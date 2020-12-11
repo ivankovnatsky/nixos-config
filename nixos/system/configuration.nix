@@ -15,6 +15,8 @@
     ./modules/tmux.nix
     ./modules/xserver.nix
     ./modules/zsh.nix
+
+    ./modules/terraform.nix
   ];
 
   boot = {
