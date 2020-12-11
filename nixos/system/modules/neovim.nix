@@ -1,4 +1,6 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+
+{
   environment.systemPackages = with pkgs;
     [
       (neovim.override {
@@ -19,6 +21,7 @@
               vim-repeat
               vim-sensible
               vim-sneak
+              lens-vim
               vim-surround
               vim-terraform
               vim-terraform-completion
@@ -28,6 +31,7 @@
             ];
             opt = [ ];
           };
+
           customRC = ''
             syntax on
             colorscheme default
@@ -168,6 +172,9 @@
 
             " vim-markdown
             let g:vim_markdown_folding_disabled = 1
+
+            " lens-vim
+            let g:lens#disabled_filetypes = ['nerdtree', 'fzf']
           '';
         };
       })
