@@ -78,10 +78,10 @@
 
     (python38.withPackages (ps: with ps; [ grip ]))
 
-    (st.override { conf = builtins.readFile ./../../suckless/st/config.h; })
+    (st.override { conf = builtins.readFile ./../../../suckless/st/config.h; })
 
     (dwm.override {
-      conf = builtins.readFile ./../../suckless/dwm/config.h;
+      conf = builtins.readFile ./../../../suckless/dwm/config.h;
       patches = builtins.map pkgs.fetchurl [
         {
           url = "https://dwm.suckless.org/patches/pwkl/dwm-pwkl-6.2.diff";
@@ -91,7 +91,7 @@
     })
 
     (slstatus.override {
-      conf = builtins.readFile ./../../suckless/slstatus/config.h;
+      conf = builtins.readFile ./../../../suckless/slstatus/config.h;
     })
 
     # (terraform_0_11.withPlugins (p: [
