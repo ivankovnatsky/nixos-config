@@ -40,6 +40,43 @@
         	signingKey = 
       '';
     };
+
+    ".zshrc" = {
+      text = ''
+        if [ -n "''${commands[fzf-share]}" ]; then
+            source "$(fzf-share)/key-bindings.zsh"
+            source "$(fzf-share)/completion.zsh"
+        fi
+      '';
+    };
+
+    ".gitignore" = {
+      text = ''
+        *
+      '';
+    };
+
+    ".config/ranger/rc.conf" = {
+      text = ''
+        set show_hidden true
+      '';
+    };
+
+    ".config/mpv/config" = {
+      text = ''
+        alang=eng
+        force-seekable=yes
+        fs=yes
+        hwdec=yes
+        opengl-pbo=yes
+        osc=no
+        osd-level=0
+        save-position-on-quit=yes
+        slang=eng
+        ytdl-format='bestvideo+bestaudio/best'
+        image-display-duration=5
+      '';
+    };
   };
 
   home.stateVersion = "21.03";
