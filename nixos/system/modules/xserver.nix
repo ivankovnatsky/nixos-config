@@ -18,7 +18,7 @@
 
         autoLogin = {
           enable = true;
-          user = "sevenfourk";
+          user = "ivan";
         };
 
         defaultSession = "xsession";

@@ -16,7 +16,7 @@
     ./modules/xserver.nix
     ./modules/zsh.nix
 
-    ./modules/terraform.nix
+    # ./modules/terraform.nix
   ];
 
   boot = {
@@ -56,9 +56,9 @@
 
   security.sudo.wheelNeedsPassword = false;
 
-  users.users.sevenfourk = {
+  users.users.ivan = {
     isNormalUser = true;
-    home = "/home/sevenfourk";
+    home = "/home/ivan";
     shell = pkgs.zsh;
     extraGroups = [ "wheel" "docker" "networkmanager" ];
   };

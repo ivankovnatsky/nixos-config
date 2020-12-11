@@ -3,8 +3,8 @@
 {
   programs.home-manager.enable = true;
 
-  home.username = "sevenfourk";
-  home.homeDirectory = "/home/sevenfourk";
+  home.username = "ivan";
+  home.homeDirectory = "/home/ivan";
 
   programs = {
     git = {
