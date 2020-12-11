@@ -1,7 +1,6 @@
 { ... }:
 
 {
-
   environment.variables = {
     EDITOR = "nvim";
     GDK_SCALE = "2";
