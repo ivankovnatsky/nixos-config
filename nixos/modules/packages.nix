@@ -1,0 +1,112 @@
+{ pkgs, ... }:
+
+{
+  environment.systemPackages = with pkgs; [
+    arandr
+    awscli2
+    aws-iam-authenticator
+    bat
+    binutils-unwrapped
+    bitwarden-cli
+    brightnessctl
+    clinfo
+    dmenu
+    dmidecode
+    dnsutils
+    docker
+    docker-compose
+    du-dust
+    duf
+    exa
+    exiftool
+    fd
+    fzf
+    git
+    gitAndTools.pre-commit
+    glances
+    gnumake
+    htop
+    i2c-tools
+    imagemagick
+    irssi
+    jq
+    k9s
+    killall
+    kubectl
+    kubectx
+    kubernetes-helm
+    lm_sensors
+    lshw
+    maim
+    mpv
+    networkmanagerapplet
+    networkmanager-l2tp
+    nixfmt
+    nixpkgs-review
+    pciutils
+    powertop
+    ranger
+    ripgrep
+    rubber
+    shellcheck
+    signal-desktop
+    starship
+    strace
+    taskwarrior
+    tcpdump
+    terragrunt
+    tflint
+    tfsec
+    tree
+    unzip
+    viber
+    vulkan-tools
+    wget
+    xclip
+    xorg.xprop
+    youtube-dl
+    zathura
+    zip
+
+    (ungoogled-chromium.override {
+      commandLineArgs = "--enable-accelerated-video-decode --enable-vulkan";
+    })
+
+    (texlive.combine {
+      inherit (texlive) scheme-small xetex collection-fontsrecommended moderncv;
+    })
+
+    (python38.withPackages (ps: with ps; [ grip ]))
+
+    (st.override { conf = builtins.readFile ./../../suckless/st/config.h; })
+
+    (dwm.override {
+      conf = builtins.readFile ./../../suckless/dwm/config.h;
+      patches = builtins.map pkgs.fetchurl [
+        {
+          url = "https://dwm.suckless.org/patches/pwkl/dwm-pwkl-6.2.diff";
+          sha256 = "0qq3mlcp55p5dx9jmd75rkxlsdihzh4a2z1qzpljqash14kqsqzm";
+        }
+      ];
+    })
+
+    (slstatus.override {
+      conf = builtins.readFile ./../../suckless/slstatus/config.h;
+    })
+
+    # (terraform_0_11.withPlugins (p: [
+    #   p.archive
+    #   p.aws
+    #   p.external
+    #   p.gitlab
+    #   p.grafana
+    #   p.helm
+    #   p.kubernetes
+    #   p.local
+    #   p.null
+    #   p.random
+    #   p.template
+    #   p.tls
+    # ]))
+  ];
+}
