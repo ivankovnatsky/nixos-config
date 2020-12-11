@@ -33,6 +33,9 @@
         export FZF_DEFAULT_COMMAND='fd --type f --hidden --no-ignore --follow --exclude .git'
         export ZSH_DISABLE_COMPFIX=true
 
+        export PATH="$HOME/.tfenv/bin:$PATH"
+        export PATH="$HOME/.tgenv/bin:$PATH"
+
         # Uncomment the following line to use case-sensitive completion.
         CASE_SENSITIVE="true"
 
