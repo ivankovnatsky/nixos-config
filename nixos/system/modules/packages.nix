@@ -2,6 +2,7 @@
 
 {
   environment.systemPackages = with pkgs; [
+    acpi
     arandr
     awscli2
     aws-iam-authenticator
@@ -43,6 +44,8 @@
     networkmanager-l2tp
     nixfmt
     nixpkgs-review
+    pamixer
+    pavucontrol
     pciutils
     powertop
     ranger
@@ -83,6 +86,10 @@
     (dwm.override {
       conf = builtins.readFile ./../../../suckless/dwm/config.h;
       patches = builtins.map pkgs.fetchurl [
+        {
+          url = "https://dwm.suckless.org/patches/notitle/dwm-notitle-6.2.diff";
+          sha256 = "0lr7l98jc88lwik3hw22jq7pninmdla360c3c7zsr3s2hiy39q9f";
+        }
         {
           url = "https://dwm.suckless.org/patches/pwkl/dwm-pwkl-6.2.diff";
           sha256 = "0qq3mlcp55p5dx9jmd75rkxlsdihzh4a2z1qzpljqash14kqsqzm";
