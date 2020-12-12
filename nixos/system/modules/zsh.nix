@@ -30,6 +30,8 @@
       };
 
       shellInit = ''
+        alias tg=terragrunt
+
         export FZF_DEFAULT_COMMAND='fd --type f --hidden --no-ignore --follow --exclude .git'
         export ZSH_DISABLE_COMPFIX=true
 
