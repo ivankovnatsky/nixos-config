@@ -63,7 +63,7 @@ static const char unknown_str[] = "n/a";
  */
 static const struct arg args[] = {
 	/* function format          argument */
-	{ cpu_freq,		"  %s ",	NULL },
+	{ cpu_freq,		" %s ",	NULL },
 	{ cpu_perc,		"%s%% ",	NULL },
 	{ load_avg,		"%s ",		NULL },
 
@@ -82,12 +82,11 @@ static const struct arg args[] = {
 	{ netspeed_rx,		" %s/",	"wlp3s0" },
 	{ netspeed_tx,		"%s ",		"wlp3s0" },
 
-	{ vol_perc,		"醙 %s%% ",	"/dev/dsp1" },
+	{ run_command,		"醙 %s%% ",	"pamixer --get-volume"},
 
 	{ battery_perc,		"  %s%% ",	"BAT0" },
-	{ battery_state,	"%s ",		"BAT0" },
-	{ battery_remaining,	"%s ",		"BAT0" },
 
+	{ run_command,		"%s ",		"curl -s wttr.in/Irpin?format=\"+%t\""},
 	{ keymap,		" %s ",	NULL },
 
 	{ datetime,		"%s",		"%a %b %d %H:%M" },
