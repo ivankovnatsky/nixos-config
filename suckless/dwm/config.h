@@ -66,12 +66,9 @@ static const char *termcmd[]	= { "st", NULL };
 
 static const char *slockcmd[]		= { "slock", NULL };
 
-/* static const char *volumedowncmd[]	= { "/usr/bin/pactl", "set-sink-volume", "0", "-5%",	 NULL }; */
-/* static const char *volumeupcmd[] = { "/usr/bin/pactl", "set-sink-volume", "0", "+5%",	 NULL }; */
-
-static const char *volumedowncmd[]	= { "amixer", "set", "Master", "5%-", NULL };
-static const char *volumeupcmd[]	= { "amixer", "set", "Master", "5%+", NULL };
-static const char *volumemutecmd[]	= { "amixer", "set", "Master", "0%", NULL };
+static const char *volumedowncmd[]	= { "pamixer", "-d", "5", NULL };
+static const char *volumeupcmd[]	= { "pamixer", "-i", "5", NULL };
+static const char *volumezerocmd[]	= { "pamixer", "--set-volume", "0", NULL };
 
 static const char *monbrghtnssdowncmd[] = { "brightnessctl", "--device=amdgpu_bl0",	"set", "10%-", NULL };
 static const char *monbrghtnssupcmd[]	= { "brightnessctl", "--device=amdgpu_bl0",	"set", "+10%", NULL };
@@ -127,7 +124,7 @@ static Key keys[] = {
 
 	{ 0,					XF86XK_AudioLowerVolume,	spawn,		{.v = volumedowncmd } },
 	{ 0,					XF86XK_AudioRaiseVolume,	spawn,		{.v = volumeupcmd } },
-	{ 0,					XF86XK_AudioMute,		spawn,		{.v = volumemutecmd } },
+	{ 0,					XF86XK_AudioMute,		spawn,		{.v = volumezerocmd } },
 };
 
 /* button definitions */
@@ -136,7 +133,8 @@ static Button buttons[] = {
 	/* click		event mask	    button	    function	    argument */
 	{ ClkLtSymbol,		0,		Button1,	setlayout,	{0} },
 	{ ClkLtSymbol,		0,		Button3,	setlayout,	{.v = &layouts[2]} },
-	{ ClkWinTitle,		0,		Button2,	zoom,		{0} },
+	// this is commented out due to notitle patch
+	/* { ClkWinTitle,		0,		Button2,	zoom,		{0} }, */
 	{ ClkStatusText,	0,		Button2,	spawn,		{.v = termcmd } },
 	{ ClkClientWin,		MODKEY,		Button1,	movemouse,	{0} },
 	{ ClkClientWin,		MODKEY,		Button2,	togglefloating,	{0} },
