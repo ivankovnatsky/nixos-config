@@ -24,4 +24,6 @@
     gtk-xft-hinting=1
     gtk-xft-hintstyle=hintslight
   '';
+
+  environment.shellAliases = { tg = "terragrunt"; };
 }
