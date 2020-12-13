@@ -86,7 +86,7 @@ static const struct arg args[] = {
 
 	{ battery_perc,		"  %s%% ",	"BAT0" },
 
-	{ run_command,		"%s ",		"curl -s wttr.in/Irpin?format=\"+%t\""},
+	{ run_command,		"%s ",		"curl -s wttr.in/Irpin?format=\"+%c+%t\""},
 	{ keymap,		" %s ",	NULL },
 
 	{ datetime,		"%s",		"%a %b %d %H:%M" },
