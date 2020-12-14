@@ -29,11 +29,14 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class	  instance    title	  tags mask	isfloating   monitor */
-	{ "Google-chrome",	NULL,	     NULL,	 1 << 1,       0,	    -1 },
-	{ "Chromium",		NULL,	     NULL,	 1 << 1,       0,	    -1 },
-	{ "Signal",		NULL,	     NULL,	 1 << 2,       0,	    -1 },
-	{ "ViberPC",		NULL,	     NULL,	 1 << 2,       0,	    -1 },
+	/* class			instancetitle			tags mask	isfloatingi	monitor */
+	{ "Chromium-browser",		NULL,		NULL,		1 << 1,		0,		-1 },
+
+	{ "Signal",			NULL,	     	NULL,	 	1 << 2,		0,		-1 },
+	{ "ViberPC",			NULL,	     	NULL,	 	1 << 2,		0,		-1 },
+
+	{ "Pavucontrol",		NULL,	     	NULL,	 	1 << 3,		0,		-1 },
+	{ "Nm-connection-editor",	NULL,	     	NULL,	 	1 << 3,		0,		-1 },
 };
 
 /* layout(s) */
