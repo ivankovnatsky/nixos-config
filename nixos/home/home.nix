@@ -6,32 +6,46 @@
   home.username = "ivan";
   home.homeDirectory = "/home/ivan";
 
-  programs = {
-    git = {
-      enable = true;
-
-      extraConfig = {
-        commit = { gpgSign = true; };
-        push = { default = "current"; };
-        pull = { rebase = false; };
-        core = {
-          filemode = true;
-          editor = "nvim";
-        };
-        merge = { tool = "vimdiff"; };
-        mergetool = {
-          prompt = true;
-          keepBackup = false;
-        };
-        mergetool."vimdiff".cmd =
-          "nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'";
-        include.path = "~/.config/git/config-home";
-        includeIf."gitdir:~/Sources/Work/".path = "~/.config/git/config-work";
-      };
-    };
-  };
-
   home.file = {
+    ".config/bat/config" = {
+      text = ''
+        --tabs="0"
+      '';
+    };
+
+    ".config/git/config" = {
+      text = ''
+        [commit]
+        	gpgSign = true
+
+        [core]
+        	editor = "nvim"
+        	filemode = true
+
+        [include]
+        	path = "~/.config/git/config-home"
+
+        [includeIf "gitdir:~/Sources/Work/"]
+        	path = "~/.config/git/config-work"
+
+        [merge]
+        	tool = "vimdiff"
+
+        [mergetool]
+        	keepBackup = false
+        	prompt = true
+
+        [mergetool "vimdiff"]
+        	cmd = "nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'"
+
+        [pull]
+        	rebase = false
+
+        [push]
+        	default = "current"
+      '';
+    };
+
     ".config/git/config-type.template" = {
       text = ''
         [user]
@@ -75,6 +89,19 @@
         slang=eng
         ytdl-format='bestvideo+bestaudio/best'
         image-display-duration=5
+      '';
+    };
+
+    ".config/tmuxinator/default.yml" = {
+      text = ''
+        name: default
+        root: ~/
+
+        windows:
+          - nvim-work: cd ~/Sources/Work && nvim
+          - cli-work: cd ~/Sources/Work/
+          - nvim-home: cd ~/Sources/SourceHut/ && nvim
+          - cli-home: cd ~/Sources/SourceHut
       '';
     };
   };
