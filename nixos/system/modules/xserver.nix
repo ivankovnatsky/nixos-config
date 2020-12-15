@@ -24,7 +24,7 @@
         defaultSession = "xsession";
 
         sessionCommands = ''
-          tmuxinator start default || tmuxinator new default &
+          st -e tmuxinator start default || st -e tmuxinator new default &
           chromium &
 
           while true; do slstatus 2> /tmp/slstatus-log; done &
