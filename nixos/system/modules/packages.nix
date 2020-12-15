@@ -60,6 +60,7 @@
     terragrunt
     tflint
     tfsec
+    tmuxinator
     tree
     unzip
     viber
