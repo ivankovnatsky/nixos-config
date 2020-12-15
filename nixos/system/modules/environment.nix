@@ -6,8 +6,6 @@
     GDK_SCALE = "2";
     GDK_DPI_SCALE = "0.5";
     QT_AUTO_SCREEN_SCALE_FACTOR = "1";
-
-    VK_ICD_FILENAMES = "/run/opengl-driver/share/vulkan/icd.d/amd_icd64.json";
   };
 
   environment.etc."xdg/gtk-2.0/gtkrc".text = ''
