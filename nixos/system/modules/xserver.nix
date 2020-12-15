@@ -24,8 +24,7 @@
         defaultSession = "xsession";
 
         sessionCommands = ''
-          st -e tmux attach || st -e tmux &
-          # sleep 10 && chromium &
+          tmuxinator start default || tmuxinator new default &
           chromium &
 
           while true; do slstatus 2> /tmp/slstatus-log; done &
