@@ -45,10 +45,10 @@ static const int nmaster	= 1;	/* number of clients in master area */
 static const int resizehints	= 0;	/* 1 means respect size hints in tiled resizals */
 
 static const Layout layouts[] = {
-	/* symbol	  arrange function */
-	{ "[M]",	  monocle },
-	{ "[]=",	  tile },    /* first entry is default */
-	{ "><>",	  NULL },    /* no layout function means floating behavior */
+	/* symbol	arrange function */
+	{ "[M]",	monocle },
+	{ "[]=",	tile }, /* first entry is default */
+	{ "><>",	NULL }, /* no layout function means floating behavior */
 };
 
 /* key definitions */
@@ -67,17 +67,17 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[]	= { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]	= { "st", NULL };
 
-static const char *slockcmd[]		= { "slock", NULL };
+static const char *slockcmd[] = { "slock", NULL };
 
 static const char *volumedowncmd[]	= { "pamixer", "-d", "5", NULL };
 static const char *volumeupcmd[]	= { "pamixer", "-i", "5", NULL };
 static const char *volumezerocmd[]	= { "pamixer", "--set-volume", "0", NULL };
 
-static const char *monbrghtnssdowncmd[] = { "brightnessctl", "--device=amdgpu_bl0",	"set", "10%-", NULL };
-static const char *monbrghtnssupcmd[]	= { "brightnessctl", "--device=amdgpu_bl0",	"set", "+10%", NULL };
+static const char *monbrghtnssdowncmd[] = { "brightnessctl", "--device=amdgpu_bl0", "set", "10%-", NULL };
+static const char *monbrghtnssupcmd[]   = { "brightnessctl", "--device=amdgpu_bl0", "set", "+10%", NULL };
 
 static const char *kbdbrghtnssdowncmd[] = { "brightnessctl", "--device=tpacpi::kbd_backlight", "set", "10%-", NULL };
-static const char *kbdbrghtnssupcmd[]	= { "brightnessctl", "--device=tpacpi::kbd_backlight", "set", "+10%", NULL };
+static const char *kbdbrghtnssupcmd[]   = { "brightnessctl", "--device=tpacpi::kbd_backlight", "set", "+10%", NULL };
 
 static Key keys[] = {
 	/* modifier				key				function	argument */
