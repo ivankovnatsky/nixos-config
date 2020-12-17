@@ -102,6 +102,7 @@
           - cli-work: cd ~/Sources/Work/
           - nvim-home: cd ~/Sources/SourceHut/ && nvim
           - cli-home: cd ~/Sources/SourceHut
+          - cli-service:
       '';
     };
   };
