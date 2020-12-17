@@ -2,7 +2,6 @@
 
 {
   environment.systemPackages = with pkgs; [
-    traceroute
     acpi
     arandr
     awscli2
@@ -23,6 +22,7 @@
     exiftool
     fd
     fzf
+    gimp
     git
     gitAndTools.pre-commit
     glances
@@ -62,6 +62,7 @@
     tflint
     tfsec
     tmuxinator
+    traceroute
     tree
     unzip
     viber
