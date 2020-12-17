@@ -87,7 +87,6 @@ static const struct arg args[] = {
 	{ battery_perc,		"  %s%% ",	"BAT0" },
 
 	{ keymap,		" %s",		NULL },
-	{ run_command,		"%s ",		"curl -s wttr.in/?format=\"+%t\""},
 
 	{ datetime,		"%s",		"%a %b %d %H:%M" },
 };
