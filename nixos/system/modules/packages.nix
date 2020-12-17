@@ -2,6 +2,7 @@
 
 {
   environment.systemPackages = with pkgs; [
+    traceroute
     acpi
     arandr
     awscli2
@@ -72,7 +73,7 @@
     zathura
     zip
 
-    (ungoogled-chromium.override {
+    (google-chrome.override {
       commandLineArgs = "--enable-accelerated-video-decode --enable-vulkan";
     })
 
