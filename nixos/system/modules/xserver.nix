@@ -10,7 +10,7 @@
 
       xautolock = {
         enable = true;
-        locker = "${pkgs.slock}/bin/slock";
+        locker = "/run/wrappers/bin/slock";
       };
 
       displayManager = {
