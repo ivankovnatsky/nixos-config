@@ -13,6 +13,8 @@
         locker = "/run/wrappers/bin/slock";
       };
 
+      desktopManager.xterm.enable = false;
+
       displayManager = {
         lightdm.enable = true;
 
@@ -25,7 +27,7 @@
 
         sessionCommands = ''
           st -e tmuxinator start default || st -e tmuxinator new default &
-          chromium &
+          google-chrome-stable &
 
           while true; do slstatus 2> /tmp/slstatus-log; done &
         '';

@@ -30,6 +30,7 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class			instancetitle			tags mask	isfloatingi	monitor */
+	{ "Google-chrome",		NULL,		NULL,		1 << 1,		0,		-1 },
 	{ "Chromium-browser",		NULL,		NULL,		1 << 1,		0,		-1 },
 
 	{ "Signal",			NULL,	     	NULL,	 	1 << 2,		0,		-1 },
