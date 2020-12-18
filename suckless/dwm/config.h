@@ -37,6 +37,7 @@ static const Rule rules[] = {
 	{ "ViberPC",			NULL,	     	NULL,	 	1 << 2,		0,		-1 },
 
 	{ "Pavucontrol",		NULL,	     	NULL,	 	1 << 3,		0,		-1 },
+	{ "Gimp",			NULL,	     	NULL,	 	1 << 3,		0,		-1 },
 	{ "Nm-connection-editor",	NULL,	     	NULL,	 	1 << 3,		0,		-1 },
 };
 
