@@ -58,6 +58,7 @@
     strace
     taskwarrior
     tcpdump
+    tdesktop
     terragrunt
     tflint
     tfsec
