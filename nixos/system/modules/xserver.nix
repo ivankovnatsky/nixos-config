@@ -8,12 +8,14 @@
       dpi = 192;
       videoDrivers = [ "amdgpu" ];
 
-      xautolock = {
-        enable = true;
-        locker = "/run/wrappers/bin/slock";
-      };
-
       desktopManager.xterm.enable = false;
+
+      windowManager.i3 = {
+        enable = true;
+        extraPackages = with pkgs; [
+          i3status-rust
+        ];
+      };
 
       displayManager = {
         lightdm.enable = true;
@@ -23,20 +25,7 @@
           user = "ivan";
         };
 
-        defaultSession = "xsession";
-
-        sessionCommands = ''
-          st -e tmuxinator start default || st -e tmuxinator new default &
-          google-chrome-stable &
-
-          while true; do slstatus 2> /tmp/slstatus-log; done &
-        '';
-
-        session = [{
-          manage = "desktop";
-          name = "xsession";
-          start = "while true; do dwm 2> /tmp/dwm-log; done";
-        }];
+        defaultSession = "none+i3";
       };
 
       layout = "us,ua";
