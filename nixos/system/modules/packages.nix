@@ -102,10 +102,6 @@
       ];
     })
 
-    (slstatus.override {
-      conf = builtins.readFile ./../../../suckless/slstatus/config.h;
-    })
-
     # (terraform_0_11.withPlugins (p: [
     #   p.archive
     #   p.aws
