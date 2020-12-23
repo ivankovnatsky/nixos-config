@@ -12,7 +12,7 @@
     bitwarden-cli
     brightnessctl
     clinfo
-    dmenu
+    rofi
     dmidecode
     dnsutils
     docker
