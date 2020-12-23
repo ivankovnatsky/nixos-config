@@ -7,6 +7,7 @@
       driSupport32Bit = true;
     };
 
+    bluetooth.enable = false;
     video.hidpi.enable = true;
     pulseaudio.enable = true;
   };
