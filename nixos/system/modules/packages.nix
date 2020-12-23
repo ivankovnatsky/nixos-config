@@ -3,6 +3,7 @@
 {
   environment.systemPackages = with pkgs; [
     acpi
+    alacritty
     arandr
     awscli2
     aws-iam-authenticator
@@ -21,6 +22,7 @@
     exa
     exiftool
     fd
+    firefox
     fzf
     gimp
     git
@@ -70,6 +72,7 @@
     vulkan-tools
     wget
     xclip
+    xorg.xev
     xorg.xprop
     youtube-dl
     zathura
@@ -84,8 +87,6 @@
     })
 
     (python38.withPackages (ps: with ps; [ grip ]))
-
-    (st.override { conf = builtins.readFile ./../../../suckless/st/config.h; })
 
     (dwm.override {
       conf = builtins.readFile ./../../../suckless/dwm/config.h;
