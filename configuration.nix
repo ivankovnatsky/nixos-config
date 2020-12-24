@@ -8,13 +8,11 @@
 
     ./modules/environment.nix
     ./modules/hardware.nix
-    ./modules/neovim.nix
     ./modules/packages.nix
     ./modules/programs.nix
     ./modules/services.nix
-    ./modules/tmux.nix
     ./modules/xserver.nix
-    ./modules/zsh.nix
+    # ./modules/zsh.nix
   ];
 
   boot = {
@@ -63,7 +61,7 @@
 
   virtualisation = {
     docker = {
-      enable = true;
+      enable = false;
       enableOnBoot = false;
     };
   };

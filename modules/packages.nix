@@ -12,7 +12,6 @@
     bitwarden-cli
     brightnessctl
     clinfo
-    rofi
     dmidecode
     dnsutils
     docker
@@ -23,13 +22,13 @@
     exiftool
     fd
     firefox
-    fzf
     gimp
     git
     gitAndTools.pre-commit
     glances
     gnumake
     htop
+    hwinfo
     i2c-tools
     imagemagick
     irssi
@@ -43,6 +42,7 @@
     lshw
     maim
     mpv
+    neovim
     networkmanagerapplet
     networkmanager-l2tp
     nixfmt
@@ -53,6 +53,7 @@
     powertop
     ranger
     ripgrep
+    rofi
     rubber
     shellcheck
     signal-desktop
@@ -64,6 +65,7 @@
     terragrunt
     tflint
     tfsec
+    tmux
     tmuxinator
     traceroute
     tree
