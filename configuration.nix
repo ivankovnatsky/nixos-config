@@ -12,7 +12,6 @@
     ./modules/programs.nix
     ./modules/services.nix
     ./modules/xserver.nix
-    # ./modules/zsh.nix
   ];
 
   boot = {
