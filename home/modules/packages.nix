@@ -1,29 +1,27 @@
 { pkgs, ... }:
 
 {
-  environment.systemPackages = with pkgs; [
+  home.packages = with pkgs; [
     acpi
-    alacritty
     arandr
+    awless
     awscli2
     aws-iam-authenticator
-    bat
+    aws-vault
     binutils-unwrapped
     bitwarden-cli
     brightnessctl
-    clinfo
     dmidecode
     dnsutils
-    docker
     docker-compose
     du-dust
     duf
     exa
     exiftool
     fd
-    firefox
+    genpass
+    geteltorito
     gimp
-    git
     gitAndTools.pre-commit
     glances
     gnumake
@@ -41,37 +39,26 @@
     lm_sensors
     lshw
     maim
-    mpv
-    neovim
-    networkmanagerapplet
-    networkmanager-l2tp
     nixfmt
     nixpkgs-review
-    pamixer
+    pass
     pavucontrol
     pciutils
     powertop
     ranger
     ripgrep
-    rofi
     rubber
     shellcheck
-    signal-desktop
-    starship
     strace
-    taskwarrior
     tcpdump
-    tdesktop
     terragrunt
     tflint
     tfsec
-    tmux
-    tmuxinator
     traceroute
     tree
     unzip
+    usbutils
     viber
-    vulkan-tools
     wget
     xclip
     xorg.xev
@@ -79,10 +66,7 @@
     youtube-dl
     zathura
     zip
-
-    (google-chrome.override {
-      commandLineArgs = "--enable-accelerated-video-decode --enable-vulkan";
-    })
+    i3status-rust
 
     (texlive.combine {
       inherit (texlive) scheme-small xetex collection-fontsrecommended moderncv;
@@ -104,5 +88,6 @@
     #   p.template
     #   p.tls
     # ]))
+
   ];
 }

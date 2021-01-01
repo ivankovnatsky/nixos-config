@@ -4,6 +4,8 @@
   imports = [ # Include the results of the hardware scan.
     /etc/nixos/hardware-configuration.nix
 
+    <home-manager/nixos>
+
     <nixos-hardware/lenovo/thinkpad/t14/amd/gen1>
 
     ./modules/environment.nix
@@ -12,7 +14,16 @@
     ./modules/programs.nix
     ./modules/services.nix
     ./modules/xserver.nix
+
+    ./modules/i3.nix
+    # ./modules/testing-de-wm.nix
   ];
+
+  home-manager.users.ivan = { ... }: {
+    imports = [ ../home/main.nix ];
+
+    home.stateVersion = config.system.stateVersion;
+  };
 
   boot = {
     initrd.luks.devices.crypted.device =
@@ -35,9 +46,22 @@
     networkmanager.enable = true;
   };
 
-  nixpkgs.config = {
-    allowUnfree = true;
-    allowBroken = false;
+  nixpkgs.config = { allowUnfree = true; };
+
+  nix = {
+    autoOptimiseStore = true;
+    gc.automatic = true;
+    optimise.automatic = true;
+    nixPath = [
+      "nixpkgs=https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz"
+
+      "nixos-config=/etc/nixos/configuration.nix"
+      "/nix/var/nix/profiles/per-user/root/channels"
+
+      "home-manager=https://github.com/nix-community/home-manager/archive/master.tar.gz"
+
+      "nixos-hardware=https://github.com/NixOS/nixos-hardware/archive/master.tar.gz"
+    ];
   };
 
   time.timeZone = "Europe/Kiev";
@@ -52,10 +76,12 @@
   security.sudo.wheelNeedsPassword = false;
 
   users.users.ivan = {
+    description = "Ivan Kovnatsky";
     isNormalUser = true;
     home = "/home/ivan";
     shell = pkgs.zsh;
     extraGroups = [ "wheel" "docker" "networkmanager" ];
+    uid = 1000;
   };
 
   virtualisation = {
