@@ -1,5 +1,9 @@
 {
   programs = {
+<<<<<<< HEAD:system/programs.nix
+=======
+
+>>>>>>> 52857fb (Incorporate home-manager into system config):system/modules/programs.nix
     chromium = {
       enable = true;
 
@@ -30,5 +34,13 @@
         "TranslateEnabled" = false;
       };
     };
+
+    dconf.enable = true;
+
+    gnupg.agent = {
+      enable = true;
+      enableSSHSupport = true;
+    };
+
   };
 }
