@@ -3,11 +3,6 @@
 {
   programs = {
 
-    gnupg.agent = {
-      enable = true;
-      enableSSHSupport = true;
-    };
-
     chromium = {
       enable = true;
 
@@ -40,5 +35,13 @@
         "TranslateEnabled" = false;
       };
     };
+
+    dconf.enable = true;
+
+    gnupg.agent = {
+      enable = true;
+      enableSSHSupport = true;
+    };
+
   };
 }

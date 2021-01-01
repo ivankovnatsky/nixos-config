@@ -10,24 +10,6 @@
 
       desktopManager.xterm.enable = false;
 
-      windowManager.i3 = {
-        enable = true;
-        extraPackages = with pkgs; [
-          i3status-rust
-        ];
-      };
-
-      displayManager = {
-        lightdm.enable = true;
-
-        autoLogin = {
-          enable = true;
-          user = "ivan";
-        };
-
-        defaultSession = "none+i3";
-      };
-
       layout = "us,ua";
       xkbOptions = "grp:caps_toggle";
 

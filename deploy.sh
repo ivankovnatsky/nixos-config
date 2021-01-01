@@ -35,18 +35,7 @@ mkdir -p /mnt/boot
 mount /dev/disk/by-label/boot /mnt/boot
 swapon /dev/disk/by-label/swap
 
-# nmcli dev wifi connect SSID password SSID_PASS
-tee /etc/wpa_supplicant.conf << EOF
-network={
-        ssid="{{ SSID }}"
-        psk="{{ PASSWORD }}"
-        scan_ssid=1
-}
-EOF
-
-systemctl restart wpa_supplicant.service
-
-# or you graphical interface
+nmcli dev wifi connect SSID password SSID_PASS
 
 # check internet/dns
 ping duckduckgo.com
@@ -55,13 +44,10 @@ nixos-generate-config --root /mnt
 
 nix-env -iA nixos.git
 nix-env -iA nixos.neovim
-git clone https://git.sr.ht/~sevenfourk/dotfiles /mnt/home/ivan
-git clone https://git.sr.ht/~sevenfourk/nix-configs /mnt/home/ivan/Sources/SourceHut/nix-configs
+git clone https://git.sr.ht/~ikovnatsky/dotfiles /mnt/home/ivan
+git clone https://git.sr.ht/~ikovnatsky/nix-configs /mnt/home/ivan/Sources/SourceHut/nix-configs
 
 ln -sf /mnt/home/ivan/SourceHut/nix-configs/nixos/configuration/mac.nix /mnt/etc/nixos/configuration.nix
-
-nix-channel --add https://github.com/NixOS/nixos-hardware/archive/master.tar.gz nixos-hardware
-nix-channel --update
 
 # to check linking
 vim /mnt/etc/nixos/configuration.nix
@@ -70,17 +56,3 @@ nixos-install
 chown -Rv ivan:users /mnt/home/ivan
 
 reboot
-
-# home-manager
-nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
-nix-channel --update
-nix-shell '<home-manager>' -A install
-
-ln -sf /home/ivan/SourceHut/nix-configs/nixos/home/home.nix /home/ivan/.config/nixpkgs/home.nix
-
-# configure autorandr
-arandr # -- configure laptop only
-autorandr --save mobile
-
-arandr # -- add monitor
-autorandr --save docked

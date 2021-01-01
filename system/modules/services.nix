@@ -2,8 +2,8 @@
 
 {
   services = {
-    autorandr.enable = true;
     xl2tpd.enable = true;
+    blueman.enable = true;
 
     strongswan = {
       enable = true;
