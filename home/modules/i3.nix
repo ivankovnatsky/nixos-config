@@ -7,6 +7,7 @@
     GDK_SCALE = "2";
     GDK_DPI_SCALE = "0.5";
     QT_AUTO_SCREEN_SCALE_FACTOR = "1";
+    _JAVA_OPTIONS = "-Dsun.java2d.uiScale=2";
   };
 
   xsession.windowManager.i3 = {
@@ -15,7 +16,7 @@
       fonts = [ "monospace 0" ];
 
       keybindings = {
-        "$Mod1+Control+Shift+4" =
+        "Mod1+Control+Shift+4" =
           ''exec --no-startup-id "maim -s | xclip -sel c -t image/png"'';
 
         "Mod4+Control+Mod1+Shift+l" = "exec --no-startup-id autorandr laptop";

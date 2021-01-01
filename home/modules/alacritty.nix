@@ -1,13 +1,19 @@
 { ... }:
 
-{
+let fontName = "Hack Nerd Font Mono";
+
+in {
   programs.alacritty = {
     enable = true;
     settings = {
       window.decorations = "none";
 
       font = {
-        family = "Hack Nerd Font Mono";
+        normal.family = fontName;
+        bold.family = fontName;
+        italic.family = fontName;
+        bold_italic.family = fontName;
+
         size = 12;
         draw_bold_text_with_bright_colors = true;
       };
@@ -16,8 +22,8 @@
       colors.primary.background = "#000000";
 
       cursor = {
-        text = "#ffffff";
-        cursor = "#FF7F50";
+        cursor = "#FFFFFF";
+        text = "#FF7F50";
       };
 
       live_config_reload = true;
