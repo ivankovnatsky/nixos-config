@@ -101,6 +101,8 @@
       hi CursorLine  cterm=bold        ctermbg=white ctermfg=black guibg=white   guifg=black
       hi Folded      ctermbg=white
 
+      hi Comment gui=italic cterm=italic
+
       set expandtab
       set tabstop=4
       set shiftwidth=4
@@ -166,14 +168,18 @@
       " Fixed working crontab for neovim
       autocmd filetype crontab setlocal nobackup nowritebackup
 
-      " remap
+      " remap window navigation
       nnoremap <C-h> <C-w>h
       nnoremap <C-j> <C-w>j
       nnoremap <C-k> <C-w>k
       nnoremap <C-l> <C-w>l
 
+      " history complete by word
       cmap <C-P> <Up>
       cmap <C-N> <Down>
+
+      "  disable Ex mode
+      map Q <nop>
 
       " only do this part when compiled with support for autocommands.
       if has("autocmd")

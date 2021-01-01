@@ -4,6 +4,7 @@
   home.packages = with pkgs; [
     acpi
     arandr
+    file
     awless
     awscli2
     aws-iam-authenticator
@@ -57,6 +58,7 @@
     traceroute
     tree
     unzip
+    mdl
     usbutils
     viber
     wget

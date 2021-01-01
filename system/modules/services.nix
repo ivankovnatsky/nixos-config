@@ -1,9 +1,10 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   services = {
     xl2tpd.enable = true;
     blueman.enable = true;
+    fwupd.enable = true;
 
     strongswan = {
       enable = true;
@@ -14,5 +15,27 @@
       enable = true;
       criticalPowerAction = "Hibernate";
     };
+  };
+
+  systemd.user.services = {
+
+    autocutsel-clipboard = {
+      description = "Autocutsel sync CLIPBOARD";
+      wantedBy = [ "graphical-session.target" ];
+      serviceConfig = {
+        Restart = "always";
+        ExecStart = "${pkgs.autocutsel}/bin/autocutsel -selection CLIPBOARD";
+      };
+    };
+
+    autocutsel-primary = {
+      description = "Autocutsel sync PRIMARY";
+      wantedBy = [ "graphical-session.target" ];
+      serviceConfig = {
+        Restart = "always";
+        ExecStart = "${pkgs.autocutsel}/bin/autocutsel -selection PRIMARY";
+      };
+    };
+
   };
 }

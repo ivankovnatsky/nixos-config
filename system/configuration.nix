@@ -2,7 +2,7 @@
 
 {
   imports = [ # Include the results of the hardware scan.
-    /etc/nixos/hardware-configuration.nix
+    ./hardware-configuration.nix
 
     <home-manager/nixos>
 
@@ -21,21 +21,7 @@
 
   home-manager.users.ivan = { ... }: {
     imports = [ ../home/main.nix ];
-
     home.stateVersion = config.system.stateVersion;
-  };
-
-  boot = {
-    initrd.luks.devices.crypted.device =
-      "/dev/disk/by-uuid/28eb4c4d-9c50-44ae-b046-613c7eaac520";
-    initrd.luks.devices.crypted.preLVM = true;
-
-    kernelModules = [ "amdgpu" ];
-
-    loader = {
-      systemd-boot.enable = true;
-      efi.canTouchEfiVariables = true;
-    };
   };
 
   networking = {
@@ -81,7 +67,6 @@
     home = "/home/ivan";
     shell = pkgs.zsh;
     extraGroups = [ "wheel" "docker" "networkmanager" ];
-    uid = 1000;
   };
 
   virtualisation = {
