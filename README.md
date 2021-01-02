@@ -1,4 +1,4 @@
-# nix-configs
+# nixos-config
 
 ## Installation
 
