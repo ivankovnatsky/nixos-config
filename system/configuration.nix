@@ -16,7 +16,8 @@
     ./modules/xserver.nix
 
     ./modules/i3.nix
-    # ./modules/testing-de-wm.nix
+    # ./modules/dwm.nix
+    # ./modules/gnome.nix
   ];
 
   home-manager.users.ivan = { ... }: {
@@ -26,18 +27,29 @@
 
   networking = {
     hostName = "thinkpad";
-    networkmanager.enableStrongSwan = true;
+
+    networkmanager = {
+      enable = true;
+      enableStrongSwan = true;
+      wifi.powersave = true;
+    };
 
     useDHCP = false;
-    networkmanager.enable = true;
   };
 
-  nixpkgs.config = { allowUnfree = true; };
+  documentation.enable = false;
+
+  time.timeZone = "Europe/Kiev";
+  i18n.defaultLocale = "en_US.UTF-8";
+  sound.enable = true;
+  security.sudo.wheelNeedsPassword = false;
+  nixpkgs.config.allowUnfree = true;
 
   nix = {
     autoOptimiseStore = true;
     gc.automatic = true;
     optimise.automatic = true;
+
     nixPath = [
       "nixpkgs=https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz"
 
@@ -49,17 +61,6 @@
       "nixos-hardware=https://github.com/NixOS/nixos-hardware/archive/master.tar.gz"
     ];
   };
-
-  time.timeZone = "Europe/Kiev";
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  systemd.sleep.extraConfig = ''
-    HibernateMode=shutdown
-  '';
-
-  sound.enable = true;
-
-  security.sudo.wheelNeedsPassword = false;
 
   users.users.ivan = {
     description = "Ivan Kovnatsky";

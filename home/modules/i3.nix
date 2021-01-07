@@ -1,17 +1,11 @@
 { config, lib, pkgs, ... }:
 
 {
-
-  home.sessionVariables = {
-    EDITOR = "nvim";
-    GDK_SCALE = "2";
-    GDK_DPI_SCALE = "0.5";
-    QT_AUTO_SCREEN_SCALE_FACTOR = "1";
-    _JAVA_OPTIONS = "-Dsun.java2d.uiScale=2";
-  };
+  home.sessionVariables = { };
 
   xsession.windowManager.i3 = {
     enable = true;
+
     config = {
       fonts = [ "monospace 0" ];
 
@@ -19,7 +13,9 @@
         "Mod1+Control+Shift+4" =
           ''exec --no-startup-id "maim -s | xclip -sel c -t image/png"'';
 
-        "Mod4+Control+Mod1+Shift+l" = "exec --no-startup-id autorandr laptop";
+        "Mod4+Control+Mod1+Shift+a" = "exec --no-startup-id autorandr all";
+        "Mod4+Control+Mod1+Shift+l" =
+          "exec --no-startup-id autorandr laptop && xrandr --dpi 142 && i3-msg restart && killall alacritty chrome";
         "Mod4+Control+Mod1+Shift+m" = "exec --no-startup-id autorandr monitor";
 
         "XF86MonBrightnessDown" =
@@ -70,10 +66,12 @@
 
       window = {
         hideEdgeBorders = "both";
+
         commands = [{
           command = "border pixel 1";
           criteria = { class = "^.*"; };
         }];
+
       };
 
       assigns = {

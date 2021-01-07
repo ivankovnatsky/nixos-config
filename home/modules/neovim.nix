@@ -43,6 +43,7 @@
 
       " Show dot files
       let NERDTreeShowHidden=1
+      let NERDTreeShowLineNumbers=1
       let NERDTreeMinimalUI=1
 
       " 'vim-airline/vim-airline'
@@ -62,7 +63,7 @@
       endif
 
       " 'camspiers/lens.vim'
-      let g:lens#disabled_filetypes = ['fzf']
+      let g:lens#disabled_filetypes = ['nerdtree', 'fzf']
 
       " 'w0rp/ale'
       " Check Python files with pylint.

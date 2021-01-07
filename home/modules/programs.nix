@@ -28,6 +28,7 @@
     rofi = {
       enable = true;
       font = "Hack Nerd Font Mono 20";
+
       extraConfig = ''
         dpi: 192
       '';
@@ -37,6 +38,7 @@
 
     ssh = {
       enable = true;
+
       extraConfig = ''
         Host *
           IdentityFile ~/.ssh/id_ed25519
@@ -47,8 +49,7 @@
 
     taskwarrior = {
       enable = true;
-      dataLocation = "~/.task";
+      dataLocation = "/home/ivan/.task/";
     };
-
   };
 }

@@ -1,7 +1,6 @@
 { pkgs, ... }:
 
 {
-
   programs.tmux = {
     enable = true;
 
@@ -9,8 +8,10 @@
     clock24 = true;
     keyMode = "vi";
 
-    sensibleOnTop = true;
+    # https://rsapkf.xyz/blog/enabling-italics-vim-tmux
+    terminal = "xterm-256color";
 
+    sensibleOnTop = true;
     tmuxinator.enable = true;
 
     plugins = with pkgs; [ tmuxPlugins.sensible tmuxPlugins.yank ];
@@ -29,14 +30,13 @@
   };
 
   home.file = {
-
     ".config/tmuxinator/home.yml" = {
       text = ''
         name: home
         root: ~/
 
         windows:
-          - nvim: nvim
+          - nixos-config: cd ~/Sources/Home/SourceHut/nixos-config/ && nvim
           - cli:
       '';
     };
@@ -47,11 +47,9 @@
         root: ~/Sources/Work
 
         windows:
-          - nvim: nvim
+          - editor: nvim
           - cli:
       '';
     };
-
   };
-
 }

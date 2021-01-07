@@ -2,7 +2,6 @@
 
 {
   programs = {
-
     z-lua = {
       enable = true;
       enableAliases = true;
@@ -53,6 +52,7 @@
           "vi-mode"
           "history-substring-search"
         ];
+
       };
 
       profileExtra = ''
@@ -63,7 +63,10 @@
         source ~/.env || touch ~/.env
       '';
 
-      sessionVariables = { AWS_VAULT_BACKEND = "pass"; };
+      sessionVariables = {
+        AWS_VAULT_BACKEND = "pass";
+        _ZL_HYPHEN = 1;
+      };
 
       initExtra = ''
         # enable alt+l -- to lowercase
@@ -85,7 +88,6 @@
         # enable shift+tab when using vi-mode plugin
         bindkey '^[[Z' reverse-menu-complete
       '';
-
     };
   };
 }
