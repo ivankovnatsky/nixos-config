@@ -15,6 +15,7 @@
       enable = true;
 
       dpi = 192;
+      # dpi = 142;
       videoDrivers = [ "amdgpu" ];
 
       desktopManager.xterm.enable = false;

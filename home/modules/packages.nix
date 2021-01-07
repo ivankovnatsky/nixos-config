@@ -3,6 +3,7 @@
 {
   home.packages = with pkgs; [
     acpi
+    gnome3.adwaita-icon-theme
     arandr
     awless
     awscli2
@@ -19,15 +20,19 @@
     exa
     exiftool
     fd
+    file
+    fwts
     genpass
     geteltorito
     gimp
     gitAndTools.pre-commit
     glances
+    gnome3.nautilus
     gnumake
     htop
     hwinfo
     i2c-tools
+    i3status-rust
     imagemagick
     irssi
     jq
@@ -39,6 +44,7 @@
     lm_sensors
     lshw
     maim
+    mdl
     nixfmt
     nixpkgs-review
     pass
@@ -46,6 +52,7 @@
     pciutils
     powertop
     ranger
+    rclone
     ripgrep
     rubber
     shellcheck
@@ -62,32 +69,30 @@
     wget
     xclip
     xorg.xev
-    xorg.xprop
     youtube-dl
     zathura
     zip
-    i3status-rust
 
     (texlive.combine {
       inherit (texlive) scheme-small xetex collection-fontsrecommended moderncv;
     })
 
-    (python38.withPackages (ps: with ps; [ grip ]))
+    (python38.withPackages (ps: with ps; [ grip rich ]))
 
-    # (terraform_0_11.withPlugins (p: [
-    #   p.archive
-    #   p.aws
-    #   p.external
-    #   p.gitlab
-    #   p.grafana
-    #   p.helm
-    #   p.kubernetes
-    #   p.local
-    #   p.null
-    #   p.random
-    #   p.template
-    #   p.tls
-    # ]))
+    (terraform_0_14.withPlugins (p: [
+      p.archive
+      p.aws
+      p.external
+      p.gitlab
+      p.grafana
+      p.helm
+      p.kubernetes
+      p.local
+      p.null
+      p.random
+      p.template
+      p.tls
+    ]))
 
   ];
 }

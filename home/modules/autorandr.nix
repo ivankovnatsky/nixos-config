@@ -12,7 +12,6 @@ in {
     enable = true;
 
     profiles = {
-
       "all" = {
         fingerprint = {
           eDP = laptopFingerPrint;
@@ -37,7 +36,6 @@ in {
             mode = "3840x2160";
             rate = "60.00";
           };
-
         };
       };
 
@@ -59,6 +57,7 @@ in {
 
           DisplayPort-1.enable = false;
         };
+
       };
 
       "monitor" = {
@@ -77,10 +76,8 @@ in {
             mode = "3840x2160";
             rate = "60.00";
           };
-
         };
       };
-
     };
   };
 }

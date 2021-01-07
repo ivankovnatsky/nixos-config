@@ -1,17 +1,17 @@
 {
   programs = {
-<<<<<<< HEAD:system/programs.nix
-=======
+    slock.enable = true;
 
->>>>>>> 52857fb (Incorporate home-manager into system config):system/modules/programs.nix
     chromium = {
-      enable = true;
 
+      enable = true;
       homepageLocation = "";
       defaultSearchProviderSearchURL = "https://duckduckgo.com/?q=%s";
 
       extensions = [
         "pkehgijcmpdhfbdbbnkijodmdjhbjlgp" # privacy-badger
+        "pmcmeagblkinmogikoikkdjiligflglb" # privacy-redirect
+        "ecabifbgmdmgdllomnfinbmaellmclnh" # reader-view
         "lckanjgmijmafbedllaakclkaicjfmnk" # clearurls
         "ldpochfccmkkmhdbclfhpagapcfdljkj" # decentraleyes
         "lcbjdhceifofjlpecfpeimnnphbcjgnc" # xbrowsersync
@@ -41,6 +41,5 @@
       enable = true;
       enableSSHSupport = true;
     };
-
   };
 }

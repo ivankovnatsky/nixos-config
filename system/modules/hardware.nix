@@ -1,20 +1,25 @@
 { pkgs, ... }:
 
 {
+
   hardware = {
     opengl = {
       driSupport = true;
       driSupport32Bit = true;
     };
 
-    bluetooth.enable = true;
-    video.hidpi.enable = true;
+    bluetooth = {
+      enable = true;
+      powerOnBoot = false;
+    };
 
     pulseaudio = {
       enable = true;
       extraModules = [ pkgs.pulseaudio-modules-bt ];
       package = pkgs.pulseaudioFull;
     };
+
+    video.hidpi.enable = true;
   };
 
   hardware.bluetooth.config = {

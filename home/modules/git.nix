@@ -6,6 +6,7 @@
 
     extraConfig = {
       commit.gpgsign = true;
+
       core = {
         editor = "nvim";
         filemode = true;

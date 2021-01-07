@@ -7,15 +7,13 @@
 
       displayManager = {
         lightdm.enable = true;
+        defaultSession = "none+i3";
 
         autoLogin = {
           enable = true;
           user = "ivan";
         };
-
-        defaultSession = "none+i3";
       };
-
     };
   };
 }

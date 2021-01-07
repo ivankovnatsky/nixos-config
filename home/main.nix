@@ -1,7 +1,6 @@
 { ... }:
 
 {
-
   programs.home-manager.enable = true;
 
   home.username = "ivan";
@@ -26,15 +25,22 @@
   nixpkgs.config = { allowUnfree = true; };
 
   home.file = {
-
     ".config/ranger/rc.conf" = {
       text = ''
         set show_hidden true
       '';
     };
 
+    ".Xresources" = {
+      text = ''
+        XTerm*faceName:        xft:Hack Nerd Font Mono:size=10
+        XTerm*utf8:            2
+        XTerm*background:      #000000
+        XTerm*foreground:      #FFFFFF
+        XTerm*metaSendsEscape: true
+      '';
+    };
   };
 
   home.stateVersion = "21.03";
-
 }
