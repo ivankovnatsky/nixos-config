@@ -1,7 +1,6 @@
 { pkgs, ... }:
 
 {
-
   xsession.pointerCursor = {
     name = "Adwaita";
     package = pkgs.gnome3.adwaita-icon-theme;
@@ -21,7 +20,7 @@
         gtk-application-prefer-dark-theme = true
         gtk-xft-antialias = 1
         gtk-xft-hinting = 1
-        gtk-cursor-theme-size = 32
+        gtk-xft-hintstyle = "hintfull"
       '';
     };
 
@@ -30,7 +29,7 @@
         gtk-application-prefer-dark-theme = true;
         gtk-xft-antialias = 1;
         gtk-xft-hinting = 1;
-        gtk-cursor-theme-size = 32;
+        gtk-xft-hintstyle = "hintfull";
       };
     };
   };

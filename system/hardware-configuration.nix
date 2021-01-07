@@ -24,6 +24,12 @@
     };
 
     kernelModules = [ "dm-snapshot" "kvm-amd" "amdgpu" ];
+    kernelParams = [ "amd_iommu=pt" "iommu=soft" ];
+
+    extraModprobeConfig = ''
+      options iwlwifi 11n_disable=8
+    '';
+
     extraModulePackages = [ ];
 
     loader = {

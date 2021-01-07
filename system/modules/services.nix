@@ -1,6 +1,7 @@
 { pkgs, ... }:
 
 {
+
   services = {
     xl2tpd.enable = true;
     blueman.enable = true;
@@ -11,14 +12,12 @@
       secrets = [ "ipsec.d/ipsec.nm-l2tp.secrets" ];
     };
 
-    upower = {
-      enable = true;
-      criticalPowerAction = "Hibernate";
-    };
+    gvfs.enable = true;
+
+    upower.enable = true;
   };
 
   systemd.user.services = {
-
     autocutsel-clipboard = {
       description = "Autocutsel sync CLIPBOARD";
       wantedBy = [ "graphical-session.target" ];
@@ -36,6 +35,5 @@
         ExecStart = "${pkgs.autocutsel}/bin/autocutsel -selection PRIMARY";
       };
     };
-
   };
 }

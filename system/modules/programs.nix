@@ -2,14 +2,17 @@
 
 {
   programs = {
+    slock.enable = true;
 
     chromium = {
-      enable = true;
 
+      enable = true;
       homepageLocation = "";
       defaultSearchProviderSearchURL = "https://duckduckgo.com/?q=%s";
 
       extensions = [
+        "pkehgijcmpdhfbdbbnkijodmdjhbjlgp" # privacy-badger
+        "pmcmeagblkinmogikoikkdjiligflglb" # privacy-redirect
         "ecabifbgmdmgdllomnfinbmaellmclnh" # reader-view
         "lckanjgmijmafbedllaakclkaicjfmnk" # clearurls
         "ldpochfccmkkmhdbclfhpagapcfdljkj" # decentraleyes
@@ -42,6 +45,5 @@
       enable = true;
       enableSSHSupport = true;
     };
-
   };
 }
