@@ -73,12 +73,16 @@ to install channels explicitly, but this had not been tested yet.
 #### Add Channels
 
 ```console
-sudo nix-channel --add https://github.com/NixOS/nixos-hardware/archive/master.tar.gz nixos-hardware
+sudo nix-channel --add \
+  https://github.com/NixOS/nixos-hardware/archive/master.tar.gz nixos-hardware
 sudo nix-channel --update
 
-nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+nix-channel --add \
+  https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
 nix-channel --update
 ```
+
+#### Install
 
 ```console
 nixos-generate-config --root /mnt
@@ -87,7 +91,8 @@ nix-env -iA nixos.git
 nix-env -iA nixos.neovim
 
 git clone https://git.sr.ht/~ikovnatsky/nix-configs /mnt/home/ivan/Sources/Home/SourceHut/nix-configs
-ln -sf /mnt/home/ivan/Sources/Home/SourceHut/nix-configs/system/configuration.nix /mnt/etc/nixos/configuration.nix
+ln -sf \
+  /mnt/home/ivan/Sources/Home/SourceHut/nix-configs/system/configuration.nix /mnt/etc/nixos/configuration.nix
 
 nvim /mnt/etc/nixos/configuration.nix
 
