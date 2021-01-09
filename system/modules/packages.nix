@@ -2,7 +2,7 @@
 
 {
   environment.systemPackages = with pkgs; [
-    # clinfo
+    clinfo
     docker
     google-chrome
     networkmanagerapplet

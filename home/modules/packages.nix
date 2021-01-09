@@ -3,11 +3,6 @@
 {
   home.packages = with pkgs; [
     acpi
-    hadolint
-    tdesktop
-    signal-desktop
-    teams
-    gnome3.adwaita-icon-theme
     arandr
     awless
     awscli2
@@ -18,7 +13,6 @@
     brightnessctl
     dmidecode
     dnsutils
-    nix-tree
     docker-compose
     du-dust
     duf
@@ -32,8 +26,10 @@
     gimp
     gitAndTools.pre-commit
     glances
+    gnome3.adwaita-icon-theme
     gnome3.nautilus
     gnumake
+    hadolint
     htop
     hwinfo
     i2c-tools
@@ -52,6 +48,7 @@
     mdl
     nixfmt
     nixpkgs-review
+    nix-tree
     pass
     pavucontrol
     pciutils
@@ -61,8 +58,11 @@
     ripgrep
     rubber
     shellcheck
+    signal-desktop
     strace
     tcpdump
+    tdesktop
+    teams
     terragrunt
     tflint
     tfsec

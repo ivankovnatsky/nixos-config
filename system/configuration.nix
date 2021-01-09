@@ -6,6 +6,7 @@
 
     <home-manager/nixos>
 
+    # FIXME: consider removing hardware support for tuning it myself
     <nixos-hardware/lenovo/thinkpad/t14/amd/gen1>
 
     ./modules/environment.nix
@@ -19,6 +20,8 @@
     # ./modules/dwm.nix
     # ./modules/gnome.nix
   ];
+
+  powerManagement.powertop.enable = true;
 
   home-manager.users.ivan = { ... }: {
     imports = [ ../home/main.nix ];
