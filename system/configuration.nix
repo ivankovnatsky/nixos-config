@@ -6,7 +6,6 @@
 
     <home-manager/nixos>
 
-    # FIXME: consider removing hardware support for tuning it myself
     <nixos-hardware/lenovo/thinkpad/t14/amd/gen1>
 
     ./modules/environment.nix

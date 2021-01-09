@@ -5,15 +5,18 @@
     xl2tpd.enable = true;
     blueman.enable = true;
     fwupd.enable = true;
+    gvfs.enable = true;
+    ofono.enable = true;
 
     strongswan = {
       enable = true;
       secrets = [ "ipsec.d/ipsec.nm-l2tp.secrets" ];
     };
 
-    gvfs.enable = true;
-
-    upower.enable = true;
+    upower = {
+      enable = true;
+      criticalPowerAction = "PowerOff";
+    };
 
     udev.extraRules = lib.mkMerge [
       # autosuspend USB devices
@@ -27,7 +30,7 @@
     tlp = {
       enable = true;
       settings = {
-        CPU_SCALING_GOVERNOR_ON_AC = "ondemand";
+        CPU_SCALING_GOVERNOR_ON_AC = "performance";
         CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
 
         # The following prevents the battery from charging fully to

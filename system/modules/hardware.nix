@@ -3,6 +3,8 @@
 {
 
   hardware = {
+    # don't install all that firmware:
+    # https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/hardware/all-firmware.nix
     enableAllFirmware = false;
     enableRedistributableFirmware = false;
 

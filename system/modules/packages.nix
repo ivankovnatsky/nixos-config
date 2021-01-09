@@ -3,6 +3,7 @@
 {
   environment.systemPackages = with pkgs; [
     clinfo
+    ofono-phonesim
     docker
     google-chrome
     networkmanagerapplet
