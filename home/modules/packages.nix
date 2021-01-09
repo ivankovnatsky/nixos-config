@@ -3,6 +3,10 @@
 {
   home.packages = with pkgs; [
     acpi
+    hadolint
+    tdesktop
+    signal-desktop
+    teams
     gnome3.adwaita-icon-theme
     arandr
     awless
@@ -14,6 +18,7 @@
     brightnessctl
     dmidecode
     dnsutils
+    nix-tree
     docker-compose
     du-dust
     duf

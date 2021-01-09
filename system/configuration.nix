@@ -50,16 +50,16 @@
     gc.automatic = true;
     optimise.automatic = true;
 
-    nixPath = [
-      "nixpkgs=https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz"
+    # nixPath = [
+    #   "nixpkgs=https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz"
 
-      "nixos-config=/etc/nixos/configuration.nix"
-      "/nix/var/nix/profiles/per-user/root/channels"
+    #   "nixos-config=/etc/nixos/configuration.nix"
+    #   "/nix/var/nix/profiles/per-user/root/channels"
 
-      "home-manager=https://github.com/nix-community/home-manager/archive/master.tar.gz"
+    #   "home-manager=https://github.com/nix-community/home-manager/archive/master.tar.gz"
 
-      "nixos-hardware=https://github.com/NixOS/nixos-hardware/archive/master.tar.gz"
-    ];
+    #   "nixos-hardware=https://github.com/NixOS/nixos-hardware/archive/master.tar.gz"
+    # ];
   };
 
   users.users.ivan = {
@@ -72,7 +72,7 @@
 
   virtualisation = {
     docker = {
-      enable = false;
+      enable = true;
       enableOnBoot = false;
     };
   };

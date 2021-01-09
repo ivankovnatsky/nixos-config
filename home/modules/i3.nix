@@ -16,7 +16,8 @@
         "Mod4+Control+Mod1+Shift+a" = "exec --no-startup-id autorandr all";
         "Mod4+Control+Mod1+Shift+l" =
           "exec --no-startup-id autorandr laptop && xrandr --dpi 142 && i3-msg restart && killall alacritty chrome";
-        "Mod4+Control+Mod1+Shift+m" = "exec --no-startup-id autorandr monitor";
+        "Mod4+Control+Mod1+Shift+m" =
+          "exec --no-startup-id autorandr monitor && xrandr --dpi 192 && i3-msg restart";
 
         "XF86MonBrightnessDown" =
           "exec --no-startup-id brightnessctl --device=amdgpu_bl0 set 10%-";
@@ -77,7 +78,14 @@
       assigns = {
         "1" = [{ class = "^Alacritty$"; }];
         "2" = [{ class = "^Google-chrome$"; }];
-        "3" = [{ class = "^ViberPC$"; }];
+
+        "3" = [
+          { class = "^ViberPC$"; }
+          { class = "^Signal$"; }
+          { class = "^TelegramDesktop$"; }
+          { class = "^Microsoft Teams - Preview$"; }
+        ];
+
         "4" = [{ class = "^Pavucontrol$"; }];
       };
 
