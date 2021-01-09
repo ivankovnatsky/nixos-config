@@ -62,6 +62,7 @@
     strace
     tcpdump
     tdesktop
+    rofi
     teams
     terragrunt
     tflint

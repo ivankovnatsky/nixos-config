@@ -25,17 +25,6 @@
     #   };
     # };
 
-    rofi = {
-      enable = true;
-      font = "Hack Nerd Font Mono 20";
-
-      extraConfig = ''
-        dpi: 192
-      '';
-
-      theme = "DarkBlue";
-    };
-
     ssh = {
       enable = true;
 
