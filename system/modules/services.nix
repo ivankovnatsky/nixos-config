@@ -1,7 +1,6 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 {
-
   services = {
     xl2tpd.enable = true;
     blueman.enable = true;
@@ -15,6 +14,15 @@
     gvfs.enable = true;
 
     upower.enable = true;
+
+    udev.extraRules = lib.mkMerge [
+      # autosuspend USB devices
+      ''
+        ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"''
+      # autosuspend PCI devices
+      ''
+        ACTION=="add", SUBSYSTEM=="pci", TEST=="power/control", ATTR{power/control}="auto"''
+    ];
 
     tlp = {
       enable = true;
@@ -36,6 +44,13 @@
 
         SOUND_POWER_SAVE_ON_AC = 0;
         SOUND_POWER_SAVE_ON_BAT = 1;
+
+        CONTROL_BRIGHTNESS = 1;
+        BATT_BRIGHTNESS_COMMAND = "brightnessctl --device=amdgpu_bl0 set 20%";
+        LM_AC_BRIGHTNESS_COMMAND = "brightnessctl --device=amdgpu_bl0 set 35%";
+        NOLM_AC_BRIGHTNESS_COMMAND =
+          "brightnessctl --device=amdgpu_bl0 set 35%";
+        BRIGHTNESS_OUTPUT = "/sys/class/backlight/amdgpu_bl0/brightness";
       };
     };
   };
