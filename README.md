@@ -50,6 +50,18 @@ swapon /dev/disk/by-label/swap
 
 ```console
 nmcli dev wifi connect SSID password SSID_PASS
+
+# or
+cat > /etc/wpa_supplicant.conf << EOF
+network={
+        ssid=""
+        psk="sadf98h239d8hasdf"
+        scan_ssid=1
+}
+EOF
+
+systemctl restart wpa_supplicant.service
+
 ping duckduckgo.com
 ```
 
@@ -57,6 +69,16 @@ ping duckduckgo.com
 
 As `home-manager`, `nixos-hardware` included in the config, we might not need
 to install channels explicitly, but this had not been tested yet.
+
+#### Add Channels
+
+```console
+sudo nix-channel --add https://github.com/NixOS/nixos-hardware/archive/master.tar.gz nixos-hardware
+sudo nix-channel --update
+
+nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+nix-channel --update
+```
 
 ```console
 nixos-generate-config --root /mnt

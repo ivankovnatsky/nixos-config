@@ -1,6 +1,6 @@
 { ... }:
 
-let openWeatherMapApikey = builtins.readFile /home/ivan/.secrets/openweathermap;
+let openWeatherMapApikey = builtins.readFile ../../../../../../.secrets/openweathermap;
 
 in {
   programs.i3status-rust = {
@@ -55,7 +55,7 @@ in {
             alias = "/";
             info_type = "used";
             unit = "GiB";
-            format = "{icon} {used}{unit}/{total}{unit}";
+            format = " {used}{unit}/{total}{unit}";
           }
 
           {

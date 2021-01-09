@@ -3,6 +3,11 @@
 {
 
   hardware = {
+    enableAllFirmware = false;
+    enableRedistributableFirmware = false;
+
+    firmware = with pkgs; [ firmwareLinuxNonfree ];
+
     opengl = {
       driSupport = true;
       driSupport32Bit = true;
