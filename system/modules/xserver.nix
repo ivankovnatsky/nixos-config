@@ -5,8 +5,9 @@
     xserver = {
       enable = true;
 
-      dpi = 192;
-      # dpi = 142;
+      xautolock.locker = "${pkgs.i3lock}/bin/i3lock";
+
+      dpi = 142;
       videoDrivers = [ "amdgpu" ];
 
       desktopManager.xterm.enable = false;

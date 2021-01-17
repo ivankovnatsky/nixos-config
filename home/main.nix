@@ -34,11 +34,12 @@
     ".config/rofi/config.rasi" = {
       text = ''
         configuration {
-          font: "Hack Nerd Font Mono 20";
+          font: "Hack Nerd Font Mono 10";
           location: 0;
           yoffset: 0;
           xoffset: 0;
           theme: "DarkBlue";
+          dpi: 142;
         }
       '';
     };

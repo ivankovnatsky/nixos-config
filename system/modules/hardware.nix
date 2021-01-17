@@ -26,7 +26,7 @@
       package = pkgs.pulseaudioFull;
     };
 
-    video.hidpi.enable = true;
+    # video.hidpi.enable = true;
   };
 
   hardware.bluetooth.config = {

@@ -22,6 +22,10 @@
 
   powerManagement.powertop.enable = true;
 
+  systemd.sleep.extraConfig = ''
+    HibernateMode=shutdown
+  '';
+
   home-manager.users.ivan = { ... }: {
     imports = [ ../home/main.nix ];
     home.stateVersion = config.system.stateVersion;

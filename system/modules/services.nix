@@ -6,7 +6,6 @@
     blueman.enable = true;
     fwupd.enable = true;
     gvfs.enable = true;
-    ofono.enable = true;
 
     strongswan = {
       enable = true;
@@ -42,7 +41,7 @@
 
         # 100 being the maximum, limit the speed of my CPU to reduce
         # heat and increase battery usage:
-        CPU_MAX_PERF_ON_AC = 75;
+        CPU_MAX_PERF_ON_AC = 100;
         CPU_MAX_PERF_ON_BAT = 30;
 
         SOUND_POWER_SAVE_ON_AC = 0;
