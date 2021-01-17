@@ -2,8 +2,6 @@
 
 {
   programs = {
-    slock.enable = true;
-
     chromium = {
 
       enable = true;

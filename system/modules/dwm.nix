@@ -1,6 +1,9 @@
 { pkgs, ... }:
 
 {
+  programs = {
+    slock.enable = true;
+  };
 
   environment.systemPackages = with pkgs; [
     dmenu

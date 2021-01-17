@@ -11,6 +11,15 @@
     starship = {
       enable = true;
       enableZshIntegration = true;
+
+      settings = {
+        add_newline = false;
+        line_break.disabled = true;
+        aws.disabled = true;
+        git_status.disabled = false;
+        hostname.ssh_only = false;
+        username.show_always = true;
+      };
     };
 
     fzf = {

@@ -15,7 +15,7 @@
 
         "Mod4+Control+Mod1+Shift+a" = "exec --no-startup-id autorandr all";
         "Mod4+Control+Mod1+Shift+l" =
-          "exec --no-startup-id autorandr laptop && xrandr --dpi 142 && i3-msg restart && killall alacritty chrome";
+          "exec --no-startup-id autorandr laptop && xrandr --dpi 142 && i3-msg restart";
         "Mod4+Control+Mod1+Shift+m" =
           "exec --no-startup-id autorandr monitor && xrandr --dpi 192 && i3-msg restart";
 
@@ -86,7 +86,10 @@
           { class = "^Microsoft Teams - Preview$"; }
         ];
 
-        "4" = [{ class = "^Pavucontrol$"; }];
+        "4" = [
+          { class = "^Pavucontrol$"; }
+          { class = "^.blueman-manager-wrapped$"; }
+        ];
       };
 
       bars = [{
