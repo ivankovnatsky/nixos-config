@@ -5,7 +5,7 @@
     xl2tpd.enable = true;
     blueman.enable = true;
     fwupd.enable = true;
-    gvfs.enable = true;
+    # gvfs.enable = true;
 
     strongswan = {
       enable = true;
@@ -17,14 +17,14 @@
       criticalPowerAction = "PowerOff";
     };
 
-    udev.extraRules = lib.mkMerge [
-      # autosuspend USB devices
-      ''
-        ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"''
-      # autosuspend PCI devices
-      ''
-        ACTION=="add", SUBSYSTEM=="pci", TEST=="power/control", ATTR{power/control}="auto"''
-    ];
+    # udev.extraRules = lib.mkMerge [
+    #   # autosuspend USB devices
+    #   ''
+    #     ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"''
+    #   # autosuspend PCI devices
+    #   ''
+    #     ACTION=="add", SUBSYSTEM=="pci", TEST=="power/control", ATTR{power/control}="auto"''
+    # ];
 
     tlp = {
       enable = true;
@@ -57,22 +57,26 @@
     };
   };
 
-  systemd.user.services = {
-    autocutsel-clipboard = {
-      description = "Autocutsel sync CLIPBOARD";
-      wantedBy = [ "graphical-session.target" ];
-      serviceConfig = {
-        Restart = "always";
-        ExecStart = "${pkgs.autocutsel}/bin/autocutsel -selection CLIPBOARD";
-      };
-    };
+  systemd = {
+    services.NetworkManager-wait-online.enable = false;
 
-    autocutsel-primary = {
-      description = "Autocutsel sync PRIMARY";
-      wantedBy = [ "graphical-session.target" ];
-      serviceConfig = {
-        Restart = "always";
-        ExecStart = "${pkgs.autocutsel}/bin/autocutsel -selection PRIMARY";
+    user.services = {
+      autocutsel-clipboard = {
+        description = "Autocutsel sync CLIPBOARD";
+        wantedBy = [ "graphical-session.target" ];
+        serviceConfig = {
+          Restart = "always";
+          ExecStart = "${pkgs.autocutsel}/bin/autocutsel -selection CLIPBOARD";
+        };
+      };
+
+      autocutsel-primary = {
+        description = "Autocutsel sync PRIMARY";
+        wantedBy = [ "graphical-session.target" ];
+        serviceConfig = {
+          Restart = "always";
+          ExecStart = "${pkgs.autocutsel}/bin/autocutsel -selection PRIMARY";
+        };
       };
     };
   };
