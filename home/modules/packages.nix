@@ -52,7 +52,6 @@
     pass
     pavucontrol
     pciutils
-    powertop
     ranger
     rclone
     ripgrep
@@ -87,5 +86,22 @@
     })
 
     (python38.withPackages (ps: with ps; [ grip rich ]))
+
+    # FIXME: install specific version
+    # (terraform_0_14.withPlugins (p: [
+    #   p.archive
+    #   p.aws
+    #   p.external
+    #   p.gitlab
+    #   p.grafana
+    #   p.helm
+    #   p.kubernetes
+    #   p.local
+    #   p.null
+    #   p.random
+    #   p.template
+    #   p.tls
+    # ]))
+
   ];
 }

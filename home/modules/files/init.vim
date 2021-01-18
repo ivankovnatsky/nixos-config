@@ -150,6 +150,3 @@ cmap <C-N> <Down>
 
 " disable Ex mode
 map Q <nop>
-
-" disable close all windows
-map :xa <nop>
