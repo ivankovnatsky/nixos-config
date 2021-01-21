@@ -10,7 +10,7 @@
         locker = "${pkgs.i3lock}/bin/i3lock";
       };
 
-      dpi = 142;
+      dpi = 192;
       videoDrivers = [ "amdgpu" ];
 
       desktopManager.xterm.enable = false;
