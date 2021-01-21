@@ -20,8 +20,6 @@
     # ./modules/gnome.nix
   ];
 
-  powerManagement.powertop.enable = true;
-
   systemd.sleep.extraConfig = ''
     HibernateMode=shutdown
   '';
