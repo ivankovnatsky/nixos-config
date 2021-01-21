@@ -7,20 +7,21 @@
     plugins = with pkgs.vimPlugins; [
       ale
       fzf-vim
+      lens-vim
       nerdtree
       vim-airline
       vim-commentary
       vim-devicons
       vim-fugitive
       vim-gist
+      vim-git
       vim-gitgutter
+      vim-lastplace
       vim-markdown
       vim-nix
       vim-repeat
       vim-sensible
       vim-sneak
-      vim-lastplace
-      lens-vim
       vim-surround
       vim-terraform
       vim-terraform-completion
