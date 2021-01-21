@@ -39,7 +39,7 @@
           yoffset: 0;
           xoffset: 0;
           theme: "DarkBlue";
-          dpi: 142;
+          dpi: 192;
         }
       '';
     };
