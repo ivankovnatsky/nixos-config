@@ -11,9 +11,15 @@
     binutils-unwrapped
     bitwarden-cli
     brightnessctl
+    kubetail
+    linuxPackages.cpupower
+    linuxPackages.turbostat
     dmidecode
+    eksctl
     dnsutils
+    jsonnet
     docker-compose
+    dogdns
     du-dust
     duf
     exa
@@ -23,6 +29,7 @@
     fwts
     genpass
     geteltorito
+    gettext
     gimp
     gitAndTools.pre-commit
     glances
@@ -49,23 +56,19 @@
     nixfmt
     nixpkgs-review
     nix-tree
+    openssl
     pass
     pavucontrol
     pciutils
     ranger
     rclone
     ripgrep
+    rofi
     rubber
     shellcheck
     signal-desktop
     strace
     tcpdump
-    tdesktop
-    rofi
-    openssl
-    gettext
-    dogdns
-    teams
     terragrunt
     tflint
     tfsec
@@ -74,6 +77,7 @@
     unzip
     usbutils
     viber
+    lf
     wget
     xclip
     xorg.xev
