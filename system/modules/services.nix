@@ -17,18 +17,10 @@
       criticalPowerAction = "PowerOff";
     };
 
-    # udev.extraRules = lib.mkMerge [
-    #   # autosuspend USB devices
-    #   ''
-    #     ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"''
-    #   # autosuspend PCI devices
-    #   ''
-    #     ACTION=="add", SUBSYSTEM=="pci", TEST=="power/control", ATTR{power/control}="auto"''
-    # ];
-
     tlp = {
       enable = true;
       settings = {
+
         CPU_SCALING_GOVERNOR_ON_AC = "performance";
         CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
 
@@ -41,7 +33,7 @@
 
         # 100 being the maximum, limit the speed of my CPU to reduce
         # heat and increase battery usage:
-        CPU_MAX_PERF_ON_AC = 100;
+        CPU_MAX_PERF_ON_AC = 70;
         CPU_MAX_PERF_ON_BAT = 30;
 
         SOUND_POWER_SAVE_ON_AC = 0;
