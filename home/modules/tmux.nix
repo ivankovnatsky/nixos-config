@@ -11,7 +11,7 @@
     # https://rsapkf.xyz/blog/enabling-italics-vim-tmux
     terminal = "xterm-256color";
 
-    sensibleOnTop = true;
+    sensibleOnTop = false;
     tmuxinator.enable = true;
 
     plugins = with pkgs; [ tmuxPlugins.sensible tmuxPlugins.yank ];
