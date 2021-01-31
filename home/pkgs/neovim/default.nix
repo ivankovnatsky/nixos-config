@@ -30,6 +30,6 @@
       webapi-vim
     ];
 
-    extraConfig = builtins.readFile files/init.vim;
+    extraConfig = builtins.readFile ./init.vim;
   };
 }
