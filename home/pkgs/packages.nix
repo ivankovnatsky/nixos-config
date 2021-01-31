@@ -11,13 +11,8 @@
     binutils-unwrapped
     bitwarden-cli
     brightnessctl
-    kubetail
-    linuxPackages.cpupower
-    linuxPackages.turbostat
     dmidecode
-    eksctl
     dnsutils
-    jsonnet
     docker-compose
     dogdns
     du-dust
@@ -34,21 +29,21 @@
     gitAndTools.pre-commit
     glances
     gnome3.adwaita-icon-theme
-    gnome3.nautilus
     gnumake
     hadolint
     htop
     hwinfo
     i2c-tools
-    i3status-rust
     imagemagick
     irssi
     jq
+    jsonnet
     k9s
     killall
     kubectl
     kubectx
     kubernetes-helm
+    kubetail
     lm_sensors
     lshw
     maim
@@ -68,6 +63,7 @@
     shellcheck
     signal-desktop
     strace
+    sysstat
     tcpdump
     terragrunt
     tflint
@@ -77,7 +73,6 @@
     unzip
     usbutils
     viber
-    lf
     wget
     xclip
     xorg.xev
