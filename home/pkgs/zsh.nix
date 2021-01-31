@@ -44,28 +44,26 @@
         enable = true;
 
         plugins = [
-          "git"
-          "vi-mode"
           "aws"
           "command-not-found"
-          "fd"
-          "ripgrep"
-          "git"
-          "terraform"
           "docker"
-          "vault"
-          "kops"
+          "fd"
+          "git"
           "helm"
-          "tmux"
-          "kubectl"
-          "vi-mode"
           "history-substring-search"
+          "kubectl"
+          "ripgrep"
+          "terraform"
+          "tmux"
+          "vi-mode"
         ];
-
       };
 
       profileExtra = ''
         export PATH="$HOME/.bin:$PATH"
+
+        # FIXME
+        export PATH=$PATH:/nix/store/irl6plz0gk515f9l3pizv0n3zl0h6qf7-terraform-0.14.4/bin
       '';
 
       envExtra = ''
