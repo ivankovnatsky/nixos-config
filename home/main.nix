@@ -7,22 +7,24 @@
   home.homeDirectory = "/home/ivan";
 
   imports = [
-    ./modules/packages.nix
-    ./modules/programs.nix
-    ./modules/services.nix
+    ./pkgs/packages.nix
+    ./pkgs/programs.nix
+    ./pkgs/services.nix
 
-    ./modules/alacritty.nix
-    ./modules/autorandr.nix
-    ./modules/gtk.nix
-    ./modules/git.nix
-    ./modules/i3.nix
-    ./modules/i3status.nix
-    ./modules/neovim.nix
-    ./modules/tmux.nix
-    ./modules/zsh.nix
+    ./pkgs/alacritty.nix
+    ./pkgs/autorandr.nix
+    ./pkgs/gtk.nix
+    ./pkgs/git.nix
+    ./pkgs/i3.nix
+    ./pkgs/i3status.nix
+    ./pkgs/neovim/default.nix
+    ./pkgs/tmux.nix
+    ./pkgs/zsh.nix
   ];
 
   nixpkgs.config.allowUnfree = true;
+
+  # nixpkgs.overlays = [ (import ./overlays/terraform.nix) ];
 
   home.file = {
     ".config/ranger/rc.conf" = {
