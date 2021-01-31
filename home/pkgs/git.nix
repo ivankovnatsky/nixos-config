@@ -15,15 +15,14 @@
       include.path = "~/.config/git/config-home";
       includeIf."gitdir:~/Sources/Work/".path = "~/.config/git/config-work";
 
-      merge.tool = "vimdiff";
+      merge.tool = "nvim";
 
       mergetool = {
         keepBackup = false;
         prompt = true;
       };
 
-      mergetool."vimdiff".cmd =
-        "nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'";
+      mergetool."nvim".cmd = ''nvim -f -c "Gdiffsplit!" "$MERGED"'';
 
       pull.rebase = false;
       push.default = "current";
