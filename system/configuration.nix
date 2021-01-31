@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, options, ... }:
 
 {
   imports = [ # Include the results of the hardware scan.
@@ -8,12 +8,12 @@
 
     <nixos-hardware/lenovo/thinkpad/t14/amd/gen1>
 
-    ./modules/environment.nix
-    ./modules/hardware.nix
-    ./modules/packages.nix
-    ./modules/programs.nix
-    ./modules/services.nix
-    ./modules/xserver.nix
+    ./pkgs/environment.nix
+    ./pkgs/hardware.nix
+    ./pkgs/packages.nix
+    ./pkgs/programs.nix
+    ./pkgs/services.nix
+    ./pkgs/xserver.nix
 
     ./modules/i3.nix
     # ./modules/dwm.nix
