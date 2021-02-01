@@ -1,6 +1,8 @@
 { ... }:
 
-let openWeatherMapApikey = builtins.readFile ../../../../../../.secrets/openweathermap;
+let
+  openWeatherMapApikey =
+    builtins.readFile ../../../../../../.secrets/openweathermap;
 
 in {
   programs.i3status-rust = {
@@ -70,10 +72,10 @@ in {
             format = "{speed_down} {speed_up}";
           }
 
-          # {
-          #   block = "keyboard_layout";
-          #   driver = "localebus";
-          # }
+          {
+            block = "keyboard_layout";
+            driver = "kbddbus";
+          }
 
           { block = "sound"; }
 
