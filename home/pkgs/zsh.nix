@@ -38,7 +38,11 @@
         ignoreDups = true;
         expireDuplicatesFirst = true;
         share = true;
+        extended = true;
+        path = ".config/zsh/.zsh_history";
       };
+
+      dotDir = ".config/zsh";
 
       oh-my-zsh = {
         enable = true;
