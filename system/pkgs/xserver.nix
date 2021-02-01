@@ -20,9 +20,12 @@
 
       libinput = {
         enable = true;
-        tapping = false;
-        naturalScrolling = true;
-        additionalOptions = ''MatchIsTouchpad "on"'';
+
+        touchpad = {
+          additionalOptions = ''MatchIsTouchpad "on"'';
+          naturalScrolling = true;
+          tapping = false;
+        };
       };
 
       extraConfig = ''
