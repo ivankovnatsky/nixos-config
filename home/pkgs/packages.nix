@@ -70,7 +70,6 @@
     tflint
     tfsec
     traceroute
-    tree
     unzip
     usbutils
     viber

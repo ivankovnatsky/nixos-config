@@ -44,6 +44,11 @@
 
       dotDir = ".config/zsh";
 
+      shellAliases = {
+        ls = "exa --group-directories-first --group";
+        tree = "exa --tree";
+      };
+
       oh-my-zsh = {
         enable = true;
 
