@@ -9,6 +9,8 @@
     config = {
       fonts = [ "monospace 0" ];
 
+      startup = [{ command = "kbdd"; }];
+
       keybindings = {
         "Mod1+Control+Shift+4" =
           ''exec --no-startup-id "maim -s | xclip -sel c -t image/png"'';

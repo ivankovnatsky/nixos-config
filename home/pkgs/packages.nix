@@ -3,6 +3,7 @@
 {
   home.packages = with pkgs; [
     acpi
+    kbdd
     arandr
     awless
     awscli2
