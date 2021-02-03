@@ -5,7 +5,6 @@
     xl2tpd.enable = true;
     blueman.enable = true;
     fwupd.enable = true;
-    # gvfs.enable = true;
 
     strongswan = {
       enable = true;
