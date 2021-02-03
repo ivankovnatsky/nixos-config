@@ -76,6 +76,7 @@
     wget
     xclip
     xorg.xev
+    geeqie
     youtube-dl
     zathura
     zip
@@ -86,20 +87,20 @@
 
     (python38.withPackages (ps: with ps; [ grip rich ]))
 
-    (terraform_0_14.withPlugins (p: [
-      p.archive
-      p.aws
-      p.external
-      p.gitlab
-      p.grafana
-      p.helm
-      p.kubernetes
-      p.local
-      p.null
-      p.random
-      p.template
-      p.tls
-    ]))
+    # (terraform_0_14.withPlugins (p: [
+    #   p.archive
+    #   p.aws
+    #   p.external
+    #   p.gitlab
+    #   p.grafana
+    #   p.helm
+    #   p.kubernetes
+    #   p.local
+    #   p.null
+    #   p.random
+    #   p.template
+    #   p.tls
+    # ]))
 
   ];
 }
