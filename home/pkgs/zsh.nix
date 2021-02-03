@@ -39,10 +39,7 @@
         expireDuplicatesFirst = true;
         share = true;
         extended = true;
-        path = ".config/zsh/.zsh_history";
       };
-
-      dotDir = ".config/zsh";
 
       shellAliases = {
         ls = "exa --group-directories-first --group";
