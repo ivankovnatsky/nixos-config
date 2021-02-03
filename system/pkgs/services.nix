@@ -5,6 +5,7 @@
     xl2tpd.enable = true;
     blueman.enable = true;
     fwupd.enable = true;
+    picom.enable = true;
 
     strongswan = {
       enable = true;
