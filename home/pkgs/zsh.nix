@@ -67,6 +67,7 @@
 
       profileExtra = ''
         export PATH="$HOME/.bin:$PATH"
+        export PATH="$PATH:/nix/store/irl6plz0gk515f9l3pizv0n3zl0h6qf7-terraform-0.14.4/bin"
       '';
 
       envExtra = ''
