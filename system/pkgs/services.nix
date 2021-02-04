@@ -7,6 +7,8 @@
     fwupd.enable = true;
     picom.enable = true;
 
+    gnome3.gnome-keyring.enable = true;
+
     strongswan = {
       enable = true;
       secrets = [ "ipsec.d/ipsec.nm-l2tp.secrets" ];
