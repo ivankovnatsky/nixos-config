@@ -17,8 +17,8 @@ let NERDTreeMinimalUI=1
 
 " 'vim-airline/vim-airline'
 " Enable branch name in vim-airline
-let g:airline#extensions#branch#enabled=1
-let g:airline_powerline_fonts = 1
+" let g:airline#extensions#branch#enabled=1
+" let g:airline_powerline_fonts = 1
 
 " 'plasticboy/vim-markdown'
 " disable folding
