@@ -24,8 +24,6 @@
 
   nixpkgs.config.allowUnfree = true;
 
-  # nixpkgs.overlays = [ (import ./overlays/terraform.nix) ];
-
   home.file = {
     ".config/ranger/rc.conf" = {
       text = ''
