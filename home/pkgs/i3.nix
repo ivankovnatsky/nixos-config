@@ -95,7 +95,6 @@
       };
 
       bars = [{
-        trayOutput = "none";
         position = "top";
         fonts = [ "Font Awesome 5 Free 9" ];
         statusCommand =
