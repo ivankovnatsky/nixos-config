@@ -32,9 +32,9 @@
           "exec --no-startup-id brightnessctl --device=tpacpi::kbd_backlight set 10%-";
 
         "XF86AudioRaiseVolume" =
-          "exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10%";
+          "exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%";
         "XF86AudioLowerVolume" =
-          "exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10%";
+          "exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%";
         "XF86AudioMute" =
           "exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle";
         "XF86AudioMicMute" =
