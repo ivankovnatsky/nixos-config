@@ -9,7 +9,7 @@
     config = {
       fonts = [ "monospace 0" ];
 
-      startup = [{ command = "kbdd"; }];
+      startup = [{ command = "${pkgs.kbdd}/bin/kbdd"; }];
 
       keybindings = {
         "Mod1+Control+Shift+4" =
