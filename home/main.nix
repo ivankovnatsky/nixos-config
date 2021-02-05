@@ -7,9 +7,9 @@
   home.homeDirectory = "/home/ivan";
 
   imports = [
-    ./pkgs/packages.nix
-    ./pkgs/programs.nix
-    ./pkgs/services.nix
+    ./packages.nix
+    ./programs.nix
+    ./services.nix
 
     ./pkgs/alacritty.nix
     ./pkgs/autorandr.nix

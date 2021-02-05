@@ -8,12 +8,12 @@
 
     <nixos-hardware/lenovo/thinkpad/t14/amd/gen1>
 
-    ./pkgs/environment.nix
-    ./pkgs/hardware.nix
-    ./pkgs/packages.nix
-    ./pkgs/programs.nix
-    ./pkgs/services.nix
-    ./pkgs/xserver.nix
+    ./environment.nix
+    ./hardware.nix
+    ./packages.nix
+    ./programs.nix
+    ./services.nix
+    ./xserver.nix
 
     ./modules/i3.nix
     # ./modules/dwm.nix
