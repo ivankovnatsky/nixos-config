@@ -2,6 +2,8 @@
 
 {
   programs = {
+    seahorse.enable = true;
+
     chromium = {
 
       enable = true;
