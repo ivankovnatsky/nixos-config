@@ -7,6 +7,8 @@
     fwupd.enable = true;
     picom.enable = true;
 
+    autorandr.enable = true;
+
     gnome3.gnome-keyring.enable = true;
 
     strongswan = {
