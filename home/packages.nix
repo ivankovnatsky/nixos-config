@@ -75,7 +75,6 @@
     ranger
     rclone
     ripgrep
-    rofi
     rubber
     shellcheck
     signal-desktop

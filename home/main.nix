@@ -15,6 +15,7 @@
     ./pkgs/autorandr.nix
     ./pkgs/gtk.nix
     ./pkgs/git.nix
+    ./pkgs/rofi.nix
     ./pkgs/i3.nix
     ./pkgs/i3status.nix
     ./pkgs/neovim/default.nix
@@ -28,19 +29,6 @@
     ".config/ranger/rc.conf" = {
       text = ''
         set show_hidden true
-      '';
-    };
-
-    ".config/rofi/config.rasi" = {
-      text = ''
-        configuration {
-          font: "Hack Nerd Font Mono 10";
-          location: 0;
-          yoffset: 0;
-          xoffset: 0;
-          theme: "DarkBlue";
-          dpi: 192;
-        }
       '';
     };
 
