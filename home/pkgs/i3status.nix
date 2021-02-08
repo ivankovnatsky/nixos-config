@@ -62,7 +62,7 @@ in {
 
           {
             block = "net";
-            device = "wlp2s0";
+            device = "wlp3s0";
             hide_inactive = true;
             ip = false;
             speed_up = true;
