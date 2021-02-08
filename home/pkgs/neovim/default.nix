@@ -9,7 +9,7 @@
       fzf-vim
       lens-vim
       nerdtree
-      # vim-airline
+      vim-airline
       vim-commentary
       vim-devicons
       vim-fugitive
