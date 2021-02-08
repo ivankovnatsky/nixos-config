@@ -45,6 +45,7 @@
     gitAndTools.pre-commit
     glances
     gnome3.adwaita-icon-theme
+    gnome3.nautilus
     gnumake
     hadolint
     htop
