@@ -97,6 +97,8 @@
 
         # enable shift+tab when using vi-mode plugin
         bindkey '^[[Z' reverse-menu-complete
+
+        setopt extendedglob
       '';
     };
   };
