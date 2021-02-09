@@ -38,6 +38,7 @@
     fd
     file
     fwts
+    geeqie
     genpass
     geteltorito
     gettext
@@ -53,6 +54,7 @@
     i2c-tools
     imagemagick
     irssi
+    iw
     jq
     jsonnet
     k9s
@@ -91,7 +93,6 @@
     wget
     xclip
     xorg.xev
-    geeqie
     youtube-dl
     zathura
     zip
