@@ -85,13 +85,13 @@ in {
             format = "{percentage}%";
           }
 
-          # {
-          #   block = "taskwarrior";
-          #   interval = 60;
-          #   format = "{count} tasks";
-          #   format_singular = "{count} task";
-          #   format_everything_done = "nothing to do!";
-          # }
+          {
+            block = "taskwarrior";
+            interval = 60;
+            format = "{count} tasks";
+            format_singular = "{count} task";
+            format_everything_done = "nothing to do!";
+          }
 
           {
             block = "weather";
