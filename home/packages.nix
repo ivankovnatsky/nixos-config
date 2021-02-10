@@ -38,7 +38,7 @@
     fd
     file
     fwts
-    geeqie
+    gnome3.eog
     genpass
     geteltorito
     gettext
