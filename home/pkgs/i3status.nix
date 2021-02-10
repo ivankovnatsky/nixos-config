@@ -75,6 +75,7 @@ in {
           {
             block = "keyboard_layout";
             driver = "kbddbus";
+            format = " {layout}";
           }
 
           { block = "sound"; }
