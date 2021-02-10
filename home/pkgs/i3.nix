@@ -1,6 +1,10 @@
 { config, lib, pkgs, ... }:
 
-{
+let
+  blackColorHTML = "#000000";
+  whiteColorHTML = "#ffffff";
+
+in {
   home.sessionVariables = { };
 
   xsession.windowManager.i3 = {
@@ -97,6 +101,35 @@
       bars = [{
         position = "top";
         fonts = [ "Font Awesome 5 Free 9" ];
+
+        colors = {
+
+          focusedWorkspace = {
+            border = whiteColorHTML;
+            background = whiteColorHTML;
+            text = blackColorHTML;
+          };
+
+          activeWorkspace = {
+            border = "#5f676a";
+            background = "#5f676a";
+            text = "#ffffff";
+          };
+
+          inactiveWorkspace = {
+            border = "#222222";
+            background = "#222222";
+            text = whiteColorHTML;
+          };
+
+          urgentWorkspace = {
+            border = "#900000";
+            background = "#900000";
+            text = "#ffffff";
+          };
+
+        };
+
         statusCommand =
           "${pkgs.i3status-rust}/bin/i3status-rs ~/.config/i3status-rust/config-top.toml";
       }];
