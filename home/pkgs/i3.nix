@@ -16,6 +16,16 @@ in {
 
       startup = [{ command = "${pkgs.kbdd}/bin/kbdd"; }];
 
+      colors = {
+        focused = {
+          border = "#4c7899";
+          background = whiteColorHTML;
+          text = "#ffffff";
+          indicator = "#2e9ef4";
+          childBorder = "#285577";
+        };
+      };
+
       keybindings = {
         "Mod1+Control+Shift+4" =
           ''exec --no-startup-id "maim -s | xclip -sel c -t image/png"'';
