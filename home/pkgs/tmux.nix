@@ -17,10 +17,10 @@
     plugins = with pkgs; [ tmuxPlugins.sensible tmuxPlugins.yank ];
 
     extraConfig = ''
-      set -g status-bg colour234
-      set -g status-fg colour252
+      set -g status-bg colour0
+      set -g status-fg colour15
 
-      set -g window-status-current-style fg=colour255,bg=colour241
+      set -g window-status-current-style fg=colour16,bg=colour15
 
       set -g terminal-overrides ",alacritty:RGB"
 
