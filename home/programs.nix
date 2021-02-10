@@ -31,7 +31,6 @@
       extraConfig = ''
         Host *
           IdentityFile ~/.ssh/id_ed25519
-          IdentityFile ~/.ssh/id_ed25519_1
           IdentityFile ~/.ssh/id_ed25519_work
       '';
     };
