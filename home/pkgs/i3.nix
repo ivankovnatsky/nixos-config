@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
+  fontName = "Font Awesome 5 Free";
   blackColorHTML = "#000000";
   whiteColorHTML = "#ffffff";
 
@@ -11,7 +12,7 @@ in {
     enable = true;
 
     config = {
-      fonts = [ "monospace 0" ];
+      fonts = [ "${fontName} 0" ];
 
       startup = [{ command = "${pkgs.kbdd}/bin/kbdd"; }];
 
@@ -100,7 +101,7 @@ in {
 
       bars = [{
         position = "top";
-        fonts = [ "Font Awesome 5 Free 9" ];
+        fonts = [ "${fontName} 9" ];
 
         colors = {
 
