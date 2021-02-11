@@ -69,9 +69,7 @@
         export PATH="$HOME/.bin:$PATH"
       '';
 
-      envExtra = ''
-        source ~/.env || touch ~/.env
-      '';
+      envExtra = "";
 
       sessionVariables = {
         AWS_VAULT_BACKEND = "pass";
