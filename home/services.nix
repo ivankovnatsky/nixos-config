@@ -2,6 +2,11 @@
 
 {
   services = {
+    gpg-agent = {
+      enable = true;
+      enableSshSupport = true;
+    };
+
     redshift = {
       enable = true;
       provider = "geoclue2";
