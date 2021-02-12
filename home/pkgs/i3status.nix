@@ -1,6 +1,7 @@
 { ... }:
 
 let
+  wifiDeviceName = "wlp2s0";
   openWeatherMapApikey =
     builtins.readFile ../../../../../../.secrets/openweathermap;
 
@@ -62,7 +63,7 @@ in {
 
           {
             block = "net";
-            device = "wlp3s0";
+            device = wifiDeviceName;
             hide_inactive = true;
             ip = false;
             speed_up = true;
