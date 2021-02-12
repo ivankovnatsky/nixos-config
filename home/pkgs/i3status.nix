@@ -74,18 +74,18 @@ in {
           }
 
           {
+            block = "battery";
+            driver = "upower";
+            format = "{percentage}%";
+          }
+
+          {
             block = "keyboard_layout";
             driver = "kbddbus";
             format = " {layout}";
           }
 
           { block = "sound"; }
-
-          {
-            block = "battery";
-            driver = "upower";
-            format = "{percentage}%";
-          }
 
           {
             block = "taskwarrior";
