@@ -49,7 +49,7 @@ swapon /dev/disk/by-label/swap
 ### Connect to internet
 
 ```console
-nmcli dev wifi connect SSID password SSID_PASS
+nmcli dev wifi connect SSID password SSID_PASS hidden yes
 
 # or
 cat > /etc/wpa_supplicant.conf << EOF
