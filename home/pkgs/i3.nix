@@ -60,11 +60,11 @@ in {
         "XF86AudioMicMute" =
           "exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle";
 
-        "${modifier}+Shift+Return" = "exec alacritty -e tmuxinator start home";
-        "${modifier}+p" = "exec rofi -show run";
+        "${modifier}+Return" = "exec alacritty -e tmuxinator start home";
+        "${modifier}+d" = "exec rofi -show run";
 
-        "${modifier}+j" = "focus left";
-        "${modifier}+k" = "focus right";
+        "${modifier}+h" = "focus left";
+        "${modifier}+l" = "focus right";
 
         "${modifier}+w" = "layout tabbed";
         "${modifier}+e" = "layout toggle split";
@@ -79,8 +79,8 @@ in {
         "${modifier}+Shift+3" = "move container to workspace number 3";
         "${modifier}+Shift+4" = "move container to workspace number 4";
 
-        "${modifier}+Shift+c" = "kill";
-        "${modifier}+Shift+Control+r" = "restart";
+        "${modifier}+Shift+q" = "kill";
+        "${modifier}+Shift+r" = "restart";
 
         "Mod1+Tab" = "workspace back_and_forth";
       };
