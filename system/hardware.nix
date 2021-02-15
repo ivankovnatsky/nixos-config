@@ -11,6 +11,8 @@
     firmware = with pkgs; [ firmwareLinuxNonfree ];
 
     opengl = {
+      enable = true;
+
       driSupport = true;
       driSupport32Bit = true;
     };
