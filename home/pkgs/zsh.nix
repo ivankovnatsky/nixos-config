@@ -44,6 +44,7 @@
       shellAliases = {
         ls = "exa --group-directories-first --group";
         tree = "exa --tree";
+        cat = "bat";
       };
 
       oh-my-zsh = {
