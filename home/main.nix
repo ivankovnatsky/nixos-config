@@ -32,6 +32,18 @@
       '';
     };
 
+    ".terraform.d/plugin-cache/.keep" = {
+      text = ''
+        keep
+      '';
+    };
+
+    ".terraformrc" = {
+      text = ''
+        plugin_cache_dir   = "$HOME/.terraform.d/plugin-cache"
+      '';
+    };
+
     # xterm is installed anyway:
     # https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/services/x11/xserver.nix#L651
     ".Xresources" = {
