@@ -47,6 +47,7 @@
     glances
     gnome3.adwaita-icon-theme
     gnome3.nautilus
+    gnome3.libsecret
     gnumake
     hadolint
     htop
