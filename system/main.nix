@@ -14,9 +14,7 @@
     ./services.nix
     ./xserver.nix
 
-    ./modules/i3.nix
-    # ./modules/dwm.nix
-    # ./modules/gnome.nix
+    ./i3.nix
   ];
 
   systemd.sleep.extraConfig = ''

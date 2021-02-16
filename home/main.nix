@@ -11,16 +11,16 @@
     ./programs.nix
     ./services.nix
 
-    ./pkgs/alacritty.nix
-    ./pkgs/autorandr.nix
-    ./pkgs/gtk.nix
-    ./pkgs/git.nix
-    ./pkgs/rofi.nix
-    ./pkgs/i3.nix
-    ./pkgs/i3status.nix
-    ./pkgs/neovim/default.nix
-    ./pkgs/tmux.nix
-    ./pkgs/zsh.nix
+    ./alacritty.nix
+    ./autorandr.nix
+    ./gtk.nix
+    ./git.nix
+    ./rofi.nix
+    ./i3.nix
+    ./i3status.nix
+    ./neovim/default.nix
+    ./tmux.nix
+    ./zsh.nix
   ];
 
   nixpkgs.config.allowUnfree = true;
