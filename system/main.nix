@@ -6,8 +6,6 @@
 
     <home-manager/nixos>
 
-    <nixos-hardware/lenovo/thinkpad/t14/amd/gen1>
-
     ./environment.nix
     ./hardware.nix
     ./packages.nix
