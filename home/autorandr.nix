@@ -37,10 +37,9 @@ in {
             rate = "60.00";
           };
         };
-
       };
 
-      "default" = {
+      "laptop" = {
         fingerprint = {
           eDP = laptopFingerPrint;
           DisplayPort-1 = monitorFingerPrint;
@@ -59,8 +58,11 @@ in {
           DisplayPort-1.enable = false;
         };
 
+<<<<<<< HEAD
         hooks.postswitch = "xrandr --dpi 142";
 
+=======
+>>>>>>> 3177387 (Move out files of individual home/system pkgs/ dirs)
       };
 
       "monitor" = {
@@ -80,9 +82,12 @@ in {
             rate = "60.00";
           };
         };
+<<<<<<< HEAD
 
         hooks.postswitch = "xrandr --dpi 192";
 
+=======
+>>>>>>> 3177387 (Move out files of individual home/system pkgs/ dirs)
       };
     };
   };

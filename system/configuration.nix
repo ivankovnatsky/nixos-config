@@ -15,9 +15,7 @@
     ./pkgs/services.nix
     ./pkgs/xserver.nix
 
-    ./modules/i3.nix
-    # ./modules/dwm.nix
-    # ./modules/gnome.nix
+    ./i3.nix
   ];
 
   home-manager.users.ivan = { ... }: {

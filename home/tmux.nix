@@ -17,16 +17,22 @@
     plugins = with pkgs; [ tmuxPlugins.sensible tmuxPlugins.yank ];
 
     extraConfig = ''
-      set -g status-bg colour0
-      set -g status-fg colour15
+            set -g status-bg colour0
+            set -g status-fg colour15
 
-      set -g window-status-current-style fg=colour16,bg=colour15
+            set -g window-status-current-style fg=colour16,bg=colour15
+      =======
+            set -g status-bg colour234
+            set -g status-fg colour252
 
-      set -g terminal-overrides ",alacritty:RGB"
+            set -g window-status-current-style fg=colour255,bg=colour241
+      >>>>>>> 3177387 (Move out files of individual home/system pkgs/ dirs)
 
-      # https://neovim.io/doc/user/term.html#tui-cursor-shape
-      set -ga terminal-overrides '*:Ss=\E[%p1%d q:Se=\E[ q'
-    '';
+            set -g terminal-overrides ",alacritty:RGB"
+
+            # https://neovim.io/doc/user/term.html#tui-cursor-shape
+            set -ga terminal-overrides '*:Ss=\E[%p1%d q:Se=\E[ q'
+          '';
   };
 
   home.file = {

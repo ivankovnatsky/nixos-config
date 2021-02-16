@@ -1,6 +1,8 @@
+{ pkgs, ... }:
+
 {
   programs = {
-    slock.enable = true;
+    seahorse.enable = true;
 
     chromium = {
 
