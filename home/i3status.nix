@@ -3,7 +3,7 @@
 let
   wifiDeviceName = "wlp2s0";
   openWeatherMapApikey =
-    builtins.readFile ../../../../../../.secrets/openweathermap;
+    builtins.readFile ../../../../../.secrets/openweathermap;
 
 in {
   programs.i3status-rust = {
