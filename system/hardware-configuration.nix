@@ -24,7 +24,9 @@
     };
 
     kernelModules = [ "dm-snapshot" "kvm-amd" "amdgpu" ];
-    kernelParams = [ "amd_iommu=pt" "iommu=soft" ];
+    kernelParams = [ "amd_iommu=pt" "iommu=soft" "acpi_backlight=native" ];
+
+    kernelPackages = pkgs.linuxPackages_latest;
 
     extraModprobeConfig = ''
       # idle audio card after one second
