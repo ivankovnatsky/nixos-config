@@ -10,13 +10,11 @@
     ./packages.nix
     ./programs.nix
     ./services.nix
+    ./xserver.nix
 
     ./alacritty.nix
-    ./autorandr.nix
     ./gtk.nix
     ./git.nix
-    ./rofi.nix
-    ./i3.nix
     ./i3status.nix
     ./neovim/default.nix
     ./tmux.nix
@@ -41,18 +39,6 @@
     ".terraformrc" = {
       text = ''
         plugin_cache_dir   = "$HOME/.terraform.d/plugin-cache"
-      '';
-    };
-
-    # xterm is installed anyway:
-    # https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/services/x11/xserver.nix#L651
-    ".Xresources" = {
-      text = ''
-        XTerm*faceName:        xft:Hack Nerd Font Mono:size=10
-        XTerm*utf8:            2
-        XTerm*background:      #000000
-        XTerm*foreground:      #FFFFFF
-        XTerm*metaSendsEscape: true
       '';
     };
   };
