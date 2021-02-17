@@ -38,7 +38,7 @@
 
     ".terraformrc" = {
       text = ''
-        plugin_cache_dir   = "$HOME/.terraform.d/plugin-cache"
+        plugin_cache_dir = "$HOME/.terraform.d/plugin-cache"
       '';
     };
   };

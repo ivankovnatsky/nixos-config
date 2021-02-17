@@ -5,8 +5,8 @@
     seahorse.enable = true;
 
     chromium = {
-
       enable = true;
+
       homepageLocation = "";
       defaultSearchProviderSearchURL = "https://duckduckgo.com/?q=%s";
 

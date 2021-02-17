@@ -35,4 +35,3 @@ in {
     extraConfig = { dpi = dpiNumber; };
   };
 }
-
