@@ -19,7 +19,6 @@
 
   home.packages = with pkgs; [
     acpi
-    arandr
     awless
     awscli2
     aws-iam-authenticator
@@ -66,7 +65,6 @@
     kubetail
     lm_sensors
     lshw
-    maim
     mdl
     nixfmt
     nixpkgs-review
@@ -92,8 +90,6 @@
     usbutils
     viber
     wget
-    xclip
-    xorg.xev
     youtube-dl
     zathura
     zip

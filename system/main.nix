@@ -13,8 +13,6 @@
     ./security.nix
     ./services.nix
     ./xserver.nix
-
-    ./i3.nix
   ];
 
   systemd.sleep.extraConfig = ''

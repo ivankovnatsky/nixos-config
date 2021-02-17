@@ -5,10 +5,6 @@
     xl2tpd.enable = true;
     blueman.enable = true;
     fwupd.enable = true;
-    picom.enable = true;
-
-    autorandr.enable = true;
-
     gnome3.gnome-keyring.enable = true;
 
     strongswan = {
