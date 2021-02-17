@@ -1,8 +1,10 @@
 { ... }:
 
-{
+let editorName = "nvim";
+
+in {
   environment.variables = {
-    EDITOR = "nvim";
-    VISUAL = "nvim";
+    EDITOR = editorName;
+    VISUAL = editorName;
   };
 }
