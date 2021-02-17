@@ -12,7 +12,6 @@
 
       extensions = [
         "pkehgijcmpdhfbdbbnkijodmdjhbjlgp" # privacy-badger
-        # "pmcmeagblkinmogikoikkdjiligflglb" # privacy-redirect
         "ecabifbgmdmgdllomnfinbmaellmclnh" # reader-view
         "lckanjgmijmafbedllaakclkaicjfmnk" # clearurls
         "ldpochfccmkkmhdbclfhpagapcfdljkj" # decentraleyes
