@@ -19,6 +19,7 @@
 
   home.packages = with pkgs; [
     acpi
+    gping
     awless
     awscli2
     aws-iam-authenticator
