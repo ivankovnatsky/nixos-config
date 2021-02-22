@@ -11,7 +11,6 @@
   };
 
   services = {
-    picom.enable = true;
     autorandr.enable = true;
 
     xserver = {
