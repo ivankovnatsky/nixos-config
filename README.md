@@ -67,9 +67,6 @@ ping duckduckgo.com
 
 ### Install NixOS
 
-As `home-manager`, `nixos-hardware` included in the config, we might not need
-to install channels explicitly, but this had not been tested yet.
-
 #### Add Channels
 
 ```console
