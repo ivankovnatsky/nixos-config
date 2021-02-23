@@ -88,14 +88,6 @@ in {
           { block = "sound"; }
 
           {
-            block = "taskwarrior";
-            interval = 60;
-            format = "{count} tasks";
-            format_singular = "{count} task";
-            format_everything_done = "nothing to do!";
-          }
-
-          {
             block = "weather";
             format = "{weather} {temp}°";
             autolocate = true;
