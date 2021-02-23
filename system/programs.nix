@@ -17,7 +17,6 @@
         "ldpochfccmkkmhdbclfhpagapcfdljkj" # decentraleyes
         "lcbjdhceifofjlpecfpeimnnphbcjgnc" # xbrowsersync
         "ecabifbgmdmgdllomnfinbmaellmclnh" # reader view
-        "madlgmccpddkhohkdobabokeecnjonhl" # krypton
         "nngceckbapebfimnlniiiahkandclblb" # bitwarden
         "cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock origin
         "gcbommkclmclpchllfjekcdonpmejbdp" # https everywhere
