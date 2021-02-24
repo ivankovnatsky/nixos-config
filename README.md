@@ -18,6 +18,7 @@ mklabel gpt
 mkpart ESP fat32 1MiB 512MiB
 set 1 boot on
 mkpart primary 512MiB 100%
+quit
 ```
 
 ### Encrypt disk
