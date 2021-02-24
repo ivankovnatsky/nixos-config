@@ -91,6 +91,8 @@ nvim /mnt/etc/nixos/configuration.nix
 
 nixos-install
 
+nixos-enter --root /mnt
+
 chown -R ivan:users /mnt/home/ivan
 
 reboot
