@@ -36,8 +36,8 @@ in {
 
         "${modifier}+Control+Mod1+Shift+a" =
           "exec --no-startup-id autorandr all";
-        "${modifier}+Control+Mod1+Shift+l" =
-          "exec --no-startup-id autorandr laptop && xrandr --dpi 142 && i3-msg restart";
+        "${modifier}+Control+Mod1+Shift+d" =
+          "exec --no-startup-id autorandr default && xrandr --dpi 142 && i3-msg restart";
         "${modifier}+Control+Mod1+Shift+m" =
           "exec --no-startup-id autorandr monitor && xrandr --dpi 192 && i3-msg restart";
 
