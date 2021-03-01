@@ -16,11 +16,6 @@
     xserver = {
       enable = true;
 
-      xautolock = {
-        enable = true;
-        locker = ''${pkgs.i3lock}/bin/i3lock -c "#000000"'';
-      };
-
       dpi = 192;
       videoDrivers = [ "amdgpu" ];
 
