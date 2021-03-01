@@ -40,7 +40,7 @@ in {
 
       };
 
-      "laptop" = {
+      "default" = {
         fingerprint = {
           eDP = laptopFingerPrint;
           DisplayPort-1 = monitorFingerPrint;
