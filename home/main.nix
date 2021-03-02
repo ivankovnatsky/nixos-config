@@ -22,6 +22,7 @@
   ];
 
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.overlays = [ (import ./overlays/default.nix) ];
 
   home.file = {
     ".config/ranger/rc.conf" = {
