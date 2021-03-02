@@ -3,7 +3,6 @@
 {
   home.packages = with pkgs; [
     acpi
-    gping
     awless
     awscli2
     aws-iam-authenticator
@@ -22,7 +21,6 @@
     fd
     file
     fwts
-    gnome3.eog
     genpass
     geteltorito
     gettext
@@ -30,9 +28,11 @@
     gitAndTools.pre-commit
     glances
     gnome3.adwaita-icon-theme
-    gnome3.nautilus
+    gnome3.eog
     gnome3.libsecret
+    gnome3.nautilus
     gnumake
+    gping
     hadolint
     htop
     hwinfo
