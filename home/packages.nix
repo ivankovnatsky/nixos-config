@@ -63,7 +63,6 @@
     ripgrep
     rubber
     shellcheck
-    signal-desktop
     strace
     sysstat
     tcpdump
@@ -73,7 +72,6 @@
     traceroute
     unzip
     usbutils
-    viber
     wget
     youtube-dl
     zathura
