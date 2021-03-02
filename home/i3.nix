@@ -101,13 +101,6 @@ in {
         "1" = [{ class = "^Alacritty$"; }];
         "2" = [{ class = "^Google-chrome$"; }];
 
-        "3" = [
-          { class = "^ViberPC$"; }
-          { class = "^Signal$"; }
-          { class = "^TelegramDesktop$"; }
-          { class = "^Microsoft Teams - Preview$"; }
-        ];
-
         "4" = [
           { class = "^Pavucontrol$"; }
           { class = "^.blueman-manager-wrapped$"; }

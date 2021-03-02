@@ -63,7 +63,6 @@
     ripgrep
     rubber
     shellcheck
-    signal-desktop
     strace
     sysstat
     tcpdump
