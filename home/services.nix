@@ -7,7 +7,7 @@
       enableSshSupport = true;
     };
 
-    redshift = {
+    gammastep = {
       enable = true;
       provider = "geoclue2";
 

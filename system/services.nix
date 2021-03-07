@@ -6,6 +6,7 @@
     blueman.enable = true;
     fwupd.enable = true;
     gnome3.gnome-keyring.enable = true;
+    geoclue2.enable = true;
 
     strongswan = {
       enable = true;
