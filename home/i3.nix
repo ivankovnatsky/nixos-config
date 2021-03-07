@@ -99,7 +99,7 @@ in {
 
       assigns = {
         "1" = [{ class = "^Alacritty$"; }];
-        "2" = [{ class = "^Google-chrome$"; }];
+        "2" = [{ class = "^Chromium-browser$"; }];
 
         "4" = [
           { class = "^Pavucontrol$"; }
