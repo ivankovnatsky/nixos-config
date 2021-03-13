@@ -12,7 +12,8 @@
     ./programs.nix
     ./security.nix
     ./services.nix
-    ./xserver.nix
+
+    ./xserver/main.nix
 
     <home-manager/nixos>
   ];
