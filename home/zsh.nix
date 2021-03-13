@@ -66,12 +66,6 @@
         ];
       };
 
-      profileExtra = ''
-        export PATH="$HOME/.bin:$PATH"
-      '';
-
-      envExtra = "";
-
       sessionVariables = {
         AWS_VAULT_BACKEND = "pass";
         _ZL_HYPHEN = 1;
