@@ -8,6 +8,7 @@
 
     ./environment.nix
     ./hardware.nix
+    ./general.nix
     ./packages.nix
     ./programs.nix
     ./security.nix
@@ -22,46 +23,15 @@
 
   networking = {
     hostName = "thinkpad";
-
-    networkmanager = {
-      enable = true;
-      enableStrongSwan = true;
-      wifi.powersave = true;
-    };
-
-    useDHCP = false;
+    networkmanager.enableStrongSwan = true;
   };
 
-  documentation.enable = false;
-
-  time.timeZone = "Europe/Kiev";
-  i18n.defaultLocale = "en_US.UTF-8";
-  sound.enable = true;
-  security.sudo.wheelNeedsPassword = false;
   nixpkgs.config.allowUnfree = true;
 
   nix = {
     autoOptimiseStore = true;
     gc.automatic = true;
     optimise.automatic = true;
-  };
-
-  users.users.ivan = {
-    description = "Ivan Kovnatsky";
-    isNormalUser = true;
-    home = "/home/ivan";
-    shell = pkgs.zsh;
-    extraGroups = [ "wheel" "docker" "networkmanager" ];
-  };
-
-  fonts = {
-    fonts = with pkgs; [
-      (nerdfonts.override { fonts = [ "Hack" ]; })
-      font-awesome
-      noto-fonts
-      noto-fonts-cjk
-      noto-fonts-extra
-    ];
   };
 
   system.stateVersion = "21.03";
