@@ -9,6 +9,7 @@
     ./environment.nix
     ./hardware.nix
     ./general.nix
+    ./nix.nix
     ./packages.nix
     ./programs.nix
     ./security.nix
@@ -24,14 +25,6 @@
   networking = {
     hostName = "thinkpad";
     networkmanager.enableStrongSwan = true;
-  };
-
-  nixpkgs.config.allowUnfree = true;
-
-  nix = {
-    autoOptimiseStore = true;
-    gc.automatic = true;
-    optimise.automatic = true;
   };
 
   system.stateVersion = "21.03";
