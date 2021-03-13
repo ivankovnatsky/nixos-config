@@ -7,16 +7,17 @@
   home.homeDirectory = "/home/ivan";
 
   imports = [
+    ./neovim/default.nix
+    ./xserver/main.nix
+
     ./packages.nix
     ./programs.nix
     ./services.nix
-    ./xserver.nix
 
     ./alacritty.nix
     ./git.nix
     ./gtk.nix
     ./i3status.nix
-    ./neovim/default.nix
     ./tmux.nix
     ./zsh.nix
   ];
