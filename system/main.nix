@@ -15,10 +15,6 @@
     ./xserver.nix
   ];
 
-  systemd.sleep.extraConfig = ''
-    HibernateMode=shutdown
-  '';
-
   home-manager.users.ivan = { ... }: {
     imports = [ ../home/main.nix ];
     home.stateVersion = config.system.stateVersion;
@@ -56,13 +52,6 @@
     home = "/home/ivan";
     shell = pkgs.zsh;
     extraGroups = [ "wheel" "docker" "networkmanager" ];
-  };
-
-  virtualisation = {
-    docker = {
-      enable = true;
-      enableOnBoot = false;
-    };
   };
 
   fonts = {
