@@ -4,17 +4,17 @@
   imports = [ # Include the results of the hardware scan.
     ./hardware-configuration.nix
 
-    <home-manager/nixos>
-
     ./environment.nix
-    ./hardware.nix
     ./general.nix
+    ./hardware.nix
     ./nix.nix
     ./packages.nix
     ./programs.nix
     ./security.nix
     ./services.nix
     ./xserver.nix
+
+    <home-manager/nixos>
   ];
 
   home-manager.users.ivan = { ... }: {
