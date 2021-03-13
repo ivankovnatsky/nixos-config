@@ -50,11 +50,13 @@
     };
   };
 
-  systemd = { services.NetworkManager-wait-online.enable = false; };
+  systemd = {
+    services.NetworkManager-wait-online.enable = false;
 
-  systemd.sleep.extraConfig = ''
-    HibernateMode=shutdown
-  '';
+    sleep.extraConfig = ''
+      HibernateMode=shutdown
+    '';
+  };
 
   virtualisation = {
     docker = {
