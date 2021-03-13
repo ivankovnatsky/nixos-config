@@ -13,8 +13,8 @@
     ./xserver.nix
 
     ./alacritty.nix
-    ./gtk.nix
     ./git.nix
+    ./gtk.nix
     ./i3status.nix
     ./neovim/default.nix
     ./tmux.nix
