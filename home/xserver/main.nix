@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 {
-  imports = [ ./autorandr.nix ./i3.nix ./rofi.nix ];
+  imports = [ ./autorandr.nix ./dunst.nix ./i3.nix ./rofi.nix ];
 
   home.file = {
     # xterm is installed anyway:
