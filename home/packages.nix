@@ -55,7 +55,6 @@
     nixpkgs-review
     nix-tree
     openssl
-    pass
     pavucontrol
     pciutils
     ranger

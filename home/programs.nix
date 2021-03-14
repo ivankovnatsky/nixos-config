@@ -4,6 +4,11 @@
   programs = {
     gpg.enable = true;
 
+    password-store = {
+      enable = true;
+      package = pkgs.pass.withExtensions (exts: [ exts.pass-otp ]);
+    };
+
     bat = {
       enable = true;
       config = { tabs = "0"; };
