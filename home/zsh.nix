@@ -59,6 +59,7 @@
           "helm"
           "history-substring-search"
           "kubectl"
+          "pass"
           "ripgrep"
           "terraform"
           "tmux"
