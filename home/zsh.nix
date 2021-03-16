@@ -67,10 +67,7 @@
         ];
       };
 
-      sessionVariables = {
-        AWS_VAULT_BACKEND = "pass";
-        _ZL_HYPHEN = 1;
-      };
+      sessionVariables = { _ZL_HYPHEN = 1; };
 
       initExtra = ''
         # enable alt+l -- to lowercase
