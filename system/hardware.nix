@@ -6,8 +6,9 @@
     # https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/hardware/all-firmware.nix
     enableAllFirmware = false;
     enableRedistributableFirmware = false;
-
     firmware = with pkgs; [ firmwareLinuxNonfree ];
+
+    cpu.amd.updateMicrocode = true;
 
     opengl = {
       enable = true;
