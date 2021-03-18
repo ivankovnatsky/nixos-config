@@ -6,6 +6,7 @@
 
     extraConfig = {
       commit.gpgsign = true;
+      init.defaultBranch = "main";
 
       core = {
         editor = "nvim";
