@@ -36,7 +36,7 @@
         root: ~/
 
         windows:
-          - nixos-config: cd ~/Sources/Home/SourceHut/nixos-config/ && nvim
+          - nixos-config: cd ~/Sources/Home/GitHub/nixos-config/ && nvim
           - cli:
       '';
     };
