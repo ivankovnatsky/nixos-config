@@ -6,7 +6,7 @@
     docker
     (chromium.override {
       commandLineArgs =
-        "--force-dark-mode --flag-switches-begin --enable-features=ReaderMode,HardwareAccelerated,Vulkan,NativeNotifications --flag-switches-end";
+        "--force-dark-mode --use-vulkan --enable-gpu-rasterization --flag-switches-begin --enable-features=ReaderMode,HardwareAccelerated,Vulkan,NativeNotifications --flag-switches-end";
     })
     networkmanagerapplet
     networkmanager-l2tp
