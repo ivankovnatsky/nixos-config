@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   nixpkgs.config.allowUnfree = true;
@@ -7,5 +7,10 @@
     autoOptimiseStore = true;
     gc.automatic = true;
     optimise.automatic = true;
+
+    package = pkgs.nixFlakes;
+    extraOptions = ''
+      experimental-features = nix-command flakes
+    '';
   };
 }
