@@ -1,5 +1,3 @@
-{ ... }:
-
 let editorName = "nvim";
 
 in {

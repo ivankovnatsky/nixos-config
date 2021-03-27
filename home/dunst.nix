@@ -1,5 +1,3 @@
-{ ... }:
-
 let
   fontName = "Hack Nerd Font Mono 10";
   blackColorHTML = "#000000";
