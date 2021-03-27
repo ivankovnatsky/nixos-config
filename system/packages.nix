@@ -11,5 +11,7 @@
     networkmanagerapplet
     networkmanager-l2tp
     vulkan-tools
+
+    terraform-custom
   ];
 }

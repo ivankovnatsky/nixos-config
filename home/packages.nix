@@ -82,7 +82,5 @@
     })
 
     (python38.withPackages (ps: with ps; [ grip rich ]))
-
-    terraform-custom
   ];
 }

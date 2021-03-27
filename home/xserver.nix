@@ -1,8 +1,6 @@
 { pkgs, ... }:
 
 {
-  imports = [ ./autorandr.nix ./dunst.nix ./i3.nix ./rofi.nix ];
-
   home.file = {
     # xterm is installed anyway:
     # https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/services/x11/xserver.nix#L651
