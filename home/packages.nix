@@ -43,6 +43,7 @@
     jq
     jsonnet
     k9s
+    keepassxc
     killall
     kubectl
     kubectx
