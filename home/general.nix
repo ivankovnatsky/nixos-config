@@ -1,5 +1,3 @@
-{ ... }:
-
 {
   home.file = {
     ".config/ranger/rc.conf" = {

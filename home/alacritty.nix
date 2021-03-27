@@ -1,5 +1,3 @@
-{ ... }:
-
 let fontName = "Hack Nerd Font Mono";
 
 in {
