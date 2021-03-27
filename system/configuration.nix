@@ -27,7 +27,6 @@
       ../home/neovim/default.nix
       ../home/xserver.nix
 
-      ../home/packages.nix
       ../home/programs.nix
       ../home/services.nix
 
