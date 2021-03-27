@@ -1,7 +1,7 @@
 { config, lib, pkgs, options, ... }:
 
 {
-  imports = [ # Include the results of the hardware scan.
+  imports = [
     ./hardware-configuration.nix
 
     ./environment.nix
@@ -13,15 +13,41 @@
     ./security.nix
     ./services.nix
 
-    ./xserver/main.nix
+    ./xserver.nix
+    ./i3.nix
 
     <home-manager/nixos>
   ];
 
+  home-manager.useGlobalPkgs = true;
   home-manager.users.ivan = { ... }: {
-    imports = [ ../home/main.nix ];
+    imports = [
+      ../home/general.nix
+
+      ../home/neovim/default.nix
+      ../home/xserver.nix
+
+      ../home/packages.nix
+      ../home/programs.nix
+      ../home/services.nix
+
+      ../home/alacritty.nix
+      ../home/git.nix
+      ../home/gtk.nix
+      ../home/i3status.nix
+      ../home/tmux.nix
+      ../home/zsh.nix
+
+      ../home/autorandr.nix
+      ../home/dunst.nix
+      ../home/i3.nix
+      ../home/rofi.nix
+    ];
+
     home.stateVersion = config.system.stateVersion;
   };
+
+  nixpkgs.overlays = [ (import ./overlays/default.nix) ];
 
   networking = {
     hostName = "thinkpad";

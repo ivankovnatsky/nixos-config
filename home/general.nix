@@ -1,12 +1,6 @@
+{ ... }:
+
 {
-  programs.home-manager.enable = true;
-
-  home.username = "ivan";
-  home.homeDirectory = "/home/ivan";
-
-  nixpkgs.config.allowUnfree = true;
-  nixpkgs.overlays = [ (import ./overlays/default.nix) ];
-
   home.file = {
     ".config/ranger/rc.conf" = {
       text = ''
