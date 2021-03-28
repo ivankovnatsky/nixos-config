@@ -7,6 +7,7 @@
     fwupd.enable = true;
     gnome3.gnome-keyring.enable = true;
     geoclue2.enable = true;
+    journald.extraConfig = "SystemMaxUse=1G";
 
     strongswan = {
       enable = true;
