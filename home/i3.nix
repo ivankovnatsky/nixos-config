@@ -3,7 +3,7 @@
 let
   modifier = "Mod4";
 
-  fontName = "Font Awesome 5 Free";
+  fontName = "Font Awesome 5 Free 9";
   blackColorHTML = "#000000";
   whiteColorHTML = "#ffffff";
 
@@ -14,7 +14,7 @@ in {
     enable = true;
 
     config = {
-      fonts = [ "${fontName} 0" ];
+      fonts = [ "${fontName}" ];
 
       startup = [{ command = "${pkgs.kbdd}/bin/kbdd"; }];
 
@@ -109,7 +109,7 @@ in {
 
       bars = [{
         position = "top";
-        fonts = [ "${fontName} 9" ];
+        fonts = [ "${fontName}" ];
 
         colors = {
 
