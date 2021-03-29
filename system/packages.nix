@@ -50,6 +50,7 @@
     kubectx
     kubernetes-helm
     kubetail
+    libnotify
     lm_sensors
     lshw
     mdl
