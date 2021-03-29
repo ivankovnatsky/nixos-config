@@ -78,6 +78,7 @@ in {
     openssl
     pavucontrol
     pciutils
+    pulseaudio
     ranger
     rclone
     ripgrep
