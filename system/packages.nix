@@ -67,6 +67,7 @@ in
     openssl
     pavucontrol
     pciutils
+    pulseaudio
     rclone
     ripgrep
     shellcheck
