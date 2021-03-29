@@ -9,6 +9,12 @@
     geoclue2.enable = true;
     journald.extraConfig = "SystemMaxUse=1G";
 
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      pulse.enable = true;
+    };
+
     strongswan = {
       enable = true;
       secrets = [ "ipsec.d/ipsec.nm-l2tp.secrets" ];
