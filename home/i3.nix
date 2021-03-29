@@ -85,8 +85,6 @@ in {
         "Mod1+Tab" = "workspace back_and_forth";
       };
 
-      workspaceLayout = "tabbed";
-
       window = {
         hideEdgeBorders = "both";
 
