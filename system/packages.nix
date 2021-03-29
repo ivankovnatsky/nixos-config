@@ -35,7 +35,6 @@
     gnome3.nautilus
     gnumake
     gping
-    hadolint
     htop
     hwinfo
     i2c-tools
