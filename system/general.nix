@@ -1,6 +1,17 @@
 { pkgs, ... }:
 
-{
+let editorName = "nvim";
+
+in {
+  environment = {
+    homeBinInPath = true;
+
+    variables = {
+      EDITOR = editorName;
+      VISUAL = editorName;
+    };
+  };
+
   documentation.enable = false;
   i18n.defaultLocale = "en_US.UTF-8";
   security.sudo.wheelNeedsPassword = false;
@@ -34,4 +45,6 @@
       noto-fonts-emoji
     ];
   };
+
+  security.pam.services.login.enableGnomeKeyring = true;
 }
