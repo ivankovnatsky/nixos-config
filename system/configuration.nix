@@ -4,13 +4,11 @@
   imports = [
     ./hardware-configuration.nix
 
-    ./environment.nix
     ./general.nix
     ./hardware.nix
     ./nix.nix
     ./packages.nix
     ./programs.nix
-    ./security.nix
     ./services.nix
 
     ./xserver.nix
@@ -28,7 +26,6 @@
       ../home/xserver.nix
 
       ../home/programs.nix
-      ../home/services.nix
 
       ../home/alacritty.nix
       ../home/git.nix
