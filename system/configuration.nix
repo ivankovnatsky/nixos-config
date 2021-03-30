@@ -5,15 +5,14 @@
     ./hardware-configuration.nix
 
     ./general.nix
+    ./graphics.nix
+    ./greetd.nix
     ./hardware.nix
     ./nix.nix
     ./monitoring.nix
     ./packages.nix
     ./programs.nix
     ./services.nix
-
-    ./xserver.nix
-    ./i3.nix
 
     <home-manager/nixos>
   ];
@@ -31,7 +30,6 @@
       ../home/general.nix
 
       ../home/neovim/default.nix
-      ../home/xserver.nix
 
       ../home/programs.nix
 
@@ -43,10 +41,8 @@
       ../home/tmux.nix
       ../home/zsh.nix
 
-      ../home/autorandr.nix
-      ../home/dunst.nix
-      ../home/i3.nix
-      ../home/rofi.nix
+      ../home/sway.nix
+      ../home/mako.nix
     ];
 
     home.stateVersion = config.system.stateVersion;

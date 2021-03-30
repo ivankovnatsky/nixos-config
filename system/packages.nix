@@ -22,6 +22,7 @@ in
     binutils-unwrapped
     bitwarden-cli
     brightnessctl
+    capitaine-cursors
     chromium-work
     dmidecode
     dnsutils
@@ -86,7 +87,7 @@ in
 
     (chromium.override {
       commandLineArgs =
-        "--force-dark-mode --use-vulkan --enable-gpu-rasterization --flag-switches-begin --enable-features=ReaderMode,HardwareAccelerated,Vulkan,NativeNotifications --flag-switches-end";
+        "--force-dark-mode --use-vulkan --enable-gpu-rasterization --ozone-platform=wayland --flag-switches-begin --enable-features=UseOzonePlatform,ReaderMode,HardwareAccelerated,Vulkan,NativeNotifications --flag-switches-end";
     })
   ];
 }
