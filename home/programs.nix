@@ -31,16 +31,6 @@
       };
     };
 
-    ssh = {
-      enable = true;
-
-      extraConfig = ''
-        Host *
-          IdentityFile ~/.ssh/id_ed25519
-          IdentityFile ~/.ssh/id_ed25519_work
-      '';
-    };
-
     taskwarrior = {
       enable = true;
       dataLocation = "/home/ivan/.task/";

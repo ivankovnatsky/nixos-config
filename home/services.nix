@@ -2,10 +2,7 @@
 
 {
   services = {
-    gpg-agent = {
-      enable = true;
-      enableSshSupport = true;
-    };
+    gpg-agent.enable = true;
 
     gammastep = {
       enable = true;
