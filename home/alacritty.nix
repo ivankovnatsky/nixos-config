@@ -13,7 +13,7 @@ in {
         italic.family = fontName;
         bold_italic.family = fontName;
 
-        size = 12;
+        size = 10;
         draw_bold_text_with_bright_colors = true;
       };
 
