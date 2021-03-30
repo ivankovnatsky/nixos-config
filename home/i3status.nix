@@ -97,7 +97,7 @@ in {
 
           {
             block = "keyboard_layout";
-            driver = "kbddbus";
+            driver = "sway";
             format = " {layout}";
           }
 
@@ -119,7 +119,6 @@ in {
 
           {
             block = "time";
-            interval = 10;
             format = "%a %b %d %H:%M";
           }
 

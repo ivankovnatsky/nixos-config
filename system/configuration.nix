@@ -4,100 +4,54 @@
   imports = [ # Include the results of the hardware scan.
     /etc/nixos/hardware-configuration.nix
 
+    ./general.nix
+    ./graphics.nix
+    ./hardware.nix
+    ./nix.nix
+    ./packages.nix
+    ./programs.nix
+    ./services.nix
+
     <home-manager/nixos>
-
-    <nixos-hardware/lenovo/thinkpad/t14/amd/gen1>
-
-    ./pkgs/environment.nix
-    ./pkgs/hardware.nix
-    ./pkgs/packages.nix
-    ./pkgs/programs.nix
-    ./pkgs/services.nix
-    ./pkgs/xserver.nix
-
-    ./i3.nix
   ];
 
+  nixpkgs.config.packageOverrides = pkgs: {
+    nur = import (builtins.fetchTarball
+      "https://github.com/nix-community/NUR/archive/master.tar.gz") {
+        inherit pkgs;
+      };
+  };
+
+  home-manager.useGlobalPkgs = true;
   home-manager.users.ivan = { ... }: {
-    imports = [ ../home/main.nix ];
+    imports = [
+      ../home/general.nix
+
+      ../home/neovim/default.nix
+
+      ../home/programs.nix
+
+      ../home/alacritty.nix
+      ../home/firefox.nix
+      ../home/git.nix
+      ../home/gtk.nix
+      ../home/i3status.nix
+      ../home/tmux.nix
+      ../home/zsh.nix
+
+      ../home/sway.nix
+      ../home/mako.nix
+    ];
+  };
 
     home.stateVersion = config.system.stateVersion;
   };
 
-  boot = {
-    initrd.luks.devices.crypted.device =
-      "/dev/disk/by-uuid/28eb4c4d-9c50-44ae-b046-613c7eaac520";
-    initrd.luks.devices.crypted.preLVM = true;
-
-    kernelModules = [ "amdgpu" ];
-
-    loader = {
-      systemd-boot.enable = true;
-      efi.canTouchEfiVariables = true;
-    };
-  };
+  nixpkgs.overlays = [ (import ./overlays/default.nix) ];
 
   networking = {
     hostName = "thinkpad";
-
-    networkmanager = {
-      enable = true;
-      enableStrongSwan = true;
-      wifi.powersave = true;
-    };
-
-    useDHCP = false;
-  };
-
-  documentation.enable = false;
-
-  time.timeZone = "Europe/Kiev";
-  i18n.defaultLocale = "en_US.UTF-8";
-  sound.enable = true;
-  security.sudo.wheelNeedsPassword = false;
-  nixpkgs.config.allowUnfree = true;
-
-  nix = {
-    autoOptimiseStore = true;
-    gc.automatic = true;
-    optimise.automatic = true;
-
-    nixPath = [
-      "nixpkgs=https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz"
-
-      "nixos-config=/etc/nixos/configuration.nix"
-      "/nix/var/nix/profiles/per-user/root/channels"
-
-      "home-manager=https://github.com/nix-community/home-manager/archive/master.tar.gz"
-
-      "nixos-hardware=https://github.com/NixOS/nixos-hardware/archive/master.tar.gz"
-    ];
-  };
-
-  users.users.ivan = {
-    description = "Ivan Kovnatsky";
-    isNormalUser = true;
-    home = "/home/ivan";
-    shell = pkgs.zsh;
-    extraGroups = [ "wheel" "docker" "networkmanager" ];
-    uid = 1000;
-  };
-
-  virtualisation = {
-    docker = {
-      enable = false;
-      enableOnBoot = false;
-    };
-  };
-
-  fonts = {
-    fonts = with pkgs; [
-      (nerdfonts.override { fonts = [ "Hack" ]; })
-      font-awesome
-      noto-fonts
-      noto-fonts-cjk
-      noto-fonts-extra
-    ];
+    networkmanager.enableStrongSwan = true;
   };
 
   system.stateVersion = "21.03";

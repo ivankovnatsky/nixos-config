@@ -67,6 +67,12 @@
 
       sessionVariables = { _ZL_HYPHEN = 1; };
 
+      loginExtra = ''
+        if test `tty` = /dev/tty1; then
+           exec sway
+        fi
+      '';
+
       initExtra = ''
         # enable alt+l -- to lowercase
         bindkey '^[l' down-case-word

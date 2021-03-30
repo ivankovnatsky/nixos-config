@@ -1,14 +1,12 @@
 { pkgs, ... }:
 
-{
-  xsession.pointerCursor = {
-    name = "Adwaita";
-    package = pkgs.gnome3.adwaita-icon-theme;
-    size = 32;
-  };
+let cursorThemeName = "capitaine-cursors";
 
+in {
   gtk = {
     enable = true;
+
+    theme.name = "Adwaita";
 
     iconTheme = {
       name = "Adwaita";
@@ -21,6 +19,8 @@
         gtk-xft-antialias = 1
         gtk-xft-hinting = 1
         gtk-xft-hintstyle = "hintfull"
+        gtk-cursor-theme-size = 16
+        gtk-cursor-theme-name = ${cursorThemeName}
       '';
     };
 
@@ -30,6 +30,8 @@
         gtk-xft-antialias = 1;
         gtk-xft-hinting = 1;
         gtk-xft-hintstyle = "hintfull";
+        gtk-cursor-theme-size = 16;
+        gtk-cursor-theme-name = cursorThemeName;
       };
     };
   };
