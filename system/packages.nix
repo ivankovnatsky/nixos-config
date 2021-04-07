@@ -77,6 +77,7 @@
     unzip
     usbutils
     viber
+    v4l-utils
     vulkan-tools
     wget
     youtube-dl
