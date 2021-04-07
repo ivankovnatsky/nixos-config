@@ -76,6 +76,7 @@
     traceroute
     unzip
     usbutils
+    v4l-utils
     vulkan-tools
     wget
     youtube-dl
