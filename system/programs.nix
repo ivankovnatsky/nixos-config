@@ -12,11 +12,9 @@
 
       extensions = [
         "pkehgijcmpdhfbdbbnkijodmdjhbjlgp" # privacy-badger
-        "ecabifbgmdmgdllomnfinbmaellmclnh" # reader-view
         "lckanjgmijmafbedllaakclkaicjfmnk" # clearurls
         "ldpochfccmkkmhdbclfhpagapcfdljkj" # decentraleyes
         "lcbjdhceifofjlpecfpeimnnphbcjgnc" # xbrowsersync
-        "ecabifbgmdmgdllomnfinbmaellmclnh" # reader view
         "nngceckbapebfimnlniiiahkandclblb" # bitwarden
         "cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock origin
         "gcbommkclmclpchllfjekcdonpmejbdp" # https everywhere
