@@ -16,7 +16,10 @@ in {
     config = {
       fonts = [ "${fontName}" ];
 
-      startup = [{ command = "${pkgs.kbdd}/bin/kbdd"; }];
+      startup = [
+        { command = "${pkgs.kbdd}/bin/kbdd"; }
+        { command = "${pkgs.dunst}/bin/dunst"; }
+      ];
 
       colors = {
         focused = {
