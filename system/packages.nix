@@ -1,6 +1,13 @@
 { pkgs, ... }:
 
-{
+let
+  chromium-work = pkgs.writeScriptBin "chromium-work" ''
+    #!/usr/bin/env bash
+
+    chromium --user-data-dir=/home/ivan/.config/chromium-work
+  '';
+
+in {
   environment.systemPackages = with pkgs; [
     acpi
     awless
@@ -10,6 +17,7 @@
     binutils-unwrapped
     bitwarden-cli
     brightnessctl
+    chromium-work
     clinfo
     dmidecode
     dnsutils
