@@ -5,29 +5,105 @@
     enable = true;
 
     plugins = with pkgs.vimPlugins; [
-      ale
       fzf-vim
-      lens-vim
-      nerdtree
-      vim-airline
       vim-commentary
-      vim-devicons
       vim-fugitive
       vim-gist
       vim-git
       vim-gitgutter
       vim-lastplace
-      vim-markdown
-      vim-nix
       vim-repeat
       vim-sensible
       vim-sneak
       vim-surround
-      vim-terraform
-      vim-terraform-completion
       vim-tmux
       vim-visualstar
       webapi-vim
+
+      {
+        plugin = ale;
+        config = ''
+          let b:ale_linters = ['pylint', 'mdl']
+        '';
+      }
+
+      {
+        plugin = lens-vim;
+        config = ''
+          let g:lens#disabled_filetypes = ['nerdtree', 'fzf']
+        '';
+      }
+
+      {
+        plugin = nerdtree;
+        config = ''
+          augroup ProjectDrawer
+            autocmd!
+            autocmd VimEnter * if argc() == 0 | NERDTree | endif
+          augroup END
+
+          let NERDTreeShowHidden=1
+          let NERDTreeShowLineNumbers=1
+          let NERDTreeMinimalUI=1
+        '';
+      }
+
+      {
+        plugin = vim-airline;
+        config = ''
+          let g:airline#extensions#branch#enabled=1
+          let g:airline_powerline_fonts = 1
+        '';
+      }
+
+      {
+        plugin = vim-devicons;
+
+        config = ''
+          if exists('g:loaded_webdevicons')
+              call webdevicons#refresh()
+          endif
+        '';
+      }
+
+      {
+        plugin = vim-markdown;
+        config = ''
+          let g:vim_markdown_folding_disabled = 1
+        '';
+      }
+
+      {
+        plugin = vim-nix;
+        config = ''
+          autocmd BufWritePost *.nix silent !nixfmt <afile>
+          autocmd BufWritePost *.nix silent edit
+        '';
+      }
+
+      {
+        plugin = vim-terraform;
+        config = ''
+          let g:terraform_fmt_on_save=1
+        '';
+      }
+
+      {
+        plugin = vim-terraform-completion;
+        config = ''
+          set completeopt-=preview
+
+          " (Optional)Hide Info(Preview) window after completions
+          autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
+          autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+
+          " (Optional) Default: 0, enable(1)/disable(0) plugin's keymapping
+          let g:terraform_completion_keys = 1
+
+          " (Optional) Default: 1, enable(1)/disable(0) terraform module registry completion
+          let g:terraform_registry_module_completion = 0
+        '';
+      }
     ];
 
     extraConfig = builtins.readFile ./init.vim;
