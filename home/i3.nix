@@ -8,8 +8,6 @@ let
   whiteColorHTML = "#ffffff";
 
 in {
-  home.sessionVariables = { };
-
   xsession.windowManager.i3 = {
     enable = true;
 
@@ -31,7 +29,7 @@ in {
         };
       };
 
-      modifier = "Mod4";
+      modifier = "${modifier}";
 
       keybindings = {
         "Mod1+Control+Shift+4" =
