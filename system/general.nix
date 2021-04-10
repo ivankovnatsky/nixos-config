@@ -18,6 +18,11 @@ in {
   sound.enable = true;
   time.timeZone = "Europe/Kiev";
 
+  programs = {
+    seahorse.enable = true;
+    dconf.enable = true;
+  };
+
   networking = {
     useDHCP = false;
 

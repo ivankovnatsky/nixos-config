@@ -1,9 +1,5 @@
-{ pkgs, ... }:
-
 {
   programs = {
-    seahorse.enable = true;
-
     chromium = {
       enable = true;
 
@@ -34,7 +30,5 @@
         "TranslateEnabled" = false;
       };
     };
-
-    dconf.enable = true;
   };
 }
