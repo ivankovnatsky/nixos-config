@@ -28,6 +28,7 @@
       ../home/programs.nix
 
       ../home/alacritty.nix
+      ../home/firefox.nix
       ../home/git.nix
       ../home/gtk.nix
       ../home/i3status.nix
