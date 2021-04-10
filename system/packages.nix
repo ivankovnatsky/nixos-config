@@ -97,10 +97,6 @@ in {
         "--force-dark-mode --use-vulkan --enable-gpu-rasterization --flag-switches-begin --enable-features=ReaderMode,HardwareAccelerated,Vulkan,NativeNotifications --flag-switches-end";
     })
 
-    (texlive.combine {
-      inherit (texlive) scheme-small xetex collection-fontsrecommended moderncv;
-    })
-
     (python38.withPackages (ps: with ps; [ grip rich ]))
 
     terraform-custom
