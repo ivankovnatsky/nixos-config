@@ -108,7 +108,7 @@ in {
 
           {
             block = "time";
-            interval = 30;
+            interval = 10;
             format = "%a %b %d %H:%M";
           }
 
