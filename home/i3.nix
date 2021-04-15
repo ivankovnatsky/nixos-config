@@ -99,11 +99,7 @@ in {
       assigns = {
         "1" = [{ class = "^Alacritty$"; }];
         "2" = [{ class = "^Chromium-browser$"; }];
-
-        "4" = [
-          { class = "^Pavucontrol$"; }
-          { class = "^.blueman-manager-wrapped$"; }
-        ];
+        "4" = [{ class = "^Pavucontrol$"; }];
       };
 
       bars = [{
