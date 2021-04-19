@@ -17,7 +17,6 @@
       };
 
       include.path = "~/.config/git/config-home";
-      includeIf."gitdir:~/Sources/Work/".path = "~/.config/git/config-work";
 
       merge.tool = "nvim";
 
@@ -40,15 +39,6 @@
         	email = "ikovnatsky@protonmail.ch"
         	name = "Ivan Kovnatsky"
         	signingKey = "ikovnatsky@protonmail.ch"
-      '';
-    };
-
-    ".config/git/config-work" = {
-      text = ''
-        [user]
-        	email = "Ivan.Kovnatsky@tui.co.uk"
-        	name = "Ivan Kovnatsky"
-        	signingKey = "Ivan.Kovnatsky@tui.co.uk"
       '';
     };
   };
