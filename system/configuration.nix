@@ -17,6 +17,13 @@
     <home-manager/nixos>
   ];
 
+  nixpkgs.config.packageOverrides = pkgs: {
+    nur = import (builtins.fetchTarball
+      "https://github.com/nix-community/NUR/archive/master.tar.gz") {
+        inherit pkgs;
+      };
+  };
+
   home-manager.useGlobalPkgs = true;
   home-manager.users.ivan = { ... }: {
     imports = [
