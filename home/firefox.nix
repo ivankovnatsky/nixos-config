@@ -1,6 +1,19 @@
+{ pkgs, ... }:
+
 {
   programs.firefox = {
     enable = true;
+
+    extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+      privacy-badger
+      clearurls
+      decentraleyes
+      # xbs
+      bitwarden
+      ublock-origin
+      https-everywhere
+      duckduckgo-privacy-essentials
+    ];
 
     profiles = {
       default = {
