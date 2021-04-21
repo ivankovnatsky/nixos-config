@@ -8,7 +8,7 @@
       privacy-badger
       clearurls
       decentraleyes
-      # xbs
+      xbrowsersync
       bitwarden
       ublock-origin
       https-everywhere
