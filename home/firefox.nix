@@ -20,6 +20,7 @@
         isDefault = true;
 
         settings = {
+          "browser.ctrlTab.recentlyUsedOrder" = false;
           "gfx.webrender.all" = true;
           "widget.wayland-dmabuf-vaapi.enabled" = true;
         };
@@ -30,6 +31,7 @@
         id = 1;
 
         settings = {
+          "browser.ctrlTab.recentlyUsedOrder" = false;
           "gfx.webrender.all" = true;
           "widget.wayland-dmabuf-vaapi.enabled" = true;
         };
