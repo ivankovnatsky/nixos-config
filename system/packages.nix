@@ -35,6 +35,7 @@ in {
     geteltorito
     gettext
     gimp
+    google-cloud-sdk
     gitAndTools.pre-commit
     glances
     gnome3.adwaita-icon-theme
