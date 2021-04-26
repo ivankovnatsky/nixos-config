@@ -7,6 +7,12 @@ let
     chromium --user-data-dir=/home/ivan/.config/chromium-work
   '';
 
+  firefox-work = pkgs.writeScriptBin "firefox-work" ''
+    #!/usr/bin/env bash
+
+    firefox -P work
+  '';
+
 in {
   environment.systemPackages = with pkgs; [
     acpi
@@ -30,6 +36,7 @@ in {
     exiftool
     fd
     file
+    firefox-work
     fwts
     genpass
     geteltorito
