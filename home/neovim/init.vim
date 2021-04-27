@@ -1,3 +1,5 @@
+syntax on
+
 colorscheme default
 set background=dark
 set nocompatible
