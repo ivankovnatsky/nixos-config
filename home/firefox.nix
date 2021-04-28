@@ -21,6 +21,9 @@
 
         settings = {
           "browser.ctrlTab.recentlyUsedOrder" = false;
+          "media.videocontrols.picture-in-picture.enabled" = false;
+          "media.videocontrols.picture-in-picture.video-toggle.has-used" =
+            false;
           "gfx.webrender.all" = true;
           "widget.wayland-dmabuf-vaapi.enabled" = true;
         };
@@ -32,6 +35,9 @@
 
         settings = {
           "browser.ctrlTab.recentlyUsedOrder" = false;
+          "media.videocontrols.picture-in-picture.enabled" = false;
+          "media.videocontrols.picture-in-picture.video-toggle.has-used" =
+            false;
           "gfx.webrender.all" = true;
           "widget.wayland-dmabuf-vaapi.enabled" = true;
         };
