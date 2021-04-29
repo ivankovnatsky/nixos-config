@@ -3,7 +3,7 @@
 let
   modifier = "Mod4";
 
-  fontName = "Font Awesome 5 Free 9";
+  fontName = "Hack Nerd Font";
   blackColorHTML = "#000000";
   whiteColorHTML = "#ffffff";
 
