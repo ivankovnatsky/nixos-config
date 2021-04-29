@@ -14,6 +14,20 @@ in {
         blocks = [
 
           {
+            block = "custom";
+            command = "echo  $(uname -r)";
+            interval = "once";
+          }
+
+          {
+            block = "custom";
+            command =
+              "[ $(cut -c 16- /nix/var/nix/gcroots/current-system/nixos-version) != $(curl -s https://api.github.com/repos/NixOS/nixpkgs/git/refs/heads/nixos-unstable | jq '.object.sha' -r | cut -c 1-11) ] && echo '{\"icon\":\"update\",\"state\":\"Info\", \"text\": \"Update\"}' || echo '{\"icon\":\"noupdate\",\"state\":\"Idle\", \"text\": \"No Update\"}'";
+            interval = 300;
+            json = true;
+          }
+
+          {
             block = "cpu";
             interval = 1;
             format = "{utilization} {frequency}";
@@ -37,7 +51,7 @@ in {
           {
             block = "custom";
             interval = 1;
-            command = "echo  $(cat /sys/class/hwmon/hwmon4/fan1_input) RPM";
+            command = "echo  $(cat /sys/class/hwmon/hwmon4/fan1_input) RPM";
           }
 
           {
@@ -59,6 +73,8 @@ in {
             info_type = "used";
             unit = "GiB";
             format = " {used}{unit}/{total}{unit}";
+            alert = 200;
+            warning = 150;
           }
 
           {
@@ -114,8 +130,24 @@ in {
 
         ];
 
+        settings = {
+          icons = {
+            name = "awesome5";
+
+            overrides = {
+              update = "  ";
+              noupdate = "  ";
+            };
+          };
+
+          theme = {
+            name = "space-villain";
+            overrides = { separator = ""; };
+          };
+        };
+
         icons = "awesome5";
-        theme = "native";
+        theme = "space-villain";
       };
     };
   };
