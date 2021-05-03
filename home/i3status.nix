@@ -101,7 +101,10 @@ in {
             format = " {layout}";
           }
 
-          { block = "sound"; }
+          {
+            block = "sound";
+            on_click = "pavucontrol";
+          }
 
           {
             block = "taskwarrior";
