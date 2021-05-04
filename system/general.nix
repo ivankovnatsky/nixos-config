@@ -50,6 +50,4 @@ in {
       noto-fonts-emoji
     ];
   };
-
-  security.pam.services.login.enableGnomeKeyring = true;
 }
