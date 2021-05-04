@@ -118,8 +118,7 @@ in {
 
           {
             block = "weather";
-            format = "{weather} {temp}°";
-            autolocate = true;
+            format = "{temp}° {apparent}° {humidity}";
             service = {
               name = "openweathermap";
               api_key = "${openWeatherMapApikey}";
