@@ -1,1 +1,1 @@
-self: super: { terraform-custom = super.callPackage ./terraform.nix { }; }
+self: super: { terraform = super.callPackage ./terraform.nix { }; }
