@@ -2,6 +2,8 @@
 
 let
   wifiDeviceName = "wlp2s0";
+  openWeatherMapCity =
+    builtins.readFile ../../../../../.secrets/openweathermap_city;
   openWeatherMapApikey =
     builtins.readFile ../../../../../.secrets/openweathermap;
 
@@ -121,6 +123,7 @@ in {
             service = {
               name = "openweathermap";
               api_key = "${openWeatherMapApikey}";
+              city_id = "${openWeatherMapCity}";
               units = "metric";
             };
           }
