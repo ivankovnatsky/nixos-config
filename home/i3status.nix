@@ -118,7 +118,7 @@ in {
 
           {
             block = "weather";
-            format = "{temp}° {apparent}° {humidity}";
+            format = "{temp}° {apparent}°  {humidity} 煮 {wind_kmh} km/h";
             service = {
               name = "openweathermap";
               api_key = "${openWeatherMapApikey}";
