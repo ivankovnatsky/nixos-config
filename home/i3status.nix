@@ -24,7 +24,7 @@ in {
           {
             block = "custom";
             command =
-              "[ $(cut -c 16- /nix/var/nix/gcroots/current-system/nixos-version) != $(curl -s https://api.github.com/repos/NixOS/nixpkgs/git/refs/heads/nixos-unstable | jq '.object.sha' -r | cut -c 1-11) ] && echo '{\"icon\":\"update\",\"state\":\"Info\", \"text\": \"Update\"}' || echo '{\"icon\":\"noupdate\",\"state\":\"Idle\", \"text\": \"No Update\"}'";
+              "[ $(nixos-version --revision) != $(curl -s https://api.github.com/repos/NixOS/nixpkgs/git/refs/heads/nixos-unstable | jq '.object.sha' -r ) ] && echo '{\"icon\":\"update\",\"state\":\"Info\", \"text\": \"Update\"}' || echo '{\"icon\":\"noupdate\",\"state\":\"Idle\", \"text\": \"No Update\"}'";
             interval = 1800;
             json = true;
           }
