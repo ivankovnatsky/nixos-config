@@ -62,7 +62,7 @@ in
         "XF86AudioMicMute" =
           "exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle";
 
-        "${modifier}+Return" = "exec alacritty -e tmuxinator start home";
+        "${modifier}+Return" = "alacritty";
         "${modifier}+d" = "exec rofi -show run";
 
         "${modifier}+h" = "focus left";
