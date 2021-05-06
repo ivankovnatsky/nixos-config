@@ -13,7 +13,7 @@ in
     enable = true;
 
     config = {
-      fonts = [ "${fontName}" ];
+      fonts = [ "${fontName} 0" ];
 
       startup = [
         { command = "${pkgs.kbdd}/bin/kbdd"; }
@@ -104,7 +104,7 @@ in
 
       bars = [{
         position = "top";
-        fonts = [ "${fontName}" ];
+        fonts = [ "${fontName} 9" ];
 
         colors = {
 
