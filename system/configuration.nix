@@ -7,6 +7,7 @@
     ./general.nix
     ./hardware.nix
     ./nix.nix
+    ./monitoring.nix
     ./packages.nix
     ./programs.nix
     ./services.nix
