@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 
 let
   wifiDeviceName = "wlp2s0";
@@ -10,6 +10,8 @@ let
 in {
   programs.i3status-rust = {
     enable = true;
+
+    package = pkgs.i3status-rust;
 
     bars = {
       top = {
@@ -32,22 +34,34 @@ in {
           {
             block = "cpu";
             interval = 1;
-            format = "{utilization} {frequency}";
+
+            format = {
+              full = "{utilization} {frequency}";
+              short = "";
+            };
           }
 
           {
             block = "load";
             interval = 1;
-            format = "{1m} {5m} {15m}";
+
+            format = {
+              full = "{1m} {5m} {15m}";
+              short = "";
+            };
           }
 
           {
             block = "temperature";
             collapsed = false;
             interval = 1;
-            format = "{max}°";
             chip = "*-isa-*";
             inputs = [ "temp1" ];
+
+            format = {
+              full = "{max}";
+              short = "";
+            };
           }
 
           {
@@ -59,13 +73,13 @@ in {
           {
             block = "memory";
             display_type = "memory";
-            format_mem = "{Mug}GiB/{MTg}GiB";
+            format_mem = "{mem_used}/{mem_total}";
           }
 
           {
             block = "memory";
             display_type = "swap";
-            format_swap = "{SUg}GiB/{STg}GiB";
+            format_swap = "{swap_used}/{swap_total}";
           }
 
           {
@@ -73,28 +87,30 @@ in {
             path = "/";
             alias = "/";
             info_type = "used";
-            unit = "GiB";
-            format = " {used}{unit}/{total}{unit}";
             alert = 200;
             warning = 150;
+
+            format = {
+              full = " {used}/{total}";
+              short = "";
+            };
           }
 
           {
             block = "net";
             device = wifiDeviceName;
             hide_inactive = true;
-            ip = false;
-            speed_up = true;
-            speed_down = true;
-            graph_up = false;
             interval = 1;
-            format = "{speed_down} {speed_up}";
+
+            format = {
+              full = "{speed_down} {speed_up}";
+              short = "";
+            };
           }
 
           {
             block = "battery";
             driver = "upower";
-            format = "{percentage}%";
           }
 
           {
@@ -118,12 +134,17 @@ in {
 
           {
             block = "weather";
-            format = "{temp}° {apparent}°  {humidity} 煮 {wind_kmh} km/h";
+
             service = {
               name = "openweathermap";
               api_key = "${openWeatherMapApikey}";
               city_id = "${openWeatherMapCity}";
               units = "metric";
+            };
+
+            format = {
+              full = "{temp} {apparent}  {humidity} 煮 {wind_kmh} km/h";
+              short = "";
             };
           }
 
@@ -136,7 +157,7 @@ in {
 
         settings = {
           icons = {
-            name = "awesome5";
+            name = "material-nf";
 
             overrides = {
               update = "";
@@ -150,7 +171,7 @@ in {
           };
         };
 
-        icons = "awesome5";
+        icons = "material-nf";
         theme = "space-villain";
       };
     };
