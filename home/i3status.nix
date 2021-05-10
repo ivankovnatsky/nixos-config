@@ -140,8 +140,8 @@ in {
             name = "awesome5";
 
             overrides = {
-              update = "  ";
-              noupdate = "  ";
+              update = "";
+              noupdate = "";
             };
           };
 
