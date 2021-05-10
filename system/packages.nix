@@ -39,6 +39,7 @@ in
     geteltorito
     gimp
     gitAndTools.pre-commit
+    git-crypt
     gnome3.adwaita-icon-theme
     gnome3.eog
     gnome3.libsecret
