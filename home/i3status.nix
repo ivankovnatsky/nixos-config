@@ -4,8 +4,7 @@ let
   wifiDeviceName = "wlp2s0";
   openWeatherMapCity =
     builtins.readFile ../../../../../.secrets/openweathermap_city;
-  openWeatherMapApikey =
-    builtins.readFile ../../../../../.secrets/openweathermap;
+  openWeatherMapApikey = builtins.readFile ../.secrets/openweathermap;
 
 in {
   programs.i3status-rust = {
