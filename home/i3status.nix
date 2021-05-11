@@ -2,8 +2,7 @@
 
 let
   wifiDeviceName = "wlp2s0";
-  openWeatherMapCity =
-    builtins.readFile ../../../../../.secrets/openweathermap_city;
+  openWeatherMapCity = builtins.readFile ../.secrets/openweathermap_city;
   openWeatherMapApikey = builtins.readFile ../.secrets/openweathermap;
 
 in {
