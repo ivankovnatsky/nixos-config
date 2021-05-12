@@ -101,7 +101,7 @@ in {
             interval = 1;
 
             format = {
-              full = "{speed_down} {speed_up}";
+              full = "{speed_down} {speed_up} {signal_strength}";
               short = "";
             };
           }
