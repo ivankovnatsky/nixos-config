@@ -83,6 +83,7 @@ in
     v4l-utils
     vulkan-tools
     wget
+    xdg-utils
     youtube-dl
     zip
 
