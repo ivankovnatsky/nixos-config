@@ -161,7 +161,8 @@ in
             };
 
             format = {
-              full = "{temp} {apparent}  {humidity} 煮 {wind_kmh} km/h";
+              full =
+                "{temp} {apparent}  {humidity} 煮 {wind_kmh} km/h {direction}";
               short = "";
             };
           }
