@@ -25,8 +25,9 @@ in
 
           {
             block = "custom";
-            command = "echo  $(uname -r)";
+            command = "echo '{\"icon\":\"tux\", \"text\": \"'$(uname -r)'\"}'";
             interval = "once";
+            json = true;
           }
 
           {
@@ -73,7 +74,9 @@ in
           {
             block = "custom";
             interval = 1;
-            command = "echo  $(cat /sys/class/hwmon/hwmon4/fan1_input) RPM";
+            command =
+              "echo '{\"icon\":\"fan\", \"text\": \"'$(cat /sys/class/hwmon/hwmon4/fan1_input)' RPM\"}'";
+            json = true;
           }
 
           {
@@ -97,7 +100,7 @@ in
             warning = 150;
 
             format = {
-              full = " {used}/{total}";
+              full = "{icon}{used}/{total}";
               short = "";
             };
           }
@@ -183,6 +186,8 @@ in
             name = "material-nf";
 
             overrides = {
+              tux = "";
+              fan = "";
               update = "";
               noupdate = "";
             };
