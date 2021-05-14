@@ -122,7 +122,10 @@ in
           {
             block = "keyboard_layout";
             driver = "sway";
-            format = " {layout}";
+            mappings = {
+              "English (US)" = "🇺🇸";
+              "Ukrainian (N/A)" = "🇺🇦";
+            };
           }
 
           {
