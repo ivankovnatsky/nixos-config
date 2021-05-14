@@ -145,9 +145,13 @@ in
           {
             block = "taskwarrior";
             interval = 60;
-            format = "{count} tasks";
-            format_singular = "{count} task";
-            format_everything_done = "nothing to do!";
+            format = "{count}";
+            format_everything_done = "";
+
+            filters = [{
+              name = "today";
+              filter = "+PENDING +OVERDUE or +DUETODAY";
+            }];
           }
 
           {
