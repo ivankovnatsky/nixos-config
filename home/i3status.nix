@@ -5,7 +5,8 @@ let
   openWeatherMapCity = builtins.readFile ../.secrets/openweathermap_city;
   openWeatherMapApikey = builtins.readFile ../.secrets/openweathermap;
 
-in {
+in
+{
   xdg.configFile."i3status-rust/config-top.toml" = {
     onChange = ''
       export SWAYSOCK=$(echo /run/user/1000/sway-ipc.*.sock)
@@ -126,7 +127,16 @@ in {
 
           {
             block = "sound";
-            on_click = "pavucontrol";
+            format = "{output_name} {volume}";
+            on_click = "pavucontrol --tab=3";
+            mappings = {
+              "alsa_output.usb-Kingston_HyperX_Virtual_Surround_Sound_00000000-00.pro-output-0" =
+                "";
+              "alsa_output.usb-Schiit_Audio_Bifrost_Gen_5-00.pro-output-0" =
+                "";
+              "alsa_output.usb-Lenovo_ThinkPad_USB-C_Dock_Gen2_USB_Audio_000000000000-00.pro-output-0" =
+                "蓼";
+            };
           }
 
           {
