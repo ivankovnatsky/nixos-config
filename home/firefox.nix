@@ -6,6 +6,7 @@
 
     extensions = with pkgs.nur.repos.rycee.firefox-addons; [
       privacy-badger
+      keepassxc-browser
       clearurls
       decentraleyes
       xbrowsersync
