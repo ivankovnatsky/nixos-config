@@ -2,7 +2,6 @@
 
 let
   modifier = "Mod4";
-  browserClassApp = "firefox";
 
   fontName = "Hack Nerd Font";
   blackColorHTML = "#000000";
@@ -150,14 +149,14 @@ in {
 
           {
             command = "inhibit_idle fullscreen";
-            criteria = { app_id = browserClassApp; };
+            criteria = { app_id = "firefox"; };
           }
         ];
       };
 
       assigns = {
         "1" = [{ app_id = "Alacritty"; }];
-        "2" = [{ app_id = browserClassApp; }];
+        "2" = [{ app_id = "firefox"; }];
         "3" = [{ app_id = "Chromium-browser"; }];
       };
 
