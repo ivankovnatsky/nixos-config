@@ -61,7 +61,10 @@ in {
         };
       };
 
-      fonts = [ "${fontName} 0" ];
+      fonts = {
+        names = [ "${fontName}" ];
+        size = 0.0;
+      };
 
       terminal = "alacritty";
       menu = ''
@@ -163,7 +166,11 @@ in {
 
       bars = [{
         position = "top";
-        fonts = [ "${fontName} 9" ];
+
+        fonts = {
+          names = [ "${fontName}" ];
+          size = 9.0;
+        };
 
         colors = {
 
