@@ -25,6 +25,8 @@ in {
 
   networking = {
     useDHCP = false;
+    hostName = "thinkpad";
+    networkmanager.enableStrongSwan = true;
 
     networkmanager = {
       enable = true;
