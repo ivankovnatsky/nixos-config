@@ -17,10 +17,5 @@
 
   nixpkgs.overlays = [ (import ./overlays/default.nix) ];
 
-  networking = {
-    hostName = "thinkpad";
-    networkmanager.enableStrongSwan = true;
-  };
-
   system.stateVersion = "21.03";
 }
