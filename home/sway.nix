@@ -161,6 +161,7 @@ in
       assigns = {
         "1" = [{ app_id = "Alacritty"; }];
         "2" = [{ app_id = "firefox"; } { app_id = "Chromium-browser"; }];
+        "3" = [{ class = "ViberPC"; }];
       };
 
       workspaceLayout = "tabbed";
