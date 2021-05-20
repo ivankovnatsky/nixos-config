@@ -136,6 +136,7 @@ in
             format = "{output_name} {volume}";
             on_click = "pavucontrol --tab=3";
             mappings = {
+              "@DEFAULT_SINK@" = "";
               "alsa_output.usb-Kingston_HyperX_Virtual_Surround_Sound_00000000-00.pro-output-0" =
                 "";
               "alsa_output.usb-Schiit_Audio_Bifrost_Gen_5-00.pro-output-0" =
