@@ -12,6 +12,16 @@ in {
     };
   };
 
+  boot = {
+    loader = {
+      timeout = 1;
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
+
+    tmpOnTmpfs = true;
+  };
+
   documentation.enable = true;
   i18n.defaultLocale = "en_US.UTF-8";
   security.sudo.wheelNeedsPassword = false;
