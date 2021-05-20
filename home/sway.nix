@@ -173,6 +173,10 @@ in
           size = 9.0;
         };
 
+        extraConfig = ''
+          tray_output ${monitorDevice}
+        '';
+
         colors = {
 
           focusedWorkspace = {
