@@ -7,6 +7,12 @@ let
     chromium --user-data-dir=/home/ivan/.config/chromium-work
   '';
 
+  viber-run = pkgs.writeScriptBin "viber-run" ''
+    #!/usr/bin/env bash
+
+    QT_QPA_PLATFORM=xcb ${pkgs.viber}/bin/viber
+  '';
+
 in
 {
   environment.systemPackages = with pkgs; [
@@ -72,9 +78,9 @@ in
     terragrunt
     unzip
     usbutils
-    viber
     v4l-utils
     vulkan-tools
+    viber-run
     wget
     xdg-utils
     youtube-dl
