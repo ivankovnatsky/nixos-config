@@ -28,7 +28,8 @@ let
     ${gsettings} set ${gnomeSchema} cursor-theme ${gtkSettings.gtk.gtk3.extraConfig.gtk-cursor-theme-name}
   '';
 
-in {
+in
+{
   wayland.windowManager.sway = {
     enable = true;
     systemdIntegration = true;
@@ -159,7 +160,7 @@ in {
 
       assigns = {
         "1" = [{ app_id = "Alacritty"; }];
-        "2" = [ { app_id = "firefox"; } { app_id = "Chromium-browser"; } ];
+        "2" = [{ app_id = "firefox"; } { app_id = "Chromium-browser"; }];
       };
 
       workspaceLayout = "tabbed";

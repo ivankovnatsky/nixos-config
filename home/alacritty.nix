@@ -1,6 +1,7 @@
 let fontName = "Hack Nerd Font Mono";
 
-in {
+in
+{
   programs.alacritty = {
     enable = true;
 

@@ -36,9 +36,9 @@
     ".config/git/config-home" = {
       text = ''
         [user]
-        	email = "75213+ivankovnatsky@users.noreply.github.com"
-        	name = "Ivan Kovnatsky"
-        	signingKey = "75213+ivankovnatsky@users.noreply.github.com"
+          email = "75213+ivankovnatsky@users.noreply.github.com"
+          name = "Ivan Kovnatsky"
+          signingKey = "75213+ivankovnatsky@users.noreply.github.com"
       '';
     };
   };

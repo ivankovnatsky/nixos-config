@@ -1,5 +1,14 @@
-{ lib, rustPlatform, fetchFromGitHub, pkg-config, makeWrapper, dbus
-, libpulseaudio, notmuch, openssl, ethtool }:
+{ lib
+, rustPlatform
+, fetchFromGitHub
+, pkg-config
+, makeWrapper
+, dbus
+, libpulseaudio
+, notmuch
+, openssl
+, ethtool
+}:
 
 rustPlatform.buildRustPackage rec {
   pname = "i3status-rust";

@@ -2,7 +2,8 @@
 
 let editorName = "nvim";
 
-in {
+in
+{
   environment = {
     homeBinInPath = true;
 

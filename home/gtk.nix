@@ -2,7 +2,8 @@
 
 let cursorThemeName = "capitaine-cursors";
 
-in {
+in
+{
   gtk = {
     enable = true;
 

@@ -26,7 +26,8 @@ let
     ${pkgs.systemd}/bin/systemd-run --user --scope --collect --quiet --unit=sway-$(${pkgs.systemd}/bin/systemd-id128 new) ${pkgs.systemd}/bin/systemd-cat --identifier=sway ${pkgs.sway}/bin/sway
   '';
 
-in {
+in
+{
   services.greetd = {
     enable = true;
 
