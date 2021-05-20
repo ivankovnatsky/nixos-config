@@ -13,14 +13,14 @@
         system = "x86_64-linux";
 
         modules = [
-          ./configuration.nix
+          ./system/configuration.nix
           { nixpkgs.overlays = [ nur.overlay ]; }
 
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.ivan = import ./home.nix;
+            home-manager.users.ivan = import ./system/home.nix;
           }
         ];
       };
