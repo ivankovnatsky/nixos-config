@@ -78,7 +78,7 @@
       {
         plugin = vim-nix;
         config = ''
-          autocmd BufWritePost *.nix silent !nixfmt <afile>
+          autocmd BufWritePost *.nix silent !nixpkgs-fmt <afile>
           autocmd BufWritePost *.nix silent edit
         '';
       }

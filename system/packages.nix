@@ -56,7 +56,7 @@ in
     mdl
     networkmanagerapplet
     networkmanager-l2tp
-    nixfmt
+    nixpkgs-fmt
     nixpkgs-review
     nix-tree
     openssl

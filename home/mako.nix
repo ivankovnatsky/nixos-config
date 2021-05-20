@@ -4,7 +4,8 @@ let
   whiteColorHTML = "#ffffff";
   orangeColorHTML = "#ff7f50";
 
-in {
+in
+{
   programs.mako = {
     enable = true;
 
