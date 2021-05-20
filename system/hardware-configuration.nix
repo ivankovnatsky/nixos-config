@@ -23,6 +23,7 @@
       ];
     };
 
+    blacklistedKernelModules = [ "r8152" ];
     kernelModules = [ "dm-snapshot" "kvm-amd" "amdgpu" ];
     kernelParams = [ "amd_iommu=pt" "iommu=soft" "acpi_backlight=native" ];
 
