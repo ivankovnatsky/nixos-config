@@ -63,7 +63,7 @@ in
             collapsed = false;
             interval = 1;
             chip = "*-isa-*";
-            inputs = [ "temp1" ];
+            inputs = [ "CPU" ];
 
             format = {
               full = "{max}";
