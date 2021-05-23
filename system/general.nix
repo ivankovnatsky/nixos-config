@@ -28,7 +28,12 @@ in
     tmpOnTmpfs = true;
   };
 
-  documentation.enable = true;
+  documentation = {
+    enable = true;
+    man.enable = true;
+    info.enable = false;
+  };
+
   i18n.defaultLocale = "en_US.UTF-8";
   security.sudo.wheelNeedsPassword = false;
   sound.enable = true;
