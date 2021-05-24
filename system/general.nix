@@ -46,6 +46,17 @@ in
       driSupport = true;
       driSupport32Bit = true;
     };
+
+    bluetooth = {
+      enable = true;
+      powerOnBoot = false;
+
+      settings = {
+        General = { Enable = "Source,Sink,Media,Socket"; };
+      };
+    };
+
+    video.hidpi.enable = true;
   };
 
   programs = {
@@ -55,7 +66,6 @@ in
 
   networking = {
     useDHCP = false;
-    hostName = "thinkpad";
     networkmanager.enableStrongSwan = true;
     wireless.iwd.enable = true;
 
@@ -86,6 +96,22 @@ in
     ];
   };
 
-  security.rtkit.enable = true;
-  security.pam.services.swaylock = { };
+  xdg = {
+    icons.enable = true;
+
+    portal = {
+      enable = true;
+      gtkUsePortal = true;
+
+      extraPortals = with pkgs; [
+        xdg-desktop-portal-wlr
+        xdg-desktop-portal-gtk
+      ];
+    };
+  };
+
+  security = {
+    rtkit.enable = true;
+    pam.services.swaylock = { };
+  };
 }
