@@ -4,6 +4,7 @@
   imports = [
     ./hardware-configuration.nix
 
+    ./boot.nix
     ./general.nix
     ./graphics.nix
     ./greetd.nix
