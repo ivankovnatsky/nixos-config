@@ -16,7 +16,8 @@
         system = "x86_64-linux";
 
         modules = [
-          ./system/configuration.nix
+          ./hosts/thinkpad/default.nix
+
           { nixpkgs.overlays = [ nur.overlay ]; }
 
           home-manager.nixosModules.home-manager
