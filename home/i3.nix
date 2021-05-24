@@ -7,7 +7,8 @@ let
   blackColorHTML = "#000000";
   whiteColorHTML = "#ffffff";
 
-in {
+in
+{
   xsession.windowManager.i3 = {
     enable = true;
 
@@ -99,11 +100,6 @@ in {
       assigns = {
         "1" = [{ class = "^Alacritty$"; }];
         "2" = [{ class = "^Chromium-browser$"; }];
-
-        "4" = [
-          { class = "^Pavucontrol$"; }
-          { class = "^.blueman-manager-wrapped$"; }
-        ];
       };
 
       bars = [{
