@@ -14,6 +14,7 @@
         add_newline = false;
         line_break.disabled = true;
         aws.disabled = true;
+        gcloud.disabled = true;
         git_status.disabled = false;
         hostname.ssh_only = true;
         username.show_always = false;
