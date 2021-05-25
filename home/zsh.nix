@@ -51,7 +51,6 @@
 
         plugins = [
           "aws"
-          "command-not-found"
           "docker"
           "fd"
           "git"
