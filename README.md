@@ -76,11 +76,12 @@ nixos-generate-config --root /mnt
 nix-env -iA nixos.git
 nix-env -iA nixos.neovim
 
-git clone https://git.sr.ht/~ikovnatsky/nix-configs /mnt/home/ivan/Sources/Home/SourceHut/nix-configs
+git clone https://github.com/ivankovnatsky/nixos-config /mnt/home/ivan/Sources/Home/GitHub/nixos-config
 ln -sf \
-  /mnt/home/ivan/Sources/Home/SourceHut/nix-configs/system/configuration.nix /mnt/etc/nixos/configuration.nix
+  /mnt/home/ivan/Sources/Home/GitHub/nixos-config/flake.nix /mnt/etc/nixos/flake.nix
 
-nvim /mnt/etc/nixos/configuration.nix
+cd /mnt/home/ivan/Sources/Home/GitHub/nixos-config
+nvim .
 
 nixos-install
 
