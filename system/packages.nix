@@ -52,7 +52,6 @@ in
     iw
     jq
     k9s
-    keepassxc
     killall
     kubectl
     kubectx
