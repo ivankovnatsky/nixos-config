@@ -107,9 +107,9 @@ in
         "${modifier}+Control+Mod1+Shift+m" = "output ${monitorDevice} toggle";
 
         "XF86MonBrightnessDown" =
-          "exec --no-startup-id brightnessctl --device=amdgpu_bl0 set 10%-";
+          "exec --no-startup-id brightnessctl set 10%-";
         "XF86MonBrightnessUp" =
-          "exec --no-startup-id brightnessctl --device=amdgpu_bl0 set +10%";
+          "exec --no-startup-id brightnessctl set +10%";
 
         "XF86AudioRaiseVolume" =
           "exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%";
