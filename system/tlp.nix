@@ -23,10 +23,10 @@
         SOUND_POWER_SAVE_ON_BAT = 1;
 
         CONTROL_BRIGHTNESS = 1;
-        BATT_BRIGHTNESS_COMMAND = "brightnessctl --device=amdgpu_bl0 set 20%";
-        LM_AC_BRIGHTNESS_COMMAND = "brightnessctl --device=amdgpu_bl0 set 35%";
+        BATT_BRIGHTNESS_COMMAND = "brightnessctl set 20%";
+        LM_AC_BRIGHTNESS_COMMAND = "brightnessctl set 35%";
         NOLM_AC_BRIGHTNESS_COMMAND =
-          "brightnessctl --device=amdgpu_bl0 set 35%";
+          "brightnessctl set 35%";
         BRIGHTNESS_OUTPUT = "/sys/class/backlight/amdgpu_bl0/brightness";
       };
     };
