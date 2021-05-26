@@ -214,7 +214,6 @@ in
     extraConfig = ''
       titlebar_border_thickness 0
       titlebar_padding 0
-      workspace 9 output ${laptopDevice}
 
       seat seat0 xcursor_theme "${gtkSettings.gtk.gtk3.extraConfig.gtk-cursor-theme-name}"
       seat seat0 hide_cursor 60000
