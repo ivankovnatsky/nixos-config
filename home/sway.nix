@@ -175,7 +175,7 @@ in
         };
 
         extraConfig = ''
-          tray_output ${monitorDevice}
+          tray_output *
         '';
 
         colors = {
