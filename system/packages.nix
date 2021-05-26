@@ -37,6 +37,7 @@ in
     genpass
     geteltorito
     gimp
+    git
     gitAndTools.pre-commit
     git-crypt
     gnome3.adwaita-icon-theme
@@ -60,6 +61,7 @@ in
     lm_sensors
     lshw
     mdl
+    neovim
     networkmanagerapplet
     networkmanager-l2tp
     nixpkgs-fmt
