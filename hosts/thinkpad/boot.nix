@@ -10,7 +10,11 @@
     };
 
     blacklistedKernelModules = [ "r8152" ];
-    kernelParams = [ "amd_iommu=pt" "iommu=soft" "acpi_backlight=native" ];
+    kernelParams = [
+      "amd_iommu=pt"
+      "iommu=soft"
+      "acpi_backlight=native"
+    ];
 
     # kernelPackages = pkgs.linuxPackages_latest;
     kernelPackages = pkgs.linuxPackagesFor (pkgs.linux_testing.override {
