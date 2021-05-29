@@ -21,10 +21,10 @@
       argsOverride = rec {
         src = pkgs.fetchurl {
           url = "https://git.kernel.org/torvalds/t/linux-${version}.tar.gz";
-          sha256 = "sha256-NGc86oj35TmbcEvKzAiLPxT1gA2t8Er2qQsZw1rTd38=";
+          sha256 = "sha256-1kxnYtlM/eiUpQf4hiy1vN/i2+mxcjboPCcSbnp661Y=";
         };
-        version = "5.13-rc2";
-        modDirVersion = "5.13.0-rc2";
+        version = "5.13-rc3";
+        modDirVersion = "5.13.0-rc3";
       };
 
       ignoreConfigErrors = true;
