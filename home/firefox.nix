@@ -27,6 +27,7 @@
           "media.videocontrols.picture-in-picture.video-toggle.has-used" =
             false;
           "gfx.webrender.all" = true;
+          "extensions.pocket.enabled" = false;
           "widget.wayland-dmabuf-vaapi.enabled" = true;
         };
       };
