@@ -45,8 +45,6 @@ in
       driSupport = true;
       driSupport32Bit = true;
     };
-
-    video.hidpi.enable = true;
   };
 
   programs = {
