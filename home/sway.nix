@@ -53,7 +53,7 @@ in
         "${laptopDevice}" = {
           scale = "1.5";
           pos = "4625,2328";
-          disable = "";
+          # disable = "";
         };
 
         "${monitorDevice}" = {
