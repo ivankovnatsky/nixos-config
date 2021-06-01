@@ -199,9 +199,6 @@ in
             overrides = { separator = ""; };
           };
         };
-
-        icons = "material-nf";
-        theme = "space-villain";
       };
     };
   };
