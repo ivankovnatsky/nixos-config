@@ -120,6 +120,8 @@ in
           {
             block = "battery";
             driver = "upower";
+            allow_missing = true;
+            hide_missing = true;
           }
 
           {
