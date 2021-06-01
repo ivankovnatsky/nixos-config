@@ -35,7 +35,6 @@ in
   };
 
   i18n.defaultLocale = "en_US.UTF-8";
-  security.sudo.wheelNeedsPassword = false;
   sound.enable = true;
   time.timeZone = "Europe/Kiev";
 
