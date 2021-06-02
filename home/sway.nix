@@ -53,7 +53,6 @@ in
         "${laptopDevice}" = {
           scale = "1.5";
           pos = "4625,2328";
-          # disable = "";
         };
 
         "${monitorDevice}" = {
@@ -217,6 +216,10 @@ in
 
       seat seat0 xcursor_theme "${gtkSettings.gtk.gtk3.extraConfig.gtk-cursor-theme-name}"
       seat seat0 hide_cursor 60000
+
+      set $laptop ${laptopDevice}
+      bindswitch --reload --locked lid:on output $laptop disable
+      bindswitch --reload --locked lid:off output $laptop enable
     '';
   };
 
