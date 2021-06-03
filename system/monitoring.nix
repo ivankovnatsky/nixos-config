@@ -3,7 +3,7 @@
 {
   services = {
     grafana = {
-      enable = true;
+      enable = false;
 
       provision = {
         enable = true;
@@ -36,7 +36,7 @@
     };
 
     prometheus = {
-      enable = true;
+      enable = false;
 
       configText = ''
         global:
@@ -50,7 +50,7 @@
           - targets: ['localhost:9100']
       '';
 
-      exporters.node.enable = true;
+      exporters.node.enable = false;
     };
   };
 }
