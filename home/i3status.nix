@@ -40,17 +40,17 @@ in
 
           {
             block = "cpu";
-            interval = 1;
+            interval = 10;
 
             format = {
-              full = "{utilization} {frequency}";
+              full = "{barchart}";
               short = "";
             };
           }
 
           {
             block = "load";
-            interval = 1;
+            interval = 10;
 
             format = {
               full = "{1m} {5m} {15m}";
@@ -61,7 +61,6 @@ in
           {
             block = "temperature";
             collapsed = false;
-            interval = 1;
             chip = "*-isa-*";
             inputs = [ "CPU" ];
 
@@ -73,7 +72,6 @@ in
 
           {
             block = "custom";
-            interval = 1;
             command =
               "echo '{\"icon\":\"fan\", \"text\": \"'$(cat /sys/class/hwmon/hwmon4/fan1_input)' RPM\"}'";
             json = true;
@@ -109,10 +107,10 @@ in
             block = "net";
             device = wifiDeviceName;
             hide_inactive = true;
-            interval = 1;
+            interval = 10;
 
             format = {
-              full = "{speed_down} {speed_up} {signal_strength}";
+              full = "{graph_down} {graph_up} {signal_strength}";
               short = "";
             };
           }
@@ -152,7 +150,6 @@ in
 
           {
             block = "taskwarrior";
-            interval = 60;
             format = "{count}";
             format_everything_done = "";
 
