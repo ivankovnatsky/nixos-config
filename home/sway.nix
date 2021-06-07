@@ -223,5 +223,5 @@ in
     '';
   };
 
-  home.packages = with pkgs; [ sway-contrib.grimshot wdisplays wl-clipboard ];
+  home.packages = with pkgs; [ sway-contrib.grimshot wdisplays wl-clipboard wf-recorder ];
 }
