@@ -77,6 +77,7 @@ in
     sysstat
     terraform
     terragrunt
+    tldr
     unzip
     usbutils
     v4l-utils
