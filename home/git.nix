@@ -4,7 +4,11 @@
   programs.git = {
     enable = true;
 
-    includes = [{ path = "~/.config/git/config-home"; }];
+    includes = [{ path = "~/.config/git/config-home"; }
+      {
+        path = "~/.config/git/config-work";
+        condition = "gitdir:~/Sources/Work/";
+      }];
 
     extraConfig = {
       commit.gpgsign = true;
@@ -37,6 +41,15 @@
           email = "75213+ivankovnatsky@users.noreply.github.com"
           name = "Ivan Kovnatsky"
           signingKey = "75213+ivankovnatsky@users.noreply.github.com"
+      '';
+    };
+
+    ".config/git/config-work" = {
+      text = ''
+        [user]
+          email = "ikovnatsky@bigid.com"
+          name = "Ivan Kovnatsky"
+          signingKey = "ikovnatsky@bigid.com"
       '';
     };
   };
