@@ -1,6 +1,7 @@
 { pkgs, ... }:
 
 let
+
   chromium-work = pkgs.writeScriptBin "chromium-work" ''
     #!/usr/bin/env bash
 
@@ -56,6 +57,7 @@ in
     kubectl
     kubectx
     kubernetes-helm
+    lastpass-cli
     libnotify
     lm_sensors
     lshw
