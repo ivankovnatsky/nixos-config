@@ -1,5 +1,9 @@
 { pkgs, ... }:
 
+let
+  inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
+
+in
 {
   programs.git = {
     enable = true;
@@ -18,7 +22,7 @@
       pull.rebase = false;
       push.default = "current";
 
-      credential.helper = "${
+      credential.helper = if isDarwin then "osxkeychain" else "${
           pkgs.git.override { withLibsecret = true; }
         }/bin/git-credential-libsecret";
 
