@@ -1,4 +1,8 @@
-let fontName = "Hack Nerd Font Mono";
+{ pkgs, ... }:
+
+let
+  fontName = "Hack Nerd Font Mono";
+  inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
 
 in
 {
@@ -14,7 +18,7 @@ in
         italic.family = fontName;
         bold_italic.family = fontName;
 
-        size = 10;
+        size = if isDarwin then 13 else 10;
         draw_bold_text_with_bright_colors = true;
       };
 
