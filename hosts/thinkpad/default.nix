@@ -17,7 +17,6 @@
     ../../system/programs.nix
     ../../system/services.nix
     ../../system/tlp.nix
-    ../../system/tz.nix
     ../../system/upowerd.nix
   ];
 
