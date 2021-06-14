@@ -6,6 +6,7 @@
 
     ../../home/alacritty.nix
     ../../home/bat.nix
+    ../../home/dotfiles.nix
     ../../home/firefox.nix
     ../../home/git.nix
     ../../home/gtk.nix
