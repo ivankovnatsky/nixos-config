@@ -16,7 +16,7 @@
         system = "x86_64-linux";
 
         modules = [
-          ./hosts/thinkpad/default.nix
+          ./hosts/thinkpad
 
           { nixpkgs.overlays = [ nur.overlay ]; }
 
