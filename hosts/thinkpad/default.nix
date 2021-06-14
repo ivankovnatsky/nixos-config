@@ -29,7 +29,7 @@
     cpu.amd.updateMicrocode = true;
   };
 
-  nixpkgs.overlays = [ (import ../../system/overlays/default.nix) ];
+  nixpkgs.overlays = [ (import ./overlays.nix) ];
 
   system.stateVersion = "21.03";
 }
