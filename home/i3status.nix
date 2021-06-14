@@ -136,6 +136,8 @@ in
             on_click = "pavucontrol --tab=3";
             mappings = {
               "@DEFAULT_SINK@" = "";
+              "bluez_output.CC_98_8B_D1_40_88.a2dp-sink" =
+                " ";
               "alsa_output.pci-0000_07_00.6.HiFi__hw_Generic_1__sink" =
                 "";
               "alsa_output.usb-Kingston_HyperX_Virtual_Surround_Sound_00000000-00.pro-output-0" =
