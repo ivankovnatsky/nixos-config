@@ -9,6 +9,7 @@
     ../../system/general.nix
     ../../system/greetd.nix
     ../../system/nix.nix
+    ../../system/nix-linux.nix
     ../../system/monitoring.nix
     ../../system/packages.nix
     ../../system/programs.nix
