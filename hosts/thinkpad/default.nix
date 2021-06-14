@@ -5,6 +5,7 @@
     ./hardware-configuration.nix
     ./boot.nix
 
+    ../../system/bluetooth.nix
     ../../system/general.nix
     ../../system/greetd.nix
     ../../system/nix.nix
