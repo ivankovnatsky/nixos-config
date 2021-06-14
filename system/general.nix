@@ -1,18 +1,6 @@
 { pkgs, ... }:
 
-let editorName = "nvim";
-
-in
 {
-  environment = {
-    homeBinInPath = true;
-
-    variables = {
-      EDITOR = editorName;
-      VISUAL = editorName;
-    };
-  };
-
   boot = {
     loader = {
       timeout = 1;
