@@ -16,12 +16,6 @@
   };
 
   home.file = {
-    ".config/ranger/rc.conf" = {
-      text = ''
-        set show_hidden true
-      '';
-    };
-
     ".terraform.d/plugin-cache/.keep" = {
       text = ''
         keep
