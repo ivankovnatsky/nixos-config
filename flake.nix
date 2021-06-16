@@ -13,17 +13,17 @@
     nur.url = "github:nix-community/NUR";
   };
 
-  outputs = { home-manager, nixpkgs, darwin, nur, ... }: {
+  outputs = inputs: {
     nixosConfigurations = {
-      thinkpad = nixpkgs.lib.nixosSystem {
+      thinkpad = inputs.nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
 
         modules = [
           ./hosts/thinkpad
 
-          { nixpkgs.overlays = [ nur.overlay ]; }
+          { nixpkgs.overlays = [ inputs.nur.overlay ]; }
 
-          home-manager.nixosModules.home-manager
+          inputs.home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
@@ -34,11 +34,11 @@
     };
 
     darwinConfigurations = {
-      "Ivans-MacBook-Pro" = darwin.lib.darwinSystem {
+      "Ivans-MacBook-Pro" = inputs.darwin.lib.darwinSystem {
         modules = [
           ./hosts/macbook
 
-          home-manager.darwinModules.home-manager
+          inputs.home-manager.darwinModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
@@ -47,11 +47,11 @@
         ];
       };
 
-      "workbook" = darwin.lib.darwinSystem {
+      "workbook" = inputs.darwin.lib.darwinSystem {
         modules = [
           ./hosts/workbook
 
-          home-manager.darwinModules.home-manager
+          inputs.home-manager.darwinModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
