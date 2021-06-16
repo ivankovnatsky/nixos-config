@@ -98,7 +98,7 @@ in
             warning = 150;
 
             format = {
-              full = "{icon}{used}/{total}";
+              full = "{icon} {used}/{total}";
               short = "";
             };
           }
