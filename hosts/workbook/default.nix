@@ -12,5 +12,9 @@
     ../../modules/darwin/security/pam.nix
   ];
 
+  homebrew.casks = [
+    "aws-vpn-client"
+  ];
+
   security.pam.enableSudoTouchIdAuth = true;
 }
