@@ -1,4 +1,7 @@
 self: super: {
+  inherit (super.callPackages ../../system/overlays/openvpn.nix { })
+    openvpn;
+
   i3status-rust = super.callPackage ../../system/overlays/i3status-rust.nix { };
 
   terraform = self.callPackage ../../system/overlays/hashicorp-generic.nix {
