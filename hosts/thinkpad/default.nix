@@ -11,7 +11,6 @@
     ../../system/greetd.nix
     ../../system/nix.nix
     ../../system/nix-linux.nix
-    ../../system/monitoring.nix
     ../../system/packages.nix
     ../../system/packages-linux.nix
     ../../system/programs.nix
