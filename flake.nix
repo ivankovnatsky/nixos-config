@@ -13,52 +13,80 @@
     nur.url = "github:nix-community/NUR";
   };
 
-  outputs = inputs: {
-    nixosConfigurations = {
-      thinkpad = inputs.nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
+  outputs = inputs:
+    let
+      editorName = "nvim";
 
-        modules = [
-          ./hosts/thinkpad
+      commonModule = [
+        ({ pkgs, ... }: {
+          environment = {
+            variables = {
+              EDITOR = editorName;
+              VISUAL = editorName;
+            };
+          };
 
-          { nixpkgs.overlays = [ inputs.nur.overlay ]; }
+          nixpkgs.config.allowUnfree = true;
 
-          inputs.home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.ivan = import ./hosts/thinkpad/home.nix;
-          }
-        ];
+          nix = {
+            package = pkgs.nixUnstable;
+            extraOptions = ''
+              experimental-features = nix-command flakes
+            '';
+          };
+        })
+      ];
+
+    in
+    {
+      nixosConfigurations = {
+        thinkpad = inputs.nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+
+          modules = commonModule ++ [
+            ./hosts/thinkpad
+
+            {
+              nixpkgs.overlays = [ inputs.nur.overlay ];
+              nix.autoOptimiseStore = true;
+            }
+
+            inputs.home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.ivan = import ./hosts/thinkpad/home.nix;
+            }
+          ];
+        };
+      };
+
+      darwinConfigurations = {
+        "Ivans-MacBook-Pro" = inputs.darwin.lib.darwinSystem {
+          modules = commonModule ++ [
+            ./hosts/macbook
+
+            inputs.home-manager.darwinModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.ivan = import ./hosts/macbook/home.nix;
+            }
+          ];
+        };
+
+        "workbook" = inputs.darwin.lib.darwinSystem {
+          modules = commonModule ++ [
+            ./hosts/workbook
+
+            inputs.home-manager.darwinModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.ivan = import ./hosts/workbook/home.nix;
+            }
+          ];
+        };
       };
     };
-
-    darwinConfigurations = {
-      "Ivans-MacBook-Pro" = inputs.darwin.lib.darwinSystem {
-        modules = [
-          ./hosts/macbook
-
-          inputs.home-manager.darwinModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.ivan = import ./hosts/macbook/home.nix;
-          }
-        ];
-      };
-
-      "workbook" = inputs.darwin.lib.darwinSystem {
-        modules = [
-          ./hosts/workbook
-
-          inputs.home-manager.darwinModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.ivan = import ./hosts/workbook/home.nix;
-          }
-        ];
-      };
-    };
-  };
 }
