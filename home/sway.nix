@@ -28,6 +28,16 @@ let
     ${gsettings} set ${gnomeSchema} cursor-theme ${gtkSettings.gtk.gtk3.extraConfig.gtk-cursor-theme-name}
   '';
 
+  isLaptop = config.device.type == "laptop";
+
+  extraConfigSway = ''
+    titlebar_border_thickness 0
+    titlebar_padding 0
+
+    seat seat0 xcursor_theme "${gtkSettings.gtk.gtk3.extraConfig.gtk-cursor-theme-name}"
+    seat seat0 hide_cursor 60000
+  '';
+
 in
 {
   wayland.windowManager.sway = {
@@ -49,17 +59,23 @@ in
         { command = "${importGsettingsCmd}"; }
       ];
 
-      output = {
-        "${laptopDevice}" = {
-          scale = "1.5";
-          pos = "4625,2328";
-        };
+      output =
+        if isLaptop then {
+          "${laptopDevice}" = {
+            scale = "1.5";
+            pos = "4625,2328";
+          };
 
-        "${monitorDevice}" = {
-          scale = "2";
-          pos = "2705,2328";
+          "${monitorDevice}" = {
+            scale = "2";
+            pos = "2705,2328";
+
+          };
+        } else {
+          "*" = {
+            scale = "2";
+          };
         };
-      };
 
       fonts = {
         names = [ "${fontName}" ];
@@ -70,34 +86,45 @@ in
       menu = ''
         ${pkgs.bemenu}/bin/bemenu-run --list 3 -n -f --ifne -p "" --hb "${whiteColorHTML}" --hf "${blackColorHTML}"'';
 
-      input = {
-        "1:1:AT_Translated_Set_2_keyboard" = {
-          xkb_layout = "us,ua";
-          xkb_options = "grp:caps_toggle";
-        };
+      input =
+        if isLaptop then {
+          "1:1:AT_Translated_Set_2_keyboard" = {
+            xkb_layout = "us,ua";
+            xkb_options = "grp:caps_toggle";
+          };
 
-        "1241:274:USB-HID_Keyboard" = {
-          xkb_layout = "us,ua";
-          xkb_options = "grp:caps_toggle";
-        };
+          "2:10:TPPS/2_Elan_TrackPoint" = {
+            accel_profile = "flat";
+            pointer_accel = "-0.7";
+          };
 
-        "5426:120:Razer_Razer_Viper" = {
-          accel_profile = "flat";
-          pointer_accel = "-0.7";
-        };
+          "type:touchpad" = {
+            accel_profile = "flat";
+            pointer_accel = "-0.5";
+            natural_scroll = "enabled";
+            middle_emulation = "enabled";
+          };
 
-        "2:10:TPPS/2_Elan_TrackPoint" = {
-          accel_profile = "flat";
-          pointer_accel = "-0.7";
-        };
+          "1241:274:USB-HID_Keyboard" = {
+            xkb_layout = "us,ua";
+            xkb_options = "grp:caps_toggle";
+          };
 
-        "type:touchpad" = {
-          accel_profile = "flat";
-          pointer_accel = "-0.5";
-          natural_scroll = "enabled";
-          middle_emulation = "enabled";
+          "5426:120:Razer_Razer_Viper" = {
+            accel_profile = "flat";
+            pointer_accel = "-0.7";
+          };
+        } else {
+          "1241:274:USB-HID_Keyboard" = {
+            xkb_layout = "us,ua";
+            xkb_options = "grp:caps_toggle";
+          };
+
+          "5426:120:Razer_Razer_Viper" = {
+            accel_profile = "flat";
+            pointer_accel = "-0.7";
+          };
         };
-      };
 
       keybindings = lib.mkOptionDefault {
         "Mod1+Control+Shift+4" = "exec grimshot --notify copy area";
@@ -204,17 +231,16 @@ in
       }];
     };
 
-    extraConfig = ''
-      titlebar_border_thickness 0
-      titlebar_padding 0
+    extraConfig =
+      if isLaptop then ''
+        ${extraConfigSway}
 
-      seat seat0 xcursor_theme "${gtkSettings.gtk.gtk3.extraConfig.gtk-cursor-theme-name}"
-      seat seat0 hide_cursor 60000
-
-      set $laptop ${laptopDevice}
-      bindswitch --reload --locked lid:on output $laptop disable
-      bindswitch --reload --locked lid:off output $laptop enable
-    '';
+        set $laptop ${laptopDevice}
+        bindswitch --reload --locked lid:on output $laptop disable
+        bindswitch --reload --locked lid:off output $laptop enable
+      '' else ''
+        ${extraConfigSway}
+      '';
   };
 
   home.packages = with pkgs; [ sway-contrib.grimshot wdisplays wl-clipboard wf-recorder ];

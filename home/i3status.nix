@@ -1,7 +1,9 @@
-{ pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   wifiDeviceName = "wlan0";
+
+  isLaptop = config.device.type == "laptop";
 
 in
 {
@@ -17,121 +19,121 @@ in
 
     package = pkgs.i3status-rust;
 
-    bars = {
-      top = {
-        blocks = [
-
+    bars =
+      let
+        tuxBlock =
           {
             block = "custom";
             command = "echo '{\"icon\":\"tux\", \"text\": \"'$(uname -r)'\"}'";
             interval = "once";
             json = true;
-          }
+          };
 
-          {
-            block = "cpu";
-            interval = 10;
+        cpuBlock = {
+          block = "cpu";
+          interval = 10;
 
-            format = {
-              full = "{barchart}";
-              short = "";
-            };
-          }
+          format = {
+            full = "{barchart}";
+            short = "";
+          };
+        };
 
-          {
-            block = "load";
-            interval = 10;
+        loadBlock = {
+          block = "load";
+          interval = 10;
 
-            format = {
-              full = "{1m} {5m} {15m}";
-              short = "";
-            };
-          }
+          format = {
+            full = "{1m} {5m} {15m}";
+            short = "";
+          };
+        };
 
+        tempBlock =
           {
             block = "temperature";
             collapsed = false;
             chip = "*-isa-*";
-            inputs = [ "CPU" ];
+            inputs = [ config.device.cpuTempPattern ];
 
             format = {
               full = "{max}";
               short = "";
             };
-          }
+          };
 
-          {
+        fanBlock =
+          if isLaptop then {
             block = "custom";
             command =
               "echo '{\"icon\":\"fan\", \"text\": \"'$(cat /sys/class/hwmon/hwmon4/fan1_input)' RPM\"}'";
             json = true;
-          }
+          } else { };
 
-          {
-            block = "memory";
-            display_type = "memory";
-            format_mem = "{mem_used}/{mem_total}";
-          }
+        memBlock = {
+          block = "memory";
+          display_type = "memory";
+          format_mem = "{mem_used}/{mem_total}";
+        };
 
-          {
-            block = "memory";
-            display_type = "swap";
-            format_swap = "{swap_used}/{swap_total}";
-          }
+        swapBlock = {
+          block = "memory";
+          display_type = "swap";
+          format_swap = "{swap_used}/{swap_total}";
+        };
 
-          {
-            block = "disk_space";
-            path = "/";
-            alias = "/";
-            info_type = "used";
-            alert = 200;
-            warning = 150;
+        diskBlock = {
+          block = "disk_space";
+          path = "/";
+          alias = "/";
+          info_type = "used";
+          alert = 200;
+          warning = 150;
 
-            format = {
-              full = "{icon} {used}/{total}";
-              short = "";
-            };
-          }
+          format = {
+            full = "{icon} {used}/{total}";
+            short = "";
+          };
+        };
 
-          {
-            block = "net";
-            device = wifiDeviceName;
-            hide_inactive = true;
-            interval = 10;
+        netBlock = {
+          block = "net";
+          device = wifiDeviceName;
+          hide_inactive = true;
+          interval = 10;
 
-            format = {
-              full = "{graph_down} {graph_up} {signal_strength}";
-              short = "";
-            };
-          }
+          format = {
+            full = "{graph_down} {graph_up} {signal_strength}";
+            short = "";
+          };
+        };
 
-          {
+        batteryBlock =
+          if isLaptop then {
             block = "battery";
             allow_missing = true;
             hide_missing = true;
-          }
+          } else { };
 
-          {
-            block = "keyboard_layout";
-            driver = "sway";
-            mappings = {
-              "English (US)" = "🇺🇸";
-              "Ukrainian (N/A)" = "🇺🇦";
-            };
-          }
+        kbdBlock = {
+          block = "keyboard_layout";
+          driver = "sway";
+          mappings = {
+            "English (US)" = "🇺🇸";
+            "Ukrainian (N/A)" = "🇺🇦";
+          };
+        };
 
-          {
-            block = "sound";
-            format = "{volume}";
-            on_click = "pavucontrol --tab=3";
-          }
+        soundBlock = {
+          block = "sound";
+          format = "{volume}";
+          on_click = "pavucontrol --tab=3";
+        };
 
-          {
-            block = "time";
-            format = "%a %b %d %H:%M";
-          }
-
-        ];
+        timeBlock = {
+          block = "time";
+          format = "%a %b %d %H:%M";
+        };
 
         settings = {
           icons = {
@@ -150,7 +152,26 @@ in
             overrides = { separator = ""; };
           };
         };
+      in
+      {
+        top = {
+          inherit settings;
+          blocks = lib.lists.flatten [
+            tuxBlock
+            cpuBlock
+            loadBlock
+            tempBlock
+            fanBlock
+            memBlock
+            swapBlock
+            diskBlock
+            netBlock
+            batteryBlock
+            kbdBlock
+            soundBlock
+            timeBlock
+          ];
+        };
       };
-    };
   };
 }
