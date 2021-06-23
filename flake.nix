@@ -88,5 +88,15 @@
           ];
         };
       };
+
+      packages.x86_64-linux = (builtins.head (builtins.attrValues inputs.self.nixosConfigurations)).pkgs;
+
+      devShell.x86_64-linux = with inputs.self.packages.x86_64-linux;
+        mkShell {
+          buildInputs = [
+            go
+          ];
+        };
+
     };
 }
