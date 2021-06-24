@@ -102,9 +102,6 @@ in
       keybindings = lib.mkOptionDefault {
         "Mod1+Control+Shift+4" = "exec grimshot --notify copy area";
 
-        "${modifier}+Control+Mod1+Shift+l" = "output ${laptopDevice} toggle";
-        "${modifier}+Control+Mod1+Shift+m" = "output ${monitorDevice} toggle";
-
         "XF86MonBrightnessDown" =
           "exec --no-startup-id brightnessctl set 10%-";
         "XF86MonBrightnessUp" =
