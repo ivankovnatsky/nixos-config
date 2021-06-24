@@ -5,7 +5,6 @@
     ../../system/darwin.nix
     ../../system/homebrew.nix
     ../../system/packages.nix
-    ../../system/packages-darwin.nix
 
     ../../modules/darwin/security/pam.nix
   ];
