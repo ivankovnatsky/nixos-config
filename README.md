@@ -86,6 +86,10 @@ nvim .
 
 nixos-install
 
+# or
+
+nixos-install --flake .#thinkpad
+
 nixos-enter --root /mnt
 
 chown -R ivan:users /mnt/home/ivan
