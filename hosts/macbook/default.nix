@@ -9,6 +9,5 @@
 
   homebrew.casks = [
     "coconutbattery"
-    "tidal"
   ];
 }
