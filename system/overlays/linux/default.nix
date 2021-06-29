@@ -6,8 +6,8 @@ self: super: {
 
   terraform = self.callPackage ../hashicorp-generic.nix {
     name = "terraform";
-    version = "0.14.4";
-    sha256 = "1dalg9vw72vbmpfh7599gd3hppp6rkkvq4na5r2b75knni7iybq4";
+    version = "0.15.5";
+    sha256 = "sha256-OxREmeCMJFqAOQJ+srhMBJXhGfV9eej7YFhku0iJen0=";
     system = "x86_64-linux";
   };
 }
