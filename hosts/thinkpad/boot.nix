@@ -16,19 +16,7 @@
       "acpi_backlight=native"
     ];
 
-    # kernelPackages = pkgs.linuxPackages_latest;
-    kernelPackages = pkgs.linuxPackagesFor (pkgs.linux_testing.override {
-      argsOverride = rec {
-        src = pkgs.fetchurl {
-          url = "https://git.kernel.org/torvalds/t/linux-${version}.tar.gz";
-          sha256 = "sha256-GobpxRjVB0GtOSL8pYloY96CFOwH9z78QcerJAX3/BM=";
-        };
-        version = "5.13-rc4";
-        modDirVersion = "5.13.0-rc4";
-      };
-
-      ignoreConfigErrors = true;
-    });
+    kernelPackages = pkgs.linuxPackages_5_13;
 
     extraModprobeConfig = ''
       # idle audio card after one second
