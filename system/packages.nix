@@ -17,6 +17,7 @@
     git
     gitAndTools.pre-commit
     git-crypt
+    go
     htop
     jq
     k9s
