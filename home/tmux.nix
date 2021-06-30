@@ -12,7 +12,7 @@
     terminal = "xterm-256color";
 
     sensibleOnTop = false;
-    tmuxp.enable = true;
+    tmuxinator.enable = true;
 
     plugins = with pkgs; [ tmuxPlugins.sensible tmuxPlugins.yank ];
 
@@ -30,31 +30,25 @@
   };
 
   home.file = {
-    ".config/tmuxp/home.yml" = {
+    ".config/tmuxinator/home.yml" = {
       text = ''
-        session_name: home
-        start_directory: ~/Sources/Home/GitHub/nixos-config/
+        name: home
+        root: ~/
+
         windows:
-        - window_name: editor
-          panes:
-            - shell_command:
-                - nvim
-        - window_name: cli
-          focus: true
+          - nixos-config: cd ~/Sources/Home/GitHub/nixos-config/ && nvim
+          - cli:
       '';
     };
 
-    ".config/tmuxp/work.yml" = {
+    ".config/tmuxinator/work.yml" = {
       text = ''
-        session_name: work
-        start_directory: ~/Sources/Work/
+        name: work
+        root: ~/Sources/Work
+
         windows:
-        - window_name: editor
-          panes:
-            - shell_command:
-                - nvim
-        - window_name: cli
-          focus: true
+          - editor: nvim
+          - cli:
       '';
     };
   };
