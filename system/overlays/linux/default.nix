@@ -2,7 +2,6 @@ self: super: {
   inherit (super.callPackages ../openvpn.nix { })
     openvpn;
 
-  i3status-rust = super.callPackage ../i3status-rust.nix { };
   awscli2 = super.callPackage ../awscli2.nix { };
 
   terraform = self.callPackage ../hashicorp-generic.nix {
