@@ -33,10 +33,11 @@
     ".config/tmuxinator/home.yml" = {
       text = ''
         name: home
-        root: ~/
+        startup_window: 2
+        root: ~/Sources/Home/GitHub/nixos-config/
 
         windows:
-          - nixos-config: cd ~/Sources/Home/GitHub/nixos-config/ && nvim
+          - editor: nvim
           - cli:
       '';
     };
@@ -44,6 +45,7 @@
     ".config/tmuxinator/work.yml" = {
       text = ''
         name: work
+        startup_window: 2
         root: ~/Sources/Work
 
         windows:
