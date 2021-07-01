@@ -52,7 +52,38 @@
           system = "x86_64-linux";
 
           modules = commonModule ++ [
-            ./hosts/thinkpad
+            ({ config, lib, pkgs, options, ... }: {
+              imports = [
+                ./hosts/thinkpad/boot.nix
+                ./hosts/thinkpad/hardware-configuration.nix
+
+                ./system/bluetooth.nix
+                ./system/general.nix
+                ./system/greetd.nix
+                ./system/packages.nix
+                ./system/packages-linux.nix
+                ./system/programs.nix
+                ./system/services.nix
+                ./system/tlp.nix
+                ./system/upowerd.nix
+              ];
+
+              networking.hostName = "thinkpad";
+
+              hardware = {
+                # don't install all that firmware:
+                # https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/hardware/all-firmware.nix
+                enableAllFirmware = false;
+                enableRedistributableFirmware = false;
+                firmware = with pkgs; [ firmwareLinuxNonfree ];
+
+                cpu.amd.updateMicrocode = true;
+              };
+
+              nixpkgs.overlays = [ (import ./system/overlays/linux) ];
+
+              system.stateVersion = "21.03";
+            })
 
             {
               nixpkgs.overlays = [ inputs.nur.overlay ];
@@ -63,7 +94,29 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.users.ivan = import ./hosts/thinkpad/home.nix;
+              home-manager.users.ivan = {
+                imports = [
+                  ./home/general.nix
+
+                  ./home/neovim/default.nix
+
+                  ./home/alacritty.nix
+                  ./home/bat.nix
+                  ./home/dotfiles.nix
+                  ./home/firefox.nix
+                  ./home/git.nix
+                  ./home/gtk.nix
+                  ./home/i3status.nix
+                  ./home/mpv.nix
+                  ./home/password-store.nix
+                  ./home/task.nix
+                  ./home/tmux.nix
+                  ./home/zsh.nix
+
+                  ./home/sway.nix
+                  ./home/mako.nix
+                ];
+              };
             }
           ];
         };
