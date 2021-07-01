@@ -80,15 +80,15 @@
                 cpu.amd.updateMicrocode = true;
               };
 
-              nixpkgs.overlays = [ (import ./system/overlays/linux) ];
+              nixpkgs.overlays = [
+                (import ./system/overlays/linux)
+                inputs.nur.overlay
+              ];
+
+              nix.autoOptimiseStore = true;
 
               system.stateVersion = "21.03";
             })
-
-            {
-              nixpkgs.overlays = [ inputs.nur.overlay ];
-              nix.autoOptimiseStore = true;
-            }
 
             inputs.home-manager.nixosModules.home-manager
             {
