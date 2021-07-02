@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    master.url = "github:nixos/nixpkgs/master";
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -81,8 +82,10 @@
               };
 
               nixpkgs.overlays = [
-                (import ./system/overlays/linux)
+                inputs.self.overlay
                 inputs.nur.overlay
+
+                (import ./system/overlays/linux)
               ];
 
               nix.autoOptimiseStore = true;
@@ -119,6 +122,8 @@
               };
             }
           ];
+
+          specialArgs = { inherit inputs; };
         };
       };
 
@@ -154,6 +159,10 @@
               }
             ];
         };
+      };
+
+      overlay = final: prev: {
+        master = import inputs.master { system = final.system; config = final.config; };
       };
 
       packages.x86_64-linux = (builtins.head (builtins.attrValues inputs.self.nixosConfigurations)).pkgs;
