@@ -2,7 +2,7 @@
 
 {
   environment.systemPackages = with pkgs; [
-    awscli2
+    master.awscli2
     aws-vault
     bitwarden-cli
     dnsutils
