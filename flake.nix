@@ -159,6 +159,14 @@
                     ./modules/darwin/security/pam.nix
                   ];
 
+                  homebrew.taps = [
+                    "fabianishere/personal"
+                  ];
+
+                  homebrew.brews = [
+                    "pam_reattach"
+                  ];
+
                   homebrew.casks = [
                     "aws-vpn-client"
                   ];
