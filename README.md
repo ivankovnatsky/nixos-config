@@ -78,9 +78,6 @@ nix-env -iA nixos.git-crypt
 nix-env -iA nixos.neovim
 
 git clone https://github.com/ivankovnatsky/nixos-config /mnt/home/ivan/Sources/Home/GitHub/nixos-config
-ln -sf \
-  /mnt/home/ivan/Sources/Home/GitHub/nixos-config/flake.nix /mnt/etc/nixos/flake.nix
-
 cd /mnt/home/ivan/Sources/Home/GitHub/nixos-config
 nvim .
 
