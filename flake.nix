@@ -149,13 +149,49 @@
             commonModule ++
             darwinModule ++
             [
-              ./hosts/workbook
+              ({ config, lib, pkgs, options, ... }:
+                {
+                  imports = [
+                    ./system/darwin.nix
+                    ./system/homebrew.nix
+                    ./system/packages.nix
+
+                    ./modules/darwin/security/pam.nix
+                  ];
+
+                  homebrew.casks = [
+                    "aws-vpn-client"
+                  ];
+
+
+                  nixpkgs.overlays = [
+                    inputs.self.overlay
+
+                    (import ./system/overlays/darwin)
+                  ];
+
+                  security.pam.enableSudoTouchIdAuth = true;
+                }
+              )
 
               inputs.home-manager.darwinModules.home-manager
               {
                 home-manager.useGlobalPkgs = true;
                 home-manager.useUserPackages = true;
-                home-manager.users.ivan = import ./hosts/workbook/home.nix;
+                home-manager.users.ivan = {
+                  imports = [
+                    ./home/alacritty.nix
+                    ./home/bat.nix
+                    ./home/dotfiles.nix
+                    ./home/git.nix
+                    ./home/hammerspoon
+                    ./home/mpv.nix
+                    ./home/neovim
+                    ./home/task.nix
+                    ./home/tmux.nix
+                    ./home/zsh.nix
+                  ];
+                };
               }
             ];
         };
