@@ -59,7 +59,7 @@
                 ./hosts/thinkpad/hardware-configuration.nix
 
                 ./system/bluetooth.nix
-                ./system/fprintd.nix
+                # ./system/fprintd.nix
                 ./system/general.nix
                 ./system/greetd.nix
                 ./system/packages.nix
