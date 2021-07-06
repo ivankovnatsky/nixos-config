@@ -30,6 +30,7 @@
     nixpkgs-fmt
     nixpkgs-review
     nix-tree
+    python38Packages.grip
     ripgrep
     shellcheck
     tldr
