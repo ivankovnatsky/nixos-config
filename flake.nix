@@ -134,13 +134,40 @@
             commonModule ++
             darwinModule ++
             [
-              ./hosts/macbook
+              ({ config, lib, pkgs, options, ... }:
+                {
+                  imports = [
+                    ../../system/darwin.nix
+                    ../../system/homebrew.nix
+                    ../../system/packages.nix
+                  ];
+
+                  homebrew.casks = [
+                    "coconutbattery"
+                  ];
+                }
+              )
 
               inputs.home-manager.darwinModules.home-manager
               {
                 home-manager.useGlobalPkgs = true;
                 home-manager.useUserPackages = true;
-                home-manager.users.ivan = import ./hosts/macbook/home.nix;
+                home-manager.users.ivan =
+                  {
+                    imports = [
+                      ../../home/alacritty.nix
+                      ../../home/bat.nix
+                      ../../home/dotfiles.nix
+                      ../../home/git.nix
+                      ../../home/hammerspoon
+                      ../../home/mpv.nix
+                      ../../home/neovim
+                      ../../home/password-store.nix
+                      ../../home/task.nix
+                      ../../home/tmux.nix
+                      ../../home/zsh.nix
+                    ];
+                  };
               }
             ];
         };
