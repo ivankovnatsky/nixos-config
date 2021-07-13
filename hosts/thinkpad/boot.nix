@@ -14,6 +14,7 @@
       "amd_iommu=pt"
       "iommu=soft"
       "acpi_backlight=native"
+      "acpi_osi=linux"
     ];
 
     # kernelPackages = pkgs.linuxPackages_latest;
