@@ -11,6 +11,7 @@
 
     blacklistedKernelModules = [ "r8152" ];
     kernelParams = [
+      "quiet"
       "amd_iommu=pt"
       "iommu=soft"
       "acpi_backlight=native"
