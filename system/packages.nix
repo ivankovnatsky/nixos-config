@@ -37,6 +37,8 @@
     terraform
     terragrunt
     unzip
+    rbw
+    pinentry
     wget
     youtube-dl
   ];
