@@ -4,7 +4,6 @@
   environment.systemPackages = with pkgs; [
     master.awscli2
     aws-vault
-    bitwarden-cli
     dnsutils
     docker-compose
     dogdns
