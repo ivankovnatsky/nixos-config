@@ -24,6 +24,7 @@
             variables = {
               EDITOR = editorName;
               VISUAL = editorName;
+              LPASS_AGENT_TIMEOUT = "0";
             };
           };
 
