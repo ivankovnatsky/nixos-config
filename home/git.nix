@@ -4,8 +4,8 @@ let
   inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
 
   git-credentials-rbw = pkgs.fetchurl {
-    url = "https://gist.githubusercontent.com/ivankovnatsky/a4074eb9202f7067fc9a19faa4b399d2/raw/b8bbbcafd67648dc3fb67f482f8ad91a1989d4c5/git-credentials-rbw";
-    sha256 = "sha256-h7h369YuX0pEmmAEHbWzlKKQjo6oVL0vsxmRxy1p8F8=";
+    url = "https://gist.githubusercontent.com/mikeboiko/58ab730afd65bca0a125bc12b6f4670d/raw/378a35d30d282c65d4d514a5acc917d30181fa5e/git-credential-rbw";
+    sha256 = "sha256-/MVXA+3LHaKRUiHBDA15fN7Ndo7MXdyeIhtMTh46NxA=";
     executable = true;
   };
 in
