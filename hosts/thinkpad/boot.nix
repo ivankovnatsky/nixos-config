@@ -13,9 +13,11 @@
     kernelParams = [
       "quiet"
       "amd_iommu=pt"
-      "iommu=soft"
       "acpi_backlight=native"
+
       "acpi_osi=linux"
+      "tsc=nowatchdog"
+      "iommu=pt"
     ];
 
     kernelPackages = pkgs.linuxPackagesFor (pkgs.linux_testing.override {
@@ -29,7 +31,23 @@
       };
 
       ignoreConfigErrors = true;
+
+      extraConfig = ''
+        CONFIG_AMD_PMC y
+        CONFIG_I2C_HID_ACPI m
+        CONFIG_HSA_AMD n
+      '';
     });
+
+    kernelPatches = [
+      {
+        name = "5.14-rc1+git+patch";
+        patch = builtins.fetchurl {
+          url = "https://crazy.dev.frugalware.org/S0ix-5.14rc1.patch";
+          sha256 = "129wdnj92r0dry0ca5id7rwbnqaz0mvs72nj6x873yb0kv6jqrsy";
+        };
+      }
+    ];
 
     extraModprobeConfig = ''
       # idle audio card after one second
