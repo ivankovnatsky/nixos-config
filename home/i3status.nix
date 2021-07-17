@@ -140,6 +140,8 @@ in
                 " ";
               "alsa_output.pci-0000_03_00.6.analog-stereo" =
                 "";
+              "alsa_output.pci-0000_07_00.6.pro-output-0" =
+                "";
               "alsa_output.pci-0000_07_00.6.HiFi__hw_Generic_1__sink" =
                 "";
               "alsa_output.usb-Kingston_HyperX_Virtual_Surround_Sound_00000000-00.pro-output-0" =
