@@ -2,7 +2,7 @@
 
 {
   environment.systemPackages = with pkgs; [
-    master.awscli2
+    awscli2
     aws-vault
     dnsutils
     docker-compose
