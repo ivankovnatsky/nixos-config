@@ -15,7 +15,7 @@ in
 
     includes = [
       {
-        path = "~/.config/git/config-home";
+        path = "~/.config/git/config-home-rbw";
         condition = "gitdir:~/Sources/Home/";
       }
 
@@ -25,8 +25,14 @@ in
       }
     ];
 
+    userEmail = "75213+ivankovnatsky@users.noreply.github.com";
+    userName = "Ivan Kovnatsky";
+    signing = {
+      signByDefault = true;
+      key = "75213+ivankovnatsky@users.noreply.github.com";
+    };
+
     extraConfig = {
-      commit.gpgsign = true;
       init.defaultBranch = "main";
       merge.tool = "nvim";
       mergetool."nvim".cmd = ''nvim -f -c "Gdiffsplit!" "$MERGED"'';
@@ -46,14 +52,10 @@ in
   };
 
   home.file = {
-    ".config/git/config-home" = {
+    ".config/git/config-home-rbw" = {
       text = ''
-        [user]
-          email = "75213+ivankovnatsky@users.noreply.github.com"
-          name = "Ivan Kovnatsky"
-          signingKey = "75213+ivankovnatsky@users.noreply.github.com"
-          [credential]
-            helper = "${git-credentials-rbw}";
+        [credential]
+          helper = "${git-credentials-rbw}";
       '';
     };
 
@@ -63,8 +65,8 @@ in
           email = "ikovnatsky@bigid.com"
           name = "Ivan Kovnatsky"
           signingKey = "ikovnatsky@bigid.com"
-          [credential]
-            helper = "lastpass";
+        [credential]
+          helper = "lastpass";
       '';
     };
   };
