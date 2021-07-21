@@ -1,6 +1,7 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 {
+
   boot = {
     initrd = {
       luks.devices.crypted = {
@@ -20,24 +21,25 @@
       "iommu=pt"
     ];
 
-    kernelPackages = pkgs.linuxPackagesFor (pkgs.linux_testing.override {
-      argsOverride = rec {
-        src = pkgs.fetchurl {
-          url = "https://git.kernel.org/stable/t/linux-${version}.tar.gz";
-          sha256 = "sha256-W8u6Y9O2Hokp/Q156yuwU/HfMHeO/nYTn8digcrSlyQ=";
+    kernelPackages = pkgs.linuxPackagesFor
+      (pkgs.linux_testing.override {
+        argsOverride = rec {
+          src = pkgs.fetchurl {
+            url = "https://git.kernel.org/stable/t/linux-${version}.tar.gz";
+            sha256 = "sha256-W8u6Y9O2Hokp/Q156yuwU/HfMHeO/nYTn8digcrSlyQ=";
+          };
+          version = "5.14-rc1";
+          modDirVersion = "5.14.0-rc1";
         };
-        version = "5.14-rc1";
-        modDirVersion = "5.14.0-rc1";
-      };
 
-      ignoreConfigErrors = true;
+        ignoreConfigErrors = true;
 
-      extraConfig = ''
-        CONFIG_AMD_PMC y
-        CONFIG_I2C_HID_ACPI m
-        CONFIG_HSA_AMD n
-      '';
-    });
+        structuredExtraConfig = with lib.kernel; {
+          AMD_PMC = yes;
+          I2C_HID_ACPI = module;
+          HSA_AMD = lib.mkForce (option no);
+        };
+      });
 
     kernelPatches = [
       {
