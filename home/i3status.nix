@@ -31,14 +31,6 @@ in
           }
 
           {
-            block = "custom";
-            command =
-              "[ $(nixos-version --revision) != $(curl -s https://api.github.com/repos/NixOS/nixpkgs/git/refs/heads/nixos-unstable | jq '.object.sha' -r ) ] && echo '{\"icon\":\"update\",\"state\":\"Info\", \"text\": \"Update\"}' || echo '{\"icon\":\"noupdate\",\"state\":\"Idle\", \"text\": \"No Update\"}'";
-            interval = 1800;
-            json = true;
-          }
-
-          {
             block = "cpu";
             interval = 10;
 
