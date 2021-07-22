@@ -26,10 +26,10 @@
         argsOverride = rec {
           src = pkgs.fetchurl {
             url = "https://git.kernel.org/stable/t/linux-${version}.tar.gz";
-            sha256 = "sha256-W8u6Y9O2Hokp/Q156yuwU/HfMHeO/nYTn8digcrSlyQ=";
+            sha256 = "sha256-tHA3JFuoh5s6DgQe7tK8snkaSmal0uYZhMNPTk5GzX8=";
           };
-          version = "5.14-rc1";
-          modDirVersion = "5.14.0-rc1";
+          version = "5.14-rc2";
+          modDirVersion = "5.14.0-rc2";
         };
 
         ignoreConfigErrors = true;
