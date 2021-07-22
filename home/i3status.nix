@@ -124,25 +124,8 @@ in
 
           {
             block = "sound";
-            format = "{output_name} {volume}";
+            format = "{volume}";
             on_click = "pavucontrol --tab=3";
-            mappings = {
-              "@DEFAULT_SINK@" = "";
-              "bluez_output.CC_98_8B_D1_40_88.a2dp-sink" =
-                " ";
-              "alsa_output.pci-0000_03_00.6.analog-stereo" =
-                "";
-              "alsa_output.pci-0000_07_00.6.pro-output-0" =
-                "";
-              "alsa_output.pci-0000_07_00.6.HiFi__hw_Generic_1__sink" =
-                "";
-              "alsa_output.usb-Kingston_HyperX_Virtual_Surround_Sound_00000000-00.pro-output-0" =
-                "";
-              "alsa_output.usb-Schiit_Audio_Bifrost_Gen_5-00.pro-output-0" =
-                "";
-              "alsa_output.usb-Lenovo_ThinkPad_USB-C_Dock_Gen2_USB_Audio_000000000000-00.pro-output-0" =
-                "蓼";
-            };
           }
 
           {
