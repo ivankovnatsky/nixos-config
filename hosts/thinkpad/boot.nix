@@ -32,9 +32,8 @@
           modDirVersion = "5.14.0-rc2";
         };
 
-        ignoreConfigErrors = true;
-
         structuredExtraConfig = with lib.kernel; {
+          IDE = lib.mkForce (option no);
           AMD_PMC = yes;
           I2C_HID_ACPI = module;
           HSA_AMD = lib.mkForce (option no);
