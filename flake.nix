@@ -60,11 +60,11 @@
                 ./hosts/thinkpad/boot.nix
                 ./hosts/thinkpad/hardware-configuration.nix
 
-                ./system/bluetooth.nix
+                # ./system/bluetooth.nix
                 # ./system/fprintd.nix
                 ./system/general.nix
                 ./system/greetd.nix
-                ./system/monitoring.nix
+                # ./system/monitoring.nix
                 ./system/packages.nix
                 ./system/packages-linux.nix
                 ./system/programs.nix
