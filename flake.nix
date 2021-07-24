@@ -111,6 +111,7 @@
                   ./home/bat.nix
                   ./home/dotfiles.nix
                   ./home/firefox.nix
+                  ./home/gammastep.nix
                   ./home/git.nix
                   ./home/gtk.nix
                   ./home/i3status.nix
