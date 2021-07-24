@@ -2,7 +2,8 @@
   services = {
     gammastep = {
       enable = true;
-      provider = "geoclue2";
+      latitude = "50.45";
+      longitude = "30.52";
 
       temperature = {
         day = 5500;
