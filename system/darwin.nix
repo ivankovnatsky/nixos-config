@@ -1,6 +1,4 @@
 {
-  nixpkgs.overlays = [ (import ./overlays/darwin/default.nix) ];
-
   programs.zsh.enable = true; # default shell on catalina
 
   system = {
