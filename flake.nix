@@ -89,7 +89,12 @@
                 inputs.self.overlay
                 inputs.nur.overlay
 
-                (import ./system/overlays/linux)
+                (
+                  self: super: {
+                    inherit (super.callPackages system/overlays/openvpn.nix { })
+                      openvpn;
+                  }
+                )
               ];
 
               nix.autoOptimiseStore = true;
