@@ -211,8 +211,6 @@
 
                   nixpkgs.overlays = [
                     inputs.self.overlay
-
-                    (import ./system/overlays/darwin)
                   ];
 
                   security.pam.enableSudoTouchIdAuth = true;
