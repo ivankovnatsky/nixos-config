@@ -33,7 +33,7 @@
     python38Packages.grip
     ripgrep
     shellcheck
-    tldr
+    tealdeer
     terraform
     terragrunt
     unzip
