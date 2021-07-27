@@ -208,7 +208,6 @@
                     "aws-vpn-client"
                   ];
 
-
                   nixpkgs.overlays = [
                     inputs.self.overlay
                   ];
