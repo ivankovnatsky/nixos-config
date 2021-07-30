@@ -46,6 +46,7 @@ in
     update-systemd-resolved
     pavucontrol
     pciutils
+    powertop
     pulseaudio
     strace
     sysstat
