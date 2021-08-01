@@ -18,25 +18,32 @@
       editorName = "nvim";
 
       commonModule = [
-        ({ pkgs, ... }: {
-          environment = {
-            variables = {
-              EDITOR = editorName;
-              VISUAL = editorName;
-              LPASS_AGENT_TIMEOUT = "0";
-              AWS_VAULT_BACKEND = "pass";
+        ({ pkgs, ... }:
+
+          let rootDir = builtins.toString ./.;
+          in
+          {
+            environment = {
+              variables = {
+                EDITOR = editorName;
+                VISUAL = editorName;
+                LPASS_AGENT_TIMEOUT = "0";
+                AWS_VAULT_BACKEND = "pass";
+              };
             };
-          };
 
-          nixpkgs.config.allowUnfree = true;
+            nixpkgs.config.allowUnfree = true;
 
-          nix = {
-            package = pkgs.nixUnstable;
-            extraOptions = ''
-              experimental-features = nix-command flakes
-            '';
-          };
-        })
+            nix = {
+              package = pkgs.nixUnstable;
+              extraOptions = ''
+                experimental-features = nix-command flakes
+                plugin-files = ${pkgs.nix-plugins}/lib/nix/plugins/libnix-extra-builtins.so
+                extra-builtins-file = ${rootDir}/extra-builtins.nix
+              '';
+            };
+
+          })
       ];
 
       linuxModule = [
@@ -136,7 +143,6 @@
                     imports = [
                       ./home/neovim/default.nix
                       ./home/alacritty.nix
-                      ./home/aws-config.nix
                       ./home/bat.nix
                       ./home/dotfiles.nix
                       ./home/firefox.nix
@@ -147,7 +153,6 @@
                       ./home/i3status.nix
                       ./home/mpv.nix
                       ./home/password-store.nix
-                      ./home/rbw.nix
                       ./home/task.nix
                       ./home/tmux.nix
                       ./home/zsh.nix
@@ -245,7 +250,6 @@
                       ./home/i3status.nix
                       ./home/mpv.nix
                       ./home/password-store.nix
-                      ./home/rbw.nix
                       ./home/task.nix
                       ./home/tmux.nix
                       ./home/zsh.nix
@@ -327,6 +331,21 @@
                     self: super: {
                       inherit (super.callPackages system/overlays/openvpn.nix { })
                         openvpn;
+
+                      nix =
+                        self.nixUnstable;
+
+                      nix-plugins =
+                        (super.nix-plugins.override { nix = self.nixUnstable; }).overrideAttrs
+                          (oldAttrs: {
+                            src = self.fetchFromGitHub {
+                              owner = "rehno-lindeque";
+                              repo = "nix-plugins";
+                              rev = "524c6c29e4e340ec0c2440b878507983339b65df";
+                              sha256 = "0xi3bs8j9zc5hpv10jys95mc1w4933cbyiraxl7s9by6rl42dmmm";
+                            };
+                            buildInputs = oldAttrs.buildInputs ++ [ self.nlohmann_json ];
+                          });
                     }
                   )
                 ];
@@ -343,7 +362,6 @@
                     imports = [
                       ./home/neovim/default.nix
                       ./home/alacritty.nix
-                      ./home/aws-config.nix
                       ./home/bat.nix
                       ./home/dotfiles.nix
                       ./home/firefox.nix
@@ -354,7 +372,6 @@
                       ./home/i3status.nix
                       ./home/mpv.nix
                       ./home/password-store.nix
-                      ./home/rbw.nix
                       ./home/task.nix
                       ./home/tmux.nix
                       ./home/zsh.nix

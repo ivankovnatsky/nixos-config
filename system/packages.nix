@@ -3,6 +3,7 @@
 {
   environment.systemPackages = with pkgs; [
     aws-vault
+    bitwarden-cli
     delta
     dnsutils
     docker-compose
