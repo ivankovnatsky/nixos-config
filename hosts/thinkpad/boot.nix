@@ -21,34 +21,7 @@
       "iommu=pt"
     ];
 
-    kernelPackages = pkgs.linuxPackagesFor
-      (pkgs.linux_testing.override {
-        argsOverride = rec {
-          src = pkgs.fetchurl {
-            url = "https://git.kernel.org/stable/t/linux-${version}.tar.gz";
-            sha256 = "sha256-tHA3JFuoh5s6DgQe7tK8snkaSmal0uYZhMNPTk5GzX8=";
-          };
-          version = "5.14-rc2";
-          modDirVersion = "5.14.0-rc2";
-        };
-
-        structuredExtraConfig = with lib.kernel; {
-          IDE = lib.mkForce (option no);
-          AMD_PMC = yes;
-          I2C_HID_ACPI = module;
-          HSA_AMD = lib.mkForce (option no);
-        };
-      });
-
-    kernelPatches = [
-      {
-        name = "5.14-rc1+git+patch";
-        patch = builtins.fetchurl {
-          url = "https://crazy.dev.frugalware.org/S0ix-5.14rc1.patch";
-          sha256 = "129wdnj92r0dry0ca5id7rwbnqaz0mvs72nj6x873yb0kv6jqrsy";
-        };
-      }
-    ];
+    kernelPackages = pkgs.linuxPackages_latest;
 
     extraModprobeConfig = ''
       # idle audio card after one second
