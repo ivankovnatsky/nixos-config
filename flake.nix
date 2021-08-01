@@ -67,7 +67,6 @@
                 # ./system/monitoring.nix
                 ./system/packages.nix
                 ./system/packages-linux.nix
-                ./system/powertop.nix
                 ./system/programs.nix
                 ./system/services.nix
                 ./system/tlp.nix
