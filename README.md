@@ -79,6 +79,17 @@ nix-env -iA nixos.git-crypt
 nix-env -iA nixos.neovim
 
 git clone https://github.com/ivankovnatsky/nixos-config /mnt/home/ivan/Sources/Home/GitHub/nixos-config
+
+cat > /mnt/home/ivan/.config/rbw/config.json << EOF
+{
+  "base_url": null,
+  "email": "",
+  "identity_url": null,
+  "lock_timeout": 2419200,
+  "pinentry": "pinentry"
+}
+EOF
+
 cd /mnt/home/ivan/Sources/Home/GitHub/nixos-config
 nvim .
 

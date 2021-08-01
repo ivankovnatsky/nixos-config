@@ -136,7 +136,6 @@
                     imports = [
                       ./home/neovim/default.nix
                       ./home/alacritty.nix
-                      ./home/aws-config.nix
                       ./home/bat.nix
                       ./home/dotfiles.nix
                       ./home/firefox.nix
@@ -147,7 +146,6 @@
                       ./home/i3status.nix
                       ./home/mpv.nix
                       ./home/password-store.nix
-                      ./home/rbw.nix
                       ./home/task.nix
                       ./home/tmux.nix
                       ./home/zsh.nix
@@ -245,7 +243,6 @@
                       ./home/i3status.nix
                       ./home/mpv.nix
                       ./home/password-store.nix
-                      ./home/rbw.nix
                       ./home/task.nix
                       ./home/tmux.nix
                       ./home/zsh.nix
@@ -343,7 +340,6 @@
                     imports = [
                       ./home/neovim/default.nix
                       ./home/alacritty.nix
-                      ./home/aws-config.nix
                       ./home/bat.nix
                       ./home/dotfiles.nix
                       ./home/firefox.nix
@@ -354,7 +350,6 @@
                       ./home/i3status.nix
                       ./home/mpv.nix
                       ./home/password-store.nix
-                      ./home/rbw.nix
                       ./home/task.nix
                       ./home/tmux.nix
                       ./home/zsh.nix
