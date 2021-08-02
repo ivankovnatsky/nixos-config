@@ -61,17 +61,33 @@
                 ./hosts/thinkpad/hardware-configuration.nix
 
                 # ./system/bluetooth.nix
+                ./system/boot.nix
+                ./system/documentation.nix
                 # ./system/fprintd.nix
-                ./system/general.nix
                 ./system/greetd.nix
+                ./system/fonts.nix
                 # ./system/monitoring.nix
+                ./system/networking.nix
+                ./system/opengl.nix
                 ./system/packages.nix
                 ./system/packages-linux.nix
                 ./system/programs.nix
+                ./system/security.nix
                 ./system/services.nix
+                ./system/xdg.nix
                 ./system/tlp.nix
+                ./system/users.nix
                 ./system/upowerd.nix
               ];
+
+              i18n.defaultLocale = "en_US.UTF-8";
+              time.timeZone = "Europe/Kiev";
+              sound.enable = true;
+
+              programs = {
+                seahorse.enable = true;
+                dconf.enable = true;
+              };
 
               networking.hostName = "thinkpad";
 
@@ -108,16 +124,14 @@
               home-manager.useUserPackages = true;
               home-manager.users.ivan = {
                 imports = [
-                  ./home/general.nix
-
                   ./home/neovim/default.nix
-
                   ./home/alacritty.nix
                   ./home/bat.nix
                   ./home/dotfiles.nix
                   ./home/firefox.nix
                   ./home/gammastep.nix
                   ./home/git.nix
+                  ./home/gpg.nix
                   ./home/gtk.nix
                   ./home/i3status.nix
                   ./home/mpv.nix
@@ -126,7 +140,6 @@
                   ./home/task.nix
                   ./home/tmux.nix
                   ./home/zsh.nix
-
                   ./home/sway.nix
                   ./home/mako.nix
                 ];
