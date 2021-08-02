@@ -129,17 +129,6 @@ in
           }
 
           {
-            block = "taskwarrior";
-            format = "{count}";
-            format_everything_done = "";
-
-            filters = [{
-              name = "today";
-              filter = "+PENDING +OVERDUE or +DUETODAY";
-            }];
-          }
-
-          {
             block = "time";
             format = "%a %b %d %H:%M";
           }
