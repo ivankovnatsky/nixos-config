@@ -11,14 +11,10 @@
     };
 
     blacklistedKernelModules = [ "r8152" ];
+
     kernelParams = [
       "quiet"
-      "amd_iommu=pt"
       "acpi_backlight=native"
-
-      "acpi_osi=linux"
-      "tsc=nowatchdog"
-      "iommu=pt"
     ];
 
     kernelPackages = pkgs.linuxPackages_latest;
