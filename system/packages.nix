@@ -3,6 +3,7 @@
 {
   environment.systemPackages = with pkgs; [
     awscli2
+    awscurl
     aws-vault
     dnsutils
     docker-compose
