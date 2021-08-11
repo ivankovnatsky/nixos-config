@@ -136,6 +136,13 @@ in
 
         commands = [
           {
+            command = "inhibit_idle visible, floating enable";
+            criteria = {
+              title = "(is sharing your screen)|(Sharing Indicator)";
+            };
+          }
+
+          {
             command = "border pixel 1";
             criteria = { class = "^.*"; };
           }
