@@ -14,6 +14,7 @@
       vim-lastplace
       vim-repeat
       vim-sensible
+      nvim-toggleterm-lua
 
       {
         plugin = vim-sneak;
