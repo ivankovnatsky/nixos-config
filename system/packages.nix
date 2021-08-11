@@ -36,6 +36,7 @@
     python38Packages.grip
     ripgrep
     shellcheck
+    tflint
     tealdeer
     terraform
     terragrunt
