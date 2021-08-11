@@ -32,6 +32,7 @@
     nixpkgs-review
     nix-tree
     ntp
+    python38
     python38Packages.grip
     ripgrep
     shellcheck
