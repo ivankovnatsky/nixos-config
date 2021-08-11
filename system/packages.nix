@@ -17,6 +17,7 @@
     git
     gitAndTools.pre-commit
     git-crypt
+    git-ignore
     go
     htop
     jq
