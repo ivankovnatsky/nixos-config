@@ -20,6 +20,8 @@
   };
 
   systemd = {
+    services.NetworkManager-wait-online.enable = false;
+
     sleep.extraConfig = ''
       HibernateMode=shutdown
     '';
