@@ -44,6 +44,7 @@
         ls = "exa --group-directories-first --group";
         tree = "exa --tree";
         cat = "bat";
+        rclone = "rclone -P";
       };
 
       oh-my-zsh = {
