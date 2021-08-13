@@ -53,5 +53,25 @@
           - cli:
       '';
     };
+
+    ".config/tmuxinator/default.yml" = {
+      text = ''
+        name: default
+        startup_window: 2
+        root: ~/Sources/Work
+
+        windows:
+          - work-editor:
+              panes:
+                - nvim
+          - work-cli:
+          - home-editor:
+              panes:
+                - nvim
+              root: ~/Sources/Home/GitHub/nixos-config/
+          - home-cli:
+              root: ~/Sources/Home/GitHub/nixos-config/
+      '';
+    };
   };
 }
