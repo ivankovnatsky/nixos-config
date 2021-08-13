@@ -72,7 +72,7 @@
                 ./system/opengl.nix
                 ./system/packages.nix
                 ./system/packages-linux.nix
-                ./system/programs.nix
+                ./system/chromium.nix
                 ./system/security.nix
                 ./system/services.nix
                 ./system/xdg.nix
