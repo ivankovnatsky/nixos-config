@@ -7,6 +7,7 @@
       defaultSearchProviderSearchURL = "https://duckduckgo.com/?q=%s";
 
       extensions = [
+        "hdokiejnpimakedhajhdlcegeplioahd" # lastpass-free-password-ma
         "pkehgijcmpdhfbdbbnkijodmdjhbjlgp" # privacy-badger
         "lckanjgmijmafbedllaakclkaicjfmnk" # clearurls
         "ldpochfccmkkmhdbclfhpagapcfdljkj" # decentraleyes
