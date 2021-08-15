@@ -34,6 +34,7 @@
     ntp
     python38
     python38Packages.grip
+    python38Packages.pylint
     rclone
     ripgrep
     shellcheck
