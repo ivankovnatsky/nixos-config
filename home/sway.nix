@@ -159,8 +159,6 @@ in
         "3" = [{ app_id = "Chromium-browser"; }];
       };
 
-      workspaceLayout = "tabbed";
-
       bars = [{
         position = "top";
 
