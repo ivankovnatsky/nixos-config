@@ -35,6 +35,7 @@
     python38
     python38Packages.grip
     python38Packages.pylint
+    postgresql
     rclone
     ripgrep
     shellcheck
