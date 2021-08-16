@@ -20,6 +20,11 @@ in
       }
 
       {
+        path = "~/.config/git/config-home-rbw";
+        condition = "gitdir:~/Sources/Public/";
+      }
+
+      {
         path = "~/.config/git/config-work";
         condition = "gitdir:~/Sources/Work/";
       }
