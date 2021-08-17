@@ -32,20 +32,20 @@
     nixpkgs-review
     nix-tree
     ntp
+    pinentry
+    postgresql
     python38
     python38Packages.grip
     python38Packages.pylint
-    postgresql
+    rbw
     rclone
     ripgrep
     shellcheck
-    tflint
     tealdeer
     terraform
     terragrunt
+    tflint
     unzip
-    rbw
-    pinentry
     wget
     youtube-dl
   ];
