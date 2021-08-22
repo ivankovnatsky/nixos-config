@@ -238,6 +238,7 @@ in
         set $laptop ${laptopDevice}
         bindswitch --reload --locked lid:on output $laptop disable
         bindswitch --reload --locked lid:off output $laptop enable
+        workspace 9 output ${laptopDevice}
       '' else ''
         ${extraConfigSway}
       '';
