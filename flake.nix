@@ -295,6 +295,118 @@
 
           specialArgs = { inherit inputs; };
         };
+
+        xps = inputs.nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+
+          modules =
+            commonModule ++
+            linuxModule ++
+            [
+              ({ config, lib, pkgs, options, ... }: {
+                imports = [
+                  ./hosts/xps/boot.nix
+                  ./hosts/xps/hardware-configuration.nix
+
+                  ./system/boot.nix
+                  ./system/chromium.nix
+                  ./system/documentation.nix
+                  ./system/greetd.nix
+                  ./system/fonts.nix
+                  ./system/networking.nix
+                  ./system/opengl.nix
+                  ./system/opengl-intel.nix
+                  ./system/packages.nix
+                  ./system/packages-linux.nix
+                  ./system/security.nix
+                  ./system/services.nix
+                  ./system/xdg.nix
+                  # ./system/tlp.nix
+                  ./system/upowerd.nix
+                  ./system/users.nix
+
+                  ./modules/device.nix
+                ];
+
+                networking.hostName = "xps";
+
+                device = {
+                  type = "laptop";
+                  monitorName = "DP-3";
+                };
+
+                hardware = {
+                  enableAllFirmware = true;
+                  enableRedistributableFirmware = true;
+
+                  cpu.intel.updateMicrocode = true;
+                };
+
+                nixpkgs.overlays = [
+                  inputs.self.overlay
+                  inputs.nur.overlay
+
+                  (
+                    self: super: {
+                      inherit (super.callPackages system/overlays/openvpn.nix { })
+                        openvpn;
+
+                      awscurl = self.callPackage ./system/overlays/generic.nix {
+                        name = "awscurl";
+                        owner = "legal90";
+                        repo = "awscurl";
+                        version = "0.1.2";
+                        platform = "linux_amd64";
+                        sha256 = "sha256-DfH46NGZyqmK8dwOz6QQm/ctoMcrhj+Eu4OjZyyYVBM=";
+                      };
+                    }
+                  )
+                ];
+
+                system.stateVersion = "21.11";
+              })
+
+              inputs.home-manager.nixosModules.home-manager
+              ({ config, system, ... }: {
+                home-manager.useGlobalPkgs = true;
+                home-manager.useUserPackages = true;
+                home-manager.users.ivan =
+                  ({ super, ... }: {
+                    imports = [
+                      ./home/neovim/default.nix
+                      ./home/alacritty.nix
+                      ./home/bat.nix
+                      ./home/dotfiles.nix
+                      ./home/firefox.nix
+                      ./home/gammastep.nix
+                      ./home/git.nix
+                      ./home/gpg.nix
+                      ./home/gtk.nix
+                      ./home/i3status.nix
+                      ./home/mpv.nix
+                      ./home/password-store.nix
+                      ./home/rbw.nix
+                      ./home/task.nix
+                      ./home/tmux.nix
+                      ./home/zsh.nix
+                      ./home/sway.nix
+                      ./home/mako.nix
+
+                      ./modules/device.nix
+                    ];
+
+                    device = super.device;
+                  });
+
+                home-manager.extraSpecialArgs = {
+                  inherit inputs system;
+                  super = config;
+                };
+              })
+            ];
+
+          specialArgs = { inherit inputs; };
+        };
       };
 
       darwinConfigurations = {

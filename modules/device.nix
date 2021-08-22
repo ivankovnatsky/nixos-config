@@ -13,5 +13,11 @@ with lib; {
       description = "Type of CPU Temp search pattern in lensors command";
       default = "Package id 0";
     };
+
+    monitorName = mkOption {
+      type = types.enum [ "DP-2" "DP-3" ];
+      description = "Monitor name in Sway";
+      default = "DP-2";
+    };
   };
 }
