@@ -8,7 +8,7 @@ let
   whiteColorHTML = "#ffffff";
 
   laptopDevice = "eDP-1";
-  monitorDevice = "DP-2";
+  monitorDevice = config.device.monitorName;
 
   lockCmd =
     "${pkgs.swaylock}/bin/swaylock --indicator-radius 70 --indicator-idle-visible --daemonize --show-failed-attempts --indicator-caps-lock --color '${blackColorHTML}'";
