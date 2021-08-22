@@ -47,6 +47,7 @@
     tflint
     unzip
     wget
+    yamllint
     youtube-dl
   ];
 }
