@@ -73,6 +73,7 @@ ping duckduckgo.com
 ```console
 nixos-generate-config --root /mnt
 
+nix-env -iA nixos.nixUnstable
 nix-env -iA nixos.git
 nix-env -iA nixos.git-crypt
 nix-env -iA nixos.neovim
