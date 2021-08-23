@@ -8,6 +8,8 @@ let
     sha256 = "sha256-/MVXA+3LHaKRUiHBDA15fN7Ndo7MXdyeIhtMTh46NxA=";
     executable = true;
   };
+
+  homeCredentialHelper = if isDarwin then "osxkeychain" else "${git-credentials-rbw}";
 in
 {
   programs.git = {
@@ -60,7 +62,7 @@ in
     ".config/git/config-home-rbw" = {
       text = ''
         [credential]
-          helper = "${git-credentials-rbw}";
+          helper = ${homeCredentialHelper}
       '';
     };
 
