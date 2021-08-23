@@ -142,8 +142,6 @@ in
             overrides = {
               tux = "";
               fan = "";
-              update = "";
-              noupdate = "";
             };
           };
 
