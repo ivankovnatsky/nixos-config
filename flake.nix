@@ -482,6 +482,22 @@
 
                   nixpkgs.overlays = [
                     inputs.self.overlay
+
+                    (
+                      self: super: {
+                        inherit (super.callPackages system/overlays/openvpn.nix { })
+                          openvpn;
+
+                        awscurl = self.callPackage ./system/overlays/generic.nix {
+                          name = "awscurl";
+                          owner = "legal90";
+                          repo = "awscurl";
+                          version = "0.1.2";
+                          platform = "linux_amd64";
+                          sha256 = "sha256-DfH46NGZyqmK8dwOz6QQm/ctoMcrhj+Eu4OjZyyYVBM=";
+                        };
+                      }
+                    )
                   ];
 
                   security.pam.enableSudoTouchIdAuth = true;
