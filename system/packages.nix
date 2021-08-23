@@ -41,6 +41,7 @@
     rclone
     ripgrep
     shellcheck
+    syncthing
     tealdeer
     terraform
     terragrunt
