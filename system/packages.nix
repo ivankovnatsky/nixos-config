@@ -5,6 +5,7 @@
     awscli2
     awscurl
     aws-vault
+    delta
     dnsutils
     docker-compose
     dogdns
