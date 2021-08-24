@@ -33,7 +33,6 @@ in
     libnotify
     lm_sensors
     lshw
-    neovide
     networkmanagerapplet
     networkmanager-l2tp
     openssl
