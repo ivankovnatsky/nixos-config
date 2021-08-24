@@ -351,6 +351,8 @@
                       inherit (super.callPackages system/overlays/openvpn.nix { })
                         openvpn;
 
+                      neovide = self.callPackage ./system/overlays/neovide { };
+
                       awscurl = self.callPackage ./system/overlays/generic.nix {
                         name = "awscurl";
                         owner = "legal90";
