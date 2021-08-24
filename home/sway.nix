@@ -98,12 +98,19 @@ in
             pointer_accel = "-0.7";
           };
 
-          "type:touchpad" = {
-            accel_profile = "flat";
-            pointer_accel = "-0.5";
+          "1739:52710:DLL0945:00_06CB:CDE6_Touchpad" = {
             natural_scroll = "enabled";
             middle_emulation = "enabled";
+            tap = "enabled";
           };
+
+          # FIXME: change to thinkpad identifier
+          # "type:touchpad" = {
+          #   accel_profile = "flat";
+          #   pointer_accel = "-0.5";
+          #   natural_scroll = "enabled";
+          #   middle_emulation = "enabled";
+          # };
 
           "1241:274:USB-HID_Keyboard" = {
             xkb_layout = "us,ua";
