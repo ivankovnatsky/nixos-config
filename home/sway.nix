@@ -104,13 +104,10 @@ in
             tap = "enabled";
           };
 
-          # FIXME: change to thinkpad identifier
-          # "type:touchpad" = {
-          #   accel_profile = "flat";
-          #   pointer_accel = "-0.5";
-          #   natural_scroll = "enabled";
-          #   middle_emulation = "enabled";
-          # };
+          "2:7:SynPS\/2_Synaptics_TouchPad" = {
+            natural_scroll = "enabled";
+            middle_emulation = "enabled";
+          };
 
           "1241:274:USB-HID_Keyboard" = {
             xkb_layout = "us,ua";
