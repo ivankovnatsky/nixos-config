@@ -14,6 +14,7 @@
       vim-lastplace
       vim-repeat
       vim-sensible
+      nerdtree-git-plugin
       nvim-toggleterm-lua
 
       {
