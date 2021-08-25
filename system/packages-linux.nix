@@ -28,6 +28,7 @@ in
     google-cloud-sdk
     hwinfo
     imagemagick
+    ipcalc
     iw
     killall
     libnotify
