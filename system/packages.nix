@@ -45,6 +45,7 @@
     syncthing
     tealdeer
     terraform
+    terraformer
     terragrunt
     tflint
     unzip
