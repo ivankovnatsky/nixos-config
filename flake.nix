@@ -376,6 +376,7 @@
                     imports = [
                       ./home/neovim/default.nix
                       ./home/alacritty.nix
+                      ./home/aws-config.nix
                       ./home/bat.nix
                       ./home/dotfiles.nix
                       ./home/firefox.nix
