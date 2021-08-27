@@ -11,5 +11,14 @@
         plugin_cache_dir = "$HOME/.terraform.d/plugin-cache"
       '';
     };
+
+    # under wayland default password store path that `pass` uses points to:
+    # ~/.local/share/password-store/
+    # aws-vault somehow wants it to be here:
+    ".password-store/.gpg-id" = {
+      text = ''
+        75213+ivankovnatsky@users.noreply.github.com"
+      '';
+    };
   };
 }
