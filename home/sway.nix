@@ -87,7 +87,7 @@ in
         ${pkgs.bemenu}/bin/bemenu-run --list 3 -n -f --ifne -p "" --hb "${whiteColorHTML}" --hf "${blackColorHTML}"'';
 
       input =
-        if isLaptop then {
+        {
           "1:1:AT_Translated_Set_2_keyboard" = {
             xkb_layout = "us,ua";
             xkb_options = "grp:caps_toggle";
@@ -109,16 +109,6 @@ in
             middle_emulation = "enabled";
           };
 
-          "1241:274:USB-HID_Keyboard" = {
-            xkb_layout = "us,ua";
-            xkb_options = "grp:caps_toggle";
-          };
-
-          "5426:120:Razer_Razer_Viper" = {
-            accel_profile = "flat";
-            pointer_accel = "-0.7";
-          };
-        } else {
           "1241:274:USB-HID_Keyboard" = {
             xkb_layout = "us,ua";
             xkb_options = "grp:caps_toggle";
