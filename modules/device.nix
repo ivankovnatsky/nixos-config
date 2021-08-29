@@ -19,5 +19,11 @@ with lib; {
       description = "Monitor name in Sway";
       default = "DP-2";
     };
+
+    graphicsEnv = mkOption {
+      type = types.enum [ "xorg" "wayland" ];
+      description = "";
+      default = "wayland";
+    };
   };
 }
