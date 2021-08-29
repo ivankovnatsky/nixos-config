@@ -109,11 +109,6 @@
 
                 networking.hostName = "thinkpad";
 
-                device = {
-                  type = "laptop";
-                  cpuTempPattern = "CPU";
-                };
-
                 hardware = {
                   # don't install all that firmware:
                   # https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/hardware/all-firmware.nix
@@ -343,7 +338,6 @@
                 networking.hostName = "xps";
 
                 device = {
-                  type = "laptop";
                   monitorName = "DP-3";
                 };
 
