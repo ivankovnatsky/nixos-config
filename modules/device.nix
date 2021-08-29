@@ -25,5 +25,11 @@ with lib; {
       description = "";
       default = "wayland";
     };
+
+    videoDriver = mkOption {
+      type = types.enum [ "amdgpu" "nvidia" ];
+      description = "";
+      default = "nvidia";
+    };
   };
 }

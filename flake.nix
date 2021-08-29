@@ -207,7 +207,6 @@
                   ./system/boot.nix
                   ./system/chromium.nix
                   ./system/documentation.nix
-                  ./system/greetd.nix
                   ./system/fonts.nix
                   ./system/networking.nix
                   ./system/opengl.nix
@@ -215,8 +214,14 @@
                   ./system/packages-linux.nix
                   ./system/security.nix
                   ./system/services.nix
-                  ./system/xdg.nix
                   ./system/users.nix
+
+                  # ./system/xdg.nix
+                  # ./system/greetd.nix
+
+                  ./system/i3.nix
+                  ./system/xserver.nix
+                  ./system/packages-xserver.nix
 
                   ./modules/device.nix
                 ];
@@ -225,6 +230,8 @@
 
                 device = {
                   type = "desktop";
+                  cpuTempPattern = "Package id 0";
+                  graphicsEnv = "xorg";
                 };
 
                 hardware = {
@@ -284,8 +291,14 @@
                       ./home/task.nix
                       ./home/tmux.nix
                       ./home/zsh.nix
-                      ./home/sway.nix
-                      ./home/mako.nix
+
+                      # ./home/sway.nix
+                      # ./home/mako.nix
+
+                      ./home/dunst.nix
+                      ./home/i3.nix
+                      ./home/rofi.nix
+                      ./home/xsession.nix
 
                       ./modules/device.nix
                     ];
@@ -339,6 +352,7 @@
 
                 device = {
                   monitorName = "DP-3";
+                  cpuTempPattern = "Package id 0";
                 };
 
                 hardware = {
