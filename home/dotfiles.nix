@@ -17,7 +17,7 @@
     # aws-vault somehow wants it to be here:
     ".password-store/.gpg-id" = {
       text = ''
-        75213+ivankovnatsky@users.noreply.github.com"
+        75213+ivankovnatsky@users.noreply.github.com
       '';
     };
   };
