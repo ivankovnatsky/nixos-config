@@ -1,6 +1,8 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
-let cursorThemeName = "capitaine-cursors";
+let
+  cursorThemeName = "capitaine-cursors";
+  cursorSize = if config.device.graphicsEnv == "xorg" then 64 else 16;
 
 in
 {
@@ -20,7 +22,7 @@ in
         gtk-xft-antialias = 1
         gtk-xft-hinting = 1
         gtk-xft-hintstyle = "hintfull"
-        gtk-cursor-theme-size = 16
+        gtk-cursor-theme-size = cursorSize
         gtk-cursor-theme-name = ${cursorThemeName}
       '';
     };
@@ -31,7 +33,7 @@ in
         gtk-xft-antialias = 1;
         gtk-xft-hinting = 1;
         gtk-xft-hintstyle = "hintfull";
-        gtk-cursor-theme-size = 16;
+        gtk-cursor-theme-size = cursorSize;
         gtk-cursor-theme-name = cursorThemeName;
       };
     };
