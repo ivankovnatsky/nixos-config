@@ -85,7 +85,6 @@
                   ./system/chromium.nix
                   ./system/documentation.nix
                   # ./system/fprintd.nix
-                  ./system/greetd.nix
                   ./system/fonts.nix
                   # ./system/monitoring.nix
                   ./system/networking.nix
@@ -94,10 +93,16 @@
                   ./system/packages-linux.nix
                   ./system/security.nix
                   ./system/services.nix
-                  ./system/xdg.nix
                   ./system/tlp.nix
                   ./system/users.nix
                   ./system/upowerd.nix
+
+                  ./system/greetd.nix
+                  ./system/xdg.nix
+
+                  # ./system/i3.nix
+                  # ./system/xserver.nix
+                  # ./system/packages-xserver.nix
 
                   ./modules/device.nix
                 ];
@@ -167,8 +172,14 @@
                       ./home/task.nix
                       ./home/tmux.nix
                       ./home/zsh.nix
+
                       ./home/sway.nix
                       ./home/mako.nix
+
+                      # ./home/autorandr.nix
+                      # ./home/dunst.nix
+                      # ./home/i3.nix
+                      # ./home/rofi.nix
 
                       ./modules/device.nix
                     ];
