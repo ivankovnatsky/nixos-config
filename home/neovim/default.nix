@@ -15,7 +15,7 @@
       vim-repeat
       vim-sensible
       nerdtree-git-plugin
-      nvim-toggleterm-lua
+      toggleterm-nvim
 
       {
         plugin = vim-sneak;
