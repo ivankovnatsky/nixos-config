@@ -20,7 +20,7 @@ let
         before-sleep "${lockCmd}"'';
 
   gsettings = "${pkgs.glib}/bin/gsettings";
-  gtkSettings = import ./gtk.nix { inherit pkgs; };
+  gtkSettings = import ./gtk.nix { inherit config pkgs; };
   gnomeSchema = "org.gnome.desktop.interface";
   importGsettingsCmd = pkgs.writeShellScript "import_gsettings.sh" ''
     ${gsettings} set ${gnomeSchema} gtk-theme ${gtkSettings.gtk.theme.name}
