@@ -7,6 +7,7 @@
       defaultSearchProviderSearchURL = "https://duckduckgo.com/?q=%s";
 
       extensions = [
+        "glnpjglilkicbckjpbgcfkogebgllemb" # okta-browser-plugin
         "hdokiejnpimakedhajhdlcegeplioahd" # lastpass-free-password-ma
         "pkehgijcmpdhfbdbbnkijodmdjhbjlgp" # privacy-badger
         "lckanjgmijmafbedllaakclkaicjfmnk" # clearurls
