@@ -12,7 +12,6 @@
         "pkehgijcmpdhfbdbbnkijodmdjhbjlgp" # privacy-badger
         "lckanjgmijmafbedllaakclkaicjfmnk" # clearurls
         "ldpochfccmkkmhdbclfhpagapcfdljkj" # decentraleyes
-        "lcbjdhceifofjlpecfpeimnnphbcjgnc" # xbrowsersync
         "nngceckbapebfimnlniiiahkandclblb" # bitwarden
         "cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock origin
         "gcbommkclmclpchllfjekcdonpmejbdp" # https everywhere
