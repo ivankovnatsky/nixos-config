@@ -50,16 +50,23 @@ in
         };
 
         tempBlock =
-          {
-            block = "temperature";
-            collapsed = false;
-            chip = "*-isa-*";
-            inputs = [ config.device.cpuTempPattern ];
+          # {
+          #   block = "temperature";
+          #   collapsed = false;
+          #   chip = "*-isa-*";
+          #   inputs = [ config.device.cpuTempPattern ];
 
-            format = {
-              full = "{max}";
-              short = "";
-            };
+          #   format = {
+          #     full = "{max}";
+          #     short = "";
+          #   };
+          # };
+
+          {
+            block = "custom";
+            command = "echo '{\"icon\":\"thermometer\", \"text\": \"'$(cat /sys/class/hwmon/hwmon4/temp1_input|sed \"s/000$/°C/\")'\"}'";
+            interval = "once";
+            json = true;
           };
 
         memBlock = {
