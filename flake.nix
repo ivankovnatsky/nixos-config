@@ -3,7 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    master.url = "github:nixos/nixpkgs/master";
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -548,9 +547,7 @@
         };
       };
 
-      overlay = final: prev: {
-        master = import inputs.master { system = final.system; config = final.config; };
-      };
+      overlay = final: prev: { };
 
       packages.x86_64-linux = (builtins.head (builtins.attrValues inputs.self.nixosConfigurations)).pkgs;
 
