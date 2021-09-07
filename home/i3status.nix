@@ -53,7 +53,8 @@ in
           {
             block = "temperature";
             collapsed = false;
-            chip = "*-isa-*";
+            driver = "sysfs";
+            chip = "coretemp";
             inputs = [ config.device.cpuTempPattern ];
 
             format = {
