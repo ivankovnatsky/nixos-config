@@ -54,8 +54,8 @@ in
             block = "temperature";
             collapsed = false;
             driver = "sysfs";
-            chip = "coretemp";
-            inputs = [ config.device.cpuTempPattern ];
+            chip = config.device.cpuTempChip;
+            inputs = [ config.device.cpuTempInput ];
 
             format = {
               full = "{max:1}";
