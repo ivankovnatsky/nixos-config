@@ -229,7 +229,7 @@
 
                 device = {
                   type = "desktop";
-                  cpuTempPattern = "Package id 0";
+                  cpuTempInput = "Package id 0";
                   graphicsEnv = "xorg";
                 };
 
@@ -352,7 +352,8 @@
                 device = {
                   name = "xps";
                   monitorName = "DP-3";
-                  cpuTempPattern = "Package id 0";
+                  cpuTempChip = "coretemp";
+                  cpuTempInput = "Package id 0";
                 };
 
                 hardware = {

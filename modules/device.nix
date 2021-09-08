@@ -14,9 +14,15 @@ with lib; {
       default = "laptop";
     };
 
-    cpuTempPattern = mkOption {
+    cpuTempChip = mkOption {
+      type = types.enum [ "thinkpad" "coretemp" ];
+      description = "Type of CPU Temp chip pattern in i3status widget";
+      default = "thinkpad";
+    };
+
+    cpuTempInput = mkOption {
       type = types.enum [ "Package id 0" "CPU" ];
-      description = "Type of CPU Temp search pattern in lensors command";
+      description = "Type of CPU Temp search pattern in i3status widget";
       default = "CPU";
     };
 
