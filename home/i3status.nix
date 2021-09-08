@@ -58,7 +58,7 @@ in
             inputs = [ config.device.cpuTempPattern ];
 
             format = {
-              full = "{max}";
+              full = "{max:1}";
               short = "";
             };
           };
@@ -66,13 +66,13 @@ in
         memBlock = {
           block = "memory";
           display_type = "memory";
-          format_mem = "{mem_used}/{mem_total}";
+          format_mem = "{mem_used}/{mem_total:1}";
         };
 
         swapBlock = {
           block = "memory";
           display_type = "swap";
-          format_swap = "{swap_used}/{swap_total}";
+          format_swap = "{swap_used}/{swap_total:1}";
         };
 
         diskBlock = {
