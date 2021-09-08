@@ -350,6 +350,7 @@
                 networking.hostName = "xps";
 
                 device = {
+                  name = "xps";
                   monitorName = "DP-3";
                   cpuTempPattern = "Package id 0";
                 };
