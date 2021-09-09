@@ -67,7 +67,7 @@ in
           if isLaptop then {
             block = "custom";
             command =
-              "echo '{\"icon\":\"fan\", \"text\": \"'$(cat /sys/class/hwmon/hwmon4/fan1_input)' RPM\"}'";
+              "echo '{\"icon\":\"fan\", \"text\": \"'$(cat /sys/class/hwmon/hwmon*/fan*_input)' RPM\"}'";
             json = true;
           } else { };
 
