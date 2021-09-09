@@ -63,6 +63,14 @@ in
             };
           };
 
+        fanBlock =
+          if isLaptop then {
+            block = "custom";
+            command =
+              "echo '{\"icon\":\"fan\", \"text\": \"'$(cat /sys/class/hwmon/hwmon4/fan1_input)' RPM\"}'";
+            json = true;
+          } else { };
+
         memBlock = {
           block = "memory";
           display_type = "memory";
@@ -152,6 +160,7 @@ in
             cpuBlock
             loadBlock
             tempBlock
+            fanBlock
             memBlock
             swapBlock
             diskBlock
