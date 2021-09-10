@@ -131,6 +131,23 @@ in
           on_click = "pavucontrol --tab=3";
         };
 
+        weatherBlock = {
+          block = "weather";
+
+          service = {
+            name = "openweathermap";
+            api_key = "${openWeatherMapApikey}";
+            city_id = "${openWeatherMapCity}";
+            units = "metric";
+          };
+
+          format = {
+            full =
+              "{temp} {apparent}  {humidity} 煮 {wind_kmh} km/h {direction}";
+            short = "";
+          };
+        };
+
         timeBlock = {
           block = "time";
           format = "%a %b %d %H:%M";
@@ -168,6 +185,7 @@ in
             batteryBlock
             kbdBlock
             soundBlock
+            weatherBlock
             timeBlock
           ];
         };
