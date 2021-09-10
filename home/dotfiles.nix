@@ -12,6 +12,8 @@
       '';
     };
 
+    ".config/rclone/rclone.conf".source = ../.secrets/config/rclone.conf;
+
     # under wayland default password store path that `pass` uses points to:
     # ~/.local/share/password-store/
     # aws-vault somehow wants it to be here:
