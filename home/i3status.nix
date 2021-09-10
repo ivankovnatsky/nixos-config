@@ -2,6 +2,8 @@
 
 let
   wifiDeviceName = "wlan0";
+  openWeatherMapCity = builtins.readFile ../.secrets/openweathermap/city;
+  openWeatherMapApikey = builtins.readFile ../.secrets/openweathermap/token;
 
   isLaptop = config.device.type == "laptop";
 
