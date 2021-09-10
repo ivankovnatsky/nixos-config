@@ -135,7 +135,6 @@ in
 
         weatherBlock = {
           block = "weather";
-
           service = {
             name = "openweathermap";
             api_key = "${openWeatherMapApikey}";
@@ -148,6 +147,17 @@ in
               "{temp} {apparent}  {humidity} 煮 {wind_kmh} km/h {direction}";
             short = "";
           };
+        };
+
+        taskBlock = {
+          block = "taskwarrior";
+          format = "{count}";
+          format_everything_done = "";
+
+          filters = [{
+            name = "today";
+            filter = "+PENDING +OVERDUE or +DUETODAY";
+          }];
         };
 
         timeBlock = {
@@ -187,6 +197,7 @@ in
             batteryBlock
             kbdBlock
             soundBlock
+            taskBlock
             weatherBlock
             timeBlock
           ];
