@@ -59,7 +59,7 @@ in
 
             format = {
               full = "{max:1}";
-              short = "";
+              short = "{max:1}";
             };
           };
 
