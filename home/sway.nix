@@ -182,6 +182,8 @@ in
         "2" = [{ app_id = "firefox"; } { app_id = "Chromium-browser"; }];
       };
 
+      workspaceLayout = "tabbed";
+
       bars = [{
         position = "top";
 
