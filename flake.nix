@@ -79,13 +79,10 @@
                   ./hosts/thinkpad/boot.nix
                   ./hosts/thinkpad/hardware-configuration.nix
 
-                  # ./system/bluetooth.nix
                   ./system/boot.nix
                   ./system/chromium.nix
                   ./system/documentation.nix
-                  # ./system/fprintd.nix
                   ./system/fonts.nix
-                  # ./system/monitoring.nix
                   ./system/networking.nix
                   ./system/opengl.nix
                   ./system/packages.nix
@@ -215,9 +212,6 @@
                   ./system/services.nix
                   ./system/users.nix
 
-                  # ./system/xdg.nix
-                  # ./system/greetd.nix
-
                   ./system/i3.nix
                   ./system/xserver.nix
                   ./system/packages-xserver.nix
@@ -290,9 +284,6 @@
                       ./home/tmux.nix
                       ./home/zsh.nix
 
-                      # ./home/sway.nix
-                      # ./home/mako.nix
-
                       ./home/dunst.nix
                       ./home/i3.nix
                       ./home/rofi.nix
@@ -339,7 +330,6 @@
                   ./system/security.nix
                   ./system/services.nix
                   ./system/xdg.nix
-                  # ./system/tlp.nix
                   ./system/upowerd.nix
                   ./system/users.nix
 
