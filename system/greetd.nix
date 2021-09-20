@@ -46,4 +46,7 @@ in
       };
     };
   };
+
+  users.users.greeter.group = "greeter";
+  users.groups.greeter = { };
 }
