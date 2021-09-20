@@ -21,6 +21,7 @@
     git-ignore
     go
     htop
+    jsonnet
     jq
     k9s
     kubectl
