@@ -8,6 +8,7 @@
       fzf-vim
       vim-commentary
       vim-fugitive
+      vim-jsonnet
       vim-gist
       vim-git
       vim-gitgutter
