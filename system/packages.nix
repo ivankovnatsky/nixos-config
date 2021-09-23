@@ -11,6 +11,7 @@
     dogdns
     du-dust
     duf
+    envsubst
     exa
     fd
     file
