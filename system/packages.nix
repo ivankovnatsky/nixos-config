@@ -3,7 +3,6 @@
 {
   environment.systemPackages = with pkgs; [
     awscli2
-    awscurl
     aws-vault
     delta
     dnsutils
@@ -19,7 +18,6 @@
     git
     gitAndTools.pre-commit
     git-crypt
-    git-ignore
     go
     htop
     jsonnet
@@ -34,7 +32,6 @@
     nixpkgs-fmt
     nixpkgs-review
     nix-tree
-    ntp
     pinentry
     postgresql
     python38
@@ -48,7 +45,6 @@
     tealdeer
     terraform
     terraformer
-    terragrunt
     tflint
     unzip
     wget
