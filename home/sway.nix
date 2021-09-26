@@ -179,7 +179,7 @@ in
 
       assigns = {
         "1" = [{ app_id = "Alacritty"; }];
-        "2" = [{ app_id = "firefox"; } { app_id = "Chromium-browser"; }];
+        "2" = [{ app_id = "firefox"; } { app_id = "chromium-browser"; }];
       };
 
       workspaceLayout = "tabbed";
