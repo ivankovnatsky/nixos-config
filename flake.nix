@@ -326,8 +326,11 @@
                 };
 
                 hardware = {
-                  enableAllFirmware = true;
-                  enableRedistributableFirmware = true;
+                  enableAllFirmware = false;
+                  enableRedistributableFirmware = false;
+                  firmware = with pkgs; [
+                    firmwareLinuxNonfree
+                  ];
 
                   cpu.intel.updateMicrocode = true;
                 };
