@@ -52,14 +52,6 @@
           };
 
           nix.autoOptimiseStore = true;
-
-          hardware = {
-            # don't install all that firmware:
-            # https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/hardware/all-firmware.nix
-            enableAllFirmware = false;
-            enableRedistributableFirmware = false;
-            firmware = with pkgs; [ firmwareLinuxNonfree ];
-          };
         })
       ];
 
@@ -114,6 +106,12 @@
                 networking.hostName = "thinkpad";
 
                 hardware = {
+                  # don't install all that firmware:
+                  # https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/hardware/all-firmware.nix
+                  enableAllFirmware = false;
+                  enableRedistributableFirmware = false;
+                  firmware = with pkgs; [ firmwareLinuxNonfree ];
+
                   cpu.amd.updateMicrocode = true;
                 };
 
@@ -312,7 +310,14 @@
                 ];
 
                 networking.hostName = "xps";
-                hardware.cpu.intel.updateMicrocode = true;
+
+                hardware = {
+                  enableAllFirmware = true;
+                  enableRedistributableFirmware = true;
+                  firmware = with pkgs; [ firmwareLinuxNonfree ];
+
+                  cpu.intel.updateMicrocode = true;
+                };
 
                 device = {
                   name = "xps";
