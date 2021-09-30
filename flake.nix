@@ -428,6 +428,7 @@
         };
 
         "workbook" = inputs.darwin.lib.darwinSystem {
+          system = "x86_64-darwin";
           modules =
             commonModule ++
             darwinModule ++
