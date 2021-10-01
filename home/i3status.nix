@@ -1,7 +1,6 @@
 { config, lib, pkgs, ... }:
 
 let
-  wifiDeviceName = "wlan0";
   openWeatherMapCity = builtins.readFile ../.secrets/openweathermap/city;
   openWeatherMapApikey = builtins.readFile ../.secrets/openweathermap/token;
 
@@ -99,7 +98,6 @@ in
 
         netBlock = {
           block = "net";
-          device = wifiDeviceName;
           hide_inactive = true;
           interval = 10;
 
