@@ -36,7 +36,7 @@ in
           interval = 10;
 
           format = {
-            full = "{barchart}";
+            full = "{utilization} {frequency}";
             short = "";
           };
         };
@@ -104,7 +104,7 @@ in
           interval = 10;
 
           format = {
-            full = "{graph_down} {graph_up} {signal_strength}";
+            full = "{speed_down} {speed_up} {ssid} {signal_strength}";
             short = "";
           };
         };
