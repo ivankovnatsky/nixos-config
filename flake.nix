@@ -94,6 +94,7 @@
                   ./system/upowerd.nix
 
                   ./system/greetd.nix
+                  ./system/pipewire.nix
                   ./system/xdg.nix
 
                   # ./system/i3.nix
@@ -305,6 +306,8 @@
                   ./system/xdg.nix
                   ./system/upowerd.nix
                   ./system/users.nix
+
+                  ./system/pipewire.nix
 
                   ./modules/device.nix
                 ];
