@@ -95,6 +95,7 @@
 
                   ./system/greetd.nix
                   ./system/pipewire.nix
+                  ./system/swaylock.nix
                   ./system/xdg.nix
 
                   # ./system/i3.nix
@@ -207,6 +208,7 @@
                   ./system/i3.nix
                   ./system/xserver.nix
                   ./system/packages-xserver.nix
+                  ./system/pulseaudio.nix
 
                   ./modules/device.nix
                 ];
@@ -294,7 +296,6 @@
                   ./system/boot.nix
                   ./system/chromium.nix
                   ./system/documentation.nix
-                  ./system/greetd.nix
                   ./system/fonts.nix
                   ./system/networking.nix
                   ./system/opengl.nix
@@ -303,11 +304,13 @@
                   ./system/packages-linux.nix
                   ./system/security.nix
                   ./system/services.nix
-                  ./system/xdg.nix
                   ./system/upowerd.nix
                   ./system/users.nix
 
                   ./system/pipewire.nix
+                  ./system/swaylock.nix
+                  ./system/greetd.nix
+                  ./system/xdg.nix
 
                   ./modules/device.nix
                 ];
@@ -366,6 +369,7 @@
                       ./home/task.nix
                       ./home/tmux.nix
                       ./home/zsh.nix
+
                       ./home/sway.nix
                       ./home/mako.nix
 
