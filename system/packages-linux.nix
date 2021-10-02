@@ -10,6 +10,7 @@ let
 in
 {
   environment.systemPackages = with pkgs; [
+    awscli2
     acpi
     binutils-unwrapped
     brightnessctl
