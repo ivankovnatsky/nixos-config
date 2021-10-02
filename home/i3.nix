@@ -33,9 +33,13 @@ in
         };
       };
 
+      terminal = "alacritty";
+      menu = ''
+        ${pkgs.bemenu}/bin/bemenu-run --fn "${fontName} 20" --list 3 -n -f --ifne -p "" --hb "${whiteColorHTML}" --hf "${blackColorHTML}"'';
+
       modifier = "${modifier}";
 
-      keybindings = {
+      keybindings = lib.mkOptionDefault {
         "Mod1+Control+Shift+4" =
           ''exec --no-startup-id "maim -s | xclip -sel c -t image/png"'';
 
@@ -65,28 +69,6 @@ in
         "XF86AudioMicMute" =
           "exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle";
 
-        "${modifier}+Return" = "exec alacritty";
-        "${modifier}+d" = "exec rofi -show run";
-
-        "${modifier}+h" = "focus left";
-        "${modifier}+l" = "focus right";
-
-        "${modifier}+w" = "layout tabbed";
-        "${modifier}+e" = "layout toggle split";
-
-        "${modifier}+1" = "workspace number 1";
-        "${modifier}+2" = "workspace number 2";
-        "${modifier}+3" = "workspace number 3";
-        "${modifier}+4" = "workspace number 4";
-
-        "${modifier}+Shift+1" = "move container to workspace number 1";
-        "${modifier}+Shift+2" = "move container to workspace number 2";
-        "${modifier}+Shift+3" = "move container to workspace number 3";
-        "${modifier}+Shift+4" = "move container to workspace number 4";
-
-        "${modifier}+Shift+q" = "kill";
-        "${modifier}+Shift+r" = "restart";
-
         "Mod1+Tab" = "workspace back_and_forth";
       };
 
@@ -102,8 +84,7 @@ in
 
       assigns = {
         "1" = [{ class = "^Alacritty$"; }];
-        "2" = [{ class = "^Firefox$"; }];
-        "3" = [{ class = "^Chromium-browser$"; }];
+        "2" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; }];
       };
 
       bars = [{
