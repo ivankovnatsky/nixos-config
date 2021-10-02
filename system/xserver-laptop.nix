@@ -1,3 +1,10 @@
+{ config, ... }:
+
+let
+  laptopName = if config.device.name == "xps" then "eDP-1" else "eDP";
+  monitorName = if config.device.name == "xps" then "DP-3" else "DisplayPort-1";
+
+in
 {
   services = {
     xserver = {
@@ -13,15 +20,15 @@
 
       extraConfig = ''
         Section "Monitor"
-          Identifier "eDP"
-          Option "RightOf" "DisplayPort-1"
+          Identifier "${laptopName}"
+          Option "RightOf" "${monitorName}"
           Option "DPMS" "true"
         EndSection
         Section "Monitor"
-          Identifier "DisplayPort-1"
+          Identifier "${monitorName}"
           Option "PreferredMode" "3840x2160"
           Option "Position" "0 0"
-          Option "LeftOf" "eDP"
+          Option "LeftOf" "${laptopName}"
           Option "DPMS" "true"
         EndSection
       '';
