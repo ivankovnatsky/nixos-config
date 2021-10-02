@@ -50,6 +50,11 @@ in
         "${modifier}+Control+Mod1+Shift+m" =
           "exec --no-startup-id autorandr monitor && xrandr --dpi 192 && i3-msg restart";
 
+        "${modifier}+h" = "focus left";
+        "${modifier}+j" = "focus down";
+        "${modifier}+k" = "focus up";
+        "${modifier}+l" = "focus right";
+
         "XF86MonBrightnessDown" =
           "exec --no-startup-id brightnessctl set 10%-";
         "XF86MonBrightnessUp" =
