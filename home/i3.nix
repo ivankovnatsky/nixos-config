@@ -82,6 +82,8 @@ in
         "2" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; }];
       };
 
+      workspaceLayout = "tabbed";
+
       bars = [{
         position = "top";
         fonts = {
