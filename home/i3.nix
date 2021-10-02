@@ -55,11 +55,6 @@ in
         "XF86MonBrightnessUp" =
           "exec --no-startup-id brightnessctl set +10%";
 
-        "XF86KbdBrightnessUp" =
-          "exec --no-startup-id brightnessctl --device=tpacpi::kbd_backlight set +10%";
-        "XF86KbdBrightnessDown" =
-          "exec --no-startup-id brightnessctl --device=tpacpi::kbd_backlight set 10%-";
-
         "XF86AudioRaiseVolume" =
           "exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%";
         "XF86AudioLowerVolume" =
