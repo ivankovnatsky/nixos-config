@@ -57,8 +57,6 @@ in
         { command = "${pkgs.swaykbdd}/bin/swaykbdd"; }
         { command = "${idleCmd}"; }
         { command = "${importGsettingsCmd}"; }
-        { command = if config.device.name == "xps" then "${pkgs.firefox}/bin/firefox" else "echo"; }
-        { command = if config.device.name == "xps" then "${pkgs.alacritty}/bin/alacritty -e ${pkgs.tmuxinator}/bin/tmuxinator start default" else "echo"; }
       ];
 
       output =
