@@ -13,6 +13,7 @@ in
 
         touchpad = {
           additionalOptions = ''MatchIsTouchpad "on"'';
+          disableWhileTyping = true;
           naturalScrolling = true;
           tapping = false;
         };
