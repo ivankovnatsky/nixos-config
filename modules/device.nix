@@ -27,7 +27,7 @@ with lib; {
     };
 
     videoDriver = mkOption {
-      type = types.enum [ "amdgpu" "nvidia" ];
+      type = types.enum [ "amdgpu" "nvidia" "intel" "modesetting" ];
       description = "";
       default = "nvidia";
     };
