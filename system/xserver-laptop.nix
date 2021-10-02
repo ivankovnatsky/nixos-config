@@ -23,6 +23,7 @@ in
         Section "Monitor"
           Identifier "${laptopName}"
           Option "RightOf" "${monitorName}"
+          Option "Position" "3840 960"
           Option "DPMS" "true"
         EndSection
         Section "Monitor"
