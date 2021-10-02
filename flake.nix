@@ -446,6 +446,7 @@
 
                   homebrew.brews = [
                     "pam_reattach"
+                    "awscli"
                   ];
 
                   homebrew.casks = [
