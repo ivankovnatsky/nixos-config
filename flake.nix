@@ -262,7 +262,6 @@
 
                       ./home/dunst.nix
                       ./home/i3.nix
-                      ./home/rofi.nix
                       ./home/xsession.nix
 
                       ./modules/device.nix
