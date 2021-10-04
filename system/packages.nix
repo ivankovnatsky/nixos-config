@@ -27,6 +27,7 @@
     kubernetes-helm
     lastpass-cli
     mdl
+    mtr
     neovim
     nixpkgs-fmt
     nixpkgs-review
