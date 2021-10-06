@@ -7,6 +7,12 @@ let
     chromium --user-data-dir=/home/ivan/.config/chromium-work
   '';
 
+  slack = pkgs.writeScriptBin "slack" ''
+    #!/usr/bin/env bash
+
+    ${pkgs.slack}/bin/slack --enable-features=UseOzonePlatform --ozone-platform=wayland
+  '';
+
 in
 {
   environment.systemPackages = with pkgs; [
@@ -42,6 +48,7 @@ in
     pavucontrol
     pciutils
     pulseaudio
+    slack
     strace
     sysstat
     usbutils
