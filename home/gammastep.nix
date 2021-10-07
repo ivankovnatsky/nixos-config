@@ -1,7 +1,3 @@
-let
-  latitude = builtins.readFile ../.secrets/personal/latitude;
-  longitude = builtins.readFile ../.secrets/personal/longitude;
-in
 {
   services = {
     gammastep = {
