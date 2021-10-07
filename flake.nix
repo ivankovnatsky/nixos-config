@@ -16,7 +16,6 @@
   outputs = inputs:
     let
       editorName = "nvim";
-      timezone = builtins.readFile ./.secrets/personal/timezone;
 
       commonModule = [
         ({ pkgs, ... }: {
@@ -43,7 +42,7 @@
       linuxModule = [
         ({ pkgs, ... }: {
           i18n.defaultLocale = "en_US.UTF-8";
-          time.timeZone = timezone;
+          time.timeZone = "Europe/Uzhgorod";
           sound.enable = true;
 
           programs = {
