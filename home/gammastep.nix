@@ -6,8 +6,7 @@ in
   services = {
     gammastep = {
       enable = true;
-      latitude = latitude;
-      longitude = longitude;
+      provider = "geoclue2";
 
       temperature = {
         day = 5500;
