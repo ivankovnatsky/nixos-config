@@ -4,6 +4,7 @@
   environment.systemPackages = with pkgs; [
     aws-vault
     delta
+    bitwarden-cli
     dnsutils
     docker-compose
     dogdns
