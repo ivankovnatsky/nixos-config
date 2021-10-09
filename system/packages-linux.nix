@@ -12,7 +12,6 @@ let
 
     ${pkgs.slack}/bin/slack --enable-features=UseOzonePlatform --ozone-platform=wayland
   '';
-
 in
 {
   environment.systemPackages = with pkgs; [
@@ -65,3 +64,5 @@ in
     })
   ];
 }
+
+
