@@ -11,8 +11,6 @@
 # 1. Put this somewhere in your path.
 # 2. git config --global credential.helper bw
 
-set -x
-
 declare -A params
 
 if [[ "$1" == "get" ]]; then
