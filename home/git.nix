@@ -9,7 +9,11 @@ let
     executable = true;
   };
 
-  homeCredentialHelper = if isDarwin then "osxkeychain" else "${git-credentials-rbw}";
+  git-credential-bw = pkgs.writeScriptBin "git-credential-bw" ''
+    ${toString(builtins.readFile ../files/git-credential-bw.sh)}
+  '';
+
+  homeCredentialHelper = if isDarwin then "osxkeychain" else "${git-credential-bw}/bin/git-credential-bw";
 in
 {
   programs.git = {
@@ -17,12 +21,12 @@ in
 
     includes = [
       {
-        path = "~/.config/git/config-home-rbw";
+        path = "~/.config/git/config-home-bw";
         condition = "gitdir:~/Sources/Home/";
       }
 
       {
-        path = "~/.config/git/config-home-rbw";
+        path = "~/.config/git/config-home-bw";
         condition = "gitdir:~/Sources/Public/";
       }
 
@@ -59,7 +63,7 @@ in
   };
 
   home.file = {
-    ".config/git/config-home-rbw" = {
+    ".config/git/config-home-bw" = {
       text = ''
         [credential]
           helper = ${homeCredentialHelper}
