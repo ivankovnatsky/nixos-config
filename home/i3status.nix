@@ -128,8 +128,8 @@ in
 
         weatherBlock = {
           block = "custom";
-          command = "echo '{\"icon\":\"\", \"text\": \"'$(curl -s \'wttr.in/?format=1\')'\"}'";
-          interval = 3600;
+          command = "echo '{\"icon\":\"\", \"text\": \"'$(curl -s \'wttr.in/?format=%c+%t+%f+%h+%w\')'\"}'";
+          interval = 900;
           json = true;
         };
 
