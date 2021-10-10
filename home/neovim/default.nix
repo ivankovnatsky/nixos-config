@@ -9,14 +9,12 @@
       vim-commentary
       vim-fugitive
       vim-jsonnet
-      vim-gist
       vim-git
       vim-gitgutter
       vim-lastplace
       vim-repeat
       vim-sensible
       nerdtree-git-plugin
-      toggleterm-nvim
 
       vim-surround
       vim-tmux
