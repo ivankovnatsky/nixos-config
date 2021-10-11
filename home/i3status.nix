@@ -104,6 +104,17 @@ in
           };
         };
 
+        taskBlock = {
+          block = "taskwarrior";
+          format = "{count}";
+          format_everything_done = "";
+
+          filters = [{
+            name = "today";
+            filter = "+PENDING +OVERDUE or +DUETODAY";
+          }];
+        };
+
         batteryBlock =
           if isLaptop then {
             block = "battery";
@@ -131,17 +142,6 @@ in
           command = "echo '{\"icon\":\"\", \"text\": \"'$(curl -s \'wttr.in/?format=%c+%t+%f+%h+%w\')'\"}'";
           interval = 900;
           json = true;
-        };
-
-        taskBlock = {
-          block = "taskwarrior";
-          format = "{count}";
-          format_everything_done = "";
-
-          filters = [{
-            name = "today";
-            filter = "+PENDING +OVERDUE or +DUETODAY";
-          }];
         };
 
         timeBlock = {
@@ -178,10 +178,10 @@ in
             swapBlock
             diskBlock
             netBlock
+            taskBlock
             batteryBlock
             kbdBlock
             soundBlock
-            taskBlock
             weatherBlock
             timeBlock
           ];
