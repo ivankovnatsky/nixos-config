@@ -6,16 +6,15 @@
 
     plugins = with pkgs.vimPlugins; [
       fzf-vim
+      nerdtree-git-plugin
       vim-commentary
       vim-fugitive
-      vim-jsonnet
       vim-git
       vim-gitgutter
+      vim-jsonnet
       vim-lastplace
       vim-repeat
       vim-sensible
-      nerdtree-git-plugin
-
       vim-surround
       vim-tmux
       vim-visualstar
