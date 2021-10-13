@@ -80,6 +80,7 @@ nix-env -iA nixos.neovim
 
 git clone https://github.com/ivankovnatsky/nixos-config /mnt/home/ivan/Sources/Home/GitHub/nixos-config
 
+mkdir -p /mnt/home/ivan/.config/rbw/
 cat > /mnt/home/ivan/.config/rbw/config.json << EOF
 {
   "base_url": null,
