@@ -70,7 +70,7 @@ in
         memBlock = {
           block = "memory";
           display_type = "memory";
-          format_mem = "{mem_used}/{mem_total:1}";
+          format_mem = "{mem_used:1}/{mem_total:1}";
         };
 
         swapBlock = {
@@ -99,7 +99,7 @@ in
           interval = 10;
 
           format = {
-            full = "{speed_down} {speed_up} {ssid} {signal_strength}";
+            full = "{speed_down:1} {speed_up:1} {ssid} {signal_strength}";
             short = "";
           };
         };
