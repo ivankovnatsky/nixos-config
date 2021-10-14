@@ -120,6 +120,11 @@ in
             block = "battery";
             allow_missing = true;
             hide_missing = true;
+
+            theme_overrides = {
+              good_bg = "#06060f";
+            };
+
           } else { };
 
         kbdBlock = {
