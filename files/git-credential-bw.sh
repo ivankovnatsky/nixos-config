@@ -30,11 +30,6 @@ if [[ "$1" == "get" ]]; then
         exit
     fi
 
-    if ! bw list items --search "asdf" > /dev/null 2>&1; then
-        echo "Please login to Bitwarden to use git credential helper" > /dev/stderr
-        exit
-    fi
-
     id=$(bw list items --search "${params["host"]}"|jq ".[] | select(.name == \"${params["host"]}\").id" -r)
 
     if [[ -z "$id" ]]; then
