@@ -8,6 +8,7 @@
       privacy-badger
       clearurls
       decentraleyes
+      darkreader
       bitwarden
       lastpass-password-manager
       multi-account-containers
