@@ -43,8 +43,13 @@ if [[ "$1" == "get" ]]; then
         exit
     fi
 
-    user=$(bw get username "${id}")
-    pass=$(bw get password "${id}")
+    credentials=$(cat <<-END
+$(bw get item "${id}")
+END
+    )
+
+    user=$(echo "$credentials"|jq '.login.username' -r)
+    pass=$(echo "$credentials"|jq '.login.password' -r)
 
     if [[ -z "$user" ]] || [[ -z "$pass" ]]; then
         echo "Couldn't find host in Bitwarden DB." > /dev/stderr
