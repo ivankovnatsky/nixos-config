@@ -11,7 +11,12 @@
       vim-fugitive
       vim-git
       vim-gitgutter
-      vim-jsonnet
+      {
+        plugin = vim-jsonnet;
+        config = ''
+          autocmd FileType jsonnet setlocal ts=2 sts=2 sw=2 expandtab
+        '';
+      }
       vim-lastplace
       vim-repeat
       vim-sensible
