@@ -42,6 +42,7 @@
     rclone
     ripgrep
     shellcheck
+    ssm-session-manager-plugin
     syncthing
     tealdeer
     terraform
