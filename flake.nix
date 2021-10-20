@@ -375,49 +375,6 @@
       };
 
       darwinConfigurations = {
-        "Ivans-MacBook-Pro" = inputs.darwin.lib.darwinSystem {
-          modules =
-            commonModule ++
-            darwinModule ++
-            [
-              ({ config, lib, pkgs, options, ... }:
-                {
-                  imports = [
-                    ../../system/darwin.nix
-                    ../../system/homebrew.nix
-                    ../../system/packages.nix
-                  ];
-
-                  homebrew.casks = [
-                    "coconutbattery"
-                  ];
-                }
-              )
-
-              inputs.home-manager.darwinModules.home-manager
-              {
-                home-manager.useGlobalPkgs = true;
-                home-manager.useUserPackages = true;
-                home-manager.users.ivan =
-                  {
-                    imports = [
-                      ../../home/alacritty.nix
-                      ../../home/bat.nix
-                      ../../home/dotfiles.nix
-                      ../../home/git.nix
-                      ../../home/hammerspoon
-                      ../../home/mpv.nix
-                      ../../home/neovim
-                      ../../home/password-store.nix
-                      ../../home/task.nix
-                      ../../home/tmux.nix
-                      ../../home/zsh.nix
-                    ];
-                  };
-              }
-            ];
-        };
-
         "workbook" = inputs.darwin.lib.darwinSystem {
           system = "x86_64-darwin";
           modules =
