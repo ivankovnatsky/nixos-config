@@ -16,6 +16,10 @@
         aws.format = "on [$symbol$profile]($style) ";
         gcloud.disabled = true;
         git_status.disabled = false;
+        git_branch = {
+          truncation_length = 30;
+          truncation_symbol = "";
+        };
         hostname.ssh_only = true;
         username.show_always = false;
       };
