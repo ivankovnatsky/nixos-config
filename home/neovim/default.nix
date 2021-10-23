@@ -90,7 +90,7 @@
         plugin = lens-vim;
         config = ''
           let g:lens#disabled_filetypes = ['nerdtree', 'fzf']
-          command! -bang -nargs=* Rg call fzf#vim#grep("rg --column --hidden --glob '!.git/*' --line-number --no-heading --color=always --smart-case -- ".shellescape(<q-args>), 1, fzf#vim#with_preview(), <bang>0)
+          command! -bang -nargs=* Rg call fzf#vim#grep("rg --column --hidden --no-ignore-parent --glob '!.git/*' --line-number --no-heading --color=always --smart-case -- ".shellescape(<q-args>), 1, fzf#vim#with_preview(), <bang>0)
         '';
       }
 
