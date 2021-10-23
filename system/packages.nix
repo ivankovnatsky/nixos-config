@@ -12,6 +12,7 @@
     duf
     envsubst
     exa
+    exiftool
     fd
     file
     genpass
