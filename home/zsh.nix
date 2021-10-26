@@ -20,6 +20,9 @@
           truncation_length = 30;
           truncation_symbol = "";
         };
+        directory = {
+          truncation_length = 1;
+        };
         hostname.ssh_only = true;
         username.show_always = false;
       };
