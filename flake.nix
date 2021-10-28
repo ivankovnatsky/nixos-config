@@ -453,7 +453,11 @@
         };
       };
 
-      overlay = final: prev: { };
+      overlay = final: prev: {
+        rbw = final.callPackage ./system/overlays/rbw.nix {
+          inherit (inputs.nixpkgs.pkgs.darwin.apple_sdk.frameworks) Security;
+        };
+      };
 
       packages.x86_64-linux = (builtins.head (builtins.attrValues inputs.self.nixosConfigurations)).pkgs;
 
