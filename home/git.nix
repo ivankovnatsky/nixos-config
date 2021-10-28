@@ -3,9 +3,9 @@
 let
   inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
 
-  git-credentials-rbw = pkgs.fetchurl {
-    url = "https://gist.githubusercontent.com/mikeboiko/58ab730afd65bca0a125bc12b6f4670d/raw/378a35d30d282c65d4d514a5acc917d30181fa5e/git-credential-rbw";
-    sha256 = "sha256-/MVXA+3LHaKRUiHBDA15fN7Ndo7MXdyeIhtMTh46NxA=";
+  git-credential-rbw = pkgs.fetchurl {
+    url = "https://raw.githubusercontent.com/doy/rbw/1adf7ed3ba3ea711e00bc21c626691c6ce3d4a1b/bin/git-credential-rbw";
+    sha256 = "sha256-KC7vuNh/VR2Na+ftyBi5i0V1TJBGTVqydyjCZpd/49Y=";
     executable = true;
   };
 
@@ -13,7 +13,7 @@ let
     ${toString(builtins.readFile ../files/git-credential-bw.sh)}
   '';
 
-  homeCredentialHelper = if isDarwin then "osxkeychain" else "${git-credential-bw}/bin/git-credential-bw";
+  homeCredentialHelper = if isDarwin then "osxkeychain" else "${git-credential-rbw}";
 in
 {
   programs.git = {
