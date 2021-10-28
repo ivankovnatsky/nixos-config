@@ -460,6 +460,7 @@
 
       overlay = final: prev: {
         rbw = final.callPackage ./system/overlays/rbw.nix {
+          withFzf = true;
           inherit (inputs.nixpkgs.pkgs.darwin.apple_sdk.frameworks) Security;
         };
       };
