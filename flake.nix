@@ -97,6 +97,12 @@
                   ./system/swaylock.nix
                   ./system/xdg.nix
 
+                  # ./system/i3.nix
+                  # ./system/xserver.nix
+                  # ./system/xserver-laptop.nix
+                  # ./system/packages-xserver.nix
+                  # ./system/pulseaudio.nix
+
                   ./modules/device.nix
                 ];
 
@@ -152,6 +158,11 @@
 
                       ./home/sway.nix
                       ./home/mako.nix
+
+                      # ./home/autorandr.nix
+                      # ./home/dunst.nix
+                      # ./home/i3.nix
+                      # ./home/xsession.nix
 
                       ./modules/device.nix
                     ];
