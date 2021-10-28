@@ -92,21 +92,26 @@
                   ./system/users.nix
                   ./system/upowerd.nix
 
-                  ./system/greetd.nix
-                  ./system/pipewire.nix
-                  ./system/swaylock.nix
-                  ./system/xdg.nix
+                  # ./system/greetd.nix
+                  # ./system/pipewire.nix
+                  # ./system/swaylock.nix
+                  # ./system/xdg.nix
 
-                  # ./system/i3.nix
-                  # ./system/xserver.nix
-                  # ./system/xserver-laptop.nix
-                  # ./system/packages-xserver.nix
-                  # ./system/pulseaudio.nix
+                  ./system/i3.nix
+                  ./system/xserver.nix
+                  ./system/xserver-laptop.nix
+                  ./system/packages-xserver.nix
+                  ./system/pulseaudio.nix
 
                   ./modules/device.nix
                 ];
 
                 networking.hostName = "thinkpad";
+
+                device = {
+                  graphicsEnv = "xorg";
+                  videoDriver = "amdgpu";
+                };
 
                 hardware = {
                   # don't install all that firmware:
@@ -156,13 +161,13 @@
                       ./home/tmux.nix
                       ./home/zsh.nix
 
-                      ./home/sway.nix
-                      ./home/mako.nix
+                      # ./home/sway.nix
+                      # ./home/mako.nix
 
-                      # ./home/autorandr.nix
-                      # ./home/dunst.nix
-                      # ./home/i3.nix
-                      # ./home/xsession.nix
+                      ./home/autorandr.nix
+                      ./home/dunst.nix
+                      ./home/i3.nix
+                      ./home/xsession.nix
 
                       ./modules/device.nix
                     ];
