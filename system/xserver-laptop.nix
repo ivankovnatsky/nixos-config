@@ -34,10 +34,6 @@ in
           Option "DPMS" "true"
         EndSection
       '';
-
-      deviceSection = ''
-        Option "TearFree" "true"
-      '';
     };
   };
 }
