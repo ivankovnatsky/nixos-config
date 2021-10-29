@@ -45,6 +45,7 @@ in
     sysstat
     usbutils
     xdg-utils
+    xidlehook
     zip
 
     (chromium.override {
