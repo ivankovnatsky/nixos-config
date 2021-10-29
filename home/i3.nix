@@ -7,6 +7,9 @@ let
   blackColorHTML = "#000000";
   whiteColorHTML = "#ffffff";
 
+  xidlehook-script = pkgs.writeScriptBin "xidlehook" ''
+    ${toString(builtins.readFile ../files/xidlehook.sh )}
+  '';
 in
 {
   xsession.windowManager.i3 = {
@@ -21,6 +24,7 @@ in
       startup = [
         { command = "${pkgs.kbdd}/bin/kbdd"; }
         { command = "${pkgs.dunst}/bin/dunst"; }
+        { command = "${xidlehook-script}/bin/xidlehook"; }
       ];
 
       colors = {
