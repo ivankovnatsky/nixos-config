@@ -51,6 +51,15 @@
           };
 
           nix.autoOptimiseStore = true;
+
+
+          services = {
+            xserver = {
+              deviceSection = ''
+                Option "TearFree" "true"
+              '';
+            };
+          };
         })
       ];
 
