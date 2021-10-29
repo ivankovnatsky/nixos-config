@@ -12,7 +12,7 @@
     xserver = {
       enable = true;
 
-      dpi = 192;
+      dpi = config.device.xorgDpi;
       videoDrivers = [ config.device.videoDriver ];
 
       desktopManager.xterm.enable = false;

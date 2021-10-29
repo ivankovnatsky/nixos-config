@@ -31,5 +31,11 @@ with lib; {
       description = "";
       default = "nvidia";
     };
+
+    xorgDpi = mkOption {
+      type = types.enum [ 192 142 ];
+      description = "";
+      default = 192;
+    };
   };
 }
