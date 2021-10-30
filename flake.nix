@@ -108,6 +108,7 @@
 
                   ./system/i3.nix
                   ./system/xserver.nix
+                  # ./system/xserver-hidpi.nix
                   ./system/xserver-laptop.nix
                   ./system/packages-xserver.nix
                   ./system/pulseaudio.nix
@@ -120,6 +121,7 @@
                 device = {
                   graphicsEnv = "xorg";
                   videoDriver = "amdgpu";
+                  xorgDpi = 142;
                 };
 
                 hardware = {
@@ -220,6 +222,7 @@
 
                   ./system/i3.nix
                   ./system/xserver.nix
+                  ./system/xserver-hidpi.nix
                   ./system/packages-xserver.nix
                   ./system/pulseaudio.nix
 
