@@ -11,6 +11,7 @@
       vim-fugitive
       vim-git
       vim-gitgutter
+      vim-helm
       {
         plugin = vim-jsonnet;
         config = ''
