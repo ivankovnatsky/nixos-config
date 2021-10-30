@@ -5,6 +5,7 @@
     aws-vault
     delta
     bitwarden-cli
+    broot
     dnsutils
     docker-compose
     dogdns
@@ -36,6 +37,7 @@
     nix-tree
     pinentry
     postgresql
+    procs
     python38
     python38Packages.grip
     python38Packages.pylint
