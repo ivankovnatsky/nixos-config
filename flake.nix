@@ -126,7 +126,6 @@
                 device = {
                   graphicsEnv = "xorg";
                   videoDriver = "amdgpu";
-                  xorgDpi = 142;
                 };
 
                 hardware = {
