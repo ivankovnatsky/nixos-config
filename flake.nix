@@ -71,7 +71,6 @@
 
           nix.autoOptimiseStore = true;
 
-
           services = {
             xserver = {
               deviceSection = ''
