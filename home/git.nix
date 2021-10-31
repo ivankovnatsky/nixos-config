@@ -3,17 +3,11 @@
 let
   inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
 
-  git-credential-rbw = pkgs.fetchurl {
-    url = "https://raw.githubusercontent.com/doy/rbw/1adf7ed3ba3ea711e00bc21c626691c6ce3d4a1b/bin/git-credential-rbw";
-    sha256 = "sha256-KC7vuNh/VR2Na+ftyBi5i0V1TJBGTVqydyjCZpd/49Y=";
-    executable = true;
-  };
-
   git-credential-bw = pkgs.writeScriptBin "git-credential-bw" ''
     ${toString(builtins.readFile ../files/git-credential-bw.sh)}
   '';
 
-  homeCredentialHelper = if isDarwin then "osxkeychain" else "${git-credential-rbw}";
+  homeCredentialHelper = if isDarwin then "osxkeychain" else "${pkgs.rbw}/bin/git-credential-rbw";
 in
 {
   programs.git = {
