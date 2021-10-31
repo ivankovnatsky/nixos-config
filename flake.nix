@@ -45,6 +45,19 @@
 
       linuxModule = [
         ({ pkgs, ... }: {
+          imports = [
+            ./system/boot.nix
+            ./system/chromium.nix
+            ./system/documentation.nix
+            ./system/fonts.nix
+            ./system/networking.nix
+            ./system/opengl.nix
+            ./system/packages-linux.nix
+            ./system/security.nix
+            ./system/services.nix
+            ./system/users.nix
+          ];
+
           i18n.defaultLocale = "en_US.UTF-8";
           time.timeZone = "Europe/Uzhgorod";
           sound.enable = true;
@@ -91,17 +104,7 @@
                   ./hosts/thinkpad/boot.nix
                   ./hosts/thinkpad/hardware-configuration.nix
 
-                  ./system/boot.nix
-                  ./system/chromium.nix
-                  ./system/documentation.nix
-                  ./system/fonts.nix
-                  ./system/networking.nix
-                  ./system/opengl.nix
-                  ./system/packages-linux.nix
-                  ./system/security.nix
-                  ./system/services.nix
                   ./system/tlp.nix
-                  ./system/users.nix
                   ./system/upowerd.nix
 
                   # ./system/greetd.nix
@@ -211,17 +214,6 @@
                   ./hosts/desktop/boot.nix
                   ./hosts/desktop/hardware-configuration.nix
 
-                  ./system/boot.nix
-                  ./system/chromium.nix
-                  ./system/documentation.nix
-                  ./system/fonts.nix
-                  ./system/networking.nix
-                  ./system/opengl.nix
-                  ./system/packages-linux.nix
-                  ./system/security.nix
-                  ./system/services.nix
-                  ./system/users.nix
-
                   ./system/i3.nix
                   ./system/xserver.nix
                   ./system/xserver-hidpi.nix
@@ -309,18 +301,8 @@
                   ./hosts/xps/boot.nix
                   ./hosts/xps/hardware-configuration.nix
 
-                  ./system/boot.nix
-                  ./system/chromium.nix
-                  ./system/documentation.nix
-                  ./system/fonts.nix
-                  ./system/networking.nix
-                  ./system/opengl.nix
                   ./system/opengl-intel.nix
-                  ./system/packages-linux.nix
-                  ./system/security.nix
-                  ./system/services.nix
                   ./system/upowerd.nix
-                  ./system/users.nix
 
                   ./system/pipewire.nix
                   ./system/swaylock.nix
