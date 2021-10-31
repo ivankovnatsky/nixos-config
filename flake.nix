@@ -91,7 +91,6 @@
     in
     {
       nixosConfigurations = {
-
         thinkpad = inputs.nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
 
@@ -443,6 +442,5 @@
             buildInputs = [
             ];
           };
-
     };
 }
