@@ -19,6 +19,10 @@
 
       commonModule = [
         ({ pkgs, ... }: {
+          imports = [
+            ./system/packages.nix
+          ];
+
           environment = {
             variables = {
               EDITOR = editorName;
@@ -93,7 +97,6 @@
                   ./system/fonts.nix
                   ./system/networking.nix
                   ./system/opengl.nix
-                  ./system/packages.nix
                   ./system/packages-linux.nix
                   ./system/security.nix
                   ./system/services.nix
@@ -214,7 +217,6 @@
                   ./system/fonts.nix
                   ./system/networking.nix
                   ./system/opengl.nix
-                  ./system/packages.nix
                   ./system/packages-linux.nix
                   ./system/security.nix
                   ./system/services.nix
@@ -314,7 +316,6 @@
                   ./system/networking.nix
                   ./system/opengl.nix
                   ./system/opengl-intel.nix
-                  ./system/packages.nix
                   ./system/packages-linux.nix
                   ./system/security.nix
                   ./system/services.nix
@@ -414,7 +415,6 @@
                   imports = [
                     ./system/darwin.nix
                     ./system/homebrew.nix
-                    ./system/packages.nix
 
                     ./modules/darwin/security/pam.nix
                   ];
