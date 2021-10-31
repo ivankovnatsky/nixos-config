@@ -143,13 +143,6 @@
                 nixpkgs.overlays = [
                   inputs.self.overlay
                   inputs.nur.overlay
-
-                  (
-                    self: super: {
-                      inherit (super.callPackages system/overlays/openvpn.nix { })
-                        openvpn;
-                    }
-                  )
                 ];
 
                 system.stateVersion = "21.03";
@@ -234,13 +227,6 @@
                 nixpkgs.overlays = [
                   inputs.self.overlay
                   inputs.nur.overlay
-
-                  (
-                    self: super: {
-                      inherit (super.callPackages system/overlays/openvpn.nix { })
-                        openvpn;
-                    }
-                  )
                 ];
 
                 system.stateVersion = "21.11";
@@ -330,13 +316,6 @@
                 nixpkgs.overlays = [
                   inputs.self.overlay
                   inputs.nur.overlay
-
-                  (
-                    self: super: {
-                      inherit (super.callPackages system/overlays/openvpn.nix { })
-                        openvpn;
-                    }
-                  )
                 ];
 
                 system.stateVersion = "21.11";
@@ -416,13 +395,6 @@
 
                   nixpkgs.overlays = [
                     inputs.self.overlay
-
-                    (
-                      self: super: {
-                        inherit (super.callPackages system/overlays/openvpn.nix { })
-                          openvpn;
-                      }
-                    )
                   ];
 
                   security.pam.enableSudoTouchIdAuth = true;
@@ -458,6 +430,9 @@
           withGitCredential = true;
           inherit (inputs.nixpkgs.pkgs.darwin.apple_sdk.frameworks) Security;
         };
+
+        inherit (final.callPackages system/overlays/openvpn.nix { })
+          openvpn;
       };
 
       packages.x86_64-linux = (builtins.head (builtins.attrValues inputs.self.nixosConfigurations)).pkgs;
