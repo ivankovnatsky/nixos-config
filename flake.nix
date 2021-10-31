@@ -92,6 +92,17 @@
         })
       ];
 
+      xorgModule = [
+        ({
+          imports = [
+            ./system/i3.nix
+            ./system/packages-xserver.nix
+            ./system/pulseaudio.nix
+            ./system/xserver.nix
+          ];
+        })
+      ];
+
       darwinModule = [
         ({ pkgs, ... }: {
           environment.systemPackages = with pkgs; [
@@ -109,6 +120,7 @@
           modules =
             commonModule ++
             linuxModule ++
+            xorgModule ++
             [
               ({ config, lib, pkgs, options, ... }: {
                 imports = [
@@ -118,11 +130,7 @@
                   ./system/tlp.nix
                   ./system/upowerd.nix
 
-                  ./system/i3.nix
-                  ./system/xserver.nix
                   ./system/xserver-laptop.nix
-                  ./system/packages-xserver.nix
-                  ./system/pulseaudio.nix
                 ];
 
                 networking.hostName = "thinkpad";
@@ -203,6 +211,7 @@
           modules =
             commonModule ++
             linuxModule ++
+            xorgModule ++
             [
               ({ config, lib, pkgs, options, ... }: {
                 imports = [
@@ -211,11 +220,7 @@
 
                   ./system/opengl-intel.nix
 
-                  ./system/i3.nix
-                  ./system/xserver.nix
                   ./system/xserver-hidpi.nix
-                  ./system/packages-xserver.nix
-                  ./system/pulseaudio.nix
                 ];
 
                 networking.hostName = "desktop";
