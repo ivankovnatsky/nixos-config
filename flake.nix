@@ -204,6 +204,8 @@
                   ./hosts/desktop/boot.nix
                   ./hosts/desktop/hardware-configuration.nix
 
+                  ./system/opengl-intel.nix
+
                   ./system/i3.nix
                   ./system/xserver.nix
                   ./system/xserver-hidpi.nix
