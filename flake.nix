@@ -81,6 +81,17 @@
         })
       ];
 
+      waylandModule = [
+        ({
+          imports = [
+            ./system/greetd.nix
+            ./system/pipewire.nix
+            ./system/swaylock.nix
+            ./system/xdg.nix
+          ];
+        })
+      ];
+
       darwinModule = [
         ({ pkgs, ... }: {
           environment.systemPackages = with pkgs; [
@@ -106,11 +117,6 @@
 
                   ./system/tlp.nix
                   ./system/upowerd.nix
-
-                  # ./system/greetd.nix
-                  # ./system/pipewire.nix
-                  # ./system/swaylock.nix
-                  # ./system/xdg.nix
 
                   ./system/i3.nix
                   ./system/xserver.nix
@@ -277,6 +283,7 @@
           modules =
             commonModule ++
             linuxModule ++
+            waylandModule ++
             [
               ({ config, lib, pkgs, options, ... }: {
                 imports = [
@@ -285,11 +292,6 @@
 
                   ./system/opengl-intel.nix
                   ./system/upowerd.nix
-
-                  ./system/pipewire.nix
-                  ./system/swaylock.nix
-                  ./system/greetd.nix
-                  ./system/xdg.nix
                 ];
 
                 networking.hostName = "xps";
