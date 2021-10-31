@@ -165,7 +165,7 @@
                 home-manager.users.ivan =
                   ({ super, ... }: {
                     imports = [
-                      ./home/neovim/default.nix
+                      ./home/neovim
                       ./home/alacritty.nix
                       ./home/bat.nix
                       ./home/dotfiles.nix
@@ -246,7 +246,7 @@
                 home-manager.users.ivan =
                   ({ super, ... }: {
                     imports = [
-                      ./home/neovim/default.nix
+                      ./home/neovim
                       ./home/alacritty.nix
                       ./home/bat.nix
                       ./home/dotfiles.nix
@@ -329,7 +329,7 @@
                 home-manager.users.ivan =
                   ({ super, ... }: {
                     imports = [
-                      ./home/neovim/default.nix
+                      ./home/neovim
                       ./home/alacritty.nix
                       ./home/bat.nix
                       ./home/dotfiles.nix
