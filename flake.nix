@@ -56,6 +56,8 @@
             ./system/security.nix
             ./system/services.nix
             ./system/users.nix
+
+            ./modules/device.nix
           ];
 
           i18n.defaultLocale = "en_US.UTF-8";
@@ -117,8 +119,6 @@
                   ./system/xserver-laptop.nix
                   ./system/packages-xserver.nix
                   ./system/pulseaudio.nix
-
-                  ./modules/device.nix
                 ];
 
                 networking.hostName = "thinkpad";
@@ -211,8 +211,6 @@
                   ./system/xserver-hidpi.nix
                   ./system/packages-xserver.nix
                   ./system/pulseaudio.nix
-
-                  ./modules/device.nix
                 ];
 
                 networking.hostName = "desktop";
@@ -293,8 +291,6 @@
                   ./system/swaylock.nix
                   ./system/greetd.nix
                   ./system/xdg.nix
-
-                  ./modules/device.nix
                 ];
 
                 networking.hostName = "xps";
