@@ -98,6 +98,7 @@
             ./system/i3.nix
             ./system/packages-xserver.nix
             ./system/pulseaudio.nix
+            ./system/xserver-hidpi.nix
             ./system/xserver.nix
           ];
         })
@@ -219,8 +220,6 @@
                   ./hosts/desktop/hardware-configuration.nix
 
                   ./system/opengl-intel.nix
-
-                  ./system/xserver-hidpi.nix
                 ];
 
                 networking.hostName = "desktop";
