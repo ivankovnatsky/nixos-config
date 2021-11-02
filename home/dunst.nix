@@ -19,7 +19,7 @@ in
         # escape \n with \
         format = "<b>%s</b>\\n%b";
         frame_color = orangeColorHTML;
-        frame_width = 8;
+        frame_width = 2;
         geometry = "1000x10-20+60";
         horizontal_padding = 8;
         icon_position = "off";
