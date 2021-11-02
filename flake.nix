@@ -425,13 +425,13 @@
       };
 
       overlay = final: prev: {
-        rbw = final.callPackage ./system/overlays/rbw.nix {
+        rbw = final.callPackage ./overlays/rbw.nix {
           withFzf = true;
           withGitCredential = true;
           inherit (inputs.nixpkgs.pkgs.darwin.apple_sdk.frameworks) Security;
         };
 
-        inherit (final.callPackages system/overlays/openvpn.nix { })
+        inherit (final.callPackages ./overlays/openvpn.nix { })
           openvpn;
       };
 
