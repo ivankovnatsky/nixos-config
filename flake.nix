@@ -427,7 +427,6 @@
       overlay = final: prev: {
         rbw = final.callPackage ./overlays/rbw.nix {
           withFzf = true;
-          withGitCredential = true;
           inherit (inputs.nixpkgs.pkgs.darwin.apple_sdk.frameworks) Security;
         };
 
