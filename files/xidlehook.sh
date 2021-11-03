@@ -3,9 +3,9 @@
 xidlehook \
   --not-when-fullscreen \
   --not-when-audio \
-  --timer 150 \
+  --timer 300 \
     'xset dpms force off' \
     '' \
-  --timer 300 \
+  --timer 600 \
     'i3lock -c "#000000"' \
     ''
