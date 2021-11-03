@@ -186,7 +186,7 @@
                       # ./home/mako.nix
 
                       ./home/autorandr.nix
-                      ./home/dunst.nix
+                      # ./home/dunst.nix
                       ./home/i3.nix
                       ./home/xsession.nix
 
