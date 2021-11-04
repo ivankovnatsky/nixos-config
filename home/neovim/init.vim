@@ -3,6 +3,7 @@ syntax on
 colorscheme default
 set background=dark
 set nocompatible
+set termguicolors
 
 " edition to default colors scheme
 hi TabLine     term=bold,reverse cterm=bold    ctermfg=black ctermbg=white gui=bold guifg=black guibg=white
