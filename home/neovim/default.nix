@@ -11,7 +11,29 @@
           command! -bang -nargs=* Rg call fzf#vim#grep("rg --column --hidden --no-ignore-parent --glob '!.git/*' --line-number --no-heading --color=always --smart-case -- ".shellescape(<q-args>), 1, fzf#vim#with_preview(), <bang>0)
         '';
       }
-      nerdtree-git-plugin
+      nvim-web-devicons
+      {
+        plugin = nvim-tree-lua;
+        config = ''
+          set termguicolors " this variable must be enabled for colors to be applied properly
+
+          lua << EOF
+          require'nvim-tree'.setup {
+            open_on_setup = true,
+            view = {
+              side = 'left',
+              auto_resize = true,
+              mappings = {
+                custom_only = false,
+                list = {}
+              }
+            },
+          }
+
+          require'nvim-tree.view'.View.winopts.relativenumber = true
+          EOF
+        '';
+      }
       vim-commentary
       vim-fugitive
       vim-git
@@ -100,37 +122,12 @@
       }
 
       {
-        plugin = nerdtree;
-        config = ''
-          augroup ProjectDrawer
-            autocmd!
-            autocmd VimEnter * if argc() == 0 | NERDTree | endif
-          augroup END
-
-          let NERDTreeShowHidden=1
-          let NERDTreeShowLineNumbers=1
-          let NERDTreeMinimalUI=1
-          let NERDTreeWinSize=40
-        '';
-      }
-
-      {
         plugin = vim-airline;
         config = ''
           let g:airline#extensions#branch#enabled=1
           let g:airline_powerline_fonts = 1
           let g:airline_left_sep=' '
           let g:airline_right_sep=' '
-        '';
-      }
-
-      {
-        plugin = vim-devicons;
-
-        config = ''
-          if exists('g:loaded_webdevicons')
-              call webdevicons#refresh()
-          endif
         '';
       }
 
