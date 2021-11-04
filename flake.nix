@@ -121,7 +121,8 @@
           modules =
             commonModule ++
             linuxModule ++
-            xorgModule ++
+            # xorgModule ++
+            waylandModule ++
             [
               ({ config, lib, pkgs, options, ... }: {
                 imports = [
@@ -131,15 +132,15 @@
                   ./system/tlp.nix
                   ./system/upowerd.nix
 
-                  ./system/xserver-laptop.nix
+                  # ./system/xserver-laptop.nix
                 ];
 
                 networking.hostName = "thinkpad";
 
-                device = {
-                  graphicsEnv = "xorg";
-                  videoDriver = "amdgpu";
-                };
+                # device = {
+                #   graphicsEnv = "xorg";
+                #   videoDriver = "amdgpu";
+                # };
 
                 hardware = {
                   # don't install all that firmware:
@@ -182,13 +183,13 @@
                       ./home/tmux.nix
                       ./home/zsh.nix
 
-                      # ./home/sway.nix
+                      ./home/sway.nix
                       # ./home/mako.nix
 
-                      ./home/autorandr.nix
+                      # ./home/autorandr.nix
                       # ./home/dunst.nix
-                      ./home/i3.nix
-                      ./home/xsession.nix
+                      # ./home/i3.nix
+                      # ./home/xsession.nix
 
                       ./modules/device.nix
                     ];
