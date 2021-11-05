@@ -22,13 +22,6 @@
           lua << EOF
           require'nvim-tree'.setup {
             open_on_setup = true,
-            view = {
-              side = 'left',
-              mappings = {
-                custom_only = false,
-                list = {}
-              }
-            },
           }
 
           require'nvim-tree.view'.View.winopts.relativenumber = true
