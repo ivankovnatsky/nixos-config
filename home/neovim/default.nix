@@ -24,7 +24,6 @@
             open_on_setup = true,
             view = {
               side = 'left',
-              auto_resize = true,
               mappings = {
                 custom_only = false,
                 list = {}
