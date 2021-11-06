@@ -68,14 +68,11 @@ ping duckduckgo.com
 
 ### Install NixOS
 
-#### Install
-
 ```console
 nixos-generate-config --root /mnt
 
 nix-env -iA nixos.nixUnstable
 nix-env -iA nixos.git
-nix-env -iA nixos.git-crypt
 nix-env -iA nixos.neovim
 
 git clone https://github.com/ivankovnatsky/nixos-config /mnt/home/ivan/Sources/Home/GitHub/nixos-config
@@ -96,7 +93,7 @@ nvim .
 
 nixos-install
 
-# or
+# or if flake-based:
 
 nixos-install --flake .#thinkpad
 
