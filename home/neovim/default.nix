@@ -15,12 +15,21 @@
       {
         plugin = nvim-tree-lua;
         config = ''
+          let g:nvim_tree_respect_buf_cwd = 1
           let g:nvim_tree_icons = {
             \ 'default': '',
             \ }
 
           lua << EOF
           require'nvim-tree'.setup {
+            update_to_buf_dir   = {
+              enable = true,
+              auto_open = true,
+            },
+            update_focused_file = {
+              enable      = true,
+              update_cwd  = true,
+            },
             open_on_setup = true,
           }
 
