@@ -52,6 +52,7 @@
         tree = "exa --tree";
         cat = "bat";
         rclone = "rclone -P";
+        wl-copy = "wl-copy -n";
       };
 
       oh-my-zsh = {
