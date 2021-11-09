@@ -433,11 +433,6 @@
       };
 
       overlay = final: prev: {
-        rbw = final.callPackage ./overlays/rbw.nix {
-          withFzf = true;
-          inherit (inputs.nixpkgs.pkgs.darwin.apple_sdk.frameworks) Security;
-        };
-
         inherit (final.callPackages ./overlays/openvpn.nix { })
           openvpn;
       };
