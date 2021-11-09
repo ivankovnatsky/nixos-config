@@ -129,6 +129,7 @@
                   ./hosts/thinkpad/boot.nix
                   ./hosts/thinkpad/hardware-configuration.nix
 
+                  ./system/bluetooth.nix
                   ./system/tlp.nix
                   ./system/upowerd.nix
 
