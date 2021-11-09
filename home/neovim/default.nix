@@ -31,6 +31,11 @@
               update_cwd  = true,
             },
             open_on_setup = true,
+            view = {
+              side = 'left',
+              width = 50,
+              auto_resize = true,
+            }
           }
 
           require'nvim-tree.view'.View.winopts.relativenumber = true
