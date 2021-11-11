@@ -46,6 +46,7 @@
       linuxModule = [
         ({ pkgs, ... }: {
           imports = [
+            ./system/bluetooth.nix
             ./system/boot.nix
             ./system/chromium.nix
             ./system/documentation.nix
@@ -130,7 +131,6 @@
                   ./hosts/thinkpad/boot.nix
                   ./hosts/thinkpad/hardware-configuration.nix
 
-                  ./system/bluetooth.nix
                   ./system/tlp.nix
                   ./system/upowerd.nix
 
