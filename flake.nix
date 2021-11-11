@@ -56,6 +56,7 @@
             ./system/security.nix
             ./system/services.nix
             ./system/users.nix
+            ./system/xdg-mime.nix
 
             ./modules/device.nix
           ];
