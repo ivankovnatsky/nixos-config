@@ -107,6 +107,8 @@ in
           "2:7:SynPS\/2_Synaptics_TouchPad" = {
             natural_scroll = "enabled";
             middle_emulation = "enabled";
+            accel_profile = "flat";
+            pointer_accel = "-0.5";
           };
 
           "1241:274:USB-HID_Keyboard" = {
