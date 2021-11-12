@@ -5,13 +5,25 @@
     enable = true;
 
     plugins = with pkgs.vimPlugins; [
+      nvim-web-devicons
+      vim-commentary
+      vim-fugitive
+      vim-git
+      vim-gitgutter
+      vim-helm
+      vim-lastplace
+      vim-repeat
+      vim-sensible
+      vim-surround
+      vim-tmux
+      vim-visualstar
+      webapi-vim
       {
         plugin = fzf-vim;
         config = ''
           command! -bang -nargs=* Rg call fzf#vim#grep("rg --column --hidden --no-ignore-parent --glob '!.git/*' --line-number --no-heading --color=always --smart-case -- ".shellescape(<q-args>), 1, fzf#vim#with_preview(), <bang>0)
         '';
       }
-      nvim-web-devicons
       {
         plugin = nvim-tree-lua;
         config = ''
@@ -38,25 +50,12 @@
           EOF
         '';
       }
-      vim-commentary
-      vim-fugitive
-      vim-git
-      vim-gitgutter
-      vim-helm
       {
         plugin = vim-jsonnet;
         config = ''
           autocmd FileType jsonnet setlocal ts=2 sts=2 sw=2 expandtab
         '';
       }
-      vim-lastplace
-      vim-repeat
-      vim-sensible
-      vim-surround
-      vim-tmux
-      vim-visualstar
-      webapi-vim
-
       {
         plugin = nvim-lspconfig;
         config = ''
