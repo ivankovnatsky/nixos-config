@@ -5,6 +5,19 @@
     enable = true;
 
     plugins = with pkgs.vimPlugins; [
+      {
+        plugin = lualine-nvim;
+        config = ''
+          lua << END
+          require'lualine'.setup {
+            options = {
+              component_separators = ''',
+              section_separators = '''
+            },
+          }
+          END
+        '';
+      }
       nvim-web-devicons
       vim-commentary
       vim-fugitive
@@ -121,16 +134,6 @@
         plugin = lens-vim;
         config = ''
           let g:lens#disabled_filetypes = ['NvimTree', 'fzf']
-        '';
-      }
-
-      {
-        plugin = vim-airline;
-        config = ''
-          let g:airline#extensions#branch#enabled=1
-          let g:airline_powerline_fonts = 1
-          let g:airline_left_sep=' '
-          let g:airline_right_sep=' '
         '';
       }
 
