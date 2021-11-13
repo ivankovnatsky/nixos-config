@@ -60,6 +60,7 @@
     rnix-lsp
     nodePackages.pyright
     nodePackages.bash-language-server
+    nodePackages.yaml-language-server
     terraform-ls
   ];
 }
