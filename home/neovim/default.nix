@@ -47,6 +47,7 @@
 
           lua << EOF
           require'nvim-tree'.setup {
+            disable_netrw       = false,
             update_to_buf_dir   = {
               enable = true,
               auto_open = true,
