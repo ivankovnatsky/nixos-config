@@ -35,7 +35,7 @@ set hlsearch
 set smartcase
 set ignorecase
 
-set history=1000
+set history=10000
 
 set iskeyword=@,48-57,_,192-255
 
