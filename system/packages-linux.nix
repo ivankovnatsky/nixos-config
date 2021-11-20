@@ -20,9 +20,7 @@ in
     geteltorito
     gimp
     gnome3.adwaita-icon-theme
-    gnome3.eog
     gnome3.libsecret
-    gnome3.nautilus
     gnumake
     google-cloud-sdk
     hwinfo
