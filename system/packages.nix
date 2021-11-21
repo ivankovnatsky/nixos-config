@@ -25,6 +25,7 @@
     jsonnet
     jq
     k9s
+    kubecolor
     kubectl
     kubectx
     kubernetes-helm

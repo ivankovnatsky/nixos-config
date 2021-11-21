@@ -438,6 +438,8 @@
       overlay = final: prev: {
         inherit (final.callPackages ./overlays/openvpn.nix { })
           openvpn;
+
+        kubecolor = final.callPackage ./overlays/kubecolor.nix { };
       };
 
       packages.x86_64-linux = (builtins.head (builtins.attrValues inputs.self.nixosConfigurations)).pkgs;
