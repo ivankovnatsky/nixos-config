@@ -28,7 +28,12 @@
       vim-fugitive
       vim-git
       vim-gitgutter
-      vim-helm
+      {
+        plugin = vim-helm;
+        config = ''
+          autocmd FileType helm setlocal ts=2 sts=2 sw=2 expandtab
+        '';
+      }
       vim-lastplace
       vim-repeat
       vim-sensible
