@@ -29,6 +29,7 @@
     kubectl
     kubectx
     kubernetes-helm
+    kubetail
     lastpass-cli
     mdl
     mtr
