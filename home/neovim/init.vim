@@ -14,6 +14,8 @@ hi Folded      ctermbg=white
 
 hi Comment gui=italic cterm=italic ctermfg=gray guifg=gray
 
+hi Pmenu ctermbg=black guibg=black
+
 set expandtab
 set tabstop=4
 set shiftwidth=4
