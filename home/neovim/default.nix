@@ -19,7 +19,12 @@
         '';
       }
       nvim-web-devicons
-      vim-commentary
+      {
+        plugin = vim-commentary;
+        config = '';
+          autocmd FileType helm setlocal commentstring=#\ %s
+        '';
+      }
       vim-fugitive
       vim-git
       vim-gitgutter
