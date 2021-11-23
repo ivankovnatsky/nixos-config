@@ -4,7 +4,6 @@ let
   termName = import ../home/tmux.nix { inherit pkgs; };
 
   waylandEnablement = pkgs.writeShellScript "wayland-enablement" ''
-    export MOZ_ENABLE_WAYLAND=1
     export CLUTTER_BACKEND=wayland
     export QT_QPA_PLATFORM=wayland-egl
     export ECORE_EVAS_ENGINE=wayland-egl
