@@ -204,6 +204,8 @@
                       ./modules/device.nix
                     ];
 
+                    home.stateVersion = config.system.stateVersion;
+
                     device = super.device;
                   });
 
@@ -278,6 +280,8 @@
 
                       ./modules/device.nix
                     ];
+
+                    home.stateVersion = config.system.stateVersion;
 
                     device = super.device;
                   });
@@ -361,6 +365,8 @@
                       ./modules/device.nix
                     ];
 
+                    home.stateVersion = config.system.stateVersion;
+
                     device = super.device;
                   });
 
@@ -416,20 +422,23 @@
               {
                 home-manager.useGlobalPkgs = true;
                 home-manager.useUserPackages = true;
-                home-manager.users.ivan = {
-                  imports = [
-                    ./home/alacritty.nix
-                    ./home/bat.nix
-                    ./home/dotfiles.nix
-                    ./home/git.nix
-                    ./home/hammerspoon
-                    ./home/mpv.nix
-                    ./home/neovim
-                    ./home/task.nix
-                    ./home/tmux.nix
-                    ./home/zsh.nix
-                  ];
-                };
+                home-manager.users.ivan =
+                  ({ config, ... }: {
+                    imports = [
+                      ./home/alacritty.nix
+                      ./home/bat.nix
+                      ./home/dotfiles.nix
+                      ./home/git.nix
+                      ./home/hammerspoon
+                      ./home/mpv.nix
+                      ./home/neovim
+                      ./home/task.nix
+                      ./home/tmux.nix
+                      ./home/zsh.nix
+                    ];
+
+                    home.stateVersion = config.system.stateVersion;
+                  });
               }
             ];
         };
