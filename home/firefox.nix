@@ -4,8 +4,6 @@
   programs.firefox = {
     enable = true;
 
-    package = pkgs.firefox;
-
     extensions = with pkgs.nur.repos.rycee.firefox-addons; [
       privacy-badger
       clearurls
