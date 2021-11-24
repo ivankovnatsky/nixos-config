@@ -25,10 +25,10 @@
 
           environment = {
             variables = {
-              EDITOR = editorName;
-              VISUAL = editorName;
-              LPASS_AGENT_TIMEOUT = "0";
               AWS_VAULT_BACKEND = "pass";
+              EDITOR = editorName;
+              LPASS_AGENT_TIMEOUT = "0";
+              VISUAL = editorName;
             };
           };
 
