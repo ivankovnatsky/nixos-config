@@ -19,6 +19,9 @@
 
     kernelPackages = pkgs.linuxPackages_latest;
 
+    tmpOnTmpfs = true;
+    tmpOnTmpfsSize = "100%";
+
     extraModprobeConfig = ''
       # idle audio card after one second
       options snd_hda_intel power_save=1

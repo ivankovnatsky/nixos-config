@@ -10,8 +10,5 @@
 
       efi.canTouchEfiVariables = true;
     };
-
-    tmpOnTmpfs = true;
-    tmpOnTmpfsSize = "100%";
   };
 }
