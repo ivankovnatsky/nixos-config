@@ -12,5 +12,6 @@
     };
 
     tmpOnTmpfs = true;
+    tmpOnTmpfsSize = "100%";
   };
 }
