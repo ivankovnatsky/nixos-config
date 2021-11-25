@@ -104,15 +104,15 @@ in
           };
         };
 
-        taskBlock = {
-          block = "taskwarrior";
-          format = "{count}";
-          format_everything_done = "";
+        bluetoothBlock = {
+          block = "bluetooth";
+          mac = "CC:98:8B:D1:40:88";
+        };
 
-          filters = [{
-            name = "today";
-            filter = "+PENDING +OVERDUE or +DUETODAY";
-          }];
+        soundBlock = {
+          block = "sound";
+          format = "{volume}";
+          on_click = "pavucontrol --tab=3";
         };
 
         batteryBlock =
@@ -127,6 +127,17 @@ in
 
           } else { };
 
+        taskBlock = {
+          block = "taskwarrior";
+          format = "{count}";
+          format_everything_done = "";
+
+          filters = [{
+            name = "today";
+            filter = "+PENDING +OVERDUE or +DUETODAY";
+          }];
+        };
+
         kbdBlock = {
           block = "keyboard_layout";
           driver = if config.device.graphicsEnv == "xorg" then "kbddbus" else "sway";
@@ -134,17 +145,6 @@ in
             "English (US)" = "🇺🇸";
             "Ukrainian (N/A)" = "🇺🇦";
           };
-        };
-
-        bluetoothBlock = {
-          block = "bluetooth";
-          mac = "CC:98:8B:D1:40:88";
-        };
-
-        soundBlock = {
-          block = "sound";
-          format = "{volume}";
-          on_click = "pavucontrol --tab=3";
         };
 
         timeBlock = {
@@ -181,11 +181,11 @@ in
             swapBlock
             diskBlock
             netBlock
-            taskBlock
-            batteryBlock
-            kbdBlock
             bluetoothBlock
             soundBlock
+            batteryBlock
+            taskBlock
+            kbdBlock
             timeBlock
           ];
         };
