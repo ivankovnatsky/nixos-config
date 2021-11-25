@@ -212,7 +212,7 @@
                       ./modules/device.nix
                     ];
 
-                    home.stateVersion = config.system.stateVersion;
+                    home.stateVersion = "21.03";
 
                     device = super.device;
                   });
@@ -289,7 +289,7 @@
                       ./modules/device.nix
                     ];
 
-                    home.stateVersion = config.system.stateVersion;
+                    home.stateVersion = "21.11";
 
                     device = super.device;
                   });
@@ -373,7 +373,7 @@
                       ./modules/device.nix
                     ];
 
-                    home.stateVersion = config.system.stateVersion;
+                    home.stateVersion = "21.11";
 
                     device = super.device;
                   });
