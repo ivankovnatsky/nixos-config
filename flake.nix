@@ -165,12 +165,6 @@
                 nixpkgs.overlays = [
                   inputs.self.overlay
                   inputs.nur.overlay
-
-                  (
-                    self: super: {
-                      xdg-desktop-portal = super.callPackage ./overlays/xdg-desktop-portal.nix { };
-                    }
-                  )
                 ];
 
                 system.stateVersion = "21.03";
