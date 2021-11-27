@@ -13,7 +13,7 @@ let
     export NO_AT_BRIDGE=1
   '';
 
-  swayRun = pkgs.writeShellScript "sway-run" ''
+  greetdSessionRun = pkgs.writeShellScript "greetd-session-run" ''
     export XDG_SESSION_TYPE=wayland
     export XDG_SESSION_DESKTOP=sway
     export XDG_CURRENT_DESKTOP=sway
@@ -35,12 +35,12 @@ in
     settings = {
       default_session = {
         command =
-          "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd ${swayRun}";
+          "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd ${greetdSessionRun}";
         user = "greeter";
       };
 
       initial_session = {
-        command = "${swayRun}";
+        command = "${greetdSessionRun}";
         user = "ivan";
       };
     };
