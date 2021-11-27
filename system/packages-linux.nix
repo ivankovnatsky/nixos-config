@@ -12,6 +12,7 @@ in
     awscli2
     acpi
     binutils-unwrapped
+    bemenu
     brightnessctl
     capitaine-cursors
     chromium-work
