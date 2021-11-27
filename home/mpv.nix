@@ -15,6 +15,7 @@
       "image-display-duration" = "5";
       "vo" = "gpu";
       "profile" = "gpu-hq";
+      "audio-channels" = 2;
     };
   };
 }
