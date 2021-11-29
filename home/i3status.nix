@@ -107,7 +107,7 @@ in
         bluetoothBlock = {
           block = "bluetooth";
           mac = "CC:98:8B:D1:40:88";
-          format = "{percentage}";
+          format = "{percentage:1}";
         };
 
         soundBlock = {
