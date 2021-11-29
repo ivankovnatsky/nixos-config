@@ -2,7 +2,9 @@
   services = {
     gammastep = {
       enable = true;
-      provider = "geoclue2";
+
+      latitude = "49.80,";
+      longitude = "29.98";
 
       settings = {
         # otherwise causes funky color tilt
