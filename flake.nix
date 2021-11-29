@@ -391,12 +391,12 @@
               ({ config, lib, pkgs, options, ... }:
                 {
                   imports = [
+                    ./modules/darwin/security/pam.nix
+
                     ./hosts/workbook
 
                     ./system/darwin.nix
                     ./system/homebrew.nix
-
-                    ./modules/darwin/security/pam.nix
                   ];
 
                 }
