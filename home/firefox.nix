@@ -15,6 +15,7 @@
       ublock-origin
       https-everywhere
       duckduckgo-privacy-essentials
+      tree-style-tab
     ];
 
     profiles = {
