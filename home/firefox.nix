@@ -22,6 +22,7 @@
         isDefault = true;
 
         settings = {
+          "browser.startup.page" = 3;
           "browser.ctrlTab.recentlyUsedOrder" = false;
           "media.videocontrols.picture-in-picture.video-toggle.enabled" = false;
           "media.videocontrols.picture-in-picture.enabled" = false;
