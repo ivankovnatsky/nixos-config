@@ -71,14 +71,6 @@
             dconf.enable = true;
           };
 
-          nixpkgs.overlays = [
-            (
-              self: super: {
-                firefox = super.firefox.override { forceWayland = true; };
-              }
-            )
-          ];
-
           nix.autoOptimiseStore = true;
 
           services = {
@@ -98,6 +90,14 @@
             ./system/pipewire.nix
             ./system/swaylock.nix
             ./system/xdg.nix
+          ];
+
+          nixpkgs.overlays = [
+            (
+              self: super: {
+                firefox = super.firefox.override { forceWayland = true; };
+              }
+            )
           ];
         })
       ];
