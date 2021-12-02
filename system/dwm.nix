@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   programs = {
@@ -10,11 +10,11 @@
     pamixer
 
     (slstatus.override {
-      conf = builtins.readFile ../files/suckless/slstatus/config.h;
+      conf = builtins.readFile ./files/suckless/slstatus/config.h;
     })
 
     (dwm.override {
-      conf = builtins.readFile ../files/suckless/dwm/config.h;
+      conf = builtins.readFile ./files/suckless/dwm/config.h;
       patches = builtins.map pkgs.fetchurl [
         {
           url = "https://dwm.suckless.org/patches/notitle/dwm-notitle-6.2.diff";
@@ -27,19 +27,13 @@
       ];
     })
 
-    (st.override { conf = builtins.readFile ../files/suckless/st/config.h; })
+    (st.override { conf = builtins.readFile ./files/suckless/st/config.h; })
   ];
 
   services = {
     xserver = {
       displayManager = {
-        lightdm.enable = true;
         defaultSession = "xsession";
-
-        autoLogin = {
-          enable = true;
-          user = "ivan";
-        };
 
         sessionCommands = ''
           while true; do slstatus 2> /tmp/slstatus-log; done &
