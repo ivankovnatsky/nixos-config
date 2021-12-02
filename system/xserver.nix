@@ -2,6 +2,18 @@
 
 {
   services = {
+
+    xserver = {
+      displayManager = {
+        lightdm.enable = true;
+
+        autoLogin = {
+          enable = true;
+          user = "ivan";
+        };
+      };
+    };
+
     xserver = {
       enable = true;
 
