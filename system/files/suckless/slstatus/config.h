@@ -65,33 +65,33 @@ static const char wireless_iface[] = "wlp3s0";
  */
 static const struct arg args[] = {
 	/* function		format          argument */
-	{ cpu_freq,		" %s | ",	NULL },
-	{ cpu_perc,		"%s%% | ",	NULL },
-	{ load_avg,		"%s | ",	NULL },
+	{ cpu_freq,		" %s · ",	NULL },
+	{ cpu_perc,		"%s%% · ",	NULL },
+	{ load_avg,		"%s · ",	NULL },
 
-	{ temp,			" %s°C | ",	"/sys/devices/platform/thinkpad_hwmon/hwmon/hwmon4/temp1_input" },
-	{ run_command,		" %s RPM | ",	"cat /sys/class/hwmon/hwmon4/fan1_input" },
+	{ temp,			" %s°C · ",	"/sys/devices/platform/thinkpad_hwmon/hwmon/hwmon4/temp1_input" },
+	{ run_command,		" %s RPM · ",	"cat /sys/class/hwmon/hwmon4/fan1_input" },
 
 	{ ram_used,		" %s/",	NULL },
-	{ ram_total,		"%s | ",	NULL },
+	{ ram_total,		"%s · ",	NULL },
 
 	{ swap_used,		" %s/",	NULL },
-	{ swap_total,		"%s | ",	NULL },
+	{ swap_total,		"%s · ",	NULL },
 
 	{ disk_used,		" %s/",	"/" },
-	{ disk_total,		"%s | ",	"/" },
+	{ disk_total,		"%s · ",	"/" },
 
 	{ netspeed_rx,		"  %s/",	wireless_iface },
-	{ netspeed_tx,		"%s | ",	wireless_iface },
+	{ netspeed_tx,		"%s · ",	wireless_iface },
 
-	{ run_command,		"%s | ",	"pamixer --get-mute | while read mute; do if [[ ${mute} == true ]]; then echo  ; else echo  ; fi; done" },
-	{ run_command,		"%s%% | ",	"pamixer --get-volume" },
-	{ run_command,		"%s | ",	"pamixer --default-source --get-mute | while read mute; do if [[ ${mute} == true ]]; then echo ; else echo ; fi; done" },
+	{ run_command,		"%s · ",	"pamixer --get-mute | while read mute; do if [[ ${mute} == true ]]; then echo  ; else echo  ; fi; done" },
+	{ run_command,		"%s%% · ",	"pamixer --get-volume" },
+	{ run_command,		"%s · ",	"pamixer --default-source --get-mute | while read mute; do if [[ ${mute} == true ]]; then echo ; else echo ; fi; done" },
 
-	{ battery_perc,		"  %s%% | ",	"BAT0" },
+	{ battery_perc,		"  %s%% · ",	"BAT0" },
 
-	{ keymap,		" %s |",	NULL },
-	{ run_command,		"%s | ",	"curl -s wttr.in/?format=+%t+%f" },
+	{ keymap,		" %s ·",	NULL },
+	{ run_command,		"%s · ",	"curl -s wttr.in/?format=+%t+%f" },
 
 	{ datetime,		"%s ",		"%a %b %d %H:%M" },
 };
