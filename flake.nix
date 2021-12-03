@@ -434,6 +434,7 @@
           openvpn;
 
         kubecolor = final.callPackage ./overlays/kubecolor.nix { };
+        kubectl-tree = final.callPackage ./overlays/kubectl-tree.nix { };
       };
 
       packages.x86_64-linux = (builtins.head (builtins.attrValues inputs.self.nixosConfigurations)).pkgs;

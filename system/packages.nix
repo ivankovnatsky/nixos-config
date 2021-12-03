@@ -26,6 +26,7 @@
     k9s
     kubecolor
     kubectl
+    kubectl-tree
     kubectx
     kubernetes-helm
     kubetail
