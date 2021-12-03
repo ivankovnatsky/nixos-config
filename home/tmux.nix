@@ -17,6 +17,7 @@
     plugins = with pkgs; [ tmuxPlugins.sensible tmuxPlugins.yank ];
 
     extraConfig = ''
+      set -g status-right ""
       set -g status-bg colour0
       set -g status-fg colour15
 
