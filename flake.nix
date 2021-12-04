@@ -190,6 +190,7 @@
                       ./home/i3status.nix
                       ./home/mpv.nix
                       ./home/password-store.nix
+                      ./home/ranger.nix
                       ./home/task.nix
                       ./home/tmux.nix
                       ./home/zsh.nix
