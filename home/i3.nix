@@ -8,7 +8,15 @@ let
   whiteColorHTML = "#ffffff";
 
   xidlehook-script = pkgs.writeScriptBin "xidlehook" ''
-    ${toString(builtins.readFile ../files/xidlehook.sh )}
+    xidlehook \
+      --not-when-fullscreen \
+      --not-when-audio \
+      --timer 300 \
+        'xset dpms force off' \
+        ''' \
+      --timer 600 \
+        'i3lock -c "#000000"' \
+        '''
   '';
 in
 {
