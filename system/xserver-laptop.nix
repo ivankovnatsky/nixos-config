@@ -1,8 +1,8 @@
 { config, ... }:
 
 let
-  laptopName = if config.device.name == "xps" then "eDP-1" else "eDP";
-  monitorName = if config.device.name == "xps" then "DP-3" else "DisplayPort-1";
+  laptopName = "eDP";
+  monitorName = "DisplayPort-1";
 
 in
 {
