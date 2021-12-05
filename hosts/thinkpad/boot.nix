@@ -1,6 +1,12 @@
 { lib, pkgs, ... }:
 
 {
+  environment.etc.crypttab = {
+    enable = true;
+    text = ''
+      crypted /dev/nvme0n1p2 - tpm2-device=auto
+    '';
+  };
 
   boot = {
     initrd = {
