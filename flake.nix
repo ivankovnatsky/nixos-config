@@ -196,7 +196,6 @@
                       ./home/zsh.nix
 
                       # ./home/sway.nix
-                      # ./home/mako.nix
 
                       ./home/autorandr.nix
                       ./home/i3.nix
