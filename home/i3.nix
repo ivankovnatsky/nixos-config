@@ -31,7 +31,6 @@ in
 
       startup = [
         { command = "${pkgs.kbdd}/bin/kbdd"; }
-        { command = "${pkgs.dunst}/bin/dunst"; }
         { command = "${xidlehook-script}/bin/xidlehook"; }
       ];
 
