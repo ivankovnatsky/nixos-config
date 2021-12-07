@@ -107,7 +107,7 @@
           imports = [
             ./system/i3.nix
             ./system/packages-xserver.nix
-            ./system/pulseaudio.nix
+            ./system/pipewire.nix
             ./system/xserver-hidpi.nix
             ./system/xserver.nix
           ];

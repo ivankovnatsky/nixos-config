@@ -40,7 +40,6 @@ in
     pavucontrol
     pciutils
     powertop
-    pulseaudio
     strace
     sysstat
     usbutils

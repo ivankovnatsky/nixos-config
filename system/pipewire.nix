@@ -1,4 +1,10 @@
+{ pkgs, ... }:
+
 {
+  environment.systemPackages = with pkgs; [
+    pulseaudio
+  ];
+
   services = {
     pipewire = {
       enable = true;
