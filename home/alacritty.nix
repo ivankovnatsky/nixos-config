@@ -1,7 +1,6 @@
 { config, pkgs, ... }:
 
 let
-  fontName = "Hack Nerd Font Mono";
   inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
 
   fontSize = if config.device.graphicsEnv == "xorg" then 12 else 10;
@@ -14,10 +13,10 @@ in
       window.decorations = "none";
 
       font = {
-        normal.family = fontName;
-        bold.family = fontName;
-        italic.family = fontName;
-        bold_italic.family = fontName;
+        normal.family = config.global.fontMono;
+        bold.family = config.global.fontMono;
+        italic.family = config.global.fontMono;
+        bold_italic.family = config.global.fontMono;
 
         size = if isDarwin then 13 else fontSize;
         draw_bold_text_with_bright_colors = true;
