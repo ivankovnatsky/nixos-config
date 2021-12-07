@@ -106,7 +106,6 @@
         ({
           imports = [
             ./system/i3.nix
-            # ./system/dwm.nix
             ./system/packages-xserver.nix
             ./system/pulseaudio.nix
             ./system/xserver-hidpi.nix
