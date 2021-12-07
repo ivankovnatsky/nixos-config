@@ -18,6 +18,15 @@ let
         'i3lock -c "#000000"' \
         '''
   '';
+
+  autostart-script = pkgs.writeScriptBin "autostart" ''
+    #!${pkgs.bash}/bin/bash
+
+    if [[ $(date +%u) == [1-5] ]]; then
+      ${pkgs.firefox}/bin/firefox &!
+      ${pkgs.alacritty}/bin/alacritty -e ${pkgs.tmuxinator}/bin/tmuxinator start default &!
+    fi
+  '';
 in
 {
   xsession.windowManager.i3 = {
@@ -32,6 +41,7 @@ in
       startup = [
         { command = "${pkgs.kbdd}/bin/kbdd"; }
         { command = "${xidlehook-script}/bin/xidlehook"; }
+        { command = "${autostart-script}/bin/autostart"; }
       ];
 
       colors = {
