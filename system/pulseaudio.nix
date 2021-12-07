@@ -1,3 +1,0 @@
-{
-  hardware.pulseaudio.enable = true;
-}
