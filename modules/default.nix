@@ -38,4 +38,18 @@ with lib; {
       default = 192;
     };
   };
+
+  options.global = {
+    fontGeneral = mkOption {
+      type = types.str;
+      description = "General Font Name";
+      default = "Hack Nerd Font";
+    };
+
+    fontMono = mkOption {
+      type = types.str;
+      description = "Mono Font Name";
+      default = "Hack Nerd Font Mono";
+    };
+  };
 }

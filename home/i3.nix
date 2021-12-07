@@ -3,7 +3,6 @@
 let
   modifier = "Mod4";
 
-  fontName = "Hack Nerd Font";
   blackColorHTML = "#000000";
   whiteColorHTML = "#ffffff";
 
@@ -34,7 +33,7 @@ in
 
     config = {
       fonts = {
-        names = [ "${fontName}" ];
+        names = [ "${config.global.fontGeneral}" ];
         size = 0.0;
       };
 
@@ -56,7 +55,7 @@ in
 
       terminal = "alacritty";
       menu = ''
-        ${pkgs.bemenu}/bin/bemenu-run --fn "${fontName} 20" --list 3 -n -f --ifne -p "" --hb "${whiteColorHTML}" --hf "${blackColorHTML}"'';
+        ${pkgs.bemenu}/bin/bemenu-run --fn "${config.global.fontGeneral} 20" --list 3 -n -f --ifne -p "" --hb "${whiteColorHTML}" --hf "${blackColorHTML}"'';
 
       modifier = "${modifier}";
 
@@ -113,7 +112,7 @@ in
       bars = [{
         position = "top";
         fonts = {
-          names = [ "${fontName}" ];
+          names = [ "${config.global.fontGeneral}" ];
           size = 9.0;
         };
 

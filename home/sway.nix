@@ -3,7 +3,6 @@
 let
   modifier = "Mod4";
 
-  fontName = "Hack Nerd Font";
   blackColorHTML = "#000000";
   whiteColorHTML = "#ffffff";
 
@@ -78,7 +77,7 @@ in
         };
 
       fonts = {
-        names = [ "${fontName}" ];
+        names = [ "${config.global.fontGeneral}" ];
         size = 0.0;
       };
 
@@ -189,7 +188,7 @@ in
         position = "top";
 
         fonts = {
-          names = [ "${fontName}" ];
+          names = [ "${config.global.fontGeneral}" ];
           size = 9.0;
         };
 

@@ -60,7 +60,7 @@
             ./system/users.nix
             ./system/xdg.nix
 
-            ./modules/device.nix
+            ./modules/default.nix
           ];
 
           i18n.defaultLocale = "en_US.UTF-8";
@@ -200,12 +200,13 @@
                       ./home/i3.nix
                       ./home/xsession.nix
 
-                      ./modules/device.nix
+                      ./modules/default.nix
                     ];
 
                     home.stateVersion = config.system.stateVersion;
 
                     device = super.device;
+                    global = super.global;
                   });
 
                 home-manager.extraSpecialArgs = {
@@ -276,12 +277,13 @@
                       ./home/i3.nix
                       ./home/xsession.nix
 
-                      ./modules/device.nix
+                      ./modules/default.nix
                     ];
 
                     home.stateVersion = config.system.stateVersion;
 
                     device = super.device;
+                    global = super.global;
                   });
 
                 home-manager.extraSpecialArgs = {
