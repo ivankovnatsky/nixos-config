@@ -21,6 +21,7 @@
         ({ pkgs, ... }: {
           imports = [
             ./system/packages.nix
+            ./system/xdg.nix
           ];
 
           environment = {
@@ -57,7 +58,7 @@
             ./system/security.nix
             ./system/services.nix
             ./system/users.nix
-            ./system/xdg-mime.nix
+            ./system/xdg.nix
 
             ./modules/device.nix
           ];
@@ -89,7 +90,7 @@
             ./system/greetd.nix
             ./system/pipewire.nix
             ./system/swaylock.nix
-            ./system/xdg.nix
+            ./system/xdg-portal.nix
           ];
 
           nixpkgs.overlays = [
@@ -106,7 +107,6 @@
         ({
           imports = [
             ./system/i3.nix
-            ./system/packages-xserver.nix
             ./system/pipewire.nix
             ./system/xserver-hidpi.nix
             ./system/xserver.nix
