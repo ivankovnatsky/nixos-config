@@ -34,6 +34,7 @@
           autocmd FileType helm setlocal ts=2 sts=2 sw=2 expandtab
         '';
       }
+      vim-sleuth
       vim-lastplace
       vim-repeat
       vim-sensible
