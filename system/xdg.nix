@@ -1,4 +1,7 @@
+{ pkgs, ... }:
+
 {
+  environment.systemPackages = with pkgs; [ xdg-utils ];
   xdg = {
     icons.enable = true;
 

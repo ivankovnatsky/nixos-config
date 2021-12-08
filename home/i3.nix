@@ -28,6 +28,10 @@ let
   '';
 in
 {
+  home.packages = with pkgs; [
+    xidlehook
+  ];
+
   xsession.windowManager.i3 = {
     enable = true;
 

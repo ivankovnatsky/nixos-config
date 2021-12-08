@@ -11,9 +11,7 @@
     du-dust
     duf
     envsubst
-    exa
     exiftool
-    fd
     file
     genpass
     git
