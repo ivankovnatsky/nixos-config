@@ -40,6 +40,12 @@ with lib; {
   };
 
   options.global = {
+    nightShiftManager = mkOption {
+      type = types.enum [ "gammastep" "redshift" ];
+      description = "";
+      default = "redshift";
+    };
+
     fontGeneral = mkOption {
       type = types.str;
       description = "General Font Name";
