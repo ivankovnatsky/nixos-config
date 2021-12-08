@@ -8,6 +8,10 @@
     terraform-ls
 
     mdl
+    shellcheck
+
+    python38Packages.grip
+    python38Packages.pylint
   ];
 
   programs.neovim = {
