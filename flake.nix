@@ -182,7 +182,7 @@
                       ./home/bat.nix
                       ./home/dotfiles.nix
                       ./home/firefox.nix
-                      ./home/gammastep.nix
+                      ./home/nightshift.nix
                       ./home/git.nix
                       ./home/gpg.nix
                       ./home/gtk.nix
@@ -263,7 +263,7 @@
                       ./home/bat.nix
                       ./home/dotfiles.nix
                       ./home/firefox.nix
-                      ./home/gammastep.nix
+                      ./home/nightshift.nix
                       ./home/git.nix
                       ./home/gpg.nix
                       ./home/gtk.nix

@@ -1,6 +1,8 @@
+{ config, ... }:
+
 {
   services = {
-    gammastep = {
+    ${config.global.nightShiftManager} = {
       enable = true;
 
       latitude = "49.8";
