@@ -6,6 +6,8 @@
     nodePackages.pyright
     nodePackages.bash-language-server
     terraform-ls
+
+    mdl
   ];
 
   programs.neovim = {
