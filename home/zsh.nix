@@ -1,4 +1,11 @@
+{ pkgs, ... }:
+
 {
+  home.packages = with pkgs; [
+    exa
+    fd
+  ];
+
   programs = {
     z-lua = {
       enable = true;
