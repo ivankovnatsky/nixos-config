@@ -1,6 +1,13 @@
 { pkgs, ... }:
 
 {
+  home.packages = with pkgs; [
+    rnix-lsp
+    nodePackages.pyright
+    nodePackages.bash-language-server
+    terraform-ls
+  ];
+
   programs.neovim = {
     enable = true;
 

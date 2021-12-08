@@ -56,10 +56,5 @@
     whois
     yamllint
     youtube-dl
-
-    rnix-lsp
-    nodePackages.pyright
-    nodePackages.bash-language-server
-    terraform-ls
   ];
 }
