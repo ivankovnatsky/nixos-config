@@ -29,7 +29,6 @@
     kubernetes-helm
     kubetail
     lastpass-cli
-    mdl
     mtr
     neovim
     nixpkgs-fmt
