@@ -13,7 +13,7 @@ let
       --timer 300 \
         'xset dpms force off' \
         ''' \
-      --timer 600 \
+      --timer 1200 \
         'i3lock -c "#000000"' \
         '''
   '';
