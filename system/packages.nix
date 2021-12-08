@@ -15,8 +15,6 @@
     file
     genpass
     git
-    gitAndTools.pre-commit
-    git-crypt
     go
     htop
     jsonnet
@@ -28,7 +26,6 @@
     kubectx
     kubernetes-helm
     kubetail
-    lastpass-cli
     mtr
     neovim
     nixpkgs-fmt
