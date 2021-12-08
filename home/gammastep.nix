@@ -3,8 +3,8 @@
     gammastep = {
       enable = true;
 
-      latitude = "49.80,";
-      longitude = "29.98";
+      latitude = "49.8";
+      longitude = "29.9";
 
       temperature = {
         day = 5500;
