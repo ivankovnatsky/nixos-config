@@ -6,6 +6,12 @@ let
   homeCredentialHelper = if isDarwin then "osxkeychain" else "${pkgs.rbw}/bin/git-credential-rbw";
 in
 {
+  home.packages = with pkgs; [
+    gitAndTools.pre-commit
+    git-crypt
+    lastpass-cli
+  ];
+
   programs.git = {
     enable = true;
 
