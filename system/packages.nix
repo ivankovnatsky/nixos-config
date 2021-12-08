@@ -35,12 +35,9 @@
     postgresql
     procs
     python38
-    python38Packages.grip
-    python38Packages.pylint
     rbw
     rclone
     ripgrep
-    shellcheck
     ssm-session-manager-plugin
     syncthing
     tealdeer
