@@ -54,7 +54,6 @@
     unzip
     wget
     whois
-    yamllint
     youtube-dl
   ];
 }

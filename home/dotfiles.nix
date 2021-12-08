@@ -1,6 +1,10 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 {
+  home.packages = with pkgs; [
+    yamllint
+  ];
+
   home.file = {
     ".terraform.d/plugin-cache/.keep" = {
       text = ''
