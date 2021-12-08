@@ -31,11 +31,9 @@
     nixpkgs-fmt
     nixpkgs-review
     nix-tree
-    pinentry
     postgresql
     procs
     python38
-    rbw
     rclone
     ripgrep
     ssm-session-manager-plugin
