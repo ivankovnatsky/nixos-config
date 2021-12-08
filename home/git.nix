@@ -10,6 +10,8 @@ in
     gitAndTools.pre-commit
     git-crypt
     lastpass-cli
+    pinentry
+    rbw
   ];
 
   programs.git = {
