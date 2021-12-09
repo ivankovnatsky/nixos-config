@@ -73,6 +73,7 @@
           "git"
           "helm"
           "history-substring-search"
+          "command-not-found"
           "kubectl"
           "pass"
           "ripgrep"
