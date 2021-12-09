@@ -110,6 +110,13 @@ cat > /mnt/home/ivan/.config/rbw/config.json << EOF
 EOF
 ```
 
+### command-not-found
+
+```console
+sudo nix-channel --add https://nixos.org/channels/nixos-unstable nixos
+sudo nix-channel --update
+```
+
 ## Notes
 
 Some packages might be needed to be places in system, so that they would
