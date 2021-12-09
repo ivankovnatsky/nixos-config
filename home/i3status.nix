@@ -7,8 +7,12 @@ in
 {
   xdg.configFile."i3status-rust/config-top.toml" = {
     onChange = ''
-      export SWAYSOCK=$(echo /run/user/1000/sway-ipc.*.sock)
-      ${pkgs.sway}/bin/swaymsg reload
+      if pgrep sway; then
+        export SWAYSOCK=$(echo /run/user/1000/sway-ipc.*.sock)
+        ${pkgs.sway}/bin/swaymsg reload || true
+      else
+        ${pkgs.i3}/bin/i3-msg restart || true
+      fi
     '';
   };
 
