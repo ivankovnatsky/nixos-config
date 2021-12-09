@@ -42,6 +42,7 @@ in
     strace
     sysstat
     usbutils
+    viber
     zip
 
     (chromium.override {
