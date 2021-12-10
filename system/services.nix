@@ -5,6 +5,7 @@
     xl2tpd.enable = true;
     fwupd.enable = true;
     gnome.gnome-keyring.enable = true;
+    clipmenu.enable = true;
     journald.extraConfig = "SystemMaxUse=1G";
 
     strongswan = {
