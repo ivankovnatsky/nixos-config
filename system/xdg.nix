@@ -10,6 +10,7 @@
       defaultApplications = {
         "application/pdf" = "firefox.desktop";
         "image/png" = "firefox.desktop";
+        "image/jpeg" = "firefox.desktop";
       };
     };
   };
