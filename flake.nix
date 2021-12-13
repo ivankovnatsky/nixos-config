@@ -106,6 +106,7 @@
       xorgModule = [
         ({
           imports = [
+            ./system/autorandr.nix
             ./system/i3.nix
             ./system/pipewire.nix
             ./system/xserver-hidpi.nix
