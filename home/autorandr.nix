@@ -10,8 +10,20 @@ let
   laptopIdentifier = "eDP";
   monitorIdentifier = "DisplayPort-1";
 
+  lid-close = pkgs.writeScriptBin "run" ''
+    #!${pkgs.bash}/bin/bash
+
+    exec grep -q close /proc/acpi/button/lid/LID/state
+  '';
+
+  lid-open = pkgs.writeScriptBin "run" ''
+    #!${pkgs.bash}/bin/bash
+
+    exec grep -q open /proc/acpi/button/lid/LID/state
+  '';
 in
 {
+
   programs.autorandr = {
     enable = true;
 
@@ -86,5 +98,11 @@ in
         hooks.postswitch = "xrandr --dpi 192";
       };
     };
+  };
+
+  home.file = {
+    ".config/autorandr/all/block".source = "${lid-open}/bin/run";
+    ".config/autorandr/default/block".source = "${lid-open}/bin/run";
+    ".config/autorandr/monitor/block".source = "${lid-close}/bin/run";
   };
 }
