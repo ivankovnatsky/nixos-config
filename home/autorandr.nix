@@ -41,7 +41,6 @@ in
             rate = "60.00";
           };
         };
-
       };
 
       "default" = {
@@ -64,7 +63,6 @@ in
         };
 
         hooks.postswitch = "xrandr --dpi 142";
-
       };
 
       "monitor" = {
@@ -86,7 +84,6 @@ in
         };
 
         hooks.postswitch = "xrandr --dpi 192";
-
       };
     };
   };
