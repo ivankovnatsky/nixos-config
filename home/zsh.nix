@@ -74,6 +74,7 @@
           "helm"
           "history-substring-search"
           "command-not-found"
+          "taskwarrior"
           "kubectl"
           "pass"
           "ripgrep"
