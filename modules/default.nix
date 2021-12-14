@@ -22,19 +22,16 @@ with lib; {
 
     graphicsEnv = mkOption {
       type = types.enum [ "xorg" "wayland" ];
-      description = "";
       default = "wayland";
     };
 
     videoDriver = mkOption {
       type = types.enum [ "amdgpu" "nvidia" "intel" "modesetting" ];
-      description = "";
       default = "nvidia";
     };
 
     xorgDpi = mkOption {
       type = types.enum [ 192 142 ];
-      description = "";
       default = 192;
     };
   };
@@ -42,19 +39,16 @@ with lib; {
   options.global = {
     nightShiftManager = mkOption {
       type = types.enum [ "gammastep" "redshift" ];
-      description = "";
       default = "redshift";
     };
 
     fontGeneral = mkOption {
       type = types.str;
-      description = "General Font Name";
       default = "Hack Nerd Font";
     };
 
     fontMono = mkOption {
       type = types.str;
-      description = "Mono Font Name";
       default = "Hack Nerd Font Mono";
     };
   };
