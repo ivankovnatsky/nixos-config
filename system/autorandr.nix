@@ -1,20 +1,19 @@
 { pkgs, ... }:
 
-let
-  autorandr-change-script = pkgs.writeScriptBin "change" ''
-    #!${pkgs.bash}/bin/bash
-
-    ${pkgs.autorandr}/bin/autorandr --change
-  '';
-in
 {
   services.autorandr.enable = true;
-  services.acpid.enable = true;
 
-  environment.etc."acpi/events/lid-switch" = {
-    text = ''
-      event=button/lid LID (open|close)
-      action=${autorandr-change-script}/bin/change
+  services.acpid = {
+    enable = true;
+
+    lidEventCommands = ''
+      export DISPLAY=:0
+
+      if grep -q open /proc/acpi/button/lid/LID/state; then
+        ${pkgs.sudo}/bin/sudo -u ivan ${pkgs.autorandr}/bin/autorandr all
+      else
+        ${pkgs.sudo}/bin/sudo -u ivan ${pkgs.autorandr}/bin/autorandr monitor
+      fi
     '';
   };
 }
