@@ -13,7 +13,6 @@ in
     acpi
     binutils-unwrapped
     brightnessctl
-    capitaine-cursors
     chromium-work
     dmidecode
     docker

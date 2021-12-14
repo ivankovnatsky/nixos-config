@@ -6,6 +6,10 @@ let
 
 in
 {
+  home.packages = with pkgs; [
+    capitaine-cursors
+  ];
+
   gtk = {
     enable = true;
 
