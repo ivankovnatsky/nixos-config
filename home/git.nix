@@ -11,7 +11,7 @@ in
     git-crypt
     lastpass-cli
     pinentry
-    rbw
+    (rbw.override { withFzf = true; })
   ];
 
   programs.git = {
