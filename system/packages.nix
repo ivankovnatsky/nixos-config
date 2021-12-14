@@ -4,7 +4,6 @@
   environment.systemPackages = with pkgs; [
     aws-vault
     delta
-    broot
     dnsutils
     docker-compose
     dogdns
