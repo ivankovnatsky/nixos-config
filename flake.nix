@@ -61,6 +61,7 @@
             ./system/xdg.nix
 
             ./modules/default.nix
+            ./modules/secrets.nix
           ];
 
           i18n.defaultLocale = "en_US.UTF-8";
@@ -202,12 +203,14 @@
                       ./home/xsession.nix
 
                       ./modules/default.nix
+                      ./modules/secrets.nix
                     ];
 
                     home.stateVersion = config.system.stateVersion;
 
                     device = super.device;
                     global = super.global;
+                    secrets = super.secrets;
                   });
 
                 home-manager.extraSpecialArgs = {
@@ -279,12 +282,14 @@
                       ./home/xsession.nix
 
                       ./modules/default.nix
+                      ./modules/secrets.nix
                     ];
 
                     home.stateVersion = config.system.stateVersion;
 
                     device = super.device;
                     global = super.global;
+                    secrets = super.secrets;
                   });
 
                 home-manager.extraSpecialArgs = {

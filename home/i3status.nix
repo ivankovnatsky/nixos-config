@@ -1,9 +1,6 @@
 { config, lib, pkgs, ... }:
 
 let
-  openWeatherMapCity = builtins.readFile ../.secrets/openweathermap/city;
-  openWeatherMapApikey = builtins.readFile ../.secrets/openweathermap/token;
-
   isLaptop = config.device.type == "laptop";
 
 in
@@ -159,8 +156,8 @@ in
           block = "weather";
           service = {
             name = "openweathermap";
-            api_key = "${openWeatherMapApikey}";
-            city_id = "${openWeatherMapCity}";
+            api_key = "${config.secrets.openWeatherMapApikey}";
+            city_id = "${config.secrets.openWeatherMapCity}";
             units = "metric";
           };
 
