@@ -1,6 +1,9 @@
 { config, lib, pkgs, ... }:
 
 let
+  openWeatherMapCity = builtins.readFile ../.secrets/openweathermap/city;
+  openWeatherMapApikey = builtins.readFile ../.secrets/openweathermap/token;
+
   isLaptop = config.device.type == "laptop";
 
 in
@@ -153,10 +156,19 @@ in
         };
 
         weatherBlock = {
-          block = "custom";
-          command = "echo '{\"icon\":\"\", \"text\": \"'$(curl -s \'wttr.in/?format=%C+%t+%f+%h+%w\')'\"}'";
-          interval = 900;
-          json = true;
+          block = "weather";
+          service = {
+            name = "openweathermap";
+            api_key = "${openWeatherMapApikey}";
+            city_id = "${openWeatherMapCity}";
+            units = "metric";
+          };
+
+          format = {
+            full =
+              "{temp} {apparent}  {humidity} 煮 {wind_kmh} km/h {direction}";
+            short = "";
+          };
         };
 
         timeBlock = {
