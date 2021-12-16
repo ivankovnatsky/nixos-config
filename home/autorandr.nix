@@ -42,6 +42,8 @@ in
             rate = "60.00";
           };
         };
+
+        hooks.postswitch = "xrandr --dpi 192";
       };
 
       "default" = {
