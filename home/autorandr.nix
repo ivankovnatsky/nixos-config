@@ -42,8 +42,6 @@ in
             rate = "60.00";
           };
         };
-
-        hooks.postswitch = "xrandr --dpi 192";
       };
 
       "default" = {
@@ -64,8 +62,6 @@ in
 
           "${monitorIdentifier}".enable = false;
         };
-
-        hooks.postswitch = "xrandr --dpi 142";
       };
 
       "monitor" = {
@@ -85,8 +81,6 @@ in
             rate = "60.00";
           };
         };
-
-        hooks.postswitch = "xrandr --dpi 192";
       };
     };
   };
