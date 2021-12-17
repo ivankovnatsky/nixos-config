@@ -82,6 +82,10 @@ autocmd FileType go setlocal noexpandtab tabstop=8 shiftwidth=8
 " Fixed working crontab for neovim
 autocmd filetype crontab setlocal nobackup nowritebackup
 
+" autoformat python files
+autocmd BufWritePost *.py silent !black <afile>
+autocmd BufWritePost *.py silent edit
+
 " remap window navigation
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
