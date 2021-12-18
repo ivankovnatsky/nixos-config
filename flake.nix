@@ -304,53 +304,6 @@
 
       };
 
-      darwinConfigurations = {
-        "workbook" = inputs.darwin.lib.darwinSystem {
-          system = "x86_64-darwin";
-          modules =
-            commonModule ++
-            darwinModule ++
-            [
-              ({ config, lib, pkgs, options, ... }:
-                {
-                  imports = [
-                    ./modules/darwin/security/pam.nix
-
-                    ./hosts/workbook
-
-                    ./system/darwin.nix
-                    ./system/homebrew.nix
-                  ];
-
-                }
-              )
-
-              inputs.home-manager.darwinModules.home-manager
-              {
-                home-manager.useGlobalPkgs = true;
-                home-manager.useUserPackages = true;
-                home-manager.users.ivan =
-                  ({ config, ... }: {
-                    imports = [
-                      ./home/alacritty.nix
-                      ./home/bat.nix
-                      ./home/dotfiles.nix
-                      ./home/git.nix
-                      ./home/hammerspoon
-                      ./home/mpv.nix
-                      ./home/neovim
-                      ./home/task.nix
-                      ./home/tmux.nix
-                      ./home/zsh.nix
-                    ];
-
-                    home.stateVersion = config.system.stateVersion;
-                  });
-              }
-            ];
-        };
-      };
-
       overlay = final: prev: {
         inherit (final.callPackages ./overlays/openvpn.nix { })
           openvpn;
