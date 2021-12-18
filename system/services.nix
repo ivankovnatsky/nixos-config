@@ -12,7 +12,6 @@
       ];
     };
 
-    acpid.enable = true;
     xl2tpd.enable = true;
     fwupd.enable = true;
     gnome.gnome-keyring.enable = true;
