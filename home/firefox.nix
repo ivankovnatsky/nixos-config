@@ -28,6 +28,7 @@
           "media.videocontrols.picture-in-picture.enabled" = false;
           "media.videocontrols.picture-in-picture.video-toggle.has-used" =
             false;
+          "permissions.default.desktop-notification" = 2;
           "gfx.webrender.all" = true;
           "extensions.pocket.enabled" = false;
           "widget.wayland-dmabuf-vaapi.enabled" = true;
