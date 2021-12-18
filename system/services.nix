@@ -1,7 +1,17 @@
-{ lib, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   services = {
+    nextdns = {
+      enable = true;
+      arguments = [
+        "-config"
+        "${config.secrets.nextDNSID}"
+        "-report-client-info"
+        "-auto-activate"
+      ];
+    };
+
     acpid.enable = true;
     xl2tpd.enable = true;
     fwupd.enable = true;
