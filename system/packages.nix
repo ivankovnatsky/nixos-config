@@ -18,6 +18,7 @@
     htop
     jsonnet
     jq
+    keepassxc
     k9s
     kubecolor
     kubectl
