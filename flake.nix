@@ -21,7 +21,6 @@
         ({ pkgs, ... }: {
           imports = [
             ./system/packages.nix
-            ./system/xdg.nix
           ];
 
           environment = {
