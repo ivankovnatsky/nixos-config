@@ -16,23 +16,6 @@ in
   programs.git = {
     enable = true;
 
-    includes = [
-      {
-        path = "~/.config/git/config-home-bw";
-        condition = "gitdir:~/Sources/Home/";
-      }
-
-      {
-        path = "~/.config/git/config-home-bw";
-        condition = "gitdir:~/Sources/Public/";
-      }
-
-      {
-        path = "~/.config/git/config-work";
-        condition = "gitdir:~/Sources/Work/";
-      }
-    ];
-
     userEmail = "75213+ivankovnatsky@users.noreply.github.com";
     userName = "Ivan Kovnatsky";
     signing = {
@@ -47,6 +30,10 @@ in
       pull.rebase = false;
       push.default = "current";
 
+      credential = {
+        helper = "${homeCredentialHelper}";
+      };
+
       core = {
         editor = "nvim";
         filemode = true;
@@ -56,24 +43,6 @@ in
         keepBackup = false;
         prompt = true;
       };
-    };
-  };
-
-  home.file = {
-    ".config/git/config-home-bw" = {
-      text = ''
-        [credential]
-          helper = ${homeCredentialHelper}
-      '';
-    };
-
-    ".config/git/config-work" = {
-      text = ''
-        [user]
-          email = "ikovnatsky@bigid.com"
-          name = "Ivan Kovnatsky"
-          signingKey = "ikovnatsky@bigid.com"
-      '';
     };
   };
 }
