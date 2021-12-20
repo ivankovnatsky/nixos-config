@@ -37,6 +37,15 @@ let
     seat seat0 hide_cursor 60000
   '';
 
+  autostart-script = pkgs.writeScriptBin "autostart" ''
+    #!${pkgs.bash}/bin/bash
+
+    if [[ $(date +%u) == [1-5] ]]; then
+      ${pkgs.firefox}/bin/firefox &!
+      ${pkgs.alacritty}/bin/alacritty -e ${pkgs.tmuxinator}/bin/tmuxinator start default &!
+    fi
+  '';
+
 in
 {
   wayland.windowManager.sway = {
@@ -56,6 +65,7 @@ in
         { command = "${pkgs.swaykbdd}/bin/swaykbdd"; }
         { command = "${idleCmd}"; }
         { command = "${importGsettingsCmd}"; }
+        { command = "${autostart-script}/bin/autostart"; }
       ];
 
       output =
