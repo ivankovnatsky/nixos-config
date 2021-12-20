@@ -9,7 +9,6 @@ in
   home.packages = with pkgs; [
     gitAndTools.pre-commit
     git-crypt
-    lastpass-cli
     pinentry
     (rbw.override { withFzf = true; })
   ];
@@ -74,8 +73,6 @@ in
           email = "ikovnatsky@bigid.com"
           name = "Ivan Kovnatsky"
           signingKey = "ikovnatsky@bigid.com"
-        [credential]
-          helper = "lastpass";
       '';
     };
   };

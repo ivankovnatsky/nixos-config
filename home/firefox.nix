@@ -11,7 +11,6 @@
       decentraleyes
       darkreader
       bitwarden
-      lastpass-password-manager
       multi-account-containers
       ublock-origin
       https-everywhere
