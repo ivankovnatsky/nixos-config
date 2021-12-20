@@ -5,6 +5,7 @@
     enable = true;
 
     extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+      onepassword-password-manager
       privacy-badger
       clearurls
       decentraleyes
