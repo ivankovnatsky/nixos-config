@@ -48,6 +48,17 @@ let
 
 in
 {
+
+  programs = {
+    zsh = {
+      shellAliases = {
+        clipman-fzf = ''
+          ${pkgs.clipman}/bin/clipman pick --print0 --tool=CUSTOM --tool-args="fzf --bind 'tab:up' --cycle --read0"
+        '';
+      };
+    };
+  };
+
   wayland.windowManager.sway = {
     enable = true;
     systemdIntegration = true;
@@ -66,6 +77,7 @@ in
         { command = "${idleCmd}"; }
         { command = "${importGsettingsCmd}"; }
         { command = "${autostart-script}/bin/autostart"; }
+        { command = "exec ${pkgs.wl-clipboard}/bin/wl-paste -t text --watch clipman store 1>> /tmp/clipman.log 2>&1 &"; }
       ];
 
       output =
