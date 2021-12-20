@@ -2,6 +2,7 @@
 
 {
   environment.systemPackages = with pkgs; [
+    _1password
     aws-vault
     delta
     dnsutils
