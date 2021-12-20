@@ -33,6 +33,7 @@
     nix-tree
     postgresql
     procs
+    p7zip
     python38
     rclone
     ripgrep
