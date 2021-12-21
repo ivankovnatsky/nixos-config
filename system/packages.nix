@@ -38,6 +38,7 @@
     python38
     rclone
     ripgrep
+    sops
     ssm-session-manager-plugin
     syncthing
     tealdeer
