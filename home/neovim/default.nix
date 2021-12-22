@@ -83,7 +83,12 @@
               side = 'left',
               width = 50,
               auto_resize = true,
-            }
+            },
+            git = {
+              enable = true,
+              ignore = false,
+              timeout = 500,
+            },
           }
 
           require'nvim-tree.view'.View.winopts.relativenumber = true
