@@ -77,7 +77,7 @@ in
         { command = "${idleCmd}"; }
         { command = "${importGsettingsCmd}"; }
         { command = "${autostart-script}/bin/autostart"; }
-        { command = "exec ${pkgs.wl-clipboard}/bin/wl-paste -t text --watch clipman store 1>> /tmp/clipman.log 2>&1 &"; }
+        { command = "exec ${pkgs.wl-clipboard}/bin/wl-paste -t text --watch ${pkgs.clipman}/bin/clipman store 1>> /tmp/clipman.log 2>&1 &"; }
       ];
 
       output =
