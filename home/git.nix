@@ -11,6 +11,7 @@ in
     git-crypt
     pinentry
     (rbw.override { withFzf = true; })
+    tig
   ];
 
   programs.git = {
