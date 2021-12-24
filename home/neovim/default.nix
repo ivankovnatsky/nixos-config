@@ -40,6 +40,7 @@
           autocmd FileType helm setlocal commentstring=#\ %s
         '';
       }
+      ansible-vim
       vim-fugitive
       vim-git
       vim-gitgutter
