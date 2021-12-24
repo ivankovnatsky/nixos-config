@@ -12,6 +12,8 @@ hi TabLineSel  term=reverse      ctermfg=white ctermbg=black guifg=white   guibg
 hi CursorLine  cterm=bold        ctermbg=white ctermfg=black guibg=white   guifg=black
 hi Folded      ctermbg=white
 
+hi Visual cterm=bold ctermbg=DarkCyan ctermfg=black guibg=DarkCyan guifg=black
+
 hi Comment gui=italic cterm=italic ctermfg=gray guifg=gray
 
 hi Pmenu ctermbg=black guibg=black
