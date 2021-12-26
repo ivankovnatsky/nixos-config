@@ -193,7 +193,7 @@ in
 
           {
             command = "inhibit_idle fullscreen";
-            criteria = { app_id = "(firefox|Chromium-browser)"; };
+            criteria = { app_id = "(firefox|chromium-browser)"; };
           }
         ];
       };
