@@ -16,11 +16,6 @@
     fwupd.enable = true;
     gnome.gnome-keyring.enable = true;
     journald.extraConfig = "SystemMaxUse=1G";
-
-    strongswan = {
-      enable = true;
-      secrets = [ "ipsec.d/ipsec.nm-l2tp.secrets" ];
-    };
   };
 
   systemd = {

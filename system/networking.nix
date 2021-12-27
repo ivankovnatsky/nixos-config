@@ -1,7 +1,6 @@
 {
   networking = {
     useDHCP = false;
-    networkmanager.enableStrongSwan = true;
 
     networkmanager = {
       dns = "none";
