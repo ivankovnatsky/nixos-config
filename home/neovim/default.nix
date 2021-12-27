@@ -40,6 +40,15 @@
           autocmd FileType helm setlocal commentstring=#\ %s
         '';
       }
+      {
+        plugin = nvim-colorizer-lua;
+        config = ''
+          set termguicolors
+          lua << END
+          require 'colorizer'.setup()
+          END
+        '';
+      }
       ansible-vim
       vim-fugitive
       vim-git
