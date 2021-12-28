@@ -9,7 +9,6 @@ set termguicolors
 hi TabLine     term=bold,reverse cterm=bold    ctermfg=black ctermbg=white gui=bold guifg=black guibg=white
 hi TabLineFill term=bold,reverse cterm=bold    ctermfg=black ctermbg=white gui=bold guifg=black guibg=white
 hi TabLineSel  term=reverse      ctermfg=white ctermbg=black guifg=white   guibg=black
-hi CursorLine  cterm=bold        ctermbg=white ctermfg=black guibg=white   guifg=black
 hi Folded      ctermbg=white
 
 hi Visual cterm=bold ctermbg=DarkCyan ctermfg=black guibg=DarkCyan guifg=black
