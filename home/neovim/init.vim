@@ -11,7 +11,7 @@ hi TabLineFill term=bold,reverse cterm=bold    ctermfg=black ctermbg=white gui=b
 hi TabLineSel  term=reverse      ctermfg=white ctermbg=black guifg=white   guibg=black
 hi Folded      ctermbg=white
 
-hi Visual cterm=bold ctermbg=DarkCyan ctermfg=black guibg=DarkCyan guifg=black
+hi Visual cterm=bold ctermbg=white ctermfg=black guibg=white guifg=black
 
 hi Comment gui=italic cterm=italic ctermfg=gray guifg=gray
 
