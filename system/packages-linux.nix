@@ -33,7 +33,6 @@ in
     networkmanagerapplet
     networkmanager-l2tp
     openssl
-    openvpn
     update-systemd-resolved
     pavucontrol
     pciutils
