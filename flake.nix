@@ -144,6 +144,8 @@
                   # ./system/xserver-laptop.nix
                 ];
 
+                networking.extraHosts = '''';
+
                 networking.hostName = "thinkpad";
 
                 # device = {
