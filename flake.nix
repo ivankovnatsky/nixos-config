@@ -301,9 +301,6 @@
       };
 
       overlay = final: prev: {
-        inherit (final.callPackages ./overlays/openvpn.nix { })
-          openvpn;
-
         kubecolor = final.callPackage ./overlays/kubecolor.nix { };
         kubectl-tree = final.callPackage ./overlays/kubectl-tree.nix { };
         git-credential-1password = final.callPackage ./overlays/git-credential-1password.nix { };
