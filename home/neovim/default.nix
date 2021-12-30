@@ -91,7 +91,7 @@
             open_on_setup = true,
             view = {
               side = 'left',
-              width = 50,
+              width = 40,
               auto_resize = true,
             },
             git = {
