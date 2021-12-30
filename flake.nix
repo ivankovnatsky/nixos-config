@@ -300,11 +300,7 @@
 
       };
 
-      overlay = final: prev: {
-        kubecolor = final.callPackage ./overlays/kubecolor.nix { };
-        kubectl-tree = final.callPackage ./overlays/kubectl-tree.nix { };
-        git-credential-1password = final.callPackage ./overlays/git-credential-1password.nix { };
-      };
+      overlay = final: prev: { };
 
       packages.x86_64-linux = (builtins.head (builtins.attrValues inputs.self.nixosConfigurations)).pkgs;
 
