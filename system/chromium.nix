@@ -8,7 +8,6 @@
 
       extensions = [
         "eimadpbcbfnmbkopoojfekhnkhdbieeh" # dark-reader
-        "glnpjglilkicbckjpbgcfkogebgllemb" # okta-browser-plugin
         "pkehgijcmpdhfbdbbnkijodmdjhbjlgp" # privacy-badger
         "lckanjgmijmafbedllaakclkaicjfmnk" # clearurls
         "ldpochfccmkkmhdbclfhpagapcfdljkj" # decentraleyes
