@@ -4,7 +4,6 @@
   programs.tmux = {
     enable = true;
 
-    baseIndex = 1;
     clock24 = true;
     keyMode = "vi";
 
@@ -34,7 +33,7 @@
     ".config/tmuxinator/home.yml" = {
       text = ''
         name: home
-        startup_window: 2
+        startup_window: 1
         root: ~/Sources/Home/GitHub/nixos-config/
 
         windows:
@@ -46,7 +45,7 @@
     ".config/tmuxinator/work.yml" = {
       text = ''
         name: work
-        startup_window: 2
+        startup_window: 1
         root: ~/Sources/Work
 
         windows:
@@ -58,7 +57,7 @@
     ".config/tmuxinator/default.yml" = {
       text = ''
         name: default
-        startup_window: 2
+        startup_window: 1
         root: ~/Sources/Work
 
         windows:
