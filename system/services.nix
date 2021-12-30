@@ -2,16 +2,6 @@
 
 {
   services = {
-    nextdns = {
-      enable = true;
-      arguments = [
-        "-config"
-        "${config.secrets.nextDNSID}"
-        "-report-client-info"
-        "-auto-activate"
-      ];
-    };
-
     xl2tpd.enable = true;
     fwupd.enable = true;
     gnome.gnome-keyring.enable = true;
