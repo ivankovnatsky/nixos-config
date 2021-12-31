@@ -50,6 +50,14 @@
         '';
       }
       ansible-vim
+      {
+        plugin = registers-nvim;
+        config = ''
+          let g:registers_normal_mode = 0
+          let g:registers_visual_mode = 0
+          let g:registers_insert_mode = 0
+        '';
+      }
       vim-fugitive
       vim-git
       vim-gitgutter
