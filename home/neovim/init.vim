@@ -54,6 +54,7 @@ set wildmenu
 set showcmd
 
 set tabpagemax=100
+set showtabline=2
 
 set autoindent
 set smartindent
