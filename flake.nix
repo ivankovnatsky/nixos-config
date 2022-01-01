@@ -191,7 +191,7 @@
                     home.stateVersion = config.system.stateVersion;
 
                     device = super.device;
-                    global = super.global;
+                    variables = super.variables;
                     secrets = super.secrets;
                   });
 
