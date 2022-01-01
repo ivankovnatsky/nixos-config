@@ -51,7 +51,6 @@
             ./system/networking.nix
             ./system/nextdns.nix
             ./system/opengl.nix
-            ./system/packages-linux.nix
             ./system/security.nix
             ./system/services.nix
             ./system/users.nix
