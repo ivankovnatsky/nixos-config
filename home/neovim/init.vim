@@ -6,9 +6,7 @@ set nocompatible
 set termguicolors
 
 " edition to default colors scheme
-hi TabLine     term=bold,reverse cterm=bold    ctermfg=black ctermbg=white gui=bold guifg=black guibg=white
-hi TabLineFill term=bold,reverse cterm=bold    ctermfg=black ctermbg=white gui=bold guifg=black guibg=white
-hi TabLineSel  term=reverse      ctermfg=white ctermbg=black guifg=white   guibg=black
+hi TabLine ctermfg=black guifg=black
 hi Folded      ctermbg=white
 
 hi Visual cterm=bold ctermbg=white ctermfg=black guibg=white guifg=black
