@@ -113,14 +113,6 @@
         })
       ];
 
-      darwinModule = [
-        ({ pkgs, ... }: {
-          environment.systemPackages = with pkgs; [
-            gnupg
-          ];
-        })
-      ];
-
     in
     {
       nixosConfigurations = {
