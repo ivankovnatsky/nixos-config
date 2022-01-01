@@ -99,7 +99,7 @@ in
         };
 
       fonts = {
-        names = [ "${config.global.fontGeneral}" ];
+        names = [ "${config.variables.fontGeneral}" ];
         size = 0.0;
       };
 
@@ -210,7 +210,7 @@ in
         position = "top";
 
         fonts = {
-          names = [ "${config.global.fontGeneral}" ];
+          names = [ "${config.variables.fontGeneral}" ];
           size = 9.0;
         };
 

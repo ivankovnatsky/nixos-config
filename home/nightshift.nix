@@ -2,7 +2,7 @@
 
 {
   services = {
-    ${config.global.nightShiftManager} = {
+    ${config.variables.nightShiftManager} = {
       enable = true;
 
       latitude = "49.8";

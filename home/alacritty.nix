@@ -13,10 +13,10 @@ in
       window.decorations = "none";
 
       font = {
-        normal.family = config.global.fontMono;
-        bold.family = config.global.fontMono;
-        italic.family = config.global.fontMono;
-        bold_italic.family = config.global.fontMono;
+        normal.family = config.variables.fontMono;
+        bold.family = config.variables.fontMono;
+        italic.family = config.variables.fontMono;
+        bold_italic.family = config.variables.fontMono;
 
         size = if isDarwin then 13 else fontSize;
         draw_bold_text_with_bright_colors = true;

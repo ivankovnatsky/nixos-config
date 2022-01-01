@@ -37,7 +37,7 @@ in
 
     config = {
       fonts = {
-        names = [ "${config.global.fontGeneral}" ];
+        names = [ "${config.variables.fontGeneral}" ];
         size = 0.0;
       };
 
@@ -59,7 +59,7 @@ in
 
       terminal = "alacritty";
       menu = ''
-        ${pkgs.bemenu}/bin/bemenu-run --fn "${config.global.fontGeneral} 20" --list 3 -n -f --ifne -p "" --hb "${whiteColorHTML}" --hf "${blackColorHTML}"'';
+        ${pkgs.bemenu}/bin/bemenu-run --fn "${config.variables.fontGeneral} 20" --list 3 -n -f --ifne -p "" --hb "${whiteColorHTML}" --hf "${blackColorHTML}"'';
 
       modifier = "${modifier}";
 
@@ -116,7 +116,7 @@ in
       bars = [{
         position = "top";
         fonts = {
-          names = [ "${config.global.fontGeneral}" ];
+          names = [ "${config.variables.fontGeneral}" ];
           size = 9.0;
         };
 

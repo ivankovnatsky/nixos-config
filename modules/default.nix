@@ -36,7 +36,7 @@ with lib; {
     };
   };
 
-  options.global = {
+  options.variables = {
     nightShiftManager = mkOption {
       type = types.enum [ "gammastep" "redshift" ];
       default = "redshift";
