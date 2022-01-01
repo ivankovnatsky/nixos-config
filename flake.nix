@@ -17,7 +17,22 @@
       commonModule = [
         ({ pkgs, ... }: {
           imports = [
+            ./system/bluetooth.nix
+            ./system/boot.nix
+            ./system/chromium.nix
+            ./system/documentation.nix
+            ./system/fonts.nix
+            ./system/networking.nix
+            ./system/nextdns.nix
+            ./system/opengl.nix
             ./system/packages.nix
+            ./system/security.nix
+            ./system/services.nix
+            ./system/users.nix
+            ./system/xdg.nix
+
+            ./modules/default.nix
+            ./modules/secrets.nix
           ];
 
           environment = {
@@ -28,37 +43,6 @@
               VISUAL = editorName;
             };
           };
-
-          nixpkgs.config.allowUnfree = true;
-
-          nix = {
-            package = pkgs.nixUnstable;
-            extraOptions = ''
-              experimental-features = nix-command flakes
-            '';
-          };
-        })
-      ];
-
-      linuxModule = [
-        ({ pkgs, ... }: {
-          imports = [
-            ./system/bluetooth.nix
-            ./system/boot.nix
-            ./system/chromium.nix
-            ./system/documentation.nix
-            ./system/fonts.nix
-            ./system/networking.nix
-            ./system/nextdns.nix
-            ./system/opengl.nix
-            ./system/security.nix
-            ./system/services.nix
-            ./system/users.nix
-            ./system/xdg.nix
-
-            ./modules/default.nix
-            ./modules/secrets.nix
-          ];
 
           i18n.defaultLocale = "en_US.UTF-8";
           time.timeZone = "Europe/Kiev";
@@ -77,6 +61,15 @@
                 Option "TearFree" "true"
               '';
             };
+          };
+
+          nixpkgs.config.allowUnfree = true;
+
+          nix = {
+            package = pkgs.nixUnstable;
+            extraOptions = ''
+              experimental-features = nix-command flakes
+            '';
           };
         })
       ];
@@ -120,7 +113,6 @@
 
           modules =
             commonModule ++
-            linuxModule ++
             # xorgModule ++
             waylandModule ++
             [
