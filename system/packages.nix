@@ -32,6 +32,7 @@
     nixpkgs-fmt
     nixpkgs-review
     nix-tree
+    nodePackages.peerflix
     postgresql
     procs
     p7zip
