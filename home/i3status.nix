@@ -132,17 +132,6 @@ in
 
           } else { };
 
-        taskBlock = {
-          block = "taskwarrior";
-          format = "{count}";
-          format_everything_done = "";
-
-          filters = [{
-            name = "today";
-            filter = "+PENDING +OVERDUE or +DUETODAY";
-          }];
-        };
-
         kbdBlock = {
           block = "keyboard_layout";
           driver = if config.device.graphicsEnv == "xorg" then "kbddbus" else "sway";
@@ -205,7 +194,6 @@ in
             bluetoothBlock
             soundBlock
             batteryBlock
-            taskBlock
             kbdBlock
             weatherBlock
             timeBlock
