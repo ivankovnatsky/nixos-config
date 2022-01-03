@@ -16,6 +16,9 @@ hi Comment gui=italic cterm=italic ctermfg=gray guifg=gray
 hi Pmenu ctermbg=black guibg=black
 hi PmenuSel ctermfg=black guifg=black
 
+" This is to make :Registers window to look more fancy
+hi FloatBorder ctermbg=NONE guibg=NONE
+
 set expandtab
 set tabstop=4
 set shiftwidth=4
