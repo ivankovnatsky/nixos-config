@@ -68,16 +68,16 @@
 
         plugins = [
           "aws"
+          "command-not-found"
           "docker"
           "fd"
           "git"
           "helm"
           "history-substring-search"
-          "command-not-found"
-          "taskwarrior"
           "kubectl"
           "pass"
           "ripgrep"
+          "taskwarrior"
           "terraform"
           "tmux"
           "vi-mode"
