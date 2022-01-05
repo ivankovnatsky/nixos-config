@@ -62,6 +62,7 @@ in
     nixpkgs-fmt
     nixpkgs-review
     nix-tree
+    nmap
     nodePackages.peerflix
     openssl
     p7zip
