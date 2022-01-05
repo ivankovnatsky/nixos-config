@@ -168,6 +168,7 @@
                       ./home/firefox.nix
                       ./home/nightshift.nix
                       ./home/git.nix
+                      ./home/gh.nix
                       ./home/gpg.nix
                       ./home/gtk.nix
                       ./home/i3status.nix

@@ -71,6 +71,7 @@
           "command-not-found"
           "docker"
           "fd"
+          "gh"
           "git"
           "helm"
           "history-substring-search"
