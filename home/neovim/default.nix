@@ -59,6 +59,7 @@
           let g:registers_window_border = "rounded"
         '';
       }
+      dhall-vim
       vim-fugitive
       vim-git
       vim-gitgutter
