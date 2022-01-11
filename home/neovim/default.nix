@@ -60,7 +60,12 @@
           let g:registers_window_border = "rounded"
         '';
       }
-      dhall-vim
+      {
+        plugin = dhall-vim;
+        config = ''
+          let g:dhall_format=1
+        '';
+      }
       vim-fugitive
       vim-git
       vim-gitgutter
