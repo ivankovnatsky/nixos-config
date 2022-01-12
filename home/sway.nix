@@ -200,8 +200,8 @@ in
 
       assigns = {
         "1" = [{ app_id = "Alacritty"; }];
-        "2" = [{ app_id = "firefox"; } { app_id = "chromium-browser"; }];
-        "3" = [{ app_id = "Slack"; }];
+        "2" = [{ app_id = "firefox"; }];
+        "3" = [{ app_id = "chromium-browser"; }];
       };
 
       workspaceLayout = "tabbed";
