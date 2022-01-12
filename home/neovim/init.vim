@@ -13,9 +13,6 @@ hi Visual cterm=bold ctermbg=white ctermfg=black guibg=white guifg=black
 
 hi Comment gui=italic cterm=italic ctermfg=gray guifg=gray
 
-hi Pmenu ctermbg=black guibg=black
-hi PmenuSel ctermfg=black guifg=black
-
 " This is to make :Registers window to look more fancy
 hi FloatBorder ctermbg=NONE guibg=NONE
 
