@@ -17,6 +17,8 @@ in
     brightnessctl
     chromium-work
     delta
+    dhall
+    dhall-json
     dmidecode
     dnsutils
     docker
