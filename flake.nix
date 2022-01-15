@@ -246,7 +246,6 @@
         };
       };
 
-
       overlay = final: prev: { };
 
       packages.x86_64-linux = (builtins.head (builtins.attrValues inputs.self.nixosConfigurations)).pkgs;
