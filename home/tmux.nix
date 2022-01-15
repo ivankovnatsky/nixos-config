@@ -42,18 +42,6 @@
       '';
     };
 
-    ".config/tmuxinator/work.yml" = {
-      text = ''
-        name: work
-        startup_window: 1
-        root: ~/Sources/Work
-
-        windows:
-          - editor: nvim
-          - cli:
-      '';
-    };
-
     ".config/tmuxinator/default.yml" = {
       text = ''
         name: default
