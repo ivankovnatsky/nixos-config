@@ -26,6 +26,7 @@
             ./system/nextdns.nix
             ./system/opengl.nix
             ./system/packages.nix
+            ./system/pipewire.nix
             ./system/security.nix
             ./system/services.nix
             ./system/users.nix
@@ -78,7 +79,6 @@
         ({
           imports = [
             ./system/greetd.nix
-            ./system/pipewire.nix
             ./system/swaylock.nix
             ./system/xdg-portal.nix
           ];
@@ -98,7 +98,6 @@
           imports = [
             ./system/autorandr.nix
             ./system/i3.nix
-            ./system/pipewire.nix
             ./system/xserver-hidpi.nix
             ./system/xserver.nix
           ];
