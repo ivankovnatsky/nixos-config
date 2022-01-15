@@ -3,7 +3,7 @@
 with lib; {
   options.device = {
     name = mkOption {
-      type = types.enum [ "thinkpad" "desktop" ];
+      type = types.enum [ "thinkpad" "xps" "desktop" ];
       description = "Name of device";
       default = "thinkpad";
     };
@@ -15,7 +15,7 @@ with lib; {
     };
 
     monitorName = mkOption {
-      type = types.enum [ "DP-2" "DP-3" ];
+      type = types.enum [ "DP-1" "DP-2" "DP-3" ];
       description = "Monitor name in Sway";
       default = "DP-2";
     };

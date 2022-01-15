@@ -205,7 +205,92 @@
 
           specialArgs = { inherit inputs; };
         };
+
+        xps = inputs.nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+
+          modules =
+            commonModule ++
+            waylandModule ++
+            [
+              ({ config, lib, pkgs, options, ... }: {
+                imports = [
+                  ./hosts/xps/boot.nix
+                  ./hosts/xps/hardware-configuration.nix
+
+                  ./system/opengl-intel.nix
+                  ./system/upowerd.nix
+                ];
+
+                networking.hostName = "xps";
+
+                hardware = {
+                  enableAllFirmware = true;
+                  enableRedistributableFirmware = true;
+                  firmware = with pkgs; [ firmwareLinuxNonfree ];
+
+                  cpu.intel.updateMicrocode = true;
+                };
+
+                device = {
+                  name = "xps";
+                  monitorName = "DP-1";
+                };
+
+                nixpkgs.overlays = [
+                  inputs.self.overlay
+                  inputs.nur.overlay
+                ];
+
+                system.stateVersion = "22.05";
+              })
+
+              inputs.home-manager.nixosModules.home-manager
+              ({ config, system, ... }: {
+                home-manager.useGlobalPkgs = true;
+                home-manager.useUserPackages = true;
+                home-manager.users.ivan =
+                  ({ super, ... }: {
+                    imports = [
+                      ./home/neovim
+                      ./home/alacritty.nix
+                      ./home/bat.nix
+                      ./home/dotfiles.nix
+                      ./home/firefox.nix
+                      ./home/git.nix
+                      ./home/gpg.nix
+                      ./home/gtk.nix
+                      ./home/i3status.nix
+                      ./home/mpv.nix
+                      ./home/password-store.nix
+                      ./home/task.nix
+                      ./home/tmux.nix
+                      ./home/zsh.nix
+
+                      ./home/sway.nix
+
+                      ./modules/default.nix
+                      ./modules/secrets.nix
+                    ];
+
+                    home.stateVersion = "21.11";
+
+                    device = super.device;
+                    variables = super.variables;
+                    secrets = super.secrets;
+                  });
+
+                home-manager.extraSpecialArgs = {
+                  inherit inputs system;
+                  super = config;
+                };
+              })
+            ];
+
+          specialArgs = { inherit inputs; };
+        };
       };
+
 
       overlay = final: prev: { };
 
