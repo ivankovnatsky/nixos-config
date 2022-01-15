@@ -12,6 +12,7 @@
 
   outputs = inputs:
     let
+      inherit (inputs);
       editorName = "nvim";
 
       commonModule = [
@@ -66,6 +67,11 @@
 
           nixpkgs.config.allowUnfree = true;
 
+          nixpkgs.overlays = [
+            inputs.self.overlay
+            inputs.nur.overlay
+          ];
+
           nix = {
             package = pkgs.nixUnstable;
             extraOptions = ''
@@ -119,12 +125,6 @@
                 imports = [
                   ./hosts/thinkpad
                 ];
-
-                nixpkgs.overlays = [
-                  inputs.self.overlay
-                  inputs.nur.overlay
-                ];
-
               })
 
               inputs.home-manager.nixosModules.home-manager
@@ -189,11 +189,6 @@
               ({ ... }: {
                 imports = [
                   ./hosts/xps
-                ];
-
-                nixpkgs.overlays = [
-                  inputs.self.overlay
-                  inputs.nur.overlay
                 ];
               })
 
