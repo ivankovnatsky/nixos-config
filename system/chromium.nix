@@ -23,6 +23,7 @@
       # https://cloud.google.com/docs/chrome-enterprise/policies/
       extraOpts = {
         "DefaultSearchProviderEnabled" = true;
+        "DownloadDirectory" = "/tmp";
         "BrowserSignin" = 0;
         "HardwareAccelerationModeEnabled" = true;
         "PasswordManagerEnabled" = false;
