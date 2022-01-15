@@ -4,7 +4,9 @@
       enable = true;
 
       homepageLocation = "";
-      defaultSearchProviderSearchURL = "https://duckduckgo.com/?q=%s";
+
+      defaultSearchProviderSearchURL = "https://duckduckgo.com/?q={searchTerms}";
+      defaultSearchProviderSuggestURL = "https://duckduckgo.com/?q={searchTerms}";
 
       extensions = [
         "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1password-–-password-mana
@@ -20,6 +22,7 @@
 
       # https://cloud.google.com/docs/chrome-enterprise/policies/
       extraOpts = {
+        "DefaultSearchProviderEnabled" = true;
         "BrowserSignin" = 0;
         "HardwareAccelerationModeEnabled" = true;
         "PasswordManagerEnabled" = false;
