@@ -116,42 +116,16 @@
             # xorgModule ++
             waylandModule ++
             [
-              ({ config, lib, pkgs, options, ... }: {
+              ({ ... }: {
                 imports = [
-                  ./hosts/thinkpad/boot.nix
-                  ./hosts/thinkpad/hardware-configuration.nix
-
-                  ./system/tlp.nix
-                  ./system/upowerd.nix
-
-                  # ./system/xserver-laptop.nix
+                  ./hosts/thinkpad
                 ];
-
-                networking.extraHosts = '''';
-
-                networking.hostName = "thinkpad";
-
-                # device = {
-                #   graphicsEnv = "xorg";
-                #   videoDriver = "amdgpu";
-                # };
-
-                hardware = {
-                  # don't install all that firmware:
-                  # https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/hardware/all-firmware.nix
-                  enableAllFirmware = false;
-                  enableRedistributableFirmware = false;
-                  firmware = with pkgs; [ firmwareLinuxNonfree ];
-
-                  cpu.amd.updateMicrocode = true;
-                };
 
                 nixpkgs.overlays = [
                   inputs.self.overlay
                   inputs.nur.overlay
                 ];
 
-                system.stateVersion = "21.03";
               })
 
               inputs.home-manager.nixosModules.home-manager
@@ -213,36 +187,15 @@
             commonModule ++
             waylandModule ++
             [
-              ({ config, lib, pkgs, options, ... }: {
+              ({ ... }: {
                 imports = [
-                  ./hosts/xps/boot.nix
-                  ./hosts/xps/hardware-configuration.nix
-
-                  ./system/opengl-intel.nix
-                  ./system/upowerd.nix
+                  ./hosts/xps
                 ];
-
-                networking.hostName = "xps";
-
-                hardware = {
-                  enableAllFirmware = true;
-                  enableRedistributableFirmware = true;
-                  firmware = with pkgs; [ firmwareLinuxNonfree ];
-
-                  cpu.intel.updateMicrocode = true;
-                };
-
-                device = {
-                  name = "xps";
-                  monitorName = "DP-1";
-                };
 
                 nixpkgs.overlays = [
                   inputs.self.overlay
                   inputs.nur.overlay
                 ];
-
-                system.stateVersion = "22.05";
               })
 
               inputs.home-manager.nixosModules.home-manager
