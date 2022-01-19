@@ -11,89 +11,35 @@ in
   environment.systemPackages = with pkgs; [
     _1password
     acpi
-    awscli2
-    aws-vault
     binutils-unwrapped
     brightnessctl
     chromium-work
-    delta
-    dhall
-    dhall-json
     dmidecode
     dnsutils
     docker
     docker-compose
-    dogdns
-    du-dust
-    duf
-    envsubst
-    exiftool
-    file
-    genpass
     geteltorito
     gimp
     git
     gnome3.adwaita-icon-theme
     gnome3.libsecret
-    gnumake
-    go
     google-cloud-sdk
-    htop
     hwinfo
-    imagemagick
-    ipcalc
     iw
-    jq
-    jsonnet
-    k9s
-    keepassxc
-    killall
-    kubecolor
-    kubectl
-    kubectl-tree
-    kubectx
-    kubernetes-helm
-    kubetail
     libnotify
     lm_sensors
     lshw
-    mtr
     neovim
     networkmanagerapplet
     networkmanager-l2tp
-    nixpkgs-fmt
-    nixpkgs-review
-    nix-tree
-    nmap
-    nodePackages.peerflix
-    openssl
-    p7zip
     pavucontrol
     pciutils
-    postgresql
     powertop
-    procs
-    python38
-    rclone
-    ripgrep
-    sops
-    ssm-session-manager-plugin
     strace
-    syncthing
     sysstat
-    tealdeer
-    terraform
-    terraformer
-    tflint
-    unzip
     update-systemd-resolved
     usbutils
     viber
-    viddy
-    wget
-    whois
-    youtube-dl
-    zip
 
     (chromium.override {
       commandLineArgs =
