@@ -11,93 +11,33 @@
   };
 
   outputs = inputs:
-    let
-      inherit (inputs);
-
-      commonModule = [
-        {
-          nixpkgs.overlays = [
-            inputs.self.overlay
-            inputs.nur.overlay
-          ];
-        }
-      ];
-
-      waylandModule = [
-        ({
-          imports = [
-            ./system/greetd.nix
-            ./system/swaylock.nix
-            ./system/xdg-portal.nix
-          ];
-
-          nixpkgs.overlays = [
-            (
-              self: super: {
-                firefox = super.firefox.override { forceWayland = true; };
-              }
-            )
-          ];
-        })
-      ];
-
-      xorgModule = [
-        ({
-          imports = [
-            ./system/autorandr.nix
-            ./system/i3.nix
-            ./system/xserver-hidpi.nix
-            ./system/xserver.nix
-          ];
-
-          services = {
-            xserver = {
-              deviceSection = ''
-                Option "TearFree" "true"
-              '';
-            };
-          };
-
-        })
-      ];
-
-    in
     {
       nixosConfigurations = {
         thinkpad = inputs.nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
 
-          modules =
-            commonModule ++
-            # xorgModule ++
-            waylandModule ++
-            [
-              { imports = [ ./hosts/thinkpad ./system ]; }
+          modules = [
+            {
+              imports = [ ./hosts/thinkpad ./system ./system/wayland.nix ];
+              nixpkgs.overlays = [ inputs.self.overlay inputs.nur.overlay ];
+            }
 
-              inputs.home-manager.nixosModules.home-manager
-              ({ config, system, ... }: {
-                home-manager.useGlobalPkgs = true;
-                home-manager.useUserPackages = true;
-                home-manager.users.ivan =
-                  ({ super, ... }: {
-                    imports = [
-                      ./home
-                      ./home/sway.nix
+            inputs.home-manager.nixosModules.home-manager
+            ({ config, system, ... }: {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.ivan =
+                ({ super, ... }: {
+                  imports = [ ./home ./home/sway.nix ];
+                  home.stateVersion = config.system.stateVersion;
+                });
 
-                      # ./home/autorandr.nix
-                      # ./home/i3.nix
-                      # ./home/xsession.nix
-                    ];
-
-                    home.stateVersion = config.system.stateVersion;
-                  });
-
-                home-manager.extraSpecialArgs = {
-                  inherit inputs system;
-                  super = config;
-                };
-              })
-            ];
+              home-manager.extraSpecialArgs = {
+                inherit inputs system;
+                super = config;
+              };
+            })
+          ];
 
           specialArgs = { inherit inputs; };
         };
@@ -105,28 +45,28 @@
         xps = inputs.nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
 
-          modules =
-            commonModule ++
-            waylandModule ++
-            [
-              { imports = [ ./hosts/xps ./system ]; }
+          modules = [
+            {
+              imports = [ ./hosts/xps ./system ./system/wayland.nix ];
+              nixpkgs.overlays = [ inputs.self.overlay inputs.nur.overlay ];
+            }
 
-              inputs.home-manager.nixosModules.home-manager
-              ({ config, system, ... }: {
-                home-manager.useGlobalPkgs = true;
-                home-manager.useUserPackages = true;
-                home-manager.users.ivan =
-                  ({ super, ... }: {
-                    imports = [ ./home ];
-                    home.stateVersion = config.system.stateVersion;
-                  });
+            inputs.home-manager.nixosModules.home-manager
+            ({ config, system, ... }: {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.ivan =
+                ({ super, ... }: {
+                  imports = [ ./home ./home/sway.nix ];
+                  home.stateVersion = config.system.stateVersion;
+                });
 
-                home-manager.extraSpecialArgs = {
-                  inherit inputs system;
-                  super = config;
-                };
-              })
-            ];
+              home-manager.extraSpecialArgs = {
+                inherit inputs system;
+                super = config;
+              };
+            })
+          ];
 
           specialArgs = { inherit inputs; };
         };
