@@ -11,14 +11,14 @@
   };
 
   outputs = inputs:
-    {
-      nixosConfigurations = {
-        thinkpad = inputs.nixpkgs.lib.nixosSystem {
+    let
+      makeNixosConfig = { hostname }:
+        inputs.nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
 
           modules = [
             {
-              imports = [ ./hosts/thinkpad ./system ./system/wayland.nix ];
+              imports = [ ./hosts/${hostname} ./system ./system/wayland.nix ];
               nixpkgs.overlays = [ inputs.self.overlay inputs.nur.overlay ];
             }
 
@@ -26,11 +26,10 @@
             ({ config, system, ... }: {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.users.ivan =
-                ({ super, ... }: {
-                  imports = [ ./home ./home/sway.nix ];
-                  home.stateVersion = config.system.stateVersion;
-                });
+              home-manager.users.ivan = {
+                imports = [ ./home ./home/sway.nix ];
+                home.stateVersion = config.system.stateVersion;
+              };
 
               home-manager.extraSpecialArgs = {
                 inherit inputs system;
@@ -42,33 +41,15 @@
           specialArgs = { inherit inputs; };
         };
 
-        xps = inputs.nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
+    in
+    {
+      nixosConfigurations = {
+        thinkpad = makeNixosConfig {
+          hostname = "thinkpad";
+        };
 
-          modules = [
-            {
-              imports = [ ./hosts/xps ./system ./system/wayland.nix ];
-              nixpkgs.overlays = [ inputs.self.overlay inputs.nur.overlay ];
-            }
-
-            inputs.home-manager.nixosModules.home-manager
-            ({ config, system, ... }: {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.ivan =
-                ({ super, ... }: {
-                  imports = [ ./home ./home/sway.nix ];
-                  home.stateVersion = config.system.stateVersion;
-                });
-
-              home-manager.extraSpecialArgs = {
-                inherit inputs system;
-                super = config;
-              };
-            })
-          ];
-
-          specialArgs = { inherit inputs; };
+        xps = makeNixosConfig {
+          hostname = "xps";
         };
       };
 
