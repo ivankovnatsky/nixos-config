@@ -89,6 +89,7 @@ in
     update-systemd-resolved
     usbutils
     viber
+    viddy
     wget
     whois
     youtube-dl
