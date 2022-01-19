@@ -16,6 +16,7 @@
     ./i3status.nix
     ./mpv.nix
     ./password-store.nix
+    ./packages.nix
     ./ranger.nix
     ./task.nix
     ./tmux.nix
