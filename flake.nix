@@ -58,14 +58,6 @@
 
           nix.autoOptimiseStore = true;
 
-          services = {
-            xserver = {
-              deviceSection = ''
-                Option "TearFree" "true"
-              '';
-            };
-          };
-
           nixpkgs.config.allowUnfree = true;
 
           nixpkgs.overlays = [
@@ -108,6 +100,15 @@
             ./system/xserver-hidpi.nix
             ./system/xserver.nix
           ];
+
+          services = {
+            xserver = {
+              deviceSection = ''
+                Option "TearFree" "true"
+              '';
+            };
+          };
+
         })
       ];
 
