@@ -14,6 +14,14 @@ in
     tig
   ];
 
+  programs.gh = {
+    enable = true;
+
+    settings = { };
+
+    enableGitCredentialHelper = false;
+  };
+
   programs.git = {
     enable = true;
 

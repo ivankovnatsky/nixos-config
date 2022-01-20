@@ -5,6 +5,7 @@
     _1password
     awscli2
     aws-vault
+    bemenu
     delta
     dhall
     dhall-json
@@ -55,6 +56,7 @@
     viddy
     wget
     whois
+    yamllint
     youtube-dl
     zip
   ];
