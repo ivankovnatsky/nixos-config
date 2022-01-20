@@ -12,9 +12,9 @@
 
   outputs = inputs:
     let
-      makeNixosConfig = { hostname }:
+      makeNixosConfig = { hostname ? "thinkpad", system ? "x86_64-linux" }:
         inputs.nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
+          inherit system;
 
           modules = [
             {
@@ -44,9 +44,7 @@
     in
     {
       nixosConfigurations = {
-        thinkpad = makeNixosConfig {
-          hostname = "thinkpad";
-        };
+        thinkpad = makeNixosConfig { };
 
         xps = makeNixosConfig {
           hostname = "xps";
