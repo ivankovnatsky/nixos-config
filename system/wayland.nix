@@ -1,8 +1,8 @@
+{ pkgs, ... }:
+
 {
   imports = [
     ./greetd.nix
-    ./swaylock.nix
-    ./xdg-portal.nix
   ];
 
   nixpkgs.overlays = [
@@ -12,4 +12,20 @@
       }
     )
   ];
+
+  security = {
+    pam.services.swaylock = { };
+  };
+
+  xdg = {
+    portal = {
+      enable = true;
+      gtkUsePortal = true;
+
+      extraPortals = with pkgs; [
+        xdg-desktop-portal-wlr
+        xdg-desktop-portal-gtk
+      ];
+    };
+  };
 }
