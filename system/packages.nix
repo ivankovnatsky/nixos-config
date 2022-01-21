@@ -22,7 +22,7 @@ in
     gimp
     git
     gnome3.adwaita-icon-theme
-    gnome3.libsecret
+    libsecret
     google-cloud-sdk
     hwinfo
     iw
