@@ -23,6 +23,13 @@ in
 
     bars =
       let
+        nixOSUpdate = {
+          block = "custom";
+          command = "[ $(nixos-version --revision) != $(curl -s -m 0.5 https://api.github.com/repos/NixOS/nixpkgs/git/refs/heads/nixos-unstable | jq '.object.sha' -r ) ] && echo '{\"icon\":\"upd\",\"state\":\"Info\", \"text\": \"\"}' || echo '{\"icon\":\"noupd\",\"state\":\"Idle\", \"text\": \"\"}'";
+          interval = 3600;
+          json = true;
+        };
+
         tuxBlock =
           {
             block = "custom";
@@ -169,6 +176,8 @@ in
             overrides = {
               tux = "";
               fan = "";
+              upd = "";
+              noupd = "";
             };
           };
 
@@ -182,6 +191,7 @@ in
         top = {
           inherit settings;
           blocks = lib.lists.flatten [
+            nixOSUpdate
             tuxBlock
             cpuBlock
             loadBlock
