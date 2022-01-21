@@ -34,7 +34,6 @@ in
     networkmanager-l2tp
     pavucontrol
     pciutils
-    powertop
     strace
     sysstat
     update-systemd-resolved
