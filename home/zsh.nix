@@ -47,8 +47,8 @@
       enable = true;
 
       history = {
-        size = 102400;
-        save = 102400;
+        size = 1024000;
+        save = 1024000;
         ignoreDups = true;
         expireDuplicatesFirst = true;
         share = true;
