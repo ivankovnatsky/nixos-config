@@ -1,5 +1,8 @@
 { config, pkgs, super, ... }:
 
+let editorName = "nvim";
+
+in
 {
   imports = [
     ./neovim
@@ -17,7 +20,11 @@
   ];
 
   home.sessionVariables = {
+    AWS_VAULT_BACKEND = "pass";
+    EDITOR = editorName;
+    LPASS_AGENT_TIMEOUT = "0";
     PASSWORD_STORE_DIR = "/home/ivan/.password-store";
+    VISUAL = editorName;
   };
 
   programs.bat = {

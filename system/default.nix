@@ -1,8 +1,5 @@
 { pkgs, ... }:
 
-let editorName = "nvim";
-
-in
 {
   imports = [
     ./chromium.nix
@@ -42,15 +39,6 @@ in
       noto-fonts-extra
       noto-fonts-emoji
     ];
-  };
-
-  environment = {
-    variables = {
-      AWS_VAULT_BACKEND = "pass";
-      EDITOR = editorName;
-      LPASS_AGENT_TIMEOUT = "0";
-      VISUAL = editorName;
-    };
   };
 
   hardware.bluetooth = {
