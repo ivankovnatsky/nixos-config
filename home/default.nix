@@ -16,6 +16,10 @@
     ../modules/secrets.nix
   ];
 
+  home.sessionVariables = {
+    PASSWORD_STORE_DIR = "/home/ivan/.password-store";
+  };
+
   programs.bat = {
     enable = true;
     config = { tabs = "0"; };
