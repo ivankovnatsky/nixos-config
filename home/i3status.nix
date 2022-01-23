@@ -25,8 +25,8 @@ in
       let
         nixOSUpdate = {
           block = "custom";
-          command = "[ $(nixos-version --revision) != $(curl -s -m 0.5 https://api.github.com/repos/NixOS/nixpkgs/git/refs/heads/nixos-unstable | jq '.object.sha' -r ) ] && echo '{\"icon\":\"upd\",\"state\":\"Info\", \"text\": \"\"}' || echo '{\"icon\":\"noupd\",\"state\":\"Idle\", \"text\": \"\"}'";
-          interval = 3600;
+          command = "[ $(nixos-version --revision) != $(curl -s -m 0.5 https://api.github.com/repos/NixOS/nixpkgs/git/refs/heads/nixos-unstable | jq '.object.sha' -r ) ] && echo '{\"icon\":\"upd\",\"state\":\"Info\", \"text\": \"Update\"}' || echo '{\"icon\":\"noupd\",\"state\":\"Idle\", \"text\": \"\"}'";
+          interval = "once";
           json = true;
         };
 
