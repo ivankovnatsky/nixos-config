@@ -10,7 +10,7 @@ let
   monitorDevice = config.device.monitorName;
 
   lockCmd =
-    "${pkgs.swaylock}/bin/swaylock --indicator-radius 70 --indicator-idle-visible --daemonize --show-failed-attempts --indicator-caps-lock --color '${blackColorHTML}'";
+    "${pkgs.swaylock}/bin/swaylock --daemonize --show-failed-attempts --indicator-caps-lock --color '${blackColorHTML}'";
   idleCmd = ''
     ${pkgs.swayidle}/bin/swayidle -w \
         timeout 3600 "${lockCmd}" \
