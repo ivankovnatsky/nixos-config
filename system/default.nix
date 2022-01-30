@@ -93,10 +93,6 @@
     '';
   };
 
-  nix.settings = {
-    auto-optimise-store = true;
-  };
-
   nixpkgs.config.allowUnfree = true;
 
   users.users.ivan = {
@@ -122,6 +118,11 @@
 
   nix = {
     package = pkgs.nixUnstable;
+
+    settings = {
+      auto-optimise-store = true;
+    };
+
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
