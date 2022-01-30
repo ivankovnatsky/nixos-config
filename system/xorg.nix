@@ -5,7 +5,6 @@
     ./autorandr.nix
     ./i3.nix
     ./xserver-hidpi.nix
-    ./xserver.nix
   ];
 
   environment.systemPackages = with pkgs; [ arandr maim xclip xorg.xev ];
