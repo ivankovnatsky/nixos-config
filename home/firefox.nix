@@ -32,6 +32,7 @@
             false;
           "permissions.default.desktop-notification" = 2;
           "gfx.webrender.all" = true;
+          "geo.enabled" = false;
           "extensions.pocket.enabled" = false;
           "widget.wayland-dmabuf-vaapi.enabled" = true;
         };
