@@ -43,6 +43,11 @@ in
         helper = "${homeCredentialHelper}";
       };
 
+      tag = {
+        gpgSign = "true";
+        forceSignAnnotated = "true";
+      };
+
       core = {
         editor = "nvim";
         filemode = true;
