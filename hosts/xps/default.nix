@@ -24,5 +24,7 @@
     monitorName = "DP-1";
   };
 
+  services.logind.lidSwitch = "ignore";
+
   system.stateVersion = "22.05";
 }
