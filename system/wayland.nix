@@ -8,7 +8,7 @@
   nixpkgs.overlays = [
     (
       self: super: {
-        firefox = super.firefox.override { forceWayland = true; };
+        firefox = super.firefox-bin.override { forceWayland = true; };
       }
     )
   ];
