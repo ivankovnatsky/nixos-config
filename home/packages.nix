@@ -16,6 +16,7 @@
     exiftool
     file
     genpass
+    gitleaks
     gnumake
     go
     htop
