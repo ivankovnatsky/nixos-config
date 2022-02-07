@@ -78,10 +78,6 @@
       xdg-utils
       pulseaudio
     ];
-
-    variables = {
-      NIXOS_OZONE_WL = "1";
-    };
   };
 
   services = {
