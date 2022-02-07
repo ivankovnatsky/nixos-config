@@ -79,6 +79,10 @@
         plugin = vim-sneak;
         config = ''
           let g:sneak#label = 1
+
+          map ss <Plug>Sneak_s
+          map SS <Plug>Sneak_S
+
           map ff <Plug>Sneak_f
           map FF <Plug>Sneak_F
           map tt <Plug>Sneak_t
