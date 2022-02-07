@@ -73,10 +73,16 @@
     dconf.enable = true;
   };
 
-  environment.systemPackages = with pkgs; [
-    xdg-utils
-    pulseaudio
-  ];
+  environment = {
+    systemPackages = with pkgs; [
+      xdg-utils
+      pulseaudio
+    ];
+
+    variables = {
+      NIXOS_OZONE_WL = "1";
+    };
+  };
 
   services = {
     pipewire = {
