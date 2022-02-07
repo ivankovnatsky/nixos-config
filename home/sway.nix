@@ -43,6 +43,7 @@ let
     if [[ $(date +%u) == [1-5] ]]; then
       ${pkgs.firefox}/bin/firefox &!
       ${pkgs.alacritty}/bin/alacritty -e ${pkgs.tmuxinator}/bin/tmuxinator start default &!
+      chromium-work &!
     fi
   '';
 
