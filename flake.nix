@@ -51,7 +51,9 @@
         };
       };
 
-      overlay = final: prev: { };
+      overlay = final: prev: {
+        helm-secrets = final.callPackage ./overlays/helm-secrets.nix { };
+      };
 
       packages.x86_64-linux = (builtins.head (builtins.attrValues inputs.self.nixosConfigurations)).pkgs;
 
