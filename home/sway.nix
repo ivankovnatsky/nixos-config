@@ -203,6 +203,7 @@ in
         "1" = [{ app_id = "Alacritty"; }];
         "2" = [{ app_id = "firefox"; }];
         "3" = [{ app_id = "chromium-browser"; }];
+        "4" = [{ app_id = "google-chrome"; }];
       };
 
       workspaceLayout = "tabbed";
