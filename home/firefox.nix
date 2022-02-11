@@ -23,19 +23,18 @@
 
         settings = {
           "browser.contentblocking.category" = "strict";
-          "network.allow-experiments" = false;
-          "browser.fullscreen.autohide" = false;
-          "browser.toolbars.bookmarks.visibility" = "never";
-          "browser.startup.page" = 3;
           "browser.ctrlTab.recentlyUsedOrder" = false;
-          "media.videocontrols.picture-in-picture.video-toggle.enabled" = false;
-          "media.videocontrols.picture-in-picture.enabled" = false;
-          "media.videocontrols.picture-in-picture.video-toggle.has-used" =
-            false;
-          "permissions.default.desktop-notification" = 2;
-          "gfx.webrender.all" = true;
-          "geo.enabled" = false;
+          "browser.fullscreen.autohide" = false;
+          "browser.startup.page" = 3;
+          "browser.toolbars.bookmarks.visibility" = "never";
           "extensions.pocket.enabled" = false;
+          "geo.enabled" = false;
+          "gfx.webrender.all" = true;
+          "media.videocontrols.picture-in-picture.enabled" = false;
+          "media.videocontrols.picture-in-picture.video-toggle.enabled" = false;
+          "media.videocontrols.picture-in-picture.video-toggle.has-used" = false;
+          "network.allow-experiments" = false;
+          "permissions.default.desktop-notification" = 2;
           "widget.wayland-dmabuf-vaapi.enabled" = true;
         };
       };
