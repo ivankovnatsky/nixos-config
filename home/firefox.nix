@@ -22,6 +22,8 @@
         isDefault = true;
 
         settings = {
+          "browser.contentblocking.category" = "strict";
+          "network.allow-experiments" = false;
           "browser.fullscreen.autohide" = false;
           "browser.toolbars.bookmarks.visibility" = "never";
           "browser.startup.page" = 3;
