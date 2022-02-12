@@ -57,7 +57,7 @@
 
       shellAliases = {
         ls = "exa --group-directories-first --group --icons";
-        tree = "exa --tree";
+        tree = "ls --tree";
         cat = "bat";
         rclone = "rclone -P";
         wl-copy = "wl-copy -n";
