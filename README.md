@@ -75,9 +75,9 @@ nix-env -iA nixos.nixUnstable
 nix-env -iA nixos.git
 nix-env -iA nixos.neovim
 
-git clone https://github.com/ivankovnatsky/nixos-config /mnt/home/ivan/Sources/Home/GitHub/nixos-config
+git clone https://github.com/ivankovnatsky/nixos-config /mnt/home/ivan/Sources/github.com/ivankovnatsky/nixos-config
 
-cd /mnt/home/ivan/Sources/Home/GitHub/nixos-config
+cd /mnt/home/ivan/Sources/github.com/ivankovnatsky/nixos-config
 nvim .
 
 nixos-install
