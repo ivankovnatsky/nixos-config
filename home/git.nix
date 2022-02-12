@@ -43,6 +43,10 @@ in
         helper = "${homeCredentialHelper}";
       };
 
+      ghq = {
+        root = "~/Sources";
+      };
+
       tag = {
         gpgSign = "true";
         forceSignAnnotated = "true";

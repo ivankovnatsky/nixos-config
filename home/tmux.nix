@@ -34,7 +34,7 @@
       text = ''
         name: home
         startup_window: 1
-        root: ~/Sources/Home/GitHub/nixos-config/
+        root: ~/Sources/github.com/ivankovnatsky/nixos-config/
 
         windows:
           - editor: nvim
@@ -46,7 +46,7 @@
       text = ''
         name: default
         startup_window: 1
-        root: ~/Sources/Work
+        root: ~/Sources/github.com/elastio
 
         windows:
           - work-editor:
@@ -56,9 +56,9 @@
           - home-editor:
               panes:
                 - nvim
-              root: ~/Sources/Home/GitHub/nixos-config/
+              root: ~/Sources/github.com/ivankovnatsky/nixos-config/
           - home-cli:
-              root: ~/Sources/Home/GitHub/nixos-config/
+              root: ~/Sources/github.com/ivankovnatsky/nixos-config/
       '';
     };
   };
