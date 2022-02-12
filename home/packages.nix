@@ -16,6 +16,7 @@
     exiftool
     file
     genpass
+    ghq
     gitleaks
     gnumake
     go
