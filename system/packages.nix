@@ -2,7 +2,6 @@
 
 {
   environment.systemPackages = with pkgs; [
-    _1password
     acpi
     binutils-unwrapped
     brightnessctl
@@ -15,7 +14,6 @@
     git
     gnome3.adwaita-icon-theme
     libsecret
-    google-cloud-sdk
     hwinfo
     iw
     libnotify

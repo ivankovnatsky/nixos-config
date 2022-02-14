@@ -20,6 +20,7 @@
     gitleaks
     gnumake
     go
+    google-cloud-sdk
     htop
     imagemagick
     ipcalc
