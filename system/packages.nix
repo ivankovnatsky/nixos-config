@@ -6,6 +6,7 @@
     binutils-unwrapped
     brightnessctl
     dmidecode
+    bitwarden-cli
     dnsutils
     docker
     docker-compose
