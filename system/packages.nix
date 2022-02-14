@@ -1,19 +1,11 @@
 { config, pkgs, ... }:
 
-let
-  chromium-work = pkgs.writeScriptBin "chromium-work" ''
-    #!/usr/bin/env bash
-
-    chromium --user-data-dir=/home/ivan/.config/chromium-work
-  '';
-in
 {
   environment.systemPackages = with pkgs; [
     _1password
     acpi
     binutils-unwrapped
     brightnessctl
-    chromium-work
     dmidecode
     dnsutils
     docker
