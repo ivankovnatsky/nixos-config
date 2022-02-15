@@ -7,7 +7,7 @@ let
     ${toString(builtins.readFile ../files/git-credential-bw.sh)}
   '';
 
-  homeCredentialHelper = if isDarwin then "osxkeychain" else "${git-credential-bw}/bin/git-credential-bw";
+  homeCredentialHelper = if isDarwin then "osxkeychain" else "${pkgs.rbw}/bin/git-credential-rbw";
 in
 {
   home.packages = with pkgs; [
