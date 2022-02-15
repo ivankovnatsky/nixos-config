@@ -78,6 +78,16 @@ in
     };
   };
 
+  programs.rbw = {
+    enable = true;
+
+    settings = {
+      email = "${config.secrets.email}";
+      lock_timeout = 2419200;
+      pinentry = pkgs.pinentry;
+    };
+  };
+
   programs.taskwarrior = {
     enable = true;
     dataLocation = "/home/ivan/.task/";
