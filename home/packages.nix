@@ -12,6 +12,7 @@ in
     awscli2
     aws-vault
     bemenu
+    bloomrpc
     bwget
     delta
     dhall
