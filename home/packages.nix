@@ -1,11 +1,18 @@
 { pkgs, ... }:
 
+let
+  bwget = pkgs.writeScriptBin "bwget" ''
+    ${toString(builtins.readFile ../files/bwget.sh)}
+  '';
+
+in
 {
   home.packages = with pkgs; [
     _1password
     awscli2
     aws-vault
     bemenu
+    bwget
     delta
     dhall
     dhall-json
