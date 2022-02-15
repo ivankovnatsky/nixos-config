@@ -53,6 +53,10 @@
 
       overlay = final: prev: {
         helm-secrets = final.callPackage ./overlays/helm-secrets.nix { };
+        rbw = final.callPackage ./overlays/rbw.nix {
+          withFzf = true;
+          inherit (inputs.nixpkgs.pkgs.darwin.apple_sdk.frameworks) Security;
+        };
       };
 
       packages.x86_64-linux = (builtins.head (builtins.attrValues inputs.self.nixosConfigurations)).pkgs;
