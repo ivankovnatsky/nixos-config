@@ -23,11 +23,11 @@ let
     fi
   '';
 
-  kernelCheck = pkgs.writeShellScript "kernelCheck" ''
+  checkKernel = pkgs.writeShellScript "checkKernel" ''
     echo '{"icon":"tux", "text": "'$(uname -r)'"}'
   '';
 
-  fanCheck = pkgs.writeShellScript "fanCheck" ''
+  checkFan = pkgs.writeShellScript "checkFan" ''
     echo '{"icon":"fan", "text": "'$(cat /sys/class/hwmon/hwmon*/fan*_input)' RPM"}'
   '';
 
@@ -61,7 +61,7 @@ in
         tuxBlock =
           {
             block = "custom";
-            command = kernelCheck;
+            command = checkKernel;
             interval = "once";
             json = true;
           };
@@ -101,7 +101,7 @@ in
         fanBlock =
           if isLaptop then {
             block = "custom";
-            command = fanCheck;
+            command = checkFan;
             json = true;
           } else { };
 
