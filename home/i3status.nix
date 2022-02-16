@@ -23,6 +23,14 @@ let
     fi
   '';
 
+  kernelCheck = pkgs.writeShellScript "kernelCheck" ''
+    echo '{"icon":"tux", "text": "'$(uname -r)'"}'
+  '';
+
+  fanCheck = pkgs.writeShellScript "fanCheck" ''
+    echo '{"icon":"fan", "text": "'$(cat /sys/class/hwmon/hwmon*/fan*_input)' RPM"}'
+  '';
+
 in
 {
   xdg.configFile."i3status-rust/config-top.toml" = {
@@ -53,7 +61,7 @@ in
         tuxBlock =
           {
             block = "custom";
-            command = "echo '{\"icon\":\"tux\", \"text\": \"'$(uname -r)'\"}'";
+            command = kernelCheck;
             interval = "once";
             json = true;
           };
@@ -93,8 +101,7 @@ in
         fanBlock =
           if isLaptop then {
             block = "custom";
-            command =
-              "echo '{\"icon\":\"fan\", \"text\": \"'$(cat /sys/class/hwmon/hwmon*/fan*_input)' RPM\"}'";
+            command = fanCheck;
             json = true;
           } else { };
 
