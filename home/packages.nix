@@ -67,6 +67,7 @@ in
     viddy
     wget
     whois
+    yamlfix
     yamllint
     youtube-dl
     zip
