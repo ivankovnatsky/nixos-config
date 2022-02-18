@@ -5,17 +5,17 @@
     enable = true;
 
     extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+      bitwarden
+      clearurls
+      darkreader
+      decentraleyes
+      duckduckgo-privacy-essentials
+      https-everywhere
+      multi-account-containers
       onepassword-password-manager
       privacy-badger
-      clearurls
-      decentraleyes
-      darkreader
-      bitwarden
-      multi-account-containers
-      ublock-origin
-      https-everywhere
-      duckduckgo-privacy-essentials
       tree-style-tab
+      ublock-origin
     ];
 
     profiles = {
