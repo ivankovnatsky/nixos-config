@@ -16,8 +16,6 @@ in
     dmidecode
     bitwarden-cli
     dnsutils
-    docker
-    docker-compose
     geteltorito
     gimp
     git
