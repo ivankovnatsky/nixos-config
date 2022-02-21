@@ -68,7 +68,6 @@
 
         plugins = [
           "aws"
-          "docker"
           "fd"
           "gh"
           "git"
