@@ -29,6 +29,8 @@ in
     gnumake
     go
     google-cloud-sdk
+    grpcui
+    grpcurl
     htop
     imagemagick
     ipcalc
