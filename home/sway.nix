@@ -44,6 +44,7 @@ let
       ${pkgs.firefox}/bin/firefox &!
       ${pkgs.alacritty}/bin/alacritty -e ${pkgs.tmuxinator}/bin/tmuxinator start default &!
       chromium &!
+      google-chrome-stable &!
     fi
   '';
 
