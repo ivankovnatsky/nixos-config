@@ -3,7 +3,7 @@
 {
   imports = [
     ./chromium.nix
-    ./nextdns.nix
+    # ./nextdns.nix
     ./opengl.nix
     ./packages.nix
     ./services.nix
