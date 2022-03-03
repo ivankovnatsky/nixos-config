@@ -3,7 +3,8 @@
 let
   inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
 
-  fontSize = if config.device.graphicsEnv == "xorg" then 12 else 10;
+  fontSizeWM = if config.device.graphicsEnv == "xorg" then 12 else 10;
+  fontSize = if config.device.name == "xps" then 9.5 else fontSizeWM;
 in
 {
   programs.alacritty = {
