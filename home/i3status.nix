@@ -136,10 +136,7 @@ in
           hide_inactive = true;
           interval = 10;
 
-          format = {
-            full = "{speed_down:1} {speed_up:1} {ssid} {signal_strength}";
-            short = "";
-          };
+          format = "{speed_down:1} {speed_up:1} {ssid} {signal_strength}";
         };
 
         bluetoothBlock = {
