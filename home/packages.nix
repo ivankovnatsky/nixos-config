@@ -31,6 +31,7 @@ in
     google-cloud-sdk
     grpcui
     grpcurl
+    hcloud
     htop
     imagemagick
     ipcalc
