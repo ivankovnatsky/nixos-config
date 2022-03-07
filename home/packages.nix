@@ -35,6 +35,8 @@ in
     htop
     imagemagick
     ipcalc
+    jami-daemon
+    jami-client-gnome
     jq
     jsonnet
     k9s
