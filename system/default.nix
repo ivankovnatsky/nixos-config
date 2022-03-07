@@ -121,12 +121,6 @@
   nix = {
     package = pkgs.nixUnstable;
 
-    gc = {
-      automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 15d";
-    };
-
     settings = {
       auto-optimise-store = true;
     };
