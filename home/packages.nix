@@ -56,6 +56,7 @@ in
     p7zip
     postgresql
     procs
+    protonvpn-gui
     python38
     rclone
     ripgrep
