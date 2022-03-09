@@ -29,11 +29,14 @@ in
   programs.git = {
     enable = true;
 
-    userEmail = "75213+ivankovnatsky@users.noreply.github.com";
-    userName = "Ivan Kovnatsky";
-    signing = {
-      signByDefault = true;
-      key = "75213+ivankovnatsky@users.noreply.github.com";
+    defaultProfile = "home";
+    profiles = {
+      home = {
+        name = "Ivan Kovnatsky";
+        email = "75213+ivankovnatsky@users.noreply.github.com";
+        signingKey = "75213+ivankovnatsky@users.noreply.github.com";
+        dirs = [ ];
+      };
     };
 
     extraConfig = {
