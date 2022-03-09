@@ -36,7 +36,7 @@ in
     imagemagick
     ipcalc
     jami-daemon
-    jami-client-gnome
+    jami-client-qt
     jq
     jsonnet
     k9s

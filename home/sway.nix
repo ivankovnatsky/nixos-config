@@ -206,7 +206,7 @@ in
         "3" = [{ app_id = "chromium-browser"; }];
         "4" = [{ app_id = "google-chrome"; }];
         "6" = [{ class = "ViberPC"; }];
-        "7" = [{ class = "Jami-gnome"; }];
+        "7" = [{ class = "net.jami."; }];
       };
 
       workspaceLayout = "tabbed";
