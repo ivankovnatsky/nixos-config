@@ -30,6 +30,11 @@ in
     enable = true;
 
     defaultProfile = "home";
+
+    signing = {
+      signByDefault = true;
+    };
+
     profiles = {
       home = {
         name = "Ivan Kovnatsky";
