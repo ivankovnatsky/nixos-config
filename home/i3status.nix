@@ -3,26 +3,6 @@
 let
   isLaptop = config.device.type == "laptop";
 
-  checkNixOSUpdate = pkgs.writeShellScript "CheckNixOSUpdate" ''
-    github_url="https://api.github.com/repos/NixOS/nixpkgs/git/refs/heads/nixos-unstable"
-
-    current_revision=$(nixos-version --revision)
-    remote_revision=$(curl -s --retry 5 -m 5 $github_url | jq '.object.sha' -r)
-
-    update='{"icon":"upd","state":"Info", "text": "Update"}'
-    no_update='{"icon":"","state":"Idle", "text":""}'
-
-    if [[ $(date +%u) == [6-7] ]]; then
-      if [[ $current_revision == $remote_revision ]]; then
-        echo $no_update
-      else
-        echo $update
-      fi
-    else
-      echo $no_update
-    fi
-  '';
-
   checkKernel = pkgs.writeShellScript "checkKernel" ''
     echo '{"icon":"tux", "text": "'$(uname -r)'"}'
   '';
@@ -51,13 +31,6 @@ in
 
     bars =
       let
-        nixOSUpdate = {
-          block = "custom";
-          command = checkNixOSUpdate;
-          interval = "once";
-          json = true;
-        };
-
         tuxBlock =
           {
             block = "custom";
@@ -215,7 +188,6 @@ in
         top = {
           inherit settings;
           blocks = lib.lists.flatten [
-            nixOSUpdate
             tuxBlock
             cpuBlock
             loadBlock
