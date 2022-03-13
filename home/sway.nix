@@ -40,10 +40,8 @@ let
   autostart-script = pkgs.writeScriptBin "autostart" ''
     #!${pkgs.bash}/bin/bash
 
-    if [[ $(date +%u) == [1-5] ]]; then
-      ${pkgs.firefox}/bin/firefox &!
-      ${pkgs.alacritty}/bin/alacritty -e ${pkgs.tmuxinator}/bin/tmuxinator start default &!
-    fi
+    ${pkgs.firefox}/bin/firefox &!
+    ${pkgs.alacritty}/bin/alacritty -e ${pkgs.tmuxinator}/bin/tmuxinator start default &!
   '';
 
 in
