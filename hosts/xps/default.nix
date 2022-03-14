@@ -20,8 +20,7 @@
   };
 
   device = {
-    name = "xps";
-    monitorName = "DP-1";
+    graphicsEnv = "xorg";
   };
 
   services.logind.lidSwitch = "ignore";
