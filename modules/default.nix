@@ -5,7 +5,7 @@ with lib; {
     name = mkOption {
       type = types.enum [ "thinkpad" "xps" "desktop" ];
       description = "Name of device";
-      default = "thinkpad";
+      default = "xps";
     };
 
     type = mkOption {
@@ -17,7 +17,7 @@ with lib; {
     monitorName = mkOption {
       type = types.enum [ "DP-1" "DP-2" "DP-3" ];
       description = "Monitor name in Sway";
-      default = "DP-2";
+      default = "DP-1";
     };
 
     graphicsEnv = mkOption {
@@ -27,12 +27,12 @@ with lib; {
 
     videoDriver = mkOption {
       type = types.enum [ "amdgpu" "nvidia" "intel" "modesetting" ];
-      default = "nvidia";
+      default = "modesetting";
     };
 
     xorgDpi = mkOption {
       type = types.enum [ 192 142 ];
-      default = 192;
+      default = 142;
     };
   };
 
