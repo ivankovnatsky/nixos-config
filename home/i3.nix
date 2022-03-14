@@ -3,6 +3,8 @@
 let
   modifier = "Mod4";
 
+  fontSize = if config.device.xorgDpi == 192 then "20" else "14";
+
   blackColorHTML = "#000000";
   whiteColorHTML = "#ffffff";
 
@@ -59,7 +61,7 @@ in
 
       terminal = "alacritty";
       menu = ''
-        ${pkgs.bemenu}/bin/bemenu-run --fn "${config.variables.fontGeneral} 20" --list 3 -n -f --ifne -p "" --hb "${whiteColorHTML}" --hf "${blackColorHTML}"'';
+        ${pkgs.bemenu}/bin/bemenu-run --fn "${config.variables.fontGeneral} ${fontSize}" --list 3 -n -f --ifne -p "" --hb "${whiteColorHTML}" --hf "${blackColorHTML}"'';
 
       modifier = "${modifier}";
 

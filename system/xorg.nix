@@ -8,6 +8,12 @@
 
   environment.systemPackages = with pkgs; [ arandr maim xclip xorg.xev ];
 
+  environment = {
+    variables = {
+      BEMENU_SCALE = "1";
+    };
+  };
+
   services = {
     clipmenu.enable = true;
 
