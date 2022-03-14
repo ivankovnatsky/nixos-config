@@ -12,13 +12,13 @@
 
   outputs = inputs:
     let
-      makeNixosConfig = { hostname ? "thinkpad", system ? "x86_64-linux" }:
+      makeNixosConfig = { hostname ? "xps", system ? "x86_64-linux", modules, homeModules }:
         inputs.nixpkgs.lib.nixosSystem {
           inherit system;
 
           modules = [
             {
-              imports = [ ./hosts/${hostname} ./system ./system/wayland.nix ];
+              imports = [ ./hosts/${hostname} ./system ];
               nixpkgs.overlays = [ inputs.self.overlay inputs.nur.overlay ];
             }
 
@@ -27,7 +27,7 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.ivan = {
-                imports = [ ./home ./home/sway.nix ];
+                imports = [ ./home ] ++ homeModules;
                 home.stateVersion = config.system.stateVersion;
               };
 
@@ -36,7 +36,7 @@
                 super = config;
               };
             })
-          ];
+          ] ++ modules;
 
           specialArgs = { inherit inputs; };
         };
@@ -44,10 +44,21 @@
     in
     {
       nixosConfigurations = {
-        thinkpad = makeNixosConfig { };
-
         xps = makeNixosConfig {
-          hostname = "xps";
+          modules = [
+            ./system/xorg.nix
+          ];
+
+          homeModules = [ ./home/i3.nix ];
+        };
+
+        thinkpad = makeNixosConfig {
+          hostname = "thinkpad";
+          modules = [
+            ./system/wayland.nix
+          ];
+
+          homeModules = [ ./home/sway.nix ];
         };
       };
 
