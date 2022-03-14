@@ -110,7 +110,12 @@ in
 
       assigns = {
         "1" = [{ class = "^Alacritty$"; }];
-        "2" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; }];
+        "2" = [{ class = "^Firefox$"; }];
+        "3" = [{ class = "^Chromium-browser$"; }];
+        "4" = [{ class = "^Google-chrome$"; }];
+        "6" = [{ class = "^ViberPC$"; }];
+        "7" = [{ class = "^Jami$"; }];
+        "8" = [{ class = "^Signal$"; }];
       };
 
       workspaceLayout = "tabbed";
