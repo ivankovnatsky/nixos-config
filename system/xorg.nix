@@ -2,9 +2,8 @@
 
 {
   imports = [
-    ./autorandr.nix
     ./i3.nix
-    ./xserver-hidpi.nix
+    ./xserver-laptop.nix
   ];
 
   environment.systemPackages = with pkgs; [ arandr maim xclip xorg.xev ];
