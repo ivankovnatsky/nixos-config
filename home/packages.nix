@@ -8,6 +8,7 @@ let
 in
 {
   home.packages = with pkgs; [
+    tdesktop
     signal-desktop
     _1password
     awscli2

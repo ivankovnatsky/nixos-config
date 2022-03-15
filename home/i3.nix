@@ -113,6 +113,7 @@ in
         "2" = [{ class = "^Firefox$"; }];
         "3" = [{ class = "^Chromium-browser$"; }];
         "4" = [{ class = "^Google-chrome$"; }];
+        "5" = [{ class = "^TelegramDesktop$"; }];
         "6" = [{ class = "^ViberPC$"; }];
         "7" = [{ class = "^Jami$"; }];
         "8" = [{ class = "^Signal$"; }];
