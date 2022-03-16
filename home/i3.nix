@@ -118,6 +118,7 @@ in
         "7" = [{ class = "^ViberPC$"; }];
         "8" = [{ class = "^Jami$"; }];
         "9" = [{ class = "^Signal$"; }];
+        "0" = [{ class = "^discord$"; }];
       };
 
       workspaceLayout = "tabbed";
