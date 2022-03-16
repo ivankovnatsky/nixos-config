@@ -8,6 +8,8 @@ let
 in
 {
   home.packages = with pkgs; [
+    slack
+    discord
     tdesktop
     signal-desktop
     _1password
