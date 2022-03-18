@@ -1,7 +1,7 @@
-{ pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 
 let
-  termName = import ../home/tmux.nix { inherit pkgs; };
+  termName = import ../home/tmux.nix { inherit config pkgs; };
 
   waylandEnablement = pkgs.writeShellScript "wayland-enablement" ''
     export CLUTTER_BACKEND=wayland
