@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   programs.tmux = {
@@ -52,7 +52,9 @@
           - work-editor:
               panes:
                 - nvim
+              root: ${config.secrets.workRootDir}
           - work-cli:
+              root: ${config.secrets.workRootDir}
           - home-editor:
               panes:
                 - nvim
