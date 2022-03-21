@@ -8,6 +8,7 @@ let
 in
 {
   home.packages = with pkgs; [
+    zoom-us
     slack
     discord
     tdesktop
