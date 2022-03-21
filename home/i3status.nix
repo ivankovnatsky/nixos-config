@@ -100,7 +100,7 @@ in
 
           format = {
             full = "{icon} {used:1}/{total}";
-            short = "";
+            short = "{icon} {used:1}/{total}";
           };
         };
 
