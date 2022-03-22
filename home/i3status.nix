@@ -67,7 +67,7 @@ in
 
             format = {
               full = "{max:1}";
-              short = "{max:1}";
+              short = "";
             };
           };
 
@@ -109,19 +109,28 @@ in
           hide_inactive = true;
           interval = 10;
 
-          format = "{speed_down:1} {speed_up:1} {ssid} {signal_strength}";
+          format = {
+            full = "{speed_down:1} {speed_up:1} {ssid} {signal_strength}";
+            short = "";
+          };
         };
 
         bluetoothBlock = {
           block = "bluetooth";
           mac = "CC:98:8B:D1:40:88";
-          format = "{percentage:1}";
+          format = {
+            full = "{percentage:1}";
+            short = "";
+          };
         };
 
         soundBlock = {
           block = "sound";
-          format = "{volume}";
           on_click = "pavucontrol --tab=3";
+          format = {
+            full = "{volume}";
+            short = "";
+          };
         };
 
         batteryBlock =
