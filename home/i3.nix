@@ -31,6 +31,7 @@ in
 {
   home.packages = with pkgs; [
     xidlehook
+    ffmpeg
   ];
 
   xsession.windowManager.i3 = {
