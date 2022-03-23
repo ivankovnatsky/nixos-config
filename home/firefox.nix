@@ -37,7 +37,14 @@
           "network.allow-experiments" = false;
           "permissions.default.desktop-notification" = 2;
           "widget.wayland-dmabuf-vaapi.enabled" = true;
+          "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
         };
+
+        userChrome = ''
+          #TabsToolbar {
+            visibility: collapse;
+          }
+        '';
       };
     };
   };
