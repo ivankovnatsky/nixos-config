@@ -30,6 +30,7 @@ let
     slack &!
     telegram-desktop &!
     signal-desktop &!
+    zoom &!
   '';
 in
 {
