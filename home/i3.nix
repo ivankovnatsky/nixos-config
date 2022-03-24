@@ -29,6 +29,7 @@ let
     google-chrome-stable &!
     slack &!
     telegram-desktop &!
+    viber &!
     signal-desktop &!
     zoom &!
   '';
