@@ -32,6 +32,7 @@ let
     viber &!
     signal-desktop &!
     zoom &!
+    nm-applet &!
   '';
 in
 {
