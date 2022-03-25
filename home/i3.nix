@@ -117,7 +117,7 @@ in
 
       assigns = {
         "1" = [{ class = "^Alacritty$"; }];
-        "2" = [{ class = "^Firefox$"; }];
+        "2" = [{ class = "^firefox$"; }];
         "3" = [{ class = "^Chromium-browser$"; }];
         "4" = [{ class = "^Google-chrome$"; }];
         "5" = [{ class = "^Slack$"; }];
