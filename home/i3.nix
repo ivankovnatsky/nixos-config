@@ -23,16 +23,8 @@ let
   autostart-script = pkgs.writeScriptBin "autostart" ''
     #!${pkgs.bash}/bin/bash
 
-    ${pkgs.firefox}/bin/firefox &!
     ${pkgs.alacritty}/bin/alacritty -e ${pkgs.tmuxinator}/bin/tmuxinator start default &!
-    chromium &!
-    google-chrome-stable &!
-    slack &!
-    telegram-desktop &!
-    viber &!
-    signal-desktop &!
-    zoom &!
-    nm-applet &!
+    ${pkgs.firefox}/bin/firefox &!
   '';
 in
 {
