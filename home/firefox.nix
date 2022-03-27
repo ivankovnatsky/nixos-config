@@ -24,7 +24,9 @@
 
         settings = {
           "browser.contentblocking.category" = "strict";
-          "browser.ctrlTab.recentlyUsedOrder" = false;
+          "browser.ctrlTab.recentlyUsedOrder" = true;
+          "browser.ctrlTab.sortByRecentlyUsed" = true;
+          "browser.engagement.ctrlTab.has-used" = true;
           "browser.download.dir" = "/tmp";
           "browser.fullscreen.autohide" = false;
           "browser.safebrowsing.appRepURL" = "";
