@@ -52,6 +52,7 @@ in
     kubectl-tree
     kubectx
     kubernetes-helm
+    kube-score
     kubetail
     mtr
     nixpkgs-fmt
