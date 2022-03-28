@@ -192,13 +192,6 @@
       }
 
       {
-        plugin = lens-vim;
-        config = ''
-          let g:lens#disabled_filetypes = ['NvimTree', 'fzf']
-        '';
-      }
-
-      {
         plugin = vim-markdown;
         config = ''
           let g:vim_markdown_folding_disabled = 1
