@@ -54,6 +54,7 @@ in
     kubernetes-helm
     kube-score
     kubetail
+    krelay
     mtr
     nixpkgs-fmt
     nixpkgs-review
