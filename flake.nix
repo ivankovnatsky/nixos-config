@@ -63,6 +63,7 @@
       };
 
       overlay = final: prev: {
+        krelay = final.callPackage ./overlays/krelay.nix { };
         helm-secrets = final.callPackage ./overlays/helm-secrets.nix { };
         bloomrpc = final.callPackage ./overlays/bloomrpc.nix { };
         rbw = final.callPackage ./overlays/rbw.nix {
