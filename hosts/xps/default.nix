@@ -23,7 +23,10 @@
     graphicsEnv = "xorg";
   };
 
-  services.logind.lidSwitch = "ignore";
+  services.logind = {
+    extraConfig = "HandlePowerKey=hibernate";
+    lidSwitch = "hibernate";
+  };
 
   system.stateVersion = "22.05";
 }
