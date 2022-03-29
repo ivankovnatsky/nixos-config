@@ -8,6 +8,8 @@ let
 in
 {
   home.packages = with pkgs; [
+    dbeaver
+    jless
     zoom-us
     slack
     discord

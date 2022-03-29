@@ -111,7 +111,6 @@
             view = {
               side = 'left',
               width = 40,
-              auto_resize = true,
             },
             git = {
               enable = true,
