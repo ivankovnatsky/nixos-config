@@ -111,7 +111,7 @@ in
 
           format = {
             full = "{speed_down:1} {speed_up:1} {ssid} {signal_strength}";
-            short = "";
+            short = "{speed_down:1} {speed_up:1} {ssid} {signal_strength}";
           };
         };
 
