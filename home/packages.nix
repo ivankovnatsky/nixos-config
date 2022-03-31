@@ -8,6 +8,7 @@ let
 in
 {
   home.packages = with pkgs; [
+    jetbrains.datagrip
     dbeaver
     jless
     zoom-us
