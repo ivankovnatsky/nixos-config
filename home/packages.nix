@@ -8,6 +8,7 @@ let
 in
 {
   home.packages = with pkgs; [
+    podman-compose
     jetbrains.datagrip
     dbeaver
     jless
