@@ -8,24 +8,17 @@ let
 in
 {
   home.packages = with pkgs; [
-    podman-compose
-    jetbrains.datagrip
-    dbeaver
-    jless
-    zoom-us
-    slack
-    discord
-    tdesktop
-    signal-desktop
     _1password
     awscli2
     aws-vault
     bemenu
     bloomrpc
     bwget
+    dbeaver
     delta
     dhall
     dhall-json
+    discord
     dogdns
     du-dust
     duf
@@ -44,13 +37,16 @@ in
     htop
     imagemagick
     ipcalc
-    jami-daemon
     jami-client-qt
+    jami-daemon
+    jetbrains.datagrip
+    jless
     jq
     jsonnet
     k9s
     keepassxc
     killall
+    krelay
     kubecolor
     kubectl
     kubectl-tree
@@ -58,7 +54,6 @@ in
     kubernetes-helm
     kube-score
     kubetail
-    krelay
     mtr
     nixpkgs-fmt
     nixpkgs-review
@@ -67,15 +62,19 @@ in
     nodePackages.peerflix
     openssl
     p7zip
+    podman-compose
     postgresql
     procs
     protonvpn-cli
     python38
     rclone
     ripgrep
+    signal-desktop
+    slack
     sops
     ssm-session-manager-plugin
     syncthing
+    tdesktop
     tealdeer
     terraform
     terraformer
@@ -88,5 +87,6 @@ in
     yamllint
     youtube-dl
     zip
+    zoom-us
   ];
 }
