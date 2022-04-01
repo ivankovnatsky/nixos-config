@@ -61,6 +61,24 @@
               root: ~/Sources/github.com/ivankovnatsky/nixos-config/
           - home-cli:
               root: ~/Sources/github.com/ivankovnatsky/nixos-config/
+          - shell:
+            - tmux set-window-option -t4 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t5 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t6 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t7 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t8 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t9 automatic-rename on
+            - clear
       '';
     };
   };
