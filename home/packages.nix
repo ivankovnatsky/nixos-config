@@ -8,6 +8,7 @@ let
 in
 {
   home.packages = with pkgs; [
+    asciinema
     _1password
     awscli2
     aws-vault
