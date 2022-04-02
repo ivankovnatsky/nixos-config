@@ -19,10 +19,6 @@
     cpu.intel.updateMicrocode = true;
   };
 
-  device = {
-    graphicsEnv = "xorg";
-  };
-
   services.logind = {
     extraConfig = "HandlePowerKey=hibernate";
     lidSwitch = "hibernate";
