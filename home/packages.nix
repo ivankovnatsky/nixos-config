@@ -68,6 +68,7 @@ in
     procs
     protonvpn-cli
     python38
+    python38Packages.j2cli
     rclone
     ripgrep
     signal-desktop
