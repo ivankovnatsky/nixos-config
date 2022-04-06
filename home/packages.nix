@@ -8,6 +8,7 @@ let
 in
 {
   home.packages = with pkgs; [
+    element-desktop
     asciinema
     _1password
     awscli2
