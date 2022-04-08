@@ -20,7 +20,6 @@
 
       settings = {
         add_newline = false;
-        line_break.disabled = true;
         aws.format = "on [$symbol$profile]($style) ";
         gcloud.disabled = true;
         git_status.disabled = false;
