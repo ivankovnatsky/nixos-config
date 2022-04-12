@@ -109,9 +109,8 @@ in
 
       assigns = {
         "1" = [{ class = "^Alacritty$"; }];
-        "2" = [{ class = "^firefox$"; }];
-        "3" = [{ class = "^Chromium-browser$"; }];
-        "4" = [{ class = "^Google-chrome$"; }];
+        "2" = [{ class = "^firefox$"; } { class = "^Chromium-browser$"; }];
+        "3" = [{ class = "^Google-chrome$"; }];
         "5" = [{ class = "^Slack$"; }];
         "6" = [{ class = "^TelegramDesktop$"; }];
         "7" = [{ class = "^ViberPC$"; }];
