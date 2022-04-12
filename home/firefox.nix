@@ -38,7 +38,7 @@
           "browser.toolbars.bookmarks.visibility" = "never";
           "dom.security.https_only_mode" = true;
           "extensions.pocket.enabled" = false;
-          "general.smoothScroll" = true;
+          "general.smoothScroll" = false;
           "geo.enabled" = false;
           "gfx.webrender.all" = true;
           "media.videocontrols.picture-in-picture.enabled" = false;

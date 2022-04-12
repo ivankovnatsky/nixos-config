@@ -46,10 +46,10 @@
       nixosConfigurations = {
         xps = makeNixosConfig {
           modules = [
-            ./system/wayland.nix
+            ./system/xorg.nix
           ];
 
-          homeModules = [ ./home/sway.nix ];
+          homeModules = [ ./home/i3.nix ];
         };
 
         thinkpad = makeNixosConfig {
