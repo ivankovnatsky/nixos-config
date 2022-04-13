@@ -51,6 +51,7 @@
           "privacy.donottrackheader.value" = 1;
           "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
           "widget.wayland-dmabuf-vaapi.enabled" = true;
+          "security.sandbox.content.level" = 3;
         };
 
         userChrome = ''
