@@ -1,16 +1,7 @@
 { config, pkgs, ... }:
 
-let
-  viber-wayland = pkgs.writeScriptBin "viber-wayland" ''
-    #!/usr/bin/env bash
-
-    QT_QPA_PLATFORM=xcb ${pkgs.viber}/bin/viber
-  '';
-in
 {
   environment.systemPackages = with pkgs; [
-    viber-wayland
-    viber
     acpi
     binutils-unwrapped
     brightnessctl
