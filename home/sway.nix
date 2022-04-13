@@ -201,6 +201,7 @@ in
         "2" = [{ app_id = "firefox"; }];
         "3" = [{ app_id = "chromium-browser"; }];
         "4" = [{ app_id = "google-chrome"; }];
+        "5" = [{ app_id = "Slack"; }];
         "6" = [{ app_id = "telegramdesktop"; }];
         "7" = [{ class = "ViberPC"; }];
       };
