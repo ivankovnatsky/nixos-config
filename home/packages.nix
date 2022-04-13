@@ -16,7 +16,6 @@ in
     bemenu
     bloomrpc
     bwget
-    dbeaver
     delta
     dhall
     dhall-json
