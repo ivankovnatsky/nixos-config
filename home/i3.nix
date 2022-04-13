@@ -115,7 +115,6 @@ in
         "6" = [{ class = "^TelegramDesktop$"; }];
         "7" = [{ class = "^ViberPC$"; }];
         "8" = [
-          { class = "^Jami$"; }
           { class = "^jetbrains-datagrip$"; }
         ];
         "9" = [{ class = "^Signal$"; }];
