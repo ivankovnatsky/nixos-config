@@ -113,7 +113,6 @@ in
         "3" = [{ class = "^Google-chrome$"; }];
         "5" = [{ class = "^Slack$"; }];
         "6" = [{ class = "^TelegramDesktop$"; }];
-        "7" = [{ class = "^ViberPC$"; }];
         "8" = [
           { class = "^jetbrains-datagrip$"; }
         ];

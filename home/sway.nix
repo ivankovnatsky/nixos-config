@@ -203,7 +203,6 @@ in
         "4" = [{ app_id = "google-chrome"; }];
         "5" = [{ app_id = "Slack"; }];
         "6" = [{ app_id = "telegramdesktop"; }];
-        "7" = [{ class = "ViberPC"; }];
       };
 
       workspaceLayout = "tabbed";
