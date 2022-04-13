@@ -39,8 +39,6 @@ in
     htop
     imagemagick
     ipcalc
-    jami-client-qt
-    jami-daemon
     jetbrains.datagrip
     jless
     jq
