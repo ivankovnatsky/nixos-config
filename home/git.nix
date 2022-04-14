@@ -14,7 +14,6 @@ in
     gitAndTools.pre-commit
     git-crypt
     pinentry
-    (rbw.override { withFzf = true; })
     tig
   ];
 
