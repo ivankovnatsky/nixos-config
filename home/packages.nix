@@ -8,7 +8,6 @@ let
 in
 {
   home.packages = with pkgs; [
-    element-desktop
     asciinema
     _1password
     awscli2
@@ -19,7 +18,6 @@ in
     delta
     dhall
     dhall-json
-    discord
     dogdns
     du-dust
     duf
@@ -69,12 +67,9 @@ in
     python38Packages.j2cli
     rclone
     ripgrep
-    signal-desktop
-    slack
     sops
     ssm-session-manager-plugin
     syncthing
-    tdesktop
     tealdeer
     terraform
     terraformer
@@ -87,6 +82,5 @@ in
     yamllint
     youtube-dl
     zip
-    zoom-us
   ];
 }
