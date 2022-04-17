@@ -111,15 +111,8 @@ in
         "1" = [{ class = "^Alacritty$"; }];
         "2" = [{ class = "^firefox$"; } { class = "^Chromium-browser$"; }];
         "3" = [{ class = "^Google-chrome$"; }];
-        "5" = [{ class = "^Slack$"; }];
-        "6" = [{ class = "^TelegramDesktop$"; }];
         "8" = [
           { class = "^jetbrains-datagrip$"; }
-        ];
-        "9" = [{ class = "^Signal$"; }];
-        "10" = [
-          { class = "^discord$"; }
-          { class = "^zoom$"; }
         ];
       };
 

@@ -42,7 +42,6 @@ let
 
     ${pkgs.alacritty}/bin/alacritty -e ${pkgs.tmuxinator}/bin/tmuxinator start default &!
     ${pkgs.firefox}/bin/firefox &!
-    slack &!
   '';
 
 in
@@ -202,8 +201,6 @@ in
         "2" = [{ app_id = "firefox"; }];
         "3" = [{ app_id = "chromium-browser"; }];
         "4" = [{ app_id = "google-chrome"; }];
-        "5" = [{ app_id = "Slack"; }];
-        "6" = [{ app_id = "telegramdesktop"; }];
       };
 
       workspaceLayout = "tabbed";
