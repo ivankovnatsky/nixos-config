@@ -74,7 +74,6 @@
       vim-lastplace
       vim-repeat
       vim-sensible
-
       {
         plugin = vim-sneak;
         config = ''
@@ -185,13 +184,6 @@
             }
           end
           EOF
-        '';
-      }
-
-      {
-        plugin = ale;
-        config = ''
-          let b:ale_linters = ['pylint', 'mdl']
         '';
       }
 
