@@ -8,6 +8,7 @@ let
 in
 {
   home.packages = with pkgs; [
+    istioctl
     asciinema
     _1password
     awscli2
