@@ -74,6 +74,7 @@
       vim-lastplace
       vim-repeat
       vim-sensible
+      git-blame-nvim
       {
         plugin = vim-sneak;
         config = ''
