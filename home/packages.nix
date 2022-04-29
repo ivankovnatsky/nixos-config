@@ -8,7 +8,7 @@ let
 in
 {
   home.packages = with pkgs; [
-    wineWowPackages.waylandFull
+    wineWowPackages.staging
     istioctl
     asciinema
     _1password
