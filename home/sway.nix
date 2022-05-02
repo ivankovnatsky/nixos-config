@@ -42,6 +42,7 @@ let
 
     ${pkgs.alacritty}/bin/alacritty -e ${pkgs.tmuxinator}/bin/tmuxinator start default &!
     ${pkgs.firefox}/bin/firefox &!
+    chromium &!
   '';
 
 in
