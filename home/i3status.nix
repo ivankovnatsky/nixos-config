@@ -87,7 +87,7 @@ in
         swapBlock = {
           block = "memory";
           display_type = "swap";
-          format_swap = "{swap_used}/{swap_total:1}";
+          format_swap = "{swap_used:1}/{swap_total:1}";
         };
 
         diskBlock = {
