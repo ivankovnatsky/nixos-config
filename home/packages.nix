@@ -8,6 +8,7 @@ let
 in
 {
   home.packages = with pkgs; [
+    tfk8s
     wineWowPackages.staging
     istioctl
     asciinema
