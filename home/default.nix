@@ -1,12 +1,12 @@
 { config, pkgs, super, ... }:
 
 let editorName = "nvim";
-    inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
+  inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
 
 in
 {
   imports = [
-    ./alacritty-config.nix
+    ./alacritty.nix
     ./neovim
     ./git.nix
     ./tmux.nix
