@@ -3,11 +3,7 @@
 let
   inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
 
-  git-credential-bw = pkgs.writeScriptBin "git-credential-bw" ''
-    ${toString(builtins.readFile ../files/git-credential-bw.sh)}
-  '';
 
-  homeCredentialHelper = if isDarwin then "osxkeychain" else "${pkgs.rbw}/bin/git-credential-rbw";
 in
 {
   home.packages = with pkgs; [
@@ -51,7 +47,7 @@ in
       push.default = "current";
 
       credential = {
-        helper = "${homeCredentialHelper}";
+        helper = "${pkgs.rbw}/bin/git-credential-rbw";
       };
 
       ghq = {
