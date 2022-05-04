@@ -2,6 +2,7 @@
 
 {
   home.packages = with pkgs; [
+    gnused
     tfk8s
     istioctl
     _1password
