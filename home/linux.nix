@@ -65,12 +65,8 @@ in
     };
   };
 
-  programs.password-store = {
-    enable = true;
-    package = pkgs.pass.withExtensions (exts: [ exts.pass-otp ]);
-  };
-
   home.packages = with pkgs; [
+    alacritty
     bemenu
     ranger
     file
@@ -94,17 +90,6 @@ in
       text = ''
         set show_hidden true
       '';
-    };
-  };
-
-  programs.rbw = {
-    enable = true;
-    package = (pkgs.rbw.override { withFzf = true; });
-
-    settings = {
-      email = "${config.secrets.email}";
-      lock_timeout = 2419200;
-      pinentry = pkgs.pinentry;
     };
   };
 
