@@ -15,6 +15,8 @@
     python38Packages.pip
     python38Packages.grip
     python38Packages.pylint
+
+    ripgrep
   ];
 
   programs.neovim = {
@@ -126,12 +128,6 @@
 
           require'nvim-tree.view'.View.winopts.relativenumber = true
           EOF
-        '';
-      }
-      {
-        plugin = vim-jsonnet;
-        config = ''
-          autocmd FileType jsonnet setlocal ts=2 sts=2 sw=2 expandtab
         '';
       }
       {

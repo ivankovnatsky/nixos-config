@@ -7,6 +7,9 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
+    darwin.url = "github:lnl7/nix-darwin/master";
+    darwin.inputs.nixpkgs.follows = "nixpkgs";
+
     nur.url = "github:nix-community/NUR";
   };
 
@@ -18,7 +21,7 @@
 
           modules = [
             {
-              imports = [ ./hosts/${hostname} ./system ];
+              imports = [ ./hosts/${hostname} ./system ./system/linux.nix ];
               nixpkgs.overlays = [ inputs.self.overlay inputs.nur.overlay ];
             }
 
@@ -27,7 +30,7 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.ivan = {
-                imports = [ ./home ] ++ homeModules;
+                imports = [ ./home ./home/linux.nix ] ++ homeModules;
                 home.stateVersion = config.system.stateVersion;
               };
 
@@ -36,6 +39,38 @@
                 super = config;
               };
             })
+          ] ++ modules;
+
+          specialArgs = { inherit inputs; };
+        };
+
+      makeDarwinConfig = { hostname ? "xps", system ? "aarch64-darwin", modules, homeModules }:
+        inputs.darwin.lib.darwinSystem {
+          inherit system;
+
+          modules = [
+            {
+              imports = [ ./hosts/macbook ];
+              nixpkgs.overlays = [ inputs.self.overlay ];
+            }
+
+            inputs.home-manager.darwinModules.home-manager
+            ({ config, system, ... }: {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.ivan = {
+                imports = [
+                  ./home/hammerspoon
+                  ./home/default.nix
+                ];
+              };
+
+              home-manager.extraSpecialArgs = {
+                inherit inputs system;
+                super = config;
+              };
+            })
+
           ] ++ modules;
 
           specialArgs = { inherit inputs; };
@@ -62,9 +97,16 @@
         };
       };
 
+      darwinConfigurations = {
+        "Ivans-MacBook-Air" = makeDarwinConfig {
+          hostname = "Ivans-MacBook-Air";
+          modules = [ ];
+          homeModules = [ ];
+        };
+      };
+
       overlay = final: prev: {
         helm-secrets = final.callPackage ./overlays/helm-secrets.nix { };
-        bloomrpc = final.callPackage ./overlays/bloomrpc.nix { };
       };
 
       packages.x86_64-linux = (builtins.head (builtins.attrValues inputs.self.nixosConfigurations)).pkgs;

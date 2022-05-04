@@ -6,7 +6,6 @@
     binutils-unwrapped
     brightnessctl
     dmidecode
-    bitwarden-cli
     dnsutils
     geteltorito
     gimp

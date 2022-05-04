@@ -1,88 +1,34 @@
 { pkgs, ... }:
 
-let
-  bwget = pkgs.writeScriptBin "bwget" ''
-    ${toString(builtins.readFile ../files/bwget.sh)}
-  '';
-
-in
 {
   home.packages = with pkgs; [
     tfk8s
-    wineWowPackages.staging
     istioctl
-    asciinema
     _1password
     awscli2
     aws-vault
-    bemenu
-    bwget
-    delta
     dhall
     dhall-json
     dogdns
     du-dust
-    duf
-    envsubst
-    exiftool
-    file
     genpass
     ghq
-    gitleaks
-    gnumake
-    go
-    google-cloud-sdk
-    grpcui
-    grpcurl
-    hcloud
     htop
-    imagemagick
-    ipcalc
-    jetbrains.datagrip
-    jless
     jq
-    jsonnet
     k9s
-    keepassxc
-    killall
     krelay
-    kubecolor
     kubectl
-    kubectl-tree
     kubectx
     kubernetes-helm
-    kube-score
     kubetail
-    mtr
     nixpkgs-fmt
     nixpkgs-review
-    nix-tree
-    nmap
-    nodePackages.peerflix
-    openssl
-    p7zip
-    podman-compose
-    postgresql
-    procs
-    protonvpn-cli
-    python38
-    python38Packages.j2cli
-    rclone
-    ripgrep
     sops
-    ssm-session-manager-plugin
     syncthing
     tealdeer
     terraform
-    terraformer
-    tflint
-    unzip
-    viddy
     wget
-    whois
     yamlfix
     yamllint
-    youtube-dl
-    zip
   ];
 }

@@ -1,18 +1,16 @@
 { config, pkgs, super, ... }:
 
 let editorName = "nvim";
+    inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
 
 in
 {
   imports = [
+    ./alacritty-config.nix
     ./neovim
-    ./alacritty.nix
-    ./firefox.nix
     ./git.nix
-    ./gtk.nix
-    ./i3status.nix
-    ./packages.nix
     ./tmux.nix
+    ./packages.nix
     ./zsh.nix
 
     ../modules/default.nix
@@ -20,49 +18,9 @@ in
     ../modules/secrets.nix
   ];
 
-  home.sessionVariables = {
-    AWS_VAULT_BACKEND = "pass";
-    EDITOR = editorName;
-    LPASS_AGENT_TIMEOUT = "0";
-    PASSWORD_STORE_DIR = "/home/ivan/.password-store";
-    VISUAL = editorName;
-  };
-
   programs.bat = {
     enable = true;
     config = { tabs = "0"; };
-  };
-
-  programs.go = {
-    enable = true;
-
-    goPath = "go";
-  };
-
-  programs.gpg.enable = true;
-
-  services = {
-    gpg-agent.enable = true;
-  };
-
-  programs.mpv = {
-    enable = true;
-    config = {
-      "alang" = "eng";
-      "force-seekable" = "yes";
-      "fs" = "yes";
-      "hwdec" = "yes";
-      "opengl-pbo" = "yes";
-      "osc" = "no";
-      "osd-level" = "0";
-      "save-position-on-quit" = "yes";
-      "slang" = "eng";
-      "ytdl-format" = "bestvideo+bestaudio/best";
-      "image-display-duration" = "5";
-      "vo" = "gpu";
-      "profile" = "gpu-hq";
-      "audio-channels" = 2;
-    };
   };
 
   programs.password-store = {
@@ -90,11 +48,6 @@ in
     };
   };
 
-  programs.taskwarrior = {
-    enable = true;
-    dataLocation = "/home/ivan/.task/";
-  };
-
   home.file = {
     ".local/share/helm/plugins/helm-secrets".source = (config.lib.file.mkOutOfStoreSymlink
       "${pkgs.helm-secrets}");
@@ -115,20 +68,6 @@ in
       text = ''
         document-start: disable
       '';
-    };
-  };
-
-  services = {
-    ${config.variables.nightShiftManager} = {
-      enable = true;
-
-      latitude = "49.8";
-      longitude = "29.9";
-
-      temperature = {
-        day = 5500;
-        night = 3700;
-      };
     };
   };
 
