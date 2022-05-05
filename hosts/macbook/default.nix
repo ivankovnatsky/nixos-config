@@ -13,10 +13,17 @@
 
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
-  environment.systemPackages = [
-    pkgs.gnupg
-    pkgs.syncthing
+  environment.systemPackages = with pkgs; [
+    gnupg
+    syncthing
+    podman
+    qemu
   ];
+
+  environment.etc."containers/containers.conf.d/99-gvproxy-path.conf".text = ''
+    [engine]
+    helper_binaries_dir = ["${pkgs.gvproxy}/bin"]
+  '';
 
   device = {
     name = "mac";
@@ -87,17 +94,11 @@
     "firefox"
     "font-hack-nerd-font"
     "google-chrome"
+    "chromium"
     "hammerspoon"
   ];
 
-
-  services.nextdns = {
-    enable = true;
-    arguments = [
-      "-config"
-      "${config.secrets.nextDNSID}"
-      "-report-client-info"
-      "-auto-activate"
-    ];
+  homebrew.masApps = {
+    "NextDNS" = 1464122853;
   };
 }
