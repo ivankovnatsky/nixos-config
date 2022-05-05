@@ -70,17 +70,10 @@ in
     bemenu
     ranger
     file
-    wineWowPackages.staging
     gnumake
-    imagemagick
-    jetbrains.datagrip
-    keepassxc
     killall
     openssl
-    p7zip
-    postgresql
     procs
-    protonvpn-cli
     whois
     zip
   ];
