@@ -12,9 +12,7 @@
     black
     shellcheck
 
-    python38Packages.pip
     python38Packages.grip
-    python38Packages.pylint
 
     ripgrep
   ];
