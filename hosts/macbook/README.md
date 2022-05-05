@@ -1,9 +1,15 @@
 # nix-darwin
 
-nix-darwin:
+Install nix stable:
 
 ```
 <(curl -L https://nixos.org/nix/install) --darwin-use-unencrypted-nix-store-volume
+```
+
+Or unstable:
+
+```
+sh <(curl -L https://github.com/numtide/nix-unstable-installer/releases/download/nix-2.9.0pre20220428_660835d/install)
 ```
 
 Follow instructions here:
