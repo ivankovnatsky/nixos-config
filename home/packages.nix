@@ -2,6 +2,7 @@
 
 {
   home.packages = with pkgs; [
+    rclone
     delta
     gnused
     tfk8s
