@@ -24,5 +24,7 @@
     lidSwitch = "hibernate";
   };
 
+  programs.steam.enable = true;
+
   system.stateVersion = "22.05";
 }
