@@ -140,6 +140,11 @@ in
             accel_profile = "flat";
             pointer_accel = "-0.7";
           };
+
+          "1133:49271:Logitech_USB_Optical_Mouse" = {
+            accel_profile = "flat";
+            pointer_accel = "-0.7";
+          };
         };
 
       keybindings = lib.mkOptionDefault {
