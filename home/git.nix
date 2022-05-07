@@ -68,10 +68,6 @@ in
         keepBackup = false;
         prompt = true;
       };
-
-      safe = {
-        directory = "*";
-      };
     };
   };
 }
