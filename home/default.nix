@@ -30,6 +30,9 @@ in
   programs.password-store = {
     enable = true;
     package = pkgs.pass.withExtensions (exts: [ exts.pass-otp ]);
+    settings = {
+      PASSWORD_STORE_DIR = "${homeDir}/ivan/.password-store/";
+    };
   };
 
   home.packages = [ pkgs.ranger ];
@@ -45,7 +48,6 @@ in
     AWS_VAULT_BACKEND = "pass";
     EDITOR = editorName;
     LPASS_AGENT_TIMEOUT = "0";
-    PASSWORD_STORE_DIR = "${homeDir}/ivan/.password-store";
     VISUAL = editorName;
   };
 
