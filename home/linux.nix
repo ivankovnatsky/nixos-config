@@ -20,14 +20,6 @@ in
     ../modules/secrets.nix
   ];
 
-  home.sessionVariables = {
-    AWS_VAULT_BACKEND = "pass";
-    EDITOR = editorName;
-    LPASS_AGENT_TIMEOUT = "0";
-    PASSWORD_STORE_DIR = "/home/ivan/.password-store";
-    VISUAL = editorName;
-  };
-
   programs.bat = {
     enable = true;
     config = { tabs = "0"; };
@@ -84,11 +76,6 @@ in
         set show_hidden true
       '';
     };
-  };
-
-  programs.taskwarrior = {
-    enable = true;
-    dataLocation = "/home/ivan/.task/";
   };
 
   home.file = {
