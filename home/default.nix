@@ -1,7 +1,10 @@
 { config, pkgs, super, ... }:
 
-let editorName = "nvim";
+let
+  editorName = "nvim";
   inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
+
+  homeDir = if isDarwin then "/Users" else "/home";
 
 in
 {
@@ -36,6 +39,19 @@ in
         set show_hidden true
       '';
     };
+  };
+
+  home.sessionVariables = {
+    AWS_VAULT_BACKEND = "pass";
+    EDITOR = editorName;
+    LPASS_AGENT_TIMEOUT = "0";
+    PASSWORD_STORE_DIR = "${homeDir}/ivan/.password-store";
+    VISUAL = editorName;
+  };
+
+  programs.taskwarrior = {
+    enable = true;
+    dataLocation = "${homeDir}/ivan/.task/";
   };
 
   programs.rbw = {

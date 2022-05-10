@@ -45,6 +45,8 @@
   # $ darwin-rebuild changelog
   system.stateVersion = 4;
 
+  users.users.ivan.home = "/Users/ivan";
+
   system = {
     defaults = {
 
