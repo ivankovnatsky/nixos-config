@@ -19,6 +19,10 @@
     cpu.intel.updateMicrocode = true;
   };
 
+  device = {
+    monitorName = "DP-3";
+  };
+
   services.logind = {
     extraConfig = "HandlePowerKey=hibernate";
     lidSwitch = "hibernate";
