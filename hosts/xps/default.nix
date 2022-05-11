@@ -23,11 +23,6 @@
     monitorName = "DP-3";
   };
 
-  services.logind = {
-    extraConfig = "HandlePowerKey=hibernate";
-    lidSwitch = "hibernate";
-  };
-
   programs.steam.enable = true;
 
   system.stateVersion = "22.05";
