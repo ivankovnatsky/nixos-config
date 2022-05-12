@@ -15,10 +15,9 @@
 
   networking.hostName = "thinkpad";
 
-  # device = {
-  #   graphicsEnv = "xorg";
-  #   videoDriver = "amdgpu";
-  # };
+  device = {
+    monitorName = "DP-2";
+  };
 
   hardware = {
     # don't install all that firmware:
