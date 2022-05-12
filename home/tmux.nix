@@ -46,15 +46,16 @@
       text = ''
         name: default
         startup_window: 1
-        root: ~/Sources/github.com/elastio
+        root: ${config.secrets.workRootDir}
 
         windows:
           - work-editor:
               panes:
                 - nvim
               root: ${config.secrets.workRootDir}
-          - work-cli:
-              root: ${config.secrets.workRootDir}
+          - shell:
+            - tmux set-window-option -t1 automatic-rename on
+            - clear
           - shell:
             - tmux set-window-option -t2 automatic-rename on
             - clear
@@ -67,18 +68,20 @@
           - shell:
             - tmux set-window-option -t5 automatic-rename on
             - clear
+          - shell:
+            - tmux set-window-option -t6 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t7 automatic-rename on
+            - clear
           - home-editor:
               panes:
                 - nvim
               root: ~/Sources/github.com/ivankovnatsky/nixos-config/
-          - home-cli:
+          - shell:
               root: ~/Sources/github.com/ivankovnatsky/nixos-config/
-          - shell:
-            - tmux set-window-option -t8 automatic-rename on
-            - clear
-          - shell:
-            - tmux set-window-option -t9 automatic-rename on
-            - clear
+              panes:
+                - tmux set-window-option -t9 automatic-rename on && clear
       '';
     };
   };
