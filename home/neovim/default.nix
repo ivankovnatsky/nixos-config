@@ -60,7 +60,12 @@
           let g:registers_window_border = "rounded"
         '';
       }
-      dhall-vim
+      {
+        plugin = dhall-vim;
+        config = ''
+          autocmd FileType dhall setlocal ts=2 sts=2 sw=2 expandtab
+        '';
+      }
       vim-fugitive
       vim-git
       vim-gitgutter
