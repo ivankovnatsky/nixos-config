@@ -5,8 +5,6 @@ let
 
   fontSizeT = if config.device.graphicsEnv == "xorg" then 7.5 else 9.5;
   fontSize = if isDarwin then 13 else fontSizeT;
-
-  decorations = if isDarwin then "buttonless" else "none";
 in
 {
   home.file = {
@@ -39,7 +37,7 @@ in
             "save_to_clipboard": true
           },
           "window": {
-            "decorations": "${decorations}"
+            "decorations": "none"
           }
         }
       '';
