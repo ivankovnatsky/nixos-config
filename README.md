@@ -84,7 +84,7 @@ nixos-install
 
 # or if flake-based:
 
-nixos-install --flake .#thinkpad
+nixos-install --flake .#xps
 
 nixos-enter --root /mnt
 
