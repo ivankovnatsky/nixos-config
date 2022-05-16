@@ -86,15 +86,6 @@
 
           homeModules = [ ./home/sway.nix ];
         };
-
-        thinkpad = makeNixosConfig {
-          hostname = "thinkpad";
-          modules = [
-            ./system/wayland.nix
-          ];
-
-          homeModules = [ ./home/sway.nix ];
-        };
       };
 
       darwinConfigurations = {
