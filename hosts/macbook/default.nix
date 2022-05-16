@@ -98,6 +98,7 @@
     "google-chrome"
     "chromium"
     "hammerspoon"
+    "mos"
   ];
 
   homebrew.masApps = {
