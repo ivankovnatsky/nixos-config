@@ -86,7 +86,7 @@
           let g:sneak#label = 1
         '';
       }
-
+      mkdir-nvim
       vim-surround
       vim-tmux
       vim-visualstar
