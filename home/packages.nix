@@ -2,6 +2,7 @@
 
 {
   home.packages = with pkgs; [
+    ssm-session-manager-plugin
     rclone
     delta
     gnused
