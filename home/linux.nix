@@ -58,6 +58,7 @@ in
   };
 
   home.packages = with pkgs; [
+    jetbrains.datagrip
     alacritty
     bemenu
     ranger
