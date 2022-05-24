@@ -99,7 +99,7 @@
     isNormalUser = true;
     home = "/home/ivan";
     shell = pkgs.zsh;
-    extraGroups = [ "wheel" "networkmanager" ];
+    extraGroups = [ "wheel" "networkmanager" "docker" ];
   };
 
   xdg = {

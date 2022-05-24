@@ -7,6 +7,8 @@
     brightnessctl
     dmidecode
     dnsutils
+    docker
+    docker-compose
     geteltorito
     gimp
     git
