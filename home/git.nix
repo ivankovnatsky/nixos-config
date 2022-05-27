@@ -3,7 +3,6 @@
 let
   inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
 
-
 in
 {
   home.packages = with pkgs; [
@@ -24,19 +23,12 @@ in
   programs.git = {
     enable = true;
 
-    defaultProfile = "home";
+    userEmail = "75213+ivankovnatsky@users.noreply.github.com";
+    userName = "Ivan Kovnatsky";
 
     signing = {
       signByDefault = true;
-    };
-
-    profiles = {
-      home = {
-        name = "Ivan Kovnatsky";
-        email = "75213+ivankovnatsky@users.noreply.github.com";
-        signingKey = "75213+ivankovnatsky@users.noreply.github.com";
-        dirs = [ ];
-      };
+      key = "75213+ivankovnatsky@users.noreply.github.com";
     };
 
     extraConfig = {

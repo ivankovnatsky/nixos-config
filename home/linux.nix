@@ -16,7 +16,6 @@ in
     ./zsh.nix
 
     ../modules/default.nix
-    ../modules/git.nix
     ../modules/secrets.nix
   ];
 
