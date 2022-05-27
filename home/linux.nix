@@ -104,9 +104,7 @@ in
   services = {
     ${config.variables.nightShiftManager} = {
       enable = true;
-
-      latitude = "49.8";
-      longitude = "29.9";
+      provider = "geoclue2";
 
       temperature = {
         day = 5500;
