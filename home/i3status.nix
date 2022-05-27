@@ -159,7 +159,7 @@ in
           service = {
             name = "openweathermap";
             api_key = "${config.secrets.openWeatherMapApikey}";
-            city_id = "${config.secrets.openWeatherMapCity}";
+            place = "${config.secrets.openWeatherMapPlace}";
             units = "metric";
           };
 
