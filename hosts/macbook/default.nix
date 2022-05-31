@@ -14,16 +14,10 @@
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
   environment.systemPackages = with pkgs; [
+    lima
     gnupg
     syncthing
-    podman
-    qemu
   ];
-
-  environment.etc."containers/containers.conf.d/99-gvproxy-path.conf".text = ''
-    [engine]
-    helper_binaries_dir = ["${pkgs.gvproxy}/bin"]
-  '';
 
   device = {
     name = "mac";
