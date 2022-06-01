@@ -85,6 +85,7 @@
   ];
 
   homebrew.casks = [
+    "docker"
     "alacritty"
     "amethyst"
     "firefox"
