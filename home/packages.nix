@@ -2,6 +2,7 @@
 
 {
   home.packages = with pkgs; [
+    telepresence2
     ssm-session-manager-plugin
     rclone
     delta
