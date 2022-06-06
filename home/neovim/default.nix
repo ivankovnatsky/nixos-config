@@ -100,13 +100,9 @@
       {
         plugin = nvim-tree-lua;
         config = ''
-          let g:nvim_tree_respect_buf_cwd = 1
-          let g:nvim_tree_icons = {
-            \ 'default': '',
-            \ }
-
           lua << EOF
           require'nvim-tree'.setup {
+            respect_buf_cwd = true,
             disable_netrw       = false,
             update_to_buf_dir   = {
               enable = true,
@@ -117,10 +113,18 @@
                 resize_window = true,
               },
             },
+            renderer = {
+              icons = {
+                glyphs = {
+                  default = '',
+                },
+              },
+            },
             open_on_setup = true,
             view = {
               side = 'left',
               width = 40,
+              relativenumber = true,
             },
             git = {
               enable = true,
@@ -128,8 +132,6 @@
               timeout = 500,
             },
           }
-
-          require'nvim-tree.view'.View.winopts.relativenumber = true
           EOF
         '';
       }
