@@ -89,8 +89,6 @@
     "amethyst"
     "firefox"
     "font-hack-nerd-font"
-    "google-chrome"
-    "chromium"
     "hammerspoon"
     "mos"
   ];
