@@ -57,6 +57,7 @@ in
   };
 
   home.packages = with pkgs; [
+    postgresql
     tdesktop
     slack
     signal-desktop
