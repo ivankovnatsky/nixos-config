@@ -57,6 +57,9 @@ in
   };
 
   home.packages = with pkgs; [
+    tdesktop
+    slack
+    signal-desktop
     jetbrains.datagrip
     alacritty
     bemenu
