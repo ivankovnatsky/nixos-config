@@ -86,6 +86,7 @@
   homebrew.casks = [
     "slack"
     "signal"
+    "telegram"
     "docker"
     "alacritty"
     "amethyst"
