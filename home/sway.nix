@@ -208,7 +208,7 @@ in
         "3" = [{ app_id = "chromium-browser"; }];
         "4" = [{ app_id = "google-chrome"; }];
         "5" = [{ app_id = "Slack"; }];
-        "6" = [{ class = "^TelegramDesktop$"; }];
+        "6" = [{ app_id = "telegramdesktop"; }];
         "7" = [{ class = "^Signal$"; }];
         "8" = [
           { class = "^jetbrains-datagrip$"; }
