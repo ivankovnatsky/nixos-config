@@ -84,6 +84,8 @@
   ];
 
   homebrew.casks = [
+    "protonmail-bridge"
+    "1password"
     "slack"
     "signal"
     "telegram"
@@ -97,6 +99,8 @@
   ];
 
   homebrew.masApps = {
+    "Bitwarden" = 1352778147;
     "NextDNS" = 1464122853;
+    "1Password for Safari" = 1569813296;
   };
 }
