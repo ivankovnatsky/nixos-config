@@ -85,7 +85,6 @@
 
   homebrew.casks = [
     "1password-cli"
-    "protonmail-bridge"
     "1password"
     "slack"
     "signal"
