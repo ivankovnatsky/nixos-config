@@ -57,6 +57,7 @@ in
   };
 
   home.packages = with pkgs; [
+    _1password
     postgresql
     tdesktop
     slack

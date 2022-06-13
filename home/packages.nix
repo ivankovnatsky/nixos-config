@@ -9,7 +9,6 @@
     gnused
     tfk8s
     istioctl
-    _1password
     awscli2
     aws-vault
     dhall
