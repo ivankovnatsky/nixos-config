@@ -88,7 +88,6 @@
     "1password"
     "slack"
     "signal"
-    "telegram"
     "docker"
     "alacritty"
     "amethyst"
