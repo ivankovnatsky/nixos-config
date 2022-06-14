@@ -74,6 +74,12 @@
           - shell:
             - tmux set-window-option -t7 automatic-rename on
             - clear
+          - shell:
+            - tmux set-window-option -t8 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t9 automatic-rename on
+            - clear
           - home-editor:
               panes:
                 - nvim
@@ -81,7 +87,7 @@
           - shell:
               root: ~/Sources/github.com/ivankovnatsky/nixos-config/
               panes:
-                - tmux set-window-option -t9 automatic-rename on && clear
+                - tmux set-window-option -t11 automatic-rename on && clear
       '';
     };
   };
