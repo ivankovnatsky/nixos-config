@@ -59,9 +59,6 @@ in
   home.packages = with pkgs; [
     _1password
     postgresql
-    tdesktop
-    slack
-    signal-desktop
     jetbrains.datagrip
     alacritty
     bemenu
