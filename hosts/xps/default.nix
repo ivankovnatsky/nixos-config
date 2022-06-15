@@ -20,7 +20,7 @@
   };
 
   device = {
-    monitorName = "DP-1";
+    monitorName = "DP-3";
   };
 
   programs.steam.enable = true;
