@@ -102,6 +102,7 @@
 
       overlay = final: prev: {
         helm-secrets = final.callPackage ./overlays/helm-secrets.nix { };
+        iam-policy-json-to-terraform = final.callPackage ./overlays/iam-policy-json-to-terraform.nix { };
       };
 
       packages.x86_64-linux = (builtins.head (builtins.attrValues inputs.self.nixosConfigurations)).pkgs;
