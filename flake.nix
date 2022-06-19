@@ -54,7 +54,7 @@
 
           modules = [
             {
-              imports = [ ./hosts/macbook ];
+              imports = [ ./hosts/${hostname} ];
               nixpkgs.overlays = [ inputs.self.overlay ];
             }
 
@@ -66,7 +66,9 @@
                 imports = [
                   ./home/hammerspoon
                   ./home/default.nix
-                ];
+
+                  ./hosts/${hostname}/home.nix
+                ] ++ homeModules;
               };
 
               home-manager.extraSpecialArgs = {
