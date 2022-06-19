@@ -1,0 +1,5 @@
+{
+  imports = [
+    ../../home/kitty.nix
+  ];
+}

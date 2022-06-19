@@ -13,7 +13,7 @@ ext = {
 local mash = {"alt"}
 
 hs.fnutils.each({
-  { key = "1", app = "Alacritty" },
+  { key = "1", app = "Kitty" },
   { key = "2", app = "Firefox" },
   { key = "3", app = "Safari" },
 }, function(object)
