@@ -84,6 +84,7 @@
   ];
 
   homebrew.casks = [
+    "spectacle"
     "kitty"
     "telegram"
     "1password-cli"
