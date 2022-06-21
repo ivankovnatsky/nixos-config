@@ -84,6 +84,7 @@
   ];
 
   homebrew.casks = [
+    "iterm2"
     "spectacle"
     "kitty"
     "telegram"
