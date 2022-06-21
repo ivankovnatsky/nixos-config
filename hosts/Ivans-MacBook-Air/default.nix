@@ -85,7 +85,7 @@
 
   homebrew.casks = [
     "iterm2"
-    "spectacle"
+    "rectangle"
     "kitty"
     "telegram"
     "1password-cli"
