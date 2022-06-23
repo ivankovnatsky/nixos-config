@@ -22,6 +22,8 @@
     };
   };
 
+  services.teamviewer.enable = true;
+
   documentation = {
     enable = true;
     man.enable = true;
