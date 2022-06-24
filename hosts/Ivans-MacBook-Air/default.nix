@@ -86,7 +86,6 @@
   homebrew.casks = [
     "iterm2"
     "rectangle"
-    "kitty"
     "1password-cli"
     "1password"
     "docker"
