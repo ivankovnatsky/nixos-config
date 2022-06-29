@@ -36,7 +36,7 @@ in
           args:
             - -l
             - -c
-            - "${pkgs.tmuxinator}/bin/tmuxinator start default"
+            - "${pkgs.tmux}/bin/tmux attach || ${pkgs.tmuxinator}/bin/tmuxinator start default"
       '';
     };
   };
