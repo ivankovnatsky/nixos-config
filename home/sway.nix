@@ -42,7 +42,6 @@ let
 
     ${pkgs.alacritty}/bin/alacritty &!
     ${pkgs.firefox}/bin/firefox &!
-    chromium &!
   '';
 
 in
