@@ -40,7 +40,7 @@ let
   autostart-script = pkgs.writeScriptBin "autostart" ''
     #!${pkgs.bash}/bin/bash
 
-    ${pkgs.alacritty}/bin/alacritty -e ${pkgs.tmuxinator}/bin/tmuxinator start default &!
+    ${pkgs.alacritty}/bin/alacritty &!
     ${pkgs.firefox}/bin/firefox &!
     chromium &!
   '';
