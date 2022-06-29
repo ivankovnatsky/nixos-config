@@ -12,12 +12,6 @@
     info.enable = false;
   };
 
-  environment = {
-    variables = {
-      TMUX = "/tmp/tmux-1000/default";
-    };
-  };
-
   nixpkgs.config.allowUnfree = true;
 
   nix = {
