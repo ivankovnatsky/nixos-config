@@ -5,6 +5,7 @@
     enable = true;
 
     extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+      # firefox-translations
       bitwarden
       clearurls
       darkreader
