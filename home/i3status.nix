@@ -63,7 +63,6 @@ in
           {
             block = "temperature";
             collapsed = false;
-            driver = "sysfs";
 
             format = {
               full = "{max:1}";
