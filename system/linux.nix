@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   imports = [
@@ -38,6 +38,17 @@
       noto-fonts-extra
       noto-fonts-emoji
     ];
+
+    fontconfig = {
+      enable = true;
+      antialias = true;
+      defaultFonts = {
+        monospace = [ "${config.variables.fontMono}" ];
+      };
+    };
+
+    enableDefaultFonts = true;
+    fontDir.enable = true;
   };
 
   hardware.bluetooth = {
