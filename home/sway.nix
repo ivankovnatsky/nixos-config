@@ -101,7 +101,7 @@ in
         size = 0.0;
       };
 
-      terminal = "alacritty";
+      terminal = "${pkgs.alacritty}/bin/alacritty";
       menu = ''
         ${pkgs.bemenu}/bin/bemenu-run --list 3 -n -f --ifne -p "" --hb "${whiteColorHTML}" --hf "${blackColorHTML}"'';
 
@@ -202,7 +202,10 @@ in
       };
 
       assigns = {
-        "1" = [{ app_id = "Alacritty"; }];
+        "1" = [
+          { app_id = "Alacritty"; }
+          { app_id = "foot"; }
+        ];
         "2" = [{ app_id = "firefox"; }];
         "3" = [{ app_id = "chromium-browser"; }];
         "4" = [{ app_id = "google-chrome"; }];
@@ -272,6 +275,7 @@ in
   };
 
   home.packages = with pkgs; [
+    foot
     sway-contrib.grimshot
     wdisplays
     wl-clipboard
