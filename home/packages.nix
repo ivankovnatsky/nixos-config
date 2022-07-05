@@ -10,7 +10,6 @@
     gnused
     tfk8s
     istioctl
-    awscli2
     aws-vault
     dhall
     dhall-json
@@ -22,7 +21,6 @@
     jq
     k9s
     krelay
-    kubectl
     kubectx
     kubernetes-helm
     kubetail

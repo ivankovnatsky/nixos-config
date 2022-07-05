@@ -80,6 +80,7 @@
   ];
 
   homebrew.brews = [
+    "awscli"
     "pam-reattach"
   ];
 

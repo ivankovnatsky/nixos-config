@@ -58,6 +58,8 @@ in
   };
 
   home.packages = with pkgs; [
+    awscli2
+    kubectl
     iam-policy-json-to-terraform
     _1password
     postgresql
