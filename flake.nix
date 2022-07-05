@@ -69,6 +69,8 @@
 
                   ./hosts/${hostname}/home.nix
                 ] ++ homeModules;
+
+                home.stateVersion = "22.05";
               };
 
               home-manager.extraSpecialArgs = {
