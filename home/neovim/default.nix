@@ -190,6 +190,13 @@
       }
 
       {
+        plugin = ale;
+        config = ''
+          let b:ale_linters = ['pylint', 'mdl']
+        '';
+      }
+
+      {
         plugin = vim-markdown;
         config = ''
           let g:vim_markdown_folding_disabled = 1
