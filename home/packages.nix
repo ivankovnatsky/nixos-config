@@ -3,7 +3,6 @@
 {
   home.packages = with pkgs; [
     unzip
-    iam-policy-json-to-terraform
     telepresence2
     ssm-session-manager-plugin
     rclone

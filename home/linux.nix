@@ -58,6 +58,7 @@ in
   };
 
   home.packages = with pkgs; [
+    iam-policy-json-to-terraform
     _1password
     postgresql
     jetbrains.datagrip
