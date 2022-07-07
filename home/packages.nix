@@ -20,6 +20,7 @@
     htop
     jq
     k9s
+    procs
     krelay
     kubectx
     kubernetes-helm

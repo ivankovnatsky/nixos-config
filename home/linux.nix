@@ -73,7 +73,6 @@ in
     gnumake
     killall
     openssl
-    procs
     whois
     zip
   ];
