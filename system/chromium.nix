@@ -37,7 +37,7 @@
         "SpellcheckEnabled" = true;
         "SpellcheckLanguage" = [ "en-US" ];
         "SyncDisabled" = true;
-        "TranslateEnabled" = false;
+        "TranslateEnabled" = true;
       };
     };
   };
