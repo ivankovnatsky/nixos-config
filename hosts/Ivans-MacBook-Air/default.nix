@@ -77,10 +77,12 @@
     "homebrew/cask"
     "homebrew/cask-fonts"
     "homebrew/core"
+    "homebrew/services"
   ];
 
   homebrew.brews = [
     "awscli"
+    "syncthing"
     "pam-reattach"
   ];
 
@@ -102,4 +104,6 @@
     "NextDNS" = 1464122853;
     "1Password for Safari" = 1569813296;
   };
+
+  homebrew.extraConfig = { };
 }
