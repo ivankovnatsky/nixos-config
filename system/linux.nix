@@ -47,7 +47,6 @@
       };
     };
 
-    enableDefaultFonts = true;
     fontDir.enable = true;
   };
 
