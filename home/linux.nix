@@ -60,6 +60,7 @@ in
   };
 
   home.packages = with pkgs; [
+    grpcurl
     awscli2
     kubectl
     iam-policy-json-to-terraform
