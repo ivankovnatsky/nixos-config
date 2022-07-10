@@ -104,6 +104,4 @@
     "NextDNS" = 1464122853;
     "1Password for Safari" = 1569813296;
   };
-
-  homebrew.extraConfig = { };
 }
