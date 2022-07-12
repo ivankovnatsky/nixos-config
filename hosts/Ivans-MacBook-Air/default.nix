@@ -46,7 +46,6 @@
       NSGlobalDomain = {
         AppleKeyboardUIMode = 3;
         _HIHideMenuBar = true;
-        NSAutomaticCapitalizationEnabled = false;
         "com.apple.sound.beep.volume" = "0.000";
       };
 
