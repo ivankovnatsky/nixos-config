@@ -66,7 +66,6 @@ in
     iam-policy-json-to-terraform
     _1password
     postgresql
-    jetbrains.datagrip
     alacritty
     bemenu
     ranger
