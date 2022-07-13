@@ -113,9 +113,6 @@ in
         "2" = [{ class = "^firefox$"; }];
         "3" = [{ class = "^Chromium-browser$"; }];
         "4" = [{ class = "^Google-chrome$"; }];
-        "8" = [
-          { class = "^jetbrains-datagrip$"; }
-        ];
       };
 
       workspaceLayout = "tabbed";
