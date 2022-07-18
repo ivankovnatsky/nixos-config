@@ -2,7 +2,7 @@
 
 let
   cursorThemeName = "capitaine-cursors";
-  cursorSizeT = if config.device.graphicsEnv == "xorg" then 64 else 16;
+  cursorSizeT = 16;
   cursorSize = if config.device.name == "xps" then 32 else cursorSizeT;
 
 in

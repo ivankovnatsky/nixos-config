@@ -109,7 +109,7 @@ in
   };
 
   services = {
-    ${config.variables.nightShiftManager} = {
+    redshift = {
       enable = true;
       provider = "geoclue2";
 

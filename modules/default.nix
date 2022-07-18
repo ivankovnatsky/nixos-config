@@ -19,29 +19,9 @@ with lib; {
       description = "Monitor name in Sway";
       default = "DP-1";
     };
-
-    graphicsEnv = mkOption {
-      type = types.enum [ "xorg" "wayland" ];
-      default = "wayland";
-    };
-
-    videoDriver = mkOption {
-      type = types.enum [ "amdgpu" "nvidia" "intel" "modesetting" ];
-      default = "modesetting";
-    };
-
-    xorgDpi = mkOption {
-      type = types.enum [ 192 142 ];
-      default = 142;
-    };
   };
 
   options.variables = {
-    nightShiftManager = mkOption {
-      type = types.enum [ "gammastep" "redshift" ];
-      default = "redshift";
-    };
-
     fontGeneral = mkOption {
       type = types.str;
       default = "Hack Nerd Font";

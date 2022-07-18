@@ -146,7 +146,7 @@ in
 
         kbdBlock = {
           block = "keyboard_layout";
-          driver = if config.device.graphicsEnv == "xorg" then "kbddbus" else "sway";
+          driver = "sway";
           mappings = {
             "English (US)" = "🇺🇸";
             "Ukrainian (N/A)" = "🇺🇦";
