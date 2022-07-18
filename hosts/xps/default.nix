@@ -23,7 +23,5 @@
     monitorName = "DP-3";
   };
 
-  programs.steam.enable = true;
-
   system.stateVersion = "22.05";
 }
