@@ -112,7 +112,7 @@ EOF
 
 ## Notes
 
-Some packages might be needed to be places in system, so that they would
+Some packages might be needed to be placed in system, so that they would
 available on install/re-install if home-manager fails to be configured.
 
 Example:
