@@ -70,7 +70,7 @@ set undodir=~/.cache/neovim/undo/
 endif
 
 " indent by filetype
-autocmd FileType tex,yaml,conf,vim,template,markdown setlocal ts=2 sts=2 sw=2 expandtab
+autocmd FileType tex,yaml,conf,vim,template,markdown,javascript setlocal ts=2 sts=2 sw=2 expandtab
 autocmd FileType cpp,c setlocal ts=8 sts=8 sw=8 noexpandtab
 
 autocmd BufEnter,BufNew *.hcl setlocal ts=2 sts=2 sw=2 expandtab
