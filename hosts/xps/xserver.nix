@@ -1,5 +1,0 @@
-{
-  services.xserver = {
-    useGlamor = true;
-  };
-}
