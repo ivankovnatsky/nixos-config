@@ -1,11 +1,11 @@
 { config, pkgs, super, ... }:
 
 let
-  editorName = "nvim";
   inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
 
+  editorName = "nvim";
   homeDir = if isDarwin then "/Users" else "/home";
-
+  helmPluginsPath = if isDarwin then "Library/helm/plugins" else ".local/share/helm/plugins";
 in
 {
   imports = [
@@ -40,6 +40,27 @@ in
         set show_hidden true
       '';
     };
+
+    "${helmPluginsPath}/helm-secrets".source = (config.lib.file.mkOutOfStoreSymlink
+      "${pkgs.helm-secrets}");
+
+    ".terraform.d/plugin-cache/.keep" = {
+      text = ''
+        keep
+      '';
+    };
+
+    ".terraformrc" = {
+      text = ''
+        plugin_cache_dir = "$HOME/.terraform.d/plugin-cache"
+      '';
+    };
+
+    ".config/yamllint/config" = {
+      text = ''
+        document-start: disable
+      '';
+    };
   };
 
   home.sessionVariables = {
@@ -62,29 +83,6 @@ in
       email = "${config.secrets.email}";
       lock_timeout = 2419200;
       pinentry = pkgs.pinentry;
-    };
-  };
-
-  home.file = {
-    ".local/share/helm/plugins/helm-secrets".source = (config.lib.file.mkOutOfStoreSymlink
-      "${pkgs.helm-secrets}");
-
-    ".terraform.d/plugin-cache/.keep" = {
-      text = ''
-        keep
-      '';
-    };
-
-    ".terraformrc" = {
-      text = ''
-        plugin_cache_dir = "$HOME/.terraform.d/plugin-cache"
-      '';
-    };
-
-    ".config/yamllint/config" = {
-      text = ''
-        document-start: disable
-      '';
     };
   };
 

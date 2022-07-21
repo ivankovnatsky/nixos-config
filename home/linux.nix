@@ -1,6 +1,7 @@
 { config, pkgs, super, ... }:
 
-let editorName = "nvim";
+let
+  editorName = "nvim";
 
 in
 {
@@ -82,29 +83,7 @@ in
       text = ''
         set show_hidden true
       '';
-    };
-  };
 
-  home.file = {
-    ".local/share/helm/plugins/helm-secrets".source = (config.lib.file.mkOutOfStoreSymlink
-      "${pkgs.helm-secrets}");
-
-    ".terraform.d/plugin-cache/.keep" = {
-      text = ''
-        keep
-      '';
-    };
-
-    ".terraformrc" = {
-      text = ''
-        plugin_cache_dir = "$HOME/.terraform.d/plugin-cache"
-      '';
-    };
-
-    ".config/yamllint/config" = {
-      text = ''
-        document-start: disable
-      '';
     };
   };
 
