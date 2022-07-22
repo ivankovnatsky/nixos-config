@@ -104,7 +104,7 @@
           require'nvim-tree'.setup {
             respect_buf_cwd = true,
             disable_netrw       = false,
-            update_to_buf_dir   = {
+            hijack_directories   = {
               enable = true,
               auto_open = true,
             },
