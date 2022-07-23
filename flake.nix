@@ -89,10 +89,10 @@
       nixosConfigurations = {
         xps = makeNixosConfig {
           modules = [
-            ./system/wayland.nix
+            ./system/gnome.nix
           ];
 
-          homeModules = [ ./home/sway.nix ];
+          homeModules = [ ];
         };
       };
 
