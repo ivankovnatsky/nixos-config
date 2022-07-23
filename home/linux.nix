@@ -61,6 +61,7 @@ in
   };
 
   home.packages = with pkgs; [
+    wl-clipboard
     grpcurl
     awscli2
     kubectl

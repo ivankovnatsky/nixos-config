@@ -24,6 +24,14 @@
 
   services.teamviewer.enable = true;
 
+  nixpkgs.overlays = [
+    (
+      self: super: {
+        firefox = super.firefox-bin.override { forceWayland = true; };
+      }
+    )
+  ];
+
   documentation = {
     enable = true;
     man.enable = true;
@@ -88,6 +96,8 @@
       pulseaudio
     ];
   };
+
+  environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   services = {
     pipewire = {
