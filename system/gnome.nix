@@ -5,24 +5,30 @@
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
 
-  environment.gnome.excludePackages = [
-    pkgs.gnome.cheese
-    pkgs.gnome-photos
-    pkgs.gnome.gnome-music
-    pkgs.gnome.gedit
+  environment.gnome.excludePackages = (with pkgs; [
     pkgs.epiphany
     pkgs.evince
-    pkgs.gnome.gnome-characters
-    pkgs.gnome.totem
-    pkgs.gnome.tali
-    pkgs.gnome.iagno
-    pkgs.gnome.hitori
-    pkgs.gnome.atomix
-    pkgs.gnome-tour
-    pkgs.gnome.geary
+    gnome-photos
+  ]) ++ (with pkgs.gnome; [
+    cheese
+    gnome-music
+    gedit
+    gnome-characters
+    totem
+    tali
+    iagno
+    hitori
+    atomix
+    tour
+    geary
+  ]);
+
+  environment.systemPackages = with pkgs; [
+    gnomeExtensions.appindicator
+    gnome.gnome-tweaks
+    gnomeExtensions.quick-lang-switch
   ];
 
-  environment.systemPackages = with pkgs; [ gnomeExtensions.appindicator ];
   services.udev.packages = with pkgs; [ gnome3.gnome-settings-daemon ];
 
   hardware.pulseaudio.enable = false;
