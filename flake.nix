@@ -89,10 +89,11 @@
       nixosConfigurations = {
         xps = makeNixosConfig {
           modules = [
-            ./system/gnome.nix
+            ./system/greetd.nix
+            ./system/swaylock.nix
           ];
 
-          homeModules = [ ];
+          homeModules = [ ./home/sway.nix ];
         };
       };
 
