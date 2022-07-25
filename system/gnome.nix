@@ -6,6 +6,9 @@
   services.xserver.desktopManager.gnome.enable = true;
 
   environment.gnome.excludePackages = (with pkgs; [
+    # pixel-saver dependencies
+    xorg.xprop
+    xorg.xwininfo
     pkgs.epiphany
     pkgs.evince
     gnome-photos
@@ -19,7 +22,6 @@
     iagno
     hitori
     atomix
-    tour
     geary
   ]);
 
@@ -27,6 +29,7 @@
     gnomeExtensions.appindicator
     gnome.gnome-tweaks
     gnomeExtensions.quick-lang-switch
+    gnomeExtensions.pixel-saver
   ];
 
   services.udev.packages = with pkgs; [ gnome3.gnome-settings-daemon ];
