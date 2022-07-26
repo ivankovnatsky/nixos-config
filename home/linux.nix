@@ -8,7 +8,6 @@ in
   imports = [
     ./neovim
     ./alacritty.nix
-    ./foot.nix
     ./firefox.nix
     ./git.nix
     ./gtk.nix
