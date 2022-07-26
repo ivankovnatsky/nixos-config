@@ -2,6 +2,7 @@
 
 {
   home.packages = with pkgs; [
+    kube-score
     unzip
     telepresence2
     ssm-session-manager-plugin
