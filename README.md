@@ -93,33 +93,6 @@ chown -R ivan:users /mnt/home/ivan
 reboot
 ```
 
-## Manual configuration
-
-### rbw
-
-```console
-mkdir -p /mnt/home/ivan/.config/rbw/
-cat > /mnt/home/ivan/.config/rbw/config.json << EOF
-{
-  "base_url": null,
-  "email": "",
-  "identity_url": null,
-  "lock_timeout": 2419200,
-  "pinentry": "pinentry"
-}
-EOF
-```
-
-## Notes
-
-Some packages might be needed to be placed in system, so that they would
-available on install/re-install if home-manager fails to be configured.
-
-Example:
-
-* git
-* neovim
-
 ## Reference
 
 <https://gist.github.com/walkermalling/23cf138432aee9d36cf59ff5b63a2a58>
