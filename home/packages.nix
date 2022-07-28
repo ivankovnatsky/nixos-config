@@ -12,6 +12,7 @@
     tfk8s
     istioctl
     aws-vault
+    haskellPackages.dhall-yaml
     dhall
     dhall-json
     dogdns

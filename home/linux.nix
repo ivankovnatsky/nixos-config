@@ -60,6 +60,8 @@ in
   };
 
   home.packages = with pkgs; [
+    yq
+    jsonnet
     wl-clipboard
     grpcurl
     awscli2
