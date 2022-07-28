@@ -22,6 +22,19 @@
 
     plugins = with pkgs.vimPlugins; [
       {
+        plugin = dhall-vim;
+        config = ''
+          autocmd FileType dhall setlocal ts=2 sts=2 sw=2 expandtab
+          let g:dhall_format=1
+        '';
+      }
+      {
+        plugin = vim-jsonnet;
+        config = ''
+          autocmd FileType jsonnet setlocal ts=2 sts=2 sw=2 expandtab
+        '';
+      }
+      {
         plugin = lualine-nvim;
         config = ''
           lua << END
