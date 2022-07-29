@@ -60,6 +60,7 @@ in
   };
 
   home.packages = with pkgs; [
+    haskellPackages.dhall-yaml
     yq
     jsonnet
     wl-clipboard
