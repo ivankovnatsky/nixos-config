@@ -32,6 +32,7 @@ let
     user_pref("privacy.donottrackheader.value", 1);
     user_pref("security.sandbox.content.level", 3);
     user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);
+    user_pref("app.update.silent", true);
   '';
 in
 {
