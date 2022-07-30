@@ -86,6 +86,7 @@
   ];
 
   homebrew.casks = [
+    "teamviewer"
     "iterm2"
     "rectangle"
     "1password-cli"
