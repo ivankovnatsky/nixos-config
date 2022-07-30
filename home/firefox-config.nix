@@ -33,6 +33,8 @@ let
     user_pref("security.sandbox.content.level", 3);
     user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);
     user_pref("app.update.silent", true);
+    user_pref("app.update.url.details", "https://non-existent-site");
+    user_pref("app.update.url.manual", "https://non-existent-site");
   '';
 in
 {
