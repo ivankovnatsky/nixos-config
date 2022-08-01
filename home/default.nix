@@ -64,9 +64,7 @@ in
   };
 
   home.sessionVariables = {
-    AWS_VAULT_BACKEND = "pass";
     EDITOR = editorName;
-    LPASS_AGENT_TIMEOUT = "0";
     VISUAL = editorName;
   };
 
