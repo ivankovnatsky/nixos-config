@@ -2,6 +2,7 @@
 
 {
   home.packages = with pkgs; [
+    p7zip
     kube-score
     unzip
     telepresence2
