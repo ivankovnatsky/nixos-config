@@ -7,8 +7,8 @@
   ];
 
   documentation = {
-    enable = true;
-    man.enable = true;
+    enable = false;
+    man.enable = false;
     info.enable = false;
   };
 

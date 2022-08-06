@@ -103,6 +103,12 @@
           modules = [ ];
           homeModules = [ ];
         };
+
+        "Ivans-MacBook-Pro" = makeDarwinConfig {
+          hostname = "Ivans-MacBook-Pro";
+          modules = [ ];
+          homeModules = [ ];
+        };
       };
 
       overlay = final: prev: {
