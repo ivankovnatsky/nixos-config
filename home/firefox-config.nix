@@ -5,7 +5,10 @@ let
 
   configPath = if isDarwin then "Library/Application Support/Firefox" else ".mozilla/firefox";
 
-  userConfigPath = if isDarwin then "Profiles/0ychrwr5.default-release" else "default";
+  ffProfileId = "a2270yxa";
+  ffReleaseProfileId = "0ychrwr5";
+
+  userConfigPath = if isDarwin then "Profiles/${ffReleaseProfileId}.default-release" else "default";
 
   defaultConfig = ''
     user_pref("browser.contentblocking.category", "strict");
@@ -45,7 +48,7 @@ in
           [Profile1]
           Name=default
           IsRelative=1
-          Path=Profiles/a2270yxa.default
+          Path=Profiles/${ffProfileId}.default
           Default=1
 
           [Profile0]
