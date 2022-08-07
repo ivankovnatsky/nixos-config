@@ -7,7 +7,6 @@ in
 {
   imports = [
     ./neovim
-    ./alacritty.nix
     ./firefox.nix
     ./git.nix
     ./gtk.nix

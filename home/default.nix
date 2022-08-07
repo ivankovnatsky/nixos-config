@@ -9,6 +9,7 @@ let
 in
 {
   imports = [
+    ./alacritty.nix
     ./firefox-config.nix
     ./neovim
     ./git.nix
