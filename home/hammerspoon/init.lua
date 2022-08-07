@@ -13,7 +13,7 @@ ext = {
 local mash = {"alt"}
 
 hs.fnutils.each({
-  { key = "1", app = "iTerm" },
+  { key = "1", app = "Alacritty" },
   { key = "2", app = "Firefox" },
 }, function(object)
     hs.hotkey.bind(mash, object.key, function() ext.app.forceLaunchOrFocus(object.app) end)

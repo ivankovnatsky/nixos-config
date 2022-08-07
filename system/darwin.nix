@@ -86,6 +86,7 @@
   ];
 
   homebrew.casks = [
+    "alacritty"
     "teamviewer"
     "iterm2"
     "rectangle"
