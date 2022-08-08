@@ -19,7 +19,7 @@
 
   outputs = inputs:
     let
-      makeNixosConfig = { hostname ? "xps", system ? "x86_64-linux", modules, homeModules }:
+      makeNixosConfig = { hostname, system ? "x86_64-linux", modules, homeModules }:
         inputs.nixpkgs.lib.nixosSystem {
           inherit system;
 
@@ -48,7 +48,7 @@
           specialArgs = { inherit system; };
         };
 
-      makeDarwinConfig = { hostname ? "xps", system ? "aarch64-darwin", modules, homeModules }:
+      makeDarwinConfig = { hostname, system ? "aarch64-darwin", modules, homeModules }:
         inputs.darwin.lib.darwinSystem {
           inherit system;
 
@@ -88,6 +88,8 @@
     {
       nixosConfigurations = {
         xps = makeNixosConfig {
+          hostname = "xps";
+
           modules = [
             ./system/greetd.nix
             ./system/swaylock.nix
