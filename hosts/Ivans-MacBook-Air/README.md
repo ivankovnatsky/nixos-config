@@ -30,7 +30,7 @@ brew analytics off
 
 Initially you would have to run: `darwin-rebuild switch` that would read ~/.nixpkgs/darwin-configuration.nix
 
-Enable nixFlakes, then: `darwin-rebuild --flake .`
+Enable nixFlakes, then: `darwin-rebuild switch --flake .`
 
 If nix installer can't create a `/nix` mountpoint by itself, create it manually:
 
