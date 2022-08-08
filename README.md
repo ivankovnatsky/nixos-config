@@ -30,7 +30,8 @@ cryptsetup luksOpen /dev/nvme0n1p2 crypted
 pvcreate /dev/mapper/crypted
 vgcreate vg /dev/mapper/crypted
 
-lvcreate -L 32G -n swap vg
+# Identify RAM size and run this command manually.
+# lvcreate -L 32G -n swap vg
 lvcreate -l '100%FREE' -n root vg
 ```
 
