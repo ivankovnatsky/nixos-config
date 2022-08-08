@@ -95,6 +95,17 @@
 
           homeModules = [ ./home/sway.nix ];
         };
+
+        desktop = makeNixosConfig {
+          hostname = "desktop";
+
+          modules = [
+            ./system/greetd.nix
+            ./system/swaylock.nix
+          ];
+
+          homeModules = [ ./home/sway.nix ];
+        };
       };
 
       darwinConfigurations = {
