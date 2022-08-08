@@ -87,9 +87,6 @@
 
   homebrew.casks = [
     "alacritty"
-    "teamviewer"
-    "iterm2"
-    "rectangle"
     "1password-cli"
     "1password"
     "docker"
@@ -103,6 +100,5 @@
   homebrew.masApps = {
     "Bitwarden" = 1352778147;
     "NextDNS" = 1464122853;
-    "1Password for Safari" = 1569813296;
   };
 }
