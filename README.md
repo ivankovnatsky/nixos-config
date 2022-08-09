@@ -69,14 +69,30 @@ ping duckduckgo.com
 
 ### Install NixOS
 
+When helper packages installed we can fetch gpg keys buy accesing another
+machine using ssh or syncthing.
+
+If installing a new machine adapt or copy generated nixos hardware configs to
+cloned repo.
+
 ```console
 nixos-generate-config --root /mnt
 
 nix-env -iA nixos.nixUnstable
 nix-env -iA nixos.git
+nix-env -iA nixos.git-crypt
 nix-env -iA nixos.neovim
+nix-env -iA nixos.gnupg
+nix-env -iA nixos.tmux
 
 git clone https://github.com/ivankovnatsky/nixos-config /mnt/home/ivan/Sources/github.com/ivankovnatsky/nixos-config
+
+cd /mnt/home/ivan/
+
+ssh ivan@IP
+tar cfv gnupg.tar ~/.gnupg
+scp ivan@IP:~/gnupg.tar .
+tar xf gnupg.tar
 
 cd /mnt/home/ivan/Sources/github.com/ivankovnatsky/nixos-config
 nvim .
