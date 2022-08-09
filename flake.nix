@@ -25,7 +25,7 @@
 
           modules = [
             {
-              imports = [ ./hosts/${hostname} ./system ./system/linux.nix ];
+              imports = [ ./hosts/${hostname} ./system ./system/nixos.nix ];
               nixpkgs.overlays = [ inputs.self.overlay inputs.nur.overlay ];
             }
 
@@ -34,7 +34,7 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.ivan = {
-                imports = [ ./home ./home/linux.nix ] ++ homeModules;
+                imports = [ ./home ./home/nixos.nix ] ++ homeModules;
                 home.stateVersion = config.system.stateVersion;
               };
 
