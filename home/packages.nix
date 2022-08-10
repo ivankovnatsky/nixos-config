@@ -2,6 +2,7 @@
 
 {
   home.packages = with pkgs; [
+    iam-policy-json-to-terraform
     p7zip
     kube-score
     unzip

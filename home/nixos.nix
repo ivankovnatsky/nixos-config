@@ -66,7 +66,6 @@ in
     grpcurl
     awscli2
     kubectl
-    iam-policy-json-to-terraform
     _1password
     postgresql
     alacritty
