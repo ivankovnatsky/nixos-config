@@ -89,7 +89,14 @@
         '';
       }
       vim-sleuth
-      vim-lastplace
+      {
+        plugin = nvim-lastplace;
+        config = ''
+          lua << END
+          require'nvim-lastplace'.setup{}
+          END
+        '';
+      }
       vim-repeat
       vim-sensible
       git-blame-nvim
