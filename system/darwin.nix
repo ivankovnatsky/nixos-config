@@ -9,6 +9,9 @@
     ../modules/secrets.nix
   ];
 
+  # https://github.com/NixOS/nixpkgs/issues/175875
+  nixpkgs.config.allowBroken = true;
+
   security.pam.enableSudoTouchIdAuth = true;
 
   # List packages installed in system profile. To search by name, run:
