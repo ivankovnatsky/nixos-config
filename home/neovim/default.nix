@@ -36,15 +36,14 @@
       }
       {
         plugin = lualine-nvim;
+        type = "lua";
         config = ''
-          lua << END
           require'lualine'.setup {
             options = {
               component_separators = ''',
               section_separators = '''
             },
           }
-          END
         '';
       }
       nvim-web-devicons
@@ -112,8 +111,8 @@
       }
       {
         plugin = nvim-tree-lua;
+        type = "lua";
         config = ''
-          lua << EOF
           require'nvim-tree'.setup {
             respect_buf_cwd = true,
             disable_netrw       = false,
@@ -145,13 +144,12 @@
               timeout = 500,
             },
           }
-          EOF
         '';
       }
       {
         plugin = nvim-lspconfig;
+        type = "lua";
         config = ''
-          lua << EOF
           local nvim_lsp = require('lspconfig')
 
           -- Use an on_attach function to only map the following keys
@@ -198,7 +196,6 @@
               }
             }
           end
-          EOF
         '';
       }
 
