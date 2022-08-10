@@ -65,6 +65,7 @@ in
   };
 
   home.sessionVariables = {
+    AWS_VAULT_BACKEND = "pass";
     EDITOR = editorName;
     VISUAL = editorName;
   };
