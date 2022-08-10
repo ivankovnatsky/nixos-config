@@ -88,6 +88,8 @@
     "pam-reattach"
   ];
 
+  # Docker Desktop installs all bunch of kube and container tools, so no need to install
+  # kubectl and others
   homebrew.casks = [
     "alacritty"
     "1password-cli"
