@@ -111,11 +111,10 @@
       }
       {
         plugin = nvim-tree-lua;
+        type = "lua";
         config = ''
-          let g:nvim_tree_respect_buf_cwd = 1
-
-          lua << END
           require'nvim-tree'.setup {
+            respect_buf_cwd = true,
             disable_netrw = false,
             hijack_directories = {
               enable = true,
@@ -138,7 +137,6 @@
               timeout = 500,
             },
           }
-          END
         '';
       }
       {
