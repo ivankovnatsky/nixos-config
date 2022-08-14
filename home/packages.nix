@@ -2,6 +2,7 @@
 
 {
   home.packages = with pkgs; [
+    exiftool
     go
     iam-policy-json-to-terraform
     p7zip
