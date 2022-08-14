@@ -2,6 +2,7 @@
 
 {
   home.packages = with pkgs; [
+    go
     iam-policy-json-to-terraform
     p7zip
     kube-score
