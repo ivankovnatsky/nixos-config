@@ -84,6 +84,7 @@ nix-env -iA nixos.git-crypt
 nix-env -iA nixos.neovim
 nix-env -iA nixos.gnupg
 nix-env -iA nixos.tmux
+nix-env -iA nixos.syncthing
 
 git clone https://github.com/ivankovnatsky/nixos-config /mnt/home/ivan/Sources/github.com/ivankovnatsky/nixos-config
 
