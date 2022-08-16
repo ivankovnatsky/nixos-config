@@ -59,6 +59,7 @@ in
   };
 
   home.packages = with pkgs; [
+    smartmontools
     haskellPackages.dhall-yaml
     yq
     jsonnet
