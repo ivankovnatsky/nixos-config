@@ -83,7 +83,10 @@
     "homebrew/services"
   ];
 
+  # Install some packages through brew, since using nixpkgs we sometimes need
+  # to download huge tree of dependencies
   homebrew.brews = [
+    "hadolint" # haskell
     "awscli"
     "syncthing"
     "pam-reattach"
