@@ -2,6 +2,8 @@
 
 {
   home.packages = with pkgs; [
+    ansible-lint
+    ansible
     exiftool
     go
     iam-policy-json-to-terraform
