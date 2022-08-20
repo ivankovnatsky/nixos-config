@@ -88,6 +88,12 @@
           autocmd FileType helm setlocal ts=2 sts=2 sw=2 expandtab
         '';
       }
+      {
+        plugin = rust-vim;
+        config = ''
+          let g:rustfmt_autosave = 1
+        '';
+      }
       vim-go
       vim-sleuth
       vim-lastplace

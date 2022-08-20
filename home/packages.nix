@@ -2,6 +2,8 @@
 
 {
   home.packages = with pkgs; [
+    rustfmt
+    cargo
     ansible-lint
     ansible
     exiftool
