@@ -2,6 +2,7 @@
 
 {
   home.packages = with pkgs; [
+    postgresql
     rustfmt
     cargo
     ansible-lint
