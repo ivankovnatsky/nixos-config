@@ -81,6 +81,7 @@
     "homebrew/cask-fonts"
     "homebrew/core"
     "homebrew/services"
+    "elastio/homebrew-tap"
   ];
 
   # Install some packages through brew, since using nixpkgs we sometimes need
@@ -95,6 +96,7 @@
   # Docker Desktop installs all bunch of kube and container tools, so no need to install
   # kubectl and others
   homebrew.casks = [
+    "elastio"
     "iterm2"
     "1password-cli"
     "1password"
