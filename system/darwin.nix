@@ -50,6 +50,8 @@
         AppleKeyboardUIMode = 3;
         _HIHideMenuBar = true;
         NSAutomaticCapitalizationEnabled = false;
+        NSAutomaticQuoteSubstitutionEnabled = false;
+        NSAutomaticDashSubstitutionEnabled = false;
         "com.apple.sound.beep.volume" = "0.000";
       };
 
