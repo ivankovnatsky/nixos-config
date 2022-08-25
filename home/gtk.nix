@@ -2,8 +2,7 @@
 
 let
   cursorThemeName = "capitaine-cursors";
-  cursorSizeT = 16;
-  cursorSize = if config.device.name == "xps" then 32 else cursorSizeT;
+  cursorSize = 16;
 
 in
 {

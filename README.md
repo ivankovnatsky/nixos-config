@@ -102,7 +102,7 @@ nixos-install
 
 # or if flake-based:
 
-nixos-install --flake .#xps
+nixos-install --flake .#desktop
 
 nixos-enter --root /mnt
 
