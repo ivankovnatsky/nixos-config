@@ -10,16 +10,21 @@ in
 {
   imports = [
     ./alacritty.nix
-    ./firefox-config.nix
     ./neovim
     ./git.nix
-    ./tmux.nix
     ./packages.nix
     ./zsh.nix
 
     ../modules/default.nix
-    ../modules/secrets.nix
   ];
+
+  programs.go = {
+    enable = true;
+
+    goPath = "go";
+  };
+
+  programs.gpg.enable = true;
 
   programs.bat = {
     enable = true;
@@ -75,18 +80,6 @@ in
     dataLocation = "${homeDir}/ivan/.task/";
   };
 
-  programs.rbw = {
-    enable = true;
-    package = (pkgs.rbw.override { withFzf = true; });
-
-    settings = {
-      email = "${config.secrets.email}";
-      lock_timeout = 2419200;
-      pinentry = pkgs.pinentry;
-    };
-  };
-
   device = super.device;
   variables = super.variables;
-  secrets = super.secrets;
 }

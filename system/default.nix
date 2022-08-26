@@ -3,7 +3,6 @@
 {
   imports = [
     ../modules/default.nix
-    ../modules/secrets.nix
   ];
 
   documentation = {

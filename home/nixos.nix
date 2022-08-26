@@ -6,102 +6,20 @@ let
 in
 {
   imports = [
-    ./neovim
-    ./firefox.nix
-    ./git.nix
-    ./gtk.nix
-    ./i3status.nix
-    ./packages.nix
-    ./tmux.nix
-    ./zsh.nix
-
     ../modules/default.nix
-    ../modules/secrets.nix
   ];
 
-  services.syncthing.enable = true;
-
-  programs.bat = {
+  services.syncthing = {
     enable = true;
-    config = { tabs = "0"; };
+    extraOptions = [
+      "--gui-address=http://0.0.0.0:8384"
+    ];
   };
-
-  programs.go = {
-    enable = true;
-
-    goPath = "go";
-  };
-
-  programs.gpg.enable = true;
 
   services = {
     gpg-agent.enable = true;
   };
 
-  programs.mpv = {
-    enable = true;
-    config = {
-      "alang" = "eng";
-      "force-seekable" = "yes";
-      "fs" = "yes";
-      "hwdec" = "yes";
-      "opengl-pbo" = "yes";
-      "osc" = "no";
-      "osd-level" = "0";
-      "save-position-on-quit" = "yes";
-      "slang" = "eng";
-      "ytdl-format" = "bestvideo+bestaudio/best";
-      "image-display-duration" = "5";
-      "vo" = "gpu";
-      "profile" = "gpu-hq";
-      "audio-channels" = 2;
-    };
-  };
-
-  home.packages = with pkgs; [
-    smartmontools
-    haskellPackages.dhall-yaml
-    yq
-    jsonnet
-    wl-clipboard
-    grpcurl
-    awscli2
-    kubectl
-    _1password
-    postgresql
-    alacritty
-    bemenu
-    ranger
-    file
-    gnumake
-    killall
-    openssl
-    whois
-    zip
-  ];
-
-  home.file = {
-    ".config/ranger/rc.conf" = {
-      text = ''
-        set show_hidden true
-      '';
-
-    };
-  };
-
-  services = {
-    redshift = {
-      enable = true;
-      provider = "geoclue2";
-
-      temperature = {
-        day = 5500;
-        night = 3700;
-      };
-    };
-  };
-
   device = super.device;
   variables = super.variables;
-  secrets = super.secrets;
 }

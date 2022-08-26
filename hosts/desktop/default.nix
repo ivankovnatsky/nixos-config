@@ -6,6 +6,8 @@
     ./hardware-configuration.nix
 
     ../../system/opengl-intel.nix
+
+    ../../modules/secrets.nix
   ];
 
   networking.hostName = "desktop";

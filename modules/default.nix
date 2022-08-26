@@ -9,7 +9,7 @@ with lib; {
     };
 
     type = mkOption {
-      type = types.enum [ "desktop" "laptop" ];
+      type = types.enum [ "desktop" "laptop" "server" ];
       description = "Type of device";
       default = "laptop";
     };
