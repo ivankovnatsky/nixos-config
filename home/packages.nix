@@ -2,6 +2,9 @@
 
 {
   home.packages = with pkgs; [
+    yq
+    jsonnet
+    gitleaks
     postgresql
     rustfmt
     cargo
@@ -38,7 +41,6 @@
     nixpkgs-fmt
     nixpkgs-review
     sops
-    syncthing
     tealdeer
     terraform
     wget

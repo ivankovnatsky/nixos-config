@@ -19,14 +19,13 @@
 
   outputs = inputs:
     let
-      makeNixosConfig = { hostname, system ? "x86_64-linux", modules, homeModules }:
+      makeNixosConfig = { hostname, system, modules, homeModules }:
         inputs.nixpkgs.lib.nixosSystem {
           inherit system;
 
           modules = [
             {
-              imports = [ ./hosts/${hostname} ./system ./system/nixos.nix ];
-              nixpkgs.overlays = [ inputs.self.overlay inputs.nur.overlay ];
+              imports = [ ./hosts/${hostname} ./system/nixos.nix ];
             }
 
             inputs.home-manager.nixosModules.home-manager
@@ -34,7 +33,11 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.ivan = {
-                imports = [ ./home ./home/nixos.nix ] ++ homeModules;
+                imports = [
+                  ./home
+                  ./home/common.nix
+                  ./home/nixos.nix
+                ] ++ homeModules;
                 home.stateVersion = config.system.stateVersion;
               };
 
@@ -48,7 +51,7 @@
           specialArgs = { inherit system; };
         };
 
-      makeDarwinConfig = { hostname, system ? "aarch64-darwin", modules, homeModules }:
+      makeDarwinConfig = { hostname, system, modules, homeModules }:
         inputs.darwin.lib.darwinSystem {
           inherit system;
 
@@ -64,8 +67,9 @@
               home-manager.useUserPackages = true;
               home-manager.users.ivan = {
                 imports = [
+                  ./home
+                  ./home/common.nix
                   ./home/hammerspoon
-                  ./home/default.nix
 
                   ./hosts/${hostname}/home.nix
                 ] ++ homeModules;
@@ -89,25 +93,53 @@
       nixosConfigurations = {
         desktop = makeNixosConfig {
           hostname = "desktop";
+          system = "x86_64-linux";
 
           modules = [
+            ./system
+            ./system/workstation.nix
             ./system/greetd.nix
             ./system/swaylock.nix
+
+            {
+              nixpkgs.overlays = [ inputs.self.overlay inputs.nur.overlay ];
+            }
           ];
 
-          homeModules = [ ./home/sway.nix ];
+          homeModules = [
+            ./home/common.nix
+            ./home/workstation.nix
+            ./home/sway.nix
+          ];
+        };
+
+        ax41 = makeNixosConfig {
+          hostname = "ax41";
+          system = "x86_64-linux";
+
+          modules = [
+            ./system
+
+            {
+              nixpkgs.overlays = [ inputs.self.overlay ];
+            }
+          ];
+
+          homeModules = [ ];
         };
       };
 
       darwinConfigurations = {
         "Ivans-MacBook-Air" = makeDarwinConfig {
           hostname = "Ivans-MacBook-Air";
+          system = "aarch64-darwin";
           modules = [ ];
           homeModules = [ ];
         };
 
         "Ivans-MacBook-Pro" = makeDarwinConfig {
           hostname = "Ivans-MacBook-Pro";
+          system = "aarch64-darwin";
           modules = [ ];
           homeModules = [ ];
         };
