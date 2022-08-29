@@ -66,7 +66,8 @@
   services.openssh.permitRootLogin = "prohibit-password";
 
   # Key removed after configuring it for local user
-  users.users.root.openssh.authorizedKeys.keys = [ ];
+  users.users.root.openssh.authorizedKeys.keys = [
+  ];
 
   services.openssh.enable = true;
 
