@@ -130,13 +130,6 @@
       };
 
       darwinConfigurations = {
-        "Ivans-MacBook-Air" = makeDarwinConfig {
-          hostname = "Ivans-MacBook-Air";
-          system = "aarch64-darwin";
-          modules = [ ];
-          homeModules = [ ];
-        };
-
         "Ivans-MacBook-Pro" = makeDarwinConfig {
           hostname = "Ivans-MacBook-Pro";
           system = "aarch64-darwin";
