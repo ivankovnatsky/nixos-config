@@ -37,6 +37,8 @@
                   ./home
                   ./home/common.nix
                   ./home/nixos.nix
+
+                  ./hosts/${hostname}/home.nix
                 ] ++ homeModules;
                 home.stateVersion = config.system.stateVersion;
               };
