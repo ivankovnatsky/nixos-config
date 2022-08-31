@@ -9,7 +9,6 @@ let
 in
 {
   imports = [
-    ./firefox-config.nix
     ./i3status.nix
     ./gtk.nix
     ./firefox.nix
