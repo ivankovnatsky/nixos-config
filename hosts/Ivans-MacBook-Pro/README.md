@@ -52,14 +52,6 @@ Fix zsh permissions:
 compaudit | xargs chmod g-w,o-w
 ```
 
-Keep sudo session a little bit longer:
-
-```
-sudo bash -c 'cat << EOF > /etc/sudoers.d/default
-Defaults timestamp_timeout=240
-EOF'
-```
-
 Clean stable nix:
 
 ```
