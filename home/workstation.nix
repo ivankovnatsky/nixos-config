@@ -59,7 +59,6 @@ in
     alacritty
     bemenu
     file
-    gnumake
     killall
     openssl
     whois
