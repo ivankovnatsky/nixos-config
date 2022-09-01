@@ -2,6 +2,7 @@
 
 {
   home.packages = with pkgs; [
+    gnumake
     gnutar
     yq
     jsonnet
