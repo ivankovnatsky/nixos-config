@@ -2,6 +2,13 @@
 
 {
   home.packages = with pkgs; [
+    (python310.withPackages (ps: with ps; [
+      pip
+      ansible-lint
+      ansible
+      yamllint
+    ]))
+
     gnumake
     gnutar
     yq
@@ -10,8 +17,6 @@
     postgresql
     rustfmt
     cargo
-    ansible-lint
-    ansible
     exiftool
     go
     iam-policy-json-to-terraform
@@ -47,6 +52,5 @@
     terraform
     wget
     yamlfix
-    yamllint
   ];
 }
