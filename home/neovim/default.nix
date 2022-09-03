@@ -13,7 +13,7 @@
     black
     shellcheck
 
-    python38Packages.grip
+    python310Packages.grip
 
     ripgrep
   ];
