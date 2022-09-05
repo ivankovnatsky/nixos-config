@@ -31,6 +31,10 @@ in
       key = "75213+ivankovnatsky@users.noreply.github.com";
     };
 
+    ignores = [
+      ".stignore"
+    ];
+
     extraConfig = {
       init.defaultBranch = "main";
       merge.tool = "nvim";
