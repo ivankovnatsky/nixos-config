@@ -72,6 +72,7 @@
                   ./home
                   ./home/common.nix
                   ./home/hammerspoon
+                  ./home/darwin.nix
 
                   ./hosts/${hostname}/home.nix
                 ] ++ homeModules;
