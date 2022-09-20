@@ -18,5 +18,10 @@
 
   hardware.cpu.intel.updateMicrocode = true;
 
+  services.openssh.enable = true;
+  users.users.ivan.openssh.authorizedKeys.keys = [
+    "${config.secrets.sshPublicKey}"
+  ];
+
   system.stateVersion = "22.11";
 }
