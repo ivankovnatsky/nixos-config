@@ -4,7 +4,6 @@
   ];
 
   homebrew.casks = [
-    "alacritty"
     "teamviewer"
   ];
 }
