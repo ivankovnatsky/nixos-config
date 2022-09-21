@@ -111,7 +111,6 @@
   ];
 
   homebrew.masApps = {
-    "Bitwarden" = 1352778147;
     "NextDNS" = 1464122853;
   };
 }
