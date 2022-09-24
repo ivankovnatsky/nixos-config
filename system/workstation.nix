@@ -7,8 +7,6 @@
     ./opengl.nix
   ];
 
-  services.teamviewer.enable = true;
-
   nixpkgs.overlays = [
     (
       self: super: {
