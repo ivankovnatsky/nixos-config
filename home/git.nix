@@ -51,7 +51,6 @@ in
       };
 
       tag = {
-        gpgSign = "true";
         forceSignAnnotated = "true";
       };
 
