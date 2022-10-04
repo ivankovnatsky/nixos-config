@@ -10,7 +10,6 @@
     terraform-ls
 
     mdl
-    black
     shellcheck
 
     python310Packages.grip
