@@ -3,7 +3,6 @@
 {
   imports = [
     ./default.nix
-    ../modules/darwin/pam.nix
 
     ../modules/default.nix
     ../modules/secrets.nix
@@ -73,10 +72,9 @@
   };
 
   homebrew.enable = true;
-  homebrew.autoUpdate = false;
-  homebrew.cleanup = "zap";
+  homebrew.onActivation.autoUpdate = false;
+  homebrew.onActivation.cleanup = "zap";
   homebrew.global.brewfile = true;
-  homebrew.global.noLock = true;
 
   homebrew.taps = [
     "homebrew/cask"
