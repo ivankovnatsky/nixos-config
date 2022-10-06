@@ -78,6 +78,7 @@
           autocmd FileType dhall setlocal ts=2 sts=2 sw=2 expandtab
         '';
       }
+      context-vim
       vim-fugitive
       vim-git
       vim-gitgutter
