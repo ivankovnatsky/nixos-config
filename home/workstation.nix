@@ -53,7 +53,6 @@ in
     smartmontools
     haskellPackages.dhall-yaml
     wl-clipboard
-    grpcurl
     awscli2
     kubectl
     _1password
