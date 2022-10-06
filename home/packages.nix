@@ -9,6 +9,7 @@
       yamllint
     ]))
 
+    grpcurl
     gnumake
     gnutar
     yq
