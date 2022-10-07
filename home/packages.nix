@@ -10,6 +10,7 @@
     ]))
 
     grpcurl
+    ghz
     gnumake
     gnutar
     yq
