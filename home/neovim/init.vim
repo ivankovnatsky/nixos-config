@@ -5,6 +5,8 @@ set background=dark
 set nocompatible
 set termguicolors
 
+set mouse=
+
 " edition to default colors scheme
 hi TabLine ctermfg=black guifg=black
 hi Folded      ctermbg=white
