@@ -18,8 +18,6 @@ hi Comment gui=italic cterm=italic ctermfg=gray guifg=gray
 " This is to make :Registers window to look more fancy
 hi FloatBorder ctermbg=NONE guibg=NONE
 
-set fillchars=vert:\ " trailing char is expected
-
 set expandtab
 set tabstop=4
 set shiftwidth=4
