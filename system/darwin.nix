@@ -109,5 +109,6 @@
 
   homebrew.masApps = {
     "NextDNS" = 1464122853;
+    "Twitterrific: Tweet Your Way" = 1289378661;
   };
 }

@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   home.file.".dockutil/config".text = ''
@@ -7,5 +7,6 @@
     ${pkgs.dockutil}/bin/dockutil --add "/Applications/Firefox.app"
     ${pkgs.dockutil}/bin/dockutil --add "/Applications/Safari.app"
     ${pkgs.dockutil}/bin/dockutil --add "/System/Applications/Messages.app"
+    ${pkgs.dockutil}/bin/dockutil --add "/Applications/Twitterrific.app"
   '';
 }
