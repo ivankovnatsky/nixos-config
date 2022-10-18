@@ -52,6 +52,7 @@
     sops
     tealdeer
     terraform
+    tflint
     wget
     yamlfix
   ];
