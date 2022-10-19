@@ -9,6 +9,7 @@
       yamllint
     ]))
 
+    grpcui
     grpcurl
     ghz
     gnumake
