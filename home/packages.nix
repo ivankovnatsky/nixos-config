@@ -29,7 +29,6 @@
     telepresence2
     ssm-session-manager-plugin
     rclone
-    delta
     gnused
     tfk8s
     istioctl
@@ -53,7 +52,6 @@
     sops
     tealdeer
     terraform
-    tflint
     wget
     yamlfix
   ];
