@@ -2,19 +2,18 @@
 
 {
   home.packages = with pkgs; [
-    gopls
+    delta
     dhall-lsp-server
-    rnix-lsp
-    nodePackages.pyright
-    nodePackages.bash-language-server
-    terraform-ls
-
+    gopls
     mdl
-    shellcheck
-
+    nodePackages.bash-language-server
+    nodePackages.pyright
     python310Packages.grip
-
     ripgrep
+    rnix-lsp
+    shellcheck
+    terraform-ls
+    tflint
   ];
 
   programs.neovim = {
