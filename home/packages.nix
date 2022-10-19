@@ -26,7 +26,6 @@
     p7zip
     kube-score
     unzip
-    telepresence2
     ssm-session-manager-plugin
     rclone
     gnused
