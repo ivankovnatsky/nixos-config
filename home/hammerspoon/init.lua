@@ -19,6 +19,8 @@ hs.fnutils.each({
   { key = "3", app = "Safari" },
   { key = "4", app = "Messages" },
   { key = "5", app = "Twitterrific" },
+  { key = "6", app = "Activity Monitor" },
+  { key = "9", app = "System Preferences" },
 }, function(object)
     hs.hotkey.bind(mash, object.key, function() ext.app.forceLaunchOrFocus(object.app) end)
 end)
