@@ -45,7 +45,6 @@
     krelay
     kubectx
     kubernetes-helm
-    kubetail
     nixpkgs-fmt
     nixpkgs-review
     sops
