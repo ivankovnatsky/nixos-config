@@ -16,5 +16,7 @@
     pciutils
     strace
     sysstat
+    docker-buildx
+    qemu
   ];
 }
