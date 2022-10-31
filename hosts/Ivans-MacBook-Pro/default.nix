@@ -9,6 +9,7 @@
 
   homebrew.brews = [
     "kail"
+    "youtube-dl"
   ];
 
   homebrew.casks = [
