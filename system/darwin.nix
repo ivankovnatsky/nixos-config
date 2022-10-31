@@ -3,6 +3,7 @@
 {
   imports = [
     ./default.nix
+    ../modules/darwin/pam.nix
 
     ../modules/default.nix
     ../modules/secrets.nix
@@ -11,7 +12,7 @@
   # https://github.com/NixOS/nixpkgs/issues/175875
   nixpkgs.config.allowBroken = true;
 
-  security.pam.enableSudoTouchIdAuth = true;
+  security.pamCustom.enableSudoTouchIdAuth = true;
 
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
