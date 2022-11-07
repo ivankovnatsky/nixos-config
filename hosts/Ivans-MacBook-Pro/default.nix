@@ -14,5 +14,6 @@
 
   homebrew.casks = [
     "teamviewer"
+    "stats"
   ];
 }
