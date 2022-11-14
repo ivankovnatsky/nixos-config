@@ -12,6 +12,7 @@
     ripgrep
     rnix-lsp
     shellcheck
+    shfmt
     terraform-ls
     tflint
   ];
@@ -81,6 +82,15 @@
       vim-fugitive
       vim-git
       vim-gitgutter
+      {
+        plugin = neoformat;
+        config = ''
+          augroup fmt
+            autocmd!
+            autocmd BufWritePre * undojoin | Neoformat
+          augroup END
+        '';
+      }
       {
         plugin = vim-helm;
         config = ''
