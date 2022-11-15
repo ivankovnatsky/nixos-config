@@ -13,7 +13,12 @@
   ];
 
   homebrew.casks = [
+    "chromium"
     "teamviewer"
     "stats"
   ];
+
+  homebrew.caskArgs = {
+    no_quarantine = true;
+  };
 }
