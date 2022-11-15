@@ -8,6 +8,7 @@
     mdl
     nodePackages.bash-language-server
     nodePackages.pyright
+    nodePackages.js-beautify
     python310Packages.grip
     ripgrep
     rnix-lsp
