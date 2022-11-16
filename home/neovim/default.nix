@@ -239,15 +239,7 @@
           let g:vim_markdown_folding_disabled = 1
         '';
       }
-
-      {
-        plugin = vim-nix;
-        config = ''
-          autocmd BufWritePost *.nix silent !nixpkgs-fmt <afile>
-          autocmd BufWritePost *.nix silent edit
-        '';
-      }
-
+      vim-nix
       {
         plugin = vim-terraform;
         config = ''
