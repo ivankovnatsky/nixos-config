@@ -47,7 +47,7 @@
     defaults = {
       NSGlobalDomain = {
         AppleKeyboardUIMode = 3;
-        _HIHideMenuBar = true;
+        _HIHideMenuBar = false;
         NSAutomaticCapitalizationEnabled = false;
         NSAutomaticQuoteSubstitutionEnabled = false;
         NSAutomaticDashSubstitutionEnabled = false;
