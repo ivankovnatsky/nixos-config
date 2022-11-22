@@ -26,7 +26,6 @@
         plugin = dhall-vim;
         config = ''
           autocmd FileType dhall setlocal ts=2 sts=2 sw=2 expandtab
-          let g:dhall_format=1
         '';
       }
       {
@@ -240,13 +239,7 @@
         '';
       }
       vim-nix
-      {
-        plugin = vim-terraform;
-        config = ''
-          let g:terraform_fmt_on_save=1
-        '';
-      }
-
+      vim-terraform
       {
         plugin = vim-terraform-completion;
         config = ''
