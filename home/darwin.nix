@@ -1,6 +1,7 @@
 {
   imports = [
     ./dockutil.nix
+    ./mpv.nix
   ];
 
   home.file = {
