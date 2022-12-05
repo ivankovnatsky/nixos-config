@@ -54,6 +54,8 @@
         "com.apple.sound.beep.volume" = 0.000;
       };
 
+      screencapture.location = "~/Screenshots";
+
       dock = {
         autohide = true;
         minimize-to-application = true;
