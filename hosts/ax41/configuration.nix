@@ -65,8 +65,10 @@
   users.users.root.initialHashedPassword = "";
   services.openssh.permitRootLogin = "prohibit-password";
 
-  # Key removed after configuring it for local user
+  # Add when running nixos-rebuild for the first time
+  # Remove once user account created
   users.users.root.openssh.authorizedKeys.keys = [
+    "${config.secrets.sshPublicKey}"
   ];
 
   services.openssh.enable = true;
