@@ -20,6 +20,8 @@
     syncthing
   ];
 
+  services.fail2ban.enable = true;
+
   users.users.ivan.openssh.authorizedKeys.keys = [
     "${config.secrets.sshPublicKey}"
   ];
