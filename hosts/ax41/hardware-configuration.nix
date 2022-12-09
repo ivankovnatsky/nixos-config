@@ -5,16 +5,18 @@
 
 {
   imports =
-    [ (modulesPath + "/installer/scan/not-detected.nix")
+    [
+      (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "ahci" "nvme" ];
+  boot.initrd.availableKernelModules = [ "nvme" "ahci" ];
   boot.initrd.kernelModules = [ "dm-snapshot" ];
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/4d73c3bf-852f-454e-b261-59d3e021e2e2";
+    {
+      device = "/dev/disk/by-uuid/04051c0d-9bff-41c1-ba86-9ab9f3f4864c";
       fsType = "ext4";
     };
 
@@ -27,6 +29,7 @@
   networking.useDHCP = lib.mkDefault true;
   # networking.interfaces.eth0.useDHCP = lib.mkDefault true;
 
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   powerManagement.cpuFreqGovernor = lib.mkDefault "ondemand";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }
