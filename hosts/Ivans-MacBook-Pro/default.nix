@@ -17,6 +17,7 @@
   ];
 
   homebrew.casks = [
+    "cog"
     "chromium"
     "teamviewer"
     "stats"
