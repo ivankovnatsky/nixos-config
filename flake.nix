@@ -104,8 +104,8 @@
           modules = [
             ./system
             ./system/workstation.nix
-            # ./system/greetd.nix
-            # ./system/swaylock.nix
+            ./system/greetd.nix
+            ./system/swaylock.nix
 
             {
               nixpkgs.overlays = [ inputs.self.overlay inputs.nur.overlay ];
@@ -115,7 +115,7 @@
           homeModules = [
             ./home/common.nix
             ./home/workstation.nix
-            # ./home/sway.nix
+            ./home/sway.nix
           ];
         };
 
