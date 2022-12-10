@@ -7,13 +7,7 @@
     ./opengl.nix
   ];
 
-  nixpkgs.overlays = [
-    (
-      self: super: {
-        firefox = super.firefox-bin.override { forceWayland = true; };
-      }
-    )
-  ];
+  nixpkgs.overlays = [ ];
 
   fonts = {
     fonts = with pkgs; [
