@@ -65,11 +65,19 @@
       ansible-vim
       {
         plugin = registers-nvim;
+        type = "lua";
         config = ''
-          let g:registers_normal_mode = 0
-          let g:registers_visual_mode = 0
-          let g:registers_insert_mode = 0
-          let g:registers_window_border = "rounded"
+          local registers = require("registers")
+          registers.setup({
+            bind_keys = {
+              normal = false,
+              visual = false,
+              insert = false,
+            },
+            window = {
+              border = "rounded"
+            }
+          })
         '';
       }
       {
