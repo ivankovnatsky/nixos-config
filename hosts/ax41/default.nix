@@ -6,11 +6,20 @@
     ./hardware-configuration.nix
 
     ../../modules/secrets.nix
+    ../../modules/falcon-sensor.nix
   ];
 
   time.timeZone = "Europe/Helsinki";
 
   networking.hostName = "ax41";
+
+  nixpkgs.overlays = [
+    (
+      self: super: {
+        falcon-sensor = super.callPackage ../../overlays/falcon-sensor.nix { };
+      }
+    )
+  ];
 
   environment.systemPackages = with pkgs; [
     git-crypt
@@ -18,8 +27,10 @@
     neovim
     tmux
     syncthing
+    falcon-sensor
   ];
 
+  custom.falcon.enable = true;
   services.fail2ban.enable = true;
 
   users.users.ivan.openssh.authorizedKeys.keys = [
