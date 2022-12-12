@@ -26,4 +26,12 @@
   homebrew.caskArgs = {
     no_quarantine = true;
   };
+
+  nixpkgs.overlays = [
+    (
+      self: super: {
+        eks-node-viewer = super.callPackage ../../overlays/eks-node-viewer.nix { };
+      }
+    )
+  ];
 }
