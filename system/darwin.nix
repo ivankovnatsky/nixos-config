@@ -19,6 +19,9 @@
   environment.systemPackages = with pkgs; [
     gnupg
     git-crypt
+
+    # https://github.com/LnL7/nix-darwin/pull/553#issuecomment-1348696468
+    ncurses
   ];
 
   device = {
