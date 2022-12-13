@@ -133,6 +133,21 @@
 
           homeModules = [ ];
         };
+
+        ax41-ikovnatsky = makeNixosConfig {
+          hostname = "ax41-ikovnatsky";
+          system = "x86_64-linux";
+
+          modules = [
+            ./system
+
+            {
+              nixpkgs.overlays = [ inputs.self.overlay ];
+            }
+          ];
+
+          homeModules = [ ];
+        };
       };
 
       darwinConfigurations = {
