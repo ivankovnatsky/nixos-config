@@ -16,7 +16,7 @@
     home-manager-mac.url = "github:nix-community/home-manager";
     home-manager-mac.inputs.nixpkgs.follows = "nixpkgs-mac";
 
-    darwin.url = "github:lnl7/nix-darwin/?rev=115ab9a0b127e2cc07e2c7f45897f269f66b62f8";
+    darwin.url = "github:lnl7/nix-darwin/master";
     darwin.inputs.nixpkgs.follows = "nixpkgs-mac";
   };
 
