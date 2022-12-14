@@ -22,7 +22,7 @@ hs.fnutils.each({
   { key = "6", app = "Notes" },
   { key = "7", app = "Twitterrific" },
   { key = "8", app = "Activity Monitor" },
-  { key = "9", app = "System Preferences" },
+  { key = "9", app = "System Settings" },
 }, function(object)
     hs.hotkey.bind(mash, object.key, function() ext.app.forceLaunchOrFocus(object.app) end)
 end)
