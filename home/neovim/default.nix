@@ -6,6 +6,7 @@
     dhall-lsp-server
     gopls
     mdl
+    nodejs
     nodePackages.bash-language-server
     nodePackages.pyright
     nodePackages.js-beautify
@@ -46,6 +47,7 @@
           }
         '';
       }
+      copilot-vim
       nvim-web-devicons
       {
         plugin = vim-commentary;
