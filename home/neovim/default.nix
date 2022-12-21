@@ -148,6 +148,7 @@
               auto_open = true,
             },
             actions = {
+              use_system_clipboard = true,
               open_file = {
                 resize_window = true,
               },
