@@ -47,6 +47,8 @@
           }
         '';
       }
+      vim-better-whitespace
+      vim-strip-trailing-whitespace
       copilot-vim
       nvim-web-devicons
       {
