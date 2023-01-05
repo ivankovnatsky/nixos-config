@@ -55,7 +55,6 @@ in
     wl-clipboard
     awscli2
     kubectl
-    _1password
     alacritty
     bemenu
     file
