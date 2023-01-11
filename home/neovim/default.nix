@@ -68,23 +68,6 @@
       }
       ansible-vim
       {
-        plugin = registers-nvim;
-        type = "lua";
-        config = ''
-          local registers = require("registers")
-          registers.setup({
-            bind_keys = {
-              normal = false,
-              visual = false,
-              insert = false,
-            },
-            window = {
-              border = "rounded"
-            }
-          })
-        '';
-      }
-      {
         plugin = dhall-vim;
         config = ''
           autocmd FileType dhall setlocal ts=2 sts=2 sw=2 expandtab
