@@ -15,6 +15,7 @@
     (
       self: super: {
         falcon-sensor = super.callPackage ../../overlays/falcon-sensor.nix { };
+        pv-migrate = super.callPackage ../../overlays/pv-migrate.nix { };
       }
     )
   ];
@@ -26,6 +27,7 @@
     tmux
     syncthing
     falcon-sensor
+    pv-migrate
   ];
 
   custom.falcon.enable = true;
