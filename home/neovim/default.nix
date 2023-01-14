@@ -17,6 +17,7 @@
     shfmt
     terraform-ls
     tflint
+    rust-analyzer
   ];
 
   programs.neovim = {
@@ -215,6 +216,10 @@
               flags = lsp_flags,
           }
           require('lspconfig')['terraformls'].setup{
+              on_attach = on_attach,
+              flags = lsp_flags,
+          }
+          require('lspconfig')['rust_analyzer'].setup{
               on_attach = on_attach,
               flags = lsp_flags,
           }
