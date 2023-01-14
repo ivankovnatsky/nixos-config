@@ -53,15 +53,8 @@ in
     smartmontools
     haskellPackages.dhall-yaml
     wl-clipboard
-    awscli2
-    kubectl
     alacritty
     bemenu
-    file
-    killall
-    openssl
-    whois
-    zip
   ];
 
   device = super.device;

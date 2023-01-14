@@ -22,4 +22,14 @@ in
 
   device = super.device;
   variables = super.variables;
+
+  home.packages = with pkgs; [
+    awscli2
+    file
+    kubectl
+    killall
+    openssl
+    whois
+    zip
+  ];
 }
