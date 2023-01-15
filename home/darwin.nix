@@ -1,7 +1,6 @@
 {
   imports = [
     ./dockutil.nix
-    ./mpv.nix
   ];
 
   home.file."Screenshots/.keep".text = ''
