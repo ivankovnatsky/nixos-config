@@ -20,7 +20,6 @@ hs.fnutils.each({
   { key = "4", app = "Messages" },
   { key = "5", app = "Reminders" },
   { key = "6", app = "Notes" },
-  { key = "7", app = "Twitterrific" },
   { key = "8", app = "Activity Monitor" },
   { key = "9", app = "System Settings" },
 }, function(object)
