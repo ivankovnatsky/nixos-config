@@ -42,17 +42,16 @@
       '';
     };
 
-    ".config/tmuxinator/default.yml" = {
+    ".config/tmuxinator/work.yml" = {
       text = ''
-        name: default
+        name: work
         startup_window: 1
         root: ${config.secrets.workRootDir}
 
         windows:
-          - work-editor:
+          - nvim:
               panes:
                 - nvim
-              root: ${config.secrets.workRootDir}
           - shell:
             - tmux set-window-option -t1 automatic-rename on
             - clear
@@ -80,14 +79,6 @@
           - shell:
             - tmux set-window-option -t9 automatic-rename on
             - clear
-          - home-editor:
-              panes:
-                - nvim
-              root: ~/Sources/github.com/ivankovnatsky/nixos-config/
-          - shell:
-              root: ~/Sources/github.com/ivankovnatsky/nixos-config/
-              panes:
-                - tmux set-window-option -t11 automatic-rename on && clear
       '';
     };
   };
