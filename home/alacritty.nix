@@ -31,12 +31,6 @@ in
           save_to_clipboard: true
         window:
           decorations: ${decorations}
-        shell:
-          program: ${pkgs.zsh}/bin/zsh
-          args:
-            - -l
-            - -c
-            - "${pkgs.tmux}/bin/tmux attach || ${pkgs.tmuxinator}/bin/tmuxinator start default"
       '';
     };
   };
