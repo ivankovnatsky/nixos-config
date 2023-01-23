@@ -18,8 +18,9 @@ hs.fnutils.each({
   { key = "2", app = "Firefox" },
   { key = "3", app = "Safari" },
   { key = "4", app = "Messages" },
-  { key = "5", app = "Reminders" },
-  { key = "6", app = "Notes" },
+  { key = "5", app = "Calendar" },
+  { key = "6", app = "Reminders" },
+  { key = "7", app = "Notes" },
   { key = "8", app = "Activity Monitor" },
   { key = "9", app = "System Settings" },
 }, function(object)
