@@ -7,6 +7,7 @@
     ${pkgs.dockutil}/bin/dockutil --add "/Applications/Firefox.app"
     ${pkgs.dockutil}/bin/dockutil --add "/System/Cryptexes/App/System/Applications/Safari.app"
     ${pkgs.dockutil}/bin/dockutil --add "/System/Applications/Messages.app"
+    ${pkgs.dockutil}/bin/dockutil --add "/System/Applications/Calendar.app"
     ${pkgs.dockutil}/bin/dockutil --add "/System/Applications/Reminders.app"
     ${pkgs.dockutil}/bin/dockutil --add "/System/Applications/Notes.app"
     ${pkgs.dockutil}/bin/dockutil --add "/System/Applications/Utilities/Activity Monitor.app"
