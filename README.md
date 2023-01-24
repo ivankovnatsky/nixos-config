@@ -69,10 +69,10 @@ ping duckduckgo.com
 
 ### Install NixOS
 
-When helper packages installed we can fetch gpg keys buy accesing another
+When helper packages installed we can fetch gpg keys by accesing another
 machine using ssh or syncthing.
 
-If installing a new machine adapt or copy generated nixos hardware configs to
+If setting up a new machine adapt or copy generated nixos hardware configs to
 cloned repo.
 
 ```console
