@@ -43,6 +43,7 @@
     jq
     k9s
     procs
+    pstree
     krelay
     kubectx
     kubernetes-helm
