@@ -39,6 +39,12 @@
         };
         hostname.ssh_only = true;
         username.show_always = false;
+        kubernetes = {
+          disabled = false;
+          context_aliases = {
+            "arn:aws:eks:.*:.*:.*/(.*)" = "$1";
+          };
+        };
       };
     };
 
