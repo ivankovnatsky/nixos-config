@@ -16,6 +16,9 @@
     pciutils
     strace
     sysstat
+
+    # To install arm emulator:
+    # docker run --privileged --rm tonistiigi/binfmt --install arm64
     docker-buildx
     qemu
   ];
