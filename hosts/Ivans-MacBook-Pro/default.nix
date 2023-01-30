@@ -17,6 +17,7 @@
   ];
 
   homebrew.casks = [
+    "vlc"
     "rectangle"
     "cog"
     "chromium"
