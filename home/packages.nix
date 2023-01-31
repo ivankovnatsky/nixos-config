@@ -37,6 +37,7 @@
     dhall-json
     dogdns
     du-dust
+    duf
     genpass
     ghq
     htop
