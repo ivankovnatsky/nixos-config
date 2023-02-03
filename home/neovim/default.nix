@@ -114,7 +114,6 @@
       mkdir-nvim
       vim-surround
       vim-tmux
-      vim-visualstar
       webapi-vim
       {
         plugin = fzf-vim;
