@@ -9,7 +9,6 @@
       yamllint
     ]))
 
-    _1password
     grpcui
     grpcurl
     ghz
