@@ -5,6 +5,7 @@
   ];
 
   home.packages = with pkgs; [
+    defaultbrowser
     eks-node-viewer
     pv-migrate
 
