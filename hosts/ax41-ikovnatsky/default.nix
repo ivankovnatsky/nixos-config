@@ -16,6 +16,7 @@
       self: super: {
         falcon-sensor = super.callPackage ../../overlays/falcon-sensor.nix { };
         pv-migrate = super.callPackage ../../overlays/pv-migrate.nix { };
+        eks-node-viewer = super.callPackage ../../overlays/eks-node-viewer.nix { };
       }
     )
   ];
@@ -28,6 +29,8 @@
     syncthing
     falcon-sensor
     pv-migrate
+
+    eks-node-viewer
   ];
 
   custom.falcon.enable = true;
