@@ -33,6 +33,7 @@ in
 
     ignores = [
       ".stignore"
+      "__worktrees/"
     ];
 
     extraConfig = {
