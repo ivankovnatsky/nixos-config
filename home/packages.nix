@@ -43,6 +43,7 @@
     jq
     k9s
     procs
+    procps
     pstree
     krelay
     kubectx
