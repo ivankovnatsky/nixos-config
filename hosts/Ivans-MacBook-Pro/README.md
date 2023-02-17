@@ -1,12 +1,8 @@
 # nix-darwin
 
-Install nix stable:
+Install nix unstable:
 
-```
-<(curl -L https://nixos.org/nix/install) --darwin-use-unencrypted-nix-store-volume
-```
-
-Or unstable:
+(Probably a good idea to check for the latest release)
 
 ```
 sh <(curl -L https://github.com/numtide/nix-unstable-installer/releases/download/nix-2.9.0pre20220428_660835d/install)
@@ -44,12 +40,6 @@ If nix installer can't create a `/nix` mountpoint by itself, create it manually:
 
 ```
 sudo diskutil apfs addVolume disk1 APFS Nix Store -mountpoint /nix
-```
-
-Fix zsh permissions:
-
-```
-compaudit | xargs chmod g-w,o-w
 ```
 
 Clean stable nix:
