@@ -9,7 +9,6 @@
 
   programs.rbw = {
     enable = true;
-    package = (pkgs.rbw.override { withFzf = true; });
 
     settings = {
       email = "${config.secrets.email}";
