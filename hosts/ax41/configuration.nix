@@ -63,7 +63,7 @@
 
   # Initial empty root password for easy login:
   users.users.root.initialHashedPassword = "";
-  services.openssh.permitRootLogin = "prohibit-password";
+  services.openssh.settings.permitRootLogin = "prohibit-password";
 
   # Add when running nixos-rebuild for the first time
   # Remove once user account created
