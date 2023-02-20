@@ -138,7 +138,6 @@
                 resize_window = true,
               },
             },
-            open_on_setup = true,
             view = {
               side = 'left',
               width = 40,
