@@ -12,6 +12,13 @@ in
     tig
   ];
 
+  # Git started to read global config and opens up osxkeychain windows first by
+  # default, I've tried usung override, but that re-builds the package, that's
+  # too much
+  home.sessionVariables = {
+    GIT_CONFIG_NOSYSTEM = "true";
+  };
+
   programs.gh = {
     enable = true;
 
