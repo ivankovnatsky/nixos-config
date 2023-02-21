@@ -18,9 +18,11 @@
 
     darwin.url = "github:lnl7/nix-darwin/master";
     darwin.inputs.nixpkgs.follows = "nixpkgs-mac";
+
+    flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = inputs:
+  outputs = { self, ... }@inputs:
     let
       makeNixosConfig = { hostname, system, modules, homeModules }:
         inputs.nixpkgs.lib.nixosSystem {
@@ -68,6 +70,9 @@
 
             inputs.home-manager-mac.darwinModules.home-manager
             ({ config, system, ... }: {
+              # Support legacy workflows that use `<nixpkgs>` etc.
+              nix.nixPath.nixpkgs = "${inputs.nixpkgs-mac}";
+
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.ivan = {
@@ -164,13 +169,14 @@
         iam-policy-json-to-terraform = final.callPackage ./overlays/iam-policy-json-to-terraform.nix { };
       };
 
-      packages.x86_64-linux = (builtins.head (builtins.attrValues inputs.self.nixosConfigurations)).pkgs;
 
-      devShell.x86_64-linux = with inputs.self.packages.x86_64-linux;
-        mkShell
-          {
-            buildInputs = [
-            ];
-          };
-    };
+    } // inputs.flake-utils.lib.eachDefaultSystem (system: {
+      legacyPackages = import inputs.nixpkgs ({ inherit system; });
+
+      devShells = let pkgs = self.legacyPackages.${system}; in
+        {
+          default = pkgs.mkShell { };
+        };
+    })
+  ;
 }
