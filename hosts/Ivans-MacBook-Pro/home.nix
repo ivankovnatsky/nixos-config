@@ -9,7 +9,7 @@
     eks-node-viewer
     pv-migrate
 
-    transmission-qt
+    transmission-gtk
     rustc
   ];
 }
