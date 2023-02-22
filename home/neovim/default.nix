@@ -149,6 +149,33 @@
               timeout = 500,
             },
           }
+
+          local function open_nvim_tree(data)
+
+            -- buffer is a directory
+            local directory = vim.fn.isdirectory(data.file) == 1
+
+            if not directory then
+              return
+            end
+
+            -- check if argument list is empty
+            if vim.tbl_isempty(vim.fn.argv()) then
+              -- create a new, empty buffer
+              vim.cmd.enew()
+
+              -- wipe the directory buffer
+              vim.cmd.bw(data.buf)
+
+              -- change to the directory
+              vim.cmd.cd(data.file)
+
+              -- open the tree
+              require("nvim-tree.api").tree.open()
+            end
+          end
+
+          open_nvim_tree({ buf = vim.fn.bufnr(), file = vim.fn.expand('%:p:h') })
         '';
       }
       {
