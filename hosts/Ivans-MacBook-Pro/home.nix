@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ../../home/transmission.nix
   ];
 
   home.packages = with pkgs; [
@@ -9,7 +10,8 @@
     eks-node-viewer
     pv-migrate
 
-    transmission-gtk
     rustc
+
+    packer
   ];
 }
