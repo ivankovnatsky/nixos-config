@@ -95,7 +95,6 @@
     "hadolint" # haskell
     "awscli"
     "syncthing"
-    "pam-reattach"
   ];
 
   # Docker Desktop installs all bunch of kube and container tools, so no need to install
