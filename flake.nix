@@ -119,7 +119,7 @@
 
           homeModules = [
             ./home/common.nix
-            ./home/workstation.nix
+            ./home/nixos-workstation.nix
             ./home/sway.nix
           ];
         };
