@@ -3,6 +3,7 @@
 {
   imports = [
     ../../home/transmission.nix
+    ../../home/workstation.nix
   ];
 
   home.packages = with pkgs; [
