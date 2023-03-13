@@ -9,7 +9,7 @@ in
     gitAndTools.pre-commit
     git-crypt
     pinentry
-    tig
+    gitui
   ];
 
   # Git started to read global config and opens up osxkeychain windows first by
