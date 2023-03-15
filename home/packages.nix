@@ -30,7 +30,7 @@
     rclone
     gnused
     tfk8s
-    istioctl
+    nixpkgs-unstable.istioctl
     aws-vault
     dhall
     dhall-json
