@@ -8,6 +8,7 @@ in
   home.packages = with pkgs; [
     gitAndTools.pre-commit
     git-crypt
+    git-remote-codecommit
     pinentry
     gitui
   ];
