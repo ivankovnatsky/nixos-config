@@ -50,6 +50,7 @@
     kubernetes-helm
     nixpkgs-fmt
     nixpkgs-review
+    rnr
     sops
     tealdeer
     terraform
