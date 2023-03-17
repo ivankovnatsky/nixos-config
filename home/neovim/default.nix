@@ -182,6 +182,8 @@
         plugin = nvim-lspconfig;
         type = "lua";
         config = ''
+          -- Disable logging
+          vim.lsp.set_log_level("off")
           -- Mappings.
           -- See `:help vim.diagnostic.*` for documentation on any of the below functions
           local opts = { noremap=true, silent=true }
