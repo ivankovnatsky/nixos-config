@@ -118,6 +118,10 @@
         if [[ -d /opt/homebrew/bin ]]; then
           export PATH=$PATH:/opt/homebrew/bin
         fi
+
+        if [[ -d $HOME/bin ]]; then
+          export PATH=$PATH:$HOME/bin
+        fi
       '';
     };
   };
