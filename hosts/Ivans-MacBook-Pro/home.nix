@@ -10,6 +10,7 @@
     defaultbrowser
     eks-node-viewer
     pv-migrate
+    granted
 
     rustc
 
