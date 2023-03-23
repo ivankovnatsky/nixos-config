@@ -32,6 +32,7 @@
     tfk8s
     nixpkgs-unstable.istioctl
     aws-vault
+    aws-sso-creds
     dhall
     dhall-json
     dogdns
