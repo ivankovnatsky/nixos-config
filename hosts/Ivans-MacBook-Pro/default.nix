@@ -34,6 +34,7 @@
       self: super: {
         eks-node-viewer = super.callPackage ../../overlays/eks-node-viewer.nix { };
         pv-migrate = super.callPackage ../../overlays/pv-migrate.nix { };
+        granted = super.callPackage ../../overlays/granted.nix { };
       }
     )
   ];
