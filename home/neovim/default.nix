@@ -48,6 +48,13 @@
           }
         '';
       }
+      {
+        plugin = fidget-nvim;
+        type = "lua";
+        config = ''
+          require("fidget").setup({})
+        '';
+      }
       vim-better-whitespace
       vim-strip-trailing-whitespace
       copilot-vim
