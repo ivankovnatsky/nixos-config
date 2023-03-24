@@ -17,6 +17,7 @@
         falcon-sensor = super.callPackage ../../overlays/falcon-sensor.nix { };
         pv-migrate = super.callPackage ../../overlays/pv-migrate.nix { };
         eks-node-viewer = super.callPackage ../../overlays/eks-node-viewer.nix { };
+        granted = super.callPackage ../../overlays/granted.nix { };
       }
     )
   ];
@@ -29,7 +30,7 @@
     syncthing
     falcon-sensor
     pv-migrate
-
+    granted
     eks-node-viewer
   ];
 
