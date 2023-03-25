@@ -10,6 +10,13 @@ let
     defaults write org.p0deje.Maccy ignoreEvents false
   '';
 
+  createPrContents = builtins.readFile ./scripts/create-pr.sh;
+  createPrWithFixedShebang = builtins.replaceStrings [ "#!/usr/bin/env bash" ] [ "#!${pkgs.bash}/bin/bash" ] createPrContents;
+  createPr = pkgs.writeScriptBin "create-pr" createPrWithFixedShebang;
+
+  forwardSsmSessionContents = builtins.readFile ./scripts/forward-ssm-session.sh;
+  forwardSsmSessionWithFixedShebang = builtins.replaceStrings [ "#!/usr/bin/env bash" ] [ "#!${pkgs.bash}/bin/bash" ] forwardSsmSessionContents;
+  forwardSsmSession = pkgs.writeScriptBin "forward-ssm-session" forwardSsmSessionWithFixedShebang;
 in
 {
   home.packages = with pkgs; [
@@ -21,6 +28,8 @@ in
     ]))
 
     passDisableMaccy
+    createPr
+    forwardSsmSession
 
     _1password
     grpcui
