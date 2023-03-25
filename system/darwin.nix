@@ -107,7 +107,6 @@
     "firefox"
     "font-hack-nerd-font"
     "hammerspoon"
-    "mos"
   ];
 
   homebrew.masApps = {

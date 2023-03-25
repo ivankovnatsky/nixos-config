@@ -48,6 +48,7 @@
     procps
     pstree
     kubectl
+    kail
     krelay
     kubectx
     kubernetes-helm
