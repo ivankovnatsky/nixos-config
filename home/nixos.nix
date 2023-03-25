@@ -24,7 +24,6 @@ in
   variables = super.variables;
 
   home.packages = with pkgs; [
-    _1password
     awscli2
     file
     killall

@@ -22,6 +22,7 @@ in
 
     passDisableMaccy
 
+    _1password
     grpcui
     grpcurl
     ghz
