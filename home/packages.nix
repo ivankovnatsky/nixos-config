@@ -1,5 +1,16 @@
 { pkgs, ... }:
 
+let
+  passDisableMaccy = pkgs.writeScriptBin "pass-safe" ''
+    #!/usr/bin/env ${pkgs.bash}/bin/bash
+
+    defaults write org.p0deje.Maccy ignoreEvents true
+    ${pkgs.pass}/bin/pass $1 -c
+    sleep 0.5
+    defaults write org.p0deje.Maccy ignoreEvents false
+  '';
+
+in
 {
   home.packages = with pkgs; [
     (python310.withPackages (ps: with ps; [
@@ -8,6 +19,8 @@
       ansible
       yamllint
     ]))
+
+    passDisableMaccy
 
     grpcui
     grpcurl
