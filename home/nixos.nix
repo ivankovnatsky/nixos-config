@@ -27,7 +27,6 @@ in
     _1password
     awscli2
     file
-    kubectl
     killall
     openssl
     whois

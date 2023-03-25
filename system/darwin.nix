@@ -97,15 +97,12 @@
     "syncthing"
   ];
 
-  # Docker Desktop installs all bunch of kube and container tools, so no need to install
-  # kubectl and others
   homebrew.casks = [
     "maccy"
     "elastio"
     "iterm2"
     "1password-cli"
     "1password"
-    "docker"
     "amethyst"
     "firefox"
     "font-hack-nerd-font"
