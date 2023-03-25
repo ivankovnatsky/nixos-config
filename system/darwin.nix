@@ -101,8 +101,6 @@
     "maccy"
     "elastio"
     "iterm2"
-    "1password-cli"
-    "1password"
     "amethyst"
     "firefox"
     "font-hack-nerd-font"
