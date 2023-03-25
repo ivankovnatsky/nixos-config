@@ -9,17 +9,9 @@ set mouse=
 
 " edition to default colors scheme
 hi TabLine ctermfg=black guifg=black
-hi Folded      ctermbg=white
-
-hi Visual cterm=bold ctermbg=white ctermfg=black guibg=white guifg=black
-
+hi Folded  ctermbg=white
+hi Visual  cterm=bold ctermbg=white ctermfg=black guibg=white guifg=black
 hi Comment gui=italic cterm=italic ctermfg=gray guifg=gray
-
-" This is to make :Registers window to look more fancy
-hi FloatBorder ctermbg=NONE guibg=NONE
-
-" https://github.com/nvim-telescope/telescope.nvim/issues/2145#issuecomment-1264323345
-hi link NormalFloat Normal
 
 set expandtab
 set tabstop=4
