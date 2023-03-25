@@ -107,6 +107,10 @@ in
 
       input =
         {
+          "type:touchpad" = {
+            natural_scroll = "enabled";
+          };
+
           "1:1:AT_Translated_Set_2_keyboard" = {
             xkb_layout = "us,ua";
             xkb_options = "grp:caps_toggle";

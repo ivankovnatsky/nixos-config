@@ -4,18 +4,19 @@
   programs.firefox = {
     enable = true;
 
-    extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+    profiles.default.extensions = with pkgs.nur.repos.rycee.firefox-addons; [
       # firefox-translations
+      # granted-containers
       bitwarden
       clearurls
       darkreader
       decentraleyes
       duckduckgo-privacy-essentials
-      https-everywhere
+      # https-everywhere
       multi-account-containers
       onepassword-password-manager
       privacy-badger
-      tree-style-tab
+      # tree-style-tab
       ublock-origin
     ];
   };
