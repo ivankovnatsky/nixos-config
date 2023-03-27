@@ -33,6 +33,7 @@ in
 
     userEmail = "75213+ivankovnatsky@users.noreply.github.com";
     userName = "Ivan Kovnatsky";
+    delta.enable = true;
 
     signing = {
       signByDefault = true;
