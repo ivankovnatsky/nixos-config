@@ -1,22 +1,19 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 let
-  passDisableMaccy = pkgs.writeScriptBin "pass-safe" ''
-    #!/usr/bin/env ${pkgs.bash}/bin/bash
+  scriptsDir = ./scripts;
+  scriptFiles = builtins.readDir scriptsDir;
 
-    defaults write org.p0deje.Maccy ignoreEvents true
-    ${pkgs.pass}/bin/pass $1 -c
-    sleep 0.5
-    defaults write org.p0deje.Maccy ignoreEvents false
-  '';
+  processScript = scriptName:
+    let
+      scriptPath = "${scriptsDir}/${scriptName}";
+      scriptContents = builtins.readFile scriptPath;
+      scriptWithFixedShebang = builtins.replaceStrings [ "#!/usr/bin/env bash" ] [ "#!${pkgs.bash}/bin/bash" ] scriptContents;
+    in
+    pkgs.writeScriptBin (lib.removeSuffix ".sh" scriptName) scriptWithFixedShebang;
 
-  createPrContents = builtins.readFile ./scripts/create-pr.sh;
-  createPrWithFixedShebang = builtins.replaceStrings [ "#!/usr/bin/env bash" ] [ "#!${pkgs.bash}/bin/bash" ] createPrContents;
-  createPr = pkgs.writeScriptBin "create-pr" createPrWithFixedShebang;
-
-  forwardSsmSessionContents = builtins.readFile ./scripts/forward-ssm-session.sh;
-  forwardSsmSessionWithFixedShebang = builtins.replaceStrings [ "#!/usr/bin/env bash" ] [ "#!${pkgs.bash}/bin/bash" ] forwardSsmSessionContents;
-  forwardSsmSession = pkgs.writeScriptBin "forward-ssm-session" forwardSsmSessionWithFixedShebang;
+  filteredScriptNames = lib.filter (scriptName: lib.hasSuffix ".sh" scriptName) (builtins.attrNames scriptFiles);
+  scriptPackages = builtins.map processScript filteredScriptNames;
 in
 {
   home.packages = with pkgs; [
@@ -26,10 +23,6 @@ in
       ansible
       yamllint
     ]))
-
-    passDisableMaccy
-    createPr
-    forwardSsmSession
 
     _1password
     grpcui
@@ -83,5 +76,5 @@ in
     terraform
     wget
     yamlfix
-  ];
+  ] ++ scriptPackages;
 }
