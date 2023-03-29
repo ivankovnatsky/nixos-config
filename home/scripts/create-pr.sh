@@ -5,6 +5,7 @@ ASSIGNEE="@me"
 REVIEWER=""
 LABEL=""
 UPDATE="rebase"
+DRAFT="false"
 
 # Parse command-line arguments
 while [[ $# -gt 0 ]]; do
@@ -28,6 +29,10 @@ while [[ $# -gt 0 ]]; do
     --update)
         UPDATE="$2"
         shift
+        shift
+        ;;
+    --draft)
+        DRAFT="true"
         shift
         ;;
     *)
@@ -63,4 +68,5 @@ gh pr create \
     --title "$TITLE" \
     --base "$DEFAULT_BRANCH" \
     ${REVIEWER:+--reviewer "$REVIEWER"} \
-    ${LABEL:+--label "$LABEL"}
+    ${LABEL:+--label "$LABEL"} \
+    ${DRAFT:+--draft}
