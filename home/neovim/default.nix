@@ -189,15 +189,7 @@
           -- The nvim-cmp almost supports LSP's capabilities so You should advertise it to LSP servers..
           local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-          local servers = {
-            'bashls',
-            'gopls',
-            'rnix',
-            'terraformls',
-            'rust_analyzer'
-          }
-
-          for _, server in ipairs(servers) do
+          for _, server in ipairs(lsp_servers) do
             require('lspconfig')[server].setup {
               capabilities = capabilities
             }
@@ -354,34 +346,17 @@
             -- This is the default in Nvim 0.7+
             debounce_text_changes = 150,
           }
-          require('lspconfig')['pyright'].setup{
+
+          for _, server in ipairs(lsp_servers) do
+            require('lspconfig')[server].setup {
+              capabilities = capabilities
+            }
+
+            require('lspconfig')[server].setup{
               on_attach = on_attach,
               flags = lsp_flags,
-          }
-          require('lspconfig')['bashls'].setup{
-              on_attach = on_attach,
-              flags = lsp_flags,
-          }
-          require('lspconfig')['dhall_lsp_server'].setup{
-              on_attach = on_attach,
-              flags = lsp_flags,
-          }
-          require('lspconfig')['gopls'].setup{
-              on_attach = on_attach,
-              flags = lsp_flags,
-          }
-          require('lspconfig')['rnix'].setup{
-              on_attach = on_attach,
-              flags = lsp_flags,
-          }
-          require('lspconfig')['terraformls'].setup{
-              on_attach = on_attach,
-              flags = lsp_flags,
-          }
-          require('lspconfig')['rust_analyzer'].setup{
-              on_attach = on_attach,
-              flags = lsp_flags,
-          }
+            }
+          end
 
           require('lspkind').init({
             -- DEPRECATED (use mode instead): enables text annotations
@@ -469,5 +444,6 @@
     ];
 
     extraConfig = builtins.readFile ./init.vim;
+    extraLuaConfig = builtins.readFile ./init.lua;
   };
 }
