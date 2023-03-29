@@ -130,6 +130,48 @@
         '';
       }
       {
+        plugin = cmp-buffer;
+        type = "lua";
+        config = ''
+          require('cmp').setup({
+            sources = {
+              { name = 'buffer' },
+            },
+          })
+        '';
+      }
+      {
+        plugin = cmp-nvim-lsp;
+        type = "lua";
+        config = ''
+          require'cmp'.setup {
+            sources = {
+              { name = 'nvim_lsp' }
+            }
+          }
+
+          -- The nvim-cmp almost supports LSP's capabilities so You should advertise it to LSP servers..
+          local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
+          -- The following example advertise capabilities to `clangd`.
+          require'lspconfig'.clangd.setup {
+            capabilities = capabilities,
+          }
+        '';
+      }
+      {
+        plugin = cmp-path;
+        type = "lua";
+        config = ''
+          require'cmp'.setup {
+            sources = {
+              { name = 'path' }
+            }
+          }
+        '';
+      }
+      cmp-cmdline
+      {
         plugin = nvim-cmp;
         type = "lua";
         config = ''
@@ -177,6 +219,24 @@
             })
           })
 
+          -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+          cmp.setup.cmdline({ '/', '?' }, {
+            mapping = cmp.mapping.preset.cmdline(),
+            sources = {
+              { name = 'buffer' }
+            }
+          })
+
+          -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+          cmp.setup.cmdline(':', {
+            mapping = cmp.mapping.preset.cmdline(),
+            sources = cmp.config.sources({
+              { name = 'path' }
+            }, {
+              { name = 'cmdline' }
+            })
+          })
+
           -- Set up lspconfig.
           local capabilities = require('cmp_nvim_lsp').default_capabilities()
           -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
@@ -198,79 +258,6 @@
 
           require('lspconfig')['rust_analyzer'].setup {
             capabilities = capabilities
-          }
-        '';
-      }
-      {
-        plugin = cmp-cmdline;
-        type = "lua";
-        config = ''
-          -- Set up nvim-cmp.
-          local cmp = require'cmp'
-
-          -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
-          cmp.setup.cmdline({ '/', '?' }, {
-            mapping = cmp.mapping.preset.cmdline(),
-            sources = {
-              { name = 'buffer' }
-            }
-          })
-
-          -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-          cmp.setup.cmdline(':', {
-            mapping = cmp.mapping.preset.cmdline(),
-            sources = cmp.config.sources({
-              { name = 'path' }
-            }, {
-              { name = 'cmdline',
-                option = {
-                  -- Could cause performance issues on ":!", add ignore if needed.
-                  ignore_cmds = { 'Man' }
-                }
-              }
-            })
-          })
-
-        '';
-      }
-      {
-        plugin = cmp-buffer;
-        type = "lua";
-        config = ''
-          require('cmp').setup({
-            sources = {
-              { name = 'buffer' },
-            },
-          })
-        '';
-      }
-      {
-        plugin = cmp-nvim-lsp;
-        type = "lua";
-        config = ''
-          require'cmp'.setup {
-            sources = {
-              { name = 'nvim_lsp' }
-            }
-          }
-
-          -- The nvim-cmp almost supports LSP's capabilities so You should advertise it to LSP servers..
-          local capabilities = require('cmp_nvim_lsp').default_capabilities()
-
-          -- The following example advertise capabilities to `clangd`.
-          require'lspconfig'.clangd.setup {
-            capabilities = capabilities,
-          }
-        '';
-      }
-      {
-        plugin = cmp-path;
-        type = "lua";
-        config = ''
-          require'cmp'.setup {
-            sources = {
-              { name = 'path' }
-            }
           }
         '';
       }
