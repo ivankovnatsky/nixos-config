@@ -153,10 +153,19 @@
           -- The nvim-cmp almost supports LSP's capabilities so You should advertise it to LSP servers..
           local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-          -- The following example advertise capabilities to `clangd`.
-          require'lspconfig'.clangd.setup {
-            capabilities = capabilities,
+          local servers = {
+            'bashls',
+            'gopls',
+            'rnix',
+            'terraformls',
+            'rust_analyzer'
           }
+
+          for _, server in ipairs(servers) do
+            require('lspconfig')[server].setup {
+              capabilities = capabilities
+            }
+          end
         '';
       }
       {
@@ -236,29 +245,6 @@
               { name = 'cmdline' }
             })
           })
-
-          -- Set up lspconfig.
-          local capabilities = require('cmp_nvim_lsp').default_capabilities()
-          -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
-          require('lspconfig')['bashls'].setup {
-            capabilities = capabilities
-          }
-
-          require('lspconfig')['gopls'].setup {
-            capabilities = capabilities
-          }
-
-          require('lspconfig')['rnix'].setup {
-            capabilities = capabilities
-          }
-
-          require('lspconfig')['terraformls'].setup {
-            capabilities = capabilities
-          }
-
-          require('lspconfig')['rust_analyzer'].setup {
-            capabilities = capabilities
-          }
         '';
       }
       {
