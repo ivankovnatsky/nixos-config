@@ -2,6 +2,14 @@
 
 Hetzner remote dedicated server.
 
+## Automation
+
+Use this
+[script](https://raw.githubusercontent.com/ivankovnatsky/nixos-install-scripts/5aae4e42a4749edf49f42a5aa360eca7290f422f/hosters/hetzner-dedicated/hetzner-dedicated-wipe-and-install-nixos.sh)
+to bootstrap NixOS on hetzner dedicated, unencrypted.
+
+Mostly copied over here: <https://github.com/serokell/nixos-install-scripts/pull/1>.
+
 ## New Machine setup
 
 1. Copy hardware-configuration.nix from newly created machine
