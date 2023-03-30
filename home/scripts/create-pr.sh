@@ -5,7 +5,7 @@ ASSIGNEE="@me"
 REVIEWER=""
 LABEL=""
 UPDATE="rebase"
-DRAFT="false"
+DRAFT=""
 
 # Parse command-line arguments
 while [[ $# -gt 0 ]]; do
