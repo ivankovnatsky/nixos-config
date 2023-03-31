@@ -55,6 +55,7 @@
           require("fidget").setup({})
         '';
       }
+      vim-rhubarb
       lspkind-nvim
       vim-better-whitespace
       vim-strip-trailing-whitespace
