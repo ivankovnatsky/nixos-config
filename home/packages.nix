@@ -64,6 +64,7 @@ in
     procps
     pstree
     kubectl
+    kubectl-images
     kail
     krelay
     kubectx
