@@ -17,6 +17,7 @@
     shfmt
     terraform-ls
     tflint
+    sumneko-lua-language-server
     stylua
     rust-analyzer
   ];
