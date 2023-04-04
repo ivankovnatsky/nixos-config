@@ -118,3 +118,51 @@ endif
 if maparg('<leader>*', 'v') == ''
   vmap <leader>* :<C-u>call <SID>VSetSearch()<CR>:execute 'noautocmd vimgrep /' . @/ . '/ **'<CR>
 endif
+
+" Plugins
+" {{{ dhall-vim
+autocmd FileType dhall setlocal ts=2 sts=2 sw=2 expandtab
+" }}}
+" {{{ vim-jsonnet
+autocmd FileType jsonnet setlocal ts=2 sts=2 sw=2 expandtab
+" }}}
+" {{{ vim-commentary
+autocmd FileType helm setlocal commentstring=#\ %s
+" }}}
+" {{{ neoformat
+augroup fmt
+  autocmd!
+  autocmd BufWritePre * undojoin | Neoformat
+augroup END
+" }}}
+" {{{ vim-helm
+autocmd FileType helm setlocal ts=2 sts=2 sw=2 expandtab
+" }}}
+" {{{ rust-vim
+let g:rustfmt_autosave = 1
+" }}}
+" {{{ vim-sneak
+let g:sneak#label = 1
+" }}}
+" {{{ fzf-vim
+command! -bang -nargs=* Rg call fzf#vim#grep("rg --column --hidden --no-ignore-parent --glob '!.git/*' --line-number --no-heading --color=always --smart-case -- ".shellescape(<q-args>), 1, fzf#vim#with_preview(), <bang>0)
+" }}}
+" {{{ ale
+let b:ale_linters = ['pylint', 'mdl']
+" }}}
+" {{{ vim-markdown
+let g:vim_markdown_folding_disabled = 1
+" }}}
+" {{{ vim-terraform-completion
+set completeopt-=preview
+
+" (Optional)Hide Info(Preview) window after completions
+autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
+autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+
+" (Optional) Default: 0, enable(1)/disable(0) plugin's keymapping
+let g:terraform_completion_keys = 1
+
+" (Optional) Default: 1, enable(1)/disable(0) terraform module registry completion
+let g:terraform_registry_module_completion = 0
+" }}}
