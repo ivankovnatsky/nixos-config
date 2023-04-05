@@ -170,6 +170,7 @@
         nixpkgs-unstable = import inputs.nixpkgs-unstable { system = final.system; config = final.config; };
         helm-secrets = final.callPackage ./overlays/helm-secrets.nix { };
         iam-policy-json-to-terraform = final.callPackage ./overlays/iam-policy-json-to-terraform.nix { };
+        stc = final.callPackage ./overlays/stc.nix { };
       };
 
 
