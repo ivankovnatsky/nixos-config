@@ -1,6 +1,12 @@
 # vim:filetype=nix
 { pkgs, ... }:
 
+let
+  inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
+
+  syncthingHomeDir = if isDarwin then "~/Library/Application\\ Support/Syncthing" else "~/.config/syncthing";
+
+in
 {
   home.packages = with pkgs; [
     exa
@@ -66,6 +72,7 @@
         cat = "bat";
         rclone = "rclone -P";
         wl-copy = "wl-copy -n";
+        stc = "stc -homedir ${syncthingHomeDir}";
       };
 
       oh-my-zsh = {

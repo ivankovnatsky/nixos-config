@@ -72,6 +72,7 @@ in
     nixpkgs-fmt
     nixpkgs-review
     rnr
+    stc
     sops
     tealdeer
     terraform
