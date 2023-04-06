@@ -51,6 +51,9 @@ in
             "arn:aws:eks:.*:.*:.*/(.*)" = "$1";
           };
         };
+        rust.disabled = true;
+        nodejs.disabled = true;
+        package.disabled = true;
       };
     };
 
