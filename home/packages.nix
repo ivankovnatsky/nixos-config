@@ -30,7 +30,6 @@ in
     ghz
     gnumake
     gnutar
-    yq
     jsonnet
     gitleaks
     postgresql
@@ -78,5 +77,6 @@ in
     terraform
     wget
     yamlfix
+    yq-go
   ] ++ scriptPackages;
 }
