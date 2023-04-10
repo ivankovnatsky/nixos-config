@@ -46,6 +46,7 @@
       neoformat
       nvim-cmp
       nvim-colorizer-lua
+      symbols-outline-nvim
       nvim-lspconfig
       nvim-tree-lua
       nvim-web-devicons
