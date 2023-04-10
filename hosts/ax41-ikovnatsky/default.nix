@@ -18,6 +18,12 @@
         pv-migrate = super.callPackage ../../overlays/pv-migrate.nix { };
         eks-node-viewer = super.callPackage ../../overlays/eks-node-viewer.nix { };
         granted = super.callPackage ../../overlays/granted.nix { };
+        terraform = super.callPackage ../../overlays/hashicorp-generic.nix {
+          name = "terraform";
+          version = "1.1.7";
+          sha256 = "sha256-5K3QkqVP9v69MyXR4MEJyeWQ3Gw4+Lt/ljLk5rzKmdQ=";
+          system = "x86_64-linux";
+        };
       }
     )
   ];
