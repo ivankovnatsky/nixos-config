@@ -28,11 +28,14 @@
     plugins = with pkgs.vimPlugins; [
       ale
       ansible-vim
+
+      cmp_luasnip
       cmp-buffer
       cmp-cmdline
-      cmp-nvim-lsp
       cmp-path
-      cmp_luasnip
+      cmp-nvim-lsp
+      nvim-cmp
+
       context-vim
       copilot-vim
       dhall-vim
@@ -44,7 +47,6 @@
       luasnip
       mkdir-nvim
       neoformat
-      nvim-cmp
       nvim-colorizer-lua
       symbols-outline-nvim
       nvim-lspconfig
