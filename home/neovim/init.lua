@@ -39,11 +39,22 @@ require("fidget").setup({})
 require("colorizer").setup()
 -- }}}
 -- {{{ cmp-buffer
-require("cmp").setup({ sources = { { name = "buffer" } } })
+require("cmp").setup({
+  sources = {
+    {
+      name = "buffer",
+      option = {
+        get_bufnrs = function()
+          return vim.api.nvim_list_bufs()
+        end,
+      },
+    },
+  },
+})
 -- }}}
--- {{{ cmp-path
-require("cmp").setup({ sources = { { name = "path" } } })
--- }}}
+-- -- {{{ cmp-path
+-- require("cmp").setup({ sources = { { name = "path" } } })
+-- -- }}}
 -- {{{ cmp-cmdline
 local cmp = require("cmp")
 -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
@@ -71,8 +82,7 @@ end
 -- }}}
 -- {{{ nvim-cmp
 -- Set up nvim-cmp.
-local cmp = require("cmp")
-
+-- local cmp = require("cmp")
 cmp.setup({
   snippet = {
     -- REQUIRED - you must specify a snippet engine
@@ -95,12 +105,15 @@ cmp.setup({
     ["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
   }),
   sources = cmp.config.sources({
+    { name = "luasnip" },
+    { name = "nvim_lua" },
+    { name = "vsnip" },
+    { name = "path" },
+    { name = "latex_symbols" },
     { name = "nvim_lsp" },
-    { name = "vsnip" }, -- For vsnip users.
-    -- { name = 'luasnip' }, -- For luasnip users.
-    -- { name = 'ultisnips' }, -- For ultisnips users.
-    -- { name = 'snippy' }, -- For snippy users.
-  }, { { name = "buffer" } }),
+    { name = "buffer" },
+    { name = "emoji" },
+  }),
 })
 
 -- Set configuration for specific filetype.
