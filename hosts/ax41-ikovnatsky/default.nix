@@ -18,6 +18,7 @@
         pv-migrate = super.callPackage ../../overlays/pv-migrate.nix { };
         eks-node-viewer = super.callPackage ../../overlays/eks-node-viewer.nix { };
         granted = super.callPackage ../../overlays/granted.nix { };
+        kubectl-ktop = super.callPackage ../../overlays/kubectl-ktop.nix { };
         terraform = super.callPackage ../../overlays/hashicorp-generic.nix {
           name = "terraform";
           version = "1.1.7";
@@ -38,6 +39,7 @@
     pv-migrate
     granted
     eks-node-viewer
+    kubectl-ktop
   ];
 
   custom.falcon.enable = true;
