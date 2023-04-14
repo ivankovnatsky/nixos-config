@@ -261,9 +261,7 @@ require("lspkind").init({
 })
 -- }}}
 -- {{{ symbols-outline-nvim
-require("symbols-outline").setup()
-
-local opts = {
+require("symbols-outline").setup({
   highlight_hovered_item = true,
   show_guides = true,
   auto_preview = false,
@@ -271,7 +269,7 @@ local opts = {
   relative_width = true,
   width = 25,
   auto_close = false,
-  show_numbers = false,
+  show_numbers = true,
   show_relative_numbers = false,
   show_symbol_details = true,
   preview_bg_highlight = "Pmenu",
@@ -325,5 +323,5 @@ local opts = {
     Component = { icon = "", hl = "@function" },
     Fragment = { icon = "", hl = "@constant" },
   },
-}
+})
 -- }}}
