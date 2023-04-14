@@ -11,6 +11,7 @@
     eks-node-viewer
     pv-migrate
     granted
+    kubectl-ktop
 
     rustc
 
