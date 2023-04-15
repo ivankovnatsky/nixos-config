@@ -59,7 +59,6 @@ in
     htop
     jq
     k9s
-    procs
     procps
     pstree
     kubectl
@@ -76,7 +75,6 @@ in
     tealdeer
     terraform
     wget
-    yamlfix
     yq-go
   ] ++ scriptPackages;
 }
