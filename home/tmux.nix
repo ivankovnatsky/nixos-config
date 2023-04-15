@@ -81,5 +81,44 @@
             - clear
       '';
     };
+
+    ".config/tmuxinator/ax41.yml" = {
+      text = ''
+        name: ax41
+        startup_window: 0
+
+        windows:
+          - shell:
+            - tmux set-window-option -t0 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t1 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t2 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t3 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t4 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t5 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t6 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t7 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t8 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t9 automatic-rename on
+            - clear
+      '';
+    };
   };
 }
