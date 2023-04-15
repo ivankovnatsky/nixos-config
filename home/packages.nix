@@ -45,10 +45,10 @@ in
     rclone
     gnused
     tfk8s
-    nixpkgs-unstable.istioctl
+    istioctl
     aws-vault
     aws-sso-cli
-    aws-sso-creds
+    nixpkgs.aws-sso-creds
     dhall
     dhall-json
     dogdns

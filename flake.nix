@@ -2,32 +2,42 @@
   description = "NixOS configuration";
 
   inputs = {
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-
-    # Linux
+    # This is used to pin packages from current unstable channel.
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    home-manager.url = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    # Release 22.11
+    nixpkgs-22-11.url = "github:nixos/nixpkgs/nixos-22.11";
+    home-manager-22-11 = {
+      url = "github:nix-community/home-manager/release-22.11";
+      inputs.nixpkgs.follows = "nixpkgs-22-11";
+    };
 
-    nur.url = "github:nix-community/NUR";
+    # Unstable
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    home-manager-unstable = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Darwin
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixos-unstable";
+    home-manager-darwin = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs-darwin";
+    };
+    darwin = {
+      url = "github:lnl7/nix-darwin/master";
+      inputs.nixpkgs.follows = "nixpkgs-darwin";
+    };
 
-    home-manager-darwin.url = "github:nix-community/home-manager";
-    home-manager-darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
-
-    darwin.url = "github:lnl7/nix-darwin/master";
-    darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
-
+    nur.url = "github:nix-community/NUR";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
   outputs = { self, ... }@inputs:
     let
-      makeNixosConfig = { hostname, system, modules, homeModules }:
-        inputs.nixpkgs.lib.nixosSystem {
+      makeNixosConfig = { nixpkgs, home-manager, hostname, system, modules, homeModules }:
+        nixpkgs.lib.nixosSystem {
           inherit system;
 
           modules = [
@@ -35,7 +45,7 @@
               imports = [ ./hosts/${hostname} ./system/nixos.nix ];
             }
 
-            inputs.home-manager.nixosModules.home-manager
+            home-manager.nixosModules.home-manager
             ({ config, system, ... }: {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
@@ -105,6 +115,8 @@
     {
       nixosConfigurations = {
         desktop = makeNixosConfig {
+          nixpkgs = inputs.nixpkgs-unstable;
+          home-manager = inputs.home-manager-unstable;
           hostname = "desktop";
           system = "x86_64-linux";
 
@@ -127,6 +139,8 @@
         };
 
         ax41 = makeNixosConfig {
+          nixpkgs = inputs.nixpkgs-22-11;
+          home-manager = inputs.home-manager-22-11;
           hostname = "ax41";
           system = "x86_64-linux";
 
@@ -142,6 +156,8 @@
         };
 
         ax41-ikovnatsky = makeNixosConfig {
+          nixpkgs = inputs.nixpkgs-22-11;
+          home-manager = inputs.home-manager-22-11;
           hostname = "ax41-ikovnatsky";
           system = "x86_64-linux";
 
@@ -167,7 +183,7 @@
       };
 
       overlay = final: prev: {
-        nixpkgs-unstable = import inputs.nixpkgs-unstable { system = final.system; config = final.config; };
+        nixpkgs = import inputs.nixpkgs { system = final.system; config = final.config; };
         helm-secrets = final.callPackage ./overlays/helm-secrets.nix { };
         iam-policy-json-to-terraform = final.callPackage ./overlays/iam-policy-json-to-terraform.nix { };
         stc = final.callPackage ./overlays/stc.nix { };
