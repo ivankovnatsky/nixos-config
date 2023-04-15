@@ -12,6 +12,7 @@
     pv-migrate
     granted
     kubectl-ktop
+    typst
 
     rustc
 

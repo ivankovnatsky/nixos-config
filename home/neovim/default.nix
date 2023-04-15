@@ -20,6 +20,7 @@
     sumneko-lua-language-server
     stylua
     rust-analyzer
+    typst-lsp
   ];
 
   programs.neovim = {
