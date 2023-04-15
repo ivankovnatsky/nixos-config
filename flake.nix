@@ -12,14 +12,14 @@
 
     nur.url = "github:nix-community/NUR";
 
-    # Mac
-    nixpkgs-mac.url = "github:nixos/nixpkgs/nixos-unstable";
+    # Darwin
+    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    home-manager-mac.url = "github:nix-community/home-manager";
-    home-manager-mac.inputs.nixpkgs.follows = "nixpkgs-mac";
+    home-manager-darwin.url = "github:nix-community/home-manager";
+    home-manager-darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
 
     darwin.url = "github:lnl7/nix-darwin/master";
-    darwin.inputs.nixpkgs.follows = "nixpkgs-mac";
+    darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
 
     flake-utils.url = "github:numtide/flake-utils";
   };
@@ -70,10 +70,10 @@
               nixpkgs.overlays = [ inputs.self.overlay ];
             }
 
-            inputs.home-manager-mac.darwinModules.home-manager
+            inputs.home-manager-darwin.darwinModules.home-manager
             ({ config, system, ... }: {
               # Support legacy workflows that use `<nixpkgs>` etc.
-              nix.nixPath.nixpkgs = "${inputs.nixpkgs-mac}";
+              nix.nixPath.nixpkgs = "${inputs.nixpkgs-darwin}";
 
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
