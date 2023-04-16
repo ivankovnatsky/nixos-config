@@ -1,13 +1,14 @@
 syntax on
+set encoding=utf-8
+scriptencoding=utf-8
 
 colorscheme default
 set background=dark
-set nocompatible
 set termguicolors
 
 set mouse=
 
-" edition to default colors scheme
+" Edition to default colors scheme
 hi TabLine ctermfg=black guifg=black
 hi Folded  ctermbg=white
 hi Visual  cterm=bold ctermbg=white ctermfg=black guibg=white guifg=black
@@ -38,14 +39,14 @@ set history=10000
 
 set iskeyword=@,48-57,_,192-255
 
-" search down into subfolders
+" Search down into subfolders
 " tab-completion for all file-related tasks
 set path+=**
 
-" display all matching files when we tab complete
+" Display all matching files when we tab complete
 set wildmenu
 
-" display commands typing in
+" Display commands typing in
 set showcmd
 
 set tabpagemax=100
@@ -56,43 +57,45 @@ set smartindent
 filetype indent plugin on
 
 set list
-set encoding=utf-8
 
-" undo file even after neovim exists
+" Undo file even after vim exists
 if has('persistent_undo')
-set undofile
-set undodir=~/.cache/neovim/undo/
+  set undofile
+  if has('nvim')
+    set undodir=~/.cache/nvim/undo/
+  elseif has('vim_starting')
+    set undodir=~/.cache/vim/undo/
+  endif
 endif
 
-" indent by filetype
-autocmd FileType tex,yaml,conf,vim,template,markdown,javascript setlocal ts=2 sts=2 sw=2 expandtab
-autocmd FileType cpp,c setlocal ts=8 sts=8 sw=8 noexpandtab
+" Indent by filetype
+augroup indent
+  autocmd FileType tex,yaml,conf,vim,template,markdown,javascript setlocal ts=2 sts=2 sw=2 expandtab
+  autocmd FileType cpp,c setlocal ts=8 sts=8 sw=8 noexpandtab
+  autocmd BufEnter,BufNew *.hcl setlocal ts=2 sts=2 sw=2 expandtab
+  autocmd BufRead,BufNewFile *.hcl set filetype=terraform
+  autocmd FileType go setlocal noexpandtab tabstop=8 shiftwidth=8
+augroup end
 
-autocmd BufEnter,BufNew *.hcl setlocal ts=2 sts=2 sw=2 expandtab
+" Fix working crontab for neovim
+augroup crontab
+  autocmd filetype crontab setlocal nobackup nowritebackup
+augroup END
 
-" terragrunt
-autocmd BufRead,BufNewFile *.hcl set filetype=terraform
-
-" go
-autocmd FileType go setlocal noexpandtab tabstop=8 shiftwidth=8
-
-" Fixed working crontab for neovim
-autocmd filetype crontab setlocal nobackup nowritebackup
-
-" remap window navigation
+" Remap window navigation
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
-" history complete by word
+" History complete by word
 cmap <C-P> <Up>
 cmap <C-N> <Down>
 
-" disable Ex mode
+" Disable Ex mode
 map Q <nop>
 
-" Set Ukrainian key mappings: this will let me navigate in neovim even if did
+" Set Ukrainian key mappings: this will let me navigate in vim even if did
 " not moved back to english keyboard layout
 set langmap=йq,цw,уe,кr,еt,нy,гu,шi,щo,зp,х[,ї],фa,іs,вd,аf,пg,рh,оj,лk,дl,ж\\;,
   \є',ґ\\,яz,чx,сc,мv,иb,тn,ьm,б\\,,ю.,,ЙQ,ЦW,УE,КR,ЕT,НY,НY,ГU,ШI,ЩO,ЗP,Х{,Ї},ФA,
@@ -111,23 +114,29 @@ endfunction
 xnoremap * :<C-u>call <SID>VSetSearch('/')<CR>/<C-R>=@/<CR><CR>
 xnoremap # :<C-u>call <SID>VSetSearch('?')<CR>?<C-R>=@/<CR><CR>
 
-" recursively vimgrep for word under cursor or selection if you hit leader-star
-if maparg('<leader>*', 'n') == ''
+" Recursively vimgrep for word under cursor or selection if you hit leader-star
+if maparg('<leader>*', 'n') ==# ''
   nmap <leader>* :execute 'noautocmd vimgrep /\V' . substitute(escape(expand("<cword>"), '\'), '\n', '\\n', 'g') . '/ **'<CR>
 endif
-if maparg('<leader>*', 'v') == ''
+if maparg('<leader>*', 'v') ==# ''
   vmap <leader>* :<C-u>call <SID>VSetSearch()<CR>:execute 'noautocmd vimgrep /' . @/ . '/ **'<CR>
 endif
 
 " Plugins
 " {{{ dhall-vim
-autocmd FileType dhall setlocal ts=2 sts=2 sw=2 expandtab
+augroup dhall
+  autocmd FileType dhall setlocal ts=2 sts=2 sw=2 expandtab
+augroup END
 " }}}
 " {{{ vim-jsonnet
-autocmd FileType jsonnet setlocal ts=2 sts=2 sw=2 expandtab
+augroup jsonnet
+  autocmd FileType jsonnet setlocal ts=2 sts=2 sw=2 expandtab
+augroup END
 " }}}
 " {{{ vim-commentary
-autocmd FileType helm setlocal commentstring=#\ %s
+augroup commentary
+  autocmd FileType helm setlocal commentstring=#\ %s
+augroup END
 " }}}
 " {{{ neoformat
 augroup fmt
@@ -136,7 +145,9 @@ augroup fmt
 augroup END
 " }}}
 " {{{ vim-helm
-autocmd FileType helm setlocal ts=2 sts=2 sw=2 expandtab
+augroup helm
+  autocmd FileType helm setlocal ts=2 sts=2 sw=2 expandtab
+augroup END
 " }}}
 " {{{ rust-vim
 let g:rustfmt_autosave = 1
@@ -157,8 +168,10 @@ let g:vim_markdown_folding_disabled = 1
 set completeopt-=preview
 
 " (Optional)Hide Info(Preview) window after completions
-autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
-autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+augroup terraform_completion
+  autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
+  autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+augroup END
 
 " (Optional) Default: 0, enable(1)/disable(0) plugin's keymapping
 let g:terraform_completion_keys = 1
@@ -166,3 +179,47 @@ let g:terraform_completion_keys = 1
 " (Optional) Default: 1, enable(1)/disable(0) terraform module registry completion
 let g:terraform_registry_module_completion = 0
 " }}}
+
+" This block sets config only for vim
+if has('vim_starting')
+  if executable('terraform-ls')
+    augroup lsp
+      au User lsp_setup call lsp#register_server({
+          \ 'name': 'terraform-ls',
+          \ 'cmd': {server_info->['terraform-ls', 'serve']},
+          \ 'whitelist': ['terraform'],
+          \ })
+    augroup END
+  endif
+
+  function! s:on_lsp_buffer_enabled() abort
+      setlocal omnifunc=lsp#complete
+      setlocal signcolumn=yes
+      if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+      nmap <buffer> gd <plug>(lsp-definition)
+      nmap <buffer> gs <plug>(lsp-document-symbol-search)
+      nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
+      nmap <buffer> gr <plug>(lsp-references)
+      nmap <buffer> gi <plug>(lsp-implementation)
+      nmap <buffer> gt <plug>(lsp-type-definition)
+      nmap <buffer> <leader>rn <plug>(lsp-rename)
+      nmap <buffer> [g <plug>(lsp-previous-diagnostic)
+      nmap <buffer> ]g <plug>(lsp-next-diagnostic)
+      nmap <buffer> K <plug>(lsp-hover)
+      nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
+      nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
+
+      let g:lsp_format_sync_timeout = 1000
+      augroup lsp_format
+        autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
+      augroup END
+
+      " refer to doc to add more commands
+  endfunction
+
+  augroup lsp_install
+      au!
+      " call s:on_lsp_buffer_enabled only for languages that has the server registered.
+      autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+  augroup END
+endif
