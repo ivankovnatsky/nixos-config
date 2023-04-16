@@ -23,36 +23,43 @@
     nixpkgs.typst-lsp
   ];
 
+  home.file.".cache/nvim/undo/.keep".text = "";
+
+  programs.vim-vint.enable = true;
+
   programs.neovim = {
     enable = true;
 
     plugins = with pkgs.vimPlugins; [
-      ale
-      ansible-vim
-
+      # Cmp
       cmp_luasnip
+      luasnip
       cmp-buffer
       cmp-cmdline
       cmp-path
       cmp-nvim-lsp
       nvim-cmp
 
-      context-vim
+      # Neovim
       copilot-vim
-      dhall-vim
-      fidget-nvim
-      fzf-vim
       git-blame-nvim
       lspkind-nvim
       lualine-nvim
-      luasnip
+      fidget-nvim
       mkdir-nvim
-      neoformat
       nvim-colorizer-lua
       symbols-outline-nvim
       nvim-lspconfig
       nvim-tree-lua
       nvim-web-devicons
+
+      # Vim
+      ale
+      ansible-vim
+      context-vim
+      dhall-vim
+      fzf-vim
+      neoformat
       rust-vim
       vim-better-whitespace
       vim-commentary

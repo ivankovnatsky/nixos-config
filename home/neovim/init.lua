@@ -1,3 +1,5 @@
+vim.lsp.set_log_level("error")
+
 local lsp_servers = {
   bashls = {},
   dhall_lsp_server = {},
@@ -36,7 +38,7 @@ require("lualine").setup({
 require("fidget").setup({})
 -- }}}
 -- {{{ nvim-colorizer-lua
-require("colorizer").setup()
+require("colorizer").setup({})
 -- }}}
 -- {{{ cmp-buffer
 require("cmp").setup({
