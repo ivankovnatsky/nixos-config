@@ -101,26 +101,19 @@ set langmap=йq,цw,уe,кr,еt,нy,гu,шi,щo,зp,х[,ї],фa,іs,вd,аf,пg,
   \є',ґ\\,яz,чx,сc,мv,иb,тn,ьm,б\\,,ю.,,ЙQ,ЦW,УE,КR,ЕT,НY,НY,ГU,ШI,ЩO,ЗP,Х{,Ї},ФA,
   \ІS,ВD,АF,ПG,РH,ОJ,ЛK,ДL,Ж\\:,Є\\",Ґ\|,ЯZ,ЧX,СC,МV,ИB,ТN,ЬM,Б\\<,Ю>,№#
 
-" https://github.com/nelstrom/vim-visual-star-search/blob/master/plugin/visual-star-search.vim
-" From http://got-ravings.blogspot.com/2008/07/vim-pr0n-visual-search-mappings.html
-" makes * and # work on visual mode too.
-function! s:VSetSearch(cmdtype)
-  let temp = @s
-  norm! gv"sy
-  let @/ = '\V' . substitute(escape(@s, a:cmdtype.'\'), '\n', '\\n', 'g')
-  let @s = temp
+" {{{ visual-star-search
+" https://www.reddit.com/r/neovim/comments/keutw5/comment/gh9w1mf/?utm_source=share&utm_medium=web3x
+function! s:VSetSearch()
+  let temp = @@
+  norm! gvy
+  let @/ = '\V' . substitute(escape(@@, '\'), '\n', '\\n', 'g')
+  call histadd('/', substitute(@/, '[?/]', '\="\\%d".char2nr(submatch(0))', 'g'))
+  let @@ = temp
 endfunction
 
-xnoremap * :<C-u>call <SID>VSetSearch('/')<CR>/<C-R>=@/<CR><CR>
-xnoremap # :<C-u>call <SID>VSetSearch('?')<CR>?<C-R>=@/<CR><CR>
-
-" Recursively vimgrep for word under cursor or selection if you hit leader-star
-if maparg('<leader>*', 'n') ==# ''
-  nmap <leader>* :execute 'noautocmd vimgrep /\V' . substitute(escape(expand("<cword>"), '\'), '\n', '\\n', 'g') . '/ **'<CR>
-endif
-if maparg('<leader>*', 'v') ==# ''
-  vmap <leader>* :<C-u>call <SID>VSetSearch()<CR>:execute 'noautocmd vimgrep /' . @/ . '/ **'<CR>
-endif
+vnoremap * :<C-u>call <SID>VSetSearch()<CR>/<CR>
+vnoremap # :<C-u>call <SID>VSetSearch()<CR>?<CR>
+" }}}
 
 " Plugins
 " {{{ dhall-vim
@@ -223,3 +216,8 @@ if has('vim_starting')
       autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
   augroup END
 endif
+
+" Change filetype for files with *.typ extension
+augroup typst
+  autocmd BufNewFile,BufRead *.typ set filetype=typst
+augroup END
