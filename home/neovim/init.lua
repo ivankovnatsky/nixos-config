@@ -26,6 +26,7 @@ local lsp_servers = {
   rnix = {},
   rust_analyzer = {},
   terraformls = {},
+  typst_lsp = {},
 }
 
 -- Plugins
