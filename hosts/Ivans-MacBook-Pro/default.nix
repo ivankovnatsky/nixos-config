@@ -28,6 +28,7 @@
         pv-migrate = super.callPackage ../../overlays/pv-migrate.nix { };
         granted = super.callPackage ../../overlays/granted.nix { };
         kubectl-ktop = super.callPackage ../../overlays/kubectl-ktop.nix { };
+        tfupdate = super.callPackage ../../overlays/tfupdate.nix { };
       }
     )
   ];
