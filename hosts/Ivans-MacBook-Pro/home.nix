@@ -14,6 +14,7 @@
     granted
     kubectl-ktop
     typst
+    tfupdate
 
     rustc
 
