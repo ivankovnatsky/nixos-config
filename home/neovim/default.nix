@@ -25,8 +25,6 @@
 
   home.file.".cache/nvim/undo/.keep".text = "";
 
-  programs.vim-vint.enable = true;
-
   programs.neovim = {
     enable = true;
 
