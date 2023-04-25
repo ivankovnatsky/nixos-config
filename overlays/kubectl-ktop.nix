@@ -23,7 +23,7 @@ buildGoModule rec {
   ];
 
   postInstall = ''
-    mv $out/bin/ktop $out/bin/kubectl-ktop
+    ln -s $out/bin/ktop $out/bin/kubectl-ktop
   '';
 
   meta = with lib; {
