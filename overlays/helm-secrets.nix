@@ -2,13 +2,13 @@
 
 stdenv.mkDerivation rec {
   pname = "helm-secrets";
-  version = "3.12.0";
+  version = "92415f7543343c0f21af6b344b3295483c562550";
 
   src = fetchFromGitHub {
     owner = "jkroepke";
     repo = "${pname}";
-    rev = "v${version}";
-    sha256 = "sha256-y8GumMCABdQGnNWJcmM/cXvJ61GoAm6467Ks+YRRW+s=";
+    rev = "${version}";
+    sha256 = "sha256-xy5PXXK8ji6lsHyZ0hFa9Et6I9LRMnP4jxboYFIhoh4=";
   };
 
   installPhase = ''
