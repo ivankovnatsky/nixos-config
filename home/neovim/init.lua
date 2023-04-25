@@ -55,9 +55,9 @@ require("cmp").setup({
   },
 })
 -- }}}
--- -- {{{ cmp-path
--- require("cmp").setup({ sources = { { name = "path" } } })
--- -- }}}
+-- {{{ cmp-path
+require("cmp").setup({ sources = { { name = "path" } } })
+-- }}}
 -- {{{ cmp-cmdline
 local cmp = require("cmp")
 -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
