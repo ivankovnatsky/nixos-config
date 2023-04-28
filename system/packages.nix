@@ -19,6 +19,11 @@
 
     # To install arm emulator:
     # docker run --privileged --rm tonistiigi/binfmt --install arm64
+    #
+    # To use it by default:
+    # docker buildx install
+    # docker buildx use default
+    # docker buildx inspect --bootstrap
     docker-buildx
     qemu
   ];
