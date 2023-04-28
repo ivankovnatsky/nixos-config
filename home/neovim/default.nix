@@ -81,6 +81,7 @@
       vim-terraform-completion
       vim-tmux
       webapi-vim
+      ultisnips
     ];
 
     extraConfig = builtins.readFile ./init.vim;

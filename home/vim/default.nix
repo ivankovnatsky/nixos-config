@@ -49,6 +49,7 @@
       vim-vsnip
       vim-vsnip-integ
       vim-which-key
+      ultisnips
       webapi-vim
     ];
     extraConfig = builtins.readFile ../neovim/init.vim;
