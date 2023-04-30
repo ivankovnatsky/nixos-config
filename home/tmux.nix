@@ -118,6 +118,12 @@
           - shell:
             - tmux set-window-option -t9 automatic-rename on
             - clear
+          - shell:
+            - tmux set-window-option -t10 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t11 automatic-rename on
+            - clear
       '';
     };
   };
