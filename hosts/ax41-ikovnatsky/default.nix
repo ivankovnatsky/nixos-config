@@ -45,9 +45,19 @@
   custom.falcon.enable = true;
   services.fail2ban.enable = true;
 
-  users.users.ivan.openssh.authorizedKeys.keys = [
-    "${config.secrets.sshPublicKey}"
-  ];
+  # Only comment out when ivan-remote password set and ssh connectivity
+  # verified.
+  # users.users.ivan.openssh.authorizedKeys.keys = [
+  #   "${config.secrets.sshPublicKey}"
+  # ];
+
+  # Set dedicated user for remote access
+  users.users.ivan-remote = {
+    isNormalUser = true;
+    openssh.authorizedKeys.keys = [
+      "${config.secrets.sshPublicKey}"
+    ];
+  };
 
   # Syncthing
   networking.firewall.allowedTCPPorts = [ 8384 22000 ];
