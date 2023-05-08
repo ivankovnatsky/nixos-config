@@ -82,9 +82,11 @@
   services.openssh.permitRootLogin = "prohibit-password";
   services.openssh.enable = true;
 
-  users.users.root.openssh.authorizedKeys.keys = [
-    "${config.secrets.sshPublicKey}"
-  ];
+  # Only comment out when ivan password set and ssh connectivity
+  # verified.
+  # users.users.root.openssh.authorizedKeys.keys = [
+  #   "${config.secrets.sshPublicKey}"
+  # ];
 
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database
