@@ -29,15 +29,6 @@
     enable = true;
 
     plugins = with pkgs.vimPlugins; [
-      # Cmp
-      cmp_luasnip
-      luasnip
-      cmp-buffer
-      cmp-cmdline
-      cmp-path
-      cmp-nvim-lsp
-      nvim-cmp
-
       # Neovim
       copilot-vim
       git-blame-nvim
