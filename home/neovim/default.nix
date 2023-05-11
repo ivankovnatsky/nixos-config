@@ -48,11 +48,7 @@
       nvim-colorizer-lua
       symbols-outline-nvim
       nvim-lspconfig
-
-      neo-tree-nvim
-      nui-nvim
-      plenary-nvim
-
+      nvim-tree-lua
       nvim-web-devicons
 
       # Vim
