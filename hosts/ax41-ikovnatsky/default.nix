@@ -40,6 +40,7 @@
     granted
     eks-node-viewer
     kubectl-ktop
+    pinentry-curses
   ];
 
   custom.falcon.enable = true;
