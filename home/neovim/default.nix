@@ -45,7 +45,6 @@
       # Vim
       ale
       ansible-vim
-      context-vim
       dhall-vim
       fzf-vim
       neoformat
