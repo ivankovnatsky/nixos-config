@@ -15,7 +15,6 @@
       nerdtree-git-plugin
       ale
       ansible-vim
-      context-vim
       dhall-vim
       fzf-vim
       git-messenger-vim
