@@ -46,7 +46,15 @@ require("nvim-tree").setup({
   respect_buf_cwd = true,
   disable_netrw = false,
   hijack_directories = { enable = true, auto_open = true },
-  actions = { use_system_clipboard = true, open_file = { resize_window = true } },
+  actions = {
+    use_system_clipboard = true,
+    open_file = {
+      resize_window = true,
+      window_picker = {
+        enable = false,
+      },
+    },
+  },
   view = { side = "left", width = 40, relativenumber = true },
   git = { enable = true, ignore = false, timeout = 500 },
 })
