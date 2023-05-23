@@ -19,6 +19,7 @@
         eks-node-viewer = super.callPackage ../../overlays/eks-node-viewer.nix { };
         granted = super.callPackage ../../overlays/granted.nix { };
         kubectl-ktop = super.callPackage ../../overlays/kubectl-ktop.nix { };
+        yor = super.callPackage ../../overlays/yor.nix { };
         terraform = super.callPackage ../../overlays/hashicorp-generic.nix {
           name = "terraform";
           version = "1.1.7";
@@ -41,6 +42,7 @@
     eks-node-viewer
     kubectl-ktop
     pinentry-curses
+    yor
   ];
 
   custom.falcon.enable = true;
