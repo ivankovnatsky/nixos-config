@@ -11,7 +11,6 @@
     defaultbrowser
     eks-node-viewer
     pv-migrate
-    granted
     kubectl-ktop
     typst
     tfupdate

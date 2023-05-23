@@ -9,17 +9,17 @@
 
 buildGoModule rec {
   pname = "granted";
-  version = "0.9.1";
+  version = "0.11.1";
 
   src = fetchFromGitHub {
     owner = "common-fate";
     repo = pname;
     rev = "v${version}";
-    sha256 = "sha256-R+cJ3Ztfw2D6uuY9D09cfpXRvjfQrScjZT3L0HV2Yw8";
+    sha256 = "sha256-m6cFAX8FMyv9H1IKm6meWu2yNEZz4g1Q+h2rRijYJsc=";
   };
 
   vendorSha256 =
-    "sha256-2BCJ5T89yd8ebcjYDppYtOJplWaLKEreENBw10gW3jE";
+    "sha256-8BPntTgd7QqO2T3vyWXC1z5yE/ovg3D3iilnislqV30=";
 
   nativeBuildInputs = [ makeWrapper ];
 
@@ -33,15 +33,11 @@ buildGoModule rec {
   ];
 
   subPackages = [
-    "cmd/assume"
     "cmd/granted"
   ];
 
   postInstall = ''
-    # https://docs.commonfate.io/granted/internals/shell-alias/
-    mv $out/bin/assume $out/bin/assumego
-
-    # Install the shell script
+    # Install shell script
     install -Dm755 $src/scripts/assume $out/bin/assume
     substituteInPlace $out/bin/assume \
       --replace /bin/bash ${bash}/bin/bash
@@ -56,7 +52,7 @@ buildGoModule rec {
   '';
 
   meta = with lib; {
-    description = " The easiest way to access your cloud. ";
+    description = "The easiest way to access your cloud.";
     homepage = "https://github.com/common-fate/granted";
     changelog = "https://github.com/common-fate/granted/releases/tag/${version}";
     license = licenses.mit;
