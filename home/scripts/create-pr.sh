@@ -7,6 +7,18 @@ LABEL=""
 UPDATE="rebase"
 DRAFT=""
 
+# Function to display script usage
+usage() {
+    echo "Usage: $0 [options]"
+    echo "Options:"
+    echo "  --assignee <username>    Specify the assignee for the pull request (default: @me)"
+    echo "  --reviewers <username>   Specify the reviewers for the pull request"
+    echo "  --labels <label>         Specify the label for the pull request"
+    echo "  --update <strategy>      Specify the update strategy (rebase or merge, default: rebase)"
+    echo "  --draft                  Create a draft pull request"
+    echo "  --help                   Display this help message"
+}
+
 # Parse command-line arguments
 while [[ $# -gt 0 ]]; do
     key="$1"
@@ -34,6 +46,10 @@ while [[ $# -gt 0 ]]; do
     --draft)
         DRAFT="true"
         shift
+        ;;
+    --help)
+        usage
+        exit 0
         ;;
     *)
         echo "Unknown argument: $1"
