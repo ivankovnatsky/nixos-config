@@ -64,6 +64,9 @@ INSTANCE_ID=$(aws "${aws_options[@]}" ec2 describe-instances \
     Name=instance-state-name,Values=running \
     --query 'Reservations[*].Instances[*].[InstanceId]' --output text)
 
-aws "${aws_options[@]}" ssm start-session --target "$INSTANCE_ID" \
-    --document-name AWS-StartPortForwardingSession \
-    --parameters "{\"portNumber\":[\"$PORT_NUMBER\"], \"localPortNumber\":[\"$LOCAL_PORT_NUMBER\"]}"
+while true; do
+    aws "${aws_options[@]}" ssm start-session --target "$INSTANCE_ID" \
+        --document-name AWS-StartPortForwardingSession \
+        --parameters "{\"portNumber\":[\"$PORT_NUMBER\"], \"localPortNumber\":[\"$LOCAL_PORT_NUMBER\"]}"
+    sleep 1
+done
