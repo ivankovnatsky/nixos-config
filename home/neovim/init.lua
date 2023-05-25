@@ -23,7 +23,7 @@ local lsp_servers = {
       },
     },
   },
-  rnix = {},
+  nil_ls = {},
   rust_analyzer = {},
   terraformls = {},
   typst_lsp = {},

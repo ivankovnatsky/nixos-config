@@ -12,7 +12,7 @@
     nodePackages.js-beautify
     python310Packages.grip
     ripgrep
-    rnix-lsp
+    nil
     shellcheck
     shfmt
     terraform-ls
