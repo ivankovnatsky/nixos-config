@@ -34,6 +34,7 @@
       luasnip
       cmp-buffer
       cmp-cmdline
+      cmp-git
       cmp-path
       cmp-nvim-lsp
       nvim-cmp

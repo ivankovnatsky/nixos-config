@@ -41,9 +41,30 @@ require("fidget").setup({})
 -- {{{ nvim-colorizer-lua
 require("colorizer").setup({})
 -- }}}
--- {{{ cmp-buffer
-require("cmp").setup({
-  sources = {
+-- {{{ nvim-cmp
+local cmp = require("cmp")
+
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      require("luasnip").lsp_expand(args.body) -- For `luasnip` users.
+      vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+    end,
+  },
+  mapping = cmp.mapping.preset.insert({
+    ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+    ["<C-f>"] = cmp.mapping.scroll_docs(4),
+    ["<C-Space>"] = cmp.mapping.complete(),
+    ["<C-e>"] = cmp.mapping.abort(),
+    ["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+  }),
+  sources = cmp.config.sources({
+    { name = "luasnip" },
+    { name = "nvim_lua" },
+    { name = "path" },
+    { name = "git" },
+    { name = "latex_symbols" },
+    { name = "nvim_lsp" },
     {
       name = "buffer",
       option = {
@@ -52,15 +73,17 @@ require("cmp").setup({
         end,
       },
     },
-  },
+    { name = "emoji" },
+  }),
 })
--- }}}
--- {{{ cmp-path
-require("cmp").setup({ sources = { { name = "path" } } })
--- }}}
--- {{{ cmp-cmdline
-local cmp = require("cmp")
--- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+
+-- Set configuration for specific filetype.
+cmp.setup.filetype("gitcommit", {
+  sources = cmp.config.sources({
+    { name = "cmp_git" }, -- You can specify the `cmp_git` source if you were installed it.
+  }, { { name = "buffer" } }),
+})
+
 cmp.setup.cmdline({ "/", "?" }, {
   mapping = cmp.mapping.preset.cmdline(),
   sources = { { name = "buffer" } },
@@ -73,58 +96,8 @@ cmp.setup.cmdline(":", {
     { name = "cmdline", option = { ignore_cmds = { "Man" } } },
   }),
 })
--- }}}
--- {{{ cmp-nvim-lsp
-require("cmp").setup({ sources = { { name = "nvim_lsp" } } })
--- The nvim-cmp almost supports LSP's capabilities so You should advertise it to LSP servers
+
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
-
-for _, server in ipairs(lsp_servers) do
-  require("lspconfig")[server].setup({ capabilities = capabilities })
-end
--- }}}
--- {{{ nvim-cmp
--- Set up nvim-cmp.
--- local cmp = require("cmp")
-cmp.setup({
-  snippet = {
-    -- REQUIRED - you must specify a snippet engine
-    expand = function(args)
-      require("luasnip").lsp_expand(args.body) -- For `luasnip` users.
-      vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
-      -- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-      -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
-    end,
-  },
-  window = {
-    -- completion = cmp.config.window.bordered(),
-    -- documentation = cmp.config.window.bordered(),
-  },
-  mapping = cmp.mapping.preset.insert({
-    ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-    ["<C-f>"] = cmp.mapping.scroll_docs(4),
-    ["<C-Space>"] = cmp.mapping.complete(),
-    ["<C-e>"] = cmp.mapping.abort(),
-    ["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-  }),
-  sources = cmp.config.sources({
-    { name = "luasnip" },
-    { name = "nvim_lua" },
-    { name = "vsnip" },
-    { name = "path" },
-    { name = "latex_symbols" },
-    { name = "nvim_lsp" },
-    { name = "buffer" },
-    { name = "emoji" },
-  }),
-})
-
--- Set configuration for specific filetype.
-cmp.setup.filetype("gitcommit", {
-  sources = cmp.config.sources({
-    { name = "cmp_git" }, -- You can specify the `cmp_git` source if you were installed it.
-  }, { { name = "buffer" } }),
-})
 -- }}}
 -- {{{ nvim-lspconfig
 -- Setup language servers.
@@ -133,8 +106,6 @@ local lspconfig = require("lspconfig")
 for server, config in pairs(lsp_servers) do
   lspconfig[server].setup({
     capabilities = capabilities,
-    on_attach = on_attach,
-    flags = lsp_flags,
     settings = config.settings,
   })
 end
@@ -308,7 +279,7 @@ require("neo-tree").setup({
   event_handlers = {
     {
       event = "neo_tree_buffer_enter",
-      handler = function(arg)
+      handler = function()
         vim.cmd([[
           setlocal relativenumber
         ]])
