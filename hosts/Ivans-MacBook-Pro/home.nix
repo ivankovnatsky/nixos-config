@@ -4,7 +4,6 @@
   imports = [
     ../../home/transmission.nix
     ../../home/workstation.nix
-    ../../home/vim
   ];
 
   home.packages = with pkgs; [
