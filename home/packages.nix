@@ -33,7 +33,7 @@ in
     jsonnet
     gitleaks
     postgresql
-    rustfmt
+    nixpkgs.rustfmt
     cargo
     exiftool
     go
