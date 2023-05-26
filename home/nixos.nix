@@ -1,9 +1,5 @@
-{ config, pkgs, super, ... }:
+{ pkgs, super, ... }:
 
-let
-  editorName = "nvim";
-
-in
 {
   imports = [
     ../modules/default.nix
@@ -30,5 +26,6 @@ in
     openssl
     whois
     zip
+    gcc
   ];
 }
