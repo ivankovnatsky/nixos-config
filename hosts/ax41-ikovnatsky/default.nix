@@ -20,6 +20,7 @@
         granted = super.callPackage ../../overlays/granted.nix { };
         kubectl-ktop = super.callPackage ../../overlays/kubectl-ktop.nix { };
         yor = super.callPackage ../../overlays/yor.nix { };
+        k8sgpt = super.callPackage ../../overlays/k8sgpt.nix { };
         terraform = super.callPackage ../../overlays/hashicorp-generic.nix {
           name = "terraform";
           version = "1.1.7";
@@ -43,6 +44,7 @@
     kubectl-ktop
     pinentry-curses
     yor
+    k8sgpt
   ];
 
   custom.falcon.enable = true;
