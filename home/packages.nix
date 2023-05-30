@@ -34,6 +34,7 @@ in
     gitleaks
     postgresql
     nixpkgs.rustfmt
+    clippy
     cargo
     exiftool
     go
