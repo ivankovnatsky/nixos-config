@@ -11,10 +11,10 @@ buildGoModule rec {
     owner = "bridgecrewio";
     repo = pname;
     rev = "${version}";
-    sha256 = "sha256-tOYRd3LxSlAvXCW89LAm4GWWukDBZhsgYIWYlEVKokE=";
+    hash = "sha256-tOYRd3LxSlAvXCW89LAm4GWWukDBZhsgYIWYlEVKokE=";
   };
 
-  vendorSha256 =
+  vendorHash =
     "sha256-ZeTjGmlu8LndD2DKNncPzlpECdvkOjfwaVvV6S3sL9E=";
 
   doCheck = false;
