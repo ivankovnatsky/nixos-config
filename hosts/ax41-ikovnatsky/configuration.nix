@@ -72,9 +72,25 @@
   };
 
   networking = {
-    # https://docs.hetzner.com/dns-console/dns/general/recursive-name-servers/
-    nameservers = [ "185.12.64.1" "185.12.64.2" ];
     hostName = "ax41-ikovnatsky";
+
+    # https://docs.hetzner.com/dns-console/dns/general/recursive-name-servers/
+    # Resolution does not work unless hetzner servers used. Firewall could be
+    # configured to fix this, but I don't have access to it on work server, so
+    # leave it be.
+    nameservers = [ "185.12.64.1" "185.12.64.2" ];
+
+    # https://www.reddit.com/r/hetzner/comments/11qaxur/hetzner_rclone_google_drive_if_youre_getting_an/
+    # https://forum.rclone.org/t/429-google-drive-errors-back-for-anyone-using-hetzner-even-with-cloudflare-or-google-dns-used/36671/174
+    extraHosts = ''
+      142.250.113.95 www.googleapis.com
+      142.251.16.95 www.googleapis.com
+      172.253.63.95 www.googleapis.com
+      142.251.111.95 www.googleapis.com
+      142.251.163.95 www.googleapis.com
+      142.251.167.95 www.googleapis.com
+      142.250.74.78 www.googleapis.com
+    '';
   };
 
   # Initial empty root password for easy login:
