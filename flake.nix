@@ -3,7 +3,8 @@
 
   inputs = {
     # This is used to pin packages from current unstable channel.
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-master-pin.url = "github:nixos/nixpkgs/master";
+    nixpkgs-unstable-pin.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # Release 22.11
     nixpkgs-22-11.url = "github:nixos/nixpkgs/nixos-22.11";
@@ -183,15 +184,14 @@
       };
 
       overlay = final: prev: {
-        nixpkgs = import inputs.nixpkgs { system = final.system; config = final.config; };
+        nixpkgs-unstable-pin = import inputs.nixpkgs-unstable-pin { system = final.system; config = final.config; };
+        nixpkgs-master-pin = import inputs.nixpkgs-master-pin { system = final.system; config = final.config; };
         helm-secrets = final.callPackage ./overlays/helm-secrets.nix { };
-        iam-policy-json-to-terraform = final.callPackage ./overlays/iam-policy-json-to-terraform.nix { };
-        stc = final.callPackage ./overlays/stc.nix { };
       };
 
 
     } // inputs.flake-utils.lib.eachDefaultSystem (system: {
-      legacyPackages = import inputs.nixpkgs ({ inherit system; });
+      legacyPackages = import inputs.nixpkgs-master-pin ({ inherit system; });
 
       devShells = let pkgs = self.legacyPackages.${system}; in
         {

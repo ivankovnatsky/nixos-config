@@ -33,7 +33,7 @@ in
     jsonnet
     gitleaks
     postgresql
-    nixpkgs.rustfmt
+    nixpkgs-unstable-pin.rustfmt
     clippy
     cargo
     exiftool
@@ -49,7 +49,7 @@ in
     istioctl
     aws-vault
     aws-sso-cli
-    nixpkgs.aws-sso-creds
+    nixpkgs-unstable-pin.aws-sso-creds
     dhall
     dhall-json
     dogdns
@@ -71,11 +71,14 @@ in
     nixpkgs-fmt
     nixpkgs-review
     rnr
-    stc
+    nixpkgs-master-pin.stc-cli
+    nixpkgs-unstable-pin.kubectl-ktop
     sops
     tealdeer
     terraform
     wget
     yq-go
+    nixpkgs-master-pin.k8sgpt
+    nixpkgs-unstable-pin.eks-node-viewer
   ] ++ scriptPackages;
 }

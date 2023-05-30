@@ -15,12 +15,7 @@
     (
       self: super: {
         falcon-sensor = super.callPackage ../../overlays/falcon-sensor.nix { };
-        pv-migrate = super.callPackage ../../overlays/pv-migrate.nix { };
-        eks-node-viewer = super.callPackage ../../overlays/eks-node-viewer.nix { };
-        granted = super.callPackage ../../overlays/granted.nix { };
-        kubectl-ktop = super.callPackage ../../overlays/kubectl-ktop.nix { };
         yor = super.callPackage ../../overlays/yor.nix { };
-        k8sgpt = super.callPackage ../../overlays/k8sgpt.nix { };
         terraform = super.callPackage ../../overlays/hashicorp-generic.nix {
           name = "terraform";
           version = "1.1.7";
@@ -38,13 +33,7 @@
     tmux
     syncthing
     falcon-sensor
-    pv-migrate
-    granted
-    eks-node-viewer
-    kubectl-ktop
     pinentry-curses
-    yor
-    k8sgpt
   ];
 
   custom.falcon.enable = true;

@@ -24,10 +24,6 @@
   nixpkgs.overlays = [
     (
       self: super: {
-        eks-node-viewer = super.callPackage ../../overlays/eks-node-viewer.nix { };
-        pv-migrate = super.callPackage ../../overlays/pv-migrate.nix { };
-        kubectl-ktop = super.callPackage ../../overlays/kubectl-ktop.nix { };
-        tfupdate = super.callPackage ../../overlays/tfupdate.nix { };
         terraform = super.callPackage ../../overlays/hashicorp-generic.nix {
           name = "terraform";
           version = "1.1.7";

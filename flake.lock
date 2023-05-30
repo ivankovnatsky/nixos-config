@@ -98,22 +98,6 @@
         "type": "github"
       }
     },
-    "nixpkgs": {
-      "locked": {
-        "lastModified": 1684935479,
-        "narHash": "sha256-6QMMsXMr2nhmOPHdti2j3KRHt+bai2zw+LJfdCl97Mk=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "f91ee3065de91a3531329a674a45ddcb3467a650",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs-22-11": {
       "locked": {
         "lastModified": 1681349002,
@@ -146,6 +130,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-master-pin": {
+      "locked": {
+        "lastModified": 1685443814,
+        "narHash": "sha256-/7KPqsU3UqaD3jgLozVrMnPDVV1IqBmW2FoetPFymkY=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "900320df3ecc6a6c5ca32764a93915b6241b33a2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "master",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-unstable": {
       "locked": {
         "lastModified": 1678654296,
@@ -153,6 +153,22 @@
         "owner": "nixos",
         "repo": "nixpkgs",
         "rev": "5a1dc8acd977ff3dccd1328b7c4a6995429a656b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs-unstable-pin": {
+      "locked": {
+        "lastModified": 1685383865,
+        "narHash": "sha256-3uQytfnotO6QJv3r04ajSXbEFMII0dUtw0uqYlZ4dbk=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "5e871d8aa6f57cc8e0dc087d1c5013f6e212b4ce",
         "type": "github"
       },
       "original": {
@@ -184,10 +200,11 @@
         "home-manager-22-11": "home-manager-22-11",
         "home-manager-darwin": "home-manager-darwin",
         "home-manager-unstable": "home-manager-unstable",
-        "nixpkgs": "nixpkgs",
         "nixpkgs-22-11": "nixpkgs-22-11",
         "nixpkgs-darwin": "nixpkgs-darwin",
+        "nixpkgs-master-pin": "nixpkgs-master-pin",
         "nixpkgs-unstable": "nixpkgs-unstable",
+        "nixpkgs-unstable-pin": "nixpkgs-unstable-pin",
         "nur": "nur"
       }
     },
