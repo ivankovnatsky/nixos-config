@@ -2,7 +2,7 @@
 { pkgs, ... }:
 
 let
-  inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
+  inherit (pkgs.stdenv.targetPlatform) isDarwin;
 
   syncthingHomeDir = if isDarwin then "~/Library/Application\\ Support/Syncthing" else "~/.config/syncthing";
 
