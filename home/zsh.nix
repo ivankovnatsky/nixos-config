@@ -74,6 +74,7 @@ in
         tree = "ls --tree";
         cat = "bat";
         grep = "rg";
+        fd = "fd -HI";
         rclone = "rclone -P";
         wl-copy = "wl-copy -n";
         stc = "stc -homedir ${syncthingHomeDir}";
