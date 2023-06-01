@@ -73,6 +73,7 @@ in
         ls = "exa --group-directories-first --group --icons";
         tree = "ls --tree";
         cat = "bat";
+        grep = "rg";
         rclone = "rclone -P";
         wl-copy = "wl-copy -n";
         stc = "stc -homedir ${syncthingHomeDir}";
