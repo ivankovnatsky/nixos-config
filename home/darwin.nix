@@ -20,8 +20,8 @@
     '';
 
     ".sudo/config".text = ''
-      sudo bash -c 'cat << EOF > /etc/sudoers.d/default
-      Defaults timestamp_timeout=240
+      bash -c 'cat << EOF > /private/etc/sudoers.d/default
+      Defaults:ivan timestamp_timeout=240
       EOF'
     '';
   };
