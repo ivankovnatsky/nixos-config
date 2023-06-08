@@ -11,5 +11,6 @@
     typst
     rustc
     packer
+    nixpkgs-unstable-pin.killport
   ];
 }
