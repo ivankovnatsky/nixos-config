@@ -60,6 +60,7 @@ in
     htop
     jq
     k9s
+    packer
     procps
     pstree
     kubectl
