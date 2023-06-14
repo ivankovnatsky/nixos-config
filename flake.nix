@@ -2,7 +2,8 @@
   description = "NixOS configuration";
 
   inputs = {
-    # This is used to pin packages from current unstable channel.
+    # This is used to pin packages from master and unstable channels
+    # respectively.
     nixpkgs-master-pin.url = "github:nixos/nixpkgs/master";
     nixpkgs-unstable-pin.url = "github:nixos/nixpkgs/nixos-unstable";
 
