@@ -14,9 +14,9 @@ local mash = { "alt" }
 
 hs.fnutils.each({
   { key = "0", app = "Finder" },
-  { key = "1", app = "iTerm" },
+  { key = "1", app = nil },
   { key = "2", app = nil },
-  { key = "3", app = "Chromium" },
+  { key = "3", app = "Terminal" },
   { key = "4", app = "Safari" },
   { key = "5", app = "Messages" },
   { key = "6", app = "Calendar" },
@@ -26,14 +26,22 @@ hs.fnutils.each({
 }, function(object)
   hs.hotkey.bind(mash, object.key, function()
     local appToLaunch = object.app
-    if object.key == "2" then
-      local currentWeekday = tonumber(os.date("%w")) -- Sunday = 0, Monday = 1, ..., Saturday = 6
+    local currentWeekday = tonumber(os.date("%w")) -- Sunday = 0, Monday = 1, ..., Saturday = 6
+
+    if object.key == "1" then
       if currentWeekday == 0 or currentWeekday == 6 then -- weekend
-        appToLaunch = "Safari"
+        appToLaunch = "Terminal"
       else -- weekday
+        appToLaunch = "iTerm"
+      end
+    elseif object.key == "2" then
+      if currentWeekday == 0 or currentWeekday == 6 then
+        appToLaunch = "Safari"
+      else
         appToLaunch = "Firefox"
       end
     end
+
     ext.app.forceLaunchOrFocus(appToLaunch)
   end)
 end)
