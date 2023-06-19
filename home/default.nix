@@ -67,12 +67,6 @@ in
         document-start: disable
       '';
     };
-
-    ".netrc" = {
-      text = ''
-        default api.github.com login ivankovnatsky password ${config.secrets.gitApiTokenRepoScope}
-      '';
-    };
   };
 
   home.sessionVariables = {
