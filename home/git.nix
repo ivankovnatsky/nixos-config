@@ -1,9 +1,5 @@
 { pkgs, ... }:
 
-let
-  inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
-
-in
 {
   home.packages = with pkgs; [
     gitAndTools.pre-commit
