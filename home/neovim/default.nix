@@ -56,6 +56,9 @@
 
       nvim-web-devicons
 
+      inc-rename-nvim
+      dressing-nvim
+
       # Vim
       ale
       ansible-vim
