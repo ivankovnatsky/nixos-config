@@ -19,11 +19,11 @@ in
   home.packages = with pkgs; [
     (python310.withPackages (ps: with ps; [
       pip
-      ansible-lint
       ansible
       yamllint
     ]))
 
+    ansible-lint
     _1password
     grpcui
     grpcurl
