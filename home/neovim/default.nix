@@ -86,6 +86,7 @@
       vim-surround
       vim-terraform
       vim-terraform-completion
+      vim-speeddating
       vim-tmux
       webapi-vim
       ultisnips
