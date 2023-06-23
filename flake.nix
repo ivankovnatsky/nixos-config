@@ -7,11 +7,11 @@
     nixpkgs-master-pin.url = "github:nixos/nixpkgs/master";
     nixpkgs-unstable-pin.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    # Release 22.11
-    nixpkgs-22-11.url = "github:nixos/nixpkgs/nixos-22.11";
-    home-manager-22-11 = {
-      url = "github:nix-community/home-manager/release-22.11";
-      inputs.nixpkgs.follows = "nixpkgs-22-11";
+    # Release 23.05
+    nixpkgs-23-05.url = "github:nixos/nixpkgs/nixos-23.05";
+    home-manager-23-05 = {
+      url = "github:nix-community/home-manager/release-23.05";
+      inputs.nixpkgs.follows = "nixpkgs-23-05";
     };
 
     # Unstable
@@ -141,8 +141,8 @@
         };
 
         ax41 = makeNixosConfig {
-          nixpkgs = inputs.nixpkgs-22-11;
-          home-manager = inputs.home-manager-22-11;
+          nixpkgs = inputs.nixpkgs-23-05;
+          home-manager = inputs.home-manager-23-05;
           hostname = "ax41";
           system = "x86_64-linux";
 
@@ -158,8 +158,8 @@
         };
 
         ax41-ikovnatsky = makeNixosConfig {
-          nixpkgs = inputs.nixpkgs-22-11;
-          home-manager = inputs.home-manager-22-11;
+          nixpkgs = inputs.nixpkgs-23-05;
+          home-manager = inputs.home-manager-23-05;
           hostname = "ax41-ikovnatsky";
           system = "x86_64-linux";
 

@@ -95,7 +95,7 @@
 
   # Initial empty root password for easy login:
   users.users.root.initialHashedPassword = "";
-  services.openssh.permitRootLogin = "prohibit-password";
+  services.openssh.settings.PermitRootLogin = "prohibit-password";
   services.openssh.enable = true;
 
   # Only comment out when ivan password set and ssh connectivity
