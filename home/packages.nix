@@ -46,7 +46,7 @@ in
     rclone
     gnused
     tfk8s
-    istioctl
+    nixpkgs-master-pin.istioctl
     aws-vault
     aws-sso-cli
     nixpkgs-unstable-pin.aws-sso-creds
