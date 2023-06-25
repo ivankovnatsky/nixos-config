@@ -46,7 +46,7 @@ in
     rclone
     gnused
     tfk8s
-    nixpkgs-master-pin.istioctl
+    nixpkgs-unstable-pin.istioctl
     aws-vault
     aws-sso-cli
     nixpkgs-unstable-pin.aws-sso-creds
@@ -72,14 +72,14 @@ in
     nixpkgs-fmt
     nixpkgs-review
     rnr
-    nixpkgs-master-pin.stc-cli
+    nixpkgs-unstable-pin.stc-cli
     nixpkgs-unstable-pin.kubectl-ktop
     sops
     tealdeer
     terraform
     wget
     yq-go
-    nixpkgs-master-pin.k8sgpt
+    nixpkgs-unstable-pin.k8sgpt
     nixpkgs-unstable-pin.eks-node-viewer
   ] ++ scriptPackages;
 }

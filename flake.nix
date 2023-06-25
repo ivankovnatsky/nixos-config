@@ -4,32 +4,19 @@
   inputs = {
     # This is used to pin packages from master and unstable channels
     # respectively.
-    nixpkgs-master-pin.url = "github:nixos/nixpkgs/master";
     nixpkgs-unstable-pin.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    # Release 23.05
+    # Release
     nixpkgs-23-05.url = "github:nixos/nixpkgs/nixos-23.05";
     home-manager-23-05 = {
       url = "github:nix-community/home-manager/release-23.05";
       inputs.nixpkgs.follows = "nixpkgs-23-05";
     };
 
-    # Unstable
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    home-manager-unstable = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-
     # Darwin
-    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixos-unstable";
-    home-manager-darwin = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs-darwin";
-    };
     darwin = {
       url = "github:lnl7/nix-darwin/master";
-      inputs.nixpkgs.follows = "nixpkgs-darwin";
+      inputs.nixpkgs.follows = "nixpkgs-23-05";
     };
 
     nur.url = "github:nix-community/NUR";
@@ -82,10 +69,10 @@
               nixpkgs.overlays = [ inputs.self.overlay ];
             }
 
-            inputs.home-manager-darwin.darwinModules.home-manager
+            inputs.home-manager-23-05.darwinModules.home-manager
             ({ config, system, ... }: {
               # Support legacy workflows that use `<nixpkgs>` etc.
-              nix.nixPath.nixpkgs = "${inputs.nixpkgs-darwin}";
+              nix.nixPath.nixpkgs = "${inputs.nixpkgs-23-05}";
 
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
@@ -117,7 +104,7 @@
     {
       nixosConfigurations = {
         desktop = makeNixosConfig {
-          nixpkgs = inputs.nixpkgs-unstable;
+          nixpkgs = inputs.nixpkgs-23-05;
           home-manager = inputs.home-manager-unstable;
           hostname = "desktop";
           system = "x86_64-linux";
@@ -186,13 +173,12 @@
 
       overlay = final: prev: {
         nixpkgs-unstable-pin = import inputs.nixpkgs-unstable-pin { system = final.system; config = final.config; };
-        nixpkgs-master-pin = import inputs.nixpkgs-master-pin { system = final.system; config = final.config; };
         helm-secrets = final.callPackage ./overlays/helm-secrets.nix { };
       };
 
 
     } // inputs.flake-utils.lib.eachDefaultSystem (system: {
-      legacyPackages = import inputs.nixpkgs-master-pin ({ inherit system; });
+      legacyPackages = import inputs.nixpkgs-unstable-pin ({ inherit system; });
 
       devShells = let pkgs = self.legacyPackages.${system}; in
         {
