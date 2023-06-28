@@ -58,6 +58,8 @@
       };
 
       screencapture.location = "~/Screenshots";
+      # Enable Silent Clicking.
+      trackpad.ActuationStrength = 0;
 
       dock = {
         autohide = true;
