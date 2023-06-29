@@ -7,6 +7,7 @@
   ];
 
   home.packages = with pkgs; [
+    aria
     defaultbrowser
     typst
     rustc
