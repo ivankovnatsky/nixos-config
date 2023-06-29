@@ -54,6 +54,7 @@
       nui-nvim
       plenary-nvim
 
+      todo-comments-nvim
       nvim-web-devicons
 
       inc-rename-nvim
