@@ -11,6 +11,7 @@
   ];
 
   homebrew.casks = [
+    "iina"
     "chromium"
     "mos"
     "rectangle"
