@@ -102,7 +102,6 @@
   homebrew.casks = [
     "maccy"
     "elastio"
-    "iterm2"
     "amethyst"
     "firefox"
     "font-hack-nerd-font"

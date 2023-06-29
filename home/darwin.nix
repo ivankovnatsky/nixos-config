@@ -1,6 +1,7 @@
 {
   imports = [
     ./dockutil.nix
+    ./kitty.nix
   ];
 
   home.file."Screenshots/.keep".text = ''
