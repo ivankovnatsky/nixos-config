@@ -12,7 +12,6 @@
 
   homebrew.casks = [
     "kitty"
-    "iina"
     "chromium"
     "mos"
     "rectangle"
