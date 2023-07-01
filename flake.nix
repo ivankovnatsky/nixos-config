@@ -105,7 +105,7 @@
       nixosConfigurations = {
         desktop = makeNixosConfig {
           nixpkgs = inputs.nixpkgs-23-05;
-          home-manager = inputs.home-manager-unstable;
+          home-manager = inputs.home-manager-23-05;
           hostname = "desktop";
           system = "x86_64-linux";
 
