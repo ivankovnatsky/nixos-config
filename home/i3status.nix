@@ -44,7 +44,7 @@ in
           interval = 10;
 
           format = {
-            full = "{utilization} {frequency}";
+            full = "$icon $utilization$frequency ";
             short = "";
           };
         };
@@ -54,62 +54,56 @@ in
           interval = 10;
 
           format = {
-            full = "{1m} {5m} {15m}";
+            full = "$icon $1m.eng(w:4) $5m.eng(w:4) $15m.eng(w:4) ";
             short = "";
           };
         };
 
-        tempBlock =
-          {
-            block = "temperature";
-            collapsed = false;
+        tempBlock = {
+          block = "temperature";
 
-            format = {
-              full = "{max:1}";
-              short = "";
-            };
+          format = {
+            full = " $icon $max ";
+            short = "";
           };
+        };
 
-        fanBlock =
-          if isLaptop then {
-            block = "custom";
-            command = checkFan;
-            json = true;
-          } else { };
+        fanBlock = {
+          block = "custom";
+          command = checkFan;
+          json = true;
+        };
 
         memBlock = {
           block = "memory";
-          display_type = "memory";
-          format_mem = "{mem_used:1}/{mem_total:1}";
+          format = " $icon $mem_used.eng(w:3,u:B,p:M)/$mem_total.eng(w:3,u:B,p:M) ";
         };
 
         swapBlock = {
           block = "memory";
-          display_type = "swap";
-          format_swap = "{swap_used:1}/{swap_total:1}";
+          format = "$icon_swap $swap_used.eng(w:3,u:B,p:M)/$swap_total.eng(w:3,u:B,p:M) ";
         };
 
         diskBlock = {
           block = "disk_space";
           path = "/";
-          alias = "/";
           info_type = "used";
-          alert = 200;
-          warning = 150;
+          alert_unit = "GB";
+          alert = 200.0;
+          warning = 150.0;
 
           format = {
-            full = "{icon} {used:1}/{total}";
-            short = "{icon} {used:1}/{total}";
+            full = "$icon $used/$total";
+            short = "$icon $used/$total";
           };
         };
 
         netBlock = {
           block = "net";
-          hide_inactive = true;
           interval = 10;
 
           format = {
-            full = "{speed_down:1} {speed_up:1} {ssid} {signal_strength}";
+            full = " $icon $speed_down $speed_up $ssid $signal_strength";
             short = "";
           };
         };
@@ -118,31 +112,27 @@ in
           block = "bluetooth";
           mac = "CC:98:8B:D1:40:88";
           format = {
-            full = "{percentage:1}";
+            full = "$icon $percentage";
             short = "";
           };
         };
 
         soundBlock = {
           block = "sound";
-          on_click = "pavucontrol --tab=3";
+          click = [{
+            button = "left";
+            cmd = "pavucontrol --tab=3";
+          }];
           format = {
-            full = "{volume}";
+            full = "$icon $volume";
             short = "";
           };
         };
 
-        batteryBlock =
-          if isLaptop then {
-            block = "battery";
-            allow_missing = true;
-            hide_missing = true;
-
-            theme_overrides = {
-              good_bg = "#06060f";
-            };
-
-          } else { };
+        batteryBlock = {
+          block = "battery";
+          missing_format = "";
+        };
 
         kbdBlock = {
           block = "keyboard_layout";
@@ -164,20 +154,19 @@ in
 
           format = {
             full =
-              "{temp} {apparent}  {humidity} 煮 {wind_kmh} km/h {direction}";
+              "$icon $temp $apparent  $humidity  $wind_kmh km/h $direction";
             short = "";
           };
         };
 
         timeBlock = {
           block = "time";
-          format = "%a %b %d %H:%M";
+          format = " $icon $timestamp.datetime(f:'%a %b %d %H:%M') ";
         };
 
         settings = {
           icons = {
-            name = "material-nf";
-
+            icons = "material-nf";
             overrides = {
               tux = "";
               fan = "";
@@ -187,7 +176,7 @@ in
           };
 
           theme = {
-            name = "space-villain";
+            theme = "space-villain";
             overrides = { separator = ""; };
           };
         };
@@ -200,14 +189,14 @@ in
             cpuBlock
             loadBlock
             tempBlock
-            fanBlock
+            (if isLaptop then [ fanBlock ] else [ ])
             memBlock
             swapBlock
             diskBlock
             netBlock
             bluetoothBlock
             soundBlock
-            batteryBlock
+            (if isLaptop then [ batteryBlock ] else [ ])
             kbdBlock
             weatherBlock
             timeBlock
