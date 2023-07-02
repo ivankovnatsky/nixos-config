@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-# This script retrieves an item's field from Bitwarden using rbw,
-# filters the results with ripgrep (rg), and selects one with fzf if there are multiple matches.
-# The selected field is then copied to the clipboard with clipboard tool.
+# This script retrieves an item's field from Bitwarden using rbw, filters the
+# results with ripgrep (rg), and selects one with fzf if there are multiple
+# matches. The selected field is then copied to the clipboard with clipboard
+# tool.
 
 # Check if the required number of arguments are provided
 if [ "$#" -ne 2 ]; then
