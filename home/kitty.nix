@@ -12,14 +12,17 @@ in
       text = ''
         font_family ${config.variables.fontMono}
         font_size ${builtins.toString fontSize}
+
         adjust_line_height 115%
         hide_window_decorations titlebar-only
         cursor_blink_interval 0
         copy_on_select yes
         window_margin_width 0.5
-
         tab_bar_edge top
-        tab_title_template "{index}: {title}"
+        max_title_length 100
+        tab_title_template "{index}: {tab.active_exe}"
+        macos_option_as_alt yes
+        macos_menubar_title_max_length 1
 
         map cmd+1 goto_tab 1
         map cmd+2 goto_tab 2
