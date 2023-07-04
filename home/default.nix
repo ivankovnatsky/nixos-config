@@ -1,7 +1,7 @@
 { config, pkgs, super, ... }:
 
 let
-  inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
+  inherit (pkgs.stdenv.targetPlatform) isDarwin;
 
   editorName = "nvim";
   homeDir = if isDarwin then "/Users" else "/home";
@@ -73,6 +73,8 @@ in
     AWS_VAULT_BACKEND = "pass";
     EDITOR = editorName;
     VISUAL = editorName;
+    # https://github.com/kovidgoyal/kitty/issues/879
+    TERM = "xterm-256color";
   };
 
   programs.taskwarrior = {
