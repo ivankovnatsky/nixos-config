@@ -1,4 +1,5 @@
-vim.lsp.set_log_level("error")
+-- Disable logs, I'm not reading them and they grow too big.
+vim.lsp.set_log_level("off")
 
 local lsp_servers = {
   bashls = {},
