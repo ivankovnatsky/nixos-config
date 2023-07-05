@@ -23,6 +23,7 @@ in
       yamllint
     ]))
 
+    awscli2
     ansible-lint
     _1password
     grpcui
@@ -75,6 +76,7 @@ in
     nixpkgs-unstable-pin.stc-cli
     nixpkgs-unstable-pin.kubectl-ktop
     sops
+    syncthing
     tealdeer
     terraform
     wget

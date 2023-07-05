@@ -3,23 +3,22 @@
     ../../system/darwin.nix
   ];
 
-  homebrew.taps = [
-    "boz/repo"
-  ];
+  homebrew = {
+    taps = [
+      "boz/repo"
+    ];
 
-  homebrew.brews = [
-  ];
+    casks = [
+      "kitty"
+      "chromium"
+      "mos"
+      "rectangle"
+      "stats"
+    ];
 
-  homebrew.casks = [
-    "kitty"
-    "chromium"
-    "mos"
-    "rectangle"
-    "stats"
-  ];
-
-  homebrew.caskArgs = {
-    no_quarantine = true;
+    caskArgs = {
+      no_quarantine = true;
+    };
   };
 
   nixpkgs.overlays = [
