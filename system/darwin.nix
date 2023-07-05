@@ -1,4 +1,4 @@
-{ config, lib, pkgs, options, ... }:
+{ pkgs, ... }:
 
 {
   imports = [
@@ -78,37 +78,39 @@
     };
   };
 
-  homebrew.enable = true;
-  homebrew.onActivation.autoUpdate = false;
-  homebrew.onActivation.cleanup = "zap";
-  homebrew.global.brewfile = true;
+  homebrew = {
+    enable = true;
+    onActivation.autoUpdate = false;
+    onActivation.cleanup = "zap";
+    global.brewfile = true;
 
-  homebrew.taps = [
-    "homebrew/cask"
-    "homebrew/cask-fonts"
-    "homebrew/core"
-    "homebrew/services"
-    "elastio/homebrew-tap"
-  ];
+    taps = [
+      "homebrew/cask"
+      "homebrew/cask-fonts"
+      "homebrew/core"
+      "homebrew/services"
+      "elastio/homebrew-tap"
+    ];
 
-  # Install some packages through brew, since using nixpkgs we sometimes need
-  # to download huge tree of dependencies
-  homebrew.brews = [
-    "hadolint" # haskell
-    "awscli"
-    "syncthing"
-  ];
+    # Install some packages through brew, since nixpkgs would require to
+    # download huge tree of dependencies.
+    brews = [
+      # in nixpkgs
+      # these 203 paths will be fetched (171.91 MiB download, 2050.54 MiB unpacked):
+      "hadolint" # haskell
+    ];
 
-  homebrew.casks = [
-    "maccy"
-    "elastio"
-    "amethyst"
-    "firefox"
-    "font-hack-nerd-font"
-    "hammerspoon"
-  ];
+    casks = [
+      "maccy"
+      "elastio"
+      "amethyst"
+      "firefox"
+      "font-hack-nerd-font"
+      "hammerspoon"
+    ];
 
-  homebrew.masApps = {
-    "NextDNS" = 1464122853;
+    masApps = {
+      "NextDNS" = 1464122853;
+    };
   };
 }

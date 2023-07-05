@@ -20,7 +20,6 @@
   variables = super.variables;
 
   home.packages = with pkgs; [
-    awscli2
     file
     killall
     openssl
