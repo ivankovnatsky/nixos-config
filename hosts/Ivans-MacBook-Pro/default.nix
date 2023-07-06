@@ -19,6 +19,10 @@
     caskArgs = {
       no_quarantine = true;
     };
+
+    masApps = {
+      "Slack for Desktop" = 803453959;
+    };
   };
 
   nixpkgs.overlays = [
