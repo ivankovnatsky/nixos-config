@@ -178,11 +178,23 @@
 
 
     } // inputs.flake-utils.lib.eachDefaultSystem (system: {
-      legacyPackages = import inputs.nixpkgs-unstable-pin ({ inherit system; });
+      legacyPackages = import inputs.nixpkgs-23-05 ({ inherit system; });
 
       devShells = let pkgs = self.legacyPackages.${system}; in
         {
-          default = pkgs.mkShell { };
+          default = pkgs.mkShell {
+            buildInputs = with pkgs; [
+              # Rust build
+              openssl
+              libiconv
+              pkg-config
+              cmake
+              zlib
+              darwin.Security
+              darwin.apple_sdk.frameworks.SystemConfiguration
+              cyrus_sasl
+            ];
+          };
         };
     })
   ;
