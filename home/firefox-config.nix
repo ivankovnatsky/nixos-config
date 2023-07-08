@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-  inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
+  inherit (pkgs.stdenv.targetPlatform) isDarwin;
 
   configPath = if isDarwin then "Library/Application Support/Firefox" else ".mozilla/firefox";
 
@@ -39,6 +39,21 @@ let
     user_pref("app.update.url.details", "https://non-existent-site");
     user_pref("app.update.url.manual", "https://non-existent-site");
   '';
+
+  defaultLinuxConfig = ''
+    ${defaultConfig}
+    user_pref("media.videocontrols.picture-in-picture.enabled", false);
+    user_pref("media.videocontrols.picture-in-picture.video-toggle.enabled", false);
+    user_pref("media.videocontrols.picture-in-picture.video-toggle.has-used", false);
+    user_pref("widget.wayland-dmabuf-vaapi.enabled", true);
+    user_pref("gfx.webrender.all", true);
+  '';
+
+  userChromeConfig = ''
+    #TabsToolbar {
+      visibility: collapse;
+    }
+  '';
 in
 {
   home.file = {
@@ -50,6 +65,12 @@ in
           IsRelative=1
           Path=Profiles/${ffProfileId}.default
           Default=1
+
+          [Profile2]
+          Name=home
+          IsRelative=1
+          Path=Profiles/home
+          Default=0
 
           [Profile0]
           Name=default-release
@@ -80,20 +101,28 @@ in
         if isDarwin then ''
           ${defaultConfig}
         '' else ''
+          ${defaultLinuxConfig}
+        '';
+    };
+
+    "${configPath}/Profiles/home/user.js" = {
+      text =
+        if isDarwin then ''
           ${defaultConfig}
-          user_pref("media.videocontrols.picture-in-picture.enabled", false);
-          user_pref("media.videocontrols.picture-in-picture.video-toggle.enabled", false);
-          user_pref("media.videocontrols.picture-in-picture.video-toggle.has-used", false);
-          user_pref("widget.wayland-dmabuf-vaapi.enabled", true);
-          user_pref("gfx.webrender.all", true);
+        '' else ''
+          ${defaultLinuxConfig}
         '';
     };
 
     "${configPath}/${userConfigPath}/chrome/userChrome.css" = {
       text = ''
-        #TabsToolbar {
-          visibility: collapse;
-        }
+        ${userChromeConfig}
+      '';
+    };
+
+    "${configPath}/Profiles/home/chrome/userChrome.css" = {
+      text = ''
+        ${userChromeConfig}
       '';
     };
   };
