@@ -20,11 +20,7 @@ in
     (python310.withPackages (ps: with ps; [
       pip
       yamllint
-
       ansible-core
-      netaddr
-      passlib
-      boto3
     ]))
 
     awscli2
