@@ -184,6 +184,11 @@
         {
           default = pkgs.mkShell {
             buildInputs = with pkgs; [
+              # Ansible project deps
+              python310
+              python310Packages.botocore
+              python310Packages.boto3
+
               # Rust build
               openssl
               libiconv
