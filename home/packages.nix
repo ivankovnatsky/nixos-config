@@ -75,6 +75,7 @@ in
     rnr
     nixpkgs-unstable-pin.stc-cli
     nixpkgs-unstable-pin.kubectl-ktop
+    sd
     sops
     syncthing
     tealdeer
