@@ -49,6 +49,7 @@ set wildmenu
 " Display commands typing in
 set showcmd
 
+set textwidth=80
 set tabpagemax=100
 set showtabline=2
 
