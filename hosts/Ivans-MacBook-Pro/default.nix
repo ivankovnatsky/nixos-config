@@ -10,6 +10,7 @@
 
     casks = [
       "kitty"
+      "chromium"
       "mos"
       "rectangle"
       "stats"
