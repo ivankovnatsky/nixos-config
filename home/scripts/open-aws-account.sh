@@ -2,6 +2,7 @@
 
 # Variables
 AWS_SSO_ROLE=""
+AWS_ACCOUNT_ID=""
 
 # Parse command-line arguments
 while [[ $# -gt 0 ]]; do
@@ -9,8 +10,11 @@ while [[ $# -gt 0 ]]; do
     case $key in
     --role)
         AWS_SSO_ROLE="$2"
-        shift
-        shift
+        shift 2
+        ;;
+    --account)
+        AWS_ACCOUNT_ID="$2"
+        shift 2
         ;;
     *)
         echo "Unknown argument: $1"
@@ -26,6 +30,22 @@ if [[ -z $AWS_SSO_ROLE ]]; then
     exit 1
 fi
 
-PROFILE=$(aws-sso | rg "${AWS_SSO_ROLE}" | fzf | awk '{print $7}')
+# Function to select an AWS account using fzf
+select_aws_account() {
+    local role="$1"
+    local account_id=""
 
-aws-sso console --profile "${PROFILE}"
+    if [[ -z $AWS_ACCOUNT_ID ]]; then
+        account_id=$(aws-sso | rg "$role" | fzf | awk '{print $7}')
+    else
+        account_id=$(aws-sso | rg "$role" | rg "$AWS_ACCOUNT_ID" | awk '{print $7}')
+    fi
+
+    echo "$account_id"
+}
+
+# Select AWS account
+PROFILE=$(select_aws_account "$AWS_SSO_ROLE")
+
+# Launch AWS SSO console
+aws-sso console --profile "$PROFILE"
