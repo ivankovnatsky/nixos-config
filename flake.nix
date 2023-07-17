@@ -20,7 +20,6 @@
     };
 
     nur.url = "github:nix-community/NUR";
-    flake-utils.url = "github:numtide/flake-utils";
   };
 
   outputs = { self, ... }@inputs:
@@ -175,34 +174,5 @@
         nixpkgs-unstable-pin = import inputs.nixpkgs-unstable-pin { system = final.system; config = final.config; };
         helm-secrets = final.callPackage ./overlays/helm-secrets.nix { };
       };
-
-
-    } // inputs.flake-utils.lib.eachDefaultSystem (system: {
-      legacyPackages = import inputs.nixpkgs-23-05 ({ inherit system; });
-
-      devShells = let pkgs = self.legacyPackages.${system}; in
-        {
-          default = pkgs.mkShell {
-            buildInputs = with pkgs; [
-              # Ansible project deps
-              python310
-              python310Packages.botocore
-              python310Packages.boto3
-
-              # Rust build
-              openssl
-              libiconv
-              pkg-config
-              cmake
-              zlib
-              cyrus_sasl
-            ]
-            ++ lib.optionals stdenv.isDarwin [
-              darwin.apple_sdk.frameworks.Security
-              darwin.apple_sdk.frameworks.SystemConfiguration
-            ];
-          };
-        };
-    })
-  ;
+    };
 }
