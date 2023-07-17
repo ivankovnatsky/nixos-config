@@ -12,6 +12,7 @@ in
     ./firefox-config.nix
     ./neovim
     ./git.nix
+    ./ssh.nix
     ./packages.nix
     ./zsh.nix
 
