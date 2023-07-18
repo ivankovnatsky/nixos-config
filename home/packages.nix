@@ -37,6 +37,7 @@ in
     nixpkgs-unstable-pin.rustfmt
     clippy
     cargo
+    cargo-deny
     exiftool
     go
     iam-policy-json-to-terraform
