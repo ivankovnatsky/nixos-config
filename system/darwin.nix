@@ -60,6 +60,8 @@
       screencapture.location = "~/Screenshots";
 
       dock = {
+        # Whether to automatically rearrange spaces based on most recent use.
+        mru-spaces = false;
         autohide = true;
         minimize-to-application = true;
       };
