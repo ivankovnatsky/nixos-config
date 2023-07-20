@@ -1,4 +1,4 @@
-# NixOS
+# nixos-install-luks
 
 ## Installation
 
