@@ -1,4 +1,3 @@
-# vim:filetype=nix
 { pkgs, ... }:
 
 let

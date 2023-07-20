@@ -1,14 +1,11 @@
 { stdenv
 , lib
-, pkgs
 , dpkg
 , openssl
 , libnl
 , zlib
-, fetchurl
 , autoPatchelfHook
 , buildFHSUserEnv
-, writeScript
 , ...
 }:
 
