@@ -14,7 +14,7 @@ in
     ./git.nix
     ./ssh.nix
     ./packages.nix
-    ./zsh.nix
+    ./shell.nix
 
     ../modules/default.nix
   ];
