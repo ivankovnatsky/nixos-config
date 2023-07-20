@@ -25,6 +25,7 @@ in
       enableZshIntegration = true;
       flags = [ "--disable-up-arrow" ];
       settings = {
+        update_check = false;
         style = "compact";
         inline_height = 25;
       };
