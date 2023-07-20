@@ -1,12 +1,5 @@
-{ config, pkgs, super, ... }:
+{ pkgs, super, ... }:
 
-let
-  inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
-
-  editorName = "nvim";
-  homeDir = if isDarwin then "/Users" else "/home";
-  helmPluginsPath = if isDarwin then "Library/helm/plugins" else ".local/share/helm/plugins";
-in
 {
   imports = [
     ./alacritty.nix

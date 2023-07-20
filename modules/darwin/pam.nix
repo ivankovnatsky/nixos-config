@@ -1,4 +1,4 @@
-{ config, lib, pkgs, pam-reattach, ... }:
+{ config, lib, pkgs, ... }:
 
 with lib;
 

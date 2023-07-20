@@ -5,7 +5,6 @@
 , platform
 , sha256
 
-, lib
 , stdenv
 , fetchurl
 , unzip
