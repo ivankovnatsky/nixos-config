@@ -20,6 +20,17 @@ in
       enableZshIntegration = true;
     };
 
+    atuin = {
+      enable = true;
+      package = pkgs.nixpkgs-unstable-pin.atuin;
+      enableZshIntegration = true;
+      flags = [ "--disable-up-arrow" ];
+      settings = {
+        style = "compact";
+        inline_height = 25;
+      };
+    };
+
     fzf = {
       enable = true;
       defaultCommand =
