@@ -11,6 +11,6 @@
     defaultbrowser
     typst
     rustc
-    nixpkgs-unstable-pin.killport
+    killport
   ];
 }

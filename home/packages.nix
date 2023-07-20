@@ -34,7 +34,7 @@ in
     jsonnet
     gitleaks
     postgresql
-    nixpkgs-unstable-pin.rustfmt
+    rustfmt
     clippy
     cargo
     cargo-deny
@@ -48,10 +48,10 @@ in
     rclone
     gnused
     tfk8s
-    nixpkgs-unstable-pin.istioctl
+    istioctl
     aws-vault
     aws-sso-cli
-    nixpkgs-unstable-pin.aws-sso-creds
+    aws-sso-creds
     dhall
     dhall-json
     dogdns
@@ -60,6 +60,7 @@ in
     genpass
     ghq
     htop
+    glances
     jq
     k9s
     packer
@@ -74,8 +75,8 @@ in
     nixpkgs-fmt
     nixpkgs-review
     rnr
-    nixpkgs-unstable-pin.stc-cli
-    nixpkgs-unstable-pin.kubectl-ktop
+    stc-cli
+    kubectl-ktop
     sd
     sops
     syncthing
@@ -84,6 +85,6 @@ in
     wget
     yq-go
     nixpkgs-unstable-pin.k8sgpt
-    nixpkgs-unstable-pin.eks-node-viewer
+    eks-node-viewer
   ] ++ scriptPackages;
 }

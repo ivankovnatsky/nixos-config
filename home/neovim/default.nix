@@ -20,7 +20,7 @@
     sumneko-lua-language-server
     stylua
     rust-analyzer
-    nixpkgs-unstable-pin.typst-lsp
+    typst-lsp
   ];
 
   home.file.".cache/nvim/undo/.keep".text = "";
