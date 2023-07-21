@@ -5,7 +5,7 @@
 , libnl
 , zlib
 , autoPatchelfHook
-, buildFHSUserEnv
+, buildFHSEnv
 , ...
 }:
 
@@ -41,8 +41,10 @@ let
   };
 in
 
-buildFHSUserEnv {
+# https://gist.github.com/ravloony/2f5682fad481168dfb5778e911f47bee?permalink_comment_id=4612688#gistcomment-4612688
+buildFHSEnv {
   name = "fs-bash";
+  unsharePid = false;
   targetPkgs = pkgs: [ libnl openssl zlib ];
 
   extraInstallCommands = ''
