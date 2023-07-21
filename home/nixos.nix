@@ -26,5 +26,6 @@
     whois
     zip
     gcc
+    lsof
   ];
 }
