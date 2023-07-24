@@ -57,6 +57,7 @@ in
     dogdns
     du-dust
     duf
+    difftastic
     genpass
     ghq
     htop

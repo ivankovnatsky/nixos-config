@@ -8,7 +8,7 @@ let
 in
 {
   home.packages = with pkgs; [
-    exa
+    lsd
     fd
   ];
 
@@ -81,8 +81,8 @@ in
       };
 
       shellAliases = {
-        ls = "exa --group-directories-first --group --icons";
-        tree = "ls --tree";
+        ls = "lsd --group-dirs first --icon always -la";
+        tree = "ls --tree -a";
         cat = "bat";
         grep = "rg";
         fd = "fd -HI";
