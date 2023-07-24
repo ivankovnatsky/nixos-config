@@ -2,8 +2,9 @@
 
 pkgs.mkShell {
   buildInputs = with pkgs; [
-    # Ansible project deps
+    # Python
     python310
+    python310Packages.pip
     python310Packages.botocore
     python310Packages.boto3
 
