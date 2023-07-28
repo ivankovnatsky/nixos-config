@@ -4,6 +4,18 @@
 AWS_SSO_ROLE=""
 AWS_ACCOUNT_ID=""
 
+# Help function
+display_help() {
+    echo "Usage: $0 --role <value> [--account <value>]"
+    exit 1
+}
+
+# Check if all required arguments are provided
+if [[ $# -eq 0 ]]; then
+    echo "Error: Missing required arguments."
+    display_help
+fi
+
 # Parse command-line arguments
 while [[ $# -gt 0 ]]; do
     key="$1"
@@ -16,18 +28,20 @@ while [[ $# -gt 0 ]]; do
         AWS_ACCOUNT_ID="$2"
         shift 2
         ;;
+    --help)
+        display_help
+        ;;
     *)
         echo "Unknown argument: $1"
-        exit 1
+        display_help
         ;;
     esac
 done
 
-# Check if all required arguments are provided
+# Check if the required argument is provided
 if [[ -z $AWS_SSO_ROLE ]]; then
     echo "Error: Missing required arguments."
-    echo "Usage: $0 --role <value>"
-    exit 1
+    display_help
 fi
 
 # Function to select an AWS account using fzf
