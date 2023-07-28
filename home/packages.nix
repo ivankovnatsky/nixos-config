@@ -19,7 +19,6 @@ in
   home.packages = with pkgs; [
     (python310.withPackages (ps: with ps; [
       pip
-      yamllint
       ansible-core
     ]))
 
@@ -48,7 +47,7 @@ in
     rclone
     gnused
     tfk8s
-    istioctl
+    nixpkgs-unstable-pin.istioctl
     aws-vault
     aws-sso-cli
     aws-sso-creds
@@ -65,7 +64,9 @@ in
     jq
     k9s
     packer
+    procs
     procps
+    pass2csv
     pstree
     kubectl
     kubectl-images
@@ -87,5 +88,7 @@ in
     yq-go
     nixpkgs-unstable-pin.k8sgpt
     eks-node-viewer
+    yubikey-manager
+    yamllint
   ] ++ scriptPackages;
 }
