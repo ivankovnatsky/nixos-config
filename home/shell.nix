@@ -1,7 +1,7 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 let
-  inherit (pkgs.stdenv.targetPlatform) isDarwin;
+  inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
 
   syncthingHomeDir = if isDarwin then "~/Library/Application\\ Support/Syncthing" else "~/.config/syncthing";
 
@@ -81,13 +81,13 @@ in
       };
 
       shellAliases = {
-        ls = "lsd --group-dirs first --icon always -la";
-        tree = "ls --tree -a";
+        ls = "lsd --group-dirs first --icon always";
+        tree = "ls --tree";
         cat = "bat";
         grep = "rg";
-        fd = "fd -HI";
+        fd = "fd --hidden --no-ignore";
         rclone = "rclone -P";
-        wl-copy = "wl-copy -n";
+        wl-copy = lib.mkIf isLinux "wl-copy -n";
         stc = "stc -homedir ${syncthingHomeDir}";
       };
 
