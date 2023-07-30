@@ -81,14 +81,15 @@ in
       };
 
       shellAliases = {
-        ls = "lsd --group-dirs first --icon always";
-        tree = "ls --tree";
         cat = "bat";
-        grep = "rg";
+        dig = "doggo";
         fd = "fd --hidden --no-ignore";
+        grep = "rg";
+        ls = "lsd --group-dirs first --icon always";
         rclone = "rclone -P";
-        wl-copy = lib.mkIf isLinux "wl-copy -n";
         stc = "stc -homedir ${syncthingHomeDir}";
+        tree = "ls --tree";
+        wl-copy = lib.mkIf isLinux "wl-copy -n";
       };
 
       oh-my-zsh = {

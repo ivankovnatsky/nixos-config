@@ -53,7 +53,7 @@ in
     aws-sso-creds
     dhall
     dhall-json
-    dogdns
+    doggo
     du-dust
     duf
     difftastic
