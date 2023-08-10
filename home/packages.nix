@@ -40,6 +40,7 @@ in
     exiftool
     go
     iam-policy-json-to-terraform
+    imagemagick
     p7zip
     kube-score
     unzip
