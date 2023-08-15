@@ -56,12 +56,12 @@ select_aws_account() {
 
     if [[ -z $AWS_ACCOUNT_ID ]]; then
         if [[ -z $role ]]; then
-            account_id=$(aws-sso --sso "$AWS_SSO" | rg '[0-9]*' | fzf | awk '{print $7}')
+            account_id=$(aws-sso --sso "$AWS_SSO" | rg '^[0-9]+' | fzf | awk '{print $7}')
         else
-            account_id=$(aws-sso --sso "$AWS_SSO" | rg '[0-9]*' | rg "$role" | fzf | awk '{print $7}')
+            account_id=$(aws-sso --sso "$AWS_SSO" | rg '^[0-9]+' | rg "$role" | fzf | awk '{print $7}')
         fi
     else
-        account_id=$(aws-sso --sso "$AWS_SSO" | rg '[0-9]*' | rg "$role" | rg "$AWS_ACCOUNT_ID" | awk '{print $7}')
+        account_id=$(aws-sso --sso "$AWS_SSO" | rg '^[0-9]+' | rg "$role" | rg "$AWS_ACCOUNT_ID" | awk '{print $7}')
     fi
 
     echo "$account_id"
