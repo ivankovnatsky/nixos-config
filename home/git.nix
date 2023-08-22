@@ -47,6 +47,11 @@
       pull.rebase = false;
       push.default = "current";
 
+      http = {
+        version = "HTTP/1.1";
+        postBuffer = 157286400;
+      };
+
       credential = {
         helper = "${pkgs.rbw}/bin/git-credential-rbw";
       };
