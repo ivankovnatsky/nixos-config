@@ -91,5 +91,9 @@ in
     eks-node-viewer
     yubikey-manager
     yamllint
+
+    # Commitlint dependency
+    nixpkgs-unstable-pin.husky
+
   ] ++ scriptPackages;
 }
