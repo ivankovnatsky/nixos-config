@@ -5,10 +5,6 @@
     ./mpv.nix
   ];
 
-  home.file."Screenshots/.keep".text = ''
-    keep
-  '';
-
   home.file = {
     ".firefox/config".text = ''
       mkdir -p /Applications/Firefox.app/Contents/Resources/distribution/
