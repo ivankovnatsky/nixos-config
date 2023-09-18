@@ -57,8 +57,6 @@
         "com.apple.sound.beep.volume" = 0.000;
       };
 
-      screencapture.location = "~/Screenshots";
-
       dock = {
         # Whether to automatically rearrange spaces based on most recent use.
         mru-spaces = false;
