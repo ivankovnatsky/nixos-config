@@ -63,6 +63,7 @@
       # Vim
       ale
       ansible-vim
+      asyncrun-vim
       dhall-vim
       fzf-vim
       neoformat
