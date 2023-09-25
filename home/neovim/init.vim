@@ -150,7 +150,15 @@ let g:rustfmt_autosave = 1
 let g:sneak#label = 1
 " }}}
 " {{{ fzf-vim
-command! -bang -nargs=* Rg call fzf#vim#grep("rg --column --hidden --no-ignore-parent --glob '!.git/*' --line-number --no-heading --color=always --smart-case -- ".shellescape(<q-args>), 1, fzf#vim#with_preview(), <bang>0)
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   "rg --column --hidden --no-ignore-parent --glob '!.git/*' --line-number --no-heading --color=always --smart-case --with-filename "
+  \   .<q-args>, 1, fzf#vim#with_preview(), <bang>0)
+
+command! -bang -nargs=* GGrep
+  \ call fzf#vim#grep(
+  \   'git grep --line-number -- '.fzf#shellescape(<q-args>),
+  \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
 " }}}
 " {{{ ale
 let b:ale_linters = ['pylint', 'mdl']
