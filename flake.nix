@@ -102,47 +102,6 @@
     in
     {
       nixosConfigurations = {
-        desktop = makeNixosConfig {
-          nixpkgs = inputs.nixpkgs-23-05;
-          home-manager = inputs.home-manager-23-05;
-          hostname = "desktop";
-          system = "x86_64-linux";
-
-          modules = [
-            ./system
-            ./system/workstation.nix
-            ./system/greetd.nix
-            ./system/swaylock.nix
-
-            {
-              nixpkgs.overlays = [ inputs.self.overlay inputs.nur.overlay ];
-            }
-          ];
-
-          homeModules = [
-            ./home/common.nix
-            ./home/nixos-workstation.nix
-            ./home/sway.nix
-          ];
-        };
-
-        ax41 = makeNixosConfig {
-          nixpkgs = inputs.nixpkgs-23-05;
-          home-manager = inputs.home-manager-23-05;
-          hostname = "ax41";
-          system = "x86_64-linux";
-
-          modules = [
-            ./system
-
-            {
-              nixpkgs.overlays = [ inputs.self.overlay ];
-            }
-          ];
-
-          homeModules = [ ];
-        };
-
         ax41-ikovnatsky = makeNixosConfig {
           nixpkgs = inputs.nixpkgs-23-05;
           home-manager = inputs.home-manager-23-05;
