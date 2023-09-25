@@ -33,10 +33,7 @@ in
     jsonnet
     gitleaks
     postgresql
-    rustfmt
-    clippy
-    cargo
-    cargo-deny
+    rustup
     exiftool
     go
     iam-policy-json-to-terraform

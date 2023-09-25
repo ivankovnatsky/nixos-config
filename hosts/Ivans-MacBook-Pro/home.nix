@@ -10,7 +10,6 @@
     aria
     defaultbrowser
     typst
-    rustc
     killport
   ];
 }
