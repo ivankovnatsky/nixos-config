@@ -10,7 +10,7 @@ in
   home.file = {
     ".config/kitty/kitty.conf" = {
       text = ''
-        font_family ${config.variables.fontMono}
+        font_family ${config.variables.fontGeneral}
         font_size ${builtins.toString fontSize}
 
         adjust_line_height 115%
