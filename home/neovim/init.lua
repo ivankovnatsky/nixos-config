@@ -464,6 +464,7 @@ require("neo-tree").setup({
         ["<c-x>"] = "clear_filter",
         ["[g"] = "prev_git_modified",
         ["]g"] = "next_git_modified",
+        ["y"] = "copy_file_name",
       },
       fuzzy_finder_mappings = { -- define keymaps for filter popup window in fuzzy_finder_mode
         ["<down>"] = "move_cursor_down",
@@ -473,7 +474,13 @@ require("neo-tree").setup({
       },
     },
 
-    commands = {}, -- Add a custom command or override a global one using the same function name
+    -- https://github.com/nvim-neo-tree/neo-tree.nvim/issues/359#issuecomment-1164667350
+    commands = {
+      copy_file_name = function(state)
+        local node = state.tree:get_node()
+        vim.fn.setreg('"', node.name, "c")
+      end,
+    }, -- Add a custom command or override a global one using the same function name
   },
   buffers = {
     follow_current_file = true, -- This will find and focus the file in the active buffer every
