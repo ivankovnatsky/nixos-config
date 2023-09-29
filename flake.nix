@@ -2,9 +2,8 @@
   description = "NixOS configuration";
 
   inputs = {
-    # This is used to pin packages from master and unstable channels
-    # respectively.
-    nixpkgs-unstable-pin.url = "github:nixos/nixpkgs/nixos-unstable";
+    # This is used to pin packages from unstable channel.
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # Release
     nixpkgs-23-05.url = "github:nixos/nixpkgs/nixos-23.05";
@@ -130,7 +129,7 @@
       };
 
       overlay = final: prev: {
-        nixpkgs-unstable-pin = import inputs.nixpkgs-unstable-pin { system = final.system; config = final.config; };
+        nixpkgs-unstable = import inputs.nixpkgs-unstable { system = final.system; config = final.config; };
         helm-secrets = final.callPackage ./overlays/helm-secrets.nix { };
       };
     };

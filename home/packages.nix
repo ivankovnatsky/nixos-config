@@ -45,7 +45,7 @@ in
     rclone
     gnused
     tfk8s
-    nixpkgs-unstable-pin.istioctl
+    nixpkgs-unstable.istioctl
     aws-vault
     aws-sso-cli
     aws-sso-creds
@@ -84,13 +84,13 @@ in
     terraform
     wget
     yq-go
-    nixpkgs-unstable-pin.k8sgpt
+    nixpkgs-unstable.k8sgpt
     eks-node-viewer
     yubikey-manager
     yamllint
 
     # Commitlint dependency
-    nixpkgs-unstable-pin.husky
+    nixpkgs-unstable.husky
 
   ] ++ scriptPackages;
 }
