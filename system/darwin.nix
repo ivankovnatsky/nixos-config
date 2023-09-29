@@ -63,7 +63,7 @@
         autohide = true;
         # Don't show dock right after mouse coursor is moved to the bottom of
         # the screen. Default is 0.24.
-        autohide-delay = 2.0;
+        autohide-delay = 50.0;
         minimize-to-application = true;
       };
 
