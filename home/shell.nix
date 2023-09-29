@@ -21,7 +21,7 @@ in
 
     atuin = {
       enable = true;
-      package = pkgs.nixpkgs-unstable-pin.atuin;
+      package = pkgs.nixpkgs-unstable.atuin;
       enableZshIntegration = true;
       flags = [ "--disable-up-arrow" ];
       settings = {
