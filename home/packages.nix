@@ -88,6 +88,7 @@ in
     eks-node-viewer
     yubikey-manager
     yamllint
+    home-manager
 
     # Commitlint dependency
     nixpkgs-unstable.husky
