@@ -89,6 +89,7 @@ in
     yubikey-manager
     yamllint
     home-manager
+    nodePackages.webtorrent-cli
 
     # Commitlint dependency
     nixpkgs-unstable.husky
