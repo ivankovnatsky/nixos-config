@@ -14,6 +14,7 @@
       "mos"
       "rectangle"
       "stats"
+      "vlc"
     ];
 
     caskArgs = {
