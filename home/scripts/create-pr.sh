@@ -86,3 +86,6 @@ gh pr create \
     ${REVIEWER:+--reviewer "$REVIEWER"} \
     ${LABEL:+--label "$LABEL"} \
     ${DRAFT:+--draft}
+
+# Open PR right away to verify everything is in order.
+gh pr view --web
