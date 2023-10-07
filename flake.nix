@@ -18,6 +18,12 @@
       inputs.nixpkgs.follows = "nixpkgs-23-05";
     };
 
+    # NixOS-WSL
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL";
+      inputs.nixpkgs.follows = "nixpkgs-23-05";
+    };
+
     nur.url = "github:nix-community/NUR";
   };
 
@@ -109,6 +115,24 @@
 
           modules = [
             ./system
+
+            {
+              nixpkgs.overlays = [ inputs.self.overlay ];
+            }
+          ];
+
+          homeModules = [ ];
+        };
+
+        nixos = makeNixosConfig {
+          nixpkgs = inputs.nixpkgs-23-05;
+          home-manager = inputs.home-manager-23-05;
+          hostname = "wsl";
+          system = "x86_64-linux";
+
+          modules = [
+            ./system
+            inputs.nixos-wsl.nixosModules.wsl
 
             {
               nixpkgs.overlays = [ inputs.self.overlay ];
