@@ -20,6 +20,7 @@
     sumneko-lua-language-server
     stylua
     typst-lsp
+    rufo
   ];
 
   home.file.".cache/nvim/undo/.keep".text = "";
