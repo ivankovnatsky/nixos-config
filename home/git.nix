@@ -43,7 +43,7 @@
     extraConfig = {
       init.defaultBranch = "main";
       merge.tool = "nvim";
-      mergetool."nvim".cmd = ''nvim -f -c "Gdiffsplit!" "$MERGED"'';
+      mergetool."nvim".cmd = ''nvim -f -c "Gvdiffsplit!" "$MERGED"'';
       pull.rebase = false;
       push.default = "current";
 
