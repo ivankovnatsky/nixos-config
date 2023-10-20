@@ -16,6 +16,8 @@
       multi-account-containers
       onepassword-password-manager
       privacy-badger
+      # To disable all those tree shenanigans:
+      # https://github.com/piroor/treestyletab/issues/1544#issuecomment-522902490
       # tree-style-tab
       ublock-origin
     ];
