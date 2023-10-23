@@ -1,12 +1,19 @@
+{ pkgs, ... }:
+
 {
   imports = [
-    ./dockutil.nix
     ./kitty.nix
     ./mpv.nix
   ];
 
   home.file = {
-    ".firefox/config".text = ''
+    ".manual/config".text = ''
+      # Sudo; run as sudo
+      bash -c 'cat << EOF > /private/etc/sudoers.d/default
+      Defaults:ivan timestamp_timeout=240
+      EOF'
+
+      # Firefox
       mkdir -p /Applications/Firefox.app/Contents/Resources/distribution/
       cat > /Applications/Firefox.app/Contents/Resources/distribution/policies.json << EOF
       {
@@ -15,12 +22,18 @@
         }
       }
       EOF
-    '';
 
-    ".sudo/config".text = ''
-      bash -c 'cat << EOF > /private/etc/sudoers.d/default
-      Defaults:ivan timestamp_timeout=240
-      EOF'
+      # Dockutil
+      ${pkgs.dockutil}/bin/dockutil --remove all
+      ${pkgs.dockutil}/bin/dockutil --add "/Applications/kitty.app"
+      ${pkgs.dockutil}/bin/dockutil --add "/Applications/Firefox.app"
+      ${pkgs.dockutil}/bin/dockutil --add "/System/Cryptexes/App/System/Applications/Safari.app"
+      ${pkgs.dockutil}/bin/dockutil --add "/System/Applications/Messages.app"
+      ${pkgs.dockutil}/bin/dockutil --add "/System/Applications/Calendar.app"
+      ${pkgs.dockutil}/bin/dockutil --add "/System/Applications/Reminders.app"
+      ${pkgs.dockutil}/bin/dockutil --add "/System/Applications/Notes.app"
+      ${pkgs.dockutil}/bin/dockutil --add "/System/Applications/Utilities/Activity Monitor.app"
+      ${pkgs.dockutil}/bin/dockutil --add "/System/Applications/System Settings.app"
     '';
   };
 }
