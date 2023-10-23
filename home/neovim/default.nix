@@ -49,6 +49,7 @@
       nvim-colorizer-lua
       symbols-outline-nvim
       nvim-lspconfig
+      rust-tools-nvim
 
       neo-tree-nvim
       nui-nvim
