@@ -9,7 +9,7 @@
 #
 # 1.
 #
-# ```
+# ```console
 # ❯ home-manager generations
 # 2023-10-18 12:39 : id 1163 -> /nix/store/jhnjszgsni1a94aff7f31jj3hzg7n757-home-manager-generation
 # ...
@@ -20,7 +20,7 @@
 #
 # 2.
 #
-# ```
+# ```console
 # nix-collect-garbage -d
 # ```
 #
@@ -28,17 +28,38 @@
 # generations once we delete them.
 
 nix_gc() {
-    nix-collect-garbage -d
+    # List nix generations.
+    # Example: nix --list-generations
+    #
+    # ```console
+    #    3   2022-10-04 10:51:55   (current)
+    # ```
+    nix-env --list-generations
+
+    generations=$(nix-env --list-generations | tail -n +2 | awk '{print $1}')
+    if [[ -n $generations ]]; then
+        nix-collect-garbage -d
+    else
+        echo "No nix generations to remove"
+    fi
 }
 
 home_manager_gc() {
     local generations
+
+    # List home-manager generations.
+    home-manager generations
+
     # We need to list everything except the first generation, which is at the
     # top of the list and is the current generation.
     generations=$(home-manager generations | tail -n +2 | awk '{print $5}')
-    for g in $generations; do
-        home-manager remove-generations "$g"
-    done
+    if [[ -n $generations ]]; then
+        for g in $generations; do
+            home-manager remove-generations "$g"
+        done
+    else
+        echo "No home-manager generations to remove"
+    fi
 }
 
 home_manager_gc
