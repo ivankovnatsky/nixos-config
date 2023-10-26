@@ -74,6 +74,7 @@ in
   };
 
   home.sessionVariables = {
+    CARGO_HOME = "${config.secrets.volumePath}/Work/.cargo";
     AWS_VAULT_BACKEND = "pass";
     EDITOR = editorName;
     VISUAL = editorName;
