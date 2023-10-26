@@ -34,14 +34,10 @@ nix_gc() {
     # ```console
     #    3   2022-10-04 10:51:55   (current)
     # ```
-    nix-env --list-generations
+    PAGER="" nix-env --list-generations
 
     generations=$(nix-env --list-generations | tail -n +2 | awk '{print $1}')
-    if [[ -n $generations ]]; then
-        nix-collect-garbage -d
-    else
-        echo "No nix generations to remove"
-    fi
+    nix-collect-garbage -d
 }
 
 home_manager_gc() {
