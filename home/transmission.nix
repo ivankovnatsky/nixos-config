@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 let
   inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
@@ -13,7 +13,7 @@ let
 
   downloadPath =
     if isDarwin then
-      "/Volumes/SamsungSSD980PRO2TBMedia/Downloads"
+      "${config.secrets.volumePath}/Downloads"
     else if isLinux then
       "~/Downloads"
     else
