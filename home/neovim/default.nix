@@ -50,6 +50,7 @@
       symbols-outline-nvim
       nvim-lspconfig
       rust-tools-nvim
+      indent-blankline-nvim
 
       neo-tree-nvim
       nui-nvim

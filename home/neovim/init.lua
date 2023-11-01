@@ -727,3 +727,7 @@ rt.setup({
   },
 })
 -- }}}
+-- {{{
+vim.cmd([[ hi IndentBlanklineChar guifg=#330000 ]])
+require("ibl").setup({})
+-- }}}
