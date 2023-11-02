@@ -82,7 +82,9 @@ in
 
       shellAliases = {
         cat = "bat";
+        curl = "curlie";
         dig = "doggo";
+        dog = "dig";
         fd = "fd --hidden --no-ignore";
         grep = "rg";
         ls = "lsd --group-dirs first --icon always";
