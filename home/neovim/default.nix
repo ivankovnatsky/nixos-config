@@ -93,6 +93,7 @@
       vim-terraform
       vim-terraform-completion
       vim-speeddating
+      vim-eunuch
       vim-tmux
       webapi-vim
       ultisnips
