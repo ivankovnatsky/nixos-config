@@ -6,6 +6,7 @@ colorscheme default
 set background=dark
 set termguicolors
 
+let mapleader='<Space>'
 set mouse=
 
 " Edition to default colors scheme
