@@ -25,6 +25,7 @@ in
     awscli2
     ansible-lint
     _1password
+    curlie
     grpcui
     grpcurl
     ghz
