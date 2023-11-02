@@ -61,6 +61,9 @@
       inc-rename-nvim
       dressing-nvim
 
+      octo-nvim
+      telescope-nvim
+
       # Vim
       ale
       ansible-vim
