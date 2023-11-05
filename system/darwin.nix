@@ -1,5 +1,7 @@
 { pkgs, ... }:
 
+let fishEnable = false;
+in
 {
   imports = [
     ./default.nix
@@ -37,12 +39,25 @@
   # nix.package = pkgs.nix;
 
   # Add shells installed by nix to /etc/shells file.
+  # Run before applying:
+  #
+  # ```console
+  # sudo mv /etc/shells /etc/shells..before-nix-darwin
+  # ```
+  #
+  # Set default shell to fish:
+  #
+  # ```console
+  # chsh -s /run/current-system/sw/bin/fish
+  # ```
   environment.shells = with pkgs; [
-  ];
+    bashInteractive
+    zsh
+  ] ++ lib.optionals fishEnable [ fish ];
 
   # Create /etc/bashrc that loads the nix-darwin environment.
   programs.zsh.enable = true; # default shell on catalina
-  # programs.fish.enable = true;
+  programs.fish.enable = fishEnable;
 
   # Used for backwards compatibility, please read the changelog before changing.
   # $ darwin-rebuild changelog
