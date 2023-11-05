@@ -1,5 +1,7 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
+let fishEnable = false;
+in
 {
   programs.tmux = {
     enable = true;
@@ -26,8 +28,12 @@
 
       # https://neovim.io/doc/user/term.html#tui-cursor-shape
       set -ga terminal-overrides '*:Ss=\E[%p1%d q:Se=\E[ q'
+    '' + lib.optionalString fishEnable ''
+      set -g default-command ${pkgs.fish}/bin/fish
+      set -g default-shell ${pkgs.fish}/bin/fish
     '';
   };
+
 
   home.file = {
     ".config/tmuxinator/home.yml" = {

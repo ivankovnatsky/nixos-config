@@ -4,12 +4,29 @@ let
   inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
 
   syncthingHomeDir = if isDarwin then "~/Library/Application\\ Support/Syncthing" else "~/.config/syncthing";
+  fishEnable = false;
 
+  shellAliases = {
+    cat = "${pkgs.bat}/bin/bat";
+    curl = "${pkgs.curlie}/bin/curlie";
+    dig = "${pkgs.doggo}/bin/doggo";
+    dog = "${pkgs.doggo}/bin/doggo";
+    fd = "${pkgs.fd}/bin/fd --hidden --no-ignore";
+    grep = "${pkgs.ripgrep}/bin/rg";
+    ls = "${pkgs.lsd}/bin/lsd --group-dirs first --icon always";
+    tree = "${pkgs.lsd}/bin/lsd --tree";
+    rclone = "${pkgs.rclone}/bin/rclone -P";
+    stc = "stc -homedir ${syncthingHomeDir}";
+    wl-copy = lib.mkIf isLinux "${pkgs.wl-clipboard}/bin/wl-copy -n";
+    tf = "${pkgs.terraform}/bin/terraform";
+  };
 in
 {
   home.packages = with pkgs; [
     lsd
     fd
+    # Install grc only when progreams.fish.enable = true
+    (lib.mkIf fishEnable grc)
   ];
 
   programs = {
@@ -17,12 +34,14 @@ in
       enable = true;
       enableAliases = true;
       enableZshIntegration = true;
+      enableFishIntegration = fishEnable;
     };
 
     atuin = {
       enable = true;
       package = pkgs.nixpkgs-unstable.atuin;
       enableZshIntegration = true;
+      enableFishIntegration = fishEnable;
       flags = [ "--disable-up-arrow" ];
       settings = {
         update_check = false;
@@ -36,11 +55,13 @@ in
       defaultCommand =
         "fd --type f --hidden --no-ignore --follow --exclude .git";
       enableZshIntegration = true;
+      enableFishIntegration = fishEnable;
     };
 
     starship = {
       enable = true;
       enableZshIntegration = true;
+      enableFishIntegration = fishEnable;
 
       settings = {
         add_newline = false;
@@ -68,6 +89,21 @@ in
       };
     };
 
+    fish = {
+      enable = fishEnable;
+      interactiveShellInit = ''
+        set fish_greeting # Disable greeting
+      '';
+      plugins = with pkgs.fishPlugins; [
+        { name = "fzf"; src = fzf.src; }
+        { name = "grc"; src = grc.src; }
+        { name = "plugin-git"; src = plugin-git.src; }
+        { name = "forgit"; src = forgit.src; }
+        { name = "github-copilot-cli-fish"; src = github-copilot-cli-fish.src; }
+      ];
+      shellAliases = shellAliases;
+    };
+
     zsh = {
       enable = true;
 
@@ -80,19 +116,7 @@ in
         extended = true;
       };
 
-      shellAliases = {
-        cat = "bat";
-        curl = "curlie";
-        dig = "doggo";
-        dog = "dig";
-        fd = "fd --hidden --no-ignore";
-        grep = "rg";
-        ls = "lsd --group-dirs first --icon always";
-        rclone = "rclone -P";
-        stc = "stc -homedir ${syncthingHomeDir}";
-        tree = "ls --tree";
-        wl-copy = lib.mkIf isLinux "wl-copy -n";
-      };
+      shellAliases = shellAliases;
 
       oh-my-zsh = {
         enable = true;
