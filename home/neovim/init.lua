@@ -877,4 +877,5 @@ require("octo").setup({
     },
   },
 })
+vim.cmd([[ hi OctoEditable guibg=#ff00ff guifg=#f0f0f0 ]])
 -- }}}
