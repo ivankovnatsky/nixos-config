@@ -11,5 +11,6 @@
     defaultbrowser
     typst
     killport
+    kor
   ];
 }

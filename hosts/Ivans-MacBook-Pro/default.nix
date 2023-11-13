@@ -39,6 +39,7 @@
           platform = "osx-arm64";
           sha256 = "sha256-3DcNqhexJ50P2AeNlQnOfO5a3307lIDq0bDSaGB6+TI=";
         };
+        kor = self.callPackage ../../overlays/kor.nix { };
       }
     )
   ];
