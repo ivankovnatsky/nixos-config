@@ -69,6 +69,7 @@ in
     pstree
     kubectl
     kubectl-images
+    kubepug
     kail
     krelay
     kubectx
