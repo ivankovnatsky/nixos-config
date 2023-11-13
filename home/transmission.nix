@@ -13,7 +13,7 @@ let
 
   downloadPath =
     if isDarwin then
-      "${config.secrets.volumePath}/Downloads"
+      "${config.secrets.volumePath}/Home/Downloads"
     else if isLinux then
       "~/Downloads"
     else
@@ -64,7 +64,7 @@ in
       "main-window-x": 0,
       "main-window-y": 25,
       "message-level": 2,
-      "open-dialog-dir": "/Users/ivan/Downloads",
+      "open-dialog-dir": "${downloadPath}",
       "peer-congestion-algorithm": "",
       "peer-id-ttl-hours": 6,
       "peer-limit-global": 200,
