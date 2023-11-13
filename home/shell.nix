@@ -4,7 +4,7 @@ let
   inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
 
   syncthingHomeDir = if isDarwin then "~/Library/Application\\ Support/Syncthing" else "~/.config/syncthing";
-  fishEnable = false;
+  fishEnable = true;
 
   shellAliases = {
     cat = "${pkgs.bat}/bin/bat";
@@ -25,7 +25,7 @@ in
   home.packages = with pkgs; [
     lsd
     fd
-    # Install grc only when progreams.fish.enable = true
+    # Install grc only when fishEnable = true
     (lib.mkIf fishEnable grc)
   ];
 
