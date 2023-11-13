@@ -1,5 +1,7 @@
 { pkgs, ... }:
 
+let fishEnable = true;
+in
 {
   imports = [
     ../modules/default.nix
@@ -40,4 +42,5 @@
   #      logging in as that user impossible. You can fix it with:
   #      programs.zsh.enable = true;
   programs.zsh.enable = true;
+  programs.fish.enable = fishEnable;
 }
