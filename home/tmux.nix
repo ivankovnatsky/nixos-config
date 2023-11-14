@@ -1,6 +1,6 @@
 { config, pkgs, lib, ... }:
 
-let fishEnable = true;
+let fishEnable = false;
 in
 {
   programs.tmux = {
