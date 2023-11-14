@@ -31,6 +31,12 @@
           sha256 = "sha256-iRnO7jT2v7Fqbp/2HJX0BDw1xtcLId4n5aFTwZx+upw=";
           system = "aarch64-darwin";
         };
+        # terraform = super.callPackage ../../overlays/hashicorp-generic.nix {
+        #   name = "terraform";
+        #   version = "1.3.7";
+        #   sha256 = "sha256-AdVT2197TPBym3JeRAJkPv3liEsdq/XrgK8yjOXkR88=";
+        #   system = "aarch64-darwin";
+        # };
         aws-sso-cli = super.callPackage ../../overlays/aws-sso-cli.nix { };
 
         istioctl = self.callPackage ../../overlays/istioctl.nix {
