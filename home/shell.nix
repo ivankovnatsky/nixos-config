@@ -93,6 +93,7 @@ in
       enable = fishEnable;
       interactiveShellInit = ''
         set fish_greeting # Disable greeting
+        set fish_vi_key_bindings
       '';
       plugins = with pkgs.fishPlugins; [
         { name = "fzf"; src = fzf.src; }
