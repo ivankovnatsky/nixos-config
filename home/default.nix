@@ -57,6 +57,10 @@ in
       '';
     };
 
+    ".npmrc".text = ''
+      prefix=~/.npm
+    '';
+
     ".terraformrc" = {
       # https://developer.hashicorp.com/terraform/cli/config/config-file
       text = ''

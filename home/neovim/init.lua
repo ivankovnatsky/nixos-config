@@ -28,6 +28,7 @@ local lsp_servers = {
   rust_analyzer = {},
   terraformls = {},
   typst_lsp = {},
+  denols = {},
 }
 
 -- Plugins

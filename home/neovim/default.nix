@@ -21,6 +21,8 @@
     stylua
     typst-lsp
     rufo
+    deno
+    yarn
   ];
 
   home.file.".cache/nvim/undo/.keep".text = "";
