@@ -11,7 +11,7 @@
     force-seekable=yes
     fs=yes
     osc=no
-    osd-level=0
+    osd-level=1
     save-position-on-quit=yes
     slang=eng
     ytdl-format=bestvideo+bestaudio/best
