@@ -21,6 +21,7 @@ in
 
   programs.go = {
     enable = true;
+    package = pkgs.nixpkgs-unstable.go;
 
     goPath = "go";
   };
