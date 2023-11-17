@@ -91,6 +91,7 @@ in
     yamllint
     home-manager
     nodePackages.webtorrent-cli
+    youtube-dl
 
     # Commitlint dependency
     nixpkgs-unstable.husky
