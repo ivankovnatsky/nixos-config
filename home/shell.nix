@@ -173,6 +173,10 @@ in
         if [[ -d $HOME/bin ]]; then
           export PATH=$PATH:$HOME/bin
         fi
+
+        if [[ -d $GOPATH/bin ]]; then
+          export PATH=$PATH:$GOPATH/bin
+        fi
       '';
     };
   };
