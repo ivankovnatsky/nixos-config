@@ -1,6 +1,6 @@
 { pkgs, ... }:
 
-let fishEnable = false;
+let fishEnable = true;
 in
 {
   imports = [
