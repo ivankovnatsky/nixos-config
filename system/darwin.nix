@@ -1,6 +1,6 @@
 { pkgs, ... }:
 
-let fishEnable = false;
+let fishEnable = true;
 in
 {
   imports = [
@@ -53,8 +53,7 @@ in
   environment.shells = with pkgs; [
     bashInteractive
     zsh
-  ];
-  # ] ++ lib.optionals fishEnable [ fish ];
+  ] ++ lib.optionals fishEnable [ fish ];
 
   # Create /etc/bashrc that loads the nix-darwin environment.
   programs.zsh.enable = true; # default shell on catalina
