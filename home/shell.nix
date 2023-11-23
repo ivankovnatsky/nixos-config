@@ -10,6 +10,7 @@ let
     cat = "${pkgs.bat}/bin/bat";
     curl = "${pkgs.curlie}/bin/curlie";
     dig = "${pkgs.doggo}/bin/doggo";
+    du = "${pkgs.du-dust}/bin/dust";
     dog = "${pkgs.doggo}/bin/doggo";
     fd = "${pkgs.fd}/bin/fd --hidden --no-ignore";
     grep = "${pkgs.ripgrep}/bin/rg";
@@ -89,22 +90,6 @@ in
       };
     };
 
-    fish = {
-      enable = fishEnable;
-      interactiveShellInit = ''
-        set fish_greeting # Disable greeting
-        set fish_vi_key_bindings
-      '';
-      plugins = with pkgs.fishPlugins; [
-        { name = "fzf"; src = fzf.src; }
-        { name = "grc"; src = grc.src; }
-        { name = "plugin-git"; src = plugin-git.src; }
-        { name = "forgit"; src = forgit.src; }
-        { name = "github-copilot-cli-fish"; src = github-copilot-cli-fish.src; }
-      ];
-      shellAliases = shellAliases;
-    };
-
     zsh = {
       enable = true;
 
@@ -178,6 +163,43 @@ in
           export PATH=$PATH:$GOPATH/bin
         fi
       '';
+    };
+
+    fish = {
+      enable = fishEnable;
+      shellInit = ''
+        set -U fish_term24bit 1
+      '';
+
+      interactiveShellInit = ''
+        set fish_greeting # Disable greeting
+        set fish_vi_key_bindings
+
+        set _ZL_HYPHEN 1
+
+        if test -d /opt/homebrew/bin
+            set -gx PATH $PATH /opt/homebrew/bin
+        end
+
+        if test -d $HOME/bin
+            set -gx PATH $PATH $HOME/bin
+        end
+
+        if test -d $GOPATH/bin
+            set -gx PATH $PATH $GOPATH/bin
+        end
+
+      '';
+      plugins = with pkgs.fishPlugins; [
+        { name = "fzf-fish"; src = fzf-fish.src; }
+        { name = "grc"; src = grc.src; }
+        { name = "plugin-git"; src = plugin-git.src; }
+        { name = "forgit"; src = forgit.src; }
+        { name = "github-copilot-cli-fish"; src = github-copilot-cli-fish.src; }
+        { name = "foreign-env"; src = foreign-env.src; }
+      ];
+
+      shellAliases = shellAliases;
     };
   };
 }
