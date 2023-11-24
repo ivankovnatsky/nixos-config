@@ -175,7 +175,8 @@ in
         set fish_greeting # Disable greeting
         set fish_vi_key_bindings
 
-        set _ZL_HYPHEN 1
+        # z.lua -- this is needed for words with hyphens to autocomplete
+        set -x _ZL_HYPHEN 1
 
         if test -d /opt/homebrew/bin
             set -gx PATH $PATH /opt/homebrew/bin
@@ -196,7 +197,6 @@ in
         { name = "plugin-git"; src = plugin-git.src; }
         { name = "forgit"; src = forgit.src; }
         { name = "github-copilot-cli-fish"; src = github-copilot-cli-fish.src; }
-        { name = "foreign-env"; src = foreign-env.src; }
       ];
 
       shellAliases = shellAliases;
