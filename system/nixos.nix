@@ -16,7 +16,7 @@
     description = "Ivan Kovnatsky";
     isNormalUser = true;
     home = "/home/ivan";
-    shell = pkgs.zsh;
+    shell = pkgs.fish;
     extraGroups = [ "wheel" "networkmanager" "docker" ];
   };
 
