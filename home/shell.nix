@@ -196,7 +196,6 @@ in
         { name = "grc"; src = grc.src; }
         { name = "plugin-git"; src = plugin-git.src; }
         { name = "forgit"; src = forgit.src; }
-        { name = "github-copilot-cli-fish"; src = github-copilot-cli-fish.src; }
       ];
 
       shellAliases = shellAliases;
