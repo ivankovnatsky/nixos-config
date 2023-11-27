@@ -3,7 +3,7 @@ set encoding=utf-8
 scriptencoding=utf-8
 
 " https://www.reddit.com/r/neovim/comments/olrtof/a_fix_for_neovim_been_slow_for_fish_users/
-set shell=/bin/zsh
+set shell=/bin/sh
 
 colorscheme default
 set background=dark
