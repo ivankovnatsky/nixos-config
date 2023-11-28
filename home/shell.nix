@@ -13,6 +13,8 @@ let
     du = "${pkgs.du-dust}/bin/dust";
     dog = "${pkgs.doggo}/bin/doggo";
     fd = "${pkgs.fd}/bin/fd --hidden --no-ignore";
+    g = "${pkgs.git}/bin/git";
+    k = "${pkgs.kubectl}/bin/kubectl";
     grep = "${pkgs.ripgrep}/bin/rg";
     ls = "${pkgs.lsd}/bin/lsd --group-dirs first --icon always";
     tree = "${pkgs.lsd}/bin/lsd --tree";
