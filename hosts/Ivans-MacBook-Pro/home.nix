@@ -12,5 +12,6 @@
     typst
     killport
     kor
+    docker-client
   ];
 }

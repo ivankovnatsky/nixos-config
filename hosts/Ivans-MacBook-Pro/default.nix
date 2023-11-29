@@ -15,6 +15,7 @@
       "rectangle"
       "stats"
       "vlc"
+      "orbstack"
     ];
 
     caskArgs = {
