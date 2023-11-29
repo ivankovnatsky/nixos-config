@@ -14,7 +14,6 @@
       "mos"
       "rectangle"
       "stats"
-      "vlc"
       "orbstack"
     ];
 
