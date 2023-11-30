@@ -14,14 +14,16 @@ let
     dog = "${pkgs.doggo}/bin/doggo";
     fd = "${pkgs.fd}/bin/fd --hidden --no-ignore";
     g = "${pkgs.git}/bin/git";
+    gll = "${pkgs.git}/bin/git pull origin";
     k = "${pkgs.kubectl}/bin/kubectl";
     grep = "${pkgs.ripgrep}/bin/rg";
     ls = "${pkgs.lsd}/bin/lsd --group-dirs first --icon always";
     tree = "${pkgs.lsd}/bin/lsd --tree";
     rclone = "${pkgs.rclone}/bin/rclone -P";
-    stc = "stc -homedir ${syncthingHomeDir}";
+    stc = "${pkgs.stc-cli}/bin/stc -homedir ${syncthingHomeDir}";
     wl-copy = lib.mkIf isLinux "${pkgs.wl-clipboard}/bin/wl-copy -n";
     tf = "${pkgs.terraform}/bin/terraform";
+    transmission = "${pkgs.transmission}/bin/transmission-remote --list";
   };
 in
 {
@@ -167,6 +169,7 @@ in
       '';
     };
 
+    # https://github.com/nix-community/home-manager/blob/master/modules/programs/fish.nix
     fish = {
       enable = fishEnable;
       shellInit = ''
