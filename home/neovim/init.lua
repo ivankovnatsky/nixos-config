@@ -442,7 +442,9 @@ require("neo-tree").setup({
         --".null-ls_*",
       },
     },
-    follow_current_file = false, -- This will find and focus the file in the active buffer every
+    follow_current_file = {
+      enabled = false, -- This will find and focus the file in the active buffer every
+    },
     -- time the current file is changed while the tree is open.
     group_empty_dirs = false, -- when true, empty folders will be grouped together
     hijack_netrw_behavior = "open_default", -- netrw disabled, opening a directory opens neo-tree
@@ -484,7 +486,9 @@ require("neo-tree").setup({
     }, -- Add a custom command or override a global one using the same function name
   },
   buffers = {
-    follow_current_file = true, -- This will find and focus the file in the active buffer every
+    follow_current_file = {
+      enable = true, -- This will find and focus the file in the active buffer every
+    },
     -- time the current file is changed while the tree is open.
     group_empty_dirs = true, -- when true, empty folders will be grouped together
     show_unloaded = true,
@@ -534,7 +538,7 @@ local function open_tree(data)
     vim.cmd.cd(data.file)
 
     -- open the tree
-    require("neo-tree").show()
+    require("neo-tree.command").execute({})
   end
 end
 
@@ -565,7 +569,6 @@ require("dressing").setup({
     start_in_insert = true,
 
     -- These are passed to nvim_open_win
-    anchor = "SW",
     border = "rounded",
     -- 'editor' and 'win' will default to being centered
     relative = "cursor",
@@ -669,7 +672,6 @@ require("dressing").setup({
     -- Options for built-in selector
     builtin = {
       -- These are passed to nvim_open_win
-      anchor = "NW",
       border = "rounded",
       -- 'editor' and 'win' will default to being centered
       relative = "editor",
