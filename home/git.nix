@@ -18,10 +18,8 @@
 
   programs.gh = {
     enable = true;
-
+    gitCredentialHelper.enable = false;
     settings = { };
-
-    enableGitCredentialHelper = false;
   };
 
   programs.git = {

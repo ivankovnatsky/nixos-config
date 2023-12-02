@@ -6,22 +6,22 @@
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # Release
-    nixpkgs-23-05.url = "github:nixos/nixpkgs/nixos-23.05";
-    home-manager-23-05 = {
-      url = "github:nix-community/home-manager/release-23.05";
-      inputs.nixpkgs.follows = "nixpkgs-23-05";
+    nixpkgs-23-11.url = "github:nixos/nixpkgs/nixos-23.11";
+    home-manager-23-11 = {
+      url = "github:nix-community/home-manager/release-23.11";
+      inputs.nixpkgs.follows = "nixpkgs-23-11";
     };
 
     # Darwin
     darwin = {
       url = "github:lnl7/nix-darwin/master";
-      inputs.nixpkgs.follows = "nixpkgs-23-05";
+      inputs.nixpkgs.follows = "nixpkgs-23-11";
     };
 
     # NixOS-WSL
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL";
-      inputs.nixpkgs.follows = "nixpkgs-23-05";
+      inputs.nixpkgs.follows = "nixpkgs-23-11";
     };
 
     nur.url = "github:nix-community/NUR";
@@ -73,10 +73,10 @@
               nixpkgs.overlays = [ inputs.self.overlay ];
             }
 
-            inputs.home-manager-23-05.darwinModules.home-manager
+            inputs.home-manager-23-11.darwinModules.home-manager
             ({ config, system, ... }: {
               # Support legacy workflows that use `<nixpkgs>` etc.
-              nix.nixPath.nixpkgs = "${inputs.nixpkgs-23-05}";
+              nix.nixPath.nixpkgs = "${inputs.nixpkgs-23-11}";
 
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
@@ -108,8 +108,8 @@
     {
       nixosConfigurations = {
         ax41-ikovnatsky = makeNixosConfig {
-          nixpkgs = inputs.nixpkgs-23-05;
-          home-manager = inputs.home-manager-23-05;
+          nixpkgs = inputs.nixpkgs-23-11;
+          home-manager = inputs.home-manager-23-11;
           hostname = "ax41-ikovnatsky";
           system = "x86_64-linux";
 
@@ -125,8 +125,8 @@
         };
 
         nixos = makeNixosConfig {
-          nixpkgs = inputs.nixpkgs-23-05;
-          home-manager = inputs.home-manager-23-05;
+          nixpkgs = inputs.nixpkgs-23-11;
+          home-manager = inputs.home-manager-23-11;
           hostname = "wsl";
           system = "x86_64-linux";
 
