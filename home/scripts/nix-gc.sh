@@ -35,9 +35,10 @@ nix_gc() {
     #    3   2022-10-04 10:51:55   (current)
     # ```
     PAGER="" nix-env --list-generations
+    PAGER="" sudo nix-env --profile /nix/var/nix/profiles/system --list-generations
 
-    generations=$(nix-env --list-generations | tail -n +2 | awk '{print $1}')
     nix-collect-garbage -d
+    sudo nix-collect-garbage -d
 }
 
 home_manager_gc() {
