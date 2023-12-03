@@ -17,6 +17,7 @@
       "rectangle"
       "stats"
       "orbstack"
+      "protonvpn"
     ];
 
     caskArgs = {
