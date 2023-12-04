@@ -198,6 +198,11 @@ in
             set -gx PATH $PATH $GOPATH/bin
         end
 
+        # Git completions; FIXME: remove this once landed in upstream in
+        # fish-shell and later when package updated in nixpkgs.
+        # https://github.com/fish-shell/fish-shell/pull/10133
+        complete -f -c git -n '__fish_git_using_command branch' -l contains -d 'List branches that contain the specified commit' -xa '(__fish_git_commits)'
+        complete -f -c git -n '__fish_git_using_command branch' -l no-contains -d 'List branches that don\'t contain the specified commit' -xa '(__fish_git_commits)'
       '';
       plugins = with pkgs.fishPlugins; [
         { name = "fzf-fish"; src = fzf-fish.src; }
