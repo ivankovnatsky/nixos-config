@@ -13,8 +13,6 @@ let
     du = "${pkgs.du-dust}/bin/dust";
     dog = "${pkgs.doggo}/bin/doggo";
     fd = "${pkgs.fd}/bin/fd --hidden --no-ignore";
-    g = "${pkgs.git}/bin/git";
-    gll = "${pkgs.git}/bin/git pull origin";
     k = "${pkgs.kubectl}/bin/kubectl";
     grep = "${pkgs.ripgrep}/bin/rg";
     ls = "${pkgs.lsd}/bin/lsd --group-dirs first --icon always";
@@ -24,6 +22,10 @@ let
     wl-copy = lib.mkIf isLinux "${pkgs.wl-clipboard}/bin/wl-copy -n";
     tf = "${pkgs.terraform}/bin/terraform";
     transmission = "${pkgs.transmission}/bin/transmission-remote --list";
+
+    g = "${pkgs.git}/bin/git";
+    gll = "${pkgs.git}/bin/git pull origin";
+    gpf = "${pkgs.git}/bin/git push --force-with-lease";
   };
 in
 {
