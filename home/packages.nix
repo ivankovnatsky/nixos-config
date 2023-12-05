@@ -75,6 +75,7 @@ in
     kubernetes-helm
     nixpkgs-fmt
     nixpkgs-review
+    nushell
     rnr
     stc-cli
     kubectl-ktop
