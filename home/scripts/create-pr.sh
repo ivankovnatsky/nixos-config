@@ -58,9 +58,6 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-GITHUB_TOKEN=$(rbw get https://github.com)
-export GITHUB_TOKEN
-
 TITLE="$(git log -1 --pretty=format:%s)"
 HEAD="$(git rev-parse --abbrev-ref HEAD)"
 
