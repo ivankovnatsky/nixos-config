@@ -22,80 +22,77 @@ in
       ansible-core
     ]))
 
-    awscli2
-    ansible-lint
     _1password
-    curlie
-    grpcui
-    grpcurl
-    ghz
-    gnumake
-    gnutar
-    jsonnet
-    gitleaks
-    postgresql
-    rustup
-    exiftool
-    iam-policy-json-to-terraform
-    imagemagick
-    p7zip
-    kube-score
-    unzip
-    ssm-session-manager-plugin
-    rclone
-    gnused
-    tfk8s
-    istioctl
-    aws-vault
+    ansible-lint
     aws-sso-cli
     aws-sso-creds
+    aws-vault
+    awscli2
+    curlie
     dhall
     dhall-json
+    difftastic
     doggo
     du-dust
     duf
-    difftastic
+    eks-node-viewer
+    exiftool
     genpass
     ghq
-    htop
+    ghz
+    gitleaks
     glances
+    gnumake
+    gnused
+    gnutar
+    grpcui
+    grpcurl
+    home-manager
+    htop
+    iam-policy-json-to-terraform
+    imagemagick
+    istioctl
     jq
+    jsonnet
     k9s
-    packer
-    procs
-    procps
-    pass2csv
-    pstree
-    kubectl
-    kubectl-images
-    kubepug
     kail
     krelay
+    kube-score
+    kubectl
+    kubectl-images
+    kubectl-ktop
     kubectx
+    kubepug
     kubernetes-helm
     nixpkgs-fmt
     nixpkgs-review
+    nixpkgs-unstable.husky # Commitlint dependency
+    nixpkgs-unstable.k8sgpt
+    nodePackages.webtorrent-cli
     nushell
+    p7zip
+    packer
+    pass2csv
+    postgresql
+    procps
+    procs
+    pstree
+    rclone
     rnr
-    stc-cli
-    kubectl-ktop
+    rustup
     sd
     sops
+    ssm-session-manager-plugin
+    stc-cli
     syncthing
     tealdeer
     terraform
+    tfk8s
+    unzip
     wget
-    yq-go
-    nixpkgs-unstable.k8sgpt
-    eks-node-viewer
-    yubikey-manager
     yamllint
-    home-manager
-    nodePackages.webtorrent-cli
     youtube-dl
-
-    # Commitlint dependency
-    nixpkgs-unstable.husky
-
+    yq-go
+    yubikey-manager
   ] ++ scriptPackages;
 }
