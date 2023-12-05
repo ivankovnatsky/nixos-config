@@ -27,6 +27,7 @@ in
   };
 
   programs.gpg.enable = true;
+  programs.nushell.enable = true;
 
   programs.bat = {
     enable = true;

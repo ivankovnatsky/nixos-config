@@ -69,7 +69,6 @@ in
     nixpkgs-unstable.husky # Commitlint dependency
     nixpkgs-unstable.k8sgpt
     nodePackages.webtorrent-cli
-    nushell
     p7zip
     packer
     pass2csv
