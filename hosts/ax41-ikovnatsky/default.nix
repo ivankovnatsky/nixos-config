@@ -22,6 +22,9 @@
           sha256 = "sha256-5K3QkqVP9v69MyXR4MEJyeWQ3Gw4+Lt/ljLk5rzKmdQ=";
           system = "x86_64-linux";
         };
+        atuin = self.callPackage ../../overlays/atuin.nix {
+          inherit (pkgs.darwin.apple_sdk.frameworks) AppKit Security SystemConfiguration;
+        };
       }
     )
   ];
