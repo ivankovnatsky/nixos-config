@@ -18,10 +18,15 @@
       "stats"
       "orbstack"
       "protonvpn"
+      "teamviewer"
     ];
 
     caskArgs = {
       no_quarantine = true;
+    };
+
+    masApps = {
+      "1Password for Safari" = 1569813296;
     };
   };
 
