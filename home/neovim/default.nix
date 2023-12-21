@@ -23,6 +23,7 @@
     rufo
     deno
     yarn
+    taplo
   ];
 
   home.file.".cache/nvim/undo/.keep".text = "";
