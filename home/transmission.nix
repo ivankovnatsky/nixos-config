@@ -11,13 +11,7 @@ let
     else
       throw "Unsupported platform";
 
-  downloadPath =
-    if isDarwin then
-      "${config.secrets.volumePath}/Home/Downloads"
-    else if isLinux then
-      "~/Downloads"
-    else
-      throw "Unsupported platform";
+  downloadPath = "${config.home.homeDirectory}/Downloads";
 
 in
 {
@@ -53,7 +47,7 @@ in
       "filter-trackers": "",
       "idle-seeding-limit": 30,
       "idle-seeding-limit-enabled": false,
-      "incomplete-dir": "/Users/ivan/Downloads",
+      "incomplete-dir": "${downloadPath}",
       "incomplete-dir-enabled": false,
       "inhibit-desktop-hibernation": false,
       "lpd-enabled": false,
