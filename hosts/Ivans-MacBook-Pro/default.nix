@@ -19,6 +19,7 @@
       "orbstack"
       "protonvpn"
       "teamviewer"
+      "vlc"
     ];
 
     caskArgs = {
