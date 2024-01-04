@@ -41,6 +41,7 @@ in
     genpass
     ghq
     ghz
+    git-ignore
     gitleaks
     glances
     gnumake
