@@ -103,14 +103,6 @@ in
     onActivation.cleanup = "zap";
     global.brewfile = true;
 
-    taps = [
-      "homebrew/cask"
-      "homebrew/cask-fonts"
-      "homebrew/core"
-      "homebrew/services"
-      "elastio/homebrew-tap"
-    ];
-
     # Install some packages through brew, since nixpkgs would require to
     # download huge tree of dependencies.
     brews = [

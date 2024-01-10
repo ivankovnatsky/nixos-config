@@ -6,10 +6,6 @@
   ];
 
   homebrew = {
-    taps = [
-      "boz/repo"
-    ];
-
     casks = [
       "kitty"
       "chromium"
