@@ -23,6 +23,7 @@
     rufo
     deno
     yarn
+    yapf
     taplo
   ];
 
