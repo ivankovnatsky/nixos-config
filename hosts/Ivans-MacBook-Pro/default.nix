@@ -9,6 +9,7 @@
     casks = [
       "kitty"
       "chromium"
+      # To use PC mouse with natural scrolling
       "mos"
       "rectangle"
       "stats"
@@ -16,6 +17,8 @@
       "protonvpn"
       "teamviewer"
       "vlc"
+      # To be able to use background blur
+      "zoom"
     ];
 
     caskArgs = {
