@@ -70,6 +70,7 @@
       telescope-nvim
 
       # Vim
+      # TODO: Move to https://github.com/mfussenegger/nvim-lint
       ale
       ansible-vim
       asyncrun-vim
