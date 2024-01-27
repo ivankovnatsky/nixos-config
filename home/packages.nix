@@ -29,6 +29,7 @@ in
     aws-sso-creds
     aws-vault
     awscli2
+    azure-cli
     curlie
     dhall
     dhall-json
