@@ -28,7 +28,6 @@
     masApps = {
       "1Password for Safari" = 1569813296;
       "Dark Reader for Safari" = 1438243180;
-      "Bitwarden" = 1352778147;
     };
   };
 
