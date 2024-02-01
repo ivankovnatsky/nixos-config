@@ -83,6 +83,8 @@ in
         # the screen. Default is 0.24.
         autohide-delay = 50.0;
         minimize-to-application = true;
+        # Don't show indicators of currently running applications.
+        show-process-indicators = false;
       };
 
       finder = {
