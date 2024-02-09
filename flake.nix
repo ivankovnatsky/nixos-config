@@ -3,6 +3,7 @@
 
   inputs = {
     # This is used to pin packages from unstable channel.
+    nixpkgs-master.url = "github:nixos/nixpkgs/master";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # Release
@@ -129,6 +130,7 @@
       };
 
       overlay = final: prev: {
+        nixpkgs-master = import inputs.nixpkgs-master { system = final.system; config = final.config; };
         nixpkgs-unstable = import inputs.nixpkgs-unstable { system = final.system; config = final.config; };
         helm-secrets = final.callPackage ./overlays/helm-secrets.nix { };
       };

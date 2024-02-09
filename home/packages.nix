@@ -68,6 +68,7 @@ in
     kubepug
     kubernetes-helm
     nixpkgs-fmt
+    nixpkgs-master.aichat
     nixpkgs-review
     nixpkgs-unstable.husky # Commitlint dependency
     nixpkgs-unstable.k8sgpt
