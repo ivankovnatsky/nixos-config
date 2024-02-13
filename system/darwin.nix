@@ -106,9 +106,7 @@ in
     global.brewfile = true;
 
     taps = [
-      "homebrew/cask"
       "homebrew/cask-fonts"
-      "homebrew/core"
       "homebrew/services"
       "elastio/homebrew-tap"
     ];
