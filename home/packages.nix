@@ -92,11 +92,12 @@ in
     tealdeer
     terraform
     tfk8s
+    unrar
     unzip
     wget
     yamllint
-    yt-dlp
     yq-go
+    yt-dlp
     yubikey-manager
   ] ++ scriptPackages;
 }
