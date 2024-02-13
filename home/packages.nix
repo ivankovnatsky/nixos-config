@@ -88,13 +88,14 @@ in
     ssm-session-manager-plugin
     stc-cli
     syncthing
+    tailscale
     tealdeer
     terraform
     tfk8s
     unzip
     wget
     yamllint
-    youtube-dl
+    yt-dlp
     yq-go
     yubikey-manager
   ] ++ scriptPackages;
