@@ -67,6 +67,7 @@ in
     kubectx
     kubepug
     kubernetes-helm
+    mtr
     nixpkgs-fmt
     nixpkgs-master.aichat
     nixpkgs-review
