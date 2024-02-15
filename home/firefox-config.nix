@@ -5,11 +5,6 @@ let
 
   configPath = if isDarwin then "Library/Application Support/Firefox" else ".mozilla/firefox";
 
-  ffProfileId = "a2270yxa";
-  ffReleaseProfileId = "0ychrwr5";
-
-  userConfigPath = if isDarwin then "Profiles/${ffReleaseProfileId}.default-release" else "default";
-
   defaultConfig = ''
     user_pref("browser.contentblocking.category", "strict");
     user_pref("browser.ctrlTab.recentlyUsedOrder", true);
@@ -61,46 +56,34 @@ let
 in
 {
   home.file = {
-    "${configPath}/profiles.ini" = {
-      text =
-        if isDarwin then ''
-          [Profile1]
-          Name=default
-          IsRelative=1
-          Path=Profiles/${ffProfileId}.default
-          Default=1
+    # "${configPath}/profiles.ini" =
+    #   if isDarwin then { text = ""; }
+    #   else {
+    #     text = ''
+    #       [General]
+    #       StartWithLastProfile=1
 
-          [Profile2]
-          Name=home
-          IsRelative=1
-          Path=Profiles/home
-          Default=0
+    #       [Profile0]
+    #       Default=1
+    #       IsRelative=1
+    #       Name=Home
+    #       Path=Profiles/Home
+    #     '';
+    #   };
 
-          [Profile0]
-          Name=default-release
-          IsRelative=1
-          Path=${userConfigPath}
+    # This thing only needed to a macOS, will check sometime on Linux.
+    # "${configPath}/installs.ini" =
+    #   if isDarwin then
+    #     {
+    #       text = ''
+    #         [2656FF1E876E9973]
+    #         Default=Profiles/Work
+    #         Locked=1
+    #       '';
+    #     }
+    #   else { text = ""; };
 
-          [General]
-          StartWithLastProfile=1
-          Version=2
-
-          [Install2656FF1E876E9973]
-          Default=${userConfigPath}
-          Locked=1
-        '' else ''
-          [ General ]
-          StartWithLastProfile=1
-
-          [Profile0]
-          Default=1
-          IsRelative=1
-          Name=default
-          Path=default
-        '';
-    };
-
-    "${configPath}/${userConfigPath}/user.js" = {
+    "${configPath}/Profiles/Home/user.js" = {
       text =
         if isDarwin then ''
           ${defaultConfig}
@@ -109,25 +92,20 @@ in
         '';
     };
 
-    "${configPath}/Profiles/home/user.js" = {
-      text =
-        if isDarwin then ''
-          ${defaultConfig}
-        '' else ''
-          ${defaultLinuxConfig}
-        '';
-    };
-
-    "${configPath}/${userConfigPath}/chrome/userChrome.css" = {
+    "${configPath}/Profiles/Home/chrome/userChrome.css" = {
       text = ''
         ${userChromeConfig}
       '';
     };
 
-    "${configPath}/Profiles/home/chrome/userChrome.css" = {
-      text = ''
-        ${userChromeConfig}
-      '';
-    };
+    "${configPath}/Profiles/Work/user.js" =
+      if isDarwin then
+        { text = defaultConfig; }
+      else { };
+
+    "${configPath}/Profiles/Work/chrome/userChrome.css" =
+      if isDarwin then
+        { text = userChromeConfig; }
+      else { };
   };
 }
