@@ -6,6 +6,7 @@ let
   editorName = "nvim";
   homeDir = if isDarwin then "/Users" else "/home";
   helmPluginsPath = if isDarwin then "Library/helm/plugins" else ".local/share/helm/plugins";
+  aichatConfigPath = if isDarwin then "Library/Application Support/aichat/config.yaml" else ".config/aichat/config.yaml";
 in
 {
   imports = [
@@ -75,6 +76,20 @@ in
     ".config/yamllint/config" = {
       text = ''
         document-start: disable
+      '';
+    };
+
+    "${aichatConfigPath}" = {
+      text = ''
+        model: openai:gpt-4
+        save: true
+        highlight: true
+        wrap: 80
+        wrap_code: true
+        keybindings: vi
+        clients:
+        - type: openai
+          api_key: ${config.secrets.openaiApikey}
       '';
     };
   };
