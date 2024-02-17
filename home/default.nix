@@ -81,7 +81,7 @@ in
 
     "${aichatConfigPath}" = {
       text = ''
-        model: openai:gpt-4
+        model: openai:gpt-4-turbo-preview
         save: true
         highlight: true
         wrap: 80
