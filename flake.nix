@@ -65,7 +65,7 @@
           modules = [
             {
               imports = [ ./hosts/${hostname} ];
-              nixpkgs.overlays = [ inputs.self.overlay ];
+              nixpkgs.overlays = [ inputs.self.overlay inputs.nur.overlay ];
             }
 
             inputs.home-manager-23-11.darwinModules.home-manager
