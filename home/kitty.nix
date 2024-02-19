@@ -13,6 +13,7 @@ in
         font_family ${config.variables.fontGeneral}
         font_size ${builtins.toString fontSize}
 
+        allow_remote_control yes
         adjust_line_height 115%
         hide_window_decorations titlebar-only
         cursor_blink_interval 0
