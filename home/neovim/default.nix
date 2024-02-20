@@ -58,7 +58,6 @@ in
       lualine-nvim
       fidget-nvim
       mkdir-nvim
-      nvim-colorizer-lua
       symbols-outline-nvim
       nvim-lspconfig
       rust-tools-nvim

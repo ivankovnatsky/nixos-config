@@ -40,9 +40,6 @@ require("lualine").setup({
 -- {{{ fidget-nvim
 require("fidget").setup({})
 -- }}}
--- {{{ nvim-colorizer-lua
-require("colorizer").setup({})
--- }}}
 -- {{{ nvim-cmp
 local cmp = require("cmp")
 
