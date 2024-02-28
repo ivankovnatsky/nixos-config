@@ -84,8 +84,6 @@ in
         model: openai:gpt-4-turbo-preview
         save: true
         highlight: true
-        wrap: 80
-        wrap_code: true
         keybindings: vi
         clients:
         - type: openai
