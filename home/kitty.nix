@@ -18,11 +18,26 @@ in
         hide_window_decorations titlebar-only
         cursor_blink_interval 0
         copy_on_select yes
-        window_margin_width 0.5
+        draw_minimal_borders yes
         tab_bar_edge top
-        max_title_length 100
         tab_title_template "{index}: {tab.active_exe}"
         macos_option_as_alt yes
+
+        enabled_layouts tall, grid
+
+        map ctrl+shift+k neighboring_window up
+        map ctrl+shift+j neighboring_window down
+        map ctrl+shift+h neighboring_window left
+        map ctrl+shift+l neighboring_window right
+
+        map ctrl+shift+up neighboring_window up
+        map ctrl+shift+down neighboring_window down
+        map ctrl+shift+left neighboring_window left
+        map ctrl+shift+right neighboring_window right
+
+        # This is the remap of default value
+        # Was ctrl+shift+l
+        map ctrl+shift+space next_layout
 
         ${if isDarwin then ''
           map cmd+1 goto_tab 1
