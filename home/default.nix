@@ -51,9 +51,6 @@ in
       '';
     };
 
-    "${helmPluginsPath}/helm-secrets".source = (config.lib.file.mkOutOfStoreSymlink
-      "${pkgs.helm-secrets}");
-
     ".terraform.d/plugin-cache/.keep" = {
       text = ''
         keep
