@@ -66,7 +66,6 @@ in
     kubectl-ktop
     kubectx
     kubepug
-    kubernetes-helm
     mtr
     nixpkgs-fmt
     nixpkgs-master.aichat
@@ -100,5 +99,10 @@ in
     yq-go
     yt-dlp
     yubikey-manager
+    (wrapHelm kubernetes-helm {
+      plugins = with pkgs.kubernetes-helmPlugins; [
+        helm-secrets
+      ];
+    })
   ] ++ scriptPackages;
 }
