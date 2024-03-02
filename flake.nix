@@ -30,7 +30,7 @@
 
           modules = [
             {
-              imports = [ ./hosts/${hostname} ./system/nixos.nix ];
+              imports = [ ./machines/${hostname} ./system/nixos.nix ];
             }
 
             home-manager.nixosModules.home-manager
@@ -43,7 +43,7 @@
                   ./home/common.nix
                   ./home/nixos.nix
 
-                  ./hosts/${hostname}/home.nix
+                  ./machines/${hostname}/home.nix
                 ] ++ homeModules;
                 home.stateVersion = config.system.stateVersion;
               };
@@ -64,7 +64,7 @@
 
           modules = [
             {
-              imports = [ ./hosts/${hostname} ];
+              imports = [ ./machines/${hostname} ];
               nixpkgs.overlays = [ inputs.self.overlay ];
             }
 
@@ -82,7 +82,7 @@
                   ./home/hammerspoon
                   ./home/darwin.nix
 
-                  ./hosts/${hostname}/home.nix
+                  ./machines/${hostname}/home.nix
                 ] ++ homeModules;
 
                 home.stateVersion = "22.05";
