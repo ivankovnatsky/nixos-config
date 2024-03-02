@@ -23,6 +23,7 @@
       "vlc"
       # To be able to use background blur
       "zoom"
+      "coconutbattery"
     ];
 
     caskArgs = {
