@@ -24,6 +24,7 @@
       # To be able to use background blur
       "zoom"
       "coconutbattery"
+      "vmware-fusion"
     ];
 
     caskArgs = {
