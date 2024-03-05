@@ -1,11 +1,11 @@
-PLATFORM=$(shell uname)
+PLATFORM := $(shell uname)
 
 default:
-	@if [ ${PLATFORM} == "Darwin" ]; then \
-		darwin-rebuild switch --verbose -L --flake . ; \
-	else \
-		nixos-rebuild switch --use-remote-sudo --verbose -L --flake . ; \
-	fi
+ifeq (${PLATFORM}, Darwin)
+	darwin-rebuild switch --verbose -L --flake .
+else
+	nixos-rebuild switch --use-remote-sudo --verbose -L --flake .
+endif
 
 rebuild-impure/nixos:
 	nixos-rebuild switch --use-remote-sudo --impure --verbose -L --flake .

@@ -6,6 +6,7 @@
     ./i3status.nix
     ./gtk.nix
     ./firefox.nix
+    ./firefox-config.nix
 
     ../modules/secrets.nix
   ];

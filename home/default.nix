@@ -10,7 +10,6 @@ let
 in
 {
   imports = [
-    ./firefox-config.nix
     ./neovim
     ./git.nix
     ./ssh.nix
