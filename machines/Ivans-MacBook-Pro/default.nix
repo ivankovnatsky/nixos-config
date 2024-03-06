@@ -70,7 +70,7 @@
         autohide-delay = 50.0;
         minimize-to-application = true;
         # Don't show indicators of currently running applications.
-        show-process-indicators = false;
+        show-process-indicators = true;
       };
 
       finder = {
