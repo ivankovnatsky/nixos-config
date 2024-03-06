@@ -5,7 +5,6 @@ let
 
   editorName = "nvim";
   homeDir = if isDarwin then "/Users" else "/home";
-  helmPluginsPath = if isDarwin then "Library/helm/plugins" else ".local/share/helm/plugins";
   aichatConfigPath = if isDarwin then "Library/Application Support/aichat/config.yaml" else ".config/aichat/config.yaml";
 in
 {
@@ -32,14 +31,6 @@ in
   programs.bat = {
     enable = true;
     config = { tabs = "0"; };
-  };
-
-  programs.password-store = {
-    enable = true;
-    package = pkgs.pass.withExtensions (exts: [ exts.pass-otp exts.pass-import ]);
-    settings = {
-      PASSWORD_STORE_DIR = "${homeDir}/ivan/.password-store/";
-    };
   };
 
   home.packages = [ pkgs.ranger ];

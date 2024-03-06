@@ -2,11 +2,8 @@
 
 {
   home.packages = with pkgs; [
-    gitAndTools.pre-commit
     git-crypt
-    git-remote-codecommit
     pinentry
-    gitui
   ];
 
   # Git started to read global config and opens up osxkeychain windows first by
