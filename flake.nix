@@ -141,14 +141,27 @@
         "Ivans-MacBook-Pro" = makeDarwinConfig {
           hostname = "Ivans-MacBook-Pro";
           system = "aarch64-darwin";
+          modules = [
+            ({ ... }: {
+              nixpkgs.overlays = [
+                (final: prev: {
+                  nixpkgs-master = import inputs.nixpkgs-master { system = final.system; config = final.config; };
+                  nixpkgs-unstable = import inputs.nixpkgs-unstable { system = final.system; config = final.config; };
+                })
+              ];
+            })
+          ];
+          homeModules = [ ];
+        };
+
+        "Ivans-MacBook-Air" = makeDarwinConfig {
+          hostname = "Ivans-MacBook-Air";
+          system = "aarch64-darwin";
           modules = [ ];
           homeModules = [ ];
         };
       };
 
-      overlay = final: prev: {
-        nixpkgs-master = import inputs.nixpkgs-master { system = final.system; config = final.config; };
-        nixpkgs-unstable = import inputs.nixpkgs-unstable { system = final.system; config = final.config; };
-      };
+      overlay = final: prev: { };
     };
 }
