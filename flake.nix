@@ -138,11 +138,6 @@
           hostname = "Ivans-MacBook-Pro";
           system = "aarch64-darwin";
           modules = [
-            ./home
-            ./home/common.nix
-            ./home/hammerspoon
-            ./home/darwin.nix
-
             ({ ... }: {
               nixpkgs.overlays = [
                 (final: prev: {
@@ -153,7 +148,11 @@
             })
           ];
           homeModules = [
+            ./home
             ./home/pass.nix
+            ./home/common.nix
+            ./home/hammerspoon
+            ./home/darwin.nix
           ];
         };
 
