@@ -52,6 +52,7 @@
   system = {
     defaults = {
       NSGlobalDomain = {
+        # Allow tab focus in all controls, space to select.
         AppleKeyboardUIMode = 3;
         _HIHideMenuBar = false;
         NSAutomaticCapitalizationEnabled = false;
