@@ -38,9 +38,6 @@
       "rectangle"
       "stats"
       "orbstack"
-      "protonvpn"
-      "teamviewer"
-      "vlc"
       # To be able to use background blur
       "zoom"
       "coconutbattery"
@@ -49,12 +46,6 @@
 
     caskArgs = {
       no_quarantine = true;
-    };
-
-    masApps = {
-      "1Password for Safari" = 1569813296;
-      "Dark Reader for Safari" = 1438243180;
-      "Bitwarden" = 1352778147;
     };
   };
 
