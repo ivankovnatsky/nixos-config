@@ -40,6 +40,7 @@
               home-manager.users.ivan = {
                 imports = [
                   ./home
+                  ./home/pass.nix
                   ./home/common.nix
                   ./home/nixos.nix
 
@@ -77,11 +78,6 @@
               home-manager.useUserPackages = true;
               home-manager.users.ivan = {
                 imports = [
-                  ./home
-                  ./home/common.nix
-                  ./home/hammerspoon
-                  ./home/darwin.nix
-
                   ./machines/${hostname}/home.nix
                 ] ++ homeModules;
 
@@ -142,6 +138,11 @@
           hostname = "Ivans-MacBook-Pro";
           system = "aarch64-darwin";
           modules = [
+            ./home
+            ./home/common.nix
+            ./home/hammerspoon
+            ./home/darwin.nix
+
             ({ ... }: {
               nixpkgs.overlays = [
                 (final: prev: {
@@ -151,14 +152,19 @@
               ];
             })
           ];
-          homeModules = [ ];
+          homeModules = [
+            ./home/pass.nix
+          ];
         };
 
         "Ivans-MacBook-Air" = makeDarwinConfig {
           hostname = "Ivans-MacBook-Air";
           system = "aarch64-darwin";
-          modules = [ ];
-          homeModules = [ ];
+          modules = [
+          ];
+          homeModules = [
+            ./home/pass.nix
+          ];
         };
       };
 
