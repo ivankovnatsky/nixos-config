@@ -56,48 +56,6 @@ let
 in
 {
   home.file = {
-    # "${configPath}/profiles.ini" =
-    #   if isDarwin then { text = ""; }
-    #   else {
-    #     text = ''
-    #       [General]
-    #       StartWithLastProfile=1
-
-    #       [Profile0]
-    #       Default=1
-    #       IsRelative=1
-    #       Name=Home
-    #       Path=Profiles/Home
-    #     '';
-    #   };
-
-    # This thing only needed to a macOS, will check sometime on Linux.
-    # "${configPath}/installs.ini" =
-    #   if isDarwin then
-    #     {
-    #       text = ''
-    #         [2656FF1E876E9973]
-    #         Default=Profiles/Work
-    #         Locked=1
-    #       '';
-    #     }
-    #   else { text = ""; };
-
-    "${configPath}/Profiles/Home/user.js" = {
-      text =
-        if isDarwin then ''
-          ${defaultConfig}
-        '' else ''
-          ${defaultLinuxConfig}
-        '';
-    };
-
-    "${configPath}/Profiles/Home/chrome/userChrome.css" = {
-      text = ''
-        ${userChromeConfig}
-      '';
-    };
-
     "${configPath}/Profiles/Work/user.js" =
       if isDarwin then
         { text = defaultConfig; }

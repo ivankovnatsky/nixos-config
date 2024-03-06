@@ -4,6 +4,7 @@
   imports = [
     ../../home/transmission.nix
     ../../home/workstation.nix
+    ../../home/firefox-config.nix
   ];
 
   home.packages = with pkgs; [
