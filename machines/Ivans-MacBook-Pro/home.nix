@@ -5,6 +5,7 @@
     ../../home/transmission.nix
     ../../home/workstation.nix
     ../../home/firefox-config.nix
+    ../../home/amethyst.nix
   ];
 
   home.packages = with pkgs; [
