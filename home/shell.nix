@@ -47,7 +47,7 @@ in
     atuin = {
       enable = true;
       # https://github.com/atuinsh/atuin/commit/1ce88c9d17c6dd66d387b2dfd2544a527a262f3e.
-      package = pkgs.atuin;
+      package = pkgs.nixpkgs-unstable.atuin;
       enableZshIntegration = true;
       enableFishIntegration = fishEnable;
       flags = [ "--disable-up-arrow" ];

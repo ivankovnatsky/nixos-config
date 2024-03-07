@@ -112,9 +112,6 @@
           sha256 = "sha256-3DcNqhexJ50P2AeNlQnOfO5a3307lIDq0bDSaGB6+TI=";
         };
         kor = self.callPackage ../../overlays/kor.nix { };
-        atuin = self.callPackage ../../overlays/atuin.nix {
-          inherit (pkgs.darwin.apple_sdk.frameworks) AppKit Security SystemConfiguration;
-        };
       }
     )
   ];
