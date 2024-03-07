@@ -138,7 +138,7 @@
           hostname = "Ivans-MacBook-Pro";
           system = "aarch64-darwin";
           modules = [
-            ({ ... }: {
+            ({
               nixpkgs.overlays = [
                 (final: prev: {
                   nixpkgs-master = import inputs.nixpkgs-master { system = final.system; config = final.config; };
