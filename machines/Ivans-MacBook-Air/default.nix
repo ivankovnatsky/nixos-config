@@ -1,5 +1,3 @@
-{ ... }:
-
 {
   imports = [
     ../../system/darwin.nix
