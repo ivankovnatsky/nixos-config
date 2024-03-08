@@ -42,6 +42,10 @@
       "vmware-fusion"
     ];
 
+    masApps = {
+      "NextDNS" = 1464122853;
+    };
+
     caskArgs = {
       no_quarantine = true;
     };
