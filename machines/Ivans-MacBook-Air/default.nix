@@ -3,11 +3,25 @@
     ../../system/darwin.nix
   ];
 
+  system = {
+    defaults = {
+      NSGlobalDomain = {
+        # Allow tab focus in all controls, space to select.
+        AppleKeyboardUIMode = 3;
+      };
+    };
+  };
+
   homebrew = {
+    taps = [
+      "homebrew/cask-fonts"
+    ];
+
     casks = [
       # To use PC mouse with natural scrolling
       "mos"
       "coconutbattery"
+      "font-hack-nerd-font"
     ];
 
     masApps = {
