@@ -112,7 +112,14 @@ in
       ultisnips
     ];
 
-    extraConfig = builtins.readFile ./init.vim;
+    # I want to split general config that my non work machine would also agree
+    # and development, which will be under neovim/ directory for now.
+    extraConfig =
+      builtins.readFile (../vim/vimrc) +
+      "\n" +
+      builtins.readFile (./init.vim)
+      ;
+
     extraLuaConfig = builtins.readFile ./init.lua;
   };
 }

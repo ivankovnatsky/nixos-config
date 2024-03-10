@@ -4,28 +4,99 @@ let editor = "vim";
 
 in
 {
-  home.packages = with pkgs; [
-    syncthing
-    yt-dlp
-    mpv
-  ];
-
-  home.sessionVariables = {
-    EDITOR = editor;
-    VISUAL = editor;
-  };
-
-  home.file = {
-    ".manual/config".text = ''
-      # Do not enter user password too often
-      bash -c 'cat << EOF > /private/etc/sudoers.d/ivan
-      Defaults:ivan timestamp_timeout=240
-      EOF'
-    '';
+  home = {
+    packages = with pkgs; [
+      syncthing
+      yt-dlp
+      mpv
+      bat
+      ripgrep
+      delta
+      nixpkgs-fmt
+    ];
+    sessionVariables = {
+      EDITOR = editor;
+    };
+    file = {
+      ".manual/config".text = ''
+        # Do not enter user password too often
+        bash -c 'cat << EOF > /private/etc/sudoers.d/ivan
+        Defaults:ivan timestamp_timeout=240
+        EOF'
+      '';
+    };
   };
 
   programs = {
-    zsh.enable = true;
+    # Install zlua
+    z-lua = {
+      enable = true;
+      enableZshIntegration = true;
+    };
+    tmux = {
+      enable = true;
+      terminal = "xterm-256color";
+      extraConfig = ''
+        set -s escape-time 0
+        set -g status-interval 0
+
+        # https://neovim.io/doc/user/term.html#tui-cursor-shape
+        set -ga terminal-overrides '*:Ss=\E[%p1%d q:Se=\E[ q'
+      '';
+    };
+    vim = {
+      enable = true;
+      # https://stackoverflow.com/a/76594191
+      packageConfigurable = pkgs.vim-darwin;
+      defaultEditor = true;
+      plugins = with pkgs.vimPlugins; [
+        fzf-vim
+        copilot-vim
+        vim-lastplace
+        vim-nix
+        vim-fugitive
+        neoformat
+        vim-commentary
+        vim-sensible
+        vim-sleuth
+        vim-strip-trailing-whitespace
+        vim-surround
+      ];
+      extraConfig =
+        builtins.readFile (../../home/vim/vimrc) +
+      ''
+        " I want to run :Lex when I'm not opening a file with vim
+        " Also I want Lex to be resized to 20
+        autocmd VimEnter * if argc() == 0 | Lex 20 | endif
+
+        " Hide netrw banner
+        let g:netrw_banner = 0
+
+        " Set cursor shape depending on mode
+        " https://vim.fandom.com/wiki/Change_cursor_shape_in_different_modes#For_tmux_running_in_iTerm2_on_OS_X
+        let &t_SI.="\e[6 q" "SI = INSERT mode
+        let &t_SR.="\e[4 q" "SR = REPLACE mode
+        let &t_EI.="\e[2 q" "EI = NORMAL mode (ELSE)
+
+        " Cursor settings:
+        " 1 -> blinking block
+        " 2 -> solid block
+        " 3 -> blinking underscore
+        " 4 -> solid underscore
+        " 5 -> blinking vertical bar
+        " 6 -> solid vertical bar
+
+        " https://stackoverflow.com/a/58042714
+        " Rest option are configured by vim-sensible
+        set ttyfast
+      '';
+    };
+    zsh = {
+      enable = true;
+      shellAliases = {
+        g = "git";
+      };
+    };
     starship = {
       enable = true;
       enableZshIntegration = true;
@@ -49,8 +120,10 @@ in
         push.default = "current";
       };
       aliases = {
+        a = "add";
         co = "checkout";
         ca = "commit -av";
+        d = "diff";
       };
     };
   };
