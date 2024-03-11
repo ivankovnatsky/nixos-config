@@ -4,17 +4,10 @@ if &shell =~# 'fish'
   set shell=/bin/sh
 endif
 
-set background=dark
 set termguicolors
 
 let mapleader='<Space>'
 set mouse=
-
-" Edition to default colors scheme
-hi TabLine ctermfg=black guifg=black
-hi Folded  ctermbg=white
-hi Visual  cterm=bold ctermbg=white ctermfg=black guibg=white guifg=black
-hi Comment gui=italic cterm=italic ctermfg=gray guifg=gray
 
 set nobackup
 set noswapfile
