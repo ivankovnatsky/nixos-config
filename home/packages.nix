@@ -57,7 +57,6 @@ in
     istioctl
     jq
     jsonnet
-    k9s
     kail
     krelay
     kube-score
