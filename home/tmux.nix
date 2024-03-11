@@ -18,14 +18,6 @@ in
     plugins = with pkgs; [ tmuxPlugins.sensible tmuxPlugins.yank ];
 
     extraConfig = ''
-      set -g status-right ""
-      set -g status-bg colour0
-      set -g status-fg colour15
-
-      set -g window-status-current-style fg=colour16,bg=colour15
-
-      set -g terminal-overrides ",alacritty:RGB"
-
       # https://neovim.io/doc/user/term.html#tui-cursor-shape
       set -ga terminal-overrides '*:Ss=\E[%p1%d q:Se=\E[ q'
     '' + lib.optionalString fishEnable ''
