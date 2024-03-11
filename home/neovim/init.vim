@@ -63,20 +63,6 @@ let g:terraform_completion_keys = 1
 " (Optional) Default: 1, enable(1)/disable(0) terraform module registry completion
 let g:terraform_registry_module_completion = 0
 " }}}
-" {{{ copilot.vim
-" https://codeinthehole.com/tips/vim-and-github-copilot/
-let g:copilot_filetypes = {
-    \ 'gitcommit': v:true,
-    \ 'markdown': v:true,
-    \ 'yaml': v:true
-    \ }
-
- autocmd BufReadPre *
-     \ let f=getfsize(expand("<afile>"))
-     \ | if f > 100000 || f == -2
-     \ | let b:copilot_enabled = v:false
-     \ | endif
-" }}}
 
 " This block sets config only for vim
 if has('vim_starting')

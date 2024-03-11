@@ -117,9 +117,15 @@ in
     extraConfig =
       builtins.readFile (../vim/vimrc) +
       "\n" +
+      builtins.readFile (./vim/common-plugins.vim) +
+      "\n" +
       builtins.readFile (./init.vim)
-      ;
+    ;
 
-    extraLuaConfig = builtins.readFile ./init.lua;
+    extraLuaConfig =
+      ''
+        vim.opt.background = "dark"
+      '' +
+      builtins.readFile ./init.lua;
   };
 }
