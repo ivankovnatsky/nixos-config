@@ -19,6 +19,7 @@
       # in nixpkgs
       # these 203 paths will be fetched (171.91 MiB download, 2050.54 MiB unpacked):
       "hadolint" # haskell
+      "dockutil"
     ];
 
     casks = [
