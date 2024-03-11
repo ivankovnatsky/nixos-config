@@ -1,5 +1,3 @@
-{ pkgs, ... }:
-
 {
   imports = [
     ./kitty.nix
@@ -24,12 +22,12 @@
       EOF
 
       # Dockutil
-      ${pkgs.dockutil}/bin/dockutil --remove all
-      ${pkgs.dockutil}/bin/dockutil --add "/Applications/kitty.app"
-      ${pkgs.dockutil}/bin/dockutil --add "/Applications/Firefox.app"
-      ${pkgs.dockutil}/bin/dockutil --add "/Applications/Chromium.app"
-      ${pkgs.dockutil}/bin/dockutil --add "/System/Cryptexes/App/System/Applications/Safari.app"
-      ${pkgs.dockutil}/bin/dockutil --add "/System/Applications/System Settings.app"
+      dockutil --remove all
+      dockutil --add "/System/Applications/Utilities/Terminal.app"
+      dockutil --add "/Applications/Firefox.app"
+      dockutil --add "/Applications/Chromium.app"
+      dockutil --add "/System/Cryptexes/App/System/Applications/Safari.app"
+      dockutil --add "/System/Applications/System Settings.app"
     '';
   };
 }
