@@ -5,11 +5,25 @@ let
 
   fontSizeT = if config.device.graphicsEnv == "xorg" then 7.5 else 9.5;
   fontSize = if isDarwin then 13 else fontSizeT;
+
+  darkMode = false;
 in
 {
+  home.file.".config/kitty/current-theme.conf".source = pkgs.fetchurl
+    {
+      url = "https://raw.githubusercontent.com/dexpota/kitty-themes/master/themes/3024_Day.conf";
+      sha256 = "sha256-qJ7cGNt1NYW2CtAI0RZGOgMFayy0TEH1TtGKdKpkcg8=";
+    };
+
+  # place it in ~/.config/kitty/current-theme.conf and add an include to kitty.conf
   home.file = {
     ".config/kitty/kitty.conf" = {
       text = ''
+        ${if darkMode then ""
+        else ''
+            include current-theme.conf
+        ''};
+
         font_family ${config.variables.fontGeneral}
         font_size ${builtins.toString fontSize}
 
