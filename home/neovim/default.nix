@@ -61,7 +61,6 @@ in
       symbols-outline-nvim
       nvim-lspconfig
       rust-tools-nvim
-      indent-blankline-nvim
 
       neo-tree-nvim
       nui-nvim
@@ -117,14 +116,14 @@ in
     extraConfig =
       builtins.readFile (../vim/vimrc) +
       "\n" +
-      builtins.readFile (./vim/common-plugins.vim) +
+      builtins.readFile (../vim/common-plugins.vim) +
       "\n" +
       builtins.readFile (./init.vim)
     ;
 
     extraLuaConfig =
       ''
-        vim.opt.background = "dark"
+        vim.opt.background = "light"
       '' +
       builtins.readFile ./init.lua;
   };

@@ -5,6 +5,7 @@ if &shell =~# 'fish'
 endif
 
 set termguicolors
+hi Comment cterm=italic gui=italic
 
 let mapleader='<Space>'
 set mouse=

@@ -878,15 +878,3 @@ require("octo").setup({
   },
 })
 -- }}}
--- {{{ ibl
-local highlight = {
-  "SomeBlack",
-}
-
-local hooks = require("ibl.hooks")
-hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
-  vim.api.nvim_set_hl(0, "SomeBlack", { fg = "#1C1C1C" })
-end)
-
-require("ibl").setup({ indent = { highlight = highlight, char = "│" } })
--- }}}
