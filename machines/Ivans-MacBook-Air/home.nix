@@ -128,6 +128,7 @@ in
         co = "checkout";
         ca = "commit -av";
         d = "diff";
+        l = "log";
       };
     };
   };
