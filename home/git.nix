@@ -35,6 +35,14 @@
       "__worktrees/"
     ];
 
+    aliases = {
+      a = "add";
+      co = "checkout";
+      ca = "commit -av";
+      d = "diff";
+      l = "log";
+    };
+
     extraConfig = {
       init.defaultBranch = "main";
       merge.tool = "nvim";

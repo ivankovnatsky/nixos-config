@@ -1,9 +1,13 @@
 { pkgs, ... }:
 
-let editor = "vim";
-
+let
+  editor = "vim";
+  gitConfig = import ../../home/git.nix { inherit pkgs; };
 in
 {
+  imports = [
+    ../../home/amethyst.nix
+  ];
   home = {
     packages = with pkgs; [
       syncthing
@@ -26,7 +30,6 @@ in
       '';
     };
   };
-
   programs = {
     # Install zlua
     z-lua = {
@@ -123,13 +126,7 @@ in
         pull.rebase = false;
         push.default = "current";
       };
-      aliases = {
-        a = "add";
-        co = "checkout";
-        ca = "commit -av";
-        d = "diff";
-        l = "log";
-      };
+      aliases = gitConfig.programs.git.aliases;
     };
   };
 }
