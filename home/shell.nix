@@ -24,8 +24,6 @@ let
     transmission = "${pkgs.transmission}/bin/transmission-remote --list";
 
     g = "${pkgs.git}/bin/git";
-    gll = "${pkgs.git}/bin/git pull origin";
-    gpf = "${pkgs.git}/bin/git push --force-with-lease";
   };
 in
 {
