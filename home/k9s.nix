@@ -1,9 +1,7 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 let inherit (pkgs.stdenv.targetPlatform) isDarwin;
   k9sConfigPath = if isDarwin then "Library/Application Support" else ".config";
-
-  darkMode = false;
 in
 {
   home.packages = with pkgs; [ nixpkgs-unstable.k9s ];
@@ -26,6 +24,6 @@ in
         crumbsless: true
         noIcons: true
         # Uses skin located in your $XDG_CONFIG_HOME/skins/
-        ${if darkMode then "" else "skin: transparent"}
+        ${if config.device.darkMode then "" else "skin: transparent"}
   '';
 }

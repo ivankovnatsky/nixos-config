@@ -14,6 +14,18 @@ with lib; {
       default = "laptop";
     };
 
+    purpose = mkOption {
+      type = types.enum [ "home" "work" ];
+      description = "Purpose of device";
+      default = "home";
+    };
+
+    darkMode = mkOption {
+      type = types.bool;
+      description = "Enable dark mode";
+      default = false;
+    };
+
     monitorName = mkOption {
       type = types.enum [ "DP-1" "DP-2" "DP-3" ];
       description = "Monitor name in Sway";

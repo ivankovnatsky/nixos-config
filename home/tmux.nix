@@ -1,8 +1,7 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
 let
   fishEnable = true;
-  darkMode = false;
 in
 {
   programs.tmux = {
@@ -22,7 +21,7 @@ in
     extraConfig = ''
       set -g status-right ""
 
-      ${if darkMode then ''
+      ${if config.device.darkMode then ''
       set -g status-bg colour0
       set -g status-fg colour15
       set -g window-status-current-style fg=colour16,bg=colour15
