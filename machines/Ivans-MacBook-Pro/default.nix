@@ -108,11 +108,17 @@
         # };
         aws-sso-cli = super.callPackage ../../overlays/aws-sso-cli.nix { };
 
+        # istioctl = self.callPackage ../../overlays/istioctl.nix {
+        #   name = "istioctl";
+        #   version = "1.17.6";
+        #   platform = "osx-arm64";
+        #   sha256 = "sha256-3DcNqhexJ50P2AeNlQnOfO5a3307lIDq0bDSaGB6+TI=";
+        # };
         istioctl = self.callPackage ../../overlays/istioctl.nix {
           name = "istioctl";
-          version = "1.17.6";
+          version = "1.18.7";
           platform = "osx-arm64";
-          sha256 = "sha256-3DcNqhexJ50P2AeNlQnOfO5a3307lIDq0bDSaGB6+TI=";
+          sha256 = "sha256-ZI9W4NGgrcNK2RaR8BKPNGbvYhfQ3nZpSaOojHmKhyo=";
         };
         kor = self.callPackage ../../overlays/kor.nix { };
       }
