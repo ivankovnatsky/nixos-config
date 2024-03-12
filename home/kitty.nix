@@ -6,37 +6,20 @@ let
   fontSizeT = if config.device.graphicsEnv == "xorg" then 7.5 else 9.5;
   fontSize = if isDarwin then 13 else fontSizeT;
 
-  darkMode = false;
-
   githubTheme = pkgs.fetchurl {
     url = "https://raw.githubusercontent.com/kovidgoyal/kitty-themes/master/themes/Github.conf";
     sha256 = "sha256-hGIgtYSAXztWehWagpPJhK64yX51GbKDNGlmQs6xnGQ=";
   };
 
-  leafLightTheme = pkgs.fetchurl {
-    url = "https://raw.githubusercontent.com/kovidgoyal/kitty-themes/master/themes/leaf_light.conf";
-    sha256 = "sha256-ptJwdXdI/IucJCBFMr4ezQXl0iZb6LZ5+I8BvfXlYlo=";
-  };
-
-  tangoLightTheme = pkgs.fetchurl {
-    url = "https://raw.githubusercontent.com/kovidgoyal/kitty-themes/master/themes/Tango_Light.conf";
-    sha256 = "sha256-2VGW6CmOlkmp2YZJsFAeUAHK2py+43u+w3UG1LFND9U=";
-  };
-
-  tomorrowTheme = pkgs.fetchurl {
-    url = "https://raw.githubusercontent.com/kovidgoyal/kitty-themes/master/themes/Tomorrow.conf";
-    sha256 = "sha256-jZPchAiZj52VD4ZdJAo/JNBxC42IiembtHyt44rXSnw=";
-  };
-
 in
 {
-  home.file.".config/kitty/current-theme.conf".source = tomorrowTheme;
+  home.file.".config/kitty/current-theme.conf".source = githubTheme;
 
   # place it in ~/.config/kitty/current-theme.conf and add an include to kitty.conf
   home.file = {
     ".config/kitty/kitty.conf" = {
       text = ''
-        ${if darkMode then ""
+        ${if config.device.darkMode then ""
         else ''
             include current-theme.conf
         ''}

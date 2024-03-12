@@ -4,6 +4,9 @@
     ../../modules/darwin/pam.nix
   ];
 
+  device = {
+    purpose = "home";
+  };
 
   homebrew = {
     taps = [
