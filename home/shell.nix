@@ -96,7 +96,10 @@ in
 
     zsh = {
       enable = true;
-      enableAutoSuggestions = true;
+      enableAutosuggestions = true;
+      syntaxHighlighting = {
+        enable = true;
+      };
 
       history = {
         size = 1024000;
