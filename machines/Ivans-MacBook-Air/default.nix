@@ -5,6 +5,7 @@
   ];
   variables = {
     purpose = "home";
+    editor = "vim";
   };
   security.pamCustom.enableSudoTouchIdAuth = true;
   system = {
