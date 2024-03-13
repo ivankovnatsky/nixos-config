@@ -45,7 +45,7 @@
         root: ~/Sources/github.com/ivankovnatsky/nixos-config/
 
         windows:
-          - editor: nvim
+          - editor: ${config.variables.editor}
           - cli:
       '';
     };

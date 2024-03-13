@@ -1,7 +1,6 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 let
-  editor = "vim";
   gitConfig = import ../../home/git.nix { inherit pkgs; };
 in
 {
@@ -19,7 +18,7 @@ in
       nixpkgs-fmt
     ];
     sessionVariables = {
-      EDITOR = editor;
+      EDITOR = config.variables.editor;
     };
     file = {
       ".manual/config".text = ''
@@ -51,7 +50,7 @@ in
       enable = true;
       # https://stackoverflow.com/a/76594191
       packageConfigurable = pkgs.vim-darwin;
-      defaultEditor = true;
+      defaultEditor = if config.variables.editor == "vim" then true else false;
       plugins = with pkgs.vimPlugins; [
         fzf-vim
         copilot-vim
@@ -121,7 +120,7 @@ in
       ];
       extraConfig = {
         core = {
-          editor = editor;
+          editor = config.variables.editor;
         };
         pull.rebase = false;
         push.default = "current";

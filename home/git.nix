@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   home.packages = with pkgs; [
@@ -45,8 +45,8 @@
 
     extraConfig = {
       init.defaultBranch = "main";
-      merge.tool = "nvim";
-      mergetool."nvim".cmd = ''nvim -f -c "Gvdiffsplit!" "$MERGED"'';
+      mergetool."fugitive".cmd = ''nvim -f -c "Gvdiffsplit!" "$MERGED"'';
+      merge.tool = "fugitive";
       pull.rebase = false;
       push.default = "current";
 
@@ -68,7 +68,7 @@
       };
 
       core = {
-        editor = "nvim";
+        editor = "${config.variables.editor}";
         filemode = true;
       };
 

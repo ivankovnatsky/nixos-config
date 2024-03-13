@@ -6,6 +6,7 @@
 
   variables = {
     purpose = "work";
+    editor = "nvim";
   };
 
   homebrew = {

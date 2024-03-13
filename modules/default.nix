@@ -28,6 +28,12 @@ with lib; {
       default = "home";
     };
 
+    editor = mkOption {
+      type = types.enum [ "vim" "nvim" ];
+      description = "Editor to use";
+      default = "vim";
+    };
+
     darkMode = mkOption {
       type = types.bool;
       description = "Enable dark mode";

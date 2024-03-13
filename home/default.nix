@@ -3,7 +3,6 @@
 let
   inherit (pkgs.stdenv.targetPlatform) isDarwin;
 
-  editorName = "nvim";
   homeDir = if isDarwin then "/Users" else "/home";
   aichatConfigPath = if isDarwin then "Library/Application Support/aichat/config.yaml" else ".config/aichat/config.yaml";
 in
@@ -100,8 +99,8 @@ in
 
   home.sessionVariables = {
     AWS_VAULT_BACKEND = "pass";
-    EDITOR = editorName;
-    VISUAL = editorName;
+    EDITOR = config.variables.editor;
+    VISUAL = config.variables.editor;
     # https://github.com/kovidgoyal/kitty/issues/879
     TERM = "xterm-256color";
   };
