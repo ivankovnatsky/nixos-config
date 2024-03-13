@@ -11,9 +11,14 @@ let
     sha256 = "sha256-hGIgtYSAXztWehWagpPJhK64yX51GbKDNGlmQs6xnGQ=";
   };
 
+  tangoTheme = pkgs.fetchurl {
+    url = "https://raw.githubusercontent.com/dexpota/kitty-themes/master/themes/Tango_Light.conf";
+    sha256 = "sha256-5jvlTAovkcVczwhTREalLIanlzjDRMbf+aT7jMOxDkU=";
+  };
+
 in
 {
-  home.file.".config/kitty/current-theme.conf".source = githubTheme;
+  home.file.".config/kitty/current-theme.conf".source = tangoTheme;
 
   # place it in ~/.config/kitty/current-theme.conf and add an include to kitty.conf
   home.file = {
