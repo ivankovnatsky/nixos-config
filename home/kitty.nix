@@ -24,7 +24,7 @@ in
   home.file = {
     ".config/kitty/kitty.conf" = {
       text = ''
-        ${if config.device.darkMode then ""
+        ${if config.variables.darkMode then ""
         else ''
             include current-theme.conf
         ''}

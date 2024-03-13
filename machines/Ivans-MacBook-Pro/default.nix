@@ -4,8 +4,8 @@
     ../../modules/darwin/pam.nix
   ];
 
-  device = {
-    purpose = "home";
+  variables = {
+    purpose = "work";
   };
 
   homebrew = {

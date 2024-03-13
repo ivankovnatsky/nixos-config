@@ -3,7 +3,7 @@
     ../../system/darwin.nix
     ../../modules/darwin/pam.nix
   ];
-  device = {
+  variables = {
     purpose = "home";
   };
   security.pamCustom.enableSudoTouchIdAuth = true;

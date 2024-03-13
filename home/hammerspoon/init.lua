@@ -14,7 +14,7 @@ local mash = { "alt" }
 
 hs.fnutils.each({
   { key = "0", app = "Finder" },
-  { key = "1", app = "kitty" },
+  { key = "1", app = "Terminal" },
   { key = "2", app = "Firefox" },
   { key = "9", app = "System Settings" },
 }, function(object)
