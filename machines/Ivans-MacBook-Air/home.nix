@@ -11,6 +11,7 @@ in
   variables = {
     purpose = "home";
     editor = "vim";
+    darkMode = false;
   };
   home = {
     packages = with pkgs; [

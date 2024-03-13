@@ -7,6 +7,7 @@
   variables = {
     purpose = "work";
     editor = "nvim";
+    darkMode = false;
   };
 
   homebrew = {

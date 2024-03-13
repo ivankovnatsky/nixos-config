@@ -31,13 +31,13 @@ with lib; {
     editor = mkOption {
       type = types.enum [ "vim" "nvim" ];
       description = "Editor to use";
-      default = "vim";
+      default = "nvim";
     };
 
     darkMode = mkOption {
       type = types.bool;
       description = "Enable dark mode";
-      default = false;
+      default = true;
     };
 
     fontGeneral = mkOption {

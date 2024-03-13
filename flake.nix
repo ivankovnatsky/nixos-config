@@ -108,7 +108,13 @@
             ./system
 
             {
-              nixpkgs.overlays = [ inputs.self.overlay ];
+              nixpkgs.overlays = [
+                inputs.self.overlay
+                (final: prev: {
+                  nixpkgs-master = import inputs.nixpkgs-master { system = final.system; config = final.config; };
+                  nixpkgs-unstable = import inputs.nixpkgs-unstable { system = final.system; config = final.config; };
+                })
+              ];
             }
           ];
 
