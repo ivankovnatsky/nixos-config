@@ -1,14 +1,20 @@
 { config, pkgs, ... }:
 
 let
-  gitConfig = import ../../home/git.nix { inherit pkgs; };
+  gitConfig = import ../../home/git.nix { inherit config pkgs; };
 in
 {
   imports = [
     ../../home/amethyst.nix
+    ../../modules
   ];
+  variables = {
+    purpose = "home";
+    editor = "vim";
+  };
   home = {
     packages = with pkgs; [
+      exiftool
       syncthing
       yt-dlp
       mpv
