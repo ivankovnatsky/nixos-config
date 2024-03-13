@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   imports = [
@@ -16,7 +16,7 @@
     description = "Ivan Kovnatsky";
     isNormalUser = true;
     home = "/home/ivan";
-    shell = pkgs.fish;
+    shell = if config.variables.enableFishShell then pkgs.fish else pkgs.zsh;
     extraGroups = [ "wheel" "networkmanager" "docker" ];
   };
 

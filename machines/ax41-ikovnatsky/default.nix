@@ -11,6 +11,10 @@
 
   time.timeZone = "Europe/Berlin";
 
+  variables = {
+    enableFishShell = false;
+  };
+
   nixpkgs.overlays = [
     (
       self: super: {

@@ -9,6 +9,12 @@
     ../../home/vim
   ];
 
+  variables = {
+    purpose = "work";
+    editor = "nvim";
+    darkMode = false;
+  };
+
   home.packages = with pkgs; [
     aria
     defaultbrowser
