@@ -1,7 +1,5 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
-let fishEnable = true;
-in
 {
   imports = [
     ./default.nix
@@ -50,7 +48,7 @@ in
   environment.shells = with pkgs; [
     bashInteractive
     zsh
-  ] ++ lib.optionals fishEnable [ fish ];
+  ] ++ lib.optionals config.variables.enableFishShell [ fish ];
 
   # Create /etc/bashrc that loads the nix-darwin environment.
   programs.zsh.enable = true; # default shell on catalina

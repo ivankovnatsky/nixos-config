@@ -70,7 +70,7 @@ in
     "${aichatConfigPath}" = {
       text = ''
         model: openai:gpt-4-turbo-preview
-        ${if config.device.darkMode then "" else
+        ${if config.variables.darkMode then "" else
         ''
         light_theme: true
         ''

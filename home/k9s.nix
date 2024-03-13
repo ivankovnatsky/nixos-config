@@ -24,6 +24,6 @@ in
         crumbsless: true
         noIcons: true
         # Uses skin located in your $XDG_CONFIG_HOME/skins/
-        ${if config.device.darkMode then "" else "skin: transparent"}
+        ${if config.variables.darkMode then "" else "skin: transparent"}
   '';
 }

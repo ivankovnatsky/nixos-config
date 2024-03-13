@@ -1,8 +1,5 @@
 { config, pkgs, ... }:
 
-let
-  fishEnable = true;
-in
 {
   programs.tmux = {
     enable = true;
@@ -21,7 +18,7 @@ in
     extraConfig = ''
       set -g status-right ""
 
-      ${if config.device.darkMode then ''
+      ${if config.variables.darkMode then ''
       set -g status-bg colour0
       set -g status-fg colour15
       set -g window-status-current-style fg=colour16,bg=colour15
@@ -33,7 +30,7 @@ in
 
       # https://neovim.io/doc/user/term.html#tui-cursor-shape
       set -ga terminal-overrides '*:Ss=\E[%p1%d q:Se=\E[ q'
-      ${if fishEnable then ''
+      ${if config.variables.enableFishShell then ''
       set -g default-command ${pkgs.fish}/bin/fish
       set -g default-shell ${pkgs.fish}/bin/fish
       '' else ""}

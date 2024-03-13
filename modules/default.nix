@@ -14,6 +14,14 @@ with lib; {
       default = "laptop";
     };
 
+    monitorName = mkOption {
+      type = types.enum [ "DP-1" "DP-2" "DP-3" ];
+      description = "Monitor name in Sway";
+      default = "DP-1";
+    };
+  };
+
+  options.variables = {
     purpose = mkOption {
       type = types.enum [ "home" "work" ];
       description = "Purpose of device";
@@ -26,14 +34,6 @@ with lib; {
       default = false;
     };
 
-    monitorName = mkOption {
-      type = types.enum [ "DP-1" "DP-2" "DP-3" ];
-      description = "Monitor name in Sway";
-      default = "DP-1";
-    };
-  };
-
-  options.variables = {
     fontGeneral = mkOption {
       type = types.str;
       default = "Hack Nerd Font";
@@ -42,6 +42,12 @@ with lib; {
     fontMono = mkOption {
       type = types.str;
       default = "Hack Nerd Font Mono";
+    };
+
+    enableFishShell = mkOption {
+      type = types.bool;
+      description = "Enable fish shell";
+      default = false;
     };
   };
 }

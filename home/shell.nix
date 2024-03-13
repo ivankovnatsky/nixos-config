@@ -1,10 +1,9 @@
-{ lib, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
 
   syncthingHomeDir = if isDarwin then "~/Library/Application\\ Support/Syncthing" else "~/.config/syncthing";
-  fishEnable = true;
 
   shellAliases = {
     cat = "${pkgs.bat}/bin/bat";
@@ -30,8 +29,8 @@ in
   home.packages = with pkgs; [
     lsd
     fd
-    # Install grc only when fishEnable = true
-    (lib.mkIf fishEnable grc)
+    # Install grc only when config.variables.enableFishShell = true
+    (lib.mkIf config.variables.enableFishShell grc)
   ];
 
   programs = {
@@ -39,7 +38,7 @@ in
       enable = true;
       enableAliases = true;
       enableZshIntegration = true;
-      enableFishIntegration = fishEnable;
+      enableFishIntegration = config.variables.enableFishShell;
     };
 
     atuin = {
@@ -47,7 +46,7 @@ in
       # https://github.com/atuinsh/atuin/commit/1ce88c9d17c6dd66d387b2dfd2544a527a262f3e.
       package = pkgs.nixpkgs-unstable.atuin;
       enableZshIntegration = true;
-      enableFishIntegration = fishEnable;
+      enableFishIntegration = config.variables.enableFishShell;
       flags = [ "--disable-up-arrow" ];
       settings = {
         update_check = false;
@@ -61,13 +60,13 @@ in
       defaultCommand =
         "fd --type f --hidden --no-ignore --follow --exclude .git";
       enableZshIntegration = true;
-      enableFishIntegration = fishEnable;
+      enableFishIntegration = config.variables.enableFishShell;
     };
 
     starship = {
       enable = true;
       enableZshIntegration = true;
-      enableFishIntegration = fishEnable;
+      enableFishIntegration = config.variables.enableFishShell;
 
       settings = {
         add_newline = false;
@@ -97,6 +96,7 @@ in
 
     zsh = {
       enable = true;
+      enableAutoSuggestions = true;
 
       history = {
         size = 1024000;
@@ -172,7 +172,7 @@ in
 
     # https://github.com/nix-community/home-manager/blob/master/modules/programs/fish.nix
     fish = {
-      enable = fishEnable;
+      enable = config.variables.enableFishShell;
       shellInit = ''
         set -U fish_term24bit 1
       '';
