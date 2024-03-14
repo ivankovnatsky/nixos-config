@@ -22,6 +22,7 @@ in
         font_family ${config.variables.fontGeneral}
         font_size ${builtins.toString fontSize}
 
+        macos_menubar_title_max_length 100
         allow_remote_control yes
         adjust_line_height 115%
         hide_window_decorations titlebar-only
