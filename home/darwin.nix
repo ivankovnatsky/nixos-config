@@ -23,7 +23,7 @@
 
       # Dockutil
       dockutil --remove all
-      dockutil --add "/System/Applications/Utilities/Terminal.app"
+      dockutil --add "/Applications/kitty.app"
       dockutil --add "/Applications/Firefox.app"
       dockutil --add "/Applications/Chromium.app"
       dockutil --add "/System/Cryptexes/App/System/Applications/Safari.app"
