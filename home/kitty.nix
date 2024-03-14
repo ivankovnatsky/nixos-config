@@ -8,6 +8,9 @@ let
 
 in
 {
+  # Keybindings:
+  # Ctrl + Shift + g -- opens a Pager of the last output
+  # Ctrl + Shift + right click -- opens a Pager of the output under cursor
   home.file = {
     ".config/kitty/kitty.conf" = {
       text = ''
@@ -61,6 +64,14 @@ in
           map cmd+9 goto_tab 9
         ''
         else ""}
+      '';
+    };
+    ".config/kitty/open-actions.conf" = {
+      text = ''
+        # Open text files without fragments in the editor
+        protocol file
+        mime text/*
+        action launch --type=os-window ${config.variables.editor} $FILE_PATH
       '';
     };
   };
