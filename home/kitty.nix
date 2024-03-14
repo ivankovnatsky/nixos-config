@@ -6,28 +6,17 @@ let
   fontSizeT = if config.device.graphicsEnv == "xorg" then 7.5 else 9.5;
   fontSize = if isDarwin then 13 else fontSizeT;
 
-  tangoTheme = pkgs.fetchurl {
-    url = "https://raw.githubusercontent.com/dexpota/kitty-themes/master/themes/Tango_Light.conf";
-    sha256 = "sha256-5jvlTAovkcVczwhTREalLIanlzjDRMbf+aT7jMOxDkU=";
-  };
-
 in
 {
-  home.file.".config/kitty/current-theme.conf".source = tangoTheme;
-
-  # place it in ~/.config/kitty/current-theme.conf and add an include to kitty.conf
   home.file = {
     ".config/kitty/kitty.conf" = {
       text = ''
         ${if config.variables.darkMode then ""
         else ''
-            include current-theme.conf
-        ''}
-
-        # Should be something grayish.
-        ${if config.variables.darkMode then ""
-        else ''
-            cursor #808080
+          cursor #808080
+          background #ffffff
+          foreground #000000
+          color15 #d8d8c0
         ''}
 
         font_family ${config.variables.fontGeneral}
