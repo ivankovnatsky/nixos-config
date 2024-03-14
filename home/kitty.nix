@@ -24,6 +24,12 @@ in
             include current-theme.conf
         ''}
 
+        # Should be something grayish.
+        ${if config.variables.darkMode then ""
+        else ''
+            cursor #808080
+        ''}
+
         font_family ${config.variables.fontGeneral}
         font_size ${builtins.toString fontSize}
 
