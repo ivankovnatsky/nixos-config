@@ -12,6 +12,7 @@
   time.timeZone = "Europe/Berlin";
 
   variables = {
+    darkMode = false;
     enableFishShell = false;
   };
 
