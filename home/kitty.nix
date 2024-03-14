@@ -6,11 +6,6 @@ let
   fontSizeT = if config.device.graphicsEnv == "xorg" then 7.5 else 9.5;
   fontSize = if isDarwin then 13 else fontSizeT;
 
-  githubTheme = pkgs.fetchurl {
-    url = "https://raw.githubusercontent.com/kovidgoyal/kitty-themes/master/themes/Github.conf";
-    sha256 = "sha256-hGIgtYSAXztWehWagpPJhK64yX51GbKDNGlmQs6xnGQ=";
-  };
-
   tangoTheme = pkgs.fetchurl {
     url = "https://raw.githubusercontent.com/dexpota/kitty-themes/master/themes/Tango_Light.conf";
     sha256 = "sha256-5jvlTAovkcVczwhTREalLIanlzjDRMbf+aT7jMOxDkU=";
