@@ -66,13 +66,5 @@ in
         else ""}
       '';
     };
-    ".config/kitty/open-actions.conf" = {
-      text = ''
-        # Open text files without fragments in the editor
-        protocol file
-        mime text/*
-        action launch --type=os-window ${config.variables.editor} $FILE_PATH
-      '';
-    };
   };
 }
