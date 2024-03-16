@@ -61,7 +61,7 @@
         # Allow tab focus in all controls, space to select.
         AppleKeyboardUIMode = 3;
         _HIHideMenuBar = false;
-        NSAutomaticCapitalizationEnabled = false;
+        NSAutomaticCapitalizationEnabled = true;
         NSAutomaticQuoteSubstitutionEnabled = false;
         NSAutomaticDashSubstitutionEnabled = false;
         "com.apple.sound.beep.volume" = 0.000;
@@ -70,12 +70,12 @@
       dock = {
         # Whether to automatically rearrange spaces based on most recent use.
         mru-spaces = false;
-        autohide = true;
+        autohide = false;
         # Don't show dock right after mouse coursor is moved to the bottom of
         # the screen. Default is 0.24.
-        autohide-delay = 50.0;
+        autohide-delay = 0.24;
         minimize-to-application = true;
-        # Don't show indicators of currently running applications.
+        # Whether to show indicators of currently running applications.
         show-process-indicators = true;
       };
 
