@@ -15,6 +15,7 @@ in
   };
   home = {
     packages = with pkgs; [
+      aria2
       exiftool
       syncthing
       yt-dlp
