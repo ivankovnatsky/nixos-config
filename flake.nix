@@ -97,30 +97,7 @@
 
     in
     {
-      nixosConfigurations = {
-        ax41-ikovnatsky = makeNixosConfig {
-          nixpkgs = inputs.nixpkgs-23-11;
-          home-manager = inputs.home-manager-23-11;
-          hostname = "ax41-ikovnatsky";
-          system = "x86_64-linux";
-
-          modules = [
-            ./system
-
-            {
-              nixpkgs.overlays = [
-                inputs.self.overlay
-                (final: prev: {
-                  nixpkgs-master = import inputs.nixpkgs-master { system = final.system; config = final.config; };
-                  nixpkgs-unstable = import inputs.nixpkgs-unstable { system = final.system; config = final.config; };
-                })
-              ];
-            }
-          ];
-
-          homeModules = [ ];
-        };
-      };
+      nixosConfigurations = { };
 
       darwinConfigurations = {
         "Ivans-MacBook-Pro" = makeDarwinConfig {
