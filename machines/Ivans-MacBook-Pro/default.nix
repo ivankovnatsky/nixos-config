@@ -43,7 +43,6 @@
       "stats"
       "orbstack"
       "coconutbattery"
-      "vmware-fusion"
     ];
 
     masApps = {
