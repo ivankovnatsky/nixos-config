@@ -17,6 +17,7 @@ in
   };
   home = {
     packages = with pkgs; [
+      rclone
       aria2
       exiftool
       syncthing
