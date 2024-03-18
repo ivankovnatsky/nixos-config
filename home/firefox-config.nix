@@ -33,13 +33,13 @@ let
     user_pref("app.update.silent", true);
     user_pref("app.update.url.details", "https://non-existent-site");
     user_pref("app.update.url.manual", "https://non-existent-site");
+    user_pref("media.videocontrols.picture-in-picture.enabled", false);
+    user_pref("media.videocontrols.picture-in-picture.video-toggle.enabled", false);
+    user_pref("media.videocontrols.picture-in-picture.video-toggle.has-used", false);
   '';
 
   defaultLinuxConfig = ''
     ${defaultConfig}
-    user_pref("media.videocontrols.picture-in-picture.enabled", false);
-    user_pref("media.videocontrols.picture-in-picture.video-toggle.enabled", false);
-    user_pref("media.videocontrols.picture-in-picture.video-toggle.has-used", false);
     user_pref("widget.wayland-dmabuf-vaapi.enabled", true);
     user_pref("gfx.webrender.all", true);
   '';
