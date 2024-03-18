@@ -1,6 +1,8 @@
 { config, pkgs, ... }:
 
 let
+  inherit (pkgs.stdenv.targetPlatform) isDarwin;
+
   gitConfig = import ../../home/git.nix { inherit config pkgs; };
 in
 {
@@ -108,6 +110,7 @@ in
     zsh = {
       enable = true;
       shellAliases = {
+        top = if isDarwin then "top -o cpu" else "top";
         g = "git";
       };
     };
