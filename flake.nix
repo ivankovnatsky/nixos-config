@@ -120,23 +120,6 @@
 
           homeModules = [ ];
         };
-
-        vm-aarch64 = makeNixosConfig {
-          nixpkgs = inputs.nixpkgs-23-11;
-          home-manager = inputs.home-manager-23-11;
-          hostname = "vm-aarch64";
-          system = "aarch64-linux";
-
-          modules = [
-            ./system
-
-            {
-              nixpkgs.overlays = [ inputs.self.overlay ];
-            }
-          ];
-
-          homeModules = [ ];
-        };
       };
 
       darwinConfigurations = {
