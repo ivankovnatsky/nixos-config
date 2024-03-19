@@ -45,6 +45,7 @@
       "stats"
       "orbstack"
       "coconutbattery"
+      "zoom" # For recording
     ];
 
     masApps = {
