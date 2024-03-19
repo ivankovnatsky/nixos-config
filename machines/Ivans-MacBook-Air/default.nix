@@ -3,6 +3,7 @@
     ../../system/darwin.nix
     ../../modules/darwin/pam.nix
   ];
+  networking.hostName = "Ivans-MacBook-Air";
   variables = {
     purpose = "home";
     editor = "vim";
