@@ -25,8 +25,8 @@
       dockutil --remove all
       dockutil --add "/Applications/kitty.app"
       dockutil --add "/Applications/Firefox.app"
-      dockutil --add "/Applications/Chromium.app"
-      dockutil --add "/System/Cryptexes/App/System/Applications/Safari.app"
+      dockutil --add "/System/Applications/Mail.app"
+      dockutil --add "/System/Applications/Calendar.app"
       dockutil --add "/System/Applications/System Settings.app"
     '';
   };
