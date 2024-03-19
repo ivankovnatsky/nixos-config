@@ -4,6 +4,8 @@
     ../../modules/darwin/pam.nix
   ];
 
+  networking.hostName = "Ivans-MacBook-Pro";
+
   variables = {
     purpose = "work";
     editor = "nvim";
