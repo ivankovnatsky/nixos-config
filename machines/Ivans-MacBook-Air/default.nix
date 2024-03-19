@@ -23,6 +23,7 @@
       "homebrew/cask-fonts"
     ];
     casks = [
+      "firefox"
       "amethyst"
       # To use PC mouse with natural scrolling
       "mos"

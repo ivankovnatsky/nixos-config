@@ -8,6 +8,7 @@ in
 {
   imports = [
     ../../home/amethyst.nix
+    ../../home/firefox-config.nix
     ../../modules
   ];
   variables = {
