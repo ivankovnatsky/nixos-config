@@ -77,11 +77,11 @@ in
           { text = userChromeConfig; }
         else { };
     } else {
-      "${configPath}/Profiles/Personal/user.js" =
+      "${configPath}/Profiles/Home/user.js" =
         if isDarwin then
           { text = defaultConfig; }
         else { };
-      "${configPath}/Profiles/Personal/chrome/userChrome.css" =
+      "${configPath}/Profiles/Home/chrome/userChrome.css" =
         if isDarwin then
           { text = userChromeConfig; }
         else { };
