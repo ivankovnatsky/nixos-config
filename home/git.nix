@@ -38,6 +38,7 @@
     aliases = {
       a = "add";
       co = "checkout";
+      c = "commit -v";
       ca = "commit -av";
       d = "diff";
       l = "log";
