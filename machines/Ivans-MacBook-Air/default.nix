@@ -24,6 +24,7 @@
     ];
     casks = [
       "firefox"
+      "rectangle"
       "amethyst"
       # To use PC mouse with natural scrolling
       "mos"
