@@ -39,6 +39,7 @@ in
         Defaults:ivan timestamp_timeout=240
         EOF'
       '';
+      ".cache/vim/undo/.keep".text = "";
     };
   };
   programs = {
