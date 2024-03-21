@@ -42,6 +42,8 @@
       ca = "commit -av";
       d = "diff";
       l = "log";
+      p = "push";
+      pp = "pull";
     };
 
     extraConfig = {
