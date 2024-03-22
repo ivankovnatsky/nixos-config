@@ -4,14 +4,13 @@ Related to macOS various configuration and tweaks.
 
 ## Safari
 
-### Re-bind Close Window and Quit Safari
+### Keyboard Shortcuts
+
+#### Re-bind Close Window and Quit Safari
 
 - <https://apple.stackexchange.com/questions/209295/stop-safari-window-closing-when-only-pinned-tabs-are-left>
 - <https://i.imgur.com/cZgKdss.jpg>
 
-## Keyboard
+#### Change keybinding for "Move focus to next window or next window
 
-Changed keybinding:
-
-Move focus to active window or next window to Option + ` (Scope of single
-desktop)
+`` Option + ` `` (Scope of single desktop)
