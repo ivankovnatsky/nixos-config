@@ -105,9 +105,11 @@ in
     TERM = "xterm-256color";
   };
 
+  # https://github.com/nix-community/home-manager/blob/master/modules/programs/taskwarrior.nix
   programs.taskwarrior = {
     enable = true;
     dataLocation = "${homeDir}/ivan/.task/";
+    colorTheme = if config.variables.darkMode then "no-color" else "light-256";
   };
 
   device = super.device;
