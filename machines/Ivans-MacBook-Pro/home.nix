@@ -7,6 +7,7 @@
     ../../home/firefox-config.nix
     ../../home/amethyst.nix
     ../../home/vim
+    ../../home/lsd.nix
   ];
 
   variables = {

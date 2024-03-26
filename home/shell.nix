@@ -27,7 +27,6 @@ let
 in
 {
   home.packages = with pkgs; [
-    lsd
     fd
     zsh-forgit
     # Install grc only when config.variables.enableFishShell = true
