@@ -28,6 +28,7 @@ in
       ripgrep
       delta
       nixpkgs-fmt
+      magic-wormhole-rs
     ];
     sessionVariables = {
       EDITOR = config.variables.editor;
