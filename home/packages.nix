@@ -65,6 +65,7 @@ in
     kubectl-ktop
     kubectx
     kubepug
+    magic-wormhole-rs
     mtr
     nixpkgs-fmt
     nixpkgs-master.aichat
