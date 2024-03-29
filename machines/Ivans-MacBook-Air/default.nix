@@ -30,6 +30,7 @@
       "mos"
       "coconutbattery"
       "font-hack-nerd-font"
+      "stats"
     ];
     masApps = {
       "Bitwarden" = 1352778147;
