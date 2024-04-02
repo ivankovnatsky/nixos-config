@@ -16,6 +16,15 @@
     darkMode = false;
   };
 
+  # https://github.com/nix
+  programs = {
+    direnv = {
+      enable = true;
+      enableZshIntegration = true; # see note on other shells below
+      nix-direnv.enable = true;
+    };
+  };
+
   home.packages = with pkgs; [
     aria
     defaultbrowser
