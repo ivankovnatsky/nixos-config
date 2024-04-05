@@ -48,6 +48,7 @@
     ];
 
     masApps = {
+      "Numbers" = 409203825;
       "1Password for Safari" = 1569813296;
       "NextDNS" = 1464122853;
     };
