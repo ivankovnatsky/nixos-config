@@ -29,6 +29,7 @@ in
       delta
       nixpkgs-fmt
       magic-wormhole-rs
+      typst
     ];
     sessionVariables = {
       EDITOR = config.variables.editor;
