@@ -50,6 +50,8 @@ set showtabline=2 " Always show tabs
 
 set list
 
+set spellfile=~/.vim/spell/en.utf-8.add
+
 " Undo file even after vim exists
 if has('persistent_undo')
   set undofile
