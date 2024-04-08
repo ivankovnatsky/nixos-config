@@ -31,6 +31,7 @@
         aria
         defaultbrowser
         typst
+        typstfmt
         killport
         kor
         docker-client
