@@ -30,6 +30,7 @@ in
       nixpkgs-fmt
       magic-wormhole-rs
       typst
+      typstfmt
     ];
     sessionVariables = {
       EDITOR = config.variables.editor;
