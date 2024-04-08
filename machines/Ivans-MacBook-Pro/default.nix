@@ -30,7 +30,6 @@
     ];
 
     casks = [
-      "maccy"
       "elastio"
       "amethyst"
       "firefox"
