@@ -58,6 +58,7 @@ in
     jq
     jsonnet
     kail
+    kdash
     krelay
     kube-score
     kubectl
