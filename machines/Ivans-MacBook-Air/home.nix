@@ -118,6 +118,7 @@ in
       shellAliases = {
         top = if isDarwin then "top -o cpu" else "top";
         g = "git";
+        rm-image-meta = "exiftool -all= -overwrite_original";
       };
     };
     starship = {
