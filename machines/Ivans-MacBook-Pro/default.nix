@@ -37,6 +37,7 @@
       "hammerspoon"
       #
       "kitty"
+      "chromium"
       # To use PC mouse with natural scrolling
       "mos"
       "rectangle"
