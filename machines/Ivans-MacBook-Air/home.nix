@@ -9,6 +9,7 @@ in
   imports = [
     ../../home/amethyst.nix
     ../../home/firefox-config.nix
+    ../../home/mpv.nix
     ../../modules
   ];
   variables = {
@@ -23,7 +24,6 @@ in
       exiftool
       syncthing
       yt-dlp
-      mpv
       bat
       ripgrep
       delta
