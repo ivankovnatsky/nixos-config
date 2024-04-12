@@ -70,6 +70,7 @@ in
     mtr
     nixpkgs-fmt
     nixpkgs-master.aichat
+    aiac
     nixpkgs-review
     nixpkgs-unstable.husky # Commitlint dependency
     nixpkgs-unstable.k8sgpt
