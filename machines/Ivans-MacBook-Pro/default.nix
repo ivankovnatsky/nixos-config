@@ -35,14 +35,12 @@
       "firefox"
       "font-hack-nerd-font"
       "hammerspoon"
-      #
       "kitty"
       "chromium"
       # To use PC mouse with natural scrolling
       "mos"
       "rectangle"
       "stats"
-      "orbstack"
       "coconutbattery"
       "zoom" # For recording
     ];
