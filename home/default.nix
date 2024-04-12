@@ -103,6 +103,8 @@ in
     VISUAL = config.variables.editor;
     # https://github.com/kovidgoyal/kitty/issues/879
     TERM = "xterm-256color";
+    # This is needed for aiac
+    OPENAI_API_KEY = "${config.secrets.openaiApikey}";
   };
 
   # https://github.com/nix-community/home-manager/blob/master/modules/programs/taskwarrior.nix
