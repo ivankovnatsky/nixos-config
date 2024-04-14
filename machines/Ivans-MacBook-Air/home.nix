@@ -119,6 +119,7 @@ in
         top = if isDarwin then "top -o cpu" else "top";
         g = "git";
         rm-image-meta = "exiftool -all= -overwrite_original";
+        show-image-meta = "exiftool";
       };
     };
     starship = {
