@@ -10,6 +10,8 @@ in
     ../../home/amethyst.nix
     ../../home/firefox-config.nix
     ../../home/mpv.nix
+    ../../home/tmux.nix
+
     ../../modules
   ];
   variables = {
@@ -51,17 +53,6 @@ in
       enable = true;
       enableZshIntegration = true;
     };
-    tmux = {
-      enable = true;
-      terminal = "xterm-256color";
-      extraConfig = ''
-        set -s escape-time 0
-        set -g status-interval 0
-
-        # https://neovim.io/doc/user/term.html#tui-cursor-shape
-        set -ga terminal-overrides '*:Ss=\E[%p1%d q:Se=\E[ q'
-      '';
-    };
     vim = {
       enable = true;
       # https://stackoverflow.com/a/76594191
@@ -88,8 +79,8 @@ in
         builtins.readFile (../../home/vim/common-plugins.vim) +
         ''
           " I want to run :Lex when I'm not opening a file with vim
-          " Also I want Lex to be resized to 20
-          autocmd VimEnter * if argc() == 0 | Lex 20 | endif
+          " Also I want Lex to be resized to 30
+          autocmd VimEnter * if argc() == 0 | Lex 30 | endif
 
           " Hide netrw banner
           let g:netrw_banner = 0
