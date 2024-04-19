@@ -23,6 +23,7 @@ in
     packages = with pkgs; [
       rclone
       aria2
+      nodePackages.webtorrent-cli
       exiftool
       syncthing
       yt-dlp
@@ -103,14 +104,30 @@ in
           set ttyfast
         '';
     };
+    atuin = {
+      enable = true;
+      enableZshIntegration = true;
+      flags = [ "--disable-up-arrow" ];
+      settings = {
+        update_check = false;
+        style = "compact";
+        inline_height = 25;
+      };
+    };
     zsh = {
       enable = true;
+      enableAutosuggestions = true;
+      syntaxHighlighting.enable = true;
+      historySubstringSearch.enable = true;
+      autocd = true;
+      # autosuggestion.enable = true;
       shellAliases = {
         top = if isDarwin then "top -o cpu" else "top";
         g = "git";
         rm-image-meta = "exiftool -all= -overwrite_original";
         show-image-meta = "exiftool";
       };
+      sessionVariables = { _ZL_HYPHEN = 1; };
     };
     starship = {
       enable = true;
