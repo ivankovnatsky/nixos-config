@@ -79,8 +79,8 @@ in
         builtins.readFile (../../home/vim/common-plugins.vim) +
         ''
           " I want to run :Lex when I'm not opening a file with vim
-          " Also I want Lex to be resized to 30
-          autocmd VimEnter * if argc() == 0 | Lex 30 | endif
+          " Also I want Lex to be resized to 20
+          autocmd VimEnter * if argc() == 0 | Lex 20 | endif
 
           " Hide netrw banner
           let g:netrw_banner = 0
