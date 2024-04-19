@@ -48,7 +48,6 @@ in
     };
   };
   programs = {
-    # Install zlua
     z-lua = {
       enable = true;
       enableZshIntegration = true;
@@ -72,7 +71,7 @@ in
         vim-surround
       ];
       settings = {
-        background = "light";
+        background = if config.variables.darkMode then "dark" else "light";
       };
       extraConfig =
         builtins.readFile (../../home/vim/vimrc) +
