@@ -6,7 +6,7 @@
   networking.hostName = "Ivans-MacBook-Air";
   variables = {
     purpose = "home";
-    editor = "vim";
+    editor = "nvim";
     darkMode = false;
   };
   security.pamCustom.enableSudoTouchIdAuth = true;

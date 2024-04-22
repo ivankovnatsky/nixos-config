@@ -18,7 +18,7 @@ in
   ];
   variables = {
     purpose = "home";
-    editor = "vim";
+    editor = "nvim";
     darkMode = false;
   };
   home = {
@@ -40,15 +40,6 @@ in
     ];
     sessionVariables = {
       EDITOR = config.variables.editor;
-    };
-    file = {
-      ".manual/config".text = ''
-        # Do not enter user password too often
-        bash -c 'cat << EOF > /private/etc/sudoers.d/ivan
-        Defaults:ivan timestamp_timeout=240
-        EOF'
-      '';
-      ".cache/vim/undo/.keep".text = "";
     };
   };
   programs = {
