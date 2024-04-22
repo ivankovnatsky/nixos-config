@@ -8,12 +8,12 @@
       commentary.enable = true;
       lsp-format.enable = true;
       fugitive.enable = true;
+      gitblame.enable = true;
       lsp = {
         enable = true;
         servers = {
-          nil_ls = {
-            enable = true;
-          };
+          nil_ls.enable = true;
+          typst-lsp.enable = true;
         };
         keymaps = {
           silent = true;
