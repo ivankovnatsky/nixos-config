@@ -20,6 +20,11 @@
     };
 
     nur.url = "github:nix-community/NUR";
+
+    nixvim = {
+      url = "github:nix-community/nixvim/nixos-23.11";
+      inputs.nixpkgs.follows = "nixpkgs-23-11";
+    };
   };
 
   outputs = { self, ... }@inputs:
@@ -79,6 +84,7 @@
               home-manager.users.ivan = {
                 imports = [
                   ./machines/${hostname}/home.nix
+                  inputs.nixvim.homeManagerModules.nixvim
                 ] ++ homeModules;
 
                 home.stateVersion = "22.05";
