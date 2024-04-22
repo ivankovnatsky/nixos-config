@@ -14,6 +14,7 @@ in
     ./keymaps
     ./plugins
   ];
+  # https://github.com/elythh/nixvim
   programs.nixvim = {
     enable = true;
     globals.mapleader = "<Space>";
