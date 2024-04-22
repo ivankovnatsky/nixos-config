@@ -11,6 +11,7 @@ in
     ../../home/firefox-config.nix
     ../../home/mpv.nix
     ../../home/nixvim
+    ../../home/scripts.nix
     ../../home/tmux.nix
 
     ../../modules
