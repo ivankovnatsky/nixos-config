@@ -37,6 +37,7 @@ in
       magic-wormhole-rs
       typst
       typstfmt
+      du-dust
     ];
     sessionVariables = {
       EDITOR = config.variables.editor;
