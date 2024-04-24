@@ -9,11 +9,17 @@
       lsp-format.enable = true;
       fugitive.enable = true;
       gitblame.enable = true;
+      # luasnip = {
+      #   enable = true;
+      #   extraConfig = {
+      #     enable_autosnippets = true;
+      #     store_selection_keys = "<Tab>";
+      #   };
+      # };
       lsp = {
         enable = true;
         servers = {
           nil_ls.enable = true;
-          typst-lsp.enable = true;
         };
         keymaps = {
           silent = true;

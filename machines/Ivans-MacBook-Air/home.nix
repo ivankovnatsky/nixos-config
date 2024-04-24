@@ -12,9 +12,11 @@ in
     ../../home/mpv.nix
     ../../home/nixvim
     ../../home/scripts.nix
+    ../../home/aichat.nix
     ../../home/tmux.nix
 
     ../../modules
+    ../../modules/secrets.nix
   ];
   variables = {
     purpose = "home";
@@ -39,12 +41,30 @@ in
       typst
       typstfmt
       du-dust
+
+      rust-analyzer
+      cargo
+      rustc
     ];
     sessionVariables = {
       EDITOR = config.variables.editor;
     };
   };
   programs = {
+    nixvim = {
+      plugins = {
+        lsp = {
+          servers = {
+            typst-lsp.enable = true;
+            rust-analyzer = {
+              enable = true;
+              installCargo = true;
+              installRustc = true;
+            };
+          };
+        };
+      };
+    };
     z-lua = {
       enable = true;
       enableZshIntegration = true;

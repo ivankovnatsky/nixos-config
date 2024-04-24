@@ -54,7 +54,6 @@
     magic-wormhole-rs
     mtr
     nixpkgs-fmt
-    nixpkgs-master.aichat
     aiac
     nixpkgs-review
     nixpkgs-unstable.husky # Commitlint dependency
