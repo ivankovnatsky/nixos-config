@@ -23,6 +23,7 @@ in
   };
   home = {
     packages = with pkgs; [
+      home-manager
       zsh-forgit
       rclone
       aria2
