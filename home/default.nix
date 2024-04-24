@@ -4,7 +4,6 @@ let
   inherit (pkgs.stdenv.targetPlatform) isDarwin;
 
   homeDir = if isDarwin then "/Users" else "/home";
-  aichatConfigPath = if isDarwin then "Library/Application Support/aichat/config.yaml" else ".config/aichat/config.yaml";
 in
 {
   imports = [
@@ -63,23 +62,6 @@ in
     ".config/yamllint/config" = {
       text = ''
         document-start: disable
-      '';
-    };
-
-    "${aichatConfigPath}" = {
-      text = ''
-        model: openai:gpt-4-turbo-preview
-        ${if config.variables.darkMode then "" else
-        ''
-        light_theme: true
-        ''
-        }
-        save: true
-        highlight: true
-        keybindings: vi
-        clients:
-        - type: openai
-          api_key: ${config.secrets.openaiApikey}
       '';
     };
   };

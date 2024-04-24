@@ -132,6 +132,14 @@
           hostname = "Ivans-MacBook-Air";
           system = "aarch64-darwin";
           modules = [
+            ({
+              nixpkgs.overlays = [
+                (final: prev: {
+                  nixpkgs-master = import inputs.nixpkgs-master { system = final.system; config = final.config; };
+                  nixpkgs-unstable = import inputs.nixpkgs-unstable { system = final.system; config = final.config; };
+                })
+              ];
+            })
           ];
           homeModules = [
             ./home/pass.nix
