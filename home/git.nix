@@ -41,7 +41,7 @@
       c = "commit -v";
       ca = "commit -av";
       d = "diff";
-      l = "log";
+      l = "log --oneline";
       p = "push";
       pp = "pull";
     };
