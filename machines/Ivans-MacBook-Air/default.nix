@@ -35,7 +35,6 @@
     masApps = {
       "Numbers" = 409203825;
       "Bitwarden" = 1352778147;
-      "NextDNS" = 1464122853;
     };
   };
   nixpkgs.overlays = [ ];
