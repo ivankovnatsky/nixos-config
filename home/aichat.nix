@@ -23,6 +23,11 @@ in
           clients:
           - type: openai
             api_key: ${config.secrets.openaiApikey}
+          - type: ollama
+            api_base: http://localhost:11434
+            models:
+              - name: llama3:8b
+                max_input_tokens: 8192
         '';
       };
     };
