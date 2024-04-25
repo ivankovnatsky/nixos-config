@@ -14,6 +14,7 @@ in
     ../../home/scripts.nix
     ../../home/aichat.nix
     ../../home/tmux.nix
+    ../../home/transmission.nix
 
     ../../modules
     ../../modules/secrets.nix
