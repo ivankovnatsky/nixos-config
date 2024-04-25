@@ -43,6 +43,8 @@ in
       typstfmt
       du-dust
 
+      nixpkgs-master.ollama
+
       rust-analyzer
       cargo
       rustc
