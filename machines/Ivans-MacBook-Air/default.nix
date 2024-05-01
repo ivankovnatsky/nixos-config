@@ -24,6 +24,7 @@
     ];
     casks = [
       "firefox"
+      "chromium"
       "rectangle"
       "amethyst"
       # To use PC mouse with natural scrolling
@@ -31,10 +32,14 @@
       "coconutbattery"
       "font-hack-nerd-font"
       "stats"
+      "protonvpn"
     ];
     masApps = {
       "Numbers" = 409203825;
       "Bitwarden" = 1352778147;
+    };
+    caskArgs = {
+      no_quarantine = true;
     };
   };
   nixpkgs.overlays = [ ];
