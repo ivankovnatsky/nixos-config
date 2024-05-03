@@ -11,7 +11,8 @@ let
     else
       throw "Unsupported platform";
 
-  downloadPath = "${config.home.homeDirectory}/Downloads";
+  # downloadPath = "${config.home.homeDirectory}/Downloads";
+  downloadPath = "${config.secrets.volumePath}/Home/Downloads";
 
 in
 {
