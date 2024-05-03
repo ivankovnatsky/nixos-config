@@ -42,6 +42,7 @@ in
       typst
       typstfmt
       du-dust
+      genpass
 
       nixpkgs-master.ollama
 
@@ -73,6 +74,7 @@ in
       enableZshIntegration = true;
     };
     atuin = {
+      package = pkgs.nixpkgs-master.atuin;
       enable = true;
       enableZshIntegration = true;
       flags = [ "--disable-up-arrow" ];
@@ -80,6 +82,7 @@ in
         update_check = false;
         style = "compact";
         inline_height = 25;
+        # history_filter = [ ];
       };
     };
     zsh = {
