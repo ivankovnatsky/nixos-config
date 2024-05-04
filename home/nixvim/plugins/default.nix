@@ -9,17 +9,17 @@
       lsp-format.enable = true;
       fugitive.enable = true;
       gitblame.enable = true;
-      # luasnip = {
-      #   enable = true;
-      #   extraConfig = {
-      #     enable_autosnippets = true;
-      #     store_selection_keys = "<Tab>";
-      #   };
-      # };
+      luasnip = {
+        enable = true;
+        extraConfig = {
+          enable_autosnippets = true;
+        };
+      };
       lsp = {
         enable = true;
         servers = {
           nil_ls.enable = true;
+          lua-ls.enable = true;
         };
         keymaps = {
           silent = true;
@@ -73,6 +73,50 @@
           };
         };
       };
+      nvim-cmp = {
+        enable = true;
+        autoEnableSources = true;
+        performance = {
+          debounce = 60;
+          fetchingTimeout = 200;
+          maxViewEntries = 30;
+        };
+        snippet.expand = "luasnip";
+        formatting.fields = [ "kind" "abbr" "menu" ];
+        sources = [
+          { name = "git"; }
+          { name = "nvim_lsp"; }
+          {
+            name = "buffer"; # text within current buffer
+            option.get_bufnrs.__raw = "vim.api.nvim_list_bufs";
+            keywordLength = 3;
+          }
+          {
+            name = "path"; # file system paths
+            keywordLength = 3;
+          }
+          {
+            name = "luasnip"; # snippets
+            keywordLength = 3;
+          }
+        ];
+        mapping = {
+          "<Tab>" = "cmp.mapping(cmp.mapping.select_next_item(), {'i', 's'})";
+          "<C-j>" = "cmp.mapping.select_next_item()";
+          "<C-k>" = "cmp.mapping.select_prev_item()";
+          "<C-e>" = "cmp.mapping.abort()";
+          "<C-b>" = "cmp.mapping.scroll_docs(-4)";
+          "<C-f>" = "cmp.mapping.scroll_docs(4)";
+          "<C-Space>" = "cmp.mapping.complete()";
+          "<CR>" = "cmp.mapping.confirm({ select = true })";
+          "<S-CR>" = "cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true })";
+        };
+      };
+      cmp-nvim-lsp.enable = true; # lsp
+      cmp-buffer.enable = true;
+      cmp-path.enable = true; # file system paths
+      cmp_luasnip.enable = true; # snippets
+      cmp-cmdline.enable = false; # autocomplete for cmdline
       telescope = {
         enable = true;
         extensions = {
@@ -95,50 +139,6 @@
         # };
       };
     };
-    extraConfigLua = ''
-      local _border = "rounded"
-
-      vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-        vim.lsp.handlers.hover, {
-          border = _border
-        }
-      )
-
-      vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
-        vim.lsp.handlers.signature_help, {
-          border = _border
-        }
-      )
-
-      vim.diagnostic.config{
-        float={border=_border}
-      };
-
-      require('lspconfig.ui.windows').default_options = {
-        border = _border
-      }
-
-      -- Fzf muscle memory
-      vim.cmd [[command! Files Telescope find_files]]
-      vim.cmd [[command! GFiles Telescope git_files]]
-      vim.cmd [[command! GFiles Telescope git_files]]
-
-      -- Command for static ripgrep search
-      vim.cmd [[
-      command! -nargs=? Rg lua require('telescope.builtin').grep_string({ search = <q-args> })
-      ]]
-
-      -- For dynamic searching, this command will prompt for input and update as you type
-      vim.cmd [[
-      command! -nargs=* RG call feedkeys(":Telescope live_grep<CR>")
-      ]]
-
-      -- Make the preview window wider
-      require('telescope').setup({
-        defaults = {
-          layout_config = { width = 0.9 },
-        },
-      })
-    '';
+    extraConfigLua = builtins.readFile ./telescope.lua;
   };
 }
