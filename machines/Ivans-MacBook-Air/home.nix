@@ -2,14 +2,13 @@
 
 let
   inherit (pkgs.stdenv.targetPlatform) isDarwin;
-
-  gitConfig = import ../../home/git.nix { inherit config pkgs; };
 in
 {
   imports = [
     ../../home/amethyst.nix
     ../../home/firefox-config.nix
     ../../home/mpv.nix
+    ../../home/git.nix
     ../../home/nixvim
     ../../home/scripts.nix
     ../../home/aichat.nix
@@ -103,26 +102,6 @@ in
     starship = {
       enable = true;
       enableZshIntegration = true;
-    };
-    git = {
-      enable = true;
-      userEmail = "75213+ivankovnatsky@users.noreply.github.com";
-      userName = "Ivan Kovnatsky";
-      signing = {
-        signByDefault = true;
-        key = "75213+ivankovnatsky@users.noreply.github.com";
-      };
-      ignores = [
-        ".stignore"
-      ];
-      extraConfig = {
-        core = {
-          editor = config.variables.editor;
-        };
-        pull.rebase = false;
-        push.default = "current";
-      };
-      aliases = gitConfig.programs.git.aliases;
     };
   };
 }

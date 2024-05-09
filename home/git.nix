@@ -3,11 +3,10 @@
 {
   home.packages = with pkgs; [
     git-crypt
-    pinentry
   ];
 
   # Git started to read global config and opens up osxkeychain windows first by
-  # default, I've tried sung override, but that re-builds the package, that's
+  # default, I've tried using override, but that re-builds the package, that's
   # too much
   home.sessionVariables = {
     GIT_CONFIG_NOSYSTEM = "true";
@@ -15,7 +14,7 @@
 
   programs.gh = {
     enable = true;
-    gitCredentialHelper.enable = false;
+    gitCredentialHelper.enable = true;
     settings = { };
   };
 
@@ -56,10 +55,6 @@
       http = {
         version = "HTTP/1.1";
         postBuffer = 157286400;
-      };
-
-      credential = {
-        helper = "${pkgs.rbw}/bin/git-credential-rbw";
       };
 
       ghq = {
