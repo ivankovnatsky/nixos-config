@@ -97,7 +97,7 @@ in
         };
 
       fonts = {
-        names = [ "${config.variables.fontGeneral}" ];
+        names = [ "${config.flags.fontGeneral}" ];
         size = 0.0;
       };
 
@@ -221,7 +221,7 @@ in
         position = "top";
 
         fonts = {
-          names = [ "${config.variables.fontGeneral}" ];
+          names = [ "${config.flags.fontGeneral}" ];
           size = 9.0;
         };
 

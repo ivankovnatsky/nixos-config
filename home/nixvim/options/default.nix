@@ -4,7 +4,7 @@
   programs.nixvim.options = {
     # My options
     # Background
-    background = if config.variables.darkMode then "dark" else "light";
+    background = if config.flags.darkMode then "dark" else "light";
 
     # Disable mouse mode
     mouse = "";

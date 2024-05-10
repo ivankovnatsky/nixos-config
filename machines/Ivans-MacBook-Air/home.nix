@@ -15,10 +15,10 @@ in
     ../../home/tmux.nix
     ../../home/transmission.nix
 
-    ../../modules
-    ../../modules/secrets.nix
+    ../../modules/flags
+    ../../modules/secrets
   ];
-  variables = {
+  flags = {
     purpose = "home";
     editor = "nvim";
     darkMode = false;
@@ -50,7 +50,7 @@ in
       rustc
     ];
     sessionVariables = {
-      EDITOR = config.variables.editor;
+      EDITOR = config.flags.editor;
     };
   };
   programs = {

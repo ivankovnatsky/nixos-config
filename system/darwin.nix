@@ -4,8 +4,8 @@
   imports = [
     ./default.nix
 
-    ../modules/default.nix
-    ../modules/secrets.nix
+    ../modules/flags
+    ../modules/secrets
   ];
 
   # https://github.com/NixOS/nixpkgs/issues/175875
@@ -48,7 +48,7 @@
   environment.shells = with pkgs; [
     bashInteractive
     zsh
-  ] ++ lib.optionals config.variables.enableFishShell [ fish ];
+  ] ++ lib.optionals config.flags.enableFishShell [ fish ];
 
   # Create /etc/bashrc that loads the nix-darwin environment.
   programs.zsh.enable = true; # default shell on catalina

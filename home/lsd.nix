@@ -13,7 +13,7 @@
         theme: custom
     '';
     ".config/lsd/colors.yaml".text = ''
-      user: ${if config.variables.darkMode then "230" else "100"}
+      user: ${if config.flags.darkMode then "230" else "100"}
       group: 187
       permission:
         read: dark_green
@@ -29,9 +29,9 @@
         day-old: 42
         older: 36
       size:
-        none: ${if config.variables.darkMode then "245" else "190"}
-        small: ${if config.variables.darkMode then "229" else "185"}
-        medium: ${if config.variables.darkMode then "216" else "180"}
+        none: ${if config.flags.darkMode then "245" else "190"}
+        small: ${if config.flags.darkMode then "229" else "185"}
+        medium: ${if config.flags.darkMode then "216" else "180"}
         large: 172
       inode:
         valid: 13

@@ -14,7 +14,7 @@ in
   home.file = {
     ".config/kitty/kitty.conf" = {
       text = ''
-        ${if config.variables.darkMode then ""
+        ${if config.flags.darkMode then ""
         else ''
           cursor #808080
           background #ffffff
@@ -22,7 +22,7 @@ in
           color15 #d8d8c0
         ''}
 
-        font_family ${config.variables.fontGeneral}
+        font_family ${config.flags.fontGeneral}
         font_size ${builtins.toString fontSize}
 
         macos_menubar_title_max_length 50

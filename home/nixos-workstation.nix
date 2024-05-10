@@ -8,7 +8,7 @@
     ./firefox.nix
     ./firefox-config.nix
 
-    ../modules/secrets.nix
+    ../modules/secrets
   ];
 
   programs.mpv = {
@@ -52,6 +52,6 @@
   ];
 
   device = super.device;
-  variables = super.variables;
+  flags = super.flags;
   secrets = super.secrets;
 }

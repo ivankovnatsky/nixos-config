@@ -21,7 +21,7 @@ with lib; {
     };
   };
 
-  options.variables = {
+  options.flags = {
     purpose = mkOption {
       type = types.enum [ "home" "work" ];
       description = "Purpose of device";

@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ../modules/default.nix
+    ../modules/flags
   ];
 
   documentation = {
@@ -32,5 +32,5 @@
   #      logging in as that user impossible. You can fix it with:
   #      programs.zsh.enable = true;
   programs.zsh.enable = true;
-  programs.fish.enable = config.variables.enableFishShell;
+  programs.fish.enable = config.flags.enableFishShell;
 }

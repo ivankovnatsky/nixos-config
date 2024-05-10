@@ -12,7 +12,7 @@ in
       "${aichatConfigPath}" = {
         text = ''
           model: openai:gpt-4-turbo-preview
-          ${if config.variables.darkMode then "" else
+          ${if config.flags.darkMode then "" else
           ''
           light_theme: true
           ''

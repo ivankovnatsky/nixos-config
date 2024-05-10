@@ -18,7 +18,7 @@
     extraConfig = ''
       set -g status-right ""
 
-      ${if config.variables.darkMode then ''
+      ${if config.flags.darkMode then ''
       set -g status-bg colour0
       set -g status-fg colour15
       set -g window-status-current-style fg=colour16,bg=colour15
@@ -30,7 +30,7 @@
 
       # https://neovim.io/doc/user/term.html#tui-cursor-shape
       set -ga terminal-overrides '*:Ss=\E[%p1%d q:Se=\E[ q'
-      ${if config.variables.enableFishShell then ''
+      ${if config.flags.enableFishShell then ''
       set -g default-command ${pkgs.fish}/bin/fish
       set -g default-shell ${pkgs.fish}/bin/fish
       '' else ""}
@@ -38,7 +38,7 @@
   };
 
   home.file =
-    if config.variables.purpose == "home" then {
+    if config.flags.purpose == "home" then {
       ".config/tmuxinator/home.yml" = {
         text = ''
           name: home
@@ -46,7 +46,7 @@
           root: ~/Sources/github.com/ivankovnatsky/nixos-config/
 
           windows:
-            - editor: ${config.variables.editor}
+            - editor: ${config.flags.editor}
             - cli:
         '';
       };

@@ -22,7 +22,7 @@
       enable = true;
       antialias = true;
       defaultFonts = {
-        monospace = [ "${config.variables.fontMono}" ];
+        monospace = [ "${config.flags.fontMono}" ];
       };
     };
 

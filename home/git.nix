@@ -66,7 +66,7 @@
       };
 
       core = {
-        editor = "${config.variables.editor}";
+        editor = "${config.flags.editor}";
         filemode = true;
       };
 

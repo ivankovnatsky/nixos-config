@@ -1,10 +1,10 @@
 {
   imports = [
     ../../system/darwin.nix
-    ../../modules/darwin/pam.nix
+    ../../modules/darwin/pam
   ];
   networking.hostName = "Ivans-MacBook-Air";
-  variables = {
+  flags = {
     purpose = "home";
     editor = "nvim";
     darkMode = false;

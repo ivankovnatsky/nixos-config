@@ -29,8 +29,8 @@ in
   home.packages = with pkgs; [
     fd
     zsh-forgit
-    # Install grc only when config.variables.enableFishShell = true
-    (lib.mkIf config.variables.enableFishShell grc)
+    # Install grc only when config.flags.enableFishShell = true
+    (lib.mkIf config.flags.enableFishShell grc)
   ];
 
   programs = {
@@ -38,7 +38,7 @@ in
       enable = true;
       enableAliases = true;
       enableZshIntegration = true;
-      enableFishIntegration = config.variables.enableFishShell;
+      enableFishIntegration = config.flags.enableFishShell;
     };
 
     atuin = {
@@ -46,7 +46,7 @@ in
       # https://github.com/atuinsh/atuin/commit/1ce88c9d17c6dd66d387b2dfd2544a527a262f3e.
       package = pkgs.nixpkgs-unstable.atuin;
       enableZshIntegration = true;
-      enableFishIntegration = config.variables.enableFishShell;
+      enableFishIntegration = config.flags.enableFishShell;
       flags = [ "--disable-up-arrow" ];
       settings = {
         update_check = false;
@@ -60,13 +60,13 @@ in
       defaultCommand =
         "fd --type f --hidden --no-ignore --follow --exclude .git";
       enableZshIntegration = true;
-      enableFishIntegration = config.variables.enableFishShell;
+      enableFishIntegration = config.flags.enableFishShell;
     };
 
     starship = {
       enable = true;
       enableZshIntegration = true;
-      enableFishIntegration = config.variables.enableFishShell;
+      enableFishIntegration = config.flags.enableFishShell;
 
       settings = {
         add_newline = false;
@@ -172,7 +172,7 @@ in
 
     # https://github.com/nix-community/home-manager/blob/master/modules/programs/fish.nix
     fish = {
-      enable = config.variables.enableFishShell;
+      enable = config.flags.enableFishShell;
       shellInit = ''
         set -U fish_term24bit 1
       '';
