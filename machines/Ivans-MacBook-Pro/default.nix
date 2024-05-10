@@ -31,7 +31,6 @@
 
     casks = [
       "elastio"
-      "amethyst"
       "firefox"
       "font-hack-nerd-font"
       "hammerspoon"
