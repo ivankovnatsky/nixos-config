@@ -2,6 +2,12 @@
   programs.nixvim = {
     plugins = {
       neo-tree.enable = true;
+      treesitter = {
+        enable = true;
+        indent = true;
+        # folding = true;
+      };
+      treesitter-context.enable = true;
       surround.enable = true;
       lualine.enable = true;
       lastplace.enable = true;
