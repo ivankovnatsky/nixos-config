@@ -10,7 +10,7 @@
     ../../home/lsd.nix
   ];
 
-  variables = {
+  flags = {
     purpose = "work";
     editor = "nvim";
     darkMode = false;

@@ -56,7 +56,7 @@ let
 in
 {
   home.file =
-    if config.variables.purpose == "work" then {
+    if config.flags.purpose == "work" then {
       "${configPath}/Profiles/Work/user.js" =
         if isDarwin then
           { text = defaultConfig; }

@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ../modules/default.nix
+    ../modules/flags
   ];
 
   services.syncthing = {
@@ -17,7 +17,7 @@
   };
 
   device = super.device;
-  variables = super.variables;
+  flags = super.flags;
 
   home.packages = with pkgs; [
     file

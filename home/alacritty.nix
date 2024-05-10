@@ -43,14 +43,14 @@ in
             white:   '0xffffff'
         font:
           bold:
-            family: "${config.variables.fontMono}"
+            family: "${config.flags.fontMono}"
           bold_italic:
-            family: "${config.variables.fontMono}"
+            family: "${config.flags.fontMono}"
           draw_bold_text_with_bright_colors: true
           italic:
-            family: "${config.variables.fontMono}"
+            family: "${config.flags.fontMono}"
           normal:
-            family: "${config.variables.fontMono}"
+            family: "${config.flags.fontMono}"
           size: ${builtins.toString fontSize}
           offset:
             x: 1

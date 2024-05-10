@@ -1,12 +1,12 @@
 {
   imports = [
     ../../system/darwin.nix
-    ../../modules/darwin/pam.nix
+    ../../modules/darwin/pam
   ];
 
   networking.hostName = "Ivans-MacBook-Pro";
 
-  variables = {
+  flags = {
     purpose = "work";
     editor = "nvim";
     darkMode = false;
@@ -97,35 +97,7 @@
 
   nixpkgs.overlays = [
     (
-      self: super: {
-        # terraform = super.callPackage ../../overlays/hashicorp-generic.nix {
-        #   name = "terraform";
-        #   version = "1.1.7";
-        #   sha256 = "sha256-iRnO7jT2v7Fqbp/2HJX0BDw1xtcLId4n5aFTwZx+upw=";
-        #   system = "aarch64-darwin";
-        # };
-        # terraform = super.callPackage ../../overlays/hashicorp-generic.nix {
-        #   name = "terraform";
-        #   version = "1.3.7";
-        #   sha256 = "sha256-AdVT2197TPBym3JeRAJkPv3liEsdq/XrgK8yjOXkR88=";
-        #   system = "aarch64-darwin";
-        # };
-        aws-sso-cli = super.callPackage ../../overlays/aws-sso-cli.nix { };
-
-        # istioctl = self.callPackage ../../overlays/istioctl.nix {
-        #   name = "istioctl";
-        #   version = "1.17.6";
-        #   platform = "osx-arm64";
-        #   sha256 = "sha256-3DcNqhexJ50P2AeNlQnOfO5a3307lIDq0bDSaGB6+TI=";
-        # };
-        istioctl = self.callPackage ../../overlays/istioctl.nix {
-          name = "istioctl";
-          version = "1.18.7";
-          platform = "osx-arm64";
-          sha256 = "sha256-ZI9W4NGgrcNK2RaR8BKPNGbvYhfQ3nZpSaOojHmKhyo=";
-        };
-        kor = self.callPackage ../../overlays/kor.nix { };
-      }
+      self: super: { }
     )
   ];
 }

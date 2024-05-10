@@ -4,7 +4,7 @@
   imports = [
     ./tmux.nix
 
-    ../modules/secrets.nix
+    ../modules/secrets
   ];
 
   programs.rbw = {

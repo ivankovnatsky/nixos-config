@@ -16,7 +16,7 @@
     description = "Ivan Kovnatsky";
     isNormalUser = true;
     home = "/home/ivan";
-    shell = if config.variables.enableFishShell then pkgs.fish else pkgs.zsh;
+    shell = if config.flags.enableFishShell then pkgs.fish else pkgs.zsh;
     extraGroups = [ "wheel" "networkmanager" "docker" ];
   };
 

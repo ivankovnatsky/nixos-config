@@ -1,1 +1,1 @@
-modules/secrets.nix filter=git-crypt diff=git-crypt
+modules/secrets/default.nix filter=git-crypt diff=git-crypt
