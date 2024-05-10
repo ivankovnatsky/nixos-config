@@ -26,7 +26,6 @@
       "firefox"
       "chromium"
       "rectangle"
-      "amethyst"
       # To use PC mouse with natural scrolling
       "mos"
       "coconutbattery"

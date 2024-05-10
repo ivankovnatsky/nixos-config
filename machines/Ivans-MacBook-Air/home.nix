@@ -5,7 +5,6 @@ let
 in
 {
   imports = [
-    ../../home/amethyst.nix
     ../../home/firefox-config.nix
     ../../home/mpv.nix
     ../../home/git.nix
