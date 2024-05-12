@@ -23,7 +23,7 @@ require('lspconfig.ui.windows').default_options = {
 -- Fzf muscle memory
 vim.cmd [[command! Files Telescope find_files]]
 vim.cmd [[command! GFiles Telescope git_files]]
-vim.cmd [[command! GFiles Telescope git_files]]
+vim.cmd [[command! OFiles Telescope oldfiles]]
 
 -- Command for static ripgrep search
 vim.cmd [[
