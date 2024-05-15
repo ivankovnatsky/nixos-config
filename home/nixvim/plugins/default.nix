@@ -1,3 +1,5 @@
+{ pkgs, ... }:
+
 {
   programs.nixvim = {
     plugins = {
@@ -19,7 +21,14 @@
         enable = true;
         extraConfig = {
           enable_autosnippets = true;
+          store_selection_keys = "<Tab>";
         };
+        fromVscode = [
+          {
+            lazyLoad = true;
+            paths = "${pkgs.vimPlugins.friendly-snippets}";
+          }
+        ];
       };
       lsp = {
         enable = true;
@@ -145,6 +154,8 @@
         # };
       };
     };
-    extraConfigLua = builtins.readFile ./telescope.lua;
+    extraConfigLua =
+      builtins.readFile ./telescope.lua
+    ;
   };
 }
