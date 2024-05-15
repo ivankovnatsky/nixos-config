@@ -23,7 +23,6 @@ in
       vim-strip-trailing-whitespace
       vim-sensible
       vim-sleuth
-      neoformat
     ];
   };
 }

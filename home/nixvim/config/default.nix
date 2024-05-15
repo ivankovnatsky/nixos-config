@@ -25,15 +25,6 @@
     -- Create or clear the autocommand group named 'fmt'
     local group = vim.api.nvim_create_augroup('fmt', { clear = true })
 
-    -- Set up an autocommand for 'BufWritePre' that triggers Neoformat before saving any file
-    vim.api.nvim_create_autocmd('BufWritePre', {
-        group = group,
-        pattern = '*',
-        callback = function()
-            vim.cmd('undojoin | Neoformat')
-        end
-    })
-
     -- Filetype specific settings for multiple types
     local filetypes = {
         dhall = 'ts=2 sts=2 sw=2 expandtab',
