@@ -13,6 +13,7 @@ in
     ../../home/aichat.nix
     ../../home/tmux.nix
     ../../home/transmission.nix
+    ../../home/direnv.nix
 
     ../../modules/flags
     ../../modules/secrets
