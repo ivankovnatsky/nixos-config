@@ -1,6 +1,10 @@
 { config, pkgs, ... }:
 
 let
+  vimPlugin = builtins.fetchurl {
+    url = "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/plugins/vi-mode/vi-mode.plugin.zsh";
+    sha256 = "sha256:12gsfifj00rlx8nw1zs6cr0g7jxslxhph4mbkkg7fxsyl811c4ad";
+  };
   inherit (pkgs.stdenv.targetPlatform) isDarwin;
 in
 {
@@ -100,6 +104,9 @@ in
         rm-image-meta = "exiftool -all= -overwrite_original";
         show-image-meta = "exiftool";
       };
+      initExtra = ''
+        source ${vimPlugin}
+      '';
       sessionVariables = { _ZL_HYPHEN = 1; };
     };
     starship = {
