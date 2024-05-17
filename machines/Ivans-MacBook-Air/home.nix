@@ -34,6 +34,7 @@ in
       syncthing
       yt-dlp
       bat
+      fzf
       ripgrep
       delta
       nixpkgs-fmt
