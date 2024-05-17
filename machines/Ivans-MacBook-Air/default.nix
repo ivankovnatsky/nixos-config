@@ -41,5 +41,11 @@
       no_quarantine = true;
     };
   };
-  nixpkgs.overlays = [ ];
+  nixpkgs.overlays = [
+    (
+      self: super: {
+        ks = super.callPackage ../../overlays/ks.nix { };
+      }
+    )
+  ];
 }

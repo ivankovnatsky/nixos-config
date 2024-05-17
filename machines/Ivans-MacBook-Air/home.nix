@@ -49,6 +49,8 @@ in
       rust-analyzer
       cargo
       rustc
+
+      ks
     ];
     sessionVariables = {
       EDITOR = config.flags.editor;
