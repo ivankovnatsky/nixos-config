@@ -13,11 +13,15 @@ in
     ./options
     ./keymaps
     ./plugins
+
+    ./plugins/lsp
+    ./plugins/none-ls
+    ./plugins/lspsaga
   ];
   # https://github.com/elythh/nixvim
   programs.nixvim = {
     enable = true;
-    globals.mapleader = "<Space>";
+    globals.mapleader = " ";
     extraPlugins = with pkgs.vimPlugins; [
       vim-nix
       vim-strip-trailing-whitespace
