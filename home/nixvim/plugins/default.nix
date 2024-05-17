@@ -14,9 +14,44 @@
       lualine.enable = true;
       lastplace.enable = true;
       commentary.enable = true;
-      lsp-format.enable = true;
       fugitive.enable = true;
       gitblame.enable = true;
+      flash.enable = true;
+      oil.enable = true;
+      undotree.enable = true;
+      which-key.enable = true;
+      hardtime = {
+        enable = true;
+        enabled = true;
+        disableMouse = true;
+        disabledFiletypes = [ "Oil" ];
+        hint = true;
+        maxCount = 4;
+        maxTime = 1000;
+        restrictionMode = "hint";
+        restrictedKeys = { };
+      };
+      nvim-autopairs.enable = true;
+      illuminate = {
+        enable = true;
+        underCursor = false;
+        filetypesDenylist = [
+          "Outline"
+          "TelescopePrompt"
+          "alpha"
+          "harpoon"
+          "reason"
+        ];
+      };
+      conform-nvim = {
+        enable = true;
+        formatOnSave = {
+          lspFallback = true;
+          timeoutMs = 500;
+        };
+        notifyOnError = true;
+        formattersByFt = { };
+      };
       luasnip = {
         enable = true;
         extraConfig = {
@@ -30,64 +65,8 @@
           }
         ];
       };
-      lsp = {
-        enable = true;
-        servers = {
-          nil_ls.enable = true;
-          lua-ls.enable = true;
-        };
-        keymaps = {
-          silent = true;
-          lspBuf = {
-            gd = {
-              action = "definition";
-              desc = "Goto Definition";
-            };
-            gr = {
-              action = "references";
-              desc = "Goto References";
-            };
-            gD = {
-              action = "declaration";
-              desc = "Goto Declaration";
-            };
-            gI = {
-              action = "implementation";
-              desc = "Goto Implementation";
-            };
-            gT = {
-              action = "type_definition";
-              desc = "Type Definition";
-            };
-            K = {
-              action = "hover";
-              desc = "Hover";
-            };
-            "<leader>cw" = {
-              action = "workspace_symbol";
-              desc = "Workspace Symbol";
-            };
-            "<leader>cr" = {
-              action = "rename";
-              desc = "Rename";
-            };
-          };
-          diagnostic = {
-            "<leader>cd" = {
-              action = "open_float";
-              desc = "Line Diagnostics";
-            };
-            "[d" = {
-              action = "goto_next";
-              desc = "Next Diagnostic";
-            };
-            "]d" = {
-              action = "goto_prev";
-              desc = "Previous Diagnostic";
-            };
-          };
-        };
-      };
+      trouble.enable = true;
+      cmp-emoji.enable = true;
       nvim-cmp = {
         enable = true;
         autoEnableSources = true;
@@ -100,6 +79,7 @@
         formatting.fields = [ "kind" "abbr" "menu" ];
         sources = [
           { name = "git"; }
+          { name = "emoji"; }
           { name = "nvim_lsp"; }
           {
             name = "buffer"; # text within current buffer
@@ -117,6 +97,7 @@
         ];
         mapping = {
           "<Tab>" = "cmp.mapping(cmp.mapping.select_next_item(), {'i', 's'})";
+          "<S-Tab>" = "cmp.mapping(cmp.mapping.select_prev_item(), {'i', 's'})";
           "<C-j>" = "cmp.mapping.select_next_item()";
           "<C-k>" = "cmp.mapping.select_prev_item()";
           "<C-e>" = "cmp.mapping.abort()";
