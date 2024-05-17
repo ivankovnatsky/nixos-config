@@ -67,6 +67,7 @@
       };
       trouble.enable = true;
       cmp-emoji.enable = true;
+      cmp-spell.enable = true;
       nvim-cmp = {
         enable = true;
         autoEnableSources = true;
@@ -80,6 +81,7 @@
         sources = [
           { name = "git"; }
           { name = "emoji"; }
+          { name = "spell"; }
           { name = "nvim_lsp"; }
           {
             name = "buffer"; # text within current buffer
