@@ -65,7 +65,10 @@ in
       plugins = {
         lsp = {
           servers = {
+            eslint.enable = true;
+            tsserver.enable = true;
             typst-lsp.enable = true;
+            pyright.enable = true;
             rust-analyzer = {
               enable = true;
               installCargo = true;
