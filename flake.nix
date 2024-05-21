@@ -7,23 +7,23 @@
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # Release
-    nixpkgs-23-11.url = "github:nixos/nixpkgs/nixos-23.11";
-    home-manager-23-11 = {
+    nixpkgs-release.url = "github:nixos/nixpkgs/nixos-23.11";
+    home-manager-release = {
       url = "github:nix-community/home-manager/release-23.11";
-      inputs.nixpkgs.follows = "nixpkgs-23-11";
+      inputs.nixpkgs.follows = "nixpkgs-release";
     };
 
     # Darwin
     darwin = {
       url = "github:lnl7/nix-darwin/master";
-      inputs.nixpkgs.follows = "nixpkgs-23-11";
+      inputs.nixpkgs.follows = "nixpkgs-release";
     };
 
     nur.url = "github:nix-community/NUR";
 
     nixvim = {
       url = "github:nix-community/nixvim/nixos-23.11";
-      inputs.nixpkgs.follows = "nixpkgs-23-11";
+      inputs.nixpkgs.follows = "nixpkgs-release";
     };
   };
 
@@ -74,10 +74,10 @@
               nixpkgs.overlays = [ inputs.self.overlay ];
             }
 
-            inputs.home-manager-23-11.darwinModules.home-manager
+            inputs.home-manager-release.darwinModules.home-manager
             ({ config, system, ... }: {
               # Support legacy workflows that use `<nixpkgs>` etc.
-              nix.nixPath.nixpkgs = "${inputs.nixpkgs-23-11}";
+              nix.nixPath.nixpkgs = "${inputs.nixpkgs-release}";
 
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
