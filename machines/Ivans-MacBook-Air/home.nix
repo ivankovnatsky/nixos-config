@@ -48,6 +48,9 @@ in
       du-dust
       genpass
 
+      bitwarden-cli
+      jq
+
       nixpkgs-master.ollama
 
       rust-analyzer
