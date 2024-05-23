@@ -39,6 +39,7 @@
       "font-hack-nerd-font"
       "stats"
       "protonvpn"
+      "orbstack"
     ];
     masApps = {
       "Numbers" = 409203825;
