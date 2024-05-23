@@ -31,20 +31,16 @@
     ];
     casks = [
       "firefox"
-      "chromium"
       "rectangle"
       # To use PC mouse with natural scrolling
       "mos"
       "coconutbattery"
       "font-hack-nerd-font"
       "stats"
-      "protonvpn"
-      "orbstack"
     ];
     masApps = {
       "Numbers" = 409203825;
       "Bitwarden" = 1352778147;
-      "Kagi for Safari" = 1622835804;
     };
     caskArgs = {
       no_quarantine = true;
