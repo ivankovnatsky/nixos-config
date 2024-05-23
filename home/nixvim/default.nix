@@ -27,6 +27,7 @@ in
       vim-strip-trailing-whitespace
       vim-sensible
       vim-sleuth
+      vim-sneak
     ];
   };
 }
