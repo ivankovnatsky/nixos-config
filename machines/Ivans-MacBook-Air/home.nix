@@ -65,6 +65,7 @@ in
   };
   programs = {
     nixvim = {
+      colorschemes.tokyonight.enable = true;
       plugins = {
         lsp = {
           servers = {
