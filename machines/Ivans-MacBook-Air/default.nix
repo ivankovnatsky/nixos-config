@@ -44,6 +44,7 @@
     masApps = {
       "Numbers" = 409203825;
       "Bitwarden" = 1352778147;
+      "Kagi for Safari" = 1622835804;
     };
     caskArgs = {
       no_quarantine = true;
