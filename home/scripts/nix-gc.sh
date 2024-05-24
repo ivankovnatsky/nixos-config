@@ -29,7 +29,7 @@
 
 nix_gc() {
     # List nix generations.
-    # Example: nix --list-generations
+    # Example: nix-env --list-generations
     #
     # ```console
     #    3   2022-10-04 10:51:55   (current)
