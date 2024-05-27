@@ -47,6 +47,7 @@ in
       typstfmt
       du-dust
       genpass
+      fswatch
 
       bitwarden-cli
       jq
