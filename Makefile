@@ -1,5 +1,7 @@
 PLATFORM := $(shell uname)
 
+all: default darwin-rebuild-watch rebuild-impure/nixos
+
 default:
 ifeq (${PLATFORM}, Darwin)
 	darwin-rebuild switch --verbose -L --flake . && \
@@ -8,6 +10,14 @@ ifeq (${PLATFORM}, Darwin)
 else
 	nixos-rebuild switch --use-remote-sudo --verbose -L --flake .
 endif
+
+darwin-rebuild-watch:
+		echo "Watching for changes..."; \
+		fswatch -o . | while read -r event; do \
+			echo "Change detected, running make to rebuild configuration..."; \
+			$(MAKE) default; \
+		done; \
+	fi
 
 rebuild-impure/nixos:
 	nixos-rebuild switch --use-remote-sudo --impure --verbose -L --flake .
