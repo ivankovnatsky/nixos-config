@@ -12,12 +12,11 @@ else
 endif
 
 darwin-rebuild-watch:
-		echo "Watching for changes..."; \
-		fswatch -o . | while read -r event; do \
-			echo "Change detected, running make to rebuild configuration..."; \
-			$(MAKE) default; \
-		done; \
-	fi
+	echo "Watching for changes..."; \
+	fswatch -o . | while read -r event; do \
+		echo "Change detected, running make to rebuild configuration..."; \
+		$(MAKE) default; \
+	done; \
 
 rebuild-impure/nixos:
 	nixos-rebuild switch --use-remote-sudo --impure --verbose -L --flake .
