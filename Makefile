@@ -16,7 +16,7 @@ darwin-rebuild-watch:
 	git ls-files | xargs fswatch -o | while read -r event; do \
 		echo "Change detected, running make to rebuild configuration..."; \
 		$(MAKE) default; \
-	done; \
+	done
 
 rebuild-impure/nixos:
 	nixos-rebuild switch --use-remote-sudo --impure --verbose -L --flake .
