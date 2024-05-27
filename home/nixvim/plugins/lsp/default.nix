@@ -1,6 +1,9 @@
 {
   programs.nixvim.plugins = {
     fidget.enable = true;
+    # Issues:
+    # * `gq` does not work when enabled, but `qw` does
+    # * The formatting itself does not work for some servers
     lsp-format.enable = true;
     lspkind = {
       enable = true;

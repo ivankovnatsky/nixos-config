@@ -30,8 +30,4 @@ in
       vim-sneak
     ];
   };
-
-  # Issues:
-  # * `gq` does not work for some reason, probably due to telescope or treesitter
-  # * lsp-format does not work
 }
