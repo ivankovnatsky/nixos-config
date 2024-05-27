@@ -4,6 +4,8 @@
     # Issues:
     # * `gq` does not work when enabled, but `qw` does
     # * The formatting itself does not work for some servers
+    #
+    # Reference: https://github.com/neovim/neovim/issues/23381#issuecomment-1527899109.
     lsp-format.enable = true;
     lspkind = {
       enable = true;
