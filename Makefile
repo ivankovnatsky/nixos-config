@@ -13,7 +13,7 @@ endif
 
 darwin-rebuild-watch:
 	echo "Watching for changes..."; \
-	fswatch -o . | while read -r event; do \
+	git ls-files | xargs fswatch -o | while read -r event; do \
 		echo "Change detected, running make to rebuild configuration..."; \
 		$(MAKE) default; \
 	done; \
