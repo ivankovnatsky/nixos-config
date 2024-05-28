@@ -28,7 +28,6 @@ in
           - type: ollama
             api_base: http://localhost:11434
             models:
-              - name: llama2:13b
               - name: llama3:8b
               - name: codellama:13b
         '';
