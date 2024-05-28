@@ -31,12 +31,9 @@
     ];
     casks = [
       "firefox"
-      "rectangle"
       # To use PC mouse with natural scrolling
       "mos"
-      "coconutbattery"
       "font-hack-nerd-font"
-      "stats"
     ];
     masApps = {
       "Numbers" = 409203825;
@@ -50,6 +47,7 @@
     (
       self: super: {
         ks = super.callPackage ../../overlays/ks.nix { };
+        coconutbattery = super.callPackage ../../overlays/coconutbattery.nix { };
       }
     )
   ];

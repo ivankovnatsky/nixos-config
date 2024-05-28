@@ -59,6 +59,11 @@ in
       rustc
 
       ks
+
+      # macOS specific
+      rectangle
+      coconutbattery
+      stats
     ];
     sessionVariables = {
       EDITOR = config.flags.editor;
