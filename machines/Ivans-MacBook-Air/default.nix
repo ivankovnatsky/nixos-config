@@ -25,9 +25,6 @@
     (nerdfonts.override { fonts = [ "Hack" ]; })
   ];
   homebrew = {
-    taps = [
-      "homebrew/cask-fonts"
-    ];
     brews = [
       # Since nix places it's new installs under newly generated nix store
       # path, we can't relay on nixpkgs pam-reattach, because after nixpkgs
@@ -51,7 +48,6 @@
       self: super: {
         ks = super.callPackage ../../overlays/ks.nix { };
         coconutbattery = super.callPackage ../../overlays/coconutbattery.nix { };
-        mos = super.callPackage ../../overlays/mos.nix { };
       }
     )
   ];
