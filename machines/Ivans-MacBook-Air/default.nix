@@ -1,3 +1,5 @@
+{ pkgs, ... }:
+
 {
   imports = [
     ../../system/darwin.nix
@@ -18,6 +20,10 @@
       };
     };
   };
+  fonts.fontDir.enable = true;
+  fonts.fonts = with pkgs; [
+    (nerdfonts.override { fonts = [ "Hack" ]; })
+  ];
   homebrew = {
     taps = [
       "homebrew/cask-fonts"
@@ -31,9 +37,6 @@
     ];
     casks = [
       "firefox"
-      # To use PC mouse with natural scrolling
-      "mos"
-      "font-hack-nerd-font"
     ];
     masApps = {
       "Numbers" = 409203825;
@@ -48,6 +51,7 @@
       self: super: {
         ks = super.callPackage ../../overlays/ks.nix { };
         coconutbattery = super.callPackage ../../overlays/coconutbattery.nix { };
+        mos = super.callPackage ../../overlays/mos.nix { };
       }
     )
   ];
