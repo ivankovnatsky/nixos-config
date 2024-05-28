@@ -1,6 +1,9 @@
+{ pkgs, ... }:
+
 {
   programs = {
     nixvim = {
+      extraPackages = with pkgs; [ black ];
       plugins = {
         none-ls = {
           enable = true;
