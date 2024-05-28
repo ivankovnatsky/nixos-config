@@ -65,7 +65,7 @@ in
       coconutbattery
       stats
       # To use PC mouse with natural scrolling
-      mos
+      nixpkgs-master.mos
     ];
     sessionVariables = {
       EDITOR = config.flags.editor;
