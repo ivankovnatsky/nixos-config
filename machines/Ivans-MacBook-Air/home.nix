@@ -64,6 +64,8 @@ in
       rectangle
       coconutbattery
       stats
+      # To use PC mouse with natural scrolling
+      mos
     ];
     sessionVariables = {
       EDITOR = config.flags.editor;
