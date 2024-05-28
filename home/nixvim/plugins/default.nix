@@ -16,7 +16,9 @@
       commentary.enable = true;
       fugitive.enable = true;
       gitblame.enable = true;
-      flash.enable = true;
+      # Somehow typing `r` in search escapes search and places cursor in text,
+      # even though it did not find any occurrences
+      # flash.enable = true;
       oil.enable = true;
       undotree.enable = true;
       which-key.enable = true;
