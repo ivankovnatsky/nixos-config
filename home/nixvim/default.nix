@@ -28,6 +28,21 @@ in
       vim-sensible
       vim-sleuth
       vim-sneak
+
+      # material-nvim
     ];
+    # extraConfigLua =
+    #   if config.flags.darkMode then
+    #     ''
+    #       vim.cmd('colorscheme material')
+    #       vim.g.material_style = "darker"
+    #       vim.opt.background = "dark"
+    #     ''
+    #   else
+    #     ''
+    #       vim.cmd('colorscheme material')
+    #       vim.g.material_style = "lighter"
+    #       vim.opt.background = "light"
+    #     '';
   };
 }
