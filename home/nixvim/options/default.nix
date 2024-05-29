@@ -99,6 +99,9 @@
     encoding = "utf-8";
     fileencoding = "utf-8";
 
+    # More space in the neovim command line for displaying messages
+    cmdheight = 0;
+
     # We don't need to see things like INSERT anymore
     showmode = true;
   };
