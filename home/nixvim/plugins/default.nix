@@ -2,6 +2,8 @@
 
 {
   programs.nixvim = {
+    # https://github.com/nix-community/nixvim/issues/1141#issuecomment-2054102360
+    extraPackages = with pkgs; [ rustfmt ];
     plugins = {
       neo-tree.enable = true;
       treesitter = {
@@ -52,7 +54,9 @@
           timeoutMs = 500;
         };
         notifyOnError = true;
-        formattersByFt = { };
+        formattersByFt = {
+          rust = [ "rustfmt" ];
+        };
       };
       luasnip = {
         enable = true;
