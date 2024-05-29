@@ -30,19 +30,24 @@ in
       vim-sneak
 
       # material-nvim
+      # onenord-nvim
     ];
     # extraConfigLua =
     #   if config.flags.darkMode then
     #     ''
-    #       vim.cmd('colorscheme material')
-    #       vim.g.material_style = "darker"
     #       vim.opt.background = "dark"
+    #       -- vim.cmd('colorscheme material')
+    #       -- vim.g.material_style = "darker"
+
+    #       vim.cmd('colorscheme onenord')
     #     ''
     #   else
     #     ''
-    #       vim.cmd('colorscheme material')
-    #       vim.g.material_style = "lighter"
     #       vim.opt.background = "light"
+    #       -- vim.cmd('colorscheme material')
+    #       -- vim.g.material_style = "lighter"
+
+    #       vim.cmd('colorscheme onenord-light')
     #     '';
   };
 }
