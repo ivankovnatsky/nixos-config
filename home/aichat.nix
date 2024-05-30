@@ -29,7 +29,6 @@ in
             api_base: http://localhost:11434
             models:
               - name: llama3:8b
-              - name: codellama:13b
         '';
       };
     };
