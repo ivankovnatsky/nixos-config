@@ -86,8 +86,6 @@
                   ./machines/${hostname}/home.nix
                   inputs.nixvim.homeManagerModules.nixvim
                 ] ++ homeModules;
-
-                home.stateVersion = "22.05";
               };
 
               home-manager.extraSpecialArgs = {
@@ -114,17 +112,11 @@
               nixpkgs.overlays = [
                 (final: prev: {
                   nixpkgs-master = import inputs.nixpkgs-master { system = final.system; config = final.config; };
-                  nixpkgs-unstable = import inputs.nixpkgs-unstable { system = final.system; config = final.config; };
                 })
               ];
             })
           ];
           homeModules = [
-            ./home
-            ./home/pass.nix
-            ./home/common.nix
-            ./home/hammerspoon
-            ./home/darwin.nix
           ];
         };
 

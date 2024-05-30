@@ -70,6 +70,7 @@ in
     sessionVariables = {
       EDITOR = config.flags.editor;
     };
+    stateVersion = "22.05";
   };
   programs = {
     nixvim = {

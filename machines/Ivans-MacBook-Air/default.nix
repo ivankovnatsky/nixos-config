@@ -4,6 +4,8 @@
   imports = [
     ../../system/darwin.nix
     ../../modules/darwin/pam
+
+    ../../modules/secrets
   ];
   networking.hostName = "Ivans-MacBook-Air";
   flags = {
@@ -25,6 +27,10 @@
     (nerdfonts.override { fonts = [ "Hack" ]; })
   ];
   homebrew = {
+    enable = true;
+    onActivation.autoUpdate = false;
+    onActivation.cleanup = "zap";
+    global.brewfile = true;
     brews = [
       # Since nix places it's new installs under newly generated nix store
       # path, we can't relay on nixpkgs pam-reattach, because after nixpkgs
