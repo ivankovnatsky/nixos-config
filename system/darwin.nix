@@ -5,7 +5,6 @@
     ./default.nix
 
     ../modules/flags
-    ../modules/secrets
   ];
 
   # https://github.com/NixOS/nixpkgs/issues/175875
@@ -19,6 +18,7 @@
 
     # https://github.com/LnL7/nix-darwin/pull/553#issuecomment-1348696468
     ncurses
+    syncthing
   ];
 
   device = {
@@ -56,13 +56,5 @@
   # Used for backwards compatibility, please read the changelog before changing.
   # $ darwin-rebuild changelog
   system.stateVersion = 4;
-
   users.users.ivan.home = "/Users/ivan";
-
-  homebrew = {
-    enable = true;
-    onActivation.autoUpdate = false;
-    onActivation.cleanup = "zap";
-    global.brewfile = true;
-  };
 }

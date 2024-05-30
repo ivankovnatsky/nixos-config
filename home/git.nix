@@ -48,6 +48,7 @@
 
     extraConfig = {
       init.defaultBranch = "main";
+      # TODO: Add a condition vim or neovim editor
       mergetool."fugitive".cmd = ''nvim -f -c "Gvdiffsplit!" "$MERGED"'';
       merge.tool = "fugitive";
       pull.rebase = false;
