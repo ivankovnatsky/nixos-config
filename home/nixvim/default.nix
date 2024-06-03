@@ -10,7 +10,7 @@ in
   home.file."${config.xdg.configHome}/nvim/spell/uk.utf-8.spl".source = nvim-spell-uk-utf8-dictionary;
   imports = [
     ./config
-    ./options
+    ./opts
     ./keymaps
     ./plugins
 

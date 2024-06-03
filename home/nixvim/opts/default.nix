@@ -1,7 +1,7 @@
 { config, ... }:
 
 {
-  programs.nixvim.options = {
+  programs.nixvim.opts = {
     # My options
     # Background
     background = if config.flags.darkMode then "dark" else "light";

@@ -7,9 +7,9 @@
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # Release
-    nixpkgs-release.url = "github:nixos/nixpkgs/nixos-23.11";
+    nixpkgs-release.url = "github:nixos/nixpkgs/nixos-24.05";
     home-manager-release = {
-      url = "github:nix-community/home-manager/release-23.11";
+      url = "github:nix-community/home-manager/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs-release";
     };
 
@@ -19,10 +19,22 @@
       inputs.nixpkgs.follows = "nixpkgs-release";
     };
 
+    # https://github.com/zhaofengli/nix-homebrew
+    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+
+    homebrew-core = {
+      url = "github:homebrew/homebrew-core";
+      flake = false;
+    };
+    homebrew-cask = {
+      url = "github:homebrew/homebrew-cask";
+      flake = false;
+    };
+
     nur.url = "github:nix-community/NUR";
 
     nixvim = {
-      url = "github:nix-community/nixvim/nixos-23.11";
+      url = "github:nix-community/nixvim/main";
       inputs.nixpkgs.follows = "nixpkgs-release";
     };
   };
@@ -124,6 +136,22 @@
           hostname = "Ivans-MacBook-Air";
           system = "aarch64-darwin";
           modules = [
+            inputs.nix-homebrew.darwinModules.nix-homebrew
+            {
+              nix-homebrew = {
+                # Install Homebrew under the default prefix
+                enable = true;
+
+                # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
+                enableRosetta = false;
+
+                # User owning the Homebrew prefix
+                user = "ivan";
+
+                # Automatically migrate existing Homebrew installations
+                autoMigrate = true;
+              };
+            }
             ({
               nixpkgs.overlays = [
                 (final: prev: {
