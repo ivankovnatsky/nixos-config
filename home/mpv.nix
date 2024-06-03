@@ -15,6 +15,7 @@
     fs=no
     osc=no
     osd-level=1  # Default osd-level when not seeking
+    no-border
     # When viewing images
     image-display-duration=5
     ytdl-format="bestvideo[height<=1080]+bestaudio/best"
