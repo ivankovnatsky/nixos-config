@@ -96,7 +96,7 @@ in
 
     zsh = {
       enable = true;
-      enableAutosuggestions = true;
+      autosuggestion.enable = true;
 
       history = {
         size = 1024000;
@@ -156,10 +156,6 @@ in
       '';
 
       envExtra = ''
-        if [[ -d /opt/homebrew/bin ]]; then
-          export PATH=$PATH:/opt/homebrew/bin
-        fi
-
         if [[ -d $HOME/bin ]]; then
           export PATH=$PATH:$HOME/bin
         fi
@@ -183,10 +179,6 @@ in
 
         # z.lua -- this is needed for words with hyphens to autocomplete
         set -x _ZL_HYPHEN 1
-
-        if test -d /opt/homebrew/bin
-            set -gx PATH $PATH /opt/homebrew/bin
-        end
 
         if test -d $HOME/bin
             set -gx PATH $PATH $HOME/bin

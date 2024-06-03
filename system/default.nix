@@ -14,7 +14,7 @@
   nixpkgs.config.allowUnfree = true;
 
   nix = {
-    package = pkgs.nixUnstable;
+    package = pkgs.nixVersions.latest;
 
     extraOptions = ''
       auto-optimise-store = true

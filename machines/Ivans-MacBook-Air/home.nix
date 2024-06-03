@@ -108,11 +108,10 @@ in
     };
     zsh = {
       enable = true;
-      enableAutosuggestions = true;
+      autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
       historySubstringSearch.enable = true;
       autocd = true;
-      # autosuggestion.enable = true;
       shellAliases = {
         top = if isDarwin then "top -o cpu" else "top";
         g = "git";
