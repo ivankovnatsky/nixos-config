@@ -42,7 +42,7 @@ in
       ripgrep
       delta
       nixpkgs-fmt
-      magic-wormhole-rs
+      magic-wormhole
       typst
       typstfmt
       du-dust
