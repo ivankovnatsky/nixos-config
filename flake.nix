@@ -168,6 +168,9 @@
           hostname = "Ivans-MacBook-Air";
           system = "aarch64-darwin";
           modules = [
+            ({ config, ... }: {
+              homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
+            })
             inputs.nix-homebrew.darwinModules.nix-homebrew
             {
               nix-homebrew = {
