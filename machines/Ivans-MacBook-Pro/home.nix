@@ -14,8 +14,14 @@
   #   darkMode = false;
   # };
   home.packages = with pkgs; [
+    fswatch
+
     ollama
     rectangle
+
+    # To use PC mouse with natural scrolling
+    nixpkgs-master.mos
+    stats
   ];
 
   home.username = "ivan";
