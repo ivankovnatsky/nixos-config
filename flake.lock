@@ -253,6 +253,22 @@
         "type": "github"
       }
     },
+    "homebrew-bundle": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1717457442,
+        "narHash": "sha256-FMDCqRXGZBmcjDgVc8NaOnn34BeAr5QNc+smI79URx4=",
+        "owner": "homebrew",
+        "repo": "homebrew-bundle",
+        "rev": "c12687f25df4820cd0c7c4dabd192a631b702cdc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "homebrew",
+        "repo": "homebrew-bundle",
+        "type": "github"
+      }
+    },
     "homebrew-cask": {
       "flake": false,
       "locked": {
@@ -470,6 +486,7 @@
       "inputs": {
         "darwin": "darwin",
         "home-manager-release": "home-manager-release",
+        "homebrew-bundle": "homebrew-bundle",
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
         "nix-homebrew": "nix-homebrew",
