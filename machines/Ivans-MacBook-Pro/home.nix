@@ -14,6 +14,7 @@
   #   darkMode = false;
   # };
   home.packages = with pkgs; [
+    dust
     fswatch
 
     ollama
