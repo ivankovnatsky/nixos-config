@@ -8,11 +8,11 @@
     ../../modules/flags
     # ../../modules/secrets
   ];
-  # flags = {
-  #   purpose = "home";
-  #   editor = "nvim";
-  #   darkMode = false;
-  # };
+  flags = {
+    purpose = "home";
+    editor = "vim";
+    darkMode = false;
+  };
   home.packages = with pkgs; [
     dust
     fswatch
