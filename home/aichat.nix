@@ -21,10 +21,6 @@ in
           highlight: true
           keybindings: vi
           clients:
-          - type: openai
-            api_key: ${config.secrets.openaiApikey}
-            models:
-              - name: gpt-4o
           - type: ollama
             api_base: http://localhost:11434
             models:
