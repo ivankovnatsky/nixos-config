@@ -17,13 +17,6 @@ in
     ../modules/flags
   ];
 
-  programs.go = {
-    enable = true;
-    package = pkgs.nixpkgs-unstable.go;
-
-    goPath = "go";
-  };
-
   programs.gpg.enable = true;
   programs.nushell.enable = true;
 
