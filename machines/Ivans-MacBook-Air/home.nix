@@ -12,6 +12,7 @@ in
     ../../home/firefox-config.nix
     ../../home/mpv.nix
     ../../home/git.nix
+    ../../home/go.nix
     ../../home/nixvim
     ../../home/scripts.nix
     ../../home/aichat.nix
@@ -66,6 +67,8 @@ in
       stats
       # To use PC mouse with natural scrolling
       nixpkgs-master.mos
+
+      # username
     ];
     sessionVariables = {
       EDITOR = config.flags.editor;
@@ -81,6 +84,7 @@ in
             tsserver.enable = true;
             typst-lsp.enable = true;
             pyright.enable = true;
+            gopls.enable = true;
             rust-analyzer = {
               enable = true;
               installCargo = true;
@@ -89,6 +93,9 @@ in
           };
         };
       };
+      extraPlugins = with pkgs.vimPlugins; [
+        vim-go
+      ];
     };
     z-lua = {
       enable = true;
