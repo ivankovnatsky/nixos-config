@@ -152,8 +152,6 @@
       };
     };
     extraConfigLua =
-      builtins.readFile ./telescope.lua +
-      builtins.readFile ./cmp.lua
-    ;
+      builtins.readFile ./telescope.lua;
   };
 }
