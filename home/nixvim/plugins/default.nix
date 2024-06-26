@@ -83,7 +83,13 @@
             fetchingTimeout = 200;
             maxViewEntries = 30;
           };
-          snippet.expand = "luasnip";
+          snippet = {
+            expand = ''
+              function(args)
+                require('luasnip').lsp_expand(args.body)
+              end
+            '';
+          };
           formatting.fields = [ "kind" "abbr" "menu" ];
           sources = [
             { name = "git"; }
@@ -146,7 +152,8 @@
       };
     };
     extraConfigLua =
-      builtins.readFile ./telescope.lua
+      builtins.readFile ./telescope.lua +
+      builtins.readFile ./cmp.lua
     ;
   };
 }
