@@ -41,6 +41,14 @@
       url = "github:nix-community/nixvim/nixos-24.05";
       inputs.nixpkgs.follows = "nixpkgs-release";
     };
+
+    flake-utils.url = "github:numtide/flake-utils";
+
+    username = {
+      url = "github:ivankovnatsky/username";
+      inputs.nixpkgs.follows = "nixpkgs-release";
+      inputs.flake-utils.follows = "flake-utils";
+    };
   };
 
   outputs = { self, ... }@inputs:
@@ -205,6 +213,7 @@
             ({
               nixpkgs.overlays = [
                 (final: prev: {
+                  username = inputs.username.packages.${final.system}.username;
                   nixpkgs-master = import inputs.nixpkgs-master { system = final.system; config = final.config; };
                   nixpkgs-unstable = import inputs.nixpkgs-unstable { system = final.system; config = final.config; };
                 })
