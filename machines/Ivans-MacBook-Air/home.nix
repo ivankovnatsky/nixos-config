@@ -68,7 +68,7 @@ in
       # To use PC mouse with natural scrolling
       nixpkgs-master.mos
 
-      # username
+      username
     ];
     sessionVariables = {
       EDITOR = config.flags.editor;
