@@ -53,41 +53,6 @@
 
   outputs = { self, ... }@inputs:
     let
-      makeNixosConfig = { nixpkgs, home-manager, hostname, system, modules, homeModules }:
-        nixpkgs.lib.nixosSystem {
-          inherit system;
-
-          modules = [
-            {
-              imports = [ ./machines/${hostname} ./system/nixos.nix ];
-            }
-
-            home-manager.nixosModules.home-manager
-            ({ config, system, ... }: {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.ivan = {
-                imports = [
-                  ./home
-                  ./home/pass.nix
-                  ./home/common.nix
-                  ./home/nixos.nix
-
-                  ./machines/${hostname}/home.nix
-                ] ++ homeModules;
-                home.stateVersion = config.system.stateVersion;
-              };
-
-              home-manager.extraSpecialArgs = {
-                inherit inputs system;
-                super = config;
-              };
-            })
-          ] ++ modules;
-
-          specialArgs = { inherit system; };
-        };
-
       makeDarwinConfig = { hostname, system, modules, homeModules }:
         inputs.darwin.lib.darwinSystem {
           inherit system;
@@ -125,8 +90,6 @@
 
     in
     {
-      nixosConfigurations = { };
-
       darwinConfigurations = {
         "Ivans-MacBook-Pro" = makeDarwinConfig {
           hostname = "Ivans-MacBook-Pro";
