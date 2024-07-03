@@ -1,3 +1,8 @@
+{ config, ... }:
+let
+  neovimBackground = if config.flags.darkMode then "dark" else "light";
+  neovimTrueColorThemeName = if config.flags.darkMode then "tokyonight-night" else "tokyonight-day";
+in
 {
   programs.nixvim.extraConfigLua = ''
     vim.api.nvim_set_hl(0, "Comment", { italic = true }) 
@@ -51,10 +56,12 @@
 
     -- We need to disable termguicolors in Apple Terminal not under tmux, since
     -- Terminal does not support truecolor.
-    if vim.fn.getenv('TERM_PROGRAM') == 'Apple_Terminal' and vim.o.termguicolors ~= 'true' then
+    if vim.fn.getenv('TERM_PROGRAM') == 'Apple_Terminal' and vim.fn.getenv('TMUX') ~= "" then
         vim.opt.termguicolors = false
     else
         vim.opt.termguicolors = true
+        vim.o.background = ${neovimBackground}
+        vim.cmd([[colorscheme ${neovimTrueColorThemeName}]])
     end
   '';
 }
