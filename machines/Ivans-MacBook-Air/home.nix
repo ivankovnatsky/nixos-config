@@ -95,6 +95,7 @@ in
       };
       extraPlugins = with pkgs.vimPlugins; [
         vim-go
+        tokyonight-nvim
       ];
     };
     z-lua = {
