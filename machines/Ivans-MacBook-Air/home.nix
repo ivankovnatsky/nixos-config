@@ -13,6 +13,7 @@ in
     ../../home/mpv.nix
     ../../home/git.nix
     ../../home/go.nix
+    ../../home/lsd.nix
     ../../home/nixvim
     ../../home/scripts.nix
     ../../home/aichat.nix
@@ -125,6 +126,7 @@ in
         g = "git";
         rm-image-meta = "exiftool -all= -overwrite_original";
         show-image-meta = "exiftool";
+        ls = "${pkgs.lsd}/bin/lsd --group-dirs first --icon always";
       };
       plugins =
         [
