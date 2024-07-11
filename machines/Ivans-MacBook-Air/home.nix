@@ -11,6 +11,7 @@ in
   imports = [
     ../../home/firefox-config.nix
     ../../home/mpv.nix
+    ../../home/yt-dlp.nix
     ../../home/git.nix
     ../../home/go.nix
     ../../home/lsd.nix
@@ -38,7 +39,6 @@ in
       nodePackages.webtorrent-cli
       exiftool
       syncthing
-      yt-dlp
       bat
       fzf
       ripgrep
