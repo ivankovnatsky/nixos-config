@@ -12,6 +12,7 @@
     ];
     casks = [
       "whisky"
+      "discord"
     ];
     masApps = {
     };
