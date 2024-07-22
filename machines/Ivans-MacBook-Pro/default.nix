@@ -11,11 +11,8 @@
     brews = [
     ];
     casks = [
-      "whisky"
-      "discord"
     ];
-    masApps = {
-    };
+    masApps = { };
     caskArgs = {
       no_quarantine = true;
     };
