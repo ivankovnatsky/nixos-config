@@ -40,6 +40,7 @@
     ];
     casks = [
       "firefox"
+      "balenaetcher"
     ];
     masApps = {
       "Numbers" = 409203825;
