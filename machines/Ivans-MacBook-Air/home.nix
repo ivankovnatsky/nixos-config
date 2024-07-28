@@ -93,6 +93,19 @@ in
             };
           };
         };
+        none-ls = {
+            formatting = {
+              black = {
+                enable = true;
+                withArgs = ''
+                  {
+                    extra_args = { "--fast" },
+                  }
+                '';
+              };
+            };
+          };
+        };
       };
       extraPlugins = with pkgs.vimPlugins; [
         vim-go

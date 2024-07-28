@@ -29,6 +29,7 @@ in
       vim-sleuth
       vim-sneak
 
+      tokyonight-nvim
       # material-nvim
       # onenord-nvim
     ];
