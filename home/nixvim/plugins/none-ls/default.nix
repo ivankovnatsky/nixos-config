@@ -20,14 +20,6 @@
             formatting = {
               nixpkgs_fmt.enable = true;
               stylua.enable = true;
-              black = {
-                enable = true;
-                withArgs = ''
-                  {
-                    extra_args = { "--fast" },
-                  }
-                '';
-              };
             };
           };
         };

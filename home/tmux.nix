@@ -37,59 +37,57 @@
     '';
   };
 
-  home.file =
-    if config.flags.purpose == "home" then {
-      ".config/tmuxinator/home.yml" = {
-        text = ''
-          name: home
-          startup_window: 1
-          root: ~/Sources/github.com/ivankovnatsky/nixos-config/
+  home.file = {
+    ".config/tmuxinator/home.yml" = {
+      text = ''
+        name: home
+        startup_window: 1
+        root: ~/Sources/github.com/ivankovnatsky/nixos-config/
 
-          windows:
-            - editor: ${config.flags.editor}
-            - cli:
-        '';
-      };
-
-    } else {
-      ".config/tmuxinator/work.yml" = {
-        text = ''
-          name: work
-          startup_window: 1
-          root: ${config.secrets.workRootDir}
-
-          windows:
-            - nvim:
-                panes:
-                  - nvim
-            - shell:
-              - tmux set-window-option -t1 automatic-rename on
-              - clear
-            - shell:
-              - tmux set-window-option -t2 automatic-rename on
-              - clear
-            - shell:
-              - tmux set-window-option -t3 automatic-rename on
-              - clear
-            - shell:
-              - tmux set-window-option -t4 automatic-rename on
-              - clear
-            - shell:
-              - tmux set-window-option -t5 automatic-rename on
-              - clear
-            - shell:
-              - tmux set-window-option -t6 automatic-rename on
-              - clear
-            - shell:
-              - tmux set-window-option -t7 automatic-rename on
-              - clear
-            - shell:
-              - tmux set-window-option -t8 automatic-rename on
-              - clear
-            - shell:
-              - tmux set-window-option -t9 automatic-rename on
-              - clear
-        '';
-      };
+        windows:
+          - editor: ${config.flags.editor}
+          - cli:
+      '';
     };
+
+    ".config/tmuxinator/work.yml" = {
+      text = ''
+        name: work
+        startup_window: 1
+        root: ~/Sources
+
+        windows:
+          - nvim:
+              panes:
+                - nvim
+          - shell:
+            - tmux set-window-option -t1 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t2 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t3 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t4 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t5 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t6 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t7 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t8 automatic-rename on
+            - clear
+          - shell:
+            - tmux set-window-option -t9 automatic-rename on
+            - clear
+      '';
+    };
+  };
 }

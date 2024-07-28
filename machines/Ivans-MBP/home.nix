@@ -2,13 +2,19 @@
 
 {
   imports = [
-    ../../home/git.nix
-
     ../../modules/flags
+
+    ../../home/firefox-config.nix
+    ../../home/git.nix
+    ../../home/lsd.nix
+    ../../home/tmux.nix
+    ../../home/direnv.nix
+
+    ../../home/nixvim
   ];
   flags = {
-    purpose = "home";
-    editor = "vim";
+    purpose = "work";
+    editor = "nvim";
     darkMode = false;
   };
   home.packages = with pkgs; [
