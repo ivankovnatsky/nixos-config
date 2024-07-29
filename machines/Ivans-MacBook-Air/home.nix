@@ -15,12 +15,15 @@ in
     ../../home/git.nix
     ../../home/go.nix
     ../../home/lsd.nix
-    ../../home/nixvim
+
     ../../home/scripts.nix
+    ../../home/shell.nix
     ../../home/aichat.nix
     ../../home/tmux.nix
     ../../home/transmission.nix
     ../../home/direnv.nix
+
+    ../../home/nixvim
 
     ../../modules/flags
     ../../modules/secrets
@@ -94,73 +97,21 @@ in
           };
         };
         none-ls = {
-            formatting = {
-              black = {
-                enable = true;
-                withArgs = ''
-                  {
-                    extra_args = { "--fast" },
-                  }
-                '';
-              };
+          formatting = {
+            black = {
+              enable = true;
+              withArgs = ''
+                {
+                  extra_args = { "--fast" },
+                }
+              '';
             };
           };
         };
       };
-      extraPlugins = with pkgs.vimPlugins; [
-        vim-go
-        tokyonight-nvim
-      ];
     };
-    z-lua = {
-      enable = true;
-      enableZshIntegration = true;
-    };
-    atuin = {
-      package = pkgs.nixpkgs-master.atuin;
-      enable = true;
-      enableZshIntegration = true;
-      flags = [ "--disable-up-arrow" ];
-      settings = {
-        update_check = false;
-        style = "compact";
-        inline_height = 25;
-        # history_filter = [ ];
-      };
-    };
-    zsh = {
-      enable = true;
-      autosuggestion.enable = true;
-      syntaxHighlighting.enable = true;
-      historySubstringSearch.enable = true;
-      autocd = true;
-      shellAliases = {
-        top = if isDarwin then "top -o cpu" else "top";
-        g = "git";
-        rm-image-meta = "exiftool -all= -overwrite_original";
-        show-image-meta = "exiftool";
-        ls = "${pkgs.lsd}/bin/lsd --group-dirs first --icon always";
-      };
-      plugins =
-        [
-          # {
-          #   name = "zsh-vi-mode";
-          #   src = pkgs.fetchFromGitHub {
-          #     owner = "jeffreytse";
-          #     repo = "zsh-vi-mode";
-          #     rev = "v0.11.0";
-          #     sha256 = "sha256-xbchXJTFWeABTwq6h4KWLh+EvydDrDzcY9AQVK65RS8=";
-          #   };
-          # }
-        ];
-      # initExtra = ''
-      #   source ${vimPlugin}
-      # '';
-      sessionVariables = { _ZL_HYPHEN = 1; };
-    };
-    starship = {
-      enable = true;
-      enableZshIntegration = true;
-    };
+    extraPlugins = with pkgs.vimPlugins; [
+      vim-go
+    ];
   };
 }

@@ -4,6 +4,8 @@
   imports = [
     ../../system/darwin.nix
     ../../modules/darwin/pam
+
+    ../../modules/secrets
   ];
   networking.hostName = "Ivans-MBP";
   flags = {
@@ -38,8 +40,11 @@
     ];
     casks = [
       "firefox"
+      "orbstack"
     ];
     masApps = {
+      "1Password for Safari" = 1569813296;
+      "Okta Verify" = 490179405;
     };
     caskArgs = {
       no_quarantine = true;
@@ -47,8 +52,7 @@
   };
   nixpkgs.overlays = [
     (
-      self: super: {
-      }
+      self: super: { }
     )
   ];
 }
