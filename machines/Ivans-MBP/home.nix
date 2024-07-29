@@ -29,6 +29,8 @@
     nixpkgs-master.mos
     stats
 
+    magic-wormhole
+
     ghorg
 
     docker-client
