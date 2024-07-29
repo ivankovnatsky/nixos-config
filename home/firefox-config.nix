@@ -66,16 +66,6 @@ in
         if isDarwin then
           { text = userChromeConfig; }
         else { };
-
-      "${configPath}/Profiles/Polytech/user.js" =
-        if isDarwin then
-          { text = defaultConfig; }
-        else { };
-
-      "${configPath}/Profiles/Polytech/chrome/userChrome.css" =
-        if isDarwin then
-          { text = userChromeConfig; }
-        else { };
     } else {
       "${configPath}/Profiles/Home/user.js" =
         if isDarwin then

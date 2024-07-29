@@ -5,28 +5,37 @@ let
 
   syncthingHomeDir = if isDarwin then "~/Library/Application\\ Support/Syncthing" else "~/.config/syncthing";
 
-  shellAliases = {
+  commonShellAliases = {
+    g = "${pkgs.git}/bin/git";
     cat = "${pkgs.bat}/bin/bat";
     curl = "${pkgs.curlie}/bin/curlie";
     dig = "${pkgs.doggo}/bin/doggo";
     du = "${pkgs.du-dust}/bin/dust";
     dog = "${pkgs.doggo}/bin/doggo";
     fd = "${pkgs.fd}/bin/fd --hidden --no-ignore";
-    k = "${pkgs.kubectl}/bin/kubectl";
-    grep = "${pkgs.ripgrep}/bin/rg";
     ls = "${pkgs.lsd}/bin/lsd --group-dirs first --icon always";
+    grep = "${pkgs.ripgrep}/bin/rg";
     tree = "${pkgs.lsd}/bin/lsd --tree";
-    rclone = "${pkgs.rclone}/bin/rclone -P";
-    stc = "${pkgs.stc-cli}/bin/stc -homedir ${syncthingHomeDir}";
-    wl-copy = lib.mkIf isLinux "${pkgs.wl-clipboard}/bin/wl-copy -n";
-    tf = "${pkgs.terraform}/bin/terraform";
-    transmission = "${pkgs.transmission}/bin/transmission-remote --list";
 
-    g = "${pkgs.git}/bin/git";
+    top = if isDarwin then "top -o cpu" else "top";
+    rm-image-meta = "exiftool -all= -overwrite_original";
+    show-image-meta = "exiftool";
   };
+
+  shellAliases =
+    if config.flags.purpose == "home" then commonShellAliases // {
+      rclone = "${pkgs.rclone}/bin/rclone -P";
+      stc = "${pkgs.stc-cli}/bin/stc -homedir ${syncthingHomeDir}";
+      transmission = "${pkgs.transmission}/bin/transmission-remote --list";
+      wl-copy = lib.mkIf isLinux "${pkgs.wl-clipboard}/bin/wl-copy -n";
+    } else commonShellAliases // {
+      tf = "${pkgs.terraform}/bin/terraform";
+      k = "${pkgs.kubectl}/bin/kubectl";
+    };
 in
 {
   home.packages = with pkgs; [
+    ripgrep
     fd
     zsh-forgit
     # Install grc only when config.flags.enableFishShell = true
@@ -44,7 +53,7 @@ in
     atuin = {
       enable = true;
       # https://github.com/atuinsh/atuin/commit/1ce88c9d17c6dd66d387b2dfd2544a527a262f3e.
-      package = pkgs.nixpkgs-unstable.atuin;
+      package = pkgs.nixpkgs-master.atuin;
       enableZshIntegration = true;
       enableFishIntegration = config.flags.enableFishShell;
       flags = [ "--disable-up-arrow" ];
@@ -52,6 +61,7 @@ in
         update_check = false;
         style = "compact";
         inline_height = 25;
+        # history_filter = [ ];
       };
     };
 
@@ -97,6 +107,9 @@ in
     zsh = {
       enable = true;
       autosuggestion.enable = true;
+      syntaxHighlighting.enable = true;
+      historySubstringSearch.enable = true;
+      autocd = true;
 
       history = {
         size = 1024000;
@@ -107,28 +120,23 @@ in
         extended = true;
       };
 
-      shellAliases = shellAliases;
-
-      oh-my-zsh = {
-        enable = true;
-
-        plugins = [
-          "aws"
-          "docker"
-          "fd"
-          "gh"
-          "git"
-          "helm"
-          "history-substring-search"
-          "kubectl"
-          "pass"
-          "ripgrep"
-          "taskwarrior"
-          "terraform"
-          "tmux"
-          "vi-mode"
+      plugins =
+        [
+          # {
+          #   name = "zsh-vi-mode";
+          #   src = pkgs.fetchFromGitHub {
+          #     owner = "jeffreytse";
+          #     repo = "zsh-vi-mode";
+          #     rev = "v0.11.0";
+          #     sha256 = "sha256-xbchXJTFWeABTwq6h4KWLh+EvydDrDzcY9AQVK65RS8=";
+          #   };
+          # }
         ];
-      };
+      # initExtra = ''
+      #   source ${vimPlugin}
+      # '';
+
+      shellAliases = shellAliases;
 
       sessionVariables = { _ZL_HYPHEN = 1; };
 

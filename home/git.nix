@@ -27,6 +27,15 @@
       signByDefault = true;
       key = "75213+ivankovnatsky@users.noreply.github.com";
     };
+    includes = [
+      {
+        condition = "gitdir:~/Sources/github.com/dealroadshow/";
+        contents.user = {
+          email = config.secrets.workEmail;
+          signingKey = config.secrets.workEmail;
+        };
+      }
+    ];
     ignores = [
       ".stignore"
       "__worktrees/"
