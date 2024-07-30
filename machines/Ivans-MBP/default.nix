@@ -4,6 +4,7 @@
   imports = [
     ../../system/darwin.nix
     ../../modules/darwin/pam
+    ../../modules/darwin/dock
 
     ../../modules/secrets
   ];
@@ -50,6 +51,20 @@
       no_quarantine = true;
     };
   };
+  local = {
+    dock.enable = true;
+    dock.entries = [
+      { path = "/System/Applications/Launchpad.app/"; }
+      { path = "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/"; }
+      { path = "/System/Applications/Mail.app/"; }
+      { path = "/System/Applications/Calendar.app"; }
+      { path = "/System/Applications/Reminders.app"; }
+      { path = "/System/Applications/Notes.app"; }
+      { path = "/System/Applications/App Store.app"; }
+      { path = "/System/Applications/System Settings.app"; }
+    ];
+  };
+
   nixpkgs.overlays = [
     (
       self: super: { }
