@@ -54,6 +54,7 @@ in
             cfg.entries;
         in
         {
+          # FIXME: Check if we can ignore recent apps
           system.activationScripts.postUserActivation.text = ''
             echo >&2 "Setting up the Dock..."
             haveURIs="$(${dockutil}/bin/dockutil --list | ${pkgs.coreutils}/bin/cut -f2)"

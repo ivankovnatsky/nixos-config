@@ -97,6 +97,13 @@ in
           context_aliases = {
             "arn:aws:eks:.*:.*:.*/(.*)" = "$1";
           };
+          # FIXME: https://github.com/starship/starship/issues/6101
+          # contexts = [
+          #   {
+          #     context_pattern = "arn.*:(?P<cluster>[\w/]+)";
+          #     context_alias = "$cluster";
+          #   }
+          # ];
         };
         rust.disabled = true;
         nodejs.disabled = true;

@@ -227,6 +227,7 @@
               nixpkgs.overlays = [
                 (final: prev: {
                   nixpkgs-master = import inputs.nixpkgs-master { system = final.system; config = final.config; };
+                  nixpkgs-unstable = import inputs.nixpkgs-unstable { system = final.system; config = final.config; };
                 })
               ];
             })
