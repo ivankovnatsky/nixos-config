@@ -31,6 +31,8 @@
     nixpkgs-master.mos
     stats
 
+    home-manager
+
     magic-wormhole
 
     ghorg
