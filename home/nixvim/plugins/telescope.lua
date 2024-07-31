@@ -32,6 +32,19 @@ vim.cmd([[
 command! -nargs=* RG call feedkeys(":Telescope live_grep<CR>")
 ]])
 
+-- Search word under cursor
+vim.keymap.set("n", "<leader>rg", function()
+  require("telescope.builtin").live_grep({
+    default_text = vim.fn.expand("<cword>"),
+  })
+end, { noremap = true, silent = true })
+
+vim.keymap.set("v", "<leader>rg", function()
+  require("telescope.builtin").live_grep({
+    default_text = vim.fn.expand("<cword>"),
+  })
+end, { noremap = true, silent = true })
+
 -- Make the preview window wider
 require("telescope").setup({
   defaults = {
