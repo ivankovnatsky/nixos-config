@@ -5,6 +5,7 @@
     ../../system/darwin.nix
     ../../modules/darwin/pam
     ../../modules/darwin/dock
+    ../../modules/darwin/sudo
 
     ../../modules/secrets
   ];
@@ -55,6 +56,12 @@
   };
   # https://github.com/kcrawford/dockutil
   local = {
+    sudo = {
+      enable = true;
+      configContent = ''
+        Defaults:ivan timestamp_timeout=240
+      '';
+    };
     dock.enable = true;
     dock.entries = [
       { path = "/System/Applications/Utilities/Terminal.app/"; }
@@ -66,9 +73,6 @@
       { path = "/System/Applications/Notes.app"; }
       { path = "/System/Applications/App Store.app"; }
       { path = "/System/Applications/System Settings.app"; }
-      # {
-      #   section = "spacer";
-      # }
       {
         path = "${config.users.users."ivan".home}/Downloads/";
         section = "others";
