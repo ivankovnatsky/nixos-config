@@ -11,6 +11,7 @@
   ];
   networking.hostName = "Ivans-MBP";
   flags = {
+    enableFishShell = true;
     purpose = "work";
     editor = "nvim";
     darkMode = false;
@@ -42,9 +43,9 @@
     ];
     casks = [
       "firefox"
+      "google-chrome"
       "orbstack"
       "twingate"
-
     ];
     masApps = {
       "1Password for Safari" = 1569813296;
@@ -67,12 +68,13 @@
       { path = "/System/Applications/Utilities/Terminal.app/"; }
       { path = "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/"; }
       { path = "/Applications/Firefox.app/"; }
+      { path = "/Applications/Google Chrome.app/"; }
       { path = "/System/Applications/Mail.app/"; }
-      { path = "/System/Applications/Calendar.app"; }
-      { path = "/System/Applications/Reminders.app"; }
-      { path = "/System/Applications/Notes.app"; }
-      { path = "/System/Applications/App Store.app"; }
-      { path = "/System/Applications/System Settings.app"; }
+      { path = "/System/Applications/Calendar.app/"; }
+      { path = "/System/Applications/Reminders.app/"; }
+      { path = "/System/Applications/Notes.app/"; }
+      { path = "/System/Applications/App Store.app/"; }
+      { path = "/System/Applications/System Settings.app/"; }
       {
         path = "${config.users.users."ivan".home}/Downloads/";
         section = "others";
@@ -82,7 +84,9 @@
 
   nixpkgs.overlays = [
     (
-      self: super: { }
+      self: super: {
+        changesets = super.callPackage ../../overlays/changesets { };
+      }
     )
   ];
 }
