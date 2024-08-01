@@ -29,9 +29,14 @@ let
       transmission = "${pkgs.transmission}/bin/transmission-remote --list";
       wl-copy = lib.mkIf isLinux "${pkgs.wl-clipboard}/bin/wl-copy -n";
     } else commonShellAliases // {
-      tf = "${pkgs.terraform}/bin/terraform";
+      tf = "terraform";
       k = "${pkgs.kubectl}/bin/kubectl";
     };
+
+  # vimPlugin = builtins.fetchurl {
+  #   url = "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/plugins/vi-mode/vi-mode.plugin.zsh";
+  #   sha256 = "sha256:12gsfifj00rlx8nw1zs6cr0g7jxslxhph4mbkkg7fxsyl811c4ad";
+  # };
 in
 {
   home.packages = with pkgs; [
@@ -178,6 +183,10 @@ in
         if [[ -d $GOPATH/bin ]]; then
           export PATH=$PATH:$GOPATH/bin
         fi
+
+        if [[ -d $HOME/.npm-global/bin ]]; then
+          export PATH=$PATH:$HOME/.npm-global/bin
+        fi
       '';
     };
 
@@ -201,6 +210,10 @@ in
 
         if test -d $GOPATH/bin
             set -gx PATH $PATH $GOPATH/bin
+        end
+
+        if test -d $HOME/.npm-global/bin
+            set -gx PATH $PATH $HOME/.npm-global/bin
         end
 
         # Git completions; FIXME: remove this once landed in upstream in

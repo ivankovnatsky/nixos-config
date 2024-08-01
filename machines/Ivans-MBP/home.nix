@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   imports = [
@@ -14,13 +14,27 @@
     ../../home/direnv.nix
     ../../home/scripts.nix
     ../../home/k9s.nix
+    ../../home/terraform.nix
 
     ../../home/nixvim
   ];
   flags = {
+    enableFishShell = true;
     purpose = "work";
     editor = "nvim";
     darkMode = false;
+  };
+  # This is basically to track you manual installations
+  home.file = {
+    ".npm-global/.keep".text = ''
+      keep
+    '';
+    ".npmrc".text = ''
+      prefix=''${HOME}/.npm-global
+    '';
+    ".config/manual".text = ''
+      npm install -g @changesets/cli
+    '';
   };
   home.packages = with pkgs; [
     # FIXME: move this to default darwin config
@@ -33,18 +47,25 @@
 
     home-manager
 
+    jq
+
     magic-wormhole
 
     ghorg
 
     docker-client
     docker-compose
-    nodejs
     php83Packages.composer
+
+    nodejs
 
     awscli2
     aws-sso-cli
     aws-sso-creds
+    nixpkgs-master.nodePackages.aws-cdk
+
+    vault
+    teller
 
     kubectx
     eks-node-viewer
@@ -57,14 +78,33 @@
   ];
   programs.nixvim = {
     plugins = {
+      lint = {
+        lintersByFt = {
+          terraform = [ "tflint" ];
+        };
+      };
       lsp = {
         servers = {
+          bashls.enable = true;
           terraformls.enable = true;
           eslint.enable = true;
-          tsserver.enable = false;
+          tsserver.enable = true;
+          phpactor.enable = true;
+        };
+      };
+      none-ls = {
+        sources = {
+          formatting = {
+            # pretty_php.enable = true;
+          };
         };
       };
     };
+  };
+
+  home.sessionVariables = {
+    EDITOR = config.flags.editor;
+    VISUAL = config.flags.editor;
   };
   home.username = "ivan";
   home.stateVersion = "24.05";
