@@ -93,21 +93,23 @@ in
           };
         };
         none-ls = {
-          formatting = {
-            black = {
-              enable = true;
-              withArgs = ''
-                {
-                  extra_args = { "--fast" },
-                }
-              '';
+          sources = {
+            formatting = {
+              black = {
+                enable = true;
+                withArgs = ''
+                  {
+                    extra_args = { "--fast" },
+                  }
+                '';
+              };
             };
           };
         };
       };
+      extraPlugins = with pkgs.vimPlugins; [
+        vim-go
+      ];
     };
-    extraPlugins = with pkgs.vimPlugins; [
-      vim-go
-    ];
   };
 }
