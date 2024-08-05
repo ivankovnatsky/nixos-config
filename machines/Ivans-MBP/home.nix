@@ -31,6 +31,7 @@
     '';
     ".npmrc".text = ''
       prefix=''${HOME}/.npm-global
+      //npm.pkg.github.com/:_authToken=${config.secrets.githubNpmReadPackageToken}
     '';
     ".config/manual".text = ''
       npm install -g @changesets/cli
@@ -55,6 +56,8 @@
 
     docker-client
     docker-compose
+
+    php
     php83Packages.composer
 
     nodejs
@@ -68,16 +71,23 @@
     teller
 
     kubectx
+    kdash
     eks-node-viewer
+
+    fluxcd
 
     go-jsonnet
     jsonnet-bundler
     mimir
     pre-commit
+    commitlint
+    husky
     cmake
   ];
   programs.nixvim = {
+    editorconfig.enable = true;
     plugins = {
+      octo.enable = true;
       lint = {
         lintersByFt = {
           terraform = [ "tflint" ];
@@ -96,7 +106,49 @@
         sources = {
           formatting = {
             # pretty_php.enable = true;
+            # black = {
+            #   enable = true;
+            #   settings = ''
+            #     {
+            #       extra_args = { "--fast" },
+            #     }
+            #   '';
+            # };
+            # prettier = {
+            #   enable = true;
+            #   disableTsServerFormatter = true;
+            #   settings = ''
+            #     {
+            #       extra_args = { "--no-semi", "--single-quote" },
+            #     }
+            #   '';
+            # };
+            yamlfmt.enable = true;
+            yamlfix.enable = true;
           };
+        };
+      };
+      conform-nvim = {
+        formattersByFt = {
+          javascript = [
+            [
+              "prettierd"
+              "prettier"
+            ]
+          ];
+          typescript = [
+            [
+              "prettierd"
+              "prettier"
+            ]
+          ];
+          python = [ "black" ];
+          lua = [ "stylua" ];
+          nix = [ "nixfmt" ];
+          yaml = [
+            "yamllint"
+            "yamlfmt"
+          ];
         };
       };
     };
