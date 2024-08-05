@@ -16,6 +16,8 @@ let
     ls = "${pkgs.lsd}/bin/lsd --group-dirs first --icon always";
     grep = "${pkgs.ripgrep}/bin/rg";
     tree = "${pkgs.lsd}/bin/lsd --tree";
+    stc = "${pkgs.stc-cli}/bin/stc -homedir ${syncthingHomeDir}";
+    vim = "vim -n -c 'set noswapfile'";
 
     top = if isDarwin then "top -o cpu" else "top";
     rm-image-meta = "exiftool -all= -overwrite_original";
@@ -25,7 +27,6 @@ let
   shellAliases =
     if config.flags.purpose == "home" then commonShellAliases // {
       rclone = "${pkgs.rclone}/bin/rclone -P";
-      stc = "${pkgs.stc-cli}/bin/stc -homedir ${syncthingHomeDir}";
       transmission = "${pkgs.transmission}/bin/transmission-remote --list";
       wl-copy = lib.mkIf isLinux "${pkgs.wl-clipboard}/bin/wl-copy -n";
     } else commonShellAliases // {
@@ -116,6 +117,7 @@ in
       };
     };
 
+    # https://github.com/nix-community/home-manager/blob/master/modules/programs/zsh.nix
     zsh = {
       enable = true;
       autosuggestion.enable = true;
