@@ -21,18 +21,24 @@
 
   programs.git = {
     enable = true;
-    userEmail = "75213+ivankovnatsky@users.noreply.github.com";
     userName = "Ivan Kovnatsky";
+    userEmail =
+      if config.flags.purpose == "home"
+      then "75213+ivankovnatsky@users.noreply.github.com"
+      else "176893148+ivan-kovnatskyi@users.noreply.github.com";
     signing = {
       signByDefault = true;
-      key = "75213+ivankovnatsky@users.noreply.github.com";
+      key =
+        if config.flags.purpose == "home"
+        then "75213+ivankovnatsky@users.noreply.github.com"
+        else "176893148+ivan-kovnatskyi@users.noreply.github.com";
     };
     includes = [
       {
-        condition = "gitdir:~/Sources/github.com/dealroadshow/";
+        condition = "gitdir:~/Sources/github.com/ivankovnatsky/";
         contents.user = {
-          email = config.secrets.workEmail;
-          signingKey = config.secrets.workEmail;
+          userEmail = "75213+ivankovnatsky@users.noreply.github.com";
+          signingKey = "75213+ivankovnatsky@users.noreply.github.com";
         };
       }
     ];
