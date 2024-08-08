@@ -5,7 +5,18 @@
     # https://github.com/nix-community/nixvim/issues/1141#issuecomment-2054102360
     extraPackages = with pkgs; [ rustfmt ];
     plugins = {
-      neo-tree.enable = true;
+      neo-tree = {
+        enable = true;
+        filesystem = {
+          filteredItems = {
+            showHiddenCount = false;
+            hideDotfiles = false;
+            hideByName = [
+              ".git"
+            ];
+          };
+        };
+      };
       treesitter = {
         enable = true;
         indent = true;
@@ -21,7 +32,12 @@
       # Somehow typing `r` in search escapes search and places cursor in text,
       # even though it did not find any occurrences
       # flash.enable = true;
-      oil.enable = true;
+      oil = {
+        enable = true;
+        settings = {
+          view_options.show_hidden = true;
+        };
+      };
       undotree.enable = true;
       which-key.enable = true;
       hardtime = {
@@ -152,6 +168,8 @@
       };
     };
     extraConfigLua =
-      builtins.readFile ./telescope.lua;
+      builtins.readFile ./telescope.lua +
+      "\n" +
+      builtins.readFile ./cmp.lua;
   };
 }
