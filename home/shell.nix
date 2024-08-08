@@ -201,7 +201,9 @@ in
 
       interactiveShellInit = ''
         set fish_greeting # Disable greeting
-        set fish_vi_key_bindings
+
+        # https://fishshell.com/docs/current/interactive.html#vi-mode-commands
+        fish_vi_key_bindings
 
         # z.lua -- this is needed for words with hyphens to autocomplete
         set -x _ZL_HYPHEN 1
