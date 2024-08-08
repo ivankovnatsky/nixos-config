@@ -66,10 +66,12 @@
     aws-sso-cli
     aws-sso-creds
     nixpkgs-master.nodePackages.aws-cdk
+    ssm-session-manager-plugin
 
     vault
     teller
 
+    kubectl
     kubectx
     kdash
     eks-node-viewer
