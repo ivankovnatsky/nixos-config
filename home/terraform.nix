@@ -4,7 +4,7 @@
   home = {
     packages = with pkgs; [
       # Manage terraform versions
-      tenv
+      nixpkgs-master.tenv
       tflint
     ];
     file = {
