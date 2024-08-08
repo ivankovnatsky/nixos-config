@@ -72,8 +72,10 @@
     teller
 
     kubectl
+    kubectl-images
     kubectx
     kdash
+    kail
     eks-node-viewer
 
     fluxcd
@@ -85,6 +87,8 @@
     commitlint
     husky
     cmake
+
+    yamllint
   ];
   programs.nixvim = {
     editorconfig.enable = true;
@@ -106,25 +110,29 @@
       };
       none-ls = {
         sources = {
+          diagnostics = {
+            statix.enable = true;
+            yamllint.enable = true;
+          };
           formatting = {
             # pretty_php.enable = true;
-            # black = {
-            #   enable = true;
-            #   settings = ''
-            #     {
-            #       extra_args = { "--fast" },
-            #     }
-            #   '';
-            # };
-            # prettier = {
-            #   enable = true;
-            #   disableTsServerFormatter = true;
-            #   settings = ''
-            #     {
-            #       extra_args = { "--no-semi", "--single-quote" },
-            #     }
-            #   '';
-            # };
+            black = {
+              enable = true;
+              withArgs = ''
+                {
+                  extra_args = { "--fast" },
+                }
+              '';
+            };
+            prettier = {
+              enable = true;
+              disableTsServerFormatter = true;
+              withArgs = ''
+                {
+                  extra_args = { "--no-semi", "--single-quote" },
+                }
+              '';
+            };
             yamlfmt.enable = true;
             yamlfix.enable = true;
           };
