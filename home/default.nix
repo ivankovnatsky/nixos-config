@@ -1,10 +1,5 @@
-{ config, lib, pkgs, super, ... }:
+{ super, ... }:
 
-let
-  inherit (pkgs.stdenv.targetPlatform) isDarwin;
-
-  homeDir = if isDarwin then "/Users" else "/home";
-in
 {
   imports = [
     ./k9s.nix
@@ -17,63 +12,5 @@ in
     ../modules/flags
   ];
 
-  programs.gpg.enable = true;
-  programs.nushell.enable = true;
-
-  programs.bat = {
-    enable = true;
-    config = { tabs = "0"; };
-  };
-
-  home.packages = [ pkgs.ranger ];
-  home.file = {
-    ".config/ranger/rc.conf" = {
-      text = ''
-        set show_hidden true
-      '';
-    };
-
-    ".npmrc".text = ''
-      prefix=~/.npm
-    '';
-
-    ".config/yamllint/config" = {
-      text = ''
-        document-start: disable
-      '';
-    };
-  };
-
-  home.activation = {
-    createAndSetPermissionsNetrc =
-      let
-        netrcContent = pkgs.writeText "tmp_netrc" ''
-          default api.github.com login ivankovnatsky password ${config.secrets.gitApiTokenRepoScope}
-        '';
-      in
-      lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-        cp "${netrcContent}" "$HOME/.netrc"
-        chmod 0600 "$HOME/.netrc"
-      '';
-  };
-
-  home.sessionVariables = {
-    AWS_VAULT_BACKEND = "pass";
-    EDITOR = config.flags.editor;
-    VISUAL = config.flags.editor;
-    # https://github.com/kovidgoyal/kitty/issues/879
-    TERM = "xterm-256color";
-    # This is needed for aiac
-    OPENAI_API_KEY = "${config.secrets.openaiApikey}";
-  };
-
-  # https://github.com/nix-community/home-manager/blob/master/modules/programs/taskwarrior.nix
-  programs.taskwarrior = {
-    enable = true;
-    dataLocation = "${homeDir}/ivan/.task/";
-    colorTheme = if config.flags.darkMode then "no-color" else "light-256";
-  };
-
-  device = super.device;
-  flags = super.flags;
+  inherit (super) device flags;
 }
