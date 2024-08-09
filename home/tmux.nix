@@ -17,6 +17,7 @@
 
     extraConfig = ''
       set -g status-right ""
+      set -g status-left-length 30
 
       ${if config.flags.darkMode then ''
       set -g status-bg colour0
