@@ -25,71 +25,82 @@
     darkMode = false;
   };
   # This is basically to track you manual installations
-  home.file = {
-    ".npm-global/.keep".text = ''
-      keep
-    '';
-    ".npmrc".text = ''
-      prefix=''${HOME}/.npm-global
-      //npm.pkg.github.com/:_authToken=${config.secrets.githubNpmReadPackageToken}
-    '';
-    ".config/manual".text = ''
-      npm install -g @changesets/cli
-    '';
+  home = {
+    file = {
+      ".npm-global/.keep".text = ''
+        keep
+      '';
+      ".npmrc".text = ''
+        prefix=''${HOME}/.npm-global
+        //npm.pkg.github.com/:_authToken=${config.secrets.githubNpmReadPackageToken}
+      '';
+      ".config/manual".text = ''
+        npm install -g @changesets/cli
+      '';
+    };
+    packages = with pkgs; [
+      # FIXME: move this to default darwin config
+      dust
+      fswatch
+      rectangle
+      # To use PC mouse with natural scrolling
+      nixpkgs-master.mos
+      stats
+
+      home-manager
+
+      jq
+
+      magic-wormhole
+
+      ghorg
+
+      docker-client
+      docker-compose
+
+      php
+      php83Packages.composer
+
+      nodejs
+
+      awscli2
+      aws-sso-cli
+      aws-sso-creds
+      nixpkgs-master.nodePackages.aws-cdk
+      ssm-session-manager-plugin
+
+      vault
+      teller
+
+      kubectl
+      kubectl-images
+      kubectx
+      kdash
+      kail
+      eks-node-viewer
+
+      fluxcd
+
+      go-jsonnet
+      jsonnet-bundler
+      mimir
+      pre-commit
+      commitlint
+      husky
+      cmake
+
+      yamllint
+      delta
+    ];
+
+    sessionVariables = {
+      EDITOR = config.flags.editor;
+      VISUAL = config.flags.editor;
+    };
+    username = "ivan";
+    stateVersion = "24.05";
   };
-  home.packages = with pkgs; [
-    # FIXME: move this to default darwin config
-    dust
-    fswatch
-    rectangle
-    # To use PC mouse with natural scrolling
-    nixpkgs-master.mos
-    stats
 
-    home-manager
-
-    jq
-
-    magic-wormhole
-
-    ghorg
-
-    docker-client
-    docker-compose
-
-    php
-    php83Packages.composer
-
-    nodejs
-
-    awscli2
-    aws-sso-cli
-    aws-sso-creds
-    nixpkgs-master.nodePackages.aws-cdk
-    ssm-session-manager-plugin
-
-    vault
-    teller
-
-    kubectl
-    kubectl-images
-    kubectx
-    kdash
-    kail
-    eks-node-viewer
-
-    fluxcd
-
-    go-jsonnet
-    jsonnet-bundler
-    mimir
-    pre-commit
-    commitlint
-    husky
-    cmake
-
-    yamllint
-  ];
   programs.nixvim = {
     editorconfig.enable = true;
     plugins = {
@@ -164,11 +175,5 @@
     };
   };
 
-  home.sessionVariables = {
-    EDITOR = config.flags.editor;
-    VISUAL = config.flags.editor;
-  };
-  home.username = "ivan";
-  home.stateVersion = "24.05";
   programs.home-manager.enable = true;
 }
