@@ -81,7 +81,6 @@
     unrar
     unzip
     wget
-    yamllint
     yq-go
     yt-dlp
     yubikey-manager
