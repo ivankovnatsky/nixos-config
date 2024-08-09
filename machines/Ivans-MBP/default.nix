@@ -67,14 +67,15 @@
     dock.entries = [
       { path = "/System/Applications/Utilities/Terminal.app/"; }
       { path = "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/"; }
-      { path = "/Applications/Firefox.app/"; }
-      { path = "/Applications/Google Chrome.app/"; }
       { path = "/System/Applications/Mail.app/"; }
       { path = "/System/Applications/Calendar.app/"; }
       { path = "/System/Applications/Reminders.app/"; }
       { path = "/System/Applications/Notes.app/"; }
       { path = "/System/Applications/App Store.app/"; }
       { path = "/System/Applications/System Settings.app/"; }
+      { type = "spacer"; section = "apps"; }
+      { path = "/Applications/Firefox.app/"; }
+      { path = "/Applications/Google Chrome.app/"; }
       {
         path = "${config.users.users."ivan".home}/Downloads/";
         section = "others";

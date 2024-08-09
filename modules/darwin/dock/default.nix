@@ -1,8 +1,5 @@
 { config, pkgs, lib, ... }:
 
-# Original source: https://gist.github.com/antifuchs/10138c4d838a63c0a05e725ccd7bccdd
-# Current source: https://github.com/dustinlyons/nixos-config/blob/2bb69193da51364040495bc2aaffef8334001d0c/modules/darwin/dock/default.nix
-
 with lib;
 let
   cfg = config.local.dock;
@@ -16,24 +13,28 @@ in
       example = false;
     };
 
-    local.dock.entries = mkOption
-      {
-        description = "Entries on the Dock";
-        type = with types; listOf (submodule {
-          options = {
-            path = lib.mkOption { type = str; };
-            section = lib.mkOption {
-              type = str;
-              default = "apps";
-            };
-            options = lib.mkOption {
-              type = str;
-              default = "";
-            };
+    local.dock.entries = mkOption {
+      description = "Entries on the Dock";
+      type = with types; listOf (submodule {
+        options = {
+          path = lib.mkOption { type = str; };
+          section = lib.mkOption {
+            type = str;
+            default = "apps";
           };
-        });
-        readOnly = true;
-      };
+          options = lib.mkOption {
+            type = str;
+            default = "";
+          };
+          type = lib.mkOption {
+            type = str;
+            default = "";
+            description = "Type of the dock item (e.g., app, spacer)";
+          };
+        };
+      });
+      readOnly = true;
+    };
   };
 
   config =
@@ -47,14 +48,20 @@ in
             (normalize path)
           );
           wantURIs = concatMapStrings
-            (entry: "${entryURI entry.path}\n")
+            (entry:
+              if entry.type == "spacer" then ""
+              else "${entryURI entry.path}\n")
             cfg.entries;
           createEntries = concatMapStrings
-            (entry: "${dockutil}/bin/dockutil --no-restart --add '${entry.path}' --section ${entry.section} ${entry.options}\n")
+            (entry:
+              if entry.type == "spacer" then
+                "${dockutil}/bin/dockutil --no-restart --add '' --type spacer --section ${entry.section}\n"
+              else
+                "${dockutil}/bin/dockutil --no-restart --add '${entry.path}' --section ${entry.section} ${entry.options}\n"
+            )
             cfg.entries;
         in
         {
-          # FIXME: Check if we can ignore recent apps
           system.activationScripts.postUserActivation.text = ''
             echo >&2 "Setting up the Dock..."
             haveURIs="$(${dockutil}/bin/dockutil --list | ${pkgs.coreutils}/bin/cut -f2)"
