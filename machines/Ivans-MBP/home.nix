@@ -15,6 +15,7 @@
     ../../home/scripts.nix
     ../../home/k9s.nix
     ../../home/terraform.nix
+    ../../home/yamlint.nix
 
     ../../home/nixvim
   ];
@@ -73,6 +74,7 @@
       teller
 
       kubectl
+      kustomize
       kubectl-images
       kubectx
       kdash
@@ -89,7 +91,6 @@
       husky
       cmake
 
-      yamllint
       delta
     ];
 
@@ -123,7 +124,6 @@
         sources = {
           diagnostics = {
             statix.enable = true;
-            yamllint.enable = true;
           };
           formatting = {
             # pretty_php.enable = true;
@@ -135,17 +135,6 @@
                 }
               '';
             };
-            prettier = {
-              enable = true;
-              disableTsServerFormatter = true;
-              withArgs = ''
-                {
-                  extra_args = { "--no-semi", "--single-quote" },
-                }
-              '';
-            };
-            yamlfmt.enable = true;
-            yamlfix.enable = true;
           };
         };
       };
@@ -166,10 +155,6 @@
           python = [ "black" ];
           lua = [ "stylua" ];
           nix = [ "nixfmt" ];
-          yaml = [
-            "yamllint"
-            "yamlfmt"
-          ];
         };
       };
     };
