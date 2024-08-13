@@ -43,7 +43,7 @@
     ];
     casks = [
       "firefox"
-      "google-chrome"
+      "eloston-chromium"
       "orbstack"
       "twingate"
     ];
@@ -74,8 +74,7 @@
       { path = "/System/Applications/App Store.app/"; }
       { path = "/System/Applications/System Settings.app/"; }
       { type = "spacer"; section = "apps"; }
-      { path = "/Applications/Firefox.app/"; }
-      { path = "/Applications/Google Chrome.app/"; }
+      { path = "/Applications/Chromium.app/"; }
       {
         path = "${config.users.users."ivan".home}/Downloads/";
         section = "others";
