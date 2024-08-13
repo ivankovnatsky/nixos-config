@@ -23,6 +23,11 @@
         # Allow tab focus in all controls, space to select.
         AppleKeyboardUIMode = 3;
       };
+      CustomUserPreferences = {
+        "com.apple.Safari" = {
+          "ShowFullURLInSmartSearchField" = true;
+        };
+      };
     };
   };
   fonts.fontDir.enable = true;
@@ -74,6 +79,7 @@
       { path = "/System/Applications/App Store.app/"; }
       { path = "/System/Applications/System Settings.app/"; }
       { type = "spacer"; section = "apps"; }
+      { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Chromium.app/"; }
       {
         path = "${config.users.users."ivan".home}/Downloads/";
