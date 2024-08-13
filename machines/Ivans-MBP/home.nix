@@ -43,6 +43,11 @@
       # FIXME: move this to default darwin config
       dust
       fswatch
+
+      # macOS related
+      dockutil
+
+      # GUI
       rectangle
       # To use PC mouse with natural scrolling
       nixpkgs-master.mos
