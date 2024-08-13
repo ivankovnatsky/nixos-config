@@ -3,7 +3,6 @@
 {
   imports = [
     ./k9s.nix
-    ./neovim
     ./git.nix
     ./ssh.nix
     ./packages.nix
