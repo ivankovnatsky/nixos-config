@@ -158,6 +158,11 @@
         };
       };
     };
+    extraConfigVim = ''
+      augroup commentary
+        autocmd FileType terraform setlocal commentstring=#\ %s
+      augroup END
+    '';
   };
 
   programs.home-manager.enable = true;
