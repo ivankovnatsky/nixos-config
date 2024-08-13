@@ -76,6 +76,7 @@
           cmd = vimCommand;
         } // mergetoolOptions;
       merge.tool = if config.flags.editor == "nvim" then "fugitive" else "vimdiff";
+      diff.noprefix = true;
       pull.rebase = false;
       push.default = "current";
       http = {
