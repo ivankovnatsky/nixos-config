@@ -52,7 +52,7 @@
       c = "commit -v";
       ca = "commit -av";
       d = "diff";
-      l = "log --oneline";
+      l = "log --oneline -n 20";
       p = "push";
       pp = "pull";
     };
