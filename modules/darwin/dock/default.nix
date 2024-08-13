@@ -42,15 +42,19 @@ in
       (
         let
           normalize = path: if hasSuffix ".app" path then path + "/" else path;
-          entryURI = path: "file://" + (builtins.replaceStrings
-            [ " " "!" "\"" "#" "$" "%" "&" "'" "(" ")" ]
-            [ "%20" "%21" "%22" "%23" "%24" "%25" "%26" "%27" "%28" "%29" ]
-            (normalize path)
-          );
+          entryURI = entry:
+            if entry.type == "spacer"
+            then ""
+            else "file://" + (builtins.replaceStrings
+              [ " " "!" "\"" "#" "$" "%" "&" "'" "(" ")" ]
+              [ "%20" "%21" "%22" "%23" "%24" "%25" "%26" "%27" "%28" "%29" ]
+              (normalize entry.path)
+            );
           wantURIs = concatMapStrings
             (entry:
-              if entry.type == "spacer" then ""
-              else "${entryURI entry.path}\n")
+              if entry.type == "spacer"
+              then "\n"
+              else "${entryURI entry}\n")
             cfg.entries;
           createEntries = concatMapStrings
             (entry:
