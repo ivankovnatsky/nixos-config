@@ -20,6 +20,11 @@
         # Allow tab focus in all controls, space to select.
         AppleKeyboardUIMode = 3;
       };
+      CustomUserPreferences = {
+        "com.apple.Safari" = {
+          "ShowFullURLInSmartSearchField" = true;
+        };
+      };
     };
   };
   fonts.fontDir.enable = true;
