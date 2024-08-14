@@ -14,6 +14,8 @@ let
     dog = "${pkgs.doggo}/bin/doggo";
     fd = "${pkgs.fd}/bin/fd --hidden --no-ignore";
     ls = "${pkgs.lsd}/bin/lsd --group-dirs first --icon always";
+    # Let's not use GNU Coreutils mkdir for now.
+    mkdir = "mkdir -p";
     grep = "${pkgs.ripgrep}/bin/rg";
     tree = "${pkgs.lsd}/bin/lsd --tree";
     stc = "${pkgs.stc-cli}/bin/stc -homedir ${syncthingHomeDir}";
