@@ -74,6 +74,7 @@
       aws-sso-creds
       nixpkgs-master.nodePackages.aws-cdk
       ssm-session-manager-plugin
+      iam-policy-json-to-terraform
 
       vault
       teller
