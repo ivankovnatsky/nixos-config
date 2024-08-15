@@ -74,6 +74,10 @@ fi
 # Push changes
 git push --force-with-lease origin "$HEAD"
 
+# Make sure we're not authenticated using personal tokens evaluated in shell environment.
+unset GH_TOKEN
+unset GITHUB_TOKEN
+
 # Create pull request
 gh pr create \
     --assignee "$ASSIGNEE" \
