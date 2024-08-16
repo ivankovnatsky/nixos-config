@@ -19,7 +19,12 @@ rebuild-fswatch:
 	done
 
 rebuild-watchman:
-	watchman-make --pattern '**/*' --target default
+	watchman-make \
+		--pattern \
+			'**/*.nix' \
+			'**/*.sh' \
+			'**/*.lua' \
+		--target default
 
 rebuild-impure/nixos:
 	nixos-rebuild switch --use-remote-sudo --impure --verbose -L --flake .
