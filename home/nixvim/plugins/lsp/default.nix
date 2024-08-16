@@ -39,10 +39,11 @@
             action = "implementation";
             desc = "Goto Implementation";
           };
-          gT = {
-            action = "type_definition";
-            desc = "Type Definition";
-          };
+          # Conflicts with prev tab keymap
+          # gT = {
+          #   action = "type_definition";
+          #   desc = "Type Definition";
+          # };
           K = {
             action = "hover";
             desc = "Hover";
