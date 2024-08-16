@@ -44,6 +44,7 @@
       dust
       fswatch
 
+      watchman
       watchman-make
 
       # macOS related
