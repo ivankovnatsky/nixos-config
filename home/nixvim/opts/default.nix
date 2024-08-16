@@ -28,8 +28,6 @@
       tabstop = 2;
       softtabstop = 2;
 
-      # Always show tabs
-      showtabline = 2;
       expandtab = true;
 
       # Enable auto indenting and set it to spaces
