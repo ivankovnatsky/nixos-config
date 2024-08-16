@@ -1,6 +1,6 @@
 PLATFORM := $(shell uname)
 
-all: default darwin-rebuild-watch rebuild-impure/nixos
+all: default rebuild-fswatch rebuild-watchman rebuild-impure/nixos
 
 default:
 ifeq (${PLATFORM}, Darwin)
@@ -11,12 +11,15 @@ else
 	nixos-rebuild switch --use-remote-sudo --verbose -L --flake .
 endif
 
-darwin-rebuild-watch:
+rebuild-fswatch:
 	echo "Watching for changes..."; \
 	git ls-files | xargs fswatch -o | while read -r event; do \
 		echo "Change detected, running make to rebuild configuration..."; \
 		$(MAKE) default; \
 	done
+
+rebuild-watchman:
+	watchman-make --pattern '**/*' --target default
 
 rebuild-impure/nixos:
 	nixos-rebuild switch --use-remote-sudo --impure --verbose -L --flake .

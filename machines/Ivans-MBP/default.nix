@@ -91,7 +91,7 @@
   nixpkgs.overlays = [
     (
       self: super: {
-        changesets = super.callPackage ../../overlays/changesets { };
+        watchman-make = super.callPackage ../../overlays/watchman-make.nix { };
       }
     )
   ];
