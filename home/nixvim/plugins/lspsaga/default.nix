@@ -97,15 +97,16 @@
           };
         }
 
-        {
-          mode = "n";
-          key = "gT";
-          action = "<cmd>Lspsaga peek_type_definition<CR>";
-          options = {
-            desc = "Type Definition";
-            silent = true;
-          };
-        }
+        # Conflicts with prev tab keymap
+        # {
+        #   mode = "n";
+        #   key = "gT";
+        #   action = "<cmd>Lspsaga peek_type_definition<CR>";
+        #   options = {
+        #     desc = "Type Definition";
+        #     silent = true;
+        #   };
+        # }
 
         {
           mode = "n";
