@@ -44,6 +44,8 @@
       dust
       fswatch
 
+      watchman-make
+
       # macOS related
       dockutil
 
