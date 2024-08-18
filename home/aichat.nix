@@ -11,7 +11,7 @@ in
     file = {
       "${aichatConfigPath}" = {
         text = ''
-          model: ollama:llama3:8b
+          model: ollama:llama3.1:8b
           ${if config.flags.darkMode then "" else
           ''
           light_theme: true
@@ -24,7 +24,7 @@ in
           - type: ollama
             api_base: http://localhost:11434
             models:
-              - name: llama3:8b
+              - name: llama3.1:8b
         '';
       };
     };
