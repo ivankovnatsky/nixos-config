@@ -4,6 +4,7 @@
   home.packages = with pkgs; [
     ghq
     git-crypt
+    git-filter-repo
   ];
 
   # Git started to read global config and opens up osxkeychain windows first by
