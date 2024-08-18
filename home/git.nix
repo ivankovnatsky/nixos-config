@@ -47,7 +47,7 @@
             commit.gpgSign = true;
           };
         }
-      ] else null;
+      ] else [ ];
     ignores = [
       ".stignore"
       "__worktrees/"
