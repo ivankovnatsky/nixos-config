@@ -22,7 +22,7 @@
 
   programs.git = {
     enable = true;
-    userName = "Ivan Kovnatsky";
+    userName = if config.flags.purpose == "home" then "Ivan Kovnatsky" else "Ivan Kovnatskyi";
     userEmail =
       if config.flags.purpose == "home"
       then "75213+ivankovnatsky@users.noreply.github.com"
@@ -34,15 +34,20 @@
         then "75213+ivankovnatsky@users.noreply.github.com"
         else "176893148+ivan-kovnatskyi@users.noreply.github.com";
     };
-    includes = [
-      {
-        condition = "gitdir:~/Sources/github.com/ivankovnatsky/";
-        contents.user = {
-          userEmail = "75213+ivankovnatsky@users.noreply.github.com";
-          signingKey = "75213+ivankovnatsky@users.noreply.github.com";
-        };
-      }
-    ];
+    includes =
+      if config.flags.purpose == "work" then [
+        {
+          condition = "gitdir:~/Sources/github.com/ivankovnatsky/";
+          contents = {
+            user = {
+              name = "Ivan Kovnatsky";
+              email = "75213+ivankovnatsky@users.noreply.github.com";
+              signingKey = "75213+ivankovnatsky@users.noreply.github.com";
+            };
+            commit.gpgSign = true;
+          };
+        }
+      ] else null;
     ignores = [
       ".stignore"
       "__worktrees/"
