@@ -1,3 +1,6 @@
+# https://stackoverflow.com/a/30176470
+.DEFAULT_GOAL := default
+
 PLATFORM := $(shell uname)
 
 all: default rebuild-fswatch rebuild-watchman rebuild-impure/nixos
