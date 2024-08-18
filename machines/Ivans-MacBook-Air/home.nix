@@ -17,6 +17,7 @@ in
     ../../home/aichat.nix
     ../../home/tmux.nix
     ../../home/transmission.nix
+    ../../home/syncthing.nix
     ../../home/direnv.nix
 
     ../../home/nixvim
@@ -25,6 +26,7 @@ in
     ../../modules/secrets
   ];
   flags = {
+    enableFishShell = true;
     purpose = "home";
     editor = "nvim";
     darkMode = false;
@@ -69,6 +71,9 @@ in
       nixpkgs-master.mos
 
       username
+
+      watchman
+      watchman-make
     ];
     sessionVariables = {
       EDITOR = config.flags.editor;

@@ -9,6 +9,7 @@
   ];
   networking.hostName = "Ivans-MacBook-Air";
   flags = {
+    enableFishShell = true;
     purpose = "home";
     editor = "nvim";
     darkMode = false;
@@ -60,6 +61,7 @@
       self: super: {
         ks = super.callPackage ../../overlays/ks.nix { };
         coconutbattery = super.callPackage ../../overlays/coconutbattery.nix { };
+        watchman-make = super.callPackage ../../overlays/watchman-make.nix { };
       }
     )
   ];
