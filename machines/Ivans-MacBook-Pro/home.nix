@@ -3,6 +3,7 @@
 {
   imports = [
     ../../home/git.nix
+    ../../home/mpv.nix
     # ../../home/aichat.nix
 
     ../../modules/flags
@@ -16,6 +17,9 @@
   home.packages = with pkgs; [
     dust
     fswatch
+
+    watchman
+    watchman-make
 
     ollama
     rectangle
