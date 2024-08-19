@@ -71,7 +71,7 @@
       php
       php83Packages.composer
 
-      nodejs
+      nodejs_22
 
       awscli2
       aws-sso-cli
@@ -98,6 +98,7 @@
       mimir
       pre-commit
       commitlint
+      nixpkgs-master.nodePackages.eslint
       husky
       cmake
 
