@@ -4,12 +4,14 @@
   imports = [
     ../../home/git.nix
     ../../home/mpv.nix
+    ../../home/shell.nix
     # ../../home/aichat.nix
 
     ../../modules/flags
     # ../../modules/secrets
   ];
   flags = {
+    enableFishShell = true;
     purpose = "home";
     editor = "vim";
     darkMode = false;
@@ -27,6 +29,8 @@
     # To use PC mouse with natural scrolling
     nixpkgs-master.mos
     stats
+
+    magic-wormhole
   ];
 
   home.username = "ivan";
