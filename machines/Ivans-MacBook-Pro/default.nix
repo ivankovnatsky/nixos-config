@@ -17,4 +17,11 @@
       no_quarantine = true;
     };
   };
+  nixpkgs.overlays = [
+    (
+      self: super: {
+        watchman-make = super.callPackage ../../overlays/watchman-make.nix { };
+      }
+    )
+  ];
 }
