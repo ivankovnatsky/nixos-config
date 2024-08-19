@@ -102,16 +102,13 @@ in
         username.show_always = false;
         kubernetes = {
           disabled = false;
-          context_aliases = {
-            "arn:aws:eks:.*:.*:.*/(.*)" = "$1";
-          };
-          # FIXME: https://github.com/starship/starship/issues/6101
-          # contexts = [
-          #   {
-          #     context_pattern = "arn.*:(?P<cluster>[\w/]+)";
-          #     context_alias = "$cluster";
-          #   }
-          # ];
+          # https://github.com/starship/starship/issues/6101#issuecomment-2295210551
+          contexts = [
+            {
+              context_pattern = ''arn.*\/(?P<cluster>[\w\/-]+)'';
+              context_alias = "$cluster";
+            }
+          ];
         };
         rust.disabled = true;
         nodejs.disabled = true;
