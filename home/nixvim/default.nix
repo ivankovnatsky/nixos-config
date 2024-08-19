@@ -28,6 +28,7 @@ in
       vim-sensible
       vim-sleuth
       vim-sneak
+      vim-eunuch
 
       tokyonight-nvim
       # material-nvim
