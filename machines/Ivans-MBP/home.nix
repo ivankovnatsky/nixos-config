@@ -5,6 +5,7 @@
     ../../modules/flags
     ../../modules/secrets
 
+    ../../home/aichat.nix
     ../../home/firefox-config.nix
     ../../home/git.nix
     ../../home/lsd.nix
@@ -101,6 +102,8 @@
       cmake
 
       delta
+
+      nixpkgs-master.ollama
     ];
 
     sessionVariables = {
