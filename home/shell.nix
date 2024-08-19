@@ -10,7 +10,6 @@ let
     cat = "${pkgs.bat}/bin/bat";
     curl = "${pkgs.curlie}/bin/curlie";
     dig = "${pkgs.doggo}/bin/doggo";
-    du = "${pkgs.du-dust}/bin/dust";
     dog = "${pkgs.doggo}/bin/doggo";
     fd = "${pkgs.fd}/bin/fd --hidden --no-ignore";
     ls = "${pkgs.lsd}/bin/lsd --group-dirs first --icon always";
