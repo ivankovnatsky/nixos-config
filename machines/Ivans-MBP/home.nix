@@ -107,7 +107,7 @@
 
       nixpkgs-master.ollama
 
-      # bclm
+      bclm
     ];
 
     sessionVariables = {
