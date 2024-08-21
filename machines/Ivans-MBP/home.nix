@@ -17,6 +17,7 @@
     ../../home/k9s.nix
     ../../home/terraform.nix
     ../../home/yamlint.nix
+    ../../home/yt-dlp.nix
 
     ../../home/nixvim
   ];
@@ -105,6 +106,8 @@
       delta
 
       nixpkgs-master.ollama
+
+      # bclm
     ];
 
     sessionVariables = {
@@ -174,6 +177,7 @@
     extraConfigVim = ''
       augroup commentary
         autocmd FileType terraform setlocal commentstring=#\ %s
+        autocmd FileType tf setlocal commentstring=#\ %s
       augroup END
     '';
   };
