@@ -45,6 +45,7 @@
       # upgrades PAM auth is broken for a common user. To fix it we need to
       # enable root user and edit /private/etc/pam.d/sudo to unblock auth.
       "pam-reattach"
+      # "bclm"
     ];
     casks = [
       "firefox"
