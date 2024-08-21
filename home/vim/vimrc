@@ -1,0 +1,101 @@
+scriptencoding utf-8
+
+" https://www.reddit.com/r/neovim/comments/olrtof/a_fix_for_neovim_been_slow_for_fish_users/
+" Set shell to /bin/sh if my shell is fish
+if &shell =~# 'fish'
+  set shell=/bin/sh
+endif
+
+set termguicolors
+
+" We need to disable termguicolors in Apple Terminal not under tmux, since
+" Terminal does not support truecolor.
+if getenv('TERM_PROGRAM') ==# 'Apple_Terminal' && empty(getenv('TMUX'))
+  set notermguicolors
+endif
+
+hi Comment cterm=italic gui=italic
+
+let mapleader='<Space>'
+set mouse=
+
+set nobackup
+set noswapfile
+
+set number relativenumber
+set wrap
+set cursorline
+set foldmethod=marker
+
+set autowrite
+set lazyredraw
+
+set showmatch
+set hlsearch
+set smartcase
+set ignorecase
+
+set history=10000
+
+set iskeyword=@,48-57,_,192-255 "
+
+" Search down into subfolders
+" tab-completion for all file-related tasks
+set path+=**
+
+" Display commands typing in
+set showcmd
+
+set showtabline=2 " Always show tabs
+
+set list
+
+set spellfile=~/.vim/spell/en.utf-8.add
+
+" Undo file even after vim exists
+if has('persistent_undo')
+  set undofile
+  if has('nvim')
+    set undodir=~/.cache/nvim/undo/
+  elseif has('vim_starting')
+    set undodir=~/.cache/vim/undo/
+  endif
+endif
+
+" Fix working crontab for neovim
+augroup crontab
+  autocmd filetype crontab setlocal nobackup nowritebackup
+augroup END
+
+" Remap window navigation
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+" History complete by word
+cmap <C-P> <Up>
+cmap <C-N> <Down>
+
+" Disable Ex mode
+map Q <nop>
+
+" Set Ukrainian key mappings: this will let me navigate in vim even if did
+" not moved back to english keyboard layout
+set langmap=йq,цw,уe,кr,еt,нy,гu,шi,щo,зp,х[,ї],фa,іs,вd,аf,пg,рh,оj,лk,дl,ж\\;,
+  \є',ґ\\,яz,чx,сc,мv,иb,тn,ьm,б\\,,ю.,,ЙQ,ЦW,УE,КR,ЕT,НY,НY,ГU,ШI,ЩO,ЗP,Х{,Ї},ФA,
+  \ІS,ВD,АF,ПG,РH,ОJ,ЛK,ДL,Ж\\:,Є\\",Ґ\|,ЯZ,ЧX,СC,МV,ИB,ТN,ЬM,Б\\<,Ю>,№#
+
+" {{{ visual-star-search
+" https://www.reddit.com/r/neovim/comments/keutw5/comment/gh9w1mf/?utm_source=share&utm_medium=web3x
+function! s:VSetSearch()
+  let temp = @@
+  norm! gvy
+  let @/ = '\V' . substitute(escape(@@, '\'), '\n', '\\n', 'g')
+  call histadd('/', substitute(@/, '[?/]', '\="\\%d".char2nr(submatch(0))', 'g'))
+  let @@ = temp
+endfunction
+
+vnoremap * :<C-u>call <SID>VSetSearch()<CR>/<CR>
+vnoremap # :<C-u>call <SID>VSetSearch()<CR>?<CR>
+" }}}
