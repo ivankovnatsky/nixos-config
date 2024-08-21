@@ -304,6 +304,22 @@
         "type": "github"
       }
     },
+    "homebrew-zackelia-formulae": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1700431196,
+        "narHash": "sha256-O/qwaci/TWSlJaze3GDgLMygH9Fju6t6dajVW1kse4o=",
+        "owner": "zackelia",
+        "repo": "homebrew-formulae",
+        "rev": "d20606bc22be379349616c26e8dd48cb98de30ed",
+        "type": "github"
+      },
+      "original": {
+        "owner": "zackelia",
+        "repo": "homebrew-formulae",
+        "type": "github"
+      }
+    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": "nixpkgs"
@@ -492,6 +508,7 @@
         "homebrew-bundle": "homebrew-bundle",
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
+        "homebrew-zackelia-formulae": "homebrew-zackelia-formulae",
         "nix-homebrew": "nix-homebrew",
         "nixpkgs-master": "nixpkgs-master",
         "nixpkgs-release": "nixpkgs-release",

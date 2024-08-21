@@ -35,6 +35,11 @@
       flake = false;
     };
 
+    homebrew-zackelia-formulae = {
+      url = "github:zackelia/homebrew-formulae";
+      flake = false;
+    };
+
     nur.url = "github:nix-community/NUR";
 
     nixvim = {
@@ -215,6 +220,7 @@
                   "homebrew/homebrew-core" = inputs.homebrew-core;
                   "homebrew/homebrew-cask" = inputs.homebrew-cask;
                   "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
+                  "homebrew/homebrew-formulae" = inputs.homebrew-zackelia-formulae;
                 };
 
                 # Optional: Enable fully-declarative tap management
