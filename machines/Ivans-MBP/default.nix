@@ -26,6 +26,7 @@
       CustomUserPreferences = {
         "com.apple.Safari" = {
           "ShowFullURLInSmartSearchField" = true;
+          "AutoShowToolbarInFullScreen" = true;
         };
       };
     };
@@ -55,6 +56,7 @@
     masApps = {
       "1Password for Safari" = 1569813296;
       "Okta Verify" = 490179405;
+      "Slack for Desktop" = 803453959;
     };
     caskArgs = {
       no_quarantine = true;
@@ -81,6 +83,7 @@
       { type = "spacer"; section = "apps"; }
       { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Chromium.app/"; }
+      { path = "/Applications/Slack.app/"; }
       {
         path = "${config.users.users."ivan".home}/Downloads/";
         section = "others";
