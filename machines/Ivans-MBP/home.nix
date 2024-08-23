@@ -20,6 +20,7 @@
     ../../home/yt-dlp.nix
 
     ../../home/nixvim
+    ../../home/nixvim/plugins/gen-nvim
   ];
   flags = {
     enableFishShell = true;
