@@ -26,6 +26,7 @@ rebuild-watchman:
 		--pattern \
 			'**/*.nix' \
 			'**/*.sh' \
+			'**/*.fish' \
 			'**/*.lua' \
 		--target default
 

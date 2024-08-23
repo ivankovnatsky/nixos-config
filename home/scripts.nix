@@ -1,5 +1,4 @@
 { lib, pkgs, ... }:
-
 let
   scriptsDir = ./scripts;
   scriptFiles = builtins.readDir scriptsDir;
@@ -8,11 +7,17 @@ let
     let
       scriptPath = "${scriptsDir}/${scriptName}";
       scriptContents = builtins.readFile scriptPath;
-      scriptWithFixedShebang = builtins.replaceStrings [ "#!/usr/bin/env bash" ] [ "#!${pkgs.bash}/bin/bash" ] scriptContents;
+      isFishScript = lib.hasSuffix ".fish" scriptName;
+      bashShebang = "#!${pkgs.bash}/bin/bash";
+      fishShebang = "#!${pkgs.fish}/bin/fish";
+      scriptWithFixedShebang =
+        if isFishScript
+        then builtins.replaceStrings [ "#!/usr/bin/env fish" ] [ fishShebang ] scriptContents
+        else builtins.replaceStrings [ "#!/usr/bin/env bash" ] [ bashShebang ] scriptContents;
     in
-    pkgs.writeScriptBin (lib.removeSuffix ".sh" scriptName) scriptWithFixedShebang;
+    pkgs.writeScriptBin (lib.removeSuffix (if isFishScript then ".fish" else ".sh") scriptName) scriptWithFixedShebang;
 
-  filteredScriptNames = lib.filter (scriptName: lib.hasSuffix ".sh" scriptName) (builtins.attrNames scriptFiles);
+  filteredScriptNames = lib.filter (scriptName: lib.hasSuffix ".sh" scriptName || lib.hasSuffix ".fish" scriptName) (builtins.attrNames scriptFiles);
   scriptPackages = builtins.map processScript filteredScriptNames;
 in
 {
