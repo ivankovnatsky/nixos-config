@@ -47,6 +47,7 @@
     casks = [
       "firefox"
       "balenaetcher"
+      "mullvadvpn"
     ];
     masApps = {
       "Numbers" = 409203825;
