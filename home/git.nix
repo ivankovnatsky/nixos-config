@@ -2,6 +2,7 @@
 
 {
   home.packages = with pkgs; [
+    git-extras
     ghq
     git-crypt
     git-filter-repo
