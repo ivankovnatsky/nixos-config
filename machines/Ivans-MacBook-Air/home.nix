@@ -17,7 +17,6 @@ in
     ../../home/aichat.nix
     ../../home/tmux.nix
     ../../home/transmission.nix
-    ../../home/syncthing.nix
     ../../home/direnv.nix
 
     ../../home/nixvim
@@ -41,6 +40,7 @@ in
       exiftool
       syncthing
       bat
+      erdtree
       fzf
       ripgrep
       delta
