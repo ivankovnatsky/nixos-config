@@ -71,6 +71,7 @@
       '';
     };
     dock.enable = true;
+    # TODO: can dock be streched 100% horizontally?
     dock.entries = [
       { path = "/System/Applications/Utilities/Terminal.app/"; }
       { path = "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/"; }
@@ -84,6 +85,10 @@
       { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Chromium.app/"; }
       { path = "/Applications/Slack.app/"; }
+      { type = "spacer"; section = "apps"; }
+      # TODO: see if making a Dock web app could be automated.
+      { path = "~/Applications/Claude.app/"; }
+      { path = "~/Applications/ChatGPT.app/"; }
       {
         path = "${config.users.users."ivan".home}/Downloads/";
         section = "others";
