@@ -6,17 +6,18 @@ function print_help
     echo "Usage: open-gh-notifications [OPTIONS]"
     echo ""
     echo "OPTIONS:"
-    echo "  -n, --new     Open notifications in a new browser window"
-    echo "  -o, --open    Actually open the URLs in the browser"
-    echo "  -h, --help    Display this help message"
+    echo "  -r, --running     Open notifications in a running browser window"
+    echo "  -s, --show        Just print the URLs script would open in the browser"
+    echo "  -h, --help        Display this help message"
     echo ""
     echo "Examples:"
     echo "  open-gh-notifications"
-    echo "  open-gh-notifications --new"
-    echo "  open-gh-notifications --open"
-    echo "  open-gh-notifications --new --open"
+    echo "  open-gh-notifications --running"
+    echo "  open-gh-notifications --show"
+    echo "  open-gh-notifications --running --show"
 end
 
+# BUG: When not opening PR itself, it does not get marked as viewed.
 function get_latest_url
     set -l api_url $argv[1]
     set -l timeline_url (string replace "/pulls/" "/issues/" $api_url)
@@ -45,7 +46,7 @@ function collect_urls
 end
 
 function main
-    argparse h/help n/new o/open -- $argv
+    argparse h/help r/running s/show -- $argv
     or begin
         print_help
         return 1
@@ -72,19 +73,19 @@ function main
 
     wait
 
-    if set -q _flag_open
-        if set -q _flag_new
-            echo "Opening URLs in a new browser window"
-            open --new -a $browser $all_urls
+    if set -q _flag_show
+        if set -q _flag_running
+            echo "Would open URLs in a new browser window (omit --show option to actually open)"
         else
-            echo "Opening URLs in the current browser window"
-            open -a $browser $all_urls
+            echo "Would open URLs in the current browser window (omit --show option to actually open)"
         end
     else
-        if set -q _flag_new
-            echo "Would open URLs in a new browser window (use --open to actually open)"
+        if set -q _flag_running
+            echo "Opening URLs in the current browser window"
+            open -a $browser $all_urls
         else
-            echo "Would open URLs in the current browser window (use --open to actually open)"
+            echo "Opening URLs in a new browser window"
+            open --new -a $browser $all_urls
         end
     end
 end
