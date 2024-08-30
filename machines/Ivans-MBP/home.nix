@@ -65,6 +65,8 @@
 
       magic-wormhole
 
+      devbox
+
       ghorg
 
       docker-client
@@ -86,6 +88,7 @@
       teller
 
       kubectl
+      krew
       kustomize
       kubectl-images
       kubectx
