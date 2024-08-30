@@ -104,11 +104,16 @@
       husky
       cmake
 
+      git-secrets
       delta
 
       nixpkgs-master.ollama
 
       bclm
+
+      (python312.withPackages (ps: with ps; [
+        pip
+      ]))
     ];
 
     sessionVariables = {
