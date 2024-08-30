@@ -36,6 +36,7 @@ in
       zsh-forgit
       rclone
       aria2
+      wget
       nodePackages.webtorrent-cli
       exiftool
       syncthing
