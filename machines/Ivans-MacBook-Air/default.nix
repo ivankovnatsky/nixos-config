@@ -48,6 +48,7 @@
       "firefox"
       "balenaetcher"
       "mullvadvpn"
+      "vlc"
     ];
     masApps = {
       "Numbers" = 409203825;
