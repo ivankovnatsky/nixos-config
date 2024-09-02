@@ -17,32 +17,11 @@ function print_help
     echo "  open-gh-notifications --running --show"
 end
 
-# BUG: When not opening PR itself, it does not get marked as viewed.
-function get_latest_url
-    set -l api_url $argv[1]
-    set -l timeline_url (string replace "/pulls/" "/issues/" $api_url)
-    set -l timeline_url (string replace -r '/issues/\d+$' '$0/timeline' $timeline_url)
-
-    set -l latest_url (gh api $timeline_url --paginate | jq -r 'map(select(.html_url != null)) | last | .html_url') &
-    wait
-
-    if test -n "$latest_url" -a "$latest_url" != null
-        echo $latest_url
-    else
-        # If no events with html_url, return the original issue/PR URL
-        echo (string replace "api.github.com/repos" "github.com" (string replace "/pulls/" "/pull/" $api_url))
-    end
-end
-
 function collect_urls
     set -l type $argv[1]
-
-    begin
-        gh api notifications --paginate | jq -r ".[] | select(.subject.type == \"$type\") | .subject.url" | while read -l url
-            get_latest_url $url &
-        end
-        wait
-    end &
+    gh api notifications --paginate | jq -r ".[] | select(.subject.type == \"$type\") | .subject.url" | 
+    string replace "api.github.com/repos" "github.com" |
+    string replace "/pulls/" "/pull/"
 end
 
 function main
@@ -67,17 +46,13 @@ function main
     end
 
     echo "URLs to open:"
-    for url in $all_urls
-        echo $url &
-    end
-
-    wait
+    printf "%s\n" $all_urls
 
     if set -q _flag_show
         if set -q _flag_running
-            echo "Would open URLs in a new browser window (omit --show option to actually open)"
-        else
             echo "Would open URLs in the current browser window (omit --show option to actually open)"
+        else
+            echo "Would open URLs in a new browser window (omit --show option to actually open)"
         end
     else
         if set -q _flag_running
