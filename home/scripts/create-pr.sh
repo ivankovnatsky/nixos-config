@@ -23,40 +23,47 @@ usage() {
 while [[ $# -gt 0 ]]; do
     key="$1"
     case $key in
-    --assignee)
-        ASSIGNEE="$2"
-        shift
-        shift
-        ;;
-    --reviewers)
-        REVIEWER="$2"
-        shift
-        shift
-        ;;
-    --labels)
-        LABEL="$2"
-        shift
-        shift
-        ;;
-    --update)
-        UPDATE="$2"
-        shift
-        shift
-        ;;
-    --draft)
-        DRAFT="true"
-        shift
-        ;;
-    --help)
-        usage
-        exit 0
-        ;;
-    *)
-        echo "Unknown argument: $1"
-        exit 1
-        ;;
+        --assignee)
+            ASSIGNEE="$2"
+            shift
+            shift
+            ;;
+        --reviewers)
+            REVIEWER="$2"
+            shift
+            shift
+            ;;
+        --labels)
+            LABEL="$2"
+            shift
+            shift
+            ;;
+        --update)
+            UPDATE="$2"
+            shift
+            shift
+            ;;
+        --draft)
+            DRAFT="true"
+            shift
+            ;;
+        --help)
+            usage
+            exit 0
+            ;;
+        *)
+            echo "Unknown argument: $1"
+            exit 1
+            ;;
     esac
 done
+
+# Check if we're on main or master branch
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [[ "$CURRENT_BRANCH" == "main" || "$CURRENT_BRANCH" == "master" ]]; then
+    echo "Error: You are on the $CURRENT_BRANCH branch. This script cannot be run on main or master branches."
+    exit 1
+fi
 
 TITLE="$(git log -1 --pretty=format:%s)"
 HEAD="$(git rev-parse --abbrev-ref HEAD)"
