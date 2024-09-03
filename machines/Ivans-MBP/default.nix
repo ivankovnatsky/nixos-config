@@ -48,6 +48,8 @@
       "pam-reattach"
     ];
     casks = [
+      "1password"
+      "1password-cli"
       "firefox"
       "eloston-chromium"
       "orbstack"
