@@ -24,10 +24,6 @@ function collect_urls
     string replace "/pulls/" "/pull/"
 end
 
-function collect_actions_urls
-    gh api notifications --paginate | jq -r ".[] | .repository.html_url + \"/actions\"" | sort -u
-end
-
 function main
     argparse h/help r/running s/show -- $argv
     or begin
@@ -35,15 +31,14 @@ function main
         return 1
     end
 
-    if set -q \_flag_help
+    if set -q _flag_help
         print_help
         return 0
     end
 
     set -l issue_urls (collect_urls "Issue")
     set -l pr_urls (collect_urls "PullRequest")
-    set -l actions_urls (collect_actions_urls)
-    set -l all_urls $issue_urls $pr_urls $actions_urls
+    set -l all_urls $issue_urls $pr_urls
 
     if test (count $all_urls) -eq 0
         echo "No notifications found."
@@ -53,19 +48,19 @@ function main
     echo "URLs to open:"
     printf "%s\n" $all_urls
 
-    if set -q \_flag_show
-        if set -q \_flag_running
+    if set -q _flag_show
+        if set -q _flag_running
             echo "Would open URLs in the current browser window (omit --show option to actually open)"
         else
             echo "Would open URLs in a new browser window (omit --show option to actually open)"
         end
     else
-        if set -q \_flag_running
+        if set -q _flag_running
             echo "Opening URLs in the current browser window"
             open -a $browser $all_urls
         else
             echo "Opening URLs in a new browser window"
-            open -n -a $browser $all_urls
+            open --new -a $browser $all_urls
         end
     end
 end
