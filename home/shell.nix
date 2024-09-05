@@ -86,6 +86,10 @@ in
       enableFishIntegration = config.flags.enableFishShell;
 
       settings = {
+        time = {
+          disabled = false;
+          time_format = "%h %d %R";
+        };
         add_newline = false;
         aws.format = "on [$symbol$profile]($style) ";
         gcloud.disabled = true;
