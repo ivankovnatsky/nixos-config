@@ -21,6 +21,7 @@
 
     ../../home/nixvim
     ../../home/nixvim/plugins/gen-nvim
+    # ../../home/nixvim/plugins/octo-nvim
   ];
   flags = {
     enableFishShell = true;
@@ -130,6 +131,8 @@
   programs.nixvim = {
     editorconfig.enable = true;
     plugins = {
+      # Enable when it will be update to at least this version:
+      # https://github.com/pwntester/octo.nvim/commit/b4923dc97555c64236c4535b2adf75c74c00caca
       octo.enable = true;
       lint = {
         lintersByFt = {
