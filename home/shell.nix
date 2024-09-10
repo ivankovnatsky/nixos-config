@@ -32,7 +32,7 @@ let
       wl-copy = lib.mkIf isLinux "${pkgs.wl-clipboard}/bin/wl-copy -n";
     } else commonShellAliases // {
       tf = "terraform";
-      k = "${pkgs.kubectl}/bin/kubectl";
+      k = "${pkgs.kubectl}/bin/kubectl --no-headers";
     };
 
   # vimPlugin = builtins.fetchurl {
