@@ -26,6 +26,15 @@ in
         font_size ${builtins.toString fontSize}
 
         macos_menubar_title_max_length 50
+        # https://github.com/kovidgoyal/kitty/issues/3458#issuecomment-1312957967
+        # Make it look more like Terminal.app
+        # macos_thicken_font 0.5
+
+        # font_size 13.75
+        # modify_font cell_height 1.2
+        # modify_font cell_width 95%
+        # text_composition_strategy legacy
+
         allow_remote_control yes
         adjust_line_height 115%
         hide_window_decorations titlebar-only
