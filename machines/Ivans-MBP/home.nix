@@ -10,6 +10,7 @@
     ../../home/git.nix
     ../../home/lsd.nix
     ../../home/mpv.nix
+    ../../home/kitty.nix
     ../../home/tmux.nix
     ../../home/shell.nix
     ../../home/direnv.nix
@@ -70,6 +71,7 @@
 
       ghorg
 
+      hadolint
       docker-client
       docker-compose
 
@@ -95,6 +97,7 @@
       kubectx
       kdash
       kail
+      kubernetes-helm
       eks-node-viewer
 
       fluxcd
@@ -152,6 +155,7 @@
         sources = {
           diagnostics = {
             statix.enable = true;
+            hadolint.enable = true;
           };
           formatting = {
             # pretty_php.enable = true;
