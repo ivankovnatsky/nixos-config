@@ -52,6 +52,7 @@
       "eloston-chromium"
       "orbstack"
       "twingate"
+      "kitty"
     ];
     masApps = {
       "1Password for Safari" = 1569813296;
@@ -89,6 +90,8 @@
       # TODO: see if making a Dock web app could be automated.
       { path = "~/Applications/Claude.app/"; }
       { path = "~/Applications/ChatGPT.app/"; }
+      { type = "spacer"; section = "apps"; }
+      { path = "~/Applications/Chromium Apps.localized/Google Meet.app/"; }
       {
         path = "${config.users.users."ivan".home}/Downloads/";
         section = "others";
