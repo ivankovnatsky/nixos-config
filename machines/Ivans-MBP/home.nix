@@ -66,6 +66,7 @@
       jq
 
       magic-wormhole
+      rclone
 
       devbox
 
