@@ -50,6 +50,7 @@ in
       typst
       typstfmt
       du-dust
+      duf
       genpass
       fswatch
 
