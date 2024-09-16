@@ -17,6 +17,8 @@ in
     ./plugins/lsp
     ./plugins/none-ls
     ./plugins/lspsaga
+    # ./plugins/gitsigns
+    ./plugins/git-blame
   ];
   # https://github.com/elythh/nixvim
   programs.nixvim = {
