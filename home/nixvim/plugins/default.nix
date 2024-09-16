@@ -28,7 +28,6 @@
       lastplace.enable = true;
       commentary.enable = true;
       fugitive.enable = true;
-      gitblame.enable = true;
       # Somehow typing `r` in search escapes search and places cursor in text,
       # even though it did not find any occurrences
       # flash.enable = true;

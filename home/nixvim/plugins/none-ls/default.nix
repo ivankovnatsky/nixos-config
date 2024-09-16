@@ -11,7 +11,7 @@
           updateInInsert = false;
           sources = {
             code_actions = {
-              gitsigns.enable = true;
+              # gitsigns.enable = true;
             };
             # Normally I would wanted for native LSP to handle this, but for some
             # reason it stopped working, I'm not sure why, but I think I recall
