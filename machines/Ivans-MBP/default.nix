@@ -74,7 +74,6 @@
     dock.enable = true;
     # TODO: can dock be streched 100% horizontally?
     dock.entries = [
-      { path = "/System/Applications/Utilities/Terminal.app/"; }
       { path = "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/"; }
       { path = "/System/Applications/Mail.app/"; }
       { path = "/System/Applications/Calendar.app/"; }
@@ -82,7 +81,14 @@
       { path = "/System/Applications/Notes.app/"; }
       { path = "/System/Applications/App Store.app/"; }
       { path = "/System/Applications/System Settings.app/"; }
+
       { type = "spacer"; section = "apps"; }
+
+      { path = "/System/Applications/Utilities/Terminal.app/"; }
+      { path = "/System/Applications/Utilities/Activity Monitor.app/"; }
+
+      { type = "spacer"; section = "apps"; }
+
       { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Chromium.app/"; }
       { path = "/Applications/Slack.app/"; }
