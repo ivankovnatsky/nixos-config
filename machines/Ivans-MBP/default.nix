@@ -90,11 +90,14 @@
       { type = "spacer"; section = "apps"; }
 
       # TODO: see if making a Dock web app could be automated.
-      { path = "~/Applications/Google Meet.app/"; }
       { path = "~/Applications/Notion.app/"; }
       { path = "~/Applications/Claude.app/"; }
       { path = "~/Applications/ChatGPT.app/"; }
       { path = "~/Applications/Тривога.app/"; }
+
+      { type = "spacer"; section = "apps"; }
+
+      { path = "~/Applications/Chromium Apps.localized/Google Meet.app/"; }
 
       {
         path = "${config.users.users."ivan".home}/Downloads/";
