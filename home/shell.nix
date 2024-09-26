@@ -17,6 +17,7 @@ let
     mkdir = "mkdir -p";
     grep = "${pkgs.ripgrep}/bin/rg";
     tree = "${pkgs.lsd}/bin/lsd --tree";
+    syncthing = "${pkgs.syncthing}/bin/syncthing serve --no-browser";
     stc = "${pkgs.stc-cli}/bin/stc -homedir ${syncthingHomeDir}";
     vim = "vim -n -c 'set noswapfile'";
 
