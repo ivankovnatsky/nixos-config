@@ -23,6 +23,8 @@
         AppleKeyboardUIMode = 3;
       };
       CustomUserPreferences = {
+        # TODO:
+        # * Tab layout: Compact tabs
         "com.apple.Safari" = {
           "ShowFullURLInSmartSearchField" = true;
         };
@@ -47,6 +49,7 @@
     ];
     casks = [
       "firefox"
+      "eloston-chromium"
       "balenaetcher"
       "mullvadvpn"
       "vlc"
@@ -86,6 +89,12 @@
       { path = "/System/Applications/Utilities/Activity Monitor.app/"; }
       { path = "/System/Applications/Passwords.app/"; }
       { path = "/System/Applications/iPhone Mirroring.app/"; }
+
+      { type = "spacer"; section = "apps"; }
+
+      { path = "/Applications/Firefox.app/"; }
+      { path = "/Applications/Chromium.app/"; }
+      { path = "/Applications/Bitwarden.app/"; }
 
       { type = "spacer"; section = "apps"; }
 
