@@ -72,6 +72,8 @@ in
       # To use PC mouse with natural scrolling
       nixpkgs-master.mos
 
+      battery-toolkit
+
       username
 
       watchman
@@ -85,6 +87,7 @@ in
   programs = {
     nixvim = {
       plugins = {
+        octo.enable = true;
         lsp = {
           servers = {
             eslint.enable = true;
