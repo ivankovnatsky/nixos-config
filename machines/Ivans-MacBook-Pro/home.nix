@@ -31,6 +31,8 @@
     stats
 
     magic-wormhole
+
+    battery-toolkit
   ];
 
   home.username = "ivan";
