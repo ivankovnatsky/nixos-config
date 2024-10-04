@@ -17,8 +17,6 @@ function set_wallpaper
         end tell
     end tell
     '
-    
-    echo "Wallpaper set to $color"
 end
 
 # Get the current theme
@@ -28,9 +26,9 @@ set current_theme (get_current_theme)
 if test "$current_theme" = "true"
     osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to false'
     set_wallpaper "Silver"
-    echo "Switched to Light Mode with Silver wallpaper"
+    echo "Switched to Light appearance"
 else
     osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to true'
     set_wallpaper "Stone"
-    echo "Switched to Dark Mode with Stone wallpaper"
+    echo "Switched to Dark appearance"
 end
