@@ -15,7 +15,17 @@
 
     plugins = with pkgs; [ tmuxPlugins.sensible tmuxPlugins.yank ];
 
+    # I use tabs in Terminal.app, so no need to show tmux status bar, but I
+    # need tmux for 24bit color gama.
+    # Yes, I just need to use another terminal, right. But I don't like them
+    # for not being integrated into macOS too deep and the current
+    # functionality is ok for me.
     extraConfig = ''
+      # Check if running on macOS and in Terminal.app
+      if-shell "[ $(uname) = 'Darwin' ] && [ $TERM_PROGRAM = 'Apple_Terminal' ]" \
+        "set -g status off" \
+        "set -g status on"
+
       set -g status-right ""
       set -g status-left-length 30
 
