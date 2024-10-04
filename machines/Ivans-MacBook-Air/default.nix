@@ -56,6 +56,7 @@
     ];
     masApps = {
       "Numbers" = 409203825;
+      "Pages" = 409201541;
       "Bitwarden" = 1352778147;
       "Dark Reader for Safari" = 1438243180;
     };
