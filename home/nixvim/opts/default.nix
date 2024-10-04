@@ -5,7 +5,7 @@
     opts = {
       # My options
       # Background
-      background = if config.flags.darkMode then "dark" else "light";
+      # background = if config.flags.darkMode then "dark" else "light";
 
       # Disable mouse mode, this is needed for handy copy-pasting from the
       # command line.
@@ -109,6 +109,8 @@
         'фa,іs,вd,аf,пg,рh,оj,лk,дl,ж\\;,є\',ґ\\,яz,чx,сc,мv,иb,тn,ьm,б\\,,ю.,' ..
         'ЙQ,ЦW,УE,КR,ЕT,НY,ГU,ШI,ЩO,ЗP,Х{,Ї},ФA,' ..
         'ІS,ВD,АF,ПG,РH,ОJ,ЛK,ДL,Ж\\:,Є\\",Ґ\\|,ЯZ,ЧX,СC,МV,ИB,ТN,ЬM,Б\\<,Ю>,№#'
+
+      ${builtins.readFile ./appearance.lua}
     '';
   };
 }
