@@ -29,10 +29,10 @@
     # To use PC mouse with natural scrolling
     nixpkgs-master.mos
     stats
+    battery-toolkit
+    coconutbattery
 
     magic-wormhole
-
-    battery-toolkit
   ];
 
   home.username = "ivan";
