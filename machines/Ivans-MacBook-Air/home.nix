@@ -78,6 +78,10 @@ in
 
       watchman
       watchman-make
+
+      (python312.withPackages (ps: with ps; [
+        grip
+      ]))
     ];
     sessionVariables = {
       EDITOR = config.flags.editor;
