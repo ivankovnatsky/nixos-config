@@ -28,6 +28,7 @@ rebuild-watchman:
 			'**/*.sh' \
 			'**/*.fish' \
 			'**/*.lua' \
+			'flake.lock' \
 		--target default
 
 rebuild-impure/nixos:
