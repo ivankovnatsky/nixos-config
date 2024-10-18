@@ -9,7 +9,7 @@ end
 function set_wallpaper
     set color $argv[1]
     set file_path "/System/Library/Desktop Pictures/Solid Colors/$color.png"
-    
+
     osascript -e '
     tell application "System Events"
         tell every desktop
@@ -17,6 +17,25 @@ function set_wallpaper
         end tell
     end tell
     '
+end
+
+function open_settings
+    # We need to close to make sure we control on which desktop the app will be
+    # opened.
+    osascript -e 'quit app "System Settings"'
+
+    # Open System Settings directly to Wallpaper preferences
+    osascript -e '
+    tell application "System Settings"
+        activate
+        delay 0.5
+        tell application "System Events"
+            tell process "System Settings"
+                click menu item "Wallpaper" of menu "View" of menu bar 1
+            end tell
+        end tell
+    end tell
+    ' 1>/dev/null
 end
 
 # Get the current theme
@@ -32,3 +51,5 @@ else
     set_wallpaper "Stone"
     echo "Switched to Dark appearance"
 end
+
+open_settings
