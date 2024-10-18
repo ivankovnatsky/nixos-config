@@ -1,5 +1,8 @@
 { pkgs, config, ... }:
 
+let homePath = config.users.users."ivan".home;
+
+in
 {
   imports = [
     ../../system/darwin.nix
@@ -113,14 +116,16 @@
       { type = "spacer"; section = "apps"; }
 
       # TODO: see if making a Dock web app could be automated.
-      { path = "~/Applications/WhatsApp Web.app/"; }
-      { path = "~/Applications/Telegram Web.app/"; }
-      { path = "~/Applications/Claude.app/"; }
-      { path = "~/Applications/ChatGPT.app/"; }
-      { path = "~/Applications/Тривога.app/"; }
+      { path = "${homePath}/Applications/Тривога.app/"; }
+      { path = "${homePath}/Applications/WhatsApp Web.app/"; }
+      { path = "${homePath}/Applications/Telegram Web.app/"; }
+      { path = "${homePath}/Applications/Claude.app/"; }
+      { path = "${homePath}/Applications/ChatGPT.app/"; }
+      { path = "${homePath}/Applications/LinkedIn.app/"; }
+      { path = "${homePath}/Applications/OLX.ua.app/"; }
 
       {
-        path = "${config.users.users."ivan".home}/Downloads/";
+        path = "${homePath}/Downloads/";
         section = "others";
       }
     ];
