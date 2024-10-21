@@ -23,7 +23,6 @@
     watchman
     watchman-make
 
-    ollama
     rectangle
 
     # To use PC mouse with natural scrolling
