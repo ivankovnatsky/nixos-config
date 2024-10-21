@@ -57,8 +57,6 @@ in
       bitwarden-cli
       jq
 
-      nixpkgs-master.ollama
-
       rust-analyzer
       cargo
       rustc
