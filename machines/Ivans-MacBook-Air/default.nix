@@ -104,6 +104,7 @@ in
       { path = "/System/Applications/Utilities/Terminal.app/"; }
       { path = "/System/Applications/Utilities/Activity Monitor.app/"; }
       { path = "/System/Applications/Passwords.app/"; }
+      { path = "/System/Library/CoreServices/Applications/Keychain Access.app/"; }
       { path = "/System/Applications/iPhone Mirroring.app/"; }
 
       { type = "spacer"; section = "apps"; }
@@ -117,6 +118,7 @@ in
 
       # TODO: see if making a Dock web app could be automated.
       { path = "${homePath}/Applications/Тривога.app/"; }
+      { path = "${homePath}/Applications/X.app/"; }
       { path = "${homePath}/Applications/WhatsApp Web.app/"; }
       { path = "${homePath}/Applications/Telegram Web.app/"; }
       { path = "${homePath}/Applications/Claude.app/"; }
