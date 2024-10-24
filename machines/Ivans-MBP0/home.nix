@@ -38,6 +38,7 @@
       # To use PC mouse with natural scrolling
       nixpkgs-master.mos
       stats
+      battery-toolkit
 
       home-manager
 
