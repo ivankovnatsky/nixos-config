@@ -31,8 +31,7 @@
       };
     };
   };
-  fonts.fontDir.enable = true;
-  fonts.fonts = with pkgs; [
+  fonts.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "Hack" ]; })
   ];
   homebrew = {
@@ -52,8 +51,7 @@
       "eloston-chromium"
       "orbstack"
     ];
-    masApps = {
-    };
+    masApps = { };
     caskArgs = {
       no_quarantine = true;
     };
