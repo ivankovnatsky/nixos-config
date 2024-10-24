@@ -115,8 +115,6 @@
       git-secrets
       delta
 
-      bclm
-
       (python312.withPackages (ps: with ps; [
         pip
       ]))
