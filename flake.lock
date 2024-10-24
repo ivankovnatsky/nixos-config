@@ -259,11 +259,11 @@
     "homebrew-bundle": {
       "flake": false,
       "locked": {
-        "lastModified": 1717457442,
-        "narHash": "sha256-FMDCqRXGZBmcjDgVc8NaOnn34BeAr5QNc+smI79URx4=",
+        "lastModified": 1729724566,
+        "narHash": "sha256-g4VI1U6Mq4W2d1cf7S8hyIZbI+DVVwL8RCMCcmzX0Ys=",
         "owner": "homebrew",
         "repo": "homebrew-bundle",
-        "rev": "c12687f25df4820cd0c7c4dabd192a631b702cdc",
+        "rev": "f3e5960cf1c15f1bfdabe42c173df6592c787249",
         "type": "github"
       },
       "original": {
