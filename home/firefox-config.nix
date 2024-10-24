@@ -55,14 +55,19 @@ let
   '';
 in
 {
+  # To make sure this will work you have to create profile manually on macOS:
+  #
+  # ```
+  # /Applications/Firefox.app/Contents/MacOS/firefox -P
+  # ```
   home.file =
     if config.flags.purpose == "work" then {
-      "${configPath}/Profiles/Work/user.js" =
+      "${configPath}/Profiles/Default/user.js" =
         if isDarwin then
           { text = defaultConfig; }
         else { };
 
-      "${configPath}/Profiles/Work/chrome/userChrome.css" =
+      "${configPath}/Profiles/Default/chrome/userChrome.css" =
         if isDarwin then
           { text = userChromeConfig; }
         else { };
