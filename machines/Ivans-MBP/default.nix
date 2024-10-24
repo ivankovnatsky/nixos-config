@@ -116,7 +116,6 @@
     (
       self: super: {
         watchman-make = super.callPackage ../../overlays/watchman-make.nix { };
-        bclm = super.callPackage ../../overlays/bclm.nix { };
       }
     )
   ];
