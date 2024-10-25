@@ -28,6 +28,17 @@
           "ShowFullURLInSmartSearchField" = true;
           "AutoShowToolbarInFullScreen" = true;
         };
+        "NSGlobalDomain" = {
+          # My keyboard does not support Globe switch key, or I don't know how
+          # to use it, don't want to use karabiner-elements for now.
+          "NSUserKeyEquivalents" = {
+            "Center" = "@~^c";
+            "Fill" = "@~^f";
+            "Right" = "@~^→";
+            "Left" = "@~^←";
+            "Return to Previous Size" = "@~^r";
+          };
+        };
       };
     };
   };
@@ -47,11 +58,15 @@
       "pam-reattach"
     ];
     casks = [
+      "microsoft-teams"
+
       "firefox"
       "eloston-chromium"
       "orbstack"
     ];
-    masApps = { };
+    masApps = {
+      "Slack for Desktop" = 803453959;
+    };
     caskArgs = {
       no_quarantine = true;
     };
@@ -80,11 +95,17 @@
 
       { path = "/System/Applications/Utilities/Terminal.app/"; }
       { path = "/System/Applications/Utilities/Activity Monitor.app/"; }
+      { path = "/System/Applications/Passwords.app/"; }
+
+      { type = "spacer"; section = "apps"; }
+
+      { path = "/Applications/Microsoft Teams.app/"; }
 
       { type = "spacer"; section = "apps"; }
 
       { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Chromium.app/"; }
+      { path = "/Applications/Slack.app/"; }
 
       { type = "spacer"; section = "apps"; }
 
