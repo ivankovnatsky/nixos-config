@@ -11,6 +11,7 @@
     ../../home/shell.nix
     ../../home/direnv.nix
     ../../home/scripts.nix
+    ../../home/pass.nix
     ../../home/k9s.nix
     ../../home/terraform.nix
     ../../home/yamlint.nix
@@ -26,7 +27,9 @@
   };
   home = {
     packages = with pkgs; [
+      defaultbrowser
       dust
+      genpass
 
       watchman
       watchman-make
@@ -80,13 +83,15 @@
       (python312.withPackages (ps: with ps; [
         pip
       ]))
+
+      exiftool
     ];
 
     sessionVariables = {
       EDITOR = config.flags.editor;
       VISUAL = config.flags.editor;
     };
-    username = "ivan";
+    username = "Ivan.Kovnatskyi";
     stateVersion = "24.05";
   };
 

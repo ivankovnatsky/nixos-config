@@ -1,5 +1,8 @@
 { config, pkgs, ... }:
 
+let userName = "Ivan.Kovnatskyi";
+
+in
 {
   imports = [
     ../../system/darwin.nix
@@ -9,7 +12,7 @@
 
     ../../modules/secrets
   ];
-  networking.hostName = "Ivans-MBP0";
+  users.users.${userName}.home = "/Users/${userName}";
   flags = {
     enableFishShell = true;
     purpose = "work";
@@ -58,15 +61,8 @@
       "pam-reattach"
     ];
     casks = [
-      "microsoft-teams"
-
-      "firefox"
-      "eloston-chromium"
-      "orbstack"
     ];
-    masApps = {
-      "Slack for Desktop" = 803453959;
-    };
+    masApps = { };
     caskArgs = {
       no_quarantine = true;
     };
@@ -76,7 +72,7 @@
     sudo = {
       enable = true;
       configContent = ''
-        Defaults:ivan timestamp_timeout=240
+        Defaults:${userName} timestamp_timeout=240
       '';
     };
     dock.enable = true;
@@ -84,11 +80,6 @@
     dock.entries = [
       { path = "/System/Applications/Launchpad.app/"; }
       { path = "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/"; }
-      { path = "/System/Applications/Mail.app/"; }
-      { path = "/System/Applications/Calendar.app/"; }
-      { path = "/System/Applications/Reminders.app/"; }
-      { path = "/System/Applications/Notes.app/"; }
-      { path = "/System/Applications/App Store.app/"; }
       { path = "/System/Applications/System Settings.app/"; }
 
       { type = "spacer"; section = "apps"; }
@@ -99,13 +90,11 @@
 
       { type = "spacer"; section = "apps"; }
 
-      { path = "/Applications/Microsoft Teams.app/"; }
-
-      { type = "spacer"; section = "apps"; }
-
+      { path = "/Applications/Kandji Self Service.app/"; }
       { path = "/Applications/Firefox.app/"; }
-      { path = "/Applications/Chromium.app/"; }
+      { path = "/Applications/Google Chrome.app/"; }
       { path = "/Applications/Slack.app/"; }
+      { path = "/Applications/zoom.us.app/"; }
 
       { type = "spacer"; section = "apps"; }
 
@@ -118,7 +107,8 @@
       # { path = "~/Applications/Chromium Apps.localized/Google Meet.app/"; }
 
       {
-        path = "${config.users.users."ivan".home}/Downloads/";
+        # FIXME:
+        path = "${config.users.users.${userName}.home}/Downloads/";
         section = "others";
       }
     ];

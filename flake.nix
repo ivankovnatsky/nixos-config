@@ -58,7 +58,7 @@
 
   outputs = { self, ... }@inputs:
     let
-      makeDarwinConfig = { hostname, system, modules, homeModules }:
+      makeDarwinConfig = { hostname, system, modules, homeModules, username }:
         inputs.darwin.lib.darwinSystem {
           inherit system;
 
@@ -75,7 +75,7 @@
 
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.users.ivan = {
+              home-manager.users.${username} = {
                 imports = [
                   ./machines/${hostname}/home.nix
                   inputs.nixvim.homeManagerModules.nixvim
@@ -99,6 +99,7 @@
         "Ivans-MacBook-Pro" = makeDarwinConfig {
           hostname = "Ivans-MacBook-Pro";
           system = "aarch64-darwin";
+          username = "ivan";
           modules = [
             ({ config, ... }: {
               homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
@@ -146,6 +147,7 @@
         "Ivans-MacBook-Air" = makeDarwinConfig {
           hostname = "Ivans-MacBook-Air";
           system = "aarch64-darwin";
+          username = "ivan";
           modules = [
             ({ config, ... }: {
               homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
@@ -196,6 +198,7 @@
         "Ivans-MBP" = makeDarwinConfig {
           hostname = "Ivans-MBP";
           system = "aarch64-darwin";
+          username = "ivan";
           modules = [
             ({ config, ... }: {
               homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
@@ -245,6 +248,7 @@
         "Ivans-MBP0" = makeDarwinConfig {
           hostname = "Ivans-MBP0";
           system = "aarch64-darwin";
+          username = "Ivan.Kovnatskyi";
           modules = [
             ({ config, ... }: {
               homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
@@ -259,7 +263,7 @@
                 enableRosetta = false;
 
                 # User owning the Homebrew prefix
-                user = "ivan";
+                user = "Ivan.Kovnatskyi";
 
                 # Automatically migrate existing Homebrew installations
                 autoMigrate = true;
