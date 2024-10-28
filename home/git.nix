@@ -1,5 +1,8 @@
 { config, pkgs, ... }:
 
+let
+  githubEmailId = "75213+ivankovnatsky@users.noreply.github.com";
+in
 {
   home.packages = with pkgs; [
     git-extras
@@ -24,32 +27,12 @@
 
   programs.git = {
     enable = true;
-    userName = if config.flags.purpose == "home" then "Ivan Kovnatsky" else "Ivan Kovnatskyi";
-    userEmail =
-      if config.flags.purpose == "home"
-      then "75213+ivankovnatsky@users.noreply.github.com"
-      else "176893148+ivan-kovnatskyi@users.noreply.github.com";
+    userName = "Ivan Kovnatsky";
+    userEmail = githubEmailId;
     signing = {
       signByDefault = true;
-      key =
-        if config.flags.purpose == "home"
-        then "75213+ivankovnatsky@users.noreply.github.com"
-        else "176893148+ivan-kovnatskyi@users.noreply.github.com";
+      key = githubEmailId;
     };
-    includes =
-      if config.flags.purpose == "work" then [
-        {
-          condition = "gitdir:~/Sources/github.com/ivankovnatsky/";
-          contents = {
-            user = {
-              name = "Ivan Kovnatsky";
-              email = "75213+ivankovnatsky@users.noreply.github.com";
-              signingKey = "75213+ivankovnatsky@users.noreply.github.com";
-            };
-            commit.gpgSign = true;
-          };
-        }
-      ] else [ ];
     ignores = [
       ".stignore"
       "__worktrees/"
