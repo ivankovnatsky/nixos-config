@@ -9,6 +9,7 @@
 
     ../../modules/secrets
   ];
+  users.users.ivan.home = "/Users/ivan";
   networking.hostName = "Ivans-MBP";
   flags = {
     enableFishShell = true;

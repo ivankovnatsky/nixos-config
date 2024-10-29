@@ -11,6 +11,7 @@ in
 
     ../../modules/secrets
   ];
+  users.users.ivan.home = "/Users/ivan";
   networking.hostName = "Ivans-MacBook-Air";
   flags = {
     enableFishShell = true;
@@ -61,6 +62,7 @@ in
       "pam-reattach"
     ];
     casks = [
+      "microsoft-teams"
       "firefox"
       "eloston-chromium"
       "balenaetcher"
@@ -124,6 +126,10 @@ in
       { path = "${homePath}/Applications/ChatGPT.app/"; }
       { path = "${homePath}/Applications/LinkedIn.app/"; }
       { path = "${homePath}/Applications/OLX.ua.app/"; }
+
+      { type = "spacer"; section = "apps"; }
+
+      { path = "/Applications/Microsoft Teams.app/"; }
 
       {
         path = "${homePath}/Downloads/";
