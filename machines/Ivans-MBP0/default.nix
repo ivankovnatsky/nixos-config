@@ -1,5 +1,6 @@
 { config, pkgs, ... }:
 
+# FIXME: Add global user variable
 let userName = "Ivan.Kovnatskyi";
 
 in
@@ -61,6 +62,10 @@ in
       "pam-reattach"
     ];
     casks = [
+      "openlens"
+      "orbstack"
+      "zed"
+      "vscodium"
     ];
     masApps = { };
     caskArgs = {
@@ -95,16 +100,17 @@ in
       { path = "/Applications/Google Chrome.app/"; }
       { path = "/Applications/Slack.app/"; }
       { path = "/Applications/zoom.us.app/"; }
+      { path = "/Applications/ChatGPT.app/"; }
+      { path = "/Applications/DBeaver.app/"; }
+      { path = "/Applications/Zed.app/"; }
+      { path = "/Applications/VSCodium.app/"; }
+      { path = "/Applications/Bitwarden.app/"; }
 
       { type = "spacer"; section = "apps"; }
 
       # TODO: see if making a Dock web app could be automated.
-      # { path = "~/Applications/Claude.app/"; }
+      { path = "~/Applications/Claude.app/"; }
       # { path = "~/Applications/ChatGPT.app/"; }
-
-      { type = "spacer"; section = "apps"; }
-
-      # { path = "~/Applications/Chromium Apps.localized/Google Meet.app/"; }
 
       {
         # FIXME:

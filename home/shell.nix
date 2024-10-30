@@ -32,7 +32,9 @@ let
       transmission = "${pkgs.transmission}/bin/transmission-remote --list";
       wl-copy = lib.mkIf isLinux "${pkgs.wl-clipboard}/bin/wl-copy -n";
     } else commonShellAliases // {
+      # We tenv version manager so pkgs interpolation is not needed.
       tf = "terraform";
+      tg = "terragrunt";
       k = "${pkgs.kubectl}/bin/kubectl";
     };
 
