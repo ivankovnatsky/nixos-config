@@ -49,6 +49,13 @@ if [[ -z $AWS_SSO ]]; then
     display_help
 fi
 
+# Current aws-sso output:
+#
+# 00000000000001 | AccountAlias | AWSIamRoleName | AccountAlias:AWSIamRoleName | Expired
+extract_role_name() {
+    awk '{print $8}'
+}
+
 # Function to select an AWS account using fzf
 select_aws_account() {
     local role="$1"
@@ -56,12 +63,12 @@ select_aws_account() {
 
     if [[ -z $AWS_ACCOUNT_ID ]]; then
         if [[ -z $role ]]; then
-            account_id=$(aws-sso --sso "$AWS_SSO" | rg '^[0-9]+' | fzf | awk '{print $7}')
+            account_id=$(aws-sso --sso "$AWS_SSO" | rg '^[0-9]+' | fzf | extract_role_name)
         else
-            account_id=$(aws-sso --sso "$AWS_SSO" | rg '^[0-9]+' | rg "$role" | fzf | awk '{print $7}')
+            account_id=$(aws-sso --sso "$AWS_SSO" | rg '^[0-9]+' | rg "$role" | fzf | extract_role_name)
         fi
     else
-        account_id=$(aws-sso --sso "$AWS_SSO" | rg '^[0-9]+' | rg "$role" | rg "$AWS_ACCOUNT_ID" | awk '{print $7}')
+        account_id=$(aws-sso --sso "$AWS_SSO" | rg '^[0-9]+' | rg "$role" | rg "$AWS_ACCOUNT_ID" | extract_role_name)
     fi
 
     echo "$account_id"
