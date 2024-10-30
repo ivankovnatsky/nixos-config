@@ -62,7 +62,6 @@ in
       "pam-reattach"
     ];
     casks = [
-      "openlens"
       "orbstack"
       "zed"
       "vscodium"
