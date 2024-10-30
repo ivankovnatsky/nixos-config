@@ -15,6 +15,7 @@
     ../../home/k9s.nix
     ../../home/terraform.nix
     ../../home/yamlint.nix
+    ../../home/zed.nix
 
     ../../home/nixvim
     ../../home/nixvim/plugins/gen-nvim
@@ -70,7 +71,9 @@
       kustomize
       kubectl-images
       kubectx
+
       kdash
+
       kail
       kubernetes-helm
       eks-node-viewer
@@ -85,6 +88,10 @@
       ]))
 
       exiftool
+
+      vault
+
+      postgresql
     ];
 
     sessionVariables = {
