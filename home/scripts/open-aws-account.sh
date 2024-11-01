@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-# Constans
+# Constants
 APP_NAME="Google Chrome"
 CHROME_BROWSER_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+CHROME_PREFS_PATH="$HOME/Library/Application Support/Google/Chrome"
 
 # Variables
 BROWSER="firefox"
@@ -67,7 +68,7 @@ fi
 #
 # 00000000000001 | AccountAlias | AWSIamRoleName | AccountAlias:AWSIamRoleName | Expired
 extract_role_name() {
-    awk '{print $8}'
+    cut -d '|' -f 4 | tr -d ' '
 }
 
 # Function to select an AWS account using fzf
@@ -77,12 +78,12 @@ select_aws_account() {
 
     if [[ -z $AWS_ACCOUNT_ID ]]; then
         if [[ -z $role ]]; then
-            account_id=$(aws-sso --sso "$AWS_SSO" | rg '^[0-9]+' | fzf | extract_role_name)
+            account_id=$(aws-sso --config ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" | rg '^[0-9]+' | fzf | extract_role_name)
         else
-            account_id=$(aws-sso --sso "$AWS_SSO" | rg '^[0-9]+' | rg "$role" | fzf | extract_role_name)
+            account_id=$(aws-sso ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" | rg '^[0-9]+' | rg "$role" | fzf | extract_role_name)
         fi
     else
-        account_id=$(aws-sso --sso "$AWS_SSO" | rg '^[0-9]+' | rg "$role" | rg "$AWS_ACCOUNT_ID" | extract_role_name)
+        account_id=$(aws-sso ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" | rg '^[0-9]+' | rg "$role" | rg "$AWS_ACCOUNT_ID" | extract_role_name)
     fi
 
     echo "$account_id"
@@ -95,11 +96,24 @@ else
     PROFILE=$(select_aws_account "$AWS_SSO_ROLE")
 fi
 
+init_chrome_preferences() {
+    mkdir -p "$CHROME_PREFS_PATH/$PROFILE/"
+    cat <<EOF > "$CHROME_PREFS_PATH/$PROFILE/Preferences"
+{
+  "profile": {
+    "name": "$PROFILE"
+  }
+}
+EOF
+}
+
 # Launch AWS SSO console
 if [[ "$BROWSER" == "chrome" ]]; then
+    init_chrome_preferences
+
     # https://github.com/synfinatic/aws-sso-cli/blob/main/docs/config.md#authurlaction--browser--urlaction--urlexeccommand
-    URL=$(aws-sso console --config ~/.aws-sso/chrome.yaml --browser "$CHROME_BROWSER_PATH" --sso "$AWS_SSO" --profile "$PROFILE" 2>&1)
+    URL=$(aws-sso console --config ~/.aws-sso/"$BROWSER".yaml --browser "$CHROME_BROWSER_PATH" --sso "$AWS_SSO" --profile "$PROFILE" 2>&1)
     open --new -a "$APP_NAME" --args --profile-directory="$PROFILE" "$URL"
 else
-    aws-sso console --sso "$AWS_SSO" --profile "$PROFILE"
+    aws-sso console ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" --profile "$PROFILE"
 fi
