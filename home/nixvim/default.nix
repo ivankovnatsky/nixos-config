@@ -32,6 +32,7 @@ in
       vim-sneak
       vim-eunuch
 
+      midnight-nvim
       tokyonight-nvim
       # material-nvim
       # onenord-nvim
