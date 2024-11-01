@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 
+# Constans
+APP_NAME="Google Chrome"
+CHROME_BROWSER_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+
 # Variables
+BROWSER="firefox"
 AWS_SSO=""
 AWS_SSO_ROLE=""
 AWS_ACCOUNT_ID=""
 
 # Help function
 display_help() {
-    echo "Usage: $0 --sso <value> --role <value> [--account <value>]"
+    echo "Usage: $0 --browser --sso <value> --role <value> [--account <value>]"
     exit 1
 }
 
@@ -21,6 +26,10 @@ fi
 while [[ $# -gt 0 ]]; do
     key="$1"
     case $key in
+    --browser)
+        BROWSER="$2"
+        shift 2
+        ;;
     --sso)
         AWS_SSO="$2"
         shift 2
@@ -42,6 +51,11 @@ while [[ $# -gt 0 ]]; do
         ;;
     esac
 done
+
+if [[ $BROWSER != "firefox" && $BROWSER != "chrome" ]]; then
+    echo "Error: Wrong browser selected, use 'firefox' or 'chrome' only."
+    display_help
+fi
 
 # Check if the required argument is provided
 if [[ -z $AWS_SSO ]]; then
@@ -82,4 +96,10 @@ else
 fi
 
 # Launch AWS SSO console
-aws-sso console --sso "$AWS_SSO" --profile "$PROFILE"
+if [[ "$BROWSER" == "chrome" ]]; then
+    # https://github.com/synfinatic/aws-sso-cli/blob/main/docs/config.md#authurlaction--browser--urlaction--urlexeccommand
+    URL=$(aws-sso console --config ~/.aws-sso/chrome.yaml --browser "$CHROME_BROWSER_PATH" --sso "$AWS_SSO" --profile "$PROFILE" 2>&1)
+    open --new -a "$APP_NAME" --args --profile-directory="$PROFILE" "$URL"
+else
+    aws-sso console --sso "$AWS_SSO" --profile "$PROFILE"
+fi
