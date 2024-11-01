@@ -13,6 +13,7 @@ in
   # Ctrl + Shift + right click -- opens a Pager of the output under cursor
   home.file = {
     ".config/kitty/kitty.conf" = {
+      # TODO: Add auto-theme switcher based on system appearance.
       text = ''
         ${if config.flags.darkMode then ""
         else ''
