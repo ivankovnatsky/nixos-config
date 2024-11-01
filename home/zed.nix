@@ -1,4 +1,7 @@
+{ pkgs, ... }:
+
 {
+  home.packages = with pkgs; [ nixd ];
   home.file.".config/zed/settings.json".text = ''
     // Zed settings
     //

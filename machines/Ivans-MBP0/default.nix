@@ -18,7 +18,7 @@ in
     enableFishShell = true;
     purpose = "work";
     editor = "nvim";
-    darkMode = false;
+    darkMode = true;
   };
   security.pamCustom.enableSudoTouchIdAuth = true;
   system = {
@@ -28,10 +28,6 @@ in
         AppleKeyboardUIMode = 3;
       };
       CustomUserPreferences = {
-        "com.apple.Safari" = {
-          "ShowFullURLInSmartSearchField" = true;
-          "AutoShowToolbarInFullScreen" = true;
-        };
         "NSGlobalDomain" = {
           # My keyboard does not support Globe switch key, or I don't know how
           # to use it, don't want to use karabiner-elements for now.
@@ -62,9 +58,9 @@ in
       "pam-reattach"
     ];
     casks = [
+      "kitty"
       "orbstack"
       "zed"
-      "vscodium"
     ];
     masApps = { };
     caskArgs = {
@@ -83,12 +79,10 @@ in
     # TODO: can dock be streched 100% horizontally?
     dock.entries = [
       { path = "/System/Applications/Launchpad.app/"; }
-      { path = "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/"; }
       { path = "/System/Applications/System Settings.app/"; }
 
       { type = "spacer"; section = "apps"; }
 
-      { path = "/System/Applications/Utilities/Terminal.app/"; }
       { path = "/System/Applications/Utilities/Activity Monitor.app/"; }
       { path = "/System/Applications/Passwords.app/"; }
 
@@ -101,18 +95,20 @@ in
       { path = "/Applications/zoom.us.app/"; }
       { path = "/Applications/ChatGPT.app/"; }
       { path = "/Applications/DBeaver.app/"; }
-      { path = "/Applications/Zed.app/"; }
-      { path = "/Applications/VSCodium.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
 
       { type = "spacer"; section = "apps"; }
 
+      { path = "/Applications/kitty.app/"; }
+      { path = "/Applications/Zed.app/"; }
+      { path = "${pkgs.vscodium}/Applications/VSCodium.app/"; }
+
+      { type = "spacer"; section = "apps"; }
+
       # TODO: see if making a Dock web app could be automated.
-      { path = "~/Applications/Claude.app/"; }
-      # { path = "~/Applications/ChatGPT.app/"; }
+      { path = "${config.users.users.${userName}.home}/Applications/Claude.app/"; }
 
       {
-        # FIXME:
         path = "${config.users.users.${userName}.home}/Downloads/";
         section = "others";
       }

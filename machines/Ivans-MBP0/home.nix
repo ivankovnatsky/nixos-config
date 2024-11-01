@@ -6,16 +6,21 @@
 
     ../../home/firefox-config.nix
     ../../home/git.nix
+    ../../home/jujutsu.nix
     ../../home/lsd.nix
+    ../../home/kitty.nix
     ../../home/tmux.nix
     ../../home/shell.nix
     ../../home/direnv.nix
     ../../home/scripts.nix
     ../../home/pass.nix
+    ../../home/mpv.nix
+    ../../home/yt-dlp.nix
     ../../home/k9s.nix
     ../../home/terraform.nix
     ../../home/yamlint.nix
     ../../home/zed.nix
+    ../../home/vscode.nix
 
     ../../home/nixvim
     ../../home/nixvim/plugins/gen-nvim
@@ -24,7 +29,7 @@
     enableFishShell = true;
     purpose = "work";
     editor = "nvim";
-    darkMode = false;
+    darkMode = true;
   };
   home = {
     packages = with pkgs; [
@@ -80,7 +85,7 @@
 
       pre-commit
 
-      git-secrets
+      gitleaks
       delta
 
       (python312.withPackages (ps: with ps; [
@@ -117,6 +122,7 @@
         servers = {
           bashls.enable = true;
           terraformls.enable = true;
+          # groovyls.enable = true;
         };
       };
       none-ls = {
@@ -126,7 +132,6 @@
             hadolint.enable = true;
           };
           formatting = {
-            # pretty_php.enable = true;
             black = {
               enable = true;
               withArgs = ''
@@ -146,6 +151,9 @@
         };
       };
     };
+    extraPlugins = with pkgs.vimPlugins; [
+      Jenkinsfile-vim-syntax
+    ];
     extraConfigVim = ''
       augroup commentary
         autocmd FileType terraform setlocal commentstring=#\ %s
