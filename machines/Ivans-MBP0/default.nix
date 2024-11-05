@@ -78,6 +78,7 @@ in
     # TODO: can dock be streched 100% horizontally?
     dock.entries = [
       { path = "/System/Applications/Launchpad.app/"; }
+      { path = "/System/Applications/Calendar.app/"; }
       { path = "/System/Applications/System Settings.app/"; }
 
       { type = "spacer"; section = "apps"; }
