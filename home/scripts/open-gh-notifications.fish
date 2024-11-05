@@ -1,7 +1,5 @@
 #!/usr/bin/env fish
 
-set -g browser Safari
-
 function print_help
     echo "Usage: open-gh-notifications [OPTIONS]"
     echo ""
@@ -57,10 +55,10 @@ function main
     else
         if set -q _flag_running
             echo "Opening URLs in the current browser window"
-            open -a $browser $all_urls
+            open $all_urls
         else
             echo "Opening URLs in a new browser window"
-            open --new -a $browser $all_urls
+            open --new $all_urls
         end
     end
 end
