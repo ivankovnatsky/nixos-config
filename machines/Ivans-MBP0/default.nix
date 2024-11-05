@@ -60,7 +60,6 @@ in
     casks = [
       "kitty"
       "orbstack"
-      "zed"
     ];
     masApps = { };
     caskArgs = {
@@ -84,12 +83,9 @@ in
       { type = "spacer"; section = "apps"; }
 
       { path = "/System/Applications/Utilities/Activity Monitor.app/"; }
-      { path = "/System/Applications/Passwords.app/"; }
 
       { type = "spacer"; section = "apps"; }
 
-      { path = "/Applications/Kandji Self Service.app/"; }
-      { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Google Chrome.app/"; }
       { path = "/Applications/Slack.app/"; }
       { path = "/Applications/zoom.us.app/"; }
@@ -100,8 +96,6 @@ in
       { type = "spacer"; section = "apps"; }
 
       { path = "/Applications/kitty.app/"; }
-      { path = "/Applications/Zed.app/"; }
-      { path = "${pkgs.vscodium}/Applications/VSCodium.app/"; }
 
       { type = "spacer"; section = "apps"; }
 
