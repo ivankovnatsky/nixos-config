@@ -19,8 +19,6 @@
     ../../home/k9s.nix
     ../../home/terraform.nix
     ../../home/yamlint.nix
-    ../../home/zed.nix
-    ../../home/vscode.nix
 
     ../../home/nixvim
     ../../home/nixvim/plugins/gen-nvim
