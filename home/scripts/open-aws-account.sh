@@ -6,7 +6,7 @@ CHROME_BROWSER_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrom
 CHROME_PREFS_PATH="$HOME/Library/Application Support/Google/Chrome"
 
 # Variables
-BROWSER="firefox"
+BROWSER="chrome"
 AWS_SSO=""
 AWS_SSO_ROLE=""
 AWS_ACCOUNT_ID=""
