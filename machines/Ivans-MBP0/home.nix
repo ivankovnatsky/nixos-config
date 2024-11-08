@@ -4,7 +4,6 @@
   imports = [
     ../../modules/flags
 
-    ../../home/firefox-config.nix
     ../../home/git.nix
     ../../home/jujutsu.nix
     ../../home/lsd.nix
@@ -69,6 +68,10 @@
       ssm-session-manager-plugin
       iam-policy-json-to-terraform
 
+      terraformer
+      terragrunt-atlantis-config
+      infracost
+
       kubectl
       krew
       kustomize
@@ -76,6 +79,8 @@
       kubectx
 
       kdash
+
+      argocd
 
       kail
       kubernetes-helm
@@ -95,6 +100,11 @@
       vault
 
       postgresql
+
+      cloudflared
+
+      pv
+      pigz
     ];
 
     sessionVariables = {
@@ -119,6 +129,7 @@
       lsp = {
         servers = {
           bashls.enable = true;
+          pyright.enable = true;
           terraformls.enable = true;
           # groovyls.enable = true;
         };
@@ -130,6 +141,8 @@
             hadolint.enable = true;
           };
           formatting = {
+            # terragrunt_fmt.enable = true;
+            # terragrunt_validate.enable = true;
             black = {
               enable = true;
               withArgs = ''
@@ -159,6 +172,10 @@
       augroup END
     '';
   };
+  # https://github.com/nix-community/home-manager/blob/master/modules/programs/gh.nix#L115
+  programs.gh.extensions = with pkgs; [
+    gh-token
+  ];
 
   programs.home-manager.enable = true;
 }
