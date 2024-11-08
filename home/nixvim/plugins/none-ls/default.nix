@@ -18,6 +18,7 @@
             # that it worked before, at least for lua, nix and python files
             # only using LSP formatting capabilities.
             formatting = {
+              fish_indent.enable = true;
               nixpkgs_fmt.enable = true;
               stylua.enable = true;
             };
