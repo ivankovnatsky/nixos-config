@@ -6,6 +6,7 @@ let
   syncthingHomeDir = if isDarwin then "~/Library/Application\\ Support/Syncthing" else "~/.config/syncthing";
 
   commonShellAliases = {
+    # TODO: add function nix-prefetch-url $url | xargs nix hash to-sri --type sha256
     g = "${pkgs.git}/bin/git";
     cat = "${pkgs.bat}/bin/bat";
     curl = "${pkgs.curlie}/bin/curlie";
@@ -36,6 +37,7 @@ let
       tf = "terraform";
       tg = "terragrunt";
       k = "${pkgs.kubectl}/bin/kubectl";
+      argocd = "${pkgs.argocd}/bin/argocd --grpc-web";
     };
 
   # vimPlugin = builtins.fetchurl {
