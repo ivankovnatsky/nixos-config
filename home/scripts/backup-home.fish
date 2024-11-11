@@ -16,9 +16,9 @@ set --global darwin_excludes \
     --exclude="./$current_user/Library/Caches/com.apple.Safari" \
     --exclude="./$current_user/Library/Caches/CloudKit" \
     --exclude="./$current_user/Library/Caches/com.apple.HomeKit" \
-    --exclude="./$current_user/Library/Group Containers"
-    --exclude="**/*.sock" \
-    --exclude="**/.gnupg/S.*" \
+    --exclude="./$current_user/Library/Group Containers" \
+    --exclude="./**/*.sock" \
+    --exclude="./.gnupg/S.*"
 
 function backup_home
     pushd $HOME/..
