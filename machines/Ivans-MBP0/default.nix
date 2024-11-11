@@ -61,6 +61,7 @@ in
       "cursor"
       "kitty"
       "orbstack"
+      "zed"
     ];
     masApps = { };
     caskArgs = {
@@ -98,6 +99,8 @@ in
       { type = "spacer"; section = "apps"; }
 
       { path = "/Applications/kitty.app/"; }
+      { path = "/Applications/Zed.app/"; }
+      { path = "${pkgs.vscodium}/Applications/VSCodium.app/"; }
 
       { type = "spacer"; section = "apps"; }
 
