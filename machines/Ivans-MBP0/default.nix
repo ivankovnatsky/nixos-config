@@ -59,6 +59,7 @@ in
     ];
     casks = [
       "cursor"
+      "claude"
       "kitty"
       "orbstack"
       "zed"
@@ -101,11 +102,12 @@ in
       { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Zed.app/"; }
       { path = "${pkgs.vscodium}/Applications/VSCodium.app/"; }
+      { path = "/Applications/Cursor.app/"; }
+      { path = "/Applications/Claude.app/"; }
 
       { type = "spacer"; section = "apps"; }
 
       # TODO: see if making a Dock web app could be automated.
-      { path = "${config.users.users.${userName}.home}/Applications/Claude.app/"; }
 
       {
         path = "${config.users.users.${userName}.home}/Downloads/";
