@@ -117,67 +117,70 @@
     stateVersion = "24.05";
   };
 
-  programs.nixvim = {
-    editorconfig.enable = true;
-    plugins = {
-      # Enable when it will be update to at least this version:
-      # https://github.com/pwntester/octo.nvim/commit/b4923dc97555c64236c4535b2adf75c74c00caca
-      octo.enable = true;
-      lint = {
-        lintersByFt = {
-          terraform = [ "tflint" ];
-        };
-      };
-      lsp = {
-        servers = {
-          bashls.enable = true;
-          pyright.enable = true;
-          terraformls.enable = true;
-          # groovyls.enable = true;
-        };
-      };
-      none-ls = {
-        sources = {
-          diagnostics = {
-            statix.enable = true;
-            hadolint.enable = true;
+  programs = {
+    nixvim = {
+      editorconfig.enable = true;
+      plugins = {
+        # Enable when it will be update to at least this version:
+        # https://github.com/pwntester/octo.nvim/commit/b4923dc97555c64236c4535b2adf75c74c00caca
+        octo.enable = true;
+        lint = {
+          lintersByFt = {
+            terraform = [ "tflint" ];
           };
-          formatting = {
-            # terragrunt_fmt.enable = true;
-            # terragrunt_validate.enable = true;
-            black = {
-              enable = true;
-              withArgs = ''
-                {
-                  extra_args = { "--fast" },
-                }
-              '';
+        };
+        lsp = {
+          servers = {
+            bashls.enable = true;
+            pyright.enable = true;
+            terraformls.enable = true;
+            # groovyls.enable = true;
+          };
+        };
+        none-ls = {
+          sources = {
+            diagnostics = {
+              statix.enable = true;
+              hadolint.enable = true;
+            };
+            formatting = {
+              # terragrunt_fmt.enable = true;
+              # terragrunt_validate.enable = true;
+              black = {
+                enable = true;
+                withArgs = ''
+                  {
+                    extra_args = { "--fast" },
+                  }
+                '';
+              };
             };
           };
         };
-      };
-      conform-nvim = {
-        formattersByFt = {
-          python = [ "black" ];
-          lua = [ "stylua" ];
-          nix = [ "nixfmt" ];
+        conform-nvim = {
+          formattersByFt = {
+            python = [ "black" ];
+            lua = [ "stylua" ];
+            nix = [ "nixfmt" ];
+          };
         };
+        # https://github.com/yetone/avante.nvim
+        # avante.enable = true;
       };
+      extraPlugins = with pkgs.vimPlugins; [
+        Jenkinsfile-vim-syntax
+      ];
+      extraConfigVim = ''
+        augroup commentary
+          autocmd FileType terraform setlocal commentstring=#\ %s
+          autocmd FileType tf setlocal commentstring=#\ %s
+        augroup END
+      '';
     };
-    extraPlugins = with pkgs.vimPlugins; [
-      Jenkinsfile-vim-syntax
+    home-manager.enable = true;
+    # https://github.com/nix-community/home-manager/blob/master/modules/programs/gh.nix#L115
+    gh.extensions = with pkgs; [
+      gh-token
     ];
-    extraConfigVim = ''
-      augroup commentary
-        autocmd FileType terraform setlocal commentstring=#\ %s
-        autocmd FileType tf setlocal commentstring=#\ %s
-      augroup END
-    '';
   };
-  # https://github.com/nix-community/home-manager/blob/master/modules/programs/gh.nix#L115
-  programs.gh.extensions = with pkgs; [
-    gh-token
-  ];
-
-  programs.home-manager.enable = true;
 }
