@@ -31,13 +31,7 @@ in
         "NSGlobalDomain" = {
           # My keyboard does not support Globe switch key, or I don't know how
           # to use it, don't want to use karabiner-elements for now.
-          "NSUserKeyEquivalents" = {
-            "Center" = "@~^c";
-            "Fill" = "@~^f";
-            "Right" = "@~^→";
-            "Left" = "@~^←";
-            "Return to Previous Size" = "@~^r";
-          };
+          "NSUserKeyEquivalents" = { };
         };
       };
     };
