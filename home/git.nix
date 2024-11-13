@@ -34,8 +34,10 @@ in
       key = githubEmailId;
     };
     ignores = [
-      ".stignore"
-      "__worktrees/"
+      "**/.venv"
+      "**/venv"
+      "**/.stignore"
+      "**/__worktrees/"
     ];
     aliases = {
       a = "add";
