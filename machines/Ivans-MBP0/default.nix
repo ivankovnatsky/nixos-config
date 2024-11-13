@@ -99,10 +99,6 @@ in
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Claude.app/"; }
 
-      { type = "spacer"; section = "apps"; }
-
-      # TODO: see if making a Dock web app could be automated.
-
       {
         path = "${config.users.users.${userName}.home}/Downloads/";
         section = "others";
