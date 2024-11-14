@@ -4,6 +4,7 @@
   imports = [
     ../../modules/flags
 
+    ../../home/amethyst.nix
     ../../home/git.nix
     ../../home/jujutsu.nix
     ../../home/lsd.nix
