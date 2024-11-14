@@ -23,6 +23,9 @@ in
   security.pamCustom.enableSudoTouchIdAuth = true;
   system = {
     defaults = {
+      dock = {
+        mru-spaces = false;
+      };
       NSGlobalDomain = {
         # Allow tab focus in all controls, space to select.
         AppleKeyboardUIMode = 3;
