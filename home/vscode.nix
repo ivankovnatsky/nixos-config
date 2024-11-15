@@ -13,6 +13,9 @@ let
     "editor.renderLineHighlight" = "all";
     "diffEditor.renderSideBySide" = false;
     "diffEditor.ignoreTrimWhitespace" = false;
+    "files.insertFinalNewline" = true;
+    "files.trimFinalNewlines" = true;
+    "editor.renderFinalNewline" = false;
   };
 in
 {

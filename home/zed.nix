@@ -48,7 +48,11 @@
           }
         }
       },
-      "auto_update": false
+      "auto_update": false,
+      "buffer": {
+        "ensure_final_newline_on_save": true,
+        "show_end_of_line": false
+      }
     }
   '';
 }
