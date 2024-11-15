@@ -1,10 +1,8 @@
 { config, pkgs, ... }:
 
-let
-  inherit (pkgs.stdenv.targetPlatform) isDarwin;
-in
 {
   imports = [
+    ../../home/amethyst.nix
     ../../home/firefox-config.nix
     ../../home/mpv.nix
     ../../home/yt-dlp.nix
