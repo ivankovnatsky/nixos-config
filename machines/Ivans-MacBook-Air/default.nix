@@ -35,13 +35,7 @@ in
         "NSGlobalDomain" = {
           # My keyboard does not support Globe switch key, or I don't know how
           # to use it, don't want to use karabiner-elements for now.
-          "NSUserKeyEquivalents" = {
-            "Center" = "@~^c";
-            "Fill" = "@~^f";
-            "Right" = "@~^→";
-            "Left" = "@~^←";
-            "Return to Previous Size" = "@~^r";
-          };
+          "NSUserKeyEquivalents" = { };
         };
       };
     };
@@ -62,6 +56,7 @@ in
       "pam-reattach"
     ];
     casks = [
+      "amethyst"
       "microsoft-teams"
       "firefox"
       "eloston-chromium"
@@ -113,6 +108,9 @@ in
       { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Chromium.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
+
+      { type = "spacer"; section = "apps"; }
+
       { path = "${pkgs.coconutbattery}/Applications/coconutBattery.app/"; }
 
       { type = "spacer"; section = "apps"; }
@@ -122,8 +120,8 @@ in
       { path = "${homePath}/Applications/X.app/"; }
       { path = "${homePath}/Applications/WhatsApp Web.app/"; }
       { path = "${homePath}/Applications/Telegram Web.app/"; }
-      { path = "${homePath}/Applications/Claude.app/"; }
       { path = "${homePath}/Applications/ChatGPT.app/"; }
+      { path = "${homePath}/Applications/Claude.app/"; }
       { path = "${homePath}/Applications/LinkedIn.app/"; }
       { path = "${homePath}/Applications/OLX.ua.app/"; }
 
