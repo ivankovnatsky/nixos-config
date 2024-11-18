@@ -30,7 +30,7 @@ function backup_home
     pushd $HOME/..
     echo "Creating backup of home directory for $current_user..."
     sudo -v
-    sudo tar $darwin_excludes -cf - $current_user/ | pv | pigz > $backup_file
+    sudo tar $darwin_excludes -cvf - $current_user/ | pigz > $backup_file
 end
 
 function upload_backup

@@ -32,7 +32,7 @@ cd "$(dirname "$HOME")"
 echo "Creating backup of home directory for ${CURRENT_USER}..."
 sudo -v
 
-sudo tar "${DARWIN_EXCLUDES[@]}" -cf - "${CURRENT_USER}/" | pv | pigz > "${BACKUP_FILE}"
+sudo tar "${DARWIN_EXCLUDES[@]}" -cvf - "${CURRENT_USER}/" | pigz > "${BACKUP_FILE}"
 
 echo "Uploading backup to drive:..."
 rclone --progress copy "${BACKUP_FILE}" "drive:"
