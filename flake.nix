@@ -195,56 +195,6 @@
           ];
         };
 
-        "Ivans-MBP" = makeDarwinConfig {
-          hostname = "Ivans-MBP";
-          system = "aarch64-darwin";
-          username = "ivan";
-          modules = [
-            ({ config, ... }: {
-              homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
-            })
-            inputs.nix-homebrew.darwinModules.nix-homebrew
-            {
-              nix-homebrew = {
-                # Install Homebrew under the default prefix
-                enable = true;
-
-                # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
-                enableRosetta = false;
-
-                # User owning the Homebrew prefix
-                user = "ivan";
-
-                # Automatically migrate existing Homebrew installations
-                autoMigrate = true;
-
-                # Optional: Declarative tap management
-                taps = {
-                  "homebrew/homebrew-core" = inputs.homebrew-core;
-                  "homebrew/homebrew-cask" = inputs.homebrew-cask;
-                  "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
-                  "homebrew/homebrew-formulae" = inputs.homebrew-zackelia-formulae;
-                };
-
-                # Optional: Enable fully-declarative tap management
-                #
-                # With mutableTaps disabled, taps can no longer be added imperatively with `brew tap`.
-                mutableTaps = false;
-              };
-            }
-            ({
-              nixpkgs.overlays = [
-                (final: prev: {
-                  nixpkgs-master = import inputs.nixpkgs-master { system = final.system; config = final.config; };
-                  nixpkgs-unstable = import inputs.nixpkgs-unstable { system = final.system; config = final.config; };
-                })
-              ];
-            })
-          ];
-          homeModules = [
-          ];
-        };
-
         "Ivans-MBP0" = makeDarwinConfig {
           hostname = "Ivans-MBP0";
           system = "aarch64-darwin";
