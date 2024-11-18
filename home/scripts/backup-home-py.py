@@ -40,15 +40,14 @@ def backup_home():
 
         subprocess.run(["sudo", "-v"], check=True)
 
-        tar_cmd = ["sudo", "tar", "-cf", "-"]
+        tar_cmd = ["sudo", "tar", "-cvf", "-"]
         for exclude in DARWIN_EXCLUDES:
             tar_cmd.extend(["--exclude", exclude])
         tar_cmd.append(CURRENT_USER)
 
         with open(BACKUP_FILE, "wb") as f:
             tar_proc = subprocess.Popen(tar_cmd, stdout=subprocess.PIPE)
-            pv_proc = subprocess.Popen(["pv"], stdin=tar_proc.stdout, stdout=subprocess.PIPE)
-            pigz_proc = subprocess.Popen(["pigz"], stdin=pv_proc.stdout, stdout=f)
+            pigz_proc = subprocess.Popen(["pigz"], stdin=tar_proc.stdout, stdout=f)
             pigz_proc.wait()
         return True
 
