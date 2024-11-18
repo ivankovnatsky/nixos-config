@@ -12,6 +12,7 @@
 
     ../../home/scripts.nix
     ../../home/shell.nix
+    ../../home/starship.nix
     ../../home/aichat.nix
     ../../home/tmux.nix
     ../../home/transmission.nix

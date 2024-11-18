@@ -7,6 +7,7 @@
     ./ssh.nix
     ./packages.nix
     ./shell.nix
+    ./starship.nix
 
     ../modules/flags
   ];
