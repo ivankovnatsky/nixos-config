@@ -33,6 +33,7 @@ rebuild-watchman:
 			'**/*.sh' \
 			'**/*.fish' \
 			'**/*.lua' \
+			'**/*.py' \
 			'flake.lock' \
 		--target default
 
@@ -43,6 +44,7 @@ rebuild-watchman-machine-specific:
 			'**/*.sh' \
 			'**/*.fish' \
 			'**/*.lua' \
+			'**/*.py' \
 			'flake.lock' \
 		--target machine-specific
 
