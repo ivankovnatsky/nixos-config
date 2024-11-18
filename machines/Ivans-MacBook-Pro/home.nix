@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   imports = [
@@ -6,10 +6,8 @@
     ../../home/mpv.nix
     ../../home/shell.nix
     ../../home/starship.nix
-    # ../../home/aichat.nix
 
     ../../modules/flags
-    # ../../modules/secrets
   ];
   flags = {
     enableFishShell = true;
@@ -17,25 +15,27 @@
     editor = "vim";
     darkMode = false;
   };
-  home.packages = with pkgs; [
-    dust
-    fswatch
+  home = {
+    packages = with pkgs; [
+      dust
+      fswatch
 
-    watchman
-    watchman-make
+      watchman
+      watchman-make
 
-    rectangle
+      rectangle
 
-    # To use PC mouse with natural scrolling
-    nixpkgs-master.mos
-    stats
-    battery-toolkit
-    coconutbattery
+      # To use PC mouse with natural scrolling
+      nixpkgs-master.mos
+      stats
+      battery-toolkit
+      coconutbattery
 
-    magic-wormhole
-  ];
+      magic-wormhole
+    ];
 
-  home.username = "ivan";
-  home.stateVersion = "23.11";
+    username = "ivan";
+    stateVersion = "23.11";
+  };
   programs.home-manager.enable = true;
 }
