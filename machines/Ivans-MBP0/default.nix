@@ -78,16 +78,19 @@ in
     dock.enable = true;
     # TODO: can dock be streched 100% horizontally?
     dock.entries = [
+      # Default macOS apps
       { path = "/System/Applications/Launchpad.app/"; }
       { path = "/System/Applications/Calendar.app/"; }
       { path = "/System/Applications/System Settings.app/"; }
 
       { type = "spacer"; section = "apps"; }
 
+      # Additional macOS apps
       { path = "/System/Applications/Utilities/Activity Monitor.app/"; }
 
       { type = "spacer"; section = "apps"; }
 
+      # Installed using Kandji
       { path = "/Applications/Google Chrome.app/"; }
       { path = "/Applications/Slack.app/"; }
       { path = "/Applications/zoom.us.app/"; }
@@ -97,6 +100,7 @@ in
 
       { type = "spacer"; section = "apps"; }
 
+      # Installed using homebrew
       { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Zed.app/"; }
       { path = "/Applications/Cursor.app/"; }
@@ -104,6 +108,7 @@ in
 
       { type = "spacer"; section = "apps"; }
 
+      # Installed using nixpkgs
       { path = "${pkgs.vscodium}/Applications/VSCodium.app/"; }
 
       {
