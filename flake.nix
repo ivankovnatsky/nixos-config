@@ -73,18 +73,20 @@
               # Support legacy workflows that use `<nixpkgs>` etc.
               nix.nixPath.nixpkgs = "${inputs.nixpkgs-release}";
 
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.${username} = {
-                imports = [
-                  ./machines/${hostname}/home.nix
-                  inputs.nixvim.homeManagerModules.nixvim
-                ] ++ homeModules;
-              };
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                users.${username} = {
+                  imports = [
+                    ./machines/${hostname}/home.nix
+                    inputs.nixvim.homeManagerModules.nixvim
+                  ] ++ homeModules;
+                };
 
-              home-manager.extraSpecialArgs = {
-                inherit inputs system;
-                super = config;
+                extraSpecialArgs = {
+                  inherit inputs system;
+                  super = config;
+                };
               };
             })
 
@@ -132,13 +134,15 @@
                 mutableTaps = false;
               };
             }
-            ({
+            {
               nixpkgs.overlays = [
                 (final: prev: {
-                  nixpkgs-master = import inputs.nixpkgs-master { system = final.system; config = final.config; };
+                  nixpkgs-master = import inputs.nixpkgs-master {
+                    inherit (final) system config;
+                  };
                 })
               ];
-            })
+            }
           ];
           homeModules = [
           ];
@@ -180,15 +184,19 @@
                 mutableTaps = false;
               };
             }
-            ({
+            {
               nixpkgs.overlays = [
                 (final: prev: {
                   username = inputs.username.packages.${final.system}.username;
-                  nixpkgs-master = import inputs.nixpkgs-master { system = final.system; config = final.config; };
-                  nixpkgs-unstable = import inputs.nixpkgs-unstable { system = final.system; config = final.config; };
+                  nixpkgs-master = import inputs.nixpkgs-master {
+                    inherit (final) system config;
+                  };
+                  nixpkgs-unstable = import inputs.nixpkgs-unstable {
+                    inherit (final) system config;
+                  };
                 })
               ];
-            })
+            }
           ];
           homeModules = [
             ./home/pass.nix
@@ -232,14 +240,18 @@
                 mutableTaps = false;
               };
             }
-            ({
+            {
               nixpkgs.overlays = [
                 (final: prev: {
-                  nixpkgs-master = import inputs.nixpkgs-master { system = final.system; config = final.config; };
-                  nixpkgs-unstable = import inputs.nixpkgs-unstable { system = final.system; config = final.config; };
+                  nixpkgs-master = import inputs.nixpkgs-master {
+                    inherit (final) system config;
+                  };
+                  nixpkgs-unstable = import inputs.nixpkgs-unstable {
+                    inherit (final) system config;
+                  };
                 })
               ];
-            })
+            }
           ];
           homeModules = [
           ];
