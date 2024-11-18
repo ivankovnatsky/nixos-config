@@ -11,6 +11,7 @@
     ../../home/kitty.nix
     ../../home/tmux.nix
     ../../home/shell.nix
+    ../../home/starship.nix
     ../../home/direnv.nix
     ../../home/scripts.nix
     ../../home/pass.nix

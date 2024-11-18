@@ -85,45 +85,6 @@ in
       enableFishIntegration = config.flags.enableFishShell;
     };
 
-    starship = {
-      enable = true;
-      enableZshIntegration = true;
-      enableFishIntegration = config.flags.enableFishShell;
-
-      settings = {
-        time = {
-          disabled = false;
-          time_format = "%h %d %R";
-        };
-        add_newline = false;
-        aws.format = "on [$symbol$profile]($style) ";
-        gcloud.disabled = true;
-        git_status.disabled = false;
-        git_branch = {
-          truncation_length = 30;
-          truncation_symbol = "";
-        };
-        directory = {
-          truncation_length = 1;
-        };
-        hostname.ssh_only = true;
-        username.show_always = false;
-        kubernetes = {
-          disabled = false;
-          # https://github.com/starship/starship/issues/6101#issuecomment-2295210551
-          contexts = [
-            {
-              context_pattern = ''arn.*\/(?P<cluster>[\w\/-]+)'';
-              context_alias = "$cluster";
-            }
-          ];
-        };
-        rust.disabled = true;
-        nodejs.disabled = true;
-        package.disabled = true;
-      };
-    };
-
     # https://github.com/nix-community/home-manager/blob/master/modules/programs/zsh.nix
     zsh = {
       enable = true;
