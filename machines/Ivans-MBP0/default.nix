@@ -60,7 +60,6 @@ in
       "claude"
       "kitty"
       "orbstack"
-      "zed"
     ];
     masApps = { };
     caskArgs = {
@@ -102,7 +101,6 @@ in
 
       # Installed using homebrew
       { path = "/Applications/kitty.app/"; }
-      { path = "/Applications/Zed.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Claude.app/"; }
 
