@@ -81,6 +81,7 @@
       kustomize
       kubectl-images
       kubectx
+      kubepug
 
       kdash
 
@@ -109,6 +110,10 @@
 
       pv
       pigz
+
+      poetry
+
+      nodejs
     ];
 
     sessionVariables = {
@@ -120,6 +125,8 @@
   };
 
   programs = {
+    # TODO:
+    # 1. Make tf file comments italic
     nixvim = {
       editorconfig.enable = true;
       plugins = {

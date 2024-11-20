@@ -2,7 +2,7 @@
 
 let
   jsonFormat = pkgs.formats.json { };
-  
+
   editorSettings = {
     "terminal.integrated.fontFamily" = "${config.flags.fontGeneral}";
     "files.autoSave" = "off";
@@ -30,10 +30,11 @@ in
       vscodevim.vim
       jnoortheen.nix-ide
       hashicorp.terraform
+      eamodio.gitlens
     ];
   };
 
   # Add Cursor settings with proper formatting
-  home.file."Library/Application Support/Cursor/User/settings.json".source = 
+  home.file."Library/Application Support/Cursor/User/settings.json".source =
     jsonFormat.generate "cursor-user-settings" editorSettings;
 }
