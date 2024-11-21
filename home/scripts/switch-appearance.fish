@@ -38,6 +38,22 @@ function open_settings
     ' 1>/dev/null
 end
 
+# Function to get current date and determine seasonal wallpaper
+function get_seasonal_dark_wallpaper
+    set month (date "+%m")
+    set day (date "+%d")
+    
+    # Convert date to a comparable number (MMDD format)
+    set current_date (math $month x 100 + $day)
+    
+    # Oct 15 (1015) to Apr 15 (415) should use Black
+    if test $current_date -ge 1015 -o $current_date -le 415
+        echo "Black"
+    else
+        echo "Stone"
+    end
+end
+
 # Get the current theme
 set current_theme (get_current_theme)
 
@@ -47,8 +63,9 @@ if test "$current_theme" = "true"
     set_wallpaper "Silver"
     echo "Switched to Light appearance"
 else
+    set dark_wallpaper (get_seasonal_dark_wallpaper)
     osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to true'
-    set_wallpaper "Stone"
+    set_wallpaper $dark_wallpaper
     echo "Switched to Dark appearance"
 end
 
