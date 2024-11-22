@@ -8,7 +8,7 @@
 
     # Release
     nixpkgs-release.url = "github:nixos/nixpkgs/nixos-24.05";
-    home-manager-release = {
+    home-manager = {
       url = "github:nix-community/home-manager/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs-release";
     };
@@ -68,7 +68,7 @@
               nixpkgs.overlays = [ inputs.self.overlay ];
             }
 
-            inputs.home-manager-release.darwinModules.home-manager
+            inputs.home-manager.darwinModules.home-manager
             ({ config, system, ... }: {
               # Support legacy workflows that use `<nixpkgs>` etc.
               nix.nixPath.nixpkgs = "${inputs.nixpkgs-release}";
