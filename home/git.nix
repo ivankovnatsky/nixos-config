@@ -1,8 +1,5 @@
 { config, pkgs, ... }:
 
-let
-  githubEmailId = "75213+ivankovnatsky@users.noreply.github.com";
-in
 {
   home.packages = with pkgs; [
     git-extras
@@ -27,11 +24,10 @@ in
 
   programs.git = {
     enable = true;
-    userName = "Ivan Kovnatsky";
-    userEmail = githubEmailId;
+    inherit (config.flags.git) userName userEmail;
     signing = {
       signByDefault = true;
-      key = githubEmailId;
+      key = config.flags.git.userEmail;
     };
     ignores = [
       "**/.venv"

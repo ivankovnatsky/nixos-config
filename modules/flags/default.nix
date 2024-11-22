@@ -55,5 +55,19 @@ with lib; {
       description = "Enable fish shell";
       default = false;
     };
+
+    git = {
+      userName = mkOption {
+        type = types.str;
+        description = "Git user name";
+        default = "Ivan Kovnatsky";
+      };
+
+      userEmail = mkOption {
+        type = types.str;
+        description = "Git user email";
+        default = "75213+ivankovnatsky@users.noreply.github.com";
+      };
+    };
   };
 }
