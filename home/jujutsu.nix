@@ -9,12 +9,18 @@
         email = config.flags.git.userEmail;
       };
       ui = {
-        default-command = "log"; # Similar to your git log alias being frequently used
+        default-command = "log";
       };
       git = {
-        # Similar to your git config
         push-branch-prefix = "refs/heads/";
         push-default = "current";
+      };
+      signing = {
+        sign-all = true;
+        backend = "gpg";
+      };
+      "template-aliases" = {
+        "format_timestamp(timestamp)" = "timestamp.ago()";
       };
     };
   };
