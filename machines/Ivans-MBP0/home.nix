@@ -22,8 +22,11 @@
     ../../home/yamlint.nix
     ../../home/vscode.nix
 
+    # ../../home/launchd-services.nix
+
     ../../home/nixvim
     ../../home/nixvim/plugins/gen-nvim
+    ../../home/nixvim/plugins/nvim-jenkinsfile-linter
   ];
   flags = {
     enableFishShell = true;
@@ -48,6 +51,7 @@
       nixpkgs-master.mos
       stats
       battery-toolkit
+      rectangle
 
       home-manager
 
