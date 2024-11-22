@@ -5,7 +5,7 @@ let
 
   editorSettings = {
     "terminal.integrated.fontFamily" = "${config.flags.fontGeneral}";
-    "files.autoSave" = "off";
+    "files.autoSave" = "onFocusChange";
     "[nix]"."editor.tabSize" = 2;
     "vim.relativeLineNumbers" = true;
     "editor.lineNumbers" = "relative";
