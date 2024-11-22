@@ -23,6 +23,9 @@ in
   security.pamCustom.enableSudoTouchIdAuth = true;
   system = {
     defaults = {
+      controlcenter = {
+        Bluetooth = false;
+      };
       dock = {
         mru-spaces = false;
       };
@@ -60,8 +63,20 @@ in
       "claude"
       "kitty"
       "orbstack"
+
+      # Installed or managed using Kandji
+      # google-chrome
+      # bitwarden
+      # zoom
+      # chatgpt
+      # dbeaver-community
+      # twingate
     ];
-    masApps = { };
+    masApps = {
+      # Installed using Kandji
+      # "Okta Verify" = 490179405;
+      # "Slack for Desktop" = 803453959;
+    };
     caskArgs = {
       no_quarantine = true;
     };
