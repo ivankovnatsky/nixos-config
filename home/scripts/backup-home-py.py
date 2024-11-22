@@ -38,9 +38,7 @@ def backup_home():
         os.chdir(home.parent)
         print(f"Creating backup of home directory for {CURRENT_USER}...")
 
-        subprocess.run(["sudo", "-v"], check=True)
-
-        tar_cmd = ["sudo", "tar", "-cvf", "-"]
+        tar_cmd = ["tar", "-cvf", "-"]
         for exclude in DARWIN_EXCLUDES:
             tar_cmd.extend(["--exclude", exclude])
         tar_cmd.append(CURRENT_USER)
