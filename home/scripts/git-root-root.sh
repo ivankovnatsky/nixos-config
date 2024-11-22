@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Usage: cd (git-root-root)
+
 if [ ! -e "$(git rev-parse --show-toplevel)/.git" ]; then
     echo "Error: Not in a git repository" >&2
     exit 1
@@ -10,5 +12,6 @@ if [ -d "$(git rev-parse --show-toplevel)/.git" ]; then
     exit 0
 fi
 
-MAIN_REPO=$(cat $(git rev-parse --show-toplevel)/.git | sed 's/\.git.*//' | awk '{print $2}')
+# Read .git file directly into sed without using cat
+MAIN_REPO=$(sed 's/\.git.*//' "$(git rev-parse --show-toplevel)/.git" | awk '{print $2}')
 echo "$MAIN_REPO"
