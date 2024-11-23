@@ -42,6 +42,9 @@ in
 
     keepaspect-window=no
     autofit-larger=100%x100%
+
+    # Prevent window from floating on top
+    ontop=no
   '';
 
   home.file = {
