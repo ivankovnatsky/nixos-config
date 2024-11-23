@@ -48,7 +48,7 @@ if test "$current_theme" = "true"
     echo "Switched to Light appearance"
 else
     osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to true'
-    set_wallpaper "Stone"
+    set_wallpaper "Black"
     echo "Switched to Dark appearance"
 end
 
