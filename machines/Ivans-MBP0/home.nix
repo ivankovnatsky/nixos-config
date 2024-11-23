@@ -21,8 +21,11 @@
     ../../home/terraform.nix
     ../../home/yamlint.nix
     ../../home/vscode.nix
+    ../../home/syncthing.nix
 
     # ../../home/launchd-services.nix
+
+    ../../home/hammerspoon
 
     ../../home/nixvim
     ../../home/nixvim/plugins/gen-nvim
@@ -33,6 +36,10 @@
     purpose = "work";
     editor = "nvim";
     darkMode = true;
+    apps = {
+      terminal = "kitty";
+      browser = "Google Chrome";
+    };
   };
   home = {
     packages = with pkgs; [
@@ -179,6 +186,9 @@
         # https://github.com/yetone/avante.nvim
         # avante.enable = true;
       };
+      # FIXME: Figure out suitable key for the completion, when you need to
+      # override cmp plugins.
+      copilot-vim.enable = true;
       extraPlugins = with pkgs.vimPlugins; [
         Jenkinsfile-vim-syntax
       ];

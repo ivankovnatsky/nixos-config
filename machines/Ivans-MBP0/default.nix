@@ -58,6 +58,7 @@ in
       "pam-reattach"
     ];
     casks = [
+      "hammerspoon"
       "amethyst"
       "cursor"
       "claude"

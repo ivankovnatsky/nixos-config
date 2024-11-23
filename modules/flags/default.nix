@@ -69,5 +69,19 @@ with lib; {
         default = "75213+ivankovnatsky@users.noreply.github.com";
       };
     };
+
+    apps = {
+      terminal = mkOption {
+        type = types.enum [ "kitty" "Terminal" ];
+        description = "Default terminal application";
+        default = "kitty";
+      };
+
+      browser = mkOption {
+        type = types.enum [ "Safari" "Firefox" "Google Chrome" ];
+        description = "Default browser application";
+        default = "Safari";
+      };
+    };
   };
 }
