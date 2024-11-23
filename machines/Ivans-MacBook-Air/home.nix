@@ -17,10 +17,12 @@
     ../../home/aichat.nix
     ../../home/tmux.nix
     ../../home/transmission.nix
+    ../../home/syncthing.nix
     ../../home/direnv.nix
     ../../home/vscode.nix
 
     ../../home/nixvim
+    ../../home/hammerspoon
 
     ../../modules/flags
     ../../modules/secrets
@@ -30,6 +32,10 @@
     purpose = "home";
     editor = "nvim";
     darkMode = true;
+    apps = {
+      terminal = "kitty";
+      browser = "Safari";
+    };
   };
   home = {
     packages = with pkgs; [
@@ -123,6 +129,7 @@
         };
         # https://github.com/yetone/avante.nvim
         avante.enable = true;
+        copilot-vim.enable = true;
       };
       extraPlugins = with pkgs.vimPlugins; [
         vim-go

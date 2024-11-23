@@ -56,6 +56,7 @@ in
       "pam-reattach"
     ];
     casks = [
+      "hammerspoon"
       "kitty"
       "amethyst"
       "microsoft-teams"
