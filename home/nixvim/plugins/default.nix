@@ -19,11 +19,11 @@
       };
       treesitter = {
         enable = true;
-        indent = true;
+        settings.indent.enable = true;
         # folding = true;
       };
       treesitter-context.enable = true;
-      surround.enable = true;
+      vim-surround.enable = true;
       lualine.enable = true;
       lastplace.enable = true;
       commentary.enable = true;
@@ -41,14 +41,16 @@
       which-key.enable = true;
       hardtime = {
         enable = true;
-        enabled = true;
-        disableMouse = true;
-        disabledFiletypes = [ "Oil" ];
-        hint = true;
-        maxCount = 4;
-        maxTime = 1000;
-        restrictionMode = "hint";
-        restrictedKeys = { };
+        settings = {
+          enabled = true;
+          disable_mouse = true;
+          disabled_filetypes = [ "Oil" ];
+          hint = true;
+          max_count = 4;
+          max_time = 1000;
+          restriction_mode = "hint";
+          restricted_keys = { };
+        };
       };
       nvim-autopairs.enable = true;
       illuminate = {
@@ -64,18 +66,20 @@
       };
       conform-nvim = {
         enable = true;
-        formatOnSave = {
-          lspFallback = true;
-          timeoutMs = 500;
-        };
-        notifyOnError = true;
-        formattersByFt = {
-          rust = [ "rustfmt" ];
+        settings = {
+          format_on_save = {
+            lsp_fallback = true;
+            timeout_ms = 500;
+          };
+          notify_on_error = true;
+          formatters_by_ft = {
+            rust = [ "rustfmt" ];
+          };
         };
       };
       luasnip = {
         enable = true;
-        extraConfig = {
+        settings = {
           enable_autosnippets = true;
           store_selection_keys = "<Tab>";
         };
@@ -165,6 +169,7 @@
         #   };
         # };
       };
+      web-devicons.enable = true;
     };
     extraConfigLua =
       builtins.readFile ./telescope.lua;

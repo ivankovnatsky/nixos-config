@@ -4,7 +4,7 @@ let inherit (pkgs.stdenv.targetPlatform) isDarwin;
   k9sConfigPath = if isDarwin then "Library/Application Support" else ".config";
 in
 {
-  home.packages = with pkgs; [ nixpkgs-unstable.k9s ];
+  home.packages = with pkgs; [ k9s ];
   # https://k9scli.io/topics/skins/
   # https://github.com/derailed/k9s/tree/master/skins
   home.file."${k9sConfigPath}/k9s/skins/transparent.yaml".source = pkgs.fetchurl {
