@@ -16,11 +16,12 @@ let
     "files.insertFinalNewline" = true;
     "files.trimFinalNewlines" = true;
     "editor.renderFinalNewline" = false;
+    "window.commandCenter" = 1;
   };
 in
 {
   programs.vscode = {
-    enable = true;
+    enable = false;
     package = pkgs.vscodium;
     enableUpdateCheck = false;
     enableExtensionUpdateCheck = false;
