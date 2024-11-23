@@ -56,8 +56,8 @@
     nixpkgs-fmt
     aiac
     nixpkgs-review
-    nixpkgs-unstable.husky # Commitlint dependency
-    nixpkgs-unstable.k8sgpt
+    husky # Commitlint dependency
+    k8sgpt
     nodePackages.webtorrent-cli
     p7zip
     packer

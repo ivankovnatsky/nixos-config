@@ -13,10 +13,12 @@
     ../../home/scripts.nix
     ../../home/shell.nix
     ../../home/starship.nix
+    ../../home/kitty.nix
     ../../home/aichat.nix
     ../../home/tmux.nix
     ../../home/transmission.nix
     ../../home/direnv.nix
+    ../../home/vscode.nix
 
     ../../home/nixvim
 
@@ -27,7 +29,7 @@
     enableFishShell = true;
     purpose = "home";
     editor = "nvim";
-    darkMode = false;
+    darkMode = true;
   };
   home = {
     packages = with pkgs; [
@@ -36,7 +38,8 @@
       rclone
       aria2
       wget
-      nodePackages.webtorrent-cli
+      # FIXME: Fails to install on current nixpkgs-unstable
+      # nodePackages.webtorrent-cli
       exiftool
       syncthing
       bat
@@ -53,7 +56,8 @@
       genpass
       fswatch
 
-      bitwarden-cli
+      # FIXME: Fails to install on current nixpkgs-unstable
+      # bitwarden-cli
       jq
 
       rust-analyzer
@@ -92,11 +96,11 @@
         lsp = {
           servers = {
             eslint.enable = true;
-            tsserver.enable = true;
-            typst-lsp.enable = true;
+            ts_ls.enable = true;
+            typst_lsp.enable = true;
             pyright.enable = true;
             gopls.enable = true;
-            rust-analyzer = {
+            rust_analyzer = {
               enable = true;
               installCargo = true;
               installRustc = true;
@@ -108,15 +112,17 @@
             formatting = {
               black = {
                 enable = true;
-                withArgs = ''
+                settings = ''
                   {
-                    extra_args = { "--fast" },
+                    extra_args = { "--fast" };
                   }
                 '';
               };
             };
           };
         };
+        # https://github.com/yetone/avante.nvim
+        avante.enable = true;
       };
       extraPlugins = with pkgs.vimPlugins; [
         vim-go

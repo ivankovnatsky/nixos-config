@@ -17,7 +17,7 @@ in
     enableFishShell = true;
     purpose = "home";
     editor = "nvim";
-    darkMode = false;
+    darkMode = true;
   };
   security.pamCustom.enableSudoTouchIdAuth = true;
   system = {
@@ -56,6 +56,7 @@ in
       "pam-reattach"
     ];
     casks = [
+      "kitty"
       "amethyst"
       "microsoft-teams"
       "firefox"
@@ -63,6 +64,7 @@ in
       "balenaetcher"
       "mullvadvpn"
       "vlc"
+      "cursor"
     ];
     masApps = {
       "Numbers" = 409203825;
@@ -97,7 +99,6 @@ in
 
       { type = "spacer"; section = "apps"; }
 
-      { path = "/System/Applications/Utilities/Terminal.app/"; }
       { path = "/System/Applications/Utilities/Activity Monitor.app/"; }
       { path = "/System/Applications/Passwords.app/"; }
       { path = "/System/Library/CoreServices/Applications/Keychain Access.app/"; }
@@ -105,6 +106,7 @@ in
 
       { type = "spacer"; section = "apps"; }
 
+      { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Chromium.app/"; }
       { path = "/Applications/Bitwarden.app/"; }

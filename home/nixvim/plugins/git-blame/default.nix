@@ -4,8 +4,10 @@
   programs.nixvim = {
     plugins.gitblame = {
       enable = true;
-      messageTemplate = "  <sha> • <summary> • <date> • <author>";
-      dateFormat = "%r";
+      settings = {
+        message_template = "  <sha> • <summary> • <date> • <author>";
+        date_format = "%r";
+      };
 
       # Need to upate to latest upsteam to use that settings.
       # settings = {

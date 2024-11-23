@@ -2,21 +2,19 @@
   description = "NixOS configuration";
 
   inputs = {
-    # This is used to pin packages from unstable channel.
+    # This is used to pin packages from master channel.
     nixpkgs-master.url = "github:nixos/nixpkgs/master";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    # Release
-    nixpkgs-release.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.05";
-      inputs.nixpkgs.follows = "nixpkgs-release";
+      url = "github:nix-community/home-manager/master";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Darwin
     darwin = {
       url = "github:lnl7/nix-darwin/master";
-      inputs.nixpkgs.follows = "nixpkgs-release";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # https://github.com/zhaofengli/nix-homebrew
@@ -43,15 +41,15 @@
     nur.url = "github:nix-community/NUR";
 
     nixvim = {
-      url = "github:nix-community/nixvim/nixos-24.05";
-      inputs.nixpkgs.follows = "nixpkgs-release";
+      url = "github:nix-community/nixvim/main";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     flake-utils.url = "github:numtide/flake-utils";
 
     username = {
       url = "github:ivankovnatsky/username";
-      inputs.nixpkgs.follows = "nixpkgs-release";
+      inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
   };
@@ -71,7 +69,7 @@
             inputs.home-manager.darwinModules.home-manager
             ({ config, system, ... }: {
               # Support legacy workflows that use `<nixpkgs>` etc.
-              nix.nixPath.nixpkgs = "${inputs.nixpkgs-release}";
+              nix.nixPath.nixpkgs = "${inputs.nixpkgs}";
 
               home-manager = {
                 useGlobalPkgs = true;
@@ -191,9 +189,6 @@
                   nixpkgs-master = import inputs.nixpkgs-master {
                     inherit (final) system config;
                   };
-                  nixpkgs-unstable = import inputs.nixpkgs-unstable {
-                    inherit (final) system config;
-                  };
                 })
               ];
             }
@@ -244,9 +239,6 @@
               nixpkgs.overlays = [
                 (final: prev: {
                   nixpkgs-master = import inputs.nixpkgs-master {
-                    inherit (final) system config;
-                  };
-                  nixpkgs-unstable = import inputs.nixpkgs-unstable {
                     inherit (final) system config;
                   };
                 })

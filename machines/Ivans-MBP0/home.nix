@@ -170,7 +170,7 @@
           };
         };
         conform-nvim = {
-          formattersByFt = {
+          settings.formatters_by_ft = {
             python = [ "black" ];
             lua = [ "stylua" ];
             nix = [ "nixfmt" ];
