@@ -39,6 +39,13 @@
     apps = {
       terminal = "kitty";
       browser = "Google Chrome";
+      shortcuts = [
+        { key = "0"; app = "Finder"; }
+        { key = "1"; app = config.flags.apps.terminal; }
+        { key = "2"; app = config.flags.apps.browser; }
+        { key = "3"; app = "Slack"; }
+        { key = "9"; app = "System Settings"; }
+      ];
     };
   };
   home = {
@@ -167,9 +174,9 @@
               # terragrunt_validate.enable = true;
               black = {
                 enable = true;
-                withArgs = ''
+                settings = ''
                   {
-                    extra_args = { "--fast" },
+                    extra_args = { "--fast" };
                   }
                 '';
               };
@@ -185,10 +192,10 @@
         };
         # https://github.com/yetone/avante.nvim
         # avante.enable = true;
+        # FIXME: Figure out suitable key for the completion, when you need to
+        # override cmp plugins.
+        copilot-vim.enable = true;
       };
-      # FIXME: Figure out suitable key for the completion, when you need to
-      # override cmp plugins.
-      copilot-vim.enable = true;
       extraPlugins = with pkgs.vimPlugins; [
         Jenkinsfile-vim-syntax
       ];

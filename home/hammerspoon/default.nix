@@ -17,10 +17,7 @@
     local mash = { "alt" }
 
     hs.fnutils.each({
-      { key = "0", app = "Finder" },
-      { key = "1", app = "${config.flags.apps.terminal}" },
-      { key = "2", app = "${config.flags.apps.browser}" },
-      { key = "9", app = "System Settings" },
+      ${builtins.concatStringsSep ",\n  " (builtins.map (shortcut: ''{ key = "${shortcut.key}", app = "${shortcut.app}" }'') config.flags.apps.shortcuts)}
     }, function(object)
       hs.hotkey.bind(mash, object.key, function()
         local appToLaunch = object.app
