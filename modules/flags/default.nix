@@ -82,6 +82,28 @@ with lib; {
         description = "Default browser application";
         default = "Safari";
       };
+
+      shortcuts = mkOption {
+        type = types.listOf (types.submodule {
+          options = {
+            key = mkOption {
+              type = types.str;
+              description = "Keyboard shortcut key";
+            };
+            app = mkOption {
+              type = types.str;
+              description = "Application name to launch";
+            };
+          };
+        });
+        description = "Application shortcuts for Hammerspoon";
+        default = [
+          { key = "0"; app = "Finder"; }
+          { key = "1"; app = "kitty"; }
+          { key = "2"; app = "Safari"; }
+          { key = "9"; app = "System Settings"; }
+        ];
+      };
     };
   };
 }
