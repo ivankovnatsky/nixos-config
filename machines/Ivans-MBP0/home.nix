@@ -11,7 +11,7 @@
     ../../home/kitty.nix
     ../../home/tmux.nix
     ../../home/shell.nix
-    ../../home/starship.nix
+    ../../home/starship
     ../../home/direnv.nix
     ../../home/scripts.nix
     ../../home/pass.nix
@@ -36,16 +36,19 @@
     purpose = "work";
     editor = "nvim";
     darkMode = true;
-    apps = {
+    hotkeys = {
       terminal = "kitty";
       browser = "Google Chrome";
       shortcuts = [
         { key = "0"; app = "Finder"; }
-        { key = "1"; app = config.flags.apps.terminal; }
-        { key = "2"; app = config.flags.apps.browser; }
+        { key = "1"; app = config.flags.hotkeys.terminal; }
+        { key = "2"; app = config.flags.hotkeys.browser; }
         { key = "3"; app = "Slack"; }
         { key = "9"; app = "System Settings"; }
       ];
+    };
+    apps = {
+      vscode.enable = false;
     };
   };
   home = {

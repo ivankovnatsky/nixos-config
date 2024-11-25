@@ -5,6 +5,10 @@
     # https://github.com/nix-community/nixvim/issues/1141#issuecomment-2054102360
     extraPackages = with pkgs; [ rustfmt ];
     plugins = {
+      # TODO: Testing out
+      # Autoformat tools make things harder apply fmt when it's not needed
+      # auto-save.enable = true;
+
       neo-tree = {
         enable = true;
         filesystem = {

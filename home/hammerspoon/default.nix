@@ -17,7 +17,7 @@
     local mash = { "alt" }
 
     hs.fnutils.each({
-      ${builtins.concatStringsSep ",\n  " (builtins.map (shortcut: ''{ key = "${shortcut.key}", app = "${shortcut.app}" }'') config.flags.apps.shortcuts)}
+      ${builtins.concatStringsSep ",\n  " (builtins.map (shortcut: ''{ key = "${shortcut.key}", app = "${shortcut.app}" }'') config.flags.hotkeys.shortcuts)}
     }, function(object)
       hs.hotkey.bind(mash, object.key, function()
         local appToLaunch = object.app

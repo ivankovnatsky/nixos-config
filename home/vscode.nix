@@ -21,7 +21,7 @@ let
 in
 {
   programs.vscode = {
-    enable = false;
+    enable = config.flags.apps.vscode.enable;
     package = pkgs.vscodium;
     enableUpdateCheck = false;
     enableExtensionUpdateCheck = false;
