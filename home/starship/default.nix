@@ -1,5 +1,9 @@
 { config, lib, pkgs, ... }:
 
+let
+  jjCommand = builtins.readFile ./jj.template;
+  jjstateCommand = builtins.readFile ./jjstate.template;
+in
 {
   programs.starship = {
     enable = true;
@@ -7,6 +11,8 @@
     enableFishIntegration = config.flags.enableFishShell;
 
     settings = {
+      command_timeout = 2000;
+      
       time = {
         disabled = false;
         time_format = "%h %d %R";
@@ -36,6 +42,17 @@
       rust.disabled = true;
       nodejs.disabled = true;
       package.disabled = true;
+
+      custom.jj = {
+        command = jjCommand;
+        detect_folders = [".jj"];
+        symbol = "jj";
+      };
+
+      custom.jjstate = {
+        command = jjstateCommand;
+        detect_folders = [".jj"];
+      };
     };
   };
 } 

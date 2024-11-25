@@ -5,7 +5,7 @@
     ../../home/git.nix
     ../../home/mpv.nix
     ../../home/shell.nix
-    ../../home/starship.nix
+    ../../home/starship
     ../../home/syncthing.nix
 
     ../../modules/flags

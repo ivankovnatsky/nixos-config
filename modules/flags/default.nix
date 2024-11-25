@@ -70,7 +70,7 @@ with lib; {
       };
     };
 
-    apps = {
+    hotkeys = {
       terminal = mkOption {
         type = types.enum [ "kitty" "Terminal" ];
         description = "Default terminal application";
@@ -103,6 +103,16 @@ with lib; {
           { key = "2"; app = "Safari"; }
           { key = "9"; app = "System Settings"; }
         ];
+      };
+    };
+
+    apps = {
+      vscode = {
+        enable = mkOption {
+          type = types.bool;
+          default = false;
+          description = "Whether to enable VSCode/VSCodium";
+        };
       };
     };
   };
