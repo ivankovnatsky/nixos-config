@@ -17,6 +17,7 @@ let
     "files.trimFinalNewlines" = true;
     "editor.renderFinalNewline" = false;
     "window.commandCenter" = 1;
+    "git.openRepositoryInParentFolders" = "always";
   };
 in
 {
