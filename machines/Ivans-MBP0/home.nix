@@ -134,6 +134,8 @@
       poetry
 
       nodejs
+
+      wget
     ];
 
     sessionVariables = {
