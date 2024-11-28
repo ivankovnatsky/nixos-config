@@ -4,25 +4,26 @@ let
   jsonFormat = pkgs.formats.json { };
 
   editorSettings = {
-    "terminal.integrated.fontFamily" = "${config.flags.fontGeneral}";
-    "files.autoSave" = "onFocusChange";
-    "[nix]"."editor.tabSize" = 2;
-    "vim.relativeLineNumbers" = true;
-    "editor.lineNumbers" = "relative";
-    "scm.diffDecorations" = "all";
-    "editor.renderLineHighlight" = "all";
-    "diffEditor.renderSideBySide" = false;
+    "[nix]" = {
+      "editor.tabSize" = 2;
+    };
     "diffEditor.ignoreTrimWhitespace" = false;
+    "diffEditor.renderSideBySide" = false;
+    "editor.lineNumbers" = "relative";
+    "editor.renderFinalNewline" = "off";
+    "editor.renderLineHighlight" = "all";
+    "files.autoSave" = "onFocusChange";
     "files.insertFinalNewline" = true;
     "files.trimFinalNewlines" = true;
-    "editor.renderFinalNewline" = false;
-    "window.commandCenter" = 1;
     "git.openRepositoryInParentFolders" = "always";
+    "scm.diffDecorations" = "all";
+    "terminal.integrated.fontFamily" = "Hack Nerd Font";
+    "vim.relativeLineNumbers" = true;
   };
 in
 {
   programs.vscode = {
-    enable = config.flags.apps.vscode.enable;
+    inherit (config.flags.apps.vscode) enable;
     package = pkgs.vscodium;
     enableUpdateCheck = false;
     enableExtensionUpdateCheck = false;
