@@ -1,5 +1,3 @@
-{ config, ... }:
-
 {
   programs.nixvim = {
     opts = {
@@ -45,8 +43,9 @@
       wrap = true;
 
       # Better splitting
-      splitbelow = true;
-      splitright = true;
+      # I still could not accustomed to this, commenting for now.
+      # splitbelow = true;
+      # splitright = true;
 
       # Enable ignorecase + smartcase for better searching
       ignorecase = true;
