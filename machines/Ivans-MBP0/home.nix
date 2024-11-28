@@ -196,7 +196,8 @@
           };
         };
         # https://github.com/yetone/avante.nvim
-        # avante.enable = true;
+        avante.enable = true;
+
         # FIXME: Figure out suitable key for the completion, when you need to
         # override cmp plugins.
         copilot-vim.enable = true;
