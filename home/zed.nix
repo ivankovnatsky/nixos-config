@@ -40,6 +40,13 @@
       "tabs": {
         "git_status": true
       },
+      "assistant": {
+        "default_model": {
+          "provider": "anthropic",
+          "model": "claude-3-5-sonnet-latest"
+        },
+        "version": "2"
+      },
       // https://github.com/zed-industries/zed/discussions/6663#discussioncomment-10930390
       "experimental.theme_overrides": {
         "syntax": {

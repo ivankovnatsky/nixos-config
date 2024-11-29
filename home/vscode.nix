@@ -38,6 +38,7 @@ in
       eamodio.gitlens
       # GitHub.copilot
       ms-vscode.makefile-tools
+      ms-python.python
     ];
   };
 
