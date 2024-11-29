@@ -1,5 +1,8 @@
 #!/usr/bin/env fish
 
+# Configuration
+set -g BRANCH_NAME_CHAR_LIMIT 35
+
 # Check if branch name argument is provided
 if test (count $argv) -ne 1
     echo "Error: Please provide a branch name"
@@ -35,8 +38,30 @@ git checkout $default_branch
 git pull origin $default_branch
 
 # Store branch name
-set branch_name $argv[1]
-# Use the original branch name for the worktree directory
+set original_branch $argv[1]
+
+# Split the branch name into prefix (feature/) and the rest
+set prefix_part (string match -r '^[^/]+/' $original_branch)
+set name_part (string replace -r '^[^/]+/' '' $original_branch)
+
+# If name is longer than the char limit, trim it to the last complete word
+if test (string length $name_part) -gt $BRANCH_NAME_CHAR_LIMIT
+    # Get first N chars and trim to last complete word
+    set trimmed_name (string sub -l $BRANCH_NAME_CHAR_LIMIT $name_part)
+    # Find the last occurrence of hyphen or space
+    set last_separator (string match -r '.*[- ]' $trimmed_name)
+
+    if test -n "$last_separator"
+        # Remove trailing hyphen if present
+        set name_part (string trim -c '-' $last_separator)
+    else
+        set name_part $trimmed_name
+    end
+end
+
+# Reconstruct the branch name
+set branch_name "$prefix_part$name_part"
+# Use the processed branch name for the worktree directory
 set worktree_dir "__worktrees/$branch_name"
 
 # Create worktree directory if it doesn't exist
