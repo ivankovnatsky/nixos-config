@@ -5,11 +5,17 @@ import sys
 import subprocess
 from pathlib import Path
 
-# Global variables
+# User configuration
 CURRENT_USER = os.getenv("USER")
+
+# Path configuration
 BACKUP_FILE = f"/tmp/{CURRENT_USER}.tar.gz"
 
-# Platform-specific excludes
+USER_PROFILE_DIR = f"/etc/profiles/per-user/{CURRENT_USER}/bin"
+PIGZ_PATH = f"{USER_PROFILE_DIR}/pigz"
+RCLONE_PATH = f"{USER_PROFILE_DIR}/rclone"
+
+# Backup exclude patterns
 DARWIN_EXCLUDES = [
     f"./{CURRENT_USER}/.orbstack",
     f"./{CURRENT_USER}/.Trash",
@@ -27,6 +33,7 @@ DARWIN_EXCLUDES = [
     f"./{CURRENT_USER}/Library/Caches/CloudKit",
     f"./{CURRENT_USER}/Library/Caches/com.apple.HomeKit",
     f"./{CURRENT_USER}/Library/Group Containers",
+    f"./{CURRENT_USER}/Library/Containers/com.okta.mobile",
     f"./{CURRENT_USER}/OrbStack",
     "./**/*.sock",
     "./.gnupg/S.*",
@@ -45,17 +52,35 @@ def backup_home():
 
         with open(BACKUP_FILE, "wb") as f:
             tar_proc = subprocess.Popen(tar_cmd, stdout=subprocess.PIPE)
-            pigz_proc = subprocess.Popen(["pigz"], stdin=tar_proc.stdout, stdout=f)
-            pigz_proc.wait()
+            pigz_proc = subprocess.Popen([PIGZ_PATH], stdin=tar_proc.stdout, stdout=f)
+            tar_proc.stdout.close()
+            
+            # Add timeout and better error handling
+            ret_code = pigz_proc.wait(timeout=3600)  # 1 hour timeout
+            if ret_code != 0:
+                raise Exception(f"Compression failed with code {ret_code}")
+            
+            # Check tar process result too
+            if tar_proc.wait() != 0:
+                raise Exception("Tar process failed")
+                
         return True
 
+    except subprocess.TimeoutExpired:
+        print("Backup process timed out")
+        return False
+    except OSError as e:
+        if e.errno == errno.EINTR:  # Interrupted system call
+            print("Backup was interrupted, retrying...")
+            return backup_home()  # Recursive retry
+        raise
     except KeyboardInterrupt:
         print("\nBackup interrupted by user")
         return False
 
 def upload_backup():
     print("Uploading backup to drive:...")
-    subprocess.run(["rclone", "--progress", "copy", BACKUP_FILE, "drive:"], check=True)
+    subprocess.run([RCLONE_PATH, "--progress", "copy", BACKUP_FILE, "drive:"], check=True)
 
 def cleanup_backup():
     print(f"Cleaning up temporary backup file: {BACKUP_FILE}...")
