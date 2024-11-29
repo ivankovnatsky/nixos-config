@@ -24,7 +24,7 @@
     ../../home/vscode.nix
     ../../home/syncthing.nix
 
-    # ../../home/launchd-services.nix
+    ../../home/launchd-services.nix
 
     ../../home/hammerspoon
 
@@ -46,6 +46,8 @@
         { key = "2"; app = config.flags.hotkeys.browser; }
         { key = "3"; app = "Slack"; }
         { key = "4"; app = "Cursor"; }
+        { key = "5"; app = "Visual Studio Code"; }
+        { key = "6"; app = "Zed"; }
         { key = "9"; app = "System Settings"; }
       ];
     };
