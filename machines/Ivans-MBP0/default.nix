@@ -121,6 +121,11 @@ in
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Claude.app/"; }
 
+      { type = "spacer"; section = "apps"; }
+
+      # Installed using nixpkgs
+      { path = "${pkgs.vscodium}/Applications/VSCodium.app/"; }
+
       {
         path = "${config.users.users.${userName}.home}/Downloads/";
         section = "others";
