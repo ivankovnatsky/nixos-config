@@ -12,12 +12,14 @@ let
     "editor.lineNumbers" = "relative";
     "editor.renderFinalNewline" = "off";
     "editor.renderLineHighlight" = "all";
+    "extensions.autoCheckUpdates" = false;
     "files.autoSave" = "onFocusChange";
     "files.insertFinalNewline" = true;
     "files.trimFinalNewlines" = true;
     "git.openRepositoryInParentFolders" = "always";
     "scm.diffDecorations" = "all";
     "terminal.integrated.fontFamily" = "Hack Nerd Font";
+    "update.mode" = "none";
     "vim.relativeLineNumbers" = true;
   };
 in
