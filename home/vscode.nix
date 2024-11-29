@@ -26,7 +26,7 @@ in
 {
   programs.vscode = {
     inherit (config.flags.apps.vscode) enable;
-    package = pkgs.vscodium;
+    package = pkgs.vscode;
     enableUpdateCheck = false;
     enableExtensionUpdateCheck = false;
     userSettings = editorSettings;
@@ -36,6 +36,8 @@ in
       jnoortheen.nix-ide
       hashicorp.terraform
       eamodio.gitlens
+      # GitHub.copilot
+      ms-vscode.makefile-tools
     ];
   };
 

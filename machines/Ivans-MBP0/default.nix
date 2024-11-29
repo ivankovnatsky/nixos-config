@@ -124,7 +124,7 @@ in
       { type = "spacer"; section = "apps"; }
 
       # Installed using nixpkgs
-      { path = "${pkgs.vscodium}/Applications/VSCodium.app/"; }
+      { path = "${pkgs.vscode}/Applications/Visual Studio Code.app/"; }
 
       {
         path = "${config.users.users.${userName}.home}/Downloads/";
