@@ -64,6 +64,7 @@ in
       "claude"
       "kitty"
       "orbstack"
+      "zed"
 
       # Installed or managed using Kandji
       # google-chrome
@@ -116,6 +117,7 @@ in
 
       # Installed using homebrew
       { path = "/Applications/kitty.app/"; }
+      { path = "/Applications/Zed.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Claude.app/"; }
 

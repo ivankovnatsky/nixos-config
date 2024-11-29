@@ -20,6 +20,7 @@
     ../../home/k9s.nix
     ../../home/terraform.nix
     ../../home/yamlint.nix
+    ../../home/zed.nix
     ../../home/vscode.nix
     ../../home/syncthing.nix
 
