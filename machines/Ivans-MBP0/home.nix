@@ -45,6 +45,7 @@
         { key = "1"; app = config.flags.hotkeys.terminal; }
         { key = "2"; app = config.flags.hotkeys.browser; }
         { key = "3"; app = "Slack"; }
+        { key = "4"; app = "Cursor"; }
         { key = "9"; app = "System Settings"; }
       ];
     };
