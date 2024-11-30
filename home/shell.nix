@@ -154,8 +154,8 @@ in
           export PATH=$PATH:$GOPATH/bin
         fi
 
-        if [[ -d $HOME/.npm-global/bin ]]; then
-          export PATH=$PATH:$HOME/.npm-global/bin
+        if [[ -d $HOME/.npm/bin ]]; then
+          export PATH=$PATH:$HOME/.npm/bin
         fi
       '';
     };
@@ -184,8 +184,8 @@ in
             set -gx PATH $PATH $GOPATH/bin
         end
 
-        if test -d $HOME/.npm-global/bin
-            set -gx PATH $PATH $HOME/.npm-global/bin
+        if test -d $HOME/.npm/bin
+            set -gx PATH $PATH $HOME/.npm/bin
         end
 
         # Git completions; FIXME: remove this once landed in upstream in

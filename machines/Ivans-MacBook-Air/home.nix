@@ -20,6 +20,7 @@
     ../../home/syncthing.nix
     ../../home/direnv.nix
     ../../home/vscode.nix
+    ../../home/npm.nix
 
     ../../home/nixvim
     ../../home/hammerspoon
@@ -32,9 +33,15 @@
     purpose = "home";
     editor = "nvim";
     darkMode = true;
-    apps = {
+    hotkeys = {
       terminal = "kitty";
       browser = "Safari";
+      shortcuts = [
+        { key = "0"; app = "Finder"; }
+        { key = "1"; app = config.flags.hotkeys.terminal; }
+        { key = "2"; app = config.flags.hotkeys.browser; }
+        { key = "9"; app = "System Settings"; }
+      ];
     };
   };
   home = {
@@ -89,11 +96,16 @@
       (python312.withPackages (ps: with ps; [
         grip
       ]))
+
+      nodejs
     ];
     sessionVariables = {
       EDITOR = config.flags.editor;
     };
     stateVersion = "22.05";
+    file.".config/manual".text = ''
+      npm --global install webtorrent-cli
+    '';
   };
   programs = {
     nixvim = {
