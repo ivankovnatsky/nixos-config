@@ -108,6 +108,8 @@
     ];
     sessionVariables = {
       EDITOR = config.flags.editor;
+
+      ANTHROPIC_API_KEY = "${config.secrets.anthropicApiKey}";
     };
     stateVersion = "22.05";
     file.".config/manual".text = ''
