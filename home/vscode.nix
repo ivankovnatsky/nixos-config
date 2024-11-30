@@ -21,6 +21,7 @@ let
     "terminal.integrated.fontFamily" = "Hack Nerd Font";
     "update.mode" = "none";
     "vim.relativeLineNumbers" = true;
+    "security.workspace.trust.enabled" = false;
   };
 in
 {
