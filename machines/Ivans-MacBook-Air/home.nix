@@ -20,6 +20,7 @@
     ../../home/syncthing.nix
     ../../home/direnv.nix
     ../../home/vscode.nix
+    ../../home/zed.nix
     ../../home/npm.nix
 
     ../../home/nixvim
@@ -40,8 +41,14 @@
         { key = "0"; app = "Finder"; }
         { key = "1"; app = config.flags.hotkeys.terminal; }
         { key = "2"; app = config.flags.hotkeys.browser; }
+        { key = "4"; app = "Cursor"; }
+        { key = "5"; app = "Visual Studio Code"; }
+        { key = "6"; app = "Zed"; }
         { key = "9"; app = "System Settings"; }
       ];
+    };
+    apps = {
+      vscode.enable = true;
     };
   };
   home = {

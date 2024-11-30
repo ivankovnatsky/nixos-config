@@ -66,6 +66,7 @@ in
       "mullvadvpn"
       "vlc"
       "cursor"
+      "zed"
     ];
     masApps = {
       "Numbers" = 409203825;
@@ -111,10 +112,15 @@ in
       { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Chromium.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
+      { path = "/Applications/Zed.app/"; }
+      { path = "/Applications/Cursor.app/"; }
 
       { type = "spacer"; section = "apps"; }
 
+      # Installed using nixpkgs
       { path = "${pkgs.coconutbattery}/Applications/coconutBattery.app/"; }
+      { path = "${pkgs.vscode}/Applications/Visual Studio Code.app/"; }
+
 
       { type = "spacer"; section = "apps"; }
 
