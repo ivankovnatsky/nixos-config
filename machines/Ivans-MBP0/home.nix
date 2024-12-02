@@ -3,6 +3,7 @@
 {
   imports = [
     ../../modules/flags
+    ../../modules/secrets
 
     ../../home/amethyst.nix
     ../../home/git.nix
