@@ -20,6 +20,9 @@ in
           highlight: true
           keybindings: vi
           clients:
+            - type: claude
+              api_base: https://api.anthropic.com/v1
+              api_key: ${config.secrets.anthropicApiKey}
         '';
       };
     };

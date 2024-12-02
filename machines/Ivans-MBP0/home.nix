@@ -12,6 +12,7 @@
     ../../home/kitty.nix
     ../../home/tmux.nix
     ../../home/shell.nix
+    ../../home/aichat.nix
     ../../home/starship
     ../../home/direnv.nix
     ../../home/scripts.nix
