@@ -4,6 +4,7 @@ import os
 import sys
 import subprocess
 from pathlib import Path
+from datetime import datetime
 
 # User configuration
 CURRENT_USER = os.getenv("USER")
@@ -39,11 +40,16 @@ DARWIN_EXCLUDES = [
     "./.gnupg/S.*",
 ]
 
+def log(message: str) -> None:
+    """Print a message with a timestamp prefix."""
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    print(f"[{timestamp}] {message}")
+
 def backup_home():
     try:
         home = Path.home()
         os.chdir(home.parent)
-        print(f"Creating backup of home directory for {CURRENT_USER}...")
+        log(f"Creating backup of home directory for {CURRENT_USER}...")
 
         tar_cmd = ["tar", "-cvf", "-"]
         for exclude in DARWIN_EXCLUDES:
@@ -67,23 +73,23 @@ def backup_home():
         return True
 
     except subprocess.TimeoutExpired:
-        print("Backup process timed out")
+        log("Backup process timed out")
         return False
     except OSError as e:
         if e.errno == errno.EINTR:  # Interrupted system call
-            print("Backup was interrupted, retrying...")
+            log("Backup was interrupted, retrying...")
             return backup_home()  # Recursive retry
         raise
     except KeyboardInterrupt:
-        print("\nBackup interrupted by user")
+        log("\nBackup interrupted by user")
         return False
 
 def upload_backup():
-    print("Uploading backup to drive:...")
+    log("Uploading backup to drive:...")
     subprocess.run([RCLONE_PATH, "--progress", "copy", BACKUP_FILE, "drive:"], check=True)
 
 def cleanup_backup():
-    print(f"Cleaning up temporary backup file: {BACKUP_FILE}...")
+    log(f"Cleaning up temporary backup file: {BACKUP_FILE}...")
     os.remove(BACKUP_FILE)
 
 def main():
@@ -92,7 +98,7 @@ def main():
             upload_backup()
             cleanup_backup()
     except Exception as e:
-        print(f"Error: {e}")
+        log(f"Error: {e}")
         sys.exit(1)
 
 if __name__ == "__main__":
