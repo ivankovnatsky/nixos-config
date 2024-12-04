@@ -34,7 +34,7 @@ DARWIN_EXCLUDES = [
     f"./{CURRENT_USER}/Library/Caches/CloudKit",
     f"./{CURRENT_USER}/Library/Caches/com.apple.HomeKit",
     f"./{CURRENT_USER}/Library/Group Containers",
-    f"./{CURRENT_USER}/Library/Containers/com.okta.mobile",
+    f"./{CURRENT_USER}/Library/Containers",
     f"./{CURRENT_USER}/OrbStack",
     "./**/*.sock",
     "./.gnupg/S.*",
