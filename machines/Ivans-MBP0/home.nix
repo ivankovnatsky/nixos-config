@@ -26,7 +26,7 @@
     ../../home/vscode.nix
     ../../home/syncthing.nix
 
-    ../../home/launchd-services.nix
+    # ../../home/launchd-services.nix
 
     ../../home/hammerspoon
 
