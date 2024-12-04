@@ -31,6 +31,7 @@ in
       vim-sleuth
       vim-sneak
       vim-eunuch
+      mkdir-nvim
 
       midnight-nvim
       tokyonight-nvim
