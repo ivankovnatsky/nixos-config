@@ -22,7 +22,7 @@
     ../../home/k9s.nix
     ../../home/terraform.nix
     ../../home/yamlint.nix
-    ../../home/zed.nix
+    ../../home/zed
     ../../home/vscode.nix
     ../../home/syncthing.nix
 
