@@ -20,7 +20,7 @@
     ../../home/syncthing.nix
     ../../home/direnv.nix
     ../../home/vscode.nix
-    ../../home/zed.nix
+    ../../home/zed
     ../../home/npm.nix
 
     ../../home/nixvim
