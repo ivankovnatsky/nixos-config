@@ -82,6 +82,8 @@
 
       magic-wormhole
       rclone
+      pv
+      pigz
 
       devbox
 
@@ -133,9 +135,6 @@
       postgresql
 
       cloudflared
-
-      pv
-      pigz
 
       poetry
 

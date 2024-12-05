@@ -101,6 +101,7 @@ in
 
       { type = "spacer"; section = "apps"; }
 
+      { path = "/System/Applications/Utilities/Terminal.app/"; }
       { path = "/System/Applications/Utilities/Activity Monitor.app/"; }
       { path = "/System/Applications/Passwords.app/"; }
       { path = "/System/Library/CoreServices/Applications/Keychain Access.app/"; }
