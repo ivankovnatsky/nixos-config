@@ -1,10 +1,19 @@
 #!/usr/bin/env python3
 
+"""
+Usage:
+
+backup-home drive:
+backup-home gdrive:backup/home
+backup-home remote:path/to/backup/dir
+"""
+
 import os
 import sys
 import subprocess
 from pathlib import Path
 from datetime import datetime
+import argparse
 
 # User configuration
 CURRENT_USER = os.getenv("USER")
@@ -84,18 +93,23 @@ def backup_home():
         log("\nBackup interrupted by user")
         return False
 
-def upload_backup():
-    log("Uploading backup to drive:...")
-    subprocess.run([RCLONE_PATH, "--progress", "copy", BACKUP_FILE, "drive:"], check=True)
+def upload_backup(destination: str):
+    log(f"Uploading backup to {destination}...")
+    subprocess.run([RCLONE_PATH, "--progress", "copy", BACKUP_FILE, destination], check=True)
 
 def cleanup_backup():
     log(f"Cleaning up temporary backup file: {BACKUP_FILE}...")
     os.remove(BACKUP_FILE)
 
 def main():
+    # Add argument parser
+    parser = argparse.ArgumentParser(description='Backup home directory and upload to rclone destination')
+    parser.add_argument('destination', help='Rclone destination path (e.g., "drive:", "gdrive:backup")')
+    args = parser.parse_args()
+
     try:
         if backup_home():
-            upload_backup()
+            upload_backup(args.destination)
             cleanup_backup()
     except Exception as e:
         log(f"Error: {e}")
