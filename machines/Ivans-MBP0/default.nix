@@ -101,6 +101,7 @@ in
       { type = "spacer"; section = "apps"; }
 
       # Additional macOS apps
+      { path = "/System/Applications/Utilities/Terminal.app/"; }
       { path = "/System/Applications/Utilities/Activity Monitor.app/"; }
 
       { type = "spacer"; section = "apps"; }
