@@ -40,7 +40,7 @@
       co = "checkout";
       c = "commit -v";
       ca = "commit -av";
-      d = "diff";
+      d = "diff HEAD"; # This will show all changes
       l = "log --oneline -n 20";
       p = "push";
       pp = "pull";
