@@ -29,23 +29,13 @@ rebuild-fswatch:
 rebuild-watchman:
 	watchman-make \
 		--pattern \
-			'**/*.nix' \
-			'**/*.sh' \
-			'**/*.fish' \
-			'**/*.lua' \
-			'**/*.py' \
-			'flake.lock' \
+			'**/*' \
 		--target default
 
 rebuild-watchman-machine-specific:
 	watchman-make \
 		--pattern \
-			'**/*.nix' \
-			'**/*.sh' \
-			'**/*.fish' \
-			'**/*.lua' \
-			'**/*.py' \
-			'flake.lock' \
+			'**/*' \
 		--target machine-specific
 
 rebuild-impure/nixos:
