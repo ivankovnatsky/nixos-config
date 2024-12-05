@@ -55,7 +55,10 @@
     packages = with pkgs; [
       home-manager
       zsh-forgit
+
       rclone
+      pigz
+
       aria2
       wget
       # FIXME: Fails to install on current nixpkgs-unstable
