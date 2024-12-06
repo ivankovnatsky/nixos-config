@@ -1,13 +1,5 @@
 #!/usr/bin/env python3
 
-"""
-Usage:
-
-backup-home drive:
-backup-home gdrive:backup/home
-backup-home remote:path/to/backup/dir
-"""
-
 import os
 import sys
 import subprocess
@@ -110,12 +102,26 @@ def cleanup_backup():
 
 
 def main():
+    examples = """
+Examples:
+    backup-home drive:
+    backup-home gdrive:backup/home
+    backup-home remote:path/to/backup/dir"""
+
     parser = argparse.ArgumentParser(
-        description="Backup home directory and upload to rclone destination"
+        description="Backup home directory and upload to rclone destination",
+        epilog=examples,
+        formatter_class=argparse.RawDescriptionHelpFormatter
     )
     parser.add_argument(
-        "destination", help='Rclone destination path (e.g., "drive:", "gdrive:backup")'
+        "destination", help='Rclone destination path (e.g., "drive:", "gdrive:backup/home")'
     )
+
+    # Show help if no arguments are provided
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit(1)
+
     args = parser.parse_args()
 
     # Check if the destination includes a cloud name
