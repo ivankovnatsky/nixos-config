@@ -49,15 +49,15 @@
   };
 
   home.file = {
-    ".config/tmuxinator/home.yml" = {
+    ".config/tmuxinator/config.yml" = {
       text = ''
-        name: home
-        startup_window: 1
+        name: config
+        startup_window: 0
         root: ~/Sources/github.com/ivankovnatsky/nixos-config/
 
         windows:
-          - editor: ${config.flags.editor}
-          - cli:
+          - editor: ${config.flags.editor} .
+          - rebuild: ${pkgs.gnumake}/bin/make rebuild-watchman
       '';
     };
 
@@ -71,6 +71,9 @@
           - nvim:
               panes:
                 - nvim
+          - shell:
+            - tmux set-window-option -t1 automatic-rename on
+            - clear
           - shell:
             - tmux set-window-option -t1 automatic-rename on
             - clear
