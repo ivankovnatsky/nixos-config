@@ -24,6 +24,7 @@
     ../../home/yamlint.nix
     ../../home/zed
     ../../home/vscode.nix
+    ../../home/syncthing.nix
 
     # ../../home/launchd-services.nix
 
