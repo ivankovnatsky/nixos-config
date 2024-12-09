@@ -20,23 +20,35 @@ machine-specific:
 		osascript -e 'display notification "🔴 Darwin rebuild failed!" with title "Nix configuration"'
 
 rebuild-fswatch:
-	echo "Watching for changes..."; \
-	git ls-files | xargs fswatch -o | while read -r event; do \
-		echo "Change detected, running make to rebuild configuration..."; \
-		$(MAKE) default; \
+	while true; do \
+		echo "Watching for changes..."; \
+		git ls-files | xargs fswatch -o | while read -r event; do \
+			echo "Change detected, running make to rebuild configuration..."; \
+			$(MAKE) default; \
+		done; \
+		echo "fswatch exited, restarting..."; \
+		sleep 1; \
 	done
 
 rebuild-watchman:
-	watchman-make \
-		--pattern \
-			'**/*' \
-		--target default
+	while true; do \
+		watchman-make \
+			--pattern \
+				'**/*' \
+			--target default; \
+		echo "watchman-make exited, restarting..."; \
+		sleep 1; \
+	done
 
 rebuild-watchman-machine-specific:
-	watchman-make \
-		--pattern \
-			'**/*' \
-		--target machine-specific
+	while true; do \
+		watchman-make \
+			--pattern \
+				'**/*' \
+			--target machine-specific; \
+		echo "watchman-make exited, restarting..."; \
+		sleep 1; \
+	done
 
 rebuild-impure/nixos:
 	nixos-rebuild switch --use-remote-sudo --impure --verbose -L --flake .
