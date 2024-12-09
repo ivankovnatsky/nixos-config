@@ -22,6 +22,30 @@ function collect_urls
     string replace "/pulls/" "/pull/"
 end
 
+function open_urls_in_batches
+    set -l urls $argv[1..-2]
+    set -l running $argv[-1]
+    set -l batch_size 5
+    
+    for i in (seq 1 $batch_size (count $urls))
+        set -l end_idx (math "$i + $batch_size - 1")
+        if test $end_idx -gt (count $urls)
+            set end_idx (count $urls)
+        end
+        
+        # Process each URL in the batch individually
+        for url in $urls[$i..$end_idx]
+            if test "$running" = "true"
+                open $url
+            else
+                open --new $url
+            end
+        end
+        
+        sleep 1
+    end
+end
+
 function main
     argparse h/help r/running s/show -- $argv
     or begin
@@ -55,10 +79,10 @@ function main
     else
         if set -q _flag_running
             echo "Opening URLs in the current browser window"
-            open $all_urls
+            open_urls_in_batches $all_urls "true"
         else
             echo "Opening URLs in a new browser window"
-            open --new $all_urls
+            open_urls_in_batches $all_urls "false"
         end
     end
 end
