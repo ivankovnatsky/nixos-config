@@ -21,6 +21,11 @@ in
     darkMode = true;
   };
   security.pamCustom.enableSudoTouchIdAuth = true;
+  # Enable Low Power Mode:
+  #
+  # ```console
+  # sudo pmset -a lowpowermode 1
+  # ```
   system = {
     defaults = {
       controlcenter = {
@@ -58,6 +63,7 @@ in
       "pam-reattach"
     ];
     casks = [
+      "firefox"
       "hammerspoon"
       "amethyst"
       "cursor"
@@ -117,6 +123,7 @@ in
       { type = "spacer"; section = "apps"; }
 
       # Installed using homebrew
+      { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Zed.app/"; }
       { path = "/Applications/Cursor.app/"; }
