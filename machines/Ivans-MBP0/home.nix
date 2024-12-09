@@ -5,6 +5,7 @@
     ../../modules/flags
     ../../modules/secrets
 
+    ../../home/firefox-config.nix
     ../../home/amethyst.nix
     ../../home/git.nix
     ../../home/jujutsu.nix
