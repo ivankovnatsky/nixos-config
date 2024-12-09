@@ -16,8 +16,9 @@ require("lspconfig.ui.windows").default_options = {
   border = _border,
 }
 
--- Fzf muscle memory
+-- fzf.vim muscle memory
 vim.cmd([[command! Files Telescope find_files]])
+vim.cmd([[command! Buffers Telescope buffers]])
 vim.cmd([[command! GFiles Telescope git_files]])
 vim.cmd([[command! OFiles Telescope oldfiles]])
 
