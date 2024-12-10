@@ -47,8 +47,8 @@
         { key = "0"; app = "Finder"; }
         { key = "1"; app = config.flags.hotkeys.terminal; }
         { key = "2"; app = config.flags.hotkeys.browser; }
-        { key = "3"; app = "Firefox"; }
-        { key = "4"; app = "Slack"; }
+        { key = "3"; app = "Slack"; }
+        { key = "4"; app = "Firefox"; }
         { key = "5"; app = "Cursor"; }
         { key = "6"; app = "Visual Studio Code"; }
         { key = "7"; app = "Zed"; }
