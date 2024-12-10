@@ -105,6 +105,7 @@
 
       terraformer
       terragrunt-atlantis-config
+      hclfmt
       infracost
 
       kubectl
