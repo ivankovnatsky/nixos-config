@@ -12,6 +12,7 @@
     ../../home/lsd.nix
     ../../home/kitty.nix
     ../../home/tmux.nix
+    ../../home/go.nix
     ../../home/shell.nix
     ../../home/aichat.nix
     ../../home/starship

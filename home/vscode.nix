@@ -41,6 +41,7 @@ in
       ms-vscode.makefile-tools
       ms-python.python
       hashicorp.hcl
+      golang.go
     ];
   };
 
