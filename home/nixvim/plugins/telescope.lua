@@ -19,6 +19,7 @@ require("lspconfig.ui.windows").default_options = {
 -- fzf.vim muscle memory
 vim.cmd([[command! Files Telescope find_files]])
 vim.cmd([[command! Buffers Telescope buffers]])
+vim.cmd([[command! Registers Telescope registers]])
 vim.cmd([[command! GFiles Telescope git_files]])
 vim.cmd([[command! OFiles Telescope oldfiles]])
 
