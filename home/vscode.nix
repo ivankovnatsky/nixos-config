@@ -42,6 +42,7 @@ in
       ms-python.python
       hashicorp.hcl
       golang.go
+      ms-azuretools.vscode-docker
     ];
   };
 
