@@ -32,7 +32,8 @@ in
         Bluetooth = false;
       };
       dock = {
-        mru-spaces = false;
+        # https://github.com/LnL7/nix-darwin/blob/a35b08d09efda83625bef267eb24347b446c80b8/modules/system/defaults/dock.nix#L114
+        mru-spaces = true;
       };
       NSGlobalDomain = {
         # Allow tab focus in all controls, space to select.
