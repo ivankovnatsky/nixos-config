@@ -15,6 +15,7 @@
     ../../home/go.nix
     ../../home/shell.nix
     ../../home/aichat.nix
+    ../../home/ghostty.nix
     ../../home/starship
     ../../home/direnv.nix
     ../../home/scripts.nix
@@ -53,6 +54,7 @@
         { key = "5"; app = "Cursor"; }
         { key = "6"; app = "Visual Studio Code"; }
         { key = "7"; app = "Zed"; }
+        { key = "8"; app = "Ghostty"; }
         { key = "9"; app = "System Settings"; }
       ];
     };
@@ -149,6 +151,8 @@
       nodejs
 
       wget
+
+      ghostty
     ];
 
     sessionVariables = {
