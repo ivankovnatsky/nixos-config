@@ -12,6 +12,7 @@ in
     ./config
     ./opts
     ./keymaps
+    ./commands
     ./plugins
 
     ./plugins/lsp
