@@ -1,3 +1,6 @@
 result
 .stfolder
 **/.DS_Store
+
+# Ghostty local build file
+overlays/ghostty/ghostty-macos-universal.zip
