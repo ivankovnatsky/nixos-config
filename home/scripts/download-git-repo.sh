@@ -6,14 +6,33 @@ strip_url() {
     # Remove trailing slash if present
     url="${url%/}"
     
-    # Check if URL contains more than one slash after github.com
-    if [[ "$url" =~ github\.com/[^/]+/[^/]+ ]]; then
-        # If it's a full repo URL, strip to org/repo level
-        echo "$url"
+    # Only process github.com URLs
+    if [[ "$url" =~ ^https://github\.com/ ]]; then
+        # Check if URL contains more than one slash after github.com
+        if [[ "$url" =~ github\.com/([^/]+/[^/]+) ]]; then
+            # Extract just the org/repo part using the regex match
+            echo "https://github.com/${BASH_REMATCH[1]}"
+        else
+            # If it's just an org URL, use as is
+            echo "${url%/*}"
+        fi
     else
-        # If it's just an org URL, use as is
-        echo "${url%/*}"
+        # For non-github URLs, return as is
+        echo "$url"
     fi
+}
+
+# Get base directory from ghq config or use default
+GHQ_ROOT=$(ghq root)
+
+# Function to get the repository directory path
+get_repo_path() {
+    local url="$1"
+    # First strip the URL to base repo URL
+    url=$(strip_url "$url")
+    # Then convert github.com/org/repo format to filesystem path
+    local repo_path="${url#https://}"
+    echo "${GHQ_ROOT}/${repo_path}"
 }
 
 # Check if URL is provided
@@ -31,5 +50,11 @@ URL="${args[0]}"
 # Process the URL
 STRIPPED_URL=$(strip_url "$URL")
 
-# Use ghq to get the repository
-ghq get --look "${STRIPPED_URL}"
+# Try to clone (might fail if exists, that's ok)
+ghq get "${STRIPPED_URL}" >/dev/null 2>&1 || true
+
+# Get the directory path
+REPO_PATH=$(get_repo_path "${STRIPPED_URL}")
+
+# Instead of cd-ing, print the cd command for fish to evaluate
+echo "cd ${REPO_PATH}"
