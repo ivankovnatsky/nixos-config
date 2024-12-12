@@ -120,7 +120,11 @@
       argocd
 
       kail
-      kubernetes-helm
+      (wrapHelm kubernetes-helm {
+        plugins = with pkgs.kubernetes-helmPlugins; [
+          helm-secrets
+        ];
+      })
       eks-node-viewer
 
       pre-commit
