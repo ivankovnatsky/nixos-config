@@ -84,10 +84,5 @@
     yq-go
     yt-dlp
     yubikey-manager
-    (wrapHelm kubernetes-helm {
-      plugins = with pkgs.kubernetes-helmPlugins; [
-        helm-secrets
-      ];
-    })
   ];
 }
