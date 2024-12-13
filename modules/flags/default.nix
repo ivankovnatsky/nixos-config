@@ -72,7 +72,7 @@ with lib; {
 
     hotkeys = {
       terminal = mkOption {
-        type = types.enum [ "kitty" "Terminal" ];
+        type = types.enum [ "kitty" "Terminal" "Ghostty" ];
         description = "Default terminal application";
         default = "kitty";
       };
