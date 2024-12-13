@@ -6,25 +6,31 @@
 
 let
   version = "tip";
+  homeDir = builtins.getEnv "HOME";
 in
 
 stdenv.mkDerivation rec {
   pname = "ghostty";
   inherit version;
 
-  src = ./ghostty-macos-universal.zip;
+  src = builtins.path {
+    name = "ghostty-zip";
+    path = "${homeDir}/.ghostty/ghostty-macos-universal.zip";
+  };
 
   nativeBuildInputs = [ unzip ];
 
-  # Skip the default unpack phase and handle it manually
   dontUnpack = true;
 
   installPhase = ''
-    # Create a temporary directory and unzip there
     mkdir -p $out/Applications
     cd $out/Applications
     ${unzip}/bin/unzip ${src}
   '';
+
+  __noChroot = true;
+  preferLocalBuild = true;
+  allowSubstitutes = false;
 
   meta = with lib; {
     description = "A fast, feature-rich terminal emulator";
