@@ -119,6 +119,7 @@ in
       { type = "spacer"; section = "apps"; }
 
       # Installed using nixpkgs
+      { path = "${pkgs.ghostty}/Applications/Ghostty.app/"; }
       { path = "${pkgs.coconutbattery}/Applications/coconutBattery.app/"; }
       { path = "${pkgs.vscode}/Applications/Visual Studio Code.app/"; }
 
@@ -152,6 +153,7 @@ in
         coconutbattery = super.callPackage ../../overlays/coconutbattery.nix { };
         watchman-make = super.callPackage ../../overlays/watchman-make.nix { };
         battery-toolkit = super.callPackage ../../overlays/battery-toolkit.nix { };
+        ghostty = super.callPackage ../../overlays/ghostty { };
       }
     )
   ];
