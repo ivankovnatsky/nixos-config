@@ -7,15 +7,15 @@ all: default rebuild-fswatch rebuild-watchman rebuild-impure/nixos
 
 default:
 ifeq (${PLATFORM}, Darwin)
-	darwin-rebuild switch --verbose -L --flake . && \
+	darwin-rebuild switch --impure --verbose -L --flake . && \
 		osascript -e 'display notification "🟢 Darwin rebuild successful!" with title "Nix configuration"' || \
 		osascript -e 'display notification "🔴 Darwin rebuild failed!" with title "Nix configuration"'
 else
-	nixos-rebuild switch --use-remote-sudo --verbose -L --flake .
+	nixos-rebuild switch --use-remote-sudo --impure --verbose -L --flake .
 endif
 
 machine-specific:
-	darwin-rebuild switch --verbose -L --flake ".#Ivans-MBP0" && \
+	darwin-rebuild switch --impure --verbose -L --flake ".#Ivans-MBP0" && \
 		osascript -e 'display notification "🟢 Darwin rebuild successful!" with title "Nix configuration"' || \
 		osascript -e 'display notification "🔴 Darwin rebuild failed!" with title "Nix configuration"'
 
