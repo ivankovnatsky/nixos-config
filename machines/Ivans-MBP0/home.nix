@@ -43,7 +43,7 @@
     editor = "nvim";
     darkMode = true;
     hotkeys = {
-      terminal = "kitty";
+      terminal = "Ghostty";
       browser = "Google Chrome";
       shortcuts = [
         { key = "0"; app = "Finder"; }
@@ -54,7 +54,6 @@
         { key = "5"; app = "Cursor"; }
         { key = "6"; app = "Visual Studio Code"; }
         { key = "7"; app = "Zed"; }
-        { key = "8"; app = "Ghostty"; }
         { key = "9"; app = "System Settings"; }
       ];
     };
