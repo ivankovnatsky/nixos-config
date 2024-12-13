@@ -16,6 +16,7 @@
     ../../home/kitty.nix
     ../../home/aichat.nix
     ../../home/tmux.nix
+    ../../home/ghostty.nix
     ../../home/transmission.nix
     ../../home/syncthing.nix
     ../../home/direnv.nix
@@ -35,7 +36,7 @@
     editor = "nvim";
     darkMode = true;
     hotkeys = {
-      terminal = "kitty";
+      terminal = "Ghostty";
       browser = "Safari";
       shortcuts = [
         { key = "0"; app = "Finder"; }
@@ -108,6 +109,8 @@
       ]))
 
       nodejs
+
+      ghostty
     ];
     sessionVariables = {
       EDITOR = config.flags.editor;
