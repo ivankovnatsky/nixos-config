@@ -218,7 +218,7 @@
 
         # FIXME: Figure out suitable key for the completion, when you need to
         # override cmp plugins.
-        copilot-vim.enable = true;
+        # copilot-vim.enable = true;
       };
       extraPlugins = with pkgs.vimPlugins; [
         Jenkinsfile-vim-syntax
