@@ -198,8 +198,8 @@
           ];
         };
 
-        "Ivans-MBP0" = makeDarwinConfig {
-          hostname = "Ivans-MBP0";
+        "Lusha-Macbook-Ivan-Kovnatskyi" = makeDarwinConfig {
+          hostname = "Lusha-Macbook-Ivan-Kovnatskyi";
           system = "aarch64-darwin";
           username = "Ivan.Kovnatskyi";
           modules = [
