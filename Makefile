@@ -14,11 +14,6 @@ else
 	nixos-rebuild switch --use-remote-sudo --impure --verbose -L --flake .
 endif
 
-machine-specific:
-	darwin-rebuild switch --impure --verbose -L --flake ".#Ivans-MBP0" && \
-		osascript -e 'display notification "🟢 Darwin rebuild successful!" with title "Nix configuration"' || \
-		osascript -e 'display notification "🔴 Darwin rebuild failed!" with title "Nix configuration"'
-
 rebuild-fswatch:
 	while true; do \
 		echo "Watching for changes..."; \
@@ -36,16 +31,6 @@ rebuild-watchman:
 			--pattern \
 				'**/*' \
 			--target default; \
-		echo "watchman-make exited, restarting..."; \
-		sleep 1; \
-	done
-
-rebuild-watchman-machine-specific:
-	while true; do \
-		watchman-make \
-			--pattern \
-				'**/*' \
-			--target machine-specific; \
 		echo "watchman-make exited, restarting..."; \
 		sleep 1; \
 	done

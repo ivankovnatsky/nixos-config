@@ -61,18 +61,6 @@
       '';
     };
 
-    ".config/tmuxinator/config-work.yml" = {
-      text = ''
-        name: config
-        startup_window: 0
-        root: ~/Sources/github.com/ivankovnatsky/nixos-config/
-
-        windows:
-          - editor: ${config.flags.editor} .
-          - rebuild: ${pkgs.gnumake}/bin/make rebuild-watchman-machine-specific
-      '';
-    };
-
     ".config/tmuxinator/work.yml" = {
       text = ''
         name: work
