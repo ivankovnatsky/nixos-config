@@ -17,7 +17,11 @@ stdenv.mkDerivation rec {
   # ```console
   # rm ~/.ghostty/ghostty-macos-universal.zip
   # curl -L \
-  #   https://github.com/ghostty-org/ghostty/releases/download/tip/ghostty-macos-universal.zip \
+  #   -H "Authorization: Bearer $GITHUB_TOKEN" \
+  #   -H "Accept: application/octet-stream" \
+  #   $(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
+  #     https://api.github.com/repos/ghostty-org/ghostty/releases/tags/tip \
+  #     | jq -r '.assets[] | select(.name=="ghostty-macos-universal.zip") | .url') \
   #   -o ~/.ghostty/ghostty-macos-universal.zip
   # ```
   src = builtins.path {
