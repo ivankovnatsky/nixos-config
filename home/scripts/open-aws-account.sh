@@ -78,12 +78,25 @@ select_aws_account() {
 
     if [[ -z $AWS_ACCOUNT_ID ]]; then
         if [[ -z $role ]]; then
-            account_id=$(aws-sso --config ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" | rg '^[0-9]+' | fzf | extract_role_name)
+            account_id=$(aws-sso --config ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" | \
+                rg '^[0-9]+' | \
+                fzf | \
+                extract_role_name)
         else
-            account_id=$(aws-sso ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" | rg '^[0-9]+' | rg "$role" | fzf | extract_role_name)
+            account_id=$(aws-sso --config ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" | \
+                rg '^[0-9]+' | \
+                rg "$role" | \
+                fzf | \
+                extract_role_name
+            )
         fi
     else
-        account_id=$(aws-sso ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" | rg '^[0-9]+' | rg "$role" | rg "$AWS_ACCOUNT_ID" | extract_role_name)
+        account_id=$(aws-sso --config ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" | \
+            rg '^[0-9]+' | \
+            rg "$role" | \
+            rg "$AWS_ACCOUNT_ID" | \
+            extract_role_name
+        )
     fi
 
     echo "$account_id"
@@ -111,9 +124,9 @@ EOF
 if [[ "$BROWSER" == "chrome" ]]; then
     init_chrome_preferences
 
-    # https://github.com/synfinatic/aws-sso-cli/blob/main/docs/config.md#authurlaction--browser--urlaction--urlexeccommand
-    URL=$(aws-sso console --config ~/.aws-sso/"$BROWSER".yaml --browser "$CHROME_BROWSER_PATH" --sso "$AWS_SSO" --profile "$PROFILE" 2>&1)
+    URL=$(aws-sso console --config ~/.aws-sso/"$BROWSER".yaml --browser "$CHROME_BROWSER_PATH" \
+        --sso "$AWS_SSO" --profile "$PROFILE" 2>&1)
     open --new -a "$APP_NAME" --args --profile-directory="$PROFILE" "$URL"
 else
-    aws-sso console ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" --profile "$PROFILE"
+    aws-sso console --config ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" --profile "$PROFILE"
 fi
