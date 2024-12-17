@@ -16,5 +16,6 @@
     # window-decoration = false
     # macos-titlebar-style = hidden
     copy-on-select = true
+    macos-option-as-alt = true
   '';
 }
