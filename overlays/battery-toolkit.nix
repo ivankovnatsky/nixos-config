@@ -18,7 +18,6 @@ stdenv.mkDerivation rec {
   };
 
   installPhase = ''
-    ls -lahR .
     mkdir -p $out/Applications
     cp -R . "$out/Applications/Battery Toolkit.app"
   '';

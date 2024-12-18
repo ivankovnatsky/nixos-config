@@ -33,7 +33,7 @@
     };
   };
   fonts.packages = with pkgs; [
-    (nerdfonts.override { fonts = [ "Hack" ]; })
+    nerd-fonts.hack
   ];
   nixpkgs.overlays = [
     (
