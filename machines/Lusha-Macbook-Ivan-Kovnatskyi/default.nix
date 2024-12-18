@@ -135,8 +135,12 @@ in
       { type = "spacer"; section = "apps"; }
 
       # Installed using nixpkgs
-      { path = "${pkgs.ghostty}/Applications/Ghostty.app/"; }
       { path = "${pkgs.vscode}/Applications/Visual Studio Code.app/"; }
+
+      { type = "spacer"; section = "apps"; }
+
+      # Manually installed
+      { path = "${config.users.users.${userName}.home}/Applications/Ghostty.app/"; }
 
       {
         path = "${config.users.users.${userName}.home}/Downloads/";
@@ -152,7 +156,7 @@ in
         battery-toolkit = super.callPackage ../../overlays/battery-toolkit.nix { };
         terragrunt-atlantis-config = super.callPackage ../../overlays/terragrunt-atlantis-config.nix { };
         gh-token = super.callPackage ../../overlays/gh-token.nix { };
-        ghostty = super.callPackage ../../overlays/ghostty { };
+        # ghostty = super.callPackage ../../overlays/ghostty { };
       }
     )
   ];
