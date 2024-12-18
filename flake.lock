@@ -277,32 +277,16 @@
     "homebrew-core": {
       "flake": false,
       "locked": {
-        "lastModified": 1729747221,
-        "narHash": "sha256-7F+cbZb5oitqbo2/9J/CAA6ArQw9Wk47HWru+wSTeoQ=",
+        "lastModified": 1734534628,
+        "narHash": "sha256-+anBE4CB2f2uqw2q1oZ+bf4ZYx3lzC+m9hRLUxxxsDc=",
         "owner": "homebrew",
         "repo": "homebrew-core",
-        "rev": "4f8bd63c20f98113bd8e0e36cb6d690e7e6b5d06",
+        "rev": "777c80bd7b65dc64eb18e0f7fd54ddb7390d787f",
         "type": "github"
       },
       "original": {
         "owner": "homebrew",
         "repo": "homebrew-core",
-        "type": "github"
-      }
-    },
-    "homebrew-zackelia-formulae": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1700431196,
-        "narHash": "sha256-O/qwaci/TWSlJaze3GDgLMygH9Fju6t6dajVW1kse4o=",
-        "owner": "zackelia",
-        "repo": "homebrew-formulae",
-        "rev": "d20606bc22be379349616c26e8dd48cb98de30ed",
-        "type": "github"
-      },
-      "original": {
-        "owner": "zackelia",
-        "repo": "homebrew-formulae",
         "type": "github"
       }
     },
@@ -530,7 +514,6 @@
         "homebrew-bundle": "homebrew-bundle",
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
-        "homebrew-zackelia-formulae": "homebrew-zackelia-formulae",
         "nix-homebrew": "nix-homebrew",
         "nixpkgs": "nixpkgs_3",
         "nixpkgs-master": "nixpkgs-master",
