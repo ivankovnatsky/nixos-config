@@ -43,7 +43,9 @@ in
         "NSGlobalDomain" = {
           # My keyboard does not support Globe switch key, or I don't know how
           # to use it, don't want to use karabiner-elements for now.
-          "NSUserKeyEquivalents" = { };
+          "NSUserKeyEquivalents" = {
+            "Move focus to active or next window" = "~`";
+          };
         };
       };
     };
@@ -58,7 +60,7 @@ in
     global.brewfile = true;
     brews = [
       # Since nix places it's new installs under newly generated nix store
-      # path, we can't relay on nixpkgs pam-reattach, because after nixpkgs
+      # path, we can't rely on nixpkgs pam-reattach, because after nixpkgs
       # upgrades PAM auth is broken for a common user. To fix it we need to
       # enable root user and edit /private/etc/pam.d/sudo to unblock auth.
       "pam-reattach"
