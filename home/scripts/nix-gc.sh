@@ -27,6 +27,9 @@
 # nix gc is the second command, because it will clean it up home-manager
 # generations once we delete them.
 
+# Disable pager globally.
+export PAGER=""
+
 nix_gc() {
     # List nix generations.
     # Example: nix-env --list-generations
@@ -34,8 +37,8 @@ nix_gc() {
     # ```console
     #    3   2022-10-04 10:51:55   (current)
     # ```
-    PAGER="" nix-env --list-generations
-    PAGER="" sudo nix-env --profile /nix/var/nix/profiles/system --list-generations
+    nix-env --list-generations
+    sudo nix-env --profile /nix/var/nix/profiles/system --list-generations
 
     nix-collect-garbage -d
     sudo nix-collect-garbage -d
