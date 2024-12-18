@@ -74,6 +74,7 @@ in
       "kitty"
       "orbstack"
       "zed"
+      "twingate"
 
       # Installed or managed using Kandji
       # google-chrome
@@ -81,7 +82,6 @@ in
       # zoom
       # chatgpt
       # dbeaver-community
-      # twingate
     ];
     masApps = {
       # Installed using Kandji
