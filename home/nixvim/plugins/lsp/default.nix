@@ -18,7 +18,7 @@
       enable = true;
       servers = {
         # FIXME: https://github.com/nix-community/nixvim/blob/3d24cb72618738130e6af9c644c81fe42aa34ebc/plugins/lsp/lsp-packages.nix#L52
-        # fish_lsp.enable = true;
+        fish_lsp.enable = true;
         nil_ls.enable = true;
         lua_ls.enable = true;
       };
