@@ -14,10 +14,11 @@ fi
 LABEL_SELECTOR="$1"
 
 echo "Fetching nodes for pods with label: $LABEL_SELECTOR"
-echo "NODE NAME                                     INSTANCE TYPE"
-echo "-------------------------------------------------------------------------"
+echo ""
+printf "%-45s %s\n" "NAME" "INSTANCE-TYPE"
 
 kubectl get pods -l "$LABEL_SELECTOR" -o custom-columns=NODE:spec.nodeName --no-headers | \
     sort -u | \
     xargs -I {} -P 20 kubectl get nodes {} --no-headers \
-    -o custom-columns=NAME:.metadata.name,INSTANCE-TYPE:.metadata.labels.'node\.kubernetes\.io/instance-type'
+    -o custom-columns=NAME:.metadata.name,INSTANCE-TYPE:.metadata.labels.'node\.kubernetes\.io/instance-type' | \
+    awk '{printf "%-45s %s\n", $1, $2}'
