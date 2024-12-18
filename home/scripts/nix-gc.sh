@@ -46,12 +46,15 @@ nix_gc() {
 
 home_manager_gc() {
     local generations
+    local current_generation
 
-    # List home-manager generations.
-    home-manager generations
+    # Get and show the current (first) generation
+    current_generation=$(home-manager generations | head -n 1)
+    echo "Current home-manager generation:"
+    echo "$current_generation"
+    echo
 
-    # We need to list everything except the first generation, which is at the
-    # top of the list and is the current generation.
+    # Get all generations except the current one
     generations=$(home-manager generations | tail -n +2 | awk '{print $5}')
     if [[ -n $generations ]]; then
         for g in $generations; do
