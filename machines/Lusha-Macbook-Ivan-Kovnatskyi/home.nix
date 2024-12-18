@@ -151,7 +151,7 @@
 
       wget
 
-      ghostty
+      # ghostty
     ];
 
     sessionVariables = {
