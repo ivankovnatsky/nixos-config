@@ -9,6 +9,8 @@ let
     # TODO: add function nix-prefetch-url $url | xargs nix hash to-sri --type sha256
     g = "${pkgs.git}/bin/git";
     cat = "${pkgs.bat}/bin/bat";
+    # Darwin doesn't have tac, so we use tail -r instead.
+    tac = lib.mkIf isDarwin "tail -r";
     curl = "${pkgs.curlie}/bin/curlie";
     dig = "${pkgs.doggo}/bin/doggo";
     dog = "${pkgs.doggo}/bin/doggo";
