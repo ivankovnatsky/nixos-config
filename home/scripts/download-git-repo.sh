@@ -57,4 +57,4 @@ ghq get "${STRIPPED_URL}" >/dev/null 2>&1 || true
 REPO_PATH=$(get_repo_path "${STRIPPED_URL}")
 
 # Instead of cd-ing, print the cd command for fish to evaluate
-echo "cd ${REPO_PATH}"
+echo "${REPO_PATH}"

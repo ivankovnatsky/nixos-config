@@ -67,4 +67,5 @@ else
 end
 
 set final_path "$git_root/$worktree_dir"
-echo "cd \"$final_path\""
+# Output without quotes, letting the shell handle the escaping
+echo $final_path
