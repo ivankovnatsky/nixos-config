@@ -71,6 +71,7 @@
       watchman-make
 
       # macOS related
+      # CLI
       dockutil
 
       # GUI
@@ -79,6 +80,7 @@
       stats
       battery-toolkit
       rectangle
+      maccy
 
       home-manager
 
