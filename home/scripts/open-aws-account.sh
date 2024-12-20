@@ -8,12 +8,24 @@ CHROME_PREFS_PATH="$HOME/Library/Application Support/Google/Chrome"
 # Variables
 BROWSER="chrome"
 AWS_SSO=""
-AWS_SSO_ROLE=""
+AWS_ROLE_NAME=""
 AWS_ACCOUNT_ID=""
+AWS_ACCOUNT_ALIAS=""
+AWS_PROFILE=""
 
 # Help function
 display_help() {
-    echo "Usage: $0 --browser --sso <value> --role <value> [--account <value>]"
+    echo "Usage: $0 --browser <chrome|firefox> --sso <value> [options]"
+    echo
+    echo "Options:"
+    echo "  --browser         Browser to use (chrome or firefox)"
+    echo "  --sso            SSO instance name"
+    echo "  --role-name      Role name (will show filtered fzf dialog)"
+    echo "  --account-id     AWS Account ID (exact match)"
+    echo "  --account-alias  AWS Account Alias (exact match)"
+    echo "  --profile        AWS Profile name (exact match)"
+    echo
+    echo "Example: $0 --sso Default --role-name AdministratorAccess"
     exit 1
 }
 
@@ -35,12 +47,20 @@ while [[ $# -gt 0 ]]; do
         AWS_SSO="$2"
         shift 2
         ;;
-    --role)
-        AWS_SSO_ROLE="$2"
+    --role-name)
+        AWS_ROLE_NAME="$2"
         shift 2
         ;;
-    --account)
+    --account-id)
         AWS_ACCOUNT_ID="$2"
+        shift 2
+        ;;
+    --account-alias)
+        AWS_ACCOUNT_ALIAS="$2"
+        shift 2
+        ;;
+    --profile)
+        AWS_PROFILE="$2"
         shift 2
         ;;
     --help)
@@ -60,13 +80,14 @@ fi
 
 # Check if the required argument is provided
 if [[ -z $AWS_SSO ]]; then
-    echo "Error: Missing required arguments."
+    echo "Error: Missing required --sso argument."
     display_help
 fi
 
 # Current aws-sso output:
 #
 # 00000000000001 | AccountAlias | AWSIamRoleName | AccountAlias:AWSIamRoleName | Expired
+# AccountIdPad | AccountAlias | RoleName | Profile | Expires
 extract_role_name() {
     cut -d '|' -f 4 | tr -d ' '
 }
@@ -74,39 +95,73 @@ extract_role_name() {
 # Function to select an AWS account using fzf
 select_aws_account() {
     local role="$1"
-    local account_id=""
+    local account_id="$AWS_ACCOUNT_ID"
+    local account_alias="$AWS_ACCOUNT_ALIAS"
+    local profile="$AWS_PROFILE"
+    local result=""
 
-    if [[ -z $AWS_ACCOUNT_ID ]]; then
-        if [[ -z $role ]]; then
-            account_id=$(aws-sso --config ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" | \
-                rg '^[0-9]+' | \
-                fzf | \
-                extract_role_name)
-        else
-            account_id=$(aws-sso --config ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" | \
-                rg '^[0-9]+' | \
-                rg "$role" | \
-                fzf | \
-                extract_role_name
-            )
-        fi
-    else
-        account_id=$(aws-sso --config ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" | \
+    # If exact profile is provided, use it directly
+    if [[ -n $profile ]]; then
+        result=$(aws-sso --config ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" | \
             rg '^[0-9]+' | \
-            rg "$role" | \
-            rg "$AWS_ACCOUNT_ID" | \
-            extract_role_name
-        )
+            rg "$profile" | \
+            extract_role_name)
+        echo "$result"
+        return
     fi
 
-    echo "$account_id"
+    # Build filter for account identifiers
+    local filter=""
+    if [[ -n $account_id ]]; then
+        filter="rg '$account_id'"
+    fi
+    if [[ -n $account_alias ]]; then
+        if [[ -n $filter ]]; then
+            filter="$filter | rg '$account_alias'"
+        else
+            filter="rg '$account_alias'"
+        fi
+    fi
+
+    # If we have account identifiers and role name, use exact match
+    if [[ (-n $account_id || -n $account_alias) && -n $role ]]; then
+        result=$(aws-sso --config ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" | \
+            rg '^[0-9]+' | \
+            eval "$filter" | \
+            rg "$role" | \
+            extract_role_name)
+    # If we have only account identifiers, show filtered fzf
+    elif [[ -n $account_id || -n $account_alias ]]; then
+        result=$(aws-sso --config ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" | \
+            rg '^[0-9]+' | \
+            eval "$filter" | \
+            fzf | \
+            extract_role_name)
+    # If we have only role name, show filtered fzf
+    elif [[ -n $role ]]; then
+        result=$(aws-sso --config ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" | \
+            rg '^[0-9]+' | \
+            rg "$role" | \
+            fzf | \
+            extract_role_name)
+    # Otherwise show full fzf
+    else
+        result=$(aws-sso --config ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" | \
+            rg '^[0-9]+' | \
+            fzf | \
+            extract_role_name)
+    fi
+
+    echo "$result"
 }
 
 # Select AWS account
-if [[ -z $AWS_SSO_ROLE ]]; then
-    PROFILE=$(select_aws_account)
-else
-    PROFILE=$(select_aws_account "$AWS_SSO_ROLE")
+PROFILE=$(select_aws_account "$AWS_ROLE_NAME")
+
+# Exit early if no profile was selected
+if [[ -z $PROFILE ]]; then
+    echo "No account selected, exiting."
+    exit 1
 fi
 
 init_chrome_preferences() {
