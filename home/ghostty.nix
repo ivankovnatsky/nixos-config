@@ -13,9 +13,11 @@
     font-thicken = true
     theme = 3024 Night
     auto-update = off
-    # window-decoration = false
-    # macos-titlebar-style = hidden
     copy-on-select = true
     macos-option-as-alt = true
+    ${if config.flags.purpose == "home" then ''
+      window-decoration = false
+      macos-titlebar-style = hidden
+    '' else ""}
   '';
 }
