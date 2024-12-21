@@ -23,8 +23,8 @@ let
     vim = "vim -n -c 'set noswapfile'";
 
     top = if isDarwin then "top -o cpu" else "top";
-    rm-image-meta = "exiftool -all= -overwrite_original";
-    show-image-meta = "exiftool";
+    image-meta-rm = "exiftool -all= -overwrite_original";
+    image-meta-show = "exiftool";
   };
 
   shellAliases =
