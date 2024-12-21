@@ -134,7 +134,7 @@
           servers = {
             eslint.enable = true;
             ts_ls.enable = true;
-            typst_lsp.enable = true;
+            tinymist.enable = true;
             pyright.enable = true;
             gopls.enable = true;
             rust_analyzer = {
