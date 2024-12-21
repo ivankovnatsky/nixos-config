@@ -111,6 +111,10 @@
       nodejs
 
       # ghostty
+
+      parallel
+
+      imagemagick
     ];
     sessionVariables = {
       EDITOR = config.flags.editor;

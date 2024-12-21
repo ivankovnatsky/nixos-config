@@ -38,7 +38,6 @@
     home-manager
     htop
     iam-policy-json-to-terraform
-    imagemagick
     istioctl
     jq
     jsonnet
