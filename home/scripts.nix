@@ -2,14 +2,20 @@
 let
   scriptFiles = builtins.readDir ./scripts;
   scriptPath = ./scripts;
-  
+
+  # Define your aliases here as an attribute set
+  # Format: "original-name" = [ "alias1" "alias2" ... ]
+  scriptAliases = {
+    "create-pr" = [ "open-pr" ];
+  };
+
   processScript = scriptName:
     let
       scriptContents = builtins.readFile (scriptPath + "/${scriptName}");
       isFishScript = lib.hasSuffix ".fish" scriptName;
       isPythonScript = lib.hasSuffix ".py" scriptName;
       isGoScript = lib.hasSuffix ".go" scriptName;
-      
+
       fishShebang = "#!${pkgs.fish}/bin/fish";
       bashShebang = "#!${pkgs.bash}/bin/bash";
       pythonShebang = "#!${pkgs.python3}/bin/python3";
@@ -20,10 +26,10 @@ let
           name = lib.removeSuffix ".go" name;
           src = scriptPath + "/${name}";
           buildInputs = [ pkgs.go ];
-          
+
           # Skip unpack phase since we're dealing with a single file
           dontUnpack = true;
-          
+
           buildPhase = ''
             # Set GOCACHE to a writable location in build directory
             export GOCACHE=$TMPDIR/go-cache
@@ -31,7 +37,7 @@ let
             cp $src ${lib.removeSuffix ".go" name}.go
             go build -o $out/bin/${lib.removeSuffix ".go" name} ${lib.removeSuffix ".go" name}.go
           '';
-          
+
           installPhase = "true";
         };
 
@@ -60,7 +66,32 @@ let
 
   scriptNames = builtins.attrNames scriptFiles;
   scriptPackages = map processScript scriptNames;
+
+  # Helper function to create an alias script
+  createAlias = originalDerivation: alias:
+    pkgs.writeScriptBin alias ''
+      #!${pkgs.bash}/bin/bash
+      exec ${originalDerivation}/bin/${originalDerivation.name} "$@"
+    '';
+
+  # Generate all aliases
+  makeAliases = scriptName:
+    let
+      original = lib.removeSuffix ".sh" (lib.removeSuffix ".fish" (lib.removeSuffix ".py" (lib.removeSuffix ".go" scriptName)));
+      originalDerivation = builtins.head (builtins.filter (p: p.name == original) scriptPackages);
+      aliases = scriptAliases.${original} or [ ];
+    in
+    map (alias: createAlias originalDerivation alias) aliases;
+
+  # Generate all alias packages
+  # allAliases = lib.flatten (
+  #   map (name: makeAliases (lib.removeSuffix ".sh" (lib.removeSuffix ".fish" (lib.removeSuffix ".py" (lib.removeSuffix ".go" name)))))
+  #     scriptNames
+  # );
+
+  # Generate all alias packages
+  allAliases = lib.flatten (map makeAliases scriptNames);
 in
 {
-  home.packages = scriptPackages;
+  home.packages = scriptPackages ++ allAliases;
 }
