@@ -6,5 +6,11 @@
       bang = true;
       bar = true;
     };
+    MouseToggle = {
+      command = "if &mouse == 'a' | set mouse= | else | set mouse=a | endif";
+      desc = "Toggle mouse";
+      bang = true;
+      bar = true;
+    };
   };
 }
