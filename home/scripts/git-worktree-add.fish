@@ -53,7 +53,10 @@ if test (string length $name_part) -gt $BRANCH_NAME_CHAR_LIMIT
     end
 end
 
-set branch_name "$prefix_part$name_part"
+# Get current SHA of default branch
+set sha_suffix (git rev-parse --short=7 HEAD)
+
+set branch_name "$prefix_part$name_part-$sha_suffix"
 set worktree_dir "__worktrees/$branch_name"
 
 # Create worktree directory
