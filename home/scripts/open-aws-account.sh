@@ -18,7 +18,7 @@ display_help() {
     echo "Usage: $0 --browser <chrome|firefox> --sso <value> [options]"
     echo
     echo "Options:"
-    echo "  --browser         Browser to use (chrome or firefox)"
+    echo "  --browser        Browser to use (chrome or firefox)"
     echo "  --sso            SSO instance name"
     echo "  --role-name      Role name (will show filtered fzf dialog)"
     echo "  --account-id     AWS Account ID (exact match)"
@@ -155,12 +155,28 @@ select_aws_account() {
     echo "$result"
 }
 
+# Function to verify if profile exists
+verify_profile() {
+    local profile="$1"
+    aws-sso --config ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" | rg -q "$profile"
+}
+
 # Select AWS account
-PROFILE=$(select_aws_account "$AWS_ROLE_NAME")
+if [[ -n $AWS_PROFILE ]]; then
+    if ! verify_profile "$AWS_PROFILE"; then
+        echo "Error: Profile '$AWS_PROFILE' not found in aws-sso output"
+        exit 1
+    fi
+    PROFILE=$AWS_PROFILE
+elif [[ (-n $AWS_ACCOUNT_ALIAS || -n $AWS_ACCOUNT_ID) && -n $AWS_ROLE_NAME ]]; then
+    PROFILE=$(get_profile "$AWS_ACCOUNT_ALIAS" "$AWS_ROLE_NAME" "")
+else
+    PROFILE=$(select_aws_account "$AWS_ROLE_NAME")
+fi
 
 # Exit early if no profile was selected
 if [[ -z $PROFILE ]]; then
-    echo "No account selected, exiting."
+    echo "No account selected or profile not found, exiting."
     exit 1
 fi
 
@@ -179,8 +195,12 @@ EOF
 if [[ "$BROWSER" == "chrome" ]]; then
     init_chrome_preferences
 
-    URL=$(aws-sso console --config ~/.aws-sso/"$BROWSER".yaml --browser "$CHROME_BROWSER_PATH" \
-        --sso "$AWS_SSO" --profile "$PROFILE" 2>&1)
+    if ! URL=$(aws-sso console --config ~/.aws-sso/"$BROWSER".yaml --browser "$CHROME_BROWSER_PATH" \
+        --sso "$AWS_SSO" --profile "$PROFILE" 2>&1); then
+        echo "Error: Failed to get AWS console URL"
+        echo "$URL"
+        exit 1
+    fi
     open --new -a "$APP_NAME" --args --profile-directory="$PROFILE" "$URL"
 else
     aws-sso console --config ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" --profile "$PROFILE"
