@@ -24,22 +24,30 @@ DARWIN_EXCLUDES = [
     "./.gnupg/S.*",
     f"./{CURRENT_USER}/.Trash",
     f"./{CURRENT_USER}/.cache/nix",
+    f"./{CURRENT_USER}/.cursor/extensions",
+    f"./{CURRENT_USER}/.npm/_cacache",
     f"./{CURRENT_USER}/.orbstack",
     f"./{CURRENT_USER}/.terraform.d",
+    f"./{CURRENT_USER}/.vscode/extensions",
+    f"./{CURRENT_USER}/Library/Application Support/Cursor",
     f"./{CURRENT_USER}/Library/Application Support/Google",
     f"./{CURRENT_USER}/Library/Application Support/Slack",
     f"./{CURRENT_USER}/Library/Application Support/rancher-desktop",
     f"./{CURRENT_USER}/Library/Caches",
     f"./{CURRENT_USER}/Library/Caches/CloudKit",
     f"./{CURRENT_USER}/Library/Caches/FamilyCircle",
+    f"./{CURRENT_USER}/Library/Caches/Firefox",
+    f"./{CURRENT_USER}/Library/Caches/com.anthropic.claudefordesktop.ShipIt",
     f"./{CURRENT_USER}/Library/Caches/com.apple.HomeKit",
     f"./{CURRENT_USER}/Library/Caches/com.apple.Safari",
     f"./{CURRENT_USER}/Library/Caches/com.apple.ap.adprivacyd",
     f"./{CURRENT_USER}/Library/Caches/com.apple.containermanagerd",
     f"./{CURRENT_USER}/Library/Caches/com.apple.homed",
+    f"./{CURRENT_USER}/Library/Caches/pypoetry",
     f"./{CURRENT_USER}/Library/Containers",
     f"./{CURRENT_USER}/Library/Group Containers",
     f"./{CURRENT_USER}/OrbStack",
+    f"./{CURRENT_USER}/Sources/github.com/NixOS/nixpkgs",
 ]
 
 
@@ -111,10 +119,11 @@ Examples:
     parser = argparse.ArgumentParser(
         description="Backup home directory and upload to rclone destination",
         epilog=examples,
-        formatter_class=argparse.RawDescriptionHelpFormatter
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
-        "destination", help='Rclone destination path (e.g., "drive:", "gdrive:backup/home")'
+        "destination",
+        help='Rclone destination path (e.g., "drive:", "gdrive:backup/home")',
     )
 
     # Show help if no arguments are provided
