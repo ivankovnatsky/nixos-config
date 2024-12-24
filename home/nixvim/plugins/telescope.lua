@@ -1,3 +1,4 @@
+-- TODO: Make sure lsp is working
 local _border = "rounded"
 
 vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
@@ -39,13 +40,21 @@ vim.keymap.set("n", "<leader>rg", function()
   require("telescope.builtin").live_grep({
     default_text = vim.fn.expand("<cword>"),
   })
-end, { noremap = true, silent = true })
+end, {
+  noremap = true,
+  silent = true,
+  desc = "Search word under cursor",
+})
 
 vim.keymap.set("v", "<leader>rg", function()
   require("telescope.builtin").live_grep({
     default_text = vim.fn.expand("<cword>"),
   })
-end, { noremap = true, silent = true })
+end, {
+  noremap = true,
+  silent = true,
+  desc = "Search word under cursor",
+})
 
 -- Make the preview window wider
 require("telescope").setup({
