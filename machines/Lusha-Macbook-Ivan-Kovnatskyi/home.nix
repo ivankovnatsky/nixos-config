@@ -19,6 +19,7 @@
     ../../home/starship
     ../../home/direnv.nix
     ../../home/scripts.nix
+    ../../home/pgcli.nix
     ../../home/pass.nix
     ../../home/mpv.nix
     ../../home/yt-dlp.nix
@@ -112,6 +113,7 @@
       infracost
 
       kubectl
+      kubecolor
       krew
       kustomize
       kubectl-images
