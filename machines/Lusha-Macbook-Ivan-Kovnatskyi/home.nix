@@ -146,6 +146,8 @@
       vault
 
       postgresql
+      mariadb
+      mongosh
 
       cloudflared
 
