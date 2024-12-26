@@ -43,6 +43,8 @@ in
       hashicorp.hcl
       golang.go
       ms-azuretools.vscode-docker
+      # Nushell
+      thenuprojectcontributors.vscode-nushell-lang
     ];
   };
 
