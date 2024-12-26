@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -ex
+
 # Constants
 APP_NAME="Google Chrome"
 CHROME_BROWSER_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
@@ -195,13 +197,13 @@ EOF
 if [[ "$BROWSER" == "chrome" ]]; then
     init_chrome_preferences
 
-    if ! URL=$(aws-sso console --config ~/.aws-sso/"$BROWSER".yaml --browser "$CHROME_BROWSER_PATH" \
+    if ! URL=$(timeout 30 aws-sso console --config ~/.aws-sso/"$BROWSER".yaml --browser "$CHROME_BROWSER_PATH" \
         --sso "$AWS_SSO" --profile "$PROFILE" 2>&1); then
-        echo "Error: Failed to get AWS console URL"
+        echo "Error: Failed to get AWS console URL (timed out after 30 seconds)"
         echo "$URL"
         exit 1
     fi
     open --new -a "$APP_NAME" --args --profile-directory="$PROFILE" "$URL"
 else
-    aws-sso console --config ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" --profile "$PROFILE"
+    timeout 30 aws-sso console --config ~/.aws-sso/"$BROWSER".yaml --sso "$AWS_SSO" --profile "$PROFILE"
 fi
