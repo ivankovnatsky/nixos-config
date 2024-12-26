@@ -38,6 +38,9 @@ in
       NSGlobalDomain = {
         # Allow tab focus in all controls, space to select.
         AppleKeyboardUIMode = 3;
+        # Repeatable space is killing me.
+        InitialKeyRepeat = 15;
+        KeyRepeat = 120;
       };
       CustomUserPreferences = {
         "NSGlobalDomain" = {
