@@ -15,10 +15,12 @@ let
       isFishScript = lib.hasSuffix ".fish" scriptName;
       isPythonScript = lib.hasSuffix ".py" scriptName;
       isGoScript = lib.hasSuffix ".go" scriptName;
+      isNuScript = lib.hasSuffix ".nu" scriptName;
 
       fishShebang = "#!${pkgs.fish}/bin/fish";
       bashShebang = "#!${pkgs.bash}/bin/bash";
       pythonShebang = "#!${pkgs.python3}/bin/python3";
+      nuShebang = "#!${pkgs.nushell}/bin/nu";
 
       # For Go files, we'll compile them instead of handling shebangs
       processGoScript = name:
@@ -48,6 +50,8 @@ let
           builtins.replaceStrings [ "#!/usr/bin/env fish" ] [ fishShebang ] scriptContents
         else if isPythonScript then
           builtins.replaceStrings [ "#!/usr/bin/env python3" ] [ pythonShebang ] scriptContents
+        else if isNuScript then
+          builtins.replaceStrings [ "#!/usr/bin/env nu" ] [ nuShebang ] scriptContents
         else
           builtins.replaceStrings [ "#!/usr/bin/env bash" ] [ bashShebang ] scriptContents;
 
@@ -56,6 +60,7 @@ let
         (if isFishScript then ".fish"
         else if isPythonScript then ".py"
         else if isGoScript then ".go"
+        else if isNuScript then ".nu"
         else ".sh")
         scriptName;
     in
