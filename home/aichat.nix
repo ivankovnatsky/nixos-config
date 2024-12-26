@@ -9,6 +9,7 @@ in
   home = {
     packages = with pkgs; [ nixpkgs-master.aichat ];
     file = {
+      # https://github.com/sigoden/aichat/blob/main/config.example.yaml
       "${aichatConfigPath}" = {
         text = ''
           ${if config.flags.darkMode then "" else
@@ -23,6 +24,9 @@ in
             - type: claude
               api_base: https://api.anthropic.com/v1
               api_key: ${config.secrets.anthropicApiKey}
+            - type: openai
+              api_base: https://api.openai.com/v1
+              api_key: ${config.secrets.openaiApiKey}
         '';
       };
     };
