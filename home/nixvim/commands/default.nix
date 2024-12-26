@@ -12,5 +12,11 @@
       bang = true;
       bar = true;
     };
+    Eat = {
+      command = "%y+";
+      desc = "Copy file contents to clipboard";
+      bang = true;
+      bar = true;
+    };
   };
 }
