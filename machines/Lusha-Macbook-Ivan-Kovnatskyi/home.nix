@@ -16,6 +16,7 @@
     ../../home/shell.nix
     ../../home/aichat.nix
     ../../home/ghostty.nix
+    ../../home/nushell.nix
     ../../home/starship
     ../../home/direnv.nix
     ../../home/scripts.nix
@@ -158,6 +159,7 @@
       wget
 
       # ghostty
+      coreutils
     ];
 
     sessionVariables = {
@@ -173,6 +175,7 @@
   programs = {
     # TODO:
     # 1. Make tf file comments italic
+    # Add nushell support
     nixvim = {
       editorconfig.enable = true;
       plugins = {
