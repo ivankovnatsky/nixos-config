@@ -11,8 +11,8 @@ function show_help
     exit 1
 end
 
-# Show help if no arguments or --help
-if test (count $argv) -ne 1; or test "$argv[1]" = "--help"
+# Show help if no arguments or help flags
+if test (count $argv) -ne 1; or contains -- "$argv[1]" "--help" "-help" "-h"
     show_help
 end
 
