@@ -244,14 +244,20 @@
         };
       };
 
-      overlay = final: prev: {
-        battery-toolkit = prev.callPackage ./overlays/battery-toolkit.nix { };
-        coconutbattery = prev.callPackage ./overlays/coconutbattery.nix { };
-        gh-token = prev.callPackage ./overlays/gh-token.nix { };
-        ghostty = prev.callPackage ./overlays/ghostty { };
-        ks = prev.callPackage ./overlays/ks.nix { };
-        terragrunt-atlantis-config = prev.callPackage ./overlays/terragrunt-atlantis-config.nix { };
-        watchman-make = prev.callPackage ./overlays/watchman-make.nix { };
-      };
+      overlay = final: prev:
+        let
+          # Read all entries in the overlays directory
+          overlayDirs = builtins.readDir ./overlays;
+          # Convert the attribute set to a list of name/type pairs
+          overlayList = builtins.mapAttrs (name: type: { inherit name type; }) overlayDirs;
+          # Create the final overlay by folding over all directories
+          overlayFinal = builtins.foldl'
+            (acc: dir: acc // {
+              ${dir.name} = prev.callPackage (./overlays + "/${dir.name}") { };
+            })
+            { }
+            (builtins.filter (dir: dir.type == "directory") (builtins.attrValues overlayList));
+        in
+        overlayFinal;
     };
 }
