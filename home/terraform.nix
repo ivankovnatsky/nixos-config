@@ -5,7 +5,7 @@
     packages = with pkgs; [
       # Manage terraform versions
       # https://github.com/tofuutils/tenv/issues/121
-      nixpkgs-master.tenv
+      tenv
       tflint
     ];
     file = {

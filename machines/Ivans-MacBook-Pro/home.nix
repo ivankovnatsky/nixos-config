@@ -27,7 +27,7 @@
       rectangle
 
       # To use PC mouse with natural scrolling
-      nixpkgs-master.mos
+      mos
       stats
       battery-toolkit
       coconutbattery
