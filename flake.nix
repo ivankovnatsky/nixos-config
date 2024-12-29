@@ -127,15 +127,6 @@
                 mutableTaps = false;
               };
             }
-            {
-              nixpkgs.overlays = [
-                (final: prev: {
-                  nixpkgs-master = import inputs.nixpkgs-master {
-                    inherit (final) system config;
-                  };
-                })
-              ];
-            }
           ];
           homeModules = [
           ];
@@ -176,16 +167,6 @@
                 # With mutableTaps disabled, taps can no longer be added imperatively with `brew tap`.
                 mutableTaps = false;
               };
-            }
-            {
-              nixpkgs.overlays = [
-                (final: prev: {
-                  username = inputs.username.packages.${final.system}.username;
-                  nixpkgs-master = import inputs.nixpkgs-master {
-                    inherit (final) system config;
-                  };
-                })
-              ];
             }
           ];
           homeModules = [
@@ -229,15 +210,6 @@
                 mutableTaps = false;
               };
             }
-            {
-              nixpkgs.overlays = [
-                (final: prev: {
-                  nixpkgs-master = import inputs.nixpkgs-master {
-                    inherit (final) system config;
-                  };
-                })
-              ];
-            }
           ];
           homeModules = [
           ];
@@ -246,18 +218,29 @@
 
       overlay = final: prev:
         let
-          # Read all entries in the overlays directory
+          # 1. Automatic overlays from overlays/ directory
           overlayDirs = builtins.readDir ./overlays;
-          # Convert the attribute set to a list of name/type pairs
           overlayList = builtins.mapAttrs (name: type: { inherit name type; }) overlayDirs;
-          # Create the final overlay by folding over all directories
-          overlayFinal = builtins.foldl'
+          autoOverlays = builtins.foldl'
             (acc: dir: acc // {
               ${dir.name} = prev.callPackage (./overlays + "/${dir.name}") { };
             })
             { }
             (builtins.filter (dir: dir.type == "directory") (builtins.attrValues overlayList));
+
+          # 2. Nixpkgs-master packages
+          masterOverlays = {
+            nixpkgs-master = import inputs.nixpkgs-master {
+              inherit (final) system config;
+            };
+          };
+
+          # 3. Direct packages from other flakes
+          flakeOverlays = {
+            username = inputs.username.packages.${final.system}.username;
+          };
         in
-        overlayFinal;
+        # Merge all overlay types
+        autoOverlays // masterOverlays // flakeOverlays;
     };
 }
