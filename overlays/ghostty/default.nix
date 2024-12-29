@@ -12,17 +12,14 @@ stdenv.mkDerivation rec {
   pname = "ghostty";
   inherit version;
 
-  # To install latest version:
+  # To install latest version locally:
   #
   # ```console
   # mkdir -p ~/Applications
   # cd ~/Applications
+  # rm -rf Ghostty.app
   # curl -L \
-  #   -H "Authorization: Bearer $GITHUB_TOKEN" \
-  #   -H "Accept: application/octet-stream" \
-  #   $(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
-  #     https://api.github.com/repos/ghostty-org/ghostty/releases/tags/tip \
-  #     | jq -r '.assets[] | select(.name=="ghostty-macos-universal.zip") | .url') \
+  #   https://github.com/ghostty-org/ghostty/releases/download/tip/ghostty-macos-universal.zip \
   #   -o ghostty-macos-universal.zip && \
   #   unzip -o ghostty-macos-universal.zip && \
   #   rm ghostty-macos-universal.zip
@@ -52,4 +49,4 @@ stdenv.mkDerivation rec {
     license = licenses.mit;
     platforms = platforms.darwin;
   };
-} 
+}
