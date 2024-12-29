@@ -110,7 +110,7 @@
 
       nodejs
 
-      # ghostty
+      ghostty
 
       parallel
 
