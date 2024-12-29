@@ -153,16 +153,4 @@ in
       }
     ];
   };
-
-  nixpkgs.overlays = [
-    (
-      self: super: {
-        watchman-make = super.callPackage ../../overlays/watchman-make.nix { };
-        battery-toolkit = super.callPackage ../../overlays/battery-toolkit.nix { };
-        terragrunt-atlantis-config = super.callPackage ../../overlays/terragrunt-atlantis-config.nix { };
-        gh-token = super.callPackage ../../overlays/gh-token.nix { };
-        ghostty = super.callPackage ../../overlays/ghostty { };
-      }
-    )
-  ];
 }
