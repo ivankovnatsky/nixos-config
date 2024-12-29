@@ -158,7 +158,7 @@
 
       wget
 
-      # ghostty
+      ghostty
       coreutils
     ];
 

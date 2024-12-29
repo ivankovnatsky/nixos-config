@@ -128,7 +128,7 @@ in
       { type = "spacer"; section = "apps"; }
 
       # Manually installed
-      { path = "${homePath}/Applications/Ghostty.app/"; }
+      { path = "${pkgs.ghostty}/Applications/Ghostty.app/"; }
 
       { type = "spacer"; section = "apps"; }
 
@@ -159,7 +159,7 @@ in
         coconutbattery = super.callPackage ../../overlays/coconutbattery.nix { };
         watchman-make = super.callPackage ../../overlays/watchman-make.nix { };
         battery-toolkit = super.callPackage ../../overlays/battery-toolkit.nix { };
-        # ghostty = super.callPackage ../../overlays/ghostty { };
+        ghostty = super.callPackage ../../overlays/ghostty { };
       }
     )
   ];
