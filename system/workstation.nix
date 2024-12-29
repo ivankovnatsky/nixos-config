@@ -7,8 +7,6 @@
     ./opengl.nix
   ];
 
-  nixpkgs.overlays = [ ];
-
   fonts = {
     fonts = with pkgs; [
       nerd-fonts.hack

@@ -244,6 +244,14 @@
         };
       };
 
-      overlay = final: prev: { };
+      overlay = final: prev: {
+        battery-toolkit = prev.callPackage ./overlays/battery-toolkit.nix { };
+        coconutbattery = prev.callPackage ./overlays/coconutbattery.nix { };
+        gh-token = prev.callPackage ./overlays/gh-token.nix { };
+        ghostty = prev.callPackage ./overlays/ghostty { };
+        ks = prev.callPackage ./overlays/ks.nix { };
+        terragrunt-atlantis-config = prev.callPackage ./overlays/terragrunt-atlantis-config.nix { };
+        watchman-make = prev.callPackage ./overlays/watchman-make.nix { };
+      };
     };
 }

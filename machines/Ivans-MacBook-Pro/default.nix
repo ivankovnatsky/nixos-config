@@ -35,13 +35,4 @@
   fonts.packages = with pkgs; [
     nerd-fonts.hack
   ];
-  nixpkgs.overlays = [
-    (
-      self: super: {
-        coconutbattery = super.callPackage ../../overlays/coconutbattery.nix { };
-        watchman-make = super.callPackage ../../overlays/watchman-make.nix { };
-        battery-toolkit = super.callPackage ../../overlays/battery-toolkit.nix { };
-      }
-    )
-  ];
 }

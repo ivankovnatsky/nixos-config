@@ -152,15 +152,4 @@ in
       }
     ];
   };
-  nixpkgs.overlays = [
-    (
-      self: super: {
-        ks = super.callPackage ../../overlays/ks.nix { };
-        coconutbattery = super.callPackage ../../overlays/coconutbattery.nix { };
-        watchman-make = super.callPackage ../../overlays/watchman-make.nix { };
-        battery-toolkit = super.callPackage ../../overlays/battery-toolkit.nix { };
-        ghostty = super.callPackage ../../overlays/ghostty { };
-      }
-    )
-  ];
 }
