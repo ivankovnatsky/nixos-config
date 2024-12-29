@@ -78,7 +78,7 @@
 
       # GUI
       # To use PC mouse with natural scrolling
-      nixpkgs-master.mos
+      mos
       stats
       battery-toolkit
       rectangle
@@ -104,7 +104,7 @@
       awscli2
       aws-sso-cli
       aws-sso-creds
-      nixpkgs-master.nodePackages.aws-cdk
+      aws-cdk
       ssm-session-manager-plugin
       iam-policy-json-to-terraform
 

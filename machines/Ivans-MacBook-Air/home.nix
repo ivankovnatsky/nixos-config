@@ -95,7 +95,7 @@
       coconutbattery
       stats
       # To use PC mouse with natural scrolling
-      nixpkgs-master.mos
+      mos
 
       battery-toolkit
 
