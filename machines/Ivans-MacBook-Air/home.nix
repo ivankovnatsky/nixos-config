@@ -202,8 +202,9 @@
             };
             mappings = {
               sidebar = {
-                switch_windows = "";
-                reverse_switch_windows = "";
+                # Tab is currently used for Github Copilot.
+                switch_windows = "<C-k>";
+                reverse_switch_windows = "<C-j>";
               };
             };
             diff = {
