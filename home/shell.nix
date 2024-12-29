@@ -30,7 +30,7 @@ let
   shellAliases =
     if config.flags.purpose == "home" then commonShellAliases // {
       rclone = "${pkgs.rclone}/bin/rclone -P";
-      transmission = "${pkgs.transmission_3}/bin/transmission-remote --list";
+      transmission = "${pkgs.transmission_4}/bin/transmission-remote --list";
       wl-copy = lib.mkIf isLinux "${pkgs.wl-clipboard}/bin/wl-copy -n";
     } else commonShellAliases // {
       # We tenv version manager so pkgs interpolation is not needed.

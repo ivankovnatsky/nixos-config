@@ -16,7 +16,7 @@ let
 in
 {
   home.packages = with pkgs; [
-    transmission_3
+    transmission_4-gtk
   ];
 
   home.file."${configPath}/settings.json".text = ''
