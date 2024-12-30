@@ -2,42 +2,38 @@
 
 {
   imports = [
-    ../../modules/flags
-    ../../modules/secrets
-
-    ../../home/firefox-config.nix
-    ../../home/amethyst.nix
-    ../../home/git.nix
-    ../../home/jujutsu.nix
-    ../../home/lsd.nix
-    ../../home/kitty.nix
-    ../../home/tmux.nix
-    ../../home/go.nix
-    ../../home/shell.nix
-    ../../home/aichat.nix
-    ../../home/ghostty.nix
-    ../../home/nushell.nix
-    ../../home/starship
-    ../../home/direnv.nix
-    ../../home/scripts.nix
-    ../../home/pgcli.nix
-    ../../home/pass.nix
-    ../../home/mpv.nix
-    ../../home/yt-dlp.nix
-    ../../home/k9s.nix
-    ../../home/terraform.nix
-    ../../home/yamlint.nix
-    ../../home/zed
-    ../../home/vscode.nix
-    ../../home/syncthing.nix
-
     # ../../home/launchd-services.nix
-
+    ../../home/aichat.nix
+    ../../home/amethyst.nix
+    ../../home/direnv.nix
+    ../../home/firefox-config.nix
+    ../../home/ghostty.nix
+    ../../home/git.nix
+    ../../home/go.nix
     ../../home/hammerspoon
-
+    ../../home/jujutsu.nix
+    ../../home/k9s.nix
+    ../../home/kitty.nix
+    ../../home/lsd.nix
+    ../../home/mpv.nix
     ../../home/nixvim
     ../../home/nixvim/plugins/gen-nvim
     ../../home/nixvim/plugins/nvim-jenkinsfile-linter
+    ../../home/nushell.nix
+    ../../home/pass.nix
+    ../../home/pgcli.nix
+    ../../home/scripts.nix
+    ../../home/shell.nix
+    ../../home/starship
+    ../../home/syncthing.nix
+    ../../home/terraform.nix
+    ../../home/tmux.nix
+    ../../home/vscode.nix
+    ../../home/yamlint.nix
+    ../../home/yt-dlp.nix
+    ../../home/zed
+    ../../modules/flags
+    ../../modules/secrets
   ];
   flags = {
     enableFishShell = true;

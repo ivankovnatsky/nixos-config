@@ -2,9 +2,8 @@
 
 {
   imports = [
-    ./tmux.nix
-
     ../modules/secrets
+    ./tmux.nix
   ];
 
   programs.rbw = {
@@ -13,9 +12,9 @@
     settings = {
       email = "${config.secrets.email}";
       lock_timeout = 2419200;
-      pinentry = pkgs.pinentry;
+      inherit (pkgs) pinentry;
     };
   };
 
-  secrets = super.secrets;
+  inherit (super) secrets;
 }

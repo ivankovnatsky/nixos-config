@@ -7,7 +7,6 @@
     ../../home/shell.nix
     ../../home/starship
     ../../home/syncthing.nix
-
     ../../modules/flags
   ];
   flags = {

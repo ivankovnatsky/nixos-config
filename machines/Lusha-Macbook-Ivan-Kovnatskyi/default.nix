@@ -2,12 +2,11 @@
 
 {
   imports = [
-    ../../system/darwin.nix
-    ../../modules/darwin/pam
     ../../modules/darwin/dock
+    ../../modules/darwin/pam
     ../../modules/darwin/sudo
-
     ../../modules/secrets
+    ../../system/darwin.nix
   ];
   users.users.${username}.home = "/Users/${username}";
   flags = {

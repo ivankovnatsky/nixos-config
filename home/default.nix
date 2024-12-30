@@ -2,14 +2,13 @@
 
 {
   imports = [
-    ./k9s.nix
+    ../modules/flags
     ./git.nix
-    ./ssh.nix
+    ./k9s.nix
     ./packages.nix
     ./shell.nix
+    ./ssh.nix
     ./starship
-
-    ../modules/flags
   ];
 
   inherit (super) device flags;
