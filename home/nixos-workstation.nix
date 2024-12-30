@@ -2,13 +2,12 @@
 
 {
   imports = [
-    ./alacritty.nix
-    ./i3status.nix
-    ./gtk.nix
-    ./firefox.nix
-    ./firefox-config.nix
-
     ../modules/secrets
+    ./alacritty.nix
+    ./firefox-config.nix
+    ./firefox.nix
+    ./gtk.nix
+    ./i3status.nix
   ];
 
   programs.mpv = {
@@ -51,7 +50,7 @@
     bemenu
   ];
 
-  device = super.device;
-  flags = super.flags;
-  secrets = super.secrets;
+  inherit (super) device;
+  inherit (super) flags;
+  inherit (super) secrets;
 }

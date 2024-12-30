@@ -1,8 +1,8 @@
 { pkgs, ... }:
 {
   imports = [
-    ../../system/darwin.nix
     ../../modules/darwin/pam
+    ../../system/darwin.nix
   ];
   users.users.ivan.home = "/Users/ivan";
   networking.hostName = "Ivans-MacBook-Pro";

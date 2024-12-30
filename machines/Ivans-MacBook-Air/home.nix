@@ -2,31 +2,28 @@
 
 {
   imports = [
+    ../../home/aichat.nix
     ../../home/amethyst.nix
+    ../../home/direnv.nix
     ../../home/firefox-config.nix
-    ../../home/mpv.nix
-    ../../home/yt-dlp.nix
+    ../../home/ghostty.nix
     ../../home/git.nix
     ../../home/go.nix
+    ../../home/hammerspoon
+    ../../home/kitty.nix
     ../../home/lsd.nix
-
+    ../../home/mpv.nix
+    ../../home/nixvim
+    ../../home/npm.nix
     ../../home/scripts.nix
     ../../home/shell.nix
     ../../home/starship
-    ../../home/kitty.nix
-    ../../home/aichat.nix
-    ../../home/tmux.nix
-    ../../home/ghostty.nix
-    ../../home/transmission.nix
     ../../home/syncthing.nix
-    ../../home/direnv.nix
+    ../../home/tmux.nix
+    ../../home/transmission.nix
     ../../home/vscode.nix
+    ../../home/yt-dlp.nix
     ../../home/zed
-    ../../home/npm.nix
-
-    ../../home/nixvim
-    ../../home/hammerspoon
-
     ../../modules/flags
     ../../modules/secrets
   ];

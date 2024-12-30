@@ -9,17 +9,16 @@ in
 {
   home.file."${config.xdg.configHome}/nvim/spell/uk.utf-8.spl".source = nvim-spell-uk-utf8-dictionary;
   imports = [
-    ./config
-    ./opts
-    ./keymaps
-    ./commands
-    ./plugins
-
-    ./plugins/lsp
-    ./plugins/none-ls
-    ./plugins/lspsaga
     # ./plugins/gitsigns
+    ./commands
+    ./config
+    ./keymaps
+    ./opts
+    ./plugins
     ./plugins/git-blame
+    ./plugins/lsp
+    ./plugins/lspsaga
+    ./plugins/none-ls
   ];
   # https://github.com/elythh/nixvim
   programs.nixvim = {

@@ -5,11 +5,10 @@ let homePath = config.users.users."ivan".home;
 in
 {
   imports = [
-    ../../system/darwin.nix
-    ../../modules/darwin/pam
     ../../modules/darwin/dock
-
+    ../../modules/darwin/pam
     ../../modules/secrets
+    ../../system/darwin.nix
   ];
   users.users.ivan.home = "/Users/ivan";
   networking.hostName = "Ivans-MacBook-Air";

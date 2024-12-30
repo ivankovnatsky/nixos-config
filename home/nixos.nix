@@ -16,8 +16,8 @@
     gpg-agent.enable = true;
   };
 
-  device = super.device;
-  flags = super.flags;
+  inherit (super) device;
+  inherit (super) flags;
 
   home.packages = with pkgs; [
     file

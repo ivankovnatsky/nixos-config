@@ -2,9 +2,8 @@
 
 {
   imports = [
-    ./default.nix
-
     ../modules/flags
+    ./default.nix
   ];
 
   # https://github.com/NixOS/nixpkgs/issues/175875
