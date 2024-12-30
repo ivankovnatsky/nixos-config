@@ -104,7 +104,7 @@
       awscli2
       aws-sso-cli
       aws-sso-creds
-      aws-cdk
+      nodePackages.aws-cdk
       ssm-session-manager-plugin
       iam-policy-json-to-terraform
 
