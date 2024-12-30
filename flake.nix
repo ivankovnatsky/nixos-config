@@ -48,7 +48,7 @@
   };
 
   outputs = { self, ... }@inputs: {
-    darwinConfigurations = (import ./flake/darwin.nix { inherit inputs; }).darwinConfigurations;
+    inherit (import ./flake/darwin.nix { inherit inputs; }) darwinConfigurations;
     overlay = import ./flake/overlay.nix { inherit inputs; };
   };
 }
