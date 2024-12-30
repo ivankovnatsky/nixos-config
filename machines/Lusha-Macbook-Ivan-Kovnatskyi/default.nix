@@ -1,9 +1,5 @@
-{ config, pkgs, ... }:
+{ config, pkgs, username, ... }:
 
-# FIXME: Add global user variable
-let userName = "Ivan.Kovnatskyi";
-
-in
 {
   imports = [
     ../../system/darwin.nix
@@ -13,7 +9,7 @@ in
 
     ../../modules/secrets
   ];
-  users.users.${userName}.home = "/Users/${userName}";
+  users.users.${username}.home = "/Users/${username}";
   flags = {
     enableFishShell = true;
     purpose = "work";
@@ -100,7 +96,7 @@ in
     sudo = {
       enable = true;
       configContent = ''
-        Defaults:${userName} timestamp_timeout=240
+        Defaults:${username} timestamp_timeout=240
       '';
     };
     dock.enable = true;
@@ -148,7 +144,7 @@ in
       { path = "${pkgs.ghostty}/Applications/Ghostty.app/"; }
 
       {
-        path = "${config.users.users.${userName}.home}/Downloads/";
+        path = "${config.users.users.${username}.home}/Downloads/";
         section = "others";
       }
     ];

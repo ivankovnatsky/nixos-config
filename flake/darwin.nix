@@ -25,7 +25,7 @@ let
             };
 
             extraSpecialArgs = {
-              inherit inputs system;
+              inherit inputs system username;
               super = config;
             };
           };
@@ -51,7 +51,7 @@ let
         }
       ] ++ modules;
 
-      specialArgs = { inherit system; };
+      specialArgs = { inherit system username; };
     };
 in
 {
