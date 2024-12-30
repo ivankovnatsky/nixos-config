@@ -17,5 +17,6 @@
     # macos-titlebar-style = hidden
     copy-on-select = true
     macos-option-as-alt = true
+    keybind = global:cmd+escape=toggle_quick_terminal
   '';
 }
