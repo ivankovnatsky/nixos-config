@@ -45,6 +45,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
+
+    nixpkgs-python.url = "github:cachix/nixpkgs-python";
+    pyenv-nix-install.url = "github:sirno/pyenv-nix-install";
   };
 
   outputs = { self, ... }@inputs: {

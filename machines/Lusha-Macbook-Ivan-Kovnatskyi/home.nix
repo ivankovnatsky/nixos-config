@@ -23,6 +23,7 @@
     ../../home/nushell.nix
     ../../home/pass.nix
     ../../home/pgcli.nix
+    ../../home/pyenv.nix
     ../../home/scripts.nix
     ../../home/shell.nix
     ../../home/starship
@@ -135,10 +136,6 @@
       gitleaks
       delta
 
-      (python312.withPackages (ps: with ps; [
-        pip
-      ]))
-
       exiftool
 
       vault
@@ -150,6 +147,7 @@
       cloudflared
 
       poetry
+      pyenv-nix-install
 
       nodejs
 
