@@ -18,5 +18,7 @@
     copy-on-select = true
     macos-option-as-alt = true
     # keybind = global:cmd+escape=toggle_quick_terminal
+    keybind = cmd+down=jump_to_prompt:1
+    keybind = cmd+up=jump_to_prompt:-1
   '';
 }
