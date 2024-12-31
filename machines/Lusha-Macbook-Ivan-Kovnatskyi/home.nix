@@ -85,6 +85,7 @@
       home-manager
 
       jq
+      yq
 
       magic-wormhole
       rclone
