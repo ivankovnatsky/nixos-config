@@ -13,7 +13,10 @@
       bar = true;
     };
     Eat = {
-      command = "%y+";
+      command = ''
+        silent %y+
+        lua require('notify')('Copied file contents to clipboard', 'info')
+      '';
       desc = "Copy file contents to clipboard";
       bang = true;
       bar = true;
