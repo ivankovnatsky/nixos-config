@@ -243,10 +243,25 @@
           autocmd FileType tf setlocal commentstring=#\ %s
         augroup END
       '';
-      extraFiles = {
-        "queries/nu/highlights.scm" = builtins.readFile "${pkgs.tree-sitter-grammars.tree-sitter-nu}/queries/nu/highlights.scm";
-        "queries/nu/injections.scm" = builtins.readFile "${pkgs.tree-sitter-grammars.tree-sitter-nu}/queries/nu/injections.scm";
-      };
+      # ```console
+      # evaluation warning: Passing a string for `home-manager.users."Ivan.Kovnatskyi".programs.nixvim.extraFiles."queries/nu/highlights.scm"' is deprecated, use submodule instead. Definitions:
+      #                     - In `/nix/store/gg4g68iljc7w1z8si639fcjxs4xvfwd5-source/machines/Lusha-Macbook-Ivan-Kovnatskyi/home.nix':
+      #                         ''
+      #                           ;;; ---
+      #                           ;;; keywords
+      #                           [
+      #                               "def"
+      #                         ...
+      # evaluation warning: Passing a string for `home-manager.users."Ivan.Kovnatskyi".programs.nixvim.extraFiles."queries/nu/injections.scm"' is deprecated, use submodule instead. Definitions:
+      #                     - In `/nix/store/gg4g68iljc7w1z8si639fcjxs4xvfwd5-source/machines/Lusha-Macbook-Ivan-Kovnatskyi/home.nix':
+      #                         ''
+      #                           ((comment) @injection.content
+      #                            (#set! injection.language "comment"))''
+      # ```
+      # extraFiles = {
+      #   "queries/nu/highlights.scm" = builtins.readFile "${pkgs.tree-sitter-grammars.tree-sitter-nu}/queries/nu/highlights.scm";
+      #   "queries/nu/injections.scm" = builtins.readFile "${pkgs.tree-sitter-grammars.tree-sitter-nu}/queries/nu/injections.scm";
+      # };
       extraConfigLua = ''
         local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
         parser_config.nu = {
