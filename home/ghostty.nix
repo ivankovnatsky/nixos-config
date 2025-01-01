@@ -11,7 +11,8 @@
     font-family = ${config.flags.fontGeneral}
     font-size = 13
     font-thicken = true
-    theme = 3024 Night
+    # `ghostty +list-themes`
+    theme = dark:3024 Night,light:3024 Day
     auto-update = off
     # window-decoration = false
     # macos-titlebar-style = hidden
