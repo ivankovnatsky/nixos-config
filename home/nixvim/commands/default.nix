@@ -21,5 +21,11 @@
       bang = true;
       bar = true;
     };
+    ReplaceFileText = {
+      command = "%d | put + | 0d | wall";
+      desc = "Replace text";
+      bang = true;
+      bar = true;
+    };
   };
 }
