@@ -22,6 +22,12 @@ let
     "update.mode" = "none";
     "vim.relativeLineNumbers" = true;
     "security.workspace.trust.enabled" = false;
+
+    # Auto-switching themes
+    "window.autoDetectColorScheme" = true;
+    "workbench.preferredDarkColorTheme" = "Default Dark+";
+    "workbench.preferredLightColorTheme" = "Default Light+";
+    "workbench.colorTheme" = "Auto";
   };
 in
 {
