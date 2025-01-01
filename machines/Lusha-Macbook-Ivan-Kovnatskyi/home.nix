@@ -171,7 +171,6 @@
   programs = {
     # TODO:
     # 1. Make tf file comments italic
-    # Add nushell support
     nixvim = {
       editorconfig.enable = true;
       plugins = {
@@ -189,6 +188,7 @@
             bashls.enable = true;
             pyright.enable = true;
             terraformls.enable = true;
+            nushell.enable = true;
             # groovyls.enable = true;
           };
         };
@@ -222,15 +222,46 @@
         # FIXME: Figure out suitable key for the completion, when you need to
         # override cmp plugins.
         copilot-vim.enable = true;
+        # https://github.com/nix-community/nixvim/discussions/540
+        # https://github.com/nix-community/nixvim/discussions/2054
+        treesitter = {
+          languageRegister.nu = "nu";
+          grammarPackages = with pkgs; [
+            tree-sitter-grammars.tree-sitter-nu
+          ];
+        };
       };
-      extraPlugins = with pkgs.vimPlugins; [
-        Jenkinsfile-vim-syntax
+      extraPlugins = with pkgs; [
+        vimPlugins.Jenkinsfile-vim-syntax
+
+        vimPlugins.nvim-nu
+        tree-sitter-grammars.tree-sitter-nu
       ];
       extraConfigVim = ''
         augroup commentary
           autocmd FileType terraform setlocal commentstring=#\ %s
           autocmd FileType tf setlocal commentstring=#\ %s
         augroup END
+      '';
+      extraFiles = {
+        "queries/nu/highlights.scm" = builtins.readFile "${pkgs.tree-sitter-grammars.tree-sitter-nu}/queries/nu/highlights.scm";
+        "queries/nu/injections.scm" = builtins.readFile "${pkgs.tree-sitter-grammars.tree-sitter-nu}/queries/nu/injections.scm";
+      };
+      extraConfigLua = ''
+        local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+        parser_config.nu = {
+          filetype = "nu",
+        }
+
+        require'nu'.setup{
+          use_lsp_features = true, -- requires https://github.com/jose-elias-alvarez/null-ls.nvim
+          -- lsp_feature: all_cmd_names is the source for the cmd name completion.
+          -- It can be
+          --  * a string, which is evaluated by nushell and the returned list is the source for completions (requires plenary.nvim)
+          --  * a list, which is the direct source for completions (e.G. all_cmd_names = {"echo", "to csv", ...})
+          --  * a function, returning a list of strings and the return value is used as the source for completions
+          all_cmd_names = [[help commands | get name | str join "\n"]]
+        }
       '';
     };
     home-manager.enable = true;
