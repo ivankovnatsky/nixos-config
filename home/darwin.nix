@@ -1,6 +1,6 @@
 {
   imports = [
-    ./kitty.nix
+    ./kitty
     ./mpv.nix
   ];
 

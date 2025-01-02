@@ -19,15 +19,15 @@ else
 end
 
 while true
-    echo "----------------------------------------"
+    echo ----------------------------------------
     echo "Every $interval seconds: $command"
     echo "Press Ctrl+C to exit"
     echo "Last updated: "(date)
     echo ""
-    
+
     # Execute the command
     eval $command
-    
+
     # Wait for specified interval
     sleep $interval
 end

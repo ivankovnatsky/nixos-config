@@ -62,7 +62,6 @@
     packer
     pass2csv
     postgresql
-    procps
     procs
     pstree
     rclone
