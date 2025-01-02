@@ -4,13 +4,13 @@
 , unzip
 }:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
   pname = "ghostty";
   version = "tip";
 
   src = fetchurl {
     url = "https://github.com/ghostty-org/ghostty/releases/download/tip/ghostty-macos-universal.zip";
-    sha256 = "sha256-IBArVBC9/VrpQ/0EFkNj9jONw4A6ZGg9EYa8XUfBKPc=";
+    sha256 = "sha256-I+XF6WaFnu3HaN4838nsRId3+w1HaHpISettnXUgsKE=";
   };
 
   nativeBuildInputs = [ unzip ];
