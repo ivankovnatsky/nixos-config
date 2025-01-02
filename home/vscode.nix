@@ -17,6 +17,7 @@ let
     "files.insertFinalNewline" = true;
     "files.trimFinalNewlines" = true;
     "git.openRepositoryInParentFolders" = "always";
+    "git.autofetch" = "all";
     "scm.diffDecorations" = "all";
     "terminal.integrated.fontFamily" = "Hack Nerd Font";
     "update.mode" = "none";
