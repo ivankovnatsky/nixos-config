@@ -1,5 +1,6 @@
 #!/usr/bin/env nu
 
+# FIXME: `kn top pods` is not handled correctly.
 def main [...args] {
     let output = kubectl ...$args | complete | get stdout | lines
     
