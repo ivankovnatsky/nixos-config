@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -ex
-
 # Constants
 APP_NAME="Google Chrome"
 CHROME_BROWSER_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
