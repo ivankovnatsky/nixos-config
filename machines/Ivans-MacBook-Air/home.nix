@@ -10,7 +10,7 @@
     ../../home/git.nix
     ../../home/go.nix
     ../../home/hammerspoon
-    ../../home/kitty.nix
+    ../../home/launchd-services/dark-mode-kitty
     ../../home/lsd.nix
     ../../home/mpv.nix
     ../../home/nixvim
