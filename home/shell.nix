@@ -143,6 +143,11 @@ in
         bindkey '^[[Z' reverse-menu-complete
 
         setopt extendedglob
+
+        # Add ai completions
+        if (( $+commands[aichat] )); then
+          compdef ai=aichat
+        fi
       '';
 
       envExtra = ''
@@ -196,6 +201,11 @@ in
 
         # https://github.com/remigourdon/dotfiles/commit/733971c51c7dd1050b786c0fdc7ce04bd2661197
         complete --command aws --no-files --arguments '(begin; set --local --export COMP_SHELL fish; set --local --export COMP_LINE (commandline); aws_completer | sed \'s/ $//\'; end)'
+
+        # Add aichat completions for ai
+        if command -v aichat >/dev/null
+            complete -c ai -w aichat
+        end
       '';
       plugins = with pkgs.fishPlugins; [
         { name = "fzf-fish"; src = fzf-fish.src; }
