@@ -22,32 +22,32 @@ RCLONE_PATH = f"{USER_PROFILE_DIR}/rclone"
 DARWIN_EXCLUDES = [
     "./**/*.sock",
     "./.gnupg/S.*",
-    f"./{CURRENT_USER}/.Trash",
-    f"./{CURRENT_USER}/.cache/nix",
-    f"./{CURRENT_USER}/.cursor/extensions",
-    f"./{CURRENT_USER}/.npm/_cacache",
-    f"./{CURRENT_USER}/.orbstack",
-    f"./{CURRENT_USER}/.terraform.d",
-    f"./{CURRENT_USER}/.vscode/extensions",
-    f"./{CURRENT_USER}/Library/Application Support/Cursor",
-    f"./{CURRENT_USER}/Library/Application Support/Google",
-    f"./{CURRENT_USER}/Library/Application Support/Slack",
-    f"./{CURRENT_USER}/Library/Application Support/rancher-desktop",
-    f"./{CURRENT_USER}/Library/Caches",
-    f"./{CURRENT_USER}/Library/Caches/CloudKit",
-    f"./{CURRENT_USER}/Library/Caches/FamilyCircle",
-    f"./{CURRENT_USER}/Library/Caches/Firefox",
-    f"./{CURRENT_USER}/Library/Caches/com.anthropic.claudefordesktop.ShipIt",
-    f"./{CURRENT_USER}/Library/Caches/com.apple.HomeKit",
-    f"./{CURRENT_USER}/Library/Caches/com.apple.Safari",
-    f"./{CURRENT_USER}/Library/Caches/com.apple.ap.adprivacyd",
-    f"./{CURRENT_USER}/Library/Caches/com.apple.containermanagerd",
-    f"./{CURRENT_USER}/Library/Caches/com.apple.homed",
-    f"./{CURRENT_USER}/Library/Caches/pypoetry",
-    f"./{CURRENT_USER}/Library/Containers",
-    f"./{CURRENT_USER}/Library/Group Containers",
-    f"./{CURRENT_USER}/OrbStack",
-    f"./{CURRENT_USER}/Sources/github.com/NixOS/nixpkgs",
+    "./.Trash",
+    "./.cache/nix",
+    "./.cursor/extensions",
+    "./.npm/_cacache",
+    "./.orbstack",
+    "./.terraform.d",
+    "./.vscode/extensions",
+    "./Library/Application Support/Cursor",
+    "./Library/Application Support/Google",
+    "./Library/Application Support/Slack",
+    "./Library/Application Support/rancher-desktop",
+    "./Library/Caches",
+    "./Library/Caches/CloudKit",
+    "./Library/Caches/FamilyCircle",
+    "./Library/Caches/Firefox",
+    "./Library/Caches/com.anthropic.claudefordesktop.ShipIt",
+    "./Library/Caches/com.apple.HomeKit",
+    "./Library/Caches/com.apple.Safari",
+    "./Library/Caches/com.apple.ap.adprivacyd",
+    "./Library/Caches/com.apple.containermanagerd",
+    "./Library/Caches/com.apple.homed",
+    "./Library/Caches/pypoetry",
+    "./Library/Containers",
+    "./Library/Group Containers",
+    "./OrbStack",
+    "./Sources/github.com/NixOS/nixpkgs",
 ]
 
 
@@ -60,7 +60,6 @@ def log(message: str) -> None:
 def backup_home():
     try:
         home = Path.home()
-        os.chdir(home.parent)
         log(f"Creating backup of home directory for {CURRENT_USER}...")
 
         tar_cmd = ["tar", "-cvf", "-"]
