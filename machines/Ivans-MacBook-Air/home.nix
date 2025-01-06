@@ -98,6 +98,7 @@
       battery-toolkit
 
       username
+      backup-home
 
       watchman
       watchman-make
