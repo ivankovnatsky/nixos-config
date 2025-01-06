@@ -157,6 +157,8 @@
 
       ghostty
       coreutils
+
+      backup-home
     ];
 
     sessionVariables = {
