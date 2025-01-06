@@ -66,6 +66,7 @@
     packages = with pkgs; [
       defaultbrowser
       dust
+      duf
       genpass
 
       watchman

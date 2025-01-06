@@ -68,7 +68,7 @@
       "hammerspoon"
       "amethyst"
       "cursor"
-      "claude"
+      "mindmac"
       "kitty"
       "orbstack"
       "zed"
@@ -130,7 +130,7 @@
       { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Zed.app/"; }
       { path = "/Applications/Cursor.app/"; }
-      { path = "/Applications/Claude.app/"; }
+      { path = "/Applications/MindMac.app/"; }
 
       { type = "spacer"; section = "apps"; }
 
