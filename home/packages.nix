@@ -21,7 +21,6 @@
     difftastic
     doggo
     du-dust
-    duf
     eks-node-viewer
     exiftool
     genpass
