@@ -999,8 +999,8 @@
         "poetry2nix": "poetry2nix_2"
       },
       "locked": {
-        "lastModified": 1736329785,
-        "narHash": "sha256-TsJ9K00Rhvolv5Sg5/j8vPdNIXbStcua07IqBqEaq6U=",
+        "lastModified": 1736329851,
+        "narHash": "sha256-dnakqCt0SDPmbClNBn8UsJrhYkNfH6Lk//r6hRv7tNw=",
         "path": "/Users/Ivan.Kovnatskyi/Sources/github.com/ivankovnatsky/video-summarizer",
         "type": "path"
       },
