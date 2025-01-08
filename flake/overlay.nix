@@ -20,9 +20,10 @@ let
 
   # 3. Direct packages from other flakes
   flakeOverlays = {
-    username = inputs.username.packages.${final.system}.username;
-    backup-home = inputs.backup-home.packages.${final.system}.backup-home;
+    inherit (inputs.username.packages.${final.system}) username;
+    inherit (inputs.backup-home.packages.${final.system}) backup-home;
+
     pyenv-nix-install = inputs.pyenv-nix-install.packages.${final.system}.default;
   };
 in
-autoOverlays // masterOverlays // flakeOverlays 
+autoOverlays // masterOverlays // flakeOverlays
