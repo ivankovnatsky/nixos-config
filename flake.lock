@@ -999,17 +999,14 @@
         "poetry2nix": "poetry2nix_2"
       },
       "locked": {
-        "lastModified": 1736329072,
-        "narHash": "sha256-Ll+MPeo76TFHF634s0aMy/sQrBFHkDBPUQneqtIYYOY=",
-        "owner": "ivankovnatsky",
-        "repo": "video-summarizer",
-        "rev": "bfbfb53188a068e3f9be176e60969e709bd3ca66",
-        "type": "github"
+        "lastModified": 1736329785,
+        "narHash": "sha256-TsJ9K00Rhvolv5Sg5/j8vPdNIXbStcua07IqBqEaq6U=",
+        "path": "/Users/Ivan.Kovnatskyi/Sources/github.com/ivankovnatsky/video-summarizer",
+        "type": "path"
       },
       "original": {
-        "owner": "ivankovnatsky",
-        "repo": "video-summarizer",
-        "type": "github"
+        "path": "/Users/Ivan.Kovnatskyi/Sources/github.com/ivankovnatsky/video-summarizer",
+        "type": "path"
       }
     }
   },
