@@ -1,6 +1,6 @@
-{ pkgs, config, ... }:
+{ pkgs, config, username, ... }:
 
-let homePath = config.users.users."ivan".home;
+let homePath = "${config.users.users.${username}.home}";
 
 in
 {
@@ -10,8 +10,6 @@ in
     ../../modules/secrets
     ../../system/darwin.nix
   ];
-  users.users.ivan.home = "/Users/ivan";
-  networking.hostName = "Ivans-MacBook-Air";
   flags = {
     enableFishShell = true;
     purpose = "home";

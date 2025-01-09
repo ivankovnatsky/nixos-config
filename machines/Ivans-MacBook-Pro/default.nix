@@ -4,8 +4,6 @@
     ../../modules/darwin/pam
     ../../system/darwin.nix
   ];
-  users.users.ivan.home = "/Users/ivan";
-  networking.hostName = "Ivans-MacBook-Pro";
   flags = {
     enableFishShell = true;
     purpose = "home";
