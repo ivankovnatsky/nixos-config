@@ -55,7 +55,6 @@
     aiac
     nixpkgs-review
     husky # Commitlint dependency
-    k8sgpt
     nodePackages.webtorrent-cli
     p7zip
     packer
