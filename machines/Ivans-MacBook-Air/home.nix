@@ -20,6 +20,7 @@
     ../../home/shell.nix
     ../../home/starship
     ../../home/syncthing.nix
+    ../../home/taskwarrior.nix
     ../../home/tmux.nix
     ../../home/transmission.nix
     ../../home/vscode.nix
