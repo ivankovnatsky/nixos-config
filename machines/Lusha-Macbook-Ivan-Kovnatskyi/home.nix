@@ -121,6 +121,7 @@
       kubectl-images
       kubectx
       kubepug
+      k8sgpt
 
       kdash
 
