@@ -96,4 +96,4 @@ gh pr create \
     ${DRAFT:+--draft}
 
 # Open PR right away to verify everything is in order.
-gh pr view --web
+gh pr view --json url --jq .url | xargs -I {} open "{}/files"
