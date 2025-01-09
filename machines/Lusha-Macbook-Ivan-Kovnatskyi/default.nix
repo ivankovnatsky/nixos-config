@@ -8,7 +8,6 @@
     ../../modules/secrets
     ../../system/darwin.nix
   ];
-  users.users.${username}.home = "/Users/${username}";
   flags = {
     enableFishShell = true;
     purpose = "work";

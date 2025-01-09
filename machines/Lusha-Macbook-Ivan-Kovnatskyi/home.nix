@@ -169,8 +169,6 @@
 
       ANTHROPIC_API_KEY = "${config.secrets.anthropicApiKey}";
     };
-    username = "Ivan.Kovnatskyi";
-    stateVersion = "24.05";
   };
 
   programs = {
