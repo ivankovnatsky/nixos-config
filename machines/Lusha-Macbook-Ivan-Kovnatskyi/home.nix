@@ -146,6 +146,7 @@
 
       postgresql
       mariadb
+      mycli
       mongosh
 
       cloudflared

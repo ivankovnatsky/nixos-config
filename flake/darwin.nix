@@ -21,9 +21,9 @@ let
               imports = [
                 ../machines/${hostname}/home.nix
                 inputs.nixvim.homeManagerModules.nixvim
-                ({
+                {
                   programs.home-manager.enable = true;
-                })
+                }
               ] ++ homeModules;
             };
 
@@ -64,13 +64,12 @@ in
       system = "aarch64-darwin";
       username = "ivan";
       modules = [
-        ({ ... }: {
+        {
           networking.hostName = "Ivans-MacBook-Pro";
           users.users.ivan.home = "/Users/ivan";
-        })
+        }
       ];
       homeModules = [
-        ../home/pass.nix
         ({ username, ... }: {
           home.username = "${username}";
           home.stateVersion = "23.11";
@@ -89,7 +88,6 @@ in
         })
       ];
       homeModules = [
-        ../home/pass.nix
         ({ username, ... }: {
           home.username = "${username}";
           home.stateVersion = "22.05";
@@ -109,7 +107,6 @@ in
         })
       ];
       homeModules = [
-        ../home.nix
         ({ username, ... }: {
           home.username = "${username}";
           home.stateVersion = "24.05";
