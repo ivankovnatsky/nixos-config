@@ -16,6 +16,7 @@
     ../../home/nixvim
     ../../home/nixvim/plugins/avante
     ../../home/npm.nix
+    ../../home/pass.nix
     ../../home/scripts.nix
     ../../home/shell.nix
     ../../home/starship

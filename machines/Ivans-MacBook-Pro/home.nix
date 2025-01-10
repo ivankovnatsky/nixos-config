@@ -4,6 +4,7 @@
   imports = [
     ../../home/git.nix
     ../../home/mpv.nix
+    ../../home/pass.nix
     ../../home/shell.nix
     ../../home/starship
     ../../home/syncthing.nix
