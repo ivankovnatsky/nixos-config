@@ -1,3 +1,4 @@
+{ pkgs, scripts, ... }:
 {
   programs.nixvim.userCommands = {
     RebuildWatchman = {
@@ -15,7 +16,7 @@
     Eat = {
       command = ''
         silent %y+
-        lua require('notify')('Copied file contents to clipboard', 'info')
+        lua if pcall(require, 'notify') then require('notify')('Copied file contents to clipboard', 'info') else vim.api.nvim_echo({{'Copied file contents to clipboard'}}, true, {}) end
       '';
       desc = "Copy file contents to clipboard.";
       bang = true;
@@ -28,13 +29,13 @@
       bar = true;
     };
     CreatePr = {
-      command = "terminal create-pr";
+      command = "terminal ${scripts.create-pr}/bin/create-pr";
       desc = "Create PR with create-pr wrapper around gh CLI.";
       bang = true;
       bar = true;
     };
     MergePr = {
-      command = "terminal gh pr merge --squash";
+      command = "terminal ${pkgs.gh}/bin/gh pr merge --squash";
       desc = "Merge PR with gh CLI.";
       bang = true;
       bar = true;

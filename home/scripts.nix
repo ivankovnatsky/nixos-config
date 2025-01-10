@@ -96,7 +96,19 @@ let
 
   # Generate all alias packages
   allAliases = lib.flatten (map makeAliases scriptNames);
+
+  # Create an attribute set mapping script names to their derivations
+  scriptDerivations = builtins.listToAttrs (
+    map
+      (script: {
+        name = lib.removeSuffix ".sh" (lib.removeSuffix ".fish" (lib.removeSuffix ".py" (lib.removeSuffix ".go" (lib.removeSuffix ".nu" script))));
+        value = builtins.head (builtins.filter (p: p.name == lib.removeSuffix ".sh" (lib.removeSuffix ".fish" (lib.removeSuffix ".py" (lib.removeSuffix ".go" (lib.removeSuffix ".nu" script))))) scriptPackages);
+      })
+      scriptNames
+  );
 in
 {
   home.packages = scriptPackages ++ allAliases;
+  # Export the script derivations for use in other modules
+  _module.args.scripts = scriptDerivations;
 }
