@@ -49,6 +49,9 @@
             reverse_switch_windows = "<C-j>";
           };
         };
+        windows = {
+          width = 40;
+        };
         diff = {
           autojump = true;
         };
