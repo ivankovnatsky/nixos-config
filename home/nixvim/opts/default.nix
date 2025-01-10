@@ -104,6 +104,12 @@
       showmode = true;
     };
     extraConfigLua = ''
+      -- Set initial value for 'path'
+      vim.opt.path = ".,"
+
+      -- Append '**' to allow recursive searching
+      vim.opt.path:append("**")
+
       vim.opt.langmap = 'йq,цw,уe,кr,еt,нy,гu,шi,щo,зp,х[,ї],' ..
         'фa,іs,вd,аf,пg,рh,оj,лk,дl,ж\\;,є\',ґ\\,яz,чx,сc,мv,иb,тn,ьm,б\\,,ю.,' ..
         'ЙQ,ЦW,УE,КR,ЕT,НY,ГU,ШI,ЩO,ЗP,Х{,Ї},ФA,' ..
