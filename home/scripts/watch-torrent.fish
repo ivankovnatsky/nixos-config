@@ -12,9 +12,12 @@ function show_help
 end
 
 # Show help if no arguments or help flags
-if test (count $argv) -ne 1; or contains -- "$argv[1]" "--help" "-help" "-h"
+if test (count $argv) -ne 1; or contains -- "$argv[1]" --help -help -h
     show_help
 end
 
-# Stream using webtorrent to mpv
-webtorrent "$argv[1]" --mpv
+# Get the user's mpv config directory
+set mpv_config_dir "$HOME/.config/mpv"
+
+# Stream using webtorrent to mpv with explicit config directory
+webtorrent "$argv[1]" --not-on-top --mpv --player-args="--config-dir=$mpv_config_dir"
