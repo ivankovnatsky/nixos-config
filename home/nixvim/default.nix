@@ -30,6 +30,7 @@ in
       vim-sensible
       vim-sleuth
       vim-sneak
+      vim-sort-motion
       vim-eunuch
       mkdir-nvim
 
