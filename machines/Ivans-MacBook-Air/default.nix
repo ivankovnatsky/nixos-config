@@ -110,12 +110,8 @@ in
       { type = "spacer"; section = "apps"; }
 
       # Installed using nixpkgs
-      { path = "${pkgs.coconutbattery}/Applications/coconutBattery.app/"; }
-
-      { type = "spacer"; section = "apps"; }
-
-      # Manually installed
       { path = "${pkgs.ghostty}/Applications/Ghostty.app/"; }
+      { path = "${pkgs.coconutbattery}/Applications/coconutBattery.app/"; }
 
       { type = "spacer"; section = "apps"; }
 
@@ -130,6 +126,8 @@ in
       { path = "${homePath}/Applications/OLX.ua.app/"; }
 
       { type = "spacer"; section = "apps"; }
+
+      { path = "/Applications/Microsoft Teams.app/"; }
 
       {
         path = "${homePath}/Downloads/";
