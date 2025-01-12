@@ -10,7 +10,6 @@
     ../../home/git.nix
     ../../home/go.nix
     ../../home/hammerspoon
-    ../../home/launchd-services/dark-mode-kitty
     ../../home/lsd.nix
     ../../home/mpv.nix
     ../../home/nixvim
@@ -42,82 +41,58 @@
         { key = "0"; app = "Finder"; }
         { key = "1"; app = config.flags.hotkeys.terminal; }
         { key = "2"; app = config.flags.hotkeys.browser; }
-        { key = "4"; app = "Cursor"; }
-        { key = "5"; app = "Visual Studio Code"; }
-        { key = "6"; app = "Zed"; }
+        { key = "3"; app = "Cursor"; }
         { key = "9"; app = "System Settings"; }
       ];
     };
     apps = {
-      vscode.enable = true;
+      vscode.enable = false;
     };
   };
   home = {
     packages = with pkgs; [
-      home-manager
-      zsh-forgit
-
-      rclone
-      pigz
-
+      # bitwarden-cli  # FIXME: Fails to install on current nixpkgs-unstable
+      # nodePackages.webtorrent-cli  # FIXME: Fails to install on current nixpkgs-unstable
+      (python312.withPackages (ps: with ps; [ grip ]))
       aria2
-      wget
-      # FIXME: Fails to install on current nixpkgs-unstable
-      # nodePackages.webtorrent-cli
-      exiftool
-      syncthing
+      backup-home # Installed as flake
       bat
-      erdtree
-      fzf
-      ripgrep
+      battery-toolkit # macOS: Battery
+      cargo
+      coconutbattery # macOS: Battery
       delta
-      nixpkgs-fmt
-      magic-wormhole
-      typst
-      typstfmt
       du-dust
       duf
+      erdtree
+      exiftool
+      fzf
       genpass
-      fswatch
-
-      # FIXME: Fails to install on current nixpkgs-unstable
-      # bitwarden-cli
+      ghostty
+      home-manager
+      imagemagick
+      unrar
       jq
-
-      rust-analyzer
-      cargo
-      rustc
-
       ks
-
-      # macOS specific
-      rectangle
-      coconutbattery
-      stats
-      # To use PC mouse with natural scrolling
-      mos
-
-      battery-toolkit
-
-      username
-      backup-home
-
+      magic-wormhole
+      mos # macOS: System stats
+      nixpkgs-fmt
+      nodejs
+      parallel
+      pigz
+      rclone
+      rectangle # macOS: Window manager
+      ripgrep
+      rust-analyzer
+      rustc
+      stats # macOS: System stats
+      syncthing
+      typst
+      typstfmt
+      username # Installed as flake
       watchman
       watchman-make
-
-      (python312.withPackages (ps: with ps; [
-        grip
-      ]))
-
-      nodejs
-
-      ghostty
-
-      parallel
-
-      imagemagick
-
-      unrar
+      wget
+      zsh-forgit
     ];
     sessionVariables = {
       EDITOR = config.flags.editor;
@@ -134,8 +109,6 @@
         octo.enable = true;
         lsp = {
           servers = {
-            eslint.enable = true;
-            ts_ls.enable = true;
             tinymist.enable = true;
             pyright.enable = true;
             gopls.enable = true;
