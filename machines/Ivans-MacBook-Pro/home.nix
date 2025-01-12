@@ -3,6 +3,7 @@
 {
   imports = [
     ../../home/aichat.nix
+    ../../home/amethyst.nix
     ../../home/direnv.nix
     ../../home/ghostty.nix
     ../../home/git.nix

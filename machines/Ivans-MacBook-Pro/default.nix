@@ -56,6 +56,7 @@ in
       "pam-reattach"
     ];
     casks = [
+      "amethyst"
       "hammerspoon"
     ];
     masApps = { };
@@ -96,20 +97,12 @@ in
 
       # Brew casks placeholder
 
-      { type = "spacer"; section = "apps"; }
-
       # Installed using nixpkgs
-      { path = "${pkgs.coconutbattery}/Applications/coconutBattery.app/"; }
       { path = "${pkgs.ghostty}/Applications/Ghostty.app/"; }
-
-      { type = "spacer"; section = "apps"; }
-
-      { type = "spacer"; section = "apps"; }
+      { path = "${pkgs.coconutbattery}/Applications/coconutBattery.app/"; }
 
       # TODO: see if making a Dock web app could be automated.
       # Safari WebApps placeholder
-
-      { type = "spacer"; section = "apps"; }
 
       {
         path = "${homePath}/Downloads/";
