@@ -116,6 +116,8 @@
       parallel
 
       imagemagick
+
+      unrar
     ];
     sessionVariables = {
       EDITOR = config.flags.editor;
