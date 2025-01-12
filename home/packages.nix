@@ -74,7 +74,6 @@
     tealdeer
     terraform
     tfk8s
-    unrar
     unzip
     wget
     yq-go
