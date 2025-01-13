@@ -25,7 +25,6 @@
     ../../home/transmission.nix
     ../../home/vscode.nix
     ../../home/yt-dlp.nix
-    ../../home/zed
     ../../modules/flags
     ../../modules/secrets
   ];
