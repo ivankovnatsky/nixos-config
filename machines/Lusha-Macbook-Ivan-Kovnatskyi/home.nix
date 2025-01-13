@@ -34,7 +34,6 @@
     ../../home/vscode.nix
     ../../home/yamlint.nix
     ../../home/yt-dlp.nix
-    ../../home/zed
     ../../modules/flags
     ../../modules/secrets
   ];
@@ -53,13 +52,11 @@
         { key = "3"; app = "Slack"; }
         { key = "4"; app = "Firefox"; }
         { key = "5"; app = "Cursor"; }
-        { key = "6"; app = "Visual Studio Code"; }
-        { key = "7"; app = "Zed"; }
         { key = "9"; app = "System Settings"; }
       ];
     };
     apps = {
-      vscode.enable = true;
+      vscode.enable = false;
     };
   };
   home = {

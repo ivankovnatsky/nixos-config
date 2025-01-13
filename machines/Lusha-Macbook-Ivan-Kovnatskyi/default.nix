@@ -70,7 +70,6 @@
       "mindmac"
       "kitty"
       "orbstack"
-      "zed"
       "twingate"
 
       # Installed or managed using Kandji
@@ -127,14 +126,10 @@
       # Installed using homebrew
       { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/kitty.app/"; }
-      { path = "/Applications/Zed.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/MindMac.app/"; }
 
       { type = "spacer"; section = "apps"; }
-
-      # Installed using nixpkgs
-      { path = "${pkgs.vscode}/Applications/Visual Studio Code.app/"; }
 
       { type = "spacer"; section = "apps"; }
 
