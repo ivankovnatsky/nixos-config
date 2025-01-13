@@ -100,6 +100,7 @@
     # TODO: can dock be streched 100% horizontally?
     dock.entries = [
       # Default macOS apps
+      { path = "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/"; }
       { path = "/System/Applications/Calendar.app/"; }
       { path = "/System/Applications/System Settings.app/"; }
 
