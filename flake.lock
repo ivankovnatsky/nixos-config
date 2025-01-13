@@ -11,11 +11,11 @@
         "poetry2nix": "poetry2nix"
       },
       "locked": {
-        "lastModified": 1736106596,
-        "narHash": "sha256-DXe9kOfKxQW5Ss9hp2iANWS1GnsaURxb9+ZAvGHy0Dk=",
+        "lastModified": 1736675419,
+        "narHash": "sha256-ZB+AKKYTj5sqKqPgWc7RMeOt2CCdZdm5Uv0bQ/ZW8ls=",
         "owner": "ivankovnatsky",
         "repo": "backup-home",
-        "rev": "9d331a397b3dfd79fafd82023c22393d1cbb54c0",
+        "rev": "93f84f3f37e1f1d60f3c6dde72043850a90812ce",
         "type": "github"
       },
       "original": {
