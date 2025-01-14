@@ -97,7 +97,7 @@
       '';
     };
     dock.enable = true;
-    # TODO: can dock be streched 100% horizontally?
+    # TODO: can dock be stretched 100% horizontally?
     dock.entries = [
       # Default macOS apps
       { path = "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/"; }
