@@ -58,5 +58,11 @@
       bang = true;
       bar = true;
     };
+    ViewPr = {
+      command = "!${scripts.view-pr}/bin/view-pr";
+      desc = "View PR files in browser.";
+      bang = true;
+      bar = true;
+    };
   };
 }
