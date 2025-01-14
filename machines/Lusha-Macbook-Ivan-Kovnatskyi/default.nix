@@ -68,7 +68,6 @@
       "amethyst"
       "cursor"
       "mindmac"
-      "kitty"
       "orbstack"
       "twingate"
 
@@ -126,7 +125,6 @@
 
       # Installed using homebrew
       { path = "/Applications/Firefox.app/"; }
-      { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/MindMac.app/"; }
 

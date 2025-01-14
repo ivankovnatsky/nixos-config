@@ -14,7 +14,6 @@
     ../../home/hammerspoon
     ../../home/jujutsu.nix
     ../../home/k9s.nix
-    ../../home/launchd-services/dark-mode-kitty
     ../../home/lsd.nix
     ../../home/mpv.nix
     ../../home/nixvim
