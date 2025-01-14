@@ -16,7 +16,7 @@
     Eat = {
       command = ''
         silent %y+
-        lua if pcall(require, 'notify') then require('notify')('Copied file contents to clipboard', 'info') else vim.api.nvim_echo({{'Copied file contents to clipboard'}}, true, {}) end
+        echo "Copied file contents to clipboard"
       '';
       desc = "Copy file contents to clipboard.";
       bang = true;
@@ -35,8 +35,26 @@
       bar = true;
     };
     MergePr = {
-      command = "terminal ${pkgs.gh}/bin/gh pr merge --squash";
-      desc = "Merge PR with gh CLI.";
+      command = "terminal ${scripts.merge-pr}/bin/merge-pr";
+      desc = "Merge PR with merge-pr wrapper around gh CLI.";
+      bang = true;
+      bar = true;
+    };
+    CopyPath = {
+      command = ''
+        let @+ = getcwd()
+        echo "Copied absolute working directory path to clipboard"
+      '';
+      desc = "Copy absolute working directory path to clipboard.";
+      bang = true;
+      bar = true;
+    };
+    CopyFilePath = {
+      command = ''
+        let @+ = expand('%:p')
+        echo "Copied absolute file path to clipboard"
+      '';
+      desc = "Copy absolute file path to clipboard.";
       bang = true;
       bar = true;
     };
