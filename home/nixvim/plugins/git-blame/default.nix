@@ -1,5 +1,3 @@
-{ config, lib, ... }:
-
 {
   programs.nixvim = {
     plugins.gitblame = {

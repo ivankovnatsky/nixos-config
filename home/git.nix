@@ -22,6 +22,7 @@
     settings = { };
   };
 
+  # https://github.com/nix-community/home-manager/blob/master/modules/programs/git.nix#L102
   programs.git = {
     enable = true;
     inherit (config.flags.git) userName userEmail;
@@ -35,6 +36,10 @@
       "**/.stignore"
       "**/__worktrees/"
     ];
+    delta.enable = true;
+    # diff-highlight.enable = true;
+    # difftastic.enable = true;
+    # diff-so-fancy.enable = true;
     aliases = {
       a = "add";
       co = "checkout";

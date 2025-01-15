@@ -43,14 +43,15 @@
     darkMode = true;
     hotkeys = {
       terminal = "Ghostty";
-      browser = "Google Chrome";
+      browser = "Safari";
       shortcuts = [
         { key = "0"; app = "Finder"; }
         { key = "1"; app = config.flags.hotkeys.terminal; }
         { key = "2"; app = config.flags.hotkeys.browser; }
-        { key = "3"; app = "Slack"; }
-        { key = "4"; app = "Firefox"; }
-        { key = "5"; app = "Cursor"; }
+        { key = "3"; app = "Google Chrome"; }
+        { key = "4"; app = "Slack"; }
+        { key = "5"; app = "Firefox"; }
+        { key = "6"; app = "Cursor"; }
         { key = "9"; app = "System Settings"; }
       ];
     };
