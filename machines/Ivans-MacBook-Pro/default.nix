@@ -58,6 +58,7 @@ in
     casks = [
       "amethyst"
       "hammerspoon"
+      "cursor"
     ];
     masApps = { };
     caskArgs = {
@@ -96,6 +97,9 @@ in
       { type = "spacer"; section = "apps"; }
 
       # Brew casks placeholder
+      { path = "/Applications/Cursor.app/"; }
+
+      { type = "spacer"; section = "apps"; }
 
       # Installed using nixpkgs
       { path = "${pkgs.ghostty}/Applications/Ghostty.app/"; }
