@@ -14,14 +14,12 @@
         '';
         openai = {
           endpoint = "https://api.openai.com/v1";
-          model = "gpt-4o";
           timeout = 30000;
           temperature = 0;
           max_tokens = 4096;
         };
         copilot = {
           endpoint = "https://api.githubcopilot.com";
-          model = "gpt-4o-2024-05-13";
           proxy = null;
           allow_insecure = false;
           timeout = 30000;
@@ -30,7 +28,6 @@
         };
         claude = {
           endpoint = "https://api.anthropic.com";
-          model = "claude-3-5-sonnet-20240620";
           timeout = 30000;
           temperature = 0;
           max_tokens = 8000;
