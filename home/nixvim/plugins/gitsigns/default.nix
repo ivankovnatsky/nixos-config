@@ -1,10 +1,8 @@
-{ config, lib, ... }:
-
 {
   programs.nixvim = {
     # git-blame is way faster
     plugins.gitsigns = {
-      enable = false;
+      enable = true;
       settings = {
         trouble = true;
         current_line_blame = true;
