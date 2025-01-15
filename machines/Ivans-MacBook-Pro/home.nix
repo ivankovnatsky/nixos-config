@@ -9,6 +9,7 @@
     ../../home/git.nix
     ../../home/go.nix
     ../../home/hammerspoon
+    ../../home/vscode.nix
     ../../home/lsd.nix
     ../../home/mpv.nix
     ../../home/nixvim
