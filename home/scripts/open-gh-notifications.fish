@@ -25,24 +25,18 @@ end
 function open_urls_in_batches
     set -l urls $argv[1..-2]
     set -l running $argv[-1]
-    set -l batch_size 5
-    
-    for i in (seq 1 $batch_size (count $urls))
-        set -l end_idx (math "$i + $batch_size - 1")
-        if test $end_idx -gt (count $urls)
-            set end_idx (count $urls)
+
+    test (count $urls) -eq 0; and return
+
+    if test "$running" = "true"
+        printf "%s\n" $urls | parallel --jobs 10 "open {}"
+    else
+        # Open first URL in new window
+        open -n $urls[1]
+        # Process remaining URLs in parallel if any exist
+        if test (count $urls) -gt 1
+            printf "%s\n" $urls[2..-1] | parallel --jobs 10 "open {}"
         end
-        
-        # Process each URL in the batch individually
-        for url in $urls[$i..$end_idx]
-            if test "$running" = "true"
-                open $url
-            else
-                open --new $url
-            end
-        end
-        
-        sleep 1
     end
 end
 
@@ -67,24 +61,24 @@ function main
         return 0
     end
 
+    # First print all URLs that were found
     echo "URLs to open:"
     printf "%s\n" $all_urls
 
-    if set -q _flag_show
-        if set -q _flag_running
-            echo "Would open URLs in the current browser window (omit --show option to actually open)"
-        else
-            echo "Would open URLs in a new browser window (omit --show option to actually open)"
-        end
-    else
-        if set -q _flag_running
-            echo "Opening URLs in the current browser window"
-            open_urls_in_batches $all_urls "true"
-        else
-            echo "Opening URLs in a new browser window"
-            open_urls_in_batches $all_urls "false"
-        end
+    # Determine the mode (show vs open, and running vs new window)
+    set -l action "Would open"
+    set -l target "a new browser window"
+    
+    if set -q _flag_running
+        set target "the current browser window"
     end
+    
+    if not set -q _flag_show
+        set action "Opening"
+        open_urls_in_batches $all_urls (test -n "$_flag_running")
+    end
+    
+    echo "$action URLs in $target"
 end
 
 main $argv
