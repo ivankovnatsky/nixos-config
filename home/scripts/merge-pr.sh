@@ -2,12 +2,14 @@
 
 # Default values
 STRATEGY="squash"
+ADMIN_FLAG=""
 
 # Function to display script usage
 usage() {
     echo "Usage: $0 [options]"
     echo "Options:"
     echo "  --strategy <strategy>    Specify the merge strategy (squash, merge, or rebase, default: squash)"
+    echo "  --admin                  Use administrator privileges to bypass merge queue requirements"
     echo "  --help                   Display this help message"
 }
 
@@ -18,6 +20,14 @@ while [[ $# -gt 0 ]]; do
         --strategy)
             STRATEGY="$2"
             shift
+            shift
+            ;;
+        --admin)
+            ADMIN_FLAG="--admin"
+            shift
+            ;;
+        --bypass)
+            ADMIN_FLAG="--admin"
             shift
             ;;
         --help)
@@ -43,7 +53,7 @@ unset GH_TOKEN
 unset GITHUB_TOKEN
 
 # Merge PR
-gh pr merge --${STRATEGY}
+gh pr merge "--${STRATEGY}" "${ADMIN_FLAG}"
 
 # Open PR right away to verify everything is in order.
-gh pr view --json url --jq .url | xargs -I {} open "{}" 
+gh pr view --json url --jq .url | xargs -I {} open "{}/files"
