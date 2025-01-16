@@ -1,4 +1,4 @@
-{ pkgs, scripts, ... }:
+{ scripts, ... }:
 {
   programs.nixvim.userCommands = {
     RebuildWatchman = {
@@ -22,9 +22,21 @@
       bang = true;
       bar = true;
     };
+    Eat = {
+      command = "Yank";
+      desc = "Copy file contents to clipboard (alias for Yank).";
+      bang = true;
+      bar = true;
+    };
     PasteReplace = {
       command = "%d | put + | 0d | wall";
       desc = "Replace file contents with clipboard.";
+      bang = true;
+      bar = true;
+    };
+    ReplaceFileText = {
+      command = "PasteReplace";
+      desc = "Replace file contents with clipboard (alias for PasteReplace).";
       bang = true;
       bar = true;
     };
