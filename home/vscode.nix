@@ -44,7 +44,7 @@ in
       jnoortheen.nix-ide
       hashicorp.terraform
       eamodio.gitlens
-      # GitHub.copilot -- Can't be installed on VSCodium
+      # GitHub.copilot # Can't be installed on VSCodium
       ms-vscode.makefile-tools
       ms-python.python
       hashicorp.hcl
