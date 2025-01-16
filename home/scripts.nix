@@ -7,6 +7,7 @@ let
   # Format: "original-name" = [ "alias1" "alias2" ... ]
   scriptAliases = {
     "create-pr" = [ "open-pr" ];
+    "eat" = [ "yank" ];
   };
 
   processScript = scriptName:
