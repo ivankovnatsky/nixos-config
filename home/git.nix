@@ -34,6 +34,7 @@
       "**/.venv"
       "**/venv"
       "**/.stignore"
+      "**/.stfolder"
       "**/__worktrees/"
     ];
     delta.enable = true;
