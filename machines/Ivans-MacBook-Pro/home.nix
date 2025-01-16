@@ -3,13 +3,14 @@
 {
   imports = [
     ../../home/aichat.nix
+    ../../home/fish-ai.nix
     ../../home/amethyst.nix
     ../../home/direnv.nix
+    ../../home/vscode.nix
     ../../home/ghostty.nix
     ../../home/git.nix
     ../../home/go.nix
     ../../home/hammerspoon
-    ../../home/vscode.nix
     ../../home/lsd.nix
     ../../home/mpv.nix
     ../../home/nixvim
@@ -39,9 +40,13 @@
         { key = "9"; app = "System Settings"; }
       ];
     };
+    apps = {
+      vscode.enable = true;
+    };
   };
   home = {
     packages = with pkgs; [
+      # username # Installed as flake  # FIXME: correct hash256
       (python312.withPackages (ps: with ps; [ grip ]))
       aria2
       bat
@@ -51,6 +56,7 @@
       delta
       du-dust
       duf
+      # fish-ai # Local overlay
       fzf
       genpass
       ghostty
@@ -61,6 +67,7 @@
       mos # macOS: System stats
       nixpkgs-fmt
       nodejs
+      ollama
       parallel
       pigz
       rclone
@@ -72,8 +79,6 @@
       syncthing
       typst
       typstfmt
-      # FIXME: correct hash256
-      # username # Installed as flake
       watchman
       watchman-make
       wget

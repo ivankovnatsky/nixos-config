@@ -104,6 +104,7 @@ in
       # Installed using nixpkgs
       { path = "${pkgs.ghostty}/Applications/Ghostty.app/"; }
       { path = "${pkgs.coconutbattery}/Applications/coconutBattery.app/"; }
+      { path = "${pkgs.vscode}/Applications/Visual Studio Code.app/"; }
 
       # TODO: see if making a Dock web app could be automated.
       # Safari WebApps placeholder
