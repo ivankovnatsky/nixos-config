@@ -13,7 +13,7 @@
       bang = true;
       bar = true;
     };
-    Eat = {
+    Yank = {
       command = ''
         silent %y+
         echo "Copied file contents to clipboard"
@@ -22,9 +22,9 @@
       bang = true;
       bar = true;
     };
-    ReplaceFileText = {
+    PasteReplace = {
       command = "%d | put + | 0d | wall";
-      desc = "Replace text.";
+      desc = "Replace file contents with clipboard.";
       bang = true;
       bar = true;
     };
@@ -35,8 +35,9 @@
       bar = true;
     };
     MergePr = {
-      command = "terminal ${scripts.merge-pr}/bin/merge-pr";
+      command = "terminal ${scripts.merge-pr}/bin/merge-pr <args>";
       desc = "Merge PR with merge-pr wrapper around gh CLI.";
+      nargs = "*";
       bang = true;
       bar = true;
     };
