@@ -212,6 +212,11 @@ in
         { name = "grc"; src = grc.src; }
         { name = "plugin-git"; src = plugin-git.src; }
         { name = "forgit"; src = forgit.src; }
+        { name = "autopair"; src = autopair.src; }
+        { name = "git-abbr"; src = git-abbr.src; }
+        { name = "fish-bd"; src = fish-bd.src; }
+        { name = "pisces"; src = pisces.src; }
+        { name = "done"; src = done.src; }
       ];
 
       shellAliases = shellAliases;
