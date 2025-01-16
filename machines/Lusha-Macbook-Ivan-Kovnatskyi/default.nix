@@ -62,21 +62,21 @@
       # enable root user and edit /private/etc/pam.d/sudo to unblock auth.
       "pam-reattach"
     ];
+    # Installed or managed using Kandji
+    # google-chrome
+    # bitwarden
+    # zoom
+    # chatgpt
+    # dbeaver-community
     casks = [
-      "firefox"
-      "hammerspoon"
       "amethyst"
       "cursor"
+      "firefox"
+      "hammerspoon"
+      "kitty"
       "mindmac"
       "orbstack"
       "twingate"
-
-      # Installed or managed using Kandji
-      # google-chrome
-      # bitwarden
-      # zoom
-      # chatgpt
-      # dbeaver-community
     ];
     masApps = {
       # Installed using Kandji
@@ -124,6 +124,7 @@
       { type = "spacer"; section = "apps"; }
 
       # Installed using homebrew
+      { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/MindMac.app/"; }

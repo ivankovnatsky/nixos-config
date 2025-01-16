@@ -56,7 +56,7 @@
       delta
       du-dust
       duf
-      # fish-ai # Local overlay
+      fish-ai # Local overlay
       fzf
       genpass
       ghostty
