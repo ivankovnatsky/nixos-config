@@ -56,7 +56,7 @@
         root: ~/Sources/github.com/ivankovnatsky/nixos-config/
 
         windows:
-          - editor: ${config.flags.editor} .
+          - editor: ${config.flags.editor}
           - rebuild: ${pkgs.gnumake}/bin/make rebuild-watchman
       '';
     };
