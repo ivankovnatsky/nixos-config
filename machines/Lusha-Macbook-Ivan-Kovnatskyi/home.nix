@@ -2,8 +2,8 @@
 
 {
   imports = [
-    # ../../home/launchd-services.nix
     ../../home/aichat.nix
+    ../../home/launchd-services/dark-mode-kitty
     ../../home/amethyst.nix
     ../../home/direnv.nix
     ../../home/firefox-config.nix
@@ -61,110 +61,76 @@
   };
   home = {
     packages = with pkgs; [
-      defaultbrowser
-      dust
-      duf
-      genpass
-
-      watchman
-      watchman-make
-
-      # macOS related
-      # CLI
-      dockutil
-
-      # GUI
-      # To use PC mouse with natural scrolling
-      mos
-      stats
-      battery-toolkit
-      rectangle
-      maccy
-
-      home-manager
-
-      jq
-      yq
-
-      magic-wormhole
-      rclone
-      pv
-      pigz
-
-      devbox
-
-      ghorg
-
-      hadolint
-      docker-client
-      docker-compose
-
-      awscli2
+      (wrapHelm kubernetes-helm { plugins = with pkgs.kubernetes-helmPlugins; [ helm-secrets ]; })
+      argocd
       aws-sso-cli
       aws-sso-creds
-      nodePackages.aws-cdk
-      ssm-session-manager-plugin
-      iam-policy-json-to-terraform
-
-      terraformer
-      terragrunt-atlantis-config
+      awscli2
+      backup-home
+      battery-toolkit # Battery care
+      cloudflared
+      coreutils
+      defaultbrowser
+      delta
+      devbox
+      docker-client
+      docker-compose
+      dockutil # macOS related CLI
+      duf
+      dust
+      eks-node-viewer
+      exiftool
+      genpass
+      ghorg
+      ghostty
+      gitleaks
+      hadolint
       hclfmt
+      home-manager
+      iam-policy-json-to-terraform
       infracost
-
-      kubectl
-      kubecolor
+      jq
+      k8sgpt
+      kail
+      kdash
       krew
-      kustomize
+      kubecolor
+      kubectl
       kubectl-images
       kubectx
       kubepug
-      k8sgpt
-
-      kdash
-
-      argocd
-
-      kail
-      (wrapHelm kubernetes-helm {
-        plugins = with pkgs.kubernetes-helmPlugins; [
-          helm-secrets
-        ];
-      })
-      eks-node-viewer
-
-      pre-commit
-
-      gitleaks
-      delta
-
-      exiftool
-
-      vault
-
-      postgresql
+      kustomize
+      maccy # Clipboard manager
+      magic-wormhole
       mariadb
-      mycli
       mongosh
-
-      cloudflared
-
-      poetry
-      pyenv-nix-install
-
+      mos # To use PC mouse with natural scrolling GUI
+      mycli
+      nodePackages.aws-cdk
       nodejs
-
+      parallel
+      pigz
+      poetry
+      postgresql
+      pre-commit
+      pv
+      pyenv-nix-install
+      rclone
+      rectangle # Window manager
+      ssm-session-manager-plugin
+      stats # To show CPU, RAM, etc. usage in the menu bar
+      terraformer
+      terragrunt-atlantis-config
+      vault
+      watchman
+      watchman-make
       wget
-
-      ghostty
-      coreutils
-
-      backup-home
+      yq
     ];
 
     sessionVariables = {
       EDITOR = config.flags.editor;
       VISUAL = config.flags.editor;
-
       ANTHROPIC_API_KEY = "${config.secrets.anthropicApiKey}";
     };
   };
