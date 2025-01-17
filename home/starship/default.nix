@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, ... }:
 
 let
   jjCommand = builtins.readFile ./jj.template;
@@ -10,9 +10,10 @@ in
     enableZshIntegration = true;
     enableFishIntegration = config.flags.enableFishShell;
 
+    # https://starship.rs/config/
     settings = {
-      command_timeout = 2000;
-      
+      command_timeout = 1000;
+
       time = {
         disabled = false;
         time_format = "%h %d %R";
@@ -45,14 +46,14 @@ in
 
       custom.jj = {
         command = jjCommand;
-        detect_folders = [".jj"];
+        detect_folders = [ ".jj" ];
         symbol = "jj";
       };
 
       custom.jjstate = {
         command = jjstateCommand;
-        detect_folders = [".jj"];
+        detect_folders = [ ".jj" ];
       };
     };
   };
-} 
+}
