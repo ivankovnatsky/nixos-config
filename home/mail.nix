@@ -15,7 +15,7 @@ in
       IMAPAccount [redacted]
       Host imap.[redacted].com
       User ${config.secrets.iMail}
-      PassCmd "ks show [redacted]-mail"
+      PassCmd "pass [redacted]-mail"
       SSLType IMAPS
       CertificateFile /etc/ssl/cert.pem
       PipelineDepth 50
@@ -78,7 +78,7 @@ in
       auth           on
       from           ${config.secrets.iMail}
       user           ${config.secrets.iMail}
-      passwordeval   "ks show [redacted]-mail"
+      passwordeval   "pass [redacted]-mail"
 
       # Set a default account
       account default : [redacted]
