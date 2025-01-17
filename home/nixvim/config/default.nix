@@ -5,7 +5,7 @@ let
 in
 {
   programs.nixvim.extraConfigLua = ''
-    vim.api.nvim_set_hl(0, "Comment", { italic = true }) 
+    vim.api.nvim_set_hl(0, "Comment", { italic = true })
 
     -- Configuration for GitHub Copilot in Neovim using Lua
     vim.g.copilot_filetypes = {
