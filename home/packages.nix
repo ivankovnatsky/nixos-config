@@ -51,7 +51,7 @@
     kubepug
     magic-wormhole-rs
     mtr
-    nixpkgs-fmt
+    nixfmt-rfc-style
     aiac
     nixpkgs-review
     husky # Commitlint dependency

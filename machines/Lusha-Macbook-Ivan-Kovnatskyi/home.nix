@@ -3,10 +3,10 @@
 {
   imports = [
     ../../home/aichat.nix
-    ../../home/launchd-services/dark-mode-kitty
     ../../home/amethyst.nix
     ../../home/direnv.nix
     ../../home/firefox-config.nix
+    ../../home/fish-ai.nix
     ../../home/ghorg.nix
     ../../home/ghostty.nix
     ../../home/git.nix
@@ -97,6 +97,7 @@
       kubecolor
       kubectl
       kubectl-images
+      kubectl-view-secret
       kubectx
       kubepug
       kustomize
@@ -183,7 +184,7 @@
           settings.formatters_by_ft = {
             python = [ "black" ];
             lua = [ "stylua" ];
-            nix = [ "nixfmt" ];
+            nix = [ "nixfmt-rfc-style" ];
           };
         };
         # FIXME: Figure out suitable key for the completion, when you need to

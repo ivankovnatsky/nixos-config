@@ -41,7 +41,7 @@
       ];
     };
     apps = {
-      vscode.enable = true;
+      vscode.enable = false;
     };
   };
   home = {
@@ -65,7 +65,7 @@
       ks
       magic-wormhole
       mos # macOS: System stats
-      nixpkgs-fmt
+      nixfmt-rfc-style
       nodejs
       ollama
       parallel

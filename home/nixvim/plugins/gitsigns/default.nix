@@ -3,6 +3,7 @@
     # git-blame is way faster
     plugins.gitsigns = {
       enable = true;
+      # TODO: Make italic
       settings = {
         trouble = true;
         current_line_blame = true;
