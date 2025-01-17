@@ -27,6 +27,11 @@ in
             - type: openai
               api_base: https://api.openai.com/v1
               api_key: ${config.secrets.openaiApiKey}
+            - type: openai-compatible
+              name: ollama
+              api_base: http://localhost:11434/v1
+              models:
+                - name: llama3.1:8b
         '';
       };
     };
