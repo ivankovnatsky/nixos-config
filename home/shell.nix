@@ -208,18 +208,18 @@ in
         end
       '';
       plugins = with pkgs.fishPlugins; [
-        { name = "fzf-fish"; src = fzf-fish.src; }
-        { name = "grc"; src = grc.src; }
-        { name = "plugin-git"; src = plugin-git.src; }
-        { name = "forgit"; src = forgit.src; }
-        { name = "autopair"; src = autopair.src; }
-        { name = "git-abbr"; src = git-abbr.src; }
-        { name = "fish-bd"; src = fish-bd.src; }
-        { name = "pisces"; src = pisces.src; }
-        { name = "done"; src = done.src; }
+        { inherit (fzf-fish) name src; }
+        { inherit (grc) name src; }
+        { inherit (plugin-git) name src; }
+        { inherit (forgit) name src; }
+        { inherit (autopair) name src; }
+        { inherit (git-abbr) name src; }
+        { inherit (fish-bd) name src; }
+        { inherit (pisces) name src; }
+        { inherit (done) name src; }
       ];
 
-      shellAliases = shellAliases;
+      inherit shellAliases;
     };
   };
 }
