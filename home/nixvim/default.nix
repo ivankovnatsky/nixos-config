@@ -15,8 +15,8 @@ in
     ./keymaps
     ./opts
     ./plugins
-    # ./plugins/git-blame
-    ./plugins/gitsigns
+    ./plugins/git-blame
+    # ./plugins/gitsigns
     ./plugins/lsp
     ./plugins/lspsaga
     ./plugins/none-ls
