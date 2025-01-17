@@ -10,38 +10,26 @@
     ];
 
     interactiveShellInit = ''
+      # Source config first
+      source ${pkgs.fish-ai}/share/fish/vendor_conf.d/fish_ai.fish
+      
+      # Add paths after config
+      set -a fish_function_path ${pkgs.fish-ai}/share/fish/vendor_functions.d
+      set -a fish_complete_path ${pkgs.fish-ai}/share/fish/vendor_completions.d
+      
+      # Ensure Python module is in path
+      set -x PYTHONPATH ${pkgs.fish-ai}/share/fish/vendor_functions.d:${pkgs.fish-ai}/lib/${pkgs.python3.sitePackages} $PYTHONPATH
     '';
   };
 
   home.file.".config/fish-ai.ini".text = ''
     [fish-ai]
     configuration = anthropic
-
-    # [self-hosted]
-    # provider = self-hosted
-    # server = https://<your server>:<port>/v1
-    # model = <your model>
-    # api_key = <your API key>
-    #
-    # [fish-ai]
-    # configuration = local-llama
-    #
-    # [local-llama]
-    # provider = self-hosted
-    # model = llama3.3
-    # server = http://localhost:11434/v1
-    #
-    # [fish-ai]
-    # configuration = openai
-    #
-    # [openai]
-    # provider = openai
-    # model = gpt-4o
-    # api_key = <your API key>
-    # organization = <your organization>
+    debug = True
+    log = ~/.fish-ai/log.txt
 
     [anthropic]
     provider = anthropic
     api_key = ${config.secrets.anthropicApiKey}
   '';
-} 
+}
