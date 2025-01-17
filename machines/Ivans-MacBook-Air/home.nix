@@ -69,12 +69,11 @@
       ghostty
       home-manager
       imagemagick
-      unrar
       jq
       ks
       magic-wormhole
       mos # macOS: System stats
-      nixpkgs-fmt
+      nixfmt-rfc-style
       nodejs
       parallel
       pigz

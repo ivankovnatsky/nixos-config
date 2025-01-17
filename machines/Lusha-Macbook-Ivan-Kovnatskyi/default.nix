@@ -131,8 +131,6 @@
 
       { type = "spacer"; section = "apps"; }
 
-      { type = "spacer"; section = "apps"; }
-
       # Manually installed
       { path = "${pkgs.ghostty}/Applications/Ghostty.app/"; }
 
