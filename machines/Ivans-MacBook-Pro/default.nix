@@ -106,8 +106,12 @@ in
       { path = "${pkgs.coconutbattery}/Applications/coconutBattery.app/"; }
       { path = "${pkgs.vscode}/Applications/Visual Studio Code.app/"; }
 
+      { type = "spacer"; section = "apps"; }
+
       # TODO: see if making a Dock web app could be automated.
       # Safari WebApps placeholder
+      { path = "${homePath}/Applications/ChatGPT.app/"; }
+      { path = "${homePath}/Applications/Claude.app/"; }
 
       {
         path = "${homePath}/Downloads/";
