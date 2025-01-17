@@ -36,5 +36,23 @@
         desc = "Move to window bellow";
       };
     }
+    {
+      mode = "n";
+      key = "ZA";
+      action = ":bd<CR>";
+      options = {
+        silent = true;
+        desc = "Close buffer";
+      };
+    }
+    {
+      mode = "n";
+      key = "ZX";
+      action = ":w | bd<CR>";
+      options = {
+        silent = true;
+        desc = "Save and close buffer";
+      };
+    }
   ];
 }
