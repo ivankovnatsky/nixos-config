@@ -9,6 +9,7 @@
     ../../home/fish-ai.nix
     ../../home/ghorg.nix
     ../../home/ghostty.nix
+    ../../home/thefuck.nix
     ../../home/git.nix
     ../../home/go.nix
     ../../home/hammerspoon
