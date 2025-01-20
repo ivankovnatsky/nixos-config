@@ -68,10 +68,10 @@ in
     # Installed or managed using Kandji
     # google-chrome
     # zoom
-    # dbeaver-community
     casks = [
       "amethyst"
       "cursor"
+      "dbeaver-community"
       "firefox"
       "hammerspoon"
       "mindmac"
