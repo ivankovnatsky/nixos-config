@@ -1,5 +1,8 @@
 { config, pkgs, username, ... }:
 
+let homePath = "${config.users.users.${username}.home}";
+
+in
 {
   imports = [
     ../../modules/darwin/dock
@@ -64,16 +67,13 @@
     ];
     # Installed or managed using Kandji
     # google-chrome
-    # bitwarden
     # zoom
-    # chatgpt
     # dbeaver-community
     casks = [
       "amethyst"
       "cursor"
       "firefox"
       "hammerspoon"
-      "kitty"
       "mindmac"
       "orbstack"
       "twingate"
@@ -117,14 +117,11 @@
       { path = "/Applications/Google Chrome.app/"; }
       { path = "/Applications/Slack.app/"; }
       { path = "/Applications/zoom.us.app/"; }
-      { path = "/Applications/ChatGPT.app/"; }
       { path = "/Applications/DBeaver.app/"; }
-      { path = "/Applications/Bitwarden.app/"; }
 
       { type = "spacer"; section = "apps"; }
 
       # Installed using homebrew
-      { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/MindMac.app/"; }
@@ -133,6 +130,12 @@
 
       # Manually installed
       { path = "${pkgs.ghostty}/Applications/Ghostty.app/"; }
+
+      { type = "spacer"; section = "apps"; }
+
+      # Safari Web Apps
+      { path = "${homePath}/Applications/ChatGPT.app/"; }
+      { path = "${homePath}/Applications/Claude.app/"; }
 
       {
         path = "${config.users.users.${username}.home}/Downloads/";
