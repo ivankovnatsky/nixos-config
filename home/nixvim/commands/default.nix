@@ -77,5 +77,19 @@
       bang = true;
       bar = true;
     };
+    E = {
+      command = "e %:h/<args>";
+      desc = "Open a new file in the same directory as the current file";
+      nargs = 1;
+      bang = true;
+      bar = true;
+    };
+    NewFile = {
+      command = "E <args>";
+      desc = "Open a new file in the same directory as the current file";
+      nargs = 1;
+      bang = true;
+      bar = true;
+    };
   };
 }
