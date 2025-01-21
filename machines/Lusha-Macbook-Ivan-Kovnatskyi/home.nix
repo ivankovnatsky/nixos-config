@@ -4,12 +4,12 @@
   imports = [
     ../../home/aichat.nix
     ../../home/amethyst.nix
+    ../../home/bat.nix
     ../../home/direnv.nix
     ../../home/firefox-config.nix
     ../../home/fish-ai.nix
     ../../home/ghorg.nix
     ../../home/ghostty.nix
-    ../../home/thefuck.nix
     ../../home/git.nix
     ../../home/go.nix
     ../../home/hammerspoon
@@ -30,6 +30,7 @@
     ../../home/starship
     ../../home/syncthing.nix
     ../../home/terraform.nix
+    ../../home/thefuck.nix
     ../../home/tmux.nix
     ../../home/vscode.nix
     ../../home/yamlint.nix
