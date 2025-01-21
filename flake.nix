@@ -47,10 +47,22 @@
     };
 
     backup-home = {
-      url = "github:ivankovnatsky/backup-home";
+      url = "path:/Users/Ivan.Kovnatskyi/Sources/github.com/ivankovnatsky/backup-home-rs";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
+
+    # backup-home = {
+    #   url = "path:/Users/Ivan.Kovnatskyi/Sources/github.com/ivankovnatsky/backup-home-go";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    #   inputs.flake-utils.follows = "flake-utils";
+    # };
+
+    # backup-home = {
+    #   url = "path:/Users/Ivan.Kovnatskyi/Sources/github.com/ivankovnatsky/backup-home";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    #   inputs.flake-utils.follows = "flake-utils";
+    # };
 
     nixpkgs-python.url = "github:cachix/nixpkgs-python";
     pyenv-nix-install.url = "github:sirno/pyenv-nix-install";
