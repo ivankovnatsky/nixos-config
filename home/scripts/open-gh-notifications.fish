@@ -14,9 +14,9 @@ end
 
 function collect_urls
     set -l type $argv[1]
-    gh api notifications --paginate | jq -r ".[] | select(.subject.type == \"$type\") | .subject.url" | 
-    string replace "api.github.com/repos" "github.com" |
-    string replace "/pulls/" "/pull/"
+    gh api notifications --paginate | jq -r ".[] | select(.subject.type == \"$type\") | .subject.url" |
+        string replace "api.github.com/repos" "github.com" |
+        string replace /pulls/ /pull/
 end
 
 function open_urls_in_batches
@@ -24,7 +24,7 @@ function open_urls_in_batches
 
     test (count $urls) -eq 0; and return
 
-    printf "%s\n" $urls | parallel --will-cite --jobs 10 "open {}"
+    printf "%s\n" $urls | parallel --will-cite --jobs 10 "open {}/files"
 end
 
 function main
@@ -55,12 +55,12 @@ function main
     # Determine the mode (show vs open)
     set -l action "Would open"
     set -l target "a new browser window"
-    
+
     if not set -q _flag_show
-        set action "Opening"
+        set action Opening
         open_urls_in_batches $all_urls
     end
-    
+
     echo "$action URLs in $target"
 end
 
