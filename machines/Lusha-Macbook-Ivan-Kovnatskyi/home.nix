@@ -89,6 +89,7 @@
       hclfmt
       home-manager
       iam-policy-json-to-terraform
+      imagemagick
       infracost
       jq
       k8sgpt
