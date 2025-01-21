@@ -8,6 +8,7 @@ let
   scriptAliases = {
     "create-pr" = [ "open-pr" ];
     "eat" = [ "yank" ];
+    "grep-find" = [ "rg-fzf" ];
   };
 
   processScript = scriptName:
