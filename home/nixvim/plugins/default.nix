@@ -8,7 +8,6 @@
       # TODO: Testing out
       # Autoformat tools make things harder apply fmt when it's not needed
       # auto-save.enable = true;
-
       neo-tree = {
         enable = true;
         filesystem = {
@@ -36,6 +35,16 @@
       commentary.enable = true;
       fugitive.enable = true;
       git-conflict.enable = true;
+      auto-session = {
+        enable = true;
+      };
+      mini = {
+        enable = true;
+      };
+      # alpha = {
+      #   enable = true;
+      #   theme = "dashboard";
+      # };
       # Somehow typing `r` in search escapes search and places cursor in text,
       # even though it did not find any occurrences
       # flash.enable = true;
