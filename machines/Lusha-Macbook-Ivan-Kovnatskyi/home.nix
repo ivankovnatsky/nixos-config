@@ -112,6 +112,7 @@
       mycli
       nodePackages.aws-cdk
       nodejs
+      ollama
       parallel
       pigz
       poetry
