@@ -40,6 +40,9 @@
       };
       mini = {
         enable = true;
+        modules = {
+          starter = { };
+        };
       };
       # alpha = {
       #   enable = true;
