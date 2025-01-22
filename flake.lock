@@ -11,14 +11,17 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1737445524,
-        "narHash": "sha256-VD0+ih5Dfert0W9+ryW22IxT9ajsUZJPlSh6JpddQTI=",
-        "path": "/Users/Ivan.Kovnatskyi/Sources/github.com/ivankovnatsky/backup-home-rs",
-        "type": "path"
+        "lastModified": 1737445433,
+        "narHash": "sha256-CcXR/srgqvwOg3XyBYYsy3An4TAVHTuEzcKL58LNMIs=",
+        "owner": "ivankovnatsky",
+        "repo": "backup-home-rs",
+        "rev": "4d5df925476c653d215118b5f2bce383da2efb3c",
+        "type": "github"
       },
       "original": {
-        "path": "/Users/Ivan.Kovnatskyi/Sources/github.com/ivankovnatsky/backup-home-rs",
-        "type": "path"
+        "owner": "ivankovnatsky",
+        "repo": "backup-home-rs",
+        "type": "github"
       }
     },
     "brew-src": {

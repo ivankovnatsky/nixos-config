@@ -47,7 +47,7 @@
     };
 
     backup-home = {
-      url = "path:/Users/Ivan.Kovnatskyi/Sources/github.com/ivankovnatsky/backup-home-rs";
+      url = "github:ivankovnatsky/backup-home-rs";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
