@@ -118,7 +118,7 @@ in
       #   source ${vimPlugin}
       # '';
 
-      shellAliases = shellAliases;
+      inherit shellAliases;
 
       sessionVariables = { _ZL_HYPHEN = 1; };
 
@@ -205,6 +205,11 @@ in
         # Add aichat completions for ai
         if command -v aichat >/dev/null
             complete -c ai -w aichat
+        end
+
+        # Source ~/.env.fish if exists
+        if test -f $HOME/.env.fish
+            source $HOME/.env.fish
         end
       '';
       plugins = with pkgs.fishPlugins; [
