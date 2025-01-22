@@ -58,4 +58,8 @@ in
   # Add Cursor settings with proper formatting
   home.file."Library/Application Support/Cursor/User/settings.json".source =
     jsonFormat.generate "cursor-user-settings" editorSettings;
+
+  # Windsurf
+  home.file."Library/Application Support/Windsurf/User/settings.json".source =
+    jsonFormat.generate "windsurf-user-settings" editorSettings;
 }
