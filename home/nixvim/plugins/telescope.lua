@@ -17,45 +17,6 @@ require("lspconfig.ui.windows").default_options = {
   border = _border,
 }
 
--- fzf.vim muscle memory
-vim.cmd([[command! Files Telescope find_files]])
-vim.cmd([[command! Buffers Telescope buffers]])
-vim.cmd([[command! Registers Telescope registers]])
-vim.cmd([[command! GFiles Telescope git_files]])
-vim.cmd([[command! OFiles Telescope oldfiles]])
-
--- Command for static ripgrep search
--- TODO: Make sure Rg searches on hidden files as well.
-vim.cmd([[
-command! -nargs=? Rg lua require('telescope.builtin').grep_string({ search = <q-args> })
-]])
-
--- For dynamic searching, this command will prompt for input and update as you type
-vim.cmd([[
-command! -nargs=* RG call feedkeys(":Telescope live_grep<CR>")
-]])
-
--- Search word under cursor
-vim.keymap.set("n", "<leader>rg", function()
-  require("telescope.builtin").live_grep({
-    default_text = vim.fn.expand("<cword>"),
-  })
-end, {
-  noremap = true,
-  silent = true,
-  desc = "Search word under cursor",
-})
-
-vim.keymap.set("v", "<leader>rg", function()
-  require("telescope.builtin").live_grep({
-    default_text = vim.fn.expand("<cword>"),
-  })
-end, {
-  noremap = true,
-  silent = true,
-  desc = "Search word under cursor",
-})
-
 -- Make the preview window wider
 require("telescope").setup({
   defaults = {

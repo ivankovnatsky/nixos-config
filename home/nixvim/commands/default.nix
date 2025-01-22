@@ -1,5 +1,6 @@
 { scripts, ... }:
 {
+  # TODO: Move all defined commands here in this file
   programs.nixvim.userCommands = {
     RebuildWatchman = {
       command = "botright split | terminal cd ~/Sources/github.com/ivankovnatsky/nixos-config && make rebuild-watchman";
@@ -88,6 +89,57 @@
       command = "E <args>";
       desc = "Open a new file in the same directory as the current file";
       nargs = 1;
+      bang = true;
+      bar = true;
+    };
+    # fzf.vim muscle memory commands
+    Files = {
+      command = "Telescope find_files";
+      desc = "Find files using Telescope";
+      bang = true;
+      bar = true;
+    };
+
+    Buffers = {
+      command = "Telescope buffers";
+      desc = "List buffers using Telescope";
+      bang = true;
+      bar = true;
+    };
+
+    Registers = {
+      command = "Telescope registers";
+      desc = "List registers using Telescope";
+      bang = true;
+      bar = true;
+    };
+
+    GFiles = {
+      command = "Telescope git_files";
+      desc = "Find git files using Telescope";
+      bang = true;
+      bar = true;
+    };
+
+    OFiles = {
+      command = "Telescope oldfiles";
+      desc = "Find recently opened files using Telescope";
+      bang = true;
+      bar = true;
+    };
+
+    # Ripgrep commands
+    Rg = {
+      command = "lua require('telescope.builtin').grep_string({ search = <q-args> })";
+      desc = "Search using ripgrep (static)";
+      nargs = "?";
+      bang = true;
+      bar = true;
+    };
+
+    RG = {
+      command = "Telescope live_grep";
+      desc = "Search using ripgrep (dynamic)";
       bang = true;
       bar = true;
     };
