@@ -43,6 +43,7 @@
         enable = true;
         modules = {
           starter = { };
+          bufremove = { };
         };
       };
       # alpha = {
