@@ -13,6 +13,7 @@ let
     "editor.renderFinalNewline" = "off";
     "editor.renderLineHighlight" = "all";
     "extensions.autoCheckUpdates" = false;
+    "extensions.ignoreRecommendations" = true;
     "files.autoSave" = "onFocusChange";
     "files.insertFinalNewline" = true;
     "files.trimFinalNewlines" = true;
