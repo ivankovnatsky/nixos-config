@@ -32,6 +32,7 @@ in
               api_base: http://localhost:11434/v1
               models:
                 - name: llama3.1:8b
+                - name: deepseek-r1:14b
         '';
       };
     };
