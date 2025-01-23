@@ -13,7 +13,8 @@
     };
 
     home-manager = {
-      url = "github:nix-community/home-manager/master";
+      # url = "github:nix-community/home-manager/master";
+      url = "github:ivankovnatsky/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
