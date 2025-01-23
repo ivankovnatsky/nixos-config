@@ -20,7 +20,8 @@
           };
           # FIXME: I want to open files under URL, see if we can do it without netrw.
           # https://github.com/nix-community/nixvim/blob/f4b0b81ef9eb4e37e75f32caf1f02d5501594811/plugins/by-name/neo-tree/default.nix#L811
-          hijackNetrwBehavior = "disabled";
+          # Comment out it now, since netrw buffer can't be closed, not really neat.
+          # hijackNetrwBehavior = "disabled";
         };
       };
       treesitter = {
@@ -57,7 +58,8 @@
           # https://github.com/nix-community/nixvim/blob/f4b0b81ef9eb4e37e75f32caf1f02d5501594811/tests/test-sources/plugins/by-name/oil/default.nix#L40
           # https://github.com/stevearc/oil.nvim?tab=readme-ov-file#options
           # Don't disable netrw. I need it for URL file opening.
-          default_file_explorer = false;
+          # Comment out it now, since netrw buffer can't be closed, not really neat.
+          # default_file_explorer = false;
           view_options.show_hidden = true;
         };
       };
