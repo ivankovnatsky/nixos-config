@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ../../home/aichat-server.nix
     ../../home/aichat.nix
     ../../home/amethyst.nix
     ../../home/bat.nix
@@ -22,6 +23,8 @@
     ../../home/nixvim/plugins/gen-nvim
     ../../home/nixvim/plugins/nvim-jenkinsfile-linter
     ../../home/nushell.nix
+    ../../home/ollama.nix
+    # ../../home/ollama-server.nix
     ../../home/pass.nix
     ../../home/pgcli.nix
     ../../home/pyenv.nix
@@ -110,6 +113,7 @@
       mongosh
       mos # To use PC mouse with natural scrolling GUI
       mycli
+      nixfmt-rfc-style
       nodePackages.aws-cdk
       nodejs
       ollama
