@@ -157,6 +157,10 @@
         lint = {
           lintersByFt = {
             terraform = [ "tflint" ];
+            text = [ "vale" ];
+            json = [ "jsonlint" ];
+            markdown = [ "vale" ];
+            dockerfile = [ "hadolint" ];
           };
         };
         lsp = {
@@ -164,6 +168,7 @@
             bashls.enable = true;
             pyright.enable = true;
             terraformls.enable = true;
+            # terraform_lsp.enable = true;
             nushell.enable = true;
             # groovyls.enable = true;
           };
@@ -173,10 +178,11 @@
             diagnostics = {
               statix.enable = true;
               hadolint.enable = true;
+              terraform_validate.enable = true;
+              terragrunt_validate.enable = true;
             };
             formatting = {
-              # terragrunt_fmt.enable = true;
-              # terragrunt_validate.enable = true;
+              terragrunt_fmt.enable = true;
               black = {
                 enable = true;
                 settings = ''
@@ -209,6 +215,9 @@
       };
       extraPlugins = with pkgs; [
         vimPlugins.Jenkinsfile-vim-syntax
+
+        # This was needed to enable highlighting in Telescope window
+        vimPlugins.nvim-treesitter-parsers.terraform
 
         vimPlugins.nvim-nu
         tree-sitter-grammars.tree-sitter-nu
