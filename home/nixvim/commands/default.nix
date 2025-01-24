@@ -91,9 +91,9 @@
       bang = true;
       bar = true;
     };
-    NewFile = {
+    EditInCurrentDir = {
       command = "E <args>";
-      desc = "Open a new file in the same directory as the current file";
+      desc = "Open a file in the same directory as the current file";
       nargs = 1;
       bang = true;
       bar = true;
