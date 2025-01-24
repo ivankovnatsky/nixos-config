@@ -17,7 +17,9 @@ in
           light_theme: true
           ''
           }
+          editor: ${config.flags.editor}
           save: true
+          save_session: true
           highlight: true
           keybindings: vi
           clients:
