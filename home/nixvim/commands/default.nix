@@ -14,6 +14,12 @@
       bang = true;
       bar = true;
     };
+    SpellToggle = {
+      command = "if &spell | set nospell | else | set spell | endif";
+      desc = "Toggle mouse.";
+      bang = true;
+      bar = true;
+    };
     Yank = {
       command = ''
         silent %y+
