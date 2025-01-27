@@ -24,7 +24,21 @@ function open_urls_in_batches
 
     test (count $urls) -eq 0; and return
 
-    printf "%s\n" $urls | parallel --will-cite --jobs 10 "open {}/files"
+    # Split URLs into issues and PRs
+    set -l issue_urls
+    set -l pr_urls
+    for url in $urls
+        if string match -q "*pull*" $url
+            set -a pr_urls $url
+        else
+            set -a issue_urls $url
+        end
+    end
+
+    # Open issues without /files
+    printf "%s\n" $issue_urls | parallel --will-cite --jobs 10 "open {}"
+    # Open PRs with /files
+    printf "%s\n" $pr_urls | parallel --will-cite --jobs 10 "open {}/files"
 end
 
 function main
