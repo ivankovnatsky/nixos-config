@@ -59,6 +59,7 @@ in
       "amethyst"
       "hammerspoon"
       "cursor"
+      "windsurf"
     ];
     masApps = { };
     caskArgs = {
@@ -98,6 +99,7 @@ in
 
       # Brew casks placeholder
       { path = "/Applications/Cursor.app/"; }
+      { path = "/Applications/Windsurf.app/"; }
 
       { type = "spacer"; section = "apps"; }
 
