@@ -105,35 +105,30 @@
       bang = true;
       bar = true;
     };
-
     Buffers = {
       command = "Telescope buffers";
       desc = "List buffers using Telescope";
       bang = true;
       bar = true;
     };
-
     Registers = {
       command = "Telescope registers";
       desc = "List registers using Telescope";
       bang = true;
       bar = true;
     };
-
     GFiles = {
       command = "Telescope git_files";
       desc = "Find git files using Telescope";
       bang = true;
       bar = true;
     };
-
     OFiles = {
       command = "Telescope oldfiles";
       desc = "Find recently opened files using Telescope";
       bang = true;
       bar = true;
     };
-
     # Ripgrep commands
     Rg = {
       command = "lua require('telescope.builtin').grep_string({ search = <q-args> })";
@@ -142,7 +137,6 @@
       bang = true;
       bar = true;
     };
-
     RG = {
       command = "Telescope live_grep";
       desc = "Search using ripgrep (dynamic)";
