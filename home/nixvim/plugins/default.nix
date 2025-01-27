@@ -39,11 +39,12 @@
       auto-session = {
         enable = true;
       };
+      bufdelete.enable = true;
       mini = {
         enable = true;
         modules = {
           starter = { };
-          bufremove = { };
+          # bufremove = { };
         };
       };
       # alpha = {
