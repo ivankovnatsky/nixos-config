@@ -54,8 +54,8 @@
         { key = "2"; app = config.flags.hotkeys.terminal; }
         { key = "3"; app = config.flags.hotkeys.browser; }
         { key = "4"; app = "Google Chrome"; }
-        { key = "5"; app = "Slack"; }
-        { key = "6"; app = "Firefox"; }
+        { key = "5"; app = "Firefox"; }
+        { key = "6"; app = "Slack"; }
         { key = "7"; app = "Cursor"; }
         { key = "9"; app = "System Settings"; }
       ];
