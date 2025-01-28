@@ -37,10 +37,10 @@
       terminal = "Ghostty";
       browser = "Safari";
       shortcuts = [
-        { key = "0"; app = "Finder"; }
-        { key = "1"; app = config.flags.hotkeys.terminal; }
-        { key = "2"; app = config.flags.hotkeys.browser; }
-        { key = "3"; app = "Cursor"; }
+        { key = "1"; app = "Finder"; }
+        { key = "2"; app = config.flags.hotkeys.terminal; }
+        { key = "3"; app = config.flags.hotkeys.browser; }
+        { key = "4"; app = "Cursor"; }
         { key = "9"; app = "System Settings"; }
       ];
     };
