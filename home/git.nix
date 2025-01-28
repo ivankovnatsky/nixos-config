@@ -37,7 +37,12 @@
       "**/.stfolder"
       "**/__worktrees/"
     ];
-    delta.enable = true;
+    delta = {
+      enable = true;
+      options = {
+        features = "interactive";
+      };
+    };
     # diff-highlight.enable = true;
     # difftastic.enable = true;
     # diff-so-fancy.enable = true;
@@ -87,6 +92,9 @@
       core = {
         editor = "${config.flags.editor}";
         filemode = true;
+      };
+      delta.interactive = {
+        keep-plus-minus-markers = true;
       };
     };
   };
