@@ -31,7 +31,26 @@
       };
       treesitter-context.enable = true;
       vim-surround.enable = true;
-      lualine.enable = true;
+      lualine = {
+        enable = true;
+        settings = {
+          always_show_tabline = true;
+          tabline = {
+            lualine_b = [
+              {
+                __unkeyed-1 = "filename";
+                path = 1;  # 0 = just filename, 1 = relative path, 2 = absolute path
+                shorting_target = 60;
+              }
+            ];
+            lualine_a = [ ];
+            lualine_c = [ ];
+            lualine_x = [ ];
+            lualine_y = [ ];
+            lualine_z = [ ];
+          };
+        };
+      };
       lastplace.enable = true;
       commentary.enable = true;
       fugitive.enable = true;
