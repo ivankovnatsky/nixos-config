@@ -39,7 +39,7 @@
             lualine_b = [
               {
                 __unkeyed-1 = "filename";
-                path = 1;  # 0 = just filename, 1 = relative path, 2 = absolute path
+                path = 1; # 0 = just filename, 1 = relative path, 2 = absolute path
                 shorting_target = 60;
               }
             ];
