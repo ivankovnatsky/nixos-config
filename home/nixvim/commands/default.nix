@@ -90,6 +90,7 @@
       nargs = 1;
       bang = true;
       bar = true;
+      complete = "dir";
     };
     EditInCurrentDir = {
       command = "E <args>";
@@ -97,6 +98,7 @@
       nargs = 1;
       bang = true;
       bar = true;
+      complete = "dir";
     };
     # fzf.vim muscle memory commands
     Files = {
