@@ -12,7 +12,7 @@
     font-size = 13
     font-thicken = true
     # `ghostty +list-themes`
-    theme = dark:3024 Night,light:3024 Day
+    theme = dark:Apple System Colors,light:Apple System Colors Light
     auto-update = off
     # window-decoration = false
     # macos-titlebar-style = hidden
