@@ -1,5 +1,24 @@
 #!/usr/bin/env bash
 
+# ```console
+# # Initial setup for MacOS dotfiles:
+# git clone https://github.com/ivankovnatsky/macos-dotfiles.git ~/Sources/github.com/ivankovnatsky/macos-dotfiles
+# dotfiles macos config status.showUntrackedFiles no
+# 
+# # Initial setup for Linux dotfiles:
+# git clone https://github.com/ivankovnatsky/linux-dotfiles.git ~/Sources/github.com/ivankovnatsky/linux-dotfiles
+# dotfiles linux config status.showUntrackedFiles no
+# 
+# # Usage examples:
+# dotfiles macos status                    # Check status of tracked files
+# dotfiles macos add ~/.zshrc              # Start tracking .zshrc
+# dotfiles macos commit "Add zshrc"        # Commit changes
+# dotfiles macos push                      # Push to remote
+# 
+# # For new machine setup:
+# dotfiles macos pull                      # Pull existing dotfiles
+# ```
+
 # dotfiles config macos status.showUntrackedFiles no
 # dotfiles config linux status.showUntrackedFiles no
 
@@ -22,11 +41,13 @@ usage() {
     echo "  commit   - Commit changes"
     echo "  push     - Push changes to remote"
     echo "  pull     - Pull changes from remote"
+    echo "  diff     - Show file differences"
     echo ""
     echo "Examples:"
     echo "  $(basename "$0") macos status"
     echo "  $(basename "$0") macos add ~/.zshrc"
     echo "  $(basename "$0") macos commit \"Add zshrc\""
+    echo "  $(basename "$0") macos diff ~/.zshrc"
 }
 
 get_repo_path() {
@@ -75,16 +96,23 @@ case "$command" in
         ;;
     commit)
         if [ $# -eq 0 ]; then
-            echo "Error: commit requires a message"
-            exit 1
+            run_git "$platform" commit
+        else
+            run_git "$platform" commit "$@"
         fi
-        run_git "$platform" commit -m "$*"
         ;;
     push)
         run_git "$platform" push
         ;;
     pull)
         run_git "$platform" pull
+        ;;
+    diff)
+        if [ $# -eq 0 ]; then
+            run_git "$platform" diff
+        else
+            run_git "$platform" diff "$@"
+        fi
         ;;
     *)
         echo "Unknown command: $command"
