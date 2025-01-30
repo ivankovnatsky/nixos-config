@@ -5,12 +5,16 @@
   # use from to time and it looks like more compatible to traditional `ls`
   # command.
   # https://github.com/lsd-rs/lsd
-  # https://github.com/nix-community/home-manager/blob/master/modules/programs/lsd.nix
+  # https://github.com/lsd-rs/lsd/blob/master/README.md#config-file-content
   home.packages = with pkgs; [ lsd ];
   home.file = {
     ".config/lsd/config.yaml".text = ''
       color:
         theme: custom
+      icons:
+        when: always
+      sorting:
+        dir-grouping: first
     '';
     ".config/lsd/colors.yaml".text = ''
       user: ${if config.flags.darkMode then "230" else "100"}
