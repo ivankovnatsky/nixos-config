@@ -13,7 +13,7 @@ let
     dig = "${pkgs.doggo}/bin/doggo";
     dog = "${pkgs.doggo}/bin/doggo";
     fd = "${pkgs.fd}/bin/fd --hidden --no-ignore";
-    ls = "${pkgs.lsd}/bin/lsd --group-dirs first --icon always";
+    ls = "${pkgs.lsd}/bin/lsd";
     # Let's not use GNU Coreutils mkdir for now.
     mkdir = "mkdir -p";
     grep = "${pkgs.ripgrep}/bin/rg";
