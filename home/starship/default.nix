@@ -14,6 +14,19 @@ in
     settings = {
       command_timeout = 1000;
 
+      palette = if config.flags.darkMode then "dark" else "light";
+      palettes =
+        if config.flags.darkMode then
+          {
+            dark = { };
+          }
+        else
+          {
+            light = {
+              "yellow" = "green";
+            };
+          };
+
       time = {
         disabled = false;
         time_format = "%h %d %R";
