@@ -62,7 +62,7 @@
       mini = {
         enable = true;
         modules = {
-          starter = { };
+          # starter = { };
           # bufremove = { };
         };
       };
