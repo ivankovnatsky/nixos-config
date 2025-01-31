@@ -2,6 +2,7 @@
 
 {
   imports = [
+    # ../../home/ollama-server.nix
     ../../home/aichat-server.nix
     ../../home/aichat.nix
     ../../home/amethyst.nix
@@ -22,9 +23,9 @@
     ../../home/nixvim/plugins/avante
     ../../home/nixvim/plugins/gen-nvim
     ../../home/nixvim/plugins/nvim-jenkinsfile-linter
+    ../../home/npm.nix
     ../../home/nushell.nix
     ../../home/ollama.nix
-    # ../../home/ollama-server.nix
     ../../home/pass.nix
     ../../home/pgcli.nix
     ../../home/pyenv.nix
@@ -65,6 +66,9 @@
     };
   };
   home = {
+    file.".config/manual".text = ''
+      npm --global install npm-groovy-lint
+    '';
     packages = with pkgs; [
       (wrapHelm kubernetes-helm { plugins = with pkgs.kubernetes-helmPlugins; [ helm-secrets ]; })
       argocd
@@ -180,9 +184,11 @@
               hadolint.enable = true;
               terraform_validate.enable = true;
               terragrunt_validate.enable = true;
+              # npm_groovy_lint.enable = true;
             };
             formatting = {
               terragrunt_fmt.enable = true;
+              # npm_groovy_lint.enable = true;
               black = {
                 enable = true;
                 settings = ''
