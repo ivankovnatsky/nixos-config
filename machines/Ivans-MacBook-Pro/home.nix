@@ -3,10 +3,10 @@
 {
   imports = [
     ../../home/aichat.nix
-    ../../home/fish-ai.nix
     ../../home/amethyst.nix
     ../../home/direnv.nix
-    ../../home/vscode.nix
+    ../../home/firefox-config.nix
+    ../../home/fish-ai.nix
     ../../home/ghostty.nix
     ../../home/git.nix
     ../../home/go.nix
@@ -22,6 +22,7 @@
     ../../home/syncthing.nix
     ../../home/taskwarrior.nix
     ../../home/tmux.nix
+    ../../home/vscode.nix
     ../../modules/flags
     ../../modules/secrets
   ];
@@ -82,6 +83,7 @@
       watchman
       watchman-make
       wget
+      yt-dlp
       zsh-forgit
     ];
     sessionVariables = {

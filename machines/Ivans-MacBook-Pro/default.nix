@@ -7,6 +7,7 @@ in
   imports = [
     ../../modules/darwin/dock
     ../../modules/darwin/pam
+    ../../modules/darwin/sudo
     ../../modules/secrets
     ../../system/darwin.nix
   ];
@@ -57,8 +58,9 @@ in
     ];
     casks = [
       "amethyst"
-      "hammerspoon"
       "cursor"
+      "firefox"
+      "hammerspoon"
       "windsurf"
     ];
     masApps = { };
@@ -67,6 +69,12 @@ in
     };
   };
   local = {
+    sudo = {
+      enable = true;
+      configContent = ''
+        Defaults:${username} timestamp_timeout=240
+      '';
+    };
     dock.enable = true;
     # TODO: can dock be stretched 100% horizontally?
     dock.entries = [
@@ -98,6 +106,7 @@ in
       { type = "spacer"; section = "apps"; }
 
       # Brew casks placeholder
+      { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }
 
