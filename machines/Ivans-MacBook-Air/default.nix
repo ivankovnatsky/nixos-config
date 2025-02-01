@@ -7,6 +7,7 @@ in
   imports = [
     ../../modules/darwin/dock
     ../../modules/darwin/pam
+    ../../modules/darwin/sudo
     ../../modules/secrets
     ../../system/darwin.nix
   ];
@@ -73,6 +74,12 @@ in
     };
   };
   local = {
+    sudo = {
+      enable = true;
+      configContent = ''
+        Defaults:${username} timestamp_timeout=240
+      '';
+    };
     dock.enable = true;
     # TODO: can dock be streched 100% horizontally?
     dock.entries = [
@@ -122,7 +129,6 @@ in
       { path = "${homePath}/Applications/Telegram Web.app/"; }
       { path = "${homePath}/Applications/ChatGPT.app/"; }
       { path = "${homePath}/Applications/Claude.app/"; }
-      { path = "${homePath}/Applications/LinkedIn.app/"; }
       { path = "${homePath}/Applications/OLX.ua.app/"; }
 
       { type = "spacer"; section = "apps"; }
