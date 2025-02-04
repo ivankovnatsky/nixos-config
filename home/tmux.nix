@@ -13,8 +13,10 @@
     sensibleOnTop = false;
     tmuxinator.enable = true;
 
+    # TODO: tmux session plugin?
     plugins = with pkgs; [
-      # TODO: tmux session plugin?
+      tmuxPlugins.continuum
+      tmuxPlugins.resurrect
       tmuxPlugins.sensible
       tmuxPlugins.yank
     ];
