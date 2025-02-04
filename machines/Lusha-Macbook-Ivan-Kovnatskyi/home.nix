@@ -92,6 +92,7 @@
       ghorg
       ghostty
       gitleaks
+      gum
       hadolint
       hclfmt
       home-manager
@@ -128,6 +129,7 @@
       pyenv-nix-install
       rclone
       rectangle # Window manager
+      sesh
       ssm-session-manager-plugin
       stats # To show CPU, RAM, etc. usage in the menu bar
       terraformer
@@ -137,6 +139,7 @@
       watchman-make
       wget
       yq
+      zoxide
     ];
 
     sessionVariables = {
