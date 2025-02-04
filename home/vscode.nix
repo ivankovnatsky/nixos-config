@@ -53,6 +53,7 @@ in
       ms-azuretools.vscode-docker
       # Nushell
       thenuprojectcontributors.vscode-nushell-lang
+      # saoudrizwan.claude-dev
     ];
   };
 
