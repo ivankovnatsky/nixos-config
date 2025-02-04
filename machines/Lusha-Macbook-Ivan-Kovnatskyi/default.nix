@@ -78,6 +78,7 @@ in
       "orbstack"
       "twingate"
       "windsurf"
+      "zed"
     ];
     masApps = {
       # Installed using Kandji
@@ -125,6 +126,7 @@ in
 
       # Installed using homebrew
       { path = "/Applications/Firefox.app/"; }
+      { path = "/Applications/Zed.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }
       { path = "/Applications/MindMac.app/"; }
@@ -133,6 +135,7 @@ in
 
       # nixpkgs installed
       { path = "${pkgs.ghostty}/Applications/Ghostty.app/"; }
+      { path = "${pkgs.vscode}/Applications/Visual Studio Code.app/"; }
 
       { type = "spacer"; section = "apps"; }
 

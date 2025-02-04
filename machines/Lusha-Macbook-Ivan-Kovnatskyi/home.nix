@@ -2,8 +2,8 @@
 
 {
   imports = [
-    # ../../home/ollama-server.nix
     ../../home/aichat-server.nix
+    ../../home/zed
     ../../home/aichat.nix
     ../../home/amethyst.nix
     ../../home/bat.nix
@@ -25,7 +25,6 @@
     ../../home/nixvim/plugins/nvim-jenkinsfile-linter
     ../../home/npm.nix
     ../../home/nushell.nix
-    ../../home/ollama.nix
     ../../home/pass.nix
     ../../home/pgcli.nix
     ../../home/pyenv.nix
@@ -62,7 +61,7 @@
       ];
     };
     apps = {
-      vscode.enable = false;
+      vscode.enable = true;
     };
   };
   home = {
@@ -120,7 +119,6 @@
       nixfmt-rfc-style
       nodePackages.aws-cdk
       nodejs
-      ollama
       parallel
       pigz
       poetry
