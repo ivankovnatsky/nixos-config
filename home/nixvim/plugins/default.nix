@@ -35,6 +35,7 @@
         enable = true;
         settings = {
           always_show_tabline = true;
+          # FIXME: Do not override the default tabline view.
           tabline = {
             lualine_b = [
               {
