@@ -13,7 +13,11 @@
     sensibleOnTop = false;
     tmuxinator.enable = true;
 
-    plugins = with pkgs; [ tmuxPlugins.sensible tmuxPlugins.yank ];
+    plugins = with pkgs; [
+      # TODO: tmux session plugin?
+      tmuxPlugins.sensible
+      tmuxPlugins.yank
+    ];
 
     # I use tabs in Terminal.app, so no need to show tmux status bar, but I
     # need tmux for 24bit color gama.

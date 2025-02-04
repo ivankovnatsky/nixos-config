@@ -68,7 +68,6 @@
       mos # macOS: System stats
       nixfmt-rfc-style
       nodejs
-      ollama
       parallel
       pigz
       rclone
