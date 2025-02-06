@@ -4,10 +4,10 @@ let
   # 1. Automatic overlays from overlays/ directory
   overlayDirs = builtins.readDir ../overlays;
   overlayList = builtins.mapAttrs (name: type: { inherit name type; }) overlayDirs;
-  
+
   # List of overlays that need buildFishPlugin
   fishPluginOverlays = [ "fish-ai" ];
-  
+
   # Helper function to get appropriate arguments for each overlay
   getOverlayArgs = name:
     if builtins.elem name fishPluginOverlays
@@ -16,7 +16,7 @@ let
 
   autoOverlays = builtins.foldl'
     (acc: dir: acc // {
-      ${dir.name} = prev.callPackage (../overlays + "/${dir.name}") 
+      ${dir.name} = prev.callPackage (../overlays + "/${dir.name}")
         (getOverlayArgs dir.name);
     })
     { }
