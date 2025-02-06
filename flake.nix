@@ -69,8 +69,6 @@
     pyenv-nix-install.url = "github:sirno/pyenv-nix-install";
   };
 
-  outputs = { self, ... }@inputs: {
-    inherit (import ./flake/darwin.nix { inherit inputs; }) darwinConfigurations;
-    overlay = import ./flake/overlay.nix { inherit inputs; };
-  };
+  outputs = { self, ... }@inputs: 
+    import ./flake { inherit inputs; };
 }
