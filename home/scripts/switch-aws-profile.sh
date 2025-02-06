@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# Under fish shell:
+# ```console
+# eval (switch-aws-profile.sh)             # interactive mode
+# eval (switch-aws-profile.sh profile-name) # direct mode
+# ```
+
 # Exit on error, but don't print commands
 set -e
 
@@ -39,6 +45,9 @@ if ! command -v fzf &> /dev/null; then
     exit 1
 fi
 
+# Get the profile name from the argument, if provided
+profile_name_arg="$1"
+
 # Get profiles
 profiles=$(get_aws_profiles)
 
@@ -47,7 +56,20 @@ if [[ -z "$profiles" ]]; then
     exit 1
 fi
 
-# Use fzf to select a profile
-if selected_profile=$(echo "$profiles" | fzf --height 40% --border --prompt="Select AWS Profile > "); then
-    echo "export AWS_PROFILE='$selected_profile'"
+# Check if a profile name was provided as an argument
+if [[ -n "$profile_name_arg" ]]; then
+    if echo "$profiles" | grep -q "^$profile_name_arg$"; then
+        selected_profile="$profile_name_arg"
+    else
+        echo "Error: Profile '$profile_name_arg' not found" >&2
+        exit 1
+    fi
+else
+    # Use fzf to select a profile
+    selected_profile=$(echo "$profiles" | fzf --height 40% --border --prompt="Select AWS Profile > ")
+fi
+
+# Export the selected profile if one was selected
+if [[ -n "$selected_profile" ]]; then
+    echo "set -gx AWS_PROFILE '$selected_profile'"
 fi
