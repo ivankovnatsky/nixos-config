@@ -50,6 +50,9 @@
       }
     }
   },
+  "extensions": {
+    "auto_install_recommendations": true
+  },
   "auto_update": false,
   "buffer": {
     "ensure_final_newline_on_save": true,
