@@ -111,6 +111,7 @@ in
 
       # Additional macOS apps
       { path = "/System/Applications/Utilities/Terminal.app/"; }
+      { path = "/System/Applications/Preview.app"; }
       { path = "/System/Library/CoreServices/Applications/Keychain Access.app"; }
       { path = "/System/Applications/Utilities/Activity Monitor.app/"; }
 
