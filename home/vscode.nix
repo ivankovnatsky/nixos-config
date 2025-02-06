@@ -17,6 +17,7 @@ let
     "files.autoSave" = "onFocusChange";
     "files.insertFinalNewline" = true;
     "files.trimFinalNewlines" = true;
+    "files.enableTrash" = false;
     "git.openRepositoryInParentFolders" = "always";
     "git.autofetch" = "all";
     "scm.diffDecorations" = "all";
