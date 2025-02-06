@@ -21,6 +21,12 @@
         # FIXME: https://github.com/nix-community/nixvim/blob/3d24cb72618738130e6af9c644c81fe42aa34ebc/plugins/lsp/lsp-packages.nix#L52
         # Breaks formatting on save, will re-enable once fixed.
         # fish_lsp.enable = true;
+
+        # nil lsp zed comment:
+        #
+        # Some flake inputs are not available, please run `nix flake archive`
+        # to fetch them. Your LSP client doesn't support confirmation. You can
+        # enable autoArchive in lsp configuration.
         nil_ls.enable = true;
         lua_ls = {
           enable = true;
