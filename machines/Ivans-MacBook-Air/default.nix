@@ -10,6 +10,7 @@ in
     ../../modules/darwin/sudo
     ../../modules/secrets
     ../../system/darwin.nix
+    ../../system/openssh.nix
   ];
   flags = {
     enableFishShell = true;
