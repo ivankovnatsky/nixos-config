@@ -9,6 +9,7 @@ in
     ../../modules/darwin/pam
     ../../modules/darwin/sudo
     ../../modules/secrets
+    ../../system
     ../../system/darwin.nix
   ];
   flags = {
