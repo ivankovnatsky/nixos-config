@@ -27,6 +27,8 @@
         # Some flake inputs are not available, please run `nix flake archive`
         # to fetch them. Your LSP client doesn't support confirmation. You can
         # enable autoArchive in lsp configuration.
+
+        # Disable lsp formatting for nil
         nil_ls.enable = true;
         lua_ls = {
           enable = true;
