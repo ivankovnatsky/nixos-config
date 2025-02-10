@@ -14,6 +14,18 @@ else
 	nixos-rebuild switch --use-remote-sudo --impure --verbose -L --flake .
 endif
 
+flake-update:
+	nix flake update --commit-lock-file nixpkgs
+	nix flake update --commit-lock-file darwin
+	nix flake update --commit-lock-file home-manager
+
+	nix flake update --commit-lock-file nix-homebrew
+	nix flake update --commit-lock-file homebrew-core
+	nix flake update --commit-lock-file homebrew-cask
+	nix flake update --commit-lock-file homebrew-bundle
+
+	nix flake update --commit-lock-file nixvim
+
 rebuild-watchman:
 	while true; do \
 		watchman-make \
