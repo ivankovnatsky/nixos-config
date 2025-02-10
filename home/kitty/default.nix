@@ -12,6 +12,8 @@ let
   # Ctrl + Shift + g -- opens a Pager of the last output
   # Ctrl + Shift + right click -- opens a Pager of the output under cursor
   # Base kitty config
+
+  # FIXME: Remove ctrl+shift+6 and other related keybinds, vim prev buffer.
   kittyConfig = ''
     ${if config.flags.darkMode then ""
     else ''
