@@ -1,7 +1,7 @@
 { inputs, ... }:
 {
   # Home-manager base configuration
-  homeManagerModule = { hostname, username, extraImports ? [] }: [
+  homeManagerModule = { hostname, username, extraImports ? [ ] }: [
     inputs.home-manager.darwinModules.home-manager
     ({ config, system, ... }: {
       nix.nixPath.nixpkgs = "${inputs.nixpkgs}";
@@ -14,6 +14,7 @@
             ../../machines/${hostname}/home.nix
             {
               programs.home-manager.enable = true;
+              # nixpkgs.config.allowUnfreePredicate = _: true;
             }
           ] ++ extraImports;
         };

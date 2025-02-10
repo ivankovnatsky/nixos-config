@@ -22,7 +22,7 @@
     ../../home/nixvim
     ../../home/nixvim/plugins/avante
     ../../home/nixvim/plugins/gen-nvim
-    ../../home/nixvim/plugins/nvim-jenkinsfile-linter
+    # ../../home/nixvim/plugins/nvim-jenkinsfile-linter
     ../../home/npm.nix
     ../../home/nushell.nix
     ../../home/pass.nix
@@ -32,7 +32,7 @@
     ../../home/shell.nix
     ../../home/starship
     ../../home/syncthing.nix
-    ../../home/terraform.nix
+    # ../../home/terraform.nix
     ../../home/thefuck.nix
     ../../home/tmux.nix
     ../../home/vscode.nix
@@ -163,7 +163,7 @@
         notify.enable = true;
         lint = {
           lintersByFt = {
-            terraform = [ "tflint" ];
+            # terraform = [ "tflint" ];
             text = [ "vale" ];
             json = [ "jsonlint" ];
             markdown = [ "vale" ];
@@ -174,7 +174,7 @@
           servers = {
             bashls.enable = true;
             pyright.enable = true;
-            terraformls.enable = true;
+            # terraformls.enable = true;
             # terraform_lsp.enable = true;
             nushell.enable = true;
             # groovyls.enable = true;
@@ -185,7 +185,7 @@
             diagnostics = {
               statix.enable = true;
               hadolint.enable = true;
-              terraform_validate.enable = true;
+              # terraform_validate.enable = true;
               terragrunt_validate.enable = true;
               # npm_groovy_lint.enable = true;
             };
@@ -212,7 +212,8 @@
         };
         # FIXME: Figure out suitable key for the completion, when you need to
         # override cmp plugins.
-        copilot-vim.enable = true;
+        # FIXME: allowUnfree
+        # copilot-vim.enable = true;
         # https://github.com/nix-community/nixvim/discussions/540
         # https://github.com/nix-community/nixvim/discussions/2054
         treesitter = {
