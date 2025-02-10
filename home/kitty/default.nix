@@ -58,6 +58,9 @@ let
     map ctrl+shift+left neighboring_window left
     map ctrl+shift+right neighboring_window right
 
+    # Clear ctrl+shift+6 mapping to allow it to pass through to vim for buffer navigation
+    map ctrl+shift+6 no_op
+
     # This is the remap of default value
     # Was ctrl+shift+l
     map ctrl+shift+space next_layout
