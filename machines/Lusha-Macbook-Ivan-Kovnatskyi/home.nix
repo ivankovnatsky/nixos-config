@@ -89,6 +89,7 @@
       eks-node-viewer
       exiftool
       genpass
+      ggh
       ghorg
       ghostty
       gitleaks
