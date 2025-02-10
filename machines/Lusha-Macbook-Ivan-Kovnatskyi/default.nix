@@ -75,6 +75,7 @@ in
       "dbeaver-community"
       "firefox"
       "hammerspoon"
+      "kitty"
       "mindmac"
       "orbstack"
       "twingate"
@@ -127,6 +128,7 @@ in
       { type = "spacer"; section = "apps"; }
 
       # Installed using homebrew
+      { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Zed.app/"; }
       { path = "/Applications/Cursor.app/"; }

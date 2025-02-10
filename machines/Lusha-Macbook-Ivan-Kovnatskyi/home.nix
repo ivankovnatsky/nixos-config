@@ -2,8 +2,8 @@
 
 {
   imports = [
+    # ../../home/nixvim/plugins/nvim-jenkinsfile-linter
     ../../home/aichat-server.nix
-    ../../home/zed
     ../../home/aichat.nix
     ../../home/amethyst.nix
     ../../home/bat.nix
@@ -17,12 +17,12 @@
     ../../home/hammerspoon
     ../../home/jujutsu.nix
     ../../home/k9s.nix
+    ../../home/launchd-services/dark-mode-kitty
     ../../home/lsd.nix
     ../../home/mpv.nix
     ../../home/nixvim
     ../../home/nixvim/plugins/avante
     ../../home/nixvim/plugins/gen-nvim
-    # ../../home/nixvim/plugins/nvim-jenkinsfile-linter
     ../../home/npm.nix
     ../../home/nushell.nix
     ../../home/pass.nix
@@ -32,12 +32,13 @@
     ../../home/shell.nix
     ../../home/starship
     ../../home/syncthing.nix
-    # ../../home/terraform.nix
+    ../../home/terraform.nix
     ../../home/thefuck.nix
     ../../home/tmux.nix
     ../../home/vscode.nix
     ../../home/yamlint.nix
     ../../home/yt-dlp.nix
+    ../../home/zed
     ../../modules/flags
     ../../modules/secrets
   ];
@@ -163,7 +164,7 @@
         notify.enable = true;
         lint = {
           lintersByFt = {
-            # terraform = [ "tflint" ];
+            terraform = [ "tflint" ];
             text = [ "vale" ];
             json = [ "jsonlint" ];
             markdown = [ "vale" ];
@@ -174,7 +175,7 @@
           servers = {
             bashls.enable = true;
             pyright.enable = true;
-            # terraformls.enable = true;
+            terraformls.enable = true;
             # terraform_lsp.enable = true;
             nushell.enable = true;
             # groovyls.enable = true;
