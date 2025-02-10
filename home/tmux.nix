@@ -16,7 +16,8 @@
     # TODO: tmux session plugin?
     plugins = with pkgs; [
       tmuxPlugins.continuum
-      tmuxPlugins.resurrect
+      # FIXME: rebuild errors
+      # tmuxPlugins.resurrect
       tmuxPlugins.sensible
       tmuxPlugins.yank
     ];
