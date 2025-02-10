@@ -14,7 +14,6 @@
             ../../machines/${hostname}/home.nix
             {
               programs.home-manager.enable = true;
-              # nixpkgs.config.allowUnfreePredicate = _: true;
             }
           ] ++ extraImports;
         };
