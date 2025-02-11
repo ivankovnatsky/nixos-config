@@ -23,6 +23,7 @@
     ../../home/nixvim
     ../../home/nixvim/plugins/avante
     ../../home/nixvim/plugins/gen-nvim
+    ../../home/nixvim/plugins/copilot-lua
     ../../home/npm.nix
     ../../home/nushell.nix
     ../../home/pass.nix
