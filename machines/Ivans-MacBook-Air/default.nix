@@ -58,11 +58,12 @@ in
       "pam-reattach"
     ];
     casks = [
-      "hammerspoon"
       "amethyst"
-      "microsoft-teams"
-      "firefox"
       "cursor"
+      "firefox"
+      "hammerspoon"
+      "microsoft-teams"
+      "windsurf"
     ];
     masApps = {
       "Numbers" = 409203825;
@@ -115,11 +116,13 @@ in
       { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
       { path = "/Applications/Cursor.app/"; }
+      { path = "/Applications/Windsurf.app/"; }
 
       { type = "spacer"; section = "apps"; }
 
       # Installed using nixpkgs
       { path = "${pkgs.ghostty}/Applications/Ghostty.app/"; }
+      { path = "${pkgs.vscode}/Applications/Visual Studio Code.app/"; }
       { path = "${pkgs.coconutbattery}/Applications/coconutBattery.app/"; }
 
       { type = "spacer"; section = "apps"; }
