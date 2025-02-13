@@ -4,6 +4,7 @@
   imports = [
     ../../home/aichat.nix
     ../../home/amethyst.nix
+    ../../home/bat.nix
     ../../home/direnv.nix
     ../../home/firefox-config.nix
     ../../home/ghostty.nix
