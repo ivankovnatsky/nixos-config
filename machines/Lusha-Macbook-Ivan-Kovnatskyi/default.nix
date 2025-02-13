@@ -71,6 +71,7 @@ in
     # zoom
     casks = [
       "amethyst"
+      "bitwarden"
       "cursor"
       "dbeaver-community"
       "firefox"
@@ -134,6 +135,7 @@ in
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }
       { path = "/Applications/MindMac.app/"; }
+      { path = "/Applications/Bitwarden.app/"; }
 
       { type = "spacer"; section = "apps"; }
 
