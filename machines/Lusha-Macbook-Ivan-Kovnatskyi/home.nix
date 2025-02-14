@@ -77,7 +77,6 @@
       aws-sso-creds
       awscli2
       backup-home
-      battery-toolkit # Battery care
       cloudflared
       coreutils
       defaultbrowser
