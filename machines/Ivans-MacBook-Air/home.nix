@@ -57,7 +57,6 @@
       aria2
       backup-home # Installed as flake
       bat
-      battery-toolkit # macOS: Battery
       cargo
       coconutbattery # macOS: Battery
       delta
