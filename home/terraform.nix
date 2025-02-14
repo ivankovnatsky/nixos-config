@@ -5,7 +5,13 @@
     packages = with pkgs; [
       # Manage terraform versions
       # https://github.com/tofuutils/tenv/issues/121
+      #
+      # ```console
+      # Failure during terragrunt call : fork/exec /etc/profiles/per-user/Ivan.Kovnatskyi/bin/tenv: operation not supported by device
+      # ```
       tenv
+      # terraform
+      # terragrunt
       tflint
     ];
     file = {
