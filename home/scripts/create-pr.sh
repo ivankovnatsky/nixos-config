@@ -6,6 +6,7 @@ REVIEWER=""
 LABEL=""
 UPDATE="rebase"
 DRAFT=""
+BROWSER_APP="" # Browser name to override system default
 
 # Function to display script usage
 usage() {
@@ -16,7 +17,26 @@ usage() {
     echo "  --labels <label>         Specify the label for the pull request"
     echo "  --update <strategy>      Specify the update strategy (rebase or merge, default: rebase)"
     echo "  --draft                  Create a draft pull request"
+    echo "  --browser <name>         Specify browser (e.g., 'Google Chrome' on macOS, 'firefox' on Linux)"
     echo "  --help                   Display this help message"
+}
+
+# Function to open URL with the specified browser
+open_url() {
+    local url="$1"
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        if [ -n "$BROWSER_APP" ]; then
+            open -a "$BROWSER_APP" "$url"
+        else
+            open "$url"
+        fi
+    else
+        if [ -n "$BROWSER_APP" ]; then
+            "$BROWSER_APP" "$url"
+        else
+            xdg-open "$url"
+        fi
+    fi
 }
 
 # Parse command-line arguments
@@ -45,6 +65,11 @@ while [[ $# -gt 0 ]]; do
             ;;
         --draft)
             DRAFT="true"
+            shift
+            ;;
+        --browser)
+            BROWSER_APP="$2"
+            shift
             shift
             ;;
         --help)
@@ -96,4 +121,6 @@ gh pr create \
     ${DRAFT:+--draft}
 
 # Open PR right away to verify everything is in order.
-gh pr view --json url --jq .url | xargs -I {} open "{}/files"
+gh pr view --json url --jq .url | while read -r url; do
+    open_url "$url/files"
+done
