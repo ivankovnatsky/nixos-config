@@ -22,14 +22,28 @@
         # Breaks formatting on save, will re-enable once fixed.
         # fish_lsp.enable = true;
 
-        # nil lsp zed comment:
-        #
-        # Some flake inputs are not available, please run `nix flake archive`
-        # to fetch them. Your LSP client doesn't support confirmation. You can
-        # enable autoArchive in lsp configuration.
+        nil_ls = {
+          enable = true;
 
-        # Disable lsp formatting for nil
-        nil_ls.enable = true;
+          settings = {
+            diagnostics = {
+              ignored = [ ];
+              excludedFiles = [ "" ];
+            };
+            formatting = {
+              command = [ "nixfmt" ];
+            };
+            nix = {
+              binary = "nix";
+              maxMemoryMB = 2048;
+              flake = {
+                autoArchive = true;
+                autoEvalInputs = false;
+                nixpkgsInputName = "nixpkgs";
+              };
+            };
+          };
+        };
         lua_ls = {
           enable = true;
           settings = {
