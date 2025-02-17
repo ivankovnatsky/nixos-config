@@ -34,7 +34,12 @@
 # tail -f ~/Library/Logs/rebuild-watchman.log
 # tail -f ~/Library/Logs/rebuild-watchman.error.log
 
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   # Create an askpass script that will return the sudo password
   askpassScript = pkgs.writeScriptBin "askpass" ''
@@ -56,7 +61,7 @@ let
     export SUDO_PROMPT="rebuild-watchman"
 
     WORK_DIR="${config.home.homeDirectory}/Sources/github.com/ivankovnatsky/nixos-config"
-    
+
     log_message "Starting in directory: $WORK_DIR"
     cd "$WORK_DIR" || {
       log_message "Failed to change to directory: $WORK_DIR"
@@ -115,4 +120,4 @@ in
       };
     };
   };
-} 
+}

@@ -61,38 +61,26 @@ in
   # /Applications/Firefox.app/Contents/MacOS/firefox -P
   # ```
   home.file =
-    if config.flags.purpose == "work" then {
-      # Default
-      "${configPath}/Profiles/Default/user.js" =
-        if isDarwin then
-          { text = defaultConfig; }
-        else { };
+    if config.flags.purpose == "work" then
+      {
+        # Default
+        "${configPath}/Profiles/Default/user.js" = if isDarwin then { text = defaultConfig; } else { };
 
-      "${configPath}/Profiles/Default/chrome/userChrome.css" =
-        if isDarwin then
-          { text = userChromeConfig; }
-        else { };
+        "${configPath}/Profiles/Default/chrome/userChrome.css" =
+          if isDarwin then { text = userChromeConfig; } else { };
 
-      # Personal
-      "${configPath}/Profiles/Personal/user.js" =
-        if isDarwin then
-          { text = defaultConfig; }
-        else { };
+        # Personal
+        "${configPath}/Profiles/Personal/user.js" = if isDarwin then { text = defaultConfig; } else { };
 
-      "${configPath}/Profiles/Personal/chrome/userChrome.css" =
-        if isDarwin then
-          { text = userChromeConfig; }
-        else { };
-    } else {
-      # Home
-      "${configPath}/Profiles/Home/user.js" =
-        if isDarwin then
-          { text = defaultConfig; }
-        else { };
+        "${configPath}/Profiles/Personal/chrome/userChrome.css" =
+          if isDarwin then { text = userChromeConfig; } else { };
+      }
+    else
+      {
+        # Home
+        "${configPath}/Profiles/Home/user.js" = if isDarwin then { text = defaultConfig; } else { };
 
-      "${configPath}/Profiles/Home/chrome/userChrome.css" =
-        if isDarwin then
-          { text = userChromeConfig; }
-        else { };
-    };
+        "${configPath}/Profiles/Home/chrome/userChrome.css" =
+          if isDarwin then { text = userChromeConfig; } else { };
+      };
 }

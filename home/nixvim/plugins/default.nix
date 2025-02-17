@@ -158,7 +158,11 @@
               end
             '';
           };
-          formatting.fields = [ "kind" "abbr" "menu" ];
+          formatting.fields = [
+            "kind"
+            "abbr"
+            "menu"
+          ];
           sources = [
             { name = "git"; }
             { name = "emoji"; }
@@ -220,7 +224,6 @@
       };
       web-devicons.enable = true;
     };
-    extraConfigLua =
-      builtins.readFile ./telescope.lua;
+    extraConfigLua = builtins.readFile ./telescope.lua;
   };
 }

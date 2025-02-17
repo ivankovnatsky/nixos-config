@@ -1,6 +1,7 @@
 { config, pkgs, ... }:
 
-let inherit (pkgs.stdenv.targetPlatform) isDarwin;
+let
+  inherit (pkgs.stdenv.targetPlatform) isDarwin;
   k9sConfigPath = if isDarwin then "Library/Application Support" else ".config";
 in
 {

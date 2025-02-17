@@ -36,22 +36,32 @@
       set -g status-right ""
       set -g status-left-length 30
 
-      ${if config.flags.darkMode then ''
-      set -g status-bg colour0
-      set -g status-fg colour15
-      set -g window-status-current-style fg=colour16,bg=colour15
-      '' else ''
-      set -g status-bg colour15
-      set -g status-fg colour0
-      set -g window-status-current-style fg=colour15,bg=colour16
-      ''}
+      ${
+        if config.flags.darkMode then
+          ''
+            set -g status-bg colour0
+            set -g status-fg colour15
+            set -g window-status-current-style fg=colour16,bg=colour15
+          ''
+        else
+          ''
+            set -g status-bg colour15
+            set -g status-fg colour0
+            set -g window-status-current-style fg=colour15,bg=colour16
+          ''
+      }
 
       # https://neovim.io/doc/user/term.html#tui-cursor-shape
       set -ga terminal-overrides '*:Ss=\E[%p1%d q:Se=\E[ q'
-      ${if config.flags.enableFishShell then ''
-      set -g default-command ${pkgs.fish}/bin/fish
-      set -g default-shell ${pkgs.fish}/bin/fish
-      '' else ""}
+      ${
+        if config.flags.enableFishShell then
+          ''
+            set -g default-command ${pkgs.fish}/bin/fish
+            set -g default-shell ${pkgs.fish}/bin/fish
+          ''
+        else
+          ""
+      }
     '';
   };
 

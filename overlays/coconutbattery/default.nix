@@ -1,6 +1,7 @@
-{ lib
-, stdenvNoCC
-, fetchzip
+{
+  lib,
+  stdenvNoCC,
+  fetchzip,
 }:
 
 stdenvNoCC.mkDerivation (finalAttrs: {
@@ -41,6 +42,9 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     license = with lib.licenses; [ unfree ];
     sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
     maintainers = with lib.maintainers; [ stepbrobd ];
-    platforms = [ "aarch64-darwin" "x86_64-darwin" ];
+    platforms = [
+      "aarch64-darwin"
+      "x86_64-darwin"
+    ];
   };
 })

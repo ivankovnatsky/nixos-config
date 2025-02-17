@@ -57,9 +57,9 @@
       background = "light";
     };
     extraConfig =
-      builtins.readFile (../../home/vim/vimrc) +
-      builtins.readFile (../../home/vim/common-plugins.vim) +
-      ''
+      builtins.readFile (../../home/vim/vimrc)
+      + builtins.readFile (../../home/vim/common-plugins.vim)
+      + ''
         " I want to run :Lex when I'm not opening a file with vim
         " Also I want Lex to be resized to 20
         autocmd VimEnter * if argc() == 0 | Lex 20 | endif

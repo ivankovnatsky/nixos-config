@@ -6,7 +6,10 @@
     ghq
     git-crypt
     git-filter-repo
-    (gh-notify.override { withBat = true; withDelta = true; })
+    (gh-notify.override {
+      withBat = true;
+      withDelta = true;
+    })
   ];
 
   # Git started to read global config and opens up osxkeychain windows first by
@@ -67,14 +70,17 @@
             prompt = true;
           };
         in
-        if config.flags.editor == "nvim"
-        then {
-          "fugitive".cmd = neovimCommand;
-          tool = "fugitive";
-        } // mergetoolOptions
-        else {
-          cmd = vimCommand;
-        } // mergetoolOptions;
+        if config.flags.editor == "nvim" then
+          {
+            "fugitive".cmd = neovimCommand;
+            tool = "fugitive";
+          }
+          // mergetoolOptions
+        else
+          {
+            cmd = vimCommand;
+          }
+          // mergetoolOptions;
       merge.tool = if config.flags.editor == "nvim" then "fugitive" else "vimdiff";
       diff.noprefix = true;
       pull.rebase = false;

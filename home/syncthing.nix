@@ -9,7 +9,7 @@
     target/
     Cargo.lock
     **/*.rs.bk
-    
+
     // Incomplete Downloads
     // Firefox downloads
     *.part

@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   # Get the base kitty config from the kitty module
   baseKittyConfig = import ../../kitty { inherit config lib pkgs; };

@@ -1,16 +1,16 @@
-{ lib
-, stdenv
-, buildGoModule
-, fetchFromGitHub
-, buildPackages
-, installShellFiles
-, makeWrapper
-, enableCmount ? true
-, fuse
-, fuse3
-, macfuse-stubs
-, librclone
-,
+{
+  lib,
+  stdenv,
+  buildGoModule,
+  fetchFromGitHub,
+  buildPackages,
+  installShellFiles,
+  makeWrapper,
+  enableCmount ? true,
+  fuse,
+  fuse3,
+  macfuse-stubs,
+  librclone,
 }:
 
 buildGoModule rec {
@@ -75,13 +75,13 @@ buildGoModule rec {
       ln -s $out/bin/rclone $out/bin/mount.rclone
     ''
     +
-    lib.optionalString (enableCmount && !stdenv.hostPlatform.isDarwin)
-      # use --suffix here to ensure we don't shadow /run/wrappers/bin/fusermount3,
-      # as the setuid wrapper is required as non-root on NixOS.
-      ''
-        wrapProgram $out/bin/rclone \
-          --suffix PATH : "${lib.makeBinPath [ fuse3 ]}"
-      '';
+      lib.optionalString (enableCmount && !stdenv.hostPlatform.isDarwin)
+        # use --suffix here to ensure we don't shadow /run/wrappers/bin/fusermount3,
+        # as the setuid wrapper is required as non-root on NixOS.
+        ''
+          wrapProgram $out/bin/rclone \
+            --suffix PATH : "${lib.makeBinPath [ fuse3 ]}"
+        '';
 
   passthru.tests = {
     inherit librclone;

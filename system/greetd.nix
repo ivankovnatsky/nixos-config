@@ -34,8 +34,7 @@ in
 
     settings = {
       default_session = {
-        command =
-          "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd ${greetdSessionRun}";
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd ${greetdSessionRun}";
         user = "greeter";
       };
 

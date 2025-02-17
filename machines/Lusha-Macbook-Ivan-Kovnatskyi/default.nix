@@ -1,6 +1,12 @@
-{ config, pkgs, username, ... }:
+{
+  config,
+  pkgs,
+  username,
+  ...
+}:
 
-let homePath = "${config.users.users.${username}.home}";
+let
+  homePath = "${config.users.users.${username}.home}";
 
 in
 {
@@ -110,7 +116,10 @@ in
       { path = "/System/Applications/Calendar.app/"; }
       { path = "/System/Applications/System Settings.app/"; }
 
-      { type = "spacer"; section = "apps"; }
+      {
+        type = "spacer";
+        section = "apps";
+      }
 
       # Additional macOS apps
       { path = "/System/Applications/Utilities/Terminal.app/"; }
@@ -118,7 +127,10 @@ in
       { path = "/System/Library/CoreServices/Applications/Keychain Access.app"; }
       { path = "/System/Applications/Utilities/Activity Monitor.app/"; }
 
-      { type = "spacer"; section = "apps"; }
+      {
+        type = "spacer";
+        section = "apps";
+      }
 
       # Installed using Kandji
       { path = "/Applications/Google Chrome.app/"; }
@@ -126,7 +138,10 @@ in
       { path = "/Applications/zoom.us.app/"; }
       { path = "/Applications/DBeaver.app/"; }
 
-      { type = "spacer"; section = "apps"; }
+      {
+        type = "spacer";
+        section = "apps";
+      }
 
       # Installed using homebrew
       { path = "/Applications/kitty.app/"; }
@@ -137,13 +152,19 @@ in
       { path = "/Applications/MindMac.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
 
-      { type = "spacer"; section = "apps"; }
+      {
+        type = "spacer";
+        section = "apps";
+      }
 
       # nixpkgs installed
       { path = "${pkgs.ghostty}/Applications/Ghostty.app/"; }
       { path = "${pkgs.vscode}/Applications/Visual Studio Code.app/"; }
 
-      { type = "spacer"; section = "apps"; }
+      {
+        type = "spacer";
+        section = "apps";
+      }
 
       # Safari Web Apps
       { path = "${homePath}/Applications/ChatGPT.app/"; }

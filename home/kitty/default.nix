@@ -15,13 +15,17 @@ let
 
   # FIXME: Remove ctrl+shift+6 and other related keybinds, vim prev buffer.
   kittyConfig = ''
-    ${if config.flags.darkMode then ""
-    else ''
-      cursor #808080
-      background #ffffff
-      foreground #000000
-      color15 #d8d8c0
-    ''}
+    ${
+      if config.flags.darkMode then
+        ""
+      else
+        ''
+          cursor #808080
+          background #ffffff
+          foreground #000000
+          color15 #d8d8c0
+        ''
+    }
 
     font_family ${config.flags.fontGeneral}
     font_size ${builtins.toString fontSize}
@@ -65,18 +69,22 @@ let
     # Was ctrl+shift+l
     map ctrl+shift+space next_layout
 
-    ${if isDarwin then ''
-      map cmd+1 goto_tab 1
-      map cmd+2 goto_tab 2
-      map cmd+3 goto_tab 3
-      map cmd+4 goto_tab 4
-      map cmd+5 goto_tab 5
-      map cmd+6 goto_tab 6
-      map cmd+7 goto_tab 7
-      map cmd+8 goto_tab 8
-      map cmd+9 goto_tab 9
-    ''
-    else ""}
+    ${
+      if isDarwin then
+        ''
+          map cmd+1 goto_tab 1
+          map cmd+2 goto_tab 2
+          map cmd+3 goto_tab 3
+          map cmd+4 goto_tab 4
+          map cmd+5 goto_tab 5
+          map cmd+6 goto_tab 6
+          map cmd+7 goto_tab 7
+          map cmd+8 goto_tab 8
+          map cmd+9 goto_tab 9
+        ''
+      else
+        ""
+    }
   '';
 in
 {
@@ -85,4 +93,4 @@ in
       text = kittyConfig;
     };
   };
-} 
+}

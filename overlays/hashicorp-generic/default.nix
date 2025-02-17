@@ -1,17 +1,19 @@
-/* This function creates a derivation for installing binaries directly
+/*
+  This function creates a derivation for installing binaries directly
   * from releases.hashicorp.com.
 */
-{ name
-, version
-, sha256
-, system ? builtins.currentSystem
-, pname ? "${name}-bin"
+{
+  name,
+  version,
+  sha256,
+  system ? builtins.currentSystem,
+  pname ? "${name}-bin",
 
-, lib
-, stdenv
-, fetchurl
-, unzip
-, ...
+  lib,
+  stdenv,
+  fetchurl,
+  unzip,
+  ...
 }:
 
 let

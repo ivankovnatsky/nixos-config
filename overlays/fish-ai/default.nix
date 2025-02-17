@@ -1,8 +1,9 @@
-{ lib
-, buildFishPlugin
-, fetchFromGitHub
-, python3
-, fzf
+{
+  lib,
+  buildFishPlugin,
+  fetchFromGitHub,
+  python3,
+  fzf,
 }:
 
 buildFishPlugin rec {
@@ -18,18 +19,20 @@ buildFishPlugin rec {
 
   propagatedBuildInputs = [
     fzf
-    (python3.withPackages (ps: with ps; [
-      openai
-      tiktoken
-      anthropic
-    ]))
+    (python3.withPackages (
+      ps: with ps; [
+        openai
+        tiktoken
+        anthropic
+      ]
+    ))
   ];
 
   postInstall = ''
     # Install fish functions and conf.d
     install -Dm644 functions/*.fish $out/share/fish/vendor_functions.d/
     install -Dm644 conf.d/*.fish $out/share/fish/vendor_conf.d/
-    
+
     # Install Python module
     mkdir -p $out/share/fish/vendor_functions.d/fish_ai
     cp -r src/fish_ai/* $out/share/fish/vendor_functions.d/fish_ai/

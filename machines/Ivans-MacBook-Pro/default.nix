@@ -1,6 +1,12 @@
-{ pkgs, config, username, ... }:
+{
+  pkgs,
+  config,
+  username,
+  ...
+}:
 
-let homePath = "${config.users.users.${username}.home}";
+let
+  homePath = "${config.users.users.${username}.home}";
 
 in
 {
@@ -95,7 +101,10 @@ in
       { path = "/System/Applications/App Store.app/"; }
       { path = "/System/Applications/System Settings.app/"; }
 
-      { type = "spacer"; section = "apps"; }
+      {
+        type = "spacer";
+        section = "apps";
+      }
 
       { path = "/System/Applications/Utilities/Terminal.app/"; }
       { path = "/System/Applications/Utilities/Activity Monitor.app/"; }
@@ -103,20 +112,29 @@ in
       { path = "/System/Library/CoreServices/Applications/Keychain Access.app/"; }
       { path = "/System/Applications/iPhone Mirroring.app/"; }
 
-      { type = "spacer"; section = "apps"; }
+      {
+        type = "spacer";
+        section = "apps";
+      }
 
       # Brew casks placeholder
       { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }
 
-      { type = "spacer"; section = "apps"; }
+      {
+        type = "spacer";
+        section = "apps";
+      }
 
       # Installed using nixpkgs
       { path = "${pkgs.ghostty}/Applications/Ghostty.app/"; }
       { path = "${pkgs.coconutbattery}/Applications/coconutBattery.app/"; }
 
-      { type = "spacer"; section = "apps"; }
+      {
+        type = "spacer";
+        section = "apps";
+      }
 
       # TODO: see if making a Dock web app could be automated.
       # Safari WebApps placeholder

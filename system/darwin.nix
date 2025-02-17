@@ -44,15 +44,16 @@
   # ```console
   # chsh -s /run/current-system/sw/bin/fish
   # ```
-  environment.shells = with pkgs; [
-    bashInteractive
-    zsh
-  ] ++ lib.optionals config.flags.enableFishShell [ fish ];
+  environment.shells =
+    with pkgs;
+    [
+      bashInteractive
+      zsh
+    ]
+    ++ lib.optionals config.flags.enableFishShell [ fish ];
 
   # Create /etc/bashrc that loads the nix-darwin environment.
   programs.zsh.enable = true; # default shell on catalina
-
-
 
   # Used for backwards compatibility, please read the changelog before changing.
   # $ darwin-rebuild changelog

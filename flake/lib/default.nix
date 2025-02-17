@@ -6,5 +6,6 @@
     darwinHomebrewModule
     makeBaseDarwinSystem
     makeBaseDarwinWithHome
-    makeFullDarwinConfig;
+    makeFullDarwinConfig
+    ;
 }

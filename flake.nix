@@ -69,6 +69,5 @@
     pyenv-nix-install.url = "github:sirno/pyenv-nix-install";
   };
 
-  outputs = { self, ... }@inputs: 
-    import ./flake { inherit inputs; };
+  outputs = { self, ... }@inputs: import ./flake { inherit inputs; };
 }
