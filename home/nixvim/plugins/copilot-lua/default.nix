@@ -57,7 +57,7 @@
         };
       };
       cmp = {
-        settings.sources = [{ name = "copilot"; }];
+        settings.sources = [ { name = "copilot"; } ];
       };
     };
   };

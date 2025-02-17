@@ -12,7 +12,7 @@
     GHORG_QUIET: true
     GHORG_ABSOLUTE_PATH_TO_CLONE_TO: ${config.home.homeDirectory}/Sources/github.com
     GHORG_SKIP_ARCHIVED: true # Skip archived repositories
-    
+
     # GitHub Configuration
     GHORG_GITHUB_TOKEN: ${config.secrets.githubToken}
   '';

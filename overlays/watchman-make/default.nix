@@ -1,8 +1,9 @@
-{ lib
-, watchman
-, python311Packages
-, fetchurl
-, makeWrapper
+{
+  lib,
+  watchman,
+  python311Packages,
+  fetchurl,
+  makeWrapper,
 }:
 
 let

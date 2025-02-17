@@ -1,9 +1,15 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
 
-  syncthingHomeDir = if isDarwin then "~/Library/Application\\ Support/Syncthing" else "~/.config/syncthing";
+  syncthingHomeDir =
+    if isDarwin then "~/Library/Application\\ Support/Syncthing" else "~/.config/syncthing";
 
   commonShellAliases = {
     # TODO: add function nix-prefetch-url $url | xargs nix hash to-sri --type sha256
@@ -28,23 +34,28 @@ let
   };
 
   shellAliases =
-    if config.flags.purpose == "home" then commonShellAliases // {
-      rclone = "${pkgs.rclone}/bin/rclone -P";
-      transmission = "${pkgs.transmission_4}/bin/transmission-remote --list";
-      wl-copy = lib.mkIf isLinux "${pkgs.wl-clipboard}/bin/wl-copy -n";
-    } else commonShellAliases // {
-      # We tenv version manager so pkgs interpolation is not needed.
-      tf = "terraform";
-      tg = "terragrunt";
-      k = "${pkgs.kubectl}/bin/kubectl";
-      argocd = "${pkgs.argocd}/bin/argocd --grpc-web";
-    };
+    if config.flags.purpose == "home" then
+      commonShellAliases
+      // {
+        rclone = "${pkgs.rclone}/bin/rclone -P";
+        transmission = "${pkgs.transmission_4}/bin/transmission-remote --list";
+        wl-copy = lib.mkIf isLinux "${pkgs.wl-clipboard}/bin/wl-copy -n";
+      }
+    else
+      commonShellAliases
+      // {
+        # We tenv version manager so pkgs interpolation is not needed.
+        tf = "terraform";
+        tg = "terragrunt";
+        k = "${pkgs.kubectl}/bin/kubectl";
+        argocd = "${pkgs.argocd}/bin/argocd --grpc-web";
+      };
 
-  # vimPlugin = builtins.fetchurl {
-  #   url = "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/plugins/vi-mode/vi-mode.plugin.zsh";
-  #   sha256 = "sha256:12gsfifj00rlx8nw1zs6cr0g7jxslxhph4mbkkg7fxsyl811c4ad";
-  # };
 in
+# vimPlugin = builtins.fetchurl {
+#   url = "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/plugins/vi-mode/vi-mode.plugin.zsh";
+#   sha256 = "sha256:12gsfifj00rlx8nw1zs6cr0g7jxslxhph4mbkkg7fxsyl811c4ad";
+# };
 {
   home.packages = with pkgs; [
     ripgrep
@@ -79,8 +90,7 @@ in
 
     fzf = {
       enable = true;
-      defaultCommand =
-        "fd --type f --hidden --no-ignore --follow --exclude .git";
+      defaultCommand = "fd --type f --hidden --no-ignore --follow --exclude .git";
       enableZshIntegration = true;
       enableFishIntegration = config.flags.enableFishShell;
     };
@@ -102,25 +112,26 @@ in
         extended = true;
       };
 
-      plugins =
-        [
-          # {
-          #   name = "zsh-vi-mode";
-          #   src = pkgs.fetchFromGitHub {
-          #     owner = "jeffreytse";
-          #     repo = "zsh-vi-mode";
-          #     rev = "v0.11.0";
-          #     sha256 = "sha256-xbchXJTFWeABTwq6h4KWLh+EvydDrDzcY9AQVK65RS8=";
-          #   };
-          # }
-        ];
+      plugins = [
+        # {
+        #   name = "zsh-vi-mode";
+        #   src = pkgs.fetchFromGitHub {
+        #     owner = "jeffreytse";
+        #     repo = "zsh-vi-mode";
+        #     rev = "v0.11.0";
+        #     sha256 = "sha256-xbchXJTFWeABTwq6h4KWLh+EvydDrDzcY9AQVK65RS8=";
+        #   };
+        # }
+      ];
       # initExtra = ''
       #   source ${vimPlugin}
       # '';
 
       inherit shellAliases;
 
-      sessionVariables = { _ZL_HYPHEN = 1; };
+      sessionVariables = {
+        _ZL_HYPHEN = 1;
+      };
 
       initExtra = ''
         # enable alt+l -- to lowercase

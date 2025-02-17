@@ -1,14 +1,16 @@
-{ name
-, version
-, platform
-, sha256
+{
+  name,
+  version,
+  platform,
+  sha256,
 
-, stdenv
-, fetchurl
-, ...
+  stdenv,
+  fetchurl,
+  ...
 }:
 
-let url = "https://github.com/istio/istio/releases/download/${version}/istio-${version}-${platform}.tar.gz";
+let
+  url = "https://github.com/istio/istio/releases/download/${version}/istio-${version}-${platform}.tar.gz";
 
 in
 stdenv.mkDerivation {

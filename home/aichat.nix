@@ -3,7 +3,8 @@
 let
   inherit (pkgs.stdenv.targetPlatform) isDarwin;
 
-  aichatConfigPath = if isDarwin then "Library/Application Support/aichat/config.yaml" else ".config/aichat/config.yaml";
+  aichatConfigPath =
+    if isDarwin then "Library/Application Support/aichat/config.yaml" else ".config/aichat/config.yaml";
 in
 {
   home = {
@@ -12,10 +13,13 @@ in
       # https://github.com/sigoden/aichat/blob/main/config.example.yaml
       "${aichatConfigPath}" = {
         text = ''
-          ${if config.flags.darkMode then "" else
-          ''
-          light_theme: true
-          ''
+          ${
+            if config.flags.darkMode then
+              ""
+            else
+              ''
+                light_theme: true
+              ''
           }
           editor: ${config.flags.editor}
           save: true

@@ -11,7 +11,8 @@ let
     "grep-find" = [ "rg-fzf" ];
   };
 
-  processScript = scriptName:
+  processScript =
+    scriptName:
     let
       scriptContents = builtins.readFile (scriptPath + "/${scriptName}");
       isFishScript = lib.hasSuffix ".fish" scriptName;
@@ -25,7 +26,8 @@ let
       nuShebang = "#!${pkgs.nushell}/bin/nu";
 
       # For Go files, we'll compile them instead of handling shebangs
-      processGoScript = name:
+      processGoScript =
+        name:
         pkgs.stdenv.mkDerivation {
           name = lib.removeSuffix ".go" name;
           src = scriptPath + "/${name}";
@@ -58,13 +60,18 @@ let
           builtins.replaceStrings [ "#!/usr/bin/env bash" ] [ bashShebang ] scriptContents;
 
       # Remove extension for the final binary name
-      binaryName = lib.removeSuffix
-        (if isFishScript then ".fish"
-        else if isPythonScript then ".py"
-        else if isGoScript then ".go"
-        else if isNuScript then ".nu"
-        else ".sh")
-        scriptName;
+      binaryName = lib.removeSuffix (
+        if isFishScript then
+          ".fish"
+        else if isPythonScript then
+          ".py"
+        else if isGoScript then
+          ".go"
+        else if isNuScript then
+          ".nu"
+        else
+          ".sh"
+      ) scriptName;
     in
     if isGoScript then
       scriptWithFixedShebang
@@ -75,16 +82,20 @@ let
   scriptPackages = map processScript scriptNames;
 
   # Helper function to create an alias script
-  createAlias = originalDerivation: alias:
+  createAlias =
+    originalDerivation: alias:
     pkgs.writeScriptBin alias ''
       #!${pkgs.bash}/bin/bash
       exec ${originalDerivation}/bin/${originalDerivation.name} "$@"
     '';
 
   # Generate all aliases
-  makeAliases = scriptName:
+  makeAliases =
+    scriptName:
     let
-      original = lib.removeSuffix ".sh" (lib.removeSuffix ".fish" (lib.removeSuffix ".py" (lib.removeSuffix ".go" scriptName)));
+      original = lib.removeSuffix ".sh" (
+        lib.removeSuffix ".fish" (lib.removeSuffix ".py" (lib.removeSuffix ".go" scriptName))
+      );
       originalDerivation = builtins.head (builtins.filter (p: p.name == original) scriptPackages);
       aliases = scriptAliases.${original} or [ ];
     in
@@ -101,12 +112,23 @@ let
 
   # Create an attribute set mapping script names to their derivations
   scriptDerivations = builtins.listToAttrs (
-    map
-      (script: {
-        name = lib.removeSuffix ".sh" (lib.removeSuffix ".fish" (lib.removeSuffix ".py" (lib.removeSuffix ".go" (lib.removeSuffix ".nu" script))));
-        value = builtins.head (builtins.filter (p: p.name == lib.removeSuffix ".sh" (lib.removeSuffix ".fish" (lib.removeSuffix ".py" (lib.removeSuffix ".go" (lib.removeSuffix ".nu" script))))) scriptPackages);
-      })
-      scriptNames
+    map (script: {
+      name = lib.removeSuffix ".sh" (
+        lib.removeSuffix ".fish" (
+          lib.removeSuffix ".py" (lib.removeSuffix ".go" (lib.removeSuffix ".nu" script))
+        )
+      );
+      value = builtins.head (
+        builtins.filter (
+          p:
+          p.name == lib.removeSuffix ".sh" (
+            lib.removeSuffix ".fish" (
+              lib.removeSuffix ".py" (lib.removeSuffix ".go" (lib.removeSuffix ".nu" script))
+            )
+          )
+        ) scriptPackages
+      );
+    }) scriptNames
   );
 in
 {

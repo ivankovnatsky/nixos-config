@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   isLaptop = config.device.type == "laptop";
@@ -31,13 +36,12 @@ in
 
     bars =
       let
-        tuxBlock =
-          {
-            block = "custom";
-            command = checkKernel;
-            interval = "once";
-            json = true;
-          };
+        tuxBlock = {
+          block = "custom";
+          command = checkKernel;
+          interval = "once";
+          json = true;
+        };
 
         cpuBlock = {
           block = "cpu";
@@ -119,10 +123,12 @@ in
 
         soundBlock = {
           block = "sound";
-          click = [{
-            button = "left";
-            cmd = "pavucontrol --tab=3";
-          }];
+          click = [
+            {
+              button = "left";
+              cmd = "pavucontrol --tab=3";
+            }
+          ];
           format = {
             full = "$icon $volume";
             short = "";
@@ -153,8 +159,7 @@ in
           };
 
           format = {
-            full =
-              "$icon $temp $apparent  $humidity  $wind_kmh km/h $direction";
+            full = "$icon $temp $apparent  $humidity  $wind_kmh km/h $direction";
             short = "";
           };
         };
@@ -177,7 +182,9 @@ in
 
           theme = {
             theme = "space-villain";
-            overrides = { separator = ""; };
+            overrides = {
+              separator = "";
+            };
           };
         };
       in

@@ -17,7 +17,11 @@
     isNormalUser = true;
     home = "/home/ivan";
     shell = if config.flags.enableFishShell then pkgs.fish else pkgs.zsh;
-    extraGroups = [ "wheel" "networkmanager" "docker" ];
+    extraGroups = [
+      "wheel"
+      "networkmanager"
+      "docker"
+    ];
   };
 
   virtualisation = {

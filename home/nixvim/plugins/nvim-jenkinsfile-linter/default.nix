@@ -26,4 +26,4 @@
     #   require('jenkinsfile_linter').setup({ })
     # '';
   };
-} 
+}

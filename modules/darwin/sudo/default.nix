@@ -1,30 +1,41 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 let
   cfg = config.local.sudo;
 
-  mkSudoCustomConfigScript = isEnabled:
+  mkSudoCustomConfigScript =
+    isEnabled:
     let
       file = "/etc/sudoers.d/nix-darwin-sudo-config";
       option = "local.sudo.enable";
     in
     ''
-      ${if isEnabled then ''
-        # Enable custom sudo configuration
-        echo >&2 "Configuring custom sudo settings..."
-        sudo tee ${file} > /dev/null << EOF
-        # nix-darwin: ${option}
-        ${cfg.configContent}
-        EOF
-        sudo chmod 440 ${file}
-      '' else ''
-        # Disable custom sudo configuration
-        if [ -f ${file} ]; then
-          echo >&2 "Removing custom sudo configuration..."
-          sudo rm ${file}
-        fi
-      ''}
+      ${
+        if isEnabled then
+          ''
+            # Enable custom sudo configuration
+            echo >&2 "Configuring custom sudo settings..."
+            sudo tee ${file} > /dev/null << EOF
+            # nix-darwin: ${option}
+            ${cfg.configContent}
+            EOF
+            sudo chmod 440 ${file}
+          ''
+        else
+          ''
+            # Disable custom sudo configuration
+            if [ -f ${file} ]; then
+              echo >&2 "Removing custom sudo configuration..."
+              sudo rm ${file}
+            fi
+          ''
+      }
     '';
 in
 {
