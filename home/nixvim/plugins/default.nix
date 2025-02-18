@@ -76,6 +76,7 @@
       # flash.enable = true;
       oil = {
         enable = true;
+        # TODO: Add option to be focused on the same dir as were before when doing ..
         settings = {
           # https://github.com/nix-community/nixvim/blob/f4b0b81ef9eb4e37e75f32caf1f02d5501594811/tests/test-sources/plugins/by-name/oil/default.nix#L40
           # https://github.com/stevearc/oil.nvim?tab=readme-ov-file#options
