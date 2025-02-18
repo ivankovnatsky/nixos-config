@@ -58,6 +58,8 @@
       l = "log --oneline -n 20";
       p = "push";
       pp = "pull";
+      # Add all files in git root
+      add-all = "!git add \"$(git rev-parse --show-toplevel)\"";
     };
     extraConfig = {
       init.defaultBranch = "main";
