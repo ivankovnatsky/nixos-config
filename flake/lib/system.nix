@@ -7,10 +7,7 @@
       {
         imports = [ ../../machines/${hostname} ];
         nixpkgs.overlays = [ inputs.self.overlay ];
-        nixpkgs.config = {
-          # allowUnfree = true;
-          # allowUnfreePredicate = _: true;
-        };
+        nixpkgs.config.allowUnfree = true;
       }
       {
         nix.nixPath.nixpkgs = "${inputs.nixpkgs}";
