@@ -1,8 +1,7 @@
-{
-  config,
-  pkgs,
-  username,
-  ...
+{ config
+, pkgs
+, username
+, ...
 }:
 
 let
@@ -24,7 +23,13 @@ in
     editor = "nvim";
     darkMode = true;
   };
-  security.pamCustom.enableSudoTouchIdAuth = true;
+  security = {
+    pam = {
+      enable = true;
+      enableSudoTouchIdAuth = true;
+      enableSudoPamReattach = true;
+    };
+  };
   # Enable Low Power Mode:
   #
   # ```console

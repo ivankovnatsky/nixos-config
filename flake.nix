@@ -8,7 +8,8 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
     darwin = {
-      url = "github:lnl7/nix-darwin/master";
+      # url = "github:lnl7/nix-darwin/master";
+      url = "github:Mic92/nix-darwin/fix_pam_module";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

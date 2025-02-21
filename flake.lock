@@ -48,16 +48,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1739034224,
-        "narHash": "sha256-Mj/8jDzh1KNmUhWqEeVlW3hO9MZkxqioJGnmR7rivaE=",
-        "owner": "lnl7",
+        "lastModified": 1740049022,
+        "narHash": "sha256-Ggivk22//vUp5il8SMcxSsf3VCXax04dz26HgBZd4CI=",
+        "owner": "Mic92",
         "repo": "nix-darwin",
-        "rev": "0b6f96a6b9efcfa8d3cc8023008bcbcd1b9bc1a4",
+        "rev": "405217801f04f10ba5193453923b04e1ff4d8a23",
         "type": "github"
       },
       "original": {
-        "owner": "lnl7",
-        "ref": "master",
+        "owner": "Mic92",
+        "ref": "fix_pam_module",
         "repo": "nix-darwin",
         "type": "github"
       }
