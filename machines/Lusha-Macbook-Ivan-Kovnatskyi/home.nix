@@ -232,7 +232,6 @@
           settings.formatters_by_ft = {
             python = [ "black" ];
             lua = [ "stylua" ];
-            nix = [ "nixfmt-rfc-style" ];
           };
         };
         # FIXME: Figure out suitable key for the completion, when you need to
