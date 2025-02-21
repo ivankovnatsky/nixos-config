@@ -6,6 +6,9 @@
     ./default.nix
   ];
 
+  # Disable nix-darwin's Nix management since we're using Determinate
+  nix.enable = false;
+
   # https://github.com/NixOS/nixpkgs/issues/175875
   nixpkgs.config.allowBroken = true;
 
@@ -29,7 +32,12 @@
   # environment.darwinConfig = "$HOME/.config/nixpkgs/darwin/configuration.nix";
 
   # Auto upgrade nix package and the daemon service.
-  services.nix-daemon.enable = true;
+  #    Failed assertions:
+  #     - The option definition `services.nix-daemon.enable' in `/nix/store/sk3ii930qwi54q5cqgryg9lqs8xz4mc1-source/system/darwin.nix' no longer has any effect; please remove it.
+  #     nix-darwin now manages nix-daemon unconditionally when
+  #     `nix.enable` is on.
+  # waiting for changes
+  # services.nix-daemon.enable = true;
   # nix.package = pkgs.nix;
 
   # Add shells installed by nix to /etc/shells file.

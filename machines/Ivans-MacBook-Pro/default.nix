@@ -1,8 +1,7 @@
-{
-  pkgs,
-  config,
-  username,
-  ...
+{ pkgs
+, config
+, username
+, ...
 }:
 
 let
@@ -23,7 +22,13 @@ in
     editor = "nvim";
     darkMode = true;
   };
-  security.pamCustom.enableSudoTouchIdAuth = true;
+  security = {
+    pam = {
+      enable = true;
+      enableSudoTouchIdAuth = true;
+      enableSudoPamReattach = true;
+    };
+  };
   system = {
     defaults = {
       NSGlobalDomain = {
