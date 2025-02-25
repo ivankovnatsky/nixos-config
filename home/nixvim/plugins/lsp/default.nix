@@ -31,7 +31,7 @@
               excludedFiles = [ "" ];
             };
             formatting = {
-              command = [ "nixfmt" ];
+              command = [ "nixfmt-rfc-style" ];
             };
             nix = {
               binary = "nix";
