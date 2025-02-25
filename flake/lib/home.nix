@@ -2,10 +2,10 @@
 {
   # Home-manager base configuration
   homeManagerModule =
-    { hostname
-    , username
-    , extraImports ? [ ]
-    ,
+    {
+      hostname,
+      username,
+      extraImports ? [ ],
     }:
     [
       inputs.home-manager.darwinModules.home-manager
