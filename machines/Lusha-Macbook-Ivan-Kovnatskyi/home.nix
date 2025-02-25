@@ -153,6 +153,8 @@
       pre-commit
       pv
       pyenv-nix-install
+      rabbitmq-server # Needed for the CLI
+      rabbitmqadmin-ng # Overlay
       rclone
       rectangle # Window manager
       sesh
