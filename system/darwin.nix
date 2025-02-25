@@ -7,6 +7,7 @@
   ];
 
   # Disable nix-darwin's Nix management since we're using Determinate
+  # FIXME: Need to manage nix config somehow anyway.
   nix.enable = false;
 
   # https://github.com/NixOS/nixpkgs/issues/175875
