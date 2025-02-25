@@ -25,9 +25,11 @@ in
   };
   security = {
     pam = {
-      enable = true;
-      enableSudoTouchIdAuth = true;
-      enableSudoPamReattach = true;
+      services.sudo_local = {
+        enable = true;
+        touchIdAuth = true;
+        reattach = true; # for tmux/screen support
+      };
     };
   };
   # Enable Low Power Mode:
