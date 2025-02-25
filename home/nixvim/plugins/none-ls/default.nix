@@ -5,6 +5,7 @@
     nixvim = {
       extraPackages = with pkgs; [ black ];
       plugins = {
+        # null-ls fork
         none-ls = {
           enable = true;
           enableLspFormat = true;
@@ -19,26 +20,22 @@
             # only using LSP formatting capabilities.
             formatting = {
               fish_indent.enable = true;
-              nixfmt.enable = true;
+              # nixfmt = "nixfmt-classic"; Uses wrong formatter, we need nixfmt-rfc-style.
+              # nixfmt.enable = true;
               stylua.enable = true;
             };
           };
         };
       };
-      keymaps = [
-        {
-          mode = [
-            "n"
-            "v"
-          ];
-          key = "<leader>cf";
-          action = "<cmd>lua vim.lsp.buf.format()<cr>";
-          options = {
-            silent = true;
-            desc = "Format";
-          };
-        }
-      ];
+      keymaps = [{
+        mode = [ "n" "v" ];
+        key = "<leader>cf";
+        action = "<cmd>lua vim.lsp.buf.format()<cr>";
+        options = {
+          silent = true;
+          desc = "Format";
+        };
+      }];
     };
   };
 }
