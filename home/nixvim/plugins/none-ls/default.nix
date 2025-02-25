@@ -19,7 +19,7 @@
             # only using LSP formatting capabilities.
             formatting = {
               fish_indent.enable = true;
-              nixpkgs_fmt.enable = true;
+              nixfmt.enable = true;
               stylua.enable = true;
             };
           };
