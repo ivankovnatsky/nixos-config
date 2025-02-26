@@ -92,7 +92,9 @@
   };
   home = {
     file.".config/manual".text = ''
-      npm --global install npm-groovy-lint
+      npm --global install \
+        npm-groovy-lint \
+        @anthropic-ai/claude-code
     '';
     packages = with pkgs; [
       (wrapHelm kubernetes-helm { plugins = with pkgs.kubernetes-helmPlugins; [ helm-secrets ]; })
