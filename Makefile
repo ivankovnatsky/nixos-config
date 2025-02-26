@@ -2,12 +2,17 @@
 .DEFAULT_GOAL := default
 
 PLATFORM := $(shell uname)
+# TODO: This is temporary until we figure out how to properly configure nix.conf
+# Currently determinate.nix doesn't support nix.enable in darwin configuration
+# Remove these flags once we have proper nix configuration
+NIX_EXTRA_FLAGS := --extra-experimental-features flakes --extra-experimental-features nix-command
 
 all: default rebuild-watchman rebuild-impure/nixos
 
 default:
 ifeq (${PLATFORM}, Darwin)
-	darwin-rebuild switch --impure --verbose -L --flake . && \
+	# NIXPKGS_ALLOW_UNFREE=1 is needed for unfree packages like codeium when using --impure
+	NIXPKGS_ALLOW_UNFREE=1 darwin-rebuild switch --impure --verbose -L --flake . && \
 		osascript -e 'display notification "🟢 Darwin rebuild successful!" with title "Nix configuration"' || \
 		osascript -e 'display notification "🔴 Darwin rebuild failed!" with title "Nix configuration"'
 else
@@ -29,17 +34,20 @@ endif
 trigger-rebuild:
 	while true; do touch .trigger-rebuild && sleep 1; done
 
-flake-update:
-	nix flake update --commit-lock-file nixpkgs
-	nix flake update --commit-lock-file darwin
-	nix flake update --commit-lock-file home-manager
+flake-update-main:
+	inputs="nixpkgs darwin home-manager"; \
+	for input in $$inputs; do \
+		nix flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
+	done
 
-	nix flake update --commit-lock-file nix-homebrew
-	nix flake update --commit-lock-file homebrew-core
-	nix flake update --commit-lock-file homebrew-cask
-	nix flake update --commit-lock-file homebrew-bundle
+flake-update-nixvim:
+	nix flake update ${NIX_EXTRA_FLAGS} --commit-lock-file nixvim
 
-	nix flake update --commit-lock-file nixvim
+flake-update-homebrew:
+	inputs="nix-homebrew homebrew-core homebrew-cask homebrew-bundle"; \
+	for input in $$inputs; do \
+		nix flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
+	done
 
 rebuild-watchman:
 	while true; do \
