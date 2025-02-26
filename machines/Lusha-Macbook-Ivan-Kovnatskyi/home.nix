@@ -22,6 +22,7 @@
     ../../home/mpv.nix
     ../../home/nixvim
     ../../home/nixvim/plugins/avante
+    ../../home/nixvim/plugins/codeium
     ../../home/nixvim/plugins/gen-nvim
     ../../home/nixvim/plugins/copilot-lua
     ../../home/npm.nix
