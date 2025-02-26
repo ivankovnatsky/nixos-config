@@ -31,14 +31,19 @@ copy_to_clipboard() {
     echo "Copied to clipboard: $content"
 }
 
-# Show help if no arguments or help flag
-if [ $# -eq 0 ] || [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+# Show help if help flag is provided
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     usage
     exit 0
 fi
 
-COMMAND="$1"
-shift
+# If no command is provided, default to abs
+if [ $# -eq 0 ]; then
+    COMMAND="abs"
+else
+    COMMAND="$1"
+    shift
+fi
 
 # Handle commands
 case $COMMAND in
