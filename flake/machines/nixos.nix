@@ -1,6 +1,7 @@
-{ makeNixosConfig }:
+{ makeNixosConfig, makeStableNixosConfig }:
 {
-  "beelink" = makeNixosConfig {
+  # Using stable NixOS 24.11 for the headless server
+  "beelink" = makeStableNixosConfig {
     hostname = "beelink";
     system = "x86_64-linux";
     username = "ivan";
