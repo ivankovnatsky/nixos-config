@@ -1,6 +1,6 @@
 { inputs, ... }:
 let
-  inherit (import ./system.nix { inherit inputs; }) baseModule;
+  inherit (import ./system.nix { inherit inputs; }) systemModule;
   inherit (import ./home.nix { inherit inputs; }) homeManagerModule;
 
   # Darwin-specific homebrew configuration
@@ -42,7 +42,7 @@ in
     }:
     inputs.darwin.lib.darwinSystem {
       inherit system;
-      modules = baseModule { inherit hostname; };
+      modules = systemModule { inherit hostname; };
     };
 
   # Darwin configuration with home-manager but without nixvim
@@ -54,7 +54,7 @@ in
     }:
     inputs.darwin.lib.darwinSystem {
       inherit system;
-      modules = baseModule { inherit hostname; } ++ homeManagerModule { inherit hostname username; };
+      modules = systemModule { inherit hostname; } ++ homeManagerModule { inherit hostname username; };
     };
 
   # Full featured Darwin configuration with home-manager and nixvim
@@ -69,7 +69,7 @@ in
     inputs.darwin.lib.darwinSystem {
       inherit system;
       modules =
-        baseModule { inherit hostname; }
+        systemModule { inherit hostname; }
         ++ homeManagerModule {
           inherit hostname username;
           extraImports = [ inputs.nixvim.homeManagerModules.nixvim ] ++ homeModules;

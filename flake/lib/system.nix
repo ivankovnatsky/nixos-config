@@ -1,7 +1,8 @@
 { inputs, ... }:
+
 {
   # Base module used across all configurations
-  baseModule =
+  systemModule =
     { hostname }:
     [
       {
