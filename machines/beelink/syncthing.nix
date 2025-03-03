@@ -13,11 +13,14 @@
     user = "ivan";
     group = "users";
 
-    # Data directory
+    # Data directory - this is where configuration is persisted
     dataDir = "/home/ivan/.config/syncthing";
+    
+    # Important: This ensures configuration is preserved between rebuilds
+    configDir = "/home/ivan/.config/syncthing";
 
-    # Configure to listen on all interfaces (important for headless access)
-    guiAddress = "0.0.0.0:8384";
+    # Configure to listen on local network (needed for headless access)
+    guiAddress = "192.168.50.169:8384";
 
     # Open the required ports in the firewall
     openDefaultPorts = true;
@@ -30,6 +33,8 @@
         # You can access the web UI without credentials
         theme = "default";
         insecureAdminAccess = false;
+        insecureSkipHostcheck = false;
+        insecureAllowFrameLoading = false;
       };
 
       # Global options
@@ -76,3 +81,4 @@
   # settings.gui.user = "username";
   # settings.gui.password = "hashed-password";
 }
+
