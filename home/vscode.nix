@@ -4,9 +4,7 @@ let
   jsonFormat = pkgs.formats.json { };
 
   editorSettings = {
-    "[nix]" = {
-      "editor.tabSize" = 2;
-    };
+    "[nix]" = { "editor.tabSize" = 2; };
     "diffEditor.ignoreTrimWhitespace" = false;
     "diffEditor.renderSideBySide" = false;
     "editor.lineNumbers" = "relative";
@@ -15,22 +13,21 @@ let
     "extensions.autoCheckUpdates" = false;
     "extensions.ignoreRecommendations" = true;
     "files.autoSave" = "onFocusChange";
+    "files.enableTrash" = false;
     "files.insertFinalNewline" = true;
     "files.trimFinalNewlines" = true;
-    "files.enableTrash" = false;
-    "git.openRepositoryInParentFolders" = "always";
     "git.autofetch" = "all";
+    "git.openRepositoryInParentFolders" = "always";
     "scm.diffDecorations" = "all";
-    "terminal.integrated.fontFamily" = "Hack Nerd Font";
-    "update.mode" = "none";
-    "vim.relativeLineNumbers" = true;
     "security.workspace.trust.enabled" = false;
-
-    # Auto-switching themes
+    "terminal.integrated.fontFamily" = "Hack Nerd Font";
+    "update.mode" = "manual";
+    "vim.relativeLineNumbers" = true;
     "window.autoDetectColorScheme" = true;
+    "windsurf.autocompleteSpeed" = "default";
+    "workbench.colorTheme" = "Auto";
     "workbench.preferredDarkColorTheme" = "Default Dark+";
     "workbench.preferredLightColorTheme" = "Default Light+";
-    "workbench.colorTheme" = "Auto";
   };
 in
 {
