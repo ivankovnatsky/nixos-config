@@ -5,6 +5,9 @@
     # This is used to pin packages from master channel.
     nixpkgs-master.url = "github:nixos/nixpkgs/master";
 
+    # Stable NixOS release
+    nixos-release.url = "github:nixos/nixpkgs/release-24.11";
+
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
     darwin = {

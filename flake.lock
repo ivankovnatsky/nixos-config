@@ -413,6 +413,22 @@
         "type": "github"
       }
     },
+    "nixos-release": {
+      "locked": {
+        "lastModified": 1741018842,
+        "narHash": "sha256-78ftXhNuzj5ybrFhemvZ7KMBqlbcDqRdNYN5M/ESY4I=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "62a38aa64791b918f12b2e47fe3c97606f781018",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "release-24.11",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1736320768,
@@ -635,6 +651,7 @@
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
         "nix-homebrew": "nix-homebrew",
+        "nixos-release": "nixos-release",
         "nixpkgs": "nixpkgs_4",
         "nixpkgs-master": "nixpkgs-master",
         "nixpkgs-python": "nixpkgs-python",
