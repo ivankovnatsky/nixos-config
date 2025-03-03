@@ -7,17 +7,23 @@ PLATFORM := $(shell uname)
 # Remove these flags once we have proper nix configuration
 NIX_EXTRA_FLAGS := --extra-experimental-features flakes --extra-experimental-features nix-command
 
-all: default rebuild-watchman rebuild-impure/nixos
+# Common flags for rebuild commands
+COMMON_REBUILD_FLAGS := --verbose -L --flake .
+NIXOS_EXTRA_FLAGS := --use-remote-sudo
 
-default:
+# Default target will run rebuild and start watchman based on platform
 ifeq (${PLATFORM}, Darwin)
+default: darwin rebuild-watchman
+else
+default: nixos rebuild-watchman-nixos
+endif
+
+# Darwin-specific rebuild target
+darwin:
 	# NIXPKGS_ALLOW_UNFREE=1 is needed for unfree packages like codeium when using --impure
-	NIXPKGS_ALLOW_UNFREE=1 darwin-rebuild switch --impure --verbose -L --flake . && \
+	NIXPKGS_ALLOW_UNFREE=1 darwin-rebuild switch --impure $(COMMON_REBUILD_FLAGS) && \
 		osascript -e 'display notification "🟢 Darwin rebuild successful!" with title "Nix configuration"' || \
 		osascript -e 'display notification "🔴 Darwin rebuild failed!" with title "Nix configuration"'
-else
-	nixos-rebuild switch --use-remote-sudo --impure --verbose -L --flake .
-endif
 
 # FIXME:
 # ```console
@@ -54,10 +60,28 @@ rebuild-watchman:
 		watchman-make \
 			--pattern \
 				'**/*' \
-			--target default; \
+			--target darwin; \
 		echo "watchman-make exited, restarting..."; \
 		sleep 1; \
 	done
 
+# NixOS rebuild targets
+rebuild/nixos:
+	nixos-rebuild switch $(NIXOS_EXTRA_FLAGS) $(COMMON_REBUILD_FLAGS)
+
+# Alias for consistency with darwin target
+nixos: rebuild/nixos
+
 rebuild-impure/nixos:
-	nixos-rebuild switch --use-remote-sudo --impure --verbose -L --flake .
+	nixos-rebuild switch --impure $(NIXOS_EXTRA_FLAGS) $(COMMON_REBUILD_FLAGS)
+
+# NixOS-specific watchman rebuild target
+rebuild-watchman-nixos:
+	while true; do \
+		watchman-make \
+			--pattern \
+				'**/*' \
+			--target rebuild/nixos; \
+		echo "watchman-make exited, restarting..."; \
+		sleep 1; \
+	done
