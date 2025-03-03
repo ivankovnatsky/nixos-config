@@ -2,7 +2,6 @@
 
 {
   imports = [
-    # ../../home/nixvim/plugins/nvim-jenkinsfile-linter
     ../../home/aichat-server.nix
     ../../home/aichat.nix
     ../../home/amethyst.nix
@@ -22,9 +21,8 @@
     ../../home/mpv.nix
     ../../home/nixvim
     ../../home/nixvim/plugins/avante
-    ../../home/nixvim/plugins/codeium
-    ../../home/nixvim/plugins/gen-nvim
     ../../home/nixvim/plugins/copilot-lua
+    ../../home/nixvim/plugins/gen-nvim
     ../../home/npm.nix
     ../../home/nushell.nix
     ../../home/pass.nix
