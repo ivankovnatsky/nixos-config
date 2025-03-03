@@ -1,14 +1,10 @@
 { inputs, ... }:
-{
-  # Home-manager base configuration
-  homeManagerModule =
-    {
-      hostname,
-      username,
-      extraImports ? [ ],
-    }:
+let
+  # Common home configuration function
+  makeHomeConfiguration = { hmModule }:
+    { hostname, username, extraImports ? [] }:
     [
-      inputs.home-manager.darwinModules.home-manager
+      hmModule
       (
         { config, system, ... }:
         {
@@ -78,4 +74,21 @@
         }
       )
     ];
+
+  # Darwin-specific home-manager module
+  darwinHomeManagerModule = makeHomeConfiguration {
+    hmModule = inputs.home-manager.darwinModules.home-manager;
+  };
+  
+  # NixOS-specific home-manager module
+  nixosHomeManagerModule = makeHomeConfiguration {
+    hmModule = inputs.home-manager.nixosModules.home-manager;
+  };
+in
+{
+  # For backward compatibility
+  homeManagerModule = darwinHomeManagerModule;
+  
+  # Expose both modules
+  inherit darwinHomeManagerModule nixosHomeManagerModule;
 }
