@@ -8,7 +8,7 @@
     # Machine specific configuration
     ./syncthing.nix
     ./ssh.nix
-    ./watchman.nix
+    ./tmux-nixos-rebuild.nix
     # ./netdata.nix
 
     # Uncomment after enrolling TPM2 (see docs/beelink.md for instructions)
