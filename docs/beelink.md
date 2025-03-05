@@ -157,6 +157,13 @@ If you encounter issues with authentication methods:
 - For TPM2, verify that your system has a TPM2 module and it's enabled in BIOS/UEFI
 - You can list enrolled authentication methods with: `sudo systemd-cryptenroll /dev/disk/by-uuid/d60d88b5-b111-42bc-a377-dd4cc5630f0f --list-enrolled`
 
+## BIOS
+
+Optimized fan settings to be:
+
+Fan off temperature limit: 30 -> 50°C
+Fan start temperature limit: 35 -> 60°C
+
 ## References
 
 - [balint's nixos-configs](https://codeberg.org/balint/nixos-configs) - Contains advanced TPM2 PCR configuration examples
