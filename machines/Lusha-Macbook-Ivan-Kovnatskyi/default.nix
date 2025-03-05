@@ -11,12 +11,13 @@ let
 in
 {
   imports = [
+    ../../darwin/darwin.nix
     ../../modules/darwin/dock
     ../../modules/darwin/pam
     ../../modules/darwin/sudo
     ../../modules/flags
     ../../modules/secrets
-    ../../darwin/darwin.nix
+    ../../nixos/rebuild-diff.nix
     ../../system/documentation.nix
     ../../system/nix.nix
   ];
