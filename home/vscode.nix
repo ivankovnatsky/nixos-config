@@ -8,6 +8,7 @@ let
     "diffEditor.ignoreTrimWhitespace" = false;
     "diffEditor.renderSideBySide" = false;
     "editor.lineNumbers" = "relative";
+    "editor.minimap.enabled" = false;
     "editor.renderFinalNewline" = "off";
     "editor.renderLineHighlight" = "all";
     "extensions.autoCheckUpdates" = false;
