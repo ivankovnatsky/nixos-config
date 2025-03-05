@@ -15,7 +15,7 @@
 
     # Data directory - this is where synchronized files will be stored
     dataDir = "/home/ivan";
-    
+
     # Config directory - this is where configuration is persisted
     configDir = "/home/ivan/.config/syncthing";
 
@@ -24,6 +24,10 @@
 
     # Open the required ports in the firewall
     openDefaultPorts = true;
+
+    # IMPORTANT: These control whether NixOS will override your manual configurations
+    # overrideDevices = true;  # Set to true if you want to manage devices in this file
+    # overrideFolders = true;  # Set to true if you want to manage folders in this file
 
     # Configure settings
     settings = {
@@ -48,24 +52,22 @@
         urAccepted = -1;
       };
 
-      # Devices and folders will be configured through the web UI
-      # or can be added here if you know the device IDs in advance
-
-      # Folder configuration will be managed through the web UI
-      # This is more secure and allows for easier management
-      folders = { };
+      # Define your devices here
+      devices = {
+        "Lusha-Macbook-Ivan-Kovnatskyi" = { 
+          id = config.secrets.syncthing.devices.LushaMacbookIvanKovnatskyi;
+        };
+      };
       
-      # Recommended folder setup (to be done through web UI):
-      # - Folder ID: nixos-config
-      # - Label: Sources/github.com/ivankovnatsky/nixos-config
-      # - Path: /home/ivan/Sources/github.com/ivankovnatsky/nixos-config
-
-      # Device configuration will be done through the web UI for security
-      # This allows you to add devices without storing sensitive IDs in config files
-      devices = { };
-      
-      # Note: After rebuilding, you'll need to add your MacBook device through
-      # the Syncthing web UI at http://192.168.50.169:8384/
+      # Define your folders here
+      folders = {
+        "Sources/github.com/ivankovnatsky/nixos-config" = {
+          id = "shtdy-s2c9s";
+          label = "Sources/github.com/ivankovnatsky/nixos-config";
+          path = "/home/ivan/Sources/github.com/ivankovnatsky/nixos-config";
+          devices = [ "Lusha-Macbook-Ivan-Kovnatskyi" ];
+        };
+      };
     };
   };
   
