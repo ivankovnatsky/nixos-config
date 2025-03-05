@@ -98,7 +98,6 @@ in
       "orbstack"
       "twingate"
       "windsurf"
-      "zed"
     ];
     masApps = {
       # Installed using Kandji
@@ -158,7 +157,6 @@ in
       { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/ChatGPT.app/"; }
-      { path = "/Applications/Zed.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }
       { path = "/Applications/MindMac.app/"; }

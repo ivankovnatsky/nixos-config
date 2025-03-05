@@ -38,7 +38,6 @@
     ../../home/vscode.nix
     ../../home/yamlint.nix
     ../../home/yt-dlp.nix
-    ../../home/zed
     ../../modules/flags
     ../../modules/secrets
   ];
