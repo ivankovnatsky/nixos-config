@@ -2,12 +2,24 @@
 
 {
   programs.nixvim = {
-    extraPlugins = with pkgs.vimPlugins; [
-      img-clip-nvim
-    ];
-    extraConfigLua = ''
-      require('img-clip').setup({ })
-    '';
+    # extraPlugins = with pkgs.vimPlugins; [
+      # FIXME:
+      #
+      # ```vim
+      # paste: Error executing lua:
+      # ...eovimPackages/start/avante.nvim/lua/avante/clipboard.lua:51: attempt
+      # to index upvalue 'ImgClip' (a nil value)^@stack
+      # traceback:^@^I...eovimPackages/start/avante.nvim/lua/avante/clipboard.lua:51:
+      # in function '
+      # paste_image'^@^I...f7a6nai4x-vimplugin-avante.nvim-0.0.16/plugin/avante.lua:35:
+      # in function
+      # <...f7a6nai4x-vimplugin-avante.nvim-0.0.16/plugin/avante.lua:25>
+      # ```
+      # img-clip-nvim
+    # ];
+    # extraConfigLua = ''
+    #   require('img-clip').setup({ })
+    # '';
     plugins = {
       # https://github.com/yetone/avante.nvim?tab=readme-ov-file#default-setup-configuration
       # https://github.com/nix-community/nixvim/blob/f4b0b81ef9eb4e37e75f32caf1f02d5501594811/tests/test-sources/plugins/by-name/avante/default.nix#L3
