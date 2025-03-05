@@ -40,7 +40,7 @@
   };
 
   i18n.defaultLocale = "en_US.UTF-8";
-  time.timeZone = "Europe/Kiev";
+  time.timeZone = "Europe/Kyiv";
   sound.enable = true;
 
   networking = {
