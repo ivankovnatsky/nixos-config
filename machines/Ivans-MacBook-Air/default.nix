@@ -16,7 +16,7 @@ in
     ../../modules/darwin/sudo
     ../../modules/flags
     ../../modules/secrets
-    ../../system/darwin.nix
+    ../../darwin/darwin.nix
     ../../system/documentation.nix
     ../../system/nix.nix
     ../../system/openssh.nix
