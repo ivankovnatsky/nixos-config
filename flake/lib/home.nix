@@ -1,8 +1,13 @@
 { inputs, ... }:
 let
   # Common home configuration function
-  makeHomeConfiguration = { hmModule }:
-    { hostname, username, extraImports ? [] }:
+  makeHomeConfiguration =
+    { hmModule }:
+    {
+      hostname,
+      username,
+      extraImports ? [ ],
+    }:
     [
       hmModule
       (
@@ -79,7 +84,7 @@ let
   darwinHomeManagerModule = makeHomeConfiguration {
     hmModule = inputs.home-manager.darwinModules.home-manager;
   };
-  
+
   # NixOS-specific home-manager module
   nixosHomeManagerModule = makeHomeConfiguration {
     hmModule = inputs.home-manager.nixosModules.home-manager;
@@ -88,7 +93,7 @@ in
 {
   # For backward compatibility
   homeManagerModule = darwinHomeManagerModule;
-  
+
   # Expose both modules
   inherit darwinHomeManagerModule nixosHomeManagerModule;
 }

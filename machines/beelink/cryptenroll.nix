@@ -29,7 +29,7 @@
       # Enable systemd in initrd for better TPM2 support
       systemd = {
         enable = true;
-        emergencyAccess = true;  # Allow emergency login if needed
+        emergencyAccess = true; # Allow emergency login if needed
       };
     };
   };
