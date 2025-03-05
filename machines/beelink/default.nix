@@ -2,9 +2,8 @@
 
 {
   imports = [
-    # Base and hardware configuration.
+    # Base configuration.
     ./configuration.nix
-    ./hardware-configuration.nix
 
     # Machine specific configuration
     ./syncthing.nix
