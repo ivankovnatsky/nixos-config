@@ -13,10 +13,10 @@
     user = "ivan";
     group = "users";
 
-    # Data directory - this is where configuration is persisted
-    dataDir = "/home/ivan/.config/syncthing";
+    # Data directory - this is where synchronized files will be stored
+    dataDir = "/home/ivan";
     
-    # Important: This ensures configuration is preserved between rebuilds
+    # Config directory - this is where configuration is persisted
     configDir = "/home/ivan/.config/syncthing";
 
     # Configure to listen on local network (needed for headless access)
@@ -25,7 +25,7 @@
     # Open the required ports in the firewall
     openDefaultPorts = true;
 
-    # Configure settings (previously extraOptions)
+    # Configure settings
     settings = {
       # GUI settings
       gui = {
@@ -81,4 +81,3 @@
   # settings.gui.user = "username";
   # settings.gui.password = "hashed-password";
 }
-
