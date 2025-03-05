@@ -1,3 +1,4 @@
+{ config, ... }:
 {
   # Enable the Syncthing service
   services.syncthing = {
@@ -54,27 +55,43 @@
         "Lusha-Macbook-Ivan-Kovnatskyi" = { 
           id = config.secrets.syncthing.devices.LushaMacbookIvanKovnatskyi;
         };
+        "Ivans-MacBook-Air" = {
+          id = config.secrets.syncthing.devices.IvansMacBookAir;
+        };
+        "Ivans-MacBook-Pro" = {
+          id = config.secrets.syncthing.devices.IvansMacBookPro;
+        };
       };
-      
+
       # Define your folders here
       folders = {
         "Sources/github.com/ivankovnatsky/nixos-config" = {
           id = "shtdy-s2c9s";
           label = "Sources/github.com/ivankovnatsky/nixos-config";
           path = "/home/ivan/Sources/github.com/ivankovnatsky/nixos-config";
-          devices = [ "Lusha-Macbook-Ivan-Kovnatskyi" ];
+          devices = [
+            "Ivans-MacBook-Air"
+            "Ivans-MacBook-Pro"
+            "Lusha-Macbook-Ivan-Kovnatskyi"
+          ];
         };
       };
     };
   };
-  
+
   # Open firewall ports for Syncthing
   # Note: These are redundant if openDefaultPorts = true, but included for clarity
   networking.firewall = {
-    allowedTCPPorts = [ 8384 22000 ];  # 8384 for Web UI, 22000 for data transfer
-    allowedUDPPorts = [ 22000 21027 ];  # 22000 for data transfer, 21027 for discovery
+    allowedTCPPorts = [
+      8384
+      22000
+    ]; # 8384 for Web UI, 22000 for data transfer
+    allowedUDPPorts = [
+      22000
+      21027
+    ]; # 22000 for data transfer, 21027 for discovery
   };
-  
+
   # Note: For security in a production environment, you might want to add authentication
   # You can do this by adding user/password to the gui settings:
   # settings.gui.user = "username";
