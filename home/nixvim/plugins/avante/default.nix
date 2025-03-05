@@ -3,19 +3,19 @@
 {
   programs.nixvim = {
     # extraPlugins = with pkgs.vimPlugins; [
-      # FIXME:
-      #
-      # ```vim
-      # paste: Error executing lua:
-      # ...eovimPackages/start/avante.nvim/lua/avante/clipboard.lua:51: attempt
-      # to index upvalue 'ImgClip' (a nil value)^@stack
-      # traceback:^@^I...eovimPackages/start/avante.nvim/lua/avante/clipboard.lua:51:
-      # in function '
-      # paste_image'^@^I...f7a6nai4x-vimplugin-avante.nvim-0.0.16/plugin/avante.lua:35:
-      # in function
-      # <...f7a6nai4x-vimplugin-avante.nvim-0.0.16/plugin/avante.lua:25>
-      # ```
-      # img-clip-nvim
+    # FIXME:
+    #
+    # ```vim
+    # paste: Error executing lua:
+    # ...eovimPackages/start/avante.nvim/lua/avante/clipboard.lua:51: attempt
+    # to index upvalue 'ImgClip' (a nil value)^@stack
+    # traceback:^@^I...eovimPackages/start/avante.nvim/lua/avante/clipboard.lua:51:
+    # in function '
+    # paste_image'^@^I...f7a6nai4x-vimplugin-avante.nvim-0.0.16/plugin/avante.lua:35:
+    # in function
+    # <...f7a6nai4x-vimplugin-avante.nvim-0.0.16/plugin/avante.lua:25>
+    # ```
+    # img-clip-nvim
     # ];
     # extraConfigLua = ''
     #   require('img-clip').setup({ })

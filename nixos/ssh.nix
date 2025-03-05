@@ -2,7 +2,7 @@
   # Enable the OpenSSH daemon
   services.openssh = {
     enable = true;
-    
+
     # All settings moved to the settings attribute as per NixOS warnings
     settings = {
       # Permit root login through SSH for initial setup only
@@ -11,7 +11,7 @@
 
       # Allow password authentication for initial setup
       PasswordAuthentication = true;
-      
+
       # Enable X11 forwarding if needed
       # X11Forwarding = true;
 

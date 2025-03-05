@@ -4,7 +4,9 @@ let
   jsonFormat = pkgs.formats.json { };
 
   editorSettings = {
-    "[nix]" = { "editor.tabSize" = 2; };
+    "[nix]" = {
+      "editor.tabSize" = 2;
+    };
     "diffEditor.ignoreTrimWhitespace" = false;
     "diffEditor.renderSideBySide" = false;
     "editor.lineNumbers" = "relative";

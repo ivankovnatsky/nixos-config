@@ -6,8 +6,8 @@ in
 {
   inherit lib;
   darwinConfigurations = machines.darwinConfigurations { inherit (lib) makeFullDarwinConfig; };
-  nixosConfigurations = machines.nixosConfigurations { 
-    inherit (lib) makeNixosConfig makeStableNixosConfig; 
+  nixosConfigurations = machines.nixosConfigurations {
+    inherit (lib) makeNixosConfig makeStableNixosConfig;
   };
   overlay = import ./overlay.nix { inherit inputs; };
 }
