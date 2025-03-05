@@ -7,13 +7,12 @@
 
     # Machine specific configuration
     ./syncthing.nix
+    ./ssh.nix
     ./watchman.nix
+    # ./netdata.nix
 
     # Uncomment after enrolling TPM2 (see docs/beelink.md for instructions)
     ./cryptenroll.nix
-
-    # System services
-    ../../nixos/ssh.nix
   ];
 
   # Enable TPM2 support (required for TPM2 enrollment)
@@ -21,6 +20,7 @@
 
   # Additional system packages
   environment.systemPackages = with pkgs; [
+    btop
     tmux
   ];
 }
