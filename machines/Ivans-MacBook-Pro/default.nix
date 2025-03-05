@@ -166,5 +166,5 @@ in
   #      logging in as that user impossible. you can fix it with:
   #      programs.zsh.enable = true;
   programs.zsh.enable = true;
-  programs.fish.enable = config.flags.enablefishshell;
+  programs.fish.enable = config.flags.enableFishShell;
 }
