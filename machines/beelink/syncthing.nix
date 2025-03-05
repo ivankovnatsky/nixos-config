@@ -1,6 +1,3 @@
-# Syncthing configuration for headless NixOS machine
-{ config, lib, pkgs, ... }:
-
 {
   # Enable the Syncthing service
   services.syncthing = {
