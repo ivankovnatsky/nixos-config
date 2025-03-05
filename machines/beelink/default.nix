@@ -8,6 +8,7 @@
 
     # Machine specific configuration
     ./syncthing.nix
+    ./watchman.nix
     
     # Uncomment after enrolling TPM2 (see docs/beelink.md for instructions)
     ./cryptenroll.nix
