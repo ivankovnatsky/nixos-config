@@ -11,6 +11,9 @@ NIX_EXTRA_FLAGS := --extra-experimental-features flakes --extra-experimental-fea
 COMMON_REBUILD_FLAGS := --verbose -L --flake .
 NIXOS_EXTRA_FLAGS := --use-remote-sudo
 
+# Mark targets that don't create files as .PHONY so Make will always run them
+.PHONY: default darwin nixos rebuild/nixos rebuild-impure/nixos trigger-rebuild flake-update-main flake-update-nixvim flake-update-homebrew rebuild-watchman rebuild-watchman-nixos
+
 # Default target will run rebuild and start watchman based on platform
 ifeq (${PLATFORM}, Darwin)
 default: darwin rebuild-watchman

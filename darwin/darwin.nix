@@ -29,7 +29,7 @@
 
   # Auto upgrade nix package and the daemon service.
   #    Failed assertions:
-  #     - The option definition `services.nix-daemon.enable' in `/nix/store/sk3ii930qwi54q5cqgryg9lqs8xz4mc1-source/system/darwin.nix' no longer has any effect; please remove it.
+  #     - The option definition `services.nix-daemon.enable' in `/nix/store/sk3ii930qwi54q5cqgryg9lqs8xz4mc1-source/darwin/darwin.nix' no longer has any effect; please remove it.
   #     nix-darwin now manages nix-daemon unconditionally when
   #     `nix.enable` is on.
   # waiting for changes
