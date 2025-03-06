@@ -1,6 +1,15 @@
-# beelink
+# Beelink Homelab Server
+
+## Services
+
+### DNS Server
+
+The machine is configured as a local DNS server using dnsmasq. It resolves the following domains:
+
+- `sync.beelink.home.local` → 192.168.50.169
+- `beelink.home.local` → 192.168.50.169
 
 ## TODO
 
-- [ ] Test Configure DNS server
-- [ ] Configure service http routing dns.name.local -> localhost:8384 and so on
+- [x] Configure DNS server
+- [x] Configure service http routing for sync.beelink.home.local -> 192.168.50.169:8384
