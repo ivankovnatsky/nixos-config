@@ -15,7 +15,7 @@
     extraConfig = ''
       # Main landing page for beelink
       # FIXME: Does not work for now yet.
-      beelink.home.local:80 {
+      beelink.home.lan:80 {
         bind 192.168.50.169
 
         # Disable TLS for local development
@@ -29,7 +29,7 @@
       }
 
       # Syncthing with 4-level domain
-      sync.beelink.home.local:80 {
+      sync.beelink.home.lan:80 {
         bind 192.168.50.169
         
         # Disable TLS for local development
