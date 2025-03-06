@@ -37,6 +37,10 @@
       host-record = [
         "sync.beelink.home.lan,192.168.50.169"
         "beelink.home.lan,192.168.50.169"
+        "plex.beelink.home.lan,192.168.50.169"
+        "transmission.beelink.home.lan,192.168.50.169"
+        "radarr.beelink.home.lan,192.168.50.169"
+        "prowlarr.beelink.home.lan,192.168.50.169"
       ];
 
       # Add wildcard domain support

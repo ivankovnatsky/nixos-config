@@ -123,7 +123,7 @@ When using TPM2 authentication with multiple encrypted partitions (root and swap
 
 3. **Fallback Behavior**: If TPM2 authentication fails, you'll be prompted for the passphrase once, and NixOS will use it to unlock both partitions.
 
-### Un-enrollment
+#### Un-enrollment
 
 If you need to remove an authentication method from a LUKS device, you can use the `systemd-cryptenroll` command with the `--wipe-slot` option. First, list the enrolled authentication methods to identify the slot you want to remove:
 
@@ -150,12 +150,102 @@ sudo systemd-cryptenroll /dev/disk/by-uuid/d60d88b5-b111-42bc-a377-dd4cc5630f0f 
 
 **Important**: Always ensure you have at least one working authentication method remaining after un-enrollment. Otherwise, you might lose access to your encrypted data.
 
-### Troubleshooting
+#### Troubleshooting
 
 If you encounter issues with authentication methods:
 
 - For TPM2, verify that your system has a TPM2 module and it's enabled in BIOS/UEFI
 - You can list enrolled authentication methods with: `sudo systemd-cryptenroll /dev/disk/by-uuid/d60d88b5-b111-42bc-a377-dd4cc5630f0f --list-enrolled`
+
+## Media Server Setup
+
+### Overview
+
+The media server setup consists of four main components working together:
+
+1. **Radarr**: Manages movie downloads and library organization
+   - Monitors for new movies
+   - Sends download requests to Transmission
+   - Manages movie files after download
+   - API Key found in Settings -> General
+
+2. **Prowlarr**: Indexer management
+   - Manages and proxies requests to torrent trackers
+   - Integrates with Radarr via API
+   - Supports multiple trackers (e.g., Toloka.to)
+
+3. **Transmission**: Download client
+   - Handles torrent downloads
+   - Downloads to `/media/downloads/movies`
+   - Configured without authentication for local network access
+
+4. **Plex**: Media streaming server
+   - Serves media files for streaming
+   - Manages movie metadata and library
+   - Accessible at `http://plex.beelink.home.lan` or `http://192.168.50.169:32400/web`
+
+### Directory Structure
+
+```
+/media/
+├── downloads/
+│   └── movies/     # Temporary download location
+└── movies/         # Final movie library location
+```
+
+### Initial Setup
+
+1. **Prowlarr Setup**:
+   - Access at `http://prowlarr.beelink.home.lan`
+   - Add indexers (e.g., Toloka.to):
+     - Go to Settings -> Indexers
+     - Click '+' to add new indexer
+     - Configure indexer settings (URL, credentials)
+   - Connect to Radarr:
+     - Go to Settings -> Apps
+     - Add Radarr application
+     - Use Radarr's API key from Settings -> General
+     - Set Radarr URL: `http://localhost:7878`
+
+2. **Radarr Setup**:
+   - Access at `http://radarr.beelink.home.lan`
+   - Add Transmission as download client:
+     - Settings -> Download Clients
+     - Add Transmission
+     - Host: `localhost`
+     - Port: `9091`
+   - Configure movie paths:
+     - Download path: `/media/downloads/movies`
+     - Library path: `/media/movies`
+
+3. **Transmission Setup**:
+   - Access at `http://transmission.beelink.home.lan`
+   - Downloads automatically go to configured paths
+   - No authentication required on local network
+
+4. **Plex Setup**:
+   - Initial setup: Access via `http://192.168.50.169:32400/web`
+   - Add Movies library:
+     - Click '+' next to Libraries
+     - Choose 'Movies' type
+     - Add folder: `/media/movies`
+     - Configure scanning options as needed
+   - After initial setup, can use `http://plex.beelink.home.lan`
+
+### Workflow
+
+1. Add a movie in Radarr
+2. Radarr finds the movie and sends it to Transmission
+3. Transmission downloads to `/media/downloads/movies`
+4. Radarr moves completed download to `/media/movies`
+5. Plex detects new movie and adds it to library
+
+### Troubleshooting
+
+- If Plex shows "Get Media Server" screen:
+  - Access via direct IP: `http://192.168.50.169:32400/web`
+  - Use incognito/private browser window
+  - Clear browser cookies for Plex domain
 
 ## BIOS
 

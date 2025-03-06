@@ -5,8 +5,11 @@
     # Base configuration.
     ./configuration.nix
 
-    # Machine specific configuration
     ./syncthing.nix
+
+    # Uncomment after enrolling TPM2 (see docs/beelink.md for instructions)
+    ./cryptenroll.nix
+
     ./ssh.nix
     ./tmux-nixos-rebuild.nix
     # ./netdata.nix
@@ -14,8 +17,13 @@
     ./dns.nix
     ./http-routing.nix
 
-    # Uncomment after enrolling TPM2 (see docs/beelink.md for instructions)
-    ./cryptenroll.nix
+    # Media
+    # TODO: Consider using module? https://github.com/rasmus-kirk/nixarr
+    ./plex.nix
+    ./radarr.nix
+    ./sonarr.nix
+    ./transmission.nix
+    ./prowlarr.nix
   ];
 
   # Enable TPM2 support (required for TPM2 enrollment)
