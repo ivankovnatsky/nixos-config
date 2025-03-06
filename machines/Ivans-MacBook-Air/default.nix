@@ -14,6 +14,7 @@ in
     ../../modules/darwin/dock
     ../../modules/darwin/pam
     ../../modules/darwin/sudo
+    ../../modules/darwin/local-dns-resolver
     ../../modules/flags
     ../../modules/secrets
     ../../darwin/darwin.nix
@@ -92,6 +93,15 @@ in
       no_quarantine = true;
     };
   };
+  services.local-dns-resolver = {
+    enable = true;
+    zones = {
+      "home.lan" = {
+        nameserver = "192.168.50.169";
+      };
+    };
+  };
+
   local = {
     sudo = {
       enable = true;
