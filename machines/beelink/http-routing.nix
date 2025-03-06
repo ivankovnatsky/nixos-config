@@ -38,6 +38,62 @@
         # Proxy to Syncthing on its configured address
         reverse_proxy 192.168.50.169:8384
       }
+
+      # Prowlarr
+      prowlarr.beelink.home.lan:80 {
+        bind 192.168.50.169
+        
+        # Disable TLS for local development
+        tls internal
+
+        # Proxy to Prowlarr
+        reverse_proxy 127.0.0.1:9696
+      }
+
+      # Radarr Web UI
+      radarr.beelink.home.lan:80 {
+        bind 192.168.50.169
+        
+        # Disable TLS for local development
+        tls internal
+
+        # Proxy to Radarr
+        reverse_proxy 127.0.0.1:7878
+      }
+
+      # Transmission Web UI
+      transmission.beelink.home.lan:80 {
+        bind 192.168.50.169
+        
+        # Disable TLS for local development
+        tls internal
+
+        # Proxy to Transmission WebUI
+        reverse_proxy 127.0.0.1:9091
+      }
+
+      # Plex Media Server
+      plex.beelink.home.lan:80 {
+        bind 192.168.50.169
+        
+        # Disable TLS for local development
+        tls internal
+
+        # Proxy to Plex with WebSocket support
+        reverse_proxy 127.0.0.1:32400 {
+          # Enable WebSocket support
+          header_up X-Real-IP {remote_host}
+          header_up Host {host}
+          header_up X-Forwarded-For {remote_host}
+          header_up X-Forwarded-Proto {scheme}
+          
+          # Increase timeouts for streaming
+          transport http {
+            keepalive 12h
+            keepalive_idle_conns 100
+          }
+        }
+      }
     '';
     
     # Keep an empty virtualHosts to avoid conflicts
