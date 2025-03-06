@@ -161,8 +161,8 @@ If you encounter issues with authentication methods:
 
 Optimized fan settings to be:
 
-Fan off temperature limit: 30 -> 50°C
-Fan start temperature limit: 35 -> 60°C
+Fan off temperature limit: 30 -> 60°C
+Fan start temperature limit: 35 -> 70°C
 
 ## References
 
