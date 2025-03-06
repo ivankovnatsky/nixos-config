@@ -11,6 +11,9 @@
     ./tmux-nixos-rebuild.nix
     # ./netdata.nix
 
+    ./dns.nix
+    ./http-routing.nix
+
     # Uncomment after enrolling TPM2 (see docs/beelink.md for instructions)
     ./cryptenroll.nix
   ];
