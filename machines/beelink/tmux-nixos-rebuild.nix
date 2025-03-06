@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   # Create a systemd service that starts a tmux session on boot
@@ -6,7 +6,7 @@
     description = "Start tmux session with nixos-config";
     wantedBy = [ "multi-user.target" ];
     after = [ "network.target" ];
-    
+
     # Define a specific user to run the tmux session
     serviceConfig = {
       Type = "forking";
@@ -21,27 +21,29 @@
 
         # Create a new detached session with a named window
         ${pkgs.tmux}/bin/tmux new-session -d -s nixos-config -n rebuild -c /home/ivan/Sources/github.com/ivankovnatsky/nixos-config
-        
+
         # Increase session name length to show full name
         ${pkgs.tmux}/bin/tmux set-option -g status-left-length 30
 
         # Create a custom script for watchman-based rebuilds
         REBUILD_SCRIPT="${pkgs.writeShellScript "nixos-watchman-rebuild" ''
           cd /home/ivan/Sources/github.com/ivankovnatsky/nixos-config
-          
+
           echo "Starting watchman-based rebuild for NixOS..."
           echo "Press Ctrl+C to stop watching."
-          
+
           # Set PATH to include sudo
           export PATH="/run/wrappers/bin:$PATH"
-          
+
           # Initial build
-          echo "\nPerforming initial build..."
+          echo ""
+          echo "Performing initial build..."
           ${pkgs.nixos-rebuild}/bin/nixos-rebuild switch --use-remote-sudo --verbose -L --flake .
-          
+
           # Then watch for changes
           while true; do
-            echo "\nWatching for changes..."
+            echo ""
+            echo "Watching for changes..."
             # Use watchman-make to watch for changes
             ${pkgs.watchman-make}/bin/watchman-make \
                 --pattern "**/*" \
