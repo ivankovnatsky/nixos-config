@@ -24,6 +24,8 @@
     ./sonarr.nix
     ./transmission.nix
     ./prowlarr.nix
+
+    ../../modules/secrets
   ];
 
   # Enable TPM2 support (required for TPM2 enrollment)
