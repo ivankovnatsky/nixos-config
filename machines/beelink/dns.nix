@@ -1,3 +1,4 @@
+{ config, ... }:
 {
   # Enable dnsmasq for local DNS resolution
   services.dnsmasq = {
@@ -11,10 +12,7 @@
 
       # Use Google DNS as upstream servers
       # Use NextDNS IPs here directly?
-      server = [
-        "1.1.1.1"  # Cloudflare DNS
-        "8.8.8.8"  # Google DNS
-      ];
+      server = config.secrets.nextDnsServers;
 
       # Local domain configuration
       domain = "home.lan";
@@ -40,6 +38,7 @@
         "plex.beelink.home.lan,192.168.50.169"
         "transmission.beelink.home.lan,192.168.50.169"
         "radarr.beelink.home.lan,192.168.50.169"
+        "sonarr.beelink.home.lan,192.168.50.169"
         "prowlarr.beelink.home.lan,192.168.50.169"
       ];
 
