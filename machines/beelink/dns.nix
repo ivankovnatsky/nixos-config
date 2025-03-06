@@ -3,42 +3,45 @@
   services.dnsmasq = {
     enable = true;
     settings = {
-      # Listen on all interfaces
-      interface = "";
-      bind-interfaces = false;
+      # Listen on specific addresses
       listen-address = "127.0.0.1,192.168.50.169";
 
       # Don't use /etc/resolv.conf
       no-resolv = true;
 
       # Use Google DNS as upstream servers
+      # Use NextDNS IPs here directly?
       server = [
-        # "/home.local/127.0.0.1"
-        "/home.local/"
-        "8.8.8.8"
-        "8.8.4.4"
+        "1.1.1.1"  # Cloudflare DNS
+        "8.8.8.8"  # Google DNS
       ];
 
       # Local domain configuration
-      domain = "home.local";
-      local = "/home.local/";
+      domain = "home.lan";
+      local = "/home.lan/";
       domain-needed = true;
       expand-hosts = true;
       bogus-priv = true;
 
-      # Make it explicitly authoritative for home.local
-      auth-zone = "home.local";
-      auth-server = "home.local,192.168.50.169";
+      # Add search domain for clients
+      dhcp-option = "option:domain-search,home.lan";
+
+      # Make it explicitly authoritative for home.lan
+      auth-zone = "home.lan";
+      auth-server = "home.lan";
+
+      # Enable DNS forwarding
+      dns-forward-max = 150;
 
       # Local DNS entries - using host-record for better multi-level domain support
       host-record = [
-        "sync.beelink.home.local,192.168.50.169"
-        "beelink.home.local,192.168.50.169"
+        "sync.beelink.home.lan,192.168.50.169"
+        "beelink.home.lan,192.168.50.169"
       ];
 
       # Add wildcard domain support
       address = [
-        "/#.beelink.home.local/192.168.50.169"
+        "/#.beelink.home.lan/192.168.50.169"
       ];
 
       # Log queries (useful for debugging)
@@ -57,7 +60,7 @@
   # Add entries to /etc/hosts for local resolution
   networking.extraHosts = ''
     # Local domain entries
-    192.168.50.169 sync.beelink.home.local
-    192.168.50.169 beelink.home.local
+    192.168.50.169 sync.beelink.home.lan
+    192.168.50.169 beelink.home.lan
   '';
 }
