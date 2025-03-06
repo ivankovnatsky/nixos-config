@@ -1,5 +1,13 @@
 # Beelink Homelab Server
 
+## Configure
+
+### SSH
+
+```console
+ssh-copy-id 192.168.50.169
+```
+
 ## Services
 
 ### DNS Server
