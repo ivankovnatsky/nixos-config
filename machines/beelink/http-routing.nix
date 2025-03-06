@@ -31,10 +31,10 @@
       # Syncthing with 4-level domain
       sync.beelink.home.lan:80 {
         bind 192.168.50.169
-        
+
         # Disable TLS for local development
         tls internal
-        
+
         # Proxy to Syncthing on its configured address
         reverse_proxy 192.168.50.169:8384
       }
@@ -42,7 +42,7 @@
       # Prowlarr
       prowlarr.beelink.home.lan:80 {
         bind 192.168.50.169
-        
+
         # Disable TLS for local development
         tls internal
 
@@ -53,12 +53,23 @@
       # Radarr Web UI
       radarr.beelink.home.lan:80 {
         bind 192.168.50.169
-        
+
         # Disable TLS for local development
         tls internal
 
         # Proxy to Radarr
         reverse_proxy 127.0.0.1:7878
+      }
+
+      # Sonarr Web UI
+      sonarr.beelink.home.lan:80 {
+        bind 192.168.50.169
+
+        # Disable TLS for local development
+        tls internal
+
+        # Proxy to Sonarr
+        reverse_proxy 127.0.0.1:8989
       }
 
       # Transmission Web UI
