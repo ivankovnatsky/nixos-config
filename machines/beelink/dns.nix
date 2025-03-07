@@ -1,9 +1,12 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  lib,
+  ...
+}:
 
 {
-  environment.systemPackages = with pkgs; [ stubby ];
-
   # Enable stubby for DNS-over-TLS resolution
+  # https://dnsprivacy.org/dns_privacy_daemon_-_stubby/configuring_stubby/
   services.stubby = {
     enable = true;
     logLevel = "info";
@@ -35,7 +38,10 @@
     alwaysKeepRunning = true;
     settings = {
       # Listen on specific addresses
-      listen-address = [ "127.0.0.1" "192.168.50.169" ];
+      listen-address = [
+        "127.0.0.1"
+        "192.168.50.169"
+      ];
 
       # Don't use /etc/resolv.conf
       no-resolv = true;
