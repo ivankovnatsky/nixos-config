@@ -1,18 +1,50 @@
-{ config, ... }:
+{ config, pkgs, lib, ... }:
+
 {
+  environment.systemPackages = with pkgs; [ stubby ];
+
+  # Enable stubby for DNS-over-TLS resolution
+  services.stubby = {
+    enable = true;
+    logLevel = "info";
+    settings = {
+      resolution_type = "GETDNS_RESOLUTION_STUB";
+      dns_transport_list = [ "GETDNS_TRANSPORT_TLS" ];
+      tls_authentication = "GETDNS_AUTHENTICATION_REQUIRED";
+      tls_query_padding_blocksize = 128;
+      round_robin_upstreams = 1;
+      idle_timeout = 10000;
+      listen_addresses = [ "127.0.0.1@5453" ];
+      upstream_recursive_servers = [
+        {
+          address_data = lib.elemAt config.secrets.nextDnsServers 0;
+          tls_auth_name = config.secrets.nextDnsEndpoint;
+        }
+        {
+          address_data = lib.elemAt config.secrets.nextDnsServers 1;
+          tls_auth_name = config.secrets.nextDnsEndpoint;
+        }
+      ];
+    };
+  };
+
   # Enable dnsmasq for local DNS resolution
   services.dnsmasq = {
     enable = true;
+    resolveLocalQueries = true;
+    alwaysKeepRunning = true;
     settings = {
       # Listen on specific addresses
-      listen-address = "127.0.0.1,192.168.50.169";
+      listen-address = [ "127.0.0.1" "192.168.50.169" ];
 
       # Don't use /etc/resolv.conf
       no-resolv = true;
 
-      # Use Google DNS as upstream servers
-      # Use NextDNS IPs here directly?
-      server = config.secrets.nextDnsServers;
+      # Use NextDNS servers directly for now
+      # server = config.secrets.nextDnsServers;
+
+      # Use stubby as upstream DNS-over-TLS resolver
+      server = [ "127.0.0.1#5453" ];
 
       # Set default TTL to 60 seconds
       max-ttl = 60;
@@ -25,7 +57,7 @@
       bogus-priv = true;
 
       # Add search domain for clients
-      dhcp-option = "option:domain-search,home.lan";
+      dhcp-option = [ "option:domain-search,home.lan" ];
 
       # Make it explicitly authoritative for home.lan
       auth-zone = "home.lan";
@@ -35,7 +67,6 @@
       dns-forward-max = 150;
 
       # Local DNS entries - using host-record for better multi-level domain support
-      # FIXME: Use wildcard to point to single IP?
       host-record = [
         "sync.beelink.home.lan,192.168.50.169"
         "sync.pro.home.lan,192.168.50.169"
@@ -48,9 +79,7 @@
       ];
 
       # Add wildcard domain support
-      address = [
-        "/#.beelink.home.lan/192.168.50.169"
-      ];
+      address = [ "/#.beelink.home.lan/192.168.50.169" ];
 
       # Log queries (useful for debugging)
       log-queries = true;
