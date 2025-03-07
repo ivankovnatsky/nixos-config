@@ -64,6 +64,7 @@
       (python312.withPackages (ps: with ps; [ grip ]))
       aria2
       bat
+      battery-toolkit # Local overlay
       cargo
       coconutbattery # macOS: Battery
       delta

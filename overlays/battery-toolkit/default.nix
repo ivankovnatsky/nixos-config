@@ -1,26 +1,38 @@
 {
   lib,
-  fetchzip,
+  fetchurl,
+  unzip,
   stdenv,
 }:
 
 let
-  version = "1.4";
+  version = "1.6";
 in
 
 stdenv.mkDerivation rec {
   pname = "battery-toolkit";
   inherit version;
 
-  # https://github.com/mhaeuser/Battery-Toolkit/releases/download/1.4/Battery-Toolkit-1.4.zip
-  src = fetchzip {
+  src = fetchurl {
     url = "https://github.com/mhaeuser/Battery-Toolkit/releases/download/${version}/Battery-Toolkit-${version}.zip";
-    hash = "sha256-bTpDr83xKoBxV8EQZBMQU0g9pRXuJNHy3MtaeO1j/M0=";
+    hash = "sha256-Gk2ZtV5JtpRl9SbXg96KL6XhZIOUmJ9sgyjM2dSw1z8=";
   };
 
+  nativeBuildInputs = [ unzip ];
+
+  sourceRoot = ".";
+
+  dontStrip = true;
+  dontFixup = true;
+
+  unpackPhase = ''
+    unzip $src
+  '';
+
   installPhase = ''
-    mkdir -p $out/Applications
-    cp -R . "$out/Applications/Battery Toolkit.app"
+    ls -la
+    mkdir -p "$out/Applications"
+    mv "Battery Toolkit.app" "$out/Applications/"
   '';
 
   meta = with lib; {
