@@ -15,6 +15,7 @@
       dns_transport_list = [ "GETDNS_TRANSPORT_TLS" ];
       tls_authentication = "GETDNS_AUTHENTICATION_REQUIRED";
       tls_query_padding_blocksize = 128;
+      dnssec_return_status = "GETDNS_EXTENSION_TRUE";
       round_robin_upstreams = 1;
       idle_timeout = 10000;
       listen_addresses = [ "127.0.0.1@5453" ];
