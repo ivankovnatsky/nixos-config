@@ -1,3 +1,3 @@
 # TODO
 
-- [ ] Refactor system/ into nixos/ and darwin/ dirs
+- [x] Refactor system/ into nixos/ and darwin/ dirs
