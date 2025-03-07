@@ -14,6 +14,9 @@
       # Use NextDNS IPs here directly?
       server = config.secrets.nextDnsServers;
 
+      # Set default TTL to 60 seconds
+      max-ttl = 60;
+
       # Local domain configuration
       domain = "home.lan";
       local = "/home.lan/";
@@ -34,6 +37,7 @@
       # Local DNS entries - using host-record for better multi-level domain support
       host-record = [
         "sync.beelink.home.lan,192.168.50.169"
+        "sync.pro.home.lan,192.168.50.169"
         "beelink.home.lan,192.168.50.169"
         "plex.beelink.home.lan,192.168.50.169"
         "transmission.beelink.home.lan,192.168.50.169"
@@ -59,11 +63,4 @@
     # Ensure the firewall is enabled
     enable = true;
   };
-
-  # Add entries to /etc/hosts for local resolution
-  networking.extraHosts = ''
-    # Local domain entries
-    192.168.50.169 sync.beelink.home.lan
-    192.168.50.169 beelink.home.lan
-  '';
 }

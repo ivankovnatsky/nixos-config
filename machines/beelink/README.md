@@ -23,3 +23,5 @@ The machine is configured as a local DNS server using dnsmasq. It resolves the f
 
 - [x] Configure DNS server
 - [x] Configure service http routing for sync.beelink.home.lan -> 192.168.50.169:8384
+- [ ] Add local https
+- [ ] Move data to external drive when got one
