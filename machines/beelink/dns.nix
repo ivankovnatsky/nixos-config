@@ -35,6 +35,7 @@
       dns-forward-max = 150;
 
       # Local DNS entries - using host-record for better multi-level domain support
+      # FIXME: Use wildcard to point to single IP?
       host-record = [
         "sync.beelink.home.lan,192.168.50.169"
         "sync.pro.home.lan,192.168.50.169"
