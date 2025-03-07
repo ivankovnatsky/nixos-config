@@ -39,6 +39,7 @@ in
     package = pkgs.vscode;
     enableUpdateCheck = false;
     enableExtensionUpdateCheck = false;
+    mutableExtensionsDir = false;
     userSettings = editorSettings;
 
     extensions = with pkgs.vscode-extensions; [
