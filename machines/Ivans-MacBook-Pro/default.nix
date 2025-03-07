@@ -89,7 +89,9 @@ in
       "hammerspoon"
       "windsurf"
     ];
-    masApps = { };
+    masApps = { 
+      "Dark Reader for Safari" = 1438243180;
+    };
     caskArgs = {
       no_quarantine = true;
     };
