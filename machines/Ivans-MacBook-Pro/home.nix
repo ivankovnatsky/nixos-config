@@ -15,6 +15,7 @@
     ../../home/mpv.nix
     ../../home/nixvim
     ../../home/nixvim/plugins/avante
+    ../../home/nixvim/plugins/copilot-lua
     ../../home/pass.nix
     ../../home/scripts.nix
     ../../home/shell.nix
