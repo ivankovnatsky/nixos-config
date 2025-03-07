@@ -6,7 +6,7 @@
       # TODO: Make italic
       settings = {
         trouble = true;
-        current_line_blame = true;
+        current_line_blame = false;
         current_line_blame_formatter = "<abbrev_sha> - <author>, <author_time:%R> - <summary>";
         signs = {
           add = {
