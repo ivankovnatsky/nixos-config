@@ -5,6 +5,8 @@
     # Base configuration.
     ./configuration.nix
 
+    ./sudo.nix
+
     ./syncthing.nix
 
     # Uncomment after enrolling TPM2 (see docs/beelink.md for instructions)
