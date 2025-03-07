@@ -102,6 +102,7 @@
       aws-sso-creds
       awscli2
       backup-home
+      battery-toolkit # Local overlay
       cloudflared
       coreutils
       defaultbrowser
