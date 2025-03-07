@@ -18,7 +18,7 @@
       beelink.home.lan:80 {
         bind 192.168.50.169
 
-        # Disable TLS for local development
+        # Disable TLS
         tls internal
 
         # Serve static files from this directory
@@ -28,22 +28,33 @@
         file_server
       }
 
-      # Syncthing with 4-level domain
+      # Syncthing hostname for beelink
       sync.beelink.home.lan:80 {
         bind 192.168.50.169
 
-        # Disable TLS for local development
+        # Disable TLS
         tls internal
 
         # Proxy to Syncthing on its configured address
         reverse_proxy 192.168.50.169:8384
       }
 
+      # Syncthing hostname for pro
+      sync.pro.home.lan:80 {
+        bind 192.168.50.169
+        reverse_proxy 192.168.50.243:8384 {
+          header_up X-Real-IP {remote_host}
+          header_up Host {host}
+          header_up X-Forwarded-For {remote_host}
+          header_up X-Forwarded-Proto {scheme}
+        }
+      }
+
       # Prowlarr
       prowlarr.beelink.home.lan:80 {
         bind 192.168.50.169
 
-        # Disable TLS for local development
+        # Disable TLS
         tls internal
 
         # Proxy to Prowlarr
@@ -54,7 +65,7 @@
       radarr.beelink.home.lan:80 {
         bind 192.168.50.169
 
-        # Disable TLS for local development
+        # Disable TLS
         tls internal
 
         # Proxy to Radarr
@@ -64,8 +75,8 @@
       # Sonarr Web UI
       sonarr.beelink.home.lan:80 {
         bind 192.168.50.169
-
-        # Disable TLS for local development
+        
+        # Disable TLS
         tls internal
 
         # Proxy to Sonarr
@@ -75,8 +86,8 @@
       # Transmission Web UI
       transmission.beelink.home.lan:80 {
         bind 192.168.50.169
-        
-        # Disable TLS for local development
+
+        # Disable TLS
         tls internal
 
         # Proxy to Transmission WebUI
@@ -86,8 +97,8 @@
       # Plex Media Server
       plex.beelink.home.lan:80 {
         bind 192.168.50.169
-        
-        # Disable TLS for local development
+
+        # Disable TLS
         tls internal
 
         # Proxy to Plex with WebSocket support
@@ -106,11 +117,14 @@
         }
       }
     '';
-    
+
     # Keep an empty virtualHosts to avoid conflicts
-    virtualHosts = {};
+    virtualHosts = { };
   };
 
-  # Open HTTP/HTTPS ports in the firewall
-  networking.firewall.allowedTCPPorts = [ 80 443 ];
+  # Open HTTP port in the firewall
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
 }
