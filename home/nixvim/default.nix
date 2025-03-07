@@ -15,7 +15,7 @@ in
     ./opts
     ./plugins
     ./plugins/git-blame
-    # ./plugins/gitsigns
+    ./plugins/gitsigns
     ./plugins/lsp
     ./plugins/lspsaga
     ./plugins/none-ls
