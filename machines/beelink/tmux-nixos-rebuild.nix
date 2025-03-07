@@ -13,14 +13,14 @@
       User = "ivan";
       ExecStart = pkgs.writeShellScript "start-tmux-session" ''
         # Check if the session already exists
-        ${pkgs.tmux}/bin/tmux has-session -t nixos-config 2>/dev/null
+        ${pkgs.tmux}/bin/tmux has-session -t beelink 2>/dev/null
         if [ $? -eq 0 ]; then
           # Session exists, do nothing
           exit 0
         fi
 
         # Create a new detached session with a named window
-        ${pkgs.tmux}/bin/tmux new-session -d -s nixos-config -n rebuild -c /home/ivan/Sources/github.com/ivankovnatsky/nixos-config
+        ${pkgs.tmux}/bin/tmux new-session -d -s beelink -n rebuild -c /home/ivan/Sources/github.com/ivankovnatsky/nixos-config
 
         # Increase session name length to show full name
         ${pkgs.tmux}/bin/tmux set-option -g status-left-length 30
@@ -55,7 +55,7 @@
         ''}"
         
         # Set up the window with our custom watchman rebuild script
-        ${pkgs.tmux}/bin/tmux send-keys -t nixos-config "$REBUILD_SCRIPT" C-m
+        ${pkgs.tmux}/bin/tmux send-keys -t beelink "$REBUILD_SCRIPT" C-m
 
         exit 0
       '';
@@ -70,12 +70,12 @@
     # Script to attach to the tmux session
     (writeShellScriptBin "nixos-config-tmux" ''
       # Attach to the nixos-config tmux session or notify if it doesn't exist
-      ${tmux}/bin/tmux has-session -t nixos-config 2>/dev/null
+      ${tmux}/bin/tmux has-session -t beelink 2>/dev/null
       if [ $? -eq 0 ]; then
-        echo "Attaching to nixos-config tmux session..."
-        exec ${tmux}/bin/tmux attach-session -t nixos-config
+        echo "Attaching to beelink tmux session..."
+        exec ${tmux}/bin/tmux attach-session -t beelink
       else
-        echo "The nixos-config tmux session is not running."
+        echo "The beelink tmux session is not running."
         echo "It may have been stopped or failed to start."
         echo "Check the status with: systemctl status tmux-nixos-config"
         echo ""
