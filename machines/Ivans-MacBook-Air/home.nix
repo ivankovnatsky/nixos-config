@@ -73,6 +73,7 @@
       aria2
       backup-home # Installed as flake
       bat
+      battery-toolkit # Local overlay
       cargo
       coconutbattery # macOS: Battery
       delta
