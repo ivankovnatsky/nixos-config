@@ -1,4 +1,10 @@
 {
+  # Configure Caddy log directory
+  systemd.tmpfiles.rules = [
+    "d /var/log/caddy 0755 caddy caddy -"
+    "Z /var/log/caddy/* 0644 caddy caddy -"
+  ];
+
   # Enable Caddy web server as a reverse proxy
   services.caddy = {
     enable = true;
@@ -9,6 +15,17 @@
     # Global settings
     globalConfig = ''
       auto_https off
+    '';
+
+    # Define custom log format
+    logFormat = ''
+      output file /var/log/caddy/beelink.log {
+        roll_size 10MB
+        roll_keep 10
+        roll_keep_for 720h
+      }
+      format json
+      level INFO
     '';
 
     # Use extraConfig for more direct control over the Caddyfile format
@@ -114,6 +131,23 @@
             keepalive 12h
             keepalive_idle_conns 100
           }
+        }
+      }
+
+      # Grafana
+      grafana.beelink.home.lan:80 {
+        bind 192.168.50.169
+
+        # Disable TLS
+        tls internal
+
+        # Proxy to Grafana
+        reverse_proxy 127.0.0.1:3000 {
+          # Enable WebSocket support
+          header_up X-Real-IP {remote_host}
+          header_up Host {host}
+          header_up X-Forwarded-For {remote_host}
+          header_up X-Forwarded-Proto {scheme}
         }
       }
     '';
