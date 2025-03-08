@@ -134,6 +134,23 @@
         }
       }
 
+      # Netdata
+      netdata.beelink.home.lan:80 {
+        bind 192.168.50.169
+
+        # Disable TLS
+        tls internal
+
+        # Proxy to Netdata
+        reverse_proxy 127.0.0.1:19999 {
+          # Enable WebSocket support
+          header_up X-Real-IP {remote_host}
+          header_up Host {host}
+          header_up X-Forwarded-For {remote_host}
+          header_up X-Forwarded-Proto {scheme}
+        }
+      }
+
       # Grafana
       grafana.beelink.home.lan:80 {
         bind 192.168.50.169
