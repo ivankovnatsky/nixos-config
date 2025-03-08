@@ -20,6 +20,7 @@ in
     ../../darwin/darwin.nix
     ../../system/documentation.nix
     ../../system/nix.nix
+    # ./promtail.nix
   ];
   flags = {
     enableFishShell = true;
