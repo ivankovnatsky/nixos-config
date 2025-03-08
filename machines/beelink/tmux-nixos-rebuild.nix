@@ -57,14 +57,6 @@
         # Set up the window with our custom watchman rebuild script
         ${pkgs.tmux}/bin/tmux send-keys -t beelink "$REBUILD_SCRIPT" C-m
 
-        # Create a second window for btop
-        ${pkgs.tmux}/bin/tmux new-window -t beelink -n btop
-        ${pkgs.tmux}/bin/tmux send-keys -t beelink:btop "${pkgs.btop}/bin/btop" C-m
-
-        # Create a third window for journalctl
-        ${pkgs.tmux}/bin/tmux new-window -t beelink -n journal
-        ${pkgs.tmux}/bin/tmux send-keys -t beelink:journal "journalctl -f" C-m
-
         # Switch back to the first window
         ${pkgs.tmux}/bin/tmux select-window -t beelink:rebuild
 
