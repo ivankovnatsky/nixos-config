@@ -37,6 +37,7 @@ Default Grafana credentials:
 - [x] Configure DNS server
 - [x] Configure service http routing for sync.beelink.home.lan -> 192.168.50.169:8384
 - [ ] Add local https
+- [ ] Rename local domain: .home.lan -> home.lab
 - [ ] Move data to external drive when got one
 - [x] Grafana
   - [x] Logs with Loki and Promtail
