@@ -5,20 +5,24 @@
     # Base configuration.
     ./configuration.nix
 
-    ./sudo.nix
-
     ./syncthing.nix
 
     # Uncomment after enrolling TPM2 (see docs/beelink.md for instructions)
     ./cryptenroll.nix
 
+    # Security
+    ./sudo.nix
+
     ./ssh.nix
     ./tmux-nixos-rebuild.nix
-    # ./netdata.nix
 
+    # Networking
     ./dns.nix
     ./http-routing.nix
+
+    # Monitoring
     ./logging.nix
+    ./netdata.nix
 
     # Media
     # TODO: Consider using module? https://github.com/rasmus-kirk/nixarr
@@ -36,7 +40,6 @@
 
   # Additional system packages
   environment.systemPackages = with pkgs; [
-    btop
     lsof
     tmux
   ];

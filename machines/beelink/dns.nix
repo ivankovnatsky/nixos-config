@@ -105,6 +105,7 @@
         "sonarr.beelink.home.lan,192.168.50.169"
         "prowlarr.beelink.home.lan,192.168.50.169"
         "grafana.beelink.home.lan,192.168.50.169"
+        "netdata.beelink.home.lan,192.168.50.169"
         "loki.beelink.home.lan,192.168.50.169"
       ];
 
