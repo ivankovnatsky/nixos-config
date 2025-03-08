@@ -18,6 +18,7 @@
 
     ./dns.nix
     ./http-routing.nix
+    ./logging.nix
 
     # Media
     # TODO: Consider using module? https://github.com/rasmus-kirk/nixarr
@@ -36,6 +37,7 @@
   # Additional system packages
   environment.systemPackages = with pkgs; [
     btop
+    lsof
     tmux
   ];
 }
