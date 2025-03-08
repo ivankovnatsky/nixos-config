@@ -5,6 +5,18 @@
 }:
 
 {
+  # Configure dnsmasq user and log directory
+  users.groups.dnsmasq = { };
+  users.users.dnsmasq = {
+    isSystemUser = true;
+    group = "dnsmasq";
+  };
+
+  systemd.tmpfiles.rules = [
+    "d /var/log/dnsmasq 0755 dnsmasq dnsmasq -"
+    "Z /var/log/dnsmasq/* 0644 dnsmasq dnsmasq -"
+  ];
+
   # Enable stubby for DNS-over-TLS resolution
   # https://dnsprivacy.org/dns_privacy_daemon_-_stubby/configuring_stubby/
   services.stubby = {
@@ -15,7 +27,16 @@
       dns_transport_list = [ "GETDNS_TRANSPORT_TLS" ];
       tls_authentication = "GETDNS_AUTHENTICATION_REQUIRED";
       tls_query_padding_blocksize = 128;
-      dnssec_return_status = "GETDNS_EXTENSION_TRUE";
+      # duckduckgo.com does not work because of this?
+      #
+      # ```logs
+      # Mar 07 21:38:04 beelink dnsmasq[220827]: query[A] duckduckgo.com from 192.168.50.139
+      # Mar 07 21:38:04 beelink dnsmasq[220827]: forwarded duckduckgo.com to 127.0.0.1#5453
+      # Mar 07 21:38:04 beelink dnsmasq[220827]: forwarded duckduckgo.com to 127.0.0.1#5453
+      # Mar 07 21:38:04 beelink dnsmasq[220827]: reply error is SERVFAIL
+      # ```
+      #
+      # dnssec_return_status = "GETDNS_EXTENSION_TRUE";
       round_robin_upstreams = 1;
       idle_timeout = 10000;
       listen_addresses = [ "127.0.0.1@5453" ];
@@ -83,6 +104,8 @@
         "radarr.beelink.home.lan,192.168.50.169"
         "sonarr.beelink.home.lan,192.168.50.169"
         "prowlarr.beelink.home.lan,192.168.50.169"
+        "grafana.beelink.home.lan,192.168.50.169"
+        "loki.beelink.home.lan,192.168.50.169"
       ];
 
       # Add wildcard domain support
@@ -90,6 +113,8 @@
 
       # Log queries (useful for debugging)
       log-queries = true;
+      log-facility = "/var/log/dnsmasq/dnsmasq.log";
+      log-dhcp = true;
     };
   };
 
