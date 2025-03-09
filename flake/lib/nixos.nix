@@ -1,6 +1,8 @@
 { inputs, ... }:
 let
-  inherit (import ./home.nix { inherit inputs; }) homeManagerModule;
+  inherit (import ./home.nix { inherit inputs; }) 
+    nixosHomeManagerModule 
+    stableNixosHomeManagerModule;
   inherit (import ./system.nix { inherit inputs; }) systemModule;
 
   # Helper function to create a NixOS system with a specific nixpkgs input
@@ -25,9 +27,9 @@ let
       specialArgs = { inherit system username; };
     };
 
-  # Helper function to create a NixOS system with home-manager and a specific nixpkgs input
+  # Helper function to create a NixOS system with home-manager and specific inputs
   makeNixosWithHomeAndPkgs =
-    nixpkgsInput:
+    nixpkgsInput: homeManagerInput:
     {
       hostname,
       system,
@@ -45,7 +47,7 @@ let
           nixpkgsInput = nixpkgsInput;
           nixosReleaseInput = if nixpkgsInput == inputs.nixos-release then nixpkgsInput else null;
         })
-        ++ (homeManagerModule {
+        ++ (homeManagerInput {
           inherit hostname username system;
           extraImports = homeModules;
         })
@@ -57,11 +59,11 @@ in
 {
   # NixOS configuration with unstable channel (default)
   makeNixosConfig = makeNixosSystemWithPkgs inputs.nixpkgs;
-  makeNixosWithHome = makeNixosWithHomeAndPkgs inputs.nixpkgs;
+  makeNixosWithHome = makeNixosWithHomeAndPkgs inputs.nixpkgs nixosHomeManagerModule;
 
   # NixOS configuration with stable release
   makeStableNixosConfig = makeNixosSystemWithPkgs inputs.nixos-release;
 
   # NixOS configuration with stable release and home-manager
-  makeStableNixosWithHome = makeNixosWithHomeAndPkgs inputs.nixos-release;
+  makeStableNixosWithHome = makeNixosWithHomeAndPkgs inputs.nixos-release stableNixosHomeManagerModule;
 }

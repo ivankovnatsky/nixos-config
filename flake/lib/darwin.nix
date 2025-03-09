@@ -30,9 +30,9 @@ let
       }
     ];
 
-  # Helper function to create a Darwin system with a specific darwin and home-manager input
+  # Helper function to create a basic Darwin system with a specific darwin input
   makeBaseDarwinSystemWithInputs =
-    darwinInput: homeManagerInput:
+    darwinInput:
     {
       hostname,
       system,
@@ -110,12 +110,12 @@ in
   inherit darwinHomebrewModule;
 
   # Darwin configuration with unstable channel (default)
-  makeBaseDarwinSystem = makeBaseDarwinSystemWithInputs inputs.darwin inputs.home-manager;
+  makeBaseDarwinSystem = makeBaseDarwinSystemWithInputs inputs.darwin;
   makeBaseDarwinWithHome = makeBaseDarwinWithHomeAndInputs inputs.darwin inputs.home-manager darwinHomeManagerModule;
   makeFullDarwinConfig = makeFullDarwinConfigWithInputs inputs.darwin inputs.home-manager darwinHomeManagerModule;
   
   # Darwin configuration with stable release
-  makeStableBaseDarwinSystem = makeBaseDarwinSystemWithInputs inputs.darwin-release inputs.home-manager-release;
+  makeStableBaseDarwinSystem = makeBaseDarwinSystemWithInputs inputs.darwin-release;
   makeStableBaseDarwinWithHome = makeBaseDarwinWithHomeAndInputs inputs.darwin-release inputs.home-manager-release stableDarwinHomeManagerModule;
   makeStableFullDarwinConfig = makeFullDarwinConfigWithInputs inputs.darwin-release inputs.home-manager-release stableDarwinHomeManagerModule;
 }
