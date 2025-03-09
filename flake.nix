@@ -6,7 +6,10 @@
     nixpkgs-master.url = "github:nixos/nixpkgs/master";
 
     # Stable NixOS release
-    nixos-release.url = "github:nixos/nixpkgs/release-24.11";
+    nixos-release.url = "github:nixos/nixpkgs/nixos-24.11";
+
+    # Stable Nixpkgs release
+    nixpkgs-release.url = "github:nixos/nixpkgs/release-24.11";
 
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
@@ -15,10 +18,20 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    darwin-release = {
+      url = "github:lnl7/nix-darwin/nix-darwin-24.11";
+      inputs.nixpkgs.follows = "nixpkgs-release";
+    };
+
     home-manager = {
       # url = "github:nix-community/home-manager/master";
       url = "github:ivankovnatsky/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    home-manager-release = {
+      url = "github:nix-community/home-manager/release-24.11";
+      inputs.nixpkgs.follows = "nixpkgs-release";
     };
 
     # https://github.com/zhaofengli/nix-homebrew

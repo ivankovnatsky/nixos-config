@@ -2,7 +2,7 @@
 let
   # Common home configuration function
   makeHomeConfiguration =
-    { hmModule }:
+    { hmModule, nixpkgsInput ? inputs.nixpkgs }:
     {
       hostname,
       username,
@@ -13,7 +13,7 @@ let
       (
         { config, system, ... }:
         {
-          nix.nixPath.nixpkgs = "${inputs.nixpkgs}";
+          nix.nixPath.nixpkgs = "${nixpkgsInput}";
 
           home-manager = {
             useGlobalPkgs = true;
@@ -80,20 +80,33 @@ let
       )
     ];
 
-  # Darwin-specific home-manager module
+  # Unstable modules
   darwinHomeManagerModule = makeHomeConfiguration {
     hmModule = inputs.home-manager.darwinModules.home-manager;
+    nixpkgsInput = inputs.nixpkgs;
   };
 
-  # NixOS-specific home-manager module
   nixosHomeManagerModule = makeHomeConfiguration {
     hmModule = inputs.home-manager.nixosModules.home-manager;
+    nixpkgsInput = inputs.nixpkgs;
+  };
+  
+  # Stable modules
+  stableDarwinHomeManagerModule = makeHomeConfiguration {
+    hmModule = inputs.home-manager-release.darwinModules.home-manager;
+    nixpkgsInput = inputs.nixpkgs-release;
+  };
+
+  stableNixosHomeManagerModule = makeHomeConfiguration {
+    hmModule = inputs.home-manager-release.nixosModules.home-manager;
+    nixpkgsInput = inputs.nixpkgs-release;
   };
 in
 {
   # For backward compatibility
   homeManagerModule = darwinHomeManagerModule;
 
-  # Expose both modules
+  # Expose all modules
   inherit darwinHomeManagerModule nixosHomeManagerModule;
+  inherit stableDarwinHomeManagerModule stableNixosHomeManagerModule;
 }
