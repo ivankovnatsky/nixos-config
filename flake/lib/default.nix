@@ -13,5 +13,8 @@
     makeBaseDarwinSystem
     makeBaseDarwinWithHome
     makeFullDarwinConfig
+    makeStableBaseDarwinSystem
+    makeStableBaseDarwinWithHome
+    makeStableFullDarwinConfig
     ;
 }

@@ -5,7 +5,7 @@ let
 in
 {
   inherit lib;
-  darwinConfigurations = machines.darwinConfigurations { inherit (lib) makeFullDarwinConfig; };
+  darwinConfigurations = machines.darwinConfigurations { inherit (lib) makeStableBaseDarwinSystem makeFullDarwinConfig; };
   nixosConfigurations = machines.nixosConfigurations {
     inherit (lib) makeNixosConfig makeStableNixosConfig;
   };

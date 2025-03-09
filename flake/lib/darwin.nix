@@ -1,7 +1,7 @@
 { inputs, ... }:
 let
   inherit (import ./system.nix { inherit inputs; }) systemModule;
-  inherit (import ./home.nix { inherit inputs; }) homeManagerModule;
+  inherit (import ./home.nix { inherit inputs; }) darwinHomeManagerModule stableDarwinHomeManagerModule;
 
   # Darwin-specific homebrew configuration
   darwinHomebrewModule =
@@ -29,54 +29,93 @@ let
         };
       }
     ];
-in
-{
-  inherit darwinHomebrewModule;
 
-  # Base Darwin system configuration without home-manager
-  makeBaseDarwinSystem =
+  # Helper function to create a Darwin system with a specific darwin and home-manager input
+  makeBaseDarwinSystemWithInputs =
+    darwinInput: homeManagerInput:
     {
       hostname,
       system,
       username,
+      modules ? [ ],
+      extraNixPath ? { },
     }:
-    inputs.darwin.lib.darwinSystem {
+    darwinInput.lib.darwinSystem {
       inherit system;
-      modules = systemModule { inherit hostname; };
+      modules = (systemModule { 
+        inherit hostname extraNixPath; 
+        nixpkgsInput = if darwinInput == inputs.darwin-release then inputs.nixpkgs-release else inputs.nixpkgs;
+        nixpkgsReleaseInput = if darwinInput == inputs.darwin-release then inputs.nixpkgs-release else null;
+      }) ++ modules;
+      specialArgs = { inherit system username; };
     };
 
-  # Darwin configuration with home-manager but without nixvim
-  makeBaseDarwinWithHome =
-    {
-      hostname,
-      system,
-      username,
-    }:
-    inputs.darwin.lib.darwinSystem {
-      inherit system;
-      modules = systemModule { inherit hostname; } ++ homeManagerModule { inherit hostname username; };
-    };
-
-  # Full featured Darwin configuration with home-manager and nixvim
-  makeFullDarwinConfig =
+  # Helper function to create a Darwin system with home-manager and specific inputs
+  makeBaseDarwinWithHomeAndInputs =
+    darwinInput: homeManagerInput: hmModule:
     {
       hostname,
       system,
       username,
       modules ? [ ],
       homeModules ? [ ],
+      extraNixPath ? { },
     }:
-    inputs.darwin.lib.darwinSystem {
+    darwinInput.lib.darwinSystem {
+      inherit system;
+      modules = 
+        (systemModule { 
+          inherit hostname extraNixPath; 
+          nixpkgsInput = if darwinInput == inputs.darwin-release then inputs.nixpkgs-release else inputs.nixpkgs;
+          nixpkgsReleaseInput = if darwinInput == inputs.darwin-release then inputs.nixpkgs-release else null;
+        }) 
+        ++ (hmModule { 
+          inherit hostname username; 
+          extraImports = homeModules;
+        })
+        ++ modules;
+      specialArgs = { inherit system username; };
+    };
+
+  # Helper function to create a full featured Darwin system with specific inputs
+  makeFullDarwinConfigWithInputs =
+    darwinInput: homeManagerInput: hmModule:
+    {
+      hostname,
+      system,
+      username,
+      modules ? [ ],
+      homeModules ? [ ],
+      extraNixPath ? { },
+    }:
+    darwinInput.lib.darwinSystem {
       inherit system;
       modules =
-        systemModule { inherit hostname; }
-        ++ homeManagerModule {
+        (systemModule { 
+          inherit hostname extraNixPath; 
+          nixpkgsInput = if darwinInput == inputs.darwin-release then inputs.nixpkgs-release else inputs.nixpkgs;
+          nixpkgsReleaseInput = if darwinInput == inputs.darwin-release then inputs.nixpkgs-release else null;
+        })
+        ++ (hmModule {
           inherit hostname username;
           extraImports = [ inputs.nixvim.homeManagerModules.nixvim ] ++ homeModules;
-        }
-        ++ darwinHomebrewModule { inherit username; }
+        })
+        ++ (darwinHomebrewModule { inherit username; })
         ++ modules;
 
       specialArgs = { inherit system username; };
     };
+in
+{
+  inherit darwinHomebrewModule;
+
+  # Darwin configuration with unstable channel (default)
+  makeBaseDarwinSystem = makeBaseDarwinSystemWithInputs inputs.darwin inputs.home-manager;
+  makeBaseDarwinWithHome = makeBaseDarwinWithHomeAndInputs inputs.darwin inputs.home-manager darwinHomeManagerModule;
+  makeFullDarwinConfig = makeFullDarwinConfigWithInputs inputs.darwin inputs.home-manager darwinHomeManagerModule;
+  
+  # Darwin configuration with stable release
+  makeStableBaseDarwinSystem = makeBaseDarwinSystemWithInputs inputs.darwin-release inputs.home-manager-release;
+  makeStableBaseDarwinWithHome = makeBaseDarwinWithHomeAndInputs inputs.darwin-release inputs.home-manager-release stableDarwinHomeManagerModule;
+  makeStableFullDarwinConfig = makeFullDarwinConfigWithInputs inputs.darwin-release inputs.home-manager-release stableDarwinHomeManagerModule;
 }
