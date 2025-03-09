@@ -62,6 +62,27 @@
         "type": "github"
       }
     },
+    "darwin-release": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-release"
+        ]
+      },
+      "locked": {
+        "lastModified": 1741126078,
+        "narHash": "sha256-ng0a4cIq3c9E3iGKomlwqKzVYs2RLOzQho2U1Mc2sqU=",
+        "owner": "lnl7",
+        "repo": "nix-darwin",
+        "rev": "c172f50b55b087f8e7801631de977461603bb976",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lnl7",
+        "ref": "nix-darwin-24.11",
+        "repo": "nix-darwin",
+        "type": "github"
+      }
+    },
     "devshell": {
       "inputs": {
         "nixpkgs": [
@@ -257,6 +278,27 @@
         "type": "github"
       }
     },
+    "home-manager-release": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-release"
+        ]
+      },
+      "locked": {
+        "lastModified": 1739757849,
+        "narHash": "sha256-Gs076ot1YuAAsYVcyidLKUMIc4ooOaRGO0PqTY7sBzA=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "9d3d080aec2a35e05a15cedd281c2384767c2cfe",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "release-24.11",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
     "home-manager_2": {
       "inputs": {
         "nixpkgs": [
@@ -415,16 +457,16 @@
     },
     "nixos-release": {
       "locked": {
-        "lastModified": 1741018842,
-        "narHash": "sha256-78ftXhNuzj5ybrFhemvZ7KMBqlbcDqRdNYN5M/ESY4I=",
+        "lastModified": 1741332913,
+        "narHash": "sha256-ri1e8ZliWS3Jnp9yqpKApHaOo7KBN33W8ECAKA4teAQ=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "62a38aa64791b918f12b2e47fe3c97606f781018",
+        "rev": "20755fa05115c84be00b04690630cb38f0a203ad",
         "type": "github"
       },
       "original": {
         "owner": "nixos",
-        "ref": "release-24.11",
+        "ref": "nixos-24.11",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -477,6 +519,22 @@
       "original": {
         "owner": "cachix",
         "repo": "nixpkgs-python",
+        "type": "github"
+      }
+    },
+    "nixpkgs-release": {
+      "locked": {
+        "lastModified": 1741521366,
+        "narHash": "sha256-JOs9vfO+kks42DspCMLe0l5g9xZpRC34ZKhudByOTrE=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "16df1b33546abf4d55ee2b895606edd4e0e3612f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "release-24.11",
+        "repo": "nixpkgs",
         "type": "github"
       }
     },
@@ -645,8 +703,10 @@
       "inputs": {
         "backup-home": "backup-home",
         "darwin": "darwin",
+        "darwin-release": "darwin-release",
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
+        "home-manager-release": "home-manager-release",
         "homebrew-bundle": "homebrew-bundle",
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
@@ -655,6 +715,7 @@
         "nixpkgs": "nixpkgs_4",
         "nixpkgs-master": "nixpkgs-master",
         "nixpkgs-python": "nixpkgs-python",
+        "nixpkgs-release": "nixpkgs-release",
         "nixvim": "nixvim",
         "nur": "nur",
         "pyenv-nix-install": "pyenv-nix-install",

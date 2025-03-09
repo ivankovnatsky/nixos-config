@@ -16,7 +16,11 @@ let
     nixpkgsInput.lib.nixosSystem {
       inherit system;
 
-      modules = (systemModule { inherit hostname extraNixPath; }) ++ modules;
+      modules = (systemModule {
+        inherit hostname extraNixPath;
+        nixpkgsInput = nixpkgsInput;
+        nixosReleaseInput = if nixpkgsInput == inputs.nixos-release then nixpkgsInput else null;
+      }) ++ modules;
 
       specialArgs = { inherit system username; };
     };
@@ -36,7 +40,11 @@ let
       inherit system;
 
       modules =
-        (systemModule { inherit hostname extraNixPath; })
+        (systemModule {
+          inherit hostname extraNixPath;
+          nixpkgsInput = nixpkgsInput;
+          nixosReleaseInput = if nixpkgsInput == inputs.nixos-release then nixpkgsInput else null;
+        })
         ++ (homeManagerModule {
           inherit hostname username system;
           extraImports = homeModules;
