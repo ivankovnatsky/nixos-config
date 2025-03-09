@@ -67,6 +67,17 @@
         }
       }
 
+      # Syncthing hostname for air
+      sync.air.home.lan:80 {
+        bind 192.168.50.169
+        reverse_proxy 192.168.50.6:8384 {
+          header_up X-Real-IP {remote_host}
+          header_up Host {host}
+          header_up X-Forwarded-For {remote_host}
+          header_up X-Forwarded-Proto {scheme}
+        }
+      }
+
       # Prowlarr
       prowlarr.beelink.home.lan:80 {
         bind 192.168.50.169

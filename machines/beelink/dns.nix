@@ -98,6 +98,7 @@
       host-record = [
         "sync.beelink.home.lan,192.168.50.169"
         "sync.pro.home.lan,192.168.50.169"
+        "sync.air.home.lan,192.168.50.169"
         "beelink.home.lan,192.168.50.169"
         "plex.beelink.home.lan,192.168.50.169"
         "transmission.beelink.home.lan,192.168.50.169"
