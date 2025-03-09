@@ -16,6 +16,7 @@
   nix.enable = false;
 
   environment.systemPackages = with pkgs; [
+    rclone
     syncthing
   ];
   
