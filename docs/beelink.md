@@ -251,8 +251,8 @@ The media server setup consists of four main components working together:
 
 Optimized fan settings to be:
 
-Fan off temperature limit: 30 -> 60°C
-Fan start temperature limit: 35 -> 70°C
+Fan off temperature limit: 30 -> 70°C
+Fan start temperature limit: 35 -> 80°C
 
 ## References
 
