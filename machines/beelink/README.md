@@ -40,6 +40,7 @@ Default Grafana credentials:
 - [ ] Rename local domain: .home.lan -> home.lab
 - [ ] Move data to external drive when got one
 - [ ] Add Home Assistant
+- [ ] Add availability dashboard
 - [x] Grafana
   - [x] Logs with Loki and Promtail
   - [ ] System metrics
