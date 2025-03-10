@@ -55,6 +55,9 @@
         "Lusha-Macbook-Ivan-Kovnatskyi" = { 
           id = config.secrets.syncthing.devices.LushaMacbookIvanKovnatskyi;
         };
+        "Ivans-Mac-mini" = {
+          id = config.secrets.syncthing.devices.IvansMacMini;
+        };
         "Ivans-MacBook-Air" = {
           id = config.secrets.syncthing.devices.IvansMacBookAir;
         };
@@ -70,6 +73,7 @@
           label = "Sources/github.com/ivankovnatsky/nixos-config";
           path = "/home/ivan/Sources/github.com/ivankovnatsky/nixos-config";
           devices = [
+            "Ivans-Mac-mini"
             "Ivans-MacBook-Air"
             "Ivans-MacBook-Pro"
             "Lusha-Macbook-Ivan-Kovnatskyi"
