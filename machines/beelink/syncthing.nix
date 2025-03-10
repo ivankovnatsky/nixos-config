@@ -51,6 +51,9 @@
 
       # Define your devices here
       devices = {
+        "Ivans-Mac-mini" = {
+          id = "POR6T6G-F32D43A-XRKSKLF-QCIFMLX-UILRHLW-EEMVJ4U-Y7KBKWV-T6MUCA4";
+        };
         "Ivans-MacBook-Air" = {
           id = "5MIKWQG-5SHSMR4-ZHROMA3-TGV222E-JAJ35VZ-2INPU7I-W34IVQ3-WIYLUQM";
         };
@@ -69,6 +72,7 @@
           label = "Sources/github.com/ivankovnatsky/nixos-config";
           path = "/home/ivan/Sources/github.com/ivankovnatsky/nixos-config";
           devices = [
+            "Ivans-Mac-mini"
             "Ivans-MacBook-Air"
             "Ivans-MacBook-Pro"
             "Lusha-Macbook-Ivan-Kovnatskyi"
