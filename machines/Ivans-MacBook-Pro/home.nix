@@ -34,7 +34,7 @@
     editor = "nvim";
     darkMode = true;
     hotkeys = {
-      terminal = "Ghostty";
+      terminal = "kitty";
       browser = "Safari";
       shortcuts = [
         {
