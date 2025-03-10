@@ -89,7 +89,6 @@ in
     casks = [
       "amethyst"
       "bitwarden"
-      "chatgpt"
       "cursor"
       "dbeaver-community"
       "firefox"
@@ -157,7 +156,6 @@ in
       # Installed using homebrew
       { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Firefox.app/"; }
-      { path = "/Applications/ChatGPT.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }
       { path = "/Applications/MindMac.app/"; }
@@ -178,7 +176,7 @@ in
       }
 
       # Safari Web Apps
-      # { path = "${homePath}/Applications/ChatGPT.app/"; }
+      { path = "${homePath}/Applications/ChatGPT.app/"; }
       { path = "${homePath}/Applications/Claude.app/"; }
 
       {
