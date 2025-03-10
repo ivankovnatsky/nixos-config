@@ -88,6 +88,7 @@ in
       "cursor"
       "firefox"
       "hammerspoon"
+      "kitty"
       "windsurf"
     ];
     masApps = { 
@@ -141,6 +142,7 @@ in
       }
 
       # Brew casks placeholder
+      { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }
