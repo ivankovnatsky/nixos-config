@@ -1,5 +1,3 @@
-{ pkgs, ... }:
-
 {
   imports = [
     # Base configuration.
@@ -8,6 +6,11 @@
     ./loader.nix
 
     ./syncthing.nix
+
+    ./packages.nix
+
+    # Enable TPM2 support (required for TPM2 enrollment)
+    ./tpm2.nix
 
     # Uncomment after enrolling TPM2 (see docs/beelink.md for instructions)
     ./cryptenroll.nix
@@ -35,14 +38,5 @@
     ./prowlarr.nix
 
     ../../modules/secrets
-  ];
-
-  # Enable TPM2 support (required for TPM2 enrollment)
-  security.tpm2.enable = true;
-
-  # Additional system packages
-  environment.systemPackages = with pkgs; [
-    lsof
-    tmux
   ];
 }
