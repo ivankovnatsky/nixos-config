@@ -7,7 +7,6 @@
     ../../home/amethyst.nix
     ../../home/bat.nix
     ../../home/direnv.nix
-    ../../home/firefox-config.nix
     ../../home/fish-ai.nix
     ../../home/ghorg.nix
     ../../home/ghostty.nix
@@ -65,19 +64,19 @@
         }
         {
           key = "4";
-          app = "Google Chrome";
+          app = "Vivaldi";
         }
         {
           key = "5";
-          app = "Firefox";
+          app = "Floorp";
         }
         {
           key = "6";
-          app = "Slack";
+          app = "Cursor";
         }
         {
           key = "7";
-          app = "Cursor";
+          app = "Windsurf";
         }
         {
           key = "9";
@@ -128,6 +127,7 @@
       imagemagick
       infracost
       jq
+      jsonnet
       k8sgpt
       kail
       kdash
