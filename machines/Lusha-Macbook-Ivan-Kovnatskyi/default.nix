@@ -91,12 +91,13 @@ in
       "bitwarden"
       "cursor"
       "dbeaver-community"
-      "firefox"
+      "floorp"
       "hammerspoon"
       "kitty"
       "mindmac"
       "orbstack"
       "twingate"
+      "vivaldi"
       "windsurf"
     ];
     masApps = {
@@ -155,7 +156,8 @@ in
 
       # Installed using homebrew
       { path = "/Applications/kitty.app/"; }
-      { path = "/Applications/Firefox.app/"; }
+      { path = "/Applications/Vivaldi.app/"; }
+      { path = "/Applications/Floorp.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }
       { path = "/Applications/MindMac.app/"; }
