@@ -42,6 +42,8 @@ Default Grafana credentials:
 - [ ] Add Home Assistant
 - [ ] Add availability dashboard
 - [ ] Limit the boot timeout
+- [ ] Can we somehow security autoamtically always apply rebuild only with some
+      specific user and specific command
 - [x] Grafana
   - [x] Logs with Loki and Promtail
   - [ ] System metrics

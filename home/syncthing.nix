@@ -3,7 +3,7 @@
   services.syncthing = {
     enable = true;
     # FIXME: Security?
-    guiAddress = "0.0.0.0:8384";  # Bind to all interfaces
+    guiAddress = "0.0.0.0:8384"; # Bind to all interfaces
   };
 
   home.file.".config/syncthing/ignore".text = ''

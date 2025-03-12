@@ -3,7 +3,7 @@
   # Enable the Netdata service with enhanced settings
   services.netdata = {
     enable = true;
-    
+
     config = {
       # Global settings
       global = {
@@ -11,7 +11,7 @@
         "error log" = "syslog";
         "access log" = "syslog";
       };
-      
+
       # Disable FREEIPMI plugin (not needed for desktop/mini PCs)
       # I still see errors in the logs somehow:
       # ```console
@@ -32,7 +32,7 @@
         "enabled" = "no";
       };
     };
-    
+
     # Create essential config files for plugins
     # https://learn.netdata.cloud/docs/collecting-metrics/hardware-devices-and-sensors/linux-sensors#default-behavior
     configDir = {

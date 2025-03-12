@@ -109,7 +109,7 @@
         # Disable structured metadata to fix validation error
         allow_structured_metadata = false;
         # Increase rate limits to handle higher log volumes from promtail clients
-        ingestion_rate_mb = 16;  # 16MB per second instead of default 4MB
+        ingestion_rate_mb = 16; # 16MB per second instead of default 4MB
         ingestion_burst_size_mb = 32; # 32MB burst size
         per_stream_rate_limit = "10MB"; # Per stream rate limit
         max_entries_limit_per_query = 10000; # Max entries per query

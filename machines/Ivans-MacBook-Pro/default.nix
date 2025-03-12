@@ -91,7 +91,7 @@ in
       "kitty"
       "windsurf"
     ];
-    masApps = { 
+    masApps = {
       "Dark Reader for Safari" = 1438243180;
     };
     caskArgs = {

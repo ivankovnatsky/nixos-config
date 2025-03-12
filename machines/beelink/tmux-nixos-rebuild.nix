@@ -53,7 +53,7 @@
             sleep 3
           done
         ''}"
-        
+
         # Set up the window with our custom watchman rebuild script
         ${pkgs.tmux}/bin/tmux send-keys -t beelink "$REBUILD_SCRIPT" C-m
 
