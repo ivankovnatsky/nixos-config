@@ -41,6 +41,7 @@ Default Grafana credentials:
 - [ ] Move data to external drive when got one
 - [ ] Add Home Assistant
 - [ ] Add availability dashboard
+- [ ] Limit the boot timeout
 - [x] Grafana
   - [x] Logs with Loki and Promtail
   - [ ] System metrics
