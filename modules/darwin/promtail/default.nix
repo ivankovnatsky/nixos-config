@@ -11,7 +11,12 @@
 # - Start service: `launchctl start org.grafana.promtail`
 # - Reload config: `launchctl stop org.grafana.promtail && launchctl start org.grafana.promtail`
 #
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 
@@ -28,7 +33,7 @@ in
 
     configuration = mkOption {
       type = types.attrs;
-      default = {};
+      default = { };
       description = "Promtail configuration as a Nix attribute set. This will be converted to JSON.";
     };
 
@@ -53,7 +58,7 @@ in
 
   config = mkIf cfg.enable {
     # Add documentation to make it easy to check status
-    system.build.help = ''  
+    system.build.help = ''
       Promtail Service:
       - View logs: cat /var/log/promtail.log
       - View errors: cat /var/log/promtail.error.log

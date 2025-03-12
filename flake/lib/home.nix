@@ -2,7 +2,10 @@
 let
   # Common home configuration function
   makeHomeConfiguration =
-    { hmModule, nixpkgsInput ? inputs.nixpkgs }:
+    {
+      hmModule,
+      nixpkgsInput ? inputs.nixpkgs,
+    }:
     {
       hostname,
       username,
@@ -90,7 +93,7 @@ let
     hmModule = inputs.home-manager.nixosModules.home-manager;
     nixpkgsInput = inputs.nixpkgs;
   };
-  
+
   # Stable modules
   stableDarwinHomeManagerModule = makeHomeConfiguration {
     hmModule = inputs.home-manager-release.darwinModules.home-manager;

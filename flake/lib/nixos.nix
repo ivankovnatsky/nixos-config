@@ -1,8 +1,9 @@
 { inputs, ... }:
 let
-  inherit (import ./home.nix { inherit inputs; }) 
-    nixosHomeManagerModule 
-    stableNixosHomeManagerModule;
+  inherit (import ./home.nix { inherit inputs; })
+    nixosHomeManagerModule
+    stableNixosHomeManagerModule
+    ;
   inherit (import ./system.nix { inherit inputs; }) systemModule;
 
   # Helper function to create a NixOS system with a specific nixpkgs input
@@ -18,11 +19,13 @@ let
     nixpkgsInput.lib.nixosSystem {
       inherit system;
 
-      modules = (systemModule {
-        inherit hostname extraNixPath;
-        nixpkgsInput = nixpkgsInput;
-        nixosReleaseInput = if nixpkgsInput == inputs.nixos-release then nixpkgsInput else null;
-      }) ++ modules;
+      modules =
+        (systemModule {
+          inherit hostname extraNixPath;
+          nixpkgsInput = nixpkgsInput;
+          nixosReleaseInput = if nixpkgsInput == inputs.nixos-release then nixpkgsInput else null;
+        })
+        ++ modules;
 
       specialArgs = { inherit system username; };
     };

@@ -12,13 +12,17 @@
 
   # Create media directories with correct permissions
   systemd.tmpfiles.rules = [
-    "d /media/movies 0775 radarr media -"  # Main movies directory
-    "d /media/downloads/movies 0775 transmission media -"  # Where Transmission puts downloaded movies
-    "d /media/downloads/movies/radarr 0775 transmission media -"  # Radarr's download directory
+    "d /media/movies 0775 radarr media -" # Main movies directory
+    "d /media/downloads/movies 0775 transmission media -" # Where Transmission puts downloaded movies
+    "d /media/downloads/movies/radarr 0775 transmission media -" # Radarr's download directory
   ];
 
   # Ensure groups exist and users have correct permissions
-  users.groups.media.members = [ "radarr" "transmission" "plex" ];
+  users.groups.media.members = [
+    "radarr"
+    "transmission"
+    "plex"
+  ];
 
   # Add supplementary groups to Radarr service
   systemd.services.radarr.serviceConfig = {

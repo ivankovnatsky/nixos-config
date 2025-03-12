@@ -1,7 +1,12 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 # Syncthing configuration for Darwin systems
-# 
+#
 # Syncthing will be available at http://0.0.0.0:8384 after reboot or running:
 # launchctl kickstart -k gui/$(id -u)/net.syncthing.syncthing
 #
@@ -12,10 +17,10 @@
 # configure Syncthing devices and folders using the web interface.
 
 let
-  username = "ivan";  # Set your username here
+  username = "ivan"; # Set your username here
   homeDir = "/Users/${username}";
   configDir = "${homeDir}/Library/Application Support/Syncthing";
-  guiAddress = "0.0.0.0:8384";  # Accept connections from any interface
+  guiAddress = "0.0.0.0:8384"; # Accept connections from any interface
 in
 {
 
@@ -31,7 +36,7 @@ in
       ];
       EnvironmentVariables = {
         # Set environment variables
-        STNOUPGRADE = "1";  # Disable automatic upgrades as it's managed by Nix
+        STNOUPGRADE = "1"; # Disable automatic upgrades as it's managed by Nix
         # GUI address is controlled by the user via the web interface
       };
       RunAtLoad = true;
