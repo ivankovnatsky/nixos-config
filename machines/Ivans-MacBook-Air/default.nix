@@ -80,6 +80,7 @@ in
       "cursor"
       "firefox"
       "hammerspoon"
+      "kitty"
       "microsoft-teams"
       "windsurf"
     ];
@@ -146,6 +147,7 @@ in
         section = "apps";
       }
 
+      { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
       { path = "/Applications/Cursor.app/"; }
