@@ -58,6 +58,10 @@ in
         KeyRepeat = 120;
       };
       CustomUserPreferences = {
+        "com.apple.Safari" = {
+          "ShowFullURLInSmartSearchField" = true;
+          "ShowStandaloneTabBar" = false;  # false enables compact tabs
+        };
         "NSGlobalDomain" = {
           # My keyboard does not support Globe switch key, or I don't know how
           # to use it, don't want to use karabiner-elements for now.
