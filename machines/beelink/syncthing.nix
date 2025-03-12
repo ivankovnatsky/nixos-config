@@ -100,7 +100,7 @@
   # You can do this by adding user/password to the gui settings:
   # settings.gui.user = "username";
   # settings.gui.password = "hashed-password";
-  
+
   # Add explicit systemd dependencies to ensure Syncthing starts after network is up
   systemd.services.syncthing = {
     after = [ "network-online.target" ];

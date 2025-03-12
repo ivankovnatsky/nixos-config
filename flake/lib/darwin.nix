@@ -1,7 +1,10 @@
 { inputs, ... }:
 let
   inherit (import ./system.nix { inherit inputs; }) systemModule;
-  inherit (import ./home.nix { inherit inputs; }) darwinHomeManagerModule stableDarwinHomeManagerModule;
+  inherit (import ./home.nix { inherit inputs; })
+    darwinHomeManagerModule
+    stableDarwinHomeManagerModule
+    ;
 
   # Darwin-specific homebrew configuration
   darwinHomebrewModule =
@@ -42,11 +45,14 @@ let
     }:
     darwinInput.lib.darwinSystem {
       inherit system;
-      modules = (systemModule { 
-        inherit hostname extraNixPath; 
-        nixpkgsInput = if darwinInput == inputs.darwin-release then inputs.nixpkgs-release else inputs.nixpkgs;
-        nixpkgsReleaseInput = if darwinInput == inputs.darwin-release then inputs.nixpkgs-release else null;
-      }) ++ modules;
+      modules =
+        (systemModule {
+          inherit hostname extraNixPath;
+          nixpkgsInput =
+            if darwinInput == inputs.darwin-release then inputs.nixpkgs-release else inputs.nixpkgs;
+          nixpkgsReleaseInput = if darwinInput == inputs.darwin-release then inputs.nixpkgs-release else null;
+        })
+        ++ modules;
       specialArgs = { inherit system username; };
     };
 
@@ -63,14 +69,15 @@ let
     }:
     darwinInput.lib.darwinSystem {
       inherit system;
-      modules = 
-        (systemModule { 
-          inherit hostname extraNixPath; 
-          nixpkgsInput = if darwinInput == inputs.darwin-release then inputs.nixpkgs-release else inputs.nixpkgs;
+      modules =
+        (systemModule {
+          inherit hostname extraNixPath;
+          nixpkgsInput =
+            if darwinInput == inputs.darwin-release then inputs.nixpkgs-release else inputs.nixpkgs;
           nixpkgsReleaseInput = if darwinInput == inputs.darwin-release then inputs.nixpkgs-release else null;
-        }) 
-        ++ (hmModule { 
-          inherit hostname username; 
+        })
+        ++ (hmModule {
+          inherit hostname username;
           extraImports = homeModules;
         })
         ++ modules;
@@ -91,9 +98,10 @@ let
     darwinInput.lib.darwinSystem {
       inherit system;
       modules =
-        (systemModule { 
-          inherit hostname extraNixPath; 
-          nixpkgsInput = if darwinInput == inputs.darwin-release then inputs.nixpkgs-release else inputs.nixpkgs;
+        (systemModule {
+          inherit hostname extraNixPath;
+          nixpkgsInput =
+            if darwinInput == inputs.darwin-release then inputs.nixpkgs-release else inputs.nixpkgs;
           nixpkgsReleaseInput = if darwinInput == inputs.darwin-release then inputs.nixpkgs-release else null;
         })
         ++ (hmModule {
@@ -111,11 +119,19 @@ in
 
   # Darwin configuration with unstable channel (default)
   makeBaseDarwinSystem = makeBaseDarwinSystemWithInputs inputs.darwin;
-  makeBaseDarwinWithHome = makeBaseDarwinWithHomeAndInputs inputs.darwin inputs.home-manager darwinHomeManagerModule;
-  makeFullDarwinConfig = makeFullDarwinConfigWithInputs inputs.darwin inputs.home-manager darwinHomeManagerModule;
-  
+  makeBaseDarwinWithHome =
+    makeBaseDarwinWithHomeAndInputs inputs.darwin inputs.home-manager
+      darwinHomeManagerModule;
+  makeFullDarwinConfig =
+    makeFullDarwinConfigWithInputs inputs.darwin inputs.home-manager
+      darwinHomeManagerModule;
+
   # Darwin configuration with stable release
   makeStableBaseDarwinSystem = makeBaseDarwinSystemWithInputs inputs.darwin-release;
-  makeStableBaseDarwinWithHome = makeBaseDarwinWithHomeAndInputs inputs.darwin-release inputs.home-manager-release stableDarwinHomeManagerModule;
-  makeStableFullDarwinConfig = makeFullDarwinConfigWithInputs inputs.darwin-release inputs.home-manager-release stableDarwinHomeManagerModule;
+  makeStableBaseDarwinWithHome =
+    makeBaseDarwinWithHomeAndInputs inputs.darwin-release inputs.home-manager-release
+      stableDarwinHomeManagerModule;
+  makeStableFullDarwinConfig =
+    makeFullDarwinConfigWithInputs inputs.darwin-release inputs.home-manager-release
+      stableDarwinHomeManagerModule;
 }
