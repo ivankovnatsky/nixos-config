@@ -57,10 +57,10 @@ end
 set sha_suffix (git rev-parse --short=7 HEAD)
 
 set branch_name "$prefix_part$name_part-$sha_suffix"
-set worktree_dir "__worktrees/$branch_name"
+set worktree_dir ".git/__worktrees/$branch_name"
 
 # Create worktree directory
-mkdir -p "$git_root/__worktrees" >/dev/null 2>&1
+mkdir -p "$git_root/.git/__worktrees" >/dev/null 2>&1
 
 # Try to create worktree or reuse existing
 if git show-ref --verify --quiet "refs/heads/$branch_name"
