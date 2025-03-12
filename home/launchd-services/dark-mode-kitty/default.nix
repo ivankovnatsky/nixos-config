@@ -23,7 +23,7 @@ let
     EOL
 
         # Define your themes
-        DARK_THEME="Catppuccin-Mocha"
+        DARK_THEME="Default"
         LIGHT_THEME="Catppuccin-Latte"
 
         KITTY="/Applications/kitty.app/Contents/MacOS/kitty"
