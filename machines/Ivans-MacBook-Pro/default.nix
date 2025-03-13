@@ -59,7 +59,7 @@ in
         # * Tab layout: Compact tabs
         "com.apple.Safari" = {
           "ShowFullURLInSmartSearchField" = true;
-          "ShowStandaloneTabBar" = false;  # false enables compact tabs
+          "ShowStandaloneTabBar" = false; # false enables compact tabs
         };
         "NSGlobalDomain" = {
           # My keyboard does not support Globe switch key, or I don't know how
