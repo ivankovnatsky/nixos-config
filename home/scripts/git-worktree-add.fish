@@ -18,9 +18,26 @@ if test $status -ne 0
 end
 
 # If we're in a worktree, get the main repository path
-set real_git_root (git rev-parse --git-common-dir 2>/dev/null | string replace -r '/\.git$' '')
-if test -n "$real_git_root"
+set git_common_dir (git rev-parse --git-common-dir 2>/dev/null)
+set real_git_root (string replace -r '/\.git$' '' "$git_common_dir")
+if test -n "$real_git_root" -a "$real_git_root" != "$git_common_dir"
     set git_root $real_git_root
+end
+
+# Get the git dir (could be .git or a path to the actual git dir)
+set git_dir (git rev-parse --git-dir 2>/dev/null)
+
+# Get the actual .git directory path
+if test -f "$git_root/.git"
+    # If .git is a file (in case of worktrees or submodules), read the gitdir from it
+    set git_dir_path (string trim (cat "$git_root/.git" | string replace -r '^gitdir: ' ''))
+    # If the path is relative, make it absolute
+    if not string match -q '/*' "$git_dir_path"
+        set git_dir_path "$git_root/$git_dir_path"
+    end
+else
+    # Normal case, .git is a directory
+    set git_dir_path "$git_root/.git"
 end
 
 cd $git_root
@@ -57,10 +74,11 @@ end
 set sha_suffix (git rev-parse --short=7 HEAD)
 
 set branch_name "$prefix_part$name_part-$sha_suffix"
-set worktree_dir ".git/__worktrees/$branch_name"
+set worktree_parent_dir "__worktrees"
+set worktree_dir "$git_dir_path/$worktree_parent_dir/$branch_name"
 
 # Create worktree directory
-mkdir -p "$git_root/.git/__worktrees" >/dev/null 2>&1
+mkdir -p "$git_dir_path/$worktree_parent_dir" >/dev/null 2>&1
 
 # Try to create worktree or reuse existing
 if git show-ref --verify --quiet "refs/heads/$branch_name"
@@ -69,6 +87,6 @@ else
     git worktree add -b "$branch_name" "$worktree_dir" $default_branch >/dev/null 2>&1
 end
 
-set final_path "$git_root/$worktree_dir"
+set final_path "$worktree_dir"
 # Output without quotes, letting the shell handle the escaping
 echo $final_path
