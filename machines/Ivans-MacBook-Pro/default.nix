@@ -37,14 +37,6 @@ in
       };
     };
   };
-  services.local-dns-resolver = {
-    enable = true;
-    zones = {
-      "home.lan" = {
-        nameserver = "192.168.50.169";
-      };
-    };
-  };
   system = {
     defaults = {
       NSGlobalDomain = {
