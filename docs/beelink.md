@@ -249,9 +249,16 @@ The media server setup consists of four main components working together:
 
 ## Routers
 
-Configured both routers to use dnsmasq IP as DNS server in DHCP settings. Asus
-has ability to disable advertising router IP as dns server, TP-link does not,
-so used dnsmasq IP two times there to make the resolution reliable.
+1. Configured Asus router to use dnsmasq DNS server IP as DNS server in WAN
+   settings disabling: Forward local domain queries to upstream DNS, Enable DNS
+   Rebind protection, Enable DNSSEC. Otherwise keeping route dns IP as the main in
+   dhcp settings, the default basically.
+
+2. TP-Link router can't normally recieve dnsmasq responds somehow, so I had to
+   add dnsmasq DNS IP to DHCP settings and in WAN settings as well just in
+   case. Also, because if you configure only one server in DHCP settings, TP-Link
+   advertises as a seconds it's own IP as DNS (in clients default DNS servers),
+   whick breaks the resoltion, thus dplicated dnsmasq IP two times
 
 ## BIOS
 
