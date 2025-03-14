@@ -11,8 +11,8 @@
         # Listen on all interfaces
         http_addr = "0.0.0.0";
         http_port = 3000;
-        domain = "grafana.beelink.home.lan";
-        root_url = "http://grafana.beelink.home.lan";
+        domain = "grafana.beelink.homelab";
+        root_url = "http://grafana.beelink.homelab";
       };
       # Default admin user
       security = {

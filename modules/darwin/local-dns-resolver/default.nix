@@ -30,7 +30,7 @@ in
       description = "Mapping of zone names to their DNS configuration";
       example = literalExpression ''
         {
-          "home.lan" = {
+          "homelab" = {
             nameserver = "192.168.50.169";
           };
         }

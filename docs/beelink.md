@@ -182,7 +182,7 @@ The media server setup consists of four main components working together:
 4. **Plex**: Media streaming server
    - Serves media files for streaming
    - Manages movie metadata and library
-   - Accessible at `http://plex.beelink.home.lan` or `http://192.168.50.169:32400/web`
+   - Accessible at `http://plex.beelink.homelab` or `http://192.168.50.169:32400/web`
 
 ### Directory Structure
 
@@ -196,7 +196,7 @@ The media server setup consists of four main components working together:
 ### Initial Setup
 
 1. **Prowlarr Setup**:
-   - Access at `http://prowlarr.beelink.home.lan`
+   - Access at `http://prowlarr.beelink.homelab`
    - Add indexers (e.g., Toloka.to):
      - Go to Settings -> Indexers
      - Click '+' to add new indexer
@@ -208,7 +208,7 @@ The media server setup consists of four main components working together:
      - Set Radarr URL: `http://localhost:7878`
 
 2. **Radarr Setup**:
-   - Access at `http://radarr.beelink.home.lan`
+   - Access at `http://radarr.beelink.homelab`
    - Add Transmission as download client:
      - Settings -> Download Clients
      - Add Transmission
@@ -219,7 +219,7 @@ The media server setup consists of four main components working together:
      - Library path: `/media/movies`
 
 3. **Transmission Setup**:
-   - Access at `http://transmission.beelink.home.lan`
+   - Access at `http://transmission.beelink.homelab`
    - Downloads automatically go to configured paths
    - No authentication required on local network
 
@@ -230,7 +230,7 @@ The media server setup consists of four main components working together:
      - Choose 'Movies' type
      - Add folder: `/media/movies`
      - Configure scanning options as needed
-   - After initial setup, can use `http://plex.beelink.home.lan`
+   - After initial setup, can use `http://plex.beelink.homelab`
 
 ### Workflow
 

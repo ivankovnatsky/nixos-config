@@ -32,7 +32,7 @@
     extraConfig = ''
       # Main landing page for beelink
       # FIXME: Does not work for now yet.
-      beelink.home.lan:80 {
+      beelink.homelab:80 {
         bind 192.168.50.169
 
         # Disable TLS
@@ -46,7 +46,7 @@
       }
 
       # Syncthing hostname for beelink
-      sync.beelink.home.lan:80 {
+      sync.beelink.homelab:80 {
         bind 192.168.50.169
 
         # Disable TLS
@@ -57,7 +57,7 @@
       }
 
       # Syncthing hostname for pro
-      sync.pro.home.lan:80 {
+      sync.pro.homelab:80 {
         bind 192.168.50.169
         
         # Match requests coming from the 50.x network
@@ -92,7 +92,7 @@
       }
 
       # Syncthing hostname for air
-      sync.air.home.lan:80 {
+      sync.air.homelab:80 {
         bind 192.168.50.169
         reverse_proxy 192.168.50.6:8384 {
           header_up X-Real-IP {remote_host}
@@ -103,7 +103,7 @@
       }
 
       # Prowlarr
-      prowlarr.beelink.home.lan:80 {
+      prowlarr.beelink.homelab:80 {
         bind 192.168.50.169
 
         # Disable TLS
@@ -114,7 +114,7 @@
       }
 
       # Radarr Web UI
-      radarr.beelink.home.lan:80 {
+      radarr.beelink.homelab:80 {
         bind 192.168.50.169
 
         # Disable TLS
@@ -125,7 +125,7 @@
       }
 
       # Sonarr Web UI
-      sonarr.beelink.home.lan:80 {
+      sonarr.beelink.homelab:80 {
         bind 192.168.50.169
         
         # Disable TLS
@@ -136,7 +136,7 @@
       }
 
       # Transmission Web UI
-      transmission.beelink.home.lan:80 {
+      transmission.beelink.homelab:80 {
         bind 192.168.50.169
 
         # Disable TLS
@@ -147,7 +147,7 @@
       }
 
       # Plex Media Server
-      plex.beelink.home.lan:80 {
+      plex.beelink.homelab:80 {
         bind 192.168.50.169
 
         # Disable TLS
@@ -170,7 +170,7 @@
       }
 
       # Netdata
-      netdata.beelink.home.lan:80 {
+      netdata.beelink.homelab:80 {
         bind 192.168.50.169
 
         # Disable TLS
@@ -187,7 +187,7 @@
       }
 
       # Grafana
-      grafana.beelink.home.lan:80 {
+      grafana.beelink.homelab:80 {
         bind 192.168.50.169
 
         # Disable TLS

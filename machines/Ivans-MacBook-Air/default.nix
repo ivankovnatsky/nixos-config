@@ -98,7 +98,7 @@ in
   services.local-dns-resolver = {
     enable = true;
     zones = {
-      "home.lan" = {
+      "homelab" = {
         nameserver = "192.168.50.169";
       };
     };
