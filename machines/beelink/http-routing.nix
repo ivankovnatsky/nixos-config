@@ -99,7 +99,7 @@
         @from_50x_network remote_ip 192.168.50.0/24
         
         # For clients on the 50.x network, use the 50.x upstream with redundancy
-        reverse_proxy @from_50x_network 192.168.50.6:8384 192.168.0.15:8384 {
+        reverse_proxy @from_50x_network 192.168.50.159:8384 192.168.0.15:8384 {
           lb_policy first
           lb_try_duration 2s
           header_down +X-Network "50x-network"
@@ -107,7 +107,7 @@
         }
         
         # For all other clients, use the 0.x upstream as primary
-        reverse_proxy 192.168.0.15:8384 192.168.50.6:8384 {
+        reverse_proxy 192.168.0.15:8384 192.168.50.159:8384 {
           # Add debug info to see what's happening
           header_down +X-Proxied-By "Caddy-Failover"
           header_down +X-Upstream-Used "{upstream}"
