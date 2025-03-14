@@ -94,7 +94,31 @@
       # Syncthing hostname for air
       sync.air.homelab:80 {
         bind 192.168.50.169
-        reverse_proxy 192.168.50.6:8384 {
+        
+        # Match requests coming from the 50.x network
+        @from_50x_network remote_ip 192.168.50.0/24
+        
+        # For clients on the 50.x network, use the 50.x upstream with redundancy
+        reverse_proxy @from_50x_network 192.168.50.6:8384 192.168.0.15:8384 {
+          lb_policy first
+          lb_try_duration 2s
+          header_down +X-Network "50x-network"
+          header_down +X-Upstream-Used "{upstream}"
+        }
+        
+        # For all other clients, use the 0.x upstream as primary
+        reverse_proxy 192.168.0.15:8384 192.168.50.6:8384 {
+          # Add debug info to see what's happening
+          header_down +X-Proxied-By "Caddy-Failover"
+          header_down +X-Upstream-Used "{upstream}"
+          
+          # Reduce timeout for faster failover
+          # First policy tries first upstream in order (failover)
+          lb_policy first
+          # Try for 2 seconds to connect to an upstream
+          lb_try_duration 2s
+          # Check more frequently
+          lb_try_interval 100ms
           header_up X-Real-IP {remote_host}
           header_up Host {host}
           header_up X-Forwarded-For {remote_host}
