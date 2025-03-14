@@ -247,6 +247,12 @@ The media server setup consists of four main components working together:
   - Use incognito/private browser window
   - Clear browser cookies for Plex domain
 
+## Routers
+
+Configured both routers to use dnsmasq IP as DNS server in DHCP settings. Asus
+has ability to disable advertising router IP as dns server, TP-link does not,
+so used dnsmasq IP two times there to make the resolution reliable.
+
 ## BIOS
 
 Optimized fan settings to be:
