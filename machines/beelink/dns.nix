@@ -78,40 +78,40 @@
       max-ttl = 60;
 
       # Local domain configuration
-      domain = "home.lan";
-      local = "/home.lan/";
+      domain = "homelab";
+      local = "/homelab/";
       domain-needed = true;
       expand-hosts = true;
       bogus-priv = true;
 
       # Add search domain for clients
-      dhcp-option = [ "option:domain-search,home.lan" ];
+      dhcp-option = [ "option:domain-search,homelab" ];
 
-      # Make it explicitly authoritative for home.lan
-      auth-zone = "home.lan";
-      auth-server = "home.lan";
+      # Make it explicitly authoritative for homelab
+      auth-zone = "homelab";
+      auth-server = "homelab";
 
       # Enable DNS forwarding
       dns-forward-max = 150;
 
       # Local DNS entries - using host-record for better multi-level domain support
       host-record = [
-        "sync.beelink.home.lan,192.168.50.169"
-        "sync.pro.home.lan,192.168.50.169"
-        "sync.air.home.lan,192.168.50.169"
-        "beelink.home.lan,192.168.50.169"
-        "plex.beelink.home.lan,192.168.50.169"
-        "transmission.beelink.home.lan,192.168.50.169"
-        "radarr.beelink.home.lan,192.168.50.169"
-        "sonarr.beelink.home.lan,192.168.50.169"
-        "prowlarr.beelink.home.lan,192.168.50.169"
-        "grafana.beelink.home.lan,192.168.50.169"
-        "netdata.beelink.home.lan,192.168.50.169"
-        "loki.beelink.home.lan,192.168.50.169"
+        "sync.beelink.homelab,192.168.50.169"
+        "sync.pro.homelab,192.168.50.169"
+        "sync.air.homelab,192.168.50.169"
+        "beelink.homelab,192.168.50.169"
+        "plex.beelink.homelab,192.168.50.169"
+        "transmission.beelink.homelab,192.168.50.169"
+        "radarr.beelink.homelab,192.168.50.169"
+        "sonarr.beelink.homelab,192.168.50.169"
+        "prowlarr.beelink.homelab,192.168.50.169"
+        "grafana.beelink.homelab,192.168.50.169"
+        "netdata.beelink.homelab,192.168.50.169"
+        "loki.beelink.homelab,192.168.50.169"
       ];
 
       # Add wildcard domain support
-      address = [ "/#.beelink.home.lan/192.168.50.169" ];
+      address = [ "/#.beelink.homelab/192.168.50.169" ];
 
       # Log queries (useful for debugging)
       log-queries = true;

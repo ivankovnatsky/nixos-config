@@ -14,9 +14,9 @@ ssh-copy-id 192.168.50.169
 
 The machine is configured as a local DNS server using dnsmasq. It resolves the following domains:
 
-- `sync.beelink.home.lan` → 192.168.50.169
-- `beelink.home.lan` → 192.168.50.169
-- `grafana.beelink.home.lan` → 192.168.50.169
+- `sync.beelink.homelab` → 192.168.50.169
+- `beelink.homelab` → 192.168.50.169
+- `grafana.beelink.homelab` → 192.168.50.169
 
 > Note: We use `.lan` instead of `.local` because macOS reserves the `.local` top-level domain for Multicast DNS (mDNS/Bonjour). Using `.local` domains can cause resolution issues on macOS systems as they intercept these requests and try to resolve them via mDNS instead of regular DNS.
 
@@ -24,7 +24,7 @@ The machine is configured as a local DNS server using dnsmasq. It resolves the f
 
 The server uses the following components for log collection and visualization:
 
-- **Grafana**: Web interface for visualizing logs and metrics (http://grafana.beelink.home.lan)
+- **Grafana**: Web interface for visualizing logs and metrics (http://grafana.beelink.homelab)
 - **Loki**: Log aggregation system that stores and indexes logs
 - **Promtail**: Agent that collects logs from the system and forwards them to Loki
 
@@ -35,9 +35,9 @@ Default Grafana credentials:
 ## TODO
 
 - [x] Configure DNS server
-- [x] Configure service http routing for sync.beelink.home.lan -> 192.168.50.169:8384
+- [x] Configure service http routing for sync.beelink.homelab -> 192.168.50.169:8384
 - [ ] Add local https
-- [ ] Rename local domain: .home.lan -> home.lab
+- [x] Rename local domain: .home.lan -> homelab
 - [ ] Move data to external drive when got one
 - [ ] Add Home Assistant
 - [ ] Add availability dashboard
