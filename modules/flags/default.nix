@@ -88,6 +88,12 @@ with lib;
       };
     };
 
+    beelinkIp = mkOption {
+      type = types.str;
+      description = "Beelink IP address";
+      default = "192.168.50.2";
+    };
+
     hotkeys = {
       terminal = mkOption {
         type = types.enum [
