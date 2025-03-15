@@ -1,3 +1,4 @@
+{ config, ... }:
 {
   # Enable the Syncthing service
   services.syncthing = {
@@ -17,7 +18,7 @@
     configDir = "/home/ivan/.config/syncthing";
 
     # Configure to listen on local network (needed for headless access)
-    guiAddress = "192.168.50.169:8384";
+    guiAddress = "0.0.0.0:8384";
 
     # Open the required ports in the firewall
     openDefaultPorts = true;

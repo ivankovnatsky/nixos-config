@@ -182,7 +182,7 @@ The media server setup consists of four main components working together:
 4. **Plex**: Media streaming server
    - Serves media files for streaming
    - Manages movie metadata and library
-   - Accessible at `http://plex.beelink.homelab` or `http://192.168.50.169:32400/web`
+   - Accessible at `http://plex.beelink.homelab` or `http://beelink-ip:32400/web`
 
 ### Directory Structure
 
@@ -224,7 +224,7 @@ The media server setup consists of four main components working together:
    - No authentication required on local network
 
 4. **Plex Setup**:
-   - Initial setup: Access via `http://192.168.50.169:32400/web`
+   - Initial setup: Access via `http://beelink-ip:32400/web`
    - Add Movies library:
      - Click '+' next to Libraries
      - Choose 'Movies' type
@@ -243,7 +243,7 @@ The media server setup consists of four main components working together:
 ### Troubleshooting
 
 - If Plex shows "Get Media Server" screen:
-  - Access via direct IP: `http://192.168.50.169:32400/web`
+  - Access via direct IP: `http://beelink-ip:32400/web`
   - Use incognito/private browser window
   - Clear browser cookies for Plex domain
 
@@ -259,6 +259,9 @@ The media server setup consists of four main components working together:
    case. Also, because if you configure only one server in DHCP settings, TP-Link
    advertises as a seconds it's own IP as DNS (in clients default DNS servers),
    whick breaks the resoltion, thus dplicated dnsmasq IP two times
+
+3. Tried to use AP mode in Asus, and configuring DNS local network IP in
+   TP-Link it unpredicatably changed the network 192.168.0.1/24 -> 192.168.1.1/24 🤷
 
 ## BIOS
 

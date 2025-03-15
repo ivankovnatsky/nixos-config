@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 
@@ -9,6 +8,7 @@ with lib;
 
 let
   cfg = config.services.local-dns-resolver;
+  beelinkIp = config.flags.beelinkIp;
 in
 {
   options.services.local-dns-resolver = {
@@ -21,7 +21,7 @@ in
             nameserver = mkOption {
               type = types.str;
               description = "IP address of the nameserver for this zone";
-              example = "192.168.50.169";
+              example = beelinkIp;
             };
           };
         }
@@ -31,7 +31,7 @@ in
       example = literalExpression ''
         {
           "homelab" = {
-            nameserver = "192.168.50.169";
+            nameserver = beelinkIp;
           };
         }
       '';

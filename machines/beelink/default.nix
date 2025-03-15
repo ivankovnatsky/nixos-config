@@ -1,5 +1,8 @@
 {
   imports = [
+    ../../modules/secrets
+    ../../modules/flags
+
     # Base configuration.
     ./configuration.nix
 
@@ -40,7 +43,5 @@
     ./sonarr.nix
     ./transmission.nix
     ./prowlarr.nix
-
-    ../../modules/secrets
   ];
 }
