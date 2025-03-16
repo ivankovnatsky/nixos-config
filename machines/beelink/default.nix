@@ -25,6 +25,8 @@
     ./tmux-nixos-rebuild.nix
 
     # Networking
+    # FIXME: Did not work yet
+    # ./networking.nix
     ./dns.nix
     ./http-routing.nix
 
