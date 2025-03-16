@@ -80,6 +80,7 @@ in
       "amethyst"
       "cursor"
       "firefox"
+      "ghostty"
       "hammerspoon"
       "windsurf"
     ];
@@ -145,7 +146,7 @@ in
       }
 
       # Installed using nixpkgs
-      { path = "${pkgs.ghostty}/Applications/Ghostty.app/"; }
+      { path = "/Applications/Ghostty.app/"; }
       { path = "${pkgs.coconutbattery}/Applications/coconutBattery.app/"; }
 
       {

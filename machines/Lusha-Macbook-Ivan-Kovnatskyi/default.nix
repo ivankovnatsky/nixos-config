@@ -96,6 +96,7 @@ in
       "cursor"
       "dbeaver-community"
       "floorp"
+      "ghostty"
       "hammerspoon"
       "kitty"
       "mindmac"
@@ -173,7 +174,7 @@ in
       }
 
       # nixpkgs installed
-      { path = "${pkgs.ghostty}/Applications/Ghostty.app/"; }
+      { path = "/Applications/Ghostty.app/"; }
       { path = "${pkgs.vscode}/Applications/Visual Studio Code.app/"; }
 
       {

@@ -80,6 +80,7 @@ in
       "amethyst"
       "cursor"
       "firefox"
+      "ghostty"
       "hammerspoon"
       "microsoft-teams"
       "windsurf"
@@ -150,7 +151,7 @@ in
       }
 
       # Installed using nixpkgs
-      { path = "${pkgs.ghostty}/Applications/Ghostty.app/"; }
+      { path = "/Applications/Ghostty.app/"; }
       { path = "${pkgs.vscode}/Applications/Visual Studio Code.app/"; }
       { path = "${pkgs.coconutbattery}/Applications/coconutBattery.app/"; }
 
