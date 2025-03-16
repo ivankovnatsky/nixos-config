@@ -73,7 +73,6 @@
       fish-ai # Local overlay
       fzf
       genpass
-      ghostty
       home-manager
       jq
       ks
