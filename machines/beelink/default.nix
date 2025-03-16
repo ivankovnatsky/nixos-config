@@ -35,7 +35,7 @@
     # Logging
     ./journald.nix
     ./logrotate.nix
-
+    
     # Media
     # TODO: Consider using module? https://github.com/rasmus-kirk/nixarr
     ./plex.nix
