@@ -83,7 +83,6 @@
       exiftool
       fzf
       genpass
-      ghostty
       home-manager
       imagemagick
       jq

@@ -117,7 +117,6 @@
       genpass
       ggh
       ghorg
-      ghostty
       gitleaks
       gum
       hadolint

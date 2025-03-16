@@ -1,10 +1,11 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 {
   # Show all available options:
 
   # ```console
   # ghostty +show-config --default --docs
   # ```
+  home.packages = [ pkgs.nixpkgs-master.ghostty ];
   home.file.".config/ghostty/config".text = ''
     adjust-cell-height = 8%
     adjust-cell-width =
