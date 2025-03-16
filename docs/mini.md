@@ -7,6 +7,8 @@
   * Disable all iCloud toggles
 * Enabled FileVault
 * Configured syncthing to use default dir as /Volume/[StorageName]
+* Enabled remote login -- this was enabled by `services.openssh.enable = true`
+  * Enabled allow full disk access for remote users under `Remote Login`
 
 On other machines:
 
