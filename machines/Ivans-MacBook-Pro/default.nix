@@ -128,6 +128,7 @@ in
       { path = "/System/Applications/Passwords.app/"; }
       { path = "/System/Library/CoreServices/Applications/Keychain Access.app/"; }
       { path = "/System/Applications/iPhone Mirroring.app/"; }
+      { path = "/System/Applications/FindMy.app/"; }
 
       {
         type = "spacer";
