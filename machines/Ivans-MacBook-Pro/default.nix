@@ -14,7 +14,6 @@ in
     ../../modules/darwin/dock
     ../../modules/darwin/pam
     ../../modules/darwin/sudo
-    ../../modules/darwin/local-dns-resolver
     ../../modules/flags
     ../../modules/secrets
     ../../darwin/darwin.nix
