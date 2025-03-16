@@ -48,10 +48,9 @@
         
         # Simple reverse proxy to the MacBook Pro's Syncthing instance
         reverse_proxy 192.168.0.144:8384 {
+          # Only include headers that aren't automatically handled
           header_up X-Real-IP {remote_host}
           header_up Host {host}
-          header_up X-Forwarded-For {remote_host}
-          header_up X-Forwarded-Proto {scheme}
         }
       }
 
@@ -61,10 +60,9 @@
         
         # Simple reverse proxy to the MacBook Air's Syncthing instance
         reverse_proxy 192.168.0.15:8384 {
+          # Only include headers that aren't automatically handled
           header_up X-Real-IP {remote_host}
           header_up Host {host}
-          header_up X-Forwarded-For {remote_host}
-          header_up X-Forwarded-Proto {scheme}
         }
       }
 
@@ -124,8 +122,6 @@
           # Enable WebSocket support
           header_up X-Real-IP {remote_host}
           header_up Host {host}
-          header_up X-Forwarded-For {remote_host}
-          header_up X-Forwarded-Proto {scheme}
           
           # Increase timeouts for streaming
           transport http {
@@ -147,8 +143,6 @@
           # Enable WebSocket support
           header_up X-Real-IP {remote_host}
           header_up Host {host}
-          header_up X-Forwarded-For {remote_host}
-          header_up X-Forwarded-Proto {scheme}
         }
       }
 
@@ -164,8 +158,6 @@
           # Enable WebSocket support
           header_up X-Real-IP {remote_host}
           header_up Host {host}
-          header_up X-Forwarded-For {remote_host}
-          header_up X-Forwarded-Proto {scheme}
         }
       }
     '';
