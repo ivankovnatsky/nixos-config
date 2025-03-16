@@ -263,6 +263,12 @@ The media server setup consists of four main components working together:
 3. Tried to use AP mode in Asus, and configuring DNS local network IP in
    TP-Link it unpredicatably changed the network 192.168.0.1/24 -> 192.168.1.1/24 🤷
 
+4. With two same routers configuration make sure to add to DHCP settings two
+   single important devices:
+
+   4.1. 2nd Router IP: 192.168.50.2
+   4.1. Beelink: 192.168.50.3
+
 ## BIOS
 
 Optimized fan settings to be:
