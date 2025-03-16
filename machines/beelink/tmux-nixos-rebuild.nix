@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 {
   # Create a systemd service that starts a tmux session on boot
@@ -12,15 +12,18 @@
       Type = "forking";
       User = "ivan";
       ExecStart = pkgs.writeShellScript "start-tmux-session" ''
+        # Use the hostname as session name
+        SESSION_NAME="${config.networking.hostName}"
+        
         # Check if the session already exists
-        ${pkgs.tmux}/bin/tmux has-session -t beelink 2>/dev/null
+        ${pkgs.tmux}/bin/tmux has-session -t "$SESSION_NAME" 2>/dev/null
         if [ $? -eq 0 ]; then
           # Session exists, do nothing
           exit 0
         fi
 
         # Create a new detached session with a named window
-        ${pkgs.tmux}/bin/tmux new-session -d -s beelink -n rebuild -c /home/ivan/Sources/github.com/ivankovnatsky/nixos-config
+        ${pkgs.tmux}/bin/tmux new-session -d -s "$SESSION_NAME" -n rebuild -c /home/ivan/Sources/github.com/ivankovnatsky/nixos-config
 
         # Increase session name length to show full name
         ${pkgs.tmux}/bin/tmux set-option -g status-left-length 30
@@ -55,10 +58,10 @@
         ''}"
 
         # Set up the window with our custom watchman rebuild script
-        ${pkgs.tmux}/bin/tmux send-keys -t beelink "$REBUILD_SCRIPT" C-m
+        ${pkgs.tmux}/bin/tmux send-keys -t "$SESSION_NAME" "$REBUILD_SCRIPT" C-m
 
         # Switch back to the first window
-        ${pkgs.tmux}/bin/tmux select-window -t beelink:rebuild
+        ${pkgs.tmux}/bin/tmux select-window -t "$SESSION_NAME:rebuild"
 
         exit 0
       '';
@@ -72,13 +75,16 @@
   environment.systemPackages = with pkgs; [
     # Script to attach to the tmux session
     (writeShellScriptBin "nixos-config-tmux" ''
+      # Use the hostname as session name
+      SESSION_NAME="${config.networking.hostName}"
+      
       # Attach to the nixos-config tmux session or notify if it doesn't exist
-      ${tmux}/bin/tmux has-session -t beelink 2>/dev/null
+      ${tmux}/bin/tmux has-session -t "$SESSION_NAME" 2>/dev/null
       if [ $? -eq 0 ]; then
-        echo "Attaching to beelink tmux session..."
-        exec ${tmux}/bin/tmux attach-session -t beelink
+        echo "Attaching to $SESSION_NAME tmux session..."
+        exec ${tmux}/bin/tmux attach-session -t "$SESSION_NAME"
       else
-        echo "The beelink tmux session is not running."
+        echo "The $SESSION_NAME tmux session is not running."
         echo "It may have been stopped or failed to start."
         echo "Check the status with: systemctl status tmux-nixos-config"
         echo ""
