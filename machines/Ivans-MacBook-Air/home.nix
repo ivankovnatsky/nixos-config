@@ -11,7 +11,6 @@
     ../../home/git.nix
     ../../home/go.nix
     ../../home/hammerspoon
-    ../../home/launchd-services/dark-mode-kitty
     ../../home/lsd.nix
     ../../home/mpv.nix
     ../../home/nixvim
@@ -37,7 +36,7 @@
     editor = "nvim";
     darkMode = true;
     hotkeys = {
-      terminal = "kitty";
+      terminal = "Ghostty";
       browser = "Safari";
       shortcuts = [
         {

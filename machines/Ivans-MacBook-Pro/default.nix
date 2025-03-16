@@ -18,6 +18,7 @@ in
     ../../modules/flags
     ../../modules/secrets
     ../../darwin/darwin.nix
+    ../../darwin/tmux-darwin-rebuild.nix
     ../../system/documentation.nix
     ../../system/nix.nix
     # ./promtail.nix
@@ -81,7 +82,6 @@ in
       "cursor"
       "firefox"
       "hammerspoon"
-      "kitty"
       "windsurf"
     ];
     masApps = {
@@ -135,7 +135,6 @@ in
       }
 
       # Brew casks placeholder
-      { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }
