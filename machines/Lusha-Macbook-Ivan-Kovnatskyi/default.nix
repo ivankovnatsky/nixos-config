@@ -12,6 +12,7 @@ in
 {
   imports = [
     ../../darwin/darwin.nix
+    # ../../darwin/tmux-darwin-rebuild.nix
     ../../modules/darwin/dock
     ../../modules/darwin/pam
     ../../modules/darwin/sudo
@@ -98,7 +99,6 @@ in
       "floorp"
       "ghostty"
       "hammerspoon"
-      "kitty"
       "mindmac"
       "orbstack"
       "twingate"
@@ -160,7 +160,6 @@ in
       }
 
       # Installed using homebrew
-      { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Vivaldi.app/"; }
       { path = "/Applications/Floorp.app/"; }
       { path = "/Applications/Cursor.app/"; }
