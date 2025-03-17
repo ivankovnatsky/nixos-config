@@ -15,7 +15,6 @@
     ../../home/hammerspoon
     ../../home/jujutsu.nix
     ../../home/k9s.nix
-    ../../home/launchd-services/dark-mode-kitty
     ../../home/lsd.nix
     ../../home/mpv.nix
     ../../home/nixvim
@@ -47,7 +46,7 @@
     editor = "nvim";
     darkMode = true;
     hotkeys = {
-      terminal = "kitty";
+      terminal = "Ghostty";
       browser = "Safari";
       shortcuts = [
         {
@@ -68,15 +67,15 @@
         }
         {
           key = "5";
-          app = "Floorp";
+          app = "Google Chrome";
         }
         {
           key = "6";
-          app = "Cursor";
+          app = "Floorp";
         }
         {
           key = "7";
-          app = "Windsurf";
+          app = "Slack";
         }
         {
           key = "9";
