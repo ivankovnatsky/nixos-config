@@ -28,6 +28,7 @@ let
     "vim.relativeLineNumbers" = true;
     "window.autoDetectColorScheme" = true;
     "windsurf.autocompleteSpeed" = "default";
+    "windsurf.autoExecutionPolicy" = "off";
     "workbench.colorTheme" = "Auto";
     "workbench.preferredDarkColorTheme" = "Default Dark+";
     "workbench.preferredLightColorTheme" = "Default Light+";
