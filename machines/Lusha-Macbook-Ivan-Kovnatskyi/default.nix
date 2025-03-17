@@ -123,6 +123,12 @@ in
       configContent = ''
         Defaults:${username} timestamp_timeout=240
       '';
+      nopasswd = {
+        enable = true;
+        user = "${username}";
+        commands = [
+        ];
+      };
     };
     dock.enable = true;
     # TODO: can dock be stretched 100% horizontally?

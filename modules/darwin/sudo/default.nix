@@ -10,7 +10,7 @@ let
   cfg = config.local.sudo;
 
   mkSudoCustomConfigScript =
-    isEnabled:
+    isEnabled: configToUse:
     let
       file = "/etc/sudoers.d/nix-darwin-sudo-config";
       option = "local.sudo.enable";
@@ -23,7 +23,7 @@ let
             echo >&2 "Configuring custom sudo settings..."
             sudo tee ${file} > /dev/null << EOF
             # nix-darwin: ${option}
-            ${cfg.configContent}
+            ${configToUse}
             EOF
             sudo chmod 440 ${file}
           ''
@@ -55,13 +55,48 @@ in
         '';
         description = "Custom sudo configuration content.";
       };
+      
+      nopasswd = {
+        enable = mkEnableOption "Enable NOPASSWD for specified commands";
+        
+        user = mkOption {
+          type = types.str;
+          default = "$USER";
+          example = "username";
+          description = "User for which NOPASSWD commands should be enabled.";
+        };
+        
+        commands = mkOption {
+          type = types.listOf types.str;
+          default = [];
+          example = [ "/usr/bin/systemctl" "/usr/bin/reboot" ];
+          description = "List of commands that can be executed without password.";
+        };
+      };
     };
   };
 
+  # FIXME: Should also clean NOPASSWD commands when disabled.
   config = {
-    system.activationScripts.extraActivation.text = ''
-      # Custom sudo configuration
-      ${mkSudoCustomConfigScript cfg.enable}
-    '';
+    system.activationScripts.extraActivation.text = 
+      let
+        finalConfigContent = 
+          if (cfg.enable && cfg.nopasswd.enable) then
+            let
+              nopasswdRules = map (cmd: "${cfg.nopasswd.user} ALL=(ALL) NOPASSWD: ${cmd}") cfg.nopasswd.commands;
+              nopasswdContent = concatStringsSep "\n" nopasswdRules;
+            in
+            ''${cfg.configContent}
+
+# NOPASSWD commands
+${nopasswdContent}
+''
+          else
+            cfg.configContent;
+      in
+      ''
+        # Custom sudo configuration
+        ${mkSudoCustomConfigScript cfg.enable finalConfigContent}
+      '';
   };
 }
