@@ -9,6 +9,8 @@
 * Configured syncthing to use default dir as /Volume/[StorageName]
 * Enabled remote login -- this was enabled by `services.openssh.enable = true`
   * Enabled allow full disk access for remote users under `Remote Login`
+* Enabled file sharing
+  * Added `/Volume/[StorageName]` to shared folders
 
 On other machines:
 
