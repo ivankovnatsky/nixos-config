@@ -134,6 +134,7 @@ in
       { path = "/Applications/Numbers.app/"; }
       { path = "/System/Library/CoreServices/Applications/Keychain Access.app/"; }
       { path = "/System/Applications/iPhone Mirroring.app/"; }
+      { path = "/System/Applications/Utilities/Screen Sharing.app/"; }
 
       {
         type = "spacer";
