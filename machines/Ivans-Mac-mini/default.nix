@@ -23,6 +23,7 @@
   environment.systemPackages = with pkgs; [
     # To avoid installing Developer Tools
     gnumake
+    tmux
 
     rclone
   ];
