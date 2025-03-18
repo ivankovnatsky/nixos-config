@@ -16,7 +16,7 @@ in
     ../../modules/darwin/sudo
     ../../modules/flags
     ../../modules/secrets
-    ../../darwin/tmux-darwin-rebuild.nix
+    ../../modules/darwin/tmux-rebuild
     ../../darwin/darwin.nix
     ../../system/documentation.nix
     ../../system/nix.nix

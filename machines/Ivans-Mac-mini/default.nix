@@ -4,6 +4,7 @@
   imports = [
     # TODO: Create similar rebuild tmux service as in NixOS
     ../../darwin/syncthing.nix
+    ../../modules/darwin/tmux-rebuild
   ];
 
   # error: Determinate detected, aborting activation
@@ -20,10 +21,15 @@
   # will be unavailable.
   nix.enable = false;
 
+  # Specify custom nixos-config path for Mac Mini with external drive
+  services.tmuxRebuild.nixosConfigPath = "/Volumes/Samsung2TB/Sources/github.com/ivankovnatsky/nixos-config";
+
   environment.systemPackages = with pkgs; [
     # To avoid installing Developer Tools
     gnumake
     tmux
+    watchman
+    watchman-make
 
     rclone
   ];
