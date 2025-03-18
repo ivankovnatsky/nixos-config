@@ -72,7 +72,7 @@
         { username, ... }:
         {
           # Kandji sets it automatically, kept for reference.
-          # networking.hostName = "Lusha-Macbook-Ivan-Kovnatskyi";
+          networking.hostName = "Lusha-Macbook-Ivan-Kovnatskyi";
           users.users.${username}.home = "/Users/${username}";
           system.stateVersion = 4;
         }
