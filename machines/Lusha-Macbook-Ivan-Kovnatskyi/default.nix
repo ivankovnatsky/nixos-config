@@ -12,10 +12,10 @@ in
 {
   imports = [
     ../../darwin/darwin.nix
-    # ../../modules/darwin/tmux-rebuild
     ../../modules/darwin/dock
     ../../modules/darwin/pam
     ../../modules/darwin/sudo
+    ../../modules/darwin/tmux-rebuild
     ../../modules/flags
     ../../modules/secrets
     ../../nixos/rebuild-diff.nix
@@ -126,8 +126,7 @@ in
       nopasswd = {
         enable = true;
         user = "${username}";
-        commands = [
-        ];
+        commands = [ ];
       };
     };
     dock.enable = true;
