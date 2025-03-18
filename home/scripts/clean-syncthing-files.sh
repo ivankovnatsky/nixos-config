@@ -1,124 +1,40 @@
 #!/usr/bin/env bash
-# clean-syncthing-files.sh - Script to clean up Syncthing conflict files
-# Usage: ./clean-syncthing-files.sh [--dry-run] [--verbose] [path]
 
-set -e
+# Script to clean up Syncthing conflict files and temporary files
+# Uses fd to find and delete files in one step
 
-# Default settings
+# Default to normal run mode
 DRY_RUN=0
-VERBOSE=0
-SEARCH_PATH="."
 
 # Process command line arguments
-while [[ $# -gt 0 ]]; do
-  case $1 in
-    --dry-run)
-      DRY_RUN=1
-      shift
-      ;;
-    --verbose)
-      VERBOSE=1
-      shift
-      ;;
-    -h|--help)
-      echo "Usage: $(basename $0) [--dry-run] [--verbose] [path]"
-      echo ""
-      echo "Options:"
-      echo "  --dry-run    Show what would be deleted without actually deleting"
-      echo "  --verbose    Show all files that would be deleted"
-      echo "  --help       Show this help message"
-      echo "  [path]       Directory to search (default: current directory)"
-      exit 0
-      ;;
-    *)
-      SEARCH_PATH="$1"
-      shift
-      ;;
-  esac
-done
+if [[ "$1" == "--dry-run" ]]; then
+  DRY_RUN=1
+  shift
+fi
 
-# Print header
-echo "Syncthing Conflict Files Cleanup"
-echo "================================"
-if [ $DRY_RUN -eq 1 ]; then
+# Set the directory to clean (default to current directory if not specified)
+DIR="${1:-.}"
+
+echo "Cleaning Syncthing conflict files and temporary files in: $DIR"
+if [[ $DRY_RUN -eq 1 ]]; then
   echo "DRY RUN MODE: No files will be deleted"
 fi
-echo "Searching in: $SEARCH_PATH"
-echo ""
 
-# Function to find and optionally delete files
-find_and_clean() {
-  local pattern="$1"
-  local description="$2"
-  
-  echo "Looking for $description..."
-  
-  # Find the files - using macOS compatible syntax
-  local files=$(find "$SEARCH_PATH" -type f -name "$pattern" 2>/dev/null)
-  local count=0
-  
-  if [ -n "$files" ]; then
-    count=$(echo "$files" | grep -c "")
-  fi
-  
-  if [ -z "$files" ] || [ "$count" -eq 0 ]; then
-    echo "No $description found."
-    echo ""
-    return 0
-  fi
-  
-  echo "Found $count $description:"
-  
-  if [ $VERBOSE -eq 1 ] || [ $DRY_RUN -eq 1 ]; then
-    echo "$files" | sed 's/^/  /'
-  else
-    echo "$files" | head -n 5 | sed 's/^/  /'
-    if [ $count -gt 5 ]; then
-      echo "  ... and $((count - 5)) more files"
-    fi
-  fi
-  
-  # Delete the files if not in dry-run mode
-  if [ $DRY_RUN -eq 0 ]; then
-    echo "Deleting $count files..."
-    echo "$files" | while read file; do
-      rm -f "$file"
-    done
-    echo "Deleted $count $description."
-  else
-    echo "Would delete $count $description."
-  fi
-  
-  echo ""
-  return $count
-}
+# Define the base fd command to avoid duplication
+FD_BASE_CMD="fd --hidden --exclude '.git' '(\.sync-conflict|\.syncthing.*\.tmp|syncthing.*tmp)' \"$DIR\""
 
-# Find and clean different types of Syncthing conflict files
-total=0
-
-# Temporary files
-count=0
-find_and_clean "*syncthing*tmp" "temporary Syncthing files"
-total=$((total + $?))
-
-# Sync conflict files
-count=0
-find_and_clean "*sync-conflict*" "Syncthing conflict files"
-total=$((total + $?))
-
-# Old version files
-count=0
-find_and_clean "*.syncthing.*.tmp" "Syncthing old version files"
-total=$((total + $?))
-
-# Summary
-echo "Summary:"
-echo "========"
-if [ $DRY_RUN -eq 1 ]; then
-  echo "Would have deleted $total Syncthing-related files."
-  echo "Run without --dry-run to actually delete the files."
+# Use fd to find and delete all Syncthing-related files in one command
+# This includes:
+# - .sync-conflict-* files (conflict files)
+# - *.syncthing.*.tmp files (temporary files)
+# - *syncthing*tmp files (other temporary files)
+if [[ $DRY_RUN -eq 1 ]]; then
+  # In dry-run mode, just list the files
+  echo "Files that would be deleted:"
+  eval "$FD_BASE_CMD --exec echo '  {}'"
 else
-  echo "Deleted $total Syncthing-related files."
+  # Normal mode - delete the files
+  eval "$FD_BASE_CMD --exec rm --verbose {}"
 fi
 
-exit 0
+echo "Cleanup complete!"
