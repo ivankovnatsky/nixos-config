@@ -1,9 +1,9 @@
-{ pkgs, ... }:
+{ pkgs, username, ... }:
 
 {
   imports = [
-    # TODO: Create similar rebuild tmux service as in NixOS
     ../../darwin/syncthing.nix
+    ../../modules/darwin/sudo
     ../../modules/darwin/tmux-rebuild
   ];
 
@@ -21,7 +21,7 @@
   # will be unavailable.
   nix.enable = false;
 
-  # Specify custom nixos-config path for Mac Mini with external drive
+  # FIXME: Prepend local for all local modules
   services.tmuxRebuild.nixosConfigPath = "/Volumes/Samsung2TB/Sources/github.com/ivankovnatsky/nixos-config";
 
   environment.systemPackages = with pkgs; [
@@ -35,4 +35,13 @@
   ];
 
   services.openssh.enable = true;
+
+  local = {
+    sudo = {
+      enable = true;
+      configContent = ''
+        Defaults:${username} timestamp_timeout=240
+      '';
+    };
+  };
 }
