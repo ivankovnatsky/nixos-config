@@ -23,3 +23,7 @@ On other machines:
 ```console
 ssh-copy-id ivan@192.168.50.46
 ```
+
+## TODO
+
+- [ ] UPS or other power management
