@@ -3,28 +3,15 @@
   security.sudo = {
     enable = true;
     extraConfig = ''
-      # Set password timeout to 2 hours (7200 seconds)
-      Defaults timestamp_timeout=7200
+      # Set password timeout to 4 hours (240 minutes)
+      Defaults timestamp_timeout=240
     '';
     
     # Configure NOPASSWD rules for specific commands
     extraRules = [
       {
         users = [ "ivan" ];
-        commands = [
-          {
-            command = "/run/current-system/sw/bin/nixos-rebuild";
-            options = [ "NOPASSWD" ];
-          }
-          {
-            command = "${config.system.build.nixos-rebuild}/bin/nixos-rebuild";
-            options = [ "NOPASSWD" ];
-          }
-          {
-            command = "/run/current-system/sw/bin/nix-env";
-            options = [ "NOPASSWD" ];
-          }
-        ];
+        commands = [ ];
       }
     ];
   };
