@@ -196,6 +196,8 @@ in
       }
     ];
   };
+  # Go and Enable Full Disk Access
+  services.openssh.enable = true;
   # error:
   #      Failed assertions:
   #      - users.users.ivan.shell is set to zsh, but
