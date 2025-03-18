@@ -267,7 +267,8 @@ The media server setup consists of four main components working together:
    single important devices:
 
    4.1. 2nd Router IP: 192.168.50.2
-   4.1. Beelink: 192.168.50.3
+   4.2. Beelink: 192.168.50.3
+   4.2. Mini: 192.168.50.4
 
 ## BIOS
 
