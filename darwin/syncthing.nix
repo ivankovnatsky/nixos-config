@@ -1,7 +1,5 @@
 {
-  config,
   pkgs,
-  lib,
   ...
 }:
 
@@ -19,7 +17,6 @@
 let
   username = "ivan"; # Set your username here
   homeDir = "/Users/${username}";
-  configDir = "${homeDir}/Library/Application Support/Syncthing";
   guiAddress = "0.0.0.0:8384"; # Accept connections from any interface
 in
 {
@@ -32,13 +29,10 @@ in
         "${pkgs.syncthing}/bin/syncthing"
         "-no-browser"
         "-no-restart"
+        "-no-upgrade"
+        "-gui-address=${guiAddress}"
         "-logflags=0"
       ];
-      EnvironmentVariables = {
-        # Set environment variables
-        STNOUPGRADE = "1"; # Disable automatic upgrades as it's managed by Nix
-        # GUI address is controlled by the user via the web interface
-      };
       RunAtLoad = true;
       KeepAlive = true;
       StandardOutPath = "${homeDir}/Library/Logs/syncthing.log";

@@ -42,6 +42,16 @@
         reverse_proxy ${config.flags.beelinkIp}:8384
       }
 
+      sync.mini.homelab:80 {
+        bind ${config.flags.beelinkIp}
+
+        # Disable TLS
+        tls internal
+
+        # Proxy to Syncthing on its configured address
+        reverse_proxy 192.168.50.4:8384
+      }
+
       # Syncthing hostname for pro
       sync.pro.homelab:80 {
         bind ${config.flags.beelinkIp}
