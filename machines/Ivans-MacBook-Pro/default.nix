@@ -17,11 +17,12 @@ in
     ../../modules/flags
     ../../modules/secrets
     ../../darwin/darwin.nix
-    ../../darwin/tmux-darwin-rebuild.nix
+    ../../modules/darwin/tmux-rebuild
     ../../system/documentation.nix
     ../../system/nix.nix
     # ./promtail.nix
   ];
+  services.tmuxRebuild.nixosConfigPath = "${homePath}/Sources/github.com/ivankovnatsky/nixos-config";
   flags = {
     enableFishShell = true;
     purpose = "home";
@@ -129,6 +130,7 @@ in
       { path = "/System/Library/CoreServices/Applications/Keychain Access.app/"; }
       { path = "/System/Applications/iPhone Mirroring.app/"; }
       { path = "/System/Applications/FindMy.app/"; }
+      { path = "/System/Applications/Utilities/Screen Sharing.app/"; }
 
       {
         type = "spacer";
