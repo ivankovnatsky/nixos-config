@@ -12,7 +12,7 @@ in
 {
   imports = [
     ../../darwin/darwin.nix
-    # ../../darwin/tmux-darwin-rebuild.nix
+    # ../../modules/darwin/tmux-rebuild
     ../../modules/darwin/dock
     ../../modules/darwin/pam
     ../../modules/darwin/sudo
