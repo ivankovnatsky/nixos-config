@@ -13,6 +13,7 @@ let
 in
 {
 
+  # Should grant access to most probably bash that needs to have Full Disk Permissions.
   options = {
     services.tmuxRebuild = {
       nixosConfigPath = mkOption {
