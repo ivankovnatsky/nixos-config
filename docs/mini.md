@@ -14,6 +14,9 @@
   (https://www.reddit.com/r/macsysadmin/comments/13dhnmb/enable_remote_management_through_shell_script/?rdt=53927)
 * Enabled file sharing
   * Added `/Volume/[StorageName]` to shared folders
+  * Need to grant all different service with access to disk, namely:
+    * Syncthing?
+    * watchman / make ?
 
 On other machines:
 
