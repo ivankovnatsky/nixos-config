@@ -49,13 +49,13 @@
         tls internal
 
         # Proxy to Syncthing on its configured address
-        reverse_proxy 192.168.50.4:8384
+        reverse_proxy ${config.flags.macMiniIp}:8384
       }
 
       # Syncthing hostname for pro
       sync.pro.homelab:80 {
         bind ${config.flags.beelinkIp}
-        
+
         # Simple reverse proxy to the MacBook Pro's Syncthing instance
         reverse_proxy 192.168.0.144:8384 {
           # Only include headers that aren't automatically handled
@@ -67,7 +67,7 @@
       # Syncthing hostname for air
       sync.air.homelab:80 {
         bind ${config.flags.beelinkIp}
-        
+
         # Simple reverse proxy to the MacBook Air's Syncthing instance
         reverse_proxy 192.168.0.15:8384 {
           # Only include headers that aren't automatically handled
@@ -150,6 +150,25 @@
 
         # Proxy to Netdata
         reverse_proxy 127.0.0.1:19999 {
+          # Enable WebSocket support
+          header_up X-Real-IP {remote_host}
+          header_up Host {host}
+        }
+      }
+
+      netdata.mini.homelab:80 {
+        bind ${config.flags.beelinkIp}
+
+        # Disable TLS
+        tls internal
+
+        # FIXME: Should be fixed in nix-darwin or upsteam?
+        # Redirect root to v1 dashboard
+        redir / /v1/ 302
+        redir /index.html /v1/ 302
+        
+        # Proxy to Netdata
+        reverse_proxy ${config.flags.macMiniIp}:19999 {
           # Enable WebSocket support
           header_up X-Real-IP {remote_host}
           header_up Host {host}

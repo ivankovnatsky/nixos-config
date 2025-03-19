@@ -6,5 +6,6 @@
     ./packages.nix
     ./sudo.nix
     ./tmux-rebuild.nix
+    ./netdata.nix
   ];
 }
