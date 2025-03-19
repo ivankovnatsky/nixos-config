@@ -34,7 +34,7 @@
         "set -g status on"
 
       set -g status-right ""
-      set -g status-left-length 30
+      set -g status-left-length 40
 
       ${
         if config.flags.darkMode then
