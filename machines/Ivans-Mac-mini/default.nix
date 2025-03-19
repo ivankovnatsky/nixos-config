@@ -7,5 +7,6 @@
     ./sudo.nix
     ./tmux-rebuild.nix
     ./netdata.nix
+    ./sharing.nix
   ];
 }
