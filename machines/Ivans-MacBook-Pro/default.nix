@@ -17,6 +17,7 @@ in
     ../../modules/flags
     ../../modules/secrets
     ../../darwin/darwin.nix
+    ../../darwin/aerospace.nix
     ../../modules/darwin/tmux-rebuild
     ../../system/documentation.nix
     ../../system/nix.nix
