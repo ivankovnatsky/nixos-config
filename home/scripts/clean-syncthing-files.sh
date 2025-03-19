@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -x
-
 # Define a function for finding only Syncthing-related conflict files
 find_syncthing_files() {
   find . -type f \( \
@@ -15,6 +13,3 @@ find_syncthing_files
 
 # Then delete them
 find_syncthing_files -delete
-
-# Verify no files remain
-find_syncthing_files
