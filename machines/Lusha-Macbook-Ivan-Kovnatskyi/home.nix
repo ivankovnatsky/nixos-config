@@ -146,6 +146,7 @@
       nixfmt-rfc-style
       nodePackages.aws-cdk
       nodejs
+      opsy
       parallel
       pigz
       poetry
