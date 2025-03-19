@@ -94,6 +94,12 @@ with lib;
       default = "192.168.50.3";
     };
 
+    macMiniIp = mkOption {
+      type = types.str;
+      description = "Mac mini IP address";
+      default = "192.168.50.4";
+    };
+
     hotkeys = {
       terminal = mkOption {
         type = types.enum [

@@ -1,8 +1,13 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
   # Enable the Netdata service with enhanced settings
   services.netdata = {
     enable = true;
+
+    # package = pkgs.netdataCloud;
+
+    # Configure claim token file for Netdata Cloud
+    # claimTokenFile = "/etc/secrets/netdata_claim_token";
 
     config = {
       # Global settings
@@ -51,4 +56,12 @@
   networking.firewall = {
     allowedTCPPorts = [ 19999 ];
   };
+
+  # Create the claim token file using environment.etc
+  # environment.etc."secrets/netdata_claim_token" = {
+  #   text = config.secrets.netdataCloudToken;
+  #   mode = "0600";
+  #   user = "root";
+  #   group = "root";
+  # };
 }
