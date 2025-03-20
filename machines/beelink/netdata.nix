@@ -57,6 +57,10 @@
     allowedTCPPorts = [ 19999 ];
   };
 
+  # Create the opt-out file in the Netdata configuration directory
+  # https://learn.netdata.cloud/docs/netdata-agent/anonymous-telemetry-events
+  environment.etc."netdata/.opt-out-from-anonymous-statistics".text = "";
+
   # Create the claim token file using environment.etc
   # environment.etc."secrets/netdata_claim_token" = {
   #   text = config.secrets.netdataCloudToken;
