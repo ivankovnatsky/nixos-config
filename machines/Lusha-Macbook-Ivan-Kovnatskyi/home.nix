@@ -123,6 +123,7 @@
       home-manager
       iam-policy-json-to-terraform
       imagemagick
+      infra
       infracost
       jq
       jsonnet
