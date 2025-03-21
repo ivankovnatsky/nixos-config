@@ -23,10 +23,14 @@
       default_config = {};
       recorder.db_url = "postgresql://@/hass";
       
+      # Set location information
+      latitude = config.secrets.latitude;
+      longitude = config.secrets.longitude;
+      
       # Basic HTTP configuration
       http = {
-        # Listen on localhost for proxy access
-        server_host = "127.0.0.1";
+        # Listen on all interfaces for proxy access
+        server_host = "0.0.0.0";
         server_port = 8123;
         # Enable proxy support
         use_x_forwarded_for = true;

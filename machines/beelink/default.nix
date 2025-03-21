@@ -47,5 +47,7 @@
     ./sonarr.nix
     ./transmission.nix
     ./prowlarr.nix
+
+    ./home-assistant.nix
   ];
 }
