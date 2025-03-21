@@ -1,0 +1,32 @@
+{
+  imports = [
+    ../../../home/aichat.nix
+    ../../../home/amethyst.nix
+    ../../../home/direnv.nix
+    ../../../home/firefox-config.nix
+    ../../../home/fish-ai.nix
+    ../../../home/ghostty.nix
+    ../../../home/git.nix
+    ../../../home/go.nix
+    ../../../home/hammerspoon
+    ../../../home/lsd.nix
+    ../../../home/mpv.nix
+    ../../../home/nixvim
+    ../../../home/nixvim/plugins/avante
+    ../../../home/nixvim/plugins/copilot-lua
+    ../../../home/pass.nix
+    ../../../home/scripts.nix
+    ../../../home/shell.nix
+    ../../../home/starship
+    ../../../home/syncthing.nix
+    ../../../home/taskwarrior.nix
+    ../../../home/tmux.nix
+    ../../../home/vscode.nix
+    ../../../modules/flags
+    ../../../modules/secrets
+    ./flags.nix
+    ./packages.nix
+    ./home-session-vars.nix
+    ./nixvim.nix
+  ];
+}
