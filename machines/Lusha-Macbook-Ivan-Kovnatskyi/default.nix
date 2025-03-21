@@ -11,6 +11,7 @@ let
 in
 {
   imports = [
+    ../../darwin/aerospace.nix
     ../../darwin/darwin.nix
     ../../modules/darwin/dock
     ../../modules/darwin/pam
