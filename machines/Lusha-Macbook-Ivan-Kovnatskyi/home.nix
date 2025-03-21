@@ -160,6 +160,7 @@
       rclone
       rectangle # Window manager
       sesh
+      smctemp
       sshpass
       ssm-session-manager-plugin
       stats # To show CPU, RAM, etc. usage in the menu bar
