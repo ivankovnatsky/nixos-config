@@ -23,7 +23,7 @@ let
             useUserPackages = true;
             users.${username} = {
               imports = [
-                ../../machines/${hostname}/home.nix
+                ../../machines/${hostname}/home
                 {
                   programs.home-manager.enable = true;
                 }
