@@ -7,6 +7,7 @@
         psycopg2 
         getmac
         pyatv
+        gtts  # Google Text-to-Speech
       ];
     }).overrideAttrs (oldAttrs: {
       doInstallCheck = false;
@@ -60,4 +61,8 @@
       ensureDBOwnership = true;
     }];
   };
+  
+  # Ensure the Home Assistant service starts after PostgreSQL is fully up
+  systemd.services.home-assistant.after = [ "postgresql.service" ];
+  systemd.services.home-assistant.requires = [ "postgresql.service" ];
 }
