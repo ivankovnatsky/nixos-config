@@ -23,9 +23,15 @@
       default_config = {};
       recorder.db_url = "postgresql://@/hass";
       
-      # Set location information
-      latitude = config.secrets.latitude;
-      longitude = config.secrets.longitude;
+      # Set location information in the correct format
+      homeassistant = {
+        name = "Home";
+        latitude = config.secrets.latitude;
+        longitude = config.secrets.longitude;
+        elevation = 0;
+        unit_system = "metric";
+        time_zone = config.secrets.timezone;
+      };
       
       # Basic HTTP configuration
       http = {
