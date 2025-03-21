@@ -42,6 +42,16 @@
         reverse_proxy ${config.flags.beelinkIp}:8384
       }
 
+      home.beelink.homelab:80 {
+        bind ${config.flags.beelinkIp}
+
+        # Disable TLS
+        tls internal
+
+        # Proxy to Home-Assistant on its configured address
+        reverse_proxy ${config.flags.beelinkIp}:8123
+      }
+
       sync.mini.homelab:80 {
         bind ${config.flags.beelinkIp}
 
