@@ -1,10 +1,10 @@
-{ username, ... }:
 {
   imports = [
     ../../modules/secrets
     ../../modules/flags
 
     ../../modules/nixos/tmux-rebuild
+    ./tmux-rebuild.nix
 
     # Base configuration.
     ./configuration.nix
@@ -39,7 +39,7 @@
     # Logging
     ./journald.nix
     ./logrotate.nix
-    
+
     # Media
     # TODO: Consider using module? https://github.com/rasmus-kirk/nixarr
     ./plex.nix
@@ -48,11 +48,4 @@
     ./transmission.nix
     ./prowlarr.nix
   ];
-
-  # Configure the tmux rebuild service
-  services.tmuxRebuild = {
-    enable = true;
-    username = username; # Use the username variable from the flake
-    nixosConfigPath = "/home/${username}/Sources/github.com/ivankovnatsky/nixos-config"; # Use the username variable in the path
-  };
 }
