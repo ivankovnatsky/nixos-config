@@ -28,6 +28,7 @@
       ripgrep
       rust-analyzer
       rustc
+      smctemp
       stats # macOS: System stats
       syncthing
       typst
