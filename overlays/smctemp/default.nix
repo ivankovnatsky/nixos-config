@@ -7,13 +7,13 @@
 
 stdenv.mkDerivation rec {
   pname = "smctemp";
-  version = "0.6.0";
+  version = "eebe38b4e27ca9a8b2caef0fda09694de5751874";
 
   src = fetchFromGitHub {
     owner = "narugit";
     repo = pname;
     rev = version;
-    hash = "sha256-opkE4XYe2x+4TwZ7AZ001NDJ0eC4JXcHwMKzkQA1E0w=";
+    hash = "sha256-961N5bLZcBqdo3IKpIRxOCDLoG1+fL1YGJLsNfll7lE=";
   };
 
   buildInputs = lib.optionals stdenv.isDarwin [
