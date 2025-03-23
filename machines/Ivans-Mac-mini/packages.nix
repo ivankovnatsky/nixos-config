@@ -6,5 +6,7 @@
     tmux # Be able to attach to tmux-rebuild session manually
     watchman # Be able to rerun rebuild manually with watching
     watchman-make # Be able to rerun rebuild manually with watching
+    smctemp # Overlay
+    stats # Desktop Application
   ];
 }
