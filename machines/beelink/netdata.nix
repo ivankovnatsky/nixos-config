@@ -9,6 +9,8 @@
     # Configure claim token file for Netdata Cloud
     # claimTokenFile = "/etc/secrets/netdata_claim_token";
 
+    # TODO: https://learn.netdata.cloud/docs/netdata-agent/database#monitoring-retention-utilization
+    # TODO: https://www.netdata.cloud/blog/long-term-data-retention/#retention-configuration
     config = {
       # Global settings
       global = {
