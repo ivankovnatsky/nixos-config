@@ -8,5 +8,6 @@
     watchman-make # Be able to rerun rebuild manually with watching
     smctemp # Overlay
     stats # Desktop Application
+    dust # For disk usage analysis
   ];
 }
