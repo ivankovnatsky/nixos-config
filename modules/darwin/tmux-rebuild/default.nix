@@ -80,7 +80,7 @@ in
               ${pkgs.tmux}/bin/tmux new-session -d -s "$SESSION_NAME" -n rebuild -c ${cfg.nixosConfigPath}
 
               # Increase session name length to show full name
-              ${pkgs.tmux}/bin/tmux set-option -g status-left-length 30
+              ${pkgs.tmux}/bin/tmux set-option -g status-left-length 40
 
               # Set up the window with our rebuild script - use the script from the Nix store
               ${pkgs.tmux}/bin/tmux send-keys -t "$SESSION_NAME" "${rebuildWatchScript}/bin/darwin-rebuild-watch" C-m
