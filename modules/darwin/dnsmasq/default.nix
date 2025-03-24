@@ -108,6 +108,7 @@ in
         ];
         RunAtLoad = true;
         KeepAlive = cfg.alwaysKeepRunning;
+        AbandonProcessGroup = false;
         StandardErrorPath = "/var/log/dnsmasq/stderr.log";
         StandardOutPath = "/var/log/dnsmasq/stdout.log";
       };
