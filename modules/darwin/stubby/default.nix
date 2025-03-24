@@ -35,6 +35,12 @@ in
       description = "Log level for stubby.";
     };
 
+    alwaysKeepRunning = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Whether to restart stubby if it stops for any reason.";
+    };
+
     settings = mkOption {
       type = types.attrs;
       default = {
@@ -95,7 +101,8 @@ in
           "-v"  # Log to stdout/stderr
         ];
         RunAtLoad = true;
-        KeepAlive = true;
+        KeepAlive = cfg.alwaysKeepRunning;
+        AbandonProcessGroup = false;
         StandardErrorPath = "/var/log/stubby/stderr.log";
         StandardOutPath = "/var/log/stubby/stdout.log";
         SoftResourceLimits = {
