@@ -4,6 +4,7 @@
       # username # Installed as flake  # FIXME: correct hash256
       (python312.withPackages (ps: with ps; [ grip ]))
       aria2
+      backup-home # Installed as flake
       bat
       battery-toolkit # Local overlay
       cargo
