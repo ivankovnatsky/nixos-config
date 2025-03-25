@@ -17,6 +17,8 @@ let
   # Convert settings to YAML for stubby config
   settingsFormat = pkgs.formats.yaml {};
   configFile = settingsFormat.generate "stubby.yml" cfg.settings;
+  
+
 in
 {
   options.local.services.stubby = {
@@ -90,16 +92,9 @@ in
     '';
 
     launchd.daemons.stubby = {
+      command = "${cfg.package}/bin/stubby -C ${configFile} -l ${cfg.logLevel} -v";
       serviceConfig = {
         Label = "org.nixos.stubby";
-        ProgramArguments = [
-          "${cfg.package}/bin/stubby"
-          "-C"  # Specify config file
-          "${configFile}"
-          "-l"  # Log level
-          "${cfg.logLevel}"
-          "-v"  # Log to stdout/stderr
-        ];
         RunAtLoad = true;
         KeepAlive = cfg.alwaysKeepRunning;
         AbandonProcessGroup = false;

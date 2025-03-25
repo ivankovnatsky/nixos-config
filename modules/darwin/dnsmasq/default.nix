@@ -25,6 +25,8 @@ let
   configFile = pkgs.writeText "dnsmasq.conf" ''
     ${settingsToConf cfg.settings}
   '';
+  
+
 in
 {
   options.local.services.dnsmasq = {
@@ -98,14 +100,9 @@ in
     );
 
     launchd.daemons.dnsmasq = {
+      command = "${cfg.package}/bin/dnsmasq -k -C ${configFile}";
       serviceConfig = {
         Label = "org.nixos.dnsmasq";
-        ProgramArguments = [
-          "${cfg.package}/bin/dnsmasq"
-          "-k"  # Stay in foreground
-          "-C"  # Specify config file
-          "${configFile}"
-        ];
         RunAtLoad = true;
         KeepAlive = cfg.alwaysKeepRunning;
         AbandonProcessGroup = false;
