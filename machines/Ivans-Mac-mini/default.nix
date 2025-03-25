@@ -12,6 +12,7 @@
     ./packages.nix
     ./sharing.nix
     ./sudo.nix
+    ./power.nix
     ./tmux-rebuild.nix
   ];
 }
