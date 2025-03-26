@@ -219,9 +219,9 @@ in
         end
 
         # Source ~/.env.fish if exists
-        if test -f $HOME/.env.fish
-            source $HOME/.env.fish
-        end
+        # if test -f $HOME/.env.fish
+        #     source $HOME/.env.fish
+        # end
       '';
       plugins = with pkgs.fishPlugins; [
         { inherit (fzf-fish) name src; }
