@@ -2,6 +2,7 @@
   imports = [
     ../../../home/aichat-server.nix
     ../../../home/aichat.nix
+    ../../../home/launchd-services/dark-mode-kitty
     ../../../home/amethyst.nix
     ../../../home/bat.nix
     ../../../home/direnv.nix

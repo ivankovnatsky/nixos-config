@@ -8,6 +8,7 @@
     ../../../home/ghostty.nix
     ../../../home/git.nix
     ../../../home/go.nix
+    ../../../home/launchd-services/dark-mode-kitty
     ../../../home/hammerspoon
     ../../../home/lsd.nix
     ../../../home/mpv.nix

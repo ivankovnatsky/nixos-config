@@ -17,6 +17,7 @@
       "firefox"
       "ghostty"
       "hammerspoon"
+      "kitty"
       "microsoft-teams"
       "windsurf"
     ];
