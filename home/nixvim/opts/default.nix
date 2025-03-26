@@ -47,9 +47,9 @@
       # splitbelow = true;
       # splitright = true;
 
-      # Enable ignorecase + smartcase for better searching
+      # Enable ignorecase + disable smartcase for better searching
       ignorecase = true;
-      smartcase = true; # Don't ignore case with capitals
+      smartcase = false; # Ignore case with capitals
       grepprg = "rg --vimgrep";
       grepformat = "%f:%l:%c:%m";
 
