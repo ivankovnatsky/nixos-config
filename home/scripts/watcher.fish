@@ -3,10 +3,34 @@
 # Default interval in seconds
 set default_interval 5
 
+# Function to display help
+function show_help
+    echo "Usage: watcher \"COMMAND\" [SECONDS]"
+    echo ""
+    echo "Repeatedly runs a command at specified intervals."
+    echo ""
+    echo "Options:"
+    echo "  --help     Display this help message"
+    echo ""
+    echo "Arguments:"
+    echo "  COMMAND    The command to execute (use quotes for commands with spaces)"
+    echo "  SECONDS    Optional: Time interval between executions (default: $default_interval)"
+    echo ""
+    echo "Examples:"
+    echo "  watcher \"ls -la\""
+    echo "  watcher \"git status\" 10"
+    exit 0
+end
+
+# Check for help flag
+if test (count $argv) -eq 0; or test "$argv[1]" = "--help"; or test "$argv[1]" = "-h"
+    show_help
+end
+
 # Check if we have the required arguments
 if test (count $argv) -lt 1
-    echo "Usage: watch.sh \"COMMAND\" [SECONDS]"
-    echo "Example: watch.sh \"ls -la\" 2"
+    echo "Error: Missing command argument."
+    echo "Run 'watcher --help' for usage information."
     exit 1
 end
 
@@ -19,8 +43,9 @@ else
 end
 
 while true
-    echo ----------------------------------------
-    echo "Every $interval seconds: $command"
+    clear
+    echo "----------------------------------------"
+    echo "Every $interval: $command"
     echo "Press Ctrl+C to exit"
     echo "Last updated: "(date)
     echo ""
