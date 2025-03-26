@@ -7,6 +7,7 @@
     ../../../home/fish-ai.nix
     ../../../home/ghostty.nix
     ../../../home/git.nix
+    ../../../home/launchd-services/dark-mode-kitty
     ../../../home/go.nix
     ../../../home/hammerspoon
     ../../../home/lsd.nix

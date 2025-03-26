@@ -22,6 +22,7 @@
       "floorp"
       "ghostty"
       "hammerspoon"
+      "kitty"
       "mindmac"
       "orbstack"
       "twingate"

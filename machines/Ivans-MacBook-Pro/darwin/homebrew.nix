@@ -17,6 +17,7 @@
       "firefox"
       "ghostty"
       "hammerspoon"
+      "kitty"
       "windsurf"
     ];
     masApps = {
