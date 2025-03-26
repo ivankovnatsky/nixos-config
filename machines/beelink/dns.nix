@@ -54,6 +54,7 @@
   };
 
   # Enable dnsmasq for local DNS resolution
+  # TODO: DO I need caching?
   services.dnsmasq = {
     enable = true;
     resolveLocalQueries = true;
