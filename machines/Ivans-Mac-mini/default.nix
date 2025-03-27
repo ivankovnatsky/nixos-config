@@ -6,6 +6,7 @@
     ../../modules/secrets
     ./dns.nix
     ./logrotate.nix
+    ./miniserve.nix
     ./netdata.nix
     ./nix.nix
     ./openssh.nix
@@ -13,7 +14,7 @@
     ./sharing.nix
     ./sudo.nix
     ./power.nix
-    ./user.nix
+    # ./user.nix
     ./tmux-rebuild.nix
   ];
 }
