@@ -18,6 +18,8 @@
       "ghostty"
       "hammerspoon"
       "kitty"
+      "mullvadvpn"
+      "vivaldi"
       "windsurf"
     ];
     masApps = {
