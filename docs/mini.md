@@ -19,6 +19,7 @@
   * Need to grant all different service with access to disk, namely:
     * Syncthing?
     * watchman / make ?
+* Enable auto login in System Settings
 * Remove `noauto` from /etc/fstab for /nix store, having issues with launchd
   services that can't be started due to /nix mount point not mounted yet:
   ```logs
