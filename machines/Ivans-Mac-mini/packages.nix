@@ -12,6 +12,7 @@
     stats # Desktop Application
     dust # For disk usage analysis
 
+    wget
     yt-dlp
   ];
 }
