@@ -13,6 +13,7 @@
     ./sharing.nix
     ./sudo.nix
     ./power.nix
+    ./user.nix
     ./tmux-rebuild.nix
   ];
 }
