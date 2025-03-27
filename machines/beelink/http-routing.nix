@@ -52,6 +52,29 @@
         reverse_proxy ${config.flags.beelinkIp}:8123
       }
 
+      # Miniserve on Mac mini
+      files.mini.homelab:80 {
+        bind ${config.flags.beelinkIp}
+
+        # Disable TLS
+        tls internal
+        
+        # Proxy to miniserve on Mac mini
+        reverse_proxy ${config.flags.macMiniIp}:8080 {
+          # Headers for proper operation
+          header_up X-Real-IP {remote_host}
+          header_up Host {host}
+          header_up X-Forwarded-For {remote}
+          header_up X-Forwarded-Proto {scheme}
+          
+          # Increase timeouts and buffer sizes for large directories and files
+          transport http {
+            keepalive 30s
+            response_header_timeout 30s
+          }
+        }
+      }
+
       sync.mini.homelab:80 {
         bind ${config.flags.beelinkIp}
 
