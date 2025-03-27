@@ -58,8 +58,8 @@ done
 # Function to get token from pass
 fetch_token_from_pass() {
     if command -v pass >/dev/null 2>&1; then
-        # Sanitize the path for pass
-        local pass_path="vault/$(echo "$VAULT_ADDR" | sed 's|https://||')/$VAULT_USER_EMAIL/token"
+        # Use the correct path format for pass
+        local pass_path="$(echo "$VAULT_ADDR" | sed 's|https://||')/$VAULT_USER_EMAIL/token"
         pass "$pass_path" 2>/dev/null
     else
         echo "Warning: 'pass' command not found. Cannot retrieve stored token." >&2
@@ -80,8 +80,8 @@ update_token_in_pass() {
     [[ -n "$token" ]] || { echo "Error: Cannot store empty token." >&2; return 1; }
     
     if command -v pass >/dev/null 2>&1; then
-        # Sanitize the path for pass
-        local pass_path="vault/$(echo "$VAULT_ADDR" | sed 's|https://||')/$VAULT_USER_EMAIL/token"
+        # Use the correct path format for pass
+        local pass_path="$(echo "$VAULT_ADDR" | sed 's|https://||')/$VAULT_USER_EMAIL/token"
         echo "$token" | pass insert --echo --force "$pass_path"
     else
         echo "Warning: 'pass' command not found. Cannot store token." >&2
@@ -95,14 +95,21 @@ VAULT_TOKEN=$(fetch_token_from_pass)
 # If token is not in pass or expired, login to get a new one
 if [[ -z "$VAULT_TOKEN" ]] || ! is_token_valid "$VAULT_TOKEN"; then
     echo "Fetching new token from Vault login..." >&2
-    VAULT_TOKEN=$(vault login -method=oidc -path="$VAULT_OIDC_PATH" -token-only role="$VAULT_ROLE")
     
-    echo "Token fetched successfully" >&2
+    # Export VAULT_ADDR to environment before calling vault login
+    export VAULT_ADDR="$VAULT_ADDR"
     
-    # Update the new token in pass
+    VAULT_TOKEN=$(VAULT_ADDR="$VAULT_ADDR" vault login -method=oidc -path="$VAULT_OIDC_PATH" -token-only role="$VAULT_ROLE")
+    
     if [[ -n "$VAULT_TOKEN" ]]; then
+        echo "Token fetched successfully" >&2
+        
+        # Update the new token in pass
         echo "Updating token in pass..." >&2
         update_token_in_pass "$VAULT_TOKEN"
+    else
+        echo "Failed to fetch token from Vault" >&2
+        exit 1
     fi
 fi
 

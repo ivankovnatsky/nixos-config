@@ -90,7 +90,7 @@ function is_token_valid
         return 1 # Empty token is invalid
     end
 
-    if env VAULT_TOKEN=$argv[1] vault token lookup >/dev/null 2>&1
+    if env VAULT_ADDR="$vault_addr" VAULT_TOKEN=$argv[1] vault token lookup >/dev/null 2>&1
         return 0 # Token is valid
     else
         return 1 # Token is invalid
@@ -118,7 +118,7 @@ set -g vault_token (fetch_token_from_pass)
 # If token is not in pass or expired, login to get a new one
 if test -z "$vault_token" || ! is_token_valid $vault_token
     echo "Fetching new token from Vault login..." >&2
-    set -g vault_token (vault login -method=oidc -path=$vault_oidc_path -token-only role=$vault_role)
+    set -g vault_token (env VAULT_ADDR="$vault_addr" vault login -method=oidc -path=$vault_oidc_path -token-only role=$vault_role)
 
     echo "Token fetched successfully" >&2
 
@@ -130,5 +130,5 @@ if test -z "$vault_token" || ! is_token_valid $vault_token
 end
 
 # Output environment variables for eval to capture
-echo "set -x VAULT_ADDR \"$vault_addr\""
-echo "set -x VAULT_TOKEN \"$vault_token\""
+printf "set -x VAULT_ADDR '%s';\n" $vault_addr
+printf "set -x VAULT_TOKEN '%s';\n" $vault_token
