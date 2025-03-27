@@ -38,7 +38,7 @@ in
     ytdl-format="bestvideo[height<=1080]+bestaudio/best"
 
     auto-window-resize=no
-    keep-open=yes
+    keep-open=no
 
     keepaspect-window=no
     autofit-larger=100%x100%
