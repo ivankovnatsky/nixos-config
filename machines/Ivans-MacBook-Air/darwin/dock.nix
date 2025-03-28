@@ -46,6 +46,7 @@ in
 
       { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Firefox.app/"; }
+      { path = "/Applications/Vivaldi.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }

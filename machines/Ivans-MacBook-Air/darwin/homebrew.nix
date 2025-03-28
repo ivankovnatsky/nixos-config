@@ -19,6 +19,7 @@
       "hammerspoon"
       "kitty"
       "microsoft-teams"
+      "vivaldi"
       "windsurf"
     ];
     masApps = {
