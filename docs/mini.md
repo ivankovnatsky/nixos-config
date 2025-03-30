@@ -41,7 +41,15 @@
   ivan@Ivans-Mac-mini:~/ >
   ```
 
-  Seems like noauto still did not help
+  * Seems like noauto still did not help
+  * This was resolved by using /bin/wait4path utility already used in command
+    directive in launchd nix-darwin module and for own modules that using
+    external volume we added it to custom scripts
+* Disabled encryption/FileVault to be able to autologin
+  * Also faced at least once that system wanted to unlock encrypted /nix store
+    volume, which it turns out determinate encrypts by defaults and writes key to
+    system keychain
+  * Decrypted /nix store to avoid issue above
 
 On other machines:
 
