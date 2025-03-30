@@ -32,6 +32,7 @@
       ripgrep
       rust-analyzer
       rustc
+      smctemp # Local overlay
       stats # macOS: System stats
       syncthing
       typst
