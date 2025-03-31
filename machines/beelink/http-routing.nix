@@ -85,30 +85,6 @@
         reverse_proxy ${config.flags.macMiniIp}:8384
       }
 
-      # Syncthing hostname for pro
-      sync.pro.homelab:80 {
-        bind ${config.flags.beelinkIp}
-
-        # Simple reverse proxy to the MacBook Pro's Syncthing instance
-        reverse_proxy 192.168.0.144:8384 {
-          # Only include headers that aren't automatically handled
-          header_up X-Real-IP {remote_host}
-          header_up Host {host}
-        }
-      }
-
-      # Syncthing hostname for air
-      sync.air.homelab:80 {
-        bind ${config.flags.beelinkIp}
-
-        # Simple reverse proxy to the MacBook Air's Syncthing instance
-        reverse_proxy 192.168.0.15:8384 {
-          # Only include headers that aren't automatically handled
-          header_up X-Real-IP {remote_host}
-          header_up Host {host}
-        }
-      }
-
       # Prowlarr
       prowlarr.beelink.homelab:80 {
         bind ${config.flags.beelinkIp}
