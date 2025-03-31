@@ -20,9 +20,7 @@ stdenv.mkDerivation rec {
     darwin.IOKit
   ];
 
-  # Fix the Makefile and code issues
   patchPhase = ''
-    # Modify the Makefile to use the correct C++ compiler and install location
     substituteInPlace Makefile \
       --replace 'CXX := g++' 'CXX := c++' \
       --replace 'CXXFLAGS := -Wall -std=c++17 -g -framework IOKit' \
