@@ -52,6 +52,17 @@
         reverse_proxy ${config.flags.beelinkIp}:8123
       }
 
+      # Simplified domain for Home Assistant (singleton service)
+      homeassistant.homelab:80 {
+        bind ${config.flags.beelinkIp}
+
+        # Disable TLS
+        tls internal
+
+        # Proxy to Home-Assistant on its configured address
+        reverse_proxy ${config.flags.beelinkIp}:8123
+      }
+
       # Miniserve on Mac mini
       files.mini.homelab:80 {
         bind ${config.flags.beelinkIp}
@@ -96,8 +107,30 @@
         reverse_proxy 127.0.0.1:9696
       }
 
+      # Simplified domain for Prowlarr (singleton service)
+      prowlarr.homelab:80 {
+        bind ${config.flags.beelinkIp}
+
+        # Disable TLS
+        tls internal
+
+        # Proxy to Prowlarr
+        reverse_proxy 127.0.0.1:9696
+      }
+
       # Radarr Web UI
       radarr.beelink.homelab:80 {
+        bind ${config.flags.beelinkIp}
+
+        # Disable TLS
+        tls internal
+
+        # Proxy to Radarr
+        reverse_proxy 127.0.0.1:7878
+      }
+
+      # Simplified domain for Radarr (singleton service)
+      radarr.homelab:80 {
         bind ${config.flags.beelinkIp}
 
         # Disable TLS
@@ -118,6 +151,17 @@
         reverse_proxy 127.0.0.1:8989
       }
 
+      # Simplified domain for Sonarr (singleton service)
+      sonarr.homelab:80 {
+        bind ${config.flags.beelinkIp}
+        
+        # Disable TLS
+        tls internal
+
+        # Proxy to Sonarr
+        reverse_proxy 127.0.0.1:8989
+      }
+
       # Transmission Web UI
       transmission.beelink.homelab:80 {
         bind ${config.flags.beelinkIp}
@@ -129,8 +173,40 @@
         reverse_proxy 127.0.0.1:9091
       }
 
+      # Simplified domain for Transmission (singleton service)
+      transmission.homelab:80 {
+        bind ${config.flags.beelinkIp}
+
+        # Disable TLS
+        tls internal
+
+        # Proxy to Transmission WebUI
+        reverse_proxy 127.0.0.1:9091
+      }
+
       # Plex Media Server
       plex.beelink.homelab:80 {
+        bind ${config.flags.beelinkIp}
+
+        # Disable TLS
+        tls internal
+
+        # Proxy to Plex with WebSocket support
+        reverse_proxy 127.0.0.1:32400 {
+          # Enable WebSocket support
+          header_up X-Real-IP {remote_host}
+          header_up Host {host}
+          
+          # Increase timeouts for streaming
+          transport http {
+            keepalive 12h
+            keepalive_idle_conns 100
+          }
+        }
+      }
+
+      # Simplified domain for Plex (singleton service)
+      plex.homelab:80 {
         bind ${config.flags.beelinkIp}
 
         # Disable TLS
@@ -186,6 +262,21 @@
 
       # Grafana
       grafana.beelink.homelab:80 {
+        bind ${config.flags.beelinkIp}
+
+        # Disable TLS
+        tls internal
+
+        # Proxy to Grafana
+        reverse_proxy 127.0.0.1:3000 {
+          # Enable WebSocket support
+          header_up X-Real-IP {remote_host}
+          header_up Host {host}
+        }
+      }
+
+      # Simplified domain for Grafana (singleton service)
+      grafana.homelab:80 {
         bind ${config.flags.beelinkIp}
 
         # Disable TLS
