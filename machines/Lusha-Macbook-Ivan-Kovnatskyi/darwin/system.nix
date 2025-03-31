@@ -19,6 +19,8 @@
         "com.apple.Safari" = {
           "ShowFullURLInSmartSearchField" = true;
           "ShowStandaloneTabBar" = true; # false enables compact tabs
+          "AutoOpenSafeDownloads" = false; # Disable automatic downloads
+          "AlwaysPromptForDownloadLocation" = true; # Ask where to save downloads
         };
         "NSGlobalDomain" = {
           # My keyboard does not support Globe switch key, or I don't know how
