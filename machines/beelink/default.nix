@@ -48,6 +48,9 @@
     ./transmission.nix
     ./prowlarr.nix
 
+    # Constantly using 2 CPU Cores, disabling for now
+    # ./flaresolverr.nix
+
     ./home-assistant.nix
   ];
 }
