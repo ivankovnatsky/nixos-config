@@ -49,7 +49,10 @@
   * Also faced at least once that system wanted to unlock encrypted /nix store
     volume, which it turns out determinate encrypts by defaults and writes key to
     system keychain
-  * Decrypted /nix store to avoid issue above
+  * Decrypted /nix store to avoid issue above:
+    ```console
+    sudo diskutil apfs decryptVolume disk3s7
+    ```
 
 On other machines:
 
