@@ -30,6 +30,7 @@ let
     "windsurf.autoExecutionPolicy" = "off";
     "windsurf.autocompleteSpeed" = "default";
     "windsurf.chatFontSize" = "default";
+    "windsurf.rememberLastModelSelection" = true;
     "workbench.colorTheme" = "Auto";
     "workbench.preferredDarkColorTheme" = "Default Dark+";
     "workbench.preferredLightColorTheme" = "Default Light+";
