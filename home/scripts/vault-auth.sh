@@ -71,7 +71,13 @@ fetch_token_from_pass() {
 is_token_valid() {
     local token="$1"
     [[ -n "$token" ]] || return 1
-    VAULT_TOKEN="$token" vault token lookup >/dev/null 2>&1
+    
+    # Check if token is valid
+    if VAULT_ADDR="$VAULT_ADDR" VAULT_TOKEN="$token" vault token lookup >/dev/null 2>&1; then
+        return 0
+    else
+        return 1
+    fi
 }
 
 # Function to update token in pass
@@ -82,7 +88,10 @@ update_token_in_pass() {
     if command -v pass >/dev/null 2>&1; then
         # Use the correct path format for pass
         local pass_path="$(echo "$VAULT_ADDR" | sed 's|https://||')/$VAULT_USER_EMAIL/token"
-        echo "$token" | pass insert --echo --force "$pass_path"
+        
+        # Redirect all output to avoid fish shell issues with git commit messages
+        echo "$token" | pass insert --echo --force "$pass_path" >/dev/null 2>&1
+        return $?
     else
         echo "Warning: 'pass' command not found. Cannot store token." >&2
         return 1
@@ -91,6 +100,9 @@ update_token_in_pass() {
 
 # Try to fetch token from pass
 VAULT_TOKEN=$(fetch_token_from_pass)
+
+# Debug output (commented out for production)
+# echo "Debug: Retrieved token from pass: ${VAULT_TOKEN:0:5}..." >&2
 
 # If token is not in pass or expired, login to get a new one
 if [[ -z "$VAULT_TOKEN" ]] || ! is_token_valid "$VAULT_TOKEN"; then
@@ -111,8 +123,27 @@ if [[ -z "$VAULT_TOKEN" ]] || ! is_token_valid "$VAULT_TOKEN"; then
         echo "Failed to fetch token from Vault" >&2
         exit 1
     fi
+else
+    echo "Using existing valid token" >&2
 fi
 
-# Output environment variables for eval to capture
-printf 'export VAULT_ADDR="%s"\n' "$VAULT_ADDR"
-printf 'export VAULT_TOKEN="%s"\n' "$VAULT_TOKEN" 
+# Create a temporary file for the output
+TMP_FILE=$(mktemp)
+chmod 600 "$TMP_FILE"
+
+# Determine if we're being called from fish shell
+if [[ "$FISH_VERSION" ]] || [[ "$SHELL" == *"fish"* ]]; then
+    # Fish shell syntax
+    echo "set -gx VAULT_ADDR \"$VAULT_ADDR\";" > "$TMP_FILE"
+    echo "set -gx VAULT_TOKEN \"$VAULT_TOKEN\";" >> "$TMP_FILE"
+else
+    # Bash/zsh syntax
+    echo "export VAULT_ADDR=\"$VAULT_ADDR\"" > "$TMP_FILE"
+    echo "export VAULT_TOKEN=\"$VAULT_TOKEN\"" >> "$TMP_FILE"
+fi
+
+# Output the file content
+cat "$TMP_FILE"
+
+# Clean up
+rm -f "$TMP_FILE"
