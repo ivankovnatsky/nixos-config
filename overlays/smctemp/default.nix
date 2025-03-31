@@ -7,13 +7,13 @@
 
 stdenv.mkDerivation rec {
   pname = "smctemp";
-  version = "eebe38b4e27ca9a8b2caef0fda09694de5751874";
+  version = "37cbfece9d5a36c83b77251adbf8d869d70a1a5e";
 
   src = fetchFromGitHub {
-    owner = "narugit";
+    owner = "ivankovnatsky";
     repo = pname;
     rev = version;
-    hash = "sha256-961N5bLZcBqdo3IKpIRxOCDLoG1+fL1YGJLsNfll7lE=";
+    hash = "sha256-FvsuoJix+v4Qusr+5GhynfkJZ5eN60B2H0KBRk1PBIY=";
   };
 
   buildInputs = lib.optionals stdenv.isDarwin [
@@ -22,11 +22,6 @@ stdenv.mkDerivation rec {
 
   # Fix the Makefile and code issues
   patchPhase = ''
-    # Fix the snprintf format string security issue
-    substituteInPlace smctemp.cc \
-      --replace 'snprintf(val.key, sizeof(val.key), key);' \
-                'snprintf(val.key, sizeof(val.key), "%s", key);'
-    
     # Modify the Makefile to use the correct C++ compiler and install location
     substituteInPlace Makefile \
       --replace 'CXX := g++' 'CXX := c++' \
