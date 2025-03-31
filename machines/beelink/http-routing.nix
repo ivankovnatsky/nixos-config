@@ -289,6 +289,21 @@
           header_up Host {host}
         }
       }
+
+      # FlareSolverr proxy server
+      # flaresolverr.homelab:80 {
+      #   bind ${config.flags.beelinkIp}
+
+      #   # Disable TLS
+      #   tls internal
+
+      #   # Proxy to FlareSolverr
+      #   reverse_proxy 127.0.0.1:8191 {
+      #     # Enable WebSocket support
+      #     header_up X-Real-IP {remote_host}
+      #     header_up Host {host}
+      #   }
+      # }
     '';
 
     # Keep an empty virtualHosts to avoid conflicts
