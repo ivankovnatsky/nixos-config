@@ -19,6 +19,6 @@
 
   # Create media directories with correct permissions if they don't exist
   systemd.tmpfiles.rules = [
-    "d /media/movies 0775 plex media -"
+    "d /storage/media/movies 0775 plex media -"
   ];
 }

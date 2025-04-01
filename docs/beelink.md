@@ -185,22 +185,13 @@ The media server setup consists of four main components working together:
 
 3. **Transmission**: Download client
    - Handles torrent downloads
-   - Downloads to `/media/downloads/movies`
+   - Downloads to `/storage/media/downloads/movies`
    - Configured without authentication for local network access
 
 4. **Plex**: Media streaming server
    - Serves media files for streaming
    - Manages movie metadata and library
    - Accessible at `http://plex.beelink.homelab` or `http://beelink-ip:32400/web`
-
-### Directory Structure
-
-```
-/media/
-├── downloads/
-│   └── movies/     # Temporary download location
-└── movies/         # Final movie library location
-```
 
 ### Initial Setup
 
@@ -224,8 +215,8 @@ The media server setup consists of four main components working together:
      - Host: `localhost`
      - Port: `9091`
    - Configure movie paths:
-     - Download path: `/media/downloads/movies`
-     - Library path: `/media/movies`
+     - Download path: `/storage/media/downloads/movies`
+     - Library path: `/storage/media/movies`
 
 3. **Transmission Setup**:
    - Access at `http://transmission.beelink.homelab`
@@ -237,7 +228,7 @@ The media server setup consists of four main components working together:
    - Add Movies library:
      - Click '+' next to Libraries
      - Choose 'Movies' type
-     - Add folder: `/media/movies`
+     - Add folder: `/storage/media/movies`
      - Configure scanning options as needed
    - After initial setup, can use `http://plex.beelink.homelab`
 
@@ -245,8 +236,8 @@ The media server setup consists of four main components working together:
 
 1. Add a movie in Radarr
 2. Radarr finds the movie and sends it to Transmission
-3. Transmission downloads to `/media/downloads/movies`
-4. Radarr moves completed download to `/media/movies`
+3. Transmission downloads to `/storage/media/downloads/movies`
+4. Radarr moves completed download to `/storage/media/movies`
 5. Plex detects new movie and adds it to library
 
 ### Troubleshooting

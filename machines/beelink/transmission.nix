@@ -14,10 +14,10 @@
       rpc-authentication-required = false;
 
       # Download settings
-      download-dir = "/media/downloads/movies";
-      incomplete-dir = "/media/downloads/movies/.incomplete";
+      download-dir = "/storage/media/downloads/movies";
+      incomplete-dir = "/storage/media/downloads/movies/.incomplete";
       incomplete-dir-enabled = true;
-      watch-dir = "/media/downloads/movies/watchdir";
+      watch-dir = "/storage/media/downloads/movies/watchdir";
       watch-dir-enabled = true;
 
       # Network settings
