@@ -1,4 +1,15 @@
 { config, ... }:
+
+# Obviously DHCP may not assigned the IP yet to a hostname and caddy fails to start:
+#
+# ```journalctl
+# Apr 01 07:13:27 beelink caddy[1835]: Error: loading initial config: loading new config: http app module: start: listening on 192.168.50.3:80: listen tcp 192.168.50.3:80: bind: cannot assign requested address
+# Apr 01 07:13:27 beelink systemd[1]: caddy.service: Main process exited, code=exited, status=1/FAILURE
+# Apr 01 07:13:27 beelink systemd[1]: caddy.service: Failed with result 'exit-code'.
+# ```
+let bindAddress = "0.0.0.0";
+
+in
 {
   # Configure Caddy log directory
   systemd.tmpfiles.rules = [
@@ -33,7 +44,7 @@
     extraConfig = ''
       # Syncthing hostname for beelink
       sync.beelink.homelab:80 {
-        bind ${config.flags.beelinkIp}
+        bind ${bindAddress}
 
         # Disable TLS
         tls internal
@@ -43,7 +54,7 @@
       }
 
       home.beelink.homelab:80 {
-        bind ${config.flags.beelinkIp}
+        bind ${bindAddress}
 
         # Disable TLS
         tls internal
@@ -54,7 +65,7 @@
 
       # Simplified domain for Home Assistant (singleton service)
       homeassistant.homelab:80 {
-        bind ${config.flags.beelinkIp}
+        bind ${bindAddress}
 
         # Disable TLS
         tls internal
@@ -65,7 +76,7 @@
 
       # Miniserve on Mac mini
       files.mini.homelab:80 {
-        bind ${config.flags.beelinkIp}
+        bind ${bindAddress}
 
         # Disable TLS
         tls internal
@@ -87,7 +98,7 @@
       }
 
       sync.mini.homelab:80 {
-        bind ${config.flags.beelinkIp}
+        bind ${bindAddress}
 
         # Disable TLS
         tls internal
@@ -98,7 +109,7 @@
 
       # Prowlarr
       prowlarr.beelink.homelab:80 {
-        bind ${config.flags.beelinkIp}
+        bind ${bindAddress}
 
         # Disable TLS
         tls internal
@@ -109,7 +120,7 @@
 
       # Simplified domain for Prowlarr (singleton service)
       prowlarr.homelab:80 {
-        bind ${config.flags.beelinkIp}
+        bind ${bindAddress}
 
         # Disable TLS
         tls internal
@@ -120,7 +131,7 @@
 
       # Radarr Web UI
       radarr.beelink.homelab:80 {
-        bind ${config.flags.beelinkIp}
+        bind ${bindAddress}
 
         # Disable TLS
         tls internal
@@ -131,7 +142,7 @@
 
       # Simplified domain for Radarr (singleton service)
       radarr.homelab:80 {
-        bind ${config.flags.beelinkIp}
+        bind ${bindAddress}
 
         # Disable TLS
         tls internal
@@ -142,7 +153,7 @@
 
       # Sonarr Web UI
       sonarr.beelink.homelab:80 {
-        bind ${config.flags.beelinkIp}
+        bind ${bindAddress}
         
         # Disable TLS
         tls internal
@@ -153,7 +164,7 @@
 
       # Simplified domain for Sonarr (singleton service)
       sonarr.homelab:80 {
-        bind ${config.flags.beelinkIp}
+        bind ${bindAddress}
         
         # Disable TLS
         tls internal
@@ -164,7 +175,7 @@
 
       # Transmission Web UI
       transmission.beelink.homelab:80 {
-        bind ${config.flags.beelinkIp}
+        bind ${bindAddress}
 
         # Disable TLS
         tls internal
@@ -175,7 +186,7 @@
 
       # Simplified domain for Transmission (singleton service)
       transmission.homelab:80 {
-        bind ${config.flags.beelinkIp}
+        bind ${bindAddress}
 
         # Disable TLS
         tls internal
@@ -186,7 +197,7 @@
 
       # Plex Media Server
       plex.beelink.homelab:80 {
-        bind ${config.flags.beelinkIp}
+        bind ${bindAddress}
 
         # Disable TLS
         tls internal
@@ -207,7 +218,7 @@
 
       # Simplified domain for Plex (singleton service)
       plex.homelab:80 {
-        bind ${config.flags.beelinkIp}
+        bind ${bindAddress}
 
         # Disable TLS
         tls internal
@@ -228,7 +239,7 @@
 
       # Netdata
       netdata.beelink.homelab:80 {
-        bind ${config.flags.beelinkIp}
+        bind ${bindAddress}
 
         # Disable TLS
         tls internal
@@ -242,7 +253,7 @@
       }
 
       netdata.mini.homelab:80 {
-        bind ${config.flags.beelinkIp}
+        bind ${bindAddress}
 
         # Disable TLS
         tls internal
@@ -262,7 +273,7 @@
 
       # Grafana
       grafana.beelink.homelab:80 {
-        bind ${config.flags.beelinkIp}
+        bind ${bindAddress}
 
         # Disable TLS
         tls internal
@@ -277,7 +288,7 @@
 
       # Simplified domain for Grafana (singleton service)
       grafana.homelab:80 {
-        bind ${config.flags.beelinkIp}
+        bind ${bindAddress}
 
         # Disable TLS
         tls internal
@@ -292,7 +303,7 @@
 
       # FlareSolverr proxy server
       # flaresolverr.homelab:80 {
-      #   bind ${config.flags.beelinkIp}
+      #   bind ${bindAddress}
 
       #   # Disable TLS
       #   tls internal
