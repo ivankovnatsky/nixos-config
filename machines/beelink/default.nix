@@ -52,5 +52,8 @@
     # ./flaresolverr.nix
 
     ./home-assistant.nix
+
+    # Storage
+    ./storage.nix
   ];
 }
