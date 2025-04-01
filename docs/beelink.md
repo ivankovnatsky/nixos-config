@@ -9,6 +9,9 @@ Installation was done using mostly graphical UI, disk setup as well. Used schema
 3. /
 4. swap
 
+It appeared installed didn't configure LVM, which seemed is the case, but I
+guess I misjudged, so luks was configured, not directly not on top of LVM.
+
 ## Transfer Configuration Using magic-wormhole
 
 ### On Source Machine (MacOS)
@@ -133,6 +136,12 @@ sudo systemd-cryptenroll /dev/disk/by-uuid/d60d88b5-b111-42bc-a377-dd4cc5630f0f 
 
 # List enrolled authentication methods for swap partition
 sudo systemd-cryptenroll /dev/disk/by-uuid/14c9a632-e607-49b2-ac01-965dbe30d02e --list-enrolled
+
+# For your root partition
+sudo cryptsetup luksDump /dev/sda2 | grep -A20 "Tokens"
+
+# For your swap partition
+sudo cryptsetup luksDump /dev/sda3 | grep -A20 "Tokens"
 ```
 
 This will show you the available slots and their types (password, recovery key, TPM2, etc.). Then, you can remove a specific authentication method:
@@ -155,7 +164,7 @@ sudo systemd-cryptenroll /dev/disk/by-uuid/d60d88b5-b111-42bc-a377-dd4cc5630f0f 
 If you encounter issues with authentication methods:
 
 - For TPM2, verify that your system has a TPM2 module and it's enabled in BIOS/UEFI
-- You can list enrolled authentication methods with: `sudo systemd-cryptenroll /dev/disk/by-uuid/d60d88b5-b111-42bc-a377-dd4cc5630f0f --list-enrolled`
+- You can list enrolled authentication methods with: `sudo systemd-cryptenroll /dev/disk/by-uuid/d60d88b5-b111-42bc-a377-dd4cc5630f0f --list-enrolled`, `sudo cryptsetup luksDump /dev/sda2 | grep -A20 "Tokens"`
 
 ## Media Server Setup
 
@@ -276,6 +285,55 @@ Optimized fan settings to be:
 
 Fan off temperature limit: 30 -> 70°C
 Fan start temperature limit: 35 -> 80°C
+
+## External disk
+
+```console
+sudo wipefs -a /dev/sdb
+
+# Start parted
+sudo parted /dev/sdb
+
+# At the parted prompt:
+# Create a new GPT partition table
+(parted) mklabel gpt
+
+# Create a single partition using the entire disk
+(parted) mkpart primary 0% 100%
+
+# Set the name of the partition (optional)
+(parted) name 1 samsung
+
+# Print the partition table to verify
+(parted) print
+
+# Exit parted
+(parted) quit
+
+sudo cryptsetup luksFormat /dev/sdb1
+
+sudo cryptsetup luksOpen /dev/sdb1 samsung-crypt
+
+# Create a physical volume
+sudo pvcreate /dev/mapper/samsung-crypt
+
+# Create a volume group
+sudo vgcreate samsung-vg /dev/mapper/samsung-crypt
+
+# Create a logical volume using all available space
+sudo lvcreate -l 100%FREE -n samsung-lv samsung-vg
+
+sudo mkfs.ext4 -L samsung /dev/samsung-vg/samsung-lv
+```
+
+### Tpm2 enroll
+
+```console
+sudo systemd-cryptenroll --tpm2-device=auto /dev/disk/by-uuid/e9d01b26-cab2-47df-8da8-ed4e0e3d4cb0
+
+# For the Samsung drive
+sudo cryptsetup luksDump /dev/sdb1 | grep -A20 "Tokens"
+```
 
 ## References
 
