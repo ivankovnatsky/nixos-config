@@ -53,6 +53,27 @@ in
         reverse_proxy ${config.flags.beelinkIp}:8384
       }
 
+      # Files server for beelink (/storage)
+      files.beelink.homelab:80 {
+        bind ${bindAddress}
+
+        # Disable TLS
+        tls internal
+        
+        # Proxy to local miniserve instance
+        reverse_proxy 127.0.0.1:8080 {
+          # Headers for proper operation
+          header_up X-Real-IP {remote_host}
+          header_up Host {host}
+          
+          # Increase timeouts and buffer sizes for large directories and files
+          transport http {
+            keepalive 30s
+            response_header_timeout 30s
+          }
+        }
+      }
+
       home.beelink.homelab:80 {
         bind ${bindAddress}
 

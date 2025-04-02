@@ -55,5 +55,7 @@
 
     # Storage
     ./storage.nix
+
+    ./miniserve.nix
   ];
 }
