@@ -22,12 +22,12 @@
       "vivaldi"
       "windsurf"
     ];
-    masApps = {
-      "Numbers" = 409203825;
-      "Pages" = 409201541;
-      "Bitwarden" = 1352778147;
-      "Dark Reader for Safari" = 1438243180;
-    };
+    # masApps = {
+    #   "Numbers" = 409203825;
+    #   "Pages" = 409201541;
+    #   "Bitwarden" = 1352778147;
+    #   "Dark Reader for Safari" = 1438243180;
+    # };
     caskArgs = {
       no_quarantine = true;
     };

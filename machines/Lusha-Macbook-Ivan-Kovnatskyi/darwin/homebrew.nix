@@ -29,13 +29,24 @@
       "vivaldi"
       "windsurf"
     ];
-    masApps = {
-      # Installed using Kandji
-      # "Okta Verify" = 490179405;
-      # "Slack for Desktop" = 803453959;
-      "Dark Reader for Safari" = 1438243180;
-      "Okta Extension App" = 1439967473;
-    };
+    # FIXME: Some weird re-installation happening
+    #
+    # ```console
+    # Using vivaldi
+    # Using windsurf
+    # Installing Dark Reader for Safari
+    # Installing Numbers
+    # Error: Download failed: The installation could not be started.
+    # Installing Numbers has failed!
+    # `brew bundle` failed! 1 Brewfile dependency failed to install
+    # ```
+    # masApps = {
+    #   # Installed using Kandji
+    #   # "Okta Verify" = 490179405;
+    #   # "Slack for Desktop" = 803453959;
+    #   "Dark Reader for Safari" = 1438243180;
+    #   "Okta Extension App" = 1439967473;
+    # };
     caskArgs = {
       no_quarantine = true;
     };

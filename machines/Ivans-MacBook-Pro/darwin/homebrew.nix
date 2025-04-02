@@ -22,10 +22,10 @@
       "vivaldi"
       "windsurf"
     ];
-    masApps = {
-      "Dark Reader for Safari" = 1438243180;
-      "Numbers" = 409203825;
-    };
+    # masApps = {
+    #   "Dark Reader for Safari" = 1438243180;
+    #   "Numbers" = 409203825;
+    # };
     caskArgs = {
       no_quarantine = true;
     };
