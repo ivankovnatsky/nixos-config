@@ -317,6 +317,15 @@ sudo lvcreate -l 100%FREE -n samsung-lv samsung-vg
 sudo mkfs.ext4 -L samsung /dev/samsung-vg/samsung-lv
 ```
 
+### Troubleshooting
+
+Manual mount:
+
+```console
+sudo cryptsetup luksOpen /dev/sdb1 samsung-crypt
+sudo mount /dev/mapper/samsung--vg-samsung--lv /storage
+```
+
 ### Tpm2 enroll
 
 ```console
