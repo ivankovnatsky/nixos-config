@@ -31,7 +31,7 @@ in
 
     # Define custom log format
     logFormat = ''
-      output file /var/log/caddy/beelink.log {
+      output file /var/log/caddy/bee.log {
         roll_size 10MB
         roll_keep 10
         roll_keep_for 720h
@@ -42,30 +42,30 @@ in
 
     # Use extraConfig for more direct control over the Caddyfile format
     extraConfig = ''
-      # Syncthing hostname for beelink
-      sync.beelink.homelab:80 {
+      # Syncthing hostname for bee
+      sync.bee.homelab:80 {
         bind ${bindAddress}
 
         # Disable TLS
         tls internal
 
         # Proxy to Syncthing on its configured address
-        reverse_proxy ${config.flags.beelinkIp}:8384
+        reverse_proxy ${config.flags.beeIp}:8384
       }
 
-      # Files server for beelink (/storage)
-      files.beelink.homelab:80 {
+      # Files server for bee (/storage)
+      files.bee.homelab:80 {
         bind ${bindAddress}
 
         # Disable TLS
         tls internal
-        
+
         # Proxy to local miniserve instance
         reverse_proxy 127.0.0.1:8080 {
           # Headers for proper operation
           header_up X-Real-IP {remote_host}
           header_up Host {host}
-          
+
           # Increase timeouts and buffer sizes for large directories and files
           transport http {
             keepalive 30s
@@ -74,14 +74,14 @@ in
         }
       }
 
-      home.beelink.homelab:80 {
+      home.bee.homelab:80 {
         bind ${bindAddress}
 
         # Disable TLS
         tls internal
 
         # Proxy to Home-Assistant on its configured address
-        reverse_proxy ${config.flags.beelinkIp}:8123
+        reverse_proxy ${config.flags.beeIp}:8123
       }
 
       # Simplified domain for Home Assistant (singleton service)
@@ -92,7 +92,7 @@ in
         tls internal
 
         # Proxy to Home-Assistant on its configured address
-        reverse_proxy ${config.flags.beelinkIp}:8123
+        reverse_proxy ${config.flags.beeIp}:8123
       }
 
       # Miniserve on Mac mini
@@ -129,7 +129,7 @@ in
       }
 
       # Prowlarr
-      prowlarr.beelink.homelab:80 {
+      prowlarr.bee.homelab:80 {
         bind ${bindAddress}
 
         # Disable TLS
@@ -151,7 +151,7 @@ in
       }
 
       # Radarr Web UI
-      radarr.beelink.homelab:80 {
+      radarr.bee.homelab:80 {
         bind ${bindAddress}
 
         # Disable TLS
@@ -173,7 +173,7 @@ in
       }
 
       # Sonarr Web UI
-      sonarr.beelink.homelab:80 {
+      sonarr.bee.homelab:80 {
         bind ${bindAddress}
         
         # Disable TLS
@@ -195,7 +195,7 @@ in
       }
 
       # Transmission Web UI
-      transmission.beelink.homelab:80 {
+      transmission.bee.homelab:80 {
         bind ${bindAddress}
 
         # Disable TLS
@@ -217,7 +217,7 @@ in
       }
 
       # Plex Media Server
-      plex.beelink.homelab:80 {
+      plex.bee.homelab:80 {
         bind ${bindAddress}
 
         # Disable TLS
@@ -259,7 +259,7 @@ in
       }
 
       # Netdata
-      netdata.beelink.homelab:80 {
+      netdata.bee.homelab:80 {
         bind ${bindAddress}
 
         # Disable TLS
@@ -293,7 +293,7 @@ in
       }
 
       # Grafana
-      grafana.beelink.homelab:80 {
+      grafana.bee.homelab:80 {
         bind ${bindAddress}
 
         # Disable TLS

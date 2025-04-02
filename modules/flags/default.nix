@@ -88,9 +88,9 @@ with lib;
       };
     };
 
-    beelinkIp = mkOption {
+    beeIp = mkOption {
       type = types.str;
-      description = "Beelink IP address";
+      description = "Bee IP address";
       default = "192.168.50.3";
     };
 
