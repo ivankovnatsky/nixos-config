@@ -1,11 +1,11 @@
-# Beelink Homelab Server
+# Bee Homelab Server
 
 ## Configure
 
 ### SSH
 
 ```console
-ssh-copy-id beelink-ip
+ssh-copy-id bee-ip
 ```
 
 ## Services
@@ -14,9 +14,9 @@ ssh-copy-id beelink-ip
 
 The machine is configured as a local DNS server using dnsmasq. It resolves the following domains:
 
-- `sync.beelink.homelab` → beelink-ip
-- `beelink.homelab` → beepink-ip
-- `grafana.beelink.homelab` → beepink-ip
+- `sync.bee.homelab` → bee-ip
+- `bee.homelab` → beepink-ip
+- `grafana.bee.homelab` → beepink-ip
 
 > Note: We use `.lan` instead of `.local` because macOS reserves the `.local` top-level domain for Multicast DNS (mDNS/Bonjour). Using `.local` domains can cause resolution issues on macOS systems as they intercept these requests and try to resolve them via mDNS instead of regular DNS.
 
@@ -24,7 +24,7 @@ The machine is configured as a local DNS server using dnsmasq. It resolves the f
 
 The server uses the following components for log collection and visualization:
 
-- **Grafana**: Web interface for visualizing logs and metrics (http://grafana.beelink.homelab)
+- **Grafana**: Web interface for visualizing logs and metrics (http://grafana.bee.homelab)
 - **Loki**: Log aggregation system that stores and indexes logs
 - **Promtail**: Agent that collects logs from the system and forwards them to Loki
 
@@ -35,7 +35,7 @@ Default Grafana credentials:
 ## TODO
 
 - [x] Configure DNS server
-- [x] Configure service http routing for sync.beelink.homelab -> beelink-ip:8384
+- [x] Configure service http routing for sync.bee.homelab -> bee-ip:8384
 - [ ] Add local https
 - [x] Rename local domain: .home.lan -> homelab
 - [ ] Move data to external drive when got one
