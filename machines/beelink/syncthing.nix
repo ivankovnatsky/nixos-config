@@ -71,12 +71,22 @@
         "Sources/github.com/ivankovnatsky/nixos-config" = {
           id = "shtdy-s2c9s";
           label = "Sources/github.com/ivankovnatsky/nixos-config";
-          path = "/home/ivan/Sources/github.com/ivankovnatsky/nixos-config";
+          path = "/storage/Sources/github.com/ivankovnatsky/nixos-config";
           devices = [
             "Ivans-Mac-mini"
             "Ivans-MacBook-Air"
             "Ivans-MacBook-Pro"
             "Lusha-Macbook-Ivan-Kovnatskyi"
+          ];
+        };
+        "Sources" = {
+          id = "fpbxa-6zw5z";
+          label = "Sources";
+          path = "/storage/Sources";
+          devices = [
+            "Ivans-Mac-mini"
+            "Ivans-MacBook-Air"
+            "Ivans-MacBook-Pro"
           ];
         };
       };
