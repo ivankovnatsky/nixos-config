@@ -1,5 +1,5 @@
-# This file contains systemd-cryptenroll configuration for the beelink machine
-# See docs/beelink.md for detailed instructions on how to use this file.
+# This file contains systemd-cryptenroll configuration for the bee machine
+# See docs/bee.md for detailed instructions on how to use this file.
 
 {
   # TPM2 support for LUKS using systemd-cryptenroll

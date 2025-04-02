@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, ... }:
 {
   # Enable the Netdata service with enhanced settings
   services.netdata = {

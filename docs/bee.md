@@ -1,4 +1,4 @@
-# beelink
+# bee
 
 ## Installation
 
@@ -26,7 +26,7 @@ wormhole send nixos-config.tar.gz
 # Note the code provided by wormhole (e.g., 7-crossword-giraffe)
 ```
 
-### On Beelink (Target Machine)
+### On Bee (Target Machine)
 
 ```console
 # Install magic-wormhole
@@ -40,28 +40,28 @@ wormhole receive [code-from-source]
 mkdir -p ~/Sources/github.com/ivankovnatsky
 mv nixos-config.tar.gz ~/Sources/github.com/ivankovnatsky/
 tar -xzf nixos-config.tar.gz
-mv ~/Sources/github.com/ivankovnatsky/nixos-config ~/Sources/github.com/ivankovnatsky/nixos-config-beelink
+mv ~/Sources/github.com/ivankovnatsky/nixos-config ~/Sources/github.com/ivankovnatsky/nixos-config-bee
 
 # Enable flakes for this session (we'll configure it permanently in NixOS later)
 export NIX_CONFIG="experimental-features = nix-command flakes"
 
 # Build and switch using the extracted configuration
-cd nixos-config-beelink
-sudo nixos-rebuild switch --flake .#beelink
+cd nixos-config-bee
+sudo nixos-rebuild switch --flake .#bee
 ```
 
 ## Configuration
 
 ### Disk encryption enrollment
 
-The beelink configuration uses LUKS encryption for the root partition. To enhance security and convenience, you can use `systemd-cryptenroll` to add additional authentication methods such as TPM2 or recovery keys.
+The bee configuration uses LUKS encryption for the root partition. To enhance security and convenience, you can use `systemd-cryptenroll` to add additional authentication methods such as TPM2 or recovery keys.
 
 #### Prerequisites
 
 1. First, apply the base NixOS configuration which includes TPM2 support:
 
 ```console
-sudo nixos-rebuild switch --flake .#beelink
+sudo nixos-rebuild switch --flake .#bee
 ```
 
 2. Once the base configuration with TPM2 support is applied, you can proceed to enrolling authentication methods using systemd-cryptenroll.
@@ -106,7 +106,7 @@ Your original passphrase always remains valid, even if you add TPM2 authenticati
 To make the enrolled authentication methods work with NixOS, the necessary configuration has been added to a dedicated file:
 
 ```
-machines/beelink/cryptenroll.nix
+machines/bee/cryptenroll.nix
 ```
 
 This file contains the required LUKS configuration with TPM2 support. It includes:
@@ -191,12 +191,12 @@ The media server setup consists of four main components working together:
 4. **Plex**: Media streaming server
    - Serves media files for streaming
    - Manages movie metadata and library
-   - Accessible at `http://plex.beelink.homelab` or `http://beelink-ip:32400/web`
+   - Accessible at `http://plex.bee.homelab` or `http://bee-ip:32400/web`
 
 ### Initial Setup
 
 1. **Prowlarr Setup**:
-   - Access at `http://prowlarr.beelink.homelab`
+   - Access at `http://prowlarr.bee.homelab`
    - Add indexers (e.g., Toloka.to):
      - Go to Settings -> Indexers
      - Click '+' to add new indexer
@@ -208,7 +208,7 @@ The media server setup consists of four main components working together:
      - Set Radarr URL: `http://localhost:7878`
 
 2. **Radarr Setup**:
-   - Access at `http://radarr.beelink.homelab`
+   - Access at `http://radarr.bee.homelab`
    - Add Transmission as download client:
      - Settings -> Download Clients
      - Add Transmission
@@ -219,18 +219,18 @@ The media server setup consists of four main components working together:
      - Library path: `/storage/media/movies`
 
 3. **Transmission Setup**:
-   - Access at `http://transmission.beelink.homelab`
+   - Access at `http://transmission.bee.homelab`
    - Downloads automatically go to configured paths
    - No authentication required on local network
 
 4. **Plex Setup**:
-   - Initial setup: Access via `http://beelink-ip:32400/web`
+   - Initial setup: Access via `http://bee-ip:32400/web`
    - Add Movies library:
      - Click '+' next to Libraries
      - Choose 'Movies' type
      - Add folder: `/storage/media/movies`
      - Configure scanning options as needed
-   - After initial setup, can use `http://plex.beelink.homelab`
+   - After initial setup, can use `http://plex.bee.homelab`
 
 ### Workflow
 
@@ -243,7 +243,7 @@ The media server setup consists of four main components working together:
 ### Troubleshooting
 
 - If Plex shows "Get Media Server" screen:
-  - Access via direct IP: `http://beelink-ip:32400/web`
+  - Access via direct IP: `http://bee-ip:32400/web`
   - Use incognito/private browser window
   - Clear browser cookies for Plex domain
 
@@ -267,7 +267,7 @@ The media server setup consists of four main components working together:
    single important devices:
 
    4.1. 2nd Router IP: 192.168.50.2
-   4.2. Beelink: 192.168.50.3
+   4.2. Bee: 192.168.50.3
    4.2. Mini: 192.168.50.4
 
 ## BIOS

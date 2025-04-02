@@ -3,8 +3,8 @@
   services.home-assistant = {
     enable = true;
     package = (pkgs.home-assistant.override {
-      extraPackages = py: with py; [ 
-        psycopg2 
+      extraPackages = py: with py; [
+        psycopg2
         getmac
         pyatv
         gtts  # Google Text-to-Speech
@@ -23,7 +23,7 @@
       # https://www.home-assistant.io/integrations/default_config/
       default_config = {};
       recorder.db_url = "postgresql://@/hass";
-      
+
       # Set location information in the correct format
       homeassistant = {
         name = "Home";
@@ -33,7 +33,7 @@
         unit_system = "metric";
         time_zone = config.secrets.timezone;
       };
-      
+
       # Basic HTTP configuration
       http = {
         # Listen on all interfaces for proxy access
@@ -45,7 +45,7 @@
         trusted_proxies = [
           "127.0.0.1"
           "::1"
-          "${config.flags.beelinkIp}"
+          "${config.flags.beeIp}"
         ];
       };
     };
@@ -61,7 +61,7 @@
       ensureDBOwnership = true;
     }];
   };
-  
+
   # Ensure the Home Assistant service starts after PostgreSQL is fully up
   systemd.services.home-assistant.after = [ "postgresql.service" ];
   systemd.services.home-assistant.requires = [ "postgresql.service" ];

@@ -18,7 +18,7 @@
     # Enable TPM2 support (required for TPM2 enrollment)
     ./tpm2.nix
 
-    # Uncomment after enrolling TPM2 (see docs/beelink.md for instructions)
+    # Uncomment after enrolling TPM2 (see docs/bee.md for instructions)
     ./cryptenroll.nix
 
     # Security

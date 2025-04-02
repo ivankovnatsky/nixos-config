@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   # TODO:
@@ -11,8 +11,8 @@
         # Listen on all interfaces
         http_addr = "0.0.0.0";
         http_port = 3000;
-        domain = "grafana.beelink.homelab";
-        root_url = "http://grafana.beelink.homelab";
+        domain = "grafana.bee.homelab";
+        root_url = "http://grafana.bee.homelab";
       };
       # Default admin user
       security = {
@@ -202,7 +202,7 @@
             max_age = "12h";
             labels = {
               job = "systemd-journal";
-              host = "beelink";
+              host = "bee";
             };
           };
           relabel_configs = [
@@ -223,7 +223,7 @@
               targets = [ "localhost" ];
               labels = {
                 job = "system";
-                host = "beelink";
+                host = "bee";
                 __path__ = "/var/log/*.log";
               };
             }
@@ -236,7 +236,7 @@
               targets = [ "localhost" ];
               labels = {
                 job = "services";
-                host = "beelink";
+                host = "bee";
                 __path__ = "/var/log/services/*.log";
               };
             }
@@ -249,7 +249,7 @@
               targets = [ "localhost" ];
               labels = {
                 job = "nginx";
-                host = "beelink";
+                host = "bee";
                 __path__ = "/var/log/nginx/*.log";
               };
             }
@@ -262,7 +262,7 @@
               targets = [ "localhost" ];
               labels = {
                 job = "caddy";
-                host = "beelink";
+                host = "bee";
                 __path__ = "/var/log/caddy/*.log";
               };
             }

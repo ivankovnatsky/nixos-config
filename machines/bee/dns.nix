@@ -63,7 +63,7 @@
       # Listen on specific addresses
       listen-address = [
         "127.0.0.1"
-        "${config.flags.beelinkIp}"
+        "${config.flags.beeIp}"
       ];
 
       # Don't use /etc/resolv.conf
@@ -102,7 +102,7 @@
 
       # Wildcard domain support
       address = [
-        "/homelab/${config.flags.beelinkIp}"  # This will match all *.homelab domains
+        "/homelab/${config.flags.beeIp}"  # This will match all *.homelab domains
       ];
 
       # Log queries (useful for debugging)
