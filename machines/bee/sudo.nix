@@ -11,7 +11,12 @@
     extraRules = [
       {
         users = [ "ivan" ];
-        commands = [ ];
+        commands = [
+          {
+            command = "/run/current-system/sw/bin/shutdown -h now";
+            options = [ "NOPASSWD" ];
+          }
+        ];
       }
     ];
   };
