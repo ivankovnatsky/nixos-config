@@ -1,6 +1,6 @@
 {
-  pkgs,
   config,
+  pkgs,
   username,
   ...
 }:
@@ -55,6 +55,7 @@ in
       { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Vivaldi.app/"; }
+      { path = "/Applications/Bitwarden.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }
 
@@ -65,6 +66,7 @@ in
 
       # Installed using nixpkgs
       { path = "/Applications/Ghostty.app/"; }
+      { path = "${pkgs.vscode}/Applications/Visual Studio Code.app/"; }
       { path = "${pkgs.coconutbattery}/Applications/coconutBattery.app/"; }
 
       {
@@ -74,8 +76,20 @@ in
 
       # TODO: see if making a Dock web app could be automated.
       # Safari WebApps placeholder
+      { path = "${homePath}/Applications/Тривога.app/"; }
+      { path = "${homePath}/Applications/X.app/"; }
+      { path = "${homePath}/Applications/WhatsApp Web.app/"; }
+      { path = "${homePath}/Applications/Telegram Web.app/"; }
       { path = "${homePath}/Applications/ChatGPT.app/"; }
       { path = "${homePath}/Applications/Claude.app/"; }
+      { path = "${homePath}/Applications/OLX.ua.app/"; }
+
+      {
+        type = "spacer";
+        section = "apps";
+      }
+
+      { path = "/Applications/Microsoft Teams.app/"; }
 
       {
         path = "${homePath}/Downloads/";
