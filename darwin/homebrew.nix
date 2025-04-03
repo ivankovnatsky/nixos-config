@@ -18,6 +18,7 @@
       "ghostty"
       "hammerspoon"
       "kitty"
+      "mullvadvpn"
       "microsoft-teams"
       "vivaldi"
       "windsurf"
