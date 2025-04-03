@@ -16,5 +16,6 @@
     ./power.nix
     # ./user.nix
     ./tmux-rebuild.nix
+    ./system.nix
   ];
 }
