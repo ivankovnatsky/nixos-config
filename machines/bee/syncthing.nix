@@ -1,4 +1,3 @@
-{ config, pkgs, ... }:
 {
   # Enable the Syncthing service
   services.syncthing = {
@@ -79,6 +78,17 @@
             "Lusha-Macbook-Ivan-Kovnatskyi"
           ];
         };
+        "Sources/github.com/NixOS/nixpkgs" = {
+          id = "kwhyl-jbqmu";
+          label = "Sources/github.com/NixOS/nixpkgs";
+          path = "/storage/Sources/github.com/NixOS/nixpkgs";
+          devices = [
+            "Ivans-Mac-mini"
+            "Ivans-MacBook-Air"
+            "Ivans-MacBook-Pro"
+            "Lusha-Macbook-Ivan-Kovnatskyi"
+          ];
+        };
         "Sources" = {
           id = "fpbxa-6zw5z";
           label = "Sources";
@@ -128,15 +138,17 @@
 
   # Use systemd-tmpfiles to ensure directories exist with proper permissions
   systemd.tmpfiles.rules = [
+    # Create subdirectories mentioned in Syncthing config
+    "d /storage/Sources/github.com 0755 ivan users - -"
+    "d /storage/Sources/github.com/ivankovnatsky 0755 ivan users - -"
+    "d /storage/Sources/github.com/ivankovnatsky/nixos-config 0755 ivan users - -"
+
+    "d /storage/Sources/github.com/NixOS/nixpkgs 0755 ivan users - -"
+
     # Create /storage/Sources if it doesn't exist and ensure correct permissions
     "d /storage/Sources 0755 ivan users - -"
     
     # Create /storage/Data if it doesn't exist and ensure correct permissions
     "d /storage/Data 0755 ivan users - -"
-    
-    # Create subdirectories mentioned in Syncthing config
-    "d /storage/Sources/github.com 0755 ivan users - -"
-    "d /storage/Sources/github.com/ivankovnatsky 0755 ivan users - -"
-    "d /storage/Sources/github.com/ivankovnatsky/nixos-config 0755 ivan users - -"
   ];
 }
