@@ -85,13 +85,6 @@ in
       { path = "${homePath}/Applications/OLX.ua.app/"; }
 
       {
-        type = "spacer";
-        section = "apps";
-      }
-
-      { path = "/Applications/Microsoft Teams.app/"; }
-
-      {
         path = "${homePath}/Downloads/";
         section = "others";
       }
