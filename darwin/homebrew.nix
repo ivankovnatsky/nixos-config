@@ -13,13 +13,13 @@
     ];
     casks = [
       "amethyst"
+      "bitwarden"
       "cursor"
       "firefox"
       "ghostty"
       "hammerspoon"
       "kitty"
       "mullvadvpn"
-      "microsoft-teams"
       "vivaldi"
       "windsurf"
     ];

@@ -13,10 +13,8 @@
     ../../../modules/secrets
     ../../../system/documentation.nix
     ../../../system/nix.nix
-    ./dock.nix
     ./flags.nix
     ./fonts.nix
-    ./homebrew.nix
     ./security.nix
     ./shell.nix
     ./sudo.nix
