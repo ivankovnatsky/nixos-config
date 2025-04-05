@@ -1,5 +1,6 @@
 {
   pkgs,
+  lib,
   ...
 }:
 
@@ -17,6 +18,7 @@
 let
   username = "ivan"; # Set your username here
   homeDir = "/Users/${username}";
+  workingDirectory = "/Volumes/Samsung2TB"; # External volume to wait for
   guiAddress = "0.0.0.0:8384"; # Accept connections from any interface
 in
 {
@@ -25,19 +27,32 @@ in
   launchd.user.agents.syncthing = {
     serviceConfig = {
       Label = "net.syncthing.syncthing";
-      ProgramArguments = [
-        "${pkgs.syncthing}/bin/syncthing"
-        "-no-browser"
-        "-no-restart"
-        "-no-upgrade"
-        "-gui-address=${guiAddress}"
-        "-logflags=0"
-      ];
       RunAtLoad = true;
       KeepAlive = true;
       StandardOutPath = "${homeDir}/Library/Logs/syncthing.log";
       StandardErrorPath = "${homeDir}/Library/Logs/syncthing.log";
-      WorkingDirectory = homeDir;
+      ThrottleInterval = 10; # Restart on failure after 10 seconds
     };
+
+    # Using command instead of ProgramArguments to utilize wait4path
+    command =
+      let
+        # Create a startup script that waits for external volume to be fully available
+        startupScript = pkgs.writeShellScriptBin "syncthing-start" ''
+          #!/bin/sh
+
+          # Wait for the external volume to be available
+          /bin/wait4path "${workingDirectory}"
+
+          # Execute Syncthing with parameters
+          exec ${pkgs.syncthing}/bin/syncthing \
+            -no-browser \
+            -no-restart \
+            -no-upgrade \
+            -gui-address=${guiAddress} \
+            -logflags=0
+        '';
+      in
+      "${startupScript}/bin/syncthing-start";
   };
 }
