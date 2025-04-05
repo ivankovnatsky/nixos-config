@@ -16,6 +16,10 @@
             command = "/run/current-system/sw/bin/shutdown -h now";
             options = [ "NOPASSWD" ];
           }
+          {
+            command = "/run/current-system/sw/bin/reboot";
+            options = [ "NOPASSWD" ];
+          }
         ];
       }
     ];
