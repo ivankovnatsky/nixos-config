@@ -16,6 +16,7 @@
         user = "${username}";
         commands = [
           "/sbin/shutdown -h now"
+          "/sbin/reboot"
         ];
       };
     };
