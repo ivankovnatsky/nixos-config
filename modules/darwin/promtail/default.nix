@@ -4,8 +4,8 @@
 # logs to a Loki instance.
 #
 # To check the logs of the promtail service:
-# - View stdout logs: `cat /var/log/promtail.log`
-# - View error logs: `cat /var/log/promtail.error.log`
+# - View stdout logs: `cat /tmp/promtail.log`
+# - View error logs: `cat /tmp/promtail.error.log`
 # - Check service status: `launchctl list | grep promtail`
 # - Stop service: `launchctl stop org.grafana.promtail`
 # - Start service: `launchctl start org.grafana.promtail`
@@ -60,8 +60,8 @@ in
     # Add documentation to make it easy to check status
     system.build.help = ''
       Promtail Service:
-      - View logs: cat /var/log/promtail.log
-      - View errors: cat /var/log/promtail.error.log
+      - View logs: cat /tmp/promtail.log
+      - View errors: cat /tmp/promtail.error.log
       - Check status: launchctl list | grep promtail
     '';
     environment.systemPackages = [ cfg.package ];
@@ -76,8 +76,8 @@ in
         Label = "org.grafana.promtail";
         RunAtLoad = true;
         KeepAlive = true;
-        StandardOutPath = "/var/log/promtail.log";
-        StandardErrorPath = "/var/log/promtail.error.log";
+        StandardOutPath = "/tmp/promtail.log";
+        StandardErrorPath = "/tmp/promtail.error.log";
         EnvironmentVariables = {
           PATH = "${pkgs.coreutils}/bin:${cfg.package}/bin:${pkgs.bash}/bin";
         };

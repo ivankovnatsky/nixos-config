@@ -87,8 +87,8 @@ in
     system.activationScripts.preActivation.text = mkBefore ''
       # Create log directory for stubby
       echo "Setting up stubby directories..."
-      mkdir -p /var/log/stubby
-      chmod 755 /var/log/stubby
+      mkdir -p /tmp/stubby
+      chmod 755 /tmp/stubby
     '';
 
     launchd.daemons.stubby = {
@@ -98,8 +98,8 @@ in
         RunAtLoad = true;
         KeepAlive = cfg.alwaysKeepRunning;
         AbandonProcessGroup = false;
-        StandardErrorPath = "/var/log/stubby/stderr.log";
-        StandardOutPath = "/var/log/stubby/stdout.log";
+        StandardErrorPath = "/tmp/stubby/stderr.log";
+        StandardOutPath = "/tmp/stubby/stdout.log";
         SoftResourceLimits = {
           NumberOfFiles = 1024;
         };
