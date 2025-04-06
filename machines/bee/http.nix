@@ -26,12 +26,13 @@ in
 
     # Global settings
     globalConfig = ''
+      # Global settings
       auto_https off
     '';
 
     # Define custom log format
     logFormat = ''
-      output file /var/log/caddy/bee.log {
+      output file /tmp/caddy-access.log {
         roll_size 10MB
         roll_keep 10
         roll_keep_for 168h
@@ -107,8 +108,6 @@ in
           # Headers for proper operation
           header_up X-Real-IP {remote_host}
           header_up Host {host}
-          header_up X-Forwarded-For {remote}
-          header_up X-Forwarded-Proto {scheme}
 
           # Increase timeouts and buffer sizes for large directories and files
           transport http {
