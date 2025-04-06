@@ -30,7 +30,7 @@
     # FIXME: Did not work yet
     # ./networking.nix
     ./dns.nix
-    ./http-routing.nix
+    ./http.nix
 
     # Monitoring
     ./logging.nix
