@@ -88,6 +88,16 @@
             "Ivans-MacBook-Pro"
           ];
         };
+        "Sources/github.com/ivankovnatsky/windows-config" = {
+          id = "jumpj-dcicb";
+          label = "Sources/github.com/ivankovnatsky/windows-config";
+          path = "/storage/Sources/github.com/ivankovnatsky/windows-config";
+          devices = [
+            "Ivans-Mac-mini"
+            "Ivans-MacBook-Air"
+            "Ivans-MacBook-Pro"
+          ];
+        };
         "Sources/github.com/NixOS/nixpkgs" = {
           id = "kwhyl-jbqmu";
           label = "Sources/github.com/NixOS/nixpkgs";
@@ -153,6 +163,7 @@
     "d /storage/Sources/github.com/ivankovnatsky 0755 ivan users - -"
     "d /storage/Sources/github.com/ivankovnatsky/nixos-config 0755 ivan users - -"
     "d /storage/Sources/github.com/ivankovnatsky/deck 0755 ivan users - -"
+    "d /storage/Sources/github.com/ivankovnatsky/windows-config 0755 ivan users - -"
 
     "d /storage/Sources/github.com/NixOS/nixpkgs 0755 ivan users - -"
 
