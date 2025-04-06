@@ -78,8 +78,8 @@ in
     system.activationScripts.preActivation.text = mkAfter ''
       # Create log directory for dnsmasq
       echo "Setting up dnsmasq directories..."
-      mkdir -p /var/log/dnsmasq
-      chmod 755 /var/log/dnsmasq
+      mkdir -p /tmp/dnsmasq
+      chmod 755 /tmp/dnsmasq
     '';
     
     # Configure DNS resolution in postActivation
@@ -106,8 +106,8 @@ in
         RunAtLoad = true;
         KeepAlive = cfg.alwaysKeepRunning;
         AbandonProcessGroup = false;
-        StandardErrorPath = "/var/log/dnsmasq/stderr.log";
-        StandardOutPath = "/var/log/dnsmasq/stdout.log";
+        StandardErrorPath = "/tmp/dnsmasq/stderr.log";
+        StandardOutPath = "/tmp/dnsmasq/stdout.log";
       };
     };
   };
