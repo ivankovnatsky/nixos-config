@@ -8,6 +8,7 @@
 
     # Monitoring
     lsof
+    dust
 
     # Storage
     file
