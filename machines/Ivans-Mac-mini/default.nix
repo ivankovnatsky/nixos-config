@@ -11,6 +11,7 @@
     ./nix.nix
     ./openssh.nix
     ./packages.nix
+    ./http.nix
     ./sharing.nix
     ./sudo.nix
     ./power.nix

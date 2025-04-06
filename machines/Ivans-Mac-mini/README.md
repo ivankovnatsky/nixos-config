@@ -6,3 +6,4 @@
 - [ ] Have a power nap, but awake on network activity
 - [ ] Add monitoring maybe netdata
 - [ ] Setup remote managemnt app on client machines
+- [ ] Move logs storing from /var/log to /tmp/
