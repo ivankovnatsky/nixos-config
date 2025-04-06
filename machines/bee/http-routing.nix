@@ -34,7 +34,7 @@ in
       output file /var/log/caddy/bee.log {
         roll_size 10MB
         roll_keep 10
-        roll_keep_for 720h
+        roll_keep_for 168h
       }
       format json
       level INFO
