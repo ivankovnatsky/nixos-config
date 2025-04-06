@@ -8,6 +8,24 @@
 # This file provides a backup/resilient web proxy for the homelab
 # when the primary proxy (beelink) is unavailable
 
+# KNOWN ISSUE: macOS Sequoia (15.x) has significant problems with Local Network Privacy
+# permissions for launchd agents. Even after approving local network access for Caddy:
+# 1. The permissions may not apply correctly until a reboot
+# 2. The app may lose access after updates or when other apps are launched
+# 3. If access problems persist, potential solutions include:
+#    - Run as a daemon instead of agent (requires root)
+#    - Toggle the Firewall off and on
+#    - Manually enable in System Settings → Privacy → Local Network
+#
+# See: https://mjtsai.com/blog/2024/10/02/local-network-privacy-on-sequoia/
+# 
+# Manually done:
+# * Caddy could not connect to local network unless manually approve in security
+# 
+# References:
+# * https://apple.stackexchange.com/questions/478037/no-route-to-host-for-certain-applications-from-macos-host-to-macos-guest
+# * https://mjtsai.com/blog/2024/10/02/local-network-privacy-on-sequoia/
+
 let 
   # Use 0.0.0.0 to listen on all interfaces
   bindAddress = "0.0.0.0";
@@ -17,9 +35,9 @@ let
 in
 {
   # Configure launchd service for Caddy web server
-  launchd.user.agents.caddy = {
+  launchd.daemons.caddy = {
     serviceConfig = {
-      Label = "com.ivankovnatsky.caddy";
+      Label = "org.nixos.caddy";
       RunAtLoad = true;
       KeepAlive = true;
       StandardOutPath = "/tmp/caddy.log";
@@ -111,8 +129,6 @@ in
               # Headers for proper operation
               header_up X-Real-IP {remote_host}
               header_up Host {host}
-              header_up X-Forwarded-For {remote}
-              header_up X-Forwarded-Proto {scheme}
 
               # Increase timeouts and buffer sizes for large directories and files
               transport http {
