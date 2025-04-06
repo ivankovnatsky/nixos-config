@@ -188,8 +188,8 @@ in
       mkdir -p /var/lib/logrotate
       chmod 755 /var/lib/logrotate
       
-      mkdir -p /var/log/logrotate
-      chmod 755 /var/log/logrotate
+      mkdir -p /tmp/logrotate
+      chmod 755 /tmp/logrotate
     '';
     
     # Run logrotate via launchd
@@ -211,8 +211,8 @@ in
             { Hour = 3; Minute = 0; }
           ];
         RunAtLoad = false; # Don't run immediately on system boot
-        StandardErrorPath = "/var/log/logrotate/stderr.log";
-        StandardOutPath = "/var/log/logrotate/stdout.log";
+        StandardErrorPath = "/tmp/logrotate/stderr.log";
+        StandardOutPath = "/tmp/logrotate/stdout.log";
         EnvironmentVariables = {
           PATH = "${pkgs.coreutils}/bin:${pkgs.gzip}/bin:${logrotatePackage}/bin:/usr/bin:/bin";
         };

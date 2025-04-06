@@ -1,5 +1,23 @@
 {
-  services.netdata.enable = true;
+  services.netdata = {
+    enable = true;
+    # Store service stdout/stderr in /tmp
+    logDir = "/tmp/netdata";
+    
+    # Explicitly configure Netdata to use /tmp for its logs
+    config = ''
+      [global]
+      log directory = /tmp/netdata
+      debug log = /tmp/netdata/debug.log
+      error log = /tmp/netdata/error.log
+      access log = /tmp/netdata/access.log
+      
+      # Reduce log verbosity
+      [logs]
+      debug log = info
+      error log level = error
+    '';
+  };
 
   # Create the opt-out file in the Netdata configuration directory
   environment.etc."netdata/.opt-out-from-anonymous-statistics".text = "";
