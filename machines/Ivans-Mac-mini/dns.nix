@@ -46,7 +46,7 @@
       # Listen on specific addresses
       "listen-address" = [
         "127.0.0.1"
-        "${config.flags.macMiniIp}"
+        "${config.flags.miniIp}"
       ];
 
       # Don't use /etc/resolv.conf

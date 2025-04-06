@@ -101,15 +101,15 @@ in
 
         # Disable TLS
         tls internal
-        
+
         # Proxy to miniserve on Mac mini
-        reverse_proxy ${config.flags.macMiniIp}:8080 {
+        reverse_proxy ${config.flags.miniIp}:8080 {
           # Headers for proper operation
           header_up X-Real-IP {remote_host}
           header_up Host {host}
           header_up X-Forwarded-For {remote}
           header_up X-Forwarded-Proto {scheme}
-          
+
           # Increase timeouts and buffer sizes for large directories and files
           transport http {
             keepalive 30s
@@ -125,7 +125,7 @@ in
         tls internal
 
         # Proxy to Syncthing on its configured address
-        reverse_proxy ${config.flags.macMiniIp}:8384
+        reverse_proxy ${config.flags.miniIp}:8384
       }
 
       # Prowlarr
@@ -285,7 +285,7 @@ in
         redir /index.html /v1/ 302
         
         # Proxy to Netdata
-        reverse_proxy ${config.flags.macMiniIp}:19999 {
+        reverse_proxy ${config.flags.miniIp}:19999 {
           # Enable WebSocket support
           header_up X-Real-IP {remote_host}
           header_up Host {host}
