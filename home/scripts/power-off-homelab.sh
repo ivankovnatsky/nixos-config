@@ -2,7 +2,7 @@
 
 # Script to remotely power off homelab machines
 # Usage: ./power-off-homelab.sh
-# This script will power off both the Bee machine and Mac Mini
+# This script will power off both the Bee machine and the Mini
 
 set -e
 
