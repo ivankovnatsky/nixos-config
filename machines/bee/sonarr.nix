@@ -1,4 +1,10 @@
 {
+  # NOTE: For proper download handling with Transmission:
+  # 1. In Sonarr UI, enable "Remove Completed" in the Transmission download client settings
+  # 2. Transmission must be configured to pause/stop torrents after meeting ratio/time goals
+  #    (ratio-limit-enabled = true and/or seed-time-limit-enabled = true)
+  # 3. Sonarr will only remove downloads from Transmission when they are paused/stopped
+  #
   # Enable Sonarr
   services.sonarr = {
     enable = true;
