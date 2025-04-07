@@ -1,23 +1,30 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 
 let
   cfg = config.local.services.stubby;
-  
+
   # Override stubby package to remove systemd dependency for Darwin
   stubbyPackage = pkgs.stubby.overrideAttrs (old: {
-    buildInputs = with pkgs; [
-      getdns
-      libyaml
-      openssl
-    ] ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [ pkgs.darwin.Security ];
+    buildInputs =
+      with pkgs;
+      [
+        getdns
+        libyaml
+        openssl
+      ]
+      ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [ pkgs.darwin.Security ];
   });
-  
+
   # Convert settings to YAML for stubby config
-  settingsFormat = pkgs.formats.yaml {};
+  settingsFormat = pkgs.formats.yaml { };
   configFile = settingsFormat.generate "stubby.yml" cfg.settings;
-  
 
 in
 {
@@ -32,7 +39,16 @@ in
     };
 
     logLevel = mkOption {
-      type = types.enum [ "emerg" "alert" "crit" "err" "warning" "notice" "info" "debug" ];
+      type = types.enum [
+        "emerg"
+        "alert"
+        "crit"
+        "err"
+        "warning"
+        "notice"
+        "info"
+        "debug"
+      ];
       default = "info";
       description = "Log level for stubby.";
     };
@@ -106,4 +122,4 @@ in
       };
     };
   };
-} 
+}

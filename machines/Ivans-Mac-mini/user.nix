@@ -1,3 +1,3 @@
 {
-    system.defaults.loginwindow.autoLoginUser = "ivan";
+  system.defaults.loginwindow.autoLoginUser = "ivan";
 }

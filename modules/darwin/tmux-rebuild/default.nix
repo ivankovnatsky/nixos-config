@@ -36,18 +36,18 @@ in
         # Restart on failure
         ThrottleInterval = 10;
       };
-      
+
       # Using command instead of ProgramArguments to automatically utilize wait4path
-      command = 
+      command =
         let
           # Create the rebuild watch script
           rebuildWatchScript = pkgs.writeShellScriptBin "darwin-rebuild-watch" ''
             #!/bin/sh
-            
+
             # Wait for the Samsung2TB volume to be mounted using the built-in wait4path utility
             echo "Waiting for ${cfg.nixosConfigPath} to be available..."
             /bin/wait4path "${cfg.nixosConfigPath}"
-            
+
             # Now we can safely cd into it
             cd ${cfg.nixosConfigPath}
             echo "${cfg.nixosConfigPath} is now available!"

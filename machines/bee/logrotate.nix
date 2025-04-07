@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   # Configure log rotation for various log files
@@ -16,4 +21,4 @@
       };
     };
   };
-} 
+}

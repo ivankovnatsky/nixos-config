@@ -12,7 +12,10 @@
     enable = true;
     nssmdns4 = true; # Enable multicast DNS NSS lookup
     # Configure Avahi to work alongside dnsmasq
-    allowInterfaces = [ "enp1s0" "wlo1" ]; # Adjust based on your network interfaces
+    allowInterfaces = [
+      "enp1s0"
+      "wlo1"
+    ]; # Adjust based on your network interfaces
     publish = {
       enable = true;
       addresses = true;
