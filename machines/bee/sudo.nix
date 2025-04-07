@@ -6,7 +6,7 @@
       # Set password timeout to 4 hours (240 minutes)
       Defaults timestamp_timeout=240
     '';
-    
+
     # Configure NOPASSWD rules for specific commands
     extraRules = [
       {

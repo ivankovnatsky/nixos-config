@@ -30,5 +30,4 @@
     "d /storage/media/movies 0775 plex media -"
     "d /storage/media/tv 0775 plex media -"
   ];
-
 }

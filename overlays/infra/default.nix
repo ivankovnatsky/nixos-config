@@ -1,7 +1,8 @@
-{ lib
-, stdenv
-, fetchurl
-, unzip
+{
+  lib,
+  stdenv,
+  fetchurl,
+  unzip,
 }:
 
 stdenv.mkDerivation {
@@ -20,10 +21,10 @@ stdenv.mkDerivation {
   installPhase = ''
     # Create the Applications directory
     mkdir -p $out/Applications
-    
+
     # Move the app bundle
     mv Infra.app $out/Applications/
-    
+
     # Create a bin directory and symlink to the executable
     mkdir -p $out/bin
     ln -s $out/Applications/Infra.app/Contents/MacOS/Infra $out/bin/infra
@@ -33,8 +34,11 @@ stdenv.mkDerivation {
     description = "Infra - Application for infrastructure management";
     homepage = "https://infra.app";
     license = licenses.unfree;
-    platforms = [ "x86_64-darwin" "aarch64-darwin" ];
+    platforms = [
+      "x86_64-darwin"
+      "aarch64-darwin"
+    ];
     maintainers = with maintainers; [ ivankovnatsky ];
     mainProgram = "infra";
   };
-} 
+}

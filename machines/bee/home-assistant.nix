@@ -2,16 +2,19 @@
 {
   services.home-assistant = {
     enable = true;
-    package = (pkgs.home-assistant.override {
-      extraPackages = py: with py; [
-        psycopg2
-        getmac
-        pyatv
-        gtts  # Google Text-to-Speech
-      ];
-    }).overrideAttrs (oldAttrs: {
-      doInstallCheck = false;
-    });
+    package =
+      (pkgs.home-assistant.override {
+        extraPackages =
+          py: with py; [
+            psycopg2
+            getmac
+            pyatv
+            gtts # Google Text-to-Speech
+          ];
+      }).overrideAttrs
+        (oldAttrs: {
+          doInstallCheck = false;
+        });
     extraComponents = [
       # Components required to complete the onboarding
       "esphome"
@@ -21,7 +24,7 @@
     config = {
       # Includes dependencies for a basic setup
       # https://www.home-assistant.io/integrations/default_config/
-      default_config = {};
+      default_config = { };
       recorder.db_url = "postgresql://@/hass";
 
       # Set location information in the correct format
@@ -56,10 +59,12 @@
   services.postgresql = {
     enable = true;
     ensureDatabases = [ "hass" ];
-    ensureUsers = [{
-      name = "hass";
-      ensureDBOwnership = true;
-    }];
+    ensureUsers = [
+      {
+        name = "hass";
+        ensureDBOwnership = true;
+      }
+    ];
   };
 
   # Ensure the Home Assistant service starts after PostgreSQL is fully up

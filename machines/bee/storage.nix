@@ -20,16 +20,16 @@
       # [    1.364652] sdb: sdb1
       # [    1.364884] sd 2:0:0:0: [sdb] Attached SCSI disk
       # ```
-      availableKernelModules = ["uas"];
+      availableKernelModules = [ "uas" ];
 
       # LUKS device configurations
       luks.devices = {
         # Samsung 4TB storage
         "samsung-crypt" = {
           device = "/dev/disk/by-uuid/e9d01b26-cab2-47df-8da8-ed4e0e3d4cb0";
-          preLVM = true;  # This is important since LVM is on top of LUKS
+          preLVM = true; # This is important since LVM is on top of LUKS
           crypttabExtraOpts = [ "tpm2-device=auto" ];
-          allowDiscards = true;  # For SSD TRIM support
+          allowDiscards = true; # For SSD TRIM support
         };
       };
     };
@@ -38,7 +38,7 @@
     "/storage" = {
       device = "/dev/mapper/samsung--vg-samsung--lv";
       fsType = "ext4";
-      options = ["nofail" ];  # Continue boot if mount fails
+      options = [ "nofail" ]; # Continue boot if mount fails
     };
   };
 }

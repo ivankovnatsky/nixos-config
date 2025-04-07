@@ -151,7 +151,10 @@
 
   # Add explicit systemd dependencies to ensure Syncthing starts after network is up
   systemd.services.syncthing = {
-    after = [ "network-online.target" "systemd-tmpfiles-setup.service" ];
+    after = [
+      "network-online.target"
+      "systemd-tmpfiles-setup.service"
+    ];
     wants = [ "network-online.target" ];
     requires = [ "systemd-tmpfiles-setup.service" ];
   };
@@ -169,7 +172,7 @@
 
     # Create /storage/Sources if it doesn't exist and ensure correct permissions
     "d /storage/Sources 0755 ivan users - -"
-    
+
     # Create /storage/Data if it doesn't exist and ensure correct permissions
     "d /storage/Data 0755 ivan users - -"
   ];
