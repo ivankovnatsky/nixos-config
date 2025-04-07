@@ -32,7 +32,9 @@
       queue-stalled-enabled = true;
       queue-stalled-minutes = 30;
       ratio-limit = 2.0;
-      ratio-limit-enabled = false;
+      ratio-limit-enabled = true; # Enable ratio limit to make Sonarr able to remove completed downloads
+      seed-time-limit = 60; # 60 minutes (1 hour) seed time
+      seed-time-limit-enabled = true; # Enable seed time limit as a backup
 
       # Speed limits
       speed-limit-down = 0;
