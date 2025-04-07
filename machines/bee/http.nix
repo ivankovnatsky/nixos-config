@@ -7,7 +7,8 @@
 # Apr 01 07:13:27 beelink systemd[1]: caddy.service: Main process exited, code=exited, status=1/FAILURE
 # Apr 01 07:13:27 beelink systemd[1]: caddy.service: Failed with result 'exit-code'.
 # ```
-let bindAddress = "0.0.0.0";
+let
+  bindAddress = "0.0.0.0";
 
 in
 {

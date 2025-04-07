@@ -18,18 +18,18 @@
 #    - Manually enable in System Settings → Privacy → Local Network
 #
 # See: https://mjtsai.com/blog/2024/10/02/local-network-privacy-on-sequoia/
-# 
+#
 # Manually done:
 # * Caddy could not connect to local network unless manually approve in security
-# 
+#
 # References:
 # * https://apple.stackexchange.com/questions/478037/no-route-to-host-for-certain-applications-from-macos-host-to-macos-guest
 # * https://mjtsai.com/blog/2024/10/02/local-network-privacy-on-sequoia/
 
-let 
+let
   # Use 0.0.0.0 to listen on all interfaces
   bindAddress = "0.0.0.0";
-  
+
   # Samsung2TB path for data access
   volumePath = "/Volumes/Samsung2TB";
 in
@@ -44,9 +44,9 @@ in
       StandardErrorPath = "/tmp/caddy.error.log";
       ThrottleInterval = 10; # Restart on failure after 10 seconds
     };
-    
+
     # Using command instead of ProgramArguments to utilize wait4path
-    command = 
+    command =
       let
         # Create the Caddyfile
         caddyfile = pkgs.writeText "Caddyfile" ''
@@ -357,26 +357,26 @@ in
           #   }
           # }
         '';
-        
+
         # Create the Caddy starter script that waits for the volume
         caddyScript = pkgs.writeShellScriptBin "caddy-starter" ''
           #!/bin/sh
-          
+
           # Wait for the Samsung2TB volume to be mounted using the built-in wait4path utility
           echo "Waiting for ${volumePath} to be available..."
           /bin/wait4path "${volumePath}"
-          
+
           echo "${volumePath} is now available!"
           echo "Starting Caddy server..."
-          
+
           # Store the caddy folder in the home directory
           # Commenting out to test if these are necessary
           # export XDG_CONFIG_HOME="$HOME/.config"
           # export XDG_DATA_HOME="$HOME/.local/share"
-          
+
           # Make sure the caddy directory exists
           # mkdir -p "$XDG_DATA_HOME/caddy"
-          
+
           # Launch caddy with our Caddyfile - specifying the caddyfile adapter
           exec ${pkgs.caddy}/bin/caddy run --config ${caddyfile} --adapter=caddyfile
         '';

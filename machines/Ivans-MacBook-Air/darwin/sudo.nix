@@ -7,5 +7,5 @@
         Defaults:${username} timestamp_timeout=240
       '';
     };
-    };
+  };
 }

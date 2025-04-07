@@ -20,7 +20,7 @@ stdenv.mkDerivation rec {
 
   installPhase = ''
     install -D ./opsy $out/bin/opsy
-    
+
     # Generate and install shell completions if available
     if [ -f ./completions/opsy.bash ]; then
       installShellCompletion --bash ./completions/opsy.bash

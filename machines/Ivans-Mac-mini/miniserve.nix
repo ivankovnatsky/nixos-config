@@ -15,21 +15,21 @@
       # This makes the service attempt to start up again if it crashes
       ThrottleInterval = 10;
     };
-    
+
     # Using command instead of ProgramArguments to utilize wait4path
-    command = 
+    command =
       let
         # Create the miniserve starter script
         miniserveScript = pkgs.writeShellScriptBin "miniserve-starter" ''
           #!/bin/sh
-          
+
           # Wait for the Samsung2TB volume to be mounted using the built-in wait4path utility
           echo "Waiting for /Volumes/Samsung2TB to be available..."
           /bin/wait4path "/Volumes/Samsung2TB"
-          
+
           echo "/Volumes/Samsung2TB is now available!"
           echo "Starting miniserve..."
-          
+
           # Launch miniserve with minimal options
           # --hidden: show hidden files
           exec ${pkgs.miniserve}/bin/miniserve --hidden "/Volumes/Samsung2TB"
@@ -37,4 +37,4 @@
       in
       "${miniserveScript}/bin/miniserve-starter";
   };
-} 
+}
