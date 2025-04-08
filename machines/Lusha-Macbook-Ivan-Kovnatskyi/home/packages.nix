@@ -59,6 +59,7 @@
     parallel
     pigz
     poetry
+    popeye
     postgresql
     pre-commit
     pv
