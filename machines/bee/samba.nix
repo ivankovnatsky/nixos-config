@@ -1,7 +1,7 @@
 {
   # SMB/CIFS file sharing configuration for bee machine
   # This enables sharing of the /storage directory over the network
-  # Optimized for macOS clients
+  # Optimized for discovery and use with both Windows and macOS clients
 
   # Enable the Samba service
   services.samba = {
@@ -76,13 +76,52 @@
     };
   };
   
-  # Ensure Samba-related logs directory exists
-  # This is now handled automatically by the systemd.tmpfiles rules in the module
+  # Enable Web Services Discovery Daemon for Windows discovery
+  services.samba-wsdd = {
+    enable = true;
+    openFirewall = true;
+    workgroup = "WORKGROUP"; # Should match your Samba workgroup
+    hostname = "BEE";        # Custom hostname for Windows network
+  };
+
+  # Enable Avahi/mDNS for macOS discovery
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true; # Name resolution via mDNS
+    publish = {
+      enable = true;
+      addresses = true;
+      workstation = true;
+      userServices = true;
+    };
+    # Publish Samba shares via Bonjour
+    extraServiceFiles = {
+      smb = ''<?xml version="1.0" standalone="no"?>
+<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+<service-group>
+  <name replace-wildcards="yes">%h</name>
+  <service>
+    <type>_smb._tcp</type>
+    <port>445</port>
+  </service>
+  <service>
+    <type>_device-info._tcp</type>
+    <port>0</port>
+    <txt-record>model=RackMac</txt-record>
+  </service>
+</service-group>'';
+    };
+  };
   
   # Note for users:
   # To connect from macOS:
-  # 1. In Finder, press Cmd+K
-  # 2. Enter: smb://bee/storage (or the appropriate hostname/IP)
+  # 1. Open Finder, look for "bee" in the Network section
+  # 2. OR press Cmd+K and enter: smb://bee.local/storage or smb://bee/storage
+  # 3. Provide username and password when prompted
+  #
+  # To connect from Windows:
+  # 1. Open File Explorer, look for "BEE" in the Network section
+  # 2. OR enter \\\\bee\\storage in the address bar
   # 3. Provide username and password when prompted
   
   # You'll need to create a Samba user and password with:
