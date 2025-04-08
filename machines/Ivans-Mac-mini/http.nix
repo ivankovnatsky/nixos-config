@@ -356,6 +356,36 @@ in
           #     header_up Host {host}
           #   }
           # }
+
+          # Audiobookshelf
+          audio.bee.homelab:80 {
+            bind ${bindAddress}
+
+            # Disable TLS
+            tls internal
+
+            # Proxy to Audiobookshelf
+            reverse_proxy ${config.flags.beeIp}:8000 {
+              # Enable WebSocket support
+              header_up X-Real-IP {remote_host}
+              header_up Host {host}
+            }
+          }
+
+          # Simplified domain for Audiobookshelf (singleton service)
+          audio.homelab:80 {
+            bind ${bindAddress}
+
+            # Disable TLS
+            tls internal
+
+            # Proxy to Audiobookshelf
+            reverse_proxy ${config.flags.beeIp}:8000 {
+              # Enable WebSocket support
+              header_up X-Real-IP {remote_host}
+              header_up Host {host}
+            }
+          }
         '';
 
         # Create the Caddy starter script that waits for the volume
