@@ -8,6 +8,9 @@
         # https://github.com/LnL7/nix-darwin/blob/a35b08d09efda83625bef267eb24347b446c80b8/modules/system/defaults/dock.nix#L114
         mru-spaces = true;
       };
+      finder = {
+        FXRemoveOldTrashItems = true;
+      };
       NSGlobalDomain = {
         # Allow tab focus in all controls, space to select.
         AppleKeyboardUIMode = 3;
