@@ -48,6 +48,9 @@
     ./transmission.nix
     ./prowlarr.nix
 
+    # Audio
+    ./audiobookshelf.nix
+
     # Constantly using 2 CPU Cores, disabling for now
     # ./flaresolverr.nix
 
