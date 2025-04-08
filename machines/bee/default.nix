@@ -51,6 +51,9 @@
     # Audio
     ./audiobookshelf.nix
 
+    # Samba
+    ./sambda.nix
+
     # Constantly using 2 CPU Cores, disabling for now
     # ./flaresolverr.nix
 
