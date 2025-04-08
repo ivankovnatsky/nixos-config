@@ -1,4 +1,5 @@
 {
+  # https://github.com/transmission/transmission/blob/main/docs/Editing-Configuration-Files.md
   services.transmission = {
     enable = true;
     openFirewall = true;
@@ -31,10 +32,17 @@
       cache-size-mb = 4;
       queue-stalled-enabled = true;
       queue-stalled-minutes = 30;
-      ratio-limit = 2.0;
+      
+      # Seeding control (crucial for Sonarr cleanup)
+      ratio-limit = 1.0; # Lowered from 2.0 to have quicker cleanup
       ratio-limit-enabled = true; # Enable ratio limit to make Sonarr able to remove completed downloads
-      seed-time-limit = 60; # 60 minutes (1 hour) seed time
-      seed-time-limit-enabled = true; # Enable seed time limit as a backup
+      seed-time-limit = 30; # 30 minutes seed time (reduced from 60)
+      seed-time-limit-enabled = true; # Enable seed time limit for Sonarr cleanup
+      idle-seeding-limit = 30; # Additional 30 minutes idle time before pausing
+      idle-seeding-limit-enabled = true; # Enable idle seeding limit as extra measure
+      
+      # Important: This ensures torrents actually stop when reaching limits
+      script-torrent-done-enabled = true; # This is key for Sonarr cleanup
 
       # Speed limits
       speed-limit-down = 0;
