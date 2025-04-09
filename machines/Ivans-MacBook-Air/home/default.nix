@@ -33,5 +33,6 @@
     ./manual.nix
     ./nixvim.nix
     ./packages.nix
+    ./manual.nix
   ];
 }
