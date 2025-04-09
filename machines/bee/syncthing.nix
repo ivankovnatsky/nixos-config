@@ -127,6 +127,17 @@
             "Ivans-Mac-mini"
           ];
         };
+        "Sources/github.com/ivankovnatsky/backup-home-go" = {
+          id = "ek7as-rhzzz";
+          label = "Sources/github.com/ivankovnatsky/backup-home-go";
+          path = "/storage/Sources/github.com/ivankovnatsky/backup-home-go";
+          devices = [
+            "Ivans-Mac-mini"
+            "Ivans-MacBook-Air"
+            "Ivans-MacBook-Pro"
+            "Lusha-Macbook-Ivan-Kovnatskyi"
+          ];
+        };
       };
     };
   };
@@ -167,6 +178,7 @@
     "d /storage/Sources/github.com/ivankovnatsky/nixos-config 0755 ivan users - -"
     "d /storage/Sources/github.com/ivankovnatsky/deck 0755 ivan users - -"
     "d /storage/Sources/github.com/ivankovnatsky/windows-config 0755 ivan users - -"
+    "d /storage/Sources/github.com/ivankovnatsky/backup-home-go 0755 ivan users - -"
 
     "d /storage/Sources/github.com/NixOS/nixpkgs 0755 ivan users - -"
 
