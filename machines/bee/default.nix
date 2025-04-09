@@ -64,5 +64,7 @@
     ./storage.nix
 
     ./miniserve.nix
+
+    ../../nixos/rebuild-diff.nix
   ];
 }

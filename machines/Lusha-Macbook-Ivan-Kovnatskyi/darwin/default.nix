@@ -8,7 +8,6 @@
     ../../../modules/darwin/tmux-rebuild
     ../../../modules/flags
     ../../../modules/secrets
-    ../../../nixos/rebuild-diff.nix
     ../../../system/documentation.nix
     ../../../system/nix.nix
     ./dock.nix
