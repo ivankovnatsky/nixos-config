@@ -8,8 +8,8 @@
     ../../../home/ghostty.nix
     ../../../home/git.nix
     ../../../home/go.nix
-    ../../../home/launchd-services/dark-mode-kitty
     ../../../home/hammerspoon
+    ../../../home/launchd-services/dark-mode-kitty
     ../../../home/lsd.nix
     ../../../home/mpv.nix
     ../../../home/nixvim
@@ -31,8 +31,8 @@
     ./flags.nix
     ./home-session-vars.nix
     ./manual.nix
+    ./manual.nix
     ./nixvim.nix
     ./packages.nix
-    ./manual.nix
   ];
 }
