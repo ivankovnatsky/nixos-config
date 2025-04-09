@@ -7,14 +7,15 @@
     ../../../home/fish-ai.nix
     ../../../home/ghostty.nix
     ../../../home/git.nix
-    ../../../home/launchd-services/dark-mode-kitty
     ../../../home/go.nix
     ../../../home/hammerspoon
+    ../../../home/launchd-services/dark-mode-kitty
     ../../../home/lsd.nix
     ../../../home/mpv.nix
     ../../../home/nixvim
     ../../../home/nixvim/plugins/avante
     ../../../home/nixvim/plugins/copilot-lua
+    ../../../home/npm.nix
     ../../../home/pass.nix
     ../../../home/scripts.nix
     ../../../home/shell.nix
@@ -26,9 +27,9 @@
     ../../../modules/flags
     ../../../modules/secrets
     ./flags.nix
-    ./packages.nix
     ./home-session-vars.nix
-    ./nixvim.nix
     ./manual.nix
+    ./nixvim.nix
+    ./packages.nix
   ];
 }
