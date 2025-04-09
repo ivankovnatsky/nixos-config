@@ -64,17 +64,17 @@
       inputs.flake-utils.follows = "flake-utils";
     };
 
-    backup-home = {
-      url = "github:ivankovnatsky/backup-home-rs";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-    };
-
     # backup-home = {
-    #   url = "path:/Users/Ivan.Kovnatskyi/Sources/github.com/ivankovnatsky/backup-home-go";
+    #   url = "github:ivankovnatsky/backup-home-rs";
     #   inputs.nixpkgs.follows = "nixpkgs";
     #   inputs.flake-utils.follows = "flake-utils";
     # };
+
+    backup-home = {
+      url = "path:/Users/Ivan.Kovnatskyi/Sources/github.com/ivankovnatsky/backup-home-go";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
 
     # backup-home = {
     #   url = "path:/Users/Ivan.Kovnatskyi/Sources/github.com/ivankovnatsky/backup-home";
