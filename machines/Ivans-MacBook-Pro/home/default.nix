@@ -29,5 +29,6 @@
     ./packages.nix
     ./home-session-vars.nix
     ./nixvim.nix
+    ./manual.nix
   ];
 }
