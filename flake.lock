@@ -10,14 +10,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1744204918,
-        "narHash": "sha256-rVI/GJHp1qDK7PDduxO4k6X6AU4JpnKyEiQLJzKcN2g=",
-        "path": "/Users/Ivan.Kovnatskyi/Sources/github.com/ivankovnatsky/backup-home-go",
-        "type": "path"
+        "lastModified": 1744204569,
+        "narHash": "sha256-BAsN6ELrhAbQS8df6DSV4L2D05jRSx+P+3xuTKF9zyo=",
+        "owner": "ivankovnatsky",
+        "repo": "backup-home-go",
+        "rev": "b31ce3e1d8e17031335f5bed7962368e9d00ee60",
+        "type": "github"
       },
       "original": {
-        "path": "/Users/Ivan.Kovnatskyi/Sources/github.com/ivankovnatsky/backup-home-go",
-        "type": "path"
+        "owner": "ivankovnatsky",
+        "repo": "backup-home-go",
+        "type": "github"
       }
     },
     "brew-src": {
