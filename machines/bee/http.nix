@@ -338,7 +338,7 @@ in
       # }
 
       # Audiobookshelf
-      audio.bee.homelab:80 {
+      audiobookshelf.bee.homelab:80 {
         bind ${bindAddress}
 
         # Disable TLS
@@ -353,7 +353,7 @@ in
       }
 
       # Simplified domain for Audiobookshelf (singleton service)
-      audio.homelab:80 {
+      audiobookshelf.homelab:80 {
         bind ${bindAddress}
 
         # Disable TLS
