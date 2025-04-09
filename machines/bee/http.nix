@@ -366,6 +366,48 @@ in
           header_up Host {host}
         }
       }
+
+      # Jellyfin
+      jellyfin.bee.homelab:80 {
+        bind ${bindAddress}
+
+        # Disable TLS
+        tls internal
+
+        # Proxy to Jellyfin
+        reverse_proxy 127.0.0.1:8096 {
+          # Enable WebSocket support
+          header_up X-Real-IP {remote_host}
+          header_up Host {host}
+          
+          # Increase timeouts for streaming
+          transport http {
+            keepalive 12h
+            keepalive_idle_conns 100
+          }
+        }
+      }
+
+      # Simplified domain for Jellyfin (singleton service)
+      jellyfin.homelab:80 {
+        bind ${bindAddress}
+
+        # Disable TLS
+        tls internal
+
+        # Proxy to Jellyfin
+        reverse_proxy 127.0.0.1:8096 {
+          # Enable WebSocket support
+          header_up X-Real-IP {remote_host}
+          header_up Host {host}
+          
+          # Increase timeouts for streaming
+          transport http {
+            keepalive 12h
+            keepalive_idle_conns 100
+          }
+        }
+      }
     '';
 
     # Keep an empty virtualHosts to avoid conflicts

@@ -50,6 +50,7 @@
 
     # Audio
     ./audiobookshelf.nix
+    ./jellyfin.nix
 
     # Samba
     ./samba.nix
