@@ -1,15 +1,8 @@
 { inputs, ... }:
 let
-  lib = import ./lib { inherit inputs; };
-  machines = import ./machines;
+  machines = import ./machines { inherit inputs; };
 in
 {
-  inherit lib;
-  darwinConfigurations = machines.darwinConfigurations {
-    inherit (lib) makeStableBaseDarwinSystem makeFullDarwinConfig;
-  };
-  nixosConfigurations = machines.nixosConfigurations {
-    inherit (lib) makeNixosConfig makeStableNixosConfig;
-  };
+  inherit (machines) darwinConfigurations nixosConfigurations;
   overlay = import ./overlay.nix { inherit inputs; };
 }

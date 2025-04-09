@@ -1,4 +1,5 @@
+{ inputs, ... }:
 {
-  darwinConfigurations = import ./darwin.nix;
-  nixosConfigurations = import ./nixos.nix;
+  darwinConfigurations = import ./darwin.nix { inherit inputs; };
+  nixosConfigurations = import ./nixos.nix { inherit inputs; };
 }
