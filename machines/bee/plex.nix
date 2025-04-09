@@ -25,9 +25,6 @@
   # Ensure Plex can access media directories
   users.users.plex.extraGroups = [ "media" ];
 
-  # Create media directories with correct permissions if they don't exist
-  systemd.tmpfiles.rules = [
-    "d /storage/media/movies 0775 plex media -"
-    "d /storage/media/tv 0775 plex media -"
-  ];
+  # Media directories are managed by radarr and sonarr
+  # Plex access is provided through the media group
 }
