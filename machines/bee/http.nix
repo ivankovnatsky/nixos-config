@@ -97,65 +97,6 @@ in
         }
       }
 
-      # Specific site for sync-bee.kaliumfaan.uk
-      sync-bee.${externalDomain}:443 {
-        bind ${bindAddress}
-
-        # Proxy to Syncthing
-        reverse_proxy ${config.flags.beeIp}:8384
-      }
-
-      # Files server for bee
-      files-bee.${externalDomain}:443 {
-        bind ${bindAddress}
-
-        # Proxy to local miniserve instance
-        reverse_proxy 127.0.0.1:8080 {
-          # Headers for proper operation
-          header_up X-Real-IP {remote_host}
-          header_up Host {host}
-
-          # Increase timeouts and buffer sizes for large directories and files
-          transport http {
-            keepalive 30s
-            response_header_timeout 30s
-          }
-        }
-      }
-
-      # Simplified domain for Home Assistant (singleton service)
-      homeassistant.${externalDomain}:443 {
-        bind ${bindAddress}
-
-        # Proxy to Home-Assistant on its configured address
-        reverse_proxy ${config.flags.beeIp}:8123
-      }
-
-      # Miniserve on Mac mini
-      files-mini.${externalDomain}:443 {
-        bind ${bindAddress}
-
-        # Proxy to miniserve on Mac mini
-        reverse_proxy ${config.flags.miniIp}:8080 {
-          # Headers for proper operation
-          header_up X-Real-IP {remote_host}
-          header_up Host {host}
-
-          # Increase timeouts and buffer sizes for large directories and files
-          transport http {
-            keepalive 30s
-            response_header_timeout 30s
-          }
-        }
-      }
-
-      sync-mini.${externalDomain}:443 {
-        bind ${bindAddress}
-
-        # Proxy to Syncthing on its configured address
-        reverse_proxy ${config.flags.miniIp}:8384
-      }
-
       # Simplified domain for Prowlarr (singleton service)
       prowlarr.${externalDomain}:443 {
         bind ${bindAddress}
@@ -203,34 +144,6 @@ in
             keepalive 12h
             keepalive_idle_conns 100
           }
-        }
-      }
-
-      # Netdata
-      netdata-bee.${externalDomain}:443 {
-        bind ${bindAddress}
-
-        # Proxy to Netdata
-        reverse_proxy 127.0.0.1:19999 {
-          # Enable WebSocket support
-          header_up X-Real-IP {remote_host}
-          header_up Host {host}
-        }
-      }
-
-      netdata-mini.${externalDomain} {
-        bind ${bindAddress}
-
-        # FIXME: Should be fixed in nix-darwin or upsteam?
-        # Redirect root to v1 dashboard
-        redir / /v1/ 302
-        redir /index.html /v1/ 302
-        
-        # Proxy to Netdata
-        reverse_proxy ${config.flags.miniIp}:19999 {
-          # Enable WebSocket support
-          header_up X-Real-IP {remote_host}
-          header_up Host {host}
         }
       }
 
@@ -284,6 +197,93 @@ in
           transport http {
             keepalive 12h
             keepalive_idle_conns 100
+          }
+        }
+      }
+      
+      # Simplified domain for Home Assistant (singleton service)
+      homeassistant.${externalDomain}:443 {
+        bind ${bindAddress}
+
+        # Proxy to Home-Assistant on its configured address
+        reverse_proxy ${config.flags.beeIp}:8123
+      }
+
+      # Specific site for sync-bee.kaliumfaan.uk
+      sync-bee.${externalDomain}:443 {
+        bind ${bindAddress}
+
+        # Proxy to Syncthing
+        reverse_proxy ${config.flags.beeIp}:8384
+      }
+
+      # Files server for bee
+      files-bee.${externalDomain}:443 {
+        bind ${bindAddress}
+
+        # Proxy to local miniserve instance
+        reverse_proxy 127.0.0.1:8080 {
+          # Headers for proper operation
+          header_up X-Real-IP {remote_host}
+          header_up Host {host}
+
+          # Increase timeouts and buffer sizes for large directories and files
+          transport http {
+            keepalive 30s
+            response_header_timeout 30s
+          }
+        }
+      }
+      
+      # Netdata
+      netdata-bee.${externalDomain}:443 {
+        bind ${bindAddress}
+
+        # Proxy to Netdata
+        reverse_proxy 127.0.0.1:19999 {
+          # Enable WebSocket support
+          header_up X-Real-IP {remote_host}
+          header_up Host {host}
+        }
+      }
+
+      sync-mini.${externalDomain}:443 {
+        bind ${bindAddress}
+
+        # Proxy to Syncthing on its configured address
+        reverse_proxy ${config.flags.miniIp}:8384
+      }
+
+      netdata-mini.${externalDomain} {
+        bind ${bindAddress}
+
+        # FIXME: Should be fixed in nix-darwin or upsteam?
+        # Redirect root to v1 dashboard
+        redir / /v1/ 302
+        redir /index.html /v1/ 302
+        
+        # Proxy to Netdata
+        reverse_proxy ${config.flags.miniIp}:19999 {
+          # Enable WebSocket support
+          header_up X-Real-IP {remote_host}
+          header_up Host {host}
+        }
+      }
+
+      # Miniserve on Mac mini
+      files-mini.${externalDomain}:443 {
+        bind ${bindAddress}
+
+        # Proxy to miniserve on Mac mini
+        reverse_proxy ${config.flags.miniIp}:8080 {
+          # Headers for proper operation
+          header_up X-Real-IP {remote_host}
+          header_up Host {host}
+
+          # Increase timeouts and buffer sizes for large directories and files
+          transport http {
+            keepalive 30s
+            response_header_timeout 30s
           }
         }
       }
