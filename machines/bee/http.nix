@@ -35,9 +35,6 @@ in
   services.caddy = {
     enable = true;
 
-    # Ensure Caddy starts after network is up
-    enableReload = true;
-
     # Use the caddy-with-plugins overlay to get the withPlugins functionality
     # This works in NixOS 24.11 before the function is available in the standard package
     package = pkgs.caddy-with-plugins.withPlugins {
@@ -288,9 +285,6 @@ in
         }
       }
     '';
-
-    # Keep an empty virtualHosts to avoid conflicts
-    virtualHosts = { };
   };
 
   # Open HTTP and HTTPS ports in the firewall
