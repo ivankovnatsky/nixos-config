@@ -102,7 +102,8 @@
 
       # Wildcard domain support
       address = [
-        "/homelab/${config.flags.beeIp}" # This will match all *.homelab domains
+        "/homelab/${config.flags.beeIp}" # This will match all *.homelab records
+        "/${config.secrets.externalDomain}/${config.flags.beeIp}" # This will match all *.externalDomain records
       ];
 
       # Log queries (useful for debugging)
