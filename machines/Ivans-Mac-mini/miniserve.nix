@@ -32,7 +32,7 @@
 
           # Launch miniserve with minimal options
           # --hidden: show hidden files
-          exec ${pkgs.miniserve}/bin/miniserve --hidden "/Volumes/Samsung2TB"
+          exec ${pkgs.miniserve}/bin/miniserve --interfaces 0.0.0.0 --interfaces ::1 --hidden "/Volumes/Samsung2TB"
         '';
       in
       "${miniserveScript}/bin/miniserve-starter";
