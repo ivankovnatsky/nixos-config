@@ -138,6 +138,17 @@
             "Lusha-Macbook-Ivan-Kovnatskyi"
           ];
         };
+        "Sources/github.com/narugit/smctemp" = {
+          id = "smctemp";
+          label = "Sources/github.com/narugit/smctemp";
+          path = "/storage/Sources/github.com/narugit/smctemp";
+          devices = [
+            "Ivans-Mac-mini"
+            "Ivans-MacBook-Air"
+            "Ivans-MacBook-Pro"
+            "Lusha-Macbook-Ivan-Kovnatskyi"
+          ];
+        };
       };
     };
   };
