@@ -26,8 +26,8 @@ in
       Label = "net.syncthing.syncthing";
       RunAtLoad = true;
       KeepAlive = true;
-      StandardOutPath = "/tmp/log/launchd/syncthing.log";
-      StandardErrorPath = "/tmp/log/launchd/syncthing-error.log";
+      StandardOutPath = "/tmp/agents/log/launchd/syncthing.log";
+      StandardErrorPath = "/tmp/agents/log/launchd/syncthing.error.log";
       ThrottleInterval = 10; # Restart on failure after 10 seconds
     };
 

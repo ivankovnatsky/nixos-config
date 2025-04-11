@@ -31,8 +31,8 @@ in
         Label = "com.ivankovnatsky.tmux-darwin-config";
         RunAtLoad = true;
         KeepAlive = false;
-        StandardOutPath = "/tmp/log/launchd/tmux-darwin-config.log";
-        StandardErrorPath = "/tmp/log/launchd/tmux-darwin-config.error.log";
+        StandardOutPath = "/tmp/agents/log/launchd/tmux-darwin-config.log";
+        StandardErrorPath = "/tmp/agents/log/launchd/tmux-darwin-config.error.log";
         # Restart on failure
         ThrottleInterval = 10;
       };
