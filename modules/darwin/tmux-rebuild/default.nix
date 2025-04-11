@@ -9,13 +9,13 @@
 with lib;
 
 let
-  cfg = config.services.tmuxRebuild;
+  cfg = config.local.services.tmuxRebuild;
 in
 {
 
   # Should grant access to most probably bash that needs to have Full Disk Permissions.
   options = {
-    services.tmuxRebuild = {
+    local.services.tmuxRebuild = {
       nixosConfigPath = mkOption {
         type = types.str;
         default = "${config.users.users.${username}.home}/Sources/github.com/ivankovnatsky/nixos-config";

@@ -7,11 +7,11 @@
 with lib;
 
 let
-  cfg = config.services.local-dns-resolver;
+  cfg = config.local.services.local-dns-resolver;
   beeIp = config.flags.beeIp;
 in
 {
-  options.services.local-dns-resolver = {
+  options.local.services.local-dns-resolver = {
     enable = mkEnableOption "Local DNS resolver configuration";
 
     zones = mkOption {
