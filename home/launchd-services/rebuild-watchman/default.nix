@@ -15,8 +15,8 @@
 # 3. Output Handling:
 #    - All output is redirected to log files (not visible in terminal)
 #    - Check logs at:
-#      ~/Library/Logs/rebuild-watchman.log
-#      ~/Library/Logs/rebuild-watchman.error.log
+#      /tmp/log/launchd/rebuild-watchman.log
+#      /tmp/log/launchd/rebuild-watchman.error.log
 #
 # 4. Known Limitations:
 #    - May still encounter permission issues with certain system operations
@@ -30,9 +30,6 @@
 # - Using sudoers configuration (more complex, requires system changes)
 # - Creating a privileged helper tool (most proper but complex solution)
 #
-# To monitor service:
-# tail -f ~/Library/Logs/rebuild-watchman.log
-# tail -f ~/Library/Logs/rebuild-watchman.error.log
 
 {
   config,
@@ -115,8 +112,8 @@ in
           ];
         };
 
-        StandardOutPath = "${config.home.homeDirectory}/Library/Logs/rebuild-watchman.log";
-        StandardErrorPath = "${config.home.homeDirectory}/Library/Logs/rebuild-watchman.error.log";
+        StandardOutPath = "/tmp/log/launchd/rebuild-watchman.log";
+        StandardErrorPath = "/tmp/log/launchd/rebuild-watchman.error.log";
       };
     };
   };

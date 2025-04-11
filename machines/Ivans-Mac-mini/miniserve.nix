@@ -10,8 +10,8 @@
       Label = "com.ivankovnatsky.miniserve";
       RunAtLoad = true;
       KeepAlive = true;
-      StandardOutPath = "/tmp/miniserve.log";
-      StandardErrorPath = "/tmp/miniserve.error.log";
+      StandardOutPath = "/tmp/log/launchd/miniserve.log";
+      StandardErrorPath = "/tmp/log/launchd/miniserve.error.log";
       # This makes the service attempt to start up again if it crashes
       ThrottleInterval = 10;
     };

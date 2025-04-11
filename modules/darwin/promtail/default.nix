@@ -60,8 +60,8 @@ in
     # Add documentation to make it easy to check status
     system.build.help = ''
       Promtail Service:
-      - View logs: cat /tmp/promtail.log
-      - View errors: cat /tmp/promtail.error.log
+      - View logs: cat /tmp/log/launchd/promtail.log
+      - View errors: cat /tmp/log/launchd/promtail.error.log
       - Check status: launchctl list | grep promtail
     '';
     environment.systemPackages = [ cfg.package ];
@@ -76,8 +76,8 @@ in
         Label = "org.grafana.promtail";
         RunAtLoad = true;
         KeepAlive = true;
-        StandardOutPath = "/tmp/promtail.log";
-        StandardErrorPath = "/tmp/promtail.error.log";
+        StandardOutPath = "/tmp/log/launchd/promtail.log";
+        StandardErrorPath = "/tmp/log/launchd/promtail.error.log";
         EnvironmentVariables = {
           PATH = "${pkgs.coreutils}/bin:${cfg.package}/bin:${pkgs.bash}/bin";
         };
