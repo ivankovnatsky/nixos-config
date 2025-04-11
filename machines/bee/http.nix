@@ -51,17 +51,6 @@ let
 in
 {
   # https://github.com/NixOS/nixpkgs/blob/nixos-24.11/nixos/modules/services/web-servers/caddy/default.nix
-  # Configure Caddy directories and permissions
-  systemd.tmpfiles.rules = [
-    # Log directory
-    "d /var/log/caddy 0755 caddy caddy -"
-    "Z /var/log/caddy/* 0644 caddy caddy -"
-    # State directory with recursive permissions
-    "d /var/lib/caddy 0700 caddy caddy -"
-    # Apply recursive permissions to all files and directories under /var/lib/caddy
-    "Z /var/lib/caddy/** 0700 caddy caddy -"
-  ];
-
   # Create the caddy user and group
   users.users.caddy = {
     group = "caddy";
