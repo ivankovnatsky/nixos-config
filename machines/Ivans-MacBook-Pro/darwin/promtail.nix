@@ -3,7 +3,7 @@
 {
   imports = [ ../../modules/darwin/promtail ];
 
-  services.promtail = {
+  local.services.promtail = {
     enable = true;
     dataDir = "/tmp/promtail";
     configuration = {

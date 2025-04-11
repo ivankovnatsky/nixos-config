@@ -8,11 +8,11 @@
 with lib;
 
 let
-  cfg = config.services.tmuxRebuild;
+  cfg = config.local.services.tmuxRebuild;
 in
 {
   options = {
-    services.tmuxRebuild = {
+    local.services.tmuxRebuild = {
       enable = mkEnableOption "tmux rebuild service";
 
       username = mkOption {
