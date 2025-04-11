@@ -63,6 +63,9 @@ in
         KeepAlive = true;
         RunAtLoad = true;
 
+        StandardOutPath = "/tmp/agents/log/launchd/kitty-dark-mode.log";
+        StandardErrorPath = "/tmp/agents/log/launchd/kitty-dark-mode.error.log";
+
         EnvironmentVariables = {
           HOME = config.home.homeDirectory;
           PATH = "${pkgs.coreutils}/bin:$PATH";

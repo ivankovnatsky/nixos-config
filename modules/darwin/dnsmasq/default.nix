@@ -115,8 +115,8 @@ in
         RunAtLoad = true;
         KeepAlive = cfg.alwaysKeepRunning;
         AbandonProcessGroup = false;
-        StandardErrorPath = "/tmp/log/launchd/dnsmasq/stderr.log";
-        StandardOutPath = "/tmp/log/launchd/dnsmasq/stdout.log";
+        StandardOutPath = "/tmp/log/launchd/dnsmasq.log";
+        StandardErrorPath = "/tmp/log/launchd/dnsmasq.error.log";
       };
     };
   };

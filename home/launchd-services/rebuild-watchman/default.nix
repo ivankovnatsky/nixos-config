@@ -112,8 +112,8 @@ in
           ];
         };
 
-        StandardOutPath = "/tmp/log/launchd/rebuild-watchman.log";
-        StandardErrorPath = "/tmp/log/launchd/rebuild-watchman.error.log";
+        StandardOutPath = "/tmp/agents/log/launchd/rebuild-watchman.log";
+        StandardErrorPath = "/tmp/agents/log/launchd/rebuild-watchman.error.log";
       };
     };
   };

@@ -114,8 +114,8 @@ in
         RunAtLoad = true;
         KeepAlive = cfg.alwaysKeepRunning;
         AbandonProcessGroup = false;
-        StandardErrorPath = "/tmp/log/launchd/stubby/stderr.log";
-        StandardOutPath = "/tmp/log/launchd/stubby/stdout.log";
+        StandardOutPath = "/tmp/log/launchd/stubby.log";
+        StandardErrorPath = "/tmp/log/launchd/stubby.error.log";
         SoftResourceLimits = {
           NumberOfFiles = 1024;
         };
