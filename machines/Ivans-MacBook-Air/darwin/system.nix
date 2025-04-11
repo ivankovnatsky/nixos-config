@@ -9,8 +9,6 @@
         KeyRepeat = 120;
       };
       CustomUserPreferences = {
-        # TODO:
-        # * Tab layout: Compact tabs
         "com.apple.Safari" = {
           "ShowFullURLInSmartSearchField" = true;
           "ShowStandaloneTabBar" = true; # false enables compact tabs
