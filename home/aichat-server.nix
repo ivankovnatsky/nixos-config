@@ -19,8 +19,8 @@
       KeepAlive = true;
       RunAtLoad = true;
 
-      StandardOutPath = "/tmp/aichat-server.out.log";
-      StandardErrorPath = "/tmp/aichat-server.err.log";
+      StandardOutPath = "/tmp/log/launchd/aichat-server.out.log";
+      StandardErrorPath = "/tmp/log/launchd/aichat-server.err.log";
 
       EnvironmentVariables = {
         HOME = config.home.homeDirectory;

@@ -89,14 +89,6 @@ in
   config = mkIf cfg.enable {
     environment.systemPackages = [ cfg.package ];
 
-    # Set up directories in preActivation
-    system.activationScripts.preActivation.text = mkAfter ''
-      # Create log directory for dnsmasq
-      echo "Setting up dnsmasq directories..."
-      mkdir -p /tmp/dnsmasq
-      chmod 755 /tmp/dnsmasq
-    '';
-
     # Configure DNS resolution in postActivation
     system.activationScripts.postActivation.text = mkIf cfg.resolveLocalQueries (
       let
@@ -123,8 +115,8 @@ in
         RunAtLoad = true;
         KeepAlive = cfg.alwaysKeepRunning;
         AbandonProcessGroup = false;
-        StandardErrorPath = "/tmp/dnsmasq/stderr.log";
-        StandardOutPath = "/tmp/dnsmasq/stdout.log";
+        StandardErrorPath = "/tmp/log/launchd/dnsmasq/stderr.log";
+        StandardOutPath = "/tmp/log/launchd/dnsmasq/stdout.log";
       };
     };
   };

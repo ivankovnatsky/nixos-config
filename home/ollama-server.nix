@@ -19,8 +19,8 @@
       KeepAlive = true;
       RunAtLoad = true;
 
-      StandardOutPath = "/tmp/ollama.out.log";
-      StandardErrorPath = "/tmp/ollama.err.log";
+      StandardOutPath = "/tmp/log/launchd/ollama.out.log";
+      StandardErrorPath = "/tmp/log/launchd/ollama.err.log";
 
       EnvironmentVariables = {
         HOME = config.home.homeDirectory;

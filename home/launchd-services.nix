@@ -1,7 +1,5 @@
 {
   config,
-  lib,
-  pkgs,
   ...
 }:
 
@@ -41,8 +39,8 @@
           }
         ];
 
-        StandardOutPath = "/tmp/backup-home.out.log";
-        StandardErrorPath = "/tmp/backup-home.err.log";
+        StandardOutPath = "/tmp/log/launchd/backup-home.out.log";
+        StandardErrorPath = "/tmp/log/launchd/backup-home.err.log";
         KeepAlive = false;
         RunAtLoad = false;
 
