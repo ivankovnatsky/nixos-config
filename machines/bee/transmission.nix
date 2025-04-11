@@ -13,6 +13,11 @@
       rpc-port = 9091;
       rpc-host-whitelist-enabled = false;
       rpc-authentication-required = false;
+      
+      # Explicitly disable IP whitelist to allow proxy connections
+      rpc-whitelist-enabled = false;
+      # Include local network and Mac mini IP if whitelist is ever enabled
+      rpc-whitelist = "192.168.*.*";
 
       # Download settings
       download-dir = "/storage/media/downloads/movies";
