@@ -11,6 +11,11 @@
 		level INFO
 	}
 
+	# Configure storage location explicitly
+	storage file_system {
+		root /var/lib/caddy
+	}
+
 	# Configure ACME for external domains
 	email @letsEncryptEmail@
 

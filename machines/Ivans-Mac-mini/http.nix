@@ -30,8 +30,35 @@ let
   # Use 0.0.0.0 to listen on all interfaces
   bindAddress = "0.0.0.0";
 
+  # External domain from secrets module for easier reference
+  externalDomain = config.secrets.externalDomain;
+  
   # Samsung2TB path for data access
   volumePath = "/Volumes/Samsung2TB";
+  
+  # Create a Caddy package with the required DNS plugin
+  # Use the caddy-with-plugins overlay to get the withPlugins functionality
+  # This works in NixOS 24.11 before the function is available in the standard package
+  caddyWithPlugins = pkgs.caddy-with-plugins.withPlugins {
+    # https://github.com/caddy-dns/cloudflare/issues/97#issuecomment-2784508762
+    plugins = [ "github.com/caddy-dns/cloudflare@v0.0.0-20250214163716-188b4850c0f2" ];
+    hash = "sha256-dYZvFCSuDsOAYg8GgkdpulIzFud9EmP9mS81c87sOoY=";
+  };
+  
+  # Path to the Caddyfile template - reusing the template approach
+  caddyfilePath = ../../templates/Caddyfile;
+  
+  # Process the Caddyfile template with the local variables
+  Caddyfile = pkgs.runCommand "caddyfile" {
+    inherit bindAddress externalDomain;
+    letsEncryptEmail = config.secrets.letsEncryptEmail;
+    cloudflareApiToken = config.secrets.cloudflareApiToken;
+    beeIp = config.flags.beeIp;
+    miniIp = config.flags.miniIp;
+    logPathPrefix = "/tmp/log";
+  } ''
+    substituteAll ${caddyfilePath} $out
+  '';
 in
 {
   # Configure launchd service for Caddy web server
@@ -40,396 +67,14 @@ in
       Label = "org.nixos.caddy";
       RunAtLoad = true;
       KeepAlive = true;
-      StandardOutPath = "/tmp/caddy.log";
-      StandardErrorPath = "/tmp/caddy.error.log";
+      StandardOutPath = "/tmp/launchd/caddy.log";
+      StandardErrorPath = "/tmp/launchd/caddy.error.log";
       ThrottleInterval = 10; # Restart on failure after 10 seconds
     };
 
     # Using command instead of ProgramArguments to utilize wait4path
     command =
       let
-        # Create the Caddyfile
-        caddyfile = pkgs.writeText "Caddyfile" ''
-          # Global settings
-          {
-            auto_https off
-            log {
-              output file /tmp/caddy-access.log {
-                roll_size 10MB
-                roll_keep 10
-                roll_keep_for 168h
-              }
-              format json
-              level INFO
-            }
-          }
-
-          # Syncthing hostname for bee
-          sync.bee.homelab:80 {
-            bind ${bindAddress}
-
-            # Disable TLS
-            tls internal
-
-            # Proxy to Syncthing on its configured address
-            reverse_proxy ${config.flags.beeIp}:8384
-          }
-
-          # Files server for bee (/storage)
-          files.bee.homelab:80 {
-            bind ${bindAddress}
-
-            # Disable TLS
-            tls internal
-
-            # Proxy to local miniserve instance
-            reverse_proxy ${config.flags.beeIp}:8080 {
-              # Headers for proper operation
-              header_up X-Real-IP {remote_host}
-              header_up Host {host}
-
-              # Increase timeouts and buffer sizes for large directories and files
-              transport http {
-                keepalive 30s
-                response_header_timeout 30s
-              }
-            }
-          }
-
-          home.bee.homelab:80 {
-            bind ${bindAddress}
-
-            # Disable TLS
-            tls internal
-
-            # Proxy to Home-Assistant on its configured address
-            reverse_proxy ${config.flags.beeIp}:8123
-          }
-
-          # Simplified domain for Home Assistant (singleton service)
-          homeassistant.homelab:80 {
-            bind ${bindAddress}
-
-            # Disable TLS
-            tls internal
-
-            # Proxy to Home-Assistant on its configured address
-            reverse_proxy ${config.flags.beeIp}:8123
-          }
-
-          # Miniserve on Mac mini
-          files.mini.homelab:80 {
-            bind ${bindAddress}
-
-            # Disable TLS
-            tls internal
-
-            # Proxy to miniserve on Mac mini
-            reverse_proxy 127.0.0.1:8080 {
-              # Headers for proper operation
-              header_up X-Real-IP {remote_host}
-              header_up Host {host}
-
-              # Increase timeouts and buffer sizes for large directories and files
-              transport http {
-                keepalive 30s
-                response_header_timeout 30s
-              }
-            }
-          }
-
-          sync.mini.homelab:80 {
-            bind ${bindAddress}
-
-            # Disable TLS
-            tls internal
-
-            # Proxy to Syncthing on its configured address
-            reverse_proxy 127.0.0.1:8384
-          }
-
-          # Prowlarr
-          prowlarr.bee.homelab:80 {
-            bind ${bindAddress}
-
-            # Disable TLS
-            tls internal
-
-            # Proxy to Prowlarr
-            reverse_proxy ${config.flags.beeIp}:9696
-          }
-
-          # Simplified domain for Prowlarr (singleton service)
-          prowlarr.homelab:80 {
-            bind ${bindAddress}
-
-            # Disable TLS
-            tls internal
-
-            # Proxy to Prowlarr
-            reverse_proxy ${config.flags.beeIp}:9696
-          }
-
-          # Radarr Web UI
-          radarr.bee.homelab:80 {
-            bind ${bindAddress}
-
-            # Disable TLS
-            tls internal
-
-            # Proxy to Radarr
-            reverse_proxy ${config.flags.beeIp}:7878
-          }
-
-          # Simplified domain for Radarr (singleton service)
-          radarr.homelab:80 {
-            bind ${bindAddress}
-
-            # Disable TLS
-            tls internal
-
-            # Proxy to Radarr
-            reverse_proxy ${config.flags.beeIp}:7878
-          }
-
-          # Sonarr Web UI
-          sonarr.bee.homelab:80 {
-            bind ${bindAddress}
-            
-            # Disable TLS
-            tls internal
-
-            # Proxy to Sonarr
-            reverse_proxy ${config.flags.beeIp}:8989
-          }
-
-          # Simplified domain for Sonarr (singleton service)
-          sonarr.homelab:80 {
-            bind ${bindAddress}
-            
-            # Disable TLS
-            tls internal
-
-            # Proxy to Sonarr
-            reverse_proxy ${config.flags.beeIp}:8989
-          }
-
-          # Transmission Web UI
-          transmission.bee.homelab:80 {
-            bind ${bindAddress}
-
-            # Disable TLS
-            tls internal
-
-            # Proxy to Transmission WebUI
-            reverse_proxy ${config.flags.beeIp}:9091
-          }
-
-          # Simplified domain for Transmission (singleton service)
-          transmission.homelab:80 {
-            bind ${bindAddress}
-
-            # Disable TLS
-            tls internal
-
-            # Proxy to Transmission WebUI
-            reverse_proxy ${config.flags.beeIp}:9091
-          }
-
-          # Plex Media Server
-          plex.bee.homelab:80 {
-            bind ${bindAddress}
-
-            # Disable TLS
-            tls internal
-
-            # Proxy to Plex with WebSocket support
-            reverse_proxy ${config.flags.beeIp}:32400 {
-              # Enable WebSocket support
-              header_up X-Real-IP {remote_host}
-              header_up Host {host}
-              
-              # Increase timeouts for streaming
-              transport http {
-                keepalive 12h
-                keepalive_idle_conns 100
-              }
-            }
-          }
-
-          # Simplified domain for Plex (singleton service)
-          plex.homelab:80 {
-            bind ${bindAddress}
-
-            # Disable TLS
-            tls internal
-
-            # Proxy to Plex with WebSocket support
-            reverse_proxy ${config.flags.beeIp}:32400 {
-              # Enable WebSocket support
-              header_up X-Real-IP {remote_host}
-              header_up Host {host}
-              
-              # Increase timeouts for streaming
-              transport http {
-                keepalive 12h
-                keepalive_idle_conns 100
-              }
-            }
-          }
-
-          # Netdata
-          netdata.bee.homelab:80 {
-            bind ${bindAddress}
-
-            # Disable TLS
-            tls internal
-
-            # Proxy to Netdata
-            reverse_proxy ${config.flags.beeIp}:19999 {
-              # Enable WebSocket support
-              header_up X-Real-IP {remote_host}
-              header_up Host {host}
-            }
-          }
-
-          netdata.mini.homelab:80 {
-            bind ${bindAddress}
-
-            # Disable TLS
-            tls internal
-
-            # FIXME: Should be fixed in nix-darwin or upsteam?
-            # Redirect root to v1 dashboard
-            redir / /v1/ 302
-            redir /index.html /v1/ 302
-            
-            # Proxy to Netdata
-            reverse_proxy 127.0.0.1:19999 {
-              # Enable WebSocket support
-              header_up X-Real-IP {remote_host}
-              header_up Host {host}
-            }
-          }
-
-          # Grafana
-          grafana.bee.homelab:80 {
-            bind ${bindAddress}
-
-            # Disable TLS
-            tls internal
-
-            # Proxy to Grafana
-            reverse_proxy ${config.flags.beeIp}:3000 {
-              # Enable WebSocket support
-              header_up X-Real-IP {remote_host}
-              header_up Host {host}
-            }
-          }
-
-          # Simplified domain for Grafana (singleton service)
-          grafana.homelab:80 {
-            bind ${bindAddress}
-
-            # Disable TLS
-            tls internal
-
-            # Proxy to Grafana
-            reverse_proxy ${config.flags.beeIp}:3000 {
-              # Enable WebSocket support
-              header_up X-Real-IP {remote_host}
-              header_up Host {host}
-            }
-          }
-
-          # FlareSolverr proxy server
-          # flaresolverr.homelab:80 {
-          #   bind ${bindAddress}
-
-          #   # Disable TLS
-          #   tls internal
-
-          #   # Proxy to FlareSolverr
-          #   reverse_proxy 127.0.0.1:8191 {
-          #     # Enable WebSocket support
-          #     header_up X-Real-IP {remote_host}
-          #     header_up Host {host}
-          #   }
-          # }
-
-          # Audiobookshelf
-          audiobookshelf.bee.homelab:80 {
-            bind ${bindAddress}
-
-            # Disable TLS
-            tls internal
-
-            # Proxy to Audiobookshelf
-            reverse_proxy ${config.flags.beeIp}:8000 {
-              # Enable WebSocket support
-              header_up X-Real-IP {remote_host}
-              header_up Host {host}
-            }
-          }
-
-          # Simplified domain for Audiobookshelf (singleton service)
-          audiobookshelf.homelab:80 {
-            bind ${bindAddress}
-
-            # Disable TLS
-            tls internal
-
-            # Proxy to Audiobookshelf
-            reverse_proxy ${config.flags.beeIp}:8000 {
-              # Enable WebSocket support
-              header_up X-Real-IP {remote_host}
-              header_up Host {host}
-            }
-          }
-
-          # Jellyfin
-          jellyfin.bee.homelab:80 {
-            bind ${bindAddress}
-
-            # Disable TLS
-            tls internal
-
-            # Proxy to Jellyfin
-            reverse_proxy ${config.flags.beeIp}:8096 {
-              # Enable WebSocket support
-              header_up X-Real-IP {remote_host}
-              header_up Host {host}
-              
-              # Increase timeouts for streaming
-              transport http {
-                keepalive 12h
-                keepalive_idle_conns 100
-              }
-            }
-          }
-
-          # Simplified domain for Jellyfin (singleton service)
-          jellyfin.homelab:80 {
-            bind ${bindAddress}
-
-            # Disable TLS
-            tls internal
-
-            # Proxy to Jellyfin
-            reverse_proxy ${config.flags.beeIp}:8096 {
-              # Enable WebSocket support
-              header_up X-Real-IP {remote_host}
-              header_up Host {host}
-              
-              # Increase timeouts for streaming
-              transport http {
-                keepalive 12h
-                keepalive_idle_conns 100
-              }
-            }
-          }
-        '';
-
         # Create the Caddy starter script that waits for the volume
         caddyScript = pkgs.writeShellScriptBin "caddy-starter" ''
           #!/bin/sh
@@ -441,16 +86,8 @@ in
           echo "${volumePath} is now available!"
           echo "Starting Caddy server..."
 
-          # Store the caddy folder in the home directory
-          # Commenting out to test if these are necessary
-          # export XDG_CONFIG_HOME="$HOME/.config"
-          # export XDG_DATA_HOME="$HOME/.local/share"
-
-          # Make sure the caddy directory exists
-          # mkdir -p "$XDG_DATA_HOME/caddy"
-
           # Launch caddy with our Caddyfile - specifying the caddyfile adapter
-          exec ${pkgs.caddy}/bin/caddy run --config ${caddyfile} --adapter=caddyfile
+          exec ${caddyWithPlugins}/bin/caddy run --config ${Caddyfile} --adapter=caddyfile
         '';
       in
       "${caddyScript}/bin/caddy-starter";
