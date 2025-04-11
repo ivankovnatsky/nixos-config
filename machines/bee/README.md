@@ -38,7 +38,6 @@ Default Grafana credentials:
 ## TODO
 
 - [ ] Add availability dashboard
-- [ ] Limit the boot timeout
 - [ ] Can we somehow security automatically always apply rebuild only with some
       specific user and specific command
 - [x] Grafana

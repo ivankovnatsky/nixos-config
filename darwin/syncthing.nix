@@ -1,6 +1,5 @@
 {
   pkgs,
-  lib,
   ...
 }:
 
@@ -16,8 +15,6 @@
 # configure Syncthing devices and folders using the web interface.
 
 let
-  username = "ivan"; # Set your username here
-  homeDir = "/Users/${username}";
   workingDirectory = "/Volumes/Samsung2TB"; # External volume to wait for
   guiAddress = "0.0.0.0:8384"; # Accept connections from any interface
 in
@@ -29,8 +26,8 @@ in
       Label = "net.syncthing.syncthing";
       RunAtLoad = true;
       KeepAlive = true;
-      StandardOutPath = "${homeDir}/Library/Logs/syncthing.log";
-      StandardErrorPath = "${homeDir}/Library/Logs/syncthing.log";
+      StandardOutPath = "/tmp/log/launchd/syncthing.log";
+      StandardErrorPath = "/tmp/log/launchd/syncthing-error.log";
       ThrottleInterval = 10; # Restart on failure after 10 seconds
     };
 
