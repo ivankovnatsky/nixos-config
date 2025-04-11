@@ -67,8 +67,8 @@ in
       Label = "org.nixos.caddy";
       RunAtLoad = true;
       KeepAlive = true;
-      StandardOutPath = "/tmp/log/launchd/caddy/out.log";
-      StandardErrorPath = "/tmp/log/launchd/caddy/error.log";
+      StandardOutPath = "/tmp/log/launchd/caddy.out.log";
+      StandardErrorPath = "/tmp/log/launchd/caddy.error.log";
       ThrottleInterval = 10; # Restart on failure after 10 seconds
     };
 

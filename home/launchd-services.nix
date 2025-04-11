@@ -39,8 +39,8 @@
           }
         ];
 
-        StandardOutPath = "/tmp/log/launchd/backup-home.out.log";
-        StandardErrorPath = "/tmp/log/launchd/backup-home.err.log";
+        StandardOutPath = "/tmp/agents/log/launchd/backup-home.log";
+        StandardErrorPath = "/tmp/agents/log/launchd/backup-home.error.log";
         KeepAlive = false;
         RunAtLoad = false;
 

@@ -302,8 +302,8 @@ in
               }
             ];
         RunAtLoad = false; # Don't run immediately on system boot
-        StandardErrorPath = "/tmp/log/launchd/logrotate/stderr.log";
-        StandardOutPath = "/tmp/log/launchd/logrotate/stdout.log";
+        StandardOutPath = "/tmp/log/launchd/logrotate.log";
+        StandardErrorPath = "/tmp/log/launchd/logrotate.error.log";
         EnvironmentVariables = {
           PATH = "${pkgs.coreutils}/bin:${pkgs.gzip}/bin:${logrotatePackage}/bin:/usr/bin:/bin";
         };
