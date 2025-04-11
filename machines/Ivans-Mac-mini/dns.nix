@@ -75,8 +75,8 @@
       # We host caddy on bee machine, thus we need resolve .homelab. to
       # it's up for caddy to do the routing.
       address = [
-        "/homelab/${config.flags.beeIp}" # This will match all *.homelab records
-        "/${config.secrets.externalDomain}/${config.flags.beeIp}" # This will match all *.externalDomain records
+        "/homelab/${config.flags.miniIp}" # This will match all *.homelab records
+        "/${config.secrets.externalDomain}/${config.flags.miniIp}" # This will match all *.externalDomain records
       ];
 
       # Log queries (useful for debugging)
