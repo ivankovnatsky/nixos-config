@@ -4,7 +4,6 @@
 }:
 
 {
-  # Configure systemd service for miniserve file server
   systemd.services.miniserve = {
     description = "Miniserve file server for /storage";
     wantedBy = [ "multi-user.target" ];
@@ -15,7 +14,7 @@
 
     # Service configuration
     serviceConfig = {
-      ExecStart = "${pkgs.miniserve}/bin/miniserve --hidden /storage";
+      ExecStart = "${pkgs.miniserve}/bin/miniserve --interfaces 0.0.0.0 --interfaces ::1 --hidden /storage";
       Restart = "on-failure";
       RestartSec = "5s";
 
@@ -29,4 +28,7 @@
       ReadWritePaths = "/storage";
     };
   };
+
+  # Open port 8080 in firewall for miniserve
+  networking.firewall.allowedTCPPorts = [ 8080 ];
 }
