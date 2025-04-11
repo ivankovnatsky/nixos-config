@@ -62,5 +62,4 @@ ssh-copy-id ivan@192.168.50.46
 
 ## TODO
 
-- [ ] UPS or other power management
 - [ ] Add /Volumes/Samsung2TB to /etc/fstab
