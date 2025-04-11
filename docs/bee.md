@@ -191,12 +191,12 @@ The media server setup consists of four main components working together:
 4. **Plex**: Media streaming server
    - Serves media files for streaming
    - Manages movie metadata and library
-   - Accessible at `http://plex.bee.homelab` or `http://bee-ip:32400/web`
+   - Accessible at `http://plex.{externalDomain}` or `http://bee-ip:32400/web`
 
 ### Initial Setup
 
 1. **Prowlarr Setup**:
-   - Access at `http://prowlarr.bee.homelab`
+   - Access at `http://prowlarr.{externalDomain}`
    - Add indexers (e.g., Toloka.to):
      - Go to Settings -> Indexers
      - Click '+' to add new indexer
@@ -208,7 +208,7 @@ The media server setup consists of four main components working together:
      - Set Radarr URL: `http://localhost:7878`
 
 2. **Radarr Setup**:
-   - Access at `http://radarr.bee.homelab`
+   - Access at `http://radarr.{externalDomain}`
    - Add Transmission as download client:
      - Settings -> Download Clients
      - Add Transmission
@@ -219,7 +219,7 @@ The media server setup consists of four main components working together:
      - Library path: `/storage/media/movies`
 
 3. **Transmission Setup**:
-   - Access at `http://transmission.bee.homelab`
+   - Access at `http://transmission.{externalDomain}`
    - Downloads automatically go to configured paths
    - No authentication required on local network
 
@@ -230,7 +230,7 @@ The media server setup consists of four main components working together:
      - Choose 'Movies' type
      - Add folder: `/storage/media/movies`
      - Configure scanning options as needed
-   - After initial setup, can use `http://plex.bee.homelab`
+   - After initial setup, can use `http://plex.{externalDomain}`
 
 ### Workflow
 

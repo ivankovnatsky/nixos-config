@@ -1,5 +1,8 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
+let externalDomain = config.secrets.externalDomain;
+
+in
 {
   # TODO:
   # 1. Make sure we have aggresive retention of storage till we have a bigger disk
@@ -11,8 +14,8 @@
         # Listen on all interfaces
         http_addr = "0.0.0.0";
         http_port = 3000;
-        domain = "grafana.bee.homelab";
-        root_url = "http://grafana.bee.homelab";
+        domain = "grafana.${externalDomain}";
+        root_url = "https://grafana.${externalDomain}";
       };
       # Default admin user
       security = {

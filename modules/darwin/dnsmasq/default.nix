@@ -67,7 +67,7 @@ in
           "listen-address" = [ "127.0.0.1" "192.168.50.3" ];
           "domain-needed" = true;
           "expand-hosts" = true;
-          "domain" = "homelab";
+          "domain" = "externalDomain";
         }
       '';
       description = "Dnsmasq configuration. See man dnsmasq for available options.";

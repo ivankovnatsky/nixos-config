@@ -1,6 +1,6 @@
 {
   # NOTE: Manual Audiobookshelf configuration is required after installation:
-  # 1. Access the web UI at http://audiobookshelf.homelab
+  # 1. Access the web UI at https://audiobookshelf.{externalDomain}
   # 2. Create your root user during the initial setup process
   # 3. Add libraries for your audiobooks and podcasts, pointing to:
   #    - Podcasts library: /storage/media/podcasts
