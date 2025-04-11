@@ -59,23 +59,22 @@
       "max-ttl" = 60;
 
       # Local domain configuration
-      domain = "homelab";
-      local = "/homelab/";
+      domain = "${config.secrets.externalDomain}";
+      local = "/${config.secrets.externalDomain}/";
       "domain-needed" = true;
       "expand-hosts" = true;
       "bogus-priv" = true;
 
       # Add search domain for clients
-      "dhcp-option" = [ "option:domain-search,homelab" ];
+      "dhcp-option" = [ "option:domain-search,${config.secrets.externalDomain}" ];
 
       # Enable DNS forwarding
       "dns-forward-max" = 150;
 
       # Wildcard domain support
-      # We host caddy on bee machine, thus we need resolve .homelab. to
-      # it's up for caddy to do the routing.
+      # We host caddy on the same machine, thus we need to resolve external domain to
+      # the same machine IP, and it's up for caddy to do the routing.
       address = [
-        "/homelab/${config.flags.miniIp}" # This will match all *.homelab records
         "/${config.secrets.externalDomain}/${config.flags.miniIp}" # This will match all *.externalDomain records
       ];
 

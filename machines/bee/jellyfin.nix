@@ -1,6 +1,6 @@
 {
   # NOTE: Manual Jellyfin configuration is required after installation:
-  # 1. Access the web UI at http://jellyfin.homelab
+  # 1. Access the web UI at https://jellyfin.{externalDomain}
   # 2. Create your root user during the initial setup process
   # 3. Add libraries for your media, pointing to appropriate directories in /storage/media
 

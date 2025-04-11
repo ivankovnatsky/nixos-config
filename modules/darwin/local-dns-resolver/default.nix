@@ -30,7 +30,7 @@ in
       description = "Mapping of zone names to their DNS configuration";
       example = literalExpression ''
         {
-          "homelab" = {
+          "externalDomain" = {
             nameserver = beeIp;
           };
         }
