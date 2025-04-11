@@ -79,19 +79,19 @@
       max-ttl = 60;
 
       # Local domain configuration
-      domain = "homelab";
-      local = "/homelab/";
+      domain = "${config.secrets.externalDomain}";
+      local = "/${config.secrets.externalDomain}/";
       domain-needed = true;
       expand-hosts = true;
       bogus-priv = true;
 
       # Add search domain for clients
-      dhcp-option = [ "option:domain-search,homelab" ];
+      dhcp-option = [ "option:domain-search,${config.secrets.externalDomain}" ];
 
-      # Make it explicitly authoritative for homelab
+      # Make it explicitly authoritative for external domain
       # This don't align with wildcard records, commenting out.
-      # auth-zone = "homelab";
-      # auth-server = "homelab";
+      # auth-zone = "${config.secrets.externalDomain}";
+      # auth-server = "${config.secrets.externalDomain}";
 
       # Enable DNS forwarding
       dns-forward-max = 150;
@@ -102,7 +102,6 @@
 
       # Wildcard domain support
       address = [
-        "/homelab/${config.flags.beeIp}" # This will match all *.homelab records
         "/${config.secrets.externalDomain}/${config.flags.beeIp}" # This will match all *.externalDomain records
       ];
 

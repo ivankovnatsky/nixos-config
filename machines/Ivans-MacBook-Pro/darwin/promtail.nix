@@ -17,7 +17,7 @@
       clients = [
         {
           # Point to your bee machine's Loki instance
-          url = "http://loki.bee.homelab:3100/loki/api/v1/push";
+          url = "http://bee:3100/loki/api/v1/push";
           # Add rate limiting to avoid overwhelming Loki
           batchwait = "1s";
           batchsize = 1048576; # 1MB batch size
