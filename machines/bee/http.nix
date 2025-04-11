@@ -56,8 +56,10 @@ in
     # Log directory
     "d /var/log/caddy 0755 caddy caddy -"
     "Z /var/log/caddy/* 0644 caddy caddy -"
-    # State directory
+    # State directory with recursive permissions
     "d /var/lib/caddy 0700 caddy caddy -"
+    # Apply recursive permissions to all files and directories under /var/lib/caddy
+    "Z /var/lib/caddy/** 0700 caddy caddy -"
   ];
 
   # Enable Caddy web server as a reverse proxy
