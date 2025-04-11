@@ -21,14 +21,14 @@
 with lib;
 
 let
-  cfg = config.services.promtail;
+  cfg = config.local.services.promtail;
   # Format the config as YAML to be written to a file
   configFile = pkgs.writeText "promtail-config.yaml" (builtins.toJSON cfg.configuration);
   # Binary package for promtail
   promtailBinary = "${pkgs.grafana-loki}/bin/promtail";
 in
 {
-  options.services.promtail = {
+  options.local.services.promtail = {
     enable = mkEnableOption "Promtail log collector for Loki";
 
     configuration = mkOption {

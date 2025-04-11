@@ -32,10 +32,10 @@ let
 
   # External domain from secrets module for easier reference
   externalDomain = config.secrets.externalDomain;
-  
+
   # Samsung2TB path for data access
   volumePath = "/Volumes/Samsung2TB";
-  
+
   # Create a Caddy package with the required DNS plugin
   # Use the caddy-with-plugins overlay to get the withPlugins functionality
   # This works in NixOS 24.11 before the function is available in the standard package
@@ -44,10 +44,10 @@ let
     plugins = [ "github.com/caddy-dns/cloudflare@v0.0.0-20250214163716-188b4850c0f2" ];
     hash = "sha256-dYZvFCSuDsOAYg8GgkdpulIzFud9EmP9mS81c87sOoY=";
   };
-  
+
   # Path to the Caddyfile template - reusing the template approach
   caddyfilePath = ../../templates/Caddyfile;
-  
+
   # Process the Caddyfile template with the local variables
   Caddyfile = pkgs.runCommand "caddyfile" {
     inherit bindAddress externalDomain;
@@ -67,8 +67,8 @@ in
       Label = "org.nixos.caddy";
       RunAtLoad = true;
       KeepAlive = true;
-      StandardOutPath = "/tmp/log/launchd/caddy.log";
-      StandardErrorPath = "/tmp/log/launchd/caddy.error.log";
+      StandardOutPath = "/tmp/log/launchd/caddy/out.log";
+      StandardErrorPath = "/tmp/log/launchd/caddy/error.log";
       ThrottleInterval = 10; # Restart on failure after 10 seconds
     };
 
