@@ -15,7 +15,7 @@ let
     "editor.renderLineHighlight" = "all";
     "extensions.autoCheckUpdates" = false;
     "extensions.ignoreRecommendations" = true;
-    "files.autoSave" = "onFocusChange";
+    "files.autoSave" = "off";
     "files.enableTrash" = false;
     "files.insertFinalNewline" = true;
     "files.trimFinalNewlines" = true;
