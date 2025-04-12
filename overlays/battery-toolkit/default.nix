@@ -5,6 +5,9 @@
   stdenv,
 }:
 
+# https://github.com/mhaeuser/Battery-Toolkit/issues/105#issuecomment-2797029669
+# https://github.com/mhaeuser/Battery-Toolkit/issues/7#issuecomment-2036664963
+
 let
   version = "1.6";
 in
