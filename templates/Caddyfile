@@ -49,6 +49,7 @@
 	}
 }
 
+# # FIXME: Use wildcard instead of creating certificate for every host.
 # Simplified domain for Prowlarr (singleton service)
 prowlarr.@externalDomain@:443 {
 	bind @bindAddress@
