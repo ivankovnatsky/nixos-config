@@ -197,7 +197,7 @@ case $COMMAND in
             PR_URL=$(gh pr view --json url -q .url)
             echo "Pull request merged successfully!"
             echo "View it here: $PR_URL"
-            open_url "$PR_URL"
+            open_url "$PR_URL/files"
         else
             echo "Failed to merge pull request:"
             echo "$OUTPUT"
