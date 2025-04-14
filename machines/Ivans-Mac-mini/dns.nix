@@ -80,7 +80,7 @@
 
       # Log queries (useful for debugging)
       "log-queries" = true;
-      "log-facility" = "/tmp/dnsmasq/dnsmasq.log";
+      "log-facility" = "/tmp/log/dnsmasq/dnsmasq.log";
       "log-dhcp" = true;
     };
   };

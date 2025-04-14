@@ -101,10 +101,10 @@ in
 
     # Setup directories in activation script
     system.activationScripts.preActivation.text = mkBefore ''
-      # Create log directory for stubby
-      echo "Setting up stubby directories..."
-      mkdir -p /tmp/stubby
-      chmod 755 /tmp/stubby
+      # Create log directory
+      echo "Setting up log directories..."
+      mkdir -p /tmp/log/stubby
+      chmod 755 /tmp/log/stubby
     '';
 
     launchd.daemons.stubby = {
