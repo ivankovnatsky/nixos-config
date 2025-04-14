@@ -108,6 +108,14 @@ in
       '')
     );
 
+    # Setup directories in activation script
+    system.activationScripts.preActivation.text = mkBefore ''
+      # Create log directory
+      echo "Setting up log directories..."
+      mkdir -p /tmp/log/dnsmasq
+      chmod 755 /tmp/log/dnsmasq
+    '';
+
     launchd.daemons.dnsmasq = {
       command = "${cfg.package}/bin/dnsmasq -k -C ${configFile}";
       serviceConfig = {
