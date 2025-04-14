@@ -20,7 +20,7 @@
     dust
     eks-node-viewer
     exiftool
-    fluxcd
+    nixpkgs-master.fluxcd
     genpass
     ggh
     ghorg
