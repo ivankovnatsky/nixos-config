@@ -2,15 +2,15 @@
   services.netdata = {
     enable = true;
     # Store service stdout/stderr in /tmp
-    logDir = "/tmp/netdata";
+    logDir = "/tmp/log/netdata";
 
     # Explicitly configure Netdata to use /tmp for its logs
     config = ''
       [global]
-      log directory = /tmp/netdata
-      debug log = /tmp/netdata/debug.log
-      error log = /tmp/netdata/error.log
-      access log = /tmp/netdata/access.log
+      log directory = /tmp/log/netdata
+      debug log = /tmp/log/netdata/debug.log
+      error log = /tmp/log/netdata/error.log
+      access log = /tmp/log/netdata/access.log
 
       # Reduce log verbosity
       [logs]
@@ -26,7 +26,7 @@
   local.services.logrotate.settings = {
     # Standard log files
     netdata-logs = {
-      files = "/var/log/netdata/*.log";
+      files = "/tmp/log/netdata/*.log";
       rotate = 14; # Keep logs for 14 days
       size = "50M"; # Production size limit
       copytruncate = true; # Needed for netdata which keeps the file open
@@ -39,7 +39,7 @@
 
     # Backup files - compressed immediately and removed after rotation
     netdata-backups = {
-      files = "/var/log/netdata/*.backup";
+      files = "/tmp/log/netdata/*.backup";
       rotate = 1; # Keep only one backup at most
       size = "1K"; # Rotate even small backup files
       copytruncate = true;

@@ -253,8 +253,8 @@ in
       mkdir -p /var/lib/logrotate
       chmod 755 /var/lib/logrotate
 
-      mkdir -p /tmp/logrotate
-      chmod 755 /tmp/logrotate
+      mkdir -p /tmp/log/logrotate
+      chmod 755 /tmp/log/logrotate
     '';
 
     # Run logrotate via launchd
