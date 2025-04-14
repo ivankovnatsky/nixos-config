@@ -20,7 +20,6 @@
     dust
     eks-node-viewer
     exiftool
-    nixpkgs-master.fluxcd
     genpass
     ggh
     ghorg
@@ -53,9 +52,11 @@
     mos # To use PC mouse with natural scrolling GUI
     mycli
     nixfmt-rfc-style
+    nixpkgs-master.fluxcd
     nodePackages.aws-cdk
     nodejs
     opsy
+    oras
     parallel
     pigz
     poetry
