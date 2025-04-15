@@ -2,8 +2,7 @@
   #  https://github.com/nix-community/home-manager/blob/master/modules/services/syncthing.nix
   services.syncthing = {
     enable = true;
-    # FIXME: Security?
-    guiAddress = "0.0.0.0:8384"; # Bind to all interfaces
+    guiAddress = "127.0.0.1:8384"; # Bind to all interfaces
   };
 
   home.file.".config/syncthing/ignore".text = ''
