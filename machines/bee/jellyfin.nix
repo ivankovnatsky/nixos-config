@@ -18,7 +18,7 @@
   };
 
   # Ensure Jellyfin can access media directories
-  users.users.jellyfin.extraGroups = [ "media" ];
+  users.users.jellyfin.extraGroups = [ "media" "sonarr" "radarr" ];
 
   # Jellyfin will access existing media directories
   # No need to create directories as they're managed by radarr and sonarr
