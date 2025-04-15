@@ -185,7 +185,7 @@ The media server setup consists of four main components working together:
 
 3. **Transmission**: Download client
    - Handles torrent downloads
-   - Downloads to `/storage/media/downloads/movies`
+   - Downloads to `/storage/media/downloads`
    - Configured without authentication for local network access
 
 4. **Plex**: Media streaming server
@@ -215,7 +215,7 @@ The media server setup consists of four main components working together:
      - Host: `localhost`
      - Port: `9091`
    - Configure movie paths:
-     - Download path: `/storage/media/downloads/movies`
+     - Download path: `/storage/media/downloads`
      - Library path: `/storage/media/movies`
 
 3. **Transmission Setup**:
@@ -236,7 +236,7 @@ The media server setup consists of four main components working together:
 
 1. Add a movie in Radarr
 2. Radarr finds the movie and sends it to Transmission
-3. Transmission downloads to `/storage/media/downloads/movies`
+3. Transmission downloads to `/storage/media/downloads`
 4. Radarr moves completed download to `/storage/media/movies`
 5. Plex detects new movie and adds it to library
 
