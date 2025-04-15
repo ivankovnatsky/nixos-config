@@ -76,6 +76,7 @@
     stats # To show CPU, RAM, etc. usage in the menu bar
     terraformer
     terragrunt-atlantis-config
+    username # Installed as flake
     vault
     watchman
     watchman-make
