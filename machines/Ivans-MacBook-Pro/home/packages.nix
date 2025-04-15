@@ -33,7 +33,7 @@
     syncthing
     typst
     typstfmt
-    username # Installed as flake  # FIXME: correct hash256
+    username # Installed as flake
     watchman
     watchman-make
     wget
