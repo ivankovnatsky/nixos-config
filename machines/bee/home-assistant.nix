@@ -23,6 +23,7 @@
       "esphome"
       "met"
       "radio_browser"
+
       "zha" # Zigbee Home Automation integration
     ];
     config = {
