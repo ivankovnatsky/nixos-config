@@ -12,6 +12,10 @@
         "com.apple.Safari" = {
           "ShowFullURLInSmartSearchField" = true;
           "ShowStandaloneTabBar" = true; # false enables compact tabs
+          # Enable Web Inspector and developer features
+          "ShowDevelopMenu" = true;
+          "WebKitDeveloperExtrasEnabledPreferenceKey" = true;
+          "DeveloperExtrasEnabled" = true;
         };
         "NSGlobalDomain" = {
           # My keyboard does not support Globe switch key, or I don't know how
