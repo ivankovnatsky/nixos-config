@@ -99,16 +99,23 @@ in
   config = mkIf cfg.enable {
     environment.systemPackages = [ cfg.package ];
 
-    # Setup directories in activation script
-    system.activationScripts.preActivation.text = mkBefore ''
-      # Create log directory
-      echo "Setting up log directories..."
-      mkdir -p /tmp/log/stubby
-      chmod 755 /tmp/log/stubby
-    '';
-
     launchd.daemons.stubby = {
-      command = "${cfg.package}/bin/stubby -C ${configFile} -l ${cfg.logLevel} -v";
+      command =
+        let
+          startDnsmasqScript = pkgs.writeShellScriptBin "start-stubby" ''
+            #!/bin/sh
+
+            # Create the required directories
+            echo "Setting up log directories..."
+            mkdir -p /tmp/log/stubby
+            chmod 755 /tmp/log/stubby
+
+            echo "Starting stubby..."
+            exec ${cfg.package}/bin/stubby -C ${configFile} -l ${cfg.logLevel} -v
+          '';
+        in
+        "${startDnsmasqScript}/bin/start-stubby";
+
       serviceConfig = {
         Label = "org.nixos.stubby";
         RunAtLoad = true;
