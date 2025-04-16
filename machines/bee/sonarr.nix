@@ -4,6 +4,9 @@
   # 2. Transmission must be configured to pause/stop torrents after meeting ratio/time goals
   #    (ratio-limit-enabled = true and/or seed-time-limit-enabled = true)
   # 3. Sonarr will only remove downloads from Transmission when they are paused/stopped
+
+  # References and howtos:
+  # * https://www.reddit.com/r/sonarr/comments/10eg5fw/best_method_to_fix_incorrect_episode_nameepisode/?rdt=54609
   #
   # Enable Sonarr
   services.sonarr = {
