@@ -17,12 +17,13 @@
     casks = [
       "amethyst"
       "bitwarden"
+      "chatgpt"
+      "claude"
       "cursor"
       "dbeaver-community"
       "floorp"
       "ghostty"
       "hammerspoon"
-      "kitty"
       "mindmac"
       "orbstack"
       "twingate"
@@ -30,6 +31,8 @@
       "windsurf"
     ];
     # FIXME: Some weird re-installation happening
+    # Re-enable with brew taps update:
+    # https://github.com/zhaofengli/nix-homebrew/issues/74#issuecomment-2807640949
     #
     # ```console
     # Using vivaldi
