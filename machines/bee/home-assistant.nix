@@ -10,6 +10,9 @@
             getmac
             pyatv
             gtts # Google Text-to-Speech
+            # pyserial # Required for serial communication
+            # zigpy # Base Zigbee support
+            # zigpy-znp # Required for Silicon Labs (EFR32) based coordinators like SLZB-07
           ];
       }).overrideAttrs
         (oldAttrs: {
@@ -20,6 +23,7 @@
       "esphome"
       "met"
       "radio_browser"
+      "zha" # Zigbee Home Automation integration
     ];
     config = {
       # Includes dependencies for a basic setup
@@ -52,10 +56,16 @@
           "${config.flags.miniIp}"
         ];
       };
-    };
-  };
 
-  networking.firewall.allowedTCPPorts = [ 8123 ];
+      # Declarative ZHA (Zigbee Home Automation) configuration
+      zha = {
+        usb_path = "/dev/ttyUSB0";
+        database_path = "/var/lib/hass/zigbee.db";
+        radio_type = "znp";
+      };
+    };
+    openFirewall = true;
+  };
 
   services.postgresql = {
     enable = true;
