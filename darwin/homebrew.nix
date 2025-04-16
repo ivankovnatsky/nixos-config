@@ -23,6 +23,8 @@
       "vivaldi"
       "windsurf"
     ];
+    # Re-enable with brew taps update:
+    # https://github.com/zhaofengli/nix-homebrew/issues/74#issuecomment-2807640949
     # masApps = {
     #   "Numbers" = 409203825;
     #   "Pages" = 409201541;
