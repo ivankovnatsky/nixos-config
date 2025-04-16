@@ -48,13 +48,14 @@ in
       }
 
       # Installed using homebrew
-      { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Vivaldi.app/"; }
       { path = "/Applications/Floorp.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }
       { path = "/Applications/MindMac.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
+      { path = "/Applications/ChatGPT.app/"; }
+      { path = "/Applications/Claude.app/"; }
 
       {
         type = "spacer";
@@ -71,8 +72,8 @@ in
       }
 
       # Safari Web Apps
-      { path = "${homePath}/Applications/ChatGPT.app/"; }
-      { path = "${homePath}/Applications/Claude.app/"; }
+      { path = "${homePath}/Applications/ChatGPTWeb.app/"; }
+      { path = "${homePath}/Applications/ClaudeWeb.app/"; }
 
       {
         path = "${config.users.users.${username}.home}/Downloads/";
