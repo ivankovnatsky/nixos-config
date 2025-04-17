@@ -58,7 +58,10 @@
     # Constantly using 2 CPU Cores, disabling for now
     # ./flaresolverr.nix
 
+    # Home Automation
     ./home-assistant.nix
+    ./mosquitto.nix
+    ./zigbee2mqtt.nix
 
     # Storage
     ./storage.nix
