@@ -63,6 +63,9 @@
         "Ivans-MacBook-Pro" = {
           id = config.secrets.syncthing.devices.IvansMacBookPro;
         };
+        "Ally" = {
+          id = "ZIM6RNR-RYUHZQE-L5KJUAT-BF7MAJ4-NSIZIIY-USMGRTU-YHT4T5M-KZX6DQE";
+        };
       };
 
       # Define your folders here
