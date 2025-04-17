@@ -200,6 +200,18 @@ netdata-bee.@externalDomain@:443 {
 	}
 }
 
+# Zigbee2MQTT web interface
+zigbee.@externalDomain@:443 {
+	bind @bindAddress@
+
+	# Proxy to Zigbee2MQTT web interface
+	reverse_proxy @beeIp@:8081 {
+		# Enable WebSocket support for live updates
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+}
+
 sync-mini.@externalDomain@:443 {
 	bind @bindAddress@
 

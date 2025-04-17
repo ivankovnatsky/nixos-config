@@ -17,9 +17,11 @@
       "cursor"
       "firefox"
       "ghostty"
+      "google-chrome"
       "hammerspoon"
       "kitty"
       "mullvadvpn"
+      "silicon-labs-vcp-driver"
       "vivaldi"
       "windsurf"
     ];
