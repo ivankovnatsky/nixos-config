@@ -63,6 +63,9 @@
         "Lusha-Macbook-Ivan-Kovnatskyi" = {
           id = "3CKXPYL-MWZLPKJ-NMKQOLS-HX4EOYE-765MZ2W-3U3WGTU-FKGHNAD-OGAN4QL";
         };
+        "Ally" = {
+          id = "ZIM6RNR-RYUHZQE-L5KJUAT-BF7MAJ4-NSIZIIY-USMGRTU-YHT4T5M-KZX6DQE";
+        };
       };
 
       # Define your folders here
