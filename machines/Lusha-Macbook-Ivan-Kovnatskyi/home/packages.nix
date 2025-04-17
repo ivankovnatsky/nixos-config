@@ -70,6 +70,7 @@
     rclone
     rectangle # Window manager
     sesh
+    skopeo
     smctemp
     sshpass
     ssm-session-manager-plugin
