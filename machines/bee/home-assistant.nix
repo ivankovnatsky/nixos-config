@@ -10,6 +10,8 @@
             getmac
             pyatv
             gtts # Google Text-to-Speech
+            bluetooth-auto-recovery # Bluetooth support
+            bleak # Bluetooth Low Energy support
           ];
       }).overrideAttrs
         (oldAttrs: {
@@ -21,6 +23,7 @@
       "met"
       "radio_browser"
       "mqtt" # Required for zigbee2mqtt integration
+      "bluetooth" # Bluetooth integration
     ];
     config = {
       # Includes dependencies for a basic setup
