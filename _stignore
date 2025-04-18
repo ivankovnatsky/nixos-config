@@ -1,2 +1,2 @@
-**sync-conflict**
-**.syncthing.**.tmp 
+**/*sync-conflict*
+**/*.syncthing.*.tmp
