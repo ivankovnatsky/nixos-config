@@ -63,6 +63,7 @@ in
       # nixpkgs installed
       { path = "/Applications/Ghostty.app/"; }
       { path = "${pkgs.vscode}/Applications/Visual Studio Code.app/"; }
+      { path = "${pkgs.keycastr}/Applications/KeyCastr.app/"; }
 
       {
         type = "spacer";
