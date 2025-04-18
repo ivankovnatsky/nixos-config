@@ -23,18 +23,10 @@
         }
         {
           key = "4";
-          app = "Vivaldi";
-        }
-        {
-          key = "5";
           app = "Google Chrome";
         }
         {
-          key = "6";
-          app = "Floorp";
-        }
-        {
-          key = "7";
+          key = "5";
           app = "Slack";
         }
         {

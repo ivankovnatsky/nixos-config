@@ -48,8 +48,6 @@ in
       }
 
       # Installed using homebrew
-      { path = "/Applications/Vivaldi.app/"; }
-      { path = "/Applications/Floorp.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }
       { path = "/Applications/MindMac.app/"; }
