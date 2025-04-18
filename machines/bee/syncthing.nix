@@ -1,5 +1,6 @@
 {
   # Enable the Syncthing service
+  # 
   services.syncthing = {
     enable = true;
 
@@ -197,9 +198,9 @@
     "d /storage/Sources/github.com/NixOS/nixpkgs 0755 ivan users - -"
 
     # Create /storage/Sources if it doesn't exist and ensure correct permissions
-    "d /storage/Sources 0755 ivan users - -"
+    "d /storage/Sources 0700 ivan users - -"
 
     # Create /storage/Data if it doesn't exist and ensure correct permissions
-    "d /storage/Data 0755 ivan users - -"
+    "d /storage/Data 0700 ivan users - -"
   ];
 }
