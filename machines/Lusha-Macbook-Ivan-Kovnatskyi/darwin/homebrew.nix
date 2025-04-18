@@ -21,13 +21,11 @@
       "claude"
       "cursor"
       "dbeaver-community"
-      "floorp"
       "ghostty"
       "hammerspoon"
       "mindmac"
       "orbstack"
       "twingate"
-      "vivaldi"
       "windsurf"
     ];
     # FIXME: Some weird re-installation happening
@@ -35,7 +33,6 @@
     # https://github.com/zhaofengli/nix-homebrew/issues/74#issuecomment-2807640949
     #
     # ```console
-    # Using vivaldi
     # Using windsurf
     # Installing Dark Reader for Safari
     # Installing Numbers
