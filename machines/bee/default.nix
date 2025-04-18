@@ -66,6 +66,7 @@
 
     # Storage
     ./storage.nix
+    ./storage-settings.nix
 
     ./miniserve.nix
 
