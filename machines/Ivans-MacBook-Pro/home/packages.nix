@@ -18,6 +18,7 @@
     jq
     ks
     magic-wormhole
+    mkpasswd
     mos # macOS: System stats
     nixfmt-rfc-style
     nodejs
