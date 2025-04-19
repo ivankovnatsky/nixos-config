@@ -30,5 +30,7 @@
 - [ ] Move zlua -> zoxide
 - [ ] Power off homelab at specified time
 - [ ] Configure external dns in cloudflare and in homelab
+- [ ] Bee
+  - [ ] Add mDNS support
 - [ ] Mini
   - [ ] Differentiate daemons logs and agents logs under /tmp
