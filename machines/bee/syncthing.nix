@@ -1,3 +1,4 @@
+{ config, ... }:
 {
   # Enable the Syncthing service
   # 
@@ -31,12 +32,13 @@
     settings = {
       # GUI settings
       gui = {
-        # No authentication for simplicity
-        # You can access the web UI without credentials
         theme = "default";
         insecureAdminAccess = false;
         insecureSkipHostcheck = false;
         insecureAllowFrameLoading = false;
+
+        user = config.secrets.syncthingCredentials.username;
+        password = config.secrets.syncthingCredentials.hashedPassword;
       };
 
       # Global options
@@ -169,11 +171,6 @@
       21027
     ]; # 22000 for data transfer, 21027 for discovery
   };
-
-  # Note: For security in a production environment, you might want to add authentication
-  # You can do this by adding user/password to the gui settings:
-  # settings.gui.user = "username";
-  # settings.gui.password = "hashed-password";
 
   # Add explicit systemd dependencies to ensure Syncthing starts after network is up
   systemd.services.syncthing = {
