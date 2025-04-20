@@ -58,12 +58,9 @@
       };
 
       # MQTT Configuration for zigbee2mqtt
-      mqtt = {
-        discovery = true;
-        discovery_prefix = "zigbee2mqtt";
-        broker = "localhost";
-        port = 1883;
-      };
+      # Configured in UI, need to manually add integration:
+      # https://github.com/home-assistant/core/issues/114643
+      mqtt = { };
     };
     openFirewall = true;
   };
