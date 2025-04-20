@@ -3,7 +3,7 @@
   home.packages = with pkgs; [
     (wrapHelm kubernetes-helm { plugins = with pkgs.kubernetes-helmPlugins; [ helm-secrets ]; })
     argocd
-    keycastr # Password manager
+    keycastr # macOS: Keystroke visualizer
     aws-sso-cli
     aws-sso-creds
     awscli2
