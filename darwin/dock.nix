@@ -54,6 +54,7 @@ in
       # Brew casks placeholder
       { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Firefox.app/"; }
+      { path = "/Applications/Google Chrome.app/"; }
       { path = "/Applications/Vivaldi.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
       { path = "/Applications/Cursor.app/"; }
