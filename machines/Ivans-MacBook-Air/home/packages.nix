@@ -42,6 +42,7 @@
     watchman
     watchman-make
     wget
+    yt-dlp
     zsh-forgit
   ];
 }

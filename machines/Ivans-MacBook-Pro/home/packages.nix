@@ -1,6 +1,8 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
+    # bitwarden-cli  # FIXME: Fails to install on current nixpkgs-unstable
+    # nodePackages.webtorrent-cli  # FIXME: Fails to install on current nixpkgs-unstable
     (python312.withPackages (ps: with ps; [ grip ]))
     aria2
     backup-home # Installed as flake
@@ -11,10 +13,12 @@
     delta
     du-dust
     duf
-    fish-ai # Local overlay
+    erdtree
+    exiftool
     fzf
     genpass
     home-manager
+    imagemagick
     jq
     ks
     magic-wormhole
@@ -29,7 +33,7 @@
     ripgrep
     rust-analyzer
     rustc
-    smctemp
+    smctemp # Local overlay
     stats # macOS: System stats
     syncthing
     typst
