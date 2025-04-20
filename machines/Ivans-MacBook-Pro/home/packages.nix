@@ -20,6 +20,7 @@
     home-manager
     imagemagick
     jq
+    keycastr # macOS: Keystroke visualizer
     ks
     magic-wormhole
     mkpasswd
