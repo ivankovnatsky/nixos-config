@@ -20,7 +20,6 @@
       "ghostty"
       "google-chrome"
       "hammerspoon"
-      "kitty"
       "mullvadvpn"
       "silicon-labs-vcp-driver"
       "vivaldi"

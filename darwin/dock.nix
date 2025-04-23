@@ -52,7 +52,6 @@ in
       }
 
       # Brew casks placeholder
-      { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Google Chrome.app/"; }
       { path = "/Applications/Chromium.app/"; }
