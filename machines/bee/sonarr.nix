@@ -7,8 +7,15 @@
 
   # References and howtos:
   # * https://www.reddit.com/r/sonarr/comments/10eg5fw/best_method_to_fix_incorrect_episode_nameepisode/?rdt=54609
+  # * https://forums.sonarr.tv/t/stop-early-file-from-downloading/38285/2
+  # * https://www.redditmedia.com/r/sonarr/comments/1i82r5l/stop_lnk_files_from_downloading/
   #
   # Enable Sonarr
+  # Manual configurations:
+  # * Disable analytics
+  # * In every indexer set fail downloads:
+  #   * Executables
+  #   * Potentially dangerous
   services.sonarr = {
     enable = true;
     openFirewall = true;
