@@ -14,6 +14,7 @@
     casks = [
       "amethyst"
       "bitwarden"
+      "chromium"
       "cursor"
       "firefox"
       "ghostty"
