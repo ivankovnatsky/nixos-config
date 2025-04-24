@@ -12,6 +12,8 @@
             gtts # Google Text-to-Speech
             bluetooth-auto-recovery # Bluetooth support
             bleak # Bluetooth Low Energy support
+            zeroconf
+            ifaddr # Better interface detection
           ];
       }).overrideAttrs
         (oldAttrs: {
@@ -24,6 +26,7 @@
       "radio_browser"
       "mqtt" # Required for zigbee2mqtt integration
       "bluetooth" # Bluetooth integration
+      "zeroconf" # Add zeroconf component explicitly
     ];
     config = {
       # Includes dependencies for a basic setup
@@ -77,6 +80,14 @@
   };
 
   # Ensure the Home Assistant service starts after PostgreSQL is fully up
-  systemd.services.home-assistant.after = [ "postgresql.service" ];
-  systemd.services.home-assistant.requires = [ "postgresql.service" ];
+  systemd.services.home-assistant = {
+    after = [ "postgresql.service" "network-online.target" ];
+    requires = [ "postgresql.service" ];
+    wants = [ "network-online.target" ];
+    
+    serviceConfig = {
+      AmbientCapabilities = "CAP_NET_BIND_SERVICE CAP_NET_RAW"; # Add network capabilities
+      Environment = "PYTHONUNBUFFERED=1";
+    };
+  };
 }
