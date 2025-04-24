@@ -37,6 +37,7 @@ let
     "workbench.preferredDarkColorTheme" = "Default Dark+";
     "workbench.preferredLightColorTheme" = "Default Light+";
     "cursor.composer.shouldAutoSaveNonAgent" = false;
+    "telemetry.enableTelemetry" = false;
   };
 in
 {
