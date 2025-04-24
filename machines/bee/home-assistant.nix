@@ -81,10 +81,13 @@
 
   # Ensure the Home Assistant service starts after PostgreSQL is fully up
   systemd.services.home-assistant = {
-    after = [ "postgresql.service" "network-online.target" ];
+    after = [
+      "postgresql.service"
+      "network-online.target"
+    ];
     requires = [ "postgresql.service" ];
     wants = [ "network-online.target" ];
-    
+
     serviceConfig = {
       AmbientCapabilities = "CAP_NET_BIND_SERVICE CAP_NET_RAW"; # Add network capabilities
       Environment = "PYTHONUNBUFFERED=1";
