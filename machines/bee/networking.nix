@@ -4,9 +4,9 @@
   # Enable mDNS for local hostname resolution
   networking = {
     # Enable mDNS port in firewall
-    firewall.allowedUDPPorts = [ 
-      5353  # mDNS port for zeroconf/Avahi
-      1900  # SSDP/UPnP discovery
+    firewall.allowedUDPPorts = [
+      5353 # mDNS port for zeroconf/Avahi
+      1900 # SSDP/UPnP discovery
     ];
   };
 
@@ -17,7 +17,7 @@
     # Configure Avahi to work alongside dnsmasq
     allowInterfaces = [
       "enp1s0"
-    ]; 
+    ];
     ipv4 = true;
     ipv6 = true;
     publish = {

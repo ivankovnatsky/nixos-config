@@ -3,13 +3,13 @@
   # https://www.reddit.com/r/Zigbee2MQTT/comments/1ihh67u/slzb07_not_recognized_version_12_is_not_supported/
   # https://smlight.tech/flasher/#SLZB-07
   # https://smlight.tech/manual-slzb-07/
-  
+
   # Add udev rule for persistent device naming
   services.udev.extraRules = ''
     # SMLIGHT SLZB-07 Zigbee device with serial number acc96c324273ed11a4156aeefdf7b791
     SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", ATTRS{serial}=="acc96c324273ed11a4156aeefdf7b791", SYMLINK+="zigbee_adapter", SYMLINK+="ttyUSB0"
   '';
-  
+
   services.zigbee2mqtt = {
     enable = true;
     settings = {
