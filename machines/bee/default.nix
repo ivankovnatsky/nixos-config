@@ -62,6 +62,7 @@
     ./home-assistant.nix
     ./mosquitto.nix
     ./zigbee2mqtt.nix
+    ./matter-server.nix
     ./bluetooth.nix
 
     # Storage
