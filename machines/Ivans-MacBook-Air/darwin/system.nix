@@ -8,6 +8,13 @@
         InitialKeyRepeat = 120;
         KeyRepeat = 120;
       };
+      # https://github.com/nix-darwin/nix-darwin/blob/master/modules/system/defaults/WindowManager.nix#L6
+      WindowManager = {
+        EnableTilingByEdgeDrag = true;
+        EnableTopTilingByEdgeDrag = true;
+        EnableTilingOptionAccelerator = true;
+        EnableTiledWindowMargins = true;
+      };
       CustomUserPreferences = {
         "com.apple.Safari" = {
           "ShowFullURLInSmartSearchField" = true;
