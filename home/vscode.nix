@@ -27,6 +27,7 @@ let
     "update.mode" = "manual";
     "vim.relativeLineNumbers" = true;
     "window.autoDetectColorScheme" = true;
+    "window.commandCenter" = 1;
     "windsurf.autoExecutionPolicy" = "off";
     "windsurf.autocompleteSpeed" = "default";
     "windsurf.chatFontSize" = "default";
