@@ -14,7 +14,6 @@ tar \
     --exclude='**/.cache/nix/**' \
     --exclude='**/Library/Group Containers/group.com.apple.CoreSpeech/**' \
     --exclude='**/Library/Group Containers/group.com.apple.secure-control-center-preferences/**' \
-    --no-xattrs \
     -c \
     $USER | \
     pv | \
