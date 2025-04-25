@@ -82,8 +82,8 @@ in
       { path = "${homePath}/Applications/X.app/"; }
       { path = "${homePath}/Applications/WhatsApp Web.app/"; }
       { path = "${homePath}/Applications/Telegram Web.app/"; }
-      { path = "${homePath}/Applications/ChatGPTWeb.app/"; }
-      { path = "${homePath}/Applications/ClaudeWeb.app/"; }
+      { path = "${homePath}/Applications/ChatGPT Web.app/"; }
+      { path = "${homePath}/Applications/Claude Web.app/"; }
 
       {
         path = "${homePath}/Downloads/";
