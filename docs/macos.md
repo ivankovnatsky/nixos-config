@@ -2,6 +2,11 @@
 
 Related to macOS various configuration and tweaks.
 
+## System Settings
+
+* Enable `Use the Caps Lock key to switch to and from ABC`
+* Enable `Automatically switch to a document's input source`
+
 ## Safari
 
 ### Keyboard Shortcuts
