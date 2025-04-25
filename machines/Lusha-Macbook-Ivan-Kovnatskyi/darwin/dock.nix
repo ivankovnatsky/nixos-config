@@ -71,8 +71,8 @@ in
       }
 
       # Safari Web Apps
-      { path = "${homePath}/Applications/ChatGPTWeb.app/"; }
-      { path = "${homePath}/Applications/ClaudeWeb.app/"; }
+      { path = "${homePath}/Applications/ChatGPT Web.app/"; }
+      { path = "${homePath}/Applications/Claude Web.app/"; }
 
       {
         path = "${config.users.users.${username}.home}/Downloads/";
