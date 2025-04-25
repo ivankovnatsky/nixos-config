@@ -37,8 +37,8 @@
         insecureSkipHostcheck = false;
         insecureAllowFrameLoading = false;
 
-        user = config.secrets.syncthingCredentials.username;
-        password = config.secrets.syncthingCredentials.hashedPassword;
+        user = config.secrets.syncthing.credentials.username;
+        password = config.secrets.syncthing.credentials.hashedPassword;
       };
 
       # Global options
@@ -54,9 +54,6 @@
 
       # Define your devices here
       devices = {
-        "Lusha-Macbook-Ivan-Kovnatskyi" = { 
-          id = config.secrets.syncthing.devices.LushaMacbookIvanKovnatskyi;
-        };
         "Ivans-Mac-mini" = {
           id = config.secrets.syncthing.devices.IvansMacMini;
         };
@@ -66,8 +63,11 @@
         "Ivans-MacBook-Pro" = {
           id = config.secrets.syncthing.devices.IvansMacBookPro;
         };
+        "Lusha-Macbook-Ivan-Kovnatskyi" = {
+          id = config.secrets.syncthing.devices.LushaMacbookIvanKovnatskyi;
+        };
         "Ally" = {
-          id = "ZIM6RNR-RYUHZQE-L5KJUAT-BF7MAJ4-NSIZIIY-USMGRTU-YHT4T5M-KZX6DQE";
+          id = config.secrets.syncthing.devices.Ally;
         };
       };
 
