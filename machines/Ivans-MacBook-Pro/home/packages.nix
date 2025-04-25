@@ -29,6 +29,7 @@
     nodejs
     parallel
     pigz
+    pv
     rclone
     rectangle # macOS: Window manager
     ripgrep
