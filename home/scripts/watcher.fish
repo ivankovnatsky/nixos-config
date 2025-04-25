@@ -23,7 +23,7 @@ function show_help
 end
 
 # Check for help flag
-if test (count $argv) -eq 0; or test "$argv[1]" = "--help"; or test "$argv[1]" = "-h"
+if test (count $argv) -eq 0; or test "$argv[1]" = --help; or test "$argv[1]" = -h
     show_help
 end
 
@@ -43,8 +43,7 @@ else
 end
 
 while true
-    clear
-    echo "----------------------------------------"
+    echo ----------------------------------------
     echo "Every $interval: $command"
     echo "Press Ctrl+C to exit"
     echo "Last updated: "(date)
