@@ -23,12 +23,41 @@ let
   # External domain from secrets module for easier reference
   externalDomain = config.secrets.externalDomain;
 
+  # Create a Caddy package with the required DNS plugin
+  # Use the caddy-with-plugins overlay to get the withPlugins functionality
+  # This works in NixOS 24.11 before the function is available in the standard package
+  caddyWithPlugins = pkgs.caddy-with-plugins.withPlugins {
+    # https://github.com/caddy-dns/cloudflare/issues/97#issuecomment-2784508762
+    plugins = [ "github.com/caddy-dns/cloudflare@v0.0.0-20250214163716-188b4850c0f2" ];
+    hash = "sha256-dYZvFCSuDsOAYg8GgkdpulIzFud9EmP9mS81c87sOoY=";
+  };
+
+  # Path to the Caddyfile
+  # Using Caddyfile seperately to have a proper formatting to avoid ridiculous
+  # warnings and for consistency
+  caddyfilePath = ../../templates/Caddyfile;
+
+  # Process the Caddyfile to substitute variables
+  Caddyfile = pkgs.runCommand "caddyfile" {
+    inherit bindAddress externalDomain;
+    letsEncryptEmail = config.secrets.letsEncryptEmail;
+    cloudflareApiToken = config.secrets.cloudflareApiToken;
+    beeIp = config.flags.beeIp;
+    miniIp = config.flags.miniIp;
+    logPathPrefix = "/var/log";
+  } ''
+    substituteAll ${caddyfilePath} $out
+  '';
 in
 {
-  # Configure Caddy log directory
+  # https://github.com/NixOS/nixpkgs/blob/nixos-24.11/nixos/modules/services/web-servers/caddy/default.nix
+  # Configure Caddy directories and permissions
   systemd.tmpfiles.rules = [
+    # Log directory
     "d /var/log/caddy 0755 caddy caddy -"
     "Z /var/log/caddy/* 0644 caddy caddy -"
+    # State directory
+    "d /var/lib/caddy 0700 caddy caddy -"
   ];
 
   # Enable Caddy web server as a reverse proxy
@@ -172,7 +201,7 @@ in
       # Simplified domain for Sonarr (singleton service)
       sonarr.${externalDomain}:443 {
         bind ${bindAddress}
-        
+
         # Proxy to Sonarr
         reverse_proxy ${config.flags.beeIp}:8989
       }
@@ -194,7 +223,7 @@ in
           # Enable WebSocket support
           header_up X-Real-IP {remote_host}
           header_up Host {host}
-          
+
           # Increase timeouts for streaming
           transport http {
             keepalive 12h
@@ -248,7 +277,7 @@ in
           # Enable WebSocket support
           header_up X-Real-IP {remote_host}
           header_up Host {host}
-          
+
           # Increase timeouts for streaming
           transport http {
             keepalive 12h
@@ -256,7 +285,7 @@ in
           }
         }
       }
-      
+
       # Netdata
       netdata-bee.${externalDomain}:443 {
         bind ${bindAddress}
@@ -276,7 +305,7 @@ in
         # Redirect root to v1 dashboard
         redir / /v1/ 302
         redir /index.html /v1/ 302
-        
+
         # Proxy to Netdata
         reverse_proxy ${config.flags.miniIp}:19999 {
           # Enable WebSocket support
@@ -286,6 +315,11 @@ in
       }
     '';
   };
+
+  # https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes
+  # For HTTP/3 performance
+  boot.kernel.sysctl."net.core.rmem_max" = 2500000;
+  boot.kernel.sysctl."net.core.wmem_max" = 2500000;
 
   # Open HTTP and HTTPS ports in the firewall
   networking.firewall.allowedTCPPorts = [
