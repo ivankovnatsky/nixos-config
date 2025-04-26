@@ -40,12 +40,13 @@
       "**/.stfolder"
       "**/__worktrees/"
     ];
-    delta = {
-      enable = true;
-      options = {
-        features = "interactive";
-      };
-    };
+    # Does not render properly when using `git forgit log`.
+    # delta = {
+    #   enable = true;
+    #   options = {
+    #     features = "interactive";
+    #   };
+    # };
     # diff-highlight.enable = true;
     # difftastic.enable = true;
     # diff-so-fancy.enable = true;
