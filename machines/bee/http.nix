@@ -161,7 +161,7 @@ in
         bind ${bindAddress}
 
         # Proxy to Prowlarr
-        reverse_proxy 127.0.0.1:9696
+        reverse_proxy ${config.flags.beeIp}:9696
       }
 
       # Simplified domain for Radarr (singleton service)
@@ -169,7 +169,7 @@ in
         bind ${bindAddress}
 
         # Proxy to Radarr
-        reverse_proxy 127.0.0.1:7878
+        reverse_proxy ${config.flags.beeIp}:7878
       }
 
       # Simplified domain for Sonarr (singleton service)
@@ -177,7 +177,7 @@ in
         bind ${bindAddress}
         
         # Proxy to Sonarr
-        reverse_proxy 127.0.0.1:8989
+        reverse_proxy ${config.flags.beeIp}:8989
       }
 
       # Simplified domain for Transmission (singleton service)
@@ -185,7 +185,7 @@ in
         bind ${bindAddress}
 
         # Proxy to Transmission WebUI
-        reverse_proxy 127.0.0.1:9091
+        reverse_proxy ${config.flags.beeIp}:9091
       }
 
       # Simplified domain for Plex (singleton service)
@@ -193,7 +193,7 @@ in
         bind ${bindAddress}
 
         # Proxy to Plex with WebSocket support
-        reverse_proxy 127.0.0.1:32400 {
+        reverse_proxy ${config.flags.beeIp}:32400 {
           # Enable WebSocket support
           header_up X-Real-IP {remote_host}
           header_up Host {host}
@@ -211,7 +211,7 @@ in
         bind ${bindAddress}
 
         # Proxy to Grafana
-        reverse_proxy 127.0.0.1:3000 {
+        reverse_proxy ${config.flags.beeIp}:3000 {
           # Enable WebSocket support
           header_up X-Real-IP {remote_host}
           header_up Host {host}
@@ -223,7 +223,7 @@ in
       #   bind ${bindAddress}
 
       #   # Proxy to FlareSolverr
-      #   reverse_proxy 127.0.0.1:8191 {
+      #   reverse_proxy ${config.flags.beeIp}:8191 {
       #     # Enable WebSocket support
       #     header_up X-Real-IP {remote_host}
       #     header_up Host {host}
@@ -235,7 +235,7 @@ in
         bind ${bindAddress}
 
         # Proxy to Audiobookshelf
-        reverse_proxy 127.0.0.1:8000 {
+        reverse_proxy ${config.flags.beeIp}:8000 {
           # Enable WebSocket support
           header_up X-Real-IP {remote_host}
           header_up Host {host}
@@ -247,7 +247,7 @@ in
         bind ${bindAddress}
 
         # Proxy to Jellyfin
-        reverse_proxy 127.0.0.1:8096 {
+        reverse_proxy ${config.flags.beeIp}:8096 {
           # Enable WebSocket support
           header_up X-Real-IP {remote_host}
           header_up Host {host}
@@ -265,7 +265,7 @@ in
         bind ${bindAddress}
 
         # Proxy to Netdata
-        reverse_proxy 127.0.0.1:19999 {
+        reverse_proxy ${config.flags.beeIp}:19999 {
           # Enable WebSocket support
           header_up X-Real-IP {remote_host}
           header_up Host {host}
