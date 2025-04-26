@@ -206,34 +206,6 @@ in
         }
       }
 
-      # Netdata
-      netdata-bee.${externalDomain}:443 {
-        bind ${bindAddress}
-
-        # Proxy to Netdata
-        reverse_proxy 127.0.0.1:19999 {
-          # Enable WebSocket support
-          header_up X-Real-IP {remote_host}
-          header_up Host {host}
-        }
-      }
-
-      netdata-mini.${externalDomain} {
-        bind ${bindAddress}
-
-        # FIXME: Should be fixed in nix-darwin or upsteam?
-        # Redirect root to v1 dashboard
-        redir / /v1/ 302
-        redir /index.html /v1/ 302
-        
-        # Proxy to Netdata
-        reverse_proxy ${config.flags.miniIp}:19999 {
-          # Enable WebSocket support
-          header_up X-Real-IP {remote_host}
-          header_up Host {host}
-        }
-      }
-
       # Simplified domain for Grafana (singleton service)
       grafana.${externalDomain} {
         bind ${bindAddress}
@@ -285,6 +257,34 @@ in
             keepalive 12h
             keepalive_idle_conns 100
           }
+        }
+      }
+      
+      # Netdata
+      netdata-bee.${externalDomain}:443 {
+        bind ${bindAddress}
+
+        # Proxy to Netdata
+        reverse_proxy 127.0.0.1:19999 {
+          # Enable WebSocket support
+          header_up X-Real-IP {remote_host}
+          header_up Host {host}
+        }
+      }
+
+      netdata-mini.${externalDomain} {
+        bind ${bindAddress}
+
+        # FIXME: Should be fixed in nix-darwin or upsteam?
+        # Redirect root to v1 dashboard
+        redir / /v1/ 302
+        redir /index.html /v1/ 302
+        
+        # Proxy to Netdata
+        reverse_proxy ${config.flags.miniIp}:19999 {
+          # Enable WebSocket support
+          header_up X-Real-IP {remote_host}
+          header_up Host {host}
         }
       }
     '';
