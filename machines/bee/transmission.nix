@@ -13,7 +13,7 @@
       rpc-port = 9091;
       rpc-host-whitelist-enabled = false;
       rpc-authentication-required = false;
-      
+
       # Explicitly disable IP whitelist to allow proxy connections
       rpc-whitelist-enabled = false;
       # Include local network and Mac mini IP if whitelist is ever enabled
@@ -37,7 +37,7 @@
       cache-size-mb = 4;
       queue-stalled-enabled = true;
       queue-stalled-minutes = 30;
-      
+
       # Seeding control (crucial for Sonarr cleanup)
       ratio-limit = 1.0; # Lowered from 2.0 to have quicker cleanup
       ratio-limit-enabled = true; # Enable ratio limit to make Sonarr able to remove completed downloads
@@ -45,7 +45,7 @@
       seed-time-limit-enabled = true; # Enable seed time limit for Sonarr cleanup
       idle-seeding-limit = 30; # Additional 30 minutes idle time before pausing
       idle-seeding-limit-enabled = true; # Enable idle seeding limit as extra measure
-      
+
       # Important: This ensures torrents actually stop when reaching limits
       script-torrent-done-enabled = true; # This is key for Sonarr cleanup
 

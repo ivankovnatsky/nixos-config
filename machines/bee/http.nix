@@ -38,16 +38,19 @@ let
   caddyfilePath = ../../templates/Caddyfile;
 
   # Process the Caddyfile to substitute variables
-  Caddyfile = pkgs.runCommand "caddyfile" {
-    inherit bindAddress externalDomain;
-    letsEncryptEmail = config.secrets.letsEncryptEmail;
-    cloudflareApiToken = config.secrets.cloudflareApiToken;
-    beeIp = config.flags.beeIp;
-    miniIp = config.flags.miniIp;
-    logPathPrefix = "/var/log";
-  } ''
-    substituteAll ${caddyfilePath} $out
-  '';
+  Caddyfile =
+    pkgs.runCommand "caddyfile"
+      {
+        inherit bindAddress externalDomain;
+        letsEncryptEmail = config.secrets.letsEncryptEmail;
+        cloudflareApiToken = config.secrets.cloudflareApiToken;
+        beeIp = config.flags.beeIp;
+        miniIp = config.flags.miniIp;
+        logPathPrefix = "/var/log";
+      }
+      ''
+        substituteAll ${caddyfilePath} $out
+      '';
 in
 {
   # https://github.com/NixOS/nixpkgs/blob/nixos-24.11/nixos/modules/services/web-servers/caddy/default.nix

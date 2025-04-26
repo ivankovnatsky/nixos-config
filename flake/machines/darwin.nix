@@ -5,20 +5,22 @@
     modules = [
       # Import machine-specific configuration
       ../../machines/Ivans-MacBook-Pro
-      
+
       # Basic system configuration
       {
         nixpkgs.overlays = [ inputs.self.overlay ];
         nixpkgs.config.allowUnfree = true;
         nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
-        _module.args = { flake-inputs = inputs; };
-        
+        _module.args = {
+          flake-inputs = inputs;
+        };
+
         # System settings
         networking.hostName = "Ivans-MacBook-Pro";
         users.users.ivan.home = "/Users/ivan";
         system.stateVersion = 4;
       }
-      
+
       # Home Manager module
       inputs.home-manager.darwinModules.home-manager
       {
@@ -29,7 +31,7 @@
             imports = [
               ../../machines/Ivans-MacBook-Pro/home
               inputs.nixvim.homeManagerModules.nixvim
-              { 
+              {
                 programs.home-manager.enable = true;
                 home.username = "ivan";
                 home.stateVersion = "23.11";
@@ -49,26 +51,29 @@
           ];
         };
       }
-      
+
       # Homebrew module
       inputs.nix-homebrew.darwinModules.nix-homebrew
-      ({ config, ... }: {
-        homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
-        nix-homebrew = {
-          enable = true;
-          enableRosetta = false;
-          user = "ivan";
-          autoMigrate = true;
-          taps = {
-            "homebrew/homebrew-core" = inputs.homebrew-core;
-            "homebrew/homebrew-cask" = inputs.homebrew-cask;
-            "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
+      (
+        { config, ... }:
+        {
+          homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
+          nix-homebrew = {
+            enable = true;
+            enableRosetta = false;
+            user = "ivan";
+            autoMigrate = true;
+            taps = {
+              "homebrew/homebrew-core" = inputs.homebrew-core;
+              "homebrew/homebrew-cask" = inputs.homebrew-cask;
+              "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
+            };
+            mutableTaps = false;
           };
-          mutableTaps = false;
-        };
-      })
+        }
+      )
     ];
-    specialArgs = { 
+    specialArgs = {
       system = "aarch64-darwin";
       username = "ivan";
     };
@@ -79,20 +84,22 @@
     modules = [
       # Import machine-specific configuration
       ../../machines/Ivans-MacBook-Air
-      
+
       # Basic system configuration
       {
         nixpkgs.overlays = [ inputs.self.overlay ];
         nixpkgs.config.allowUnfree = true;
         nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
-        _module.args = { flake-inputs = inputs; };
-        
+        _module.args = {
+          flake-inputs = inputs;
+        };
+
         # System settings
         networking.hostName = "Ivans-MacBook-Air";
         users.users.ivan.home = "/Users/ivan";
         system.stateVersion = 4;
       }
-      
+
       # Home Manager module
       inputs.home-manager.darwinModules.home-manager
       {
@@ -103,7 +110,7 @@
             imports = [
               ../../machines/Ivans-MacBook-Air/home
               inputs.nixvim.homeManagerModules.nixvim
-              { 
+              {
                 programs.home-manager.enable = true;
                 home.username = "ivan";
                 home.stateVersion = "22.05";
@@ -123,26 +130,29 @@
           ];
         };
       }
-      
+
       # Homebrew module
       inputs.nix-homebrew.darwinModules.nix-homebrew
-      ({ config, ... }: {
-        homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
-        nix-homebrew = {
-          enable = true;
-          enableRosetta = false;
-          user = "ivan";
-          autoMigrate = true;
-          taps = {
-            "homebrew/homebrew-core" = inputs.homebrew-core;
-            "homebrew/homebrew-cask" = inputs.homebrew-cask;
-            "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
+      (
+        { config, ... }:
+        {
+          homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
+          nix-homebrew = {
+            enable = true;
+            enableRosetta = false;
+            user = "ivan";
+            autoMigrate = true;
+            taps = {
+              "homebrew/homebrew-core" = inputs.homebrew-core;
+              "homebrew/homebrew-cask" = inputs.homebrew-cask;
+              "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
+            };
+            mutableTaps = false;
           };
-          mutableTaps = false;
-        };
-      })
+        }
+      )
     ];
-    specialArgs = { 
+    specialArgs = {
       system = "aarch64-darwin";
       username = "ivan";
     };
@@ -153,24 +163,26 @@
     modules = [
       # Import machine-specific configuration
       ../../machines/Ivans-Mac-mini
-      
+
       # Basic system configuration
       {
         nixpkgs.overlays = [ inputs.self.overlay ];
         nixpkgs.config.allowUnfree = true;
-        nix.nixPath = [ 
-          "nixpkgs=${inputs.nixpkgs-release}" 
+        nix.nixPath = [
+          "nixpkgs=${inputs.nixpkgs-release}"
           "nixpkgs-release=${inputs.nixpkgs-release}"
         ];
-        _module.args = { flake-inputs = inputs; };
-        
+        _module.args = {
+          flake-inputs = inputs;
+        };
+
         # System settings
         networking.hostName = "Ivans-Mac-mini";
         users.users.ivan.home = "/Users/ivan";
         system.stateVersion = 5;
       }
     ];
-    specialArgs = { 
+    specialArgs = {
       system = "aarch64-darwin";
       username = "ivan";
     };
@@ -181,20 +193,22 @@
     modules = [
       # Import machine-specific configuration
       ../../machines/Lusha-Macbook-Ivan-Kovnatskyi
-      
+
       # Basic system configuration
       {
         nixpkgs.overlays = [ inputs.self.overlay ];
         nixpkgs.config.allowUnfree = true;
         nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
-        _module.args = { flake-inputs = inputs; };
-        
+        _module.args = {
+          flake-inputs = inputs;
+        };
+
         # System settings
         networking.hostName = "Lusha-Macbook-Ivan-Kovnatskyi";
         users.users."Ivan.Kovnatskyi".home = "/Users/Ivan.Kovnatskyi";
         system.stateVersion = 4;
       }
-      
+
       # Home Manager module
       inputs.home-manager.darwinModules.home-manager
       {
@@ -205,7 +219,7 @@
             imports = [
               ../../machines/Lusha-Macbook-Ivan-Kovnatskyi/home
               inputs.nixvim.homeManagerModules.nixvim
-              { 
+              {
                 programs.home-manager.enable = true;
                 home.username = "Ivan.Kovnatskyi";
                 home.stateVersion = "24.05";
@@ -262,26 +276,29 @@
           ];
         };
       }
-      
+
       # Homebrew module
       inputs.nix-homebrew.darwinModules.nix-homebrew
-      ({ config, ... }: {
-        homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
-        nix-homebrew = {
-          enable = true;
-          enableRosetta = false;
-          user = "Ivan.Kovnatskyi";
-          autoMigrate = true;
-          taps = {
-            "homebrew/homebrew-core" = inputs.homebrew-core;
-            "homebrew/homebrew-cask" = inputs.homebrew-cask;
-            "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
+      (
+        { config, ... }:
+        {
+          homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
+          nix-homebrew = {
+            enable = true;
+            enableRosetta = false;
+            user = "Ivan.Kovnatskyi";
+            autoMigrate = true;
+            taps = {
+              "homebrew/homebrew-core" = inputs.homebrew-core;
+              "homebrew/homebrew-cask" = inputs.homebrew-cask;
+              "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
+            };
+            mutableTaps = false;
           };
-          mutableTaps = false;
-        };
-      })
+        }
+      )
     ];
-    specialArgs = { 
+    specialArgs = {
       system = "aarch64-darwin";
       username = "Ivan.Kovnatskyi";
     };

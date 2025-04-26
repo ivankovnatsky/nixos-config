@@ -30,5 +30,5 @@
   ];
 
   # Make sure the media group exists
-  users.groups.media = {};
+  users.groups.media = { };
 }

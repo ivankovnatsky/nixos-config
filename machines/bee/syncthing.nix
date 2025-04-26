@@ -1,7 +1,7 @@
 { config, ... }:
 {
   # Enable the Syncthing service
-  # 
+  #
   services.syncthing = {
     enable = true;
 

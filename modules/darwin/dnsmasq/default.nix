@@ -107,24 +107,24 @@ in
         ${optionalString (port != "53") "echo \"port ${port}\" > /etc/resolver/${domain}"}
       '')
     );
-    
+
     launchd.daemons.dnsmasq = {
-      command = 
+      command =
         let
           startDnsmasqScript = pkgs.writeShellScriptBin "start-dnsmasq" ''
             #!/bin/sh
-            
+
             # Create the required directories
             echo "Setting up log directories..."
             mkdir -p /tmp/log/dnsmasq
             chmod 755 /tmp/log/dnsmasq
-            
+
             echo "Starting dnsmasq..."
             exec ${cfg.package}/bin/dnsmasq -k -C ${configFile}
           '';
         in
         "${startDnsmasqScript}/bin/start-dnsmasq";
-        
+
       serviceConfig = {
         Label = "org.nixos.dnsmasq";
         RunAtLoad = true;

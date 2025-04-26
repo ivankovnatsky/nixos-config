@@ -49,16 +49,19 @@ let
   caddyfilePath = ../../templates/Caddyfile;
 
   # Process the Caddyfile template with the local variables
-  Caddyfile = pkgs.runCommand "caddyfile" {
-    inherit bindAddress externalDomain;
-    letsEncryptEmail = config.secrets.letsEncryptEmail;
-    cloudflareApiToken = config.secrets.cloudflareApiToken;
-    beeIp = config.flags.beeIp;
-    miniIp = config.flags.miniIp;
-    logPathPrefix = "/tmp/log";
-  } ''
-    substituteAll ${caddyfilePath} $out
-  '';
+  Caddyfile =
+    pkgs.runCommand "caddyfile"
+      {
+        inherit bindAddress externalDomain;
+        letsEncryptEmail = config.secrets.letsEncryptEmail;
+        cloudflareApiToken = config.secrets.cloudflareApiToken;
+        beeIp = config.flags.beeIp;
+        miniIp = config.flags.miniIp;
+        logPathPrefix = "/tmp/log";
+      }
+      ''
+        substituteAll ${caddyfilePath} $out
+      '';
 in
 {
   # Configure launchd service for Caddy web server

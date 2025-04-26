@@ -8,11 +8,11 @@
   services.jellyfin = {
     enable = true;
     openFirewall = true;
-    
+
     # Use default user/group from the module
     user = "jellyfin";
     group = "jellyfin";
-    
+
     # Configuration directories
     dataDir = "/var/lib/jellyfin";
   };
@@ -21,5 +21,5 @@
   users.users.jellyfin.extraGroups = [ "media" ];
 
   # Make sure the media group exists
-  users.groups.media = {};
+  users.groups.media = { };
 }

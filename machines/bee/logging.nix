@@ -1,6 +1,7 @@
 { config, pkgs, ... }:
 
-let externalDomain = config.secrets.externalDomain;
+let
+  externalDomain = config.secrets.externalDomain;
 
 in
 {
