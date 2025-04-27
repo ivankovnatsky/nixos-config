@@ -200,4 +200,26 @@
     # Create /storage/Data if it doesn't exist and ensure correct permissions
     "d /storage/Data 0700 ivan users - -"
   ];
+
+  # ```
+  #   Filesystem Watcher Errors
+  # For the following folders an error occurred while starting to watch for
+  # changes. It will be retried every minute, so the errors might go away soon.
+  # If they persist, try to fix the underlying issue and ask for help if you
+  # can't.  Support
+  # 
+  # Sources	failed to setup inotify handler. Please increase inotify limits,
+  # see https://docs.syncthing.net/users/faq.html#inotify-limits
+  # Sources/github.com/NixOS/nixpkgs	failed to setup inotify handler. Please
+  # increase inotify limits, see
+  # https://docs.syncthing.net/users/faq.html#inotify-limits
+  # ```
+
+  # This increases inotify watch limits for Syncthing
+  # Reference: https://docs.syncthing.net/users/faq.html#inotify-limits
+  boot.kernel.sysctl = {
+    "fs.inotify.max_user_watches" = 204800;      # Default: 8192
+    "fs.inotify.max_user_instances" = 512;       # Default: 128 
+    "fs.inotify.max_queued_events" = 32768;      # Default: 16384
+  };
 }
