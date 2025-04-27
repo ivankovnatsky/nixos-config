@@ -13,6 +13,14 @@
 # Using public domains with Let's Encrypt is preferred over creating a local CA (which is complex to setup).
 # For local services, it's simpler to buy a cheap domain and use public certs with DNS validation.
 
+# After re-apply config after git rebase of two commits removing externalDomain and syncthing IDs, had to do this:
+# ```
+# [ivan@bee:/var/lib/caddy]$ pwd
+# /var/lib/caddy
+# 
+# [ivan@bee:/var/lib/caddy]$ sudo find . -user 239 -exec chown -v caddy:caddy '{}' \;
+# ```
+
 # References:
 # * https://caddyserver.com/docs/automatic-https#acme-challenges
 
