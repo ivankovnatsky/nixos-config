@@ -4,6 +4,8 @@
   # 2. Create your root user during the initial setup process
   # 3. Add libraries for your media, pointing to appropriate directories in /storage/media
 
+  # TODO: Can we configure through code?
+
   # Enable Jellyfin Media Server
   services.jellyfin = {
     enable = true;
