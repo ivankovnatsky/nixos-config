@@ -40,7 +40,6 @@ in
       { path = "/Applications/Google Chrome.app/"; }
       { path = "/Applications/Slack.app/"; }
       { path = "/Applications/zoom.us.app/"; }
-      { path = "/Applications/DBeaver.app/"; }
 
       {
         type = "spacer";
@@ -49,6 +48,7 @@ in
 
       # Installed using homebrew
       { path = "/Applications/Chromium.app/"; }
+      { path = "/Applications/DBeaver.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }
       { path = "/Applications/MindMac.app/"; }
