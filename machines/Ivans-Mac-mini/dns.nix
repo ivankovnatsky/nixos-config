@@ -23,7 +23,10 @@
       # dnssec_return_status = "GETDNS_EXTENSION_TRUE";
       round_robin_upstreams = 1;
       idle_timeout = 10000;
-      listen_addresses = [ "127.0.0.1@5453" ];
+      listen_addresses = [
+        "127.0.0.1@5453"
+        "${config.flags.miniIp}@5453"
+      ];
       upstream_recursive_servers = [
         {
           address_data = lib.elemAt config.secrets.nextDnsServersMini 0;

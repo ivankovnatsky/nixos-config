@@ -252,3 +252,41 @@ files-mini.@externalDomain@:443 {
 		}
 	}
 }
+
+# DNS over HTTPS for bee
+dns-bee.@externalDomain@ {
+	bind @bindAddress@
+
+	# Proxy to local doh-server
+	reverse_proxy /dns-query http://@beeIp@:8053 {
+		# Enable client IP forwarding for EDNS
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
+	log {
+		output file @logPathPrefix@/caddy/dns-bee.log {
+			roll_size 10MB
+			roll_keep 5
+		}
+	}
+}
+
+# DNS over HTTPS for mini
+dns-mini.@externalDomain@ {
+	bind @bindAddress@
+
+	# Proxy to local doh-server
+	reverse_proxy /dns-query http://@miniIp@:8053 {
+		# Enable client IP forwarding for EDNS
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
+	log {
+		output file @logPathPrefix@/caddy/dns-mini.log {
+			roll_size 10MB
+			roll_keep 5
+		}
+	}
+}
