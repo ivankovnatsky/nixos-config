@@ -80,8 +80,6 @@ in
       let
         # Create the Caddy starter script that waits for the volume
         caddyScript = pkgs.writeShellScriptBin "caddy-starter" ''
-          #!/bin/sh
-
           # Wait for the Samsung2TB volume to be mounted using the built-in wait4path utility
           echo "Waiting for ${volumePath} to be available..."
           /bin/wait4path "${volumePath}"

@@ -71,11 +71,9 @@ in
 
       command = let
         startScript = pkgs.writeShellScriptBin "start-cloudflared" ''
-          #!/bin/sh
-          
           # Create log directory
-          mkdir -p /var/log/cloudflared
-          chmod 755 /var/log/cloudflared
+          mkdir -p /tmp/log/launchd
+          chmod 755 /tmp/log/launchd
 
           echo "Starting cloudflared..."
           exec ${cfg.package}/bin/cloudflared proxy-dns \
