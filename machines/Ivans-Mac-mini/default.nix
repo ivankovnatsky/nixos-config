@@ -5,6 +5,7 @@
     ../../modules/flags
     ../../modules/secrets
     ./dns.nix
+    ./doh.nix
     ./logrotate.nix
     ./miniserve.nix
     ./netdata.nix
