@@ -34,3 +34,4 @@
   - [ ] Add mDNS support
 - [ ] Mini
   - [ ] Differentiate daemons logs and agents logs under /tmp
+- [ ] Go over all https services in Caddy and see if we expose externally anything without a password
