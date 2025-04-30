@@ -41,7 +41,6 @@ in
           let
             # Create the rebuild watch script
             rebuildWatchScript = pkgs.writeShellScriptBin "nixos-rebuild-watch" ''
-              #!/bin/sh
               cd ${cfg.nixosConfigPath}
 
               echo "Starting watchman-based rebuild for NixOS..."

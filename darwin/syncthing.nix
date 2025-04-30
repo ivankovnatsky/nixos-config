@@ -36,8 +36,6 @@ in
       let
         # Create a startup script that waits for external volume to be fully available
         startupScript = pkgs.writeShellScriptBin "syncthing-start" ''
-          #!/bin/sh
-
           # Wait for the external volume to be available
           /bin/wait4path "${workingDirectory}"
 

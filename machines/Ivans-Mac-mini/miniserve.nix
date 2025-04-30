@@ -21,8 +21,6 @@
       let
         # Create the miniserve starter script
         miniserveScript = pkgs.writeShellScriptBin "miniserve-starter" ''
-          #!/bin/sh
-
           # Wait for the Samsung2TB volume to be mounted using the built-in wait4path utility
           echo "Waiting for /Volumes/Samsung2TB to be available..."
           /bin/wait4path "/Volumes/Samsung2TB"

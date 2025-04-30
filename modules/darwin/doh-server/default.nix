@@ -102,8 +102,6 @@ in
       command = let
         configFile = toml.generate "doh-server.conf" cfg.settings;
         startScript = pkgs.writeShellScriptBin "start-doh-server" ''
-          #!/bin/sh
-          
           # Create log directory
           mkdir -p /tmp/log/doh-server
           chmod 755 /tmp/log/doh-server

@@ -103,8 +103,6 @@ in
       command =
         let
           startDnsmasqScript = pkgs.writeShellScriptBin "start-stubby" ''
-            #!/bin/sh
-
             # Create the required directories
             echo "Setting up log directories..."
             mkdir -p /tmp/log/stubby
