@@ -1,4 +1,6 @@
 {
+  # Manual configuration:
+  # Enabled Windows File Sharing to be able to connect with user/password
   # Import the custom module
   imports = [
     ../../modules/darwin/sharing
