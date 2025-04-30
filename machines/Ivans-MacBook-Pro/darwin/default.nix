@@ -13,6 +13,7 @@
     ../../../modules/secrets
     ../../../system/documentation.nix
     ../../../system/nix.nix
+    ./cloudflared.nix
     ./flags.nix
     ./fonts.nix
     ./security.nix
