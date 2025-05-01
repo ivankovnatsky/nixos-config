@@ -58,6 +58,16 @@ let
         beeIp = config.flags.beeIp;
         miniIp = config.flags.miniIp;
         logPathPrefix = "/tmp/log";
+
+        # Netdata credentials
+        netdataBeeUsername = config.secrets.netdata.bee.username;
+        netdataBeePassword = config.secrets.netdata.bee.password;
+        netdataMiniUsername = config.secrets.netdata.mini.username;
+        netdataMiniPassword = config.secrets.netdata.mini.password;
+
+        # Zigbee credentials
+        zigbeeUsername = config.secrets.zigbee.username;
+        zigbeePassword = config.secrets.zigbee.password;
       }
       ''
         substituteAll ${caddyfilePath} $out

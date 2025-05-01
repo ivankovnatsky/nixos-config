@@ -1,4 +1,19 @@
 {
+  # Manual configuration:
+  #
+  # * Changed auth to Forms (Login Page) and change password for every *arr service:
+  #   * Settings
+  #   * General
+  #   * Save Changes
+  # * Setup transmission password for radarr and sonarr:
+  #   * Settings
+  #   * Download Clients
+  #   * Save
+  # * Disable analytics:
+  #   * Settings
+  #   * General
+  #   * Save Changes
+
   # Enable Radarr
   services.radarr = {
     enable = true;

@@ -1,3 +1,4 @@
+{ config, ... }:
 {
   # https://github.com/transmission/transmission/blob/main/docs/Editing-Configuration-Files.md
   services.transmission = {
@@ -9,10 +10,12 @@
     settings = {
       # Web interface settings
       rpc-enabled = true;
-      rpc-bind-address = "0.0.0.0"; # Listen on all interfaces
+      rpc-bind-address = config.flags.beeIp;
       rpc-port = 9091;
       rpc-host-whitelist-enabled = false;
-      rpc-authentication-required = false;
+      rpc-authentication-required = true;
+      rpc-username = config.secrets.transmission.username;
+      rpc-password = config.secrets.transmission.password;
 
       # Explicitly disable IP whitelist to allow proxy connections
       rpc-whitelist-enabled = false;

@@ -192,6 +192,11 @@ files-bee.@externalDomain@:443 {
 netdata-bee.@externalDomain@:443 {
 	bind @bindAddress@
 
+	# Basic authentication for all paths
+	basic_auth /* {
+		@netdataBeeUsername@ @netdataBeePassword@
+	}
+
 	# Proxy to Netdata
 	reverse_proxy @beeIp@:19999 {
 		# Enable WebSocket support
@@ -203,6 +208,11 @@ netdata-bee.@externalDomain@:443 {
 # Zigbee2MQTT web interface
 zigbee.@externalDomain@:443 {
 	bind @bindAddress@
+
+	# Basic authentication for all paths
+	basic_auth /* {
+		@zigbeeUsername@ @zigbeePassword@
+	}
 
 	# Proxy to Zigbee2MQTT web interface
 	reverse_proxy @beeIp@:8081 {
@@ -221,6 +231,11 @@ sync-mini.@externalDomain@:443 {
 
 netdata-mini.@externalDomain@ {
 	bind @bindAddress@
+
+	# Basic authentication for all paths
+	basic_auth /* {
+		@netdataMiniUsername@ @netdataMiniPassword@
+	}
 
 	# FIXME: Should be fixed in nix-darwin or upsteam?
 	# Redirect root to v1 dashboard
