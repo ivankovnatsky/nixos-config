@@ -14,6 +14,12 @@
 #
 # Note: This module only sets up the launchd service. You'll need to manually
 # configure Syncthing devices and folders using the web interface.
+#
+# Assign only user permissions to dirs:
+# ```console
+# chmod 0700 $DIR1
+# chmod 0700 $DIR2
+# ```
 
 let
   workingDirectory = "/Volumes/Samsung2TB"; # External volume to wait for
