@@ -1,3 +1,4 @@
+{ config, ... }:
 {
   services.netdata = {
     enable = true;
@@ -11,11 +12,15 @@
       debug log = /tmp/log/netdata/debug.log
       error log = /tmp/log/netdata/error.log
       access log = /tmp/log/netdata/access.log
+      bind to = ${config.flags.miniIp}
 
       # Reduce log verbosity
       [logs]
       debug log = info
       error log level = error
+
+      [web]
+      bind to = ${config.flags.miniIp}
     '';
   };
 

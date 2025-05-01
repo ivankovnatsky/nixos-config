@@ -19,7 +19,7 @@
     configDir = "/home/ivan/.config/syncthing";
 
     # Configure to listen on local network (needed for headless access)
-    guiAddress = "0.0.0.0:8384";
+    guiAddress = "${config.flags.beeIp}:8384";
 
     # Open the required ports in the firewall
     openDefaultPorts = true;

@@ -17,7 +17,7 @@
 # ```
 # [ivan@bee:/var/lib/caddy]$ pwd
 # /var/lib/caddy
-# 
+#
 # [ivan@bee:/var/lib/caddy]$ sudo find . -user 239 -exec chown -v caddy:caddy '{}' \;
 # ```
 
@@ -25,8 +25,7 @@
 # * https://caddyserver.com/docs/automatic-https#acme-challenges
 
 let
-  # IP address to bind services to (all interfaces)
-  bindAddress = "0.0.0.0";
+  bindAddress = config.flags.beeIp;
 
   # External domain from secrets module for easier reference
   externalDomain = config.secrets.externalDomain;
@@ -55,7 +54,7 @@ let
         beeIp = config.flags.beeIp;
         miniIp = config.flags.miniIp;
         logPathPrefix = "/var/log";
-        
+
         # Netdata credentials
         netdataBeeUsername = config.secrets.netdata.bee.username;
         netdataBeePassword = config.secrets.netdata.bee.password;

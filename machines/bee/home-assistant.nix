@@ -47,7 +47,7 @@
       # Basic HTTP configuration
       http = {
         # Listen on all interfaces for proxy access
-        server_host = "0.0.0.0";
+        server_host = config.flags.beeIp;
         server_port = 8123;
         # Enable proxy support
         use_x_forwarded_for = true;

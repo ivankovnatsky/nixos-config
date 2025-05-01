@@ -1,3 +1,4 @@
+{ config, ... }:
 {
   # NOTE: Manual Audiobookshelf configuration is required after installation:
   # 1. Access the web UI at https://audiobookshelf.{externalDomain}
@@ -12,7 +13,7 @@
     openFirewall = true;
 
     # Use system-wide access instead of localhost only
-    host = "0.0.0.0";
+    host = config.flags.beeIp;
     port = 8000;
 
     # Use default user/group from the module
