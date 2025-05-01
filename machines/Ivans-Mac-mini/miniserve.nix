@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   ...
 }:
@@ -19,6 +20,9 @@
     # Using command instead of ProgramArguments to utilize wait4path
     command =
       let
+        # Create auth file with username:password
+        authFile = pkgs.writeText "miniserve-auth" "${config.secrets.miniserve.mini.username}:${config.secrets.miniserve.mini.password}";
+
         # Create the miniserve starter script
         miniserveScript = pkgs.writeShellScriptBin "miniserve-starter" ''
           # Wait for the Samsung2TB volume to be mounted using the built-in wait4path utility
@@ -28,9 +32,13 @@
           echo "/Volumes/Samsung2TB is now available!"
           echo "Starting miniserve..."
 
-          # Launch miniserve with minimal options
-          # --hidden: show hidden files
-          exec ${pkgs.miniserve}/bin/miniserve --interfaces 0.0.0.0 --interfaces ::1 --hidden "/Volumes/Samsung2TB"
+          # Launch miniserve with authentication
+          exec ${pkgs.miniserve}/bin/miniserve \
+            --interfaces 127.0.0.1 \
+            --interfaces ::1 \
+            --interfaces ${config.flags.miniIp} \
+            --auth-file ${authFile} \
+            "/Volumes/Samsung2TB"
         '';
       in
       "${miniserveScript}/bin/miniserve-starter";
