@@ -1,11 +1,12 @@
 {
+  config,
   pkgs,
   ...
 }:
 
 # Syncthing configuration for Darwin systems
 #
-# Syncthing will be available at http://0.0.0.0:8384 after reboot or running:
+# Syncthing will be available at http://localnetworkIp:8384 after reboot or running:
 # launchctl kickstart -k gui/$(id -u)/net.syncthing.syncthing
 #
 # Configuration will be stored in ~/Library/Application Support/Syncthing
@@ -16,7 +17,7 @@
 
 let
   workingDirectory = "/Volumes/Samsung2TB"; # External volume to wait for
-  guiAddress = "0.0.0.0:8384"; # Accept connections from any interface
+  guiAddress = "${config.flags.miniIp}:8384";
 in
 {
 

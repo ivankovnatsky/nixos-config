@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 {
   # Enable the Netdata service with enhanced settings
   services.netdata = {
@@ -17,6 +17,12 @@
         "debug log" = "syslog";
         "error log" = "syslog";
         "access log" = "syslog";
+        "bind to" = "${config.flags.beeIp}";
+      };
+
+      # Web settings
+      web = {
+        "bind to" = "${config.flags.beeIp}";
       };
 
       # Disable FREEIPMI plugin (not needed for desktop/mini PCs)

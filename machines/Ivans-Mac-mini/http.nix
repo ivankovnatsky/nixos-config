@@ -27,8 +27,7 @@
 # * https://mjtsai.com/blog/2024/10/02/local-network-privacy-on-sequoia/
 
 let
-  # Use 0.0.0.0 to listen on all interfaces
-  bindAddress = "0.0.0.0";
+  bindAddress = config.flags.miniIp;
 
   # External domain from secrets module for easier reference
   externalDomain = config.secrets.externalDomain;

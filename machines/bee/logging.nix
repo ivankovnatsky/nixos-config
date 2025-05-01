@@ -13,7 +13,7 @@ in
     settings = {
       server = {
         # Listen on all interfaces
-        http_addr = "0.0.0.0";
+        http_addr = config.flags.beeIp;
         http_port = 3000;
         domain = "grafana.${externalDomain}";
         root_url = "https://grafana.${externalDomain}";
