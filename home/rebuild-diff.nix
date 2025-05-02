@@ -12,6 +12,7 @@
 
 # It does not work for the first time, so you shoud comment out import of this file
 {
+  # FIXME: For the first time this fails, we need to make sure this does not fail the rebuild.
   home.activation.report-changes = config.lib.dag.entryAnywhere ''
     ${pkgs.nvd}/bin/nvd --nix-bin-dir=${pkgs.nix}/bin diff $oldGenPath $newGenPath
   '';
