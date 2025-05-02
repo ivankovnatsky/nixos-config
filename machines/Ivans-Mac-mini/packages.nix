@@ -9,7 +9,7 @@
     rclone # Sync out stuff
 
     smctemp # Overlay
-    stats # Desktop Application
+    stats # macOS: System stats; Configure `Check for update` to `Never`.
     dust # For disk usage analysis
 
     wget

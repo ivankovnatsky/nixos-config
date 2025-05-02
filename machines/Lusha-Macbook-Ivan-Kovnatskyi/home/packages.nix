@@ -50,7 +50,7 @@
     magic-wormhole
     mariadb
     mongosh
-    mos # To use PC mouse with natural scrolling GUI
+    mos # macOS: Use PC mode for mouse, instead of natural scrolling
     mycli
     nixfmt-rfc-style
     nixpkgs-master.fluxcd
@@ -75,7 +75,7 @@
     smctemp
     sshpass
     ssm-session-manager-plugin
-    stats # To show CPU, RAM, etc. usage in the menu bar
+    stats # macOS: System stats; Configure `Check for update` to `Never`.
     terraformer
     terragrunt-atlantis-config
     username # Installed as flake

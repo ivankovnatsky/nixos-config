@@ -24,7 +24,7 @@
     ks
     magic-wormhole
     mkpasswd
-    mos # macOS: System stats
+    mos # macOS: Use PC mode for mouse, instead of natural scrolling
     nixfmt-rfc-style
     nodejs
     parallel
@@ -36,7 +36,7 @@
     rust-analyzer
     rustc
     smctemp # Local overlay
-    stats # macOS: System stats
+    stats # macOS: System stats; Configure `Check for update` to `Never`.
     syncthing
     typst
     typstfmt
