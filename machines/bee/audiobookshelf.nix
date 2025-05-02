@@ -4,7 +4,7 @@
   # 1. Access the web UI at https://audiobookshelf.{externalDomain}
   # 2. Create your root user during the initial setup process
   # 3. Add libraries for your audiobooks and podcasts, pointing to:
-  #    - Podcasts library: /storage/media/podcasts
+  #    - Podcasts library: /storage/Data/media/podcasts
   # 4. Configure metadata agents and other settings according to your preferences
 
   # Enable Audiobookshelf server
@@ -27,7 +27,7 @@
 
   # Create media directories with correct permissions if they don't exist
   systemd.tmpfiles.rules = [
-    "d /storage/media/podcasts 0775 audiobookshelf media -"
+    "d /storage/Data/media/podcasts 0775 audiobookshelf media -"
   ];
 
   # Make sure the media group exists

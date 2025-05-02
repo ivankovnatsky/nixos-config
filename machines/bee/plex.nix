@@ -1,8 +1,8 @@
 {
   # NOTE: Manual Plex configuration is required after installation:
   # 1. Create separate libraries for Movies and TV Shows in the Plex web interface
-  # 2. For Movies library: use the 'Movies' type and point to /storage/media/movies
-  # 3. For TV Shows library: use the 'TV Shows' type and point to /storage/media/tv
+  # 2. For Movies library: use the 'Movies' type and point to /storage/Data/media/movies
+  # 3. For TV Shows library: use the 'TV Shows' type and point to /storage/Data/media/tv
   # 4. Make sure to use the appropriate scanner for each library type:
   #    - Movies library should use 'Plex Movie' scanner
   #    - TV Shows library should use 'Plex TV Series' scanner

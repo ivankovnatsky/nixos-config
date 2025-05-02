@@ -21,7 +21,7 @@ DEFAULT_PODCASTS_LIBRARY_ID = (
     "db54da2c-dc16-4fdb-8dd4-5375ae98f738"  # Podcasts library ID
 )
 DEFAULT_PODCASTS_FOLDER_ID = (
-    "fabf78a1-9d87-41a0-8b72-1007e7f10889"  # /storage/media/podcasts folder ID
+    "fabf78a1-9d87-41a0-8b72-1007e7f10889"  # /storage/Data/media/podcasts folder ID
 )
 
 

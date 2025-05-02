@@ -76,7 +76,7 @@
         "Sources/github.com/ivankovnatsky/nixos-config" = {
           id = "shtdy-s2c9s";
           label = "Sources/github.com/ivankovnatsky/nixos-config";
-          path = "/storage/Sources/github.com/ivankovnatsky/nixos-config";
+          path = "/storage/Data/Sources/github.com/ivankovnatsky/nixos-config";
           devices = [
             "Ivans-Mac-mini"
             "Ivans-MacBook-Air"
@@ -87,7 +87,7 @@
         "Sources/github.com/ivankovnatsky/deck" = {
           id = "tgrp6-ccmmf";
           label = "Sources/github.com/ivankovnatsky/deck";
-          path = "/storage/Sources/github.com/ivankovnatsky/deck";
+          path = "/storage/Data/Sources/github.com/ivankovnatsky/deck";
           devices = [
             "Ivans-Mac-mini"
             "Ivans-MacBook-Air"
@@ -97,7 +97,7 @@
         "Sources/github.com/ivankovnatsky/windows-config" = {
           id = "jumpj-dcicb";
           label = "Sources/github.com/ivankovnatsky/windows-config";
-          path = "/storage/Sources/github.com/ivankovnatsky/windows-config";
+          path = "/storage/Data/Sources/github.com/ivankovnatsky/windows-config";
           devices = [
             "Ivans-Mac-mini"
             "Ivans-MacBook-Air"
@@ -107,7 +107,7 @@
         "Sources/github.com/NixOS/nixpkgs" = {
           id = "kwhyl-jbqmu";
           label = "Sources/github.com/NixOS/nixpkgs";
-          path = "/storage/Sources/github.com/NixOS/nixpkgs";
+          path = "/storage/Data/Sources/github.com/NixOS/nixpkgs";
           devices = [
             "Ivans-Mac-mini"
             "Ivans-MacBook-Air"
@@ -118,17 +118,17 @@
         "Sources" = {
           id = "fpbxa-6zw5z";
           label = "Sources";
-          path = "/storage/Sources";
+          path = "/storage/Data/Sources";
           devices = [
             "Ivans-Mac-mini"
             "Ivans-MacBook-Air"
             "Ivans-MacBook-Pro"
           ];
         };
-        "Data" = {
-          id = "data";
-          label = "Data";
-          path = "/storage/Data";
+        "Drive" = {
+          id = "drive";
+          label = "Drive";
+          path = "/storage/Data/Drive";
           devices = [
             "Ivans-Mac-mini"
           ];
@@ -136,7 +136,7 @@
         "Sources/github.com/ivankovnatsky/backup-home-go" = {
           id = "ek7as-rhzzz";
           label = "Sources/github.com/ivankovnatsky/backup-home-go";
-          path = "/storage/Sources/github.com/ivankovnatsky/backup-home-go";
+          path = "/storage/Data/Sources/github.com/ivankovnatsky/backup-home-go";
           devices = [
             "Ivans-Mac-mini"
             "Ivans-MacBook-Air"
@@ -147,7 +147,7 @@
         "Sources/github.com/narugit/smctemp" = {
           id = "smctemp";
           label = "Sources/github.com/narugit/smctemp";
-          path = "/storage/Sources/github.com/narugit/smctemp";
+          path = "/storage/Data/Sources/github.com/narugit/smctemp";
           devices = [
             "Ivans-Mac-mini"
             "Ivans-MacBook-Air"
@@ -184,21 +184,24 @@
 
   # Use systemd-tmpfiles to ensure directories exist with proper permissions
   systemd.tmpfiles.rules = [
+    # Create base /storage/Data directory with root ownership
+    "d /storage/Data 0755 root root - -"
+
     # Create subdirectories mentioned in Syncthing config
-    "d /storage/Sources/github.com 0755 ivan users - -"
-    "d /storage/Sources/github.com/ivankovnatsky 0755 ivan users - -"
-    "d /storage/Sources/github.com/ivankovnatsky/nixos-config 0755 ivan users - -"
-    "d /storage/Sources/github.com/ivankovnatsky/deck 0755 ivan users - -"
-    "d /storage/Sources/github.com/ivankovnatsky/windows-config 0755 ivan users - -"
-    "d /storage/Sources/github.com/ivankovnatsky/backup-home-go 0755 ivan users - -"
+    "d /storage/Data/Sources/github.com 0755 ivan users - -"
+    "d /storage/Data/Sources/github.com/ivankovnatsky 0755 ivan users - -"
+    "d /storage/Data/Sources/github.com/ivankovnatsky/nixos-config 0755 ivan users - -"
+    "d /storage/Data/Sources/github.com/ivankovnatsky/deck 0755 ivan users - -"
+    "d /storage/Data/Sources/github.com/ivankovnatsky/windows-config 0755 ivan users - -"
+    "d /storage/Data/Sources/github.com/ivankovnatsky/backup-home-go 0755 ivan users - -"
 
-    "d /storage/Sources/github.com/NixOS/nixpkgs 0755 ivan users - -"
+    "d /storage/Data/Sources/github.com/NixOS/nixpkgs 0755 ivan users - -"
 
-    # Create /storage/Sources if it doesn't exist and ensure correct permissions
-    "d /storage/Sources 0700 ivan users - -"
+    # Create /storage/Data/Sources if it doesn't exist and ensure correct permissions
+    "d /storage/Data/Sources 0700 ivan users - -"
 
-    # Create /storage/Data if it doesn't exist and ensure correct permissions
-    "d /storage/Data 0700 ivan users - -"
+    # Create /storage/Data/Drive if it doesn't exist and ensure correct permissions
+    "d /storage/Data/Drive 0700 ivan users - -"
   ];
 
   # ```

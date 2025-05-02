@@ -11,7 +11,7 @@
     enable = true;
     shares = {
       "Samsung2TB" = {
-        path = "/Volumes/Samsung2TB";
+        path = "/Volumes/Samsung2TB/Data";
       };
     };
   };
