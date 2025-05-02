@@ -23,10 +23,10 @@
       rpc-whitelist = "192.168.*.*";
 
       # Download settings
-      download-dir = "/storage/media/downloads";
-      incomplete-dir = "/storage/media/downloads/.incomplete";
+      download-dir = "/storage/Data/media/downloads";
+      incomplete-dir = "/storage/Data/media/downloads/.incomplete";
       incomplete-dir-enabled = true;
-      watch-dir = "/storage/media/downloads/watchdir";
+      watch-dir = "/storage/Data/media/downloads/watchdir";
       watch-dir-enabled = true;
 
       # Network settings

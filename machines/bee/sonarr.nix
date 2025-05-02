@@ -28,8 +28,8 @@
 
   # Create media directories with correct permissions
   systemd.tmpfiles.rules = [
-    "d /storage/media/tv 0775 sonarr media -" # Main TV shows directory
-    "d /storage/media/downloads/tv-sonarr 0775 transmission media -" # Where Transmission puts downloaded TV shows
+    "d /storage/Data/media/tv 0775 sonarr media -" # Main TV shows directory
+    "d /storage/Data/media/downloads/tv-sonarr 0775 transmission media -" # Where Transmission puts downloaded TV shows
   ];
 
   # Ensure groups exist and users have correct permissions

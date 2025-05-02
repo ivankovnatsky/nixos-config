@@ -1,7 +1,6 @@
 {
   config,
   pkgs,
-  lib,
   ...
 }:
 
@@ -11,7 +10,7 @@ let
 in
 {
   systemd.services.miniserve = {
-    description = "Miniserve file server for /storage";
+    description = "Miniserve file server for /storage/Data";
     wantedBy = [ "multi-user.target" ];
     after = [
       "network.target"
@@ -26,7 +25,7 @@ in
           --interfaces ::1 \
           --interfaces ${config.flags.beeIp} \
           --auth-file ${authFile} \
-          /storage
+          /storage/Data
       '';
       Restart = "on-failure";
       RestartSec = "5s";
@@ -37,8 +36,8 @@ in
       ProtectHome = true;
       PrivateTmp = true;
 
-      # Make sure the service can access the /storage path
-      ReadWritePaths = "/storage";
+      # Make sure the service can access the /storage/Data path
+      ReadWritePaths = "/storage/Data";
     };
   };
 

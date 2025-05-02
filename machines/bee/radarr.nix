@@ -27,9 +27,13 @@
 
   # Create media directories with correct permissions
   systemd.tmpfiles.rules = [
-    "d /storage/media/movies 0775 radarr media -" # Main movies directory
-    "d /storage/media/downloads 0775 transmission media -" # Where Transmission puts downloaded movies
-    "d /storage/media/downloads/radarr 0775 transmission media -" # Radarr's download directory
+    # Base media directory with group write permissions
+    "d /storage/Data/media 0775 root media - -"
+    
+    # Radarr-specific directories
+    "d /storage/Data/media/movies 0775 radarr media -" # Main movies directory
+    "d /storage/Data/media/downloads 0775 transmission media -" # Where Transmission puts downloaded movies
+    "d /storage/Data/media/downloads/radarr 0775 transmission media -" # Radarr's download directory
   ];
 
   # Ensure groups exist and users have correct permissions

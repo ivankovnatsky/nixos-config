@@ -38,7 +38,7 @@
             --interfaces ::1 \
             --interfaces ${config.flags.miniIp} \
             --auth-file ${authFile} \
-            "/Volumes/Samsung2TB"
+            "/Volumes/Samsung2TB/Data"
         '';
       in
       "${miniserveScript}/bin/miniserve-starter";
