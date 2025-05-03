@@ -20,8 +20,12 @@ DEFAULT_ABS_URL = "http://localhost:13378"
 DEFAULT_PODCASTS_LIBRARY_ID = (
     "db54da2c-dc16-4fdb-8dd4-5375ae98f738"  # Podcasts library ID
 )
+
+# ```console
+# audiobookshelf libraries --url https://audiobookshelf.${externalDomain}
+# ```
 DEFAULT_PODCASTS_FOLDER_ID = (
-    "fabf78a1-9d87-41a0-8b72-1007e7f10889"  # /storage/Data/media/podcasts folder ID
+    "c9d67ffa-8e94-41f6-b22d-3924cf9ff511"  # /storage/Data/media/podcasts folder ID
 )
 
 
