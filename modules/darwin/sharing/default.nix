@@ -94,13 +94,18 @@ in
             # Capture all existing share information
             SHARE_INFO=$(sharing -l)
             
-            # Improved pattern matching to account for variable spacing
-            # Check if the path is already shared
-            if echo "$SHARE_INFO" | grep "path:" | grep -q "${share.path}"; then
-              echo "Path ${share.path} is already shared. Not modifying."
-            # Check if the name is already used
-            elif echo "$SHARE_INFO" | grep "name:" | grep -q "${share.name}"; then
-              echo "Name '${share.name}' is already used for a different share. Not modifying."
+            # Check if the name is already used for a different path
+            if echo "$SHARE_INFO" | grep -A 3 "name:.*${share.name}" | grep "path:" | grep -v "${share.path}" > /dev/null; then
+              echo "Name '${share.name}' is already used for a different path. Removing old share first..."
+              sharing -r "${share.name}" || echo "Failed to remove old share."
+              echo "Adding share '${share.name}' for path ${share.path}..."
+              sharing -a "${share.path}" -S "${share.name}" || echo "Failed to add share. The name or path might already be shared with different settings."
+            # Check if the path is already shared with this name
+            elif echo "$SHARE_INFO" | grep -A 3 "name:.*${share.name}" | grep "path:" | grep -q "${share.path}"; then
+              echo "Path ${share.path} is already shared as '${share.name}'. Not modifying."
+            # Check if the path is already shared with a different name
+            elif echo "$SHARE_INFO" | grep "path:" | grep -q "${share.path}"; then
+              echo "Path ${share.path} is already shared with a different name. Not modifying."
             else
               echo "Adding share '${share.name}' for path ${share.path}..."
               # Actually add the share
