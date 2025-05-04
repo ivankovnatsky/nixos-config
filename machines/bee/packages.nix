@@ -6,6 +6,9 @@
     gnumake
     tmux
 
+    # Sync
+    rclone
+
     # Monitoring
     lsof
     dust

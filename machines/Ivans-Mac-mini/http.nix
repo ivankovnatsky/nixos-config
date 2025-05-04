@@ -32,8 +32,8 @@ let
   # External domain from secrets module for easier reference
   externalDomain = config.secrets.externalDomain;
 
-  # Samsung2TB path for data access
-  volumePath = "/Volumes/Samsung2TB";
+  # Storage path for data access
+  volumePath = "/Volumes/Storage";
 
   # Create a Caddy package with the required DNS plugin
   # Use the caddy-with-plugins overlay to get the withPlugins functionality
@@ -89,7 +89,7 @@ in
       let
         # Create the Caddy starter script that waits for the volume
         caddyScript = pkgs.writeShellScriptBin "caddy-starter" ''
-          # Wait for the Samsung2TB volume to be mounted using the built-in wait4path utility
+          # Wait for the Storage volume to be mounted using the built-in wait4path utility
           echo "Waiting for ${volumePath} to be available..."
           /bin/wait4path "${volumePath}"
 

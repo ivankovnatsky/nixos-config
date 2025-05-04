@@ -62,4 +62,4 @@ ssh-copy-id ivan@192.168.50.46
 
 ## TODO
 
-- [ ] Add /Volumes/Samsung2TB to /etc/fstab
+- [ ] Add /Volumes/Storage to /etc/fstab

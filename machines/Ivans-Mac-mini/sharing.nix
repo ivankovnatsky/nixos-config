@@ -10,8 +10,8 @@
   local.services.macosFileSharing = {
     enable = true;
     shares = {
-      "Samsung2TB" = {
-        path = "/Volumes/Samsung2TB/Data";
+      "Storage" = {
+        path = "/Volumes/Storage/Data";
       };
     };
   };
