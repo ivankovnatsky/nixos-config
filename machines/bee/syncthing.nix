@@ -155,6 +155,16 @@
             "Lusha-Macbook-Ivan-Kovnatskyi"
           ];
         };
+        ".config/rclone" = {
+          id = "mqdq9-kaiuw";
+          label = ".config/rclone";
+          path = "/home/ivan/.config/rclone";
+          devices = [
+            "Ivans-Mac-mini"
+            "Ivans-MacBook-Air"
+            "Ivans-MacBook-Pro"
+          ];
+        };
       };
     };
   };
