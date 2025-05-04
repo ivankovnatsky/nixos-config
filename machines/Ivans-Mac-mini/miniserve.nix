@@ -25,11 +25,11 @@
 
         # Create the miniserve starter script
         miniserveScript = pkgs.writeShellScriptBin "miniserve-starter" ''
-          # Wait for the Samsung2TB volume to be mounted using the built-in wait4path utility
-          echo "Waiting for /Volumes/Samsung2TB to be available..."
-          /bin/wait4path "/Volumes/Samsung2TB"
+          # Wait for the Storage volume to be mounted using the built-in wait4path utility
+          echo "Waiting for /Volumes/Storage to be available..."
+          /bin/wait4path "/Volumes/Storage"
 
-          echo "/Volumes/Samsung2TB is now available!"
+          echo "/Volumes/Storage is now available!"
           echo "Starting miniserve..."
 
           # Launch miniserve with authentication
@@ -38,7 +38,7 @@
             --interfaces ::1 \
             --interfaces ${config.flags.miniIp} \
             --auth-file ${authFile} \
-            "/Volumes/Samsung2TB/Data"
+            "/Volumes/Storage/Data"
         '';
       in
       "${miniserveScript}/bin/miniserve-starter";

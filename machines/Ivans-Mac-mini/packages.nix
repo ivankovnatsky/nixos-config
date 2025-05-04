@@ -7,6 +7,7 @@
     watchman-make # Be able to rerun rebuild manually with watching
 
     rclone # Sync out stuff
+    pigz # To help with Sources/ packing
 
     smctemp # Overlay
     stats # macOS: System stats; Configure `Check for update` to `Never`.
