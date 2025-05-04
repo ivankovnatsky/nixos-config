@@ -16,5 +16,7 @@
     # Storage
     file
     parted
+
+    vim
   ];
 }
