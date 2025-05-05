@@ -14,6 +14,8 @@
           json = [ "jsonlint" ];
           markdown = [ "vale" ];
           dockerfile = [ "hadolint" ];
+          typescript = [ "eslint" ];
+          javascript = [ "eslint" ];
         };
       };
       lsp = {
@@ -43,6 +45,14 @@
               settings = ''
                 {
                   extra_args = { "--fast" };
+                }
+              '';
+            };
+            prettierd = {
+              enable = true;
+              settings = ''
+                {
+                  extra_args = { "--single-quote" };
                 }
               '';
             };
