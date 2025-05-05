@@ -73,5 +73,6 @@
   users.users.transmission.extraGroups = [
     "radarr"
     "plex"
+    "media"
   ];
 }
