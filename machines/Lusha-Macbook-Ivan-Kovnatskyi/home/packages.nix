@@ -3,12 +3,12 @@
   home.packages = with pkgs; [
     (wrapHelm kubernetes-helm { plugins = with pkgs.kubernetes-helmPlugins; [ helm-secrets ]; })
     argocd
-    keycastr # macOS: Keystroke visualizer
     aws-sso-cli
     aws-sso-creds
     awscli2
     backup-home
     battery-toolkit # Local overlay
+    btop
     cloudflared
     coreutils
     defaultbrowser
@@ -38,6 +38,7 @@
     k8sgpt
     kail
     kdash
+    keycastr # macOS: Keystroke visualizer
     krew
     kubecolor
     kubectl
