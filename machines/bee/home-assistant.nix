@@ -37,11 +37,9 @@
       # Set location information in the correct format
       homeassistant = {
         name = "Home";
-        latitude = config.secrets.latitude;
-        longitude = config.secrets.longitude;
+        inherit (config.secrets) latitude longitude time_zone;
         elevation = 0;
         unit_system = "metric";
-        time_zone = config.secrets.timezone;
       };
 
       # Basic HTTP configuration
