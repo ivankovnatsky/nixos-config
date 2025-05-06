@@ -42,6 +42,7 @@
     krew
     kubecolor
     kubectl
+    kubectl-ai
     kubectl-images
     kubectl-view-secret
     kubectx
