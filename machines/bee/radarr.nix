@@ -34,6 +34,10 @@
     "d /storage/Data/media/movies 0775 radarr media -" # Main movies directory
     "d /storage/Data/media/downloads 0775 transmission media -" # Where Transmission puts downloaded movies
     "d /storage/Data/media/downloads/radarr 0775 transmission media -" # Radarr's download directory
+    
+    # Set proper default ACLs for the Radarr downloads directory
+    # This overrides the restrictive default ACLs inherited from parent directories
+    "A+ /storage/Data/media/downloads/radarr - - - - default:user::rwx,default:group::rwx,default:other::r-x"
   ];
 
   # Ensure groups exist and users have correct permissions
