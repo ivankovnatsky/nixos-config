@@ -25,10 +25,10 @@
 # * https://caddyserver.com/docs/automatic-https#acme-challenges
 
 let
-  bindAddress = config.flags.beeIp;
+  bindAddress = "127.0.0.1";
 
   # External domain from secrets module for easier reference
-  externalDomain = config.secrets.externalDomain;
+  inherit (config.secrets) externalDomain ;
 
   # Create a Caddy package with the required DNS plugin
   # Use the caddy-with-plugins overlay to get the withPlugins functionality
@@ -49,10 +49,10 @@ let
     pkgs.runCommand "caddyfile"
       {
         inherit bindAddress externalDomain;
-        letsEncryptEmail = config.secrets.letsEncryptEmail;
-        cloudflareApiToken = config.secrets.cloudflareApiToken;
-        beeIp = config.flags.beeIp;
-        miniIp = config.flags.miniIp;
+        inherit (config.secrets) letsEncryptEmail;
+        inherit (config.secrets) cloudflareApiToken;
+        inherit (config.flags) beeIp;
+        inherit (config.flags) miniIp;
         logPathPrefix = "/var/log";
 
         # Netdata credentials
