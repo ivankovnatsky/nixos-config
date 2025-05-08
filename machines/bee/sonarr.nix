@@ -30,6 +30,10 @@
   systemd.tmpfiles.rules = [
     "d /storage/Data/media/tv 0775 sonarr media -" # Main TV shows directory
     "d /storage/Data/media/downloads/tv-sonarr 0775 transmission media -" # Where Transmission puts downloaded TV shows
+    
+    # Set proper default ACLs for the Sonarr downloads directory
+    # This overrides the restrictive default ACLs inherited from parent directories
+    "A+ /storage/Data/media/downloads/tv-sonarr - - - - default:user::rwx,default:group::rwx,default:other::r-x"
   ];
 
   # Ensure groups exist and users have correct permissions
