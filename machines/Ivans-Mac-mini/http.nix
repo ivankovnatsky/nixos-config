@@ -27,10 +27,10 @@
 # * https://mjtsai.com/blog/2024/10/02/local-network-privacy-on-sequoia/
 
 let
-  bindAddress = config.flags.miniIp;
+  bindAddress = "127.0.0.1";
 
   # External domain from secrets module for easier reference
-  externalDomain = config.secrets.externalDomain;
+  inherit (config.secrets) externalDomain;
 
   # Storage path for data access
   volumePath = "/Volumes/Storage";
@@ -52,10 +52,10 @@ let
     pkgs.runCommand "caddyfile"
       {
         inherit bindAddress externalDomain;
-        letsEncryptEmail = config.secrets.letsEncryptEmail;
-        cloudflareApiToken = config.secrets.cloudflareApiToken;
-        beeIp = config.flags.beeIp;
-        miniIp = config.flags.miniIp;
+        inherit (config.secrets) letsEncryptEmail;
+        inherit (config.secrets) cloudflareApiToken;
+        inherit (config.flags) beeIp;
+        inherit (config.flags) miniIp;
         logPathPrefix = "/tmp/log";
 
         # Netdata credentials
