@@ -27,7 +27,7 @@
 # * https://mjtsai.com/blog/2024/10/02/local-network-privacy-on-sequoia/
 
 let
-  bindAddress = config.flags.miniIp;
+  bindAddress = "0.0.0.0";
 
   # External domain from secrets module for easier reference
   inherit (config.secrets) externalDomain;
