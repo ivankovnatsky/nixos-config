@@ -25,7 +25,7 @@
 # * https://caddyserver.com/docs/automatic-https#acme-challenges
 
 let
-  bindAddress = config.flags.beeIp;
+  bindAddress = "0.0.0.0";
 
   # External domain from secrets module for easier reference
   inherit (config.secrets) externalDomain ;
