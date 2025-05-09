@@ -34,6 +34,9 @@
     # Set proper default ACLs for the Sonarr downloads directory
     # This overrides the restrictive default ACLs inherited from parent directories
     "A+ /storage/Data/media/downloads/tv-sonarr - - - - default:user::rwx,default:group::rwx,default:other::r-x"
+    
+    # Set proper default ACLs for the TV shows directory
+    "A+ /storage/Data/media/tv - - - - default:user::rwx,default:group::rwx,default:other::r-x"
   ];
 
   # Ensure groups exist and users have correct permissions

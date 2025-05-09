@@ -38,6 +38,9 @@
     # Set proper default ACLs for the Radarr downloads directory
     # This overrides the restrictive default ACLs inherited from parent directories
     "A+ /storage/Data/media/downloads/radarr - - - - default:user::rwx,default:group::rwx,default:other::r-x"
+    
+    # Set proper default ACLs for the movies directory
+    "A+ /storage/Data/media/movies - - - - default:user::rwx,default:group::rwx,default:other::r-x"
   ];
 
   # Ensure groups exist and users have correct permissions
