@@ -25,7 +25,7 @@
 # * https://caddyserver.com/docs/automatic-https#acme-challenges
 
 let
-  bindAddress = "0.0.0.0";
+  bindAddress = config.flags.beeIp;
 
   # External domain from secrets module for easier reference
   inherit (config.secrets) externalDomain ;
@@ -89,6 +89,7 @@ in
     description = "Caddy web server";
     after = [ "network-online.target" ];
     wants = [ "network-online.target" ];
+    requires = [ "network-online.target" ];
     wantedBy = [ "multi-user.target" ];
 
     # For HTTP/3 high UDP send/receive buffers

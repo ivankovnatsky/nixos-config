@@ -27,7 +27,7 @@
 # * https://mjtsai.com/blog/2024/10/02/local-network-privacy-on-sequoia/
 
 let
-  bindAddress = "0.0.0.0";
+  bindAddress = config.flags.miniIp;
 
   # External domain from secrets module for easier reference
   inherit (config.secrets) externalDomain;
@@ -94,6 +94,36 @@ in
           /bin/wait4path "${volumePath}"
 
           echo "${volumePath} is now available!"
+          
+          # Wait for network connectivity before starting Caddy
+          echo "Waiting for network connectivity..."
+          
+          # Function to check if we have a valid IP address
+          check_network() {
+            # Check if we have a valid IP on en0 (typical main interface on Mac)
+            # that matches our expected IP
+            ip=$(ipconfig getifaddr en0)
+            [ "$ip" = "${bindAddress}" ]
+          }
+          
+          # Wait for network connectivity with a timeout
+          TIMEOUT=60
+          COUNTER=0
+          while ! check_network; do
+            if [ $COUNTER -ge $TIMEOUT ]; then
+              echo "Network connectivity timeout after $TIMEOUT seconds!"
+              echo "Starting Caddy anyway, but it may fail to bind to IP addresses..."
+              break
+            fi
+            echo "Waiting for network connectivity... ($COUNTER/$TIMEOUT)"
+            sleep 1
+            COUNTER=$((COUNTER+1))
+          done
+          
+          if [ $COUNTER -lt $TIMEOUT ]; then
+            echo "Network connectivity established!"
+          fi
+          
           echo "Starting Caddy server..."
 
           # Launch caddy with our Caddyfile - specifying the caddyfile adapter
