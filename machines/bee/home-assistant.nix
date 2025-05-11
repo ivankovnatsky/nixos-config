@@ -85,7 +85,10 @@
       "postgresql.service"
       "network-online.target"
     ];
-    requires = [ "postgresql.service" ];
+    requires = [ 
+      "postgresql.service" 
+      "network-online.target"
+    ];
     wants = [ "network-online.target" ];
 
     serviceConfig = {
