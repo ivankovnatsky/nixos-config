@@ -15,7 +15,7 @@ HOSTS=(
 # Function to power off a specific machine
 power_off_machine() {
   local host=$1
-  ssh "$host" "sudo shutdown -h now"
+  ssh ivan@"$host" "sudo shutdown -h now"
 }
 
 # Power off all machines in the list
