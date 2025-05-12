@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 # Script to remotely power off homelab machines
 # Usage: ./power-off-homelab.sh
@@ -6,19 +6,16 @@
 
 set -e
 
-# Define machines list
-HOSTS=(
-  "bee"
-  "ivans-mac-mini"
-)
+# Define machines list as space-separated string (POSIX compatible)
+HOSTS="bee ivans-mac-mini"
 
 # Function to power off a specific machine
 power_off_machine() {
-  local host=$1
+  host=$1
   ssh ivan@"$host" "sudo shutdown -h now"
 }
 
 # Power off all machines in the list
-for host in "${HOSTS[@]}"; do
+for host in $HOSTS; do
   power_off_machine "$host"
 done
