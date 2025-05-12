@@ -4,6 +4,7 @@
     ../../../darwin/aerospace.nix
     ../../../darwin/darwin.nix
     ../../../darwin/dock.nix
+    ../../../darwin/system.nix
     ../../../modules/darwin/dock
     ../../../modules/darwin/pam
     ../../../modules/darwin/sudo

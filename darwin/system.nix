@@ -1,6 +1,16 @@
 {
   system = {
     defaults = {
+      controlcenter = {
+        Bluetooth = false;
+      };
+      dock = {
+        # https://github.com/nix-darwin/nix-darwin/blob/6cb36e8327421c61e5a3bbd08ed63491b616364a/modules/system/defaults/dock.nix#L114
+        mru-spaces = true;
+      };
+      finder = {
+        FXRemoveOldTrashItems = true;
+      };
       NSGlobalDomain = {
         # Allow tab focus in all controls, space to select.
         AppleKeyboardUIMode = 3;
@@ -19,11 +29,19 @@
         "com.apple.Safari" = {
           "ShowFullURLInSmartSearchField" = true;
           "ShowStandaloneTabBar" = true; # false enables compact tabs
+          "AutoOpenSafeDownloads" = false; # Disable automatic downloads
+          "AlwaysPromptForDownloadLocation" = true; # Ask where to save downloads
+          # Enable Web Inspector and developer features
+          "ShowDevelopMenu" = true;
+          "WebKitDeveloperExtrasEnabledPreferenceKey" = true;
+          "DeveloperExtrasEnabled" = true;
         };
         "NSGlobalDomain" = {
           # My keyboard does not support Globe switch key, or I don't know how
           # to use it, don't want to use karabiner-elements for now.
-          "NSUserKeyEquivalents" = { };
+          "NSUserKeyEquivalents" = {
+            "Move focus to active or next window" = "~`";
+          };
         };
       };
     };

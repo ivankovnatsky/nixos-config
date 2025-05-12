@@ -5,7 +5,7 @@
         Bluetooth = false;
       };
       dock = {
-        # https://github.com/LnL7/nix-darwin/blob/a35b08d09efda83625bef267eb24347b446c80b8/modules/system/defaults/dock.nix#L114
+        # https://github.com/nix-darwin/nix-darwin/blob/6cb36e8327421c61e5a3bbd08ed63491b616364a/modules/system/defaults/dock.nix#L114
         mru-spaces = true;
       };
       finder = {
@@ -18,12 +18,23 @@
         InitialKeyRepeat = 120;
         KeyRepeat = 120;
       };
+      # https://github.com/nix-darwin/nix-darwin/blob/master/modules/system/defaults/WindowManager.nix#L6
+      WindowManager = {
+        EnableTilingByEdgeDrag = true;
+        EnableTopTilingByEdgeDrag = true;
+        EnableTilingOptionAccelerator = true;
+        EnableTiledWindowMargins = true;
+      };
       CustomUserPreferences = {
         "com.apple.Safari" = {
           "ShowFullURLInSmartSearchField" = true;
           "ShowStandaloneTabBar" = true; # false enables compact tabs
           "AutoOpenSafeDownloads" = false; # Disable automatic downloads
           "AlwaysPromptForDownloadLocation" = true; # Ask where to save downloads
+          # Enable Web Inspector and developer features
+          "ShowDevelopMenu" = true;
+          "WebKitDeveloperExtrasEnabledPreferenceKey" = true;
+          "DeveloperExtrasEnabled" = true;
         };
         "NSGlobalDomain" = {
           # My keyboard does not support Globe switch key, or I don't know how
