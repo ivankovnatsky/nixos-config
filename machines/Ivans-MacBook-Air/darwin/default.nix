@@ -19,7 +19,6 @@
     ./security.nix
     ./shell.nix
     ./sudo.nix
-    ./system.nix
     ./tmux-rebuild.nix
   ];
 }
