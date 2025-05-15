@@ -1,6 +1,8 @@
 { pkgs, ... }:
 {
   programs.nixvim = {
+    # https://github.com/nix-community/nixvim/issues/1141#issuecomment-2054102360
+    extraPackages = with pkgs; [ rustfmt ];
     editorconfig.enable = true;
     plugins = {
       # Enable when it will be update to at least this version:
@@ -63,6 +65,7 @@
         settings.formatters_by_ft = {
           python = [ "black" ];
           lua = [ "stylua" ];
+          rust = [ "rustfmt" ];
         };
       };
       # FIXME: Figure out suitable key for the completion, when you need to
