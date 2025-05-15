@@ -26,14 +26,12 @@
       "vivaldi"
       "windsurf"
     ];
-    # Re-enable with brew taps update:
-    # https://github.com/zhaofengli/nix-homebrew/issues/74#issuecomment-2807640949
-    # masApps = {
-    #   "Numbers" = 409203825;
-    #   "Pages" = 409201541;
-    #   "Bitwarden" = 1352778147;
-    #   "Dark Reader for Safari" = 1438243180;
-    # };
+    masApps = {
+      "Numbers" = 409203825;
+      "Pages" = 409201541;
+      "Bitwarden" = 1352778147;
+      "Dark Reader for Safari" = 1438243180;
+    };
     caskArgs = {
       no_quarantine = true;
     };
