@@ -28,6 +28,11 @@
           # terraform_lsp.enable = true;
           nushell.enable = true;
           # groovyls.enable = true;
+          rust_analyzer = {
+            enable = true;
+            installCargo = true;
+            installRustc = true;
+          };
         };
       };
       none-ls = {

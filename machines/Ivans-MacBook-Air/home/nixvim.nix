@@ -32,7 +32,7 @@
         };
       };
       conform-nvim = {
-        formatters_by_ft = {
+        settings.formatters_by_ft = {
           rust = [ "rustfmt" ];
         };
       };
