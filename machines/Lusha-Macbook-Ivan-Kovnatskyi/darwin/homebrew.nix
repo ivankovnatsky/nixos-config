@@ -17,9 +17,7 @@
     casks = [
       "amethyst"
       "bitwarden"
-      "chatgpt"
       "chromium"
-      "claude"
       "cursor"
       "dbeaver-community"
       "ghostty"

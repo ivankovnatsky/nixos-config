@@ -53,8 +53,6 @@ in
       { path = "/Applications/Windsurf.app/"; }
       { path = "/Applications/MindMac.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
-      { path = "/Applications/ChatGPT.app/"; }
-      { path = "/Applications/Claude.app/"; }
 
       {
         type = "spacer";
