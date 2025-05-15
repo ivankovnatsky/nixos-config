@@ -8,6 +8,7 @@
     awscli2
     backup-home
     btop
+    cargo
     cloudflared
     coreutils
     defaultbrowser
@@ -71,6 +72,8 @@
     rabbitmqadmin-ng # Overlay
     rclone
     rectangle # Window manager
+    rust-analyzer
+    rustc
     sesh
     skopeo
     smctemp
