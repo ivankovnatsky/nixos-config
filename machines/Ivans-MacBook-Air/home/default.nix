@@ -4,7 +4,6 @@
     ../../../home/amethyst.nix
     ../../../home/bat.nix
     ../../../home/direnv.nix
-    ../../../home/firefox-config.nix
     ../../../home/ghostty.nix
     ../../../home/git.nix
     ../../../home/go.nix
