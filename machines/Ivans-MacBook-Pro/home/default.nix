@@ -3,7 +3,6 @@
     ../../../home/aichat.nix
     ../../../home/amethyst.nix
     ../../../home/direnv.nix
-    ../../../home/firefox-config.nix
     ../../../home/fish-ai.nix
     ../../../home/ghostty.nix
     ../../../home/git.nix
