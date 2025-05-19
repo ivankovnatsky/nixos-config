@@ -59,7 +59,7 @@
               enable = true;
               settings = ''
                 {
-                  extra_args = { "--single-quote" };
+                  extra_args = {};
                 }
               '';
             };
