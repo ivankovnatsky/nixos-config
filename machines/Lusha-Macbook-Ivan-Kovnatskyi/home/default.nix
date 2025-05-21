@@ -2,7 +2,7 @@
   imports = [
     ../../../home/aichat-server.nix
     ../../../home/aichat.nix
-    ../../../home/amethyst.nix
+    ../../../home/amethyst
     ../../../home/bat.nix
     ../../../home/direnv.nix
     ../../../home/fish-ai.nix

@@ -1,7 +1,7 @@
 {
   imports = [
     ../../../home/aichat.nix
-    ../../../home/amethyst.nix
+    ../../../home/amethyst
     ../../../home/direnv.nix
     ../../../home/fish-ai.nix
     ../../../home/ghostty.nix
