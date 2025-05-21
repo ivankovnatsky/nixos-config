@@ -32,9 +32,7 @@
           "AutoOpenSafeDownloads" = false; # Disable automatic downloads
           "AlwaysPromptForDownloadLocation" = true; # Ask where to save downloads
           # Enable Web Inspector and developer features
-          "ShowDevelopMenu" = true;
-          "WebKitDeveloperExtrasEnabledPreferenceKey" = true;
-          "DeveloperExtrasEnabled" = true;
+          "DeveloperPreferences" = 836;
         };
         "NSGlobalDomain" = {
           # My keyboard does not support Globe switch key, or I don't know how
