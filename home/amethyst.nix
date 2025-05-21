@@ -1,5 +1,6 @@
 {
 
+  # https://github.com/ianyh/Amethyst/blob/development/.amethyst.sample.yml
   home.file.".config/amethyst/amethyst.yml".text = ''
     # Default settings for Amethyst
     # Repo: `https://github.com/ianyh/Amethyst`
