@@ -44,6 +44,7 @@ in
       { path = "/System/Library/CoreServices/Applications/Keychain Access.app/"; }
       { path = "/System/Applications/iPhone Mirroring.app/"; }
       { path = "/System/Applications/FindMy.app/"; }
+      { path = "/System/Applications/Home.app/"; }
       { path = "/System/Applications/Utilities/Screen Sharing.app/"; }
 
       {
