@@ -32,7 +32,7 @@ Run this if needed to tackle with git-crypt:
 
 Check instructions here:
 
-<https://github.com/LnL7/nix-darwin>
+<https://github.com/nix-darwin/nix-darwin>
 
 Finally:
 

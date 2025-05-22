@@ -14,7 +14,7 @@
     gnupg
     git-crypt
 
-    # https://github.com/LnL7/nix-darwin/pull/553#issuecomment-1348696468
+    # https://github.com/nix-darwin/nix-darwin/pull/553#issuecomment-1348696468
     ncurses
     syncthing
   ];
