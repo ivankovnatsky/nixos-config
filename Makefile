@@ -2,7 +2,7 @@
 .DEFAULT_GOAL := default
 
 # Mark targets that don't create files as .PHONY so Make will always run them
-.PHONY: default rebuild-darwin rebuild-nixos/generic rebuild-nixos/impure trigger-rebuild flake-update-main flake-update-nixvim flake-update-homebrew rebuild-watchman-darwin rebuild-watchman-nixos
+.PHONY: default rebuild-darwin rebuild-darwin-sudo rebuild-nixos/generic rebuild-nixos/impure trigger-rebuild flake-update-main flake-update-nixvim flake-update-homebrew rebuild-watchman-darwin rebuild-watchman-nixos
 
 PLATFORM := $(shell uname)
 # TODO: This is temporary until we figure out how to properly configure nix.conf
@@ -25,6 +25,13 @@ endif
 rebuild-darwin:
 	# NIXPKGS_ALLOW_UNFREE=1 is needed for unfree packages like codeium when using --impure
 	NIXPKGS_ALLOW_UNFREE=1 darwin-rebuild switch --impure $(COMMON_REBUILD_FLAGS) && \
+		osascript -e 'display notification "🟢 Darwin rebuild successful!" with title "Nix configuration"' || \
+		osascript -e 'display notification "🔴 Darwin rebuild failed!" with title "Nix configuration"'
+
+# Darwin-specific rebuild target with sudo
+rebuild-darwin-sudo:
+	# NIXPKGS_ALLOW_UNFREE=1 is needed for unfree packages like codeium when using --impure
+	NIXPKGS_ALLOW_UNFREE=1 sudo -E darwin-rebuild switch --impure $(COMMON_REBUILD_FLAGS) && \
 		osascript -e 'display notification "🟢 Darwin rebuild successful!" with title "Nix configuration"' || \
 		osascript -e 'display notification "🔴 Darwin rebuild failed!" with title "Nix configuration"'
 
@@ -68,6 +75,17 @@ rebuild-watchman-darwin:
 			--pattern \
 				'**/*' \
 			--target rebuild-darwin; \
+		echo "watchman-make exited, restarting..."; \
+		sleep 1; \
+	done
+
+# Darwin-specific watchman rebuild target with sudo
+rebuild-watchman-darwin-sudo:
+	while true; do \
+		watchman-make \
+			--pattern \
+				'**/*' \
+			--target rebuild-darwin-sudo; \
 		echo "watchman-make exited, restarting..."; \
 		sleep 1; \
 	done
