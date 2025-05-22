@@ -12,6 +12,7 @@ in
 {
   local = {
     dock.enable = true;
+    dock.username = username;
     # TODO: can dock be stretched 100% horizontally?
     dock.entries = [
       { path = "/System/Applications/Launchpad.app/"; }
