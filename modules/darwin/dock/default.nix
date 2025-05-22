@@ -83,59 +83,30 @@ in
       wantURIs = concatMapStrings (
         entry: if entry.type == "spacer" then "\n" else "${entryURI entry}\n"
       ) cfg.entries;
-      
-      # Generate dock entries as simple commands for the heredoc
-      formatSpacerEntry = section: "${dockutil}/bin/dockutil --no-restart --add '' --type spacer --section ${section}";
-      formatAppEntry = entry: "${dockutil}/bin/dockutil --no-restart --add '${entry.path}' --section ${entry.section} ${entry.options}";
-      
-      # Generate the entries script
-      entriesScript = concatMapStringsSep "\n" (
-        entry: if entry.type == "spacer" 
-               then formatSpacerEntry entry.section
-               else formatAppEntry entry
+      createEntries = concatMapStrings (
+        entry:
+        if entry.type == "spacer" then
+          "${dockutil}/bin/dockutil --no-restart --add '' --type spacer --section ${entry.section}\n"
+        else
+          "${dockutil}/bin/dockutil --no-restart --add '${entry.path}' --section ${entry.section} ${entry.options}\n"
       ) cfg.entries;
-      
-      # Escape the wantURIs string for inclusion in the script
-      escapedWantURIs = replaceStrings ["'"] ["'\\''"] wantURIs;
       primaryUser = config.system.primaryUser;
     in
     {
-      # https://github.com/nix-darwin/nix-darwin/issues/1462#issuecomment-2895299811
-      system.activationScripts.postActivation.text = ''
+      system.activationScripts.setupDock.text = ''
         echo >&2 "Setting up the Dock for ${primaryUser}..."
-        
-        # Create a temp file with appropriate permissions
-        DOCK_SCRIPT=$(mktemp)
-        
-        # Write script to temp file
-        cat > "$DOCK_SCRIPT" << 'EOL'
-        #!/bin/bash
-        DOCK_UTIL="${dockutil}/bin/dockutil"
-        haveURIs="$($DOCK_UTIL --list | ${pkgs.coreutils}/bin/cut -f2)"
-        
-        WANT_URIS='${escapedWantURIs}'
-        
-        if ! diff -wu <(echo -n "$haveURIs") <(echo -n "$WANT_URIS") >&2 ; then
-          echo >&2 "Resetting Dock."
-          $DOCK_UTIL --no-restart --remove all
-          
-          # Add dock entries
-          ${entriesScript}
-          
-          killall Dock
-        else
-          echo >&2 "Dock setup complete."
-        fi
-        EOL
-        
-        # Make script readable and executable for everyone
-        chmod 755 "$DOCK_SCRIPT"
-        
-        # Run the script as the user
-        sudo -u ${primaryUser} "$DOCK_SCRIPT"
-        
-        # Clean up
-        rm "$DOCK_SCRIPT"
+        # Run dockutil as the primary user
+        sudo -u ${primaryUser} bash -c '
+          haveURIs="$(${dockutil}/bin/dockutil --list | ${pkgs.coreutils}/bin/cut -f2)"
+          if ! diff -wu <(echo -n "$haveURIs") <(echo -n '"'"'${wantURIs}'"'"') >&2 ; then
+            echo >&2 "Resetting Dock."
+            ${dockutil}/bin/dockutil --no-restart --remove all
+            ${createEntries}
+            killall Dock
+          else
+            echo >&2 "Dock setup complete."
+          fi
+        '
       '';
     }
   );
