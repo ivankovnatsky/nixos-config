@@ -90,19 +90,23 @@ in
         else
           "${dockutil}/bin/dockutil --no-restart --add '${entry.path}' --section ${entry.section} ${entry.options}\n"
       ) cfg.entries;
+      primaryUser = config.system.primaryUser;
     in
     {
-      system.activationScripts.postUserActivation.text = ''
-        echo >&2 "Setting up the Dock..."
-        haveURIs="$(${dockutil}/bin/dockutil --list | ${pkgs.coreutils}/bin/cut -f2)"
-        if ! diff -wu <(echo -n "$haveURIs") <(echo -n '${wantURIs}') >&2 ; then
-          echo >&2 "Resetting Dock."
-          ${dockutil}/bin/dockutil --no-restart --remove all
-          ${createEntries}
-          killall Dock
-        else
-          echo >&2 "Dock setup complete."
-        fi
+      system.activationScripts.setupDock.text = ''
+        echo >&2 "Setting up the Dock for ${primaryUser}..."
+        # Run dockutil as the primary user
+        sudo -u ${primaryUser} bash -c '
+          haveURIs="$(${dockutil}/bin/dockutil --list | ${pkgs.coreutils}/bin/cut -f2)"
+          if ! diff -wu <(echo -n "$haveURIs") <(echo -n '"'"'${wantURIs}'"'"') >&2 ; then
+            echo >&2 "Resetting Dock."
+            ${dockutil}/bin/dockutil --no-restart --remove all
+            ${createEntries}
+            killall Dock
+          else
+            echo >&2 "Dock setup complete."
+          fi
+        '
       '';
     }
   );

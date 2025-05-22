@@ -19,6 +19,9 @@
         networking.hostName = "Ivans-MacBook-Pro";
         users.users.ivan.home = "/Users/ivan";
         system.stateVersion = 4;
+
+        # Set primary user for nix-darwin features
+        system.primaryUser = "ivan";
       }
 
       # Home Manager module
@@ -98,6 +101,9 @@
         networking.hostName = "Ivans-MacBook-Air";
         users.users.ivan.home = "/Users/ivan";
         system.stateVersion = 4;
+        
+        # Set primary user for nix-darwin features
+        system.primaryUser = "ivan";
       }
 
       # Home Manager module
@@ -207,6 +213,9 @@
         networking.hostName = "Lusha-Macbook-Ivan-Kovnatskyi";
         users.users."Ivan.Kovnatskyi".home = "/Users/Ivan.Kovnatskyi";
         system.stateVersion = 4;
+        
+        # Set primary user for nix-darwin features
+        system.primaryUser = "Ivan.Kovnatskyi";
       }
 
       # Home Manager module
