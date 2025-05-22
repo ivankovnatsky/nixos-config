@@ -131,7 +131,7 @@ in
         _ZL_HYPHEN = 1;
       };
 
-      initExtra = ''
+      initContent = ''
         # enable alt+l -- to lowercase
         bindkey '^[l' down-case-word
 
