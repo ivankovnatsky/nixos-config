@@ -66,7 +66,7 @@ let
         zigbeePassword = config.secrets.zigbee.password;
       }
       ''
-        substituteAll ${caddyfilePath} $out
+        replaceVars ${caddyfilePath} $out
       '';
 in
 {
