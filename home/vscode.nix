@@ -42,29 +42,33 @@ let
   };
 in
 {
+  # https://github.com/nix-community/home-manager/blob/master/modules/programs/vscode.nix
   programs.vscode = {
     inherit (config.flags.apps.vscode) enable;
     package = pkgs.vscode;
-    enableUpdateCheck = false;
-    enableExtensionUpdateCheck = false;
     mutableExtensionsDir = false;
-    userSettings = editorSettings;
 
-    extensions = with pkgs.vscode-extensions; [
-      vscodevim.vim
-      jnoortheen.nix-ide
-      hashicorp.terraform
-      eamodio.gitlens
-      # GitHub.copilot # Can't be installed on VSCodium
-      ms-vscode.makefile-tools
-      ms-python.python
-      hashicorp.hcl
-      golang.go
-      ms-azuretools.vscode-docker
-      # Nushell
-      thenuprojectcontributors.vscode-nushell-lang
-      # saoudrizwan.claude-dev
-    ];
+    profiles.default = {
+      enableUpdateCheck = false;
+      enableExtensionUpdateCheck = false;
+      userSettings = editorSettings;
+      
+      extensions = with pkgs.vscode-extensions; [
+        vscodevim.vim
+        jnoortheen.nix-ide
+        hashicorp.terraform
+        eamodio.gitlens
+        # GitHub.copilot # Can't be installed on VSCodium
+        ms-vscode.makefile-tools
+        ms-python.python
+        hashicorp.hcl
+        golang.go
+        ms-azuretools.vscode-docker
+        # Nushell
+        thenuprojectcontributors.vscode-nushell-lang
+        # saoudrizwan.claude-dev
+      ];
+    };
   };
 
   # Add Cursor settings with proper formatting
