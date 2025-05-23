@@ -1,4 +1,5 @@
 {
+  # https://github.com/okuuva/auto-save.nvim
   programs.nixvim.plugins.auto-save = {
     enable = true;
     settings = {
@@ -16,7 +17,7 @@
       write_all_buffers = false;
       noautocmd = false;
       lockmarks = false;
-      debounce_delay = 1000;
+      debounce_delay = 5000;
       debug = false;
 
       condition = ''
