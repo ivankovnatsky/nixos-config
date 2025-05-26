@@ -54,6 +54,7 @@
     mongosh
     mos # macOS: Use PC mode for mouse, instead of natural scrolling
     mycli
+    nh # https://github.com/nix-community/nh
     nixfmt-rfc-style
     nixpkgs-master.fluxcd
     nodePackages.aws-cdk
