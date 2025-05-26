@@ -2,6 +2,7 @@
   imports = [
     ../../../darwin/aerospace.nix
     ../../../darwin/darwin.nix
+    ../../../darwin/nix.nix
     ../../../modules/darwin/dock
     ../../../modules/darwin/pam
     ../../../modules/darwin/sudo
