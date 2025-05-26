@@ -3,6 +3,7 @@
     # ./promtail.nix
     ../../../darwin/aerospace.nix
     ../../../darwin/darwin.nix
+    ../../../darwin/nix.nix
     ../../../darwin/dock.nix
     ../../../darwin/system.nix
     ../../../modules/darwin/dock
