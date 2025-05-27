@@ -1,10 +1,7 @@
 {
   config,
-  lib,
-  pkgs,
   ...
 }: {
-  imports = [ ../../modules/nixos/doh-server ];
 
   services.doh-server = {
     enable = true;
