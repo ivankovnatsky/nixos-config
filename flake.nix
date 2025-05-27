@@ -9,7 +9,7 @@
     nixos-release.url = "github:nixos/nixpkgs/nixos-25.05";
 
     # Stable Nixpkgs release
-    nixpkgs-release.url = "github:nixos/nixpkgs/release-24.11";
+    nixpkgs-release.url = "github:nixos/nixpkgs/release-25.05";
 
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
@@ -19,7 +19,7 @@
     };
 
     darwin-release = {
-      url = "github:nix-darwin/nix-darwin/nix-darwin-24.11";
+      url = "github:nix-darwin/nix-darwin/nix-darwin-25.05";
       inputs.nixpkgs.follows = "nixpkgs-release";
     };
 
@@ -29,7 +29,7 @@
     };
 
     home-manager-release = {
-      url = "github:nix-community/home-manager/release-24.11";
+      url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs-release";
     };
 
