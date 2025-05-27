@@ -186,6 +186,8 @@
         networking.hostName = "Ivans-Mac-mini";
         users.users.ivan.home = "/Users/ivan";
         system.stateVersion = 5;
+
+        system.primaryUser = "ivan";
       }
     ];
     specialArgs = {

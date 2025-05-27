@@ -37,7 +37,6 @@ let
 
   # Create a Caddy package with the required DNS plugin
   # Use the caddy-with-plugins overlay to get the withPlugins functionality
-  # This works in NixOS 24.11 before the function is available in the standard package
   caddyWithPlugins = pkgs.caddy-with-plugins.withPlugins {
     # https://github.com/caddy-dns/cloudflare/issues/97#issuecomment-2784508762
     plugins = [ "github.com/caddy-dns/cloudflare@v0.0.0-20250214163716-188b4850c0f2" ];
