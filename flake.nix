@@ -9,7 +9,7 @@
     nixos-release.url = "github:nixos/nixpkgs/nixos-25.05";
 
     # Stable Nixpkgs release
-    nixpkgs-release.url = "github:nixos/nixpkgs/release-25.05";
+    nixpkgs-release-darwin.url = "github:nixos/nixpkgs/nixpkgs-25.05-darwin";
 
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
@@ -20,7 +20,7 @@
 
     darwin-release = {
       url = "github:nix-darwin/nix-darwin/nix-darwin-25.05";
-      inputs.nixpkgs.follows = "nixpkgs-release";
+      inputs.nixpkgs.follows = "nixpkgs-release-darwin";
     };
 
     home-manager = {
@@ -30,7 +30,7 @@
 
     home-manager-release = {
       url = "github:nix-community/home-manager/release-25.05";
-      inputs.nixpkgs.follows = "nixpkgs-release";
+      inputs.nixpkgs.follows = "nixpkgs-release-darwin";
     };
 
     # https://github.com/zhaofengli/nix-homebrew

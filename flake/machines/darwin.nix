@@ -175,8 +175,8 @@
         nixpkgs.overlays = [ inputs.self.overlay ];
         nixpkgs.config.allowUnfree = true;
         nix.nixPath = [
-          "nixpkgs=${inputs.nixpkgs-release}"
-          "nixpkgs-release=${inputs.nixpkgs-release}"
+          "nixpkgs=${inputs.nixpkgs-release-darwin}"
+          "nixpkgs-release=${inputs.nixpkgs-release-darwin}"
         ];
         _module.args = {
           flake-inputs = inputs;
