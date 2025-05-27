@@ -95,6 +95,12 @@ cd nixos-config
 make rebuild-darwin-sudo
 ```
 
+### Full Disk access / Removable disk
+
+On boot tmux rebuild service can't get access to /Volumes/Storage
+
+Still an issue.
+
 ## TODO
 
 - [ ] Add /Volumes/Storage to /etc/fstab
