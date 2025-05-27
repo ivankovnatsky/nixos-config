@@ -64,7 +64,7 @@
     "darwin-release": {
       "inputs": {
         "nixpkgs": [
-          "nixpkgs-release"
+          "nixpkgs-release-darwin"
         ]
       },
       "locked": {
@@ -197,7 +197,7 @@
     "home-manager-release": {
       "inputs": {
         "nixpkgs": [
-          "nixpkgs-release"
+          "nixpkgs-release-darwin"
         ]
       },
       "locked": {
@@ -393,18 +393,18 @@
         "type": "github"
       }
     },
-    "nixpkgs-release": {
+    "nixpkgs-release-darwin": {
       "locked": {
-        "lastModified": 1748319672,
-        "narHash": "sha256-0WUep8/rR8kbN0SgYat/rnvoJF3wX1mqkvwVxZ2ss9E=",
+        "lastModified": 1748192983,
+        "narHash": "sha256-FpKC8sZCzNoeCtHJmYiqafYt5A1JzQ44opT46M/qe4I=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "d2805172083141a6cf58b61c2bab072764133453",
+        "rev": "b26c8c4da0fe0b4e496f2a432140795dabe2c8e2",
         "type": "github"
       },
       "original": {
         "owner": "nixos",
-        "ref": "release-25.05",
+        "ref": "nixpkgs-25.05-darwin",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -568,7 +568,7 @@
         "nixpkgs": "nixpkgs_3",
         "nixpkgs-master": "nixpkgs-master",
         "nixpkgs-python": "nixpkgs-python",
-        "nixpkgs-release": "nixpkgs-release",
+        "nixpkgs-release-darwin": "nixpkgs-release-darwin",
         "nixvim": "nixvim",
         "nur": "nur",
         "pyenv-nix-install": "pyenv-nix-install",
