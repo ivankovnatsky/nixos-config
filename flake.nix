@@ -6,7 +6,7 @@
     nixpkgs-master.url = "github:nixos/nixpkgs/master";
 
     # Stable NixOS release
-    nixos-release.url = "github:nixos/nixpkgs/nixos-24.11";
+    nixos-release.url = "github:nixos/nixpkgs/nixos-25.05";
 
     # Stable Nixpkgs release
     nixpkgs-release.url = "github:nixos/nixpkgs/release-24.11";

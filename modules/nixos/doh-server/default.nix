@@ -10,7 +10,7 @@ let
   toml = pkgs.formats.toml { };
 in
 {
-  options.services.doh-server = {
+  options.local.services.doh-server = {
     enable = lib.mkEnableOption "DNS-over-HTTPS server";
 
     package = lib.mkPackageOption pkgs "dns-over-https" { };

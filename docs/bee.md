@@ -335,6 +335,13 @@ sudo systemd-cryptenroll --tpm2-device=auto /dev/disk/by-uuid/e9d01b26-cab2-47df
 sudo cryptsetup luksDump /dev/sdb1 | grep -A20 "Tokens"
 ```
 
+## Upgrade nodes
+
+### No space left on /boot
+
+Had to `nix-collect-garbage -d` and run rebuild once again and after that it cleaned the /boot.
+
 ## References
 
 - [balint's nixos-configs](https://codeberg.org/balint/nixos-configs) - Contains advanced TPM2 PCR configuration examples
+- https://discourse.nixos.org/t/no-space-left-on-boot/24019/2
