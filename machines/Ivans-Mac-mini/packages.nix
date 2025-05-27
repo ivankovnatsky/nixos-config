@@ -5,6 +5,7 @@
     tmux # Be able to attach to tmux-rebuild session manually
     watchman # Be able to rerun rebuild manually with watching
     watchman-make # Be able to rerun rebuild manually with watching
+    git
 
     rclone # Sync out stuff
     pigz # To help with Sources/ packing

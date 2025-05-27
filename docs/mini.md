@@ -60,6 +60,41 @@ On other machines:
 ssh-copy-id ivan@192.168.50.46
 ```
 
+## Upgrade notes
+
+### `post-build` script hanged
+
+```console
+sudo vim /nix/var/determinate/post-build-hook.sh
+# Place exit 0 at the top of the file
+```
+
+#### References
+
+* https://www.reddit.com/r/Nix/comments/1iuqxrw/nixdarwin_switch_hangs_forever/
+* https://github.com/DeterminateSystems/nix-installer/issues/1479
+* https://github.com/DeterminateSystems/nix-installer/issues/1500
+
+### Git repo is not owned by current user
+
+```logs
+building the system configuration...
+error:
+       … while fetching the input 'git+file:///Volumes/Storage/Data/Sources/github.com/ivankovnatsky/nixos-config'
+
+       error: opening Git repository "/Volumes/Storage/Data/Sources/github.com/ivankovnatsky/nixos-config": repository path '/Volumes/Storage/Data/Sources/github.com/ivankovnatsky/nixos-config' is not owned by current user
+ivan@Ivans-Mac-mini:/Volumes/Storage/Data/Sources/github.com/ivankovnatsky/nixos-config/ >
+```
+
+```console
+cd ../
+cp -rv nixos-config ~/
+cd ~/nixos-config
+cd -
+cd nixos-config
+make rebuild-darwin-sudo
+```
+
 ## TODO
 
 - [ ] Add /Volumes/Storage to /etc/fstab

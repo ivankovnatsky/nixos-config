@@ -6,6 +6,7 @@
     ../../modules/secrets
     ./dns.nix
     ./doh.nix
+    ./git.nix
     ./logrotate.nix
     ./miniserve.nix
     ./netdata.nix
