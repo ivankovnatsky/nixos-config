@@ -16,6 +16,7 @@
     erdtree
     exiftool
     fzf
+    gallery-dl
     genpass
     home-manager
     imagemagick
