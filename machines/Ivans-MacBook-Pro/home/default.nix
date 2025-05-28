@@ -23,6 +23,7 @@
     ../../../home/taskwarrior.nix
     ../../../home/tmux.nix
     ../../../home/vscode.nix
+    ../../../home/yt-dlp.nix
     ../../../modules/flags
     ../../../modules/secrets
     ./flags.nix
