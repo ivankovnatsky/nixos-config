@@ -26,7 +26,6 @@ let
     tree = "${pkgs.lsd}/bin/lsd --tree";
     syncthing = "${pkgs.syncthing}/bin/syncthing serve --no-browser";
     stc = "${pkgs.stc-cli}/bin/stc -homedir ${syncthingHomeDir}";
-    vim = "vim -n -c 'set noswapfile'";
 
     top = if isDarwin then "top -o cpu" else "top";
   };
