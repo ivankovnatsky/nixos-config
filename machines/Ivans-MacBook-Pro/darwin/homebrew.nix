@@ -21,6 +21,7 @@
       "google-chrome"
       "hammerspoon"
       "handbrake"
+      "nvidia-geforce-now"
       "mullvadvpn"
       "silicon-labs-vcp-driver"
       "vivaldi"
