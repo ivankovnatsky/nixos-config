@@ -13,6 +13,7 @@ cd "$HOME/../" || exit 1
 tar \
     --exclude='**/.cache/huggingface/**' \
     --exclude='**/.cache/nix/**' \
+    --exclude='**/.cargo/registry/**' \
     --exclude='**/.cursor/extensions/**' \
     --exclude='**/.gnupg/S.*' \
     --exclude='**/.npm/_cacache/**' \
