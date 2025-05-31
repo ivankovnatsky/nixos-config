@@ -8,6 +8,9 @@
     " Disable swap files
     set noswapfile
 
+    " Enable mouse support
+    set mouse=a
+
     " Auto save on text changes
     autocmd TextChanged,TextChangedI <buffer> silent write
   '';
