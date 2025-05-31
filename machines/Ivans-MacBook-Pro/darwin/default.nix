@@ -4,7 +4,6 @@
     ../../../darwin/aerospace.nix
     ../../../darwin/darwin.nix
     ../../../darwin/nix.nix
-    ../../../darwin/dock.nix
     ../../../darwin/system.nix
     ../../../modules/darwin/dock
     ../../../modules/darwin/pam
@@ -15,6 +14,7 @@
     ../../../system/documentation.nix
     ../../../system/nix.nix
     ./cloudflared.nix
+    ./dock.nix
     ./flags.nix
     ./fonts.nix
     ./homebrew.nix
