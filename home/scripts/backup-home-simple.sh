@@ -41,3 +41,11 @@ tar \
     "$USER" | \
     \
     pigz > "/tmp/$USER.tar.gz"
+
+export TARGET_MACHINE=ivans-mac-mini.local
+export BACKUP_PATH=/Volumes/Storage/Data/Drive/Crypt/Machines/
+export HOSTNAME=$(hostname)
+export DATE_DIR=$(date +%Y-%m-%d)
+
+ssh $TARGET_MACHINE mkdir $BACKUP_PATH/$HOSTNAME/Users/$DATE_DIR
+scp /tmp/$USER.tar.gz "$TARGET_MACHINE:$BACKUP_PATH/$HOSTNAME/Users/$DATE_DIR/$USER.tar.gz"
