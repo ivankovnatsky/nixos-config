@@ -16,5 +16,6 @@
 
     wget
     yt-dlp
+    gallery-dl
   ];
 }
