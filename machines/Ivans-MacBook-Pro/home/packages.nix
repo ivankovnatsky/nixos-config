@@ -32,7 +32,6 @@
     pigz
     pv
     rclone
-    rectangle # macOS: Window manager
     ripgrep
     rust-analyzer
     rustc
