@@ -17,6 +17,7 @@
     ../../../home/minimal-vim
     ../../../home/mpv.nix
     ../../../home/nixvim
+    ../../../home/nixvim/plugins/auto-save
     ../../../home/nixvim/plugins/avante
     ../../../home/nixvim/plugins/copilot-lua
     ../../../home/nixvim/plugins/gen-nvim
