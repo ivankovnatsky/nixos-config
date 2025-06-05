@@ -277,6 +277,8 @@ Optimized fan settings to be:
 Fan off temperature limit: 30 -> 70°C
 Fan start temperature limit: 35 -> 80°C
 
+(Restored to default)
+
 ## External disk
 
 ```console
