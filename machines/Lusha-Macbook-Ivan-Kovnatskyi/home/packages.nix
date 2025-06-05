@@ -72,7 +72,6 @@
     rabbitmq-server # Needed for the CLI
     rabbitmqadmin-ng # Overlay
     rclone
-    rectangle # Window manager
     rust-analyzer
     rustc
     sesh
