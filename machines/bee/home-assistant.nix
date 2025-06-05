@@ -14,6 +14,7 @@
             bleak # Bluetooth Low Energy support
             zeroconf
             ifaddr # Better interface detection
+            universal-silabs-flasher # Required for ZHA with Silicon Labs adapters
           ];
       }).overrideAttrs
         (oldAttrs: {
@@ -27,6 +28,8 @@
       "mqtt" # Required for zigbee2mqtt integration
       "bluetooth" # Bluetooth integration
       "zeroconf" # Add zeroconf component explicitly
+      "zha" # Zigbee Home Automation
+      "homeassistant_hardware" # Required for ZHA hardware support
     ];
     config = {
       # Includes dependencies for a basic setup
