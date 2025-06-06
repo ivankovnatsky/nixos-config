@@ -75,13 +75,6 @@ in
       { path = "${homePath}/Applications/Claude Web.app/"; }
 
       {
-        type = "spacer";
-        section = "apps";
-      }
-
-      { path = "${homePath}/Applications/Тривога.app/"; }
-
-      {
         path = "${config.users.users.${username}.home}/Downloads/";
         section = "others";
       }
