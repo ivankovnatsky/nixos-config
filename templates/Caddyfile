@@ -188,6 +188,23 @@ files-bee.@externalDomain@:443 {
 	}
 }
 
+# Netdata
+netdata-bee.@externalDomain@:443 {
+	bind @bindAddress@
+
+	# Basic authentication for all paths
+	basic_auth /* {
+		@netdataBeeUsername@ @netdataBeePassword@
+	}
+
+	# Proxy to Netdata
+	reverse_proxy @beeIp@:19999 {
+		# Enable WebSocket support
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+}
+
 # Zigbee2MQTT web interface
 zigbee.@externalDomain@:443 {
 	bind @bindAddress@
@@ -210,6 +227,27 @@ sync-mini.@externalDomain@:443 {
 
 	# Proxy to Syncthing on its configured address
 	reverse_proxy @miniIp@:8384
+}
+
+netdata-mini.@externalDomain@ {
+	bind @bindAddress@
+
+	# Basic authentication for all paths
+	basic_auth /* {
+		@netdataMiniUsername@ @netdataMiniPassword@
+	}
+
+	# FIXME: Should be fixed in nix-darwin or upsteam?
+	# Redirect root to v1 dashboard
+	redir / /v1/ 302
+	redir /index.html /v1/ 302
+
+	# Proxy to Netdata
+	reverse_proxy @miniIp@:19999 {
+		# Enable WebSocket support
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
 }
 
 # Miniserve on Mac mini
