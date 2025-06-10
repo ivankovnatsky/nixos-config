@@ -14,7 +14,6 @@
     ../../../system/documentation.nix
     ../../../system/nix.nix
     ../../../system/openssh.nix
-    ./dock.nix
     ./flags.nix
     ./fonts.nix
     ./homebrew.nix
