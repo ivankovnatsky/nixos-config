@@ -1,7 +1,7 @@
 { config, ... }:
 {
   services.netdata = {
-    enable = true;
+    enable = false;
     # Store service stdout/stderr in /tmp
     logDir = "/tmp/log/netdata";
 

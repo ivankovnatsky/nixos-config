@@ -2,7 +2,7 @@
 {
   # Enable the Netdata service with enhanced settings
   services.netdata = {
-    enable = true;
+    enable = false;
 
     # package = pkgs.netdataCloud;
 
