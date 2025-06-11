@@ -9,3 +9,5 @@ sudo nix-env -iA nixos.gnumake
 sudo nix-env -iA nixos.tmux
 make rebuild-nixos/generic
 ```
+
+Remove incus.nix file and include from configuration.nix.

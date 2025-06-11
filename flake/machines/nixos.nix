@@ -30,11 +30,11 @@
     };
   };
 
-  "nixos" = inputs.nixos-release.lib.nixosSystem {
+  "orb-nixos" = inputs.nixos-release.lib.nixosSystem {
     system = "aarch64-linux";
     modules = [
       # Import machine-specific configuration
-      ../../machines/nixos
+      ../../machines/orb-nixos
 
       # Basic system configuration
       {
@@ -49,7 +49,7 @@
         };
 
         # System settings
-        networking.hostName = "nixos";
+        networking.hostName = "orb-nixos";
         users.users.ivan.home = "/home/ivan";
         system.stateVersion = "24.11";
       }
