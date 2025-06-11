@@ -25,6 +25,7 @@
       "mindmac"
       "orbstack"
       "twingate"
+      "utm"
       "windsurf"
     ];
     masApps = {
