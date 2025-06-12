@@ -13,7 +13,6 @@
     ../../../modules/secrets
     ../../../system/documentation.nix
     ../../../system/nix.nix
-    ../../../system/openssh.nix
     ./flags.nix
     ./fonts.nix
     ./homebrew.nix

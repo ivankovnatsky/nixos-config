@@ -5,7 +5,6 @@
     ../../../home/amethyst
     ../../../home/bat.nix
     ../../../home/direnv.nix
-    ../../../home/fish-ai.nix
     ../../../home/ghorg.nix
     ../../../home/ghostty.nix
     ../../../home/git.nix

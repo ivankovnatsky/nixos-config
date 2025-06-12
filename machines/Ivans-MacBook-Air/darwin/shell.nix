@@ -1,6 +1,5 @@
 { config, ... }:
 {
-
   # error:
   #      failed assertions:
   #      - users.users.ivan.shell is set to zsh, but
