@@ -21,6 +21,7 @@
       "ghostty"
       "google-chrome"
       "hammerspoon"
+      "handbrake"
       "mullvadvpn"
       "nvidia-geforce-now"
       "silicon-labs-vcp-driver"

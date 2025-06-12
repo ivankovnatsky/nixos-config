@@ -2,8 +2,8 @@
   imports = [
     ../../../home/aichat.nix
     ../../../home/amethyst
+    ../../../home/bat.nix
     ../../../home/direnv.nix
-    ../../../home/fish-ai.nix
     ../../../home/ghostty.nix
     ../../../home/git.nix
     ../../../home/go.nix
@@ -22,12 +22,14 @@
     ../../../home/syncthing.nix
     ../../../home/taskwarrior.nix
     ../../../home/tmux.nix
+    ../../../home/transmission.nix
     ../../../home/vscode.nix
     ../../../home/yt-dlp.nix
     ../../../modules/flags
     ../../../modules/secrets
     ./flags.nix
     ./home-session-vars.nix
+    ./manual.nix
     ./manual.nix
     ./nixvim.nix
     ./packages.nix
