@@ -25,6 +25,7 @@
       "mullvadvpn"
       "nvidia-geforce-now"
       "silicon-labs-vcp-driver"
+      "steam"
       "vivaldi"
       "windsurf"
     ];
