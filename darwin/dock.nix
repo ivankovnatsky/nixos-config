@@ -41,8 +41,8 @@ in
       { path = "/System/Applications/Utilities/Activity Monitor.app/"; }
       { path = "/System/Applications/Preview.app"; }
       { path = "/System/Applications/Passwords.app/"; }
-      { path = "/Applications/Numbers.app/"; }
       { path = "/System/Library/CoreServices/Applications/Keychain Access.app/"; }
+      { path = "/Applications/Numbers.app/"; }
       { path = "/System/Applications/iPhone Mirroring.app/"; }
       { path = "/System/Applications/FindMy.app/"; }
       { path = "/System/Applications/Weather.app/"; }
