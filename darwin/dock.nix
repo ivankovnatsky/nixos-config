@@ -80,6 +80,7 @@ in
       }
 
       { path = "/Applications/Discord.app/"; }
+      { path = "/Applications/Steam.app/"; }
       { path = "/Applications/GeForceNOW.app/"; }
 
       {
