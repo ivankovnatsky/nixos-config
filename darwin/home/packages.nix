@@ -28,6 +28,7 @@
     mos # macOS: Use PC mode for mouse, instead of natural scrolling
     nixfmt-rfc-style
     nodejs
+    pandoc
     parallel
     pigz
     pv
