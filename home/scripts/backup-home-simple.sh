@@ -30,6 +30,7 @@ tar \
     --exclude='**/Library/Caches/pypoetry/**' \
     --exclude='**/Library/Containers/com.apple.Safari/**' \
     --exclude='**/Library/Containers/com.apple.wallpaper.extension.video/**' \
+    --exclude='**/Library/Containers/com.utmapp.UTM/**' \
     --exclude='**/Library/Group Containers/BJ4HAAB9B3.ZoomClient3rd/**' \
     --exclude='**/Library/Group Containers/group.com.apple.CoreSpeech/**' \
     --exclude='**/Library/Group Containers/group.com.apple.secure-control-center-preferences/**' \
