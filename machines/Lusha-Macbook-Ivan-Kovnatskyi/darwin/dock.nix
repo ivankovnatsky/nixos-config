@@ -52,7 +52,6 @@ in
       { path = "/Applications/DBeaver.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }
-      { path = "/Applications/MindMac.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
 
       {
