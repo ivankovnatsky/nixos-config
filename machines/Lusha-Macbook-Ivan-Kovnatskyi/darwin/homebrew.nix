@@ -22,7 +22,6 @@
       "dbeaver-community"
       "ghostty"
       "hammerspoon"
-      "mindmac"
       "orbstack"
       "twingate"
       "utm"
