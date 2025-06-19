@@ -50,7 +50,7 @@
       # Enable ignorecase + disable smartcase for better searching
       ignorecase = true;
       smartcase = false; # Ignore case with capitals
-      grepprg = "rg --vimgrep";
+      grepprg = "rg --vimgrep --smart-case";
       grepformat = "%f:%l:%c:%m";
 
       # Decrease updatetime
