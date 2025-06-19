@@ -16,7 +16,6 @@
     # zoom
     casks = [
       "amethyst"
-      "bitwarden"
       "chromium"
       "cursor"
       "dbeaver-community"

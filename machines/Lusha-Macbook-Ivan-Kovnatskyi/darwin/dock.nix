@@ -52,7 +52,6 @@ in
       { path = "/Applications/DBeaver.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }
-      { path = "/Applications/Bitwarden.app/"; }
 
       {
         type = "spacer";
@@ -61,7 +60,6 @@ in
 
       # nixpkgs installed
       { path = "/Applications/Ghostty.app/"; }
-      { path = "${pkgs.vscode}/Applications/Visual Studio Code.app/"; }
       { path = "${pkgs.keycastr}/Applications/KeyCastr.app/"; }
 
       {
