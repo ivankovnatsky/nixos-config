@@ -80,7 +80,7 @@ in
       }
 
       { path = "/Applications/Discord.app/"; }
-      { path = "${homePath}/Library/Application Support/Steam/Steam.AppBundle/Steam/"; }
+      { path = "/Applications/Steam.app/"; }
       { path = "/Applications/GeForceNOW.app/"; }
 
       {
