@@ -1,5 +1,6 @@
 {
   imports = [
+    # ./user.nix
     ../../darwin/syncthing.nix
     ../../modules/darwin/logrotate
     ../../modules/flags
@@ -7,18 +8,18 @@
     ./dns.nix
     ./doh.nix
     ./git.nix
+    ./homebrew.nix
+    ./http.nix
     ./logrotate.nix
     ./miniserve.nix
     ./netdata.nix
     ./nix.nix
     ./openssh.nix
     ./packages.nix
-    ./http.nix
+    ./power.nix
     ./sharing.nix
     ./sudo.nix
-    ./power.nix
-    # ./user.nix
-    ./tmux-rebuild.nix
     ./system.nix
+    ./tmux-rebuild.nix
   ];
 }

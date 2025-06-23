@@ -48,19 +48,12 @@ in
       }
 
       # Installed using homebrew
+      { path = "/Applications/Ghostty.app/"; }
       { path = "/Applications/Chromium.app/"; }
       { path = "/Applications/DBeaver.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }
-
-      {
-        type = "spacer";
-        section = "apps";
-      }
-
-      # nixpkgs installed
-      { path = "/Applications/Ghostty.app/"; }
-      { path = "${pkgs.keycastr}/Applications/KeyCastr.app/"; }
+      { path = "/Applications/KeyCastr.app/"; }
 
       {
         type = "spacer";

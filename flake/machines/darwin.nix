@@ -189,6 +189,27 @@
 
         system.primaryUser = "ivan";
       }
+
+      # Homebrew module
+      inputs.nix-homebrew.darwinModules.nix-homebrew
+      (
+        { config, ... }:
+        {
+          homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
+          nix-homebrew = {
+            enable = true;
+            enableRosetta = false;
+            user = "ivan";
+            autoMigrate = true;
+            taps = {
+              "homebrew/homebrew-core" = inputs.homebrew-core;
+              "homebrew/homebrew-cask" = inputs.homebrew-cask;
+              "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
+            };
+            mutableTaps = false;
+          };
+        }
+      )
     ];
     specialArgs = {
       system = "aarch64-darwin";
