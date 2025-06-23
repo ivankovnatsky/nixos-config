@@ -49,5 +49,11 @@ in
 
   home.file = {
     ".config/mpv/scripts/freeze-window.lua".source = freeze-window-lua;
+    ".config/mpv/input.conf".text = ''
+      LEFT seek -3
+      RIGHT seek 3
+      UP seek 30
+      DOWN seek -30
+    '';
   };
 }
