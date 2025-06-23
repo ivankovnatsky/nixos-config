@@ -11,7 +11,6 @@
     pigz # To help with Sources/ packing
 
     smctemp # Overlay
-    stats # macOS: System stats; Configure `Check for update` to `Never`.
     dust # For disk usage analysis
 
     wget

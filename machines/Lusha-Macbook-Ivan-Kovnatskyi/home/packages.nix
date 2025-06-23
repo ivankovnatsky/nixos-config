@@ -38,7 +38,6 @@
     k8sgpt
     kail
     kdash
-    keycastr # macOS: Keystroke visualizer
     krew
     kubecolor
     kubectl
@@ -48,11 +47,9 @@
     kubectx
     kubepug
     kustomize
-    maccy # Clipboard manager
     magic-wormhole
     mariadb
     mongosh
-    mos # macOS: Use PC mode for mouse, instead of natural scrolling
     mycli
     nh # https://github.com/nix-community/nh
     nixfmt-rfc-style
@@ -79,7 +76,6 @@
     smctemp
     sshpass
     ssm-session-manager-plugin
-    stats # macOS: System stats; Configure `Check for update` to `Never`.
     terraformer
     terragrunt-atlantis-config
     username # Installed as flake

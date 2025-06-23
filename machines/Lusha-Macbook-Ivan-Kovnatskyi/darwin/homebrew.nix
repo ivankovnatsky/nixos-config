@@ -21,9 +21,13 @@
       "dbeaver-community"
       "ghostty"
       "hammerspoon"
+      "keycastr"
+      "mos"
       "orbstack"
+      "stats"
       "twingate"
       "utm"
+      "visual-studio-code"
       "windsurf"
     ];
     masApps = {

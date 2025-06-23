@@ -9,7 +9,6 @@
     bat
     battery-toolkit # Local overlay
     cargo
-    coconutbattery # macOS: Battery
     delta
     du-dust
     duf
@@ -21,11 +20,9 @@
     home-manager
     imagemagick
     jq
-    keycastr # macOS: Keystroke visualizer
     ks
     magic-wormhole
     mkpasswd
-    mos # macOS: Use PC mode for mouse, instead of natural scrolling
     nixfmt-rfc-style
     nodejs
     pandoc
@@ -37,7 +34,6 @@
     rust-analyzer
     rustc
     smctemp # Local overlay
-    stats # macOS: System stats; Configure `Check for update` to `Never`.
     syncthing
     typst
     typstfmt
