@@ -13,7 +13,6 @@
     ../../../home/jujutsu.nix
     ../../../home/k9s.nix
     ../../../home/lsd.nix
-    ../../../home/minimal-vim
     ../../../home/mpv.nix
     ../../../home/nixvim
     ../../../home/nixvim/plugins/avante
