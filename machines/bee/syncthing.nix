@@ -102,6 +102,7 @@
             "Ivans-Mac-mini"
             "Ivans-MacBook-Air"
             "Ivans-MacBook-Pro"
+            "Ally"
           ];
         };
         "Sources/github.com/NixOS/nixpkgs" = {
@@ -142,6 +143,7 @@
             "Ivans-MacBook-Air"
             "Ivans-MacBook-Pro"
             "Lusha-Macbook-Ivan-Kovnatskyi"
+            "Ally"
           ];
         };
         "Sources/github.com/narugit/smctemp" = {
@@ -163,6 +165,7 @@
             "Ivans-Mac-mini"
             "Ivans-MacBook-Air"
             "Ivans-MacBook-Pro"
+            "Ally"
           ];
         };
       };
