@@ -84,20 +84,6 @@ in
       { path = "/Applications/GeForceNOW.app/"; }
 
       {
-        type = "spacer";
-        section = "apps";
-      }
-
-      # TODO: see if making a Dock web app could be automated.
-      # Safari WebApps placeholder
-      { path = "${homePath}/Applications/Тривога.app/"; }
-      { path = "${homePath}/Applications/X.app/"; }
-      { path = "${homePath}/Applications/WhatsApp Web.app/"; }
-      { path = "${homePath}/Applications/Telegram Web.app/"; }
-      { path = "${homePath}/Applications/ChatGPT Web.app/"; }
-      { path = "${homePath}/Applications/Claude Web.app/"; }
-
-      {
         path = "${homePath}/Downloads/";
         section = "others";
       }
