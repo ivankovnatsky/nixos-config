@@ -20,17 +20,13 @@
       "discord"
       "firefox"
       "ghostty"
-      "google-chrome"
       "hammerspoon"
-      "handbrake"
       "keycastr"
       "mos"
       "mullvadvpn"
       "nvidia-geforce-now"
       "silicon-labs-vcp-driver"
       "stats"
-      "steam"
-      "vivaldi"
       "windsurf"
     ];
     masApps = {

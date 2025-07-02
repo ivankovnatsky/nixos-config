@@ -56,9 +56,7 @@ in
 
       # Brew casks placeholder
       { path = "/Applications/Firefox.app/"; }
-      { path = "/Applications/Google Chrome.app/"; }
       { path = "/Applications/Chromium.app/"; }
-      { path = "/Applications/Vivaldi.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }
@@ -70,7 +68,6 @@ in
 
       # Installed using nixpkgs
       { path = "/Applications/Ghostty.app/"; }
-      { path = "${pkgs.vscode}/Applications/Visual Studio Code.app/"; }
       { path = "${pkgs.coconutbattery}/Applications/coconutBattery.app/"; }
       { path = "${pkgs.keycastr}/Applications/KeyCastr.app/"; }
 
@@ -80,7 +77,6 @@ in
       }
 
       { path = "/Applications/Discord.app/"; }
-      { path = "/Applications/Steam.app/"; }
       { path = "/Applications/GeForceNOW.app/"; }
 
       {
