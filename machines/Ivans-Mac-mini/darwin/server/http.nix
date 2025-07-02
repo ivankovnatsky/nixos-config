@@ -44,7 +44,7 @@ let
   };
 
   # Path to the Caddyfile template - reusing the template approach
-  caddyfilePath = ../../templates/Caddyfile;
+  caddyfilePath = ../../../../templates/Caddyfile;
 
   # Process the Caddyfile template with the local variables
   Caddyfile =

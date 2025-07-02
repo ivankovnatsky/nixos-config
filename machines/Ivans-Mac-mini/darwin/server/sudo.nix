@@ -1,10 +1,6 @@
 { username, ... }:
 
 {
-  imports = [
-    ../../modules/darwin/sudo
-  ];
-
   local = {
     sudo = {
       enable = true;
