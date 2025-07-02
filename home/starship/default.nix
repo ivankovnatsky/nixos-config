@@ -1,9 +1,5 @@
 { config, ... }:
 
-let
-  jjCommand = builtins.readFile ./jj.template;
-  jjstateCommand = builtins.readFile ./jjstate.template;
-in
 {
   programs.starship = {
     enable = true;
@@ -56,17 +52,6 @@ in
       rust.disabled = true;
       nodejs.disabled = true;
       package.disabled = true;
-
-      custom.jj = {
-        command = jjCommand;
-        detect_folders = [ ".jj" ];
-        symbol = "jj";
-      };
-
-      custom.jjstate = {
-        command = jjstateCommand;
-        detect_folders = [ ".jj" ];
-      };
     };
   };
 }

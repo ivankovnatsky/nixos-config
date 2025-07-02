@@ -32,7 +32,7 @@
       ];
     };
     apps = {
-      vscode.enable = true;
+      vscode.enable = false;
     };
   };
 }

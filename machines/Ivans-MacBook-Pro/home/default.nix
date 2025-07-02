@@ -5,7 +5,6 @@
     ../../../darwin/home/manual.nix
     ../../../darwin/home/nixvim.nix
     ../../../darwin/home/packages.nix
-    ../../../home/aichat.nix
     ../../../home/amethyst
     ../../../home/bat.nix
     ../../../home/direnv.nix
@@ -27,7 +26,6 @@
     ../../../home/syncthing.nix
     ../../../home/taskwarrior.nix
     ../../../home/tmux.nix
-    ../../../home/transmission.nix
     ../../../home/vscode.nix
     ../../../modules/flags
     ../../../modules/secrets
