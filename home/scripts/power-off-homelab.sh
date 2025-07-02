@@ -6,16 +6,5 @@
 
 set -e
 
-# Define machines list as space-separated string (POSIX compatible)
-HOSTS="bee ivans-mac-mini"
-
-# Function to power off a specific machine
-power_off_machine() {
-  host=$1
-  ssh ivan@"$host" "sudo shutdown -h now"
-}
-
-# Power off all machines in the list
-for host in $HOSTS; do
-  power_off_machine "$host"
-done
+ssh ivan@bee "sudo shutdown -h now"
+ssh ivan@ivans-mac-mini.local "sudo shutdown -h now"
