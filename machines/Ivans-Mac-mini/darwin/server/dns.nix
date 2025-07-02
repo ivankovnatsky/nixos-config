@@ -5,12 +5,6 @@
 }:
 
 {
-  # Import our custom modules
-  imports = [
-    ../../modules/darwin/dnsmasq
-    ../../modules/darwin/stubby
-  ];
-
   # Enable stubby for DNS-over-TLS resolution
   local.services.stubby = {
     enable = true;

@@ -4,8 +4,6 @@
   pkgs,
   ...
 }: {
-  imports = [ ../../modules/darwin/doh-server ];
-
   local.services.doh-server = {
     enable = true;
     settings = {
