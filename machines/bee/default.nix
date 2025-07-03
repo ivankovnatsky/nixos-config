@@ -71,6 +71,8 @@
 
     ./miniserve.nix
 
+    ./power.nix
+
     ../../nixos/rebuild-diff.nix
   ];
 }

@@ -8,6 +8,7 @@
     ../../../../modules/darwin/stubby
     ../../../../modules/darwin/sudo
     ../../../../modules/darwin/tmux-rebuild
+    ../../../../modules/darwin/pmset
     ../../../../modules/flags
     ../../../../modules/secrets
     ./dns.nix

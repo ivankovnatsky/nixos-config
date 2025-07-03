@@ -55,6 +55,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixvim-release-darwin = {
+      url = "github:nix-community/nixvim/nixos-25.05";
+      inputs.nixpkgs.follows = "nixpkgs-release-darwin";
+    };
+
     flake-utils.url = "github:numtide/flake-utils";
     username = {
       url = "github:ivankovnatsky/username";

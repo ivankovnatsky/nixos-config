@@ -22,5 +22,7 @@
     # Media
     yt-dlp
     gallery-dl
+
+    ethtool
   ];
 }
