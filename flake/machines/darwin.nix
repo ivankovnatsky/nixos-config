@@ -221,7 +221,7 @@
           users.ivan = {
             imports = [
               ../../machines/Ivans-Mac-mini/home
-              inputs.nixvim.homeManagerModules.nixvim
+              inputs.nixvim-release-darwin.homeManagerModules.nixvim
               {
                 programs.home-manager.enable = true;
                 home.username = "ivan";
