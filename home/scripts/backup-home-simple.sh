@@ -8,6 +8,16 @@
 
 set -euo pipefail
 
+# Check if /Volumes/Storage/Data is available and use it for temporary storage if it is
+if [[ -d "/Volumes/Storage/Data" ]] && [[ -w "/Volumes/Storage/Data" ]]; then
+  TEMP_DIR="/Volumes/Storage/Data/tmp"
+  mkdir -p "$TEMP_DIR"
+  ARCHIVE_PATH="$TEMP_DIR/$USER.tar.gz"
+else
+  TEMP_DIR="/tmp"
+  ARCHIVE_PATH="/tmp/$USER.tar.gz"
+fi
+
 cd "$HOME/../" || exit 1
 
 tar \
@@ -28,6 +38,7 @@ tar \
     --exclude='**/Library/Application Support/Google/Chrome/**' \
     --exclude='**/Library/Caches/Google/Chrome/**' \
     --exclude='**/Library/Caches/pypoetry/**' \
+    --exclude='**/Library/Mobile Documents/**' \
     --exclude='**/Library/Containers/com.apple.Safari/**' \
     --exclude='**/Library/Containers/com.apple.wallpaper.extension.video/**' \
     --exclude='**/Library/Containers/com.utmapp.UTM/**' \
@@ -41,12 +52,18 @@ tar \
     -cv \
     "$USER" | \
     \
-    pigz > "/tmp/$USER.tar.gz"
+    pigz > "$ARCHIVE_PATH"
 
 export TARGET_MACHINE=ivans-mac-mini.local
 export BACKUP_PATH=/Volumes/Storage/Data/Drive/Crypt/Machines/
 export HOSTNAME=$(hostname)
 export DATE_DIR=$(date +%Y-%m-%d)
 
-ssh ivan@$TARGET_MACHINE mkdir $BACKUP_PATH/$HOSTNAME/Users/$DATE_DIR
-scp /tmp/$USER.tar.gz ivan@"$TARGET_MACHINE:$BACKUP_PATH/$HOSTNAME/Users/$DATE_DIR/$USER.tar.gz"
+if [[ ${TARGET_MACHINE,,} == ${HOSTNAME,,}.local ]]; then
+  mkdir -p "$BACKUP_PATH/$HOSTNAME/Users/$DATE_DIR"
+  mv "$ARCHIVE_PATH" "$BACKUP_PATH/$HOSTNAME/Users/$DATE_DIR/$USER.tar.gz"
+else
+  ssh ivan@$TARGET_MACHINE "mkdir -p $BACKUP_PATH/$HOSTNAME/Users/$DATE_DIR"
+  scp "$ARCHIVE_PATH" ivan@"$TARGET_MACHINE:$BACKUP_PATH/$HOSTNAME/Users/$DATE_DIR/$USER.tar.gz"
+  rm "$ARCHIVE_PATH"
+fi
