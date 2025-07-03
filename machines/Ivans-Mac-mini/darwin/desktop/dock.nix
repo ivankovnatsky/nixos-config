@@ -46,7 +46,6 @@ in
       { path = "/System/Applications/FindMy.app/"; }
       { path = "/System/Applications/Weather.app/"; }
       { path = "/System/Applications/Home.app/"; }
-      { path = "/System/Applications/Utilities/Screen Sharing.app/"; }
 
       {
         type = "spacer";
@@ -67,7 +66,6 @@ in
 
       # Installed using nixpkgs
       { path = "/Applications/Ghostty.app/"; }
-      { path = "${pkgs.coconutbattery}/Applications/coconutBattery.app/"; }
       { path = "${pkgs.keycastr}/Applications/KeyCastr.app/"; }
 
       {

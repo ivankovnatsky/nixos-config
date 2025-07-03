@@ -1,0 +1,29 @@
+{
+  imports = [
+    ../../../darwin/home/home-session-vars.nix
+    ../../../darwin/home/manual.nix
+    ../../../darwin/home/nixvim.nix
+    ../../../home/amethyst
+    ../../../home/bat.nix
+    ../../../home/direnv.nix
+    ../../../home/ghostty.nix
+    ../../../home/git.nix
+    ../../../home/hammerspoon
+    ../../../home/lsd.nix
+    ../../../home/mpv.nix
+    ../../../home/nixvim
+    ../../../home/nixvim/plugins/avante
+    ../../../home/nixvim/plugins/copilot-lua
+    ../../../home/npm.nix
+    ../../../home/pass.nix
+    ../../../home/rebuild-diff.nix
+    ../../../home/scripts.nix
+    ../../../home/shell.nix
+    ../../../home/starship
+    ../../../home/vscode.nix
+    ../../../modules/flags
+    ../../../modules/secrets
+    ./flags.nix
+    ./packages.nix
+  ];
+}

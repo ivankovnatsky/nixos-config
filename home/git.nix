@@ -92,7 +92,7 @@
         postBuffer = 157286400;
       };
       ghq = {
-        root = "~/Sources";
+        root = "${config.flags.homeWorkPath}/Sources";
       };
       tag = {
         forceSignAnnotated = "true";

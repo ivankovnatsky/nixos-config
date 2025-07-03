@@ -3,7 +3,7 @@
   # To prevent sleep, place "never".
   power.sleep = {
     computer = "never"; # default: 1
-    display = "never"; # default: 10
+    display = 10; # default: 10
     harddisk = "never"; # default: 10
   };
 }
