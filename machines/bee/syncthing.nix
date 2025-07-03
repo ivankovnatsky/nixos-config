@@ -168,6 +168,15 @@
             "Ally"
           ];
         };
+        "media" = {
+          id = "media";
+          label = "media";
+          path = "/storage/Data/media";
+          type = "sendonly";
+          devices = [
+            "Ivans-Mac-mini"
+          ];
+        };
       };
     };
   };
@@ -215,6 +224,9 @@
 
     # Create /storage/Data/Drive if it doesn't exist and ensure correct permissions
     "d /storage/Data/Drive 0700 ivan users - -"
+
+    # Create .stfolder marker for Syncthing in the media directory
+    "d /storage/Data/media/.stfolder 0755 ivan users - -"
   ];
 
   # ```
