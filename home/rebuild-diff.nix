@@ -10,10 +10,13 @@
 # building the system configuration...
 # warning: Git tree '/Users/ivan/Sources/github.com/ivankovnatsky/nixos-config' is dirty    waiting for changes
 
-# It does not work for the first time, so you shoud comment out import of this file
+# Now handles the first-time run case by checking if oldGenPath exists
 {
-  # FIXME: For the first time this fails, we need to make sure this does not fail the rebuild.
   home.activation.report-changes = config.lib.dag.entryAnywhere ''
-    ${pkgs.nvd}/bin/nvd --nix-bin-dir=${pkgs.nix}/bin diff $oldGenPath $newGenPath
+    if [[ -n "$oldGenPath" && -e "$oldGenPath" ]]; then
+      ${pkgs.nvd}/bin/nvd --nix-bin-dir=${pkgs.nix}/bin diff $oldGenPath $newGenPath
+    else
+      echo "No previous generation found. Skipping diff."
+    fi
   '';
 }

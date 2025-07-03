@@ -99,6 +99,12 @@ with lib;
       description = "Mac mini IP address";
       default = "192.168.50.4";
     };
+    
+    homeWorkPath = mkOption {
+      type = types.str;
+      description = "Base path for work directories (git sources, password store, etc.)";
+      default = "~";
+    };
 
     hotkeys = {
       terminal = mkOption {

@@ -16,5 +16,8 @@
     wget
     yt-dlp
     gallery-dl
+
+    # To make `git add .` work.
+    git-crypt
   ];
 }

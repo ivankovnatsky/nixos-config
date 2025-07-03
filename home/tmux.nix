@@ -70,7 +70,7 @@
       text = ''
         name: config
         startup_window: 0
-        root: ~/Sources/github.com/ivankovnatsky/nixos-config/
+        root: ${config.flags.homeWorkPath}/Sources/github.com/ivankovnatsky/nixos-config/
 
         windows:
           - editor: ${config.flags.editor}
@@ -82,7 +82,7 @@
       text = ''
         name: work
         startup_window: 1
-        root: ~/Sources
+        root: ${config.flags.homeWorkPath}/Sources
 
         windows:
           - nvim:
