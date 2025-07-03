@@ -34,6 +34,12 @@
           # Enable Web Inspector and developer features
           "DeveloperPreferences" = 836;
         };
+
+        # Additional Safari settings for download location prompt
+        "com.apple.Safari.SandboxBroker" = {
+          "AlwaysPromptForDownloadFolder" = true;
+        };
+        
         "NSGlobalDomain" = {
           # My keyboard does not support Globe switch key, or I don't know how
           # to use it, don't want to use karabiner-elements for now.
