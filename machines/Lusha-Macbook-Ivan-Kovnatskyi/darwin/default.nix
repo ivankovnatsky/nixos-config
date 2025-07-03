@@ -21,5 +21,6 @@
     ./sudo.nix
     ./system.nix
     ./tmux-rebuild.nix
+    ./user.nix
   ];
 }
