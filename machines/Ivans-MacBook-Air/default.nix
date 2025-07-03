@@ -11,6 +11,7 @@
     ../../darwin/sudo.nix
     ../../darwin/system.nix
     ../../darwin/tmux-rebuild.nix
+    ../../darwin/user.nix
     ../../modules/darwin/dock
     ../../modules/darwin/pam
     ../../modules/darwin/sudo

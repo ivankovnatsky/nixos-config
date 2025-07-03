@@ -12,6 +12,7 @@
     ../../../../darwin/shell.nix
     ../../../../darwin/sudo.nix
     ../../../../darwin/system.nix
+    ../../../../darwin/user.nix
     ../../../../modules/darwin/dock
     ../../../../modules/darwin/pam
     ../../../../modules/darwin/sudo
