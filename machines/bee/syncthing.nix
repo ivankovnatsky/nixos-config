@@ -78,6 +78,7 @@
           label = "Sources/github.com/ivankovnatsky/nixos-config";
           path = "/storage/Data/Sources/github.com/ivankovnatsky/nixos-config";
           devices = [
+            "Ally"
             "Ivans-Mac-mini"
             "Ivans-MacBook-Air"
             "Ivans-MacBook-Pro"
@@ -130,6 +131,14 @@
           id = "drive";
           label = "Drive";
           path = "/storage/Data/Drive";
+          devices = [
+            "Ivans-Mac-mini"
+          ];
+        };
+        "Downloads" = {
+          id = "downloads";
+          label = "Downloads";
+          path = "/storage/Data/Downloads";
           devices = [
             "Ivans-Mac-mini"
           ];
@@ -224,6 +233,8 @@
 
     # Create /storage/Data/Drive if it doesn't exist and ensure correct permissions
     "d /storage/Data/Drive 0700 ivan users - -"
+
+    "d /storage/Data/Downloads 0700 ivan users - -"
 
     # Create .stfolder marker for Syncthing in the media directory
     "d /storage/Data/media/.stfolder 0755 ivan users - -"
