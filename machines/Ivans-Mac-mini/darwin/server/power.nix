@@ -17,7 +17,7 @@
     schedules = {
       Sleep = {
         enable = true;
-        time = "22:30:00";
+        time = "22:20:00";
         action = "sleep";
       };
       
