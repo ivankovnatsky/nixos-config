@@ -14,6 +14,9 @@ import urllib.parse
 import urllib.error
 from pathlib import Path
 import time
+import tempfile
+import subprocess
+import glob
 
 # Constants for common values
 DEFAULT_ABS_URL = "http://localhost:13378"
@@ -159,20 +162,172 @@ class AudiobookshelfClient:
         return self.make_request("POST", "/api/upload", data=data, files=files)
 
 
+def download_audio(url, output_dir=None):
+    """Download audio from a URL using yt-dlp.
+    
+    Args:
+        url: URL to download from
+        output_dir: Directory to save the file to (default: current directory)
+        
+    Returns:
+        Path to the downloaded MP3 file or None if failed
+    """
+    print(f"Downloading and extracting audio from {url}...")
+    
+    # Create a temporary directory if none provided
+    if not output_dir:
+        output_dir = os.getcwd()
+    
+    # Ensure the directory exists
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Change to the output directory
+    original_dir = os.getcwd()
+    os.chdir(output_dir)
+    
+    try:
+        # Run yt-dlp command
+        cmd = [
+            "yt-dlp", 
+            "--extract-audio", 
+            "--audio-format", "mp3", 
+            "--postprocessor-args", "-ac 1 -ar 24000",
+            url
+        ]
+        
+        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+        
+        # Find the generated MP3 file
+        mp3_files = glob.glob(os.path.join(output_dir, "*.mp3"))
+        
+        if not mp3_files:
+            print("Error: No MP3 file was generated.")
+            return None
+            
+        # Return the path to the first MP3 file found
+        return mp3_files[0]
+        
+    except subprocess.CalledProcessError as e:
+        print(f"Error running yt-dlp: {e}")
+        print(f"Output: {e.stdout}")
+        print(f"Error: {e.stderr}")
+        return None
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return None
+    finally:
+        # Change back to the original directory
+        os.chdir(original_dir)
+
+
+def process_media_url(url, abs_url=None, library_id=DEFAULT_PODCASTS_LIBRARY_ID):
+    """Process a single media URL - download audio and upload to Audiobookshelf.
+    
+    Args:
+        url: URL to process
+        abs_url: Audiobookshelf URL (optional)
+        library_id: Library ID to upload to (optional)
+        
+    Returns:
+        True if successful, False otherwise
+    """
+    print(f"Processing media URL: {url}")
+    
+    # Create a temporary directory
+    with tempfile.TemporaryDirectory(prefix="audiobookshelf-") as temp_dir:
+        print(f"Created temporary directory: {temp_dir}")
+        
+        # Download audio
+        mp3_file = download_audio(url, temp_dir)
+        
+        if not mp3_file:
+            return False
+            
+        print(f"Audio extraction completed. File: {mp3_file}")
+        
+        # Check for API key
+        api_key = os.environ.get("ABS_API_KEY")
+        if not api_key:
+            print("Error: Missing API key")
+            print("Please set the ABS_API_KEY environment variable")
+            return False
+            
+        # Initialize client
+        if abs_url:
+            client = AudiobookshelfClient(api_key, abs_url)
+        else:
+            client = AudiobookshelfClient(api_key)
+            
+        # Upload to Audiobookshelf
+        print("Uploading to Audiobookshelf...")
+        upload_response = client.upload_file(mp3_file, library_id)
+        
+        if upload_response:
+            print("Upload successful!")
+            return True
+        else:
+            print("Upload failed.")
+            return False
+
+
+def process_from_file(file_path, abs_url=None, library_id=DEFAULT_PODCASTS_LIBRARY_ID):
+    """Process URLs from a file.
+    
+    Args:
+        file_path: Path to file containing URLs
+        abs_url: Audiobookshelf URL (optional)
+        library_id: Library ID to upload to (optional)
+        
+    Returns:
+        Number of successfully processed URLs
+    """
+    if not os.path.isfile(file_path):
+        print(f"Error: File not found: {file_path}")
+        return 0
+        
+    success_count = 0
+    
+    # Read URLs from file
+    with open(file_path, 'r') as f:
+        urls = f.readlines()
+    
+    # Process each URL
+    for url in urls:
+        url = url.strip()
+        
+        # Skip empty lines and comments
+        if not url or url.startswith('#'):
+            continue
+            
+        if process_media_url(url, abs_url, library_id):
+            success_count += 1
+            
+            # Remove successfully processed URL from the file
+            with open(file_path, 'r') as f:
+                lines = f.readlines()
+                
+            with open(file_path, 'w') as f:
+                for line in lines:
+                    if line.strip() != url:
+                        f.write(line)
+                        
+            print(f"Removed successfully processed URL from {file_path}: {url}")
+        else:
+            print(f"Failed to process URL: {url}")
+    
+    return success_count
+
+
 def upload_command(args, client):
     """Handle the upload command."""
-    file_path = Path(args.file)
+    print(f"Uploading {args.file} to {client.base_url}...")
 
-    if not file_path.exists():
-        print(f"Error: File '{file_path}' does not exist.")
-        return
+    # Extract title from filename if not provided
+    title = args.title
+    if not title:
+        title = os.path.splitext(os.path.basename(args.file))[0]
 
-    # Get filename without path or extension to use as title
-    filename = file_path.stem
-
-    # Upload file
-    print(f"Uploading '{file_path}' to Audiobookshelf...")
-    upload_response = client.upload_file(file_path, args.library_id, title=filename)
+    upload_response = client.upload_file(args.file, args.library_id, title)
 
     if upload_response:
         print("Upload successful!")
@@ -210,6 +365,68 @@ def libraries_command(client):
         print()
 
 
+def download_command(args):
+    """Handle the download command."""
+    if args.url:
+        # Process a single URL
+        if download_audio(args.url, args.output_dir):
+            print("Download completed successfully.")
+        else:
+            print("Download failed.")
+            return 1
+    elif args.file_url_list:
+        # Process URLs from a file
+        if not os.path.isfile(args.file_url_list):
+            print(f"Error: File not found: {args.file_url_list}")
+            return 1
+            
+        success_count = 0
+        total_count = 0
+        
+        # Read URLs from file
+        with open(args.file_url_list, 'r') as f:
+            urls = f.readlines()
+        
+        # Process each URL
+        for url in urls:
+            url = url.strip()
+            
+            # Skip empty lines and comments
+            if not url or url.startswith('#'):
+                continue
+                
+            total_count += 1
+            if download_audio(url, args.output_dir):
+                success_count += 1
+                
+        print(f"Downloaded {success_count} of {total_count} URLs successfully.")
+    else:
+        print("Error: Either --url or --file-url-list must be specified.")
+        return 1
+        
+    return 0
+
+
+def process_command(args):
+    """Handle the process command."""
+    if args.url:
+        # Process a single URL
+        if process_media_url(args.url, args.abs_url, args.library_id):
+            print("Processing completed successfully.")
+        else:
+            print("Processing failed.")
+            return 1
+    elif args.file_url_list:
+        # Process URLs from a file
+        success_count = process_from_file(args.file_url_list, args.abs_url, args.library_id)
+        print(f"Processed {success_count} URLs successfully.")
+    else:
+        print("Error: Either --url or --file-url-list must be specified.")
+        return 1
+        
+    return 0
+
+
 def main():
     """Main entry point for the script."""
     parser = argparse.ArgumentParser(
@@ -242,6 +459,9 @@ def main():
         default=DEFAULT_PODCASTS_LIBRARY_ID,
         help=f"Library ID (default: {DEFAULT_PODCASTS_LIBRARY_ID} - Podcasts library)",
     )
+    upload_parser.add_argument(
+        "--title", help="Title for the media (defaults to filename)"
+    )
 
     # Libraries command
     libraries_parser = subparsers.add_parser(
@@ -252,6 +472,41 @@ def main():
         default=os.environ.get("ABS_URL", DEFAULT_ABS_URL),
         help=f"Audiobookshelf URL (default: {DEFAULT_ABS_URL} or ABS_URL env var)",
     )
+    
+    # Download command
+    download_parser = subparsers.add_parser(
+        "download", help="Download audio from a URL or list of URLs"
+    )
+    download_parser.add_argument(
+        "--url", help="URL to download from"
+    )
+    download_parser.add_argument(
+        "--file-url-list", help="File containing URLs to download (one per line)"
+    )
+    download_parser.add_argument(
+        "--output-dir", default=os.getcwd(), help="Directory to save downloaded files"
+    )
+    
+    # Process command (download + upload)
+    process_parser = subparsers.add_parser(
+        "process", help="Download audio from a URL or list of URLs and upload to Audiobookshelf"
+    )
+    process_parser.add_argument(
+        "--url", help="URL to process"
+    )
+    process_parser.add_argument(
+        "--file-url-list", help="File containing URLs to process (one per line)"
+    )
+    process_parser.add_argument(
+        "--abs-url",
+        default=os.environ.get("ABS_URL", DEFAULT_ABS_URL),
+        help=f"Audiobookshelf URL (default: {DEFAULT_ABS_URL} or ABS_URL env var)",
+    )
+    process_parser.add_argument(
+        "--library-id",
+        default=DEFAULT_PODCASTS_LIBRARY_ID,
+        help=f"Library ID (default: {DEFAULT_PODCASTS_LIBRARY_ID} - Podcasts library)",
+    )
 
     # Handle case where no arguments are provided
     if len(sys.argv) == 1:
@@ -259,37 +514,47 @@ def main():
         return 1
 
     # Make sure the first argument is a valid command
-    valid_commands = ["upload", "libraries", "-h", "--help"]
+    valid_commands = ["upload", "libraries", "download", "process", "-h", "--help"]
     if sys.argv[1] not in valid_commands:
         print(f"Error: '{sys.argv[1]}' is not a recognized command.")
         print("Commands must come first, before any options.")
-        print("\nAvailable commands: upload, libraries")
-        print("\nUsage example:")
+        print("\nAvailable commands: upload, libraries, download, process")
+        print("\nUsage examples:")
         print(
             "  audiobookshelf upload --url https://example.com --file file.mp3 --library-id ID"
         )
         print("  audiobookshelf libraries --url https://example.com")
+        print("  audiobookshelf download --url https://youtube.com/watch?v=example")
+        print("  audiobookshelf process --file-url-list /path/to/urls.txt")
         return 1
 
     args = parser.parse_args()
 
-    # Check for API key
+    # Handle commands that don't require API key
+    if args.command == "download":
+        return download_command(args)
+
+    # Check for API key for commands that need it
     api_key = os.environ.get("ABS_API_KEY")
     if not api_key:
         print("Error: Missing API key")
         print("Please set the ABS_API_KEY environment variable")
         return 1
 
-    # Initialize client with URL from command arguments
-    client = AudiobookshelfClient(api_key, args.url)
-
-    # Handle commands
-    if args.command == "upload":
-        upload_command(args, client)
-    elif args.command == "libraries":
-        libraries_command(client)
+    # Handle commands that require API key
+    if args.command == "process":
+        return process_command(args)
     else:
-        parser.print_help()
+        # Initialize client with URL from command arguments
+        client = AudiobookshelfClient(api_key, args.url)
+
+        # Handle other commands
+        if args.command == "upload":
+            upload_command(args, client)
+        elif args.command == "libraries":
+            libraries_command(client)
+        else:
+            parser.print_help()
 
     return 0
 
