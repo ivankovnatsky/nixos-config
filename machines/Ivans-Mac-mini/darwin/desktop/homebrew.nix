@@ -9,13 +9,11 @@
       "bitwarden"
       "chromium"
       "cursor"
-      "discord"
       "firefox"
       "ghostty"
       "hammerspoon"
       "keycastr"
       "mos"
-      "nvidia-geforce-now"
       "stats"
       "windsurf"
     ];

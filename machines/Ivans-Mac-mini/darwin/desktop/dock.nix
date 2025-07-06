@@ -69,14 +69,6 @@ in
       { path = "${pkgs.keycastr}/Applications/KeyCastr.app/"; }
 
       {
-        type = "spacer";
-        section = "apps";
-      }
-
-      { path = "/Applications/Discord.app/"; }
-      { path = "/Applications/GeForceNOW.app/"; }
-
-      {
         path = "${homePath}/Downloads/";
         section = "others";
       }
