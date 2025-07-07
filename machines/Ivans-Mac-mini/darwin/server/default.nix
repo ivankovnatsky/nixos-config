@@ -16,6 +16,7 @@
     ./doh.nix
     ./git.nix
     ./homebrew.nix
+    ./tailscale.nix
     ./http.nix
     ./logrotate.nix
     ./miniserve.nix
