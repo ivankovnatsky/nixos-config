@@ -17,8 +17,6 @@
     file
     parted
 
-    vim
-
     # Media
     yt-dlp
     gallery-dl
