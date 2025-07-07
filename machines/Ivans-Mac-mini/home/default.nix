@@ -26,5 +26,6 @@
     ../../../modules/secrets
     ./flags.nix
     ./packages.nix
+    ./tmux.nix
   ];
 }
