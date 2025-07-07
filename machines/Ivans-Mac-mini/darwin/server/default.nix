@@ -4,13 +4,14 @@
     ../../../../modules/darwin/dnsmasq
     ../../../../modules/darwin/doh-server
     ../../../../modules/darwin/logrotate
+    ../../../../modules/darwin/pmset
     ../../../../modules/darwin/sharing
     ../../../../modules/darwin/stubby
     ../../../../modules/darwin/sudo
     ../../../../modules/darwin/tmux-rebuild
-    ../../../../modules/darwin/pmset
     ../../../../modules/flags
     ../../../../modules/secrets
+    ./bin.nix
     ./dns.nix
     ./doh.nix
     ./git.nix
