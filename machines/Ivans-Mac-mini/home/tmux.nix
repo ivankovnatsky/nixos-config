@@ -1,10 +1,10 @@
-{ config, ... }:
+{ config, osConfig, ... }:
 
 {
   home.file = {
-    ".config/tmuxinator/Ivans-Mac-mini-dev.yml" = {
+    ".config/tmuxinator/${osConfig.networking.hostName}-dev.yml" = {
       text = ''
-        name: Ivans-Mac-mini-dev
+        name: ${osConfig.networking.hostName}-dev
         startup_window: 0
         root: /Volumes/Storage/Data
 
