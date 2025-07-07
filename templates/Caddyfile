@@ -305,3 +305,14 @@ dns-mini.@externalDomain@ {
 		}
 	}
 }
+
+# Simplified domain for bin paste bin service
+bin.@externalDomain@ {
+	bind @bindAddress@
+
+	# Proxy to bin paste bin
+	reverse_proxy @miniIp@:8820 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+}
