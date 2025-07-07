@@ -20,6 +20,7 @@
     ../../../home/scripts.nix
     ../../../home/shell.nix
     ../../../home/starship
+    ../../../home/tmux.nix
     ../../../home/vscode.nix
     ../../../modules/flags
     ../../../modules/secrets
