@@ -32,6 +32,7 @@
     ./dns.nix
     ./doh.nix
     ./http.nix
+    ./tailscale.nix
 
     # Monitoring
     ./logging.nix
