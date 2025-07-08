@@ -29,6 +29,12 @@
               panes:
                 - vim List.txt
                 - make watch
+          - youtube:
+              root: /Volumes/Storage/Data/Youtube
+              layout: main-horizontal
+              panes:
+                - vim List.txt
+                - make watch
       '';
     };
   };
