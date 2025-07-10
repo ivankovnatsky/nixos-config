@@ -98,7 +98,22 @@ tar xf gnupg.tar
 
 cd /mnt/home/ivan/Sources/github.com/ivankovnatsky/nixos-config
 nvim .
+```
 
+Before running install make sure you added to configuration.nix:
+
+```nix
+  boot = {
+    initrd = {
+      luks.devices.crypted = {
+        device = "/dev/disk/by-uuid/b63f3e81-c6d5-4dc6-af60-f5eef6c79af9";
+        preLVM = true;
+      };
+    };
+  };
+```
+
+```console
 nixos-install
 
 # or if flake-based:
