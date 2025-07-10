@@ -5,12 +5,6 @@
   dconf = {
     enable = true;
     settings = {
-      # GNOME font settings
-      "org/gnome/desktop/interface" = {
-        "monospace-font-name" = "${config.flags.fontMono} 11";
-        "font-name" = "${config.flags.fontGeneral} 11";
-      };
-      
       # GNOME Console settings
       "org/gnome/Console" = {
         "use-system-font" = false;
