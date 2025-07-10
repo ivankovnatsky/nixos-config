@@ -14,6 +14,7 @@
     ./gnome.nix
     ./flags.nix
     ./home-session-vars.nix
+    ./nix-index.nix
     ./packages.nix
     ./syncthing.nix
   ];
