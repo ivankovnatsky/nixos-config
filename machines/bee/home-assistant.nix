@@ -15,6 +15,10 @@
             zeroconf
             ifaddr # Better interface detection
             universal-silabs-flasher # Required for ZHA with Silicon Labs adapters
+            python-otbr-api # Thread Border Router API
+            govee-ble # Govee Bluetooth Low Energy devices
+            inkbird-ble # Inkbird Bluetooth Low Energy devices
+            xiaomi-ble # Xiaomi Bluetooth Low Energy devices
           ];
       }).overrideAttrs
         (oldAttrs: {
@@ -73,6 +77,12 @@
 
   services.postgresql = {
     enable = true;
+    # authentication = ''
+    #   local hass hass ident map=ha
+    # '';
+    # identMap = ''
+    #   ha root hass
+    # '';
     ensureDatabases = [ "hass" ];
     ensureUsers = [
       {

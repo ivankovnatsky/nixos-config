@@ -65,6 +65,7 @@
 
     # Home Automation
     ./home-assistant.nix
+    # ./home-assistant-container.nix
     ./mosquitto.nix
     ./zigbee2mqtt.nix
     ./matter-server.nix
