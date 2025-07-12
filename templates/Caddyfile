@@ -23,9 +23,9 @@
 	acme_dns cloudflare @cloudflareApiToken@
 }
 
-# Syncthing with registered domain and proper SSL
-# Use *.extrernalDomain to request a wildcard certificate
-*.@externalDomain@:443 {
+# Single wildcard certificate for all subdomains
+# Use *.externalDomain to request a wildcard certificate
+*.@externalDomain@ {
 	bind @bindAddress@
 
 	# Enable proper TLS with Let's Encrypt using DNS challenge for wildcard cert
@@ -38,281 +38,186 @@
 		resolvers 1.1.1.1 8.8.8.8
 	}
 
+	@prowlarr host prowlarr.@externalDomain@
+	reverse_proxy @prowlarr @beeIp@:9696
+
+	@radarr host radarr.@externalDomain@
+	reverse_proxy @radarr @beeIp@:7878
+
+	@sonarr host sonarr.@externalDomain@
+	reverse_proxy @sonarr @beeIp@:8989
+
+	@transmission host transmission.@externalDomain@
+	reverse_proxy @transmission @beeIp@:9091
+
+	@plex host plex.@externalDomain@
+	reverse_proxy @plex @beeIp@:32400 {
+		# Enable WebSocket support
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		# Increase timeouts for streaming
+		transport http {
+			keepalive 12h
+			keepalive_idle_conns 100
+		}
+	}
+
+	@grafana host grafana.@externalDomain@
+	reverse_proxy @grafana @beeIp@:3000 {
+		# Enable WebSocket support
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
+	# FlareSolverr proxy server
+	# @flaresolverr host flaresolverr.@externalDomain@
+	# reverse_proxy @flaresolverr @beeIp@:8191 {
+	#	# Enable WebSocket support
+	#	header_up X-Real-IP {remote_host}
+	#	header_up Host {host}
+	# }
+
+	@audiobookshelf host audiobookshelf.@externalDomain@
+	reverse_proxy @audiobookshelf @beeIp@:8000 {
+		# Enable WebSocket support
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
+	@jellyfin host jellyfin.@externalDomain@
+	reverse_proxy @jellyfin @beeIp@:8096 {
+		# Enable WebSocket support
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		# Increase timeouts for streaming
+		transport http {
+			keepalive 12h
+			keepalive_idle_conns 100
+		}
+	}
+
+	@homeassistant host homeassistant.@externalDomain@
+	reverse_proxy @homeassistant @beeIp@:8123
+
+	@sync-bee host sync-bee.@externalDomain@
+	reverse_proxy @sync-bee @beeIp@:8384
+
+	# Files server for bee
+	@files-bee host files-bee.@externalDomain@
+	reverse_proxy @files-bee @beeIp@:8080 {
+		# Headers for proper operation
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		# Increase timeouts and buffer sizes for large directories and files
+		transport http {
+			keepalive 30s
+			response_header_timeout 30s
+		}
+	}
+
+	# Netdata
+	@netdata-bee host netdata-bee.@externalDomain@
+	handle @netdata-bee {
+		# Basic authentication for all paths
+		basic_auth /* {
+			@netdataBeeUsername@ @netdataBeePassword@
+		}
+		# Proxy to Netdata
+		reverse_proxy @beeIp@:19999 {
+			# Enable WebSocket support
+			header_up X-Real-IP {remote_host}
+			header_up Host {host}
+		}
+	}
+
+	# Zigbee2MQTT web interface
+	@zigbee host zigbee.@externalDomain@
+	handle @zigbee {
+		# Basic authentication for all paths
+		basic_auth /* {
+			@zigbeeUsername@ @zigbeePassword@
+		}
+		# Proxy to Zigbee2MQTT web interface
+		reverse_proxy @beeIp@:8081 {
+			# Enable WebSocket support for live updates
+			header_up X-Real-IP {remote_host}
+			header_up Host {host}
+		}
+	}
+
+	@sync-mini host sync-mini.@externalDomain@
+	reverse_proxy @sync-mini @miniIp@:8384
+
+	# Netdata mini
+	@netdata-mini host netdata-mini.@externalDomain@
+	handle @netdata-mini {
+		# Basic authentication for all paths
+		basic_auth /* {
+			@netdataMiniUsername@ @netdataMiniPassword@
+		}
+		# FIXME: Should be fixed in nix-darwin or upstream?
+		# Redirect root to v1 dashboard
+		redir / /v1/ 302
+		redir /index.html /v1/ 302
+		# Proxy to Netdata
+		reverse_proxy @miniIp@:19999 {
+			# Enable WebSocket support
+			header_up X-Real-IP {remote_host}
+			header_up Host {host}
+		}
+	}
+
+	# Miniserve on Mac mini
+	@files-mini host files-mini.@externalDomain@
+	reverse_proxy @files-mini @miniIp@:8080 {
+		# Headers for proper operation
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		# Increase timeouts and buffer sizes for large directories and files
+		transport http {
+			keepalive 30s
+			response_header_timeout 30s
+		}
+	}
+
+	# DNS over HTTPS for bee
+	@dns-bee host dns-bee.@externalDomain@
+	reverse_proxy @dns-bee /dns-query http://@beeIp@:8053 {
+		# Enable client IP forwarding for EDNS
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
+	# DNS over HTTPS for mini
+	@dns-mini host dns-mini.@externalDomain@
+	reverse_proxy @dns-mini /dns-query http://@miniIp@:8053 {
+		# Enable client IP forwarding for EDNS
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
+	@bin host bin.@externalDomain@
+	reverse_proxy @bin @miniIp@:8820 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
+	# Default fallback for wildcard (original behavior)
 	reverse_proxy @beeIp@:80
 
-	# Log ACME challenges for debugging
+	# Logging for ACME and DNS services
 	log {
 		output file @logPathPrefix@/caddy/acme-sync.log {
 			roll_size 10MB
 			roll_keep 5
 		}
-	}
-}
-
-# # FIXME: Use wildcard instead of creating certificate for every host.
-# Simplified domain for Prowlarr (singleton service)
-prowlarr.@externalDomain@:443 {
-	bind @bindAddress@
-
-	# Proxy to Prowlarr
-	reverse_proxy @beeIp@:9696
-}
-
-# Simplified domain for Radarr (singleton service)
-radarr.@externalDomain@:443 {
-	bind @bindAddress@
-
-	# Proxy to Radarr
-	reverse_proxy @beeIp@:7878
-}
-
-# Simplified domain for Sonarr (singleton service)
-sonarr.@externalDomain@:443 {
-	bind @bindAddress@
-
-	# Proxy to Sonarr
-	reverse_proxy @beeIp@:8989
-}
-
-# Simplified domain for Transmission (singleton service)
-transmission.@externalDomain@:443 {
-	bind @bindAddress@
-
-	# Proxy to Transmission WebUI
-	reverse_proxy @beeIp@:9091
-}
-
-# Simplified domain for Plex (singleton service)
-plex.@externalDomain@:443 {
-	bind @bindAddress@
-
-	# Proxy to Plex with WebSocket support
-	reverse_proxy @beeIp@:32400 {
-		# Enable WebSocket support
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-
-		# Increase timeouts for streaming
-		transport http {
-			keepalive 12h
-			keepalive_idle_conns 100
-		}
-	}
-}
-
-# Simplified domain for Grafana (singleton service)
-grafana.@externalDomain@ {
-	bind @bindAddress@
-
-	# Proxy to Grafana
-	reverse_proxy @beeIp@:3000 {
-		# Enable WebSocket support
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-}
-
-# FlareSolverr proxy server
-# flaresolverr.@externalDomain@ {
-#   bind @bindAddress@
-
-#   # Proxy to FlareSolverr
-#   reverse_proxy @beeIp@:8191 {
-#     # Enable WebSocket support
-#     header_up X-Real-IP {remote_host}
-#     header_up Host {host}
-#   }
-# }
-
-# Simplified domain for Audiobookshelf (singleton service)
-audiobookshelf.@externalDomain@ {
-	bind @bindAddress@
-
-	# Proxy to Audiobookshelf
-	reverse_proxy @beeIp@:8000 {
-		# Enable WebSocket support
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-}
-
-# Simplified domain for Jellyfin (singleton service)
-jellyfin.@externalDomain@ {
-	bind @bindAddress@
-
-	# Proxy to Jellyfin
-	reverse_proxy @beeIp@:8096 {
-		# Enable WebSocket support
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-
-		# Increase timeouts for streaming
-		transport http {
-			keepalive 12h
-			keepalive_idle_conns 100
-		}
-	}
-}
-
-# Simplified domain for Home Assistant (singleton service)
-homeassistant.@externalDomain@:443 {
-	bind @bindAddress@
-
-	# Proxy to Home-Assistant on its configured address
-	reverse_proxy @beeIp@:8123
-}
-
-# Specific site for sync-bee.externalDomain
-sync-bee.@externalDomain@:443 {
-	bind @bindAddress@
-
-	# Proxy to Syncthing
-	reverse_proxy @beeIp@:8384
-}
-
-# Files server for bee
-files-bee.@externalDomain@:443 {
-	bind @bindAddress@
-
-	# Proxy to local miniserve instance
-	reverse_proxy @beeIp@:8080 {
-		# Headers for proper operation
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-
-		# Increase timeouts and buffer sizes for large directories and files
-		transport http {
-			keepalive 30s
-			response_header_timeout 30s
-		}
-	}
-}
-
-# Netdata
-netdata-bee.@externalDomain@:443 {
-	bind @bindAddress@
-
-	# Basic authentication for all paths
-	basic_auth /* {
-		@netdataBeeUsername@ @netdataBeePassword@
-	}
-
-	# Proxy to Netdata
-	reverse_proxy @beeIp@:19999 {
-		# Enable WebSocket support
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-}
-
-# Zigbee2MQTT web interface
-zigbee.@externalDomain@:443 {
-	bind @bindAddress@
-
-	# Basic authentication for all paths
-	basic_auth /* {
-		@zigbeeUsername@ @zigbeePassword@
-	}
-
-	# Proxy to Zigbee2MQTT web interface
-	reverse_proxy @beeIp@:8081 {
-		# Enable WebSocket support for live updates
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-}
-
-sync-mini.@externalDomain@:443 {
-	bind @bindAddress@
-
-	# Proxy to Syncthing on its configured address
-	reverse_proxy @miniIp@:8384
-}
-
-netdata-mini.@externalDomain@ {
-	bind @bindAddress@
-
-	# Basic authentication for all paths
-	basic_auth /* {
-		@netdataMiniUsername@ @netdataMiniPassword@
-	}
-
-	# FIXME: Should be fixed in nix-darwin or upsteam?
-	# Redirect root to v1 dashboard
-	redir / /v1/ 302
-	redir /index.html /v1/ 302
-
-	# Proxy to Netdata
-	reverse_proxy @miniIp@:19999 {
-		# Enable WebSocket support
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-}
-
-# Miniserve on Mac mini
-files-mini.@externalDomain@:443 {
-	bind @bindAddress@
-
-	# Proxy to miniserve on Mac mini
-	reverse_proxy @miniIp@:8080 {
-		# Headers for proper operation
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-
-		# Increase timeouts and buffer sizes for large directories and files
-		transport http {
-			keepalive 30s
-			response_header_timeout 30s
-		}
-	}
-}
-
-# DNS over HTTPS for bee
-dns-bee.@externalDomain@ {
-	bind @bindAddress@
-
-	# Proxy to local doh-server
-	reverse_proxy /dns-query http://@beeIp@:8053 {
-		# Enable client IP forwarding for EDNS
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-
-	log {
 		output file @logPathPrefix@/caddy/dns-bee.log {
 			roll_size 10MB
 			roll_keep 5
 		}
-	}
-}
-
-# DNS over HTTPS for mini
-dns-mini.@externalDomain@ {
-	bind @bindAddress@
-
-	# Proxy to local doh-server
-	reverse_proxy /dns-query http://@miniIp@:8053 {
-		# Enable client IP forwarding for EDNS
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-
-	log {
 		output file @logPathPrefix@/caddy/dns-mini.log {
 			roll_size 10MB
 			roll_keep 5
 		}
-	}
-}
-
-# Simplified domain for bin paste bin service
-bin.@externalDomain@ {
-	bind @bindAddress@
-
-	# Proxy to bin paste bin
-	reverse_proxy @miniIp@:8820 {
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
 	}
 }
