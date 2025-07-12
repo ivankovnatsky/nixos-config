@@ -20,7 +20,7 @@
     ./http.nix
     ./logrotate.nix
     ./miniserve.nix
-    ./netdata.nix
+    # ./netdata.nix
     ./nix.nix
     ./openssh.nix
     ./packages.nix

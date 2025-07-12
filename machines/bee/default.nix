@@ -39,7 +39,7 @@
 
     # Monitoring
     ./logging.nix
-    ./netdata.nix
+    # ./netdata.nix
 
     # Logging
     ./journald.nix
