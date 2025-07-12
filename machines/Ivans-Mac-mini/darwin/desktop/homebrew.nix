@@ -14,6 +14,7 @@
       "hammerspoon"
       "keycastr"
       "mos"
+      "mullvadvpn"
       "stats"
       "windsurf"
     ];
