@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
+
   # Enable dconf for GNOME settings
   dconf = {
     enable = true;
@@ -18,7 +19,7 @@
         # Set speed to a lower value (between -1.0 and 1.0, where 0 is default)
         "speed" = -0.3;
       };
-      
+
       # BUG: Hangs GNOME
       # Night Light (Night Shift) settings
       # "org/gnome/settings-daemon/plugins/color" = {
@@ -33,7 +34,7 @@
       #   # Set end time to 6:00 (6 AM)
       #   "night-light-schedule-to" = 6.0;
       # };
-            
+
       # TODO: Dock settings
     };
   };
