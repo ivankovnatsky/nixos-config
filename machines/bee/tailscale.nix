@@ -35,6 +35,7 @@
   services.tailscale = {
     enable = true;
     useRoutingFeatures = "both";
+    extraSetFlags = [ "--advertise-routes=192.168.50.0/24" ];
   };
 
   # Enable IP forwarding for subnet routing
