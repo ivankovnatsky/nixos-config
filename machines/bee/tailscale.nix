@@ -14,11 +14,6 @@
 # 3. Under "Subnet routes" toggle ON the 192.168.50.0/24 route
 # 4. Click "Save"
 #
-# On other devices that want to use these routes:
-# ```console
-# sudo tailscale set --accept-routes
-# ```
-#
 # To access local domains from remote devices, add nameserver in Tailscale DNS:
 # 1. Go to https://login.tailscale.com/admin/dns
 # 2. Click "Add nameserver"
