@@ -50,6 +50,7 @@
     kustomize
     magic-wormhole
     mariadb
+    mkpasswd
     mongosh
     mycli
     nh # https://github.com/nix-community/nh
