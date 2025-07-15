@@ -22,6 +22,7 @@
     ../../../home/nushell.nix
     ../../../home/pass.nix
     ../../../home/pgcli.nix
+    ../../../home/codex.nix
     ../../../home/pyenv.nix
     ../../../home/rebuild-diff.nix
     ../../../home/scripts.nix
