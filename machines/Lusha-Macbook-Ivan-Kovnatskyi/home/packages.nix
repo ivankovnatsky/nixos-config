@@ -10,6 +10,7 @@
     btop
     cargo
     cloudflared
+    codex
     coreutils
     defaultbrowser
     delta
