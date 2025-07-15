@@ -180,6 +180,16 @@
 		}
 	}
 
+	# Homebridge UI
+	@homebridge host homebridge.@externalDomain@
+	handle @homebridge {
+		# Proxy to Homebridge UI
+		reverse_proxy @beeIp@:8581 {
+			header_up X-Real-IP {remote_host}
+			header_up Host {host}
+		}
+	}
+
 	# DNS over HTTPS for bee
 	@dns-bee host dns-bee.@externalDomain@
 	reverse_proxy @dns-bee /dns-query http://@beeIp@:8053 {
