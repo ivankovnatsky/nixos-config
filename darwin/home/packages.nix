@@ -4,6 +4,8 @@
     bat
     battery-toolkit # Local overlay
     cargo
+    claude-code
+    codex
     delta
     du-dust
     duf

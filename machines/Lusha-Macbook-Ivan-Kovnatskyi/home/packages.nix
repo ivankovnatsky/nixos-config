@@ -9,6 +9,7 @@
     backup-home
     btop
     cargo
+    claude-code
     cloudflared
     coreutils
     defaultbrowser
