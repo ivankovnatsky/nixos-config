@@ -3,6 +3,8 @@
   home.packages = with pkgs; [
     bat
     cargo
+    claude-code
+    codex
     delta
     du-dust
     duf
