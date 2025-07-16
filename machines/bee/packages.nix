@@ -5,6 +5,8 @@
     # Rebuild service
     gnumake
     tmux
+    git
+    git-crypt
 
     # Sync
     rclone
