@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   # Enable mDNS for local hostname resolution
@@ -53,5 +53,23 @@
     server = lib.mkAfter [
       "/local/127.0.0.1#5353"
     ];
+  };
+
+  # Add static route to link-local network for devices that fall back to APIPA
+  # This allows connectivity to Elgato Key Light when routers are powered off
+  # Using systemd service with delay to ensure network is completely ready
+  # https://discourse.nixos.org/t/networking-interfaces-name-ipv4-routes-not-working/13648/4
+  systemd.services.add-link-local-route = {
+    description = "Add route to link-local network for IoT devices";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network-online.target" "systemd-networkd.service" "NetworkManager.service" ];
+    wants = [ "network-online.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      # Add a delay to ensure the network is completely ready
+      ExecStartPre = "${pkgs.coreutils}/bin/sleep 5";
+      ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.iproute2}/bin/ip route add 169.254.0.0/16 dev enp1s0 scope link metric 1000 || true'";
+    };
   };
 }

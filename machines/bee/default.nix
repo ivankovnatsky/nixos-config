@@ -31,7 +31,7 @@
 
     # Networking
     # FIXME: Did not work yet
-    # ./networking.nix
+    ./networking.nix
     ./dns.nix
     ./doh.nix
     ./http.nix
