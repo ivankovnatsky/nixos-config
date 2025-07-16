@@ -12,9 +12,9 @@ let
   homebridgeConfig = pkgs.writeText "config.json" (builtins.toJSON {
     bridge = {
       name = "Homebridge 3E57";
-      username = "0E:58:89:AD:3E:57";
-      port = 51580;
-      pin = "652-32-353";
+      username = "0E:D5:58:2D:36:57";
+      port = 51318;
+      pin = "398-00-752";
       advertiser = "bonjour-hap";
     };
     accessories = [];
@@ -67,7 +67,7 @@ in
   # Open firewall for Homebridge
   networking.firewall.allowedTCPPorts = [ 
     8581   # Homebridge web UI
-    51580  # HomeKit bridge port (actual port from logs)
+    51318  # HomeKit bridge port (actual port from logs)
   ];
 
   # Copy package.json and config.json to writable location before starting container
