@@ -21,6 +21,7 @@
     duf
     dust
     eks-node-viewer
+    erdtree
     exiftool
     genpass
     ggh
