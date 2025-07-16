@@ -13,6 +13,9 @@
     lsof
     dust
 
+    # Network
+    nmap
+
     # Storage
     file
     parted
