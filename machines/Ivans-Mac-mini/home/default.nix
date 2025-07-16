@@ -3,6 +3,7 @@
     ../../../darwin/home/home-session-vars.nix
     ../../../darwin/home/manual.nix
     ../../../darwin/home/nixvim.nix
+    ../../../home/aichat.nix
     ../../../home/amethyst
     ../../../home/bat.nix
     ../../../home/codex.nix
