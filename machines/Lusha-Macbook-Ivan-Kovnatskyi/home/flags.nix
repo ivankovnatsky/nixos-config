@@ -5,6 +5,7 @@
     purpose = "work";
     editor = "nvim";
     darkMode = true;
+    homeWorkPath = config.home.homeDirectory;
     hotkeys = {
       terminal = "Ghostty";
       browser = "Safari";
