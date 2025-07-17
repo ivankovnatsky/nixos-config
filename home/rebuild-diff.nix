@@ -13,7 +13,7 @@
 # Now handles the first-time run case by checking if oldGenPath exists
 {
   home.activation.report-changes = config.lib.dag.entryAnywhere ''
-    if [[ -n "$oldGenPath" && -e "$oldGenPath" ]]; then
+    if [[ -n "''${oldGenPath:-}" && -e "''${oldGenPath:-}" ]]; then
       ${pkgs.nvd}/bin/nvd --nix-bin-dir=${pkgs.nix}/bin diff $oldGenPath $newGenPath
     else
       echo "No previous generation found. Skipping diff."

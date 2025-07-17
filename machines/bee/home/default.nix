@@ -3,6 +3,7 @@
 {
   imports = [
     ../../../home/git.nix
+    ../../../home/home-session-vars.nix
     ../../../home/lsd.nix
     ../../../home/nixvim
     ../../../home/rebuild-diff.nix
@@ -11,12 +12,8 @@
     ../../../home/starship
     ../../../home/tmux.nix
     ../../../modules/flags
-    ./gnome.nix
-    ./kde.nix
+    ../../../modules/secrets
     ./flags.nix
-    ../../../home/home-session-vars.nix
-    ./firefox.nix
-    ./packages.nix
-    ./syncthing.nix
+    ./vim.nix
   ];
 }

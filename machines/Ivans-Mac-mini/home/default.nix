@@ -1,6 +1,6 @@
 {
   imports = [
-    ../../../darwin/home/home-session-vars.nix
+    ../../../home/home-session-vars.nix
     ../../../darwin/home/manual.nix
     ../../../darwin/home/nixvim.nix
     ../../../home/aichat.nix
