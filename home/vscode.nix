@@ -22,6 +22,7 @@ let
   # VSCode specific extensions
   vscodeExtensions = commonExtensions ++ [
     "GitHub.copilot"
+    "atlassian.atlascode"
   ];
   
   # Generate installation script content for the given app and extensions
@@ -95,7 +96,7 @@ in
   # VSCode extensions installation script
   home.file."Library/Application Support/Code/User/install-extensions.sh" = {
     executable = true;
-    text = makeInstallScript "Visual Studio Code" "/usr/local/bin/code" vscodeExtensions;
+    text = makeInstallScript "Visual Studio Code" "/opt/homebrew/bin/code" vscodeExtensions;
   };
   
   # VSCode extensions list for reference
