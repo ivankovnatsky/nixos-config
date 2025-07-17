@@ -72,6 +72,7 @@
     ./bluetooth.nix
 
     ./home-bridge.nix
+    ./matter-bridge.nix
 
     # Storage
     ./storage.nix
