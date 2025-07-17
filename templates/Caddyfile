@@ -190,6 +190,16 @@
 		}
 	}
 
+	# Matterbridge UI
+	@matterbridge host matterbridge.@externalDomain@
+	handle @matterbridge {
+		# Proxy to Matterbridge UI
+		reverse_proxy @beeIp@:8283 {
+			header_up X-Real-IP {remote_host}
+			header_up Host {host}
+		}
+	}
+
 	# DNS over HTTPS for bee
 	@dns-bee host dns-bee.@externalDomain@
 	reverse_proxy @dns-bee /dns-query http://@beeIp@:8053 {
