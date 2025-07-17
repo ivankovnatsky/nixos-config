@@ -67,7 +67,7 @@
           };
           extraSpecialArgs = {
             inherit inputs;
-            system = "aarch64-darwin";
+            system = "x86_64-linux";
             username = "ivan";
           };
           sharedModules = [
