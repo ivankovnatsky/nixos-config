@@ -15,8 +15,6 @@
     ./syncthing.nix
 
     ./packages.nix
-    ./vim.nix
-    ./tmux.nix
 
     # Enable TPM2 support (required for TPM2 enrollment)
     ./tpm2.nix

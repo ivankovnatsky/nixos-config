@@ -37,8 +37,8 @@
     ../../../home/yt-dlp.nix
     ../../../modules/flags
     ../../../modules/secrets
+    ../../../home/home-session-vars.nix
     ./flags.nix
-    ./home-session-vars.nix
     ./manual.nix
     ./nixvim.nix
     ./packages.nix
