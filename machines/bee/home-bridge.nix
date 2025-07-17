@@ -6,6 +6,7 @@ let
     dependencies = {
       "homebridge" = "^1.11.0";
       "homebridge-keylights" = "1.3.2";
+      "homebridge-z2m" = "^1.9.3";
     };
   });
 
@@ -35,6 +36,14 @@ let
         colorChangeDurationMs = 100;
         useIP = false;
         platform = "ElgatoKeyLights";
+      }
+      {
+        platform = "zigbee2mqtt";
+        name = "Zigbee2MQTT";
+        mqtt = {
+          base_topic = "zigbee2mqtt";
+          server = "mqtt://localhost:1883";
+        };
       }
     ];
   });
