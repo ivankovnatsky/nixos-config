@@ -26,6 +26,9 @@
     yt-dlp
     gallery-dl
 
+    # Utils
+    jq
+
     ethtool
   ];
 }
