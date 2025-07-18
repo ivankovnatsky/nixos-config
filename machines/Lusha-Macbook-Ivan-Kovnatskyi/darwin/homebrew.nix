@@ -22,6 +22,7 @@
       "ghostty"
       "hammerspoon"
       "keycastr"
+      "keymapp"
       "mos"
       "orbstack"
       "stats"
