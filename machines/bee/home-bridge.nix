@@ -34,7 +34,7 @@ let
         switchOnDurationMs = 100;
         switchOffDurationMs = 300;
         colorChangeDurationMs = 100;
-        useIP = false;
+        useIP = true;
         platform = "ElgatoKeyLights";
       }
       {
