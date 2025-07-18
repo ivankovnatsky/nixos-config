@@ -1,4 +1,4 @@
-{ config, osConfig, ... }:
+{ osConfig, ... }:
 
 {
   home.file = {
@@ -35,6 +35,11 @@
               panes:
                 - vim List.txt
                 - make watch
+          - nixos-config:
+              layout: main-vertical
+              root: /Volumes/Storage/Data/Sources/github.com/ivankovnatsky/nixos-config
+              panes:
+                - nvim .
       '';
     };
   };
