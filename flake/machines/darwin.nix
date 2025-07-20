@@ -213,7 +213,7 @@
 
 
       # Home Manager module
-      inputs.home-manager-release.darwinModules.home-manager
+      inputs.home-manager-darwin-release.darwinModules.home-manager
       {
         home-manager = {
           useGlobalPkgs = true;

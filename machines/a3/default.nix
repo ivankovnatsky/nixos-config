@@ -15,6 +15,7 @@
     ./user.nix
     ./steam.nix
     ./fonts.nix
+    ./packages.nix
 
     # TPM2 support for LUKS encryption
     ./cryptenroll.nix

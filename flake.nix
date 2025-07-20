@@ -28,9 +28,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    home-manager-release = {
+    home-manager-darwin-release = {
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs-release-darwin";
+    };
+    
+    home-manager-nixos-release = {
+      url = "github:nix-community/home-manager/release-25.05";
+      inputs.nixpkgs.follows = "nixos-release";
     };
 
     # https://github.com/zhaofengli/nix-homebrew
@@ -80,6 +85,13 @@
 
     nixpkgs-python.url = "github:cachix/nixpkgs-python";
     pyenv-nix-install.url = "github:sirno/pyenv-nix-install";
+    
+    # KDE Plasma configuration manager
+    plasma-manager-release = {
+      url = "github:nix-community/plasma-manager";
+      inputs.nixpkgs.follows = "nixos-release";
+      inputs.home-manager.follows = "home-manager-nixos-release";
+    };
   };
 
   outputs = { self, ... }@inputs: import ./flake { inherit inputs; };

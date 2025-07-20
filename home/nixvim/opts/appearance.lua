@@ -24,6 +24,55 @@ local function get_macos_appearance()
   return "light" -- Default to light if we can't determine
 end
 
+-- Function to check KDE Plasma appearance
+local function get_plasma_appearance()
+  -- Check for KDE Plasma theme by reading kdeglobals file directly
+  -- First check for LookAndFeelPackage which is more reliable
+  local handle = io.popen("grep -i 'LookAndFeelPackage' ~/.config/kdeglobals 2>/dev/null")
+  if handle then
+    local result = handle:read("*a")
+    handle:close()
+    if result and (result:match("dark") or result:match("Dark") or result:match("black") or result:match("Black")) then
+      return "dark"
+    elseif result and result:len() > 0 then
+      -- If we found a LookAndFeelPackage but it doesn't contain 'dark', assume light
+      return "light"
+    end
+  end
+  
+  -- Fallback: check ColorScheme in kdeglobals
+  handle = io.popen("grep -i 'ColorScheme' ~/.config/kdeglobals 2>/dev/null")
+  if handle then
+    local result = handle:read("*a")
+    handle:close()
+    if result and (result:match("dark") or result:match("Dark") or result:match("black") or result:match("Black")) then
+      return "dark"
+    elseif result and result:len() > 0 then
+      return "light"
+    end
+  end
+  
+  -- Check if we have dark colors in the General section
+  handle = io.popen("grep -A 10 '\\[General\\]' ~/.config/kdeglobals | grep -i 'BackgroundNormal' 2>/dev/null")
+  if handle then
+    local result = handle:read("*a")
+    handle:close()
+    -- Parse the RGB values - dark themes typically have low background values
+    local r, g, b = result:match("(%d+),(%d+),(%d+)")
+    if r and g and b then
+      r, g, b = tonumber(r), tonumber(g), tonumber(b)
+      -- If average RGB is less than 128, it's likely a dark theme
+      if (r + g + b) / 3 < 128 then
+        return "dark"
+      else
+        return "light"
+      end
+    end
+  end
+  
+  return "light" -- Default to light if we can't determine
+end
+
 -- Function to check GNOME appearance
 local function get_gnome_appearance()
   -- Check if gsettings is available
@@ -67,7 +116,17 @@ local function get_system_appearance()
   if current_os == "Darwin" then
     return get_macos_appearance()
   elseif current_os == "Linux" then
-    return get_gnome_appearance()
+    -- Check if we're in a GNOME environment
+    local check_cmd = io.popen("command -v gsettings")
+    local has_gsettings = check_cmd:read("*a") ~= ""
+    check_cmd:close()
+    
+    if has_gsettings then
+      return get_gnome_appearance()
+    else
+      -- Try Plasma if GNOME is not detected
+      return get_plasma_appearance()
+    end
   else
     return "light" -- Default for other OSes
   end

@@ -25,7 +25,7 @@
       }
 
       # Home Manager module
-      inputs.home-manager-release.nixosModules.home-manager
+      inputs.home-manager-nixos-release.nixosModules.home-manager
       {
         home-manager = {
           useGlobalPkgs = true;
@@ -80,7 +80,7 @@
       }
 
       # Home Manager module
-      inputs.home-manager-release.nixosModules.home-manager
+      inputs.home-manager-nixos-release.nixosModules.home-manager
       {
         home-manager = {
           useGlobalPkgs = true;
@@ -89,6 +89,7 @@
             imports = [
               ../../machines/a3/home
               inputs.nixvim-release-nixos.homeManagerModules.nixvim
+              inputs.plasma-manager-release.homeManagerModules.plasma-manager
             ];
           };
           extraSpecialArgs = {
