@@ -11,8 +11,10 @@
     ../../../home/starship
     ../../../home/tmux.nix
     ../../../modules/flags
+    ../../../modules/secrets
     ./gnome.nix
     ./kde.nix
+    ./plasma.nix
     ./flags.nix
     ../../../home/home-session-vars.nix
     ./firefox.nix

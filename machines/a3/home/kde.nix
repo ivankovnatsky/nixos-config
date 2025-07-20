@@ -8,11 +8,4 @@
   #   [DisplaySize]
   #   Scale=2
   # '';
-
-  # # Mouse settings - disable acceleration
-  # xdg.configFile."kcminputrc".text = ''
-  #   [Mouse]
-  #   XLbInptAccelProfileFlat=true
-  #   XLbInptPointerAcceleration=0
-  # '';
 }
