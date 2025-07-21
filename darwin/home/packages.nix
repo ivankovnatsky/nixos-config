@@ -4,7 +4,7 @@
     bat
     battery-toolkit # Local overlay
     cargo
-    claude-code
+    nixpkgs-master.claude-code
     codex
     delta
     du-dust
