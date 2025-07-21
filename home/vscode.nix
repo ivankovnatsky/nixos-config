@@ -25,10 +25,9 @@ let
     "atlassian.atlascode"
   ];
   
-  # Generate installation script content for the given app and extensions
-  makeInstallScript = app: appPath: extensions: ''
+  # Generate extension management script for the given app and extensions
+  makeExtensionScript = app: appPath: action: extensions: ''
     #!/usr/bin/env bash
-    # Installation script for ${app} extensions
     
     # Use direct binary path approach which is more reliable
     BINARY="${appPath}"
@@ -38,14 +37,7 @@ let
       exit 1
     fi
     
-    # Install extensions
-    ${builtins.concatStringsSep "\n" (map (ext: 
-      if builtins.substring 0 1 ext != "#" 
-      then "\"$BINARY\" --install-extension ${ext}" 
-      else "# Skipping ${ext}"
-    ) extensions)}
-    
-    echo "All extensions installed for ${app}!"
+    ${builtins.concatStringsSep "\n" (map (ext: "\"$BINARY\" --${action}-extension ${ext}") extensions)}
   '';
 
   editorSettings = {
@@ -96,7 +88,13 @@ in
   # VSCode extensions installation script
   home.file."Library/Application Support/Code/User/install-extensions.sh" = {
     executable = true;
-    text = makeInstallScript "Visual Studio Code" "/opt/homebrew/bin/code" vscodeExtensions;
+    text = makeExtensionScript "Visual Studio Code" "/opt/homebrew/bin/code" "install" vscodeExtensions;
+  };
+  
+  # VSCode extensions uninstallation script
+  home.file."Library/Application Support/Code/User/uninstall-extensions.sh" = {
+    executable = true;
+    text = makeExtensionScript "Visual Studio Code" "/opt/homebrew/bin/code" "uninstall" vscodeExtensions;
   };
   
   # VSCode extensions list for reference
@@ -110,7 +108,13 @@ in
   # Cursor extensions installation script
   home.file."Library/Application Support/Cursor/User/install-extensions.sh" = {
     executable = true;
-    text = makeInstallScript "Cursor" "/Applications/Cursor.app/Contents/Resources/app/bin/cursor" commonExtensions;
+    text = makeExtensionScript "Cursor" "/Applications/Cursor.app/Contents/Resources/app/bin/cursor" "install" commonExtensions;
+  };
+  
+  # Cursor extensions uninstallation script
+  home.file."Library/Application Support/Cursor/User/uninstall-extensions.sh" = {
+    executable = true;
+    text = makeExtensionScript "Cursor" "/Applications/Cursor.app/Contents/Resources/app/bin/cursor" "uninstall" commonExtensions;
   };
   
   # Cursor extensions list for reference
@@ -124,9 +128,16 @@ in
   # Windsurf extensions installation script
   home.file."Library/Application Support/Windsurf/User/install-extensions.sh" = {
     executable = true;
-    text = makeInstallScript "Windsurf" "/Applications/Windsurf.app/Contents/Resources/app/bin/windsurf" commonExtensions;
+    text = makeExtensionScript "Windsurf" "/Applications/Windsurf.app/Contents/Resources/app/bin/windsurf" "install" commonExtensions;
   };
-    # Windsurf extensions list for reference
+  
+  # Windsurf extensions uninstallation script
+  home.file."Library/Application Support/Windsurf/User/uninstall-extensions.sh" = {
+    executable = true;
+    text = makeExtensionScript "Windsurf" "/Applications/Windsurf.app/Contents/Resources/app/bin/windsurf" "uninstall" commonExtensions;
+  };
+  
+  # Windsurf extensions list for reference
   home.file."Library/Application Support/Windsurf/User/extensions-list.txt".text = 
     builtins.concatStringsSep "\n" (builtins.filter (ext: builtins.substring 0 1 ext != "#") commonExtensions);
 }
