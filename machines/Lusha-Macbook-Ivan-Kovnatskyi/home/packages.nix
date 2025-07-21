@@ -9,7 +9,7 @@
     backup-home
     btop
     cargo
-    claude-code
+    nixpkgs-master.claude-code
     cloudflared
     coreutils
     defaultbrowser

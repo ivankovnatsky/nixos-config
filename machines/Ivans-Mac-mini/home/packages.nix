@@ -3,7 +3,7 @@
   home.packages = with pkgs; [
     bat
     cargo
-    claude-code
+    nixpkgs-master.claude-code
     codex
     delta
     du-dust
