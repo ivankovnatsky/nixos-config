@@ -61,13 +61,7 @@ in
       };
       # Copy path to clipboard commands
       CopyPath = {
-        command = "call CopyPathFunction('abs')";
-        desc = "Copy absolute working directory path to clipboard";
-        bang = true;
-        bar = true;
-      };
-      CopyPathAbs = {
-        command = "call CopyPathFunction('abs')";
+        command = "call CopyPathFunction()";
         desc = "Copy absolute working directory path to clipboard";
         bang = true;
         bar = true;
@@ -75,6 +69,12 @@ in
       CopyPathFile = {
         command = "call CopyPathFunction('file')";
         desc = "Copy absolute file path to clipboard";
+        bang = true;
+        bar = true;
+      };
+      CopyPathDir = {
+        command = "call CopyPathFunction('dir')";
+        desc = "Copy directory path of current file to clipboard";
         bang = true;
         bar = true;
       };
