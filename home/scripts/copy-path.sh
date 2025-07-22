@@ -2,10 +2,10 @@
 
 # Function to display script usage
 usage() {
-    echo "Usage: $0 <command> [options]"
+    echo "Usage: $0 [command] [options]"
     echo ""
     echo "Commands:"
-    echo "  abs     Copy absolute path of current directory"
+    echo "  (none)  Copy absolute path of current directory (default)"
     echo "  git     Copy path relative to git root"
     echo ""
     echo "Common options:"
@@ -37,22 +37,17 @@ if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     exit 0
 fi
 
-# If no command is provided, default to abs
+# Handle commands
 if [ $# -eq 0 ]; then
-    COMMAND="abs"
+    # Default: copy absolute path of current directory
+    path=$(pwd)
+    copy_to_clipboard "$path"
 else
     COMMAND="$1"
     shift
-fi
-
-# Handle commands
-case $COMMAND in
-    abs)
-        # Get the current working directory
-        path=$(pwd)
-        copy_to_clipboard "$path"
-        ;;
-    git)
+    
+    case $COMMAND in
+        git)
         # Get the git root directory
         if ! git_root=$(git rev-parse --show-toplevel 2>/dev/null); then
             echo "Error: Not in a git repository"
@@ -79,4 +74,5 @@ case $COMMAND in
         usage
         exit 1
         ;;
-esac
+    esac
+fi
