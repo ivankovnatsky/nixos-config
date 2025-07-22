@@ -10,7 +10,7 @@ in
       pr_script = "${scripts.pr}/bin/pr";
     };
 
-    extraConfigVim = completionScript;
+    extraConfigVim = completionScript + "\n" + copyPathScript + "\n" + prScript;
 
     userCommands = {
       # TODO: Move all defined commands here in this file
@@ -59,37 +59,50 @@ in
         bang = true;
         bar = true;
       };
-      # Copy path to clipboard with different options:
-      #   :CopyPath        Copy absolute working directory path (default)
-      #   :CopyPath abs    Copy absolute working directory path
-      #   :CopyPath file   Copy absolute file path
-      #   :CopyPath git    Copy git-relative file path
+      # Copy path to clipboard commands
       CopyPath = {
-        command = copyPathScript;
-        desc = "Copy path to clipboard. Use :CopyPath [abs|file|git] where:
-          abs  - Copy absolute working directory path (default)
-          file - Copy absolute file path
-          git  - Copy git-relative file path";
-        nargs = "?";
+        command = "call CopyPathFunction('abs')";
+        desc = "Copy absolute working directory path to clipboard";
         bang = true;
         bar = true;
-        complete = "custom,CopyPathComplete";
+      };
+      CopyPathAbs = {
+        command = "call CopyPathFunction('abs')";
+        desc = "Copy absolute working directory path to clipboard";
+        bang = true;
+        bar = true;
+      };
+      CopyPathFile = {
+        command = "call CopyPathFunction('file')";
+        desc = "Copy absolute file path to clipboard";
+        bang = true;
+        bar = true;
+      };
+      CopyPathGit = {
+        command = "call CopyPathFunction('git')";
+        desc = "Copy git-relative file path to clipboard";
+        bang = true;
+        bar = true;
       };
 
-      # Pull request commands:
-      #   :Pr create     Create a new pull request
-      #   :Pr merge      Merge a pull request
-      #   :Pr view       View pull request files in browser
-      Pr = {
-        command = prScript;
-        desc = "Pull request operations. Use :Pr [create|merge|view] where:
-          create - Create a new pull request
-          merge  - Merge a pull request
-          view   - View pull request files in browser";
-        nargs = "+";
+      # Pull request commands
+      PrCreate = {
+        command = "call PrFunction('create')";
+        desc = "Create a new pull request";
         bang = true;
         bar = true;
-        complete = "custom,PrComplete";
+      };
+      PrMerge = {
+        command = "call PrFunction('merge')";
+        desc = "Merge a pull request";
+        bang = true;
+        bar = true;
+      };
+      PrView = {
+        command = "call PrFunction('view')";
+        desc = "View pull request files in browser";
+        bang = true;
+        bar = true;
       };
       E = {
         command = "e %:h/<args>";
