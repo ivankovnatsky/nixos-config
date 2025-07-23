@@ -32,7 +32,7 @@
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs-release-darwin";
     };
-    
+
     home-manager-nixos-release = {
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixos-release";
@@ -50,6 +50,10 @@
     };
     homebrew-bundle = {
       url = "github:homebrew/homebrew-bundle";
+      flake = false;
+    };
+    pomdtr-homebrew-tap = {
+      url = "github:pomdtr/homebrew-tap";
       flake = false;
     };
 

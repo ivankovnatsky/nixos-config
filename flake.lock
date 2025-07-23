@@ -805,6 +805,22 @@
         "type": "github"
       }
     },
+    "pomdtr-homebrew-tap": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1753097354,
+        "narHash": "sha256-Ojtq48UxyZFYFZymyoJlA11pB5QVfK4lH5vecL18Ido=",
+        "owner": "pomdtr",
+        "repo": "homebrew-tap",
+        "rev": "fbd49cda43031a18766634a1efc9dacf84a119e8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "pomdtr",
+        "repo": "homebrew-tap",
+        "type": "github"
+      }
+    },
     "pyenv-nix-install": {
       "inputs": {
         "flake-utils": "flake-utils_5",
@@ -847,6 +863,7 @@
         "nixvim-release-nixos": "nixvim-release-nixos",
         "nur": "nur",
         "plasma-manager-release": "plasma-manager-release",
+        "pomdtr-homebrew-tap": "pomdtr-homebrew-tap",
         "pyenv-nix-install": "pyenv-nix-install",
         "username": "username"
       }
