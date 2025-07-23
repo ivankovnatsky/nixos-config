@@ -1,6 +1,5 @@
 {
   imports = [
-    ../../../home/home-session-vars.nix
     ../../../darwin/home/manual.nix
     ../../../darwin/home/nixvim.nix
     ../../../home/aichat.nix
@@ -11,6 +10,7 @@
     ../../../home/ghostty.nix
     ../../../home/git.nix
     ../../../home/hammerspoon
+    ../../../home/home-session-vars.nix
     ../../../home/lsd.nix
     ../../../home/mpv.nix
     ../../../home/nixvim
@@ -23,10 +23,12 @@
     ../../../home/shell.nix
     ../../../home/starship
     ../../../home/tmux.nix
+    ../../../home/tweety.nix
     ../../../home/vscode.nix
     ../../../home/yt-dlp.nix
     ../../../modules/flags
     ../../../modules/secrets
+    ./firefox.nix
     ./flags.nix
     ./packages.nix
     ./tmux.nix
