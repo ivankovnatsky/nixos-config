@@ -48,6 +48,7 @@ in
       }
 
       # Installed using homebrew
+      { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Ghostty.app/"; }
       { path = "/Applications/Chromium.app/"; }
       { path = "/Applications/DBeaver.app/"; }
