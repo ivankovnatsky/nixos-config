@@ -39,9 +39,11 @@
     ../../../modules/secrets
     ../../../home/home-session-vars.nix
     ./flags.nix
+    ./firefox.nix
     ./manual.nix
     ./nixvim.nix
     ./packages.nix
     ./programs.nix
+    ./tweety.nix
   ];
 }
