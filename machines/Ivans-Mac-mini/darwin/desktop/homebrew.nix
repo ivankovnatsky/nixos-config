@@ -4,12 +4,15 @@
     onActivation.autoUpdate = false;
     onActivation.cleanup = "zap";
     global.brewfile = true;
+    brews = [
+      "tweety"
+    ];
     casks = [
       "amethyst"
       "bitwarden"
       "chromium"
       "cursor"
-      "firefox"
+      "firefox@developer-edition"
       "ghostty"
       "hammerspoon"
       "keycastr"
