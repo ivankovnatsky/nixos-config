@@ -49,7 +49,7 @@ in
 
       # Installed using homebrew
       { path = "/Applications/Ghostty.app/"; }
-      { path = "/Applications/Firefox.app/"; }
+      { path = "/Applications/Firefox Developer Edition.app/"; }
       { path = "/Applications/Chromium.app/"; }
       { path = "/Applications/DBeaver.app/"; }
       { path = "/Applications/Visual Studio Code.app/"; }
