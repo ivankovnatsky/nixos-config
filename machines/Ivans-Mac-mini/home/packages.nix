@@ -3,7 +3,6 @@
   home.packages = with pkgs; [
     bat
     cargo
-    nixpkgs-master.claude-code
     codex
     delta
     du-dust
@@ -18,6 +17,8 @@
     magic-wormhole
     mkpasswd
     nixfmt-rfc-style
+    nixpkgs-master.claude-code
+    nixpkgs-master.gemini-cli
     nodejs
     pandoc
     parallel
