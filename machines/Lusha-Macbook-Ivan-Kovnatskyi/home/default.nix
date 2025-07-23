@@ -4,12 +4,14 @@
     ../../../home/aichat.nix
     ../../../home/amethyst
     ../../../home/bat.nix
+    ../../../home/codex.nix
     ../../../home/direnv.nix
     ../../../home/ghorg.nix
     ../../../home/ghostty.nix
     ../../../home/git.nix
     ../../../home/go.nix
     ../../../home/hammerspoon
+    ../../../home/home-session-vars.nix
     ../../../home/jujutsu.nix
     ../../../home/k9s.nix
     ../../../home/lsd.nix
@@ -22,7 +24,6 @@
     ../../../home/nushell.nix
     ../../../home/pass.nix
     ../../../home/pgcli.nix
-    ../../../home/codex.nix
     ../../../home/pyenv.nix
     ../../../home/rebuild-diff.nix
     ../../../home/scripts.nix
@@ -37,13 +38,12 @@
     ../../../home/yt-dlp.nix
     ../../../modules/flags
     ../../../modules/secrets
-    ../../../home/home-session-vars.nix
-    ./flags.nix
+    ../../../tweety.nix
     ./firefox.nix
+    ./flags.nix
     ./manual.nix
     ./nixvim.nix
     ./packages.nix
     ./programs.nix
-    ./tweety.nix
   ];
 }
