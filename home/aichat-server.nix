@@ -5,14 +5,17 @@
   ...
 }:
 
+let aichatPkg = pkgs.nixpkgs-master.aichat;
+
+in
 {
-  home.packages = [ pkgs.aichat ];
+  home.packages = [ aichatPkg ];
 
   launchd.agents.aichat-server = {
     enable = true;
     config = {
       ProgramArguments = [
-        "${pkgs.aichat}/bin/aichat"
+        "${aichatPkg}/bin/aichat"
         "--serve"
       ];
 
@@ -24,7 +27,7 @@
 
       EnvironmentVariables = {
         HOME = config.home.homeDirectory;
-        PATH = lib.makeBinPath [ pkgs.aichat ];
+        PATH = lib.makeBinPath [ aichatPkg ];
       };
     };
   };

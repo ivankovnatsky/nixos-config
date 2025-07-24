@@ -8,7 +8,7 @@ let
 in
 {
   home = {
-    packages = with pkgs; [ aichat ];
+    packages = with pkgs; [ nixpkgs-master.aichat ];
     file = {
       # https://github.com/sigoden/aichat/blob/main/config.example.yaml
       "${aichatConfigPath}" = {
