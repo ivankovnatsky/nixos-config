@@ -38,7 +38,7 @@
     ../../../home/yt-dlp.nix
     ../../../modules/flags
     ../../../modules/secrets
-    ../../../tweety.nix
+    ../../../home/tweety.nix
     ./firefox.nix
     ./flags.nix
     ./manual.nix
