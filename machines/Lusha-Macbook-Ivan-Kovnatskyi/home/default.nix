@@ -4,6 +4,7 @@
     ../../../home/aichat.nix
     ../../../home/amethyst
     ../../../home/bat.nix
+    ../../../home/claude.nix
     ../../../home/codex.nix
     ../../../home/direnv.nix
     ../../../home/ghorg.nix
