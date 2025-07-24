@@ -25,5 +25,13 @@ in
     "Library/Application Support/Firefox/Profiles/${firefoxProfile}/extensions/tweety@pomdtr.me.xpi" = {
       source = "/opt/homebrew/share/tweety/extensions/firefox.zip";
     };
+
+    # Install Okta Browser Plugin
+    "Library/Application Support/Firefox/Profiles/${firefoxProfile}/extensions/{b31c6c7d-29f1-4b34-a1e7-8b76bfabce3d}.xpi" = {
+      source = builtins.fetchurl {
+        url = "https://addons.mozilla.org/firefox/downloads/latest/okta-browser-plugin/addon-905837-latest.xpi";
+        sha256 = "0ynlpb5a4c59z7v5jc2xfw1cll7sivrk5nszmfmp1ibvyvr4bdav";
+      };
+    };
   };
 }
