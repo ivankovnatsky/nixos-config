@@ -121,6 +121,7 @@ with lib;
         type = types.enum [
           "Safari"
           "Firefox"
+          "Firefox Developer Edition"
           "Google Chrome"
         ];
         description = "Default browser application";
