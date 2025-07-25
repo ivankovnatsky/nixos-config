@@ -1,9 +1,10 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 let
   firefoxProfile = "1pnq61kq.dev-edition-default";
 in
 {
+  home.packages = [ pkgs.passff-host ];
   home.file = {
     # Firefox Developer Edition user.js configuration
     "Library/Application Support/Firefox/Profiles/${firefoxProfile}/user.js".text = ''
@@ -48,6 +49,11 @@ in
         url = "https://addons.mozilla.org/firefox/downloads/latest/passff/addon-372917-latest.xpi";
         sha256 = "0sa7alk3i77w27a768sm1jg0fdqz471lgfff91wllsnkm4c6sgbf";
       };
+    };
+
+    # PassFF native messaging host symlink
+    "Library/Application Support/Mozilla/NativeMessagingHosts/passff.json" = {
+      source = config.lib.file.mkOutOfStoreSymlink "${config.home.profileDirectory}/lib/mozilla/native-messaging-hosts/passff.json";
     };
   };
 }
