@@ -33,5 +33,21 @@ in
         sha256 = "0ynlpb5a4c59z7v5jc2xfw1cll7sivrk5nszmfmp1ibvyvr4bdav";
       };
     };
+
+    # Install Dark Reader
+    "Library/Application Support/Firefox/Profiles/${firefoxProfile}/extensions/addon@darkreader.org.xpi" = {
+      source = builtins.fetchurl {
+        url = "https://addons.mozilla.org/firefox/downloads/latest/darkreader/addon-607454-latest.xpi";
+        sha256 = "1p1hmrpqcnx8p218c8m148rz1z3n40xlk03lb441mk3hcj14aql4";
+      };
+    };
+
+    # Install PassFF
+    "Library/Application Support/Firefox/Profiles/${firefoxProfile}/extensions/passff@invicem.pro.xpi" = {
+      source = builtins.fetchurl {
+        url = "https://addons.mozilla.org/firefox/downloads/latest/passff/addon-372917-latest.xpi";
+        sha256 = "0sa7alk3i77w27a768sm1jg0fdqz471lgfff91wllsnkm4c6sgbf";
+      };
+    };
   };
 }
