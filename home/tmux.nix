@@ -28,6 +28,9 @@
     # for not being integrated into macOS too deep and the current
     # functionality is ok for me.
     extraConfig = ''
+      # Reduce ESC key delay (default 500ms is too slow for vi mode)
+      set -s escape-time 10
+
       # Check if running on macOS and in Terminal.app
       if-shell "[ $(uname) = 'Darwin' ] && [ $TERM_PROGRAM = 'Apple_Terminal' ]" \
         "set -g status off" \
