@@ -4,5 +4,7 @@
 # Usage: Called from tmux bind-key to show popup with session selection
 
 sesh connect "$(
-    sesh list -i | gum filter --limit 1 --no-sort --fuzzy --placeholder 'Pick a sesh' --height 50 --prompt='⚡'
+    sesh list -i | \
+        gum filter --limit 1 --no-sort --fuzzy \
+            --placeholder ' Pick a session' --height 50 --prompt='⚡ '
 )"
