@@ -17,5 +17,7 @@
 
     sesh
     gum
+
+    nixfmt-rfc-style
   ];
 }
