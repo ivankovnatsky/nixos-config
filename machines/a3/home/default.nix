@@ -20,5 +20,6 @@
     ./firefox.nix
     ./packages.nix
     ./syncthing.nix
+    ../../../home/claude.nix
   ];
 }
