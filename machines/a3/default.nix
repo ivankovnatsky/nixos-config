@@ -16,6 +16,7 @@
     ./steam.nix
     ./fonts.nix
     ./packages.nix
+    ./bluetooth.nix
 
     # TPM2 support for LUKS encryption
     ./cryptenroll.nix
