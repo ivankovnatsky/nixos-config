@@ -61,6 +61,15 @@
           "org.freedesktop.secrets" = {
             apiEnabled = true;
           };
+          "Auto Allow" = {
+            kdewallet = "GPG,gpg-agent";
+          };
+          "Wallet" = {
+            "Default Wallet" = "kdewallet";
+            "Enabled" = true;
+            "Launch Manager" = false;
+            "Leave Open" = true;
+          };
         };
       };
     };
