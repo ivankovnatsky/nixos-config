@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-# temp-monitor.py - Monitor and record maximum temperatures from sensors
+# temperatures.py - Monitor and record maximum temperatures from sensors
 #
 # This script monitors system temperatures using the 'sensors' command,
 # records the maximum temperatures observed, and saves them to a log file.
 #
-# Usage: temp-monitor [interval] [logfile]
+# Usage: temperatures [interval] [logfile]
 #   interval: Optional - Time between checks in seconds (default: 2)
-#   logfile: Optional - Path to log file (default: /tmp/temp-monitor-max.json)
+#   logfile: Optional - Path to log file (default: /tmp/temperatures-max.json)
 
 import json
 import os
@@ -39,7 +39,7 @@ if len(sys.argv) > 1:
         print(f'Error: Invalid interval "{sys.argv[1]}". Using default: {INTERVAL}s')
 
 # Set log file location
-LOG_FILE = '/tmp/temp-monitor-max.json'
+LOG_FILE = '/tmp/temperatures-max.json'
 if len(sys.argv) > 2:
     LOG_FILE = sys.argv[2]
 
