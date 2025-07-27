@@ -7,7 +7,6 @@
     ./configuration.nix
     ./nvidia.nix
     ./nixpkgs.nix
-    ./gnupg.nix
     # ./gnome.nix
     ./kde.nix
     ./gui.nix
