@@ -120,9 +120,6 @@
           label = "Sources/github.com/ivankovnatsky/backup-home-go";
           path = "/storage/Data/Sources/github.com/ivankovnatsky/backup-home-go";
           devices = [
-            "Ivans-Mac-mini"
-            "Ivans-MacBook-Air"
-            "Ivans-MacBook-Pro"
             "Lusha-Macbook-Ivan-Kovnatskyi"
           ];
         };
@@ -130,6 +127,22 @@
           id = "smctemp";
           label = "Sources/github.com/narugit/smctemp";
           path = "/storage/Data/Sources/github.com/narugit/smctemp";
+          devices = [
+            "Lusha-Macbook-Ivan-Kovnatskyi"
+          ];
+        };
+        "Sources/github.com/ivankovnatsky/windows-config" = {
+          id = "inmfd-grzmp";
+          label = "Sources/github.com/ivankovnatsky/windows-config";
+          path = "/storage/Data/Sources/github.com/ivankovnatsky/windows-config";
+          devices = [
+            "Lusha-Macbook-Ivan-Kovnatskyi"
+          ];
+        };
+        "Shared-Notes" = {
+          id = "shared-notes";
+          label = "Shared-Notes";
+          path = "/storage/Data/Shared-Notes";
           devices = [
             "Lusha-Macbook-Ivan-Kovnatskyi"
           ];
@@ -202,6 +215,9 @@
     "d /storage/Data/Drive 0700 ivan users - -"
 
     "d /storage/Data/Downloads 0700 ivan users - -"
+
+    # Create Shared-Notes directory
+    "d /storage/Data/Shared-Notes 0700 ivan users - -"
 
     # Create .stfolder marker for Syncthing in the media directory
     "d /storage/Data/media/.stfolder 0755 ivan users - -"
