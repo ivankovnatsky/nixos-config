@@ -23,5 +23,37 @@
     powerdevil = {
       AC.powerProfile = "balanced";
     };
+    
+    # Configure taskbar with pinned applications
+    panels = [
+      {
+        location = "top";
+        widgets = [
+          {
+            kickoff = {
+            };
+          }
+          {
+            iconTasks = {
+              launchers = [
+                "applications:org.kde.dolphin.desktop"
+                "applications:org.kde.konsole.desktop"
+                "applications:firefox-devedition.desktop"
+                "applications:systemsettings.desktop"
+              ];
+            };
+          }
+          {
+            systemTray.items = {
+              shown = [
+              ];
+            };
+          }
+          {
+            digitalClock = { };
+          }
+        ];
+      }
+    ];
   };
 }
