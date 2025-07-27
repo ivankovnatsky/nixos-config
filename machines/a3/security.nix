@@ -10,6 +10,12 @@
             package = pkgs.kdePackages.kwallet-pam;
           };
         };
+        # Enable for user login session to auto-unlock KWallet
+        login = {
+          kwallet = {
+            enable = true;
+          };
+        };
       };
     };
   };
