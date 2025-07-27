@@ -20,5 +20,7 @@
     # TPM2 support for LUKS encryption
     ./cryptenroll.nix
     ./tpm2.nix
+
+    ../../system/nix.nix
   ];
 }
