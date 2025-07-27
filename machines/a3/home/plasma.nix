@@ -55,6 +55,14 @@
         }
       ];
 
+      # Configure KDE Wallet for GPG passphrases
+      configFile = {
+        kwalletrc = {
+          "org.freedesktop.secrets" = {
+            apiEnabled = true;
+          };
+        };
+      };
     };
     konsole = {
       enable = true;
