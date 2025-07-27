@@ -28,6 +28,7 @@
     panels = [
       {
         location = "top";
+        height = 32;
         widgets = [
           {
             kickoff = {
