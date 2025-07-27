@@ -78,32 +78,7 @@
           label = "Sources/github.com/ivankovnatsky/nixos-config";
           path = "/storage/Data/Sources/github.com/ivankovnatsky/nixos-config";
           devices = [
-            "Ally"
-            "Ivans-Mac-mini"
-            "Ivans-MacBook-Air"
-            "Ivans-MacBook-Pro"
             "Lusha-Macbook-Ivan-Kovnatskyi"
-          ];
-        };
-        "Sources/github.com/ivankovnatsky/deck" = {
-          id = "tgrp6-ccmmf";
-          label = "Sources/github.com/ivankovnatsky/deck";
-          path = "/storage/Data/Sources/github.com/ivankovnatsky/deck";
-          devices = [
-            "Ivans-Mac-mini"
-            "Ivans-MacBook-Air"
-            "Ivans-MacBook-Pro"
-          ];
-        };
-        "Sources/github.com/ivankovnatsky/windows-config" = {
-          id = "jumpj-dcicb";
-          label = "Sources/github.com/ivankovnatsky/windows-config";
-          path = "/storage/Data/Sources/github.com/ivankovnatsky/windows-config";
-          devices = [
-            "Ivans-Mac-mini"
-            "Ivans-MacBook-Air"
-            "Ivans-MacBook-Pro"
-            "Ally"
           ];
         };
         "Sources/github.com/NixOS/nixpkgs" = {
@@ -111,9 +86,6 @@
           label = "Sources/github.com/NixOS/nixpkgs";
           path = "/storage/Data/Sources/github.com/NixOS/nixpkgs";
           devices = [
-            "Ivans-Mac-mini"
-            "Ivans-MacBook-Air"
-            "Ivans-MacBook-Pro"
             "Lusha-Macbook-Ivan-Kovnatskyi"
           ];
         };
@@ -152,7 +124,6 @@
             "Ivans-MacBook-Air"
             "Ivans-MacBook-Pro"
             "Lusha-Macbook-Ivan-Kovnatskyi"
-            "Ally"
           ];
         };
         "Sources/github.com/narugit/smctemp" = {
@@ -160,9 +131,6 @@
           label = "Sources/github.com/narugit/smctemp";
           path = "/storage/Data/Sources/github.com/narugit/smctemp";
           devices = [
-            "Ivans-Mac-mini"
-            "Ivans-MacBook-Air"
-            "Ivans-MacBook-Pro"
             "Lusha-Macbook-Ivan-Kovnatskyi"
           ];
         };
@@ -174,7 +142,6 @@
             "Ivans-Mac-mini"
             "Ivans-MacBook-Air"
             "Ivans-MacBook-Pro"
-            "Ally"
           ];
         };
         "media" = {
