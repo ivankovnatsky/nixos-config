@@ -13,6 +13,7 @@
     ../../../modules/flags
     ../../../modules/secrets
     ./gnome.nix
+    ./gpg.nix
     ./kde.nix
     ./plasma.nix
     ./flags.nix

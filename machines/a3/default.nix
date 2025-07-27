@@ -11,6 +11,7 @@
     # ./gnome.nix
     ./kde.nix
     ./gui.nix
+    ./security.nix
     ./sudo.nix
     ./user.nix
     ./steam.nix
