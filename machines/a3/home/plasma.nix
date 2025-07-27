@@ -37,6 +37,7 @@
                   "applications:org.kde.dolphin.desktop"
                   "applications:org.kde.konsole.desktop"
                   "applications:firefox-devedition.desktop"
+                  "applications:steam.desktop"
                   "applications:systemsettings.desktop"
                 ];
               };
