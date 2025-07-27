@@ -3,24 +3,7 @@
   security = {
     pam = {
       services = {
-        # Enable KWallet unlock for login (works with SDDM)
-        login = {
-          kwallet = {
-            enable = true;
-            package = pkgs.kdePackages.kwallet-pam;
-          };
-        };
-        
-        # Enable KWallet unlock for KDE sessions
-        kde = {
-          allowNullPassword = true;
-          kwallet = {
-            enable = true;
-            package = pkgs.kdePackages.kwallet-pam;
-          };
-        };
-        
-        # Enable for SDDM as well
+        # Enable for SDDM - Plasma 6 already handles login and kde services
         sddm = {
           kwallet = {
             enable = true;
