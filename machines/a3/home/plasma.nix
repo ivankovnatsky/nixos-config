@@ -18,5 +18,10 @@
         }
       ];
     };
+    
+    # Configure power management to use power saving mode
+    powerdevil = {
+      AC.powerProfile = "powerSaving";
+    };
   };
 }
