@@ -1,0 +1,18 @@
+{ pkgs, ... }:
+{
+  programs = {
+    # Configure GPG for KDE Wallet integration
+    gpg = {
+      enable = true;
+    };
+  };
+
+  services = {
+    # Configure GPG agent with Qt pinentry for KDE Wallet
+    gpg-agent = {
+      enable = true;
+      pinentryPackage = pkgs.pinentry-qt;
+      enableSshSupport = true;
+    };
+  };
+}
