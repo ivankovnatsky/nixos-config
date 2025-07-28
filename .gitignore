@@ -1,5 +1,6 @@
 result
 .stfolder
+.stignore
 **/.DS_Store
 
 # Ghostty local build file
