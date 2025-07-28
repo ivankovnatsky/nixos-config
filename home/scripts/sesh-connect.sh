@@ -6,7 +6,7 @@
 selected_session="$(
     {
         echo "📁 New Session"
-        sesh list -i
+        sesh list --icons --hide-attached --hide-duplicates
     } | fzf --prompt='⚡ ' --height 50% --layout=reverse --header=' Pick a session' --ansi
 )"
 
