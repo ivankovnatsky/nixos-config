@@ -7,9 +7,7 @@ selected_session="$(
     {
         echo "📁 New Session"
         sesh list -i
-    } | \
-        gum filter --limit 1 --no-sort --fuzzy \
-            --placeholder ' Pick a session' --height 50 --prompt='⚡ '
+    } | fzf --prompt='⚡ ' --height 50% --layout=reverse --header=' Pick a session'
 )"
 
 if [[ "$selected_session" == "📁 New Session" ]]; then
