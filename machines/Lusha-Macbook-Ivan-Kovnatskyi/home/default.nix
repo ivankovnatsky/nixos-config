@@ -37,6 +37,7 @@
     ../../../home/vscode.nix
     ../../../home/yamlint.nix
     ../../../home/yt-dlp.nix
+    ../../../home/zellij.nix
     ../../../modules/flags
     ../../../modules/secrets
     ../../../home/tweety.nix
