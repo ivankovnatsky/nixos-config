@@ -11,7 +11,7 @@
     # Configure GPG agent with Qt pinentry for KDE Wallet
     gpg-agent = {
       enable = true;
-      pinentryPackage = pkgs.pinentry-qt;
+      pinentry.package = pkgs.pinentry-qt;
       enableSshSupport = true;
       defaultCacheTtl = 86400; # 24 hours
       maxCacheTtl = 86400;
