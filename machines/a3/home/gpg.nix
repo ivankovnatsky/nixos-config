@@ -13,6 +13,8 @@
       enable = true;
       pinentryPackage = pkgs.pinentry-qt;
       enableSshSupport = true;
+      defaultCacheTtl = 86400; # 24 hours
+      maxCacheTtl = 86400;
     };
   };
 }
