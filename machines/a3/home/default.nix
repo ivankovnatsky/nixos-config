@@ -8,6 +8,7 @@
     ../../../home/home-session-vars.nix
     ../../../home/lsd.nix
     ../../../home/nixvim
+    ../../../home/nixvim/plugins/copilot-lua
     ../../../home/rebuild-diff.nix
     ../../../home/scripts.nix
     ../../../home/shell.nix
