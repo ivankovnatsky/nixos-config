@@ -56,7 +56,6 @@ in
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }
       { path = "/Applications/KeyCastr.app/"; }
-      { path = "/Applications/Keymapp.app/"; }
 
       {
         type = "spacer";
