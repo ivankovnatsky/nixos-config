@@ -50,7 +50,8 @@
     # difftastic.enable = true;
     # diff-so-fancy.enable = true;
     aliases = {
-      a = "add";
+      # Add all files in git root
+      a = "!git add \"$(git rev-parse --show-toplevel)\"";
       co = "checkout";
       c = "commit -v";
       ca = "commit -av";
@@ -58,8 +59,6 @@
       l = "log --oneline -n 20";
       p = "push";
       pp = "pull";
-      # Add all files in git root
-      add-all = "!git add \"$(git rev-parse --show-toplevel)\"";
     };
     extraConfig = {
       init.defaultBranch = "main";
