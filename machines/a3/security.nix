@@ -16,6 +16,11 @@
             enable = true;
           };
         };
+        # https://www.reddit.com/r/NixOS/comments/1cuzql7/os_keyring/
+        kwallet = {
+          name = "kwallet";
+          enableKwallet = true;
+        };
       };
     };
   };
