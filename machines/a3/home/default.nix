@@ -2,7 +2,10 @@
 
 {
   imports = [
+    ../../../home/claude.nix
+    ../../../home/gamescope-session.nix
     ../../../home/git.nix
+    ../../../home/home-session-vars.nix
     ../../../home/lsd.nix
     ../../../home/nixvim
     ../../../home/rebuild-diff.nix
@@ -12,15 +15,13 @@
     ../../../home/tmux.nix
     ../../../modules/flags
     ../../../modules/secrets
+    ./firefox.nix
+    ./flags.nix
     ./gnome.nix
     ./gpg.nix
     ./kde.nix
-    ./plasma.nix
-    ./flags.nix
-    ../../../home/home-session-vars.nix
-    ./firefox.nix
     ./packages.nix
+    ./plasma.nix
     ./syncthing.nix
-    ../../../home/claude.nix
   ];
 }
