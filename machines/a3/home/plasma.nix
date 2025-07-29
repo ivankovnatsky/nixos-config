@@ -12,8 +12,9 @@
             vendorId = "1532"; # Razer vendor ID (hex)
             productId = "0078"; # Razer Viper product ID (hex)
 
-            # Extremely slow mouse settings
-            acceleration = -1.0; # Minimum possible value for slowest speed
+            # Mouse settings
+            accelerationProfile = 1;
+            acceleration = -0.6;
           }
         ];
       };
