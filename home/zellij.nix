@@ -7,13 +7,10 @@
   
   programs.zellij = {
     enable = true;
-    enableFishIntegration = true;
     
     settings = {
-      theme = "default";
-      default_shell = "fish";
-      pane_frames = false;
-      simplified_ui = true;
+      # pane_frames = false;
+      # simplified_ui = true;
     };
   };
 }
