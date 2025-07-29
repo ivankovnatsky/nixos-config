@@ -57,6 +57,10 @@
 
       # https://neovim.io/doc/user/term.html#tui-cursor-shape
       set -ga terminal-overrides '*:Ss=\E[%p1%d q:Se=\E[ q'
+
+      # Enable true color support for neovim
+      # https://stackoverflow.com/questions/60309665/neovim-colorscheme-does-not-look-right-when-using-nvim-inside-tmux
+      set-option -sa terminal-overrides ',xterm-256color:RGB'
       ${
         if config.flags.enableFishShell then
           ''
@@ -68,6 +72,4 @@
       }
     '';
   };
-
-
 }
