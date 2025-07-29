@@ -13,7 +13,7 @@
             productId = "0078"; # Razer Viper product ID (hex)
 
             # Mouse settings
-            accelerationProfile = 1;
+            accelerationProfile = "none";
             acceleration = -0.6;
           }
         ];
