@@ -3,6 +3,7 @@
 {
   imports = [
     ../../../home/git.nix
+    ../../../home/gpg.nix
     ../../../home/home-session-vars.nix
     ../../../home/lsd.nix
     ../../../home/nixvim
