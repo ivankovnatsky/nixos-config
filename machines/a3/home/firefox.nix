@@ -23,7 +23,8 @@
       };
       
       extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-        # Add other extensions here as needed
+        darkreader
+        bitwarden
       ];
     };
   };

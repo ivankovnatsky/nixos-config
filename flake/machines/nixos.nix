@@ -64,7 +64,7 @@
 
       # Basic system configuration
       {
-        nixpkgs.overlays = [ inputs.self.overlay ];
+        nixpkgs.overlays = [ inputs.self.overlay inputs.nur.overlay ];
         nixpkgs.config.allowUnfree = true;
         nix.nixPath = [
           "nixpkgs=${inputs.nixos-release}"
