@@ -18,6 +18,7 @@
     ./fonts.nix
     ./packages.nix
     ./bluetooth.nix
+    ./power-management.nix
 
     # TPM2 support for LUKS encryption
     ./cryptenroll.nix
