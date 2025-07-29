@@ -26,6 +26,14 @@ end
 
 -- Function to check KDE Plasma appearance
 local function get_plasma_appearance()
+  -- Check if kdeglobals file exists first
+  local kdeglobals_file = os.getenv("HOME") .. "/.config/kdeglobals"
+  local file = io.open(kdeglobals_file, "r")
+  if not file then
+    return "light" -- Return default if file doesn't exist
+  end
+  file:close()
+  
   -- Check for KDE Plasma theme by reading kdeglobals file directly
   -- First check for LookAndFeelPackage which is more reliable
   local handle = io.popen("grep -i 'LookAndFeelPackage' ~/.config/kdeglobals 2>/dev/null")
