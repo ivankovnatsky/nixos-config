@@ -5,6 +5,7 @@
 
     # Other configurations
     ./configuration.nix
+    ./boot.nix
     ./nvidia.nix
     ./nixpkgs.nix
     # ./gnome.nix
