@@ -9,7 +9,6 @@
     backup-home
     btop
     cargo
-    nixpkgs-master.claude-code
     cloudflared
     coreutils
     defaultbrowser
@@ -56,6 +55,7 @@
     mycli
     nh # https://github.com/nix-community/nh
     nixfmt-rfc-style
+    nixpkgs-master.claude-code
     nixpkgs-master.fluxcd
     nodePackages.aws-cdk
     nodejs
