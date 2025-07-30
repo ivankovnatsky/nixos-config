@@ -55,7 +55,25 @@
     mycli
     nh # https://github.com/nix-community/nh
     nixfmt-rfc-style
-    nixpkgs-master.claude-code
+
+    # ```console
+    # node:internal/modules/cjs/loader:1215
+    # throw err;
+    # ^
+
+    # Error: Cannot find module '/nix/store/g6d2pfbvbgmmnalp4rss1qb0i7y7zcfy-claude-code-1.0.62/lib/node_modules/@anthropic-ai/claude-code/cli.js'
+    #     at Module._resolveFilename (node:internal/modules/cjs/loader:1212:15)
+    #     at Module._load (node:internal/modules/cjs/loader:1043:27)
+    #     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12)
+    #     at node:internal/main/run_main_module:28:49 {
+    #   code: 'MODULE_NOT_FOUND',
+    #   requireStack: []
+    # }
+
+    # Node.js v20.19.4
+    # ```
+    # nixpkgs-master.claude-code #
+
     nixpkgs-master.fluxcd
     nodePackages.aws-cdk
     nodejs
