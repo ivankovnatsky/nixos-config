@@ -25,5 +25,8 @@
     nixfmt-rfc-style
 
     fastfetch
+    
+    # Desktop notifications
+    libnotify  # Provides notify-send command
   ];
 }
