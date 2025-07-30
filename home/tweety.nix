@@ -9,10 +9,20 @@
   # Generate tweety fish completions
   home.activation = lib.mkIf config.flags.enableFishShell {
     generateTweetyCompletions = lib.hm.dag.entryAfter ["writeBoundary"] ''
-      if [[ -x "/opt/homebrew/bin/tweety" ]]; then
+      TWEETY_BIN=""
+      case "$(uname -s)" in
+        Darwin)
+          [[ -x "/opt/homebrew/bin/tweety" ]] && TWEETY_BIN="/opt/homebrew/bin/tweety"
+          ;;
+        Linux)
+          [[ -x "${pkgs.tweety}/bin/tweety" ]] && TWEETY_BIN="${pkgs.tweety}/bin/tweety"
+          ;;
+      esac
+      
+      if [[ -n "$TWEETY_BIN" ]]; then
         $DRY_RUN_CMD mkdir -p "${config.home.homeDirectory}/.config/fish/completions"
         $DRY_RUN_CMD rm -f "${config.home.homeDirectory}/.config/fish/completions/tweety.fish"
-        $DRY_RUN_CMD /opt/homebrew/bin/tweety completion fish > "${config.home.homeDirectory}/.config/fish/completions/tweety.fish"
+        $DRY_RUN_CMD "$TWEETY_BIN" completion fish > "${config.home.homeDirectory}/.config/fish/completions/tweety.fish"
       fi
     '';
   };
