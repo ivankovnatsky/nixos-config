@@ -1,29 +1,23 @@
 {
   imports = [
-    ../../modules/nixos/tmux-rebuild
-    ./tmux-rebuild.nix
-
-    # Other configurations
-    ./configuration.nix
-    ./boot.nix
-    ./nvidia.nix
-    ./nixpkgs.nix
     # ./gnome.nix
-    ./kde.nix
-    ./gui.nix
-    ./security.nix
-    ./sudo.nix
-    ./user.nix
-    ./steam.nix
-    ./fonts.nix
-    ./packages.nix
-    ./bluetooth.nix
-    ./power-management.nix
-
-    # TPM2 support for LUKS encryption
-    ./cryptenroll.nix
-    ./tpm2.nix
-
+    ../../modules/nixos/tmux-rebuild
     ../../system/nix.nix
+    ./bluetooth.nix
+    ./boot.nix
+    ./configuration.nix
+    ./cryptenroll.nix # TPM2 support for LUKS encryption
+    ./fonts.nix
+    ./gui.nix
+    ./kde.nix
+    ./nixpkgs.nix
+    ./nvidia.nix
+    ./power-management.nix
+    ./security.nix
+    ./steam.nix
+    ./sudo.nix
+    ./tmux-rebuild.nix
+    ./tpm2.nix
+    ./user.nix
   ];
 }
