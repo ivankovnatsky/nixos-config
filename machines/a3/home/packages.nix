@@ -13,7 +13,7 @@
     #     "--ozone-platform=wayland"
     #   ];
     # })
-    windsurf
+    nixpkgs-master.windsurf
 
     # Hardware monitoring tools
     lm_sensors  # Provides the 'sensors' command for monitoring temperatures
