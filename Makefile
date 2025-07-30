@@ -69,12 +69,29 @@ flake-update-homebrew:
 		nix flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
 	done
 
+# Function to send notifications with fallbacks
+define notify_linux
+	if [ -n "$$DISPLAY" ] && command -v notify-send >/dev/null 2>&1; then \
+		notify-send "$(1)" "Nix configuration" 2>/dev/null || echo "$(1)"; \
+	elif [ -n "$$DISPLAY" ] && command -v kdialog >/dev/null 2>&1; then \
+		kdialog --passivepopup "$(1)" 5 2>/dev/null || echo "$(1)"; \
+	elif [ -n "$$DISPLAY" ] && command -v zenity >/dev/null 2>&1; then \
+		zenity --info --text="$(1)" --timeout=5 2>/dev/null || echo "$(1)"; \
+	else \
+		echo "$(1)"; \
+	fi
+endef
+
 # NixOS rebuild targets
 rebuild-nixos/generic:
-	nixos-rebuild switch $(NIXOS_EXTRA_FLAGS) $(COMMON_REBUILD_FLAGS)
+	nixos-rebuild switch $(NIXOS_EXTRA_FLAGS) $(COMMON_REBUILD_FLAGS) && \
+		$(call notify_linux,🟢 NixOS rebuild successful!) || \
+		$(call notify_linux,🔴 NixOS rebuild failed!)
 
 rebuild-nixos/impure:
-	nixos-rebuild switch --impure $(NIXOS_EXTRA_FLAGS) $(COMMON_REBUILD_FLAGS)
+	nixos-rebuild switch --impure $(NIXOS_EXTRA_FLAGS) $(COMMON_REBUILD_FLAGS) && \
+		$(call notify_linux,🟢 NixOS rebuild successful!) || \
+		$(call notify_linux,🔴 NixOS rebuild failed!)
 
 # Darwin-specific rebuild target
 rebuild-darwin:
