@@ -13,11 +13,14 @@ get_os() {
 check_dependencies() {
     local os=$1
     if [ "$os" = "linux" ]; then
-        if ! command -v xclip >/dev/null 2>&1 && ! command -v xsel >/dev/null 2>&1; then
-            echo "Error: Please install either 'xclip' or 'xsel' for clipboard support"
-            echo "Ubuntu/Debian: sudo apt-get install xclip"
-            echo "Fedora: sudo dnf install xclip"
-            echo "Arch: sudo pacman -S xclip"
+        if ! command -v xclip >/dev/null 2>&1 && ! command -v xsel >/dev/null 2>&1 && ! command -v wl-copy >/dev/null 2>&1; then
+            echo "Error: Please install either 'xclip', 'xsel', or 'wl-copy' for clipboard support"
+            echo "X11 - Ubuntu/Debian: sudo apt-get install xclip"
+            echo "X11 - Fedora: sudo dnf install xclip"
+            echo "X11 - Arch: sudo pacman -S xclip"
+            echo "Wayland - Ubuntu/Debian: sudo apt-get install wl-clipboard"
+            echo "Wayland - Fedora: sudo dnf install wl-clipboard"
+            echo "Wayland - Arch: sudo pacman -S wl-clipboard"
             exit 1
         fi
     fi
@@ -35,7 +38,9 @@ copy_to_clipboard() {
             pbcopy
             ;;
         linux)
-            if command -v xclip >/dev/null 2>&1; then
+            if command -v wl-copy >/dev/null 2>&1; then
+                wl-copy
+            elif command -v xclip >/dev/null 2>&1; then
                 xclip -selection clipboard
             elif command -v xsel >/dev/null 2>&1; then
                 xsel --clipboard --input
