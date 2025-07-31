@@ -20,19 +20,21 @@ buildGoModule rec {
   nativeBuildInputs = [ nodejs ];
 
   preBuild = ''
-    # Build browser extensions
+    export HOME=$TMPDIR
+    export MANIFEST_VERSION=${version}
+
     cd extension
     npm ci
     npm run build
-    npm run zip
+    npm run zip:firefox
     cd ..
   '';
 
   postInstall = ''
     # Install Firefox extension
-    mkdir -p $out/share/firefox/extensions
-    if [ -f extension/firefox.zip ]; then
-      cp extension/firefox.zip $out/share/firefox/extensions/
+    mkdir -p $out/share/extensions
+    if [ -f extension/dist/tweety-${version}-firefox.zip ]; then
+      cp extension/dist/tweety-${version}-firefox.zip $out/share/extensions/firefox.zip
     fi
   '';
 
