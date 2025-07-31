@@ -28,5 +28,7 @@
     
     # Desktop notifications
     libnotify  # Provides notify-send command
+
+    ghostty
   ];
 }
