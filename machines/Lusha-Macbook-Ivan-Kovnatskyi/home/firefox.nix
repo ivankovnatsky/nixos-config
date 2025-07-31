@@ -24,7 +24,7 @@ in
 
     # Install Tweety extension automatically
     "Library/Application Support/Firefox/Profiles/${firefoxProfile}/extensions/tweety@pomdtr.me.xpi" = {
-      source = "/opt/homebrew/share/tweety/extensions/firefox.zip";
+      source = "${pkgs.tweety}/share/extensions/firefox.zip";
     };
 
     # Install Okta Browser Plugin

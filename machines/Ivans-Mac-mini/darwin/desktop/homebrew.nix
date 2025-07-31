@@ -5,7 +5,6 @@
     onActivation.cleanup = "zap";
     global.brewfile = true;
     brews = [
-      "tweety"
     ];
     casks = [
       "amethyst"

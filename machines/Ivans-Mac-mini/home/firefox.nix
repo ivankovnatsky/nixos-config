@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 let
   firefoxProfile = "5alalmgt.dev-edition-default";
@@ -23,7 +23,7 @@ in
 
     # Install Tweety extension automatically
     "Library/Application Support/Firefox/Profiles/${firefoxProfile}/extensions/tweety@pomdtr.me.xpi" = {
-      source = "/opt/homebrew/share/tweety/extensions/firefox.zip";
+      source = "${pkgs.tweety}/share/extensions/firefox.zip";
     };
   };
 }
