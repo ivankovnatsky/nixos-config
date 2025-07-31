@@ -4,6 +4,7 @@
   imports = [
     ../../../home/claude.nix
     ../../../home/gamescope-session.nix
+    ../../../home/ghostty.nix
     ../../../home/git.nix
     ../../../home/go.nix
     ../../../home/home-session-vars.nix
