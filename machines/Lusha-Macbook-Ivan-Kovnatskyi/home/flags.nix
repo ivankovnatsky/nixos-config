@@ -24,10 +24,6 @@
         }
         {
           key = "4";
-          app = "Google Chrome";
-        }
-        {
-          key = "5";
           app = "Slack";
         }
         {
