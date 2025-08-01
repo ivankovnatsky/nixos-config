@@ -222,6 +222,18 @@
 		header_up Host {host}
 	}
 
+	@stash host stash.@externalDomain@
+	reverse_proxy @stash @beeIp@:9999 {
+		# Enable WebSocket support
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		# Increase timeouts for streaming
+		transport http {
+			keepalive 12h
+			keepalive_idle_conns 100
+		}
+	}
+
 	# Default fallback for wildcard (original behavior)
 	reverse_proxy @beeIp@:80
 
@@ -238,24 +250,6 @@
 		output file @logPathPrefix@/caddy/dns-mini.log {
 			roll_size 10MB
 			roll_keep 5
-		}
-	}
-}
-
-# Simplified domain for Stash (singleton service)
-stash.@externalDomain@:443 {
-	bind @bindAddress@
-
-	# Proxy to Stash
-	reverse_proxy @beeIp@:9999 {
-		# Enable WebSocket support
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-		
-		# Increase timeouts for streaming
-		transport http {
-			keepalive 12h
-			keepalive_idle_conns 100
 		}
 	}
 }
