@@ -51,8 +51,6 @@
     ./transmission.nix
     ./prowlarr.nix
 
-    ./stash.nix
-
     # Audio
     ./audiobookshelf.nix
     ./jellyfin.nix
