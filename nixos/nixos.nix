@@ -8,7 +8,7 @@
   security = {
     rtkit.enable = true;
     sudo.configFile = ''
-      Defaults timestamp_timeout=240
+      Defaults timestamp_timeout=720
     '';
   };
 

@@ -50,7 +50,7 @@ in
         type = types.lines;
         default = "";
         example = ''
-          Defaults:$USER timestamp_timeout=240
+          Defaults:$USER timestamp_timeout=720
         '';
         description = "Custom sudo configuration content.";
       };
