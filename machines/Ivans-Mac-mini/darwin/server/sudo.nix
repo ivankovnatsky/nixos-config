@@ -5,7 +5,7 @@
     sudo = {
       enable = true;
       configContent = ''
-        Defaults:${username} timestamp_timeout=240
+        Defaults:${username} timestamp_timeout=720
       '';
       nopasswd = {
         enable = true;
