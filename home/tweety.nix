@@ -6,6 +6,10 @@
     functions = {};
   };
 
+  home.packages = with pkgs; [
+    tweety
+  ];
+
   # Generate tweety fish completions
   home.activation = lib.mkIf config.flags.enableFishShell {
     generateTweetyCompletions = lib.hm.dag.entryAfter ["writeBoundary"] ''
