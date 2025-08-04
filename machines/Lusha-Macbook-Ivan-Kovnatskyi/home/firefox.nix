@@ -51,6 +51,14 @@ in
       };
     };
 
+    # Install Automatic Dark
+    "Library/Application Support/Firefox/Profiles/${firefoxProfile}/extensions/{b19a1b81-c296-4c8b-9b60-df8a6ef31fc7}.xpi" = {
+      source = builtins.fetchurl {
+        url = "https://addons.mozilla.org/firefox/downloads/latest/automatic-dark/addon-1394019-latest.xpi";
+        sha256 = "133alh7rbc06k7b1vpgq39fbi86c07i67qmd9ymra1lncwjw9vvp";
+      };
+    };
+
     # PassFF native messaging host symlink
     "Library/Application Support/Mozilla/NativeMessagingHosts/passff.json" = {
       source = config.lib.file.mkOutOfStoreSymlink "${config.home.profileDirectory}/lib/mozilla/native-messaging-hosts/passff.json";
