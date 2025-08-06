@@ -26,6 +26,7 @@
     ggh
     ghorg
     gitleaks
+    go-grip
     gum
     hadolint
     hclfmt
