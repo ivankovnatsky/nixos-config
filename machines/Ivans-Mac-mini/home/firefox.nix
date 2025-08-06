@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  firefoxProfile = "5alalmgt.dev-edition-default";
+  firefoxProfile = "v9o2ii3a.dev-edition-default";
 in
 {
   home.file = {
