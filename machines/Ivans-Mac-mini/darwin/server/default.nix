@@ -1,5 +1,6 @@
 {
   imports = [
+    # ./netdata.nix
     ../../../../darwin/syncthing.nix
     ../../../../modules/darwin/dnsmasq
     ../../../../modules/darwin/doh-server
@@ -11,16 +12,15 @@
     ../../../../modules/darwin/tmux-rebuild
     ../../../../modules/flags
     ../../../../modules/secrets
+    ../../../../system/darwin-rebuild-local
     ./bin.nix
     ./dns.nix
     ./doh.nix
     ./git.nix
     ./homebrew.nix
-    ./tailscale.nix
     ./http.nix
     ./logrotate.nix
     ./miniserve.nix
-    # ./netdata.nix
     ./nix.nix
     ./openssh.nix
     ./packages.nix
@@ -28,6 +28,7 @@
     ./sharing.nix
     ./sudo.nix
     ./system.nix
+    ./tailscale.nix
     ./tmux-rebuild.nix
   ];
 }
