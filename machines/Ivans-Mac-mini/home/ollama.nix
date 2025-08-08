@@ -41,6 +41,7 @@ in
   home.sessionVariables = {
     OLLAMA_MODELS = ollamaModelsPath;
     OLLAMA_HOST = "${config.flags.miniIp}:11434";
+    OLLAMA_CONTEXT_LENGTH = "8192";
   };
 
   home.activation.ollamaPullModels = config.lib.dag.entryAfter ["writeBoundary"] ''
