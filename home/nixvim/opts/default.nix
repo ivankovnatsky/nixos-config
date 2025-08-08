@@ -9,6 +9,9 @@
       # command line.
       mouse = "";
 
+      # Auto-reload files when they change on filesystem
+      autoread = true;
+
       foldmethod = "marker";
       autowrite = true;
       lazyredraw = true;
@@ -118,6 +121,11 @@
         'фa,іs,вd,аf,пg,рh,оj,лk,дl,ж\\;,є\',ґ\\,яz,чx,сc,мv,иb,тn,ьm,б\\,,ю.,' ..
         'ЙQ,ЦW,УE,КR,ЕT,НY,ГU,ШI,ЩO,ЗP,Х{,Ї},ФA,' ..
         'ІS,ВD,АF,ПG,РH,ОJ,ЛK,ДL,Ж\\:,Є\\",Ґ\\|,ЯZ,ЧX,СC,МV,ИB,ТN,ЬM,Б\\<,Ю>,№#'
+
+      -- Check for file changes when cursor is idle or entering buffer
+      vim.api.nvim_create_autocmd({"FocusGained", "BufEnter"}, {
+        command = "checktime"
+      })
 
       ${builtins.readFile ./appearance.lua}
     '';
