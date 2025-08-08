@@ -6,8 +6,6 @@ let
     "gemma3:12b"
     "llama3.1:8b"
     "mistral:7b"
-    "qwen3:14b"
-    "qwen3:8b"
   ];
 
   ollamaModelsPath = "/Volumes/Storage/Data/Ollama";
