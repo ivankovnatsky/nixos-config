@@ -2,6 +2,7 @@
   imports = [
     ../../../home/aichat-server.nix
     ../../../home/aichat.nix
+    ../../../home/aider.nix
     ../../../home/amethyst
     ../../../home/bat.nix
     ../../../home/claude.nix
