@@ -37,7 +37,6 @@ in
               name: ollama
               api_base: https://ollama.${config.secrets.externalDomain}/v1
               models:
-                - name: codellama:13b
                 - name: gemma3:12b
                 - name: llama3.1:8b
                 - name: mistral:7b
