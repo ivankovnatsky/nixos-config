@@ -2,7 +2,6 @@
 
 let
   models = [
-    "codellama:13b"
     "gemma3:12b"
     "llama3.1:8b"
     "mistral:7b"
