@@ -99,6 +99,12 @@ with lib;
       description = "Mac mini IP address";
       default = "192.168.50.4";
     };
+
+    a3wIp = mkOption {
+      type = types.str;
+      description = "a3w IP address";
+      default = "192.168.50.6";
+    };
     
     homeWorkPath = mkOption {
       type = types.str;
