@@ -2,6 +2,7 @@
 {
   home.packages = with pkgs; [
     bat
+    btop
     cargo
     codex
     delta
@@ -14,6 +15,7 @@
     home-manager
     imagemagick
     jq
+    macmon
     magic-wormhole
     mkpasswd
     nixfmt-rfc-style

@@ -99,6 +99,18 @@
 	@homeassistant host homeassistant.@externalDomain@
 	reverse_proxy @homeassistant @beeIp@:8123
 
+	@openwebui host openwebui.@externalDomain@
+	reverse_proxy @openwebui @beeIp@:8090 {
+		# Enable WebSocket support for real-time updates
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		# Increase timeouts for large model responses
+		transport http {
+			keepalive 30s
+			response_header_timeout 300s
+		}
+	}
+
 	@sync-bee host sync-bee.@externalDomain@
 	reverse_proxy @sync-bee @beeIp@:8384
 
@@ -220,6 +232,36 @@
 	reverse_proxy @bin @miniIp@:8820 {
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
+	}
+
+	@ollama host ollama.@externalDomain@
+	reverse_proxy @ollama {
+		# Primary backend (a3w) listed first, failover to mini
+		to @a3wIp@:11434 @miniIp@:11434
+		
+		# Use first available backend (a3w priority)
+		lb_policy first
+		lb_try_duration 5s
+		lb_try_interval 250ms
+		
+		# Health checks for both backends
+		health_uri /
+		health_interval 30s
+		health_timeout 5s
+		
+		# Fail to next backend if primary is unhealthy
+		fail_duration 30s
+		
+		# Headers for proper operation
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		
+		# Increase timeouts for large model responses
+		transport http {
+			keepalive 300s
+			response_header_timeout 300s
+			read_timeout 300s
+		}
 	}
 
 	@stash host stash.@externalDomain@
