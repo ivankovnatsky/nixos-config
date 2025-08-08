@@ -52,6 +52,7 @@ let
         inherit (config.secrets) cloudflareApiToken;
         inherit (config.flags) beeIp;
         inherit (config.flags) miniIp;
+        inherit (config.flags) a3wIp;
         logPathPrefix = "/var/log";
 
         # Netdata credentials
