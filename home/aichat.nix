@@ -33,6 +33,16 @@ in
             - type: openai
               api_base: https://api.openai.com/v1
               api_key: ${config.secrets.openaiApiKey}
+            - type: openai-compatible
+              name: ollama
+              api_base: https://ollama.${config.secrets.externalDomain}/v1
+              models:
+                - name: codellama:13b
+                - name: gemma3:12b
+                - name: llama3.1:8b
+                - name: mistral:7b
+                - name: qwen3:14b
+                - name: qwen3:8b
         '';
       };
     };
