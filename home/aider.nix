@@ -22,13 +22,13 @@
           # Display settings
           dark-mode: true
           pretty: true
-          stream: true
+          # stream: true
 
           # Map settings (use larger context for better code understanding)
-          map-tokens: 2048
+          map-tokens: 8192
 
           # Cache settings
-          cache-prompts: true
+          # cache-prompts: true
           
           # Timeout settings (in seconds) - increase for slow model loading
           timeout: 60
