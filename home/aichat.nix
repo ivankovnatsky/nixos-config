@@ -41,8 +41,6 @@ in
                 - name: gemma3:12b
                 - name: llama3.1:8b
                 - name: mistral:7b
-                - name: qwen3:14b
-                - name: qwen3:8b
         '';
       };
     };
