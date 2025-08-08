@@ -119,30 +119,6 @@
             "Ivans-Mac-mini"
           ];
         };
-        "Sources/github.com/ivankovnatsky/backup-home-go" = {
-          id = "ek7as-rhzzz";
-          label = "Sources/github.com/ivankovnatsky/backup-home-go";
-          path = "/storage/Data/Sources/github.com/ivankovnatsky/backup-home-go";
-          devices = [
-            "Lusha-Macbook-Ivan-Kovnatskyi"
-          ];
-        };
-        "Sources/github.com/narugit/smctemp" = {
-          id = "smctemp";
-          label = "Sources/github.com/narugit/smctemp";
-          path = "/storage/Data/Sources/github.com/narugit/smctemp";
-          devices = [
-            "Lusha-Macbook-Ivan-Kovnatskyi"
-          ];
-        };
-        "Sources/github.com/ivankovnatsky/windows-config" = {
-          id = "inmfd-grzmp";
-          label = "Sources/github.com/ivankovnatsky/windows-config";
-          path = "/storage/Data/Sources/github.com/ivankovnatsky/windows-config";
-          devices = [
-            "Lusha-Macbook-Ivan-Kovnatskyi"
-          ];
-        };
         "Shared-Notes" = {
           id = "shared-notes";
           label = "Shared-Notes";
