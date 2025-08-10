@@ -12,7 +12,8 @@ in
         text = ''
           {
             "permissions": {
-              "defaultMode": "acceptEdits"
+              "defaultMode": "acceptEdits",
+              "autoApproveWebFetch": true
             },
             "env": {
               "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
