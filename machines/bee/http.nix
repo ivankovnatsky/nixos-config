@@ -136,6 +136,17 @@ in
   boot.kernel.sysctl."net.core.rmem_max" = 2500000;
   boot.kernel.sysctl."net.core.wmem_max" = 2500000;
 
+  # Set ACLs for Caddy logs
+  systemd.tmpfiles.rules = [
+    # Fix permissions on log files (remove execute bit)
+    "z /var/log/caddy/*.log 0644 - - -"
+    "z /var/log/caddy/*.log.gz 0644 - - -"
+    
+    # Grant promtail read access
+    "A+ /var/log/caddy - - - - user:promtail:r-x"
+    "A+ /var/log/caddy - - - - default:user:promtail:r--"
+  ];
+
   # Open HTTP and HTTPS ports in the firewall
   networking.firewall.allowedTCPPorts = [
     80
