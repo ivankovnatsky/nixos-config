@@ -11,6 +11,7 @@
     btop
     cargo
     cloudflared
+    crane
     coreutils
     defaultbrowser
     delta
