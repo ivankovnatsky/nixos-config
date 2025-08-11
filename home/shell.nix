@@ -35,7 +35,7 @@ let
       commonShellAliases
       // {
         rclone = "${pkgs.rclone}/bin/rclone -P";
-        transmission = "${pkgs.transmission_4}/bin/transmission-remote --list";
+        transmission = "${pkgs.transmission_4}/bin/transmission-remote ${config.flags.beeIp}:9091 --authenv --list";
         wl-copy = lib.mkIf isLinux "${pkgs.wl-clipboard}/bin/wl-copy -n";
       }
     else

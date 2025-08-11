@@ -16,5 +16,6 @@
     ../../../modules/secrets
     ./flags.nix
     ./vim.nix
+    ./env.nix
   ];
 }
