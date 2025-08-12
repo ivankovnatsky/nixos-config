@@ -123,7 +123,7 @@
         'ІS,ВD,АF,ПG,РH,ОJ,ЛK,ДL,Ж\\:,Є\\",Ґ\\|,ЯZ,ЧX,СC,МV,ИB,ТN,ЬM,Б\\<,Ю>,№#'
 
       -- Check for file changes when cursor is idle or entering buffer
-      vim.api.nvim_create_autocmd({"FocusGained", "BufEnter"}, {
+      vim.api.nvim_create_autocmd({"FocusGained", "BufEnter", "CursorHold", "CursorHoldI"}, {
         command = "checktime"
       })
 
