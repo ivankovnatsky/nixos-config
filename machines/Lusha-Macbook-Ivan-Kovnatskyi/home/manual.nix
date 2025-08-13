@@ -1,7 +1,11 @@
 { config, lib, pkgs, ... }:
 {
   home.activation = {
-    installNpmPackages = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    homeActivation = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      cat <<EOF > $HOME/.npmrc
+        prefix=~/.npm
+      EOF
+
       # Install global npm packages using nodejs from nix
       if [[ -x "${pkgs.nodejs}/bin/npm" ]]; then
         echo "Installing global npm packages..."
