@@ -61,6 +61,15 @@
       # Enable true color support for neovim
       # https://stackoverflow.com/questions/60309665/neovim-colorscheme-does-not-look-right-when-using-nvim-inside-tmux
       set-option -sa terminal-overrides ',xterm-256color:RGB'
+      
+      # Window selection keybinds for windows 10-15
+      bind-key q select-window -t 10
+      bind-key w select-window -t 11
+      bind-key e select-window -t 12
+      bind-key r select-window -t 13
+      bind-key t select-window -t 14
+      bind-key y select-window -t 15
+      
       ${
         if config.flags.enableFishShell then
           ''
