@@ -14,7 +14,7 @@ selected_branch=$(
     git branch --format='%(refname:short)' | \
     grep -v "^${current_branch}$" | \
     fzf --height=20 --layout=reverse --border \
-        --prompt="Switch to branch: " \
+        --prompt="Branch: " \
         --preview="git log --oneline --graph --decorate --color=always {} -20" \
         --preview-window=right:50%
 )
