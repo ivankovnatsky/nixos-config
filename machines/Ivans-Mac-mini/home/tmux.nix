@@ -35,11 +35,28 @@
               panes:
                 - vim List.txt
                 - make watch
+      '';
+    };
+
+    ".config/tmuxinator/nixos-config.yml" = {
+      text = ''
+        name: nixos-config
+        startup_window: 0
+        root: /Volumes/Storage/Data/Sources/github.com/ivankovnatsky/nixos-config
+
+        windows:
           - nixos-config:
               layout: main-vertical
-              root: /Volumes/Storage/Data/Sources/github.com/ivankovnatsky/nixos-config
               panes:
-                - nvim .
+                - nvim
+          - shell:
+              layout: main-vertical
+              panes:
+                - ls -lah
+          - claude:
+              layout: main-vertical
+              panes:
+                - claude
       '';
     };
   };
