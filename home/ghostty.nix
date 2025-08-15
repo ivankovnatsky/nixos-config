@@ -14,8 +14,8 @@
     # `ghostty +list-themes`
     theme = dark:Apple System Colors,light:Apple System Colors Light
     auto-update = off
-    # window-decoration = false
-    # macos-titlebar-style = hidden
+    window-decoration = false
+    macos-titlebar-style = hidden
     copy-on-select = true
     macos-option-as-alt = true
     # keybind = global:cmd+escape=toggle_quick_terminal
