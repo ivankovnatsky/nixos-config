@@ -24,6 +24,7 @@
     ../../../home/shell.nix
     ../../../home/starship
     ../../../home/tmux.nix
+    ../../../home/tmuxinator.nix
     ../../../home/tweety.nix
     ../../../home/vscode.nix
     ../../../home/yt-dlp.nix
