@@ -30,6 +30,7 @@
     ripgrep
     rust-analyzer
     rustc
+    sesh
     smctemp # Local overlay
     syncthing
     typst
