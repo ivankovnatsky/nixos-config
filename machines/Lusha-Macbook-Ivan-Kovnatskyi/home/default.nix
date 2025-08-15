@@ -34,6 +34,7 @@
     ../../../home/terraform.nix
     ../../../home/thefuck.nix
     ../../../home/tmux.nix
+    ../../../home/tmuxinator.nix
     ../../../home/vscode.nix
     ../../../home/yamlint.nix
     ../../../home/yt-dlp.nix
