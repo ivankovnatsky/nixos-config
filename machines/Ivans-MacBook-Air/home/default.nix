@@ -1,7 +1,6 @@
 {
   imports = [
     ../../../darwin/home/flags.nix
-    ../../../home/home-session-vars.nix
     ../../../darwin/home/manual.nix
     ../../../darwin/home/nixvim.nix
     ../../../darwin/home/packages.nix
@@ -12,6 +11,7 @@
     ../../../home/git.nix
     ../../../home/go.nix
     ../../../home/hammerspoon
+    ../../../home/home-session-vars.nix
     ../../../home/lsd.nix
     ../../../home/mpv.nix
     ../../../home/nixvim
@@ -26,6 +26,7 @@
     ../../../home/syncthing.nix
     ../../../home/taskwarrior.nix
     ../../../home/tmux.nix
+    ../../../home/tmuxinator.nix
     ../../../home/vscode.nix
     ../../../home/yt-dlp.nix
     ../../../modules/flags
