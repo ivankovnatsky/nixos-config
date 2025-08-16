@@ -19,7 +19,7 @@
               root: /Volumes/Storage/Data/Articast/Articles
               layout: main-horizontal
               panes:
-                - vim Articles.txt
+                - nvim Articles.txt
                 - |
                   cd /Volumes/Storage/Data/Sources/github.com/ivankovnatsky/articast
                   make watch-cast
@@ -27,13 +27,13 @@
               root: /Volumes/Storage/Data/AudioBookShelf
               layout: main-horizontal
               panes:
-                - vim List.txt
+                - nvim List.txt
                 - make watch
           - youtube:
               root: /Volumes/Storage/Data/Youtube
               layout: main-horizontal
               panes:
-                - vim List.txt
+                - nvim List.txt
                 - make watch
       '';
     };
