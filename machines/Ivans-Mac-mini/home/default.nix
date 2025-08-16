@@ -32,6 +32,7 @@
     ../../../modules/secrets
     ./firefox.nix
     ./flags.nix
+    ./nixvim.nix
     ./ollama.nix
     ./packages.nix
     ./tmux.nix
