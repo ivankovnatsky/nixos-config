@@ -27,6 +27,10 @@
           app = "Slack";
         }
         {
+          key = "5";
+          app = "zoom.us";
+        }
+        {
           key = "9";
           app = "System Settings";
         }
