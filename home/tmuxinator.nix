@@ -1,7 +1,7 @@
-{ config, osConfig, username, ... }:
+{ config, osConfig, ... }:
 
 let
-  homePath = "${config.users.users.${username}.home}";
+  homePath = config.home.homeDirectory;
   workingPath = if osConfig.networking.hostName == "Ivans-Mac-mini" then
   "/Volumes/Storage/Data/Sources/github.com/ivankovnatsky/nixos-config"
 else if osConfig.networking.hostName == "bee" then
