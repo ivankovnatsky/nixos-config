@@ -7,7 +7,7 @@
     darkMode = true;
     homeWorkPath = config.home.homeDirectory;
     hotkeys = {
-      terminal = "Ghostty";
+      terminal = "kitty";
       browser = "Firefox Developer Edition";
       shortcuts = [
         {
