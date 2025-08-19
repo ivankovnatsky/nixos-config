@@ -20,10 +20,6 @@ function set_wallpaper
 end
 
 function open_settings
-    # We need to close to make sure we control on which desktop the app will be
-    # opened.
-    osascript -e 'quit app "System Settings"'
-
     # Open System Settings directly to Wallpaper preferences
     osascript -e '
     tell application "System Settings"
