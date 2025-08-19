@@ -27,7 +27,6 @@ in
 
         # Additional macOS apps
         { path = "/System/Applications/Utilities/Terminal.app/"; }
-        { path = "/System/Applications/Preview.app"; }
         { path = "/System/Applications/Passwords.app/"; }
         { path = "/System/Applications/Utilities/Activity Monitor.app/"; }
 
@@ -49,7 +48,6 @@ in
         { path = "/Applications/Ghostty.app/"; }
         { path = "/Applications/Firefox Developer Edition.app/"; }
         { path = "/Applications/Chromium.app/"; }
-        { path = "/Applications/DBeaver.app/"; }
 
         {
           path = "${config.users.users.${username}.home}/Downloads/";
