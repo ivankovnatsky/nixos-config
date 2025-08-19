@@ -28,5 +28,6 @@
     ./packages.nix
     ./plasma.nix
     ./syncthing.nix
+    ./tmuxinator.nix
   ];
 }
