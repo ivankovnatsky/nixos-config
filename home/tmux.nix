@@ -40,6 +40,10 @@
       set -g status-right ""
       set -g status-left-length 40
 
+      # https://github.com/3rd/image.nvim?tab=readme-ov-file#tmux
+      set -gq allow-passthrough on
+      set -g visual-activity off
+
       ${
         if config.flags.darkMode then
           ''
@@ -61,10 +65,10 @@
       # Enable true color support for neovim
       # https://stackoverflow.com/questions/60309665/neovim-colorscheme-does-not-look-right-when-using-nvim-inside-tmux
       set-option -sa terminal-overrides ',xterm-256color:RGB'
-      
+
       # Automatically renumber windows when one is closed
       set -g renumber-windows on
-      
+
       # Window selection keybinds for windows 10-15
       bind-key q select-window -t 10
       bind-key w select-window -t 11
