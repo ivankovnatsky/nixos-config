@@ -46,6 +46,7 @@ in
 
         # Installed using homebrew
         { path = "/Applications/Ghostty.app/"; }
+        { path = "/Applications/Kitty.app/"; }
         { path = "/Applications/Firefox Developer Edition.app/"; }
         { path = "/Applications/Chromium.app/"; }
 

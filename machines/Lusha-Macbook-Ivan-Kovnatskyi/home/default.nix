@@ -16,6 +16,7 @@
     ../../../home/home-session-vars.nix
     ../../../home/jujutsu.nix
     ../../../home/k9s.nix
+    ../../../home/launchd-services/dark-mode-kitty
     ../../../home/lsd.nix
     ../../../home/mpv.nix
     ../../../home/nixvim
@@ -35,13 +36,13 @@
     ../../../home/thefuck.nix
     ../../../home/tmux.nix
     ../../../home/tmuxinator.nix
+    ../../../home/tweety.nix
     ../../../home/vscode.nix
     ../../../home/yamlint.nix
     ../../../home/yt-dlp.nix
     ../../../home/zellij.nix
     ../../../modules/flags
     ../../../modules/secrets
-    ../../../home/tweety.nix
     ./firefox.nix
     ./flags.nix
     ./manual.nix

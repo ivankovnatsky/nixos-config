@@ -23,6 +23,7 @@
       "ghostty"
       "hammerspoon"
       "keycastr"
+      "kitty"
       "mos"
       "orbstack"
       "stats"
