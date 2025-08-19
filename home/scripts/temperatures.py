@@ -124,6 +124,10 @@ def display_temperatures(current_data):
 def signal_handler(sig, frame):
     print('\nMonitoring stopped.')
     print(f'Maximum temperatures saved to {LOG_FILE}')
+    # Clean up the log file
+    if os.path.exists(LOG_FILE):
+        os.remove(LOG_FILE)
+        print(f'Cleaned up {LOG_FILE}')
     sys.exit(0)
 
 signal.signal(signal.SIGINT, signal_handler)
