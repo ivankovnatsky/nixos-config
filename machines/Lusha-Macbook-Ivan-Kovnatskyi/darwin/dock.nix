@@ -50,12 +50,6 @@ in
         { path = "/Applications/Firefox Developer Edition.app/"; }
         { path = "/Applications/Chromium.app/"; }
         { path = "/Applications/DBeaver.app/"; }
-        { path = "/Applications/KeyCastr.app/"; }
-
-        {
-          type = "spacer";
-          section = "apps";
-        }
 
         {
           path = "${config.users.users.${username}.home}/Downloads/";
