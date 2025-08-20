@@ -13,10 +13,12 @@ in
 
         windows:
           - monitoring:
-              layout: even-horizontal
+              layout: main-vertical
               panes:
                 - temperatures
-                - top
+                - 
+                  - top
+                  - watch nvidia-smi
       '';
     };
   };
