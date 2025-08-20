@@ -8,8 +8,12 @@
     ./configuration.nix
     ./cryptenroll.nix # TPM2 support for LUKS encryption
     ./fonts.nix
-    ./gui.nix
+
+    # ./gamemode.nix
+    # ./gamescope.nix
+    ./xserver.nix
     ./kde.nix
+
     ./nixpkgs.nix
     ./nvidia.nix
     ./power-management.nix
