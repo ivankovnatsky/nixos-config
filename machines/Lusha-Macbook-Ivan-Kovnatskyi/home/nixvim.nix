@@ -9,7 +9,8 @@
       # https://github.com/pwntester/octo.nvim/commit/b4923dc97555c64236c4535b2adf75c74c00caca
       octo.enable = true;
       notify.enable = true;
-      image.enable = true;
+      # TODO: Enable again after tmux all sessions and tmux itself is restarted.
+      # image.enable = true;
       claude-code.enable = true;
       lint = {
         lintersByFt = {
