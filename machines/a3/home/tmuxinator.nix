@@ -15,7 +15,7 @@ in
           - monitoring:
               layout: even-horizontal
               panes:
-                - temperature
+                - temperatures
                 - top
       '';
     };
