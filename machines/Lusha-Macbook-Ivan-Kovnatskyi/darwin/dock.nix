@@ -17,6 +17,7 @@ in
       # TODO: can dock be stretched 100% horizontally?
       entries = [
         # Default macOS apps
+        { path = "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/"; }
         { path = "/System/Applications/Calendar.app/"; }
         { path = "/System/Applications/System Settings.app/"; }
 
@@ -26,6 +27,7 @@ in
         }
 
         # Additional macOS apps
+        { path = "/System/Applications/Utilities/Terminal.app/"; }
         { path = "/System/Applications/Passwords.app/"; }
         { path = "/System/Applications/Utilities/Activity Monitor.app/"; }
 
@@ -35,6 +37,7 @@ in
         }
 
         # Installed using Kandji
+        { path = "/Applications/Google Chrome.app/"; }
         { path = "/Applications/Slack.app/"; }
         { path = "/Applications/zoom.us.app/"; }
 
@@ -44,7 +47,7 @@ in
         }
 
         # Installed using homebrew
-        { path = "/Applications/Kitty.app/"; }
+        { path = "/Applications/kitty.app/"; }
         { path = "/Applications/Firefox Developer Edition.app/"; }
         { path = "/Applications/Chromium.app/"; }
 
