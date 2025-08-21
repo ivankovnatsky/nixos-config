@@ -49,6 +49,7 @@ in
         # Installed using homebrew
         { path = "/Applications/kitty.app/"; }
         { path = "/Applications/Firefox Developer Edition.app/"; }
+        { path = "/Applications/Firefox.app/"; }
         { path = "/Applications/Chromium.app/"; }
 
         {

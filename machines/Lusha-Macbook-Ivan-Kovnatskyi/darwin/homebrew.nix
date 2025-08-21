@@ -19,6 +19,7 @@
       "chromium"
       "cursor"
       "dbeaver-community"
+      "firefox"
       "firefox@developer-edition"
       "ghostty"
       "hammerspoon"
