@@ -8,6 +8,7 @@
       "ollama"
     ];
     casks = [
+      "orbstack"
       "stats"
     ];
   };
