@@ -4,12 +4,26 @@
 
 `mini-vm` is a NixOS virtual machine running on Orbstack on Mac mini. It provides services like Open WebUI for the homelab infrastructure.
 
+## Creation
+
+The mini-vm was created manually through the Orbstack UI.
+
+To create a NixOS VM via command line, you would use:
+
+```console
+orb create nixos:25.05 mini-vm
+```
+
+Note: After creation, the VM's configuration is managed entirely through NixOS flakes.
+
 ## Manual
 
 - General
   - Start at login
 - Storage
   - Set to /Volumes/Storage/Data/OrbStack
+- Kubernetes
+  - Enabled (manually configured through UI)
 
 ## Network Configuration
 

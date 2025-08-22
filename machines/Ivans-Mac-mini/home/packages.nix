@@ -15,6 +15,8 @@
     home-manager
     imagemagick
     jq
+    k9s
+    kubectl
     macmon
     magic-wormhole
     mkpasswd
