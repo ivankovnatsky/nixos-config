@@ -56,6 +56,7 @@ let
         inherit (config.flags) beeIp;
         inherit (config.flags) miniIp;
         inherit (config.flags) a3wIp;
+        inherit (config.flags) miniVmIp;
         logPathPrefix = "/tmp/log";
 
         # Netdata credentials
