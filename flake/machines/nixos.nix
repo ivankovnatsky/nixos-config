@@ -141,6 +141,31 @@
     };
   };
 
+  "mini-vm" = inputs.nixos-release.lib.nixosSystem {
+    system = "aarch64-linux";
+    modules = [
+      # Import machine-specific configuration
+      ../../machines/mini-vm
+
+      # Basic system configuration
+      {
+        nixpkgs.overlays = [ inputs.self.overlay ];
+        nixpkgs.config.allowUnfree = true;
+        nix.nixPath = [
+          "nixpkgs=${inputs.nixos-release}"
+          "nixos-release=${inputs.nixos-release}"
+        ];
+        _module.args = {
+          flake-inputs = inputs;
+        };
+      }
+    ];
+    specialArgs = {
+      system = "aarch64-linux";
+      username = "ivan";
+    };
+  };
+
   "utm-nixos" = inputs.nixos-release.lib.nixosSystem {
     system = "aarch64-linux";
     modules = [
