@@ -63,7 +63,7 @@
           homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
           nix-homebrew = {
             enable = true;
-            enableRosetta = false;
+            enableRosetta = true;
             user = "ivan";
             autoMigrate = true;
             taps = {
@@ -146,7 +146,7 @@
           homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
           nix-homebrew = {
             enable = true;
-            enableRosetta = false;
+            enableRosetta = true;
             user = "ivan";
             autoMigrate = true;
             taps = {
@@ -200,7 +200,7 @@
           homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
           nix-homebrew = {
             enable = true;
-            enableRosetta = false;
+            enableRosetta = true;
             user = "ivan";
             autoMigrate = true;
             taps = {
@@ -352,7 +352,7 @@
           homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
           nix-homebrew = {
             enable = true;
-            enableRosetta = false;
+            enableRosetta = true;
             user = "Ivan.Kovnatskyi";
             autoMigrate = true;
             taps = {
