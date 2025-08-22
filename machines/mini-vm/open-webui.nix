@@ -3,7 +3,7 @@
 {
   services.open-webui = {
     enable = true;
-    host = config.flags.beeIp;
+    host = config.flags.miniVmIp;
     port = 8090;
 
     openFirewall = true;
