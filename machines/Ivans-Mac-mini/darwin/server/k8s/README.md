@@ -106,5 +106,9 @@ kubectl get helmrelease -A
 ## References
 
 - [Flux Operator GitHub App Bootstrap](https://fluxcd.io/blog/2025/04/flux-operator-github-app-bootstrap/)
+- [Flux Multi-tenancy Configuration](https://fluxcd.io/flux/installation/configuration/multitenancy/)
+- [Flux Multi-tenancy Example](https://github.com/fluxcd/flux2-multi-tenancy)
 - [D2 Fleet FluxInstance Example](https://github.com/controlplaneio-fluxcd/d2-fleet/blob/main/clusters/staging/flux-system/flux-instance.yaml)
+- [Kyverno Helm Installation](https://kyverno.io/docs/installation/methods/#install-kyverno-using-helm)
+- [Kyverno Flux Multi-tenant Policy](https://kyverno.io/policies/flux/generate-flux-multi-tenant-resources/generate-flux-multi-tenant-resources/)
 - [OpenWebUI Helm Chart](https://github.com/open-webui/helm-charts)
