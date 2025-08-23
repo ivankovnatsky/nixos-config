@@ -6,7 +6,9 @@ on:
     branches:
       - 'main'
     paths:
-      - 'machines/Ivans-Mac-mini/darwin/server/k8s/clusters/**'
+      - 'machines/Ivans-Mac-mini/darwin/server/k8s/**'
+    tags:
+      - '*'
 
 jobs:
   flux-push:
