@@ -17,6 +17,7 @@
     jq
     k9s
     kubectl
+    kubernetes-helm
     macmon
     magic-wormhole
     mkpasswd
