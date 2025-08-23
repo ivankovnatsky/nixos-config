@@ -50,8 +50,9 @@
     # difftastic.enable = true;
     # diff-so-fancy.enable = true;
     aliases = {
+      a = "add";
       # Add all files in git root
-      a = "!git add \"$(git rev-parse --show-toplevel)\"";
+      add-all = "!git add \"$(git rev-parse --show-toplevel)\"";
       co = "checkout";
       c = "commit -v";
       ca = "commit -av";
