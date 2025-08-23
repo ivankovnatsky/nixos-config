@@ -3,6 +3,6 @@ kind: Kustomization
 namespace: kyverno
 resources:
   - namespace.yaml
+  - rbac.yaml
   - repository.yaml
   - release.yaml
-  - policy.yaml
