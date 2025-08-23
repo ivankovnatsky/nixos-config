@@ -4,7 +4,7 @@ metadata:
   name: generate-flux-multi-tenant-resources
 spec:
   rules:
-  - name: flux-rbac
+  - name: generate-flux-sa
     match:
       any:
       - resources:
@@ -12,19 +12,19 @@ spec:
           - Namespace
           selector:
             matchLabels:
-              toolkit.fluxcd.io/tenant: "*"
+              toolkit.fluxcd.io/tenant: "?*"
     generate:
       generateExisting: true
       apiVersion: v1
       kind: ServiceAccount
-      name: "{{ request.object.metadata.labels.\"toolkit.fluxcd.io/tenant\" }}"
-      namespace: "{{ request.object.metadata.name }}"
-      synchronize: true
+      name: "{{request.object.metadata.labels.\"toolkit.fluxcd.io/tenant\"}}"
+      namespace: "{{request.object.metadata.name}}"
+      synchronize: false
       data:
         metadata:
           labels:
-            toolkit.fluxcd.io/tenant: "{{ request.object.metadata.labels.\"toolkit.fluxcd.io/tenant\" }}"
-  - name: flux-rbac-binding
+            toolkit.fluxcd.io/tenant: "{{request.object.metadata.labels.\"toolkit.fluxcd.io/tenant\"}}"
+  - name: generate-flux-rolebinding
     match:
       any:
       - resources:
@@ -32,14 +32,14 @@ spec:
           - Namespace
           selector:
             matchLabels:
-              toolkit.fluxcd.io/tenant: "*"
+              toolkit.fluxcd.io/tenant: "?*"
     generate:
       generateExisting: true
       apiVersion: rbac.authorization.k8s.io/v1
       kind: RoleBinding
-      name: "{{ request.object.metadata.labels.\"toolkit.fluxcd.io/tenant\" }}"
-      namespace: "{{ request.object.metadata.name }}"
-      synchronize: true
+      name: "{{request.object.metadata.labels.\"toolkit.fluxcd.io/tenant\"}}"
+      namespace: "{{request.object.metadata.name}}"
+      synchronize: false
       data:
         roleRef:
           apiGroup: rbac.authorization.k8s.io
@@ -47,5 +47,5 @@ spec:
           name: admin
         subjects:
         - kind: ServiceAccount
-          name: "{{ request.object.metadata.labels.\"toolkit.fluxcd.io/tenant\" }}"
-          namespace: "{{ request.object.metadata.name }}"
+          name: "{{request.object.metadata.labels.\"toolkit.fluxcd.io/tenant\"}}"
+          namespace: "{{request.object.metadata.name}}"
