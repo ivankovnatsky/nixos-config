@@ -5,3 +5,9 @@ resources:
   - flux-operator.yaml
   - flux-instance.yaml
   - runtime-info.yaml
+  - kyverno-repository.yaml
+  - kyverno-release.yaml
+  - sealed-secrets-repository.yaml
+  - sealed-secrets-release.yaml
+  - openwebui-repository.yaml
+  - openwebui-release.yaml
