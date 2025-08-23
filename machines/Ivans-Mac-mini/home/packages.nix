@@ -17,6 +17,7 @@
     jq
     k9s
     kubectl
+    kubeseal
     kubernetes-helm
     macmon
     magic-wormhole
