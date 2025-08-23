@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netshot
+  namespace: netshoot
+  labels:
+    app: netshot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: netshot
+  template:
+    metadata:
+      labels:
+        app: netshot
+    spec:
+      containers:
+      - name: netshot
+        image: nicolaka/netshoot:latest
+        command:
+          - /bin/bash
+          - -c
+          - |
+            echo "Netshoot debugging pod is ready!"
+            echo "Use: kubectl exec -it deployment/netshot -n netshoot -- bash"
+            # Keep the container running
+            tail -f /dev/null
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi" 
+            cpu: "100m"
+      restartPolicy: Always
