@@ -20,3 +20,13 @@ spec:
     config:
       webhooks:
         replicas: 1
+    backgroundController:
+      rbac:
+        clusterRole:
+          extraResources:
+            - apiGroups: [""]
+              resources: ["serviceaccounts"]
+              verbs: ["create", "update", "delete"]
+            - apiGroups: ["rbac.authorization.k8s.io"]
+              resources: ["rolebindings"]
+              verbs: ["create", "update", "delete"]
