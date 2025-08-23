@@ -19,6 +19,9 @@ spec:
     # Disable Ollama since we'll use external endpoint
     ollama:
       enabled: false
+    
+    # Use environment variables for Ollama URLs to support secret expansion
+    ollamaUrlsFromExtraEnv: true
 
     # Disable pipelines for now
     pipelines:
@@ -38,13 +41,13 @@ spec:
       port: 8080
 
     # Environment variables matching bee configuration
-    env:
+    extraEnvVars:
       - name: EXTERNAL_DOMAIN
         valueFrom:
           secretKeyRef:
             name: openwebui-config
             key: external-domain
-      - name: OLLAMA_API_BASE_URL
+      - name: OLLAMA_BASE_URLS
         value: "https://ollama.$(EXTERNAL_DOMAIN)"
       - name: ENABLE_WEB_SEARCH
         value: "true"
