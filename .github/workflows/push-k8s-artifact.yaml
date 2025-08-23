@@ -44,7 +44,7 @@ jobs:
         id: push
         with:
           repository: ghcr.io/${{ github.repository }}
-          path: "./machines/Ivans-Mac-mini/darwin/server/k8s/clusters"
+          path: "./machines/Ivans-Mac-mini/darwin/server/k8s"
           diff-tag: ${{ steps.prep.outputs.tag }}
           tags: ${{ steps.prep.outputs.version }}
       - name: Sign artifact
