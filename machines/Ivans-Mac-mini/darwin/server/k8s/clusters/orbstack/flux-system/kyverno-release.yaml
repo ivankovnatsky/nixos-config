@@ -25,22 +25,8 @@ spec:
         clusterRole:
           extraResources:
             - apiGroups:
-                - ""
+                - "*"
               resources:
-                - serviceaccounts
+                - "*"
               verbs:
-                - create
-                - update
-                - delete
-                - get
-                - list
-            - apiGroups:
-                - rbac.authorization.k8s.io
-              resources:
-                - rolebindings
-              verbs:
-                - create
-                - update
-                - delete
-                - get
-                - list
+                - "*"
