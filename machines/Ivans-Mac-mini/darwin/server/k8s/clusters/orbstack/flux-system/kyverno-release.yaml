@@ -4,6 +4,7 @@ metadata:
   name: kyverno
   namespace: flux-system
 spec:
+  serviceAccountName: helm-controller
   targetNamespace: kyverno
   interval: 30m
   chart:
