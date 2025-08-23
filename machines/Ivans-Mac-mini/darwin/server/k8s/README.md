@@ -30,6 +30,14 @@ helm install flux-operator \
   --create-namespace
 ```
 
+2. Apply the FluxInstance to configure sync from OCI artifacts:
+
+```console
+kubectl apply -f clusters/orbstack/flux-system/flux-instance.yaml
+```
+
+The Flux Operator will then pull the OCI artifacts from ghcr.io and apply all manifests.
+
 ## Secret Management
 
 Secrets can be managed using one of these approaches:
