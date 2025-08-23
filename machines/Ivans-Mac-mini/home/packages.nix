@@ -9,6 +9,7 @@
     du-dust
     duf
     exiftool
+    fluxcd
     fzf
     gallery-dl
     genpass
