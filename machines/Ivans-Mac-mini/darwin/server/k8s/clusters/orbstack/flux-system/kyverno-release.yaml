@@ -4,9 +4,10 @@ metadata:
   name: kyverno
   namespace: flux-system
 spec:
-  serviceAccountName: helm-controller
-  targetNamespace: kyverno
+  serviceAccountName: kustomize-controller
   interval: 30m
+  install:
+    createNamespace: true
   chart:
     spec:
       chart: kyverno
@@ -16,8 +17,6 @@ spec:
         namespace: flux-system
       interval: 12h
   values:
-    # Basic Kyverno configuration
     config:
       webhooks:
-        # Reduce resource usage for homelab
         replicas: 1
