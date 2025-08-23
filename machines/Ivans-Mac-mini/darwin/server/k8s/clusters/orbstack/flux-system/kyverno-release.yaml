@@ -5,7 +5,9 @@ metadata:
   namespace: flux-system
 spec:
   serviceAccountName: kustomize-controller
+  targetNamespace: flux-system
   interval: 30m
+  releaseName: kyverno
   chart:
     spec:
       chart: kyverno
