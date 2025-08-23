@@ -4,6 +4,7 @@ metadata:
   name: openwebui
   namespace: flux-system
 spec:
+  serviceAccountName: helm-controller
   interval: 30m
   targetNamespace: openwebui
   chart:
