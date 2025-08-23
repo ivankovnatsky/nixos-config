@@ -10,3 +10,5 @@ overlays/ghostty/ghostty-macos-universal.zip
 **/.syncthing.*.tmp
 
 .aider*
+
+CLAUDE.md
