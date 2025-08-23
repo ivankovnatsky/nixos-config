@@ -12,5 +12,5 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: sealed-secrets
-        namespace: flux-system
+        namespace: sealed-secrets
       interval: 12h
