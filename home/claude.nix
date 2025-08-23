@@ -15,6 +15,7 @@ in
               "defaultMode": "acceptEdits",
               "autoApproveWebFetch": true
             },
+            "includeCoAuthoredBy": false,
             "env": {
               "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
             }
