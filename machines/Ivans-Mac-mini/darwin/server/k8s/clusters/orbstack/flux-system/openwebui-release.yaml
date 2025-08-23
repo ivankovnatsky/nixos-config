@@ -12,7 +12,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: open-webui
-        namespace: openwebui
+        namespace: flux-system
       interval: 12h
   values:
     # Disable Ollama since we'll use external endpoint
