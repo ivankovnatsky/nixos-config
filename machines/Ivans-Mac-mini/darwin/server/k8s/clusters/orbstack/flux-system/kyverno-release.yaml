@@ -6,8 +6,6 @@ metadata:
 spec:
   serviceAccountName: kustomize-controller
   interval: 30m
-  install:
-    createNamespace: true
   chart:
     spec:
       chart: kyverno
