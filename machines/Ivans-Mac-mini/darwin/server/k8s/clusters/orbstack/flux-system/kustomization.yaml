@@ -7,3 +7,4 @@ resources:
   - runtime-info.yaml
   - kyverno-repository.yaml
   - kyverno-release.yaml
+  - ../kube-system
