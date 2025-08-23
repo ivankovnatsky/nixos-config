@@ -16,6 +16,7 @@
     imagemagick
     jq
     k9s
+    kail
     kubectl
     kubeseal
     kubernetes-helm
