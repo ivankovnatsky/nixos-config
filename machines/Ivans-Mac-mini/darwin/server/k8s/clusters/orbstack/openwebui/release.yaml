@@ -1,0 +1,52 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: openwebui
+  namespace: openwebui
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: open-webui
+      sourceRef:
+        kind: HelmRepository
+        name: open-webui
+        namespace: openwebui
+      interval: 12h
+  values:
+    # Disable Ollama since we'll use external endpoint
+    ollama:
+      enabled: false
+    
+    # Disable pipelines for now
+    pipelines:
+      enabled: false
+    
+    # Storage configuration
+    persistence:
+      enabled: true
+      storageClass: ""  # Let Orbstack use default
+    
+    # No ingress - we'll use port-forward or external access
+    ingress:
+      enabled: false
+    
+    service:
+      type: ClusterIP
+      port: 8080
+    
+    # Environment variables matching bee configuration
+    env:
+      - name: EXTERNAL_DOMAIN
+        valueFrom:
+          secretKeyRef:
+            name: openwebui-config
+            key: external-domain
+      - name: OLLAMA_API_BASE_URL
+        value: "https://ollama.$(EXTERNAL_DOMAIN)"
+      - name: ENABLE_WEB_SEARCH
+        value: "true"
+      - name: WEB_SEARCH_ENGINE
+        value: "duckduckgo"
+      - name: DEFAULT_MODELS
+        value: "gemma3:12b,llama3.1:8b,mistral:7b"
