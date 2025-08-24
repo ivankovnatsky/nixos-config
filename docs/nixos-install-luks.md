@@ -107,7 +107,7 @@ Before running install make sure you added to configuration.nix:
   boot = {
     initrd = {
       luks.devices.crypted = {
-        device = "/dev/disk/by-uuid/b63f3e81-c6d5-4dc6-af60-f5eef6c79af9";
+        device = "/dev/disk/by-uuid/e2e28bab-53df-4636-ad2e-20235d4101b9";
         preLVM = true;
       };
     };

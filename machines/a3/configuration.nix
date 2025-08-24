@@ -10,18 +10,21 @@
       ./hardware-configuration.nix
     ];
 
+  # Use the systemd-boot EFI boot loader.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  # Use latest kernel.
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
   boot = {
     initrd = {
       luks.devices.crypted = {
-        device = "/dev/disk/by-uuid/b63f3e81-c6d5-4dc6-af60-f5eef6c79af9";
+        device = "/dev/disk/by-uuid/e2e28bab-53df-4636-ad2e-20235d4101b9";
         preLVM = true;
       };
     };
   };
-
-  # Use the systemd-boot EFI boot loader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "a3"; # Define your hostname.
   # Pick only one of the below networking options.
@@ -36,12 +39,18 @@
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Select internationalisation properties.
-  # i18n.defaultLocale = "en_US.UTF-8";
+  i18n.defaultLocale = "en_US.UTF-8";
   # console = {
   #   font = "Lat2-Terminus16";
   #   keyMap = "us";
   #   useXkbConfig = true; # use xkb.options in tty.
   # };
+
+  # Enable the X11 windowing system.
+  services.xserver.enable = true;
+
+
+  
 
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
@@ -61,6 +70,16 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.libinput.enable = true;
 
+  # Define a user account. Don't forget to set a password with ‘passwd’.
+  users.users.ivan = {
+     isNormalUser = true;
+     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+     packages = with pkgs; [
+       tree
+       syncthing
+     ];
+   };
+
   # programs.firefox.enable = true;
 
   # List packages installed in system profile.
@@ -70,16 +89,35 @@
   #   wget
   # ];
 
+  # Some programs need SUID wrappers, can be configured further or are
+  # started in user sessions.
+  # programs.mtr.enable = true;
+  # programs.gnupg.agent = {
+  #   enable = true;
+  #   enableSSHSupport = true;
+  # };
+
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+  services.openssh.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
+
+  networking.firewall = {
+    allowedTCPPorts = [
+      8384
+      22000
+    ]; # 8384 for Web UI, 22000 for data transfer
+    allowedUDPPorts = [
+      22000
+      21027
+    ]; # 22000 for data transfer, 21027 for discovery
+  };
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
@@ -104,4 +142,6 @@
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
   system.stateVersion = "25.05"; # Did you read the comment?
+
 }
+
