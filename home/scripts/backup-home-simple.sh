@@ -75,11 +75,15 @@ export BACKUP_PATH=/Volumes/Storage/Data/Drive/Crypt/Machines/
 export HOSTNAME=$(hostname)
 export DATE_DIR=$(date +%Y-%m-%d)
 
+# Extract the parent directory name from $HOME (e.g., "Users" on macOS, "home" on Linux)
+# This handles both /Users/ivan and /home/ivan cases
+export HOME_PARENT_DIR=$(basename $(dirname "$HOME"))
+
 if [[ ${TARGET_MACHINE,,} == ${HOSTNAME,,}.local ]]; then
-  mkdir -p "$BACKUP_PATH/$HOSTNAME/Users/$DATE_DIR"
-  mv "$ARCHIVE_PATH" "$BACKUP_PATH/$HOSTNAME/Users/$DATE_DIR/$USER.tar.gz"
+  mkdir -p "$BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR"
+  mv "$ARCHIVE_PATH" "$BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR/$USER.tar.gz"
 else
-  ssh ivan@$TARGET_MACHINE "mkdir -p $BACKUP_PATH/$HOSTNAME/Users/$DATE_DIR"
-  scp "$ARCHIVE_PATH" ivan@"$TARGET_MACHINE:$BACKUP_PATH/$HOSTNAME/Users/$DATE_DIR/$USER.tar.gz"
+  ssh ivan@$TARGET_MACHINE "mkdir -p $BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR"
+  scp "$ARCHIVE_PATH" ivan@"$TARGET_MACHINE:$BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR/$USER.tar.gz"
   rm "$ARCHIVE_PATH"
 fi
