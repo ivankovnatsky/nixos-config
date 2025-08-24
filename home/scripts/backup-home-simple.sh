@@ -61,6 +61,7 @@ tar \
     --exclude='**/Library/Group Containers/group.com.apple.CoreSpeech/**' \
     --exclude='**/Library/Group Containers/group.com.apple.secure-control-center-preferences/**' \
     --exclude='**/OrbStack/**' \
+    --exclude='**/.local/share/Steam/steamapps/**' \
     \
     --no-xattrs \
     \
@@ -69,7 +70,7 @@ tar \
     \
     pigz > "$ARCHIVE_PATH"
 
-export TARGET_MACHINE=ivans-mac-mini.local
+export TARGET_MACHINE=192.168.50.4
 export BACKUP_PATH=/Volumes/Storage/Data/Drive/Crypt/Machines/
 export HOSTNAME=$(hostname)
 export DATE_DIR=$(date +%Y-%m-%d)
