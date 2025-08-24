@@ -31,6 +31,7 @@ pvcreate /dev/mapper/crypted
 vgcreate vg /dev/mapper/crypted
 
 # Identify RAM size and run this command manually.
+# If RAM is huge, we don't need huge swapm 96GB -- 8GB
 # lvcreate -L 32G -n swap vg
 lvcreate -l '100%FREE' -n root vg
 ```
