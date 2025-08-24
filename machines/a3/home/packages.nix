@@ -5,6 +5,7 @@
     dust  # A more intuitive version of du
     lsof  # List open files
     wl-clipboard  # Wayland clipboard utilities
+    pigz  # Parallel gzip compression
 
     # Hardware monitoring tools
     lm_sensors  # Provides the 'sensors' command for monitoring temperatures
