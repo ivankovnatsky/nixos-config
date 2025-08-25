@@ -16,7 +16,7 @@
     ../../../home/home-session-vars.nix
     ../../../home/jujutsu.nix
     ../../../home/k9s.nix
-    ../../../home/launchd-services/dark-mode-kitty
+    ../../../home/kitty
     ../../../home/lsd.nix
     ../../../home/mpv.nix
     ../../../home/nixvim
