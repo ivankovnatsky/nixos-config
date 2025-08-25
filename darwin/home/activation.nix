@@ -6,15 +6,18 @@
         prefix=~/.npm
       EOF
 
-      # Install global npm packages using nodejs from nix
-      if [[ -x "${pkgs.nodejs}/bin/npm" ]]; then
-        echo "Installing global npm packages..."
-        $DRY_RUN_CMD ${pkgs.nodejs}/bin/npm install --global \
+      # Check if packages are already installed
+      if [[ ! -x "$HOME/.npm/bin/claude" || \
+            ! -x "$HOME/.npm/bin/codex" || \
+            ! -x "$HOME/.npm/bin/gemini" ]]; then
+        echo "Installing missing npm packages..."
+        export PATH="${pkgs.nodejs}/bin:${pkgs.gnutar}/bin:${pkgs.gzip}/bin:${pkgs.curl}/bin:$PATH"
+        ${pkgs.nodejs}/bin/npm install --global --force \
           @anthropic-ai/claude-code \
           @openai/codex \
           @google/gemini-cli
       else
-        echo "Warning: nodejs package not available, skipping global package installation"
+        echo "All npm packages already installed, skipping..."
       fi
     '';
   };
