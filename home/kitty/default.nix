@@ -1,8 +1,5 @@
 { config, pkgs, ... }:
 
-# This is so ugly because we can't write to kitty config with nix managed file.
-# Instead we define here home.file, but it's being used in
-# ../../home/launchd-services/dark-mode-kitty/
 let
   inherit (pkgs.stdenv.targetPlatform) isDarwin;
   fontSizeT = if config.device.graphicsEnv == "xorg" then 7.5 else 9.5;
@@ -86,11 +83,46 @@ let
         ""
     }
   '';
+
+  # Create auto theme files to enable Kitty's automatic theme switching
+  # Users can run `kitten themes` to select and save their preferred themes
+  # These files will be automatically used based on OS appearance
+  darkThemeConfig = ''
+    # vim:ft=kitty
+    # Run `kitten themes` and select "Save as automatic dark theme" to customize
+    # Using default dark theme
+  '';
+
+  lightThemeConfig = ''
+    # vim:ft=kitty  
+    # Run `kitten themes` and select "Save as automatic light theme" to customize
+    # Using default light theme with basic light colors
+    background #ffffff
+    foreground #000000
+  '';
+
+  # For GNOME, no-preference is treated as light mode
+  noPreferenceThemeConfig = ''
+    # vim:ft=kitty
+    # Run `kitten themes` and select "Save as automatic no-preference theme" to customize
+    # For GNOME desktop, this is used for light mode
+    background #ffffff
+    foreground #000000
+  '';
 in
 {
   home.file = {
     ".config/kitty/kitty.conf" = {
       text = kittyConfig;
+    };
+    ".config/kitty/dark-theme.auto.conf" = {
+      text = darkThemeConfig;
+    };
+    ".config/kitty/light-theme.auto.conf" = {
+      text = lightThemeConfig;
+    };
+    ".config/kitty/no-preference-theme.auto.conf" = {
+      text = noPreferenceThemeConfig;
     };
   };
 }
