@@ -8,7 +8,7 @@
     homeWorkPath = config.home.homeDirectory;
     hotkeys = {
       terminal = "kitty";
-      browser = "Safari";
+      browser = "Firefox Developer Edition";
       shortcuts = [
         {
           key = "1";
@@ -24,18 +24,10 @@
         }
         {
           key = "4";
-          app = "Firefox Developer Edition";
-        }
-        {
-          key = "5";
-          app = "Google Chrome";
-        }
-        {
-          key = "6";
           app = "Slack";
         }
         {
-          key = "7";
+          key = "5";
           app = "zoom.us";
         }
         {
