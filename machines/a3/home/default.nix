@@ -20,6 +20,7 @@
     ../../../home/tweety.nix
     ../../../modules/flags
     ../../../modules/secrets
+    ./activation.nix
     ./firefox.nix
     ./flags.nix
     ./gnome.nix

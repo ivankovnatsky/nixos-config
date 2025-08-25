@@ -2,7 +2,7 @@
   imports = [
     ../../../home/aichat-server.nix
     ../../../home/aichat.nix
-    ../../../home/aider.nix
+    # ../../../home/aider.nix
     ../../../home/amethyst
     ../../../home/bat.nix
     ../../../home/claude.nix
@@ -43,9 +43,9 @@
     ../../../home/zellij.nix
     ../../../modules/flags
     ../../../modules/secrets
+    ./activation.nix
     ./firefox.nix
     ./flags.nix
-    ./manual.nix
     ./nixvim.nix
     ./packages.nix
     ./programs.nix

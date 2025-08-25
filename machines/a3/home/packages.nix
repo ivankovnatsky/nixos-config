@@ -9,7 +9,6 @@
 
     # Hardware monitoring tools
     lm_sensors  # Provides the 'sensors' command for monitoring temperatures
-    nixpkgs-master.claude-code
 
     sesh
     gum

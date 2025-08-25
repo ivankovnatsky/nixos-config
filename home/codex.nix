@@ -1,10 +1,6 @@
 { config, pkgs, ... }:
 
 {
-  home.packages = with pkgs; [
-    codex
-  ];
-
   # Create Codex configuration directory and files
   # https://github.com/openai/codex/blob/main/codex-rs/config.md
   home.file.".codex/config.toml".text = ''

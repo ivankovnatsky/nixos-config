@@ -1,6 +1,6 @@
 {
   imports = [
-    ../../../darwin/home/manual.nix
+    ../../../darwin/home/activation.nix
     ../../../darwin/home/nixvim.nix
     ../../../home/aichat.nix
     ../../../home/amethyst

@@ -1,7 +1,6 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
-    # nixpkgs-master.claude-code # Some build error
     (python313.withPackages (ps: with ps; [ grip ]))
     (wrapHelm kubernetes-helm { plugins = with pkgs.kubernetes-helmPlugins; [ helm-secrets ]; })
     argocd
