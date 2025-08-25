@@ -149,7 +149,6 @@
             fetchingTimeout = 200;
             maxViewEntries = 30;
           };
-          mapping.__raw = "cmp.mapping.preset.insert()";
           snippet = {
             expand = ''
               function(args)
