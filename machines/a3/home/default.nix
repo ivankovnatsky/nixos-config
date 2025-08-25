@@ -25,7 +25,7 @@
     ./flags.nix
     ./gnome.nix
     ./gpg.nix
-    ./kde.nix
+    ./kwinoutput
     ./packages.nix
     ./plasma.nix
     ./syncthing.nix
