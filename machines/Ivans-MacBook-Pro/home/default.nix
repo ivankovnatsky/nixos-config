@@ -2,7 +2,7 @@
   imports = [
     ../../../darwin/home/flags.nix
     ../../../home/home-session-vars.nix
-    ../../../darwin/home/manual.nix
+    ../../../darwin/home/activation.nix
     ../../../darwin/home/nixvim.nix
     ../../../darwin/home/packages.nix
     ../../../home/amethyst

@@ -10,8 +10,9 @@
       if [[ -x "${pkgs.nodejs}/bin/npm" ]]; then
         echo "Installing global npm packages..."
         $DRY_RUN_CMD ${pkgs.nodejs}/bin/npm install --global \
-          npm-groovy-lint \
-          @anthropic-ai/claude-code
+          @anthropic-ai/claude-code \
+          @openai/codex \
+          @google/gemini-cli
       else
         echo "Warning: nodejs package not available, skipping global package installation"
       fi

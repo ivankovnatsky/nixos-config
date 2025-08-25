@@ -4,7 +4,6 @@
     bat
     btop
     cargo
-    codex
     delta
     du-dust
     duf
@@ -25,8 +24,6 @@
     magic-wormhole
     mkpasswd
     nixfmt-rfc-style
-    nixpkgs-master.claude-code
-    nixpkgs-master.gemini-cli
     nodejs
     pandoc
     parallel

@@ -30,7 +30,5 @@
     jq
 
     ethtool
-
-    nixpkgs-master.claude-code
   ];
 }

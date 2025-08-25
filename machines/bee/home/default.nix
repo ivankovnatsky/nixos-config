@@ -15,6 +15,7 @@
     ../../../home/tmuxinator.nix
     ../../../modules/flags
     ../../../modules/secrets
+    ./activation.nix
     ./flags.nix
     ./vim.nix
     ./env.nix
