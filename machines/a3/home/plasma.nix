@@ -1,3 +1,5 @@
+{ lib, pkgs, ... }:
+
 {
   # Configure mouse with slow speed using plasma-manager
   programs = {
@@ -38,6 +40,7 @@
                   "applications:org.kde.dolphin.desktop"
                   "applications:org.kde.konsole.desktop"
                   "applications:firefox-devedition.desktop"
+                  "applications:chromium-browser.desktop"
                   "applications:steam.desktop"
                   "applications:systemsettings.desktop"
                 ];
@@ -78,4 +81,19 @@
       enable = true;
     };
   };
+  
+  # Run plasma-manager scripts after configuration
+  # FIXME: This doesn't actually force the scripts to run due to plasma-manager's
+  # checksum tracking. Need to manually run ~/.local/share/plasma-manager/run_all.sh
+  # after rebuild for taskbar changes to apply
+  home.activation.apply-plasma-config = lib.hm.dag.entryAfter [ "configure-plasma" ] ''
+    if [[ -v DRY_RUN ]]; then
+      echo "Would apply plasma configuration"
+    else
+      # Run the plasma-manager scripts
+      if [[ -x ~/.local/share/plasma-manager/run_all.sh ]]; then
+        ~/.local/share/plasma-manager/run_all.sh
+      fi
+    fi
+  '';
 }
