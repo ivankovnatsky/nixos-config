@@ -9,6 +9,8 @@
 
     # Hardware monitoring tools
     lm_sensors  # Provides the 'sensors' command for monitoring temperatures
+    nvtopPackages.nvidia  # GPU monitoring (like htop for GPUs)
+    btop  # Modern system monitor with beautiful UI
 
 
     # KDE Wallet integration
