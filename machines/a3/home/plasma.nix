@@ -38,7 +38,7 @@
               iconTasks = {
                 launchers = [
                   "applications:org.kde.dolphin.desktop"
-                  "applications:org.kde.konsole.desktop"
+                  "applications:kitty.desktop"
                   "applications:firefox-devedition.desktop"
                   "applications:chromium-browser.desktop"
                   "applications:steam.desktop"
