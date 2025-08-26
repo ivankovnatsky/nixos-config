@@ -11,4 +11,7 @@
     displayManager.sddm.enable = true;
     displayManager.sddm.wayland.enable = true;
   };
+
+  # Enable KDE Partition Manager with proper D-Bus access
+  programs.partition-manager.enable = true;
 }

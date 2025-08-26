@@ -10,8 +10,6 @@
     # Hardware monitoring tools
     lm_sensors  # Provides the 'sensors' command for monitoring temperatures
 
-    # Disk management tools
-    kdePackages.partitionmanager  # KDE partition manager (KDE alternative to gparted)
 
     # KDE Wallet integration
     kwalletcli  # Provides pinentry-kwallet for GPG integration
