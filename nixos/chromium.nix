@@ -1,4 +1,9 @@
 {
+  # This module configures system-wide Chromium enterprise policies
+  # The actual browser is installed via home-manager's programs.chromium
+  # Only import this module if you need enterprise policy configuration
+  # See: https://wiki.nixos.org/wiki/Chromium
+
   programs = {
     chromium = {
       enable = true;

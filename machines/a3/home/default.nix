@@ -21,6 +21,7 @@
     ../../../modules/flags
     ../../../modules/secrets
     ./activation.nix
+    ../../../home/chromium.nix
     ./firefox.nix
     ./flags.nix
     ./gnome.nix

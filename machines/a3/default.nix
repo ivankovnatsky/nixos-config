@@ -3,6 +3,7 @@
     # ./gnome.nix
     ../../modules/nixos/tmux-rebuild
     ../../system/nix.nix
+    ../../nixos/chromium.nix
     ./bluetooth.nix
     ./boot.nix
     ./configuration.nix
