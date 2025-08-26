@@ -13,6 +13,9 @@
     # Disk management tools
     kdePackages.partitionmanager  # KDE partition manager (KDE alternative to gparted)
 
+    # KDE Wallet integration
+    kwalletcli  # Provides pinentry-kwallet for GPG integration
+
     sesh
     gum
 
