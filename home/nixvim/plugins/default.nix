@@ -220,6 +220,7 @@
         #   };
         # };
       };
+      diffview.enable = true;
       web-devicons.enable = true;
     };
     extraConfigLua = builtins.readFile ./telescope.lua;
