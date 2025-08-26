@@ -1,5 +1,8 @@
 {
   imports = [
+    ../../modules/secrets
+    ../../modules/flags
+
     # ./gnome.nix
     ../../modules/nixos/tmux-rebuild
     ../../system/nix.nix
@@ -15,10 +18,12 @@
     ./xserver.nix
     ./kde.nix
 
+    ./networking.nix
     ./nixpkgs.nix
     ./nvidia.nix
     ./power-management.nix
     ./security.nix
+    ./smb.nix
     ./steam.nix
     ./sudo.nix
     ./tmux-rebuild.nix
