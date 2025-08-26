@@ -7,11 +7,13 @@
       EOF
 
       # Check if packages are already installed
-      if [[ ! -x "$HOME/.npm/bin/claude" ]]; then
+      if [[ ! -x "$HOME/.npm/bin/claude" || \
+            ! -x "$HOME/.npm/bin/happy" ]]; then
         echo "Installing missing npm packages..."
         export PATH="${pkgs.nodejs}/bin:${pkgs.gnutar}/bin:${pkgs.gzip}/bin:${pkgs.curl}/bin:$PATH"
         ${pkgs.nodejs}/bin/npm install --global --force \
-          @anthropic-ai/claude-code
+          @anthropic-ai/claude-code \
+          happy-coder
       else
         echo "All npm packages already installed, skipping..."
       fi

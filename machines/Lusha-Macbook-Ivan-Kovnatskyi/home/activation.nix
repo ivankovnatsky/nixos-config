@@ -10,14 +10,16 @@
       if [[ ! -x "$HOME/.npm/bin/npm-groovy-lint" || \
             ! -x "$HOME/.npm/bin/claude" || \
             ! -x "$HOME/.npm/bin/codex" || \
-            ! -x "$HOME/.npm/bin/gemini" ]]; then
+            ! -x "$HOME/.npm/bin/gemini" || \
+            ! -x "$HOME/.npm/bin/happy" ]]; then
         echo "Installing missing npm packages..."
         export PATH="${pkgs.nodejs}/bin:${pkgs.gnutar}/bin:${pkgs.gzip}/bin:${pkgs.curl}/bin:$PATH"
         ${pkgs.nodejs}/bin/npm install --global --force \
           npm-groovy-lint \
           @anthropic-ai/claude-code \
           @openai/codex \
-          @google/gemini-cli
+          @google/gemini-cli \
+          happy-coder
       else
         echo "All npm packages already installed, skipping..."
       fi
