@@ -36,9 +36,14 @@
     ignores = [
       "**/.venv"
       "**/venv"
+
       "**/.stignore"
       "**/.stfolder"
+
       "**/__worktrees/"
+
+      "**/CLAUDE.md"
+      ".claude/settings.local.json"
     ];
     # delta = {
     #   enable = true;
