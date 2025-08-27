@@ -30,7 +30,13 @@
       -- VGit setup with lazy loading simulation
       vim.api.nvim_create_autocmd('VimEnter', {
         callback = function()
-          require('vgit').setup()
+          require('vgit').setup({
+            settings = {
+              scene = {
+                diff_preference = 'unified', -- unified or split
+              },
+            }
+          })
         end
       })
     '';
