@@ -19,6 +19,7 @@ in
     ./plugins/lsp
     ./plugins/lspsaga
     ./plugins/none-ls
+    ./plugins/vgit
   ];
   # https://github.com/elythh/nixvim
   programs.nixvim = {
