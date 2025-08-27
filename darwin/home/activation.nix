@@ -2,10 +2,6 @@
 {
   home.activation = {
     homeActivation = lib.hm.dag.entryAfter ["writeBoundary"] ''
-      cat <<EOF > $HOME/.npmrc
-        prefix=~/.npm
-      EOF
-
       # Check if packages are already installed
       if [[ ! -x "$HOME/.npm/bin/claude" || \
             ! -x "$HOME/.npm/bin/codex" || \
