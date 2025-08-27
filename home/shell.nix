@@ -23,7 +23,8 @@ let
     # Let's not use GNU Coreutils mkdir for now.
     mkdir = "mkdir -p";
     grep = "${pkgs.ripgrep}/bin/rg";
-    tree = "${pkgs.lsd}/bin/lsd --tree";
+    tree = "${pkgs.lsd}/bin/lsd --tree --color=always";
+    less = "less -RS";
     syncthing = "${pkgs.syncthing}/bin/syncthing serve --no-browser";
     stc = "${pkgs.stc-cli}/bin/stc -homedir ${syncthingHomeDir}";
 
