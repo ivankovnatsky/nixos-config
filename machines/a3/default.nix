@@ -10,6 +10,7 @@
     ./bluetooth.nix
     ./boot.nix
     ./configuration.nix
+    ./default-apps.nix
     ./cryptenroll.nix # TPM2 support for LUKS encryption
     ./fonts.nix
 
