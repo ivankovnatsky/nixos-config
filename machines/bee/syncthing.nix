@@ -69,9 +69,9 @@
         "Ally" = {
           id = config.secrets.syncthing.devices.Ally;
         };
-        "a3w" = {
-          id = config.secrets.syncthing.devices.a3w;
-        };
+        # "a3w" = {
+        #   id = config.secrets.syncthing.devices.a3w;
+        # };
       };
 
       # Define your folders here
@@ -97,7 +97,7 @@
           label = "Sources";
           path = "/storage/Data/Sources";
           devices = [
-            "a3w"
+            # "a3w"
             "Ivans-Mac-mini"
             "Ivans-MacBook-Air"
             "Ivans-MacBook-Pro"
