@@ -13,6 +13,7 @@
       "cursor"
       "firefox@developer-edition"
       "ghostty"
+      "kitty"
       "hammerspoon"
       "keycastr"
       "mos"

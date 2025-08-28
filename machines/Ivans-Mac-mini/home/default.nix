@@ -10,6 +10,7 @@
     ../../../home/direnv.nix
     ../../../home/ghostty.nix
     ../../../home/git.nix
+    ../../../home/kitty
     ../../../home/hammerspoon
     ../../../home/home-session-vars.nix
     ../../../home/lsd.nix
