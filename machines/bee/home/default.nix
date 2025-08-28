@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ../../../home/bash.nix
+    # ../../../home/bash.nix
     ../../../home/git.nix
     ../../../home/gpg.nix
     ../../../home/home-session-vars.nix
