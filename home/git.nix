@@ -43,6 +43,7 @@
       "**/__worktrees/"
 
       "**/CLAUDE.md"
+      "**/CLAUDE.local.md"
       ".claude/settings.local.json"
     ];
     # delta = {
