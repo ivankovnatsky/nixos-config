@@ -36,6 +36,6 @@
     ./ollama.nix
     ./packages.nix
     ./tmux.nix
-    ../../../home/bash.nix
+    # ../../../home/bash.nix
   ];
 }
