@@ -54,21 +54,15 @@ in
       }
 
       # Brew casks placeholder
+      { path = "/Applications/kitty.app/"; }
+      { path = "/Applications/Ghostty.app/"; }
       { path = "/Applications/Firefox Developer Edition.app/"; }
       { path = "/Applications/Chromium.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }
       { path = "/Applications/OrbStack.app/"; }
-
-      {
-        type = "spacer";
-        section = "apps";
-      }
-
-      # Installed using nixpkgs
-      { path = "/Applications/Ghostty.app/"; }
-      { path = "${pkgs.keycastr}/Applications/KeyCastr.app/"; }
+      { path = "/Applications/KeyCastr.app/"; }
 
       {
         path = "${homePath}/Downloads/";
