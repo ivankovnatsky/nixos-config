@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ../../../home/bash.nix
     ../../../home/claude.nix
     ../../../home/gamescope-session.nix
     ../../../home/ghostty.nix

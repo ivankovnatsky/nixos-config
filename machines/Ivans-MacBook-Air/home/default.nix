@@ -5,6 +5,7 @@
     ../../../darwin/home/nixvim.nix
     ../../../darwin/home/packages.nix
     ../../../home/amethyst
+    ../../../home/bash.nix
     ../../../home/bat.nix
     ../../../home/direnv.nix
     ../../../home/ghostty.nix
