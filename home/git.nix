@@ -44,7 +44,8 @@
 
       "**/CLAUDE.md"
       "**/CLAUDE.local.md"
-      ".claude/settings.local.json"
+      "**/.claude"
+      "**/.serena"
     ];
     # delta = {
     #   enable = true;
