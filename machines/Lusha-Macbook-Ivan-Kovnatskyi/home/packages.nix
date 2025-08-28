@@ -92,5 +92,8 @@
     wget
     yq
     zoxide
+
+    # Agent coding tools
+    uv
   ];
 }
