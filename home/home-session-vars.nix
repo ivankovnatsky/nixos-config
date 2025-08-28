@@ -7,5 +7,6 @@
     ABS_API_KEY = "${config.secrets.audioBookShelfApiKey}";
     GOOGLE_CLOUD_PROJECT = "${config.secrets.googleCloudProject}";
     ANTHROPIC_API_KEY = "${config.secrets.anthropicApiKey}";
+    BW_SESSION = "${config.secrets.bitwardenSession}";
   };
 }
