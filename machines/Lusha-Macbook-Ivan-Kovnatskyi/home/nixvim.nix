@@ -58,14 +58,16 @@
                 }
               '';
             };
-            prettierd = {
-              enable = true;
-              settings = ''
-                {
-                  extra_args = {};
-                }
-              '';
-            };
+            # TODO: Tweak to disallow auto-formats for some specific files or
+            # use separate tools for auto-fmt.
+            # prettierd = {
+            #   enable = true;
+            #   settings = ''
+            #     {
+            #       extra_args = {};
+            #     }
+            #   '';
+            # };
           };
         };
       };
