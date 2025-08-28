@@ -1,6 +1,5 @@
 {
   imports = [
-    ../../../darwin/home/activation.nix
     ../../../darwin/home/nixvim.nix
     ../../../home/aichat.nix
     ../../../home/amethyst
@@ -37,6 +36,7 @@
     ./ollama.nix
     ./packages.nix
     ./tmux.nix
+    ./activation.nix
     # ../../../home/bash.nix
   ];
 }
