@@ -29,7 +29,6 @@
       "orbstack"
       "stats"
       "twingate"
-      "utm"
       "visual-studio-code"
       "windsurf"
     ];
