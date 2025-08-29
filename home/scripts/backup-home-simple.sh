@@ -8,8 +8,32 @@
 
 set -euo pipefail
 
-# Check if /Volumes/Storage/Data is available and use it for temporary storage if it is
-if [[ -d "/Volumes/Storage/Data" ]] && [[ -w "/Volumes/Storage/Data" ]]; then
+# Parse command line arguments
+SKIP_BACKUP=false
+CUSTOM_ARCHIVE_PATH=""
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --skip-backup)
+      SKIP_BACKUP=true
+      shift
+      ;;
+    --backup-path)
+      CUSTOM_ARCHIVE_PATH="$2"
+      shift 2
+      ;;
+    *)
+      echo "Unknown option: $1"
+      echo "Usage: $0 [--skip-backup] [--backup-path <path>]"
+      exit 1
+      ;;
+  esac
+done
+
+# Set archive path
+if [[ -n "$CUSTOM_ARCHIVE_PATH" ]]; then
+  ARCHIVE_PATH="$CUSTOM_ARCHIVE_PATH"
+elif [[ -d "/Volumes/Storage/Data" ]] && [[ -w "/Volumes/Storage/Data" ]]; then
   TEMP_DIR="/Volumes/Storage/Data/tmp"
   mkdir -p "$TEMP_DIR"
   ARCHIVE_PATH="$TEMP_DIR/$USER.tar.gz"
@@ -18,7 +42,15 @@ else
   ARCHIVE_PATH="/tmp/$USER.tar.gz"
 fi
 
-cd "$HOME/../" || exit 1
+# Skip backup creation if requested
+if [[ "$SKIP_BACKUP" == "true" ]]; then
+  if [[ ! -f "$ARCHIVE_PATH" ]]; then
+    echo "Error: --skip-backup specified but no backup file exists at $ARCHIVE_PATH"
+    exit 1
+  fi
+  echo "Skipping backup creation, using existing file: $ARCHIVE_PATH"
+else
+  cd "$HOME/../" || exit 1
 
 tar \
     --exclude='**/.cache/huggingface/**' \
@@ -69,6 +101,7 @@ tar \
     "$USER" | \
     \
     pigz > "$ARCHIVE_PATH"
+fi
 
 export TARGET_MACHINE=192.168.50.4
 export BACKUP_PATH=/Volumes/Storage/Data/Drive/Crypt/Machines/
