@@ -10,11 +10,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1756458229,
-        "narHash": "sha256-qGLtnRTBv4SMcPC73Ic09QGtk3xDgTwvDAxqaTX1HgU=",
+        "lastModified": 1756458650,
+        "narHash": "sha256-7H6mrHLwlTY0vo+/qUCMh99BAW8IZO0BQkTSE2pwoas=",
         "owner": "ivankovnatsky",
         "repo": "backup-home-go",
-        "rev": "e3d66ae92cfb269bb0f525862fa68df1a055e090",
+        "rev": "81448919e6f900365c7f12d3d00db36cd7f49264",
         "type": "github"
       },
       "original": {
