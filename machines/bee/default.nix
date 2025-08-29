@@ -79,6 +79,9 @@
 
     ./open-webui.nix
 
+    ./nix-serve.nix
+    ../../nixos/nix-cache.nix
+
     ./power.nix
 
     ../../nixos/rebuild-diff.nix

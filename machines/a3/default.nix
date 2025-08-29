@@ -7,6 +7,7 @@
     ../../modules/nixos/tmux-rebuild
     ../../system/nix.nix
     ../../nixos/chromium.nix
+    ../../nixos/nix-cache.nix
     ./bluetooth.nix
     ./boot.nix
     ./configuration.nix
