@@ -276,20 +276,6 @@
 		}
 	}
 
-	# Nix binary cache server
-	@cache host cache.@externalDomain@
-	reverse_proxy @cache @beeIp@:5000 {
-		# Headers for proper operation
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-		# Increase timeouts for large binary downloads
-		transport http {
-			keepalive 60s
-			response_header_timeout 60s
-			read_timeout 300s
-		}
-	}
-
 	@stash host stash.@externalDomain@
 	reverse_proxy @stash @beeIp@:9999 {
 		# Enable WebSocket support
