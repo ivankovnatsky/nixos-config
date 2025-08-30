@@ -15,7 +15,7 @@
       ENABLE_WEB_SEARCH = "true";
       WEB_SEARCH_ENGINE = "duckduckgo";
 
-      DEFAULT_MODELS = "gemma3:12b, llama3.1:8b, mistral:7b";
+      DEFAULT_MODELS = "llama3.1:8b, mistral:7b";
     };
   };
 }
