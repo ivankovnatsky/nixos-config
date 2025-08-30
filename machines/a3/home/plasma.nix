@@ -99,4 +99,16 @@
       fi
     fi
   '';
+
+  # Manage Bluetooth configuration file
+  # home.file.".config/bluedevilglobalrc".text = ''
+  #   [Adapters]
+  #   C0:BF:BE:B6:AE:4B_powered=true
+
+  #   [Devices]
+  #   connectedDevices=
+
+  #   [Global]
+  #   bluetoothBlocked=false
+  # '';
 }
