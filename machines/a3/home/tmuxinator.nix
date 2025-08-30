@@ -16,9 +16,8 @@ in
               layout: main-vertical
               panes:
                 - temperatures
-                - 
-                  - top
-                  - watch nvidia-smi
+                - top
+                - watch nvidia-smi
       '';
     };
   };
