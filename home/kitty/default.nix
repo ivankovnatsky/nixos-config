@@ -11,6 +11,7 @@ let
   # Base kitty config
 
   # FIXME: Remove ctrl+shift+6 and other related keybinds, vim prev buffer.
+  # https://sw.kovidgoyal.net/kitty/conf/
   kittyConfig = ''
     ${
       if config.flags.darkMode then
