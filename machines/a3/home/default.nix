@@ -26,13 +26,15 @@
     ../../../home/chromium.nix
     ./firefox.nix
     ./flags.nix
-    ./gnome.nix
     ./gpg.nix
     ./packages.nix
     ./syncthing.nix
     ./tmuxinator.nix
 
     # Desktop environment home configs (disable for dwm)
+    # ./gnome.nix       # GNOME config
+    
+    # KDE/Plasma configs
     # ./kwinoutput      # KDE window output config
     # ./plasma.nix      # KDE Plasma config
   ];
