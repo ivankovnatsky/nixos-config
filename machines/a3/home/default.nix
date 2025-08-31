@@ -28,10 +28,12 @@
     ./flags.nix
     ./gnome.nix
     ./gpg.nix
-    ./kwinoutput
     ./packages.nix
-    ./plasma.nix
     ./syncthing.nix
+
+    # Desktop environment home configs (disable for dwm)
+    ./kwinoutput      # KDE window output config
+    ./plasma.nix      # KDE Plasma config
     ./tmuxinator.nix
   ];
 }
