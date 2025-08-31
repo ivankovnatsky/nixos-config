@@ -10,6 +10,12 @@
   # Option 1: LightDM (lightweight graphical login)
   # services.xserver.displayManager.lightdm.enable = true;
   
+  # Configure LightDM cursor theme (since a3 already has LightDM)
+  services.xserver.displayManager.lightdm.greeters.gtk.cursorTheme = {
+    name = "Adwaita";
+    size = 48;
+  };
+  
   # Note: a3 already has LightDM enabled, so no need to enable another display manager.
   # LightDM will automatically show dwm as a session option after rebuild.
   
@@ -47,6 +53,7 @@
     '';
   };
   
+  # https://wiki.archlinux.org/title/HiDPI
   # Set DPI for GTK and Qt applications
   environment.variables = {
     GDK_SCALE = "1.5";
