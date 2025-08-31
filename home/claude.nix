@@ -16,6 +16,7 @@ let
   claudeConfigPath = ".claude/settings.json";
 in
 {
+  # https://docs.anthropic.com/en/docs/claude-code/settings
   home = {
     file = {
       "${claudeConfigPath}" = {
