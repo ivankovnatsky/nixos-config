@@ -33,9 +33,9 @@
 
     # Desktop environment home configs (disable for dwm)
     # ./gnome.nix       # GNOME config
-    
+
     # KDE/Plasma configs
-    # ./kwinoutput      # KDE window output config
-    # ./plasma.nix      # KDE Plasma config
+    ./kwinoutput      # KDE window output config
+    ./plasma.nix      # KDE Plasma config
   ];
 }
