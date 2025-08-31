@@ -16,7 +16,7 @@
 
     # ./gamemode.nix
     # ./gamescope.nix
-    ./kde.nix
+    ./desktop.nix
 
     ./networking.nix
     ./nixpkgs.nix
