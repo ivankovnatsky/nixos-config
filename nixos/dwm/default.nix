@@ -53,6 +53,11 @@
     GDK_DPI_SCALE = "1";
     QT_SCALE_FACTOR = "1.5";
     XCURSOR_SIZE = "32";
+    
+    # Firefox-specific scaling (only when using dwm)
+    MOZ_ENABLE_WAYLAND = "0";  # Force X11 mode
+    MOZ_USE_XINPUT2 = "1";     # Better input handling  
+    MOZ_DPI_FACTOR = "1.5";    # Firefox scaling factor
   };
 
   services.xserver.windowManager.dwm = {
