@@ -32,7 +32,29 @@
   # dwm patches reference: https://dwm.suckless.org/patches/
   # Note: nixpkgs uses dwm 6.5, so patches must be compatible with that version
   # HiDPI configuration for 4K displays
-  services.xserver.dpi = 144;  # 1.5x scaling (96 * 1.5 = 144)
+  services.xserver = {
+    dpi = 144;  # 1.5x scaling (96 * 1.5 = 144)
+    
+    # Disable mouse acceleration for precise movement and set DPI
+    extraConfig = ''
+      Section "InputClass"
+        Identifier "My Mouse"
+        MatchIsPointer "yes" 
+        Option "AccelerationProfile" "-1"
+        Option "AccelerationScheme" "none"
+        Option "AccelSpeed" "-1"
+      EndSection
+      
+      Section "ServerFlags"
+        Option "DefaultServerLayout" "Layout0"
+      EndSection
+      
+      Section "Device"
+        Identifier "Device0"
+        Option "DPI" "144x144"
+      EndSection
+    '';
+  };
   
   # Set DPI for GTK and Qt applications
   environment.variables = {
@@ -59,12 +81,6 @@
       ];
     };
     extraSessionCommands = ''
-      # Set DPI for X applications
-      ${pkgs.xorg.xrdb}/bin/xrdb -merge <<EOF
-      Xft.dpi: 144
-      Xcursor.size: 32
-      EOF
-      
       ${pkgs.slstatus}/bin/slstatus &
     '';
   };
