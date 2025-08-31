@@ -7,8 +7,8 @@ static const unsigned int borderpx	= 0;	/* border pixel of windows */
 static const unsigned int snap		= 32;	/* snap pixel */
 static const int showbar		= 1;	/* 0 means no bar */
 static const int topbar			= 1;	/* 0 means bottom bar */
-static const char *fonts[]		= { "Hack Nerd Font:size=9" };
-static const char dmenufont[]		= "Hack Nerd Font:size=9";
+static const char *fonts[]		= { "Hack Nerd Font:size=14" };
+static const char dmenufont[]		= "Hack Nerd Font:size=14";
 static const char col_gray1[]		= "#111111";
 static const char col_gray2[]		= "#444444";
 static const char col_gray3[]		= "#bbbbbb";
@@ -48,6 +48,7 @@ static const Rule rules[] = {
 static const float mfact	= 0.5;	/* factor of master area size [0.05..0.95] */
 static const int nmaster	= 1;	/* number of clients in master area */
 static const int resizehints	= 0;	/* 1 means respect size hints in tiled resizals */
+static const int lockfullscreen = 1;	/* 1 will force focus on the fullscreen window */
 
 static const Layout layouts[] = {
 	/* symbol	arrange function */
