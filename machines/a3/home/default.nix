@@ -29,7 +29,6 @@
     ./gpg.nix
     ./packages.nix
     ./syncthing.nix
-    ./tmuxinator.nix
 
     # Desktop environment home configs (disable for dwm)
     # ./gnome.nix       # GNOME config
