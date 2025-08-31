@@ -35,7 +35,7 @@
   services.xserver = {
     dpi = 144;  # 1.5x scaling (96 * 1.5 = 144)
     
-    # Disable mouse acceleration for precise movement and set DPI
+    # Disable mouse acceleration for precise movement
     extraConfig = ''
       Section "InputClass"
         Identifier "My Mouse"
@@ -43,15 +43,6 @@
         Option "AccelerationProfile" "-1"
         Option "AccelerationScheme" "none"
         Option "AccelSpeed" "-1"
-      EndSection
-      
-      Section "ServerFlags"
-        Option "DefaultServerLayout" "Layout0"
-      EndSection
-      
-      Section "Device"
-        Identifier "Device0"
-        Option "DPI" "144x144"
       EndSection
     '';
   };
