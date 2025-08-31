@@ -3,6 +3,7 @@
 {
   imports = [
     # ../../../home/bash.nix
+    ../../../home/btop.nix
     ../../../home/claude.nix
     ../../../home/gamescope-session.nix
     ../../../home/ghostty.nix
