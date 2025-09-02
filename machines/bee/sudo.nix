@@ -9,21 +9,5 @@
       Defaults passwd_timeout=0
     '';
 
-    # Configure NOPASSWD rules for specific commands
-    extraRules = [
-      {
-        users = [ "ivan" ];
-        commands = [
-          {
-            command = "/run/current-system/sw/bin/shutdown -h now";
-            options = [ "NOPASSWD" ];
-          }
-          {
-            command = "/run/current-system/sw/bin/reboot";
-            options = [ "NOPASSWD" ];
-          }
-        ];
-      }
-    ];
   };
 }
