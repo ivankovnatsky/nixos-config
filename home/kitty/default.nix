@@ -13,18 +13,6 @@ let
   # FIXME: Remove ctrl+shift+6 and other related keybinds, vim prev buffer.
   # https://sw.kovidgoyal.net/kitty/conf/
   kittyConfig = ''
-    ${
-      if config.flags.darkMode then
-        ""
-      else
-        ''
-          cursor #808080
-          background #ffffff
-          foreground #000000
-          color15 #d8d8c0
-        ''
-    }
-
     font_family ${config.flags.fontGeneral}
     font_size ${builtins.toString fontSize}
 
@@ -97,9 +85,6 @@ let
   lightThemeConfig = ''
     # vim:ft=kitty  
     # Run `kitten themes` and select "Save as automatic light theme" to customize
-    # Using default light theme with basic light colors
-    background #ffffff
-    foreground #000000
   '';
 
   # For GNOME, no-preference is treated as light mode
@@ -107,8 +92,6 @@ let
     # vim:ft=kitty
     # Run `kitten themes` and select "Save as automatic no-preference theme" to customize
     # For GNOME desktop, this is used for light mode
-    background #ffffff
-    foreground #000000
   '';
 in
 {
