@@ -29,6 +29,7 @@
     ghorg
     gitleaks
     go-grip
+    google-cloud-sdk
     gum
     hadolint
     hclfmt
@@ -59,9 +60,9 @@
     nh # https://github.com/nix-community/nh
     nixfmt-rfc-style
     nixpkgs-master.fluxcd
+    nodejs
     nodePackages.aws-cdk
     nodePackages.rimraf
-    nodejs
     opsy
     oras
     parallel
