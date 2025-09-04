@@ -1,9 +1,7 @@
 { config, pkgs, osConfig, ... }:
 
 let
-  inherit (pkgs.stdenv.targetPlatform) isDarwin;
-  
-  hostName = osConfig.networking.hostName;
+  inherit (osConfig.networking) hostName;
   homePath = config.home.homeDirectory;
   
   sourcesPath = if hostName == "Ivans-Mac-mini" then
@@ -26,11 +24,21 @@ in
               "defaultMode": "acceptEdits",
               "autoApproveWebFetch": true,
               "allow": [
-                "Read(${sourcesPath}/**)"
+                "Read(${sourcesPath}/**)",
+                "Bash(git add:*)",
+                "Bash(git log:*)",
+                "mcp__serena",
+                "WebFetch(domain:*)",
+                "WebSearch",
+                "Bash(nix-prefetch-url:*)",
+                "Read(${homePath}/.config/**)",
+                "Read(${homePath}/.local/**)",
+                "Read(${homePath}/Notes/**)"
               ],
               "deny": [
                 "Bash(sudo:*)",
-                "Bash(rm -rf:*)",
+                "Bash(rm:*)",
+                "Bash(mv:*)",
                 "Bash(chmod:*)",
                 "Bash(git reset:*)"
               ]
