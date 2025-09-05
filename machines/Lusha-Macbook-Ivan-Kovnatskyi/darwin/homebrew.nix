@@ -30,6 +30,7 @@
       "stats"
       "twingate"
       "visual-studio-code"
+      "vivaldi"
       "windsurf"
     ];
     masApps = {

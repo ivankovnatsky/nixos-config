@@ -52,6 +52,7 @@ in
         { path = "/Applications/Firefox Developer Edition.app/"; }
         { path = "/Applications/Firefox.app/"; }
         { path = "/Applications/Chromium.app/"; }
+        { path = "/Applications/Vivaldi.app/"; }
         { path = "/Applications/DBeaver.app/"; }
 
         {
