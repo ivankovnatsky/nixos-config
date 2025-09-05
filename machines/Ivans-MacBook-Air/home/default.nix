@@ -13,6 +13,7 @@
     ../../../home/go.nix
     ../../../home/hammerspoon
     ../../../home/home-session-vars.nix
+    ../../../home/kitty
     ../../../home/lsd.nix
     ../../../home/mpv.nix
     ../../../home/nixvim

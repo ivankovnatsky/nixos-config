@@ -21,6 +21,7 @@
       "ghostty"
       "hammerspoon"
       "keycastr"
+      "kitty"
       "mos"
       "mullvadvpn"
       "silicon-labs-vcp-driver"
