@@ -4,5 +4,6 @@
     purpose = "home";
     editor = "nvim";
     darkMode = true;
+    terminal = "kitty";
   };
 }

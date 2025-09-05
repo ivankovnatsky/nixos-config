@@ -13,6 +13,7 @@
     ../../../home/git.nix
     ../../../home/go.nix
     ../../../home/hammerspoon
+    ../../../home/kitty
     ../../../home/lsd.nix
     ../../../home/mpv.nix
     ../../../home/nixvim
