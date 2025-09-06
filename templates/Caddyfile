@@ -296,3 +296,9 @@
 		}
 	}
 }
+
+# K8s NodePort forwarding (mini machine only)
+:30080 {
+	bind @bindAddress@
+	reverse_proxy localhost:30080
+}
