@@ -8,7 +8,7 @@ metadata:
     kubernetes.io/ingress.class: caddy
 spec:
   rules:
-  - host: openwebui.local
+  - host: open-webui.openwebui.svc.cluster.local
     http:
       paths:
       - path: /
