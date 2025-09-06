@@ -19,6 +19,7 @@
     ./git.nix
     ./homebrew.nix
     ./http.nix
+    ./k8s.nix
     ./logrotate.nix
     ./miniserve.nix
     ./nix.nix
