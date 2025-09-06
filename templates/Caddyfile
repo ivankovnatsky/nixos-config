@@ -100,10 +100,11 @@
 	reverse_proxy @homeassistant @beeIp@:8123
 
 	@openwebui host openwebui.@externalDomain@
-	reverse_proxy @openwebui http://open-webui.openwebui.svc.cluster.local:8080 {
-		# Enable WebSocket support for real-time updates
+	reverse_proxy @openwebui @miniIp@:30080 {
+		# Route to Caddy ingress controller NodePort
+		# The ingress controller handles routing to K8s services
 		header_up X-Real-IP {remote_host}
-		header_up Host {host}
+		header_up Host openwebui.local
 		# Increase timeouts for large model responses
 		transport http {
 			keepalive 30s
