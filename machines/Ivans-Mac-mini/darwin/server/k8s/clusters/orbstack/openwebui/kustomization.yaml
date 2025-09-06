@@ -4,3 +4,17 @@ resources:
   - namespace.yaml
   - sealed-secret.yaml  # Create with kubeseal after sealed-secrets is deployed
   - ingress.yaml
+  # NOTE: secret-openwebui-config.yaml is NOT included here - only used for replacements
+
+replacements:
+  - source:
+      kind: Secret
+      name: openwebui-config
+      namespace: openwebui
+      fieldPath: data.host
+    targets:
+      - select:
+          kind: Ingress
+          name: openwebui
+        fieldPaths:
+          - spec.rules.0.host
