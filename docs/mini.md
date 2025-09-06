@@ -101,6 +101,32 @@ On boot tmux rebuild service can't get access to /Volumes/Storage
 
 Still an issue.
 
+## OrbStack Kubernetes Networking
+
+### NodePort Localhost Binding
+
+OrbStack binds NodePorts to localhost only, unlike standard Kubernetes which binds to all interfaces:
+
+```console
+lsof -i :30080
+COMMAND    PID USER   FD   TYPE            DEVICE SIZE/OFF NODE NAME
+OrbStack  1109 ivan  129u  IPv4 0xf5c8c1e43046b90      0t0  TCP localhost:30080 (LISTEN)
+```
+
+This means NodePort services are not accessible from external machines (like bee) without additional forwarding.
+
+**Solution**: Use Caddy to forward from external interface to localhost NodePort:
+
+```caddyfile
+# K8s NodePort forwarding (mini machine only)  
+:30080 {
+    bind @bindAddress@
+    reverse_proxy localhost:30080
+}
+```
+
+This enables the routing chain: `External machine → Mini external IP:30080 → Mini localhost:30080 → OrbStack NodePort → K8s Service`
+
 ## TODO
 
 - [ ] Add /Volumes/Storage to /etc/fstab
