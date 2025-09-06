@@ -16,4 +16,4 @@ spec:
       nodePort: 30443
   selector:
     app.kubernetes.io/name: caddy-ingress-controller
-    app.kubernetes.io/instance: caddy-ingress
+    app.kubernetes.io/instance: caddy-system-caddy-ingress
