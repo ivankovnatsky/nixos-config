@@ -104,7 +104,7 @@
 		# Route to Caddy ingress controller NodePort
 		# The ingress controller handles routing to K8s services
 		header_up X-Real-IP {remote_host}
-		header_up Host open-webui.openwebui.svc.cluster.local
+		header_up Host {host}
 		# Increase timeouts for large model responses
 		transport http {
 			keepalive 30s
