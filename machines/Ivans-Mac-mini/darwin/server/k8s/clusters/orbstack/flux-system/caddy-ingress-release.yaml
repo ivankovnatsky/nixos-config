@@ -19,3 +19,7 @@ spec:
     # Use default ClusterIP service (we have separate NodePort service)
     loadBalancer:
       enabled: false
+    
+    # Fix invalid externalTrafficPolicy for ClusterIP service
+    service:
+      externalTrafficPolicy: null
