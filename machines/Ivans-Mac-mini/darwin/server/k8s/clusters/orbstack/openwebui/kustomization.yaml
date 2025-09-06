@@ -9,6 +9,7 @@ replacements:
   - source:
       kind: Secret
       name: openwebui-config
+      namespace: openwebui
       fieldPath: data.external-domain
     targets:
       - select:
