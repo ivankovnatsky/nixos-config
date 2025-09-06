@@ -24,6 +24,11 @@ spec:
     ref: "latest"
     path: "clusters/orbstack"
     pullSecret: ""
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: openwebui-config
+        namespace: openwebui
   kustomize:
     patches:
       - target:

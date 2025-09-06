@@ -8,7 +8,7 @@ metadata:
     kubernetes.io/ingress.class: caddy
 spec:
   rules:
-  - host: EXTERNAL_DOMAIN_PLACEHOLDER
+  - host: openwebui.${external-domain}
     http:
       paths:
       - path: /
