@@ -54,4 +54,4 @@ spec:
       - name: WEB_SEARCH_ENGINE
         value: "duckduckgo"
       - name: DEFAULT_MODELS
-        value: "llama3.1:8b,mistral:7b"
+        value: "llama3.1:8b"
