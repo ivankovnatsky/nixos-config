@@ -4,6 +4,8 @@
     purpose = "home";
     editor = "nvim";
     darkMode = true;
-    terminal = "kitty";
+    hotkeys = {
+      terminal = "kitty";
+    };
   };
 }
