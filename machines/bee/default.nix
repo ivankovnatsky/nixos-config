@@ -77,8 +77,6 @@
 
     ./miniserve.nix
 
-    ./open-webui.nix
-
     ./power.nix
 
     ../../nixos/rebuild-diff.nix
