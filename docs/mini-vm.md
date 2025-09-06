@@ -2,7 +2,7 @@
 
 ## Overview
 
-`mini-vm` is a NixOS virtual machine running on Orbstack on Mac mini. It provides services like Open WebUI for the homelab infrastructure.
+`mini-vm` is a NixOS virtual machine running on Orbstack on Mac mini used for development and testing.
 
 ## Creation
 
@@ -31,6 +31,8 @@ The VM uses Orbstack's networking with:
 - IP Address: `198.19.249.245` (automatically assigned by Orbstack)
 
 ## Services
+
+Currently no active services. OpenWebUI was disabled due to chromadb package being broken on ARM64.
 
 ## Management
 
