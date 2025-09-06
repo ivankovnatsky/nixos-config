@@ -1,19 +1,23 @@
 { config, lib, pkgs, ... }:
 
+let
+  repoPath = "/Volumes/Storage/Data/Sources/github.com/ivankovnatsky/nixos-config";
+in
 {
   # Apply K8s secrets for build-time Kustomize replacements
   system.activationScripts.postActivation.text = lib.mkAfter ''
     echo >&2 "Applying K8s secrets for Kustomize replacements..."
     export KUBECONFIG="${config.users.users.ivan.home}/.kube/config"
-    
-    # Test cluster connectivity
+
+    # Test cluster connectivity  
+    cd "${repoPath}"
     if ${pkgs.kubectl}/bin/kubectl cluster-info; then
       # Define list of git-crypt secret files to apply
       SECRET_FILES=(
-        "machines/Ivans-Mac-mini/darwin/server/k8s/clusters/orbstack/openwebui/secret-openwebui-config.yaml"
+        "machines/Ivans-Mac-mini/darwin/server/k8s/clusters/orbstack/openwebui/secret-openwebui-config-secret.yaml"
         # Add more secret files here as needed
       )
-      
+
       # Apply each secret file
       for SECRET_FILE in "''${SECRET_FILES[@]}"; do
         if [[ -f "$SECRET_FILE" ]]; then
