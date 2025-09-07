@@ -23,3 +23,8 @@ spec:
     # Fix invalid externalTrafficPolicy for ClusterIP service
     service:
       externalTrafficPolicy: null
+    
+    # Disable automatic HTTPS since Mac mini Caddy handles TLS termination
+    ingressController:
+      config:
+        automaticHTTPS: false
