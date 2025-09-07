@@ -37,8 +37,9 @@ spec:
       enabled: false
 
     service:
-      type: ClusterIP
+      type: NodePort
       port: 8080
+      nodePort: 30081
 
     # Environment variables matching bee configuration
     extraEnvVars:
