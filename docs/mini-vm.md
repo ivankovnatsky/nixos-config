@@ -34,6 +34,35 @@ The VM uses Orbstack's networking with:
 
 Currently no active services. OpenWebUI was disabled due to chromadb package being broken on ARM64.
 
+## Network Limitations
+
+Mini-vm runs in OrbStack's NAT network (198.19.249.x) which provides isolation but has limitations for hardware-specific services:
+
+### Link-Local Address Access (169.254.0.0/16)
+- **Cannot reach** devices using link-local addresses (like Elgato Key Lights at 169.254.1.144)
+- Link-local addresses are not routable by design (RFC 3927)
+- Only work within the same network segment/broadcast domain
+
+### Services That Should NOT Be Moved to Mini-VM
+- **Homebridge with Elgato plugins** - Needs direct access to 169.254.x.x devices
+- **Matter-bridge** - Requires mDNS discovery on physical network
+- **IoT device integrations** - Many devices fall back to link-local addressing
+- **Hardware coordinators** - Zigbee/Z-Wave need direct USB access
+
+### Alternative Solutions
+1. **K8s with hostNetwork: true** - Pods can access physical network directly
+2. **Keep on physical machines** - Deploy on bee/mini host with full network access
+3. **Docker with --network=host** - Container shares host networking
+
+### Testing Connectivity
+```console
+# From mini host (should work)
+ping 169.254.1.144
+
+# From mini-vm (will fail)
+ssh ivan@mini-vm@orb 'ping 169.254.1.144'  # Times out
+```
+
 ## Management
 
 To access the VM:
