@@ -3,18 +3,4 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - sealed-secret.yaml  # Create with kubeseal after sealed-secrets is deployed
-  - secret-placeholder.yaml  # Placeholder for kustomize replacements
   - ingress.yaml
-
-replacements:
-  - source:
-      kind: Secret
-      name: openwebui-config
-      namespace: openwebui
-      fieldPath: stringData.host
-    targets:
-      - select:
-          kind: Ingress
-          name: openwebui
-        fieldPaths:
-          - spec.rules.0.host
