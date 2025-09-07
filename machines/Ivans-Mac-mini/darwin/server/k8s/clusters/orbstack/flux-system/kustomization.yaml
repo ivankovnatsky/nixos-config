@@ -11,5 +11,3 @@ resources:
   - sealed-secrets-release.yaml
   - openwebui-repository.yaml
   - openwebui-release.yaml
-  - caddy-ingress-repository.yaml
-  - caddy-ingress-release.yaml
