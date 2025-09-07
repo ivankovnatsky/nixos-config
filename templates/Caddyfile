@@ -100,8 +100,8 @@
 	reverse_proxy @homeassistant @beeIp@:8123
 
 	@openwebui host openwebui.@externalDomain@
-	reverse_proxy @openwebui @miniIp@:30080 {
-		# Route to Caddy ingress controller NodePort
+	reverse_proxy @openwebui @miniIp@:30081 {
+		# Route to OpenWebUI NodePort service
 		# The ingress controller handles routing to K8s services
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
@@ -295,10 +295,4 @@
 			roll_keep 5
 		}
 	}
-}
-
-# K8s NodePort forwarding (mini machine only)
-:30080 {
-	bind @bindAddress@
-	reverse_proxy localhost:30080
 }
