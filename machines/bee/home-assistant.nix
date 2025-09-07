@@ -70,6 +70,7 @@
       # MQTT Configuration for zigbee2mqtt
       # Configured in UI, need to manually add integration:
       # https://github.com/home-assistant/core/issues/114643
+      # And tweak the hostname and port if changed. Press: `Reconfigure`.
       mqtt = { };
     };
     openFirewall = true;
