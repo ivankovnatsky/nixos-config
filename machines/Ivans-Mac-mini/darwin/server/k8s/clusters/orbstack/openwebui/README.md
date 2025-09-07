@@ -21,3 +21,13 @@ The secret needs two fields:
 - `host`: The full hostname for OpenWebUI (e.g., `openwebui.yourdomain.com`)
 
 These values are used by Kustomize replacements to configure the ingress host.
+
+## Applying the Sealed Secret
+
+After creating/updating the sealed secret, apply it manually to ensure it's available for Kustomize:
+
+```console
+kubectl apply -f sealed-secret.yaml
+```
+
+This ensures the secret exists in the cluster before Flux attempts to use it for Kustomize replacements.
