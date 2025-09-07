@@ -17,8 +17,8 @@ data:
   config.json: |
     {
       "bridge": {
-        "name": "Homebridge 3E57",
-        "username": "0E:D5:58:2D:36:57",
+        "name": "Homebridge Mini K8s",
+        "username": "0E:D5:58:2D:36:58",
         "port": 51318,
         "pin": "398-00-752",
         "advertiser": "bonjour-hap"
