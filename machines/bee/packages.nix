@@ -14,6 +14,12 @@
     # Monitoring
     lsof
     dust
+    
+    # Hardware sensors
+    lm_sensors
+    
+    # Terminal utilities
+    ncurses
 
     # Network
     nmap
