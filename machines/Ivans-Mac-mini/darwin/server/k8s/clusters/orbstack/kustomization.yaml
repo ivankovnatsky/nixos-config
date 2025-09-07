@@ -3,14 +3,15 @@ kind: Kustomization
 resources:
   # Core Flux system resources
   - flux-system
-  
+
   # Infrastructure components
   - sealed-secrets
   - kyverno
   - cluster-policies
-  
+
   # Applications
   - openwebui
-  
+  - homebridge
+
   # Debug tools
   - netshoot
