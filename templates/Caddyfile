@@ -296,9 +296,3 @@
 		}
 	}
 }
-
-# K8s OpenWebUI NodePort forwarding (mini machine only)
-:30081 {
-	bind @bindAddress@
-	reverse_proxy localhost:30081
-}

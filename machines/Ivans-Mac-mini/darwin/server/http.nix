@@ -43,8 +43,9 @@ let
     hash = "sha256-dYZvFCSuDsOAYg8GgkdpulIzFud9EmP9mS81c87sOoY=";
   };
 
-  # Path to the Caddyfile template - reusing the template approach
+  # Path to the Caddyfile templates - main template plus mini-specific additions
   caddyfilePath = ../../../../templates/Caddyfile;
+  caddyfileMiniPath = ../../../../templates/Caddyfile.mini;
 
   # Process the Caddyfile template with the local variables
   Caddyfile =
@@ -70,7 +71,12 @@ let
         zigbeePassword = config.secrets.zigbee.password;
       }
       ''
+        # Process main Caddyfile template
         substituteAll ${caddyfilePath} $out
+        
+        # Append mini-specific template
+        echo "" >> $out
+        substituteAll ${caddyfileMiniPath} >> $out
       '';
 in
 {
