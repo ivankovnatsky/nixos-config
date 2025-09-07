@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homebridge
+  namespace: homebridge
+  labels:
+    app: homebridge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: homebridge
+  template:
+    metadata:
+      labels:
+        app: homebridge
+    spec:
+      # Use host network to access link-local devices (169.254.x.x) and mDNS
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      restartPolicy: Always
+      containers:
+      - name: homebridge
+        image: homebridge/homebridge:2025-07-12
+        env:
+        - name: TZ
+          value: "Europe/Kyiv"
+        ports:
+        - name: web-ui
+          containerPort: 8581
+          protocol: TCP
+        - name: homekit
+          containerPort: 51318
+          protocol: TCP
+        volumeMounts:
+        - name: homebridge-storage
+          mountPath: /homebridge
+        - name: config-volume
+          mountPath: /homebridge/package.json
+          subPath: package.json
+        - name: config-volume
+          mountPath: /homebridge/config.json
+          subPath: config.json
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        # Health check based on official docker image recommendations
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - "curl --fail localhost:8581 || exit 1"
+          initialDelaySeconds: 300
+          periodSeconds: 60
+          timeoutSeconds: 2
+          failureThreshold: 5
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - "curl --fail localhost:8581 || exit 1"
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 2
+      volumes:
+      - name: homebridge-storage
+        persistentVolumeClaim:
+          claimName: homebridge-storage
+      - name: config-volume
+        configMap:
+          name: homebridge-config
