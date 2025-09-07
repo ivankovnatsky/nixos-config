@@ -74,9 +74,10 @@ let
         # Process main Caddyfile template
         substituteAll ${caddyfilePath} $out
         
-        # Append mini-specific template
+        # Process mini-specific template and append
         echo "" >> $out
-        substituteAll ${caddyfileMiniPath} >> $out
+        substituteAll ${caddyfileMiniPath} /tmp/caddyfile-mini
+        cat /tmp/caddyfile-mini >> $out
       '';
 in
 {
