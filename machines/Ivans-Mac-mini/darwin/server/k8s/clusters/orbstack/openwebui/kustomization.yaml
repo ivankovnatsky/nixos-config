@@ -3,4 +3,4 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - sealed-secret.yaml  # Create with kubeseal after sealed-secrets is deployed
-  - ingress.yaml
+  # - ingress.yaml
