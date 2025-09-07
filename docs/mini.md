@@ -127,6 +127,33 @@ This means NodePort services are not accessible from external machines (like bee
 
 This enables the routing chain: `External machine → Mini external IP:30080 → Mini localhost:30080 → OrbStack NodePort → K8s Service`
 
+## OrbStack VM Network Limitations
+
+### Link-Local Address Access (169.254.0.0/16)
+- **Cannot reach** devices using link-local addresses from OrbStack VMs or K8s pods
+- Link-local addresses are not routable by design (RFC 3927)
+- Only work within the same network segment/broadcast domain
+- **hostNetwork: true** in K8s does NOT solve this - the "host" is still the OrbStack VM
+
+### Services That Should NOT Be Moved to OrbStack K8s
+- **Homebridge with Elgato plugins** - Needs direct access to 169.254.x.x devices
+- **Matter-bridge** - Requires mDNS discovery on physical network
+- **IoT device integrations** - Many devices fall back to link-local addressing
+- **Hardware coordinators** - Zigbee/Z-Wave need direct USB access
+
+### Alternative Solutions
+1. **Keep on physical machines** - Deploy on bee/mini host with full network access
+2. **Docker with --network=host on physical host** - Container shares host networking (not VM host)
+
+### Testing Connectivity
+```console
+# From mini host (should work)
+ping 169.254.1.144
+
+# From OrbStack VM or K8s pod (will fail)
+kubectl exec -n homebridge pod-name -- curl --connect-timeout 5 http://169.254.1.144:9123
+```
+
 ## TODO
 
 - [ ] Add /Volumes/Storage to /etc/fstab
