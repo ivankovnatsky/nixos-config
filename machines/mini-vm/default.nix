@@ -7,5 +7,6 @@
     ./configuration.nix
     ./tmux-rebuild.nix
     ./packages.nix
+    ./jellyfin.nix
   ];
 }
