@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: homebridge
+  namespace: homebridge
+  labels:
+    app: homebridge
+spec:
+  type: ClusterIP
+  ports:
+  - name: web-ui
+    port: 8581
+    targetPort: 8581
+    protocol: TCP
+  - name: homekit
+    port: 51318
+    targetPort: 51318
+    protocol: TCP
+  selector:
+    app: homebridge
