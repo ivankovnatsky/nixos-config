@@ -42,7 +42,7 @@ let
         name = "Zigbee2MQTT";
         mqtt = {
           base_topic = "zigbee2mqtt";
-          server = "mqtt://localhost:1883";
+          server = "mqtt://${config.flags.beeIp}:1883";
         };
       }
     ];

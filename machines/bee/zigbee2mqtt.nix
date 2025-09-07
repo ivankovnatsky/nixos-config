@@ -1,3 +1,4 @@
+{ config, ... }:
 {
   systemd.services.zigbee2mqtt.after = [ "mosquitto.service" ];
   # https://www.reddit.com/r/Zigbee2MQTT/comments/1ihh67u/slzb07_not_recognized_version_12_is_not_supported/
@@ -37,7 +38,7 @@
       };
       mqtt = {
         base_topic = "zigbee2mqtt";
-        server = "mqtt://localhost:1883";
+        server = "mqtt://${config.flags.beeIp}:1883";
         version = 5;
       };
       permit_join = false;
