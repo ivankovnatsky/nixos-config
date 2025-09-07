@@ -112,7 +112,19 @@
 	reverse_proxy @homeassistant @beeIp@:8123
 
 	@openwebui host openwebui.@externalDomain@
-	reverse_proxy @openwebui @miniIp@:30081 {
+	reverse_proxy @openwebui @beeIp@:8090 {
+		# Enable WebSocket support for real-time updates
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		# Increase timeouts for large model responses
+		transport http {
+			keepalive 30s
+			response_header_timeout 300s
+		}
+	}
+
+	@openwebui-mini host openwebui-mini.@externalDomain@
+	reverse_proxy @openwebui-mini @miniIp@:30081 {
 		# Route to OpenWebUI NodePort service
 		# The ingress controller handles routing to K8s services
 		header_up X-Real-IP {remote_host}
