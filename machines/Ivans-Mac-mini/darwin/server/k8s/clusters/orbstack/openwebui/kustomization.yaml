@@ -10,7 +10,7 @@ replacements:
       kind: Secret
       name: openwebui-config
       namespace: openwebui
-      fieldPath: data.host
+      fieldPath: stringData.host
     targets:
       - select:
           kind: Ingress
