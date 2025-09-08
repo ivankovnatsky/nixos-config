@@ -54,6 +54,9 @@ in
         { path = "/Applications/Chromium.app/"; }
         { path = "/Applications/Vivaldi.app/"; }
         { path = "/Applications/DBeaver.app/"; }
+        { path = "/Applications/Visual Studio Code.app/"; }
+        { path = "/Applications/Cursor.app/"; }
+        { path = "/Applications/Windsurf.app/"; }
 
         {
           path = "${config.users.users.${username}.home}/Downloads/";
