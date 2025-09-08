@@ -26,7 +26,6 @@
       "keycastr"
       "kitty"
       "mos"
-      "orbstack"
       "stats"
       "twingate"
       "visual-studio-code"
