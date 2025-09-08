@@ -37,10 +37,6 @@ in
               ],
               "deny": [
                 "Bash(sudo:*)",
-                "Bash(rm:*)",
-                "Bash(mv:*)",
-                "Bash(chmod:*)",
-                "Bash(git reset:*)"
               ]
             },
             "includeCoAuthoredBy": false,
