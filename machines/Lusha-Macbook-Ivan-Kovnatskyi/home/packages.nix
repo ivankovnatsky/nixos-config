@@ -95,6 +95,7 @@
     zoxide
 
     # Agent coding tools
+    nixpkgs-master.cursor-cli
     uv
   ];
 }
