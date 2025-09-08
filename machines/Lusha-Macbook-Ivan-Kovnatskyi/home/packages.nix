@@ -42,6 +42,7 @@
     jsonnet
     k8sgpt
     kail
+    kcat
     kdash
     krew
     kubecolor
@@ -59,10 +60,11 @@
     mycli
     nh # https://github.com/nix-community/nh
     nixfmt-rfc-style
+    nixpkgs-master.cursor-cli
     nixpkgs-master.fluxcd
-    nodejs
     nodePackages.aws-cdk
     nodePackages.rimraf
+    nodejs
     opsy
     oras
     parallel
@@ -87,15 +89,12 @@
     terraformer
     terragrunt-atlantis-config
     username # Installed as flake
+    uv
     vault
     watchman
     watchman-make
     wget
     yq
     zoxide
-
-    # Agent coding tools
-    nixpkgs-master.cursor-cli
-    uv
   ];
 }
