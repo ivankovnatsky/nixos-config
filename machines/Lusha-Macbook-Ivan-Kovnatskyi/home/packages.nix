@@ -18,6 +18,7 @@
     devbox
     docker-client
     docker-compose
+    docker-credential-helpers
     dockutil # macOS related CLI
     duf
     dust
