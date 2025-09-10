@@ -12,6 +12,7 @@
     ../../../home/go.nix
     ../../../home/home-session-vars.nix
     ../../../home/lsd.nix
+    ../../../home/mpv.nix
     ../../../home/nixvim
     ../../../home/nixvim/plugins/copilot-lua
     ../../../home/rebuild-diff.nix
