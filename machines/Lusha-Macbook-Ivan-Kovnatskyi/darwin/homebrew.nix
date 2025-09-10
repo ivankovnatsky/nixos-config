@@ -21,7 +21,7 @@
       "dbeaver-community"
       "firefox"
       "firefox@developer-edition"
-      "ghostty"
+      "ghostty@tip"
       "hammerspoon"
       "keycastr"
       "kitty"
