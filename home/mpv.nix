@@ -11,6 +11,7 @@ in
     mpv
   ];
 
+  # TODO: Check mpv scripts package.
   home.file.".config/mpv/config".text = ''
     # Do not show video window when playing audio
     no-audio-display
