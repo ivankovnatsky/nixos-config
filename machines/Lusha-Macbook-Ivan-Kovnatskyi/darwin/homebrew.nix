@@ -2,6 +2,7 @@
   homebrew = {
     enable = true;
     onActivation.autoUpdate = false;
+    onActivation.upgrade = true;
     onActivation.cleanup = "zap";
     global.brewfile = true;
     brews = [
@@ -21,7 +22,7 @@
       "dbeaver-community"
       "firefox"
       "firefox@developer-edition"
-      "ghostty@tip"
+      { name = "ghostty@tip"; greedy = true; }
       "hammerspoon"
       "keycastr"
       "kitty"

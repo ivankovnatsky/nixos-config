@@ -44,3 +44,43 @@ sudo mv /etc/zshenv /etc/zshenv.before-nix-darwin
 nix --extra-experimental-features nix-command --extra-experimental-features \
   flakes run nix-darwin -- switch  --flake ".#Ivans-MacBook-Pro"
 ```
+
+## Homebrew Package Management
+
+### How Homebrew Updates Work with nix-darwin
+
+1. **Flake updates** control the available package versions (the "catalog")
+2. **`onActivation.upgrade`** controls whether to actually upgrade installed packages
+3. **`greedy`** flag needed for auto-updating casks
+
+### Upgrading Homebrew Packages
+
+By default, Homebrew skips auto-updating casks during `brew upgrade`. This includes:
+- Casks with `version :latest`
+- Casks marked with `auto_updates` flag (like `ghostty@tip`)
+
+To upgrade these casks, you need to:
+
+1. Set `onActivation.upgrade = true` in your homebrew configuration
+2. For auto-updating casks, use the `greedy` flag:
+   ```nix
+   casks = [
+     { name = "ghostty@tip"; greedy = true; }
+   ];
+   ```
+
+### Update Workflow
+
+1. Update homebrew flakes to get latest package definitions:
+   ```console
+   make flake-update-homebrew
+   ```
+
+2. Rebuild darwin configuration to apply updates:
+   ```console
+   darwin-rebuild switch --flake .
+   ```
+
+### References
+
+- [Why aren't some apps included during brew upgrade?](https://docs.brew.sh/FAQ#why-arent-some-apps-included-during-brew-upgrade)
