@@ -32,6 +32,9 @@
         callback = function()
           require('vgit').setup({
             settings = {
+              live_blame = {
+                enabled = false,
+              },
               scene = {
                 diff_preference = 'unified', -- unified or split
               },
