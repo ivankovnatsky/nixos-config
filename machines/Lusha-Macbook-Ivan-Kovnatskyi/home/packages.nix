@@ -16,6 +16,7 @@
     defaultbrowser
     delta
     devbox
+    devcontainer
     docker-client
     docker-compose
     docker-credential-helpers
