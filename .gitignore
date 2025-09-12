@@ -16,3 +16,6 @@ AGENTS*
 
 # Claude Code commands (for now)
 .claude
+
+# Documentation and notes
+.notes/
