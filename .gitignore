@@ -13,3 +13,6 @@ overlays/ghostty/ghostty-macos-universal.zip
 
 CLAUDE*
 AGENTS*
+
+# Claude Code commands (for now)
+.claude
