@@ -67,6 +67,7 @@ else
 tar \
     --exclude='**/.cache/huggingface/**' \
     --exclude='**/.cache/nix/**' \
+    --exclude='**/.cache/uv/archive-v0/**' \
     --exclude='**/.cargo/registry/**' \
     --exclude='**/.codeium/**' \
     --exclude='**/.cursor/extensions/**' \
