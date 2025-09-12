@@ -20,7 +20,9 @@
 	rebuild-watchman-nixos \
 	\
 	rebuild-watchman-darwin \
-	rebuild-watchman-darwin-sudo
+	rebuild-watchman-darwin-sudo \
+	\
+	devcontainer
 
 PLATFORM := $(shell uname)
 # TODO: This is temporary until we figure out how to properly configure nix.conf
@@ -139,4 +141,13 @@ rebuild-watchman-darwin-sudo:
 		echo "watchman-make exited, restarting..."; \
 		sleep 1; \
 	done
+
+# Devcontainer: start and exec into container with Claude Code
+devcontainer:
+	devcontainer up --workspace-folder .
+	devcontainer exec --workspace-folder . npx @anthropic-ai/claude-code --dangerously-skip-permissions
+
+# Devcontainer rebuild: force rebuild container
+devcontainer-rebuild:
+	devcontainer up --workspace-folder . --remove-existing-container --build-no-cache
 
