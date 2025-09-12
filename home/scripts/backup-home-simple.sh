@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 
+# Primary backup script for Unix systems. Evolution journey:
+# 1. Started with tar + rclone for cloud uploads
+# 2. Explored standalone binaries for cross-platform support (Go, Rust, Python)
+#    - Go: Native but couldn't match scp speeds (5-38MB/s vs 109MB/s native)
+#    - Rust: librclone bindings lacked Windows support
+#    - Python: Too slow for large backups
+# 3. Simplified to tar + ssh/scp with mini machine as single upload source
+# 
+# This bash version remains the best solution for Unix due to native scp speeds.
+# The Go version (github.com/ivankovnatsky/backup-home-go) exists for exploration
+# and Windows support, where a PowerShell script is used instead.
+#
 # The purpose of this script is to only exclude directories to which user does
 # not have access in macOS and which contain some data that is not needed, like
 # VMs and so.
