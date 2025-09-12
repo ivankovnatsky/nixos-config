@@ -84,6 +84,7 @@ tar \
     --exclude='**/Library/Application Support/Firefox/**' \
     --exclude='**/Library/Application Support/Chromium/**' \
     --exclude='**/Library/Application Support/Google/Chrome/**' \
+    --exclude='**/Library/Application Support/Vivaldi/**' \
     --exclude='**/Library/Application Support/Cursor/**' \
     --exclude='**/Library/Application Support/Code/**' \
     --exclude='**/Library/Application Support/Windsurf/**' \
