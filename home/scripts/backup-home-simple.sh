@@ -96,6 +96,7 @@ tar \
     --exclude='**/Library/Caches/typescript/**' \
     --exclude='**/Library/Caches/Chromium/**' \
     --exclude='**/Library/Mobile Documents/**' \
+    --exclude='**/Library/Metadata/**' \
     --exclude='**/Library/pnpm/**' \
     --exclude='**/Library/Containers/com.apple.Safari/**' \
     --exclude='**/Library/Containers/com.apple.Safari.WebApp/**' \
