@@ -16,12 +16,12 @@
                 - ls -lah
                 - make sync
           - articast:
-              root: /Volumes/Storage/Data/Articast/Articles
+              root: /Volumes/Storage/Data/Textcast/Texts
               layout: main-horizontal
               panes:
                 - nvim Articles.txt
                 - |
-                  cd /Volumes/Storage/Data/Sources/github.com/ivankovnatsky/articast
+                  cd /Volumes/Storage/Data/Sources/github.com/ivankovnatsky/textcast-development
                   make watch-cast
           - audiobookshelf:
               root: /Volumes/Storage/Data/AudioBookShelf
