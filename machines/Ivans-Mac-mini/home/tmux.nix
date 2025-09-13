@@ -21,7 +21,7 @@
               panes:
                 - nvim Articles.txt
                 - |
-                  cd /Volumes/Storage/Data/Sources/github.com/ivankovnatsky/textcast-development
+                  cd /Volumes/Storage/Data/Sources/github.com/ivankovnatsky/textcast
                   make watch-cast
           - audiobookshelf:
               root: /Volumes/Storage/Data/AudioBookShelf
