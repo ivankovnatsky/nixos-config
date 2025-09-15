@@ -37,7 +37,6 @@ let
         rclone = "${pkgs.rclone}/bin/rclone -P";
         transmission = "${pkgs.transmission_4}/bin/transmission-remote ${config.flags.beeIp}:9091 --authenv --list";
         wl-copy = lib.mkIf isLinux "${pkgs.wl-clipboard}/bin/wl-copy -n";
-        tmux-rebuild = lib.mkIf isLinux "${pkgs.tmux}/bin/tmux -S /tmp/tmux-1000/default attach";
       }
     else
       commonShellAliases
