@@ -9,7 +9,6 @@
     ../../../modules/darwin/tmux-rebuild
     ../../../modules/flags
     ../../../modules/secrets
-    ../../../system/darwin-rebuild-local
     ../../../system/documentation.nix
     ../../../system/nix.nix
     ./dock.nix
