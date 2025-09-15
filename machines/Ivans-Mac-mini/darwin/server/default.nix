@@ -12,7 +12,6 @@
     ../../../../modules/darwin/tmux-rebuild
     ../../../../modules/flags
     ../../../../modules/secrets
-    ../../../../system/darwin-rebuild-local
     ./bin.nix
     ./dns.nix
     ./doh.nix
