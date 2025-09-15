@@ -171,6 +171,10 @@ in
         if [[ -d $HOME/.npm/bin ]]; then
           export PATH=$PATH:$HOME/.npm/bin
         fi
+
+        if [[ -f $HOME/.envrc ]]; then
+          source $HOME/.envrc
+        fi
       '';
     };
 
@@ -220,6 +224,10 @@ in
         # if test -f $HOME/.env.fish
         #     source $HOME/.env.fish
         # end
+
+        if test -f $HOME/.envrc
+            bass source $HOME/.envrc
+        end
       '';
       plugins = with pkgs.fishPlugins; [
         { inherit (fzf-fish) name src; }
@@ -231,6 +239,7 @@ in
         { inherit (fish-bd) name src; }
         { inherit (pisces) name src; }
         { inherit (done) name src; }
+        { inherit (bass) name src; }
       ];
 
       inherit shellAliases;
