@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   fonts = {
@@ -6,10 +6,10 @@
     packages = with pkgs; [
       nerd-fonts.hack
     ];
-    
+
     # Enable default fonts
     enableDefaultPackages = true;
-    
+
     # Font configuration
     fontconfig = {
       defaultFonts = {

@@ -1,5 +1,3 @@
-{ config, lib, pkgs, ... }:
-
 {
   # Desktop session management for a3 machine
   # Comment/uncomment the session you want to use
