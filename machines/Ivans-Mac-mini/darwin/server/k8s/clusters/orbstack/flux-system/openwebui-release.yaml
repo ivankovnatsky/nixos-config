@@ -42,6 +42,7 @@ spec:
       nodePort: 30081
 
     # Environment variables matching bee configuration
+    # Reference: https://docs.openwebui.com/getting-started/env-configuration/
     extraEnvVars:
       - name: EXTERNAL_DOMAIN
         valueFrom:
@@ -56,5 +57,5 @@ spec:
         value: "duckduckgo"
       - name: DEFAULT_MODELS
         value: "llama3.1:8b"
-      - name: SHOW_CHANGELOG
+      - name: ENABLE_VERSION_UPDATE_CHECK
         value: "false"
