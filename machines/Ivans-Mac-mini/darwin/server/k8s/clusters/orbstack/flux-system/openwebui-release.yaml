@@ -56,3 +56,5 @@ spec:
         value: "duckduckgo"
       - name: DEFAULT_MODELS
         value: "llama3.1:8b"
+      - name: SHOW_CHANGELOG
+        value: "false"
