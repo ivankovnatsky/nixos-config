@@ -1,8 +1,8 @@
-{ config, lib, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   # Default application associations
-  
+
   # Set Firefox Developer Edition as the default browser
   xdg.mime.defaultApplications = {
     "text/html" = "firefox-devedition.desktop";

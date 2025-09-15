@@ -1,9 +1,11 @@
 {
   homebrew = {
     enable = true;
-    onActivation.autoUpdate = false;
-    onActivation.upgrade = true;
-    onActivation.cleanup = "zap";
+    onActivation = {
+      autoUpdate = false;
+      upgrade = true;
+      cleanup = "zap";
+    };
     global.brewfile = true;
     brews = [
       # Since nix places it's new installs under newly generated nix store
