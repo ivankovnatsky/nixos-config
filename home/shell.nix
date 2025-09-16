@@ -174,6 +174,10 @@ in
         if [[ -f $HOME/.envrc ]]; then
           source $HOME/.envrc
         fi
+
+        if [[ -f $HOME/.env.manual ]]; then
+          source $HOME/.env.manual
+        fi
       '';
     };
 
@@ -226,6 +230,10 @@ in
 
         if test -f $HOME/.envrc
             bass source $HOME/.envrc
+        end
+
+        if test -f $HOME/.env.manual
+            bass source $HOME/.env.manual
         end
       '';
       plugins = with pkgs.fishPlugins; [
