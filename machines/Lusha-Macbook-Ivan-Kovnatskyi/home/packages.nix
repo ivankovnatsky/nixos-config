@@ -40,6 +40,7 @@
     imagemagick
     infra
     infracost
+    jira-cli-go
     jq
     jsonnet
     k8sgpt
