@@ -98,14 +98,14 @@ rebuild-nixos/impure:
 # Darwin-specific rebuild target
 rebuild-darwin:
 	# NIXPKGS_ALLOW_UNFREE=1 is needed for unfree packages like codeium when using --impure
-	NIXPKGS_ALLOW_UNFREE=1 darwin-rebuild-local switch --impure $(COMMON_REBUILD_FLAGS) && \
+	NIXPKGS_ALLOW_UNFREE=1 darwin-rebuild switch --impure $(COMMON_REBUILD_FLAGS) && \
 		osascript -e 'display notification "🟢 Darwin rebuild successful!" with title "Nix configuration"' || \
 		osascript -e 'display notification "🔴 Darwin rebuild failed!" with title "Nix configuration"'
 
 # Darwin-specific rebuild target with sudo
 rebuild-darwin-sudo:
 	# NIXPKGS_ALLOW_UNFREE=1 is needed for unfree packages like codeium when using --impure
-	NIXPKGS_ALLOW_UNFREE=1 sudo -E darwin-rebuild-local switch --impure $(COMMON_REBUILD_FLAGS) && \
+	NIXPKGS_ALLOW_UNFREE=1 sudo -E darwin-rebuild switch --impure $(COMMON_REBUILD_FLAGS) && \
 		osascript -e 'display notification "🟢 Darwin rebuild successful!" with title "Nix configuration"' || \
 		osascript -e 'display notification "🔴 Darwin rebuild failed!" with title "Nix configuration"'
 
