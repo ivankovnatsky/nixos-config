@@ -40,9 +40,9 @@
     imagemagick
     infra
     infracost
-    jira-cli-go
     jq
     jsonnet
+    nixpkgs-master.jira-cli-go
     k8sgpt
     kail
     kcat
