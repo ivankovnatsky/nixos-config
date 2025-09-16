@@ -54,14 +54,9 @@ in
         command = 'set filetype=typst'
     })
 
-    -- We need to disable termguicolors in Apple Terminal not under tmux, since
-    -- Terminal does not support truecolor.
-    if vim.fn.getenv('TERM_PROGRAM') == 'Apple_Terminal' and vim.fn.getenv('TMUX') ~= "" then
-        vim.opt.termguicolors = false
-    else
-        vim.opt.termguicolors = true
-        vim.o.background = ${neovimBackground}
-        vim.cmd([[colorscheme ${neovimTrueColorThemeName}]])
-    end
+    -- Apple Terminal now supports truecolor (24-bit) in macOS Tahoe
+    vim.opt.termguicolors = true
+    vim.o.background = ${neovimBackground}
+    vim.cmd([[colorscheme ${neovimTrueColorThemeName}]])
   '';
 }
