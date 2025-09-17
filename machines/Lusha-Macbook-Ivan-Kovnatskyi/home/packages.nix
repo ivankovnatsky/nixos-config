@@ -86,6 +86,7 @@
     rustc
     sesh
     skopeo
+    slack-cli-go
     smctemp
     sshpass
     ssm-session-manager-plugin
