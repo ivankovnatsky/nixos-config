@@ -7,7 +7,7 @@
     darkMode = true;
     homeWorkPath = "/Volumes/Storage/Data";
     hotkeys = {
-      terminal = "kitty";
+      terminal = "Terminal";
       browser = "Safari";
       shortcuts = [
         {
