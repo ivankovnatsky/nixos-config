@@ -6,7 +6,7 @@
     editor = "nvim";
     darkMode = true;
     hotkeys = {
-      terminal = "Ghostty";
+      terminal = "Terminal";
       browser = "Safari";
       shortcuts = [
         {
