@@ -35,6 +35,8 @@
           "DeveloperPreferences" = 836;
         };
         "NSGlobalDomain" = {
+          # Auto-switch icon style based on appearance mode
+          AppleIconAppearanceTheme = "RegularAutomatic";
           # My keyboard does not support Globe switch key, or I don't know how
           # to use it, don't want to use karabiner-elements for now.
           "NSUserKeyEquivalents" = {
