@@ -67,6 +67,9 @@
       l = "log --oneline -n 20";
       p = "push";
       pp = "pull";
+      s = "status";
+      # Review what would be committed without committing
+      review = "!git status --verbose && git diff --cached";
     };
     extraConfig = {
       init.defaultBranch = "main";
