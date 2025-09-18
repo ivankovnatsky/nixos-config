@@ -171,9 +171,6 @@ in
           export PATH=$PATH:$HOME/.npm/bin
         fi
 
-        if [[ -f $HOME/.env ]]; then
-          source $HOME/.env
-        fi
       '';
     };
 
@@ -224,9 +221,6 @@ in
         #     source $HOME/.env.fish
         # end
 
-        if test -f $HOME/.env
-            bass source $HOME/.env
-        end
       '';
       plugins = with pkgs.fishPlugins; [
         { inherit (fzf-fish) name src; }
