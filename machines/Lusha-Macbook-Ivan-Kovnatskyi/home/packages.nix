@@ -11,6 +11,7 @@
     btop
     cargo
     cloudflared
+    confluent-cli
     coreutils
     crane
     defaultbrowser
@@ -42,7 +43,6 @@
     infracost
     jq
     jsonnet
-    nixpkgs-master.jira-cli-go
     k8sgpt
     kail
     kcat
@@ -65,6 +65,7 @@
     nixfmt-rfc-style
     nixpkgs-master.cursor-cli
     nixpkgs-master.fluxcd
+    nixpkgs-master.jira-cli-go
     nodePackages.aws-cdk
     nodePackages.rimraf
     nodejs
