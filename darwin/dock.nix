@@ -14,7 +14,6 @@ in
     dock.enable = true;
     dock.username = username;
     dock.entries = [
-      { path = "/System/Applications/Launchpad.app/"; }
       { path = "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/"; }
       { path = "/System/Applications/Messages.app/"; }
       { path = "/System/Applications/Mail.app/"; }
