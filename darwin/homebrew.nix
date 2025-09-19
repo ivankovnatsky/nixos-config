@@ -25,7 +25,6 @@
       "keycastr"
       "kitty"
       "mos"
-      "mullvadvpn"
       "silicon-labs-vcp-driver"
       "stats"
       "windsurf"
