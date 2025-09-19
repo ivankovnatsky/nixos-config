@@ -8,5 +8,6 @@
     ./tmux-rebuild.nix
     ./packages.nix
     ./jellyfin.nix
+    ./stash.nix
   ];
 }
