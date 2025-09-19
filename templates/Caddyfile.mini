@@ -9,6 +9,3 @@
 	bind @bindAddress@
 	reverse_proxy @miniVmIp@:8096
 }
-
-# Stash now runs directly on Mac mini via launchd daemon
-# Port 9999 is handled by the stash service itself
