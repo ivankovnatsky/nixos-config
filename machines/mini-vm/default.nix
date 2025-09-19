@@ -8,6 +8,7 @@
     ./tmux-rebuild.nix
     ./packages.nix
     ./jellyfin.nix
-    ./stash.nix
+    # ./stash.nix
+    ./stash-container.nix
   ];
 }
