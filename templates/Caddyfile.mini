@@ -9,3 +9,9 @@
 	bind @bindAddress@
 	reverse_proxy @miniVmIp@:8096
 }
+
+# Stash mini-vm forwarding (mini machine only)
+:9999 {
+	bind @bindAddress@
+	reverse_proxy localhost:9999
+}
