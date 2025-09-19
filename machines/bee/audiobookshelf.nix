@@ -28,7 +28,7 @@
   # Create media directories with correct permissions if they don't exist
   systemd.tmpfiles.rules = [
     # Create podcasts directory with proper ownership
-    "d /storage/Data/media/podcasts 0775 audiobookshelf media -"
+    "d /storage/Data/media/podcasts 2775 audiobookshelf media -"
     
     # Set default ACLs for new files in the podcasts directory
     "A+ /storage/Data/media/podcasts - - - - default:user::rwx,default:group::rwx,default:other::r-x"
