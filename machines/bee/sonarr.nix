@@ -28,7 +28,7 @@
 
   # Create media directories with correct permissions
   systemd.tmpfiles.rules = [
-    "d /storage/Data/media/tv 0775 sonarr media -" # Main TV shows directory
+    "d /storage/Data/media/tv 2775 sonarr media -" # Main TV shows directory with setgid
     "d /storage/Data/media/downloads/tv-sonarr 0775 transmission media -" # Where Transmission puts downloaded TV shows
     
     # Set proper default ACLs for the Sonarr downloads directory
@@ -44,7 +44,11 @@
     "sonarr"
     "transmission"
     "plex"
+    "ivan"
   ];
+
+  # Add ivan to sonarr group for syncthing access to existing directories
+  users.users.ivan.extraGroups = [ "sonarr" ];
 
   # Add supplementary groups to Sonarr service
   systemd.services.sonarr.serviceConfig = {

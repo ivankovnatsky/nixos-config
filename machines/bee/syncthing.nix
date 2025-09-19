@@ -141,7 +141,7 @@
           id = "media";
           label = "media";
           path = "/storage/Data/media";
-          type = "sendonly";
+          type = "sendreceive";
           devices = [
             "Ivans-Mac-mini"
           ];
