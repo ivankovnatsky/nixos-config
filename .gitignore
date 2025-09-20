@@ -19,3 +19,6 @@ AGENTS*
 
 # Documentation and notes
 .notes/
+
+# Local issues tracking (for now)
+ISSUES.md
