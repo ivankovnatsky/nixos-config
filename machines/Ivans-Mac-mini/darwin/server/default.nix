@@ -25,7 +25,6 @@
     ./packages.nix
     ./power.nix
     ./sharing.nix
-    ./stash.nix
     ./sudo.nix
     ./system.nix
     ./tailscale.nix
