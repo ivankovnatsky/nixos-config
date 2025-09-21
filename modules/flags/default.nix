@@ -121,11 +121,6 @@ with lib;
       default = "192.168.50.6";
     };
 
-    miniVmIp = mkOption {
-      type = types.str;
-      description = "mini-vm (Orbstack) IP address";
-      default = "198.19.249.245";
-    };
     
     homeWorkPath = mkOption {
       type = types.str;

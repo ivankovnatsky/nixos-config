@@ -7,5 +7,5 @@
 # Jellyfin mini-vm forwarding (mini machine only)
 :8096 {
 	bind @bindAddress@
-	reverse_proxy @miniVmIp@:8096
+	reverse_proxy mini-vm.orb.local:8096
 }
