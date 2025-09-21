@@ -289,30 +289,6 @@
 		}
 	}
 
-	@stash host stash.@externalDomain@
-	reverse_proxy @stash @beeIp@:9999 {
-		# Enable WebSocket support
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-		# Increase timeouts for streaming
-		transport http {
-			keepalive 12h
-			keepalive_idle_conns 100
-		}
-	}
-
-	@stash-mini host stash-mini.@externalDomain@
-	reverse_proxy @stash-mini @miniIp@:9999 {
-		# Enable WebSocket support
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-		# Increase timeouts for streaming
-		transport http {
-			keepalive 12h
-			keepalive_idle_conns 100
-		}
-	}
-
 	# Default fallback for wildcard (original behavior)
 	reverse_proxy @beeIp@:80
 
