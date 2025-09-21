@@ -9,5 +9,8 @@ filename="$1"
 
 while true; do
     sleep 1
-    echo "$(pbpaste)" >> "$filename"
+    paste_content="$(pbpaste)"
+    if ! grep -Fxq "$paste_content" "$filename" 2>/dev/null; then
+        echo "$paste_content" >> "$filename"
+    fi
 done
