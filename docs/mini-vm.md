@@ -62,7 +62,10 @@ sudo nixos-rebuild switch --flake .
 
 ## Troubleshooting
 
-If the IP address changes after Orbstack restart:
-1. Check current IP: `orb list`
-2. Update `miniVmIp` in `modules/flags/default.nix`
-3. Rebuild configurations on bee and Mac mini
+Services on mini-vm are accessible via the hostname `mini-vm.orb.local`, which automatically resolves to the correct IP even after Orbstack restarts. No manual IP updates are needed.
+
+**Important**: The `.orb.local` hostname is only resolvable from the Mac mini (OrbStack host). For services accessed from other machines (like bee), the Caddy configuration must:
+1. Forward from bee to Mac mini IP (192.168.50.4)
+2. Mac mini then forwards to `mini-vm.orb.local`
+
+This two-hop forwarding is handled automatically by the shared Caddy templates - bee forwards to mini, mini forwards to the VM.
