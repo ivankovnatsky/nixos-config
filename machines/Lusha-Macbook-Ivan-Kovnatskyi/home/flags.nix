@@ -24,10 +24,14 @@
         }
         {
           key = "4";
-          app = "Slack";
+          app = "Google Chrome";
         }
         {
           key = "5";
+          app = "Slack";
+        }
+        {
+          key = "6";
           app = "zoom.us";
         }
         {
