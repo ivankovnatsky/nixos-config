@@ -77,6 +77,7 @@ tar \
     --exclude='**/.terraform.d/**' \
     --exclude='**/.Trash/**' \
     --exclude='**/.vscode/**' \
+    --exclude='**/.vscode-oss/**' \
     --exclude='**/*.sock' \
     --exclude='**/*.socket' \
     --exclude='**/go/**' \
@@ -90,6 +91,7 @@ tar \
     --exclude='**/Library/Application Support/Windsurf/**' \
     --exclude='**/Library/Application Support/virtualenv/**' \
     --exclude='**/Library/Application Support/Slack/**' \
+    --exclude='**/Library/Application Support/rancher-desktop/**' \
     --exclude='**/Library/Caches/Google/Chrome/**' \
     --exclude='**/Library/Caches/Firefox/Profiles/**' \
     --exclude='**/Library/Caches/go-build/**' \
