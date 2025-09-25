@@ -46,7 +46,7 @@ def main():
         
         try:
             # Download with yt-dlp (simple command)
-            result = subprocess.run(['yt-dlp', url], check=True, capture_output=False)
+            result = subprocess.run(['yt-dlp', '--write-auto-subs', '--embed-subs', url], check=True, capture_output=False)
             print(f"Successfully downloaded: {url}")
             
             # Remove URL immediately after successful download
