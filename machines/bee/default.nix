@@ -51,7 +51,7 @@
     ./transmission.nix
     ./prowlarr.nix
 
-    ./stash.nix
+    ./stash
 
     # Audio
     ./audiobookshelf.nix
