@@ -146,6 +146,15 @@
             "Ivans-Mac-mini"
           ];
         };
+        "Youtube" = {
+          id = "youtube";
+          label = "Youtube";
+          path = "/storage/Data/Youtube";
+          type = "sendreceive";
+          devices = [
+            "Ivans-Mac-mini"
+          ];
+        };
       };
     };
   };
@@ -201,6 +210,10 @@
 
     # Create .stfolder marker for Syncthing in the media directory
     "d /storage/Data/media/.stfolder 0755 ivan users - -"
+
+    # Create Youtube directory and .stfolder marker
+    "d /storage/Data/Youtube 0755 ivan users - -"
+    "d /storage/Data/Youtube/.stfolder 0755 ivan users - -"
   ];
 
   # ```
