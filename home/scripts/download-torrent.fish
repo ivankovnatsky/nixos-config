@@ -17,11 +17,8 @@ if test (count $argv) -ne 1; or contains -- "$argv[1]" --help -help -h
     show_help
 end
 
-# Set default download directory to ~/Downloads
-set download_dir ~/Downloads
-
-# Create the download directory if it doesn't exist
-mkdir -p $download_dir
+# Set default download directory to current $PWD
+set download_dir .
 
 # Download using aria2c to the specified download directory
 aria2c --dir $download_dir "$argv[1]"
