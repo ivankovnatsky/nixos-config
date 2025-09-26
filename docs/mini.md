@@ -127,6 +127,33 @@ This means NodePort services are not accessible from external machines (like bee
 
 This enables the routing chain: `External machine → Mini external IP:30080 → Mini localhost:30080 → OrbStack NodePort → K8s Service`
 
+### OrbStack HTTPS/TLS Configuration
+
+OrbStack requests keychain access to automatically configure HTTPS for its local VM services using the `orb.local` domain.
+
+**Keychain Access Request**: When granted, OrbStack can automatically manage TLS certificates for local development services, making them accessible via `https://service.orb.local`.
+
+**Implications for Caddy Routing**:
+- Services in mini-vm may be accessible via both `http://service.orb.local` and `https://service.orb.local`
+- When configuring Caddy to route to mini-vm services, consider the TLS termination:
+  - **Option 1**: Route to HTTP endpoint and let Caddy handle TLS
+  - **Option 2**: Route to HTTPS endpoint (requires proper certificate handling)
+
+**Configuration Considerations**:
+```caddyfile
+# Route to HTTP service in mini-vm (Caddy handles TLS)
+service.externalDomain {
+    reverse_proxy http://service.orb.local:8080
+}
+
+# Or route to HTTPS service (if OrbStack manages certificates)
+service.externalDomain {
+    reverse_proxy https://service.orb.local:8443
+}
+```
+
+**Note**: The `orb.local` domain is only accessible from the mini machine, so external routing must go through Caddy on the mini host.
+
 ## OrbStack VM Network Limitations
 
 ### Link-Local Address Access (169.254.0.0/16)
