@@ -1,6 +1,7 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
+    aria2
     bat
     btop
     cargo
@@ -18,8 +19,8 @@
     k9s
     kail
     kubectl
-    kubeseal
     kubernetes-helm
+    kubeseal
     macmon
     magic-wormhole
     mkpasswd
