@@ -17,6 +17,9 @@ AGENTS*
 # Claude Code commands (for now)
 .claude
 
+# Claude session tracking and project notes
+claude/
+
 # Documentation and notes
 .notes/
 
