@@ -19,7 +19,7 @@
               root: /Volumes/Storage/Data/Textcast/Texts
               layout: main-horizontal
               panes:
-                - nvim Articles.txt
+                - nvim Texts.txt
                 - |
                   cd /Volumes/Storage/Data/Sources/github.com/ivankovnatsky/textcast
                   make watch-cast
