@@ -28,10 +28,6 @@ in
     slang=eng
     sub-scale=0.5
 
-    # Keep subtitles visible longer (in seconds, 0 = forever)
-    # Default is usually around 7 seconds
-    sub-duration=0
-
     # OnScreen Controller at the bottom, terriable UI, disable it.
     osc=no
 
