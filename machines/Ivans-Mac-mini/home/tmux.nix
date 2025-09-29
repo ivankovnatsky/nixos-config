@@ -15,20 +15,6 @@
               panes:
                 - ls -lah
                 - make sync
-          - articast:
-              root: /Volumes/Storage/Data/Textcast/Texts
-              layout: main-horizontal
-              panes:
-                - nvim Texts.txt
-                - |
-                  cd /Volumes/Storage/Data/Sources/github.com/ivankovnatsky/textcast
-                  make watch-cast
-          - audiobookshelf:
-              root: /Volumes/Storage/Data/AudioBookShelf
-              layout: main-horizontal
-              panes:
-                - nvim List.txt
-                - make watch
           - youtube:
               root: /Volumes/Storage/Data/Youtube
               layout: main-horizontal
