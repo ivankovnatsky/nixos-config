@@ -17,6 +17,7 @@ import time
 import tempfile
 import subprocess
 import glob
+from datetime import datetime
 
 # Constants for common values
 DEFAULT_ABS_URL = "http://localhost:13378"
@@ -110,6 +111,10 @@ class AudiobookshelfClient:
 
         except urllib.error.HTTPError as e:
             # Handle HTTP errors (4xx, 5xx)
+            # Don't print 404 errors for progress endpoints - item might not have progress
+            if e.code == 404 and "/progress/" in url:
+                return None
+
             error_message = e.read().decode("utf-8")
             try:
                 error_data = json.loads(error_message)
@@ -127,6 +132,21 @@ class AudiobookshelfClient:
     def get_libraries(self):
         """Get all available libraries."""
         return self.make_request("GET", "/api/libraries")
+
+    def get_library_items(self, library_id):
+        """Get all items in a library."""
+        return self.make_request("GET", f"/api/libraries/{library_id}/items")
+
+    def get_item_progress(self, item_id, episode_id=None):
+        """Get progress information for a specific item."""
+        if episode_id:
+            return self.make_request("GET", f"/api/me/progress/{item_id}/{episode_id}")
+        else:
+            return self.make_request("GET", f"/api/me/progress/{item_id}")
+
+    def remove_item(self, item_id):
+        """Remove an item from the library."""
+        return self.make_request("DELETE", f"/api/items/{item_id}")
 
     def upload_file(self, file_path, library_id, title=None):
         """Upload a file to a specific library.
@@ -365,6 +385,121 @@ def libraries_command(client):
         print()
 
 
+def list_listened_command(args, client):
+    """Handle the list-listened command."""
+    print(f"Fetching listened episodes from {client.base_url}...")
+
+    # Get library items first
+    items_response = client.get_library_items(args.library_id)
+
+    if not items_response or "results" not in items_response:
+        print("No items found or unable to retrieve library items.")
+        return
+
+    listened_items = []
+
+    for item in items_response["results"]:
+        item_id = item["id"]
+
+        # Try to get progress for this item
+        progress_info = client.get_item_progress(item_id)
+
+        # Check if item is finished (progress = 1.0 means 100% complete)
+        if progress_info and progress_info.get("progress", 0) >= 1.0:
+            listened_items.append({
+                "id": item_id,
+                "title": item["media"]["metadata"]["title"],
+                "progress": progress_info.get("progress", 0),
+                "finished_at": progress_info.get("finishedAt"),
+                "duration": item["media"].get("duration", 0)
+            })
+
+    if not listened_items:
+        print("No listened episodes found.")
+        return
+
+    print(f"\nFound {len(listened_items)} listened episodes:")
+    print("-" * 50)
+
+    for item in listened_items:
+        print(f"ID: {item['id']}")
+        print(f"Title: {item['title']}")
+        print(f"Progress: {item['progress']:.1%}")
+        if item['finished_at']:
+            # Convert timestamp to readable date
+            try:
+                finished_date = datetime.fromtimestamp(item['finished_at'] / 1000)
+                print(f"Finished: {finished_date.strftime('%Y-%m-%d %H:%M')}")
+            except (ValueError, TypeError):
+                print(f"Finished: {item['finished_at']}")
+        if item['duration']:
+            duration_hours = item['duration'] / 3600
+            print(f"Duration: {duration_hours:.1f} hours")
+        print()
+
+
+def cleanup_listened_command(args, client):
+    """Handle the cleanup-listened command."""
+    print(f"Finding listened episodes to clean up from {client.base_url}...")
+
+    # Get library items
+    items_response = client.get_library_items(args.library_id)
+
+    if not items_response or "results" not in items_response:
+        print("No items found or unable to retrieve library items.")
+        return
+
+    listened_items = []
+
+    for item in items_response["results"]:
+        item_id = item["id"]
+
+        # Get progress for this item
+        progress = client.get_item_progress(item_id)
+
+        # Check if item is finished (progress = 1.0 means 100% complete)
+        if progress and progress.get("progress", 0) >= 1.0:
+            listened_items.append({
+                "id": item_id,
+                "title": item["media"]["metadata"]["title"],
+                "progress": progress.get("progress", 0)
+            })
+
+    if not listened_items:
+        print("No listened episodes found to clean up.")
+        return
+
+    print(f"\nFound {len(listened_items)} listened episodes to remove:")
+    print("-" * 50)
+
+    for item in listened_items:
+        print(f"- {item['title']} (ID: {item['id']})")
+
+    if not args.force:
+        response = input(f"\nAre you sure you want to remove {len(listened_items)} listened episodes? (y/N): ")
+        if response.lower() not in ['y', 'yes']:
+            print("Cleanup cancelled.")
+            return
+
+    # Remove the items
+    removed_count = 0
+    failed_count = 0
+
+    for item in listened_items:
+        print(f"Removing: {item['title']}")
+
+        if client.remove_item(item['id']):
+            removed_count += 1
+            print(f"  ✓ Removed successfully")
+        else:
+            failed_count += 1
+            print(f"  ✗ Failed to remove")
+
+    print(f"\nCleanup complete:")
+    print(f"  Removed: {removed_count}")
+    print(f"  Failed: {failed_count}")
+
+
 def download_command(args):
     """Handle the download command."""
     if args.url:
@@ -472,6 +607,39 @@ def main():
         default=os.environ.get("ABS_URL", DEFAULT_ABS_URL),
         help=f"Audiobookshelf URL (default: {DEFAULT_ABS_URL} or ABS_URL env var)",
     )
+
+    # List listened command
+    list_listened_parser = subparsers.add_parser(
+        "list-listened", help="List episodes that have been completely listened to"
+    )
+    list_listened_parser.add_argument(
+        "--url",
+        default=os.environ.get("ABS_URL", DEFAULT_ABS_URL),
+        help=f"Audiobookshelf URL (default: {DEFAULT_ABS_URL} or ABS_URL env var)",
+    )
+    list_listened_parser.add_argument(
+        "--library-id",
+        default=DEFAULT_PODCASTS_LIBRARY_ID,
+        help=f"Library ID (default: {DEFAULT_PODCASTS_LIBRARY_ID} - Podcasts library)",
+    )
+
+    # Cleanup listened command
+    cleanup_listened_parser = subparsers.add_parser(
+        "cleanup-listened", help="Remove episodes that have been completely listened to"
+    )
+    cleanup_listened_parser.add_argument(
+        "--url",
+        default=os.environ.get("ABS_URL", DEFAULT_ABS_URL),
+        help=f"Audiobookshelf URL (default: {DEFAULT_ABS_URL} or ABS_URL env var)",
+    )
+    cleanup_listened_parser.add_argument(
+        "--library-id",
+        default=DEFAULT_PODCASTS_LIBRARY_ID,
+        help=f"Library ID (default: {DEFAULT_PODCASTS_LIBRARY_ID} - Podcasts library)",
+    )
+    cleanup_listened_parser.add_argument(
+        "--force", action="store_true", help="Skip confirmation prompt"
+    )
     
     # Download command
     download_parser = subparsers.add_parser(
@@ -514,16 +682,18 @@ def main():
         return 1
 
     # Make sure the first argument is a valid command
-    valid_commands = ["upload", "libraries", "download", "process", "-h", "--help"]
+    valid_commands = ["upload", "libraries", "list-listened", "cleanup-listened", "download", "process", "-h", "--help"]
     if sys.argv[1] not in valid_commands:
         print(f"Error: '{sys.argv[1]}' is not a recognized command.")
         print("Commands must come first, before any options.")
-        print("\nAvailable commands: upload, libraries, download, process")
+        print("\nAvailable commands: upload, libraries, list-listened, cleanup-listened, download, process")
         print("\nUsage examples:")
         print(
             "  audiobookshelf upload --url https://example.com --file file.mp3 --library-id ID"
         )
         print("  audiobookshelf libraries --url https://example.com")
+        print("  audiobookshelf list-listened --url https://example.com --library-id ID")
+        print("  audiobookshelf cleanup-listened --url https://example.com --library-id ID")
         print("  audiobookshelf download --url https://youtube.com/watch?v=example")
         print("  audiobookshelf process --file-url-list /path/to/urls.txt")
         return 1
@@ -553,6 +723,10 @@ def main():
             upload_command(args, client)
         elif args.command == "libraries":
             libraries_command(client)
+        elif args.command == "list-listened":
+            list_listened_command(args, client)
+        elif args.command == "cleanup-listened":
+            cleanup_listened_command(args, client)
         else:
             parser.print_help()
 
