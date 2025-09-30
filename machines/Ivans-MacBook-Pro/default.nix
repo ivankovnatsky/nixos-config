@@ -1,11 +1,11 @@
 {
   imports = [
+    ./darwin
+
     ../../darwin/darwin.nix
-    ../../darwin/dock.nix
     ../../darwin/flags.nix
     ../../darwin/fonts.nix
     ../../darwin/homebrew.nix
-    ./darwin/homebrew.nix
     ../../darwin/nix.nix
     ../../darwin/security.nix
     ../../darwin/shell.nix

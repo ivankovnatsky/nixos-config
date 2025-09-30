@@ -37,6 +37,7 @@ in
 
       { path = "/System/Applications/Utilities/Terminal.app/"; }
       { path = "/Applications/Xcode.app/"; }
+      { path = "Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/"; }
       { path = "/System/Applications/Utilities/Activity Monitor.app/"; }
       { path = "/System/Applications/Utilities/Audio MIDI Setup.app/"; }
       { path = "/System/Applications/Preview.app"; }
