@@ -36,19 +36,26 @@ in
       }
 
       { path = "/System/Applications/Utilities/Terminal.app/"; }
-      { path = "/Applications/Xcode.app/"; }
-      { path = "Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/"; }
       { path = "/System/Applications/Utilities/Activity Monitor.app/"; }
       { path = "/System/Applications/Utilities/Audio MIDI Setup.app/"; }
       { path = "/System/Applications/Preview.app"; }
       { path = "/System/Applications/Passwords.app/"; }
       { path = "/System/Library/CoreServices/Applications/Keychain Access.app/"; }
-      { path = "/Applications/Numbers.app/"; }
       { path = "/System/Applications/iPhone Mirroring.app/"; }
       { path = "/System/Applications/FindMy.app/"; }
       { path = "/System/Applications/Weather.app/"; }
       { path = "/System/Applications/Home.app/"; }
       { path = "/System/Applications/Utilities/Screen Sharing.app/"; }
+
+      {
+        type = "spacer";
+        section = "apps";
+      }
+
+      # Installed from App Store later on
+      { path = "/Applications/Xcode.app/"; }
+      { path = "Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/"; }
+      { path = "/Applications/Numbers.app/"; }
 
       {
         type = "spacer";
