@@ -1,18 +1,19 @@
 {
   imports = [
-    ../../../darwin/home/flags.nix
-    ../../../home/home-session-vars.nix
+    # ../../../home/bash.nix
     ../../../darwin/home/activation.nix
+    ../../../darwin/home/flags.nix
     ../../../darwin/home/nixvim.nix
     ../../../darwin/home/packages.nix
     ../../../home/amethyst
-    # ../../../home/bash.nix
     ../../../home/bat.nix
+    ../../../home/claude.nix
     ../../../home/direnv.nix
     ../../../home/ghostty.nix
     ../../../home/git.nix
     ../../../home/go.nix
     ../../../home/hammerspoon
+    ../../../home/home-session-vars.nix
     ../../../home/kitty
     ../../../home/lsd.nix
     ../../../home/mpv.nix
@@ -33,5 +34,6 @@
     ../../../home/yt-dlp.nix
     ../../../modules/flags
     ../../../modules/secrets
+    ./packages.nix
   ];
 }
