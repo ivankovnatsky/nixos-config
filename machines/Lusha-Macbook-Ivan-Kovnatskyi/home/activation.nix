@@ -25,23 +25,22 @@
       fi
 
       # MCP (Model Context Protocol) servers for Claude Code
-      # Using --user scope for cross-project accessibility
+      # Commented out for now - serena MCP installation disabled
 
-      # Check if Serena MCP server is already configured
-      NPM_BIN="$HOME/.npm/bin"
-      CLAUDE_CLI="$NPM_BIN/claude"
-
-      if [[ -x "$CLAUDE_CLI" ]]; then
-        export PATH="${pkgs.nodejs}/bin:$NPM_BIN:${pkgs.python313}/bin:$PATH"
-        if ! "$CLAUDE_CLI" mcp list --scope user 2>/dev/null | grep -q "serena"; then
-          echo "Installing Serena MCP server globally (--user scope)..."
-          "$CLAUDE_CLI" mcp add serena --scope user -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context ide-assistant --project '$(pwd)'
-        else
-          echo "Serena MCP server already configured, skipping..."
-        fi
-      else
-        echo "Claude CLI not installed yet, skipping MCP server configuration..."
-      fi
+      # NPM_BIN="$HOME/.npm/bin"
+      # CLAUDE_CLI="$NPM_BIN/claude"
+      #
+      # if [[ -x "$CLAUDE_CLI" ]]; then
+      #   export PATH="${pkgs.nodejs}/bin:$NPM_BIN:${pkgs.python313}/bin:$PATH"
+      #   if ! "$CLAUDE_CLI" mcp list 2>/dev/null | grep -q "serena"; then
+      #     echo "Installing Serena MCP server..."
+      #     "$CLAUDE_CLI" mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context ide-assistant --project '$(pwd)'
+      #   else
+      #     echo "Serena MCP server already configured, skipping..."
+      #   fi
+      # else
+      #   echo "Claude CLI not installed yet, skipping MCP server configuration..."
+      # fi
     '';
   };
 }
