@@ -35,13 +35,12 @@ let
 
   configJson = pkgs.writeText "activation-config.json" (builtins.toJSON {
     npm = {
-      packages = cfg.npm.packages;
-      configFile = cfg.npm.configFile;
+      inherit (cfg.npm) packages configFile;
     };
     mcp = {
-      servers = cfg.mcp.servers;
+      inherit (cfg.mcp) servers;
     };
-    stateFile = cfg.stateFile;
+    inherit (cfg) stateFile;
     paths = {
       npmBin = "${config.home.homeDirectory}/.npm/bin";
       claudeCli = "${config.home.homeDirectory}/.npm/bin/claude";
