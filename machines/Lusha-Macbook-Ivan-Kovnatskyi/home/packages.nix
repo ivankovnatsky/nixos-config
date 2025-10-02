@@ -38,6 +38,7 @@
     hclfmt
     home-manager
     iam-policy-json-to-terraform
+    jcli
     imagemagick
     infra
     infracost
