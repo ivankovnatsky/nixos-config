@@ -27,7 +27,7 @@
       { name = "ghostty@tip"; greedy = true; }
       "hammerspoon"
       "keycastr"
-      "kitty"
+      { name = "kitty"; greedy = true; }
       "mos"
       "stats"
       "twingate"
