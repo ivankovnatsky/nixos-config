@@ -1,28 +1,30 @@
 #!/usr/bin/env bash
 
-# caffeinate - Prevent system from sleeping on macOS and Linux systems
+# prevent-sleep - Prevent system from sleeping on macOS and Linux systems
 
 show_help() {
     cat << EOF
-Usage: caffeinate [OPTIONS]
+Usage: prevent-sleep [OPTIONS]
 
 Prevent system from sleeping on macOS and Linux systems.
 
 Options:
     -h, --help              Show this help message
-    -t, --timeout SECONDS   Set timeout in seconds (default: 3600 = 1 hour)
+    -t, --timeout SECONDS   Set timeout in seconds (default: 43200 = 12 hours)
 
 Environment variables:
     TIMEOUT     Alternative way to set timeout in seconds
 
 Examples:
-    caffeinate              # Run with default 1 hour timeout
-    caffeinate -t 7200      # Run with 2 hour timeout
-    TIMEOUT=7200 caffeinate # Same as above
+    prevent-sleep              # Run with default 12 hour timeout
+    prevent-sleep -t 7200      # Run with 2 hour timeout
+    TIMEOUT=7200 prevent-sleep # Same as above
 
 On macOS, uses caffeinate with options:
+    -d: Prevent the display from sleeping
     -i: Prevent the system from idle sleeping
     -m: Prevent the disk from idle sleeping
+    -s: Prevent the system from sleeping (valid only when running on AC power)
 
 On Linux, uses either systemd-inhibit or xset depending on availability
 EOF
@@ -61,8 +63,8 @@ get_os() {
     esac
 }
 
-# Default timeout: 1 hour in seconds
-DEFAULT_TIMEOUT=3600
+# Default timeout: 12 hours in seconds
+DEFAULT_TIMEOUT=43200
 
 # Allow override via environment variable
 TIMEOUT=${TIMEOUT:-$DEFAULT_TIMEOUT}
@@ -71,10 +73,12 @@ TIMEOUT=${TIMEOUT:-$DEFAULT_TIMEOUT}
 prevent_sleep_macos() {
     echo "Preventing sleep on macOS using caffeinate for ${TIMEOUT} seconds..."
     # Create assertions to:
+    # -d prevent the display from sleeping
     # -i prevent the system from idle sleeping
     # -m prevent the disk from idle sleeping
+    # -s prevent the system from sleeping (valid only when running on AC power)
     # -t specify timeout in seconds
-    /usr/bin/caffeinate -i -m -t "${TIMEOUT}"
+    /usr/bin/caffeinate -d -i -m -s -t "${TIMEOUT}"
 }
 
 # Function to prevent sleep on Linux
