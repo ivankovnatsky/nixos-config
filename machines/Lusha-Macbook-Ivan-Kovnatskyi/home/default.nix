@@ -48,6 +48,7 @@
     ./flags.nix
     ./nixvim.nix
     ./packages.nix
+    ./prevent-sleep.nix
     ./programs.nix
   ];
 }
