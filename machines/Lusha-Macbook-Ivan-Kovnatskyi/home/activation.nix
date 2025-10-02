@@ -25,19 +25,17 @@
       fi
 
       # MCP (Model Context Protocol) servers for Claude Code
-      # MCP servers are configured globally, not per-project. The $(pwd) in the command
-      # tells the server which directory/project to provide context for when it starts.
-      # This allows the IDE assistant to understand the current project structure.
-      
+      # Using --user scope for cross-project accessibility
+
       # Check if Serena MCP server is already configured
       NPM_BIN="$HOME/.npm/bin"
       CLAUDE_CLI="$NPM_BIN/claude"
-      
+
       if [[ -x "$CLAUDE_CLI" ]]; then
         export PATH="${pkgs.nodejs}/bin:$NPM_BIN:${pkgs.python313}/bin:$PATH"
-        if ! "$CLAUDE_CLI" mcp list 2>/dev/null | grep -q "serena"; then
-          echo "Configuring Serena MCP server for Claude Code..."
-          "$CLAUDE_CLI" mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context ide-assistant --project '$(pwd)'
+        if ! "$CLAUDE_CLI" mcp list --scope user 2>/dev/null | grep -q "serena"; then
+          echo "Installing Serena MCP server globally (--user scope)..."
+          "$CLAUDE_CLI" mcp add serena --scope user -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context ide-assistant --project '$(pwd)'
         else
           echo "Serena MCP server already configured, skipping..."
         fi
