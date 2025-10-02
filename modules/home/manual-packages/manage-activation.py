@@ -84,16 +84,44 @@ def install_npm_packages(packages: Dict[str, str], paths: Dict, state: Dict, npm
             log(".npmrc already exists, skipping creation", Color.BLUE)
             state.setdefault("npm", {})["npmrc_created"] = True
 
-    current = get_installed_npm_packages(paths["npmBin"], packages)
     desired = set(packages.keys())
     state_packages = set(state.get("npm", {}).get("packages", {}).keys())
 
-    to_install = desired - current
-    to_remove = current - desired
+    # Check what's currently installed from what we're tracking
+    current = get_installed_npm_packages(paths["npmBin"], packages)
+
+    # Build a complete mapping of all tracked packages (state + current config)
+    # to their binaries for removal detection
+    all_tracked = {}
+    for pkg, pkg_data in state.get("npm", {}).get("packages", {}).items():
+        all_tracked[pkg] = pkg_data.get("binary", pkg.split("/")[-1])
+    for pkg, binary in packages.items():
+        if pkg not in all_tracked:
+            all_tracked[pkg] = binary
+
+    # Check if binaries exist for packages that should be removed (not in desired config)
+    to_remove = []
+    for pkg, binary in all_tracked.items():
+        if pkg not in desired and (Path(paths["npmBin"]) / binary).exists():
+            to_remove.append(pkg)
+
+    state_changed = False
 
     if to_remove:
-        log(f"Would remove NPM packages: {', '.join(to_remove)}", Color.RED)
-        log("(Skipping removal - manual cleanup recommended)", Color.YELLOW)
+        log(f"Removing NPM packages: {', '.join(to_remove)}", Color.RED)
+        env = os.environ.copy()
+        env["PATH"] = f"{paths['nodejs']}:{env.get('PATH', '')}"
+
+        npm_cmd = [f"{paths['nodejs']}/npm", "uninstall", "--global"] + list(to_remove)
+        returncode, stdout, stderr = run_command(npm_cmd, env)
+
+        if returncode != 0:
+            log(f"Failed to remove NPM packages: {stderr}", Color.RED)
+        else:
+            log(f"Removed: {', '.join(to_remove)}", Color.GREEN)
+            state_changed = True
+
+    to_install = desired - current
 
     if to_install:
         log(f"Installing NPM packages: {', '.join(to_install)}", Color.GREEN)
@@ -109,13 +137,16 @@ def install_npm_packages(packages: Dict[str, str], paths: Dict, state: Dict, npm
             log(f"Failed to install NPM packages: {stderr}", Color.RED)
             return False
 
-        # Update state after successful install
-        state.setdefault("npm", {})["packages"] = {pkg: {"installed": True} for pkg in packages.keys()}
-    elif state_packages != desired:
-        # Packages are installed but state is out of sync - update it
-        state.setdefault("npm", {})["packages"] = {pkg: {"installed": True} for pkg in packages.keys()}
-    else:
+        state_changed = True
+    elif not to_remove:
         log("All NPM packages already installed", Color.BLUE)
+
+    # Update state with current desired packages (including binary names)
+    if state_changed or state_packages != desired:
+        state.setdefault("npm", {})["packages"] = {
+            pkg: {"installed": True, "binary": binary}
+            for pkg, binary in packages.items()
+        }
 
     return True
 
