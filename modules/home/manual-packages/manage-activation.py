@@ -93,6 +93,7 @@ def install_npm_packages(packages: List[str], paths: Dict, state: Dict, npm_conf
 
     current = get_installed_npm_packages(paths["npmBin"])
     desired = set(packages)
+    state_packages = set(state.get("npm", {}).get("packages", {}).keys())
 
     to_install = desired - current
     to_remove = current - desired
@@ -115,6 +116,10 @@ def install_npm_packages(packages: List[str], paths: Dict, state: Dict, npm_conf
             log(f"Failed to install NPM packages: {stderr}", Color.RED)
             return False
 
+        # Update state after successful install
+        state.setdefault("npm", {})["packages"] = {pkg: {"installed": True} for pkg in packages}
+    elif state_packages != desired:
+        # Packages are installed but state is out of sync - update it
         state.setdefault("npm", {})["packages"] = {pkg: {"installed": True} for pkg in packages}
     else:
         log("All NPM packages already installed", Color.BLUE)
