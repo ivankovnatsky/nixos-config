@@ -40,22 +40,15 @@ def run_command(cmd: List[str], env: Dict = None) -> tuple[int, str, str]:
     return result.returncode, result.stdout, result.stderr
 
 
-def get_installed_npm_packages(npm_bin: str) -> Set[str]:
+def get_installed_npm_packages(npm_bin: str, packages: Dict[str, str]) -> Set[str]:
     npm_path = Path(npm_bin).parent.parent
     if not npm_path.exists():
         return set()
 
     installed = set()
-    for binary in ["npm-groovy-lint", "claude", "codex", "gemini", "happy"]:
+    for package, binary in packages.items():
         if (Path(npm_bin) / binary).exists():
-            package_map = {
-                "npm-groovy-lint": "npm-groovy-lint",
-                "claude": "@anthropic-ai/claude-code",
-                "codex": "@openai/codex",
-                "gemini": "@google/gemini-cli",
-                "happy": "happy-coder",
-            }
-            installed.add(package_map.get(binary, binary))
+            installed.add(package)
     return installed
 
 
@@ -76,7 +69,7 @@ def get_installed_mcp_servers(claude_cli: str) -> Set[str]:
     return servers
 
 
-def install_npm_packages(packages: List[str], paths: Dict, state: Dict, npm_config: Dict):
+def install_npm_packages(packages: Dict[str, str], paths: Dict, state: Dict, npm_config: Dict):
     # Handle .npmrc creation
     npmrc_path = os.path.expanduser("~/.npmrc")
     npmrc_content = npm_config.get("configFile")
@@ -91,8 +84,8 @@ def install_npm_packages(packages: List[str], paths: Dict, state: Dict, npm_conf
             log(".npmrc already exists, skipping creation", Color.BLUE)
             state.setdefault("npm", {})["npmrc_created"] = True
 
-    current = get_installed_npm_packages(paths["npmBin"])
-    desired = set(packages)
+    current = get_installed_npm_packages(paths["npmBin"], packages)
+    desired = set(packages.keys())
     state_packages = set(state.get("npm", {}).get("packages", {}).keys())
 
     to_install = desired - current
@@ -108,7 +101,7 @@ def install_npm_packages(packages: List[str], paths: Dict, state: Dict, npm_conf
         env["PATH"] = f"{paths['nodejs']}:{paths['tar']}:{paths['gzip']}:{paths['curl']}:{env.get('PATH', '')}"
 
         npm_cmd = [f"{paths['nodejs']}/npm", "install", "--global", "--force"] + list(
-            packages
+            to_install
         )
         returncode, stdout, stderr = run_command(npm_cmd, env)
 
@@ -117,10 +110,10 @@ def install_npm_packages(packages: List[str], paths: Dict, state: Dict, npm_conf
             return False
 
         # Update state after successful install
-        state.setdefault("npm", {})["packages"] = {pkg: {"installed": True} for pkg in packages}
+        state.setdefault("npm", {})["packages"] = {pkg: {"installed": True} for pkg in packages.keys()}
     elif state_packages != desired:
         # Packages are installed but state is out of sync - update it
-        state.setdefault("npm", {})["packages"] = {pkg: {"installed": True} for pkg in packages}
+        state.setdefault("npm", {})["packages"] = {pkg: {"installed": True} for pkg in packages.keys()}
     else:
         log("All NPM packages already installed", Color.BLUE)
 

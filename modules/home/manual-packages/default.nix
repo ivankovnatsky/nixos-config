@@ -63,9 +63,13 @@ in
     };
 
     npm.packages = mkOption {
-      type = types.listOf types.str;
-      default = [];
-      description = "NPM packages to install globally";
+      type = types.attrsOf types.str;
+      default = {};
+      description = "NPM packages to install globally (package name -> binary name)";
+      example = {
+        "@anthropic-ai/claude-code" = "claude";
+        "npm-groovy-lint" = "npm-groovy-lint";
+      };
     };
 
     npm.configFile = mkOption {

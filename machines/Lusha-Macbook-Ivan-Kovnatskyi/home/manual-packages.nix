@@ -3,13 +3,13 @@
   local.manualPackages = {
     enable = true;
 
-    npm.packages = [
-      "npm-groovy-lint"
-      "@anthropic-ai/claude-code"
-      "@openai/codex"
-      "@google/gemini-cli"
-      "happy-coder"
-    ];
+    npm.packages = {
+      "npm-groovy-lint" = "npm-groovy-lint";
+      "@anthropic-ai/claude-code" = "claude";
+      "@openai/codex" = "codex";
+      "@google/gemini-cli" = "gemini";
+      "happy-coder" = "happy";
+    };
 
     npm.configFile = ''
       prefix=~/.npm
