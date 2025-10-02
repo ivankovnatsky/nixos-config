@@ -42,8 +42,9 @@
     ../../../home/yt-dlp.nix
     ../../../home/zellij.nix
     ../../../modules/flags
+    ../../../modules/home/manual-packages
     ../../../modules/secrets
-    ./activation.nix
+    ./manual-packages.nix
     ./firefox.nix
     ./flags.nix
     ./nixvim.nix
