@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
-    (python313.withPackages (ps: with ps; [ grip ]))
+    (python313.withPackages (ps: with ps; [ grip jira ]))
     (wrapHelm kubernetes-helm { plugins = with pkgs.kubernetes-helmPlugins; [ helm-secrets ]; })
     argocd
     aws-sso-cli
