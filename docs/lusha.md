@@ -16,3 +16,7 @@ claude /mcp
 ```
 
 Pressed `1` twice to trigger OAuth flow - browser opened automatically for authentication.
+
+## Remote Access
+
+Configured SSH remote login and screen sharing for my user account only via System Settings.
