@@ -73,26 +73,6 @@ let
     }
   '';
 
-  # Create auto theme files to enable Kitty's automatic theme switching
-  # Users can run `kitten themes` to select and save their preferred themes
-  # These files will be automatically used based on OS appearance
-  darkThemeConfig = ''
-    # vim:ft=kitty
-    # Run `kitten themes` and select "Save as automatic dark theme" to customize
-    # Using default dark theme
-  '';
-
-  lightThemeConfig = ''
-    # vim:ft=kitty  
-    # Run `kitten themes` and select "Save as automatic light theme" to customize
-  '';
-
-  # For GNOME, no-preference is treated as light mode
-  noPreferenceThemeConfig = ''
-    # vim:ft=kitty
-    # Run `kitten themes` and select "Save as automatic no-preference theme" to customize
-    # For GNOME desktop, this is used for light mode
-  '';
 in
 {
   # Install kitty package on Linux only, use Homebrew on macOS
@@ -104,14 +84,30 @@ in
     ".config/kitty/kitty.conf" = {
       text = kittyConfig;
     };
+
+    # Automatic theme switching (requires kitty 0.38.0+)
+    # Inspired by https://github.com/nix-community/home-manager/blob/master/modules/programs/kitty.nix
+    # References:
+    # - https://gist.github.com/eg-ayoub/0066d7bbc4456ef5d06b8277437dc0dd
+    # - https://sw.kovidgoyal.net/kitty/kittens/themes/#change-color-themes-automatically-when-the-os-switches-between-light-and-dark
+    # Browse themes: ls ${pkgs.kitty-themes}/share/kitty-themes/themes/
     ".config/kitty/dark-theme.auto.conf" = {
-      text = darkThemeConfig;
+      text = ''
+        include ${pkgs.kitty-themes}/share/kitty-themes/themes/Tokyo_Night_Moon.conf
+      '';
     };
+
     ".config/kitty/light-theme.auto.conf" = {
-      text = lightThemeConfig;
+      text = ''
+        include ${pkgs.kitty-themes}/share/kitty-themes/themes/GitHub_Light.conf
+      '';
     };
+
+    # For GNOME, no-preference is treated as light mode
     ".config/kitty/no-preference-theme.auto.conf" = {
-      text = noPreferenceThemeConfig;
+      text = ''
+        include ${pkgs.kitty-themes}/share/kitty-themes/themes/Tokyo_Night_Moon.conf
+      '';
     };
   };
 }
