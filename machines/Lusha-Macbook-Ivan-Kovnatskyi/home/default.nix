@@ -45,6 +45,7 @@
     ../../../modules/home/manual-packages
     ../../../modules/secrets
     ./manual-packages.nix
+    ./scripts.nix
     ./firefox.nix
     ./flags.nix
     ./nixvim.nix
