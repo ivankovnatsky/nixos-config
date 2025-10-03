@@ -27,7 +27,6 @@ in
                 "Read(${sourcesPath}/**)",
                 "Bash(git add:*)",
                 "Bash(git log:*)",
-                "mcp__serena",
                 "WebFetch(domain:*)",
                 "WebSearch",
                 "Bash(nix-prefetch-url:*)",
@@ -36,7 +35,7 @@ in
                 "Read(${homePath}/Notes/**)"
               ],
               "deny": [
-                "Bash(sudo:*)",
+                "Bash(sudo:*)"
               ]
             },
             "includeCoAuthoredBy": false,
