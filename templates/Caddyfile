@@ -111,6 +111,18 @@
 	@homeassistant host homeassistant.@externalDomain@
 	reverse_proxy @homeassistant @beeIp@:8123
 
+	@matrix host matrix.@externalDomain@
+	reverse_proxy @matrix @beeIp@:8008 {
+		# Enable WebSocket support for Matrix sync
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		# Matrix requires long-lived connections for sync
+		transport http {
+			keepalive 5m
+			keepalive_idle_conns 100
+		}
+	}
+
 	@openwebui host openwebui.@externalDomain@
 	reverse_proxy @openwebui @beeIp@:8090 {
 		# Enable WebSocket support for real-time updates
