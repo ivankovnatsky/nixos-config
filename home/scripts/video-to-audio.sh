@@ -2,9 +2,9 @@
 
 # Check if a URL is provided
 if [ $# -eq 0 ]; then
-    echo "Please provide a YouTube URL as an argument."
-    echo "Usage: $0 <YouTube_URL>"
-    exit 1
+  echo "Please provide a YouTube URL as an argument."
+  echo "Usage: $0 <YouTube_URL>"
+  exit 1
 fi
 
 # YouTube URL

@@ -11,26 +11,26 @@
 #   grep-find "kafka:" "dir/dir2/file"    # Search in files containing 'file' in dir/dir2/
 
 search_term="$1"
-file_pattern="${2:-}"  # Optional file pattern argument
+file_pattern="${2:-}" # Optional file pattern argument
 
 # Try ripgrep with fzf preview for content, using file pattern if provided
 if [ -n "$file_pattern" ]; then
-    rg --color=always --line-number "$search_term" -g "**/*${file_pattern}*" | \
-        fzf --ansi \
-            --delimiter : \
-            --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' \
-            --preview-window '+{2}-/2' \
-            --bind 'enter:execute(nvim {1} +{2})'
+  rg --color=always --line-number "$search_term" -g "**/*${file_pattern}*" |
+    fzf --ansi \
+      --delimiter : \
+      --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' \
+      --preview-window '+{2}-/2' \
+      --bind 'enter:execute(nvim {1} +{2})'
 else
-    rg --color=always --line-number "$search_term" | \
-        fzf --ansi \
-            --delimiter : \
-            --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' \
-            --preview-window '+{2}-/2' \
-            --bind 'enter:execute(nvim {1} +{2})'
+  rg --color=always --line-number "$search_term" |
+    fzf --ansi \
+      --delimiter : \
+      --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' \
+      --preview-window '+{2}-/2' \
+      --bind 'enter:execute(nvim {1} +{2})'
 fi
 
 # Always run fzf file search after content search, without file pattern restriction
 fzf --preview 'bat --style=numbers --color=always {}' \
-    --query "$search_term" \
-    --bind 'enter:execute(nvim {})'
+  --query "$search_term" \
+  --bind 'enter:execute(nvim {})'

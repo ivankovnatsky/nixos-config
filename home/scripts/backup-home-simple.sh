@@ -7,7 +7,7 @@
 #    - Rust: librclone bindings lacked Windows support
 #    - Python: Too slow for large backups
 # 3. Simplified to tar + ssh/scp with mini machine as single upload source
-# 
+#
 # This bash version remains the best solution for Unix due to native scp speeds.
 # The Go version (github.com/ivankovnatsky/backup-home-go) exists for exploration
 # and Windows support, where a PowerShell script is used instead.
@@ -26,19 +26,19 @@ CUSTOM_ARCHIVE_PATH=""
 
 while [[ $# -gt 0 ]]; do
   case $1 in
-    --skip-backup)
-      SKIP_BACKUP=true
-      shift
-      ;;
-    --backup-path)
-      CUSTOM_ARCHIVE_PATH="$2"
-      shift 2
-      ;;
-    *)
-      echo "Unknown option: $1"
-      echo "Usage: $0 [--skip-backup] [--backup-path <path>]"
-      exit 1
-      ;;
+  --skip-backup)
+    SKIP_BACKUP=true
+    shift
+    ;;
+  --backup-path)
+    CUSTOM_ARCHIVE_PATH="$2"
+    shift 2
+    ;;
+  *)
+    echo "Unknown option: $1"
+    echo "Usage: $0 [--skip-backup] [--backup-path <path>]"
+    exit 1
+    ;;
   esac
 done
 
@@ -64,7 +64,7 @@ if [[ "$SKIP_BACKUP" == "true" ]]; then
 else
   cd "$HOME/../" || exit 1
 
-tar \
+  tar \
     --exclude='**/.cache/huggingface/**' \
     --exclude='**/.cache/nix/**' \
     --exclude='**/.cache/uv/archive-v0/**' \
@@ -115,9 +115,8 @@ tar \
     --no-xattrs \
     \
     -cv \
-    "$USER" | \
-    \
-    pigz > "$ARCHIVE_PATH"
+    "$USER" |
+    pigz >"$ARCHIVE_PATH"
 fi
 
 export TARGET_MACHINE=192.168.50.4

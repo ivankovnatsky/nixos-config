@@ -31,38 +31,38 @@
 export PAGER=""
 
 nix_gc() {
-    # List nix generations.
-    # Example: nix-env --list-generations
-    #
-    # ```console
-    #    3   2022-10-04 10:51:55   (current)
-    # ```
-    nix-env --list-generations
-    sudo nix-env --profile /nix/var/nix/profiles/system --list-generations
+  # List nix generations.
+  # Example: nix-env --list-generations
+  #
+  # ```console
+  #    3   2022-10-04 10:51:55   (current)
+  # ```
+  nix-env --list-generations
+  sudo nix-env --profile /nix/var/nix/profiles/system --list-generations
 
-    nix-collect-garbage -d
-    sudo nix-collect-garbage -d
+  nix-collect-garbage -d
+  sudo nix-collect-garbage -d
 }
 
 home_manager_gc() {
-    local generations
-    local current_generation
+  local generations
+  local current_generation
 
-    # Get and show the current (first) generation
-    current_generation=$(home-manager generations | head -n 1)
-    echo "Current home-manager generation:"
-    echo "$current_generation"
-    echo
+  # Get and show the current (first) generation
+  current_generation=$(home-manager generations | head -n 1)
+  echo "Current home-manager generation:"
+  echo "$current_generation"
+  echo
 
-    # Get all generations except the current one
-    generations=$(home-manager generations | tail -n +2 | awk '{print $5}')
-    if [[ -n $generations ]]; then
-        for g in $generations; do
-            home-manager remove-generations "$g"
-        done
-    else
-        echo "No home-manager generations to remove"
-    fi
+  # Get all generations except the current one
+  generations=$(home-manager generations | tail -n +2 | awk '{print $5}')
+  if [[ -n $generations ]]; then
+    for g in $generations; do
+      home-manager remove-generations "$g"
+    done
+  else
+    echo "No home-manager generations to remove"
+  fi
 }
 
 home_manager_gc
