@@ -5,12 +5,13 @@ with lib;
 let
   cfg = config.local.services.nextdns-mgmt;
 
-  applyBlocklist = pkgs.writeShellScript "apply-nextdns-blocklist" ''
+  updateProfile = pkgs.writeShellScript "update-nextdns-profile" ''
     set -euo pipefail
 
-    ${pkgs.nextdns-mgmt}/bin/nextdns-mgmt sync-all \
+    ${pkgs.nextdns-mgmt}/bin/nextdns-mgmt update \
       --api-key "${config.secrets.nextDnsApiKey}" \
-      --profiles-dir ${config.users.users.${config.user}.home}/nixos-config/machines
+      --profile-id "${cfg.profileId}" \
+      --profile-file "${cfg.profileFile}"
   '';
 
 in
@@ -18,11 +19,16 @@ in
   options.local.services.nextdns-mgmt = {
     enable = mkEnableOption "declarative NextDNS profile synchronization";
 
-    profiles = mkOption {
-      type = types.listOf types.str;
-      default = [ ];
-      example = [ "abc123" "def456" ];
-      description = "NextDNS profile IDs to configure (deprecated - use profile.json files instead)";
+    profileId = mkOption {
+      type = types.str;
+      example = "abc123";
+      description = "NextDNS profile ID to sync";
+    };
+
+    profileFile = mkOption {
+      type = types.path;
+      example = ./nextdns/profile.json;
+      description = "Path to NextDNS profile JSON file";
     };
   };
 
@@ -30,16 +36,16 @@ in
     # Darwin: Apply during system activation
     system.activationScripts.nextdns-mgmt = mkIf pkgs.stdenv.isDarwin {
       text = ''
-        echo "Syncing NextDNS denylist..."
-        ${applyBlocklist} || echo "Warning: NextDNS sync failed"
+        echo "Updating NextDNS profile ${cfg.profileId}..."
+        ${updateProfile} || echo "Warning: NextDNS update failed"
       '';
     };
 
     # NixOS: Apply during system activation
     system.activationScripts.nextdns-mgmt = mkIf (!pkgs.stdenv.isDarwin) {
       text = ''
-        echo "Syncing NextDNS denylist..."
-        ${applyBlocklist} || echo "Warning: NextDNS sync failed"
+        echo "Updating NextDNS profile ${cfg.profileId}..."
+        ${updateProfile} || echo "Warning: NextDNS update failed"
       '';
     };
   };
