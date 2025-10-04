@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   # systemd.timers.poweroff = {
@@ -15,7 +20,7 @@
   #     ExecStart = "${pkgs.systemd}/bin/poweroff";
   #   };
   # };
-  
+
   # Enable Wake-on-LAN on the primary network interface
   networking.interfaces."enp1s0".wakeOnLan = {
     enable = true;

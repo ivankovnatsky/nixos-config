@@ -2,7 +2,7 @@
 
 let
   jsonFormat = pkgs.formats.json { };
-  
+
   # Common extensions list for all editors
   commonExtensions = [
     "vscodevim.vim"
@@ -18,17 +18,17 @@ let
     "thenuprojectcontributors.vscode-nushell-lang"
     # "saoudrizwan.claude-dev"
   ];
-  
+
   # VSCode specific extensions
   vscodeExtensions = commonExtensions ++ [
     "GitHub.copilot"
     "atlassian.atlascode"
   ];
-  
+
   # Generate extension management script for the given app and extensions
   makeExtensionScript = app: appPath: action: extensions: ''
     #!/usr/bin/env bash
-    
+
     # Use direct binary path approach which is more reliable
     BINARY="${appPath}"
     if [ ! -f "$BINARY" ]; then
@@ -36,7 +36,7 @@ let
       echo "Please make sure ${app} is installed and update the path if necessary."
       exit 1
     fi
-    
+
     ${builtins.concatStringsSep "\n" (map (ext: "\"$BINARY\" --${action}-extension ${ext}") extensions)}
   '';
 
@@ -84,60 +84,76 @@ in
   # Reference: https://github.com/nix-community/home-manager/blob/master/modules/programs/vscode.nix
   home.file."Library/Application Support/Code/User/settings.json".source =
     jsonFormat.generate "vscode-user-settings" editorSettings;
-  
+
   # VSCode extensions installation script
   home.file."Library/Application Support/Code/User/install-extensions.sh" = {
     executable = true;
     text = makeExtensionScript "Visual Studio Code" "/opt/homebrew/bin/code" "install" vscodeExtensions;
   };
-  
+
   # VSCode extensions uninstallation script
   home.file."Library/Application Support/Code/User/uninstall-extensions.sh" = {
     executable = true;
-    text = makeExtensionScript "Visual Studio Code" "/opt/homebrew/bin/code" "uninstall" vscodeExtensions;
+    text =
+      makeExtensionScript "Visual Studio Code" "/opt/homebrew/bin/code" "uninstall"
+        vscodeExtensions;
   };
-  
+
   # VSCode extensions list for reference
-  home.file."Library/Application Support/Code/User/extensions-list.txt".text = 
-    builtins.concatStringsSep "\n" (builtins.filter (ext: builtins.substring 0 1 ext != "#") vscodeExtensions);
+  home.file."Library/Application Support/Code/User/extensions-list.txt".text =
+    builtins.concatStringsSep "\n"
+      (builtins.filter (ext: builtins.substring 0 1 ext != "#") vscodeExtensions);
 
   # Add Cursor settings with proper formatting
   home.file."Library/Application Support/Cursor/User/settings.json".source =
     jsonFormat.generate "cursor-user-settings" editorSettings;
-    
+
   # Cursor extensions installation script
   home.file."Library/Application Support/Cursor/User/install-extensions.sh" = {
     executable = true;
-    text = makeExtensionScript "Cursor" "/Applications/Cursor.app/Contents/Resources/app/bin/cursor" "install" commonExtensions;
+    text =
+      makeExtensionScript "Cursor" "/Applications/Cursor.app/Contents/Resources/app/bin/cursor" "install"
+        commonExtensions;
   };
-  
+
   # Cursor extensions uninstallation script
   home.file."Library/Application Support/Cursor/User/uninstall-extensions.sh" = {
     executable = true;
-    text = makeExtensionScript "Cursor" "/Applications/Cursor.app/Contents/Resources/app/bin/cursor" "uninstall" commonExtensions;
+    text =
+      makeExtensionScript "Cursor" "/Applications/Cursor.app/Contents/Resources/app/bin/cursor"
+        "uninstall"
+        commonExtensions;
   };
-  
+
   # Cursor extensions list for reference
-  home.file."Library/Application Support/Cursor/User/extensions-list.txt".text = 
-    builtins.concatStringsSep "\n" (builtins.filter (ext: builtins.substring 0 1 ext != "#") commonExtensions);
+  home.file."Library/Application Support/Cursor/User/extensions-list.txt".text =
+    builtins.concatStringsSep "\n"
+      (builtins.filter (ext: builtins.substring 0 1 ext != "#") commonExtensions);
 
   # Windsurf
   home.file."Library/Application Support/Windsurf/User/settings.json".source =
     jsonFormat.generate "windsurf-user-settings" editorSettings;
-    
+
   # Windsurf extensions installation script
   home.file."Library/Application Support/Windsurf/User/install-extensions.sh" = {
     executable = true;
-    text = makeExtensionScript "Windsurf" "/Applications/Windsurf.app/Contents/Resources/app/bin/windsurf" "install" commonExtensions;
+    text =
+      makeExtensionScript "Windsurf" "/Applications/Windsurf.app/Contents/Resources/app/bin/windsurf"
+        "install"
+        commonExtensions;
   };
-  
+
   # Windsurf extensions uninstallation script
   home.file."Library/Application Support/Windsurf/User/uninstall-extensions.sh" = {
     executable = true;
-    text = makeExtensionScript "Windsurf" "/Applications/Windsurf.app/Contents/Resources/app/bin/windsurf" "uninstall" commonExtensions;
+    text =
+      makeExtensionScript "Windsurf" "/Applications/Windsurf.app/Contents/Resources/app/bin/windsurf"
+        "uninstall"
+        commonExtensions;
   };
-  
+
   # Windsurf extensions list for reference
-  home.file."Library/Application Support/Windsurf/User/extensions-list.txt".text = 
-    builtins.concatStringsSep "\n" (builtins.filter (ext: builtins.substring 0 1 ext != "#") commonExtensions);
+  home.file."Library/Application Support/Windsurf/User/extensions-list.txt".text =
+    builtins.concatStringsSep "\n"
+      (builtins.filter (ext: builtins.substring 0 1 ext != "#") commonExtensions);
 }

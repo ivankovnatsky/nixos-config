@@ -33,17 +33,28 @@ with lib;
     };
 
     graphicsEnv = mkOption {
-      type = types.enum [ "xorg" "wayland" ];
+      type = types.enum [
+        "xorg"
+        "wayland"
+      ];
       default = "wayland";
     };
 
     videoDriver = mkOption {
-      type = types.enum [ "amdgpu" "nvidia" "intel" "modesetting" ];
+      type = types.enum [
+        "amdgpu"
+        "nvidia"
+        "intel"
+        "modesetting"
+      ];
       default = "modesetting";
     };
 
     xorgDpi = mkOption {
-      type = types.enum [ 192 142 ];
+      type = types.enum [
+        192
+        142
+      ];
       default = 142;
     };
   };
@@ -121,7 +132,6 @@ with lib;
       default = "192.168.50.6";
     };
 
-    
     homeWorkPath = mkOption {
       type = types.str;
       description = "Base path for work directories (git sources, password store, etc.)";

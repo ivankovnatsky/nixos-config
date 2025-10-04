@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 let
   inherit (pkgs.stdenv.targetPlatform) isDarwin;
@@ -76,9 +81,11 @@ let
 in
 {
   # Install kitty package on Linux only, use Homebrew on macOS
-  home.packages = with pkgs; lib.optionals pkgs.stdenv.isLinux [
-    kitty
-  ];
+  home.packages =
+    with pkgs;
+    lib.optionals pkgs.stdenv.isLinux [
+      kitty
+    ];
 
   home.file = {
     ".config/kitty/kitty.conf" = {

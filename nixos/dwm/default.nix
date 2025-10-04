@@ -6,32 +6,32 @@
   };
 
   # Display manager options for dwm (choose one):
-  
+
   # Option 1: LightDM (lightweight graphical login)
   # services.xserver.displayManager.lightdm.enable = true;
-  
+
   # Configure LightDM cursor theme (since a3 already has LightDM)
   services.xserver.displayManager.lightdm.greeters.gtk.cursorTheme = {
     name = "Adwaita";
     size = 48;
   };
-  
+
   # Note: a3 already has LightDM enabled, so no need to enable another display manager.
   # LightDM will automatically show dwm as a session option after rebuild.
-  
+
   # Option 2: Auto-login (boots directly into dwm session)
   # services.xserver.displayManager.autoLogin = {
   #   enable = true;
   #   user = "ivan";
   # };
-  
+
   # Option 3: startx/xinit (manual start from console)
   # services.xserver.displayManager.startx.enable = true;
   # After console login, run: startx
-  
+
   # Option 4: SDDM (from KDE, heavier but feature-rich)
   # services.displayManager.sddm.enable = true;
-  
+
   # Note: If none are enabled, you'll get console login only
   # and need to start X manually
 
@@ -39,8 +39,8 @@
   # Note: nixpkgs uses dwm 6.5, so patches must be compatible with that version
   # HiDPI configuration for 4K displays
   services.xserver = {
-    dpi = 144;  # 1.5x scaling (96 * 1.5 = 144)
-    
+    dpi = 144; # 1.5x scaling (96 * 1.5 = 144)
+
     # Disable mouse acceleration for precise movement
     extraConfig = ''
       Section "InputClass"
@@ -52,7 +52,7 @@
       EndSection
     '';
   };
-  
+
   # https://wiki.archlinux.org/title/HiDPI
   # Set DPI for GTK and Qt applications
   environment.variables = {
@@ -60,11 +60,11 @@
     GDK_DPI_SCALE = "1";
     QT_SCALE_FACTOR = "1.5";
     XCURSOR_SIZE = "32";
-    
+
     # Firefox-specific scaling (only when using dwm)
-    MOZ_ENABLE_WAYLAND = "0";  # Force X11 mode
-    MOZ_USE_XINPUT2 = "1";     # Better input handling  
-    MOZ_DPI_FACTOR = "1.5";    # Firefox scaling factor
+    MOZ_ENABLE_WAYLAND = "0"; # Force X11 mode
+    MOZ_USE_XINPUT2 = "1"; # Better input handling
+    MOZ_DPI_FACTOR = "1.5"; # Firefox scaling factor
   };
 
   services.xserver.windowManager.dwm = {

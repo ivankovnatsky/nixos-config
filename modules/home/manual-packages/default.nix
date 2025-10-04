@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 
@@ -8,12 +13,19 @@ let
   mcpServerType = types.submodule {
     options = {
       scope = mkOption {
-        type = types.enum [ "user" "project" ];
+        type = types.enum [
+          "user"
+          "project"
+        ];
         default = "user";
         description = "MCP server scope";
       };
       transport = mkOption {
-        type = types.enum [ "sse" "http" "stdio" ];
+        type = types.enum [
+          "sse"
+          "http"
+          "stdio"
+        ];
         description = "Transport protocol for MCP server";
       };
       url = mkOption {
@@ -22,7 +34,7 @@ let
       };
       headers = mkOption {
         type = types.listOf types.str;
-        default = [];
+        default = [ ];
         description = "HTTP headers for the MCP server";
       };
       command = mkOption {
@@ -33,24 +45,26 @@ let
     };
   };
 
-  configJson = pkgs.writeText "activation-config.json" (builtins.toJSON {
-    npm = {
-      inherit (cfg.npm) packages configFile;
-    };
-    mcp = {
-      inherit (cfg.mcp) servers;
-    };
-    inherit (cfg) stateFile;
-    paths = {
-      npmBin = "${config.home.homeDirectory}/.npm/bin";
-      claudeCli = "${config.home.homeDirectory}/.npm/bin/claude";
-      nodejs = "${pkgs.nodejs}/bin";
-      python = "${pkgs.python313}/bin";
-      tar = "${pkgs.gnutar}/bin";
-      gzip = "${pkgs.gzip}/bin";
-      curl = "${pkgs.curl}/bin";
-    };
-  });
+  configJson = pkgs.writeText "activation-config.json" (
+    builtins.toJSON {
+      npm = {
+        inherit (cfg.npm) packages configFile;
+      };
+      mcp = {
+        inherit (cfg.mcp) servers;
+      };
+      inherit (cfg) stateFile;
+      paths = {
+        npmBin = "${config.home.homeDirectory}/.npm/bin";
+        claudeCli = "${config.home.homeDirectory}/.npm/bin/claude";
+        nodejs = "${pkgs.nodejs}/bin";
+        python = "${pkgs.python313}/bin";
+        tar = "${pkgs.gnutar}/bin";
+        gzip = "${pkgs.gzip}/bin";
+        curl = "${pkgs.curl}/bin";
+      };
+    }
+  );
 in
 {
   options.local.manualPackages = {
@@ -64,7 +78,7 @@ in
 
     npm.packages = mkOption {
       type = types.attrsOf types.str;
-      default = {};
+      default = { };
       description = "NPM packages to install globally (package name -> binary name)";
       example = {
         "@anthropic-ai/claude-code" = "claude";
@@ -80,13 +94,13 @@ in
 
     mcp.servers = mkOption {
       type = types.attrsOf mcpServerType;
-      default = {};
+      default = { };
       description = "MCP servers to configure";
     };
   };
 
   config = mkIf cfg.enable {
-    home.activation.manageManualPackages = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    home.activation.manageManualPackages = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       ${pkgs.python3}/bin/python3 ${./manage-activation.py} \
         --config ${configJson}
     '';

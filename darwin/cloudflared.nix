@@ -3,7 +3,8 @@
   lib,
   pkgs,
   ...
-}: {
+}:
+{
   imports = [ ../../../modules/darwin/cloudflared ];
 
   local.services.cloudflared = {

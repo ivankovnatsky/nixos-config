@@ -99,17 +99,19 @@ in
     environment.systemPackages = [ cfg.package ];
 
     launchd.daemons.doh-server = {
-      command = let
-        configFile = toml.generate "doh-server.conf" cfg.settings;
-        startScript = pkgs.writeShellScriptBin "start-doh-server" ''
-          # Create log directory
-          mkdir -p /tmp/log/doh-server
-          chmod 755 /tmp/log/doh-server
+      command =
+        let
+          configFile = toml.generate "doh-server.conf" cfg.settings;
+          startScript = pkgs.writeShellScriptBin "start-doh-server" ''
+            # Create log directory
+            mkdir -p /tmp/log/doh-server
+            chmod 755 /tmp/log/doh-server
 
-          echo "Starting doh-server..."
-          exec ${cfg.package}/bin/doh-server -conf ${configFile}
-        '';
-      in "${startScript}/bin/start-doh-server";
+            echo "Starting doh-server..."
+            exec ${cfg.package}/bin/doh-server -conf ${configFile}
+          '';
+        in
+        "${startScript}/bin/start-doh-server";
 
       serviceConfig = {
         Label = "org.nixos.doh-server";

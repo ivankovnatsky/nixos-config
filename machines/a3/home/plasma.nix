@@ -84,7 +84,7 @@
       enable = true;
     };
   };
-  
+
   # Run plasma-manager scripts after configuration
   # FIXME: This doesn't actually force the scripts to run due to plasma-manager's
   # checksum tracking. Need to manually run ~/.local/share/plasma-manager/run_all.sh

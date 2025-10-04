@@ -26,13 +26,46 @@ in
         ProgramArguments = [
           "${preventSleepWrapper}/bin/prevent-sleep-wrapper"
         ];
-        StartCalendarInterval = builtins.concatMap (hour: [
-          { Hour = hour; Minute = 0; Weekday = 1; }
-          { Hour = hour; Minute = 0; Weekday = 2; }
-          { Hour = hour; Minute = 0; Weekday = 3; }
-          { Hour = hour; Minute = 0; Weekday = 4; }
-          { Hour = hour; Minute = 0; Weekday = 5; }
-        ]) [ 9 10 11 12 13 14 15 16 17 ];
+        StartCalendarInterval =
+          builtins.concatMap
+            (hour: [
+              {
+                Hour = hour;
+                Minute = 0;
+                Weekday = 1;
+              }
+              {
+                Hour = hour;
+                Minute = 0;
+                Weekday = 2;
+              }
+              {
+                Hour = hour;
+                Minute = 0;
+                Weekday = 3;
+              }
+              {
+                Hour = hour;
+                Minute = 0;
+                Weekday = 4;
+              }
+              {
+                Hour = hour;
+                Minute = 0;
+                Weekday = 5;
+              }
+            ])
+            [
+              9
+              10
+              11
+              12
+              13
+              14
+              15
+              16
+              17
+            ];
         RunAtLoad = false;
         KeepAlive = false;
 

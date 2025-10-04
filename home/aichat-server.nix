@@ -5,7 +5,8 @@
   ...
 }:
 
-let aichatPkg = pkgs.nixpkgs-master.aichat;
+let
+  aichatPkg = pkgs.nixpkgs-master.aichat;
 
 in
 {

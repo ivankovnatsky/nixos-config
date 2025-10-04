@@ -1,7 +1,8 @@
 {
   config,
   ...
-}: {
+}:
+{
 
   services.doh-server = {
     enable = true;

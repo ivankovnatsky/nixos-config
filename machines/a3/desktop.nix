@@ -4,7 +4,7 @@
 
   imports = [
     # Desktop environments
-    ./plasma.nix       # KDE Plasma 6 (currently active)
+    ./plasma.nix # KDE Plasma 6 (currently active)
     ./kde.nix
 
     # ./gnome.nix      # GNOME (available but commented)

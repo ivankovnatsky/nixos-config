@@ -27,13 +27,13 @@
 
   # Open firewall for Matterbridge
   networking.firewall = {
-    allowedTCPPorts = [ 
-      8283   # Matterbridge web UI and health check endpoint
-      5540   # Matter commissioning port (as shown in UI)
+    allowedTCPPorts = [
+      8283 # Matterbridge web UI and health check endpoint
+      5540 # Matter commissioning port (as shown in UI)
     ];
     allowedUDPPorts = [
-      5353   # mDNS/Bonjour for device discovery
-      5540   # Matter commissioning (UDP)
+      5353 # mDNS/Bonjour for device discovery
+      5540 # Matter commissioning (UDP)
     ];
   };
 
@@ -43,4 +43,4 @@
     "d /var/lib/matterbridge/plugins 0755 root root -"
     "d /var/lib/matterbridge/storage 0755 root root -"
   ];
-} 
+}

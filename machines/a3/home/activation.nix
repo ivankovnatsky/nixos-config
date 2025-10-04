@@ -1,7 +1,12 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 {
   home.activation = {
-    homeActivation = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    homeActivation = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       cat <<EOF > $HOME/.npmrc
         prefix=~/.npm
       EOF

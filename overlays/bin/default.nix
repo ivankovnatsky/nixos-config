@@ -20,7 +20,10 @@ rustPlatform.buildRustPackage rec {
   meta = with lib; {
     description = "A paste bin that's actually minimalist";
     homepage = "https://github.com/w4/bin";
-    license = with licenses; [ bsd0 wtfpl ];
+    license = with licenses; [
+      bsd0
+      wtfpl
+    ];
     maintainers = [ ivankovnatsky ];
     mainProgram = "bin";
   };

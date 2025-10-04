@@ -61,11 +61,16 @@ in
             # Define the rebuild command as a variable for consistency
             # Make sure to cd into the nixos-config directory first
             # REBUILD_CMD="cd \"${cfg.nixosConfigPath}\" && env NIXPKGS_ALLOW_UNFREE=1 darwin-rebuild switch --impure --verbose -L --flake ."
-            ${if cfg.useSudo then ''
-              REBUILD_CMD="env NIXPKGS_ALLOW_UNFREE=1 sudo -E darwin-rebuild switch --impure --verbose -L --flake ."
-            '' else ''
-              REBUILD_CMD="env NIXPKGS_ALLOW_UNFREE=1 darwin-rebuild switch --impure --verbose -L --flake ."
-            ''}
+            ${
+              if cfg.useSudo then
+                ''
+                  REBUILD_CMD="env NIXPKGS_ALLOW_UNFREE=1 sudo -E darwin-rebuild switch --impure --verbose -L --flake ."
+                ''
+              else
+                ''
+                  REBUILD_CMD="env NIXPKGS_ALLOW_UNFREE=1 darwin-rebuild switch --impure --verbose -L --flake ."
+                ''
+            }
 
             # Initial build
             echo ""
@@ -125,11 +130,16 @@ in
         SESSION_NAME="${config.networking.hostName}"
 
         # Define the rebuild command for consistency
-        ${if cfg.useSudo then ''
-          REBUILD_CMD="env NIXPKGS_ALLOW_UNFREE=1 sudo -E darwin-rebuild switch --impure --verbose -L --flake ."
-        '' else ''
-          REBUILD_CMD="env NIXPKGS_ALLOW_UNFREE=1 darwin-rebuild switch --impure --verbose -L --flake ."
-        ''}
+        ${
+          if cfg.useSudo then
+            ''
+              REBUILD_CMD="env NIXPKGS_ALLOW_UNFREE=1 sudo -E darwin-rebuild switch --impure --verbose -L --flake ."
+            ''
+          else
+            ''
+              REBUILD_CMD="env NIXPKGS_ALLOW_UNFREE=1 darwin-rebuild switch --impure --verbose -L --flake ."
+            ''
+        }
 
         # Attach to the tmux session or notify if it doesn't exist
         ${tmux}/bin/tmux has-session -t "$SESSION_NAME" 2>/dev/null

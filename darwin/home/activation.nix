@@ -1,7 +1,12 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 {
   home.activation = {
-    homeActivation = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    homeActivation = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       # Check if packages are already installed
       if [[ ! -x "$HOME/.npm/bin/claude" || \
             ! -x "$HOME/.npm/bin/codex" || \

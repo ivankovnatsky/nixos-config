@@ -2,18 +2,17 @@
 
 {
   home.packages = with pkgs; [
-    dust  # A more intuitive version of du
-    lsof  # List open files
-    wl-clipboard  # Wayland clipboard utilities
-    pigz  # Parallel gzip compression
+    dust # A more intuitive version of du
+    lsof # List open files
+    wl-clipboard # Wayland clipboard utilities
+    pigz # Parallel gzip compression
 
     # Hardware monitoring tools
-    lm_sensors  # Provides the 'sensors' command for monitoring temperatures
-    nvtopPackages.nvidia  # GPU monitoring (like htop for GPUs)
-
+    lm_sensors # Provides the 'sensors' command for monitoring temperatures
+    nvtopPackages.nvidia # GPU monitoring (like htop for GPUs)
 
     # KDE Wallet integration
-    kwalletcli  # Provides pinentry-kwallet for GPG integration
+    kwalletcli # Provides pinentry-kwallet for GPG integration
 
     sesh
     gum
@@ -23,7 +22,7 @@
     fastfetch
 
     # Desktop notifications
-    libnotify  # Provides notify-send command
+    libnotify # Provides notify-send command
 
     ghostty
 

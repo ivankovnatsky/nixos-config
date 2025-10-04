@@ -28,7 +28,7 @@ let
   bindAddress = config.flags.beeIp;
 
   # External domain from secrets module for easier reference
-  inherit (config.secrets) externalDomain ;
+  inherit (config.secrets) externalDomain;
 
   # Create a Caddy package with the required DNS plugin
   # Use the caddy-with-plugins overlay to get the withPlugins functionality
@@ -141,7 +141,7 @@ in
     # Fix permissions on log files (remove execute bit)
     "z /var/log/caddy/*.log 0644 - - -"
     "z /var/log/caddy/*.log.gz 0644 - - -"
-    
+
     # Grant promtail read access
     "A+ /var/log/caddy - - - - user:promtail:r-x"
     "A+ /var/log/caddy - - - - default:user:promtail:r--"

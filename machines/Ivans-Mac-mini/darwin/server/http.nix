@@ -72,7 +72,7 @@ let
       ''
         # Process main Caddyfile template
         substituteAll ${caddyfilePath} $out
-        
+
         # Process mini-specific template and append
         echo "" >> $out
         substituteAll ${caddyfileMiniPath} /tmp/caddyfile-mini
@@ -101,10 +101,10 @@ in
           /bin/wait4path "${volumePath}"
 
           echo "${volumePath} is now available!"
-          
+
           # Wait for network connectivity before starting Caddy
           echo "Waiting for network connectivity..."
-          
+
           # Function to check if we have a valid IP address
           check_network() {
             # Check if we have a valid IP on en0 (typical main interface on Mac)
@@ -112,7 +112,7 @@ in
             ip=$(ipconfig getifaddr en0)
             [ "$ip" = "${bindAddress}" ]
           }
-          
+
           # Wait for network connectivity with a timeout
           TIMEOUT=60
           COUNTER=0
@@ -126,11 +126,11 @@ in
             sleep 1
             COUNTER=$((COUNTER+1))
           done
-          
+
           if [ $COUNTER -lt $TIMEOUT ]; then
             echo "Network connectivity established!"
           fi
-          
+
           echo "Starting Caddy server..."
 
           # Launch caddy with our Caddyfile - specifying the caddyfile adapter

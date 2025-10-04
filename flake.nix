@@ -89,7 +89,7 @@
 
     nixpkgs-python.url = "github:cachix/nixpkgs-python";
     pyenv-nix-install.url = "github:sirno/pyenv-nix-install";
-    
+
     # KDE Plasma configuration manager
     plasma-manager-release = {
       url = "github:nix-community/plasma-manager";
