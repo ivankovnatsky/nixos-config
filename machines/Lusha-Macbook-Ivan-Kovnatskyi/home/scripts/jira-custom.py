@@ -4,16 +4,20 @@ from jira import JIRA
 import sys
 import os
 
+
 def search_filters(query=None):
     """Search for Jira filters"""
 
     # Get Jira config from environment
-    server = os.getenv('JIRA_SERVER')
-    email = os.getenv('JIRA_EMAIL')
-    token = os.getenv('JIRA_API_TOKEN')
+    server = os.getenv("JIRA_SERVER")
+    email = os.getenv("JIRA_EMAIL")
+    token = os.getenv("JIRA_API_TOKEN")
 
     if not all([server, email, token]):
-        print("Error: Set JIRA_SERVER, JIRA_EMAIL, and JIRA_API_TOKEN in environment", file=sys.stderr)
+        print(
+            "Error: Set JIRA_SERVER, JIRA_EMAIL, and JIRA_API_TOKEN in environment",
+            file=sys.stderr,
+        )
         sys.exit(1)
 
     # Initialize Jira with basic auth (email + API token)
@@ -33,11 +37,13 @@ def search_filters(query=None):
         print(f"  JQL: {f.jql}")
         print()
 
+
 def main():
     if len(sys.argv) > 1:
         search_filters(sys.argv[1])
     else:
         search_filters()
+
 
 if __name__ == "__main__":
     main()

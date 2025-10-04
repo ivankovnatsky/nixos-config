@@ -69,7 +69,9 @@ def get_installed_mcp_servers(claude_cli: str) -> Set[str]:
     return servers
 
 
-def install_npm_packages(packages: Dict[str, str], paths: Dict, state: Dict, npm_config: Dict):
+def install_npm_packages(
+    packages: Dict[str, str], paths: Dict, state: Dict, npm_config: Dict
+):
     # Handle .npmrc creation
     npmrc_path = os.path.expanduser("~/.npmrc")
     npmrc_content = npm_config.get("configFile")
@@ -126,7 +128,9 @@ def install_npm_packages(packages: Dict[str, str], paths: Dict, state: Dict, npm
     if to_install:
         log(f"Installing NPM packages: {', '.join(to_install)}", Color.GREEN)
         env = os.environ.copy()
-        env["PATH"] = f"{paths['nodejs']}:{paths['tar']}:{paths['gzip']}:{paths['curl']}:{env.get('PATH', '')}"
+        env["PATH"] = (
+            f"{paths['nodejs']}:{paths['tar']}:{paths['gzip']}:{paths['curl']}:{env.get('PATH', '')}"
+        )
 
         npm_cmd = [f"{paths['nodejs']}/npm", "install", "--global", "--force"] + list(
             to_install
@@ -159,7 +163,9 @@ def install_mcp_servers(servers: Dict, paths: Dict, state: Dict):
         return True
 
     env = os.environ.copy()
-    env["PATH"] = f"{paths['nodejs']}:{paths['npmBin']}:{paths['python']}:{env.get('PATH', '')}"
+    env["PATH"] = (
+        f"{paths['nodejs']}:{paths['npmBin']}:{paths['python']}:{env.get('PATH', '')}"
+    )
 
     # Check state first - if all servers are in state as installed, skip
     state_servers = set(state.get("mcp", {}).get("servers", {}).keys())
@@ -207,7 +213,10 @@ def install_mcp_servers(servers: Dict, paths: Dict, state: Dict):
             returncode, _, stderr = run_command(cmd, env)
             if returncode != 0:
                 if "already exists" in stderr:
-                    log(f"{server_name} already exists, marking as installed", Color.BLUE)
+                    log(
+                        f"{server_name} already exists, marking as installed",
+                        Color.BLUE,
+                    )
                 else:
                     log(f"Failed to install {server_name}: {stderr}", Color.RED)
                     continue
@@ -240,7 +249,6 @@ def main():
     state_file = config["stateFile"]
     state = load_json(state_file)
 
-
     success = True
 
     if config.get("npm", {}).get("packages"):
@@ -249,9 +257,7 @@ def main():
         )
 
     if config.get("mcp", {}).get("servers"):
-        success &= install_mcp_servers(
-            config["mcp"]["servers"], config["paths"], state
-        )
+        success &= install_mcp_servers(config["mcp"]["servers"], config["paths"], state)
 
     save_json(state_file, state)
 
