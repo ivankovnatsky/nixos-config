@@ -77,8 +77,7 @@
     ./matter-bridge.nix
 
     # Matrix
-    ./synapse.nix
-    ./mautrix-telegram.nix
+    ./matrix
 
     # Storage
     ./storage.nix
