@@ -12,11 +12,11 @@
     ../../../../modules/darwin/tmux-rebuild
     ../../../../modules/flags
     ../../../../modules/secrets
-    # ../../../../system/nextdns-mgmt.nix
+    ../../../../modules/shared/nextdns-mgmt
     ./bin.nix
     ./dns.nix
     ./doh.nix
-    # ./nextdns
+    ./nextdns
     ./git.nix
     ./homebrew.nix
     ./http.nix
