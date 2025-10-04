@@ -3,6 +3,8 @@
 {
   local.services.nextdns-mgmt = {
     enable = true;
-    profiles = [ config.secrets.nextDnsProfileMini ];
+    apiKey = config.secrets.nextDnsApiKey;
+    profileId = config.secrets.nextDnsProfileMini;
+    profileFile = ./profile.json;
   };
 }

@@ -4,16 +4,6 @@ with lib;
 
 let
   cfg = config.local.services.nextdns-mgmt;
-
-  updateProfile = pkgs.writeShellScript "update-nextdns-profile" ''
-    set -euo pipefail
-
-    ${pkgs.nextdns-mgmt}/bin/nextdns-mgmt update \
-      --api-key "${config.secrets.nextDnsApiKey}" \
-      --profile-id "${cfg.profileId}" \
-      --profile-file "${cfg.profileFile}"
-  '';
-
 in
 {
   options.local.services.nextdns-mgmt = {
@@ -30,23 +20,36 @@ in
       example = ./nextdns/profile.json;
       description = "Path to NextDNS profile JSON file";
     };
-  };
 
-  config = mkIf cfg.enable {
-    # Darwin: Apply during system activation
-    system.activationScripts.nextdns-mgmt = mkIf pkgs.stdenv.isDarwin {
-      text = ''
-        echo "Updating NextDNS profile ${cfg.profileId}..."
-        ${updateProfile} || echo "Warning: NextDNS update failed"
-      '';
-    };
-
-    # NixOS: Apply during system activation
-    system.activationScripts.nextdns-mgmt = mkIf (!pkgs.stdenv.isDarwin) {
-      text = ''
-        echo "Updating NextDNS profile ${cfg.profileId}..."
-        ${updateProfile} || echo "Warning: NextDNS update failed"
-      '';
+    apiKey = mkOption {
+      type = types.str;
+      description = "NextDNS API key";
     };
   };
+
+  config = mkMerge [
+    # Darwin configuration
+    (mkIf (cfg.enable && pkgs.stdenv.isDarwin) {
+      system.activationScripts.postActivation.text = ''
+        echo "Updating NextDNS profile ${cfg.profileId}..."
+        ${pkgs.nextdns-mgmt}/bin/nextdns-mgmt update \
+          --api-key "${cfg.apiKey}" \
+          --profile-id "${cfg.profileId}" \
+          --profile-file "${cfg.profileFile}" || echo "Warning: NextDNS update failed"
+      '';
+    })
+
+    # NixOS configuration
+    (mkIf (cfg.enable && !pkgs.stdenv.isDarwin) {
+      system.activationScripts.nextdns-mgmt = {
+        text = ''
+          echo "Updating NextDNS profile ${cfg.profileId}..."
+          ${pkgs.nextdns-mgmt}/bin/nextdns-mgmt update \
+            --api-key "${cfg.apiKey}" \
+            --profile-id "${cfg.profileId}" \
+            --profile-file "${cfg.profileFile}" || echo "Warning: NextDNS update failed"
+        '';
+      };
+    })
+  ];
 }
