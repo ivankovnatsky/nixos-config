@@ -1,6 +1,7 @@
 # NextDNS
 
 This will load environment variables from `.envrc`, including:
+
 - `NEXTDNS_API_KEY` - API key for NextDNS management
 
 The `.envrc` file is encrypted with git-crypt, so you'll need access to the repository's git-crypt key.

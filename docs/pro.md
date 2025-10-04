@@ -22,6 +22,7 @@ After accepting the license, re-run `darwin-rebuild switch` to complete the syst
 When installing Xcode (version 26.0.1 or later), select the following components:
 
 **Platform Support:**
+
 - ✅ macOS 26.0 (Built-in)
 - ✅ iOS 26.0 (10.07 GB)
 - ⬜ watchOS 26.0 (not needed, saves 3.83 GB)
@@ -29,6 +30,7 @@ When installing Xcode (version 26.0.1 or later), select the following components
 - ⬜ visionOS 26.0 (not needed, saves 6.98 GB)
 
 **Other Components:**
+
 - ✅ Predictive Code Completion Model (2 GB)
 
 This setup includes iOS development support while still saving approximately 14.4 GB by skipping watchOS, tvOS, and visionOS platforms.

@@ -17,6 +17,7 @@ kubectl create secret generic openwebui-config \
 ```
 
 The secret needs two fields:
+
 - `external-domain`: The base domain (e.g., `yourdomain.com`)
 - `host`: The full hostname for OpenWebUI (e.g., `openwebui.yourdomain.com`)
 

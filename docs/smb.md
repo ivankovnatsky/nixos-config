@@ -5,6 +5,7 @@ This document describes how to change SMB/CIFS passwords for shared storage acce
 ## Overview
 
 The a3 machine mounts SMB shares from:
+
 - **bee machine**: Linux Samba share at `//bee/storage`
 
 ## Changing Passwords

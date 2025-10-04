@@ -32,6 +32,7 @@ The server uses the following components for log collection and visualization:
 - **Promtail**: Agent that collects logs from the system and forwards them to Loki
 
 Default Grafana credentials:
+
 - Username: admin
 - Password: admin (change on first login)
 

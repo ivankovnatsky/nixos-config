@@ -56,6 +56,7 @@ nix --extra-experimental-features nix-command --extra-experimental-features \
 ### Upgrading Homebrew Packages
 
 By default, Homebrew skips auto-updating casks during `brew upgrade`. This includes:
+
 - Casks with `version :latest`
 - Casks marked with `auto_updates` flag (like `ghostty@tip`)
 
@@ -72,6 +73,7 @@ To upgrade these casks, you need to:
 ### Update Workflow
 
 1. Update homebrew flakes to get latest package definitions:
+
    ```console
    make flake-update-homebrew
    ```
