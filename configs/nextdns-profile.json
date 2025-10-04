@@ -1,0 +1,198 @@
+{
+  "data": {
+    "security": {
+      "threatIntelligenceFeeds": true,
+      "aiThreatDetection": true,
+      "googleSafeBrowsing": true,
+      "cryptojacking": true,
+      "dnsRebinding": false,
+      "idnHomographs": true,
+      "typosquatting": true,
+      "dga": true,
+      "nrd": true,
+      "ddns": true,
+      "parking": true,
+      "csam": true,
+      "tlds": [
+        {
+          "id": "ru"
+        }
+      ]
+    },
+    "privacy": {
+      "disguisedTrackers": true,
+      "allowAffiliate": true,
+      "blocklists": [
+        {
+          "id": "nextdns-recommended"
+        }
+      ],
+      "natives": [
+        {
+          "id": "alexa"
+        },
+        {
+          "id": "apple"
+        },
+        {
+          "id": "huawei"
+        },
+        {
+          "id": "roku"
+        },
+        {
+          "id": "samsung"
+        },
+        {
+          "id": "sonos"
+        },
+        {
+          "id": "windows"
+        },
+        {
+          "id": "xiaomi"
+        }
+      ]
+    },
+    "parentalControl": {
+      "safeSearch": true,
+      "youtubeRestrictedMode": false,
+      "blockBypass": false,
+      "services": [],
+      "categories": [
+        {
+          "id": "dating",
+          "recreation": false,
+          "active": true
+        },
+        {
+          "id": "gambling",
+          "recreation": false,
+          "active": true
+        },
+        {
+          "id": "porn",
+          "recreation": false,
+          "active": true
+        }
+      ],
+      "recreation": {
+        "times": {},
+        "timezone": null
+      }
+    },
+    "settings": {
+      "logs": {
+        "enabled": true,
+        "drop": {
+          "ip": false,
+          "domain": false
+        },
+        "retention": 63072000,
+        "location": "eu"
+      },
+      "blockPage": {
+        "enabled": false
+      },
+      "performance": {
+        "ecs": true,
+        "cacheBoost": true,
+        "cnameFlattening": true
+      },
+      "bav": false,
+      "web3": false
+    },
+    "denylist": [
+      {
+        "id": "19706903.xyz",
+        "active": true
+      },
+      {
+        "id": "aliexpress.com",
+        "active": true
+      },
+      {
+        "id": "api-updates.orbstack.dev",
+        "active": true
+      },
+      {
+        "id": "bitrix.info",
+        "active": true
+      },
+      {
+        "id": "cdn-updates.orbstack.dev",
+        "active": true
+      },
+      {
+        "id": "gravitec.media",
+        "active": true
+      },
+      {
+        "id": "lenmit.com",
+        "active": true
+      },
+      {
+        "id": "litres.com",
+        "active": true
+      },
+      {
+        "id": "litres.io",
+        "active": true
+      },
+      {
+        "id": "myscres.com",
+        "active": true
+      },
+      {
+        "id": "netdata.cloud",
+        "active": true
+      },
+      {
+        "id": "new23d.com",
+        "active": true
+      },
+      {
+        "id": "ru.anker.com",
+        "active": true
+      },
+      {
+        "id": "tildacdn.com",
+        "active": true
+      },
+      {
+        "id": "tiny-vps.com",
+        "active": true
+      },
+      {
+        "id": "yandex.net",
+        "active": true
+      },
+      {
+        "id": "yastatic.net",
+        "active": true
+      }
+    ],
+    "allowlist": [
+      {
+        "id": "1337x.to",
+        "active": true
+      },
+      {
+        "id": "confluent.cloud",
+        "active": true
+      },
+      {
+        "id": "customeriomail.com",
+        "active": true
+      },
+      {
+        "id": "limetorrents.lol",
+        "active": true
+      },
+      {
+        "id": "therarbg.to",
+        "active": true
+      }
+    ]
+  }
+}
