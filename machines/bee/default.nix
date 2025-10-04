@@ -76,6 +76,10 @@
     ./home-bridge.nix
     ./matter-bridge.nix
 
+    # Matrix
+    ./synapse.nix
+    ./mautrix-telegram.nix
+
     # Storage
     ./storage.nix
 
