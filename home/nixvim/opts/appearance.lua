@@ -33,7 +33,7 @@ local function get_plasma_appearance()
     return "light" -- Return default if file doesn't exist
   end
   file:close()
-  
+
   -- Check for KDE Plasma theme by reading kdeglobals file directly
   -- First check for LookAndFeelPackage which is more reliable
   local handle = io.popen("grep -i 'LookAndFeelPackage' ~/.config/kdeglobals 2>/dev/null")
@@ -47,7 +47,7 @@ local function get_plasma_appearance()
       return "light"
     end
   end
-  
+
   -- Fallback: check ColorScheme in kdeglobals
   handle = io.popen("grep -i 'ColorScheme' ~/.config/kdeglobals 2>/dev/null")
   if handle then
@@ -59,7 +59,7 @@ local function get_plasma_appearance()
       return "light"
     end
   end
-  
+
   -- Check if we have dark colors in the General section
   handle = io.popen("grep -A 10 '\\[General\\]' ~/.config/kdeglobals | grep -i 'BackgroundNormal' 2>/dev/null")
   if handle then
@@ -77,7 +77,7 @@ local function get_plasma_appearance()
       end
     end
   end
-  
+
   return "light" -- Default to light if we can't determine
 end
 
@@ -87,11 +87,11 @@ local function get_gnome_appearance()
   local check_cmd = io.popen("command -v gsettings")
   local has_gsettings = check_cmd:read("*a") ~= ""
   check_cmd:close()
-  
+
   if not has_gsettings then
     return "light" -- Default if gsettings not available
   end
-  
+
   -- Check GNOME color scheme
   local handle = io.popen("gsettings get org.gnome.desktop.interface color-scheme")
   if handle then
@@ -103,7 +103,7 @@ local function get_gnome_appearance()
       return "light"
     end
   end
-  
+
   -- Fallback to checking prefer-dark-theme (older GNOME versions)
   handle = io.popen("gsettings get org.gnome.desktop.interface gtk-theme")
   if handle then
@@ -115,7 +115,7 @@ local function get_gnome_appearance()
       return "light"
     end
   end
-  
+
   return "light" -- Default to light if we can't determine
 end
 
@@ -128,7 +128,7 @@ local function get_system_appearance()
     local check_cmd = io.popen("command -v gsettings")
     local has_gsettings = check_cmd:read("*a") ~= ""
     check_cmd:close()
-    
+
     if has_gsettings then
       return get_gnome_appearance()
     else
