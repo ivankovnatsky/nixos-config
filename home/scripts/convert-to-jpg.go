@@ -122,4 +122,4 @@ func main() {
 	}
 
 	fmt.Println("Conversion complete!")
-} 
+}
