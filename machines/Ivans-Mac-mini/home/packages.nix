@@ -25,6 +25,7 @@
     magic-wormhole
     mkpasswd
     nixfmt-rfc-style
+    nodePackages.prettier
     nodejs
     pandoc
     parallel
@@ -32,6 +33,7 @@
     pv
     rclone
     ripgrep
+    ruff
     rust-analyzer
     rustc
     sesh
