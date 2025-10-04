@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   # Enable mDNS for local hostname resolution
@@ -62,7 +67,11 @@
   systemd.services.add-link-local-route = {
     description = "Add route to link-local network for IoT devices";
     wantedBy = [ "multi-user.target" ];
-    after = [ "network-online.target" "systemd-networkd.service" "NetworkManager.service" ];
+    after = [
+      "network-online.target"
+      "systemd-networkd.service"
+      "NetworkManager.service"
+    ];
     wants = [ "network-online.target" ];
     serviceConfig = {
       Type = "oneshot";

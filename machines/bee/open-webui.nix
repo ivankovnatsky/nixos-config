@@ -7,7 +7,7 @@
     port = 8090;
 
     openFirewall = true;
-    
+
     # Environment variables reference: https://docs.openwebui.com/getting-started/env-configuration/
     environment = {
       # Use the load-balanced Ollama endpoint via Caddy reverse proxy

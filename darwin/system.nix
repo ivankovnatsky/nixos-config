@@ -40,7 +40,7 @@
         "com.apple.Safari.SandboxBroker" = {
           "AlwaysPromptForDownloadFolder" = true;
         };
-        
+
         "NSGlobalDomain" = {
           # Auto-switch icon style based on appearance mode
           AppleIconAppearanceTheme = "RegularAutomatic";

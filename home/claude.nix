@@ -1,15 +1,21 @@
-{ config, pkgs, osConfig, ... }:
+{
+  config,
+  pkgs,
+  osConfig,
+  ...
+}:
 
 let
   inherit (osConfig.networking) hostName;
   homePath = config.home.homeDirectory;
-  
-  sourcesPath = if hostName == "Ivans-Mac-mini" then
-    "/Volumes/Storage/Data/Sources"
-  else if hostName == "bee" then
-    "/storage/Data/Sources"
-  else
-    "${homePath}/Sources";
+
+  sourcesPath =
+    if hostName == "Ivans-Mac-mini" then
+      "/Volumes/Storage/Data/Sources"
+    else if hostName == "bee" then
+      "/storage/Data/Sources"
+    else
+      "${homePath}/Sources";
 
   claudeConfigPath = ".claude/settings.json";
 in

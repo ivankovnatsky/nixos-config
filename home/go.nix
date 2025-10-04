@@ -1,4 +1,9 @@
-{ config, osConfig, pkgs, ... }:
+{
+  config,
+  osConfig,
+  pkgs,
+  ...
+}:
 
 let
   hostName = osConfig.networking.hostName;
@@ -14,11 +19,18 @@ in
     goPath = if useAbsolutePath then null else relativeGoPath;
   };
 
-  home.sessionVariables = {
-    GO111MODULE = "on";
-  } // (if useAbsolutePath then {
-    GOPATH = absoluteGoPath;
-  } else {});
+  home.sessionVariables =
+    {
+      GO111MODULE = "on";
+    }
+    // (
+      if useAbsolutePath then
+        {
+          GOPATH = absoluteGoPath;
+        }
+      else
+        { }
+    );
 
   home.sessionPath = [
     (if useAbsolutePath then "${absoluteGoPath}/bin" else "$HOME/${relativeGoPath}/bin")

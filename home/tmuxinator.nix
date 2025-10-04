@@ -3,12 +3,13 @@
 let
   hostName = osConfig.networking.hostName;
   homePath = config.home.homeDirectory;
-  workingPath = if hostName == "Ivans-Mac-mini" then
-  "/Volumes/Storage/Data/Sources/github.com/ivankovnatsky/nixos-config"
-else if hostName == "bee" then
-  "/storage/Data/Sources/github.com/ivankovnatsky/nixos-config"
-else
-  "${homePath}/Sources/github.com/ivankovnatsky/nixos-config";
+  workingPath =
+    if hostName == "Ivans-Mac-mini" then
+      "/Volumes/Storage/Data/Sources/github.com/ivankovnatsky/nixos-config"
+    else if hostName == "bee" then
+      "/storage/Data/Sources/github.com/ivankovnatsky/nixos-config"
+    else
+      "${homePath}/Sources/github.com/ivankovnatsky/nixos-config";
 in
 {
   home.file = {

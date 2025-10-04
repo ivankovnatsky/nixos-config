@@ -3,7 +3,8 @@
   lib,
   pkgs,
   ...
-}: {
+}:
+{
   local.services.doh-server = {
     enable = true;
     settings = {

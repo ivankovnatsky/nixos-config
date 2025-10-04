@@ -23,7 +23,7 @@
         # Create the bin starter script
         binScript = pkgs.writeShellScriptBin "bin-starter" ''
           echo "Starting bin paste bin server..."
-          
+
           # Launch bin with custom settings
           exec ${pkgs.bin}/bin/bin \
             ${config.flags.miniIp}:8820 \

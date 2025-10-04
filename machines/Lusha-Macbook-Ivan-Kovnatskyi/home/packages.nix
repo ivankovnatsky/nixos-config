@@ -1,12 +1,14 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
-    (python313.withPackages (ps: with ps; [
-      grip
-      (jira.overridePythonAttrs (old: {
-        propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ old.optional-dependencies.cli;
-      }))
-    ]))
+    (python313.withPackages (
+      ps: with ps; [
+        grip
+        (jira.overridePythonAttrs (old: {
+          propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ old.optional-dependencies.cli;
+        }))
+      ]
+    ))
     (wrapHelm kubernetes-helm { plugins = with pkgs.kubernetes-helmPlugins; [ helm-secrets ]; })
     argocd
     aws-sso-cli

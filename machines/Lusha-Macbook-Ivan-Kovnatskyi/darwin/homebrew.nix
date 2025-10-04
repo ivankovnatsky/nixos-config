@@ -24,10 +24,16 @@
       "dbeaver-community"
       "firefox"
       "firefox@developer-edition"
-      { name = "ghostty@tip"; greedy = true; }
+      {
+        name = "ghostty@tip";
+        greedy = true;
+      }
       "hammerspoon"
       "keycastr"
-      { name = "kitty"; greedy = true; }
+      {
+        name = "kitty";
+        greedy = true;
+      }
       "mos"
       "stats"
       "twingate"

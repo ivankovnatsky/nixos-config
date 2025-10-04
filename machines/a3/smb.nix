@@ -21,17 +21,17 @@
       mode = "0600";
     };
   };
-  
+
   # Install necessary packages for SMB client functionality
   environment.systemPackages = with pkgs; [
-    cifs-utils  # Tools for mounting CIFS/SMB shares
-    samba       # SMB client tools (smbclient, etc.)
+    cifs-utils # Tools for mounting CIFS/SMB shares
+    samba # SMB client tools (smbclient, etc.)
   ];
 
   # Create mount points for SMB shares
   systemd.tmpfiles.rules = [
-    "d /mnt/smb 0755 root root -"              # Main SMB mount directory
-    "d /mnt/smb/bee-storage 0755 root root -"  # Bee storage share
+    "d /mnt/smb 0755 root root -" # Main SMB mount directory
+    "d /mnt/smb/bee-storage 0755 root root -" # Bee storage share
   ];
 
   # Configure systemd mount units for automatic mounting
@@ -61,12 +61,12 @@
   networking.firewall = {
     # Allow outbound SMB/CIFS connections
     allowedTCPPorts = [
-      139   # NetBIOS Session Service
-      445   # SMB over TCP
+      139 # NetBIOS Session Service
+      445 # SMB over TCP
     ];
     allowedUDPPorts = [
-      137   # NetBIOS Name Service
-      138   # NetBIOS Datagram Service
+      137 # NetBIOS Name Service
+      138 # NetBIOS Datagram Service
     ];
   };
 

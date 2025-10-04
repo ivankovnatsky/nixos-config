@@ -43,13 +43,13 @@
       export "''${mangoVars[@]}"
 
       echo "Stopping display manager..."
-      
+
       # Stop SDDM display manager (cleaner approach)
       sudo systemctl stop display-manager || true
-      
+
       # Give display manager time to stop
       sleep 3
-      
+
       echo "Starting gamescope session..."
       echo "This will launch a Steam Deck-like experience"
       echo "Press Ctrl+C to exit"

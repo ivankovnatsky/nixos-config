@@ -76,7 +76,7 @@
       bind-key r select-window -t 13
       bind-key t select-window -t 14
       bind-key y select-window -t 15
-      
+
       ${
         if config.flags.enableFishShell then
           ''

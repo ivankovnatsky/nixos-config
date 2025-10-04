@@ -29,7 +29,7 @@
 
           # Cache settings
           # cache-prompts: true
-          
+
           # Timeout settings (in seconds) - increase for slow model loading
           timeout: 60
 
@@ -46,7 +46,7 @@
     sessionVariables = {
       # Point to Ollama instance via Caddy reverse proxy
       OLLAMA_API_BASE = "https://ollama.${config.secrets.externalDomain}";
-      
+
       # Extended context for better code understanding
       OLLAMA_CONTEXT_LENGTH = "8192";
     };

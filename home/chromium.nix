@@ -8,7 +8,7 @@
   programs.chromium = {
     enable = true;
     package = pkgs.chromium;
-    
+
     extensions = [
       { id = "aeblfdkhhhdcdjpifhhbdiojplfjncoa"; } # 1password
       { id = "eimadpbcbfnmbkopoojfekhnkhdbieeh"; } # dark-reader
@@ -20,7 +20,7 @@
       { id = "gcbommkclmclpchllfjekcdonpmejbdp"; } # https everywhere
       { id = "bkdgflcldnnnapblkhphbgpggdiikppg"; } # ddg
     ];
-    
+
     commandLineArgs = [
       # Hardware acceleration
       "--enable-features=VaapiVideoDecoder"

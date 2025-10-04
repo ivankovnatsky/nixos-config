@@ -1,13 +1,18 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   # KDE Plasma display configuration with 200% scaling
   # Note: plasma-manager doesn't support monitor configuration yet
   # See: https://github.com/nix-community/plasma-manager/issues/172
-  # 
+  #
   # We copy the kwinoutputconfig.json file but only if it differs
   # This allows KDE to update the file during runtime
-  
+
   home.file.".config/kwinoutputconfig.json" = {
     source = ./kwinoutputconfig.json;
     # Don't force overwrite if the file exists and is different

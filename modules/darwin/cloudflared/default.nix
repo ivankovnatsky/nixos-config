@@ -55,33 +55,40 @@ in
     launchd.daemons.cloudflared = {
       serviceConfig = {
         Label = "org.nixos.cloudflared";
-        ProgramArguments = [ 
-          "${cfg.package}/bin/cloudflared"
-          "proxy-dns"
-          "--address"
-          cfg.address
-          "--port"
-          (toString cfg.port)
-        ] ++ (lib.concatMap (upstream: ["--upstream" upstream]) cfg.upstreamServers);
+        ProgramArguments =
+          [
+            "${cfg.package}/bin/cloudflared"
+            "proxy-dns"
+            "--address"
+            cfg.address
+            "--port"
+            (toString cfg.port)
+          ]
+          ++ (lib.concatMap (upstream: [
+            "--upstream"
+            upstream
+          ]) cfg.upstreamServers);
         RunAtLoad = true;
         KeepAlive = cfg.alwaysKeepRunning;
         StandardOutPath = "/tmp/log/launchd/cloudflared.log";
         StandardErrorPath = "/tmp/log/launchd/cloudflared.error.log";
       };
 
-      command = let
-        startScript = pkgs.writeShellScriptBin "start-cloudflared" ''
-          # Create log directory
-          mkdir -p /tmp/log/launchd
-          chmod 755 /tmp/log/launchd
+      command =
+        let
+          startScript = pkgs.writeShellScriptBin "start-cloudflared" ''
+            # Create log directory
+            mkdir -p /tmp/log/launchd
+            chmod 755 /tmp/log/launchd
 
-          echo "Starting cloudflared..."
-          exec ${cfg.package}/bin/cloudflared proxy-dns \
-            --address ${cfg.address} \
-            --port ${toString cfg.port} \
-            ${lib.concatMapStringsSep " " (upstream: "--upstream ${upstream}") cfg.upstreamServers}
-        '';
-      in "${startScript}/bin/start-cloudflared";
+            echo "Starting cloudflared..."
+            exec ${cfg.package}/bin/cloudflared proxy-dns \
+              --address ${cfg.address} \
+              --port ${toString cfg.port} \
+              ${lib.concatMapStringsSep " " (upstream: "--upstream ${upstream}") cfg.upstreamServers}
+          '';
+        in
+        "${startScript}/bin/start-cloudflared";
     };
   };
 }

@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 let
   models = [
@@ -40,7 +45,7 @@ in
     OLLAMA_CONTEXT_LENGTH = "8192";
   };
 
-  home.activation.ollamaPullModels = config.lib.dag.entryAfter ["writeBoundary"] ''
+  home.activation.ollamaPullModels = config.lib.dag.entryAfter [ "writeBoundary" ] ''
     # Set environment variables for ollama
     export OLLAMA_MODELS="${ollamaModelsPath}"
     export OLLAMA_HOST="${config.flags.miniIp}:11434"

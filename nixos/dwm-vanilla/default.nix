@@ -3,7 +3,7 @@
 {
   # Vanilla dwm with no patches or customizations
   services.xserver.windowManager.dwm.enable = true;
-  
+
   # Basic utilities for dwm
   environment.systemPackages = with pkgs; [
     dmenu

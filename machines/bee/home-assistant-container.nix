@@ -6,12 +6,12 @@ let
     # Includes dependencies for a basic setup
     # https://www.home-assistant.io/integrations/default_config/
     default_config = { };
-    
+
     # Database configuration
     recorder = {
       db_url = "postgresql://hass@/hass";
     };
-    
+
     # Set location information
     homeassistant = {
       name = "Home";
@@ -19,7 +19,7 @@ let
       elevation = 0;
       unit_system = "metric";
     };
-    
+
     # Basic HTTP configuration
     http = {
       server_host = "0.0.0.0";
@@ -33,7 +33,7 @@ let
         "192.168.50.0/24"
       ];
     };
-    
+
     # MQTT configuration for Zigbee2MQTT integration
     # Note: MQTT is now configured via UI in newer versions
     # This empty config allows the integration to be set up manually
@@ -48,7 +48,7 @@ in
     extraGroups = [ "postgres" ];
     home = "/var/lib/hass";
   };
-  users.groups.hass = {};
+  users.groups.hass = { };
 
   # Container-based Home Assistant
   virtualisation.oci-containers = {

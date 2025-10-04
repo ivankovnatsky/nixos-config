@@ -7,8 +7,8 @@
     # Enable Avahi for .local hostname resolution (mDNS/Bonjour)
     avahi = {
       enable = true;
-      nssmdns4 = true;  # Enable .local hostname resolution via mDNS for IPv4
-      nssmdns6 = true;  # Enable .local hostname resolution via mDNS for IPv6
+      nssmdns4 = true; # Enable .local hostname resolution via mDNS for IPv4
+      nssmdns6 = true; # Enable .local hostname resolution via mDNS for IPv6
       publish = {
         enable = true;
         addresses = true;
@@ -25,7 +25,7 @@
   # Network firewall configuration for mDNS
   networking.firewall = {
     allowedUDPPorts = [
-      5353  # mDNS/Avahi
+      5353 # mDNS/Avahi
     ];
   };
 }
