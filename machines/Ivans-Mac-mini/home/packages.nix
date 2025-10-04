@@ -24,6 +24,7 @@
     macmon
     magic-wormhole
     mkpasswd
+    nextdns-mgmt
     nixfmt-rfc-style
     nodePackages.prettier
     nodejs
@@ -39,6 +40,7 @@
     sesh
     smctemp # Local overlay
     syncthing
+    treefmt
     typst
     typstfmt
     username # Installed as flake
@@ -47,6 +49,5 @@
     wget
     yt-dlp
     zsh-forgit
-    nextdns-mgmt
   ];
 }
