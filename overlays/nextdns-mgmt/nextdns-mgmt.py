@@ -65,52 +65,12 @@ class NextDNSClient:
         """Get single profile details."""
         return self._api_call("GET", f"/profiles/{profile_id}")
 
-    def update_profile(self, profile_id: str, profile_data: dict):
-        """Update entire profile configuration."""
-        # Remove read-only fields
-        clean_data = profile_data.copy()
-
-        # Remove top-level read-only fields
-        clean_data.pop("id", None)
-        clean_data.pop("fingerprint", None)
-        clean_data.pop("rewrites", None)
-
-        # Remove denylist/allowlist - these have separate API endpoints
-        clean_data.pop("denylist", None)
-        clean_data.pop("allowlist", None)
-
-        # Clean setup section
-        if "setup" in clean_data:
-            setup = clean_data["setup"]
-            setup.pop("ipv4", None)
-            setup.pop("ipv6", None)
-            setup.pop("dnscrypt", None)
-            if "linkedIp" in setup:
-                setup["linkedIp"].pop("servers", None)
-                setup["linkedIp"].pop("ip", None)
-                setup["linkedIp"].pop("updateToken", None)
-
-        # Clean privacy blocklists metadata
-        if "privacy" in clean_data and "blocklists" in clean_data["privacy"]:
-            for blocklist in clean_data["privacy"]["blocklists"]:
-                blocklist.pop("name", None)
-                blocklist.pop("website", None)
-                blocklist.pop("description", None)
-                blocklist.pop("entries", None)
-                blocklist.pop("updatedOn", None)
-
-        print(f"DEBUG: Sending PATCH to /profiles/{profile_id}", file=sys.stderr)
-        print(
-            f"DEBUG: Cleaned payload keys: {list(clean_data.keys())}", file=sys.stderr
-        )
-        return self._api_call("PATCH", f"/profiles/{profile_id}", data=clean_data)
-
-    def export_profile(self, profile_id: str):
+    def export_profile_raw(self, profile_id: str):
         """Export complete profile configuration (raw API response)."""
         profile_response = self.get_profile(profile_id)
         return json.dumps(profile_response, indent=2)
 
-    def export_filtered_profile(self, profile_id: str):
+    def export_profile_filtered(self, profile_id: str):
         """Export profile with sensitive/machine-specific data removed."""
         profile_response = self.get_profile(profile_id)
 
@@ -141,31 +101,20 @@ class NextDNSClient:
 
 
 def cmd_sync(args, client):
-    """Sync command handler."""
+    """Sync command handler - sends RAW unfiltered profile data for testing."""
     try:
         # Load profile JSON
         with open(args.profile_file, "r") as f:
             profile_data = json.load(f)
 
-        # Support both raw API response {"data": {...}} and wrapped {"profile": {"data": {...}}}
-        if "data" in profile_data and "id" in profile_data["data"]:
-            # Raw API response format
+        # Support raw API response {"data": {...}} format only
+        if "data" in profile_data:
             profile = profile_data["data"]
-        elif "profile" in profile_data and "data" in profile_data["profile"]:
-            # Wrapped format (legacy)
-            profile = profile_data["profile"]["data"]
         else:
-            raise ValueError("Invalid profile JSON format")
+            raise ValueError('Invalid profile JSON format - expected {"data": {...}}')
 
-        # Validate profile ID matches
-        if profile["id"] != args.profile_id:
-            print(
-                f"Error: Profile ID mismatch - file contains '{profile['id']}' but --profile-id specified '{args.profile_id}'",
-                file=sys.stderr,
-            )
-            sys.exit(1)
-
-        print(f"Syncing profile {args.profile_id}...")
+        print(f"Syncing profile {args.profile_id} (RAW PATCH - NO FILTERING)...")
+        print(f"DEBUG: Sending all fields: {list(profile.keys())}", file=sys.stderr)
     except Exception as e:
         print(f"Error loading profile file: {e}", file=sys.stderr)
         sys.exit(1)
@@ -175,9 +124,14 @@ def cmd_sync(args, client):
         sys.exit(0)
 
     try:
-        # Update entire profile configuration
-        client.update_profile(args.profile_id, profile)
+        # Send raw PATCH request with UNFILTERED profile data
+        # This will help identify which fields cause errors
+        print(f"DEBUG: Sending PATCH to /profiles/{args.profile_id}", file=sys.stderr)
+        response = client._api_call(
+            "PATCH", f"/profiles/{args.profile_id}", data=profile
+        )
         print("Profile synced successfully!")
+        print(f"Response: {json.dumps(response, indent=2)}")
     except Exception as e:
         print(f"Error syncing profile {args.profile_id}: {e}", file=sys.stderr)
         sys.exit(1)
@@ -380,7 +334,7 @@ def cmd_update(args, client):
         sys.exit(1)
 
 
-def cmd_export(args, client):
+def cmd_export_raw(args, client):
     """Export command handler."""
     try:
         if args.list_profiles:
@@ -397,7 +351,7 @@ def cmd_export(args, client):
             )
             sys.exit(1)
 
-        output = client.export_profile(args.profile_id)
+        output = client.export_profile_raw(args.profile_id)
 
         if args.output:
             with open(args.output, "w") as f:
@@ -411,7 +365,7 @@ def cmd_export(args, client):
         sys.exit(1)
 
 
-def cmd_export_filtered(args, client):
+def cmd_export(args, client):
     """Export filtered command handler."""
     try:
         if args.list_profiles:
@@ -428,7 +382,7 @@ def cmd_export_filtered(args, client):
             )
             sys.exit(1)
 
-        output = client.export_filtered_profile(args.profile_id)
+        output = client.export_profile_filtered(args.profile_id)
 
         if args.output:
             with open(args.output, "w") as f:
@@ -449,9 +403,9 @@ def main():
         dest="command", required=True, help="Command to execute"
     )
 
-    # Sync command
+    # Sync command (raw PATCH for testing)
     sync_parser = subparsers.add_parser(
-        "sync", help="Sync profile denylist declaratively"
+        "sync", help="Send raw unfiltered PATCH request (for testing read-only fields)"
     )
     sync_parser.add_argument("--api-key", required=True, help="NextDNS API key")
     sync_parser.add_argument("--profile-id", required=True, help="Profile ID to sync")
@@ -495,9 +449,9 @@ def main():
         "--list-profiles", action="store_true", help="List all profiles and exit"
     )
 
-    # Export-all command (complete raw export)
+    # Export-raw command (complete raw export)
     export_all_parser = subparsers.add_parser(
-        "export-all", help="Export complete profile configuration (raw API response)"
+        "export-raw", help="Export complete profile configuration (raw API response)"
     )
     export_all_parser.add_argument("--api-key", required=True, help="NextDNS API key")
     export_all_parser.add_argument(
@@ -518,9 +472,9 @@ def main():
     elif args.command == "update":
         cmd_update(args, client)
     elif args.command == "export":
-        cmd_export_filtered(args, client)
-    elif args.command == "export-all":
         cmd_export(args, client)
+    elif args.command == "export-raw":
+        cmd_export_raw(args, client)
 
 
 if __name__ == "__main__":
