@@ -184,49 +184,51 @@ class AudiobookshelfClient:
 
 def download_audio(url, output_dir=None):
     """Download audio from a URL using yt-dlp.
-    
+
     Args:
         url: URL to download from
         output_dir: Directory to save the file to (default: current directory)
-        
+
     Returns:
         Path to the downloaded MP3 file or None if failed
     """
     print(f"Downloading and extracting audio from {url}...")
-    
+
     # Create a temporary directory if none provided
     if not output_dir:
         output_dir = os.getcwd()
-    
+
     # Ensure the directory exists
     os.makedirs(output_dir, exist_ok=True)
-    
+
     # Change to the output directory
     original_dir = os.getcwd()
     os.chdir(output_dir)
-    
+
     try:
         # Run yt-dlp command
         cmd = [
-            "yt-dlp", 
-            "--extract-audio", 
-            "--audio-format", "mp3", 
-            "--postprocessor-args", "-ac 1 -ar 24000",
-            url
+            "yt-dlp",
+            "--extract-audio",
+            "--audio-format",
+            "mp3",
+            "--postprocessor-args",
+            "-ac 1 -ar 24000",
+            url,
         ]
-        
+
         result = subprocess.run(cmd, check=True, capture_output=True, text=True)
-        
+
         # Find the generated MP3 file
         mp3_files = glob.glob(os.path.join(output_dir, "*.mp3"))
-        
+
         if not mp3_files:
             print("Error: No MP3 file was generated.")
             return None
-            
+
         # Return the path to the first MP3 file found
         return mp3_files[0]
-        
+
     except subprocess.CalledProcessError as e:
         print(f"Error running yt-dlp: {e}")
         print(f"Output: {e.stdout}")
@@ -242,46 +244,46 @@ def download_audio(url, output_dir=None):
 
 def process_media_url(url, abs_url=None, library_id=DEFAULT_PODCASTS_LIBRARY_ID):
     """Process a single media URL - download audio and upload to Audiobookshelf.
-    
+
     Args:
         url: URL to process
         abs_url: Audiobookshelf URL (optional)
         library_id: Library ID to upload to (optional)
-        
+
     Returns:
         True if successful, False otherwise
     """
     print(f"Processing media URL: {url}")
-    
+
     # Create a temporary directory
     with tempfile.TemporaryDirectory(prefix="audiobookshelf-") as temp_dir:
         print(f"Created temporary directory: {temp_dir}")
-        
+
         # Download audio
         mp3_file = download_audio(url, temp_dir)
-        
+
         if not mp3_file:
             return False
-            
+
         print(f"Audio extraction completed. File: {mp3_file}")
-        
+
         # Check for API key
         api_key = os.environ.get("ABS_API_KEY")
         if not api_key:
             print("Error: Missing API key")
             print("Please set the ABS_API_KEY environment variable")
             return False
-            
+
         # Initialize client
         if abs_url:
             client = AudiobookshelfClient(api_key, abs_url)
         else:
             client = AudiobookshelfClient(api_key)
-            
+
         # Upload to Audiobookshelf
         print("Uploading to Audiobookshelf...")
         upload_response = client.upload_file(mp3_file, library_id)
-        
+
         if upload_response:
             print("Upload successful!")
             return True
@@ -292,49 +294,49 @@ def process_media_url(url, abs_url=None, library_id=DEFAULT_PODCASTS_LIBRARY_ID)
 
 def process_from_file(file_path, abs_url=None, library_id=DEFAULT_PODCASTS_LIBRARY_ID):
     """Process URLs from a file.
-    
+
     Args:
         file_path: Path to file containing URLs
         abs_url: Audiobookshelf URL (optional)
         library_id: Library ID to upload to (optional)
-        
+
     Returns:
         Number of successfully processed URLs
     """
     if not os.path.isfile(file_path):
         print(f"Error: File not found: {file_path}")
         return 0
-        
+
     success_count = 0
-    
+
     # Read URLs from file
-    with open(file_path, 'r') as f:
+    with open(file_path, "r") as f:
         urls = f.readlines()
-    
+
     # Process each URL
     for url in urls:
         url = url.strip()
-        
+
         # Skip empty lines and comments
-        if not url or url.startswith('#'):
+        if not url or url.startswith("#"):
             continue
-            
+
         if process_media_url(url, abs_url, library_id):
             success_count += 1
-            
+
             # Remove successfully processed URL from the file
-            with open(file_path, 'r') as f:
+            with open(file_path, "r") as f:
                 lines = f.readlines()
-                
-            with open(file_path, 'w') as f:
+
+            with open(file_path, "w") as f:
                 for line in lines:
                     if line.strip() != url:
                         f.write(line)
-                        
+
             print(f"Removed successfully processed URL from {file_path}: {url}")
         else:
             print(f"Failed to process URL: {url}")
-    
+
     return success_count
 
 
@@ -406,13 +408,15 @@ def list_listened_command(args, client):
 
         # Check if item is finished (progress = 1.0 means 100% complete)
         if progress_info and progress_info.get("progress", 0) >= 1.0:
-            listened_items.append({
-                "id": item_id,
-                "title": item["media"]["metadata"]["title"],
-                "progress": progress_info.get("progress", 0),
-                "finished_at": progress_info.get("finishedAt"),
-                "duration": item["media"].get("duration", 0)
-            })
+            listened_items.append(
+                {
+                    "id": item_id,
+                    "title": item["media"]["metadata"]["title"],
+                    "progress": progress_info.get("progress", 0),
+                    "finished_at": progress_info.get("finishedAt"),
+                    "duration": item["media"].get("duration", 0),
+                }
+            )
 
     if not listened_items:
         print("No listened episodes found.")
@@ -425,15 +429,15 @@ def list_listened_command(args, client):
         print(f"ID: {item['id']}")
         print(f"Title: {item['title']}")
         print(f"Progress: {item['progress']:.1%}")
-        if item['finished_at']:
+        if item["finished_at"]:
             # Convert timestamp to readable date
             try:
-                finished_date = datetime.fromtimestamp(item['finished_at'] / 1000)
+                finished_date = datetime.fromtimestamp(item["finished_at"] / 1000)
                 print(f"Finished: {finished_date.strftime('%Y-%m-%d %H:%M')}")
             except (ValueError, TypeError):
                 print(f"Finished: {item['finished_at']}")
-        if item['duration']:
-            duration_hours = item['duration'] / 3600
+        if item["duration"]:
+            duration_hours = item["duration"] / 3600
             print(f"Duration: {duration_hours:.1f} hours")
         print()
 
@@ -459,11 +463,13 @@ def cleanup_listened_command(args, client):
 
         # Check if item is finished (progress = 1.0 means 100% complete)
         if progress and progress.get("progress", 0) >= 1.0:
-            listened_items.append({
-                "id": item_id,
-                "title": item["media"]["metadata"]["title"],
-                "progress": progress.get("progress", 0)
-            })
+            listened_items.append(
+                {
+                    "id": item_id,
+                    "title": item["media"]["metadata"]["title"],
+                    "progress": progress.get("progress", 0),
+                }
+            )
 
     if not listened_items:
         print("No listened episodes found to clean up.")
@@ -476,8 +482,10 @@ def cleanup_listened_command(args, client):
         print(f"- {item['title']} (ID: {item['id']})")
 
     if not args.force:
-        response = input(f"\nAre you sure you want to remove {len(listened_items)} listened episodes? (y/N): ")
-        if response.lower() not in ['y', 'yes']:
+        response = input(
+            f"\nAre you sure you want to remove {len(listened_items)} listened episodes? (y/N): "
+        )
+        if response.lower() not in ["y", "yes"]:
             print("Cleanup cancelled.")
             return
 
@@ -488,7 +496,7 @@ def cleanup_listened_command(args, client):
     for item in listened_items:
         print(f"Removing: {item['title']}")
 
-        if client.remove_item(item['id']):
+        if client.remove_item(item["id"]):
             removed_count += 1
             print(f"  ✓ Removed successfully")
         else:
@@ -514,31 +522,31 @@ def download_command(args):
         if not os.path.isfile(args.file_url_list):
             print(f"Error: File not found: {args.file_url_list}")
             return 1
-            
+
         success_count = 0
         total_count = 0
-        
+
         # Read URLs from file
-        with open(args.file_url_list, 'r') as f:
+        with open(args.file_url_list, "r") as f:
             urls = f.readlines()
-        
+
         # Process each URL
         for url in urls:
             url = url.strip()
-            
+
             # Skip empty lines and comments
-            if not url or url.startswith('#'):
+            if not url or url.startswith("#"):
                 continue
-                
+
             total_count += 1
             if download_audio(url, args.output_dir):
                 success_count += 1
-                
+
         print(f"Downloaded {success_count} of {total_count} URLs successfully.")
     else:
         print("Error: Either --url or --file-url-list must be specified.")
         return 1
-        
+
     return 0
 
 
@@ -553,12 +561,14 @@ def process_command(args):
             return 1
     elif args.file_url_list:
         # Process URLs from a file
-        success_count = process_from_file(args.file_url_list, args.abs_url, args.library_id)
+        success_count = process_from_file(
+            args.file_url_list, args.abs_url, args.library_id
+        )
         print(f"Processed {success_count} URLs successfully.")
     else:
         print("Error: Either --url or --file-url-list must be specified.")
         return 1
-        
+
     return 0
 
 
@@ -640,28 +650,25 @@ def main():
     cleanup_listened_parser.add_argument(
         "--force", action="store_true", help="Skip confirmation prompt"
     )
-    
+
     # Download command
     download_parser = subparsers.add_parser(
         "download", help="Download audio from a URL or list of URLs"
     )
-    download_parser.add_argument(
-        "--url", help="URL to download from"
-    )
+    download_parser.add_argument("--url", help="URL to download from")
     download_parser.add_argument(
         "--file-url-list", help="File containing URLs to download (one per line)"
     )
     download_parser.add_argument(
         "--output-dir", default=os.getcwd(), help="Directory to save downloaded files"
     )
-    
+
     # Process command (download + upload)
     process_parser = subparsers.add_parser(
-        "process", help="Download audio from a URL or list of URLs and upload to Audiobookshelf"
+        "process",
+        help="Download audio from a URL or list of URLs and upload to Audiobookshelf",
     )
-    process_parser.add_argument(
-        "--url", help="URL to process"
-    )
+    process_parser.add_argument("--url", help="URL to process")
     process_parser.add_argument(
         "--file-url-list", help="File containing URLs to process (one per line)"
     )
@@ -682,18 +689,33 @@ def main():
         return 1
 
     # Make sure the first argument is a valid command
-    valid_commands = ["upload", "libraries", "list-listened", "cleanup-listened", "download", "process", "-h", "--help"]
+    valid_commands = [
+        "upload",
+        "libraries",
+        "list-listened",
+        "cleanup-listened",
+        "download",
+        "process",
+        "-h",
+        "--help",
+    ]
     if sys.argv[1] not in valid_commands:
         print(f"Error: '{sys.argv[1]}' is not a recognized command.")
         print("Commands must come first, before any options.")
-        print("\nAvailable commands: upload, libraries, list-listened, cleanup-listened, download, process")
+        print(
+            "\nAvailable commands: upload, libraries, list-listened, cleanup-listened, download, process"
+        )
         print("\nUsage examples:")
         print(
             "  audiobookshelf upload --url https://example.com --file file.mp3 --library-id ID"
         )
         print("  audiobookshelf libraries --url https://example.com")
-        print("  audiobookshelf list-listened --url https://example.com --library-id ID")
-        print("  audiobookshelf cleanup-listened --url https://example.com --library-id ID")
+        print(
+            "  audiobookshelf list-listened --url https://example.com --library-id ID"
+        )
+        print(
+            "  audiobookshelf cleanup-listened --url https://example.com --library-id ID"
+        )
         print("  audiobookshelf download --url https://youtube.com/watch?v=example")
         print("  audiobookshelf process --file-url-list /path/to/urls.txt")
         return 1
