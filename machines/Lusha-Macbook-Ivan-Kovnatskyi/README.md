@@ -8,7 +8,7 @@
 ## Configured manually
 
 ### Enable Low Power Mode:
-  
+
 ```console
 sudo pmset -a lowpowermode 1
 ```

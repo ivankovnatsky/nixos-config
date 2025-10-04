@@ -28,6 +28,7 @@ Note: After creation, the VM's configuration is managed entirely through NixOS f
 ## Network Configuration
 
 The VM uses Orbstack's networking with:
+
 - IP Address: `198.19.249.245` (automatically assigned by Orbstack)
 
 ## Services
@@ -65,6 +66,7 @@ sudo nixos-rebuild switch --flake .
 Services on mini-vm are accessible via the hostname `mini-vm.orb.local`, which automatically resolves to the correct IP even after Orbstack restarts. No manual IP updates are needed.
 
 **Important**: The `.orb.local` hostname is only resolvable from the Mac mini (OrbStack host). For services accessed from other machines (like bee), the Caddy configuration must:
+
 1. Forward from bee to Mac mini IP (192.168.50.4)
 2. Mac mini then forwards to `mini-vm.orb.local`
 

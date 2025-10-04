@@ -67,6 +67,7 @@ mkdir clusters/orbstack/my-app
 ```
 
 2. Add manifests:
+
    - `namespace.yaml` - Create namespace
    - `repository.yaml` - Helm repository (if using Helm)
    - `release.yaml` - HelmRelease or Deployment

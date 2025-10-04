@@ -2,26 +2,27 @@
 
 ## Manual configuration
 
-* Cleaned up GarageBand and other non-used non-default apps
-* Logged in to Apple ID
-  * Disable all iCloud toggles
-* Enabled FileVault
-* Configured syncthing to use default dir as /Volume/[StorageName]
-* Enabled remote login -- this was enabled by `services.openssh.enable = true`
-  * Enabled allow full disk access for remote users under `Remote Login`
-* Enabled Screen Sharing
-* Disabled for now: Enabled remote management, can't enable it using any automation clearly
+- Cleaned up GarageBand and other non-used non-default apps
+- Logged in to Apple ID
+  - Disable all iCloud toggles
+- Enabled FileVault
+- Configured syncthing to use default dir as /Volume/[StorageName]
+- Enabled remote login -- this was enabled by `services.openssh.enable = true`
+  - Enabled allow full disk access for remote users under `Remote Login`
+- Enabled Screen Sharing
+- Disabled for now: Enabled remote management, can't enable it using any automation clearly
   (https://www.reddit.com/r/macsysadmin/comments/13dhnmb/enable_remote_management_through_shell_script/?rdt=53927)
-* Enabled file sharing
-  * Added `/Volume/[StorageName]` to shared folders
-  * Enable full disk access for all users, otherwise you can't have access,
+- Enabled file sharing
+  - Added `/Volume/[StorageName]` to shared folders
+  - Enable full disk access for all users, otherwise you can't have access,
     automation can't do it for now or by design?
-  * Need to grant all different service with access to disk, namely:
-    * Syncthing?
-    * watchman / make ?
-* Enable auto login in System Settings
-* Remove `noauto` from /etc/fstab for /nix store, having issues with launchd
+  - Need to grant all different service with access to disk, namely:
+    - Syncthing?
+    - watchman / make ?
+- Enable auto login in System Settings
+- Remove `noauto` from /etc/fstab for /nix store, having issues with launchd
   services that can't be started due to /nix mount point not mounted yet:
+
   ```logs
   2025-03-25 08:59:04.800168+0200 0xf0c      Error       0x0                  1      0    launchd: [system/org.nixos.stubby [564]:] Service could not initialize: access(/nix/store/6kkfq97xl9p293lxfv59q79kg8bp63sn-stubby-0.4.3/bin/stubby, X_OK) failed with errno 2 - No such file or directory, error 0x6f - Invalid or missing Program/ProgramArguments
   2025-03-25 08:59:04.800170+0200 0xf0c      Error       0x0                  1      0    launchd: [system/org.nixos.stubby [564]:] initialization failure: 24D81: xpcproxy + 36768 [1088][E4C3A3C3-0D57-3E4D-8388-880BC7F5F19E]: 0x6f
@@ -36,20 +37,21 @@
   ```
 
   ```
-  ivan@Ivans-Mac-mini:~/ > cat /etc/fstab 
+  ivan@Ivans-Mac-mini:~/ > cat /etc/fstab
   UUID=57dbf488-6645-4357-9356-8e7efc8ab1c9 /nix apfs rw,noatime,noauto,nobrowse,nosuid,owners # Added by the Determinate Nix Installer
   ivan@Ivans-Mac-mini:~/ >
   ```
 
-  * Seems like noauto still did not help
-  * This was resolved by using /bin/wait4path utility already used in command
+  - Seems like noauto still did not help
+  - This was resolved by using /bin/wait4path utility already used in command
     directive in launchd nix-darwin module and for own modules that using
     external volume we added it to custom scripts
-* Disabled encryption/FileVault to be able to autologin
-  * Also faced at least once that system wanted to unlock encrypted /nix store
+
+- Disabled encryption/FileVault to be able to autologin
+  - Also faced at least once that system wanted to unlock encrypted /nix store
     volume, which it turns out determinate encrypts by defaults and writes key to
     system keychain
-  * Decrypted /nix store to avoid issue above:
+  - Decrypted /nix store to avoid issue above:
     ```console
     sudo diskutil apfs decryptVolume disk3s7
     ```
@@ -71,9 +73,9 @@ sudo vim /nix/var/determinate/post-build-hook.sh
 
 #### References
 
-* https://www.reddit.com/r/Nix/comments/1iuqxrw/nixdarwin_switch_hangs_forever/
-* https://github.com/DeterminateSystems/nix-installer/issues/1479
-* https://github.com/DeterminateSystems/nix-installer/issues/1500
+- https://www.reddit.com/r/Nix/comments/1iuqxrw/nixdarwin_switch_hangs_forever/
+- https://github.com/DeterminateSystems/nix-installer/issues/1479
+- https://github.com/DeterminateSystems/nix-installer/issues/1500
 
 ### Git repo is not owned by current user
 
@@ -118,7 +120,7 @@ This means NodePort services are not accessible from external machines (like bee
 **Solution**: Use Caddy to forward from external interface to localhost NodePort:
 
 ```caddyfile
-# K8s NodePort forwarding (mini machine only)  
+# K8s NodePort forwarding (mini machine only)
 :30080 {
     bind @bindAddress@
     reverse_proxy localhost:30080
@@ -134,12 +136,14 @@ OrbStack requests keychain access to automatically configure HTTPS for its local
 **Keychain Access Request**: When granted, OrbStack can automatically manage TLS certificates for local development services, making them accessible via `https://service.orb.local`.
 
 **Implications for Caddy Routing**:
+
 - Services in mini-vm may be accessible via both `http://service.orb.local` and `https://service.orb.local`
 - When configuring Caddy to route to mini-vm services, consider the TLS termination:
   - **Option 1**: Route to HTTP endpoint and let Caddy handle TLS
   - **Option 2**: Route to HTTPS endpoint (requires proper certificate handling)
 
 **Configuration Considerations**:
+
 ```caddyfile
 # Route to HTTP service in mini-vm (Caddy handles TLS)
 service.externalDomain {
@@ -157,22 +161,26 @@ service.externalDomain {
 ## OrbStack VM Network Limitations
 
 ### Link-Local Address Access (169.254.0.0/16)
+
 - **Cannot reach** devices using link-local addresses from OrbStack VMs or K8s pods
 - Link-local addresses are not routable by design (RFC 3927)
 - Only work within the same network segment/broadcast domain
 - **hostNetwork: true** in K8s does NOT solve this - the "host" is still the OrbStack VM
 
 ### Services That Should NOT Be Moved to OrbStack K8s
+
 - **Homebridge with Elgato plugins** - Needs direct access to 169.254.x.x devices
 - **Matter-bridge** - Requires mDNS discovery on physical network
 - **IoT device integrations** - Many devices fall back to link-local addressing
 - **Hardware coordinators** - Zigbee/Z-Wave need direct USB access
 
 ### Alternative Solutions
+
 1. **Keep on physical machines** - Deploy on bee/mini host with full network access
 2. **Docker with --network=host on physical host** - Container shares host networking (not VM host)
 
 ### Testing Connectivity
+
 ```console
 # From mini host (should work)
 ping 169.254.1.144
