@@ -16,3 +16,27 @@ includes = ["*.nix"]
 command = "prettier"
 options = ["--write"]
 includes = ["*.md", "*.json", "*.yml", "*.yaml"]
+
+[formatter.shfmt]
+command = "shfmt"
+options = ["-w", "-i", "2"]
+includes = ["*.sh", "*.bash"]
+
+[formatter.shellcheck]
+command = "shellcheck"
+options = ["--format=diff"]
+includes = ["*.sh", "*.bash"]
+
+[formatter.stylua]
+command = "stylua"
+includes = ["*.lua"]
+
+[formatter.gofumpt]
+command = "gofumpt"
+options = ["-w"]
+includes = ["*.go"]
+
+[formatter.golangci-lint]
+command = "golangci-lint"
+options = ["run", "--fix"]
+includes = ["*.go"]
