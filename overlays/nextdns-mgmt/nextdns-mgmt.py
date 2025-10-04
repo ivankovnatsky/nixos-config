@@ -98,18 +98,9 @@ class NextDNSClient:
         return self._api_call("PATCH", f"/profiles/{profile_id}", data=clean_data)
 
     def export_profile(self, profile_id: str):
-        """Export complete profile configuration (all fields)."""
+        """Export complete profile configuration (raw API response)."""
         profile_response = self.get_profile(profile_id)
-        denylist_entries = self._api_call("GET", f"/profiles/{profile_id}/denylist").get("data", [])
-        allowlist_entries = self._api_call("GET", f"/profiles/{profile_id}/allowlist").get("data", [])
-
-        export_data = {
-            "profile": profile_response,
-            "denylist": denylist_entries,
-            "allowlist": allowlist_entries
-        }
-
-        return json.dumps(export_data, indent=2)
+        return json.dumps(profile_response, indent=2)
 
 def cmd_sync(args, client):
     """Sync command handler."""
@@ -118,12 +109,19 @@ def cmd_sync(args, client):
         with open(args.profile_file, 'r') as f:
             profile_data = json.load(f)
 
-        # Extract profile ID from JSON for validation
-        file_profile_id = profile_data['profile']['data']['id']
+        # Support both raw API response {"data": {...}} and wrapped {"profile": {"data": {...}}}
+        if 'data' in profile_data and 'id' in profile_data['data']:
+            # Raw API response format
+            profile = profile_data['data']
+        elif 'profile' in profile_data and 'data' in profile_data['profile']:
+            # Wrapped format (legacy)
+            profile = profile_data['profile']['data']
+        else:
+            raise ValueError("Invalid profile JSON format")
 
         # Validate profile ID matches
-        if file_profile_id != args.profile_id:
-            print(f"Error: Profile ID mismatch - file contains '{file_profile_id}' but --profile-id specified '{args.profile_id}'", file=sys.stderr)
+        if profile['id'] != args.profile_id:
+            print(f"Error: Profile ID mismatch - file contains '{profile['id']}' but --profile-id specified '{args.profile_id}'", file=sys.stderr)
             sys.exit(1)
 
         print(f"Syncing profile {args.profile_id}...")
@@ -137,7 +135,7 @@ def cmd_sync(args, client):
 
     try:
         # Update entire profile configuration
-        client.update_profile(args.profile_id, profile_data['profile']['data'])
+        client.update_profile(args.profile_id, profile)
         print("Profile synced successfully!")
     except Exception as e:
         print(f"Error syncing profile {args.profile_id}: {e}", file=sys.stderr)
@@ -150,15 +148,21 @@ def cmd_update(args, client):
         with open(args.profile_file, 'r') as f:
             profile_data = json.load(f)
 
-        # Extract profile ID
-        file_profile_id = profile_data['profile']['data']['id']
+        # Support both raw API response {"data": {...}} and wrapped {"profile": {"data": {...}}}
+        if 'data' in profile_data and 'id' in profile_data['data']:
+            # Raw API response format
+            profile = profile_data['data']
+        elif 'profile' in profile_data and 'data' in profile_data['profile']:
+            # Wrapped format (legacy)
+            profile = profile_data['profile']['data']
+        else:
+            raise ValueError("Invalid profile JSON format")
 
         # Validate profile ID matches
-        if file_profile_id != args.profile_id:
-            print(f"Error: Profile ID mismatch - file contains '{file_profile_id}' but --profile-id specified '{args.profile_id}'", file=sys.stderr)
+        if profile['id'] != args.profile_id:
+            print(f"Error: Profile ID mismatch - file contains '{profile['id']}' but --profile-id specified '{args.profile_id}'", file=sys.stderr)
             sys.exit(1)
 
-        profile = profile_data['profile']['data']
         print(f"Updating profile {args.profile_id} using nested endpoints...")
 
         # Update sections using nested endpoints (in order)
@@ -209,8 +213,8 @@ def cmd_update(args, client):
                         print(f"  ✗ Failed to update {section}: {e}", file=sys.stderr)
 
         # Update denylist
-        if 'denylist' in profile_data:
-            desired_denylist = {entry['id'] for entry in profile_data['denylist'] if entry.get('active', True)}
+        if 'denylist' in profile:
+            desired_denylist = {entry['id'] for entry in profile['denylist'] if entry.get('active', True)}
             if args.dry_run:
                 print(f"  Would sync denylist ({len(desired_denylist)} domains)")
             else:
@@ -239,8 +243,8 @@ def cmd_update(args, client):
                     print(f"  ✗ Failed to update denylist: {e}", file=sys.stderr)
 
         # Update allowlist
-        if 'allowlist' in profile_data:
-            desired_allowlist = {entry['id'] for entry in profile_data['allowlist'] if entry.get('active', True)}
+        if 'allowlist' in profile:
+            desired_allowlist = {entry['id'] for entry in profile['allowlist'] if entry.get('active', True)}
             if args.dry_run:
                 print(f"  Would sync allowlist ({len(desired_allowlist)} domains)")
             else:
@@ -319,16 +323,16 @@ def main():
     parser = argparse.ArgumentParser(
         description="NextDNS profile management tool"
     )
-    parser.add_argument(
-        "--api-key",
-        required=True,
-        help="NextDNS API key"
-    )
 
     subparsers = parser.add_subparsers(dest="command", required=True, help="Command to execute")
 
     # Sync command
     sync_parser = subparsers.add_parser("sync", help="Sync profile denylist declaratively")
+    sync_parser.add_argument(
+        "--api-key",
+        required=True,
+        help="NextDNS API key"
+    )
     sync_parser.add_argument(
         "--profile-id",
         required=True,
@@ -348,6 +352,11 @@ def main():
     # Update command
     update_parser = subparsers.add_parser("update", help="Update profile using nested endpoints (section by section)")
     update_parser.add_argument(
+        "--api-key",
+        required=True,
+        help="NextDNS API key"
+    )
+    update_parser.add_argument(
         "--profile-id",
         required=True,
         help="Profile ID to update"
@@ -365,6 +374,11 @@ def main():
 
     # Export command
     export_parser = subparsers.add_parser("export", help="Export profile configuration")
+    export_parser.add_argument(
+        "--api-key",
+        required=True,
+        help="NextDNS API key"
+    )
     export_parser.add_argument(
         "--profile-id",
         help="Profile ID to export (required unless using --list-profiles)"
