@@ -4,89 +4,89 @@
     ../../modules/flags
 
     ../../modules/nixos/tmux-rebuild
-    ./tmux-rebuild.nix
+    ./server/tmux-rebuild.nix
 
     # Base configuration.
-    ./configuration.nix
-    ./user.nix
+    ./server/configuration.nix
+    ./server/user.nix
 
-    ./loader.nix
+    ./server/loader.nix
 
-    ./syncthing.nix
+    ./server/syncthing.nix
 
-    ./packages.nix
+    ./server/packages.nix
 
     # Enable TPM2 support (required for TPM2 enrollment)
-    ./tpm2.nix
+    ./server/tpm2.nix
 
     # Uncomment after enrolling TPM2 (see docs/bee.md for instructions)
-    ./cryptenroll.nix
+    ./server/cryptenroll.nix
 
     # Security
-    ./sudo.nix
+    ./server/sudo.nix
 
-    ./ssh.nix
+    ./server/ssh.nix
 
     # Networking
     # FIXME: Did not work yet
-    ./networking.nix
-    ./dns.nix
-    ./doh.nix
-    ./http.nix
-    ./tailscale.nix
-    ./nextdns
+    ./server/networking.nix
+    ./server/dns.nix
+    ./server/doh.nix
+    ./server/http.nix
+    ./server/tailscale.nix
+    ./server/nextdns
     ../../modules/shared/nextdns-mgmt
 
     # Monitoring
-    ./logging.nix
-    # ./netdata.nix
+    ./server/logging.nix
+    # ./server/netdata.nix
 
     # Logging
-    ./journald.nix
-    ./logrotate.nix
+    ./server/journald.nix
+    ./server/logrotate.nix
 
     # Media
     # TODO: Consider using module? https://github.com/rasmus-kirk/nixarr
-    ./plex.nix
-    ./radarr.nix
-    ./sonarr.nix
-    ./transmission.nix
-    ./prowlarr.nix
+    ./server/plex.nix
+    ./server/radarr.nix
+    ./server/sonarr.nix
+    ./server/transmission.nix
+    ./server/prowlarr.nix
 
-    ./stash
+    ./server/stash
 
     # Audio
-    ./audiobookshelf.nix
-    ./jellyfin.nix
+    ./server/audiobookshelf.nix
+    ./server/jellyfin.nix
 
     # Samba
-    ./samba.nix
+    ./server/samba.nix
 
     # Constantly using 2 CPU Cores, disabling for now
-    # ./flaresolverr.nix
+    # ./server/flaresolverr.nix
 
     # Home Automation
-    ./home-assistant.nix
-    # ./home-assistant-container.nix
-    ./mosquitto.nix
-    ./zigbee2mqtt.nix
-    ./matter-server.nix
-    ./bluetooth.nix
+    ./server/home-assistant.nix
+    # ./server/home-assistant-container.nix
+    ./server/mosquitto.nix
+    ./server/zigbee2mqtt.nix
+    ./server/matter-server.nix
+    ./server/bluetooth.nix
 
-    ./home-bridge.nix
-    ./matter-bridge.nix
+    ./server/home-bridge.nix
+    ./server/matter-bridge.nix
 
     # Matrix
-    ./matrix
+    ./server/matrix
 
     # Storage
-    ./storage.nix
+    ./server/storage.nix
 
-    ./miniserve.nix
+    ./server/miniserve.nix
 
-    ./open-webui.nix
+    ./server/open-webui.nix
 
-    ./power.nix
+    ./server/power.nix
 
     ../../nixos/rebuild-diff.nix
   ];
