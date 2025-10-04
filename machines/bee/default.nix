@@ -35,7 +35,7 @@
     ./http.nix
     ./tailscale.nix
     # ./nextdns
-    # ../../system/nextdns-sync.nix
+    # ../../system/nextdns-mgmt.nix
 
     # Monitoring
     ./logging.nix

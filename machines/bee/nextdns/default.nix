@@ -1,7 +1,7 @@
 { config, ... }:
 
 {
-  local.services.nextdns-sync = {
+  local.services.nextdns-mgmt = {
     enable = true;
     profiles = [ config.secrets.nextDnsProfileBee ];
   };
