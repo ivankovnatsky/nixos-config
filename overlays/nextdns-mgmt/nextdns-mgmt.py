@@ -110,6 +110,35 @@ class NextDNSClient:
         profile_response = self.get_profile(profile_id)
         return json.dumps(profile_response, indent=2)
 
+    def export_filtered_profile(self, profile_id: str):
+        """Export profile with sensitive/machine-specific data removed."""
+        profile_response = self.get_profile(profile_id)
+
+        if "data" not in profile_response:
+            raise ValueError("Invalid profile response format")
+
+        data = profile_response["data"].copy()
+
+        # Remove machine-specific identity/setup fields
+        data.pop("id", None)
+        data.pop("fingerprint", None)
+        data.pop("name", None)
+        data.pop("setup", None)
+
+        # Remove read-only rewrites
+        data.pop("rewrites", None)
+
+        # Clean privacy blocklists metadata (keep only id)
+        if "privacy" in data and "blocklists" in data["privacy"]:
+            for blocklist in data["privacy"]["blocklists"]:
+                blocklist.pop("name", None)
+                blocklist.pop("website", None)
+                blocklist.pop("description", None)
+                blocklist.pop("entries", None)
+                blocklist.pop("updatedOn", None)
+
+        return json.dumps({"data": data}, indent=2)
+
 
 def cmd_sync(args, client):
     """Sync command handler."""
@@ -162,22 +191,14 @@ def cmd_update(args, client):
             profile_data = json.load(f)
 
         # Support both raw API response {"data": {...}} and wrapped {"profile": {"data": {...}}}
-        if "data" in profile_data and "id" in profile_data["data"]:
-            # Raw API response format
+        if "data" in profile_data:
+            # Raw API response format or filtered export
             profile = profile_data["data"]
         elif "profile" in profile_data and "data" in profile_data["profile"]:
             # Wrapped format (legacy)
             profile = profile_data["profile"]["data"]
         else:
             raise ValueError("Invalid profile JSON format")
-
-        # Validate profile ID matches
-        if profile["id"] != args.profile_id:
-            print(
-                f"Error: Profile ID mismatch - file contains '{profile['id']}' but --profile-id specified '{args.profile_id}'",
-                file=sys.stderr,
-            )
-            sys.exit(1)
 
         print(f"Updating profile {args.profile_id} using nested endpoints...")
 
@@ -390,6 +411,37 @@ def cmd_export(args, client):
         sys.exit(1)
 
 
+def cmd_export_filtered(args, client):
+    """Export filtered command handler."""
+    try:
+        if args.list_profiles:
+            profiles = client.get_profiles()
+            print("Available profiles:")
+            for profile in profiles:
+                print(f"  {profile['id']}: {profile['name']}")
+            sys.exit(0)
+
+        if not args.profile_id:
+            print(
+                "Error: --profile-id is required when not using --list-profiles",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+
+        output = client.export_filtered_profile(args.profile_id)
+
+        if args.output:
+            with open(args.output, "w") as f:
+                f.write(output)
+            print(f"Exported filtered profile to {args.output}")
+        else:
+            print(output)
+
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
 def main():
     parser = argparse.ArgumentParser(description="NextDNS profile management tool")
 
@@ -429,8 +481,10 @@ def main():
         help="Show what would be updated without making changes",
     )
 
-    # Export command
-    export_parser = subparsers.add_parser("export", help="Export profile configuration")
+    # Export command (filtered - removes sensitive data)
+    export_parser = subparsers.add_parser(
+        "export", help="Export profile configuration (filtered - no sensitive data)"
+    )
     export_parser.add_argument("--api-key", required=True, help="NextDNS API key")
     export_parser.add_argument(
         "--profile-id",
@@ -438,6 +492,20 @@ def main():
     )
     export_parser.add_argument("--output", help="Output file (default: stdout)")
     export_parser.add_argument(
+        "--list-profiles", action="store_true", help="List all profiles and exit"
+    )
+
+    # Export-all command (complete raw export)
+    export_all_parser = subparsers.add_parser(
+        "export-all", help="Export complete profile configuration (raw API response)"
+    )
+    export_all_parser.add_argument("--api-key", required=True, help="NextDNS API key")
+    export_all_parser.add_argument(
+        "--profile-id",
+        help="Profile ID to export (required unless using --list-profiles)",
+    )
+    export_all_parser.add_argument("--output", help="Output file (default: stdout)")
+    export_all_parser.add_argument(
         "--list-profiles", action="store_true", help="List all profiles and exit"
     )
 
@@ -450,6 +518,8 @@ def main():
     elif args.command == "update":
         cmd_update(args, client)
     elif args.command == "export":
+        cmd_export_filtered(args, client)
+    elif args.command == "export-all":
         cmd_export(args, client)
 
 
