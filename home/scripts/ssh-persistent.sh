@@ -28,7 +28,7 @@ while true; do
   else
     ssh "$HOST" $OPTIONS
   fi
-  
+
   echo "Connection to $HOST closed. Reconnecting in 1 second..."
   sleep 1
 done

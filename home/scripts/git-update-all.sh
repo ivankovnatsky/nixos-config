@@ -8,16 +8,16 @@ original_dir=$(pwd)
 
 # Function to clean up on exit
 cleanup() {
-    cd "$original_dir"
+  cd "$original_dir"
 }
 
 # Register cleanup function
 trap cleanup EXIT
 
 # Process immediate subdirectories in parallel
-/bin/ls -1 | \
-parallel --will-cite --jobs 4 \
-'
+/bin/ls -1 |
+  parallel --will-cite --jobs 4 \
+    '
     if [ -d "{}" ] && [ -d "{}/.git" ]; then
         cd "{}" 2>/dev/null || exit 1
         

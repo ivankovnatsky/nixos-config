@@ -19,7 +19,7 @@ function show_usage() {
 }
 
 # Check if exiftool is installed
-if ! command -v exiftool &> /dev/null; then
+if ! command -v exiftool &>/dev/null; then
   echo "Error: exiftool is required but not installed."
   echo "Please install it first."
   exit 1
@@ -40,21 +40,21 @@ if [ $# -lt 1 ]; then
 fi
 
 case "$command" in
-  "rm")
-    echo "Removing metadata from: $@"
-    exiftool -all= -overwrite_original "$@"
-    echo "Metadata removed successfully."
-    ;;
-  "ls")
-    for file in "$@"; do
-      echo "Metadata for: $file"
-      echo "----------------------------------------"
-      exiftool "$file"
-      echo ""
-    done
-    ;;
-  *)
-    echo "Error: Unknown command '$command'"
-    show_usage
-    ;;
+"rm")
+  echo "Removing metadata from: $@"
+  exiftool -all= -overwrite_original "$@"
+  echo "Metadata removed successfully."
+  ;;
+"ls")
+  for file in "$@"; do
+    echo "Metadata for: $file"
+    echo "----------------------------------------"
+    exiftool "$file"
+    echo ""
+  done
+  ;;
+*)
+  echo "Error: Unknown command '$command'"
+  show_usage
+  ;;
 esac

@@ -5,7 +5,7 @@ find_syncthing_files() {
   find . -type f \( \
     -name "*sync-conflict*" -o \
     -name ".syncthing.*.tmp" \
-  \) "$@"
+    \) "$@"
 }
 
 # First show files that will be deleted
