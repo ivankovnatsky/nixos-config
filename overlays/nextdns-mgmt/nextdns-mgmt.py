@@ -97,6 +97,38 @@ class NextDNSClient:
                 blocklist.pop("entries", None)
                 blocklist.pop("updatedOn", None)
 
+        # Sort all arrays alphabetically for consistent output
+        if "denylist" in data:
+            data["denylist"] = sorted(data["denylist"], key=lambda x: x.get("id", ""))
+
+        if "allowlist" in data:
+            data["allowlist"] = sorted(data["allowlist"], key=lambda x: x.get("id", ""))
+
+        if "security" in data and "tlds" in data["security"]:
+            data["security"]["tlds"] = sorted(
+                data["security"]["tlds"], key=lambda x: x.get("id", "")
+            )
+
+        if "privacy" in data:
+            if "blocklists" in data["privacy"]:
+                data["privacy"]["blocklists"] = sorted(
+                    data["privacy"]["blocklists"], key=lambda x: x.get("id", "")
+                )
+            if "natives" in data["privacy"]:
+                data["privacy"]["natives"] = sorted(
+                    data["privacy"]["natives"], key=lambda x: x.get("id", "")
+                )
+
+        if "parentalControl" in data:
+            if "categories" in data["parentalControl"]:
+                data["parentalControl"]["categories"] = sorted(
+                    data["parentalControl"]["categories"], key=lambda x: x.get("id", "")
+                )
+            if "services" in data["parentalControl"]:
+                data["parentalControl"]["services"] = sorted(
+                    data["parentalControl"]["services"], key=lambda x: x.get("id", "")
+                )
+
         return json.dumps({"data": data}, indent=2)
 
 
