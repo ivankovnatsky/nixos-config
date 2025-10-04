@@ -34,6 +34,8 @@
     ./doh.nix
     ./http.nix
     ./tailscale.nix
+    # ./nextdns
+    # ../../system/nextdns-sync.nix
 
     # Monitoring
     ./logging.nix
