@@ -47,5 +47,6 @@
     wget
     yt-dlp
     zsh-forgit
+    nextdns-mgmt
   ];
 }
