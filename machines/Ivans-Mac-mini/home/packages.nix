@@ -13,6 +13,8 @@
     fzf
     gallery-dl
     genpass
+    gofumpt
+    golangci-lint
     home-manager
     imagemagick
     jq
@@ -38,7 +40,10 @@
     rust-analyzer
     rustc
     sesh
+    shellcheck
+    shfmt
     smctemp # Local overlay
+    stylua
     syncthing
     treefmt
     typst
