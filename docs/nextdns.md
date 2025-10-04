@@ -19,7 +19,7 @@ The `nextdns-mgmt` tool is available after home-manager rebuild:
 
 ```console
 # Export a profile
-nextdns-mgmt --api-key $NEXTDNS_API_KEY export --profile-id <profile-id> --format json
+nextdns-mgmt --api-key $NEXTDNS_API_KEY export --profile-id <profile-id>
 
 # List all profiles
 nextdns-mgmt --api-key $NEXTDNS_API_KEY export --list-profiles
