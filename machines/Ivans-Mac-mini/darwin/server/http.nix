@@ -59,6 +59,9 @@ let
         inherit (config.flags) a3wIp;
         logPathPrefix = "/tmp/log";
 
+        # Element Web path
+        elementWebPath = pkgs.mkElementWeb config.secrets.externalDomain;
+
         # Netdata credentials
         netdataBeeUsername = config.secrets.netdata.bee.username;
         netdataBeePassword = config.secrets.netdata.bee.password;

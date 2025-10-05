@@ -123,6 +123,12 @@
 		}
 	}
 
+	@element host element.@externalDomain@
+	handle @element {
+		root * @elementWebPath@
+		file_server
+	}
+
 	@openwebui host openwebui.@externalDomain@
 	reverse_proxy @openwebui @beeIp@:8090 {
 		# Enable WebSocket support for real-time updates

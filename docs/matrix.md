@@ -4,13 +4,21 @@
 
 Synapse homeserver runs on bee (192.168.50.3:8008).
 
-Server name: `matrix.${config.secrets.externalDomain}`
+Server name: `matrix.${externalDomain}`
 
 Registration enabled without verification.
 
 ## Accessing Matrix
 
-Homeserver URL: `https://matrix.${config.secrets.externalDomain}`
+### Web Client
+
+Element Web: `https://element.${externalDomain}`
+
+Pre-configured with homeserver, just register or login.
+
+### Homeserver URL
+
+Homeserver URL: `https://matrix.${externalDomain}`
 
 Request flow:
 1. Client → matrix.${externalDomain} (wildcard DNS)
