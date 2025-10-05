@@ -24,9 +24,12 @@ let
     }
   ) { } (builtins.filter (dir: dir.type == "directory") (builtins.attrValues overlayList));
 
-  # 2. Nixpkgs-master packages
+  # 2. Nixpkgs-master and unstable packages
   masterOverlays = {
     nixpkgs-master = import inputs.nixpkgs-master {
+      inherit (final) system config;
+    };
+    nixpkgs-unstable-nixos = import inputs.nixpkgs-unstable-nixos {
       inherit (final) system config;
     };
   };
