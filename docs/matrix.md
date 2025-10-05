@@ -36,6 +36,39 @@ Use Element or any Matrix client:
 
 Reference: https://docs.mau.fi/bridges/python/telegram/authentication.html
 
+## WhatsApp Bridge (mautrix-whatsapp)
+
+### Authentication
+
+1. Start chat with: `@whatsappbot:matrix.${externalDomain}`
+2. Send: `login qr` (recommended) or `login phone` for pairing code
+3. On your phone:
+   - Open WhatsApp → Menu/Settings → Linked devices
+   - Tap "Link a device"
+   - Scan QR code from Matrix bot (or use pairing code)
+4. Bridge creates portal rooms automatically with 50 message backfill
+
+Reference: https://docs.mau.fi/bridges/go/whatsapp/authentication.html
+
+### Important Notes
+
+- Phone must be online for WhatsApp Web API
+- Devices disconnect after 2 weeks of phone being offline
+- Bridge warns if no data received in 12+ days
+- To logout: send `logout` to bot
+
+### Troubleshooting
+
+**Config format migration errors after updating:**
+
+```console
+sudo systemctl stop mautrix-whatsapp.service matrix-synapse.service
+sudo rm -rf /var/lib/mautrix-whatsapp
+sudo systemctl start matrix-synapse.service mautrix-whatsapp.service
+```
+
+Rebuild will regenerate config with new format and fresh registration tokens.
+
 ### Troubleshooting
 
 **Token mismatch errors after config changes:**
