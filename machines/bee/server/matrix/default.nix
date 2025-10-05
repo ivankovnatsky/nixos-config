@@ -2,5 +2,6 @@
   imports = [
     ./synapse.nix
     ./mautrix-telegram.nix
+    ./mautrix-whatsapp.nix
   ];
 }
