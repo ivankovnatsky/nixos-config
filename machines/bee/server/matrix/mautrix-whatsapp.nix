@@ -2,7 +2,7 @@
 {
   # Use updated module from nixpkgs master for new config format
   disabledModules = [ "services/matrix/mautrix-whatsapp.nix" ];
-  imports = [ ../../../../modules/nixos/mautrix-whatsapp.nix ];
+  imports = [ ../../../../modules/nixos/mautrix-whatsapp ];
 
   # https://docs.mau.fi/bridges/go/whatsapp/index.html
   # Using local module from nixpkgs master (not nixos-25.05) for new config format
