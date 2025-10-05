@@ -15,6 +15,8 @@
 
     # Automatically register the bridge with Synapse
     # This adds the registration file to Synapse's app_service_config_files
+    # WARNING: When enabled, if this bridge fails to generate its registration file,
+    # Synapse will fail to start, breaking ALL bridges.
     registerToSynapse = true;
 
     settings = {
