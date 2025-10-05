@@ -34,6 +34,15 @@ Use Element or any Matrix client:
 2. Register with username and password
 3. User ID format: `@username:matrix.${externalDomain}`
 
+### Important: Set Up Security Key
+
+After first login, immediately set up a security key:
+1. Go to Settings → Security & Privacy → Secure Backup
+2. Click "Set up Secure Backup"
+3. Create and save your security key
+
+This allows logging in on new devices without needing confirmation from another device.
+
 ## Telegram Bridge (mautrix-telegram)
 
 ### Authentication
