@@ -4,6 +4,12 @@
 
 Synapse homeserver runs on bee (192.168.50.3:8008).
 
+**When adding new bridges**: Check for port conflicts by searching the entire codebase:
+
+```console
+grep -r "$portnumber" .
+```
+
 Server name: `matrix.${externalDomain}`
 
 Registration enabled without verification.
@@ -93,6 +99,31 @@ Reference: https://docs.mau.fi/bridges/go/whatsapp/authentication.html
 3. Follow instructions to obtain Discord token from browser/app
 
 Reference: https://docs.mau.fi/bridges/go/discord/authentication.html
+
+## Messenger Bridge (mautrix-meta)
+
+### Authentication
+
+Cookie-based authentication:
+
+1. Start chat with: `@facebookbot:matrix.${externalDomain}`
+2. Send: `login`
+3. Open Facebook in private browser window
+4. Open DevTools → Network tab
+5. Login to Facebook, find any request to `facebook.com`
+6. Right-click → Copy → Copy as cURL
+7. Paste the cURL command to the bot
+8. Bridge extracts cookies automatically
+
+Reference: https://docs.mau.fi/bridges/go/meta/authentication.html
+
+## Instagram Bridge (mautrix-meta)
+
+### Authentication
+
+Same as Messenger bridge, but use `@instagrambot:matrix.${externalDomain}` and login to `instagram.com`.
+
+Reference: https://docs.mau.fi/bridges/go/meta/authentication.html
 
 ### Important Notes
 
