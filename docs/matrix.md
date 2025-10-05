@@ -57,6 +57,26 @@ Reference: https://docs.mau.fi/bridges/python/telegram/authentication.html
 
 Reference: https://docs.mau.fi/bridges/go/whatsapp/authentication.html
 
+## Discord Bridge (mautrix-discord)
+
+### Authentication
+
+**Method 1: QR Code** (recommended)
+1. Start chat with: `@discordbot:matrix.${externalDomain}`
+2. Send: `login`
+3. Bot sends a QR code image
+4. Scan QR code with Discord mobile app:
+   - If using Matrix on same device: Save QR image to Photos, open on another device to scan
+   - If using Matrix on different device: Scan QR directly from screen
+5. Approve login on Discord app
+
+**Method 2: Token Login**
+1. Start chat with: `@discordbot:matrix.${externalDomain}`
+2. Send: `login-token`
+3. Follow instructions to obtain Discord token from browser/app
+
+Reference: https://docs.mau.fi/bridges/go/discord/authentication.html
+
 ### Important Notes
 
 - Phone must be online for WhatsApp Web API
