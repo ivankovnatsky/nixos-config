@@ -547,6 +547,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-unstable-nixos": {
+      "locked": {
+        "lastModified": 1759381078,
+        "narHash": "sha256-gTrEEp5gEspIcCOx9PD8kMaF1iEmfBcTbO0Jag2QhQs=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "7df7ff7d8e00218376575f0acdcc5d66741351ee",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs_2": {
       "locked": {
         "lastModified": 1719253556,
@@ -809,6 +825,7 @@
         "nixpkgs-master": "nixpkgs-master",
         "nixpkgs-python": "nixpkgs-python",
         "nixpkgs-release-darwin": "nixpkgs-release-darwin",
+        "nixpkgs-unstable-nixos": "nixpkgs-unstable-nixos",
         "nixvim": "nixvim",
         "nixvim-release-darwin": "nixvim-release-darwin",
         "nixvim-release-nixos": "nixvim-release-nixos",
