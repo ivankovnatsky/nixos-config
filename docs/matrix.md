@@ -40,12 +40,19 @@ Reference: https://docs.mau.fi/bridges/python/telegram/authentication.html
 
 ### Authentication
 
+**Method 1: QR Code** (if using Matrix client on different device)
 1. Start chat with: `@whatsappbot:matrix.${externalDomain}`
-2. Send: `login qr` (recommended) or `login phone` for pairing code
+2. Send: `login qr`
+3. Scan QR code with WhatsApp on phone
+
+**Method 2: Phone Pairing Code** (if using Matrix client on same phone as WhatsApp)
+1. Start chat with: `@whatsappbot:matrix.${externalDomain}`
+2. Send: `login phone`
 3. On your phone:
    - Open WhatsApp → Menu/Settings → Linked devices
    - Tap "Link a device"
-   - Scan QR code from Matrix bot (or use pairing code)
+   - Select "Link with phone number instead"
+   - Enter the pairing code shown by the bot
 4. Bridge creates portal rooms automatically with 50 message backfill
 
 Reference: https://docs.mau.fi/bridges/go/whatsapp/authentication.html
