@@ -341,6 +341,102 @@ sudo systemd-cryptenroll --tpm2-device=auto /dev/disk/by-uuid/e9d01b26-cab2-47df
 sudo cryptsetup luksDump /dev/sdb1 | grep -A20 "Tokens"
 ```
 
+### Filesystem corruption incident (2025-10-06)
+
+**Issue discovered**: External Samsung disk (`/storage`) experienced I/O errors
+(`Input/output error (os error 5)`).
+
+**Symptoms**:
+
+- `ls: .: Input/output error (os error 5)` in `/storage`
+- Audiobookshelf playback failures with "resource unavailable" errors
+- iOS app showing AVPlayer error: `NSURLErrorDomain, code: -1008, OSStatus error -16847`
+- Backend logs: `Error: EIO: i/o error, open '/storage/Data/media/podcasts/...'`
+- Disk shows as 0B size: `lsblk` reports `/dev/sdb` with `SIZE: 0B`
+
+**Root cause**: External disk was placed on top of warm N100 NUC. When touched,
+the disk felt warm, indicating likely heat-induced hardware/filesystem
+corruption.
+
+**Collateral damage**: Syncthing deleted files on mini machine for folders:
+`Youtube`, `media`, `stash` (marked as "Stopped")
+
+**Status**: ~~Disk may be unrecoverable. After physical reconnection attempt, the disk controller reports 0 bytes, suggesting hardware failure or complete LUKS header corruption.~~
+
+**Recovery (2025-10-06)**: Disk successfully recovered on another machine (a3):
+
+- LUKS unlock succeeded with original passphrase
+- Filesystem mounted successfully to `/tmp/4tb-data-bee-link`
+- Data appears intact: 3.6T total, 1.2T used, 2.3T available (35% used)
+- All directories accessible: `Data/Downloads`, `Data/Drive`, `Data/media`, `Data/Shared-Notes`, `Data/Sources`, `Data/stash`, `Data/Youtube`
+- **Critical finding**: Issue was specific to bee machine, not the disk itself
+
+**SMART diagnostics results (2025-10-06)**:
+
+```console
+sudo smartctl -a /dev/sda
+```
+
+**Health status**: PASSED (but with significant concerns)
+
+**Good metrics**:
+
+- Overall health: PASSED
+- Temperature: 28°C (healthy, well below 52°C warning threshold)
+- Available Spare: 100%
+- Percentage Used: 0%
+- Power On Hours: 3,538 hours (~147 days total uptime)
+
+**Critical concerns**:
+
+- **Media and Data Integrity Errors: 281** ⚠️ (explains I/O errors)
+- **Error Information Log Entries: 281** ⚠️
+- **Unsafe Shutdowns: 130** (from disconnections/power issues)
+- Data Units Read: 12,458,201 [6.37 TB]
+- Data Units Written: 13,169,274 [6.74 TB]
+
+**Analysis**:
+
+Heat exposure (disk placed on warm N100 NUC) caused the USB
+controller/connection to fail, resulting in 0B disk detection. The 281 media
+integrity errors and 130 unsafe shutdowns are likely normal wear over 3,538
+hours of operation.
+
+**Conclusion**:
+
+- **Primary cause**: Overheating from placement on warm N100 NUC
+- Disk recovered after cooling down and power cycle (moved to a3, then back to bee)
+- Disk is functional - data intact and accessible
+- The 0B detection was thermal protection or USB controller glitch, resolved by power cycle
+- **Lesson learned**: Do not tweak BIOS fan temperature thresholds (fan off:
+  80°C, fan start: 85°C are too high) - revert to default settings
+
+**Prevention**:
+
+- Keep disk away from heat sources
+- Ensure adequate ventilation around external drives
+- Monitor operating temperature during use
+
+**Diagnosis commands**:
+
+```console
+# Check if disk is detected
+lsblk | grep sdb
+
+# Check LUKS header integrity
+sudo cryptsetup luksDump /dev/sdb1
+
+# Check disk health (requires smartmontools)
+sudo smartctl -a /dev/sdb
+
+# Create mount point and mount
+sudo mkdir -p /tmp/4tb-data-bee-link
+sudo mount /dev/samsung-vg/samsung-lv /tmp/4tb-data-bee-link
+
+# Verify disk usage
+df -h /tmp/4tb-data-bee-link
+```
+
 ## Upgrade nodes
 
 ### No space left on /boot
