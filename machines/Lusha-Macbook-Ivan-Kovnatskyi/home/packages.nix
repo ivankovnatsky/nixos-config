@@ -16,7 +16,6 @@
     aws-sso-creds
     awscli2
     backup-home
-    btop
     cargo
     cloudflared
     confluent-cli

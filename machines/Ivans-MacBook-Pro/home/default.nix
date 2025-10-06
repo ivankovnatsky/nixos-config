@@ -7,6 +7,7 @@
     ../../../darwin/home/packages.nix
     ../../../home/amethyst
     ../../../home/bat.nix
+    ../../../home/btop.nix
     ../../../home/claude.nix
     ../../../home/direnv.nix
     ../../../home/ghostty.nix

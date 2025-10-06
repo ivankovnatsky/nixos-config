@@ -3,6 +3,7 @@
 {
   imports = [
     # ../../../home/bash.nix
+    ../../../home/btop.nix
     ../../../home/git.nix
     ../../../home/gpg.nix
     ../../../home/home-session-vars.nix

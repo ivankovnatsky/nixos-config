@@ -5,6 +5,7 @@
     # ../../../home/aider.nix
     ../../../home/amethyst
     ../../../home/bat.nix
+    ../../../home/btop.nix
     ../../../home/claude.nix
     # ../../../home/codex.nix
     ../../../home/direnv.nix
