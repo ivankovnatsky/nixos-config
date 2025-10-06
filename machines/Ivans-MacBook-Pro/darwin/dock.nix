@@ -71,15 +71,8 @@ in
       { path = "/Applications/Bitwarden.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }
-
-      {
-        type = "spacer";
-        section = "apps";
-      }
-
-      # Installed using nixpkgs
-      { path = "${pkgs.coconutbattery}/Applications/coconutBattery.app/"; }
-      { path = "${pkgs.keycastr}/Applications/KeyCastr.app/"; }
+      { path = "/Applications/coconutBattery.app/"; }
+      { path = "/Applications/KeyCastr.app/"; }
 
       {
         path = "${homePath}/Downloads/";
