@@ -6,6 +6,8 @@
     ../../modules/nixos/tmux-rebuild
     ./server/tmux-rebuild.nix
 
+    ../../modules/nixos/beszel-agent
+
     # Base configuration.
     ./server/configuration.nix
     ./server/user.nix
