@@ -45,18 +45,20 @@ let
   # 4. Custom functions
   customFunctions = {
     # Element Web configured for Matrix homeserver
-    mkElementWeb = externalDomain: prev.element-web.override {
-      conf = {
-        default_server_config = {
-          "m.homeserver" = {
-            base_url = "https://matrix.${externalDomain}";
-            server_name = "matrix.${externalDomain}";
+    mkElementWeb =
+      externalDomain:
+      prev.element-web.override {
+        conf = {
+          default_server_config = {
+            "m.homeserver" = {
+              base_url = "https://matrix.${externalDomain}";
+              server_name = "matrix.${externalDomain}";
+            };
           };
+          default_theme = "dark";
+          show_labs_settings = true;
         };
-        default_theme = "dark";
-        show_labs_settings = true;
       };
-    };
   };
 in
 autoOverlays // masterOverlays // flakeOverlays // customFunctions

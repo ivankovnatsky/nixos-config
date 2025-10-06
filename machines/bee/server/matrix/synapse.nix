@@ -14,7 +14,10 @@
           x_forwarded = true;
           resources = [
             {
-              names = [ "client" "federation" ];
+              names = [
+                "client"
+                "federation"
+              ];
               compress = false;
             }
           ];

@@ -231,7 +231,7 @@ def cmd_update(args, client):
                                         f"/profiles/{args.profile_id}/parentalControl/categories",
                                         data=parental_categories,
                                     )
-                                    print(f"  ✓ Updated parentalControl/categories")
+                                    print("  ✓ Updated parentalControl/categories")
                                 except Exception as e:
                                     print(
                                         f"  ✗ Failed to update parentalControl/categories: {e}",
@@ -244,7 +244,7 @@ def cmd_update(args, client):
                                         f"/profiles/{args.profile_id}/parentalControl/services",
                                         data=parental_services,
                                     )
-                                    print(f"  ✓ Updated parentalControl/services")
+                                    print("  ✓ Updated parentalControl/services")
                                 except Exception as e:
                                     print(
                                         f"  ✗ Failed to update parentalControl/services: {e}",
@@ -275,7 +275,7 @@ def cmd_update(args, client):
                     to_remove = current_denylist - desired_denylist
 
                     if to_add or to_remove:
-                        print(f"  Denylist changes:", file=sys.stderr)
+                        print("  Denylist changes:", file=sys.stderr)
                         if to_add:
                             print(f"    Adding: {sorted(to_add)}", file=sys.stderr)
                         if to_remove:
@@ -319,7 +319,7 @@ def cmd_update(args, client):
                     to_remove = current_allowlist - desired_allowlist
 
                     if to_add or to_remove:
-                        print(f"  Allowlist changes:", file=sys.stderr)
+                        print("  Allowlist changes:", file=sys.stderr)
                         if to_add:
                             print(f"    Adding: {sorted(to_add)}", file=sys.stderr)
                         if to_remove:
@@ -344,7 +344,7 @@ def cmd_update(args, client):
         # Update settings last
         if "settings" in profile:
             if args.dry_run:
-                print(f"  Would update settings")
+                print("  Would update settings")
             else:
                 try:
                     client._api_call(
@@ -352,7 +352,7 @@ def cmd_update(args, client):
                         f"/profiles/{args.profile_id}/settings",
                         data=profile["settings"],
                     )
-                    print(f"  ✓ Updated settings")
+                    print("  ✓ Updated settings")
                 except Exception as e:
                     print(f"  ✗ Failed to update settings: {e}", file=sys.stderr)
 

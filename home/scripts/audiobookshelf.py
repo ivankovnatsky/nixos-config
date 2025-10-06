@@ -498,12 +498,12 @@ def cleanup_listened_command(args, client):
 
         if client.remove_item(item["id"]):
             removed_count += 1
-            print(f"  ✓ Removed successfully")
+            print("  ✓ Removed successfully")
         else:
             failed_count += 1
-            print(f"  ✗ Failed to remove")
+            print("  ✗ Failed to remove")
 
-    print(f"\nCleanup complete:")
+    print("\nCleanup complete:")
     print(f"  Removed: {removed_count}")
     print(f"  Failed: {failed_count}")
 
