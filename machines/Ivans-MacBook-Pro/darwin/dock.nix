@@ -65,6 +65,7 @@ in
 
       # Brew casks placeholder
       { path = "/Applications/kitty.app/"; }
+      { path = "/Applications/Ghostty.app/"; }
       { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Chromium.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
@@ -77,7 +78,6 @@ in
       }
 
       # Installed using nixpkgs
-      { path = "/Applications/Ghostty.app/"; }
       { path = "${pkgs.coconutbattery}/Applications/coconutBattery.app/"; }
       { path = "${pkgs.keycastr}/Applications/KeyCastr.app/"; }
 
