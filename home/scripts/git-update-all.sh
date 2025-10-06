@@ -15,6 +15,7 @@ cleanup() {
 trap cleanup EXIT
 
 # Process immediate subdirectories in parallel
+# shellcheck disable=SC2016
 /bin/ls -1 |
   parallel --will-cite --jobs 4 \
     '
