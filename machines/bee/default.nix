@@ -15,6 +15,7 @@
     ./server/loader.nix
 
     ./server/syncthing.nix
+    ./server/data.nix
 
     ./server/packages.nix
 
