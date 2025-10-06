@@ -2,6 +2,7 @@
   imports = [
     # ./netdata.nix
     ../../../../darwin/syncthing.nix
+    ../../../../modules/darwin/beszel-agent
     ../../../../modules/darwin/dnsmasq
     ../../../../modules/darwin/doh-server
     ../../../../modules/darwin/logrotate
@@ -13,6 +14,7 @@
     ../../../../modules/flags
     ../../../../modules/secrets
     ../../../../modules/shared/nextdns-mgmt
+    ./beszel.nix
     ./bin.nix
     ./dns.nix
     ./doh.nix
