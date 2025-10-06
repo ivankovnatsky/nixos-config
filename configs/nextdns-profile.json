@@ -99,8 +99,8 @@
         "cacheBoost": true,
         "cnameFlattening": true
       },
-      "bav": false,
-      "web3": false
+      "bav": true,
+      "web3": true
     },
     "denylist": [
       {
