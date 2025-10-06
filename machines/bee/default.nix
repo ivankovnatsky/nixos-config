@@ -40,6 +40,7 @@
     # Monitoring
     ./server/logging.nix
     # ./server/netdata.nix
+    ./server/beszel.nix
 
     # Logging
     ./server/journald.nix
