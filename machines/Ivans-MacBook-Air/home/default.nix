@@ -7,6 +7,7 @@
     ../../../home/amethyst
     # ../../../home/bash.nix
     ../../../home/bat.nix
+    ../../../home/btop.nix
     ../../../home/direnv.nix
     ../../../home/ghostty.nix
     ../../../home/git.nix
