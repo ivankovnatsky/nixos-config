@@ -52,7 +52,7 @@ def main():
 
         try:
             # Download with yt-dlp (simple command)
-            result = subprocess.run(
+            subprocess.run(
                 [
                     "yt-dlp",
                     "--write-auto-subs",

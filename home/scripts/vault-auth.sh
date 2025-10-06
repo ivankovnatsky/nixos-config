@@ -71,7 +71,8 @@ done
 fetch_token_from_pass() {
   if command -v pass >/dev/null 2>&1; then
     # Use the correct path format for pass
-    local pass_path="$(echo "$VAULT_ADDR" | sed 's|https://||')/$VAULT_USER_EMAIL/token"
+    local pass_path
+    pass_path="${VAULT_ADDR#https://}/$VAULT_USER_EMAIL/token"
     pass "$pass_path" 2>/dev/null
   else
     echo "Warning: 'pass' command not found. Cannot retrieve stored token." >&2
@@ -102,7 +103,8 @@ update_token_in_pass() {
 
   if command -v pass >/dev/null 2>&1; then
     # Use the correct path format for pass
-    local pass_path="$(echo "$VAULT_ADDR" | sed 's|https://||')/$VAULT_USER_EMAIL/token"
+    local pass_path
+    pass_path="${VAULT_ADDR#https://}/$VAULT_USER_EMAIL/token"
 
     # Redirect all output to avoid fish shell issues with git commit messages
     echo "$token" | pass insert --echo --force "$pass_path" >/dev/null 2>&1

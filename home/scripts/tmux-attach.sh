@@ -12,7 +12,7 @@ session=$(
 if [ -n "$session" ]; then
   if [ "$session" = "++ Create new session ++" ]; then
     # Prompt for new session name
-    read -p "Enter new session name: " new_session_name
+    read -r -p "Enter new session name: " new_session_name
     if [ -n "$new_session_name" ]; then
       tmux new-session -s "$new_session_name"
     fi

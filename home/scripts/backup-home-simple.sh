@@ -121,12 +121,15 @@ fi
 
 export TARGET_MACHINE=192.168.50.4
 export BACKUP_PATH=/Volumes/Storage/Data/Drive/Crypt/Machines/
-export HOSTNAME=$(hostname)
-export DATE_DIR=$(date +%Y-%m-%d)
+HOSTNAME=$(hostname)
+export HOSTNAME
+DATE_DIR=$(date +%Y-%m-%d)
+export DATE_DIR
 
 # Extract the parent directory name from $HOME (e.g., "Users" on macOS, "home" on Linux)
 # This handles both /Users/ivan and /home/ivan cases
-export HOME_PARENT_DIR=$(basename $(dirname "$HOME"))
+HOME_PARENT_DIR=$(basename "$(dirname "$HOME")")
+export HOME_PARENT_DIR
 
 if [[ ${TARGET_MACHINE,,} == ${HOSTNAME,,}.local ]]; then
   mkdir -p "$BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR"
