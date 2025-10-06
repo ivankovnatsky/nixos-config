@@ -52,12 +52,13 @@ def get_installed_npm_packages(npm_bin: str, packages: Dict[str, str]) -> Set[st
     return installed
 
 
-def get_installed_mcp_servers(claude_cli: str) -> Set[str]:
+def get_installed_mcp_servers(claude_cli: str, env: Dict = None) -> Set[str]:
     if not os.path.exists(claude_cli):
         return set()
 
-    returncode, stdout, _ = run_command([claude_cli, "mcp", "list"])
+    returncode, stdout, stderr = run_command([claude_cli, "mcp", "list"], env)
     if returncode != 0:
+        log(f"Failed to list MCP servers (exit {returncode}): {stderr}", Color.YELLOW)
         return set()
 
     servers = set()
@@ -66,6 +67,7 @@ def get_installed_mcp_servers(claude_cli: str) -> Set[str]:
         if ":" in line and ("(SSE)" in line or "(HTTP)" in line or "(STDIO)" in line):
             server_name = line.split(":")[0].strip()
             servers.add(server_name)
+    log(f"Detected installed MCP servers: {servers}", Color.BLUE)
     return servers
 
 
@@ -167,17 +169,12 @@ def install_mcp_servers(servers: Dict, paths: Dict, state: Dict):
         f"{paths['nodejs']}:{paths['npmBin']}:{paths['python']}:{env.get('PATH', '')}"
     )
 
-    # Check state first - if all servers are in state as installed, skip
-    state_servers = set(state.get("mcp", {}).get("servers", {}).keys())
     desired = set(servers.keys())
-
-    if state_servers == desired:
-        log("All MCP servers already installed", Color.BLUE)
-        return True
-
-    current = get_installed_mcp_servers(claude_cli)
+    current = get_installed_mcp_servers(claude_cli, env)
     to_install = desired - current
     to_remove = current - desired
+
+    state_changed = False
 
     if to_remove:
         log(f"Removing MCP servers: {', '.join(to_remove)}", Color.RED)
@@ -187,6 +184,9 @@ def install_mcp_servers(servers: Dict, paths: Dict, state: Dict):
             )
             if returncode != 0:
                 log(f"Failed to remove {server_name}: {stderr}", Color.RED)
+            else:
+                log(f"Removed {server_name}", Color.GREEN)
+                state_changed = True
 
     if to_install:
         log(f"Installing MCP servers: {', '.join(to_install)}", Color.GREEN)
@@ -222,7 +222,12 @@ def install_mcp_servers(servers: Dict, paths: Dict, state: Dict):
                     continue
             else:
                 log(f"Installed {server_name}", Color.GREEN)
+                state_changed = True
 
+    if not to_install and not to_remove:
+        log("All MCP servers already installed", Color.BLUE)
+
+    if state_changed or set(state.get("mcp", {}).get("servers", {}).keys()) != desired:
         state.setdefault("mcp", {})["servers"] = {
             name: {
                 "installed": True,
@@ -232,8 +237,6 @@ def install_mcp_servers(servers: Dict, paths: Dict, state: Dict):
             }
             for name, config in servers.items()
         }
-    else:
-        log("All MCP servers already installed", Color.BLUE)
 
     return True
 
