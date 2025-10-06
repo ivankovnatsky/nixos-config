@@ -28,6 +28,55 @@
     };
   };
 
-  # Open firewall port for Beszel web interface
-  networking.firewall.allowedTCPPorts = [ 8091 ];
+  systemd.services.beszel-agent = {
+    description = "Beszel Agent - System monitoring agent";
+    wantedBy = [ "multi-user.target" ];
+    wants = [ "network-online.target" ];
+    after = [ "network-online.target" "docker.service" ];
+
+    serviceConfig = {
+      Type = "simple";
+      Restart = "on-failure";
+      RestartSec = "5s";
+
+      # Create a dedicated user for beszel agent
+      DynamicUser = true;
+      StateDirectory = "beszel-agent";
+      SupplementaryGroups = [ "docker" ];
+
+      # Use environment variables for configuration
+      Environment = [
+        "LISTEN=45876"
+      ];
+
+      # KEY needs to be set separately to handle spaces in the value
+      EnvironmentFile = pkgs.writeText "beszel-agent.env" ''
+        KEY=${config.secrets.beszel.hubPublicKey}
+      '';
+
+      ExecStart = "${pkgs.beszel}/bin/beszel-agent";
+
+      # Security/sandboxing settings (from official service unit)
+      KeyringMode = "private";
+      LockPersonality = true;
+      NoNewPrivileges = true;
+      ProtectClock = true;
+      ProtectHome = "read-only";
+      ProtectHostname = true;
+      ProtectKernelLogs = true;
+      ProtectSystem = "strict";
+      RemoveIPC = true;
+      RestrictSUIDSGID = true;
+
+      # Additional restrictions
+      PrivateTmp = true;
+      RestrictAddressFamilies = [ "AF_INET" "AF_INET6" ];
+    };
+  };
+
+  # Open firewall ports
+  networking.firewall.allowedTCPPorts = [
+    8091 # Beszel Hub web interface
+    45876 # Beszel Agent
+  ];
 }
