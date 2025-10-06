@@ -10,10 +10,8 @@ if [ -z "$1" ]; then
 fi
 
 BRANCH_NAME="$1"
-GIT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
-
 # Check if we're in a git repository
-if [ $? -ne 0 ]; then
+if ! GIT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null); then
   echo "Error: Not in a git repository" >&2
   exit 1
 fi
@@ -27,7 +25,7 @@ if [ -d "$FULL_PATH" ]; then
   :
 else
   # Check if branch exists
-  if ! git show-ref --verify --quiet refs/heads/$BRANCH_NAME; then
+  if ! git show-ref --verify --quiet refs/heads/"$BRANCH_NAME"; then
     # Branch doesn't exist, create a new one
     git worktree add "$WORKTREE_DIR" -b "$BRANCH_NAME" >/dev/null 2>&1 || true
   else

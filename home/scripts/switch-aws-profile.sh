@@ -49,16 +49,16 @@ fi
 profile_name_arg="$1"
 
 # Get profiles
-profiles=$(get_aws_profiles)
+mapfile -t profiles < <(get_aws_profiles)
 
-if [[ -z "$profiles" ]]; then
+if [[ ${#profiles[@]} -eq 0 ]]; then
   echo "Error: No AWS profiles found" >&2
   exit 1
 fi
 
 # Check if a profile name was provided as an argument
 if [[ -n "$profile_name_arg" ]]; then
-  if echo "$profiles" | grep -q "^$profile_name_arg$"; then
+  if printf "%s\n" "${profiles[@]}" | grep -q "^$profile_name_arg$"; then
     selected_profile="$profile_name_arg"
   else
     echo "Error: Profile '$profile_name_arg' not found" >&2
@@ -66,7 +66,7 @@ if [[ -n "$profile_name_arg" ]]; then
   fi
 else
   # Use fzf to select a profile
-  selected_profile=$(echo "$profiles" | fzf --height 40% --border --prompt="Select AWS Profile > ")
+  selected_profile=$(printf "%s\n" "${profiles[@]}" | fzf --height 40% --border --prompt="Select AWS Profile > ")
 fi
 
 # Export the selected profile if one was selected

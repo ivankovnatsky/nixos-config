@@ -17,7 +17,7 @@ fi
 
 HOST="$1"
 shift
-OPTIONS="$@"
+OPTIONS="$*"
 
 echo "Starting persistent SSH connection to $HOST"
 echo "Press Ctrl+C to exit"
@@ -26,7 +26,7 @@ while true; do
   if [ -z "$OPTIONS" ]; then
     ssh "$HOST"
   else
-    ssh "$HOST" $OPTIONS
+    ssh "$HOST" "$OPTIONS"
   fi
 
   echo "Connection to $HOST closed. Reconnecting in 1 second..."

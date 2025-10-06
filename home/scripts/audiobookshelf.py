@@ -217,7 +217,7 @@ def download_audio(url, output_dir=None):
             url,
         ]
 
-        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+        subprocess.run(cmd, check=True, capture_output=True, text=True)
 
         # Find the generated MP3 file
         mp3_files = glob.glob(os.path.join(output_dir, "*.mp3"))

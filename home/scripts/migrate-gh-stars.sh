@@ -39,8 +39,8 @@ unstar_repos() {
 check_gh_cli
 
 # Get the usernames
-read -p "Enter the username of the account with the stars you want to transfer: " old_username
-read -p "Enter the username of the account you want to transfer stars to: " new_username
+read -r -p "Enter the username of the account with the stars you want to transfer: " old_username
+read -r -p "Enter the username of the account you want to transfer stars to: " new_username
 
 # Get starred repos from old account
 echo "Fetching starred repositories from $old_username..."
@@ -53,7 +53,7 @@ echo "Starring repositories in $new_username's account..."
 star_repos "$starred_repos"
 
 # Ask if user wants to unstar repos from old account
-read -p "Do you want to unstar these repositories from the old account? (y/n): " unstar_choice
+read -r -p "Do you want to unstar these repositories from the old account? (y/n): " unstar_choice
 if [[ $unstar_choice == "y" || $unstar_choice == "Y" ]]; then
   echo "Please authenticate with the old account ($old_username)"
   gh auth login

@@ -41,7 +41,7 @@ fi
 
 case "$command" in
 "rm")
-  echo "Removing metadata from: $@"
+  echo "Removing metadata from: $*"
   exiftool -all= -overwrite_original "$@"
   echo "Metadata removed successfully."
   ;;

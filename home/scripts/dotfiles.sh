@@ -69,7 +69,8 @@ get_repo_path() {
 run_git() {
   local platform=$1
   shift
-  local repo_path=$(get_repo_path "$platform")
+  local repo_path
+  repo_path=$(get_repo_path "$platform")
   git --git-dir="$repo_path/.git" --work-tree="$HOME" "$@"
 }
 

@@ -42,3 +42,4 @@ includes = ["*.go"]
 command = "golangci-lint"
 options = ["run", "--fix"]
 includes = ["*.go"]
+excludes = ["home/scripts/*.go"]

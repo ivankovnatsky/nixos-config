@@ -70,7 +70,7 @@ if [[ $# -eq 0 ]]; then
     connect_session "$(basename "$PWD")"
     ;;
   "📁 New session (custom name)")
-    read -p "Enter session name: " custom_name
+    read -r -p "Enter session name: " custom_name
     if [[ -n "$custom_name" ]]; then
       connect_session "$custom_name"
     else
@@ -87,7 +87,7 @@ if [[ $# -eq 0 ]]; then
     ;;
   *)
     # Extract session name from formatted output
-    session_name=$(echo "$selected" | sed 's/^🔗 //')
+    session_name="${selected#🔗 }"
     connect_session "$session_name"
     ;;
   esac
