@@ -7,6 +7,7 @@
         (jira.overridePythonAttrs (old: {
           propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ old.optional-dependencies.cli;
         }))
+        ruff
       ]
     ))
     (wrapHelm kubernetes-helm { plugins = with pkgs.kubernetes-helmPlugins; [ helm-secrets ]; })
@@ -39,6 +40,8 @@
     ghorg
     gitleaks
     go-grip
+    gofumpt
+    golangci-lint
     google-cloud-sdk
     gum
     hadolint
@@ -75,6 +78,7 @@
     nixpkgs-master.fluxcd
     nixpkgs-master.jira-cli-go
     nodePackages.aws-cdk
+    nodePackages.prettier
     nodePackages.rimraf
     nodejs
     opsy
@@ -94,13 +98,17 @@
     rust-analyzer
     rustc
     sesh
+    shellcheck
+    shfmt
     skopeo
     slack-cli-go
     smctemp
     sshpass
     ssm-session-manager-plugin
+    stylua
     terraformer
     terragrunt-atlantis-config
+    treefmt
     username # Installed as flake
     uv
     vault
