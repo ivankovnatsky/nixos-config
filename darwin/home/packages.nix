@@ -3,6 +3,7 @@
   home.packages = with pkgs; [
     bat
     battery-toolkit # Local overlay
+    btop
     cargo
     delta
     du-dust

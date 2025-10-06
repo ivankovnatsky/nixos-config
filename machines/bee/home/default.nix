@@ -18,6 +18,7 @@
     ../../../modules/secrets
     ./activation.nix
     ./flags.nix
+    ./packages.nix
     ./vim.nix
     ./env.nix
   ];
