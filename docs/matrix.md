@@ -27,6 +27,7 @@ Pre-configured with homeserver, just register or login.
 Homeserver URL: `https://matrix.${externalDomain}`
 
 Request flow:
+
 1. Client → matrix.${externalDomain} (wildcard DNS)
 2. Caddy (mini or bee) → Synapse at bee (192.168.50.3:8008)
 
@@ -36,6 +37,7 @@ Both machines also run local DNS resolvers.
 ## Registration
 
 Use Element or any Matrix client:
+
 1. Set homeserver: `https://matrix.${externalDomain}`
 2. Register with username and password
 3. User ID format: `@username:matrix.${externalDomain}`
@@ -43,6 +45,7 @@ Use Element or any Matrix client:
 ### Important: Set Up Security Key
 
 After first login, immediately set up a security key:
+
 1. Go to Settings → Security & Privacy → Secure Backup
 2. Click "Set up Secure Backup"
 3. Create and save your security key
@@ -64,11 +67,13 @@ Reference: https://docs.mau.fi/bridges/python/telegram/authentication.html
 ### Authentication
 
 **Method 1: QR Code** (if using Matrix client on different device)
+
 1. Start chat with: `@whatsappbot:matrix.${externalDomain}`
 2. Send: `login qr`
 3. Scan QR code with WhatsApp on phone
 
 **Method 2: Phone Pairing Code** (if using Matrix client on same phone as WhatsApp)
+
 1. Start chat with: `@whatsappbot:matrix.${externalDomain}`
 2. Send: `login phone`
 3. On your phone:
@@ -85,6 +90,7 @@ Reference: https://docs.mau.fi/bridges/go/whatsapp/authentication.html
 ### Authentication
 
 **Method 1: QR Code** (recommended)
+
 1. Start chat with: `@discordbot:matrix.${externalDomain}`
 2. Send: `login`
 3. Bot sends a QR code image
@@ -94,6 +100,7 @@ Reference: https://docs.mau.fi/bridges/go/whatsapp/authentication.html
 5. Approve login on Discord app
 
 **Method 2: Token Login**
+
 1. Start chat with: `@discordbot:matrix.${externalDomain}`
 2. Send: `login-token`
 3. Follow instructions to obtain Discord token from browser/app
