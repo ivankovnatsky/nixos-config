@@ -61,7 +61,6 @@
 
     # Audio
     ./server/audiobookshelf.nix
-    ./server/jellyfin.nix
 
     # Samba
     ./server/samba.nix
@@ -87,8 +86,6 @@
     ./server/storage.nix
 
     ./server/miniserve.nix
-
-    ./server/open-webui.nix
 
     ./server/power.nix
 
