@@ -9,3 +9,16 @@
 	bind @bindAddress@
 	reverse_proxy mini-vm.orb.local:8096
 }
+
+# Matrix Synapse mini-vm forwarding (mini machine only)
+:8008 {
+	bind @bindAddress@
+	reverse_proxy mini-vm.orb.local:8008 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		transport http {
+			keepalive 5m
+			keepalive_idle_conns 100
+		}
+	}
+}
