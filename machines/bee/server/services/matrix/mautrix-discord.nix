@@ -2,7 +2,7 @@
 {
   # Use updated module from nixpkgs unstable (not available in nixos-25.05)
   disabledModules = [ "services/matrix/mautrix-discord.nix" ];
-  imports = [ ../../../../modules/nixos/mautrix-discord ];
+  imports = [ ../../../../../modules/nixos/mautrix-discord ];
 
   # https://docs.mau.fi/bridges/go/discord/index.html
   # Using local module from nixpkgs unstable (not nixos-25.05)

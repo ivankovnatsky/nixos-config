@@ -52,13 +52,13 @@
     # Media
     # TODO: Consider using module? https://github.com/rasmus-kirk/nixarr
     ./plex.nix
-    ./radarr.nix
-    ./sonarr.nix
-    ./transmission.nix
-    ./prowlarr.nix
+    ./services/radarr.nix
+    ./services/sonarr.nix
+    ./services/transmission.nix
+    ./services/prowlarr.nix
 
     # Audio
-    ./audiobookshelf.nix
+    ./services/audiobookshelf.nix
 
     # Samba
     ./samba.nix
@@ -67,18 +67,18 @@
     # ./flaresolverr.nix
 
     # Home Automation
-    ./home-assistant.nix
+    ./services/home-assistant.nix
     # ./home-assistant-container.nix
-    ./mosquitto.nix
-    ./zigbee2mqtt.nix
-    ./matter-server.nix
+    ./services/mosquitto.nix
+    ./services/zigbee2mqtt.nix
+    ./services/matter-server.nix
     ./bluetooth.nix
 
-    ./home-bridge.nix
-    ./matter-bridge.nix
+    ./services/home-bridge.nix
+    ./services/matter-bridge.nix
 
     # Matrix
-    ./matrix
+    ./services/matrix
 
     # Storage
     ./storage.nix
