@@ -45,14 +45,17 @@ let
   # 4. Custom functions
   customFunctions = {
     # Element Web configured for Matrix homeserver
+    # Args:
+    #   domain: external domain (e.g., config.secrets.externalDomain)
+    #   homeserverSubdomain: subdomain for homeserver (e.g., "matrix", "matrix-mini")
     mkElementWeb =
-      externalDomain:
+      domain: homeserverSubdomain:
       prev.element-web.override {
         conf = {
           default_server_config = {
             "m.homeserver" = {
-              base_url = "https://matrix.${externalDomain}";
-              server_name = "matrix.${externalDomain}";
+              base_url = "https://${homeserverSubdomain}.${domain}";
+              server_name = "${homeserverSubdomain}.${domain}";
             };
           };
           default_theme = "dark";

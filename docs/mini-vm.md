@@ -27,13 +27,28 @@ Note: After creation, the VM's configuration is managed entirely through NixOS f
 
 ## Network Configuration
 
-The VM uses Orbstack's networking with:
+The VM uses Orbstack's networking with NAT:
 
-- IP Address: `198.19.249.245` (automatically assigned by Orbstack)
+- VM Internal IP: `192.168.139.245` (actual interface IP inside VM)
+- Gateway IP: `192.168.138.4` (what `mini-vm.orb.local` resolves to from host)
+- OrbStack handles routing between gateway and VM transparently
+
+### Service Binding Inside VM
+
+Services running inside mini-vm should bind to `0.0.0.0` (all interfaces) to be accessible from the Mac mini host. This is the correct pattern for OrbStack VMs.
+
+**Example from Jellyfin:**
+```console
+[ivan@mini-vm]$ netstat -tepan|grep 8096
+tcp  0  0  0.0.0.0:8096  0.0.0.0:*  LISTEN
+```
+
+OrbStack's NAT handles the translation from `mini-vm.orb.local` (192.168.138.4 gateway) to the actual VM IP (192.168.139.245).
 
 ## Services
 
-Currently no active services. OpenWebUI was disabled due to chromadb package being broken on ARM64.
+- Jellyfin (port 8096)
+- Matrix Synapse with bridges (port 8008)
 
 ## Network Limitations
 
