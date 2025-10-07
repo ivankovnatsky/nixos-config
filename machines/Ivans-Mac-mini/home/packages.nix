@@ -3,6 +3,7 @@
   home.packages = with pkgs; [
     aria2
     bat
+    beszel-mgmt
     cargo
     delta
     du-dust

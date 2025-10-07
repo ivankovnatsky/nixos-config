@@ -3,6 +3,7 @@
     # ./netdata.nix
     ../../../../darwin/syncthing.nix
     ../../../../modules/darwin/beszel-agent
+    ../../../../modules/darwin/beszel-mgmt
     ../../../../modules/darwin/dnsmasq
     ../../../../modules/darwin/doh-server
     ../../../../modules/darwin/logrotate

@@ -35,4 +35,23 @@
     port = 45876;
     hubPublicKey = config.secrets.beszel.hubPublicKey;
   };
+
+  # Beszel management (declarative system sync)
+  local.services.beszel-mgmt = {
+    enable = true;
+    email = config.secrets.beszel.email;
+    password = config.secrets.beszel.password;
+    systems = [
+      {
+        name = "bee";
+        host = config.flags.beeIp;
+        port = "45876";
+      }
+      {
+        name = "Ivans-Mac-mini";
+        host = config.flags.miniIp;
+        port = "45876";
+      }
+    ];
+  };
 }
