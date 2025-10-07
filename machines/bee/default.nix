@@ -57,8 +57,6 @@
     ./server/transmission.nix
     ./server/prowlarr.nix
 
-    ./server/stash
-
     # Audio
     ./server/audiobookshelf.nix
 
