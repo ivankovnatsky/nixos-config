@@ -387,7 +387,7 @@ in
     };
 
     systemd.tmpfiles.rules = [
-      "d ${cfg.dataDir} 770 mautrix-discord mautrix-discord -"
+      "d ${cfg.dataDir} 775 mautrix-discord mautrix-discord -"
     ];
 
     systemd.services = {
