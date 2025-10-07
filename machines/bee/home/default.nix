@@ -2,7 +2,6 @@
 
 {
   imports = [
-    # ../../../home/bash.nix
     ../../../home/btop.nix
     ../../../home/git.nix
     ../../../home/gpg.nix
@@ -17,7 +16,6 @@
     ../../../home/tmuxinator.nix
     ../../../modules/flags
     ../../../modules/secrets
-    ./activation.nix
     ./flags.nix
     ./packages.nix
     ./vim.nix

@@ -50,25 +50,6 @@
 	@transmission host transmission.@externalDomain@
 	reverse_proxy @transmission @beeIp@:9091
 
-	@plex host plex.@externalDomain@
-	reverse_proxy @plex @beeIp@:32400 {
-		# Enable WebSocket support
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-		# Increase timeouts for streaming
-		transport http {
-			keepalive 12h
-			keepalive_idle_conns 100
-		}
-	}
-
-	@grafana host grafana.@externalDomain@
-	reverse_proxy @grafana @beeIp@:3000 {
-		# Enable WebSocket support
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-
 	# FlareSolverr proxy server
 	# @flaresolverr host flaresolverr.@externalDomain@
 	# reverse_proxy @flaresolverr @beeIp@:8191 {
@@ -131,34 +112,6 @@
 
 	@sync-bee host sync-bee.@externalDomain@
 	reverse_proxy @sync-bee @beeIp@:8384
-
-	# Files server for bee
-	@files-bee host files-bee.@externalDomain@
-	reverse_proxy @files-bee @beeIp@:8080 {
-		# Headers for proper operation
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-		# Increase timeouts and buffer sizes for large directories and files
-		transport http {
-			keepalive 30s
-			response_header_timeout 30s
-		}
-	}
-
-	# Netdata
-	@netdata-bee host netdata-bee.@externalDomain@
-	handle @netdata-bee {
-		# Basic authentication for all paths
-		basic_auth /* {
-			@netdataBeeUsername@ @netdataBeePassword@
-		}
-		# Proxy to Netdata
-		reverse_proxy @beeIp@:19999 {
-			# Enable WebSocket support
-			header_up X-Real-IP {remote_host}
-			header_up Host {host}
-		}
-	}
 
 	# Beszel monitoring hub
 	@beszel host beszel.@externalDomain@
