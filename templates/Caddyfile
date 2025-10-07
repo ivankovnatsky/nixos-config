@@ -162,8 +162,8 @@
 
 	# Beszel monitoring hub
 	@beszel host beszel.@externalDomain@
-	reverse_proxy @beszel @beeIp@:8091 {
-		# Enable WebSocket support
+	reverse_proxy @beszel @miniIp@:8091 {
+		# Route to Beszel Hub on mini
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
 	}
