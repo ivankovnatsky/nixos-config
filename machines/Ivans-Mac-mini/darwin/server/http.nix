@@ -78,8 +78,8 @@ let
 
         # Process mini-specific template and append
         echo "" >> $out
-        substituteAll ${caddyfileMiniPath} /tmp/caddyfile-mini
-        cat /tmp/caddyfile-mini >> $out
+        substituteAll ${caddyfileMiniPath} $TMPDIR/caddyfile-mini
+        cat $TMPDIR/caddyfile-mini >> $out
       '';
 in
 {
