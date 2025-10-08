@@ -44,10 +44,6 @@
     ./journald.nix
     ./logrotate.nix
 
-    # Media
-    # TODO: Consider using module? https://github.com/rasmus-kirk/nixarr
-    ./services/media
-
     # Home Automation
     ./services/home-automation
     ./bluetooth.nix
