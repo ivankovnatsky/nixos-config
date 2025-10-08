@@ -64,9 +64,6 @@
     ./services/home-bridge.nix
     ./services/matter-bridge.nix
 
-    # Matrix
-    ./services/matrix
-
     # Storage
     ./storage.nix
 
