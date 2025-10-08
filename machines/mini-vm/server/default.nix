@@ -2,5 +2,6 @@
   imports = [
     ./audiobookshelf
     ./matrix
+    ./media
   ];
 }
