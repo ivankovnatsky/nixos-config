@@ -46,20 +46,11 @@
 
     # Media
     # TODO: Consider using module? https://github.com/rasmus-kirk/nixarr
-    ./services/radarr.nix
-    ./services/sonarr.nix
-    ./services/transmission.nix
-    ./services/prowlarr.nix
+    ./services/media
 
     # Home Automation
-    ./services/home-assistant.nix
-    ./services/mosquitto.nix
-    ./services/zigbee2mqtt.nix
-    ./services/matter-server.nix
+    ./services/home-automation
     ./bluetooth.nix
-
-    ./services/home-bridge.nix
-    ./services/matter-bridge.nix
 
     # Storage
     ./storage.nix
