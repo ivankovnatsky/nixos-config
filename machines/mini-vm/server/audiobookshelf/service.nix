@@ -1,11 +1,11 @@
 { config, ... }:
 {
-  # NOTE: Manual Audiobookshelf configuration is required after installation:
-  # 1. Access the web UI at https://audiobookshelf-mini.{externalDomain}
-  # 2. Create your root user during the initial setup process
-  # 3. Add libraries for your audiobooks and podcasts, pointing to:
-  #    - Podcasts library: /mnt/mac/Volumes/Storage/Data/media/podcasts
-  # 4. Configure metadata agents and other settings according to your preferences
+  # NOTE: Initial manual Audiobookshelf configuration required:
+  # 1. Access web UI at https://audiobookshelf-mini.${config.secrets.externalDomain}
+  # 2. Create root user during initial setup
+  # 3. Copy API token: Settings → Users → root → API token
+  # 4. Add token to modules/secrets/default.nix (secrets.audiobookshelf.apiToken)
+  # 5. Libraries are managed declaratively via abs-mgmt (see mgmt.nix)
 
   # Enable Audiobookshelf server
   services.audiobookshelf = {
