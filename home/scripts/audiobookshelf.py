@@ -22,14 +22,14 @@ from datetime import datetime
 # Constants for common values
 DEFAULT_ABS_URL = "http://localhost:13378"
 DEFAULT_PODCASTS_LIBRARY_ID = (
-    "db54da2c-dc16-4fdb-8dd4-5375ae98f738"  # Podcasts library ID
+    "47ce3711-02d7-4395-b9fc-ed1dfda0ae16"  # Podcasts library ID (mini-vm)
 )
 
 # ```console
 # audiobookshelf libraries --url https://audiobookshelf.${externalDomain}
 # ```
 DEFAULT_PODCASTS_FOLDER_ID = (
-    "c9d67ffa-8e94-41f6-b22d-3924cf9ff511"  # /storage/Data/media/podcasts folder ID
+    "4851c1d8-c539-4c4d-a872-21a2caa8458a"  # /mnt/mac/Volumes/Storage/Data/media/podcasts (mini-vm)
 )
 
 
