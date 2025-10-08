@@ -59,9 +59,6 @@ let
         inherit (config.flags) a3wIp;
         logPathPrefix = "/tmp/log";
 
-        # Element Web path
-        elementWebPath = pkgs.mkElementWeb config.secrets.externalDomain "matrix";
-
         # Element Web path for mini-vm Matrix instance
         elementWebMiniPath = pkgs.mkElementWeb config.secrets.externalDomain "matrix-mini";
 
