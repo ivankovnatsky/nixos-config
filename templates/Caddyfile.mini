@@ -31,3 +31,27 @@
 		header_up Host {host}
 	}
 }
+
+# Radarr mini-vm forwarding (mini machine only)
+:7878 {
+	bind @bindAddress@
+	reverse_proxy mini-vm.orb.local:7878
+}
+
+# Sonarr mini-vm forwarding (mini machine only)
+:8989 {
+	bind @bindAddress@
+	reverse_proxy mini-vm.orb.local:8989
+}
+
+# Prowlarr mini-vm forwarding (mini machine only)
+:9696 {
+	bind @bindAddress@
+	reverse_proxy mini-vm.orb.local:9696
+}
+
+# Transmission mini-vm forwarding (mini machine only)
+:9091 {
+	bind @bindAddress@
+	reverse_proxy mini-vm.orb.local:9091
+}
