@@ -58,22 +58,25 @@ class AudiobookshelfClient:
         data = self._api_call("GET", "/api/libraries")
         return data.get("libraries", [])
 
-    def create_library(self, name: str, folders: list, media_type: str = "podcast"):
+    def create_library(self, name: str, folders: list, media_type: str = "podcast", provider: str = "itunes"):
         """Create a new library."""
         data = {
             "name": name,
             "folders": folders,
             "mediaType": media_type,
+            "provider": provider,
         }
         return self._api_call("POST", "/api/libraries", data=data)
 
-    def update_library(self, library_id: str, name: str = None, folders: list = None):
+    def update_library(self, library_id: str, name: str = None, folders: list = None, provider: str = None):
         """Update an existing library."""
         data = {}
         if name is not None:
             data["name"] = name
         if folders is not None:
             data["folders"] = folders
+        if provider is not None:
+            data["provider"] = provider
 
         return self._api_call("PATCH", f"/api/libraries/{library_id}", data=data)
 
@@ -109,6 +112,7 @@ class AudiobookshelfClient:
         for name, desired in desired_libraries.items():
             folders = [{"fullPath": path} for path in desired["folders"]]
             media_type = desired.get("mediaType", "podcast")
+            provider = desired.get("provider", "itunes")
 
             if name in current_libraries:
                 current = current_libraries[name]
@@ -118,19 +122,35 @@ class AudiobookshelfClient:
                     f["fullPath"] for f in current.get("folders", [])
                 )
                 desired_folders = set(desired["folders"])
-                needs_update = current_folders != desired_folders
+                folders_changed = current_folders != desired_folders
+
+                # Check if provider needs update
+                current_provider = current.get("provider", "")
+                provider_changed = current_provider != provider
+
+                needs_update = folders_changed or provider_changed
 
                 if needs_update:
-                    print(f"  UPDATE: {name}", file=sys.stderr)
+                    update_parts = []
+                    if folders_changed:
+                        update_parts.append("folders")
+                    if provider_changed:
+                        update_parts.append(f"provider: {current_provider} -> {provider}")
+
+                    print(f"  UPDATE: {name} ({', '.join(update_parts)})", file=sys.stderr)
                     if not dry_run:
-                        self.update_library(current["id"], folders=folders)
+                        self.update_library(
+                            current["id"],
+                            folders=folders if folders_changed else None,
+                            provider=provider if provider_changed else None
+                        )
                 else:
                     print(f"  OK: {name} (no changes)", file=sys.stderr)
             else:
                 print(f"  CREATE: {name}", file=sys.stderr)
                 if not dry_run:
                     self.create_library(
-                        name=name, folders=folders, media_type=media_type
+                        name=name, folders=folders, media_type=media_type, provider=provider
                     )
 
         if dry_run:

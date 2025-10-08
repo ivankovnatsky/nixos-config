@@ -12,6 +12,7 @@
         name = "Podcasts";
         folders = [ "/mnt/mac/Volumes/Storage/Data/media/podcasts" ];
         mediaType = "podcast";
+        provider = "itunes";
       }
     ];
   };

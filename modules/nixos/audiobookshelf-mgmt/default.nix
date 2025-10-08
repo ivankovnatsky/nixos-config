@@ -10,6 +10,7 @@ let
       name = lib.name;
       folders = lib.folders;
       mediaType = lib.mediaType;
+      provider = lib.provider;
     }) cfg.libraries;
   });
 in
@@ -47,6 +48,12 @@ in
             type = types.enum [ "book" "podcast" ];
             default = "podcast";
             description = "Media type for this library";
+          };
+
+          provider = mkOption {
+            type = types.enum [ "google" "itunes" "audible" "audnexus" ];
+            default = "itunes";
+            description = "Metadata provider for this library";
           };
         };
       });
