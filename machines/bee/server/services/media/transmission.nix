@@ -72,7 +72,6 @@
   # Ensure transmission can access media directories
   users.users.transmission.extraGroups = [
     "radarr"
-    "plex"
     "media"
   ];
 }
