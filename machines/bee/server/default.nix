@@ -51,9 +51,6 @@
     ./services/transmission.nix
     ./services/prowlarr.nix
 
-    # Audio
-    ./services/audiobookshelf.nix
-
     # Home Automation
     ./services/home-assistant.nix
     ./services/mosquitto.nix
