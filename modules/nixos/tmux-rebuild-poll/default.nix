@@ -83,7 +83,7 @@ in
             '';
 
             startTmuxScript = pkgs.writeShellScriptBin "nixos-rebuild-poll-tmux" ''
-              SESSION_NAME="${config.networking.hostName}-poll"
+              SESSION_NAME="${config.networking.hostName}"
 
               ${pkgs.tmux}/bin/tmux has-session -t "$SESSION_NAME" 2>/dev/null
               if [ $? -eq 0 ]; then
@@ -111,7 +111,7 @@ in
       tmux
 
       (writeShellScriptBin "nixos-rebuild-poll-attach" ''
-        SESSION_NAME="${config.networking.hostName}-poll"
+        SESSION_NAME="${config.networking.hostName}"
 
         ${tmux}/bin/tmux has-session -t "$SESSION_NAME" 2>/dev/null
         if [ $? -eq 0 ]; then
