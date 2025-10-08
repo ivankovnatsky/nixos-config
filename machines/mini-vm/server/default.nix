@@ -1,5 +1,6 @@
 {
   imports = [
+    ./audiobookshelf.nix
     ./matrix
   ];
 }

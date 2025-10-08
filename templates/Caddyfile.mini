@@ -22,3 +22,12 @@
 		}
 	}
 }
+
+# Audiobookshelf mini-vm forwarding (mini machine only)
+:8000 {
+	bind @bindAddress@
+	reverse_proxy mini-vm.orb.local:8000 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+}

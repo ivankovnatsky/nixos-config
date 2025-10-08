@@ -65,6 +65,13 @@
 		header_up Host {host}
 	}
 
+	@audiobookshelf-mini host audiobookshelf-mini.@externalDomain@
+	reverse_proxy @audiobookshelf-mini @miniIp@:8000 {
+		# Route to Audiobookshelf on mini-vm via mini
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
 	@jellyfin host jellyfin.@externalDomain@
 	reverse_proxy @jellyfin @miniIp@:8096 {
 		# Route to Jellyfin on mini-vm
