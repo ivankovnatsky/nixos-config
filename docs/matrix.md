@@ -1,8 +1,13 @@
 # Matrix Setup
 
-## Configuration
+## Current Deployment
 
-Synapse homeserver runs on bee (192.168.50.3:8008).
+**Status**: Matrix stack migrated to mini-vm (Oct 2025)
+
+- **Production** (inactive): `matrix.${externalDomain}` and `element.${externalDomain}` - removed from configuration
+- **Testing**: `matrix-mini.${externalDomain}` and `element-mini.${externalDomain}` - active on mini-vm
+
+Synapse homeserver runs on mini-vm (OrbStack VM on Mac mini at 192.168.50.4:8008).
 
 **When adding new bridges**: Check for port conflicts by searching the entire codebase:
 
@@ -10,7 +15,7 @@ Synapse homeserver runs on bee (192.168.50.3:8008).
 grep -r "$portnumber" .
 ```
 
-Server name: `matrix.${externalDomain}`
+Server name: `matrix-mini.${externalDomain}`
 
 Registration enabled without verification.
 
@@ -18,29 +23,29 @@ Registration enabled without verification.
 
 ### Web Client
 
-Element Web: `https://element.${externalDomain}`
+Element Web: `https://element-mini.${externalDomain}`
 
 Pre-configured with homeserver, just register or login.
 
 ### Homeserver URL
 
-Homeserver URL: `https://matrix.${externalDomain}`
+Homeserver URL: `https://matrix-mini.${externalDomain}`
 
 Request flow:
 
-1. Client → matrix.${externalDomain} (wildcard DNS)
-2. Caddy (mini or bee) → Synapse at bee (192.168.50.3:8008)
+1. Client → matrix-mini.${externalDomain} (wildcard DNS)
+2. Caddy on bee (192.168.50.3) → Caddy on mini (192.168.50.4:8008)
+3. Caddy on mini → mini-vm Synapse (mini-vm.orb.local:8008)
 
-Note: Both mini and bee run Caddy with identical config and can proxy to Synapse.
-Both machines also run local DNS resolvers.
+Note: Two-hop routing required due to OrbStack NAT networking. Mini-vm hostname `mini-vm.orb.local` only resolvable from mini host.
 
 ## Registration
 
 Use Element or any Matrix client:
 
-1. Set homeserver: `https://matrix.${externalDomain}`
+1. Set homeserver: `https://matrix-mini.${externalDomain}`
 2. Register with username and password
-3. User ID format: `@username:matrix.${externalDomain}`
+3. User ID format: `@username:matrix-mini.${externalDomain}`
 
 ### Important: Set Up Security Key
 
@@ -56,7 +61,7 @@ This allows logging in on new devices without needing confirmation from another 
 
 ### Authentication
 
-1. Start chat with: `@telegrambot:matrix.${externalDomain}`
+1. Start chat with: `@telegrambot:matrix-mini.${externalDomain}`
 2. Send: `login`
 3. Follow authentication flow (phone number, verification code, 2FA if enabled)
 
@@ -68,13 +73,13 @@ Reference: https://docs.mau.fi/bridges/python/telegram/authentication.html
 
 **Method 1: QR Code** (if using Matrix client on different device)
 
-1. Start chat with: `@whatsappbot:matrix.${externalDomain}`
+1. Start chat with: `@whatsappbot:matrix-mini.${externalDomain}`
 2. Send: `login qr`
 3. Scan QR code with WhatsApp on phone
 
 **Method 2: Phone Pairing Code** (if using Matrix client on same phone as WhatsApp)
 
-1. Start chat with: `@whatsappbot:matrix.${externalDomain}`
+1. Start chat with: `@whatsappbot:matrix-mini.${externalDomain}`
 2. Send: `login phone`
 3. On your phone:
    - Open WhatsApp → Menu/Settings → Linked devices
@@ -91,7 +96,7 @@ Reference: https://docs.mau.fi/bridges/go/whatsapp/authentication.html
 
 **Method 1: QR Code** (recommended)
 
-1. Start chat with: `@discordbot:matrix.${externalDomain}`
+1. Start chat with: `@discordbot:matrix-mini.${externalDomain}`
 2. Send: `login`
 3. Bot sends a QR code image
 4. Scan QR code with Discord mobile app:
@@ -101,7 +106,7 @@ Reference: https://docs.mau.fi/bridges/go/whatsapp/authentication.html
 
 **Method 2: Token Login**
 
-1. Start chat with: `@discordbot:matrix.${externalDomain}`
+1. Start chat with: `@discordbot:matrix-mini.${externalDomain}`
 2. Send: `login-token`
 3. Follow instructions to obtain Discord token from browser/app
 
@@ -113,7 +118,7 @@ Reference: https://docs.mau.fi/bridges/go/discord/authentication.html
 
 Cookie-based authentication:
 
-1. Start chat with: `@facebookbot:matrix.${externalDomain}`
+1. Start chat with: `@facebookbot:matrix-mini.${externalDomain}`
 2. Send: `login`
 3. Open Facebook in private browser window
 4. Open DevTools → Network tab
@@ -128,7 +133,7 @@ Reference: https://docs.mau.fi/bridges/go/meta/authentication.html
 
 ### Authentication
 
-Same as Messenger bridge, but use `@instagrambot:matrix.${externalDomain}` and login to `instagram.com`.
+Same as Messenger bridge, but use `@instagrambot:matrix-mini.${externalDomain}` and login to `instagram.com`.
 
 Reference: https://docs.mau.fi/bridges/go/meta/authentication.html
 

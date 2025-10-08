@@ -443,6 +443,31 @@ df -h /tmp/4tb-data-bee-link
 
 Had to `nix-collect-garbage -d` and run rebuild once again and after that it cleaned the /boot.
 
+## Service Migrations
+
+### Matrix Stack Migration to mini-vm (Oct 2025)
+
+**Status**: Completed
+
+Matrix homeserver (Synapse) and all bridges migrated from bee to mini-vm (OrbStack VM on Mac mini).
+
+**Removed Services**:
+- matrix-synapse (PostgreSQL-backed homeserver)
+- mautrix-telegram bridge
+- mautrix-whatsapp bridge
+- mautrix-discord bridge
+- mautrix-meta (Instagram + Messenger bridges)
+
+**Reason**: Reduce CPU load, heat, and fan noise on bee. Mini-vm provides better resources and allows bee to focus on hardware-dependent services (Home Assistant, Zigbee, Matter, Homebridge).
+
+**Configuration Cleanup**:
+- Removed `machines/bee/server/services/matrix/` directory
+- PostgreSQL service remains (still needed by Home Assistant)
+- Matrix database `matrix-synapse` can be manually dropped after verification
+- Bridge state directories (~17MB) in `/var/lib/mautrix-*` can be cleaned up
+
+**New Deployment**: See [docs/matrix.md](./matrix.md) for current Matrix configuration on mini-vm.
+
 ## References
 
 - [balint's nixos-configs](https://codeberg.org/balint/nixos-configs) - Contains advanced TPM2 PCR configuration examples
