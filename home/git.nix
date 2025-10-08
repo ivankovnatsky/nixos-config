@@ -70,6 +70,12 @@
       s = "status";
       # Review what would be committed without committing
       review = "!git status --verbose && git diff --cached";
+      # Search commit messages (titles and body)
+      grep-commits = "log --all --grep";
+      # Search in diffs (code changes)
+      grep-diff = "log --all -S";
+      # Search everything (commits, diffs, files)
+      grep-all = "!f() { git log --all --grep=\"$1\" && git log --all -S\"$1\" && git grep \"$1\"; }; f";
     };
     extraConfig = {
       init.defaultBranch = "main";
