@@ -43,7 +43,6 @@
   users.groups.media.members = [
     "sonarr"
     "transmission"
-    "plex"
     "ivan"
   ];
 

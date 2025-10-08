@@ -47,7 +47,6 @@
   users.groups.media.members = [
     "radarr"
     "transmission"
-    "plex"
     "ivan"
   ];
 
