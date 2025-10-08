@@ -144,9 +144,17 @@ class AudiobookshelfClient:
         else:
             return self.make_request("GET", f"/api/me/progress/{item_id}")
 
-    def remove_item(self, item_id):
-        """Remove an item from the library."""
-        return self.make_request("DELETE", f"/api/items/{item_id}")
+    def remove_item(self, item_id, hard_delete=True):
+        """Remove an item from the library.
+
+        Args:
+            item_id: ID of the item to remove
+            hard_delete: If True, permanently delete files from disk (default: True)
+        """
+        endpoint = f"/api/items/{item_id}"
+        if hard_delete:
+            endpoint += "?hard=1"
+        return self.make_request("DELETE", endpoint)
 
     def upload_file(self, file_path, library_id, title=None):
         """Upload a file to a specific library.
