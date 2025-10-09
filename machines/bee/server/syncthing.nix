@@ -69,87 +69,16 @@
         "Ally" = {
           id = config.secrets.syncthing.devices.Ally;
         };
-        # "a3w" = {
-        #   id = config.secrets.syncthing.devices.a3w;
-        # };
       };
 
       # Define your folders here
       folders = {
-        "Sources/github.com/ivankovnatsky/nixos-config" = {
+        "nixos-config" = {
           id = "shtdy-s2c9s";
-          label = "Sources/github.com/ivankovnatsky/nixos-config";
-          path = "/storage/Data/Sources/github.com/ivankovnatsky/nixos-config";
+          label = "nixos-config";
+          path = "/home/ivan/Sources/github.com/ivankovnatsky/nixos-config";
           devices = [
             "Lusha-Macbook-Ivan-Kovnatskyi"
-          ];
-        };
-        "Sources/github.com/NixOS/nixpkgs" = {
-          id = "kwhyl-jbqmu";
-          label = "Sources/github.com/NixOS/nixpkgs";
-          path = "/storage/Data/Sources/github.com/NixOS/nixpkgs";
-          devices = [
-            "Lusha-Macbook-Ivan-Kovnatskyi"
-          ];
-        };
-        "Sources" = {
-          id = "fpbxa-6zw5z";
-          label = "Sources";
-          path = "/storage/Data/Sources";
-          devices = [
-            # "a3w"
-            "Ivans-Mac-mini"
-            "Ivans-MacBook-Air"
-            "Ivans-MacBook-Pro"
-          ];
-        };
-        "Drive" = {
-          id = "drive";
-          label = "Drive";
-          path = "/storage/Data/Drive";
-          devices = [
-            "Ivans-Mac-mini"
-          ];
-        };
-        "Downloads" = {
-          id = "downloads";
-          label = "Downloads";
-          path = "/storage/Data/Downloads";
-          devices = [
-            "Ivans-Mac-mini"
-          ];
-        };
-        "Shared-Notes" = {
-          id = "shared-notes";
-          label = "Shared-Notes";
-          path = "/storage/Data/Shared-Notes";
-          devices = [ ];
-        };
-        ".config/rclone" = {
-          id = "mqdq9-kaiuw";
-          label = ".config/rclone";
-          path = "/home/ivan/.config/rclone";
-          devices = [
-            "Ivans-Mac-mini"
-            "Ivans-MacBook-Air"
-            "Ivans-MacBook-Pro"
-          ];
-        };
-        "media" = {
-          id = "media";
-          label = "media";
-          path = "/storage/Data/media";
-          type = "sendreceive";
-          devices = [
-            "Ivans-Mac-mini"
-          ];
-        };
-        "Youtube" = {
-          id = "youtube";
-          label = "Youtube";
-          path = "/storage/Data/Youtube";
-          type = "sendreceive";
-          devices = [
             "Ivans-Mac-mini"
           ];
         };
@@ -182,36 +111,10 @@
 
   # Use systemd-tmpfiles to ensure directories exist with proper permissions
   systemd.tmpfiles.rules = [
-    # Create base /storage/Data directory with root ownership
-    "d /storage/Data 0755 root root - -"
-
-    # Create subdirectories mentioned in Syncthing config
-    "d /storage/Data/Sources/github.com 0755 ivan users - -"
-    "d /storage/Data/Sources/github.com/ivankovnatsky 0755 ivan users - -"
-    "d /storage/Data/Sources/github.com/ivankovnatsky/nixos-config 0755 ivan users - -"
-    "d /storage/Data/Sources/github.com/ivankovnatsky/deck 0755 ivan users - -"
-    "d /storage/Data/Sources/github.com/ivankovnatsky/windows-config 0755 ivan users - -"
-    "d /storage/Data/Sources/github.com/ivankovnatsky/backup-home-go 0755 ivan users - -"
-
-    "d /storage/Data/Sources/github.com/NixOS/nixpkgs 0755 ivan users - -"
-
-    # Create /storage/Data/Sources if it doesn't exist and ensure correct permissions
-    "d /storage/Data/Sources 0700 ivan users - -"
-
-    # Create /storage/Data/Drive if it doesn't exist and ensure correct permissions
-    "d /storage/Data/Drive 0700 ivan users - -"
-
-    "d /storage/Data/Downloads 0700 ivan users - -"
-
-    # Create Shared-Notes directory
-    "d /storage/Data/Shared-Notes 0700 ivan users - -"
-
-    # Create .stfolder marker for Syncthing in the media directory
-    "d /storage/Data/media/.stfolder 0755 ivan users - -"
-
-    # Create Youtube directory and .stfolder marker
-    "d /storage/Data/Youtube 0755 ivan users - -"
-    "d /storage/Data/Youtube/.stfolder 0755 ivan users - -"
+    # nixos-config moved to home directory - create structure there with correct ownership
+    "d /home/ivan/Sources 0755 ivan users - -"
+    "d /home/ivan/Sources/github.com 0755 ivan users - -"
+    "d /home/ivan/Sources/github.com/ivankovnatsky 0755 ivan users - -"
   ];
 
   # ```
