@@ -105,6 +105,9 @@
 	@homeassistant host homeassistant.@externalDomain@
 	reverse_proxy @homeassistant @beeIp@:8123
 
+	@homeassistant-mini host homeassistant-mini.@externalDomain@
+	reverse_proxy @homeassistant-mini @miniIp@:8123
+
 	@matrix-mini host matrix-mini.@externalDomain@
 	reverse_proxy @matrix-mini @miniIp@:8008 {
 		# Route to Matrix Synapse on mini-vm via mini

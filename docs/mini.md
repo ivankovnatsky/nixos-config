@@ -129,6 +129,29 @@ This means NodePort services are not accessible from external machines (like bee
 
 This enables the routing chain: `External machine → Mini external IP:30080 → Mini localhost:30080 → OrbStack NodePort → K8s Service`
 
+### OrbStack DNS Resolution Issues
+
+**Symptom**: `*.orb.local` domain resolution intermittently fails:
+
+```console
+$ curl https://mini-vm.orb.local:8123
+curl: (6) Could not resolve host: mini-vm.orb.local
+
+$ ping mini-vm.orb.local
+ping: cannot resolve mini-vm.orb.local: Unknown host
+
+# Wait a few seconds, try again - now it works
+$ ping mini-vm.orb.local
+PING mini-vm.orb.local (192.168.138.4): 56 data bytes
+64 bytes from 192.168.138.4: icmp_seq=0 ttl=64 time=0.325 ms
+```
+
+**Root Cause**: OrbStack's DNS service occasionally crashes or becomes unresponsive, causing temporary resolution failures for `.orb.local` domains.
+
+**Workaround**: Restart OrbStack app - the DNS service does not recover automatically.
+
+**Note**: This is an OrbStack bug, not a configuration issue. If DNS resolution is critical for automation or services, consider using IP addresses directly instead of `.orb.local` hostnames.
+
 ### OrbStack HTTPS/TLS Configuration
 
 OrbStack requests keychain access to automatically configure HTTPS for its local VM services using the `orb.local` domain.
@@ -192,3 +215,4 @@ kubectl exec -n homebridge pod-name -- curl --connect-timeout 5 http://169.254.1
 ## TODO
 
 - [ ] Add /Volumes/Storage to /etc/fstab
+- [ ] Research OrbStack DNS reliability issues or evaluate alternatives (Lima VM, Colima, UTM)
