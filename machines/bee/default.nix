@@ -48,9 +48,6 @@
     # Home Automation
     ./services/home-automation
 
-    # Storage
-    ./storage.nix
-
     ./power.nix
 
     ../../nixos/rebuild-diff.nix
