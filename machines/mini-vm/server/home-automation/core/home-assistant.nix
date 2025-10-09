@@ -68,13 +68,13 @@
       };
 
       # MQTT Configuration for zigbee2mqtt
-      # After restoring backup, the MQTT integration pointed to bee's Mosquitto (192.168.50.3:1883).
-      # After migration, Mosquitto now runs locally on mini-vm.
+      # Mosquitto MQTT broker runs on bee (192.168.50.3:1883).
+      # Zigbee2MQTT on bee publishes sensor data to the broker.
       #
       # Manual reconfiguration required:
       # 1. Go to Settings -> Devices & Services -> Integrations
       # 2. Find MQTT integration -> Click three dots -> Reconfigure
-      # 3. Change broker from 192.168.50.3 to localhost (or 127.0.0.1)
+      # 3. Change broker to 192.168.50.3 (bee's IP)
       # 4. Port: 1883
       # 5. Save and verify Zigbee2MQTT bridge reconnects
       #
