@@ -52,7 +52,6 @@
 
     # Storage
     ./storage.nix
-    ./samba.nix
 
     ./power.nix
 
