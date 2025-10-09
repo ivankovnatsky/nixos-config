@@ -23,6 +23,32 @@
         users.users.ivan.home = "/home/ivan";
         system.stateVersion = "24.11";
       }
+
+      # Home Manager module
+      inputs.home-manager-nixos-release.nixosModules.home-manager
+      {
+        home-manager = {
+          useGlobalPkgs = true;
+          useUserPackages = true;
+          backupFileExtension = "backup";
+          users.ivan = {
+            imports = [
+              ../../machines/bee/home
+              inputs.nixvim-release-nixos.homeManagerModules.nixvim
+            ];
+          };
+          extraSpecialArgs = {
+            inherit inputs;
+            system = "x86_64-linux";
+            username = "ivan";
+          };
+          sharedModules = [
+            {
+              home.stateVersion = "25.05";
+            }
+          ];
+        };
+      }
     ];
     specialArgs = {
       system = "x86_64-linux";
