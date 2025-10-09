@@ -23,6 +23,12 @@
 	}
 }
 
+# Home Assistant mini-vm forwarding (mini machine only)
+:8123 {
+	bind @bindAddress@
+	reverse_proxy mini-vm.orb.local:8123
+}
+
 # Audiobookshelf mini-vm forwarding (mini machine only)
 :8000 {
 	bind @bindAddress@

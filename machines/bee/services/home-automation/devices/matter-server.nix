@@ -11,4 +11,7 @@
     logLevel = "info"; # Default log level
     extraArgs = [ ];
   };
+
+  # Open firewall for Matter Server API (needed for Home Assistant on mini-vm)
+  networking.firewall.allowedTCPPorts = [ 5580 ];
 }
