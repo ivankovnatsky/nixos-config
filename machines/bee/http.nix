@@ -41,7 +41,7 @@ let
   # Path to the Caddyfile
   # Using Caddyfile seperately to have a proper formatting to avoid ridiculous
   # warnings and for consistency
-  caddyfilePath = ../../../templates/Caddyfile;
+  caddyfilePath = ../../templates/Caddyfile;
 
   # Process the Caddyfile to substitute variables
   Caddyfile =
