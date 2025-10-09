@@ -8,6 +8,5 @@
       # Wait indefinitely for password input
       Defaults passwd_timeout=0
     '';
-
   };
 }
