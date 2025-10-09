@@ -23,7 +23,6 @@
     ./nvidia.nix
     ./power-management.nix
     ./security.nix
-    ./smb.nix
     ./steam.nix
     ./sudo.nix
     ./tmux-rebuild.nix
