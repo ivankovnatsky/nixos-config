@@ -66,9 +66,6 @@
         "Lusha-Macbook-Ivan-Kovnatskyi" = {
           id = config.secrets.syncthing.devices.LushaMacbookIvanKovnatskyi;
         };
-        "Ally" = {
-          id = config.secrets.syncthing.devices.Ally;
-        };
       };
 
       # Define your folders here
@@ -78,8 +75,10 @@
           label = "nixos-config";
           path = "/home/ivan/Sources/github.com/ivankovnatsky/nixos-config";
           devices = [
-            "Lusha-Macbook-Ivan-Kovnatskyi"
             "Ivans-Mac-mini"
+            "Ivans-MacBook-Air"
+            "Ivans-MacBook-Pro"
+            "Lusha-Macbook-Ivan-Kovnatskyi"
           ];
         };
       };
