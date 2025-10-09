@@ -29,6 +29,12 @@
 	reverse_proxy mini-vm.orb.local:8123
 }
 
+# Mosquitto MQTT mini-vm forwarding (mini machine only)
+:1883 {
+	bind @bindAddress@
+	reverse_proxy mini-vm.orb.local:1883
+}
+
 # Audiobookshelf mini-vm forwarding (mini machine only)
 :8000 {
 	bind @bindAddress@
