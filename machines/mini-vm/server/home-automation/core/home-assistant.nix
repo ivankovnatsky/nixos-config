@@ -68,9 +68,17 @@
       };
 
       # MQTT Configuration for zigbee2mqtt
-      # Configured in UI, need to manually add integration:
-      # https://github.com/home-assistant/core/issues/114643
-      # And tweak the hostname and port if changed. Press: `Reconfigure`.
+      # After restoring backup, the MQTT integration pointed to bee's Mosquitto (192.168.50.3:1883).
+      # After migration, Mosquitto now runs locally on mini-vm.
+      #
+      # Manual reconfiguration required:
+      # 1. Go to Settings -> Devices & Services -> Integrations
+      # 2. Find MQTT integration -> Click three dots -> Reconfigure
+      # 3. Change broker from 192.168.50.3 to localhost (or 127.0.0.1)
+      # 4. Port: 1883
+      # 5. Save and verify Zigbee2MQTT bridge reconnects
+      #
+      # See: https://github.com/home-assistant/core/issues/114643
       mqtt = { };
 
       # Matter Integration Configuration
