@@ -47,7 +47,6 @@
 
     # Home Automation
     ./services/home-automation
-    ./bluetooth.nix
 
     # Storage
     ./storage.nix
