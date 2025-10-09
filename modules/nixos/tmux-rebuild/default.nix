@@ -47,8 +47,8 @@ in
               echo "Press Ctrl+C to stop watching."
 
               # Define the rebuild command as a variable for consistency
-              # Add sudo to PATH so nixos-rebuild can find it
-              REBUILD_CMD="env PATH=${pkgs.sudo}/bin:$PATH NIXPKGS_ALLOW_UNFREE=1 ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch --use-remote-sudo --impure --verbose -L --flake ."
+              # Use system sudo wrapper (not Nix store) for proper setuid permissions
+              REBUILD_CMD="env PATH=/run/wrappers/bin:$PATH NIXPKGS_ALLOW_UNFREE=1 ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch --use-remote-sudo --impure --verbose -L --flake ."
 
               # Initial build
               echo ""
@@ -117,8 +117,8 @@ in
         SESSION_NAME="${config.networking.hostName}"
 
         # Define the rebuild command for consistency
-        # Add sudo to PATH so nixos-rebuild can find it
-        REBUILD_CMD="env PATH=${pkgs.sudo}/bin:$PATH NIXPKGS_ALLOW_UNFREE=1 ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch --use-remote-sudo --impure --verbose -L --flake ."
+        # Use system sudo wrapper (not Nix store) for proper setuid permissions
+        REBUILD_CMD="env PATH=/run/wrappers/bin:$PATH NIXPKGS_ALLOW_UNFREE=1 ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch --use-remote-sudo --impure --verbose -L --flake ."
 
         # Attach to the tmux session or notify if it doesn't exist
         ${tmux}/bin/tmux has-session -t "$SESSION_NAME" 2>/dev/null
