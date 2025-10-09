@@ -150,7 +150,9 @@ PING mini-vm.orb.local (192.168.138.4): 56 data bytes
 
 **Workaround**: Restart OrbStack app - the DNS service does not recover automatically.
 
-**Note**: This is an OrbStack bug, not a configuration issue. If DNS resolution is critical for automation or services, consider using IP addresses directly instead of `.orb.local` hostnames.
+**Note**: This is a known OrbStack bug (GitHub #1966, #1876, #1451, #1984). For detailed analysis, workarounds, and recommendations, see [`/claude/issues/ORBSTACK-DNS.md`](../claude/issues/ORBSTACK-DNS.md).
+
+**Recommendation**: For critical services or automation, use IP addresses or port forwards instead of `.orb.local` domains.
 
 ### OrbStack HTTPS/TLS Configuration
 
