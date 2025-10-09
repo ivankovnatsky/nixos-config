@@ -38,7 +38,7 @@
       };
       mqtt = {
         base_topic = "zigbee2mqtt";
-        server = "mqtt://${config.flags.beeIp}:1883";
+        server = "mqtt://${config.flags.miniIp}:1883";
         version = 5;
       };
       permit_join = false;
