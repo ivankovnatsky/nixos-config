@@ -14,7 +14,6 @@
     ./loader.nix
 
     ./syncthing.nix
-    ./data.nix
 
     # Enable TPM2 support (required for TPM2 enrollment)
     ./tpm2.nix
