@@ -5,6 +5,6 @@
     enable = true;
     apiKey = config.secrets.nextDnsApiKey;
     profileId = config.secrets.nextDnsProfileBee;
-    profileFile = ../../../../configs/nextdns-profile.json;
+    profileFile = ../../../configs/nextdns-profile.json;
   };
 }
