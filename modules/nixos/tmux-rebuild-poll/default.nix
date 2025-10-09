@@ -76,8 +76,6 @@ in
                   echo "Running rebuild..."
                   $REBUILD_CMD
                   LAST_HASH=$(get_hash)
-                else
-                  echo -n "."
                 fi
               done
             '';
