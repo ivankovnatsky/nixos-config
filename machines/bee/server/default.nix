@@ -25,6 +25,9 @@
     # Security
     ./sudo.nix
 
+    # User configuration
+    ./user.nix
+
     ./ssh.nix
 
     # Networking
