@@ -70,9 +70,9 @@
 
       # Define your folders here
       folders = {
-        "nixos-config" = {
+        "Sources/github.com/ivankovnatsky/nixos-config" = {
           id = "shtdy-s2c9s";
-          label = "nixos-config";
+          label = "Sources/github.com/ivankovnatsky/nixos-config";
           path = "/home/ivan/Sources/github.com/ivankovnatsky/nixos-config";
           devices = [
             "Ivans-Mac-mini"
