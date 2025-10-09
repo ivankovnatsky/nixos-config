@@ -10,7 +10,6 @@
 
     # Base configuration.
     ./configuration.nix
-    ./user.nix
 
     ./loader.nix
 
