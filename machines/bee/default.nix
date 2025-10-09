@@ -49,7 +49,6 @@
     ./services/home-automation
 
     ./power.nix
-    ./hardware/fan-control.nix
 
     ../../nixos/rebuild-diff.nix
   ];
