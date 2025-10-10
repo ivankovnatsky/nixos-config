@@ -9,7 +9,6 @@
     du-dust
     duf
     exiftool
-    fluxcd
     fzf
     gallery-dl
     genpass
@@ -18,11 +17,6 @@
     home-manager
     imagemagick
     jq
-    k9s
-    kail
-    kubectl
-    kubernetes-helm
-    kubeseal
     macmon
     magic-wormhole
     mkpasswd
