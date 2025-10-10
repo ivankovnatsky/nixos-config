@@ -166,19 +166,6 @@
 		}
 	}
 
-	@openwebui-mini host openwebui-mini.@externalDomain@
-	reverse_proxy @openwebui-mini @miniIp@:30081 {
-		# Route to OpenWebUI NodePort service
-		# The ingress controller handles routing to K8s services
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-		# Increase timeouts for large model responses
-		transport http {
-			keepalive 30s
-			response_header_timeout 300s
-		}
-	}
-
 	@sync-bee host sync-bee.@externalDomain@
 	reverse_proxy @sync-bee @beeIp@:8384
 
