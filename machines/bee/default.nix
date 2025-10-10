@@ -48,6 +48,9 @@
     # Home Automation
     ./services/home-automation
 
+    # Audio
+    ./services/audiobookshelf.nix
+
     # OpenWebUI - restored from K8s
     ./open-webui.nix
 
