@@ -92,6 +92,18 @@
       # 3. Configure Matter Server URL: ws://192.168.50.3:5580/ws
       #    (connects to Matter Server running on bee)
       # 4. Verify Eve Energy devices reconnect automatically
+
+      # Lovelace dashboard configuration
+      lovelace = {
+        mode = "yaml";
+        dashboards = {
+          lovelace-home = {
+            mode = "yaml";
+            title = "Home";
+            filename = "dashboards/home.yaml";
+          };
+        };
+      };
     };
     openFirewall = true;
   };
@@ -131,8 +143,11 @@
     };
   };
 
-  # Fix blueprint directory permissions for backup restore
   systemd.tmpfiles.rules = [
+    # Copy dashboard configuration files to Home Assistant config directory
+    "L+ /var/lib/hass/dashboards - - - - ${./dashboards}"
+
+    # Fix blueprint directory permissions for backup restore
     "d /var/lib/hass/blueprints 0700 hass hass -"
     "d /var/lib/hass/blueprints/automation 0700 hass hass -"
     "d /var/lib/hass/blueprints/script 0700 hass hass -"
