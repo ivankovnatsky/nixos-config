@@ -7,13 +7,13 @@
 # Jellyfin mini-vm forwarding (mini machine only)
 :8096 {
 	bind @bindAddress@
-	reverse_proxy mini-vm.orb.local:8096
+	reverse_proxy @miniVmIp@:8096
 }
 
 # Matrix Synapse mini-vm forwarding (mini machine only)
 :8008 {
 	bind @bindAddress@
-	reverse_proxy mini-vm.orb.local:8008 {
+	reverse_proxy @miniVmIp@:8008 {
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
 		transport http {
@@ -26,13 +26,13 @@
 # Home Assistant mini-vm forwarding (mini machine only)
 :8123 {
 	bind @bindAddress@
-	reverse_proxy mini-vm.orb.local:8123
+	reverse_proxy @miniVmIp@:8123
 }
 
 # Audiobookshelf mini-vm forwarding (mini machine only)
 :8000 {
 	bind @bindAddress@
-	reverse_proxy mini-vm.orb.local:8000 {
+	reverse_proxy @miniVmIp@:8000 {
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
 	}
@@ -41,23 +41,23 @@
 # Radarr mini-vm forwarding (mini machine only)
 :7878 {
 	bind @bindAddress@
-	reverse_proxy mini-vm.orb.local:7878
+	reverse_proxy @miniVmIp@:7878
 }
 
 # Sonarr mini-vm forwarding (mini machine only)
 :8989 {
 	bind @bindAddress@
-	reverse_proxy mini-vm.orb.local:8989
+	reverse_proxy @miniVmIp@:8989
 }
 
 # Prowlarr mini-vm forwarding (mini machine only)
 :9696 {
 	bind @bindAddress@
-	reverse_proxy mini-vm.orb.local:9696
+	reverse_proxy @miniVmIp@:9696
 }
 
 # Transmission mini-vm forwarding (mini machine only)
 :9091 {
 	bind @bindAddress@
-	reverse_proxy mini-vm.orb.local:9091
+	reverse_proxy @miniVmIp@:9091
 }
