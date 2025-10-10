@@ -41,7 +41,6 @@ in
       { path = "/System/Applications/Preview.app"; }
       { path = "/System/Applications/Passwords.app/"; }
       { path = "/System/Library/CoreServices/Applications/Keychain Access.app/"; }
-      { path = "/Applications/Numbers.app/"; }
       { path = "/System/Applications/iPhone Mirroring.app/"; }
       { path = "/System/Applications/FindMy.app/"; }
       { path = "/System/Applications/Weather.app/"; }
@@ -53,15 +52,9 @@ in
       }
 
       # Brew casks placeholder
-      { path = "/Applications/kitty.app/"; }
-      { path = "/Applications/Ghostty.app/"; }
-      { path = "/Applications/Firefox Developer Edition.app/"; }
       { path = "/Applications/Chromium.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
-      { path = "/Applications/Cursor.app/"; }
-      { path = "/Applications/Windsurf.app/"; }
       { path = "/Applications/OrbStack.app/"; }
-      { path = "/Applications/KeyCastr.app/"; }
 
       {
         path = "${homePath}/Downloads/";
