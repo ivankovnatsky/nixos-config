@@ -75,6 +75,9 @@ in
         initScript = pkgs.writeShellScript "mautrix-discord-init" ''
           set -e
 
+          # Add lottieconverter and ffmpeg to PATH for sticker/media conversion
+          export PATH="${pkgs.lottieconverter}/bin:${pkgs.ffmpeg-headless}/bin:$PATH"
+
           # Create log directory
           mkdir -p /tmp/agents/log/launchd
 
