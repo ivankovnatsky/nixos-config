@@ -47,6 +47,9 @@ let
 
     app_service_config_files = [
       "/Volumes/Storage/Data/.matrix/bridges/whatsapp/whatsapp-registration.yaml"
+      "/Volumes/Storage/Data/.matrix/bridges/discord/discord-registration.yaml"
+      "/Volumes/Storage/Data/.matrix/bridges/messenger/messenger-registration.yaml"
+      "/Volumes/Storage/Data/.matrix/bridges/instagram/instagram-registration.yaml"
     ];
   };
 
