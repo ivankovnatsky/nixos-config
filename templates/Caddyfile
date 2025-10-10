@@ -83,6 +83,13 @@
 	#	header_up Host {host}
 	# }
 
+	@audiobookshelf host audiobookshelf.@externalDomain@
+	reverse_proxy @audiobookshelf @beeIp@:8000 {
+		# Enable WebSocket support
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
 	@audiobookshelf-mini host audiobookshelf-mini.@externalDomain@
 	reverse_proxy @audiobookshelf-mini @miniIp@:8000 {
 		# Route to Audiobookshelf on mini-vm via mini
