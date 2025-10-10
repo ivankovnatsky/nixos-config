@@ -114,6 +114,9 @@ in
         initScript = pkgs.writeShellScript "mautrix-whatsapp-init" ''
           set -e
 
+          # Add ffmpeg to PATH for voice message conversion
+          export PATH="${pkgs.ffmpeg-headless}/bin:$PATH"
+
           # Create log directory
           mkdir -p /tmp/agents/log/launchd
 
