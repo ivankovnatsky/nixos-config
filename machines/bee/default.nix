@@ -48,6 +48,9 @@
     # Home Automation
     ./services/home-automation
 
+    # OpenWebUI - restored from K8s
+    ./open-webui.nix
+
     ./power.nix
 
     ../../nixos/rebuild-diff.nix

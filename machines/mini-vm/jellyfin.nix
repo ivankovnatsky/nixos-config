@@ -2,14 +2,7 @@
   # NOTE: Manual Jellyfin configuration is required after installation:
   # 1. Access the web UI at https://jellyfin-mini.{externalDomain}
   # 2. Create your root user during the initial setup process
-  # 3. Add libraries for your media, pointing to appropriate directories
-  #
-  # Libraries configured manually via UI:
-  # - Movies: /mnt/mac/Volumes/Storage/Data/media/movies
-  # - Shows:  /mnt/mac/Volumes/Storage/Data/media/tv
-  #
-  # The /mnt/mac/Volumes/Storage path is OrbStack's automatic mount of macOS /Volumes/Storage
-  # Media is synced from bee's /storage via Syncthing to mini's /Volumes/Storage
+  # 3. Add libraries for your media, pointing to appropriate directories in /storage/Data/media
 
   # TODO: Can we configure through code?
 
