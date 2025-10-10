@@ -91,8 +91,20 @@
 	}
 
 	@jellyfin host jellyfin.@externalDomain@
-	reverse_proxy @jellyfin @miniIp@:8096 {
-		# Route to Jellyfin on mini-vm
+	reverse_proxy @jellyfin @beeIp@:8096 {
+		# Enable WebSocket support
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		# Increase timeouts for streaming
+		transport http {
+			keepalive 12h
+			keepalive_idle_conns 100
+		}
+	}
+
+	@jellyfin-mini host jellyfin-mini.@externalDomain@
+	reverse_proxy @jellyfin-mini @miniIp@:8096 {
+		# Enable WebSocket support  
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
 		# Increase timeouts for streaming
@@ -143,8 +155,21 @@
 	}
 
 	@openwebui host openwebui.@externalDomain@
-	reverse_proxy @openwebui @miniIp@:30081 {
-		# Route to OpenWebUI NodePort service on K8s
+	reverse_proxy @openwebui @beeIp@:8090 {
+		# Enable WebSocket support for real-time updates
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		# Increase timeouts for large model responses
+		transport http {
+			keepalive 30s
+			response_header_timeout 300s
+		}
+	}
+
+	@openwebui-mini host openwebui-mini.@externalDomain@
+	reverse_proxy @openwebui-mini @miniIp@:30081 {
+		# Route to OpenWebUI NodePort service
+		# The ingress controller handles routing to K8s services
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
 		# Increase timeouts for large model responses
