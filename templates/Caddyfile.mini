@@ -23,6 +23,19 @@
 	}
 }
 
+# Matrix Synapse native Darwin forwarding (mini machine only)
+:8009 {
+	bind @bindAddress@
+	reverse_proxy localhost:8009 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		transport http {
+			keepalive 5m
+			keepalive_idle_conns 100
+		}
+	}
+}
+
 # Home Assistant mini-vm forwarding (mini machine only)
 :8123 {
 	bind @bindAddress@

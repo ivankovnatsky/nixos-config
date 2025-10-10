@@ -108,6 +108,23 @@
 	@homeassistant-mini host homeassistant-mini.@externalDomain@
 	reverse_proxy @homeassistant-mini @miniIp@:8123
 
+	@matrix host matrix.@externalDomain@
+	reverse_proxy @matrix @miniIp@:8009 {
+		# Route to Matrix Synapse on native Darwin mini
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		transport http {
+			keepalive 5m
+			keepalive_idle_conns 100
+		}
+	}
+
+	@element host element.@externalDomain@
+	handle @element {
+		root * @elementWebPath@
+		file_server
+	}
+
 	@matrix-mini host matrix-mini.@externalDomain@
 	reverse_proxy @matrix-mini @miniIp@:8008 {
 		# Route to Matrix Synapse on mini-vm via mini
