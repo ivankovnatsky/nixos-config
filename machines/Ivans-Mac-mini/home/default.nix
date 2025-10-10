@@ -2,17 +2,12 @@
   imports = [
     ../../../darwin/home/nixvim.nix
     ../../../home/aichat.nix
-    ../../../home/amethyst
     ../../../home/bat.nix
     ../../../home/btop.nix
     ../../../home/claude.nix
-    # ../../../home/codex.nix
     ../../../home/direnv.nix
-    ../../../home/ghostty.nix
     ../../../home/git.nix
     ../../../home/go.nix
-    ../../../home/kitty
-    ../../../home/hammerspoon
     ../../../home/home-session-vars.nix
     ../../../home/lsd.nix
     ../../../home/mpv.nix
@@ -27,18 +22,14 @@
     ../../../home/starship
     ../../../home/tmux.nix
     ../../../home/tmuxinator.nix
-    ../../../home/tweety.nix
     ../../../home/vscode.nix
     ../../../home/yt-dlp.nix
     ../../../modules/flags
     ../../../modules/secrets
-    ./firefox.nix
     ./flags.nix
-    ./nixvim.nix
     ./ollama.nix
     ./packages.nix
     ./tmux.nix
     ./activation.nix
-    # ../../../home/bash.nix
   ];
 }

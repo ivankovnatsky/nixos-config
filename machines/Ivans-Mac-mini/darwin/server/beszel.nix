@@ -12,16 +12,27 @@
       KeepAlive = true;
       StandardOutPath = "/tmp/log/launchd/beszel-hub.out.log";
       StandardErrorPath = "/tmp/log/launchd/beszel-hub.error.log";
-
-      ProgramArguments = [
-        "${pkgs.beszel}/bin/beszel-hub"
-        "serve"
-        "--http"
-        "${config.flags.miniIp}:8091"
-        "--dir"
-        "/Volumes/Storage/Data/.beszel-hub"
-      ];
+      ThrottleInterval = 10;
     };
+
+    # Using command instead of ProgramArguments to utilize wait4path
+    command =
+      let
+        beszelScript = pkgs.writeShellScriptBin "beszel-hub-starter" ''
+          # Wait for the Storage volume to be mounted
+          echo "Waiting for /Volumes/Storage to be available..."
+          /bin/wait4path "/Volumes/Storage"
+
+          echo "/Volumes/Storage is now available!"
+          echo "Starting Beszel Hub..."
+
+          # Launch beszel-hub
+          exec ${pkgs.beszel}/bin/beszel-hub serve \
+            --http ${config.flags.miniIp}:8091 \
+            --dir /Volumes/Storage/Data/.beszel-hub
+        '';
+      in
+      "${beszelScript}/bin/beszel-hub-starter";
   };
 
   # Ensure state directory exists
