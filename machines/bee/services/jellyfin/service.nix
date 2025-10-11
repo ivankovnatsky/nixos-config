@@ -1,10 +1,11 @@
 {
-  # NOTE: Manual Jellyfin configuration is required after installation:
+  # Initial Setup (manual, one-time):
   # 1. Access the web UI at https://jellyfin.{externalDomain}
   # 2. Create your root user during the initial setup process
-  # 3. Add libraries for your media, pointing to appropriate directories in /storage/Data/media
-
-  # TODO: Can we configure through code?
+  # 3. Generate API key: Administration → Dashboard → Advanced → API Keys → New API Key
+  # 4. Save the key in modules/secrets/default.nix under secrets.jellyfin.apiKey
+  #
+  # After initial setup, jellyfin-mgmt will declaratively manage libraries
 
   # Enable Jellyfin Media Server
   services.jellyfin = {

@@ -9,6 +9,7 @@
     ../../modules/nixos/beszel-agent
     ../../modules/nixos/audiobookshelf-mgmt
     ../../modules/nixos/arr-mgmt
+    ../../modules/nixos/jellyfin-mgmt
 
     # Base configuration.
     ./configuration.nix
@@ -57,7 +58,7 @@
     ./services/audiobookshelf
 
     # Media server
-    ./services/jellyfin.nix
+    ./services/jellyfin
 
     # Media automation
     ./services/media
