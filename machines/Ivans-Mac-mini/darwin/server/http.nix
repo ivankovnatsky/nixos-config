@@ -60,9 +60,8 @@ let
         inherit (config.flags) miniVmIp;
         logPathPrefix = "/tmp/log";
 
-        # Element Web paths for Matrix instances
+        # Element Web path
         elementWebPath = pkgs.mkElementWeb config.secrets.externalDomain "matrix";
-        elementWebMiniPath = pkgs.mkElementWeb config.secrets.externalDomain "matrix-mini";
 
         # Netdata credentials
         netdataBeeUsername = config.secrets.netdata.bee.username;
