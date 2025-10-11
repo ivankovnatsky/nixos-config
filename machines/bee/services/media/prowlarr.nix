@@ -7,6 +7,8 @@
   # * The Private Bay
   #
   # Manual configuration:
+  # * Get API Key:
+  #   * Settings → General → Security → API Key (save to modules/secrets/default.nix)
   # * Add indexers via Settings → Indexers
   # * Add apps via Settings → Apps:
   #   * Radarr: localhost:7878, get API key from Radarr → Settings → General

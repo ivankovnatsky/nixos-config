@@ -1,6 +1,8 @@
 {
   # Manual configuration:
   #
+  # * Get API Key:
+  #   * Settings → General → Security → API Key (save to modules/secrets/default.nix)
   # * Changed auth to Forms (Login Page) and change password for every *arr service:
   #   * Settings
   #   * General
