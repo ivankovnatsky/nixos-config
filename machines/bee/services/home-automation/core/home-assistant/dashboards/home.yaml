@@ -1,0 +1,56 @@
+title: Home
+sections:
+  - type: grid
+    cards:
+      - type: entities
+        entities:
+          - entity: sensor.0x842712fffe37ec75_humidity
+            name: Humidity
+          - entity: sensor.0x842712fffe37ec75_temperature
+            name: Temperature
+        title: Climate
+      - type: entities
+        entities:
+          - entity: sensor.eve_energy_20ebo8301_current
+            name: Current
+          - entity: sensor.eve_energy_20ebo8301_energy
+            name: Energy
+          - entity: sensor.eve_energy_20ebo8301_power
+            name: Power
+          - entity: sensor.eve_energy_20ebo8301_voltage
+            name: Voltage
+        title: Energy
+  - type: grid
+    cards:
+      - type: history-graph
+        entities:
+          - entity: sensor.0x842712fffe37ec75_temperature
+        hours_to_show: 48
+        title: Temperature
+      - type: history-graph
+        entities:
+          - entity: sensor.0x842712fffe37ec75_humidity
+        hours_to_show: 48
+        title: Humidity
+  - type: grid
+    cards:
+      - type: history-graph
+        hours_to_show: 48
+        entities:
+          - sensor.eve_energy_20ebo8301_power
+        title: Power
+      - type: history-graph
+        hours_to_show: 48
+        entities:
+          - sensor.eve_energy_20ebo8301_energy
+        title: Energy
+      - type: history-graph
+        hours_to_show: 48
+        entities:
+          - sensor.eve_energy_20ebo8301_voltage
+        title: Voltage
+cards: []
+header:
+  layout: center
+  badges_position: bottom
+  badges_wrap: wrap

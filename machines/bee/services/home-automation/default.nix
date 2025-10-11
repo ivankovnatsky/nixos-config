@@ -1,6 +1,7 @@
 {
   imports = [
     ./bridges
+    ./core
     ./devices
   ];
 }
