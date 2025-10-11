@@ -35,12 +35,15 @@
 
   # Create media directories with correct permissions
   systemd.tmpfiles.rules = [
-    # Base media directory with group write permissions
-    "d /var/lib/radarr/media 0775 root media - -"
+    # Base media directory owned by radarr
+    "d /var/lib/radarr/media 0755 radarr radarr - -"
 
     # Radarr-specific directories
-    "d /var/lib/radarr/media/movies 2775 radarr media -" # Main movies directory with setgid
-    "d /var/lib/transmission/media/downloads 2775 transmission media -" # Where Transmission puts downloaded movies with setgid
+    "d /var/lib/radarr/media/movies 2775 radarr radarr -" # Main movies directory with setgid
+
+    # Transmission shared directories
+    "d /var/lib/transmission/media 0755 transmission media - -" # Base transmission media directory
+    "Z /var/lib/transmission/media/downloads 2775 transmission media - -" # Fix ownership on existing downloads directory
     "d /var/lib/transmission/media/downloads/radarr 0775 transmission media -" # Radarr's download directory
 
     # Set proper default ACLs for the Radarr downloads directory
