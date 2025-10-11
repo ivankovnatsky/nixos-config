@@ -117,9 +117,6 @@
 	@homeassistant host homeassistant.@externalDomain@
 	reverse_proxy @homeassistant @beeIp@:8123
 
-	@homeassistant-mini host homeassistant-mini.@externalDomain@
-	reverse_proxy @homeassistant-mini @miniIp@:8123
-
 	@matrix host matrix.@externalDomain@
 	reverse_proxy @matrix @miniIp@:8009 {
 		# Route to Matrix Synapse on native Darwin mini
