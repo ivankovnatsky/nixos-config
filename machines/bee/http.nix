@@ -56,6 +56,9 @@ let
         inherit (config.flags) miniVmIp;
         logPathPrefix = "/var/log";
 
+        # Element Web path
+        elementWebPath = pkgs.mkElementWeb config.secrets.externalDomain "matrix";
+
         # Element Web path for mini-vm Matrix instance
         elementWebMiniPath = pkgs.mkElementWeb config.secrets.externalDomain "matrix-mini";
 
