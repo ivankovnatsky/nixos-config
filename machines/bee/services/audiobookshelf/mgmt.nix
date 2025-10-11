@@ -13,5 +13,14 @@
         provider = "itunes";
       }
     ];
+
+    users = [
+      {
+        username = "textcast";
+        password = config.secrets.audiobookshelf.textcastPassword;
+        type = "user";
+        libraries = [ ]; # Empty = access to all libraries
+      }
+    ];
   };
 }
