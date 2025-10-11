@@ -69,6 +69,11 @@
     downloadDirPermissions = "775"; # Ensures correct permissions
   };
 
+  # Fix permissions on transmission state directory to allow media group access
+  systemd.tmpfiles.rules = [
+    "Z /var/lib/transmission 0755 transmission media - -" # Use Z to fix existing directory
+  ];
+
   # Ensure transmission can access media directories
   users.users.transmission.extraGroups = [
     "radarr"

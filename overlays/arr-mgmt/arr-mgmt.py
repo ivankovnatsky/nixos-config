@@ -39,7 +39,13 @@ class ArrClient:
                 try:
                     error_data = response.json()
                     print(f"DEBUG: Error response: {error_data}", file=sys.stderr)
-                    message = error_data.get("error", "Unknown error")
+                    # Handle both dict and list error responses
+                    if isinstance(error_data, list) and len(error_data) > 0:
+                        message = error_data[0].get("errorMessage", "Unknown error")
+                    elif isinstance(error_data, dict):
+                        message = error_data.get("error", "Unknown error")
+                    else:
+                        message = "Unknown error"
                     raise Exception(
                         f"API error: {message} (Status: {response.status_code})"
                     )
@@ -110,7 +116,13 @@ class ProwlarrClient:
                 try:
                     error_data = response.json()
                     print(f"DEBUG: Error response: {error_data}", file=sys.stderr)
-                    message = error_data.get("error", "Unknown error")
+                    # Handle both dict and list error responses
+                    if isinstance(error_data, list) and len(error_data) > 0:
+                        message = error_data[0].get("errorMessage", "Unknown error")
+                    elif isinstance(error_data, dict):
+                        message = error_data.get("error", "Unknown error")
+                    else:
+                        message = "Unknown error"
                     raise Exception(
                         f"API error: {message} (Status: {response.status_code})"
                     )
@@ -390,6 +402,14 @@ def _sync_indexers(client: ProwlarrClient, desired_indexers: list, dry_run: bool
     current_indexers = {idx["name"]: idx for idx in client.list_indexers()}
     desired_indexers_map = {idx["name"]: idx for idx in desired_indexers}
 
+    # Delete indexers not in desired config
+    for name, current in current_indexers.items():
+        if name not in desired_indexers_map:
+            print(f"  DELETE: {name} (not in config)", file=sys.stderr)
+            if not dry_run:
+                client.delete_indexer(current["id"])
+
+    # Create or update indexers from desired config
     for name, desired in desired_indexers_map.items():
         if name in current_indexers:
             current = current_indexers[name]
