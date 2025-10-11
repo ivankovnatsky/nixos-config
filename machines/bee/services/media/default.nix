@@ -5,5 +5,6 @@
     ./sonarr.nix
     ./prowlarr.nix
     ./transmission.nix
+    ./mgmt.nix
   ];
 }

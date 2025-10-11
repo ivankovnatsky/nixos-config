@@ -8,6 +8,7 @@
 
     ../../modules/nixos/beszel-agent
     ../../modules/nixos/audiobookshelf-mgmt
+    ../../modules/nixos/arr-mgmt
 
     # Base configuration.
     ./configuration.nix
