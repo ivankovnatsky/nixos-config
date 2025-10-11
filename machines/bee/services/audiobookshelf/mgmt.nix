@@ -8,7 +8,7 @@
     libraries = [
       {
         name = "Podcasts";
-        folders = [ "/storage/Data/media/podcasts" ];
+        folders = [ "/var/lib/audiobookshelf/media/podcasts" ];
         mediaType = "podcast";
         provider = "itunes";
       }
