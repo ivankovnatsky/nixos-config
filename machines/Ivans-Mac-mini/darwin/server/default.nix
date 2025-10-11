@@ -25,7 +25,6 @@
     ./homebrew.nix
     ./http.nix
     ./logrotate.nix
-    ./matrix
     ./miniserve.nix
     ./nix.nix
     ./openssh.nix

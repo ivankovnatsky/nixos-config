@@ -59,9 +59,6 @@ let
         # Element Web path
         elementWebPath = pkgs.mkElementWeb config.secrets.externalDomain "matrix";
 
-        # Element Web path for mini-vm Matrix instance
-        elementWebMiniPath = pkgs.mkElementWeb config.secrets.externalDomain "matrix-mini";
-
         # Netdata credentials
         netdataBeeUsername = config.secrets.netdata.bee.username;
         netdataBeePassword = config.secrets.netdata.bee.password;
