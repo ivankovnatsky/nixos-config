@@ -103,6 +103,12 @@ On boot tmux rebuild service can't get access to /Volumes/Storage
 
 Still an issue.
 
+## OrbStack Documentation (DEPRECATED)
+
+> **DEPRECATED** (Oct 2025): OrbStack and all VMs/K8s have been decommissioned. All services now run natively. The sections below are preserved for historical reference and troubleshooting knowledge.
+>
+> See: [claude/projects/deprecate-vms-and-run-natively-on-both/ORBSTACK-DECOMMISSION.md](../claude/projects/deprecate-vms-and-run-natively-on-both/ORBSTACK-DECOMMISSION.md)
+
 ## OrbStack Kubernetes Networking
 
 ### NodePort Localhost Binding
