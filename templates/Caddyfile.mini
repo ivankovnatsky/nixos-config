@@ -36,15 +36,6 @@
 	reverse_proxy @miniVmIp@:8123
 }
 
-# Audiobookshelf mini-vm forwarding (mini machine only)
-:8000 {
-	bind @bindAddress@
-	reverse_proxy @miniVmIp@:8000 {
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-}
-
 # Radarr mini-vm forwarding (mini machine only)
 :7878 {
 	bind @bindAddress@

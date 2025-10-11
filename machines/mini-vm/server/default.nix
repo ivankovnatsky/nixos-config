@@ -1,6 +1,5 @@
 {
   imports = [
-    ./audiobookshelf
     ./matrix
 
     # Home Automation
