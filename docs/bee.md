@@ -445,28 +445,27 @@ Had to `nix-collect-garbage -d` and run rebuild once again and after that it cle
 
 ## Service Migrations
 
-### Matrix Stack Migration to mini-vm (Oct 2025)
+### Matrix Stack Migration History (Oct 2025)
 
-**Status**: Completed
+**Timeline**:
 
-Matrix homeserver (Synapse) and all bridges migrated from bee to mini-vm (OrbStack VM on Mac mini).
+1. **Initial State**: Matrix running natively on bee
+2. **Oct 2025 - Migration to mini-vm**: Migrated to OrbStack VM on Mac mini
+   - **Reason**: Reduce CPU load, heat, and fan noise on bee. Mini-vm provided better resources and allowed bee to focus on hardware-dependent services (Home Assistant, Zigbee, Matter, Homebridge)
+   - **Configuration Cleanup**: Removed `machines/bee/server/services/matrix/` directory, PostgreSQL remained (still needed by Home Assistant)
+3. **Oct 2025 - Return to bee**: Migrated back to bee after OrbStack decommissioning
+   - **Reason**: OrbStack reliability issues (DNS failures, networking limitations), decision to run all services natively without VMs
 
-**Removed Services**:
-- matrix-synapse (PostgreSQL-backed homeserver)
-- mautrix-telegram bridge
-- mautrix-whatsapp bridge
-- mautrix-discord bridge
-- mautrix-meta (Instagram + Messenger bridges)
+**Current Status**: Running natively on bee
 
-**Reason**: Reduce CPU load, heat, and fan noise on bee. Mini-vm provides better resources and allows bee to focus on hardware-dependent services (Home Assistant, Zigbee, Matter, Homebridge).
+**Current Services** (on bee):
+- matrix-synapse (PostgreSQL-backed homeserver, port 8008)
+- mautrix-telegram (port 29317)
+- mautrix-whatsapp (port 29318)
+- mautrix-discord (port 29319)
+- mautrix-meta: Instagram (port 29320), Messenger (port 29322)
 
-**Configuration Cleanup**:
-- Removed `machines/bee/server/services/matrix/` directory
-- PostgreSQL service remains (still needed by Home Assistant)
-- Matrix database `matrix-synapse` can be manually dropped after verification
-- Bridge state directories (~17MB) in `/var/lib/mautrix-*` can be cleaned up
-
-**New Deployment**: See [docs/matrix.md](./matrix.md) for current Matrix configuration on mini-vm.
+**See**: [docs/matrix.md](./matrix.md) for current Matrix configuration on bee.
 
 ## References
 
