@@ -47,6 +47,13 @@
     prowlarr = {
       enable = true;
       apiKey = config.secrets.arr.prowlarr.apiKey;
+      indexers = [
+        { name = "EZTV"; definitionName = "eztv"; enable = true; priority = 25; }
+        { name = "LimeTorrents"; definitionName = "limetorrents"; enable = true; priority = 25; }
+        { name = "The Pirate Bay"; definitionName = "thepiratebay"; enable = true; priority = 25; }
+        { name = "TheRARBG"; definitionName = "therarbg"; enable = true; priority = 25; }
+        { name = "Toloka.to"; definitionName = "Toloka.to"; enable = true; priority = 25; }
+      ];
       applications = [
         {
           name = "Radarr";
