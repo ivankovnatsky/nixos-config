@@ -20,7 +20,7 @@
         }
       ];
       rootFolders = [
-        "/storage/Data/media/movies"
+        "/var/lib/radarr/media/movies"
       ];
     };
 
@@ -40,7 +40,7 @@
         }
       ];
       rootFolders = [
-        "/storage/Data/media/tv"
+        "/var/lib/sonarr/media/tv"
       ];
     };
 
