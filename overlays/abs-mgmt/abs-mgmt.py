@@ -84,10 +84,42 @@ class AudiobookshelfClient:
         """Delete a library."""
         return self._api_call("DELETE", f"/api/libraries/{library_id}")
 
+    def list_users(self):
+        """List all users."""
+        data = self._api_call("GET", "/api/users")
+        return data.get("users", [])
+
+    def create_user(self, username: str, password: str, user_type: str = "user", libraries: list = None):
+        """Create a new user."""
+        data = {
+            "username": username,
+            "password": password,
+            "type": user_type,
+        }
+        if libraries:
+            data["libraries"] = libraries
+        return self._api_call("POST", "/api/users", data=data)
+
+    def update_user(self, user_id: str, username: str = None, user_type: str = None, libraries: list = None):
+        """Update an existing user."""
+        data = {}
+        if username is not None:
+            data["username"] = username
+        if user_type is not None:
+            data["type"] = user_type
+        if libraries is not None:
+            data["libraries"] = libraries
+
+        return self._api_call("PATCH", f"/api/users/{user_id}", data=data)
+
+    def delete_user(self, user_id: str):
+        """Delete a user."""
+        return self._api_call("DELETE", f"/api/users/{user_id}")
+
     def sync_from_file(self, config_file: str, dry_run: bool = False):
         """
-        Sync libraries from a JSON configuration file.
-        Creates missing libraries, updates existing ones.
+        Sync libraries and users from a JSON configuration file.
+        Creates missing items, updates existing ones.
         """
         try:
             with open(config_file, "r") as f:
@@ -95,18 +127,28 @@ class AudiobookshelfClient:
         except Exception as e:
             raise Exception(f"Failed to load config file: {e}")
 
-        if "libraries" not in config:
-            raise ValueError('Config file must contain "libraries" array')
+        # Sync libraries if present
+        if "libraries" in config:
+            self._sync_libraries(config["libraries"], dry_run)
 
-        desired_libraries = {lib["name"]: lib for lib in config["libraries"]}
+        # Sync users if present
+        if "users" in config:
+            self._sync_users(config["users"], dry_run)
+
+    def _sync_libraries(self, libraries_config: list, dry_run: bool = False):
+        """Sync libraries from configuration."""
+        desired_libraries = {lib["name"]: lib for lib in libraries_config}
         current_libraries = {lib["name"]: lib for lib in self.list_libraries()}
 
-        print(f"\nSync Plan:", file=sys.stderr)
+        print("", file=sys.stderr)
+        print("Sync Plan:", file=sys.stderr)
         print(f"  Desired libraries: {len(desired_libraries)}", file=sys.stderr)
         print(f"  Current libraries: {len(current_libraries)}", file=sys.stderr)
 
         if dry_run:
-            print("\nDry-run mode - no changes will be made\n", file=sys.stderr)
+            print("", file=sys.stderr)
+            print("Dry-run mode - no changes will be made", file=sys.stderr)
+            print("", file=sys.stderr)
 
         # Create or update libraries
         for name, desired in desired_libraries.items():
@@ -154,9 +196,80 @@ class AudiobookshelfClient:
                     )
 
         if dry_run:
-            print("\nDry-run complete - no changes made.", file=sys.stderr)
+            print("", file=sys.stderr)
+            print("Library sync dry-run complete - no changes made.", file=sys.stderr)
         else:
-            print("\nSync complete!", file=sys.stderr)
+            print("", file=sys.stderr)
+            print("Library sync complete!", file=sys.stderr)
+
+    def _sync_users(self, users_config: list, dry_run: bool = False):
+        """Sync users from configuration."""
+        desired_users = {user["username"]: user for user in users_config}
+        current_users = {user["username"]: user for user in self.list_users()}
+
+        print("", file=sys.stderr)
+        print("User Sync Plan:", file=sys.stderr)
+        print(f"  Desired users: {len(desired_users)}", file=sys.stderr)
+        print(f"  Current users: {len(current_users)}", file=sys.stderr)
+
+        if dry_run:
+            print("", file=sys.stderr)
+            print("Dry-run mode - no changes will be made", file=sys.stderr)
+            print("", file=sys.stderr)
+
+        # Create or update users
+        for username, desired in desired_users.items():
+            user_type = desired.get("type", "user")
+            libraries = desired.get("libraries", [])
+            password = desired.get("password")
+
+            if username in current_users:
+                current = current_users[username]
+
+                # Check if type or libraries need update
+                current_type = current.get("type", "user")
+                current_libraries = current.get("libraries", [])
+                type_changed = current_type != user_type
+                libraries_changed = set(current_libraries) != set(libraries)
+
+                needs_update = type_changed or libraries_changed
+
+                if needs_update:
+                    update_parts = []
+                    if type_changed:
+                        update_parts.append(f"type: {current_type} -> {user_type}")
+                    if libraries_changed:
+                        update_parts.append("libraries")
+
+                    print(f"  UPDATE: {username} ({', '.join(update_parts)})", file=sys.stderr)
+                    if not dry_run:
+                        self.update_user(
+                            current["id"],
+                            user_type=user_type if type_changed else None,
+                            libraries=libraries if libraries_changed else None
+                        )
+                else:
+                    print(f"  OK: {username} (no changes)", file=sys.stderr)
+            else:
+                if not password:
+                    print(f"  SKIP: {username} (no password provided for new user)", file=sys.stderr)
+                    continue
+
+                print(f"  CREATE: {username}", file=sys.stderr)
+                if not dry_run:
+                    self.create_user(
+                        username=username,
+                        password=password,
+                        user_type=user_type,
+                        libraries=libraries
+                    )
+
+        if dry_run:
+            print("", file=sys.stderr)
+            print("User sync dry-run complete - no changes made.", file=sys.stderr)
+        else:
+            print("", file=sys.stderr)
+            print("User sync complete!", file=sys.stderr)
 
 
 def cmd_list(args, client):
