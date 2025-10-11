@@ -139,6 +139,9 @@
   };
 
   systemd.tmpfiles.rules = [
+    # Fix ownership of entire /var/lib/hass directory (old UID 985 -> hass user)
+    "Z /var/lib/hass 0700 hass hass -"
+
     # Copy dashboard configuration files to Home Assistant config directory
     "L+ /var/lib/hass/dashboards - - - - ${./dashboards}"
 
