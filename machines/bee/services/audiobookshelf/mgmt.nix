@@ -2,7 +2,7 @@
 {
   local.services.audiobookshelf-mgmt = {
     enable = true;
-    baseUrl = "http://localhost:8000";
+    baseUrl = "http://${config.flags.beeIp}:8000";
     apiToken = config.secrets.audiobookshelf.apiToken;
 
     libraries = [
