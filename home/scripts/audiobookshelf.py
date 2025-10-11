@@ -21,16 +21,7 @@ from datetime import datetime
 
 # Constants for common values
 DEFAULT_ABS_URL = "http://localhost:13378"
-DEFAULT_PODCASTS_LIBRARY_ID = (
-    "db54da2c-dc16-4fdb-8dd4-5375ae98f738"  # Podcasts library ID
-)
-
-# ```console
-# audiobookshelf libraries --url https://audiobookshelf.${externalDomain}
-# ```
-DEFAULT_PODCASTS_FOLDER_ID = (
-    "c9d67ffa-8e94-41f6-b22d-3924cf9ff511"  # /storage/Data/media/podcasts folder ID
-)
+DEFAULT_LIBRARY_NAME = "Podcasts"  # Library name to use by default
 
 
 class AudiobookshelfClient:
@@ -133,6 +124,29 @@ class AudiobookshelfClient:
         """Get all available libraries."""
         return self.make_request("GET", "/api/libraries")
 
+    def get_library_by_name(self, library_name):
+        """Get library ID and folder ID by library name.
+
+        Args:
+            library_name: Name of the library to find
+
+        Returns:
+            Tuple of (library_id, folder_id) or (None, None) if not found
+        """
+        libraries_data = self.get_libraries()
+        if not libraries_data or "libraries" not in libraries_data:
+            return None, None
+
+        for library in libraries_data["libraries"]:
+            if library["name"] == library_name:
+                library_id = library["id"]
+                # Get the first folder in the library
+                if library.get("folders") and len(library["folders"]) > 0:
+                    folder_id = library["folders"][0]["id"]
+                    return library_id, folder_id
+
+        return None, None
+
     def get_library_items(self, library_id):
         """Get all items in a library."""
         return self.make_request("GET", f"/api/libraries/{library_id}/items")
@@ -156,13 +170,14 @@ class AudiobookshelfClient:
             endpoint += "?hard=1"
         return self.make_request("DELETE", endpoint)
 
-    def upload_file(self, file_path, library_id, title=None):
+    def upload_file(self, file_path, library_name_or_id, title=None, folder_id=None):
         """Upload a file to a specific library.
 
         Args:
             file_path: Path to the file to upload
-            library_id: ID of the library to upload to
+            library_name_or_id: Library name (e.g., "Podcasts") or ID to upload to
             title: Title for the media (optional, defaults to filename)
+            folder_id: Folder ID to upload to (optional, will auto-detect if not provided)
         """
         file_path = Path(file_path)
         if not file_path.exists():
@@ -171,18 +186,39 @@ class AudiobookshelfClient:
 
         title = title or file_path.stem
 
-        # Use required parameters with the default folder ID
+        # Determine if library_name_or_id is a name or ID
+        # IDs are UUIDs with dashes, names typically don't have this format
+        if "-" in library_name_or_id and len(library_name_or_id) > 30:
+            # Looks like an ID
+            library_id = library_name_or_id
+            if not folder_id:
+                print("Warning: Library ID provided without folder ID, upload may fail")
+                print("Consider using library name instead for automatic folder detection")
+        else:
+            # Assume it's a library name, look it up
+            library_id, detected_folder_id = self.get_library_by_name(library_name_or_id)
+            if not library_id:
+                print(f"Error: Library '{library_name_or_id}' not found.")
+                return None
+            if not folder_id:
+                folder_id = detected_folder_id
+
+        if not folder_id:
+            print("Error: Could not determine folder ID for upload.")
+            return None
+
+        # Use required parameters
         data = {
             "title": title,
             "library": library_id,
-            "folder": DEFAULT_PODCASTS_FOLDER_ID,  # Use the default podcasts folder ID
+            "folder": folder_id,
         }
 
         # File will be uploaded as "0" parameter
         files = {str(file_path): file_path.name}
 
         print(f"Uploading to library ID: {library_id}")
-        print(f"Using folder ID: {DEFAULT_PODCASTS_FOLDER_ID}")
+        print(f"Using folder ID: {folder_id}")
         print(f"File: {file_path}")
         print(f"Title: {title}")
 
@@ -250,13 +286,13 @@ def download_audio(url, output_dir=None):
         os.chdir(original_dir)
 
 
-def process_media_url(url, abs_url=None, library_id=DEFAULT_PODCASTS_LIBRARY_ID):
+def process_media_url(url, abs_url=None, library_name_or_id=DEFAULT_LIBRARY_NAME):
     """Process a single media URL - download audio and upload to Audiobookshelf.
 
     Args:
         url: URL to process
         abs_url: Audiobookshelf URL (optional)
-        library_id: Library ID to upload to (optional)
+        library_name_or_id: Library name or ID to upload to (optional, default: "Podcasts")
 
     Returns:
         True if successful, False otherwise
@@ -290,7 +326,7 @@ def process_media_url(url, abs_url=None, library_id=DEFAULT_PODCASTS_LIBRARY_ID)
 
         # Upload to Audiobookshelf
         print("Uploading to Audiobookshelf...")
-        upload_response = client.upload_file(mp3_file, library_id)
+        upload_response = client.upload_file(mp3_file, library_name_or_id)
 
         if upload_response:
             print("Upload successful!")
@@ -300,13 +336,13 @@ def process_media_url(url, abs_url=None, library_id=DEFAULT_PODCASTS_LIBRARY_ID)
             return False
 
 
-def process_from_file(file_path, abs_url=None, library_id=DEFAULT_PODCASTS_LIBRARY_ID):
+def process_from_file(file_path, abs_url=None, library_name_or_id=DEFAULT_LIBRARY_NAME):
     """Process URLs from a file.
 
     Args:
         file_path: Path to file containing URLs
         abs_url: Audiobookshelf URL (optional)
-        library_id: Library ID to upload to (optional)
+        library_name_or_id: Library name or ID to upload to (optional, default: "Podcasts")
 
     Returns:
         Number of successfully processed URLs
@@ -329,7 +365,7 @@ def process_from_file(file_path, abs_url=None, library_id=DEFAULT_PODCASTS_LIBRA
         if not url or url.startswith("#"):
             continue
 
-        if process_media_url(url, abs_url, library_id):
+        if process_media_url(url, abs_url, library_name_or_id):
             success_count += 1
 
             # Remove successfully processed URL from the file
@@ -357,7 +393,7 @@ def upload_command(args, client):
     if not title:
         title = os.path.splitext(os.path.basename(args.file))[0]
 
-    upload_response = client.upload_file(args.file, args.library_id, title)
+    upload_response = client.upload_file(args.file, args.library, title)
 
     if upload_response:
         print("Upload successful!")
@@ -399,8 +435,17 @@ def list_listened_command(args, client):
     """Handle the list-listened command."""
     print(f"Fetching listened episodes from {client.base_url}...")
 
+    # Resolve library name to ID if needed
+    library_id = args.library
+    if not ("-" in library_id and len(library_id) > 30):
+        # It's a library name, resolve it
+        library_id, _ = client.get_library_by_name(args.library)
+        if not library_id:
+            print(f"Error: Library '{args.library}' not found.")
+            return
+
     # Get library items first
-    items_response = client.get_library_items(args.library_id)
+    items_response = client.get_library_items(library_id)
 
     if not items_response or "results" not in items_response:
         print("No items found or unable to retrieve library items.")
@@ -454,8 +499,17 @@ def cleanup_listened_command(args, client):
     """Handle the cleanup-listened command."""
     print(f"Finding listened episodes to clean up from {client.base_url}...")
 
+    # Resolve library name to ID if needed
+    library_id = args.library
+    if not ("-" in library_id and len(library_id) > 30):
+        # It's a library name, resolve it
+        library_id, _ = client.get_library_by_name(args.library)
+        if not library_id:
+            print(f"Error: Library '{args.library}' not found.")
+            return
+
     # Get library items
-    items_response = client.get_library_items(args.library_id)
+    items_response = client.get_library_items(library_id)
 
     if not items_response or "results" not in items_response:
         print("No items found or unable to retrieve library items.")
@@ -562,7 +616,7 @@ def process_command(args):
     """Handle the process command."""
     if args.url:
         # Process a single URL
-        if process_media_url(args.url, args.abs_url, args.library_id):
+        if process_media_url(args.url, args.abs_url, args.library):
             print("Processing completed successfully.")
         else:
             print("Processing failed.")
@@ -570,7 +624,7 @@ def process_command(args):
     elif args.file_url_list:
         # Process URLs from a file
         success_count = process_from_file(
-            args.file_url_list, args.abs_url, args.library_id
+            args.file_url_list, args.abs_url, args.library
         )
         print(f"Processed {success_count} URLs successfully.")
     else:
@@ -608,9 +662,9 @@ def main():
     )
     upload_parser.add_argument("--file", required=True, help="Audio file to upload")
     upload_parser.add_argument(
-        "--library-id",
-        default=DEFAULT_PODCASTS_LIBRARY_ID,
-        help=f"Library ID (default: {DEFAULT_PODCASTS_LIBRARY_ID} - Podcasts library)",
+        "--library",
+        default=DEFAULT_LIBRARY_NAME,
+        help=f'Library name or ID (default: "{DEFAULT_LIBRARY_NAME}")',
     )
     upload_parser.add_argument(
         "--title", help="Title for the media (defaults to filename)"
@@ -636,9 +690,9 @@ def main():
         help=f"Audiobookshelf URL (default: {DEFAULT_ABS_URL} or ABS_URL env var)",
     )
     list_listened_parser.add_argument(
-        "--library-id",
-        default=DEFAULT_PODCASTS_LIBRARY_ID,
-        help=f"Library ID (default: {DEFAULT_PODCASTS_LIBRARY_ID} - Podcasts library)",
+        "--library",
+        default=DEFAULT_LIBRARY_NAME,
+        help=f'Library name or ID (default: "{DEFAULT_LIBRARY_NAME}")',
     )
 
     # Cleanup listened command
@@ -651,9 +705,9 @@ def main():
         help=f"Audiobookshelf URL (default: {DEFAULT_ABS_URL} or ABS_URL env var)",
     )
     cleanup_listened_parser.add_argument(
-        "--library-id",
-        default=DEFAULT_PODCASTS_LIBRARY_ID,
-        help=f"Library ID (default: {DEFAULT_PODCASTS_LIBRARY_ID} - Podcasts library)",
+        "--library",
+        default=DEFAULT_LIBRARY_NAME,
+        help=f'Library name or ID (default: "{DEFAULT_LIBRARY_NAME}")',
     )
     cleanup_listened_parser.add_argument(
         "--force", action="store_true", help="Skip confirmation prompt"
@@ -686,9 +740,9 @@ def main():
         help=f"Audiobookshelf URL (default: {DEFAULT_ABS_URL} or ABS_URL env var)",
     )
     process_parser.add_argument(
-        "--library-id",
-        default=DEFAULT_PODCASTS_LIBRARY_ID,
-        help=f"Library ID (default: {DEFAULT_PODCASTS_LIBRARY_ID} - Podcasts library)",
+        "--library",
+        default=DEFAULT_LIBRARY_NAME,
+        help=f'Library name or ID (default: "{DEFAULT_LIBRARY_NAME}")',
     )
 
     # Handle case where no arguments are provided
