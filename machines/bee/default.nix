@@ -49,6 +49,9 @@
     # Home Automation
     ./services/home-automation
 
+    # Matrix
+    ./services/matrix
+
     # Audio
     ./services/audiobookshelf
 
