@@ -124,11 +124,11 @@ class AudiobookshelfClient:
         """Get all available libraries."""
         return self.make_request("GET", "/api/libraries")
 
-    def get_library_by_name(self, library_name):
-        """Get library ID and folder ID by library name.
+    def get_library(self, library_name=None):
+        """Get library ID and folder ID. If no name provided, returns first library.
 
         Args:
-            library_name: Name of the library to find
+            library_name: Name of the library to find (optional, defaults to first library)
 
         Returns:
             Tuple of (library_id, folder_id) or (None, None) if not found
@@ -137,15 +137,32 @@ class AudiobookshelfClient:
         if not libraries_data or "libraries" not in libraries_data:
             return None, None
 
-        for library in libraries_data["libraries"]:
-            if library["name"] == library_name:
-                library_id = library["id"]
-                # Get the first folder in the library
-                if library.get("folders") and len(library["folders"]) > 0:
-                    folder_id = library["folders"][0]["id"]
-                    return library_id, folder_id
+        libraries = libraries_data["libraries"]
+        if not libraries:
+            return None, None
 
-        return None, None
+        # If no name provided, use first library
+        if library_name is None:
+            library = libraries[0]
+        else:
+            # Find library by name
+            library = None
+            for lib in libraries:
+                if lib["name"] == library_name:
+                    library = lib
+                    break
+
+            if library is None:
+                return None, None
+
+        library_id = library["id"]
+
+        # Get the first folder in the library
+        if library.get("folders") and len(library["folders"]) > 0:
+            folder_id = library["folders"][0]["id"]
+            return library_id, folder_id
+
+        return library_id, None
 
     def get_library_items(self, library_id):
         """Get all items in a library."""
@@ -196,7 +213,7 @@ class AudiobookshelfClient:
                 print("Consider using library name instead for automatic folder detection")
         else:
             # Assume it's a library name, look it up
-            library_id, detected_folder_id = self.get_library_by_name(library_name_or_id)
+            library_id, detected_folder_id = self.get_library(library_name_or_id)
             if not library_id:
                 print(f"Error: Library '{library_name_or_id}' not found.")
                 return None
@@ -439,7 +456,7 @@ def list_listened_command(args, client):
     library_id = args.library
     if not ("-" in library_id and len(library_id) > 30):
         # It's a library name, resolve it
-        library_id, _ = client.get_library_by_name(args.library)
+        library_id, _ = client.get_library(args.library)
         if not library_id:
             print(f"Error: Library '{args.library}' not found.")
             return
@@ -503,7 +520,7 @@ def cleanup_listened_command(args, client):
     library_id = args.library
     if not ("-" in library_id and len(library_id) > 30):
         # It's a library name, resolve it
-        library_id, _ = client.get_library_by_name(args.library)
+        library_id, _ = client.get_library(args.library)
         if not library_id:
             print(f"Error: Library '{args.library}' not found.")
             return
