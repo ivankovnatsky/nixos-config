@@ -55,6 +55,9 @@
     # Audio
     ./services/audiobookshelf
 
+    # Media automation
+    ./services/media
+
     # OpenWebUI - restored from K8s
     ./open-webui.nix
 
