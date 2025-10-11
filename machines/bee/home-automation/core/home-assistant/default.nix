@@ -57,11 +57,11 @@
         server_port = 8123;
         # Enable proxy support
         use_x_forwarded_for = true;
-        # Trust the Caddy proxy server
+        # Trust local network proxies
         trusted_proxies = [
           "127.0.0.1"
           "::1"
-          "${config.flags.beeIp}"
+          "192.168.50.0/24"
         ];
       };
 
