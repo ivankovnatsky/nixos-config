@@ -35,7 +35,7 @@ class ArrClient:
             if response.status_code == 204:
                 return None
 
-            if response.status_code not in (200, 201):
+            if response.status_code not in (200, 201, 202):
                 try:
                     error_data = response.json()
                     print(f"DEBUG: Error response: {error_data}", file=sys.stderr)
@@ -106,7 +106,7 @@ class ProwlarrClient:
             if response.status_code == 204:
                 return None
 
-            if response.status_code not in (200, 201):
+            if response.status_code not in (200, 201, 202):
                 try:
                     error_data = response.json()
                     print(f"DEBUG: Error response: {error_data}", file=sys.stderr)
@@ -139,6 +139,22 @@ class ProwlarrClient:
     def delete_application(self, app_id: int):
         """Delete an application."""
         return self._api_call("DELETE", f"/api/v1/applications/{app_id}")
+
+    def list_indexers(self):
+        """List all indexers."""
+        return self._api_call("GET", "/api/v1/indexer")
+
+    def create_indexer(self, data):
+        """Create a new indexer."""
+        return self._api_call("POST", "/api/v1/indexer", data=data)
+
+    def update_indexer(self, indexer_id: int, data):
+        """Update an existing indexer."""
+        return self._api_call("PUT", f"/api/v1/indexer/{indexer_id}", data=data)
+
+    def delete_indexer(self, indexer_id: int):
+        """Delete an indexer."""
+        return self._api_call("DELETE", f"/api/v1/indexer/{indexer_id}")
 
 
 def _build_transmission_fields(config, category_field="movieCategory"):
@@ -208,6 +224,12 @@ def sync_prowlarr(config, dry_run=False):
 
     print("", file=sys.stderr)
     print("=== Prowlarr Sync ===", file=sys.stderr)
+
+    # Sync indexers
+    if "indexers" in config:
+        print("", file=sys.stderr)
+        print("Syncing indexers...", file=sys.stderr)
+        _sync_indexers(client, config["indexers"], dry_run)
 
     # Sync applications
     if "applications" in config:
@@ -361,6 +383,60 @@ def _sync_applications(client: ProwlarrClient, desired_apps: list, dry_run: bool
                     "tags": [],
                 }
                 client.create_application(create_data)
+
+
+def _sync_indexers(client: ProwlarrClient, desired_indexers: list, dry_run: bool):
+    """Sync Prowlarr indexers."""
+    current_indexers = {idx["name"]: idx for idx in client.list_indexers()}
+    desired_indexers_map = {idx["name"]: idx for idx in desired_indexers}
+
+    for name, desired in desired_indexers_map.items():
+        if name in current_indexers:
+            current = current_indexers[name]
+
+            # Check if update needed
+            needs_update = False
+            update_parts = []
+
+            # Check enable status
+            if desired.get("enable", True) != current.get("enable"):
+                needs_update = True
+                update_parts.append(f"enable: {current.get('enable')} -> {desired.get('enable', True)}")
+
+            # Check priority
+            if desired.get("priority", 25) != current.get("priority"):
+                needs_update = True
+                update_parts.append(f"priority: {current.get('priority')} -> {desired.get('priority', 25)}")
+
+            if needs_update:
+                print(f"  UPDATE: {name} ({', '.join(update_parts)})", file=sys.stderr)
+                if not dry_run:
+                    update_data = current.copy()
+                    update_data["enable"] = desired.get("enable", True)
+                    update_data["priority"] = desired.get("priority", 25)
+                    client.update_indexer(current["id"], update_data)
+            else:
+                print(f"  OK: {name} (no changes)", file=sys.stderr)
+        else:
+            # Create new indexer
+            if "definitionName" not in desired:
+                print(f"  ERROR: {name} (missing definitionName - required for creation)", file=sys.stderr)
+                continue
+
+            print(f"  CREATE: {name} (definitionName: {desired['definitionName']})", file=sys.stderr)
+            if not dry_run:
+                # Build minimal create payload - Prowlarr fills in the rest from definitionName
+                create_data = {
+                    "definitionName": desired["definitionName"],
+                    "name": name,
+                    "enable": desired.get("enable", True),
+                    "priority": desired.get("priority", 25),
+                    "appProfileId": 1,  # Default app profile
+                    "fields": [
+                        {"name": "definitionFile", "value": desired["definitionName"]}
+                    ]
+                }
+                client.create_indexer(create_data)
 
 
 def cmd_sync(args):

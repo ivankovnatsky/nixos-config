@@ -131,6 +131,34 @@ let
     };
   };
 
+  prowlarrIndexerSubmodule = types.submodule {
+    options = {
+      name = mkOption {
+        type = types.str;
+        example = "EZTV";
+        description = "Indexer display name";
+      };
+
+      definitionName = mkOption {
+        type = types.str;
+        example = "eztv";
+        description = "Indexer definition name (lowercase, determines indexer type)";
+      };
+
+      enable = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Enable this indexer";
+      };
+
+      priority = mkOption {
+        type = types.int;
+        default = 25;
+        description = "Indexer priority";
+      };
+    };
+  };
+
   configJson = pkgs.writeText "arr-config.json" (builtins.toJSON (
     optionalAttrs cfg.radarr.enable {
       radarr = {
@@ -180,6 +208,12 @@ let
       prowlarr = {
         baseUrl = cfg.prowlarr.baseUrl;
         apiKey = cfg.prowlarr.apiKey;
+        indexers = map (idx: {
+          name = idx.name;
+          definitionName = idx.definitionName;
+          enable = idx.enable;
+          priority = idx.priority;
+        }) cfg.prowlarr.indexers;
         applications = map (app: {
           name = app.name;
           baseUrl = app.baseUrl;
@@ -265,6 +299,16 @@ in
       apiKey = mkOption {
         type = types.str;
         description = "Prowlarr API key";
+      };
+
+      indexers = mkOption {
+        type = types.listOf prowlarrIndexerSubmodule;
+        default = [ ];
+        example = [
+          { name = "EZTV"; definitionName = "eztv"; enable = true; priority = 25; }
+          { name = "The Pirate Bay"; definitionName = "thepiratebay"; enable = true; priority = 25; }
+        ];
+        description = "Indexers to manage in Prowlarr";
       };
 
       applications = mkOption {
