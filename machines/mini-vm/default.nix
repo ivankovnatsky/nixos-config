@@ -6,6 +6,5 @@
     ./networking.nix
     ./configuration.nix
     ./tmux-rebuild-poll.nix
-    ./jellyfin.nix
   ];
 }
