@@ -1,6 +1,7 @@
 {
   imports = [
     # ./netdata.nix
+    ../../../../darwin/sudo.nix
     ../../../../darwin/syncthing.nix
     ../../../../modules/darwin/beszel-agent
     ../../../../modules/darwin/beszel-mgmt
@@ -32,7 +33,6 @@
     ./power.nix
     ./sharing.nix
     ./stash
-    ./sudo.nix
     ./system.nix
     ./tailscale.nix
     ./tmux-rebuild.nix

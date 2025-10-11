@@ -3,6 +3,7 @@
     ../../../darwin/aerospace.nix
     ../../../darwin/darwin.nix
     ../../../darwin/nix.nix
+    ../../../darwin/sudo.nix
     ../../../modules/darwin/dock
     ../../../modules/darwin/pam
     ../../../modules/darwin/sudo
@@ -18,7 +19,6 @@
     ./openssh.nix
     ./security.nix
     ./shell.nix
-    ./sudo.nix
     ./system.nix
     ./tmux-rebuild.nix
   ];
