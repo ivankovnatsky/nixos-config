@@ -111,31 +111,6 @@
         users.users.ivan.home = "/home/ivan";
         system.stateVersion = "25.05";
       }
-
-      # Home Manager module
-      inputs.home-manager-nixos-release.nixosModules.home-manager
-      {
-        home-manager = {
-          useGlobalPkgs = true;
-          useUserPackages = true;
-          backupFileExtension = "backup";
-          users.ivan = {
-            imports = [
-              ../../machines/mini-vm/home
-            ];
-          };
-          extraSpecialArgs = {
-            inherit inputs;
-            system = "aarch64-linux";
-            username = "ivan";
-          };
-          sharedModules = [
-            {
-              home.stateVersion = "25.05";
-            }
-          ];
-        };
-      }
     ];
     specialArgs = {
       system = "aarch64-linux";
