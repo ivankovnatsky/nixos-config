@@ -12,6 +12,8 @@
   #
   # Enable Sonarr
   # Manual configurations:
+  # * Get API Key:
+  #   * Settings → General → Security → API Key (save to modules/secrets/default.nix)
   # * Disable analytics
   # * Setup transmission password:
   #   * Settings → Download Clients → Add Transmission
