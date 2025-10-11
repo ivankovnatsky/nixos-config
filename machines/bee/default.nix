@@ -55,6 +55,9 @@
     # Audio
     ./services/audiobookshelf
 
+    # Media server
+    ./services/jellyfin.nix
+
     # Media automation
     ./services/media
 
