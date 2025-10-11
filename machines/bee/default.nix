@@ -6,6 +6,8 @@
     ../../modules/nixos/tmux-rebuild
     ./tmux-rebuild.nix
 
+    ../../modules/nixos/mautrix-whatsapp
+    ../../modules/nixos/mautrix-discord
     ../../modules/nixos/beszel-agent
     ../../modules/nixos/audiobookshelf-mgmt
     ../../modules/nixos/arr-mgmt
@@ -49,19 +51,19 @@
     ./logrotate.nix
 
     # Home Automation
-    ./services/home-automation
+    ./home-automation
 
     # Matrix
-    ./services/matrix
+    ./matrix
 
     # Audio
-    ./services/audiobookshelf
+    ./audiobookshelf
 
     # Media server
-    ./services/jellyfin
+    ./jellyfin
 
     # Media automation
-    ./services/media
+    ./media
 
     # OpenWebUI - restored from K8s
     ./open-webui.nix
