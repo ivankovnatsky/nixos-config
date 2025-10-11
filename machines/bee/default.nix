@@ -7,6 +7,7 @@
     ./tmux-rebuild.nix
 
     ../../modules/nixos/beszel-agent
+    ../../modules/nixos/audiobookshelf-mgmt
 
     # Base configuration.
     ./configuration.nix
@@ -49,7 +50,7 @@
     ./services/home-automation
 
     # Audio
-    ./services/audiobookshelf.nix
+    ./services/audiobookshelf
 
     # OpenWebUI - restored from K8s
     ./open-webui.nix
