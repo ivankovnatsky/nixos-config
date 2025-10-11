@@ -54,7 +54,6 @@ in
       # Brew casks placeholder
       { path = "/Applications/Chromium.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
-      { path = "/Applications/OrbStack.app/"; }
 
       {
         path = "${homePath}/Downloads/";
