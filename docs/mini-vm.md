@@ -1,8 +1,12 @@
 # mini-vm
 
+> **DEPRECATED** (Oct 2025): This VM has been decommissioned. All services migrated to run natively on bee (NixOS). This document is preserved for historical reference and troubleshooting knowledge about OrbStack VMs.
+>
+> See: [claude/projects/deprecate-vms-and-run-natively-on-both/ORBSTACK-DECOMMISSION.md](../claude/projects/deprecate-vms-and-run-natively-on-both/ORBSTACK-DECOMMISSION.md)
+
 ## Overview
 
-`mini-vm` is a NixOS virtual machine running on Orbstack on Mac mini used for development and testing.
+`mini-vm` was a NixOS virtual machine running on Orbstack on Mac mini used for development and testing.
 
 ## Creation
 
