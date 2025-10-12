@@ -27,6 +27,7 @@
     ./logrotate.nix
     ./miniserve.nix
     ./nix.nix
+    ./ollama.nix
     ./openssh.nix
     ./packages.nix
     ./power.nix
