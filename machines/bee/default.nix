@@ -62,9 +62,6 @@
     # Media server
     ./jellyfin
 
-    # Media automation
-    ./media
-
     # OpenWebUI - restored from K8s
     ./open-webui.nix
 

@@ -4,6 +4,14 @@
   ...
 }:
 
+# Seeding control settings (crucial for Sonarr cleanup):
+# * ratio-limit: 1.0 (lowered from 2.0 for quicker cleanup)
+# * ratio-limit-enabled: true (enables Sonarr to remove completed downloads)
+# * seed-time-limit: 30 minutes (reduced from 60)
+# * seed-time-limit-enabled: true (enables seed time limit for Sonarr cleanup)
+# * idle-seeding-limit: 30 minutes (additional idle time before pausing)
+# * idle-seeding-limit-enabled: true (extra measure for cleanup)
+
 let
   volumePath = "/Volumes/Storage";
   dataDir = "${volumePath}/Data/.transmission";
