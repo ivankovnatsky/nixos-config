@@ -319,11 +319,25 @@ in
     };
   };
 
-  config = mkIf cfg.enable {
-    system.activationScripts.arr-mgmt = ''
-      echo "Syncing *arr configuration..."
-      ${pkgs.arr-mgmt}/bin/arr-mgmt sync \
-        --config-file "${configJson}" || echo "Warning: *arr sync failed"
-    '';
-  };
+  config = mkMerge [
+    # Darwin configuration
+    (mkIf (cfg.enable && pkgs.stdenv.isDarwin) {
+      system.activationScripts.postActivation.text = ''
+        echo "Syncing *arr configuration..."
+        ${pkgs.arr-mgmt}/bin/arr-mgmt sync \
+          --config-file "${configJson}" || echo "Warning: *arr sync failed"
+      '';
+    })
+
+    # NixOS configuration
+    (mkIf (cfg.enable && !pkgs.stdenv.isDarwin) {
+      system.activationScripts.arr-mgmt = {
+        text = ''
+          echo "Syncing *arr configuration..."
+          ${pkgs.arr-mgmt}/bin/arr-mgmt sync \
+            --config-file "${configJson}" || echo "Warning: *arr sync failed"
+        '';
+      };
+    })
+  ];
 }

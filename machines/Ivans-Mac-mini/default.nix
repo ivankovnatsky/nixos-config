@@ -20,6 +20,7 @@
     ../../modules/darwin/tmux-rebuild
     ../../modules/flags
     ../../modules/secrets
+    ../../modules/shared/arr-mgmt
     ../../modules/shared/nextdns-mgmt
     ../../system/documentation.nix
     ../../system/nix.nix

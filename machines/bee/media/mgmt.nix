@@ -51,7 +51,7 @@
         { name = "EZTV"; definitionName = "eztv"; enable = true; priority = 25; }
         { name = "LimeTorrents"; definitionName = "limetorrents"; enable = true; priority = 25; }
         { name = "The Pirate Bay"; definitionName = "thepiratebay"; enable = true; priority = 25; }
-        { name = "Toloka.to"; definitionName = "Toloka.to"; enable = true; priority = 25; }
+        # Toloka.to removed - no longer available in Prowlarr upstream
         # TheRARBG removed - RARBG shut down permanently in May 2023
       ];
       applications = [

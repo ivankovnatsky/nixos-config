@@ -17,11 +17,11 @@
   # See machines/bee/media/mgmt.nix for reference
 
   local.services.arr-mgmt = {
-    enable = false;  # Set to true when ready for Phase 3
+    enable = true;
 
     radarr = {
       enable = true;
-      apiKey = config.secrets.arr.radarr.apiKey;
+      apiKey = config.secrets.arrMini.radarr.apiKey;
       downloadClients = [
         {
           name = "Transmission";
@@ -41,7 +41,7 @@
 
     sonarr = {
       enable = true;
-      apiKey = config.secrets.arr.sonarr.apiKey;
+      apiKey = config.secrets.arrMini.sonarr.apiKey;
       downloadClients = [
         {
           name = "Transmission";
@@ -61,18 +61,17 @@
 
     prowlarr = {
       enable = true;
-      apiKey = config.secrets.arr.prowlarr.apiKey;
+      apiKey = config.secrets.arrMini.prowlarr.apiKey;
       indexers = [
         { name = "EZTV"; definitionName = "eztv"; enable = true; priority = 25; }
         { name = "LimeTorrents"; definitionName = "limetorrents"; enable = true; priority = 25; }
         { name = "The Pirate Bay"; definitionName = "thepiratebay"; enable = true; priority = 25; }
-        { name = "Toloka.to"; definitionName = "Toloka.to"; enable = true; priority = 25; }
       ];
       applications = [
         {
           name = "Radarr";
           baseUrl = "http://localhost:7878";
-          apiKey = config.secrets.arr.radarr.apiKey;
+          apiKey = config.secrets.arrMini.radarr.apiKey;
           prowlarrUrl = "http://localhost:9696";
           syncLevel = "fullSync";
           syncCategories = [
@@ -92,7 +91,7 @@
         {
           name = "Sonarr";
           baseUrl = "http://localhost:8989";
-          apiKey = config.secrets.arr.sonarr.apiKey;
+          apiKey = config.secrets.arrMini.sonarr.apiKey;
           prowlarrUrl = "http://localhost:9696";
           syncLevel = "fullSync";
           syncCategories = [
