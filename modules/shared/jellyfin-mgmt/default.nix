@@ -57,11 +57,25 @@ in
     };
   };
 
-  config = mkIf cfg.enable {
-    system.activationScripts.jellyfin-mgmt = ''
-      echo "Syncing Jellyfin configuration..."
-      ${pkgs.jellyfin-mgmt}/bin/jellyfin-mgmt sync \
-        --config-file "${configJson}" || echo "Warning: Jellyfin sync failed"
-    '';
-  };
+  config = mkMerge [
+    # Darwin configuration
+    (mkIf (cfg.enable && pkgs.stdenv.isDarwin) {
+      system.activationScripts.postActivation.text = ''
+        echo "Syncing Jellyfin configuration..."
+        ${pkgs.jellyfin-mgmt}/bin/jellyfin-mgmt sync \
+          --config-file "${configJson}" || echo "Warning: Jellyfin sync failed"
+      '';
+    })
+
+    # NixOS configuration
+    (mkIf (cfg.enable && !pkgs.stdenv.isDarwin) {
+      system.activationScripts.jellyfin-mgmt = {
+        text = ''
+          echo "Syncing Jellyfin configuration..."
+          ${pkgs.jellyfin-mgmt}/bin/jellyfin-mgmt sync \
+            --config-file "${configJson}" || echo "Warning: Jellyfin sync failed"
+        '';
+      };
+    })
+  ];
 }

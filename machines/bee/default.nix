@@ -11,7 +11,7 @@
     ../../modules/nixos/beszel-agent
     ../../modules/nixos/audiobookshelf-mgmt
     ../../modules/shared/arr-mgmt
-    ../../modules/nixos/jellyfin-mgmt
+    ../../modules/shared/jellyfin-mgmt
 
     # Base configuration.
     ./configuration.nix
