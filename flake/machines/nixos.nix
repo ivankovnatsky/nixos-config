@@ -62,6 +62,7 @@
         home-manager = {
           useGlobalPkgs = true;
           useUserPackages = true;
+          backupFileExtension = "backup";
           users.ivan = {
             imports = [
               ../../machines/a3/home
