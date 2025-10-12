@@ -78,19 +78,7 @@
 	}
 
 	@jellyfin host jellyfin.@externalDomain@
-	reverse_proxy @jellyfin @beeIp@:8096 {
-		# Enable WebSocket support
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-		# Increase timeouts for streaming
-		transport http {
-			keepalive 12h
-			keepalive_idle_conns 100
-		}
-	}
-
-	@jellyfin-mini host jellyfin-mini.@externalDomain@
-	reverse_proxy @jellyfin-mini @miniIp@:8096 {
+	reverse_proxy @jellyfin @miniIp@:8096 {
 		# Enable WebSocket support
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
