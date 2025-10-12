@@ -1,6 +1,6 @@
 { inputs, ... }:
 {
-  "Ivans-MacBook-Pro" = inputs.darwin.lib.darwinSystem {
+  "Ivans-MacBook-Pro" = inputs.nix-darwin-darwin-unstable.lib.darwinSystem {
     system = "aarch64-darwin";
     modules = [
       # Import machine-specific configuration
@@ -25,7 +25,7 @@
       }
 
       # Home Manager module
-      inputs.home-manager.darwinModules.home-manager
+      inputs.home-manager-any-unstable.darwinModules.home-manager
       {
         home-manager = {
           useGlobalPkgs = true;
@@ -34,7 +34,7 @@
           users.ivan = {
             imports = [
               ../../machines/Ivans-MacBook-Pro/home
-              inputs.nixvim.homeManagerModules.nixvim
+              inputs.nixvim-any-unstable.homeManagerModules.nixvim
               {
                 programs.home-manager.enable = true;
                 home.username = "ivan";
@@ -84,7 +84,7 @@
     };
   };
 
-  "Ivans-MacBook-Air" = inputs.darwin.lib.darwinSystem {
+  "Ivans-MacBook-Air" = inputs.nix-darwin-darwin-unstable.lib.darwinSystem {
     system = "aarch64-darwin";
     modules = [
       # Import machine-specific configuration
@@ -109,7 +109,7 @@
       }
 
       # Home Manager module
-      inputs.home-manager.darwinModules.home-manager
+      inputs.home-manager-any-unstable.darwinModules.home-manager
       {
         home-manager = {
           useGlobalPkgs = true;
@@ -118,7 +118,7 @@
           users.ivan = {
             imports = [
               ../../machines/Ivans-MacBook-Air/home
-              inputs.nixvim.homeManagerModules.nixvim
+              inputs.nixvim-any-unstable.homeManagerModules.nixvim
               {
                 programs.home-manager.enable = true;
                 home.username = "ivan";
@@ -168,7 +168,7 @@
     };
   };
 
-  "Ivans-Mac-mini" = inputs.darwin-release.lib.darwinSystem {
+  "Ivans-Mac-mini" = inputs.nix-darwin-darwin-release.lib.darwinSystem {
     system = "aarch64-darwin";
     modules = [
       # Import machine-specific configuration
@@ -222,7 +222,7 @@
     };
   };
 
-  "Lusha-Macbook-Ivan-Kovnatskyi" = inputs.darwin.lib.darwinSystem {
+  "Lusha-Macbook-Ivan-Kovnatskyi" = inputs.nix-darwin-darwin-unstable.lib.darwinSystem {
     system = "aarch64-darwin";
     modules = [
       # Import machine-specific configuration
@@ -247,7 +247,7 @@
       }
 
       # Home Manager module
-      inputs.home-manager.darwinModules.home-manager
+      inputs.home-manager-any-unstable.darwinModules.home-manager
       {
         home-manager = {
           useGlobalPkgs = true;
@@ -256,7 +256,7 @@
           users."Ivan.Kovnatskyi" = {
             imports = [
               ../../machines/Lusha-Macbook-Ivan-Kovnatskyi/home
-              inputs.nixvim.homeManagerModules.nixvim
+              inputs.nixvim-any-unstable.homeManagerModules.nixvim
               {
                 programs.home-manager.enable = true;
                 home.username = "Ivan.Kovnatskyi";

@@ -1,6 +1,6 @@
 { inputs, ... }:
 {
-  "bee" = inputs.nixos-release.lib.nixosSystem {
+  "bee" = inputs.nixpkgs-nixos-release.lib.nixosSystem {
     system = "x86_64-linux";
     modules = [
       # Import machine-specific configuration
@@ -11,8 +11,8 @@
         nixpkgs.overlays = [ inputs.self.overlay ];
         nixpkgs.config.allowUnfree = true;
         nix.nixPath = [
-          "nixpkgs=${inputs.nixos-release}"
-          "nixos-release=${inputs.nixos-release}"
+          "nixpkgs=${inputs.nixpkgs-nixos-release}"
+          "nixos-release=${inputs.nixpkgs-nixos-release}"
         ];
         _module.args = {
           flake-inputs = inputs;
@@ -66,8 +66,8 @@
           users.ivan = {
             imports = [
               ../../machines/a3/home
-              inputs.nixvim.homeManagerModules.nixvim
-              inputs.plasma-manager.homeManagerModules.plasma-manager
+              inputs.nixvim-any-unstable.homeManagerModules.nixvim
+              inputs.plasma-manager-nixos-unstable.homeManagerModules.plasma-manager
             ];
           };
           extraSpecialArgs = {
