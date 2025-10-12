@@ -29,7 +29,6 @@
     ../../../home/syncthing.nix
     ../../../home/taskwarrior.nix
     ../../../home/tmux.nix
-    ../../../home/tmuxinator.nix
     ../../../home/vscode.nix
     ../../../home/yt-dlp.nix
     ../../../modules/flags

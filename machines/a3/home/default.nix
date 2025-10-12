@@ -19,7 +19,6 @@
     ../../../home/shell.nix
     ../../../home/starship
     ../../../home/tmux.nix
-    ../../../home/tmuxinator.nix
     ../../../home/tweety.nix
     ../../../modules/flags
     ../../../modules/secrets
