@@ -445,13 +445,18 @@ def _sync_indexers(client: ProwlarrClient, desired_indexers: list, dry_run: bool
 
             print(f"  CREATE: {name} (definitionName: {desired['definitionName']})", file=sys.stderr)
             if not dry_run:
-                # Build minimal create payload - Prowlarr fills in the rest from definitionName
+                # Build create payload with implementation fields
+                # Most public indexers use Cardigann (generic indexer framework)
                 create_data = {
                     "definitionName": desired["definitionName"],
                     "name": name,
                     "enable": desired.get("enable", True),
                     "priority": desired.get("priority", 25),
                     "appProfileId": 1,  # Default app profile
+                    "protocol": "torrent",
+                    "implementationName": "Cardigann",
+                    "implementation": "Cardigann",
+                    "configContract": "CardigannSettings",
                     "fields": [
                         {"name": "definitionFile", "value": desired["definitionName"]}
                     ]
