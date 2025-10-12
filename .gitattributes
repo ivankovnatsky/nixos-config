@@ -6,6 +6,7 @@ machines/mini-vm/stash-container.nix filter=git-crypt diff=git-crypt
 machines/bee/server/stash/** filter=git-crypt diff=git-crypt
 machines/Ivans-Mac-mini/darwin/server/stash.nix filter=git-crypt diff=git-crypt
 machines/Ivans-Mac-mini/darwin/server/stash/** filter=git-crypt diff=git-crypt
+machines/Ivans-Mac-mini/stash/** filter=git-crypt diff=git-crypt
 templates/stash-config.yml filter=git-crypt diff=git-crypt
 machines/Ivans-Mac-mini/darwin/server/k8s/clusters/orbstack/openwebui/secret-openwebui-config.yaml filter=git-crypt diff=git-crypt
 machines/Ivans-Mac-mini/darwin/server/k8s/clusters/orbstack/openwebui/secret-openwebui-config-secret.yaml filter=git-crypt diff=git-crypt

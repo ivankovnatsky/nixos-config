@@ -44,8 +44,8 @@ let
   };
 
   # Path to the Caddyfile templates - main template plus mini-specific additions
-  caddyfilePath = ../../../../templates/Caddyfile;
-  caddyfileMiniPath = ../../../../templates/Caddyfile.mini;
+  caddyfilePath = ../../templates/Caddyfile;
+  caddyfileMiniPath = ../../templates/Caddyfile.mini;
 
   # Process the Caddyfile template with the local variables
   Caddyfile =

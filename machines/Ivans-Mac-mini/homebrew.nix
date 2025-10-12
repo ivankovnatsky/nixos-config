@@ -11,6 +11,15 @@
     ];
     casks = [
       "stats"
+      "bitwarden"
+      "chromium"
+      "mos"
     ];
+    masApps = {
+      "Bitwarden" = 1352778147;
+    };
+    caskArgs = {
+      no_quarantine = true;
+    };
   };
 }

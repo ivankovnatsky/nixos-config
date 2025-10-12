@@ -1,6 +1,55 @@
 {
   imports = [
-    ./darwin/desktop
-    ./darwin/server
+    # ./netdata.nix
+    ../../darwin/darwin.nix
+    ../../darwin/flags.nix
+    ../../darwin/fonts.nix
+    ../../darwin/shell.nix
+    ../../darwin/sudo.nix
+    ../../darwin/sudo.nix
+    ../../darwin/syncthing.nix
+    ../../darwin/system.nix
+    ../../modules/darwin/beszel-agent
+    ../../modules/darwin/beszel-mgmt
+    ../../modules/darwin/dnsmasq
+    ../../modules/darwin/dock
+    ../../modules/darwin/doh-server
+    ../../modules/darwin/logrotate
+    ../../modules/darwin/pam
+    ../../modules/darwin/pmset
+    ../../modules/darwin/sharing
+    ../../modules/darwin/stubby
+    ../../modules/darwin/sudo
+    ../../modules/darwin/sudo
+    ../../modules/darwin/tmux-rebuild
+    ../../modules/flags
+    ../../modules/flags
+    ../../modules/secrets
+    ../../modules/secrets
+    ../../modules/shared/nextdns-mgmt
+    ../../system/documentation.nix
+    ../../system/nix.nix
+    ./beszel.nix
+    ./bin.nix
+    ./dns.nix
+    ./dock.nix
+    ./doh.nix
+    ./git.nix
+    ./homebrew.nix
+    ./homebrew.nix
+    ./http.nix
+    ./logrotate.nix
+    ./miniserve.nix
+    ./nextdns
+    ./nix.nix
+    ./ollama.nix
+    ./openssh.nix
+    ./packages.nix
+    ./power.nix
+    ./sharing.nix
+    ./stash
+    ./system.nix
+    ./tailscale.nix
+    ./tmux-rebuild.nix
   ];
 }
