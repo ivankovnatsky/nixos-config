@@ -21,6 +21,7 @@
     ../../modules/flags
     ../../modules/secrets
     ../../modules/shared/arr-mgmt
+    ../../modules/shared/jellyfin-mgmt
     ../../modules/shared/nextdns-mgmt
     ../../system/documentation.nix
     ../../system/nix.nix
@@ -32,6 +33,7 @@
     ./git.nix
     ./homebrew.nix
     ./http.nix
+    ./jellyfin
     ./logrotate.nix
     ./media
     ./miniserve.nix
