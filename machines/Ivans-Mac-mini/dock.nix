@@ -47,15 +47,6 @@ in
       { path = "/System/Applications/Home.app/"; }
 
       {
-        type = "spacer";
-        section = "apps";
-      }
-
-      # Brew casks placeholder
-      { path = "/Applications/Chromium.app/"; }
-      { path = "/Applications/Bitwarden.app/"; }
-
-      {
         path = "${homePath}/Downloads/";
         section = "others";
       }

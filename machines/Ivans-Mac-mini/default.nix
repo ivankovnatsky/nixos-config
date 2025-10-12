@@ -1,11 +1,8 @@
 {
   imports = [
-    # ./netdata.nix
     ../../darwin/darwin.nix
-    ../../darwin/flags.nix
     ../../darwin/fonts.nix
     ../../darwin/shell.nix
-    ../../darwin/sudo.nix
     ../../darwin/sudo.nix
     ../../darwin/syncthing.nix
     ../../darwin/system.nix
@@ -20,11 +17,8 @@
     ../../modules/darwin/sharing
     ../../modules/darwin/stubby
     ../../modules/darwin/sudo
-    ../../modules/darwin/sudo
     ../../modules/darwin/tmux-rebuild
     ../../modules/flags
-    ../../modules/flags
-    ../../modules/secrets
     ../../modules/secrets
     ../../modules/shared/nextdns-mgmt
     ../../system/documentation.nix
@@ -35,7 +29,6 @@
     ./dock.nix
     ./doh.nix
     ./git.nix
-    ./homebrew.nix
     ./homebrew.nix
     ./http.nix
     ./logrotate.nix
