@@ -26,7 +26,6 @@
     ../../../modules/flags
     ../../../modules/secrets
     ./flags.nix
-    ./ollama.nix
     ./packages.nix
     ./tmux.nix
     ./activation.nix
