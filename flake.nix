@@ -41,6 +41,11 @@
       inputs.nixpkgs.follows = "nixos-release";
     };
 
+    home-manager-unstable-nixos = {
+      url = "github:nix-community/home-manager/master";
+      inputs.nixpkgs.follows = "nixpkgs-unstable-nixos";
+    };
+
     # https://github.com/zhaofengli/nix-homebrew
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
     homebrew-core = {
@@ -95,9 +100,15 @@
 
     # KDE Plasma configuration manager
     plasma-manager-release = {
-      url = "github:nix-community/plasma-manager";
+      url = "github:nix-community/plasma-manager/trunk";
       inputs.nixpkgs.follows = "nixos-release";
       inputs.home-manager.follows = "home-manager-nixos-release";
+    };
+
+    plasma-manager = {
+      url = "github:nix-community/plasma-manager/trunk";
+      inputs.nixpkgs.follows = "nixpkgs-unstable-nixos";
+      inputs.home-manager.follows = "home-manager-unstable-nixos";
     };
   };
 

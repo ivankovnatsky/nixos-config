@@ -314,6 +314,27 @@
         "type": "github"
       }
     },
+    "home-manager-unstable-nixos": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable-nixos"
+        ]
+      },
+      "locked": {
+        "lastModified": 1760239230,
+        "narHash": "sha256-eqSP/BAbQwNTlQ/6yuK0yILzZAPNNj91gp6oIfVtu/E=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "c4aaddeaecc09554c92518fd904e3e84b497ed09",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "master",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
     "homebrew-bundle": {
       "flake": false,
       "locked": {
@@ -749,6 +770,30 @@
         "type": "github"
       }
     },
+    "plasma-manager": {
+      "inputs": {
+        "home-manager": [
+          "home-manager-unstable-nixos"
+        ],
+        "nixpkgs": [
+          "nixpkgs-unstable-nixos"
+        ]
+      },
+      "locked": {
+        "lastModified": 1759321049,
+        "narHash": "sha256-8XkU4gIrLT2DJZWQyvsP5woXGZF5eE/7AnKfwQkiwYU=",
+        "owner": "nix-community",
+        "repo": "plasma-manager",
+        "rev": "205dcfd4a30d4a5d1b4f28defee69daa7c7252cd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "trunk",
+        "repo": "plasma-manager",
+        "type": "github"
+      }
+    },
     "plasma-manager-release": {
       "inputs": {
         "home-manager": [
@@ -759,15 +804,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1748196248,
-        "narHash": "sha256-1iHjsH6/5UOerJEoZKE+Gx1BgAoge/YcnUsOA4wQ/BU=",
+        "lastModified": 1759321049,
+        "narHash": "sha256-8XkU4gIrLT2DJZWQyvsP5woXGZF5eE/7AnKfwQkiwYU=",
         "owner": "nix-community",
         "repo": "plasma-manager",
-        "rev": "b7697abe89967839b273a863a3805345ea54ab56",
+        "rev": "205dcfd4a30d4a5d1b4f28defee69daa7c7252cd",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
+        "ref": "trunk",
         "repo": "plasma-manager",
         "type": "github"
       }
@@ -816,6 +862,7 @@
         "home-manager": "home-manager",
         "home-manager-darwin-release": "home-manager-darwin-release",
         "home-manager-nixos-release": "home-manager-nixos-release",
+        "home-manager-unstable-nixos": "home-manager-unstable-nixos",
         "homebrew-bundle": "homebrew-bundle",
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
@@ -830,6 +877,7 @@
         "nixvim-release-darwin": "nixvim-release-darwin",
         "nixvim-release-nixos": "nixvim-release-nixos",
         "nur": "nur",
+        "plasma-manager": "plasma-manager",
         "plasma-manager-release": "plasma-manager-release",
         "pomdtr-homebrew-tap": "pomdtr-homebrew-tap",
         "pyenv-nix-install": "pyenv-nix-install",
