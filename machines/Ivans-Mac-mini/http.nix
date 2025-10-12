@@ -43,9 +43,8 @@ let
     hash = "sha256-dYZvFCSuDsOAYg8GgkdpulIzFud9EmP9mS81c87sOoY=";
   };
 
-  # Path to the Caddyfile templates - main template plus mini-specific additions
+  # Path to the Caddyfile template
   caddyfilePath = ../../templates/Caddyfile;
-  caddyfileMiniPath = ../../templates/Caddyfile.mini;
 
   # Process the Caddyfile template with the local variables
   Caddyfile =
@@ -57,7 +56,6 @@ let
         inherit (config.flags) beeIp;
         inherit (config.flags) miniIp;
         inherit (config.flags) a3wIp;
-        inherit (config.flags) miniVmIp;
         logPathPrefix = "/tmp/log";
 
         # Element Web path
@@ -76,11 +74,6 @@ let
       ''
         # Process main Caddyfile template
         substituteAll ${caddyfilePath} $out
-
-        # Process mini-specific template and append
-        echo "" >> $out
-        substituteAll ${caddyfileMiniPath} $TMPDIR/caddyfile-mini
-        cat $TMPDIR/caddyfile-mini >> $out
       '';
 in
 {

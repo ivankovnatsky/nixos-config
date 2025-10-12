@@ -32,6 +32,7 @@
     ./homebrew.nix
     ./http.nix
     ./logrotate.nix
+    ./media
     ./miniserve.nix
     ./nextdns
     ./nix.nix
