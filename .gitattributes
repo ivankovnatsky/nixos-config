@@ -10,6 +10,5 @@ machines/Ivans-Mac-mini/stash/** filter=git-crypt diff=git-crypt
 templates/stash-config.yml filter=git-crypt diff=git-crypt
 machines/Ivans-Mac-mini/darwin/server/k8s/clusters/orbstack/openwebui/secret-openwebui-config.yaml filter=git-crypt diff=git-crypt
 machines/Ivans-Mac-mini/darwin/server/k8s/clusters/orbstack/openwebui/secret-openwebui-config-secret.yaml filter=git-crypt diff=git-crypt
-machines/Ivans-Mac-mini/darwin/server/k8s/clusters/orbstack/openwebui/ingress.yaml filter=git-crypt diff=git-crypt
 machines/Ivans-Mac-mini/darwin/server/nextdns/profile.json filter=git-crypt diff=git-crypt
 .envrc filter=git-crypt diff=git-crypt
