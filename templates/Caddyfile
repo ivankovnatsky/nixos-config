@@ -39,38 +39,25 @@
 	}
 
 	@prowlarr host prowlarr.@externalDomain@
-	reverse_proxy @prowlarr @beeIp@:9696
+	reverse_proxy @prowlarr @miniIp@:9696 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
 
 	@radarr host radarr.@externalDomain@
-	reverse_proxy @radarr @beeIp@:7878
+	reverse_proxy @radarr @miniIp@:7878 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
 
 	@sonarr host sonarr.@externalDomain@
-	reverse_proxy @sonarr @beeIp@:8989
+	reverse_proxy @sonarr @miniIp@:8989 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
 
 	@transmission host transmission.@externalDomain@
-	reverse_proxy @transmission @beeIp@:9091
-
-	# Media stack on mini-vm (with -mini suffix)
-	@radarr-mini host radarr-mini.@externalDomain@
-	reverse_proxy @radarr-mini @miniIp@:7878 {
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-
-	@sonarr-mini host sonarr-mini.@externalDomain@
-	reverse_proxy @sonarr-mini @miniIp@:8989 {
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-
-	@prowlarr-mini host prowlarr-mini.@externalDomain@
-	reverse_proxy @prowlarr-mini @miniIp@:9696 {
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-
-	@transmission-mini host transmission-mini.@externalDomain@
-	reverse_proxy @transmission-mini @miniIp@:9091 {
+	reverse_proxy @transmission @miniIp@:9091 {
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
 	}
