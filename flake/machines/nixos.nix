@@ -30,7 +30,7 @@
     };
   };
 
-  "a3" = inputs.nixos-release.lib.nixosSystem {
+  "a3" = inputs.nixpkgs-unstable-nixos.lib.nixosSystem {
     system = "x86_64-linux";
     modules = [
       # Import machine-specific configuration
@@ -44,8 +44,8 @@
         ];
         nixpkgs.config.allowUnfree = true;
         nix.nixPath = [
-          "nixpkgs=${inputs.nixos-release}"
-          "nixos-release=${inputs.nixos-release}"
+          "nixpkgs=${inputs.nixpkgs-unstable-nixos}"
+          "nixpkgs-unstable-nixos=${inputs.nixpkgs-unstable-nixos}"
         ];
         _module.args = {
           flake-inputs = inputs;
@@ -57,7 +57,7 @@
       }
 
       # Home Manager module
-      inputs.home-manager-nixos-release.nixosModules.home-manager
+      inputs.home-manager-unstable-nixos.nixosModules.home-manager
       {
         home-manager = {
           useGlobalPkgs = true;
@@ -66,8 +66,8 @@
           users.ivan = {
             imports = [
               ../../machines/a3/home
-              inputs.nixvim-release-nixos.homeManagerModules.nixvim
-              inputs.plasma-manager-release.homeManagerModules.plasma-manager
+              inputs.nixvim.homeManagerModules.nixvim
+              inputs.plasma-manager.homeManagerModules.plasma-manager
             ];
           };
           extraSpecialArgs = {
