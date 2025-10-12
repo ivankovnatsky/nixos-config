@@ -32,4 +32,13 @@
       fi
     '';
   };
+
+  # Manage kscreenrc to prevent SDDM from reading 200% scale setting
+  # SDDM reads this file and applies the scale to the login screen
+  # We set Scale=1.0 here so SDDM displays at normal size
+  # The actual monitor scaling (200%) is handled by kwinoutputconfig.json
+  xdg.configFile."kscreenrc".text = ''
+    [DisplayScale]
+    Scale=1.0
+  '';
 }
