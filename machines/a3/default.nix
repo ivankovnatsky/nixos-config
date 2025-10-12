@@ -3,7 +3,6 @@
     ../../modules/secrets
     ../../modules/flags
 
-    # ./gnome.nix
     ../../modules/nixos/tmux-rebuild
     ../../system/nix.nix
     ../../nixos/chromium.nix
