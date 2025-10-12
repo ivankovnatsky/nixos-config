@@ -30,6 +30,7 @@
         home-manager = {
           useGlobalPkgs = true;
           useUserPackages = true;
+          backupFileExtension = "backup";
           users.ivan = {
             imports = [
               ../../machines/Ivans-MacBook-Pro/home
@@ -113,6 +114,7 @@
         home-manager = {
           useGlobalPkgs = true;
           useUserPackages = true;
+          backupFileExtension = "backup";
           users.ivan = {
             imports = [
               ../../machines/Ivans-MacBook-Air/home
@@ -250,6 +252,7 @@
         home-manager = {
           useGlobalPkgs = true;
           useUserPackages = true;
+          backupFileExtension = "backup";
           users."Ivan.Kovnatskyi" = {
             imports = [
               ../../machines/Lusha-Macbook-Ivan-Kovnatskyi/home
