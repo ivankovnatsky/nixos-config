@@ -9,24 +9,24 @@
     nixpkgs-unstable-nixos.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # Stable NixOS release
-    nixos-release.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs-nixos-release.url = "github:nixos/nixpkgs/nixos-25.05";
 
     # Stable Nixpkgs release
     nixpkgs-release-darwin.url = "github:nixos/nixpkgs/nixpkgs-25.05-darwin";
 
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
-    darwin = {
+    nix-darwin-darwin-unstable = {
       url = "github:nix-darwin/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    darwin-release = {
+    nix-darwin-darwin-release = {
       url = "github:nix-darwin/nix-darwin/nix-darwin-25.05";
       inputs.nixpkgs.follows = "nixpkgs-release-darwin";
     };
 
-    home-manager = {
+    home-manager-any-unstable = {
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -38,7 +38,7 @@
 
     home-manager-nixos-release = {
       url = "github:nix-community/home-manager/release-25.05";
-      inputs.nixpkgs.follows = "nixos-release";
+      inputs.nixpkgs.follows = "nixpkgs-nixos-release";
     };
 
     home-manager-unstable-nixos = {
@@ -67,19 +67,19 @@
 
     nur.url = "github:nix-community/NUR";
 
-    nixvim = {
+    nixvim-any-unstable = {
       url = "github:nix-community/nixvim/main";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixvim-release-darwin = {
+    nixvim-darwin-release = {
       url = "github:nix-community/nixvim/nixos-25.05";
       inputs.nixpkgs.follows = "nixpkgs-release-darwin";
     };
 
-    nixvim-release-nixos = {
+    nixvim-nixos-release = {
       url = "github:nix-community/nixvim/nixos-25.05";
-      inputs.nixpkgs.follows = "nixos-release";
+      inputs.nixpkgs.follows = "nixpkgs-nixos-release";
     };
 
     flake-utils.url = "github:numtide/flake-utils";
@@ -99,13 +99,13 @@
     pyenv-nix-install.url = "github:sirno/pyenv-nix-install";
 
     # KDE Plasma configuration manager
-    plasma-manager-release = {
+    plasma-manager-nixos-release = {
       url = "github:nix-community/plasma-manager/trunk";
-      inputs.nixpkgs.follows = "nixos-release";
+      inputs.nixpkgs.follows = "nixpkgs-nixos-release";
       inputs.home-manager.follows = "home-manager-nixos-release";
     };
 
-    plasma-manager = {
+    plasma-manager-nixos-unstable = {
       url = "github:nix-community/plasma-manager/trunk";
       inputs.nixpkgs.follows = "nixpkgs-unstable-nixos";
       inputs.home-manager.follows = "home-manager-unstable-nixos";
