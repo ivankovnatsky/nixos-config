@@ -4,7 +4,7 @@
   local.services.jellyfin-mgmt = {
     enable = true;
     baseUrl = "http://localhost:8096";
-    apiKey = config.secrets.jellyfinMini.apiKey;
+    apiKey = config.secrets.jellyfin.apiKey;
 
     libraries = [
       {

@@ -11,7 +11,6 @@
     ../../modules/nixos/beszel-agent
     ../../modules/nixos/audiobookshelf-mgmt
     ../../modules/shared/arr-mgmt
-    ../../modules/shared/jellyfin-mgmt
 
     # Base configuration.
     ./configuration.nix
@@ -58,9 +57,6 @@
 
     # Audio
     ./audiobookshelf
-
-    # Media server
-    ./jellyfin
 
     # OpenWebUI - restored from K8s
     ./open-webui.nix
