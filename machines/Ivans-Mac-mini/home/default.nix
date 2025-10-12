@@ -1,33 +1,3 @@
 {
-  imports = [
-    ../../../darwin/home/nixvim.nix
-    ../../../home/aichat.nix
-    ../../../home/bat.nix
-    ../../../home/btop.nix
-    ../../../home/claude.nix
-    ../../../home/direnv.nix
-    ../../../home/git.nix
-    ../../../home/go.nix
-    ../../../home/home-session-vars.nix
-    ../../../home/lsd.nix
-    ../../../home/mpv.nix
-    ../../../home/nixvim
-    ../../../home/nixvim/plugins/avante
-    ../../../home/nixvim/plugins/copilot-lua
-    ../../../home/npm.nix
-    ../../../home/pass.nix
-    ../../../home/rebuild-diff.nix
-    ../../../home/scripts.nix
-    ../../../home/shell.nix
-    ../../../home/starship
-    ../../../home/tmux.nix
-    ../../../home/vscode.nix
-    ../../../home/yt-dlp.nix
-    ../../../modules/flags
-    ../../../modules/secrets
-    ./flags.nix
-    ./packages.nix
-    ./tmux.nix
-    ./activation.nix
-  ];
+  imports = [ ];
 }
