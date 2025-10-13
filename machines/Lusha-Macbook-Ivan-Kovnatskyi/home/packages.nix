@@ -55,7 +55,7 @@
     jsonnet
     k8sgpt
     kail
-    kcat
+    # kcat # avro-c++ build fails with fmt 11.2.0: error: no matching member function for call to 'format' in fmt::formatter<avro::Type>
     kdash
     krew
     kubecolor
