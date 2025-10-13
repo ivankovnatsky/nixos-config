@@ -52,7 +52,7 @@
     infra
     infracost
     jq
-    jsonnet
+    # jsonnet # ruby3.3-nokogiri build fails: fatal error: 'nokogiri_gumbo.h' file not found
     k8sgpt
     kail
     # kcat # avro-c++ build fails with fmt 11.2.0: error: no matching member function for call to 'format' in fmt::formatter<avro::Type>
