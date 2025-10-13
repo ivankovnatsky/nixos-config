@@ -8,19 +8,21 @@
       # auto-save.enable = true;
       neo-tree = {
         enable = true;
-        filesystem = {
-          filteredItems = {
-            showHiddenCount = false;
-            hideDotfiles = false;
-            hideByName = [
-              ".git"
-            ];
+        settings = {
+          filesystem = {
+            filtered_items = {
+              show_hidden_count = false;
+              hide_dotfiles = false;
+              hide_by_name = [
+                ".git"
+              ];
+            };
           };
-          # FIXME: I want to open files under URL, see if we can do it without netrw.
-          # https://github.com/nix-community/nixvim/blob/f4b0b81ef9eb4e37e75f32caf1f02d5501594811/plugins/by-name/neo-tree/default.nix#L811
-          # Comment out it now, since netrw buffer can't be closed, not really neat.
-          # hijackNetrwBehavior = "disabled";
         };
+        # FIXME: I want to open files under URL, see if we can do it without netrw.
+        # https://github.com/nix-community/nixvim/blob/f4b0b81ef9eb4e37e75f32caf1f02d5501594811/plugins/by-name/neo-tree/default.nix#L811
+        # Comment out it now, since netrw buffer can't be closed, not really neat.
+        # hijackNetrwBehavior = "disabled";
       };
       treesitter = {
         enable = true;
@@ -103,14 +105,16 @@
       nvim-autopairs.enable = true;
       illuminate = {
         enable = true;
-        underCursor = false;
-        filetypesDenylist = [
-          "Outline"
-          "TelescopePrompt"
-          "alpha"
-          "harpoon"
-          "reason"
-        ];
+        settings = {
+          under_cursor = false;
+          filetypes_denylist = [
+            "Outline"
+            "TelescopePrompt"
+            "alpha"
+            "harpoon"
+            "reason"
+          ];
+        };
       };
       conform-nvim = {
         enable = true;
