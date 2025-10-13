@@ -36,10 +36,31 @@ in
         fd
         jq
         fish
+
+        # Node.js for npm-installed packages (like claude)
+        nodejs
       ];
 
       shellHook = ''
         export GIT_CONFIG_GLOBAL="$PWD/home/git/config"
+        export EDITOR="nvim"
+        export VISUAL="nvim"
+
+        # Install claude if not present
+        if [[ ! -x "$HOME/.npm/bin/claude" ]]; then
+          echo "Installing Claude Code CLI..."
+          npm install --global --force @anthropic-ai/claude-code
+        fi
+
+        # Add npm global bin directory to PATH for claude and other npm packages
+        if [ -d "$HOME/.npm/bin" ]; then
+          export PATH="$HOME/.npm/bin:$PATH"
+        fi
+
+        # Launch fish shell with git alias and environment
+        if command -v fish >/dev/null 2>&1; then
+          exec fish -C "set -gx GIT_CONFIG_GLOBAL $GIT_CONFIG_GLOBAL; alias g='git'"
+        fi
       '';
     };
   }
