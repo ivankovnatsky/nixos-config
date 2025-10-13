@@ -37,6 +37,8 @@ in
       serviceConfig = {
         Type = "forking";
         User = cfg.username;
+        KillMode = "none"; # Don't kill tmux session on service changes
+        RemainAfterExit = true; # Mark as active even after ExecStart completes
         ExecStart =
           let
             # Create the rebuild watch script
