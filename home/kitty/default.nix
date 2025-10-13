@@ -110,7 +110,7 @@ in
     # Browse themes: ls ${pkgs.kitty-themes}/share/kitty-themes/themes/
     ".config/kitty/dark-theme.auto.conf" = {
       text = ''
-        include ${pkgs.kitty-themes}/share/kitty-themes/themes/Tokyo_Night_Moon.conf
+        include ${pkgs.kitty-themes}/share/kitty-themes/themes/default.conf
       '';
     };
 
