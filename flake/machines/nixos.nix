@@ -67,7 +67,7 @@
             imports = [
               ../../machines/a3/home
               inputs.nixvim-nixos-unstable.homeModules.nixvim
-              inputs.plasma-manager-nixos-unstable.homeManagerModules.plasma-manager
+              inputs.plasma-manager-nixos-unstable.homeModules.plasma-manager
             ];
           };
           extraSpecialArgs = {
