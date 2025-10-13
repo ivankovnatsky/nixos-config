@@ -66,7 +66,7 @@
           users.ivan = {
             imports = [
               ../../machines/a3/home
-              inputs.nixvim-any-unstable.homeModules.nixvim
+              inputs.nixvim-nixos-unstable.homeModules.nixvim
               inputs.plasma-manager-nixos-unstable.homeManagerModules.plasma-manager
             ];
           };

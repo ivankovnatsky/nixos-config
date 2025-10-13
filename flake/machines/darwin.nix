@@ -34,7 +34,7 @@
           users.ivan = {
             imports = [
               ../../machines/Ivans-MacBook-Pro/home
-              inputs.nixvim-any-unstable.homeModules.nixvim
+              inputs.nixvim-darwin-unstable.homeModules.nixvim
               {
                 programs.home-manager.enable = true;
                 home.username = "ivan";
@@ -118,7 +118,7 @@
           users.ivan = {
             imports = [
               ../../machines/Ivans-MacBook-Air/home
-              inputs.nixvim-any-unstable.homeModules.nixvim
+              inputs.nixvim-darwin-unstable.homeModules.nixvim
               {
                 programs.home-manager.enable = true;
                 home.username = "ivan";
@@ -256,7 +256,7 @@
           users."Ivan.Kovnatskyi" = {
             imports = [
               ../../machines/Lusha-Macbook-Ivan-Kovnatskyi/home
-              inputs.nixvim-any-unstable.homeModules.nixvim
+              inputs.nixvim-darwin-unstable.homeModules.nixvim
               {
                 programs.home-manager.enable = true;
                 home.username = "Ivan.Kovnatskyi";
