@@ -1,0 +1,59 @@
+[user]
+	name = Ivan Kovnatsky
+	email = 75213+ivankovnatsky@users.noreply.github.com
+	signingKey = 75213+ivankovnatsky@users.noreply.github.com
+
+[commit]
+	gpgSign = true
+
+[tag]
+	gpgSign = true
+	forceSignAnnotated = true
+
+[core]
+	filemode = true
+
+[init]
+	defaultBranch = main
+
+[diff]
+	noprefix = true
+
+[pull]
+	rebase = false
+
+[push]
+	default = current
+
+[http]
+	version = HTTP/1.1
+	postBuffer = 157286400
+
+[delta "interactive"]
+	keep-plus-minus-markers = true
+
+[alias]
+	a = add
+	# Add all files in git root
+	add-all = "!git add \"$(git rev-parse --show-toplevel)\""
+	co = checkout
+	c = commit -v
+	ca = commit -av
+	# This will show all changes
+	d = diff --unified=10 HEAD
+	l = log --oneline -n 20
+	p = push
+	pp = pull
+	s = status
+	# Review what would be committed without committing
+	review = "!git status --verbose && git diff --cached"
+	# Search commit messages (titles and body)
+	grep-commits = log --all --grep
+	# Search in diffs (code changes)
+	grep-diff = log --all -S
+	# Search everything (commits, diffs, files)
+	grep-all = "!f() { git log --all --grep=\"$1\"; git log --all -S \"$1\"; git grep \"$1\"; }; f"
+
+[safe]
+	directory = /home/ivan/Sources/github.com/ivankovnatsky/nixos-config
+	directory = /Volumes/Storage/Data/Sources/github.com/ivankovnatsky/nixos-config

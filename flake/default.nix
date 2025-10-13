@@ -37,6 +37,10 @@ in
         jq
         fish
       ];
+
+      shellHook = ''
+        export GIT_CONFIG_GLOBAL="$PWD/home/git/config"
+      '';
     };
   }
 )
