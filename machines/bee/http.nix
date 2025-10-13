@@ -35,7 +35,7 @@ let
   caddyWithPlugins = pkgs.caddy-with-plugins.withPlugins {
     # https://github.com/caddy-dns/cloudflare/issues/97#issuecomment-2784508762
     plugins = [ "github.com/caddy-dns/cloudflare@v0.0.0-20250214163716-188b4850c0f2" ];
-    hash = "sha256-dYZvFCSuDsOAYg8GgkdpulIzFud9EmP9mS81c87sOoY=";
+    hash = "sha256-q0Y5l2Dan7lqNDLB/G7IYsBa1a9Vc/bCLyymOCTH/Jg=";
   };
 
   # Path to the Caddyfile

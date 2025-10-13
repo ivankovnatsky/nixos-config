@@ -15,6 +15,9 @@
     # Base configuration.
     ./configuration.nix
 
+    # Disable documentation to avoid mautrix module mismatch issues
+    ../../system/documentation.nix
+
     ./loader.nix
 
     ./syncthing.nix

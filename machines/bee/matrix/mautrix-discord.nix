@@ -9,7 +9,7 @@
     enable = true;
 
     # Use package from nixpkgs-unstable-nixos overlay (has binary cache)
-    package = pkgs.nixpkgs-unstable-nixos.mautrix-discord;
+    package = pkgs.nixpkgs-nixos-unstable.mautrix-discord;
 
     # Automatically register the bridge with Synapse
     # This adds the registration file to Synapse's app_service_config_files
