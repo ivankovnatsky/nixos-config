@@ -10,7 +10,7 @@
       {
         nixpkgs.overlays = [ inputs.self.overlay ];
         nixpkgs.config.allowUnfree = true;
-        nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
+        nix.nixPath = [ "nixpkgs=${inputs.nixpkgs-darwin-unstable}" ];
         _module.args = {
           flake-inputs = inputs;
         };
@@ -25,7 +25,7 @@
       }
 
       # Home Manager module
-      inputs.home-manager-any-unstable.darwinModules.home-manager
+      inputs.home-manager-darwin-unstable.darwinModules.home-manager
       {
         home-manager = {
           useGlobalPkgs = true;
@@ -94,7 +94,7 @@
       {
         nixpkgs.overlays = [ inputs.self.overlay ];
         nixpkgs.config.allowUnfree = true;
-        nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
+        nix.nixPath = [ "nixpkgs=${inputs.nixpkgs-darwin-unstable}" ];
         _module.args = {
           flake-inputs = inputs;
         };
@@ -109,7 +109,7 @@
       }
 
       # Home Manager module
-      inputs.home-manager-any-unstable.darwinModules.home-manager
+      inputs.home-manager-darwin-unstable.darwinModules.home-manager
       {
         home-manager = {
           useGlobalPkgs = true;
@@ -179,8 +179,8 @@
         nixpkgs.overlays = [ inputs.self.overlay ];
         nixpkgs.config.allowUnfree = true;
         nix.nixPath = [
-          "nixpkgs=${inputs.nixpkgs-release-darwin}"
-          "nixpkgs-release=${inputs.nixpkgs-release-darwin}"
+          "nixpkgs=${inputs.nixpkgs-darwin-release}"
+          "nixpkgs-release=${inputs.nixpkgs-darwin-release}"
         ];
         _module.args = {
           flake-inputs = inputs;
@@ -232,7 +232,7 @@
       {
         nixpkgs.overlays = [ inputs.self.overlay ];
         nixpkgs.config.allowUnfree = true;
-        nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
+        nix.nixPath = [ "nixpkgs=${inputs.nixpkgs-darwin-unstable}" ];
         _module.args = {
           flake-inputs = inputs;
         };
@@ -247,7 +247,7 @@
       }
 
       # Home Manager module
-      inputs.home-manager-any-unstable.darwinModules.home-manager
+      inputs.home-manager-darwin-unstable.darwinModules.home-manager
       {
         home-manager = {
           useGlobalPkgs = true;
