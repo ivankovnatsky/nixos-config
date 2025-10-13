@@ -69,13 +69,19 @@
     nur.url = "github:nix-community/NUR";
 
     # https://discourse.nixos.org/t/error-atopile-cannot-be-found-in-pkgs/70461
-    nixvim-any-unstable = {
+    nixvim-darwin-unstable = {
       url = "github:nix-community/nixvim/main";
+      inputs.nixpkgs.follows = "nixpkgs-darwin-unstable";
     };
 
     nixvim-darwin-release = {
       url = "github:nix-community/nixvim/nixos-25.05";
       inputs.nixpkgs.follows = "nixpkgs-darwin-release";
+    };
+
+    nixvim-nixos-unstable = {
+      url = "github:nix-community/nixvim/main";
+      inputs.nixpkgs.follows = "nixpkgs-nixos-unstable";
     };
 
     nixvim-nixos-release = {
