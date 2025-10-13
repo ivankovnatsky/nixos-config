@@ -6,34 +6,35 @@
     nixpkgs-master.url = "github:nixos/nixpkgs/master";
 
     # Unstable NixOS packages (for bee machine - binary cache available)
-    nixpkgs-unstable-nixos.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-nixos-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # Stable NixOS release
     nixpkgs-nixos-release.url = "github:nixos/nixpkgs/nixos-25.05";
 
-    # Stable Nixpkgs release
-    nixpkgs-release-darwin.url = "github:nixos/nixpkgs/nixpkgs-25.05-darwin";
+    # Stable Darwin release
+    nixpkgs-darwin-release.url = "github:nixos/nixpkgs/nixpkgs-25.05-darwin";
 
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    # Unstable Darwin packages
+    nixpkgs-darwin-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
     nix-darwin-darwin-unstable = {
       url = "github:nix-darwin/nix-darwin/master";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-darwin-unstable";
     };
 
     nix-darwin-darwin-release = {
       url = "github:nix-darwin/nix-darwin/nix-darwin-25.05";
-      inputs.nixpkgs.follows = "nixpkgs-release-darwin";
+      inputs.nixpkgs.follows = "nixpkgs-darwin-release";
     };
 
-    home-manager-any-unstable = {
+    home-manager-darwin-unstable = {
       url = "github:nix-community/home-manager/master";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-darwin-unstable";
     };
 
     home-manager-darwin-release = {
       url = "github:nix-community/home-manager/release-25.05";
-      inputs.nixpkgs.follows = "nixpkgs-release-darwin";
+      inputs.nixpkgs.follows = "nixpkgs-darwin-release";
     };
 
     home-manager-nixos-release = {
@@ -41,9 +42,9 @@
       inputs.nixpkgs.follows = "nixpkgs-nixos-release";
     };
 
-    home-manager-unstable-nixos = {
+    home-manager-nixos-unstable = {
       url = "github:nix-community/home-manager/master";
-      inputs.nixpkgs.follows = "nixpkgs-unstable-nixos";
+      inputs.nixpkgs.follows = "nixpkgs-nixos-unstable";
     };
 
     # https://github.com/zhaofengli/nix-homebrew
@@ -74,7 +75,7 @@
 
     nixvim-darwin-release = {
       url = "github:nix-community/nixvim/nixos-25.05";
-      inputs.nixpkgs.follows = "nixpkgs-release-darwin";
+      inputs.nixpkgs.follows = "nixpkgs-darwin-release";
     };
 
     nixvim-nixos-release = {
@@ -85,13 +86,13 @@
     flake-utils.url = "github:numtide/flake-utils";
     username = {
       url = "github:ivankovnatsky/username";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-darwin-unstable";
       inputs.flake-utils.follows = "flake-utils";
     };
 
     backup-home = {
       url = "github:ivankovnatsky/backup-home-go";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-darwin-unstable";
       inputs.flake-utils.follows = "flake-utils";
     };
 
@@ -107,8 +108,8 @@
 
     plasma-manager-nixos-unstable = {
       url = "github:nix-community/plasma-manager/trunk";
-      inputs.nixpkgs.follows = "nixpkgs-unstable-nixos";
-      inputs.home-manager.follows = "home-manager-unstable-nixos";
+      inputs.nixpkgs.follows = "nixpkgs-nixos-unstable";
+      inputs.home-manager.follows = "home-manager-nixos-unstable";
     };
   };
 

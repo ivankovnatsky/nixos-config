@@ -57,7 +57,7 @@
       }
 
       # Home Manager module
-      inputs.home-manager-unstable-nixos.nixosModules.home-manager
+      inputs.home-manager-nixos-unstable.nixosModules.home-manager
       {
         home-manager = {
           useGlobalPkgs = true;
