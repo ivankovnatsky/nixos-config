@@ -33,25 +33,34 @@
           system_prompt = ''
             You are an excellent programming expert.
           '';
-          openai = {
-            endpoint = "https://api.openai.com/v1";
-            timeout = 30000;
-            temperature = 0;
-            max_tokens = 4096;
-          };
-          copilot = {
-            endpoint = "https://api.githubcopilot.com";
-            proxy = null;
-            allow_insecure = false;
-            timeout = 30000;
-            temperature = 0;
-            max_tokens = 4096;
-          };
-          claude = {
-            endpoint = "https://api.anthropic.com";
-            timeout = 30000;
-            temperature = 0;
-            max_tokens = 8000;
+          # https://github.com/yetone/avante.nvim/wiki/Provider-configuration-migration-guide
+          providers = {
+            openai = {
+              endpoint = "https://api.openai.com/v1";
+              timeout = 30000;
+              extra_request_body = {
+                temperature = 0;
+                max_tokens = 4096;
+              };
+            };
+            copilot = {
+              endpoint = "https://api.githubcopilot.com";
+              proxy = null;
+              allow_insecure = false;
+              timeout = 30000;
+              extra_request_body = {
+                temperature = 0;
+                max_tokens = 4096;
+              };
+            };
+            claude = {
+              endpoint = "https://api.anthropic.com";
+              timeout = 30000;
+              extra_request_body = {
+                temperature = 0;
+                max_tokens = 8000;
+              };
+            };
           };
           behaviour = {
             auto_suggestions = false;
