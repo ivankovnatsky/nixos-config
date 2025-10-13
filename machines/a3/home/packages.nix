@@ -28,5 +28,6 @@
     ghostty
 
     nodejs
+    gnumake
   ];
 }
