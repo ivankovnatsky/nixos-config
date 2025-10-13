@@ -32,7 +32,7 @@ NIX_EXTRA_FLAGS := --extra-experimental-features flakes --extra-experimental-fea
 
 # Common flags for rebuild commands
 COMMON_REBUILD_FLAGS := --verbose -L --flake .
-NIXOS_EXTRA_FLAGS := --use-remote-sudo
+NIXOS_EXTRA_FLAGS := --sudo
 
 # Default target will run rebuild and start watchman based on platform
 ifeq (${PLATFORM}, Darwin)
