@@ -78,7 +78,6 @@
     nixpkgs-master.jira-cli-go
     nodePackages.aws-cdk
     nodePackages.prettier
-    nodePackages.rimraf
     nodejs
     opsy
     oras
