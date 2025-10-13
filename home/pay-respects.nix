@@ -1,6 +1,6 @@
 { config, ... }:
 {
-  programs.thefuck = {
+  programs.pay-respects = {
     enable = true;
     enableFishIntegration = config.flags.enableFishShell;
   };
