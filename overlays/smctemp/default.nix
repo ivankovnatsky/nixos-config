@@ -2,7 +2,6 @@
   lib,
   stdenv,
   fetchFromGitHub,
-  darwin,
 }:
 
 stdenv.mkDerivation rec {
@@ -16,10 +15,8 @@ stdenv.mkDerivation rec {
     hash = "sha256-FvsuoJix+v4Qusr+5GhynfkJZ5eN60B2H0KBRk1PBIY=";
   };
 
-  buildInputs = lib.optionals stdenv.isDarwin [
-    darwin.IOKit
-  ];
-
+  # https://nixos.org/manual/nixpkgs/stable/#sec-darwin-legacy-frameworks
+  # Legacy darwin.apple_sdk.frameworks removed - default SDK is sufficient
   patchPhase = ''
     substituteInPlace Makefile \
       --replace 'CXX := g++' 'CXX := c++' \
