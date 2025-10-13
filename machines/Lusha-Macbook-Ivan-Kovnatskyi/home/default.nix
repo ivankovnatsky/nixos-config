@@ -34,7 +34,7 @@
     ../../../home/starship
     ../../../home/syncthing.nix
     ../../../home/terraform.nix
-    ../../../home/thefuck.nix
+    ../../../home/pay-respects.nix
     ../../../home/tmux.nix
     ../../../home/tweety.nix
     ../../../home/vscode.nix
