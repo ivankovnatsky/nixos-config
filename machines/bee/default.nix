@@ -3,6 +3,8 @@
     ../../modules/secrets
     ../../modules/flags
 
+    ../../system/nix.nix
+
     ../../modules/nixos/tmux-rebuild
     ./tmux-rebuild.nix
 
