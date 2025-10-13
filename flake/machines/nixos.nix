@@ -30,7 +30,7 @@
     };
   };
 
-  "a3" = inputs.nixpkgs-unstable-nixos.lib.nixosSystem {
+  "a3" = inputs.nixpkgs-nixos-unstable.lib.nixosSystem {
     system = "x86_64-linux";
     modules = [
       # Import machine-specific configuration
@@ -44,8 +44,8 @@
         ];
         nixpkgs.config.allowUnfree = true;
         nix.nixPath = [
-          "nixpkgs=${inputs.nixpkgs-unstable-nixos}"
-          "nixpkgs-unstable-nixos=${inputs.nixpkgs-unstable-nixos}"
+          "nixpkgs=${inputs.nixpkgs-nixos-unstable}"
+          "nixpkgs-nixos-unstable=${inputs.nixpkgs-nixos-unstable}"
         ];
         _module.args = {
           flake-inputs = inputs;

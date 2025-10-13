@@ -29,7 +29,7 @@ let
     nixpkgs-master = import inputs.nixpkgs-master {
       inherit (final) system config;
     };
-    nixpkgs-unstable-nixos = import inputs.nixpkgs-unstable-nixos {
+    nixpkgs-nixos-unstable = import inputs.nixpkgs-nixos-unstable {
       inherit (final) system config;
     };
   };

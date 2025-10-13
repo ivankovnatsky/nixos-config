@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 {
   services.mautrix-meta = {
-    package = pkgs.nixpkgs-unstable-nixos.mautrix-meta;
+    package = pkgs.nixpkgs-nixos-unstable.mautrix-meta;
 
     instances = {
       messenger = {
