@@ -28,6 +28,9 @@
     # for not being integrated into macOS too deep and the current
     # functionality is ok for me.
     extraConfig = ''
+      # Update environment variables when attaching to existing sessions
+      set -g update-environment "DISPLAY WAYLAND_DISPLAY XDG_RUNTIME_DIR SWAYSOCK"
+
       # Reduce ESC key delay (default 500ms is too slow for vi mode)
       # https://neovim.io/doc/user/faq.html#faq
       set -sg escape-time 10
