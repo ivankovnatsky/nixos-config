@@ -103,6 +103,31 @@ On boot tmux rebuild service can't get access to /Volumes/Storage
 
 Still an issue.
 
+### macOS Privacy Permissions After Nix Store Updates
+
+When Nix store paths change (after rebuilds/updates), macOS treats the executables as new applications and requires re-granting permissions:
+
+**Required Manual Steps After Rebuild:**
+
+1. **Local Network** (System Settings → Privacy & Security → Local Network)
+   - Re-approve network access for services like Caddy
+   - This is especially important on macOS Sequoia (15.x) due to stricter privacy controls
+
+2. **Full Disk Access** (System Settings → Privacy & Security → Full Disk Access)
+   - Re-approve access for services that need to read `/Volumes/Storage`
+   - Affects services like Syncthing, tmux rebuild scripts, etc.
+
+3. **Files and Folders / Removable Volumes**
+   - Re-approve access to external volumes like `/Volumes/Storage`
+
+**Symptoms of Missing Permissions:**
+
+- DNS resolution failures (`Failed to resolve 'beszel.externalDomain'`)
+- Connection refused errors for locally running services
+- Services unable to access `/Volumes/Storage` data
+
+**Note**: This is a macOS security feature and cannot be automated. After every rebuild that changes service store paths, manually check and re-approve permissions in System Settings.
+
 ## OrbStack Documentation (DEPRECATED)
 
 > **DEPRECATED** (Oct 2025): OrbStack and all VMs/K8s have been decommissioned. All services now run natively. The sections below are preserved for historical reference and troubleshooting knowledge.
