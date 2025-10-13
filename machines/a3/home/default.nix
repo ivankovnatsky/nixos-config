@@ -7,7 +7,7 @@
     ../../../home/gamescope-session.nix
     ../../../home/ghostty.nix
     ../../../home/kitty
-    ../../../home/git.nix
+    ../../../home/git
     ../../../home/go.nix
     ../../../home/home-session-vars.nix
     ../../../home/lsd.nix

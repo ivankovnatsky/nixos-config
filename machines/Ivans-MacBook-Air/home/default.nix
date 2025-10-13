@@ -10,7 +10,7 @@
     ../../../home/btop.nix
     ../../../home/direnv.nix
     ../../../home/ghostty.nix
-    ../../../home/git.nix
+    ../../../home/git
     ../../../home/go.nix
     ../../../home/hammerspoon
     ../../../home/home-session-vars.nix
