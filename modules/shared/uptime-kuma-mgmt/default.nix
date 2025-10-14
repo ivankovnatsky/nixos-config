@@ -14,7 +14,7 @@ let
       };
 
       type = mkOption {
-        type = types.enum [ "http" "https" "tcp" "ping" "dns" ];
+        type = types.enum [ "http" "https" "tcp" "ping" "dns" "postgres" "mqtt" ];
         default = "http";
         description = "Monitor type";
       };
