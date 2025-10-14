@@ -103,10 +103,10 @@ class UptimeKumaClient:
         for name, desired in desired_monitors.items():
             if name in current_monitors:
                 current = current_monitors[name]
-                needs_update = self._monitor_needs_update(desired, current)
+                needs_update, reason = self._monitor_needs_update(desired, current)
 
                 if needs_update:
-                    print(f"  UPDATE: {name}", file=sys.stderr)
+                    print(f"  UPDATE: {name} ({reason})", file=sys.stderr)
                     if not dry_run:
                         monitor_config = self._prepare_monitor_config(desired)
                         self.update_monitor(current["id"], monitor_config)
@@ -132,17 +132,21 @@ class UptimeKumaClient:
         else:
             print("\nSync complete!", file=sys.stderr)
 
-    def _monitor_needs_update(self, desired: dict, current: dict) -> bool:
-        """Check if monitor configuration differs from current state."""
-        # Compare basic fields
-        if desired.get("interval") != current.get("interval"):
-            return True
-        if desired.get("maxretries") != current.get("maxretries"):
-            return True
-        if desired.get("retryInterval") != current.get("retryInterval"):
-            return True
-        if desired.get("type") != current.get("type"):
-            return True
+    def _monitor_needs_update(self, desired: dict, current: dict) -> tuple[bool, str]:
+        """Check if monitor configuration differs from current state. Returns (needs_update, reason)."""
+        # Compare basic fields (use defaults from _prepare_monitor_config)
+        if desired.get("interval", 60) != current.get("interval"):
+            return True, f"interval: {current.get('interval')} → {desired.get('interval', 60)}"
+        if desired.get("maxretries", 3) != current.get("maxretries"):
+            return True, f"maxretries: {current.get('maxretries')} → {desired.get('maxretries', 3)}"
+        if desired.get("retryInterval", 60) != current.get("retryInterval"):
+            return True, f"retryInterval: {current.get('retryInterval')} → {desired.get('retryInterval', 60)}"
+
+        # Compare monitor type (normalize both to MonitorType enum values)
+        desired_type = self._get_monitor_type(desired.get("type", "http"))
+        current_type = self._get_monitor_type(current.get("type", "http"))
+        if desired_type != current_type:
+            return True, f"type: {current.get('type')} → {desired.get('type')}"
 
         # Compare monitor-type-specific fields
         monitor_type = desired.get("type", "http")
@@ -151,38 +155,46 @@ class UptimeKumaClient:
             # For TCP/MQTT: compare hostname:port
             if ":" in desired.get("url", ""):
                 hostname, port = desired["url"].rsplit(":", 1)
-                if current.get("hostname") != hostname or current.get("port") != int(port):
-                    return True
+                current_port = current.get("port")
+                # Handle port type differences (string vs int)
+                if isinstance(current_port, str):
+                    current_port = int(current_port)
+                if current.get("hostname") != hostname:
+                    return True, f"hostname: {current.get('hostname')} → {hostname}"
+                if current_port != int(port):
+                    return True, f"port: {current_port} → {port}"
         elif monitor_type == "dns":
             # For DNS: compare hostname@dns_server
             if "@" in desired.get("url", ""):
                 hostname, dns_server = desired["url"].split("@", 1)
-                if current.get("hostname") != hostname or current.get("dns_resolve_server") != dns_server:
-                    return True
+                if current.get("hostname") != hostname:
+                    return True, f"hostname: {current.get('hostname')} → {hostname}"
+                if current.get("dns_resolve_server") != dns_server:
+                    return True, f"dns_server: {current.get('dns_resolve_server')} → {dns_server}"
         elif monitor_type == "postgres":
             # For Postgres: compare connection string
             if desired.get("url") != current.get("databaseConnectionString"):
-                return True
+                return True, f"connection: {current.get('databaseConnectionString')} → {desired.get('url')}"
         elif monitor_type == "tailscale-ping":
             # For Tailscale: compare hostname
             if desired.get("url") != current.get("hostname"):
-                return True
+                return True, f"hostname: {current.get('hostname')} → {desired.get('url')}"
         else:
             # For HTTP/HTTPS: compare URL
             if desired.get("url") != current.get("url"):
-                return True
+                return True, f"url: {current.get('url')} → {desired.get('url')}"
 
         # Compare expectedStatus (mapped to accepted_statuscodes in API)
         if "expectedStatus" in desired:
             desired_status = [str(desired["expectedStatus"])]
             current_status = current.get("accepted_statuscodes", ["200"])
             if desired_status != current_status:
-                return True
+                return True, f"status: {current_status} → {desired_status}"
         elif current.get("accepted_statuscodes") and current["accepted_statuscodes"] != ["200"]:
             # Current has non-default status but desired doesn't specify one
-            return True
+            return True, f"status: {current['accepted_statuscodes']} → ['200']"
 
-        return False
+        return False, ""
 
     def _prepare_monitor_config(self, monitor: dict) -> dict:
         """Prepare monitor configuration for API call."""
@@ -251,6 +263,7 @@ class UptimeKumaClient:
             "http": MonitorType.HTTP,
             "https": MonitorType.HTTP,
             "tcp": MonitorType.PORT,
+            "port": MonitorType.PORT,  # API returns "port" for TCP monitors
             "ping": MonitorType.PING,
             "dns": MonitorType.DNS,
             "postgres": MonitorType.POSTGRES,
