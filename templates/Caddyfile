@@ -133,11 +133,7 @@
 
 	# Uptime Kuma synthetic monitoring
 	@uptime host uptime.@externalDomain@
-	reverse_proxy @uptime @miniIp@:3001 {
-		# Enable WebSocket support for real-time dashboard updates
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
+	reverse_proxy @uptime @miniIp@:3001
 
 	# Zigbee2MQTT web interface
 	@zigbee host zigbee.@externalDomain@
