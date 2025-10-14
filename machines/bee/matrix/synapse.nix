@@ -72,8 +72,12 @@
     };
     # Allow connections from Tailscale network for monitoring
     authentication = ''
-      host all postgres ${config.flags.miniIp}/32 trust
+      host all postgres ${config.flags.miniIp}/32 scram-sha-256
       host all postgres 127.0.0.1/32 trust
+    '';
+    # Initialize postgres user password for monitoring
+    initialScript = builtins.toFile "postgres-init.sql" ''
+      ALTER USER postgres WITH PASSWORD '${config.secrets.postgres.monitoring.password}';
     '';
   };
 

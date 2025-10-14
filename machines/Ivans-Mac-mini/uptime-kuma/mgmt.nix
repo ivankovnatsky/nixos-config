@@ -153,7 +153,7 @@
       {
         name = "postgresql-bee";
         type = "postgres";
-        url = "postgres://postgres:@${config.flags.beeIp}:5432/postgres";
+        url = "postgres://postgres:${config.secrets.postgres.monitoring.password}@${config.flags.beeIp}:5432/postgres";
         interval = 60;
         description = "PostgreSQL database on bee (Home Assistant, Matrix)";
       }
