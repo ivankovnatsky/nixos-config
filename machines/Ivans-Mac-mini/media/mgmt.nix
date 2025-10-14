@@ -21,7 +21,9 @@
 
     radarr = {
       enable = true;
+      baseUrl = "http://${config.flags.miniIp}:7878";
       apiKey = config.secrets.arrMini.radarr.apiKey;
+      bindAddress = config.flags.miniIp;
       downloadClients = [
         {
           name = "Transmission";
@@ -41,7 +43,9 @@
 
     sonarr = {
       enable = true;
+      baseUrl = "http://${config.flags.miniIp}:8989";
       apiKey = config.secrets.arrMini.sonarr.apiKey;
+      bindAddress = config.flags.miniIp;
       downloadClients = [
         {
           name = "Transmission";
@@ -61,7 +65,9 @@
 
     prowlarr = {
       enable = true;
+      baseUrl = "http://${config.flags.miniIp}:9696";
       apiKey = config.secrets.arrMini.prowlarr.apiKey;
+      bindAddress = config.flags.miniIp;
       indexers = [
         { name = "EZTV"; definitionName = "eztv"; enable = true; priority = 25; }
         { name = "LimeTorrents"; definitionName = "limetorrents"; enable = true; priority = 25; }
@@ -70,9 +76,9 @@
       applications = [
         {
           name = "Radarr";
-          baseUrl = "http://localhost:7878";
+          baseUrl = "http://${config.flags.miniIp}:7878";
           apiKey = config.secrets.arrMini.radarr.apiKey;
-          prowlarrUrl = "http://localhost:9696";
+          prowlarrUrl = "http://${config.flags.miniIp}:9696";
           syncLevel = "fullSync";
           syncCategories = [
             2000  # Movies
@@ -90,9 +96,9 @@
         }
         {
           name = "Sonarr";
-          baseUrl = "http://localhost:8989";
+          baseUrl = "http://${config.flags.miniIp}:8989";
           apiKey = config.secrets.arrMini.sonarr.apiKey;
-          prowlarrUrl = "http://localhost:9696";
+          prowlarrUrl = "http://${config.flags.miniIp}:9696";
           syncLevel = "fullSync";
           syncCategories = [
             5000  # TV
