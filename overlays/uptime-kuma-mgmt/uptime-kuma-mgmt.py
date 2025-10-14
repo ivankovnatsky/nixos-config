@@ -132,6 +132,25 @@ class UptimeKumaClient:
         else:
             print("\nSync complete!", file=sys.stderr)
 
+    def _mask_password_in_url(self, url: str) -> str:
+        """Mask password in connection URLs for display purposes."""
+        if not url or "://" not in url:
+            return url
+
+        try:
+            # Handle postgres://user:password@host:port/db format
+            if "://" in url and "@" in url:
+                protocol, rest = url.split("://", 1)
+                if "@" in rest:
+                    credentials, host_part = rest.rsplit("@", 1)
+                    if ":" in credentials:
+                        user, _ = credentials.split(":", 1)
+                        return f"{protocol}://{user}:***@{host_part}"
+                    return url
+            return url
+        except Exception:
+            return url
+
     def _monitor_needs_update(self, desired: dict, current: dict) -> tuple[bool, str]:
         """Check if monitor configuration differs from current state. Returns (needs_update, reason)."""
         # Compare basic fields (use defaults from _prepare_monitor_config)
@@ -174,7 +193,10 @@ class UptimeKumaClient:
         elif monitor_type == "postgres":
             # For Postgres: compare connection string
             if desired.get("url") != current.get("databaseConnectionString"):
-                return True, f"connection: {current.get('databaseConnectionString')} → {desired.get('url')}"
+                # Mask passwords in connection strings for display
+                current_masked = self._mask_password_in_url(current.get('databaseConnectionString', ''))
+                desired_masked = self._mask_password_in_url(desired.get('url', ''))
+                return True, f"connection: {current_masked} → {desired_masked}"
         elif monitor_type == "tailscale-ping":
             # For Tailscale: compare hostname
             if desired.get("url") != current.get("hostname"):
