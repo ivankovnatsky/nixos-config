@@ -8,6 +8,9 @@ let
   configJson = pkgs.writeText "jellyfin-config.json" (builtins.toJSON {
     baseUrl = cfg.baseUrl;
     apiKey = cfg.apiKey;
+    networkConfig = optionalAttrs (cfg.bindAddress != null) {
+      localNetworkAddresses = [ cfg.bindAddress ];
+    };
     libraries = map (lib: {
       name = lib.name;
       type = lib.type;
@@ -28,6 +31,13 @@ in
     apiKey = mkOption {
       type = types.str;
       description = "Jellyfin API key";
+    };
+
+    bindAddress = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      example = "192.168.50.4";
+      description = "Bind address for Jellyfin (LocalNetworkAddresses)";
     };
 
     libraries = mkOption {

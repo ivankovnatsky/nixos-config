@@ -14,7 +14,9 @@ in
   # 3. Generate API key: Administration → Dashboard → Advanced → API Keys → New API Key
   # 4. Name the key "Default" and save it in modules/secrets/default.nix under secrets.jellyfin.apiKey
   #
-  # After initial setup, jellyfin-mgmt will declaratively manage libraries
+  # After initial setup, jellyfin-mgmt will declaratively manage:
+  # - Libraries (media paths and types)
+  # - Network configuration (bind address set to mini IP instead of all interfaces)
 
   launchd.user.agents.jellyfin = {
     serviceConfig = {
