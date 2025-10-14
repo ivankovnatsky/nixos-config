@@ -134,11 +134,6 @@
 
       # DNS services (check /dns-query endpoint)
       {
-        name = "dns-bee";
-        url = "https://dns-bee.${config.secrets.externalDomain}/dns-query";
-        description = "DNS over HTTPS on bee (bee:8053)";
-      }
-      {
         name = "dns-mini";
         url = "https://dns-mini.${config.secrets.externalDomain}/dns-query";
         description = "DNS over HTTPS on mini (mini:8053)";
