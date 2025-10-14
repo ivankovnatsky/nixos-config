@@ -134,10 +134,42 @@ class UptimeKumaClient:
 
     def _monitor_needs_update(self, desired: dict, current: dict) -> bool:
         """Check if monitor configuration differs from current state."""
-        # Compare key fields
-        fields_to_compare = ["url", "interval", "maxretries", "retryInterval", "type"]
-        for field in fields_to_compare:
-            if desired.get(field) != current.get(field):
+        # Compare basic fields
+        if desired.get("interval") != current.get("interval"):
+            return True
+        if desired.get("maxretries") != current.get("maxretries"):
+            return True
+        if desired.get("retryInterval") != current.get("retryInterval"):
+            return True
+        if desired.get("type") != current.get("type"):
+            return True
+
+        # Compare monitor-type-specific fields
+        monitor_type = desired.get("type", "http")
+
+        if monitor_type in ["tcp", "mqtt"]:
+            # For TCP/MQTT: compare hostname:port
+            if ":" in desired.get("url", ""):
+                hostname, port = desired["url"].rsplit(":", 1)
+                if current.get("hostname") != hostname or current.get("port") != int(port):
+                    return True
+        elif monitor_type == "dns":
+            # For DNS: compare hostname@dns_server
+            if "@" in desired.get("url", ""):
+                hostname, dns_server = desired["url"].split("@", 1)
+                if current.get("hostname") != hostname or current.get("dns_resolve_server") != dns_server:
+                    return True
+        elif monitor_type == "postgres":
+            # For Postgres: compare connection string
+            if desired.get("url") != current.get("databaseConnectionString"):
+                return True
+        elif monitor_type == "tailscale-ping":
+            # For Tailscale: compare hostname
+            if desired.get("url") != current.get("hostname"):
+                return True
+        else:
+            # For HTTP/HTTPS: compare URL
+            if desired.get("url") != current.get("url"):
                 return True
 
         # Compare expectedStatus (mapped to accepted_statuscodes in API)
