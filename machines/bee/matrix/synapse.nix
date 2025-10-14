@@ -78,10 +78,14 @@
   };
 
   # Create dedicated monitoring user with limited privileges
+  # This service runs only once, creating a stamp file to prevent re-execution
   systemd.services.postgresql-setup-monitoring = {
     description = "Setup PostgreSQL monitoring user with limited privileges";
     after = [ "postgresql.service" ];
     wantedBy = [ "multi-user.target" ];
+    unitConfig = {
+      ConditionPathExists = "!/var/lib/postgresql/.monitoring-setup-done";
+    };
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
@@ -91,6 +95,7 @@
     script = ''
       ${config.services.postgresql.package}/bin/psql -c "ALTER USER postgres_monitor WITH PASSWORD '${config.secrets.postgres.monitoring.password}';" || true
       ${config.services.postgresql.package}/bin/psql -c "GRANT pg_monitor TO postgres_monitor;" || true
+      touch /var/lib/postgresql/.monitoring-setup-done
     '';
   };
 
