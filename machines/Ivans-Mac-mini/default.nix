@@ -23,10 +23,12 @@
     ../../modules/shared/arr-mgmt
     ../../modules/shared/jellyfin-mgmt
     ../../modules/shared/nextdns-mgmt
+    ../../modules/shared/uptime-kuma-mgmt
     ../../system/documentation.nix
     ../../system/nix.nix
     ./beszel.nix
     ./bin.nix
+    ./uptime-kuma
     ./dns.nix
     ./dock.nix
     ./doh.nix
