@@ -27,6 +27,13 @@ in
       description = "Port for the beszel agent to listen on";
     };
 
+    listenAddress = mkOption {
+      type = types.str;
+      default = "0.0.0.0";
+      example = "192.168.1.10";
+      description = "IP address to bind the Beszel Agent to. Defaults to all interfaces (0.0.0.0).";
+    };
+
     hubPublicKey = mkOption {
       type = types.str;
       description = "SSH public key from the beszel hub";
@@ -52,7 +59,7 @@ in
         StandardOutPath = "/tmp/log/launchd/beszel-agent.log";
         StandardErrorPath = "/tmp/log/launchd/beszel-agent.error.log";
         EnvironmentVariables = {
-          LISTEN = toString cfg.port;
+          LISTEN = "${cfg.listenAddress}:${toString cfg.port}";
           KEY = cfg.hubPublicKey;
           PATH = "${pkgs.coreutils}/bin:${cfg.package}/bin:${pkgs.bash}/bin";
         };

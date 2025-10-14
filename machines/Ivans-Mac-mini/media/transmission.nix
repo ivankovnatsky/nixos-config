@@ -37,6 +37,7 @@ let
       watch-dir = watchDir;
       watch-dir-enabled = true;
 
+      bind-address-ipv4 = config.flags.miniIp;
       peer-port = 51413;
       peer-port-random-on-start = false;
       port-forwarding-enabled = false;
