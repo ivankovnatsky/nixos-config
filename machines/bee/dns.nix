@@ -117,8 +117,14 @@
 
   # Open DNS ports in the firewall
   networking.firewall = {
-    allowedTCPPorts = [ 53 ];
-    allowedUDPPorts = [ 53 ];
+    allowedTCPPorts = [
+      53 # dnsmasq
+      5453 # stubby (DNS-over-TLS)
+    ];
+    allowedUDPPorts = [
+      53 # dnsmasq
+      5453 # stubby (DNS-over-TLS)
+    ];
     # Ensure the firewall is enabled
     enable = true;
   };

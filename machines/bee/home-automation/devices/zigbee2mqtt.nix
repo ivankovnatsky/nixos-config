@@ -28,6 +28,7 @@
       devices = "devices.yaml";
       frontend = {
         enabled = true;
+        host = config.flags.beeIp;
         port = 8081;
       };
       groups = "groups.yaml";
