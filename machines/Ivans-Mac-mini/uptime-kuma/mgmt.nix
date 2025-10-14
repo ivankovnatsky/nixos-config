@@ -214,13 +214,6 @@
         interval = 60;
         description = "Tailscale VPN connectivity for bee";
       }
-      {
-        name = "tailscale-mini";
-        type = "tailscale-ping";
-        url = "ivans-mac-mini";
-        interval = 60;
-        description = "Tailscale VPN connectivity for mini";
-      }
     ];
   };
 }
