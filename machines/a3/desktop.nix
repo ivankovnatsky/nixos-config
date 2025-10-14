@@ -4,10 +4,10 @@
 
   imports = [
     # Desktop environments
-    ./plasma.nix # KDE Plasma 6 (currently active)
-    ./kde.nix
+    # ./plasma.nix # KDE Plasma 6 (currently active)
+    # ./kde.nix
 
-    # ./gnome.nix      # GNOME (available but commented)
+    ./gnome.nix      # GNOME (available but commented)
 
     # Minimal window managers (for virtual console startup)
     # ../../nixos/dwm        # Sophisticated dwm with patches
