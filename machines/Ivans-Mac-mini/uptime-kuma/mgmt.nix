@@ -39,7 +39,8 @@
       {
         name = "transmission";
         url = "https://transmission.${config.secrets.externalDomain}";
-        description = "Transmission torrent client (mini:9091)";
+        expectedStatus = 401;
+        description = "Transmission torrent client with RPC auth (mini:9091)";
       }
       {
         name = "jellyfin";
@@ -110,7 +111,8 @@
       {
         name = "files-mini";
         url = "https://files-mini.${config.secrets.externalDomain}";
-        description = "Miniserve file server (mini:8080)";
+        expectedStatus = 401;
+        description = "Miniserve file server with auth (mini:8080)";
       }
       {
         name = "bin";
