@@ -6,6 +6,7 @@
   local.services.beszel-agent = {
     enable = true;
     port = 45876;
+    listenAddress = config.flags.beeIp;
     hubPublicKey = config.secrets.beszel.hubPublicKey;
     openFirewall = true;
   };
