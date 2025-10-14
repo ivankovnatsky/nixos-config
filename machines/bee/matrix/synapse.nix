@@ -62,7 +62,7 @@
         ensureDBOwnership = true;
       }
       {
-        name = "postgres";
+        name = "postgres_monitor";
       }
     ];
     # Enable network access for monitoring (listens on localhost + bee IP only)
@@ -72,12 +72,25 @@
     };
     # Allow connections from Tailscale network for monitoring
     authentication = ''
-      host all postgres ${config.flags.miniIp}/32 scram-sha-256
-      host all postgres 127.0.0.1/32 trust
+      host all postgres_monitor ${config.flags.miniIp}/32 scram-sha-256
+      host all postgres_monitor 127.0.0.1/32 trust
     '';
-    # Initialize postgres user password for monitoring
-    initialScript = builtins.toFile "postgres-init.sql" ''
-      ALTER USER postgres WITH PASSWORD '${config.secrets.postgres.monitoring.password}';
+  };
+
+  # Create dedicated monitoring user with limited privileges
+  systemd.services.postgresql-setup-monitoring = {
+    description = "Setup PostgreSQL monitoring user with limited privileges";
+    after = [ "postgresql.service" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      User = "postgres";
+      Group = "postgres";
+    };
+    script = ''
+      ${config.services.postgresql.package}/bin/psql -c "ALTER USER postgres_monitor WITH PASSWORD '${config.secrets.postgres.monitoring.password}';" || true
+      ${config.services.postgresql.package}/bin/psql -c "GRANT pg_monitor TO postgres_monitor;" || true
     '';
   };
 
