@@ -1,12 +1,30 @@
 #!/usr/bin/env fish
 
-# Function to get the current theme
-function get_current_theme
+# Detect platform
+function is_macos
+    test (uname) = "Darwin"
+end
+
+function is_kde
+    # Check environment variables first
+    if test -n "$XDG_CURRENT_DESKTOP"
+        if string match -q "*KDE*" "$XDG_CURRENT_DESKTOP"
+            return 0
+        else if string match -q "*Plasma*" "$XDG_CURRENT_DESKTOP"
+            return 0
+        end
+    end
+
+    # Fallback: check if plasmashell is running
+    pgrep plasmashell >/dev/null 2>&1
+end
+
+# macOS Functions
+function get_current_theme_macos
     osascript -e 'tell application "System Events" to tell appearance preferences to get dark mode'
 end
 
-# Function to set wallpaper
-function set_wallpaper
+function set_wallpaper_macos
     set color $argv[1]
     set file_path "/System/Library/Desktop Pictures/Solid Colors/$color.png"
 
@@ -19,8 +37,7 @@ function set_wallpaper
     '
 end
 
-function open_settings
-    # Open System Settings directly to Wallpaper preferences
+function open_settings_macos
     osascript -e '
     tell application "System Settings"
         activate
@@ -34,18 +51,88 @@ function open_settings
     ' 1>/dev/null
 end
 
-# Get the current theme
-set current_theme (get_current_theme)
-
-# Toggle the theme and set wallpaper
-if test "$current_theme" = "true"
-    osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to false'
-    set_wallpaper "Silver"
-    echo "Switched to Light appearance"
-else
-    osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to true'
-    set_wallpaper "Black"
-    echo "Switched to Dark appearance"
+# KDE Plasma Functions
+function get_current_theme_kde
+    set scheme_output (plasma-apply-colorscheme --list-schemes 2>/dev/null | grep "(current color scheme)")
+    if string match -q "*Dark*" "$scheme_output"
+        echo "true"
+    else
+        echo "false"
+    end
 end
 
-open_settings
+function set_theme_kde
+    set mode $argv[1]
+    if test "$mode" = "dark"
+        plasma-apply-colorscheme BreezeDark
+    else
+        plasma-apply-colorscheme BreezeLight
+    end
+end
+
+function set_wallpaper_kde
+    set color $argv[1]
+
+    # Use solid color wallpaper plugin
+    if test "$color" = "Black"
+        set rgb "0,0,0"
+    else
+        set rgb "192,192,192"  # Silver
+    end
+
+    # Set wallpaper for all screens
+    for screen in (qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "
+        var allDesktops = desktops();
+        var output = [];
+        for (var i = 0; i < allDesktops.length; i++) {
+            var d = allDesktops[i];
+            output.push(d.id);
+        }
+        output.join(',');
+    " 2>/dev/null | string split ',')
+        qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "
+            var d = desktopById($screen);
+            d.wallpaperPlugin = 'org.kde.color';
+            d.currentConfigGroup = ['Wallpaper', 'org.kde.color', 'General'];
+            d.writeConfig('Color', '$rgb');
+        " >/dev/null 2>&1
+    end
+end
+
+function open_settings_kde
+    systemsettings appearance &
+end
+
+# Main logic
+if is_macos
+    set current_theme (get_current_theme_macos)
+
+    if test "$current_theme" = "true"
+        osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to false'
+        set_wallpaper_macos "Silver"
+        echo "Switched to Light appearance"
+    else
+        osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to true'
+        set_wallpaper_macos "Black"
+        echo "Switched to Dark appearance"
+    end
+
+    open_settings_macos
+else if is_kde
+    set current_theme (get_current_theme_kde)
+
+    if test "$current_theme" = "true"
+        set_theme_kde "light"
+        set_wallpaper_kde "Silver"
+        echo "Switched to Light appearance"
+    else
+        set_theme_kde "dark"
+        set_wallpaper_kde "Black"
+        echo "Switched to Dark appearance"
+    end
+
+    open_settings_kde
+else
+    echo "Unsupported platform or desktop environment"
+    exit 1
+end
