@@ -37,8 +37,7 @@ in
                 "WebSearch",
                 "Bash(nix-prefetch-url:*)",
                 "Read(${homePath}/.config/**)",
-                "Read(${homePath}/.local/**)",
-                "Read(${homePath}/Notes/**)"
+                "Read(${homePath}/.local/**)"
               ],
               "deny": [
                 "Bash(sudo:*)"
