@@ -4,10 +4,10 @@
 
   imports = [
     # Desktop environments
-    # ./plasma.nix # KDE Plasma config
-    # ./kwinoutput # KDE window output config
+    ./plasma.nix # KDE Plasma config
+    ./kwinoutput # KDE window output config
 
-    ./gnome.nix # GNOME config
+    # ./gnome.nix # GNOME config
 
     # Minimal window managers
     # (dwm typically doesn't need home-manager config)
