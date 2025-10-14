@@ -1,7 +1,20 @@
+{ config, ... }:
 {
   # Enable the OpenSSH daemon
   services.openssh = {
     enable = true;
+
+    # Restrict SSH to localhost and bee IP
+    listenAddresses = [
+      {
+        addr = "127.0.0.1";
+        port = 22;
+      }
+      {
+        addr = config.flags.beeIp;
+        port = 22;
+      }
+    ];
 
     # All settings moved to the settings attribute as per NixOS warnings
     settings = {
