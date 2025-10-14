@@ -46,6 +46,9 @@
         "${config.flags.miniIp}"
       ];
 
+      # Bind to specific interfaces only (prevents binding to 0.0.0.0)
+      "bind-interfaces" = true;
+
       # Don't use /etc/resolv.conf
       "no-resolv" = true;
 
