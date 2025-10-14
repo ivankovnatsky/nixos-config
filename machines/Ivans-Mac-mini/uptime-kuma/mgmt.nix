@@ -180,6 +180,47 @@
         interval = 60;
         description = "dnsmasq DNS resolver on mini";
       }
+
+      # DNS-over-TLS (Stubby) - Upstream for dnsmasq
+      {
+        name = "stubby-bee";
+        type = "tcp";
+        url = "${config.flags.beeIp}:5453";
+        interval = 60;
+        description = "Stubby DoT resolver on bee (upstream for dnsmasq)";
+      }
+      {
+        name = "stubby-mini";
+        type = "tcp";
+        url = "${config.flags.miniIp}:5453";
+        interval = 60;
+        description = "Stubby DoT resolver on mini (upstream for dnsmasq)";
+      }
+
+      # Home Automation Infrastructure
+      {
+        name = "matter-server-bee";
+        type = "tcp";
+        url = "${config.flags.beeIp}:5580";
+        interval = 60;
+        description = "Matter Server WebSocket on bee (Home Assistant integration)";
+      }
+
+      # VPN Mesh Network
+      {
+        name = "tailscale-bee";
+        type = "tailscale-ping";
+        url = "bee";
+        interval = 60;
+        description = "Tailscale VPN connectivity for bee";
+      }
+      {
+        name = "tailscale-mini";
+        type = "tailscale-ping";
+        url = "ivans-mac-mini";
+        interval = 60;
+        description = "Tailscale VPN connectivity for mini";
+      }
     ];
   };
 }
