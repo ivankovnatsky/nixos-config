@@ -39,8 +39,12 @@
 	co = checkout
 	c = commit -v
 	ca = commit -av
-	# This will show all changes
-	d = diff --unified=10 HEAD
+	# Show unstaged changes (working tree vs index)
+	d = diff --unified=10
+	# Show staged changes (index vs HEAD)
+	diff-cached = diff --cached --unified=10
+	# Show all changes (both staged and unstaged, working tree vs HEAD)
+	diff-all = diff --unified=10 HEAD
 	l = log --oneline -n 20
 	p = push
 	pp = pull
