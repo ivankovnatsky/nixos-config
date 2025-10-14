@@ -139,6 +139,17 @@ class UptimeKumaClient:
         for field in fields_to_compare:
             if desired.get(field) != current.get(field):
                 return True
+
+        # Compare expectedStatus (mapped to accepted_statuscodes in API)
+        if "expectedStatus" in desired:
+            desired_status = [str(desired["expectedStatus"])]
+            current_status = current.get("accepted_statuscodes", ["200"])
+            if desired_status != current_status:
+                return True
+        elif current.get("accepted_statuscodes") and current["accepted_statuscodes"] != ["200"]:
+            # Current has non-default status but desired doesn't specify one
+            return True
+
         return False
 
     def _prepare_monitor_config(self, monitor: dict) -> dict:
