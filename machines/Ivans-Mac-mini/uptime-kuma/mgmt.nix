@@ -159,7 +159,7 @@
       }
       {
         name = "mosquitto-bee";
-        type = "mqtt";
+        type = "tcp";
         url = "${config.flags.beeIp}:1883";
         interval = 60;
         description = "Mosquitto MQTT broker on bee (Zigbee2MQTT, IoT)";

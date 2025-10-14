@@ -52,7 +52,8 @@
       # Basic HTTP configuration
       http = {
         server_host = [
-          "0.0.0.0"
+          "127.0.0.1"
+          config.flags.beeIp
         ];
         server_port = 8123;
         # Enable proxy support

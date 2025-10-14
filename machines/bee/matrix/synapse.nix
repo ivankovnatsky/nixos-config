@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, lib, ... }:
 {
   services.matrix-synapse = {
     enable = true;
@@ -61,11 +61,25 @@
         name = "matrix-synapse";
         ensureDBOwnership = true;
       }
+      {
+        name = "postgres";
+      }
     ];
+    # Enable network access for monitoring (listens on localhost + bee IP only)
+    enableTCPIP = true;
+    settings = {
+      listen_addresses = lib.mkForce "127.0.0.1,${config.flags.beeIp}";
+    };
+    # Allow connections from Tailscale network for monitoring
+    authentication = ''
+      host all postgres ${config.flags.miniIp}/32 trust
+      host all postgres 127.0.0.1/32 trust
+    '';
   };
 
   # Not auto-configured by module
   networking.firewall.allowedTCPPorts = [
-    8008
+    8008 # Matrix Synapse
+    5432 # PostgreSQL (for monitoring from mini)
   ];
 }
