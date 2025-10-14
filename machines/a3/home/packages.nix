@@ -15,6 +15,9 @@
     # KDE Wallet integration
     kwalletcli # Provides pinentry-kwallet for GPG integration
 
+    # KDE Remote Desktop Client
+    kdePackages.krdc
+
     sesh
     gum
 
