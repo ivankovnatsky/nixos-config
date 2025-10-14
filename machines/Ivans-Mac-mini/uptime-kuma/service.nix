@@ -16,6 +16,9 @@ in
       StandardOutPath = "/tmp/log/launchd/uptime-kuma.out.log";
       StandardErrorPath = "/tmp/log/launchd/uptime-kuma.error.log";
       ThrottleInterval = 10;
+      EnvironmentVariables = {
+        PATH = "${pkgs.tailscale}/bin:${pkgs.coreutils}/bin";
+      };
     };
 
     command =
