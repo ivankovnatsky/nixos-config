@@ -78,6 +78,20 @@
             "Leave Open" = true;
           };
         };
+
+        krdcrc = {
+          MainWindow = {
+            StatusBar = "Disabled";
+          };
+          "PerformanceSettings" = {
+            windowedScale = true;
+            fullscreenScale = true;
+            grabAllKeys = true;
+            showLocalCursor = true;
+            walletSupport = true;
+            quality = 1;
+          };
+        };
       };
     };
     konsole = {
