@@ -164,6 +164,9 @@ let
       radarr = {
         baseUrl = cfg.radarr.baseUrl;
         apiKey = cfg.radarr.apiKey;
+        hostConfig = {
+          bindAddress = cfg.radarr.bindAddress;
+        };
         downloadClients = map (dc: {
           name = dc.name;
           host = dc.host;
@@ -186,6 +189,9 @@ let
       sonarr = {
         baseUrl = cfg.sonarr.baseUrl;
         apiKey = cfg.sonarr.apiKey;
+        hostConfig = {
+          bindAddress = cfg.sonarr.bindAddress;
+        };
         downloadClients = map (dc: {
           name = dc.name;
           host = dc.host;
@@ -208,6 +214,9 @@ let
       prowlarr = {
         baseUrl = cfg.prowlarr.baseUrl;
         apiKey = cfg.prowlarr.apiKey;
+        hostConfig = {
+          bindAddress = cfg.prowlarr.bindAddress;
+        };
         indexers = map (idx: {
           name = idx.name;
           definitionName = idx.definitionName;
@@ -245,6 +254,12 @@ in
         description = "Radarr API key";
       };
 
+      bindAddress = mkOption {
+        type = types.str;
+        example = "192.168.50.4";
+        description = "Bind address for Radarr";
+      };
+
       downloadClients = mkOption {
         type = types.listOf downloadClientSubmodule;
         default = [ ];
@@ -273,6 +288,12 @@ in
         description = "Sonarr API key";
       };
 
+      bindAddress = mkOption {
+        type = types.str;
+        example = "192.168.50.4";
+        description = "Bind address for Sonarr";
+      };
+
       downloadClients = mkOption {
         type = types.listOf downloadClientSubmodule;
         default = [ ];
@@ -299,6 +320,12 @@ in
       apiKey = mkOption {
         type = types.str;
         description = "Prowlarr API key";
+      };
+
+      bindAddress = mkOption {
+        type = types.str;
+        example = "192.168.50.4";
+        description = "Bind address for Prowlarr";
       };
 
       indexers = mkOption {

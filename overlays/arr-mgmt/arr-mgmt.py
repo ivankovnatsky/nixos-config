@@ -88,6 +88,14 @@ class ArrClient:
         """Delete a root folder."""
         return self._api_call("DELETE", f"/api/v3/rootfolder/{folder_id}")
 
+    def get_host_config(self):
+        """Get current host configuration."""
+        return self._api_call("GET", "/api/v3/config/host")
+
+    def update_host_config(self, data):
+        """Update host configuration (includes bind address)."""
+        return self._api_call("PUT", "/api/v3/config/host", data=data)
+
 
 class ProwlarrClient:
     def __init__(self, base_url: str, api_key: str, timeout: int = 120):
@@ -168,6 +176,14 @@ class ProwlarrClient:
         """Delete an indexer."""
         return self._api_call("DELETE", f"/api/v1/indexer/{indexer_id}")
 
+    def get_host_config(self):
+        """Get current host configuration."""
+        return self._api_call("GET", "/api/v1/config/host")
+
+    def update_host_config(self, data):
+        """Update host configuration (includes bind address)."""
+        return self._api_call("PUT", "/api/v1/config/host", data=data)
+
 
 def _build_transmission_fields(config, category_field="movieCategory"):
     """Build the fields array for Transmission download client."""
@@ -190,6 +206,12 @@ def sync_radarr(config, dry_run=False):
 
     print("", file=sys.stderr)
     print("=== Radarr Sync ===", file=sys.stderr)
+
+    # Sync host configuration (bind address, port, etc.)
+    if "hostConfig" in config:
+        print("", file=sys.stderr)
+        print("Syncing host configuration...", file=sys.stderr)
+        _sync_host_config(client, config["hostConfig"], dry_run)
 
     # Sync download clients
     if "downloadClients" in config:
@@ -214,6 +236,12 @@ def sync_sonarr(config, dry_run=False):
     print("", file=sys.stderr)
     print("=== Sonarr Sync ===", file=sys.stderr)
 
+    # Sync host configuration (bind address, port, etc.)
+    if "hostConfig" in config:
+        print("", file=sys.stderr)
+        print("Syncing host configuration...", file=sys.stderr)
+        _sync_host_config(client, config["hostConfig"], dry_run)
+
     # Sync download clients
     if "downloadClients" in config:
         print("", file=sys.stderr)
@@ -237,6 +265,12 @@ def sync_prowlarr(config, dry_run=False):
     print("", file=sys.stderr)
     print("=== Prowlarr Sync ===", file=sys.stderr)
 
+    # Sync host configuration (bind address, port, etc.)
+    if "hostConfig" in config:
+        print("", file=sys.stderr)
+        print("Syncing host configuration...", file=sys.stderr)
+        _sync_host_config(client, config["hostConfig"], dry_run)
+
     # Sync indexers
     if "indexers" in config:
         print("", file=sys.stderr)
@@ -251,6 +285,34 @@ def sync_prowlarr(config, dry_run=False):
 
     print("", file=sys.stderr)
     print("Prowlarr sync complete!", file=sys.stderr)
+
+
+def _sync_host_config(client, desired_config: dict, dry_run: bool):
+    """Sync host configuration (bind address, port, etc.)."""
+    current_config = client.get_host_config()
+
+    # Check if update needed
+    needs_update = False
+    update_parts = []
+
+    # Check bind address
+    if "bindAddress" in desired_config:
+        current_bind = current_config.get("bindAddress", "*")
+        desired_bind = desired_config["bindAddress"]
+        if current_bind != desired_bind:
+            needs_update = True
+            update_parts.append(f"bindAddress: {current_bind} -> {desired_bind}")
+
+    if needs_update:
+        print(f"  UPDATE: host config ({', '.join(update_parts)})", file=sys.stderr)
+        if not dry_run:
+            # Update only the fields we want to change, preserve rest
+            update_data = current_config.copy()
+            if "bindAddress" in desired_config:
+                update_data["bindAddress"] = desired_config["bindAddress"]
+            client.update_host_config(update_data)
+    else:
+        print(f"  OK: host config (no changes)", file=sys.stderr)
 
 
 def _sync_downloadclients(client: ArrClient, desired_clients: list, service_type: str, dry_run: bool):
