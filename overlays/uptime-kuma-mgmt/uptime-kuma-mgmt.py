@@ -154,14 +154,51 @@ class UptimeKumaClient:
 
     def _prepare_monitor_config(self, monitor: dict) -> dict:
         """Prepare monitor configuration for API call."""
+        monitor_type = self._get_monitor_type(monitor.get("type", "http"))
+
         config = {
-            "type": self._get_monitor_type(monitor.get("type", "http")),
+            "type": monitor_type,
             "name": monitor["name"],
-            "url": monitor["url"],
             "interval": monitor.get("interval", 60),
             "maxretries": monitor.get("maxretries", 3),
             "retryInterval": monitor.get("retryInterval", 60),
         }
+
+        # Handle different monitor types
+        if monitor_type == MonitorType.PORT:  # TCP port monitoring
+            # For TCP monitors, split hostname:port
+            if ":" in monitor["url"]:
+                hostname, port = monitor["url"].rsplit(":", 1)
+                config["hostname"] = hostname
+                config["port"] = int(port)
+            else:
+                raise ValueError(f"TCP monitor requires hostname:port format, got: {monitor['url']}")
+        elif monitor_type == MonitorType.DNS:
+            # For DNS monitors, url format: "hostname@dns_server"
+            if "@" in monitor["url"]:
+                hostname, dns_server = monitor["url"].split("@", 1)
+                config["hostname"] = hostname
+                config["dns_resolve_server"] = dns_server
+                config["dns_resolve_type"] = "A"
+                config["port"] = 53
+            else:
+                raise ValueError(f"DNS monitor requires hostname@dns_server format, got: {monitor['url']}")
+        elif monitor_type == MonitorType.POSTGRES:
+            # For PostgreSQL monitors, url is the connection string
+            config["databaseConnectionString"] = monitor["url"]
+            config["databaseQuery"] = "SELECT 1"  # Simple health check query
+        elif monitor_type == MonitorType.MQTT:
+            # For MQTT monitors, split hostname:port
+            if ":" in monitor["url"]:
+                hostname, port = monitor["url"].rsplit(":", 1)
+                config["hostname"] = hostname
+                config["port"] = int(port)
+                config["mqttTopic"] = "uptime-kuma/health"  # Default topic for health check
+            else:
+                raise ValueError(f"MQTT monitor requires hostname:port format, got: {monitor['url']}")
+        else:
+            # For HTTP/HTTPS monitors
+            config["url"] = monitor["url"]
 
         # Add optional fields
         if "description" in monitor:
@@ -181,6 +218,8 @@ class UptimeKumaClient:
             "tcp": MonitorType.PORT,
             "ping": MonitorType.PING,
             "dns": MonitorType.DNS,
+            "postgres": MonitorType.POSTGRES,
+            "mqtt": MonitorType.MQTT,
         }
         return type_map.get(type_str.lower(), MonitorType.HTTP)
 

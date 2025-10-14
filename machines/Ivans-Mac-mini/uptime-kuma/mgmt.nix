@@ -148,6 +148,38 @@
         url = "https://ollama.${config.secrets.externalDomain}";
         description = "Ollama LLM API with failover (a3w:11434 → mini:11434)";
       }
+
+      # Backend Infrastructure - Database & Message Broker
+      {
+        name = "postgresql-bee";
+        type = "postgres";
+        url = "postgres://postgres@${config.flags.beeIp}:5432/postgres";
+        interval = 60;
+        description = "PostgreSQL database on bee (Home Assistant, Matrix)";
+      }
+      {
+        name = "mosquitto-bee";
+        type = "mqtt";
+        url = "${config.flags.beeIp}:1883";
+        interval = 60;
+        description = "Mosquitto MQTT broker on bee (Zigbee2MQTT, IoT)";
+      }
+
+      # DNS Infrastructure
+      {
+        name = "dnsmasq-bee";
+        type = "dns";
+        url = "example.com@${config.flags.beeIp}";
+        interval = 60;
+        description = "dnsmasq DNS resolver on bee";
+      }
+      {
+        name = "dnsmasq-mini";
+        type = "dns";
+        url = "example.com@${config.flags.miniIp}";
+        interval = 60;
+        description = "dnsmasq DNS resolver on mini";
+      }
     ];
   };
 }
