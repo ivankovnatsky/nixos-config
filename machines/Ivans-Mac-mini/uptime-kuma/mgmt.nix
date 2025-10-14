@@ -132,11 +132,12 @@
         description = "Netdata monitoring with basic auth (mini:19999)";
       }
 
-      # DNS services (check /dns-query endpoint)
+      # DNS services (check /dns-query endpoint with example query)
       {
         name = "dns-mini";
-        url = "https://dns-mini.${config.secrets.externalDomain}/dns-query";
-        description = "DNS over HTTPS on mini (mini:8053)";
+        url = "https://dns-mini.${config.secrets.externalDomain}/dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB";
+        expectedStatus = 200;
+        description = "DNS over HTTPS on mini (mini:8053) - queries www.example.com";
       }
 
       # Ollama (load balanced with failover)
