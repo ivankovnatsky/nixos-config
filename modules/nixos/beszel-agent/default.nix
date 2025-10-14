@@ -18,6 +18,13 @@ in
       description = "Port for the Beszel Agent to listen on";
     };
 
+    listenAddress = lib.mkOption {
+      type = lib.types.str;
+      default = "0.0.0.0";
+      example = "192.168.1.10";
+      description = "IP address to bind the Beszel Agent to. Defaults to all interfaces (0.0.0.0).";
+    };
+
     hubPublicKey = lib.mkOption {
       type = lib.types.str;
       example = "ssh-ed25519 AAAAC3...";
@@ -50,7 +57,7 @@ in
         StateDirectory = "beszel-agent";
         SupplementaryGroups = [ "docker" ];
 
-        Environment = [ "LISTEN=${toString cfg.port}" ];
+        Environment = [ "LISTEN=${cfg.listenAddress}:${toString cfg.port}" ];
 
         EnvironmentFile = pkgs.writeText "beszel-agent.env" ''
           KEY=${cfg.hubPublicKey}
