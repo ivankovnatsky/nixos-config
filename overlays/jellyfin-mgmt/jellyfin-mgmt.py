@@ -119,18 +119,69 @@ class JellyfinClient:
         params = {"name": name}
         return self._api_call("DELETE", "/Library/VirtualFolders", params=params)
 
+    def get_network_config(self):
+        """Get current network configuration."""
+        # Jellyfin stores network configuration separately
+        config = self._api_call("GET", "/System/Configuration/network")
+        # Extract only network-related fields
+        return {
+            "LocalNetworkAddresses": config.get("LocalNetworkAddresses", []),
+            "InternalHttpPort": config.get("InternalHttpPort", 8096),
+            "PublicHttpPort": config.get("PublicHttpPort", 8096),
+        }
+
+    def update_network_config(self, local_network_addresses: list):
+        """Update network configuration (bind addresses)."""
+        # Get current network configuration (stored separately from main config)
+        current_network_config = self._api_call("GET", "/System/Configuration/network")
+
+        # Update only the LocalNetworkAddresses field
+        current_network_config["LocalNetworkAddresses"] = local_network_addresses
+
+        # POST the network configuration back to the network endpoint
+        return self._api_call("POST", "/System/Configuration/network", data=current_network_config)
+
 
 
 def sync_from_config(config, dry_run=False):
     """
-    Sync libraries from configuration.
+    Sync libraries and network configuration.
     Creates missing items, updates existing ones.
     """
     client = JellyfinClient(config["baseUrl"], config["apiKey"])
 
+    # Sync network configuration (bind address)
+    if "networkConfig" in config:
+        _sync_network_config(client, config["networkConfig"], dry_run)
+
     # Sync libraries
     if "libraries" in config:
         _sync_libraries(client, config["libraries"], dry_run)
+
+
+def _sync_network_config(client: JellyfinClient, network_config: dict, dry_run: bool):
+    """Sync network configuration (bind addresses)."""
+    current = client.get_network_config()
+    desired_addresses = network_config.get("localNetworkAddresses", [])
+    current_addresses = current.get("LocalNetworkAddresses", [])
+
+    print("", file=sys.stderr)
+    print("=== Network Configuration Sync ===", file=sys.stderr)
+
+    if set(current_addresses) != set(desired_addresses):
+        print(f"  UPDATE: LocalNetworkAddresses", file=sys.stderr)
+        print(f"    Current: {current_addresses}", file=sys.stderr)
+        print(f"    Desired: {desired_addresses}", file=sys.stderr)
+        if not dry_run:
+            try:
+                result = client.update_network_config(desired_addresses)
+                print(f"  DEBUG: API call result: {result}", file=sys.stderr)
+                print("  NOTE: Jellyfin service must be restarted for changes to take effect", file=sys.stderr)
+            except Exception as e:
+                print(f"  ERROR: Failed to update network config: {e}", file=sys.stderr)
+                raise
+    else:
+        print(f"  OK: LocalNetworkAddresses (no changes)", file=sys.stderr)
 
 
 def _sync_libraries(client: JellyfinClient, libraries_config: list, dry_run: bool = False):
