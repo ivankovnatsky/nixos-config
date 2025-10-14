@@ -196,6 +196,9 @@ class UptimeKumaClient:
                 config["mqttTopic"] = "uptime-kuma/health"  # Default topic for health check
             else:
                 raise ValueError(f"MQTT monitor requires hostname:port format, got: {monitor['url']}")
+        elif monitor_type == MonitorType.TAILSCALE_PING:
+            # For Tailscale Ping monitors, url is the hostname
+            config["hostname"] = monitor["url"]
         else:
             # For HTTP/HTTPS monitors
             config["url"] = monitor["url"]
@@ -220,6 +223,7 @@ class UptimeKumaClient:
             "dns": MonitorType.DNS,
             "postgres": MonitorType.POSTGRES,
             "mqtt": MonitorType.MQTT,
+            "tailscale-ping": MonitorType.TAILSCALE_PING,
         }
         return type_map.get(type_str.lower(), MonitorType.HTTP)
 
