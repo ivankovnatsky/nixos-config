@@ -65,6 +65,13 @@ in
           description = "User for which NOPASSWD commands should be enabled.";
         };
 
+        setenv = mkOption {
+          type = types.bool;
+          default = false;
+          example = true;
+          description = "Allow preserving environment variables with sudo -E (adds SETENV tag).";
+        };
+
         commands = mkOption {
           type = types.listOf types.str;
           default = [ ];
@@ -85,7 +92,8 @@ in
         finalConfigContent =
           if (cfg.enable && cfg.nopasswd.enable) then
             let
-              nopasswdRules = map (cmd: "${cfg.nopasswd.user} ALL=(ALL) NOPASSWD: ${cmd}") cfg.nopasswd.commands;
+              tags = if cfg.nopasswd.setenv then "NOPASSWD:SETENV:" else "NOPASSWD:";
+              nopasswdRules = map (cmd: "${cfg.nopasswd.user} ALL=(ALL) ${tags} ${cmd}") cfg.nopasswd.commands;
               nopasswdContent = concatStringsSep "\n" nopasswdRules;
             in
             ''
