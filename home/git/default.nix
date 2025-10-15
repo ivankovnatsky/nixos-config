@@ -40,6 +40,7 @@
       "**/CLAUDE.md"
       "**/CLAUDE.local.md"
       "**/.claude"
+      "**/claude/"
       "**/.serena"
     ];
     # delta = {
