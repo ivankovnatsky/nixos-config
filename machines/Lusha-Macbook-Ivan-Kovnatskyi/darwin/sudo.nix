@@ -6,7 +6,7 @@
       user = username;
       setenv = true;
       commands = [
-        "/run/current-system/sw/bin/darwin-rebuild"
+        "/run/current-system/sw/bin/darwin-rebuild switch *"
       ];
     };
   };
