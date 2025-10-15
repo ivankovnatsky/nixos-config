@@ -20,7 +20,7 @@ in
         git
         git-crypt
         gnupg
-        pinentry
+        pinentry-tty
 
         # Development tools
         tmux
@@ -46,6 +46,7 @@ in
         export GIT_CONFIG_GLOBAL="$PWD/home/git/config"
         export EDITOR="nvim"
         export VISUAL="nvim"
+        export GPG_TTY=$(tty)
 
         # Install claude if not present
         if [[ ! -x "$HOME/.npm/bin/claude" ]]; then
@@ -60,7 +61,7 @@ in
 
         # Launch fish shell with git alias and environment
         if command -v fish >/dev/null 2>&1; then
-          exec fish -C "set -gx GIT_CONFIG_GLOBAL $GIT_CONFIG_GLOBAL; alias g='git'"
+          exec fish -C "set -gx GIT_CONFIG_GLOBAL $GIT_CONFIG_GLOBAL; set -gx GPG_TTY (tty); alias g='git'"
         fi
       '';
     };
