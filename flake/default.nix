@@ -48,6 +48,13 @@ in
         export VISUAL="nvim"
         export GPG_TTY=$(tty)
 
+        # Configure GPG agent with pinentry-tty if config doesn't exist
+        if [ ! -f ~/.gnupg/gpg-agent.conf ]; then
+          mkdir -p ~/.gnupg
+          echo "pinentry-program $(which pinentry-tty)" >> ~/.gnupg/gpg-agent.conf
+          gpgconf --kill gpg-agent 2>/dev/null || true
+        fi
+
         # Install claude if not present
         if [[ ! -x "$HOME/.npm/bin/claude" ]]; then
           echo "Installing Claude Code CLI..."
