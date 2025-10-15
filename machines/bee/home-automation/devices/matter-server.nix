@@ -1,5 +1,3 @@
-{ config, ... }:
-
 {
   # Add udev rule for persistent device naming
   services.udev.extraRules = ''
@@ -9,27 +7,26 @@
 
   # NOTE: Matter Server binding behavior:
   #
-  # The python-matter-server supports --listen-address to bind to specific IPs.
-  # Binding to bee's IP (192.168.50.3) instead of 0.0.0.0 for defense in depth.
+  # Matter Server MUST bind to 0.0.0.0 (all interfaces) because:
+  # - mDNS (multicast DNS) requires binding to all interfaces for device discovery
+  # - Binding to specific IP causes "Network is unreachable" errors for mDNS
+  # - Matter devices advertise themselves via multicast which needs all interfaces
   #
-  # The NixOS module doesn't expose a listenAddress option, but we can use extraArgs.
+  # The python-matter-server supports --listen-address but using it breaks mDNS.
+  # We rely on firewall rules for security instead.
   #
   # Security layers:
-  # - Bound to bee's IP only (not all interfaces)
-  # - Firewall restricts TCP 5580 to specific IPs
+  # - Firewall restricts TCP 5580 to specific IPs (bee and mini)
   # - Matter devices require pairing/commissioning
   # - WebSocket API requires authentication
   #
-  # Monitoring: Uptime Kuma checks ${config.flags.beeIp}:5580 from mini
+  # Reference: Attempted binding to beeIp in commit 27fc3d86, reverted due to mDNS issues
+  # Error: "CHIP_ERROR [chip.native.DIS] Failed to advertise records: Network is unreachable"
 
   services.matter-server = {
     enable = true;
     port = 5580;
     logLevel = "info";
-    extraArgs = [
-      "--listen-address"
-      config.flags.beeIp
-    ];
   };
 
   # Open firewall for Matter Server API (needed for Home Assistant on bee and monitoring from mini)
