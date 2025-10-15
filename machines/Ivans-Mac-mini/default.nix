@@ -47,6 +47,7 @@
     ./power.nix
     ./sharing.nix
     ./stash
+    ./sudo.nix
     ./system.nix
     ./tailscale.nix
     ./tmux-rebuild.nix
