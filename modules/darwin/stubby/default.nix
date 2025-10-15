@@ -12,14 +12,11 @@ let
 
   # Override stubby package to remove systemd dependency for Darwin
   stubbyPackage = pkgs.stubby.overrideAttrs (old: {
-    buildInputs =
-      with pkgs;
-      [
-        getdns
-        libyaml
-        openssl
-      ]
-      ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [ pkgs.darwin.Security ];
+    buildInputs = with pkgs; [
+      getdns
+      libyaml
+      openssl
+    ];
   });
 
   # Convert settings to YAML for stubby config
