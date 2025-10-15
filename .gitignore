@@ -2,6 +2,7 @@ result
 .stfolder
 .stignore
 **/.DS_Store
+.direnv/
 
 # Ghostty local build file
 overlays/ghostty/ghostty-macos-universal.zip
