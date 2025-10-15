@@ -20,6 +20,7 @@ in
         git
         git-crypt
         gnupg
+        pinentry
 
         # Development tools
         tmux
