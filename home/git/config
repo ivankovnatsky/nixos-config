@@ -42,7 +42,7 @@
 	# Show unstaged changes (working tree vs index)
 	d = diff --unified=10
 	# Show staged changes (index vs HEAD)
-	diff-cached = diff --cached --unified=10
+	diff-staged = diff --staged --unified=10
 	# Show all changes (both staged and unstaged, working tree vs HEAD)
 	diff-all = diff --unified=10 HEAD
 	l = log --oneline -n 20
@@ -50,7 +50,7 @@
 	pp = pull
 	s = status
 	# Review what would be committed without committing
-	review = "!git status --verbose && git diff --cached"
+	review = "!git status --verbose && git diff --staged"
 	# Search commit messages (titles and body)
 	grep-commits = log --all --grep
 	# Search in diffs (code changes)
