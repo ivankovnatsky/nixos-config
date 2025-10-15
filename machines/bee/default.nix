@@ -69,5 +69,7 @@
     ./power.nix
 
     ../../nixos/rebuild-diff.nix
+
+    ./packages.nix
   ];
 }
