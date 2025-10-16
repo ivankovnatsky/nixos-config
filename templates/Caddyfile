@@ -261,6 +261,12 @@
 		}
 	}
 
+	@podsync host podsync.@externalDomain@
+	reverse_proxy @podsync @miniIp@:8080 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
 	# Default fallback for wildcard (original behavior)
 	reverse_proxy @beeIp@:80
 

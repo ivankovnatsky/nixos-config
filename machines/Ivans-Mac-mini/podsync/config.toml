@@ -1,0 +1,47 @@
+# Podsync Configuration
+# This file is managed by Nix - do not edit manually
+
+[server]
+port = 8080
+hostname = "https://podsync.@externalDomain@"
+bind_address = "127.0.0.1"
+web_ui = true
+
+[storage]
+  type = "local"
+
+  [storage.local]
+  data_dir = "/Volumes/Storage/Data/.podsync/data"
+
+[tokens]
+youtube = "@youtubeApiKey@"
+vimeo = "@vimeoApiKey@"
+
+[cleanup]
+# Keep last 50 episodes globally
+keep_last = 50
+
+[downloader]
+# Auto-update yt-dlp every 24 hours
+self_update = true
+# Download timeout in minutes
+timeout = 15
+
+[log]
+# Log to file instead of stdout
+filename = "/Volumes/Storage/Data/.podsync/log/podsync.log"
+max_size = 50      # MB
+max_age = 30       # days
+max_backups = 7
+compress = true
+debug = false
+
+# Feed configurations
+[feeds.sternenko]
+url = "https://www.youtube.com/@STERNENKO"
+page_size = 50
+update_period = "12h"
+quality = "high"
+format = "audio"
+opml = true
+clean = { keep_last = 10 }

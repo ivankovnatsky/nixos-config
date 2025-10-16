@@ -44,6 +44,7 @@
     ./ollama.nix
     ./openssh.nix
     ./packages.nix
+    ./podsync
     ./power.nix
     ./sharing.nix
     ./stash
