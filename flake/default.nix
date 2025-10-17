@@ -45,8 +45,8 @@ in
 
       shellHook = ''
         export GIT_CONFIG_GLOBAL="$PWD/home/git/config"
-        export EDITOR="nvim"
-        export VISUAL="nvim"
+        export EDITOR="vim"
+        export VISUAL="vim"
         export GPG_TTY=$(tty)
 
         # Configure GPG agent with pinentry-tty if config doesn't exist
