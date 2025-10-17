@@ -40,14 +40,45 @@
         AC.powerProfile = "balanced";
       };
 
-      # Configure taskbar with pinned applications
+      # Configure panels - macOS-like layout
       panels = [
+        # Top panel with global menu bar
         {
+          location = "top";
+          height = 26;
           widgets = [
             {
               kickoff = {
               };
             }
+            "org.kde.plasma.appmenu"
+            {
+              name = "org.kde.plasma.panelspacer";
+            }
+            {
+              systemTray.items = {
+                shown = [
+                  "org.kde.plasma.keyboardlayout"
+                  "org.kde.plasma.networkmanagement"
+                  "org.kde.plasma.volume"
+                ];
+              };
+            }
+            {
+              digitalClock = {
+                time.format = "24h";
+              };
+            }
+          ];
+        }
+        # Bottom panel - dock with application icons
+        {
+          location = "bottom";
+          height = 48;
+          lengthMode = "fit";
+          floating = true;
+          hiding = "none";
+          widgets = [
             {
               iconTasks = {
                 launchers = [
@@ -63,16 +94,6 @@
                   "applications:systemsettings.desktop"
                 ];
               };
-            }
-            {
-              systemTray.items = {
-                shown = [
-                  "org.kde.plasma.keyboardlayout"
-                ];
-              };
-            }
-            {
-              digitalClock = { };
             }
           ];
         }
