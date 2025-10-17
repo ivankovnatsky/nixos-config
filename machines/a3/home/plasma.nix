@@ -7,6 +7,20 @@
       enable = true;
       # Configure input devices
       input = {
+        keyboard = {
+          layouts = [
+            {
+              layout = "us";
+            }
+            {
+              layout = "ua";
+            }
+          ];
+          # Use Caps Lock to switch layouts
+          # Shift+Caps Lock will still work for actual CAPS LOCK functionality
+          options = [ "grp:caps_toggle" ];
+        };
+
         mice = [
           # Only configure the main Razer Razer Viper entry
           {
@@ -52,6 +66,7 @@
             {
               systemTray.items = {
                 shown = [
+                  "org.kde.plasma.keyboardlayout"
                 ];
               };
             }
@@ -61,6 +76,14 @@
           ];
         }
       ];
+
+      # Configure keyboard shortcuts
+      shortcuts = {
+        "KDE Keyboard Layout Switcher" = {
+          # Disable KDE's shortcut to let XKB options (grp:caps_toggle) work
+          "Switch to Next Keyboard Layout" = [];
+        };
+      };
 
       # Configure KDE Wallet for GPG passphrases
       configFile = {
@@ -100,9 +123,7 @@
   };
 
   # Run plasma-manager scripts after configuration
-  # FIXME: This doesn't actually force the scripts to run due to plasma-manager's
-  # checksum tracking. Need to manually run ~/.local/share/plasma-manager/run_all.sh
-  # after rebuild for taskbar changes to apply
+  # plasma-manager has built-in checksum tracking and will only reapply when config changes
   home.activation.apply-plasma-config = lib.hm.dag.entryAfter [ "configure-plasma" ] ''
     if [[ -v DRY_RUN ]]; then
       echo "Would apply plasma configuration"
