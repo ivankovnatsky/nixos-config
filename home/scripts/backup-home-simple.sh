@@ -46,7 +46,7 @@ done
 if [[ -n "$CUSTOM_ARCHIVE_PATH" ]]; then
   ARCHIVE_PATH="$CUSTOM_ARCHIVE_PATH"
 elif [[ -d "/Volumes/Storage/Data" ]] && [[ -w "/Volumes/Storage/Data" ]]; then
-  TEMP_DIR="/Volumes/Storage/Data/tmp"
+  TEMP_DIR="/Volumes/Storage/Data/Tmp"
   mkdir -p "$TEMP_DIR"
   ARCHIVE_PATH="$TEMP_DIR/$USER.tar.gz"
 else
