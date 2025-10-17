@@ -44,7 +44,7 @@ elif [[ ${HOSTNAME,,} == "bee" ]]; then
   mkdir -p "$TEMP_DIR"
   ARCHIVE_PATH="$TEMP_DIR/system.tar.gz"
 elif [[ -d "/Volumes/Storage/Data" ]] && [[ -w "/Volumes/Storage/Data" ]]; then
-  TEMP_DIR="/Volumes/Storage/Data/tmp"
+  TEMP_DIR="/Volumes/Storage/Data/Tmp"
   mkdir -p "$TEMP_DIR"
   ARCHIVE_PATH="$TEMP_DIR/system.tar.gz"
 else
