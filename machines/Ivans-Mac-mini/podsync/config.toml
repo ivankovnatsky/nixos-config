@@ -50,7 +50,7 @@ clean = { keep_last = 10 }
 
 [feeds.tze_vzhe_bulo]
 url = "https://www.youtube.com/@tze_vzhe_bulo"
-page_size = 50
+page_size = 3
 cron_schedule = "0 14 * * *"  # Daily at 14:00 (2:00 PM)
 quality = "high"
 format = "audio"
