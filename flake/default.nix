@@ -19,13 +19,14 @@ in
         # Version control
         git
         git-crypt
+        gh
         gnupg
         pinentry-tty
 
         # Development tools
         tmux
         gnumake
-        neovim
+        vim
 
         # Nix tools
         nixfmt-rfc-style
