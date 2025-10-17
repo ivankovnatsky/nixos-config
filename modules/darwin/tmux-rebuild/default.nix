@@ -9,6 +9,7 @@
 with lib;
 
 let
+  darwinRebuildPath = "/run/current-system/sw/bin/darwin-rebuild";
   cfg = config.local.services.tmuxRebuild;
 in
 {
@@ -64,11 +65,11 @@ in
             ${
               if cfg.useSudo then
                 ''
-                  REBUILD_CMD="env NIXPKGS_ALLOW_UNFREE=1 sudo -E darwin-rebuild switch --impure --verbose -L --flake ."
+                  REBUILD_CMD="env NIXPKGS_ALLOW_UNFREE=1 sudo -E ${darwinRebuildPath} switch --impure --verbose -L --flake ."
                 ''
               else
                 ''
-                  REBUILD_CMD="env NIXPKGS_ALLOW_UNFREE=1 darwin-rebuild switch --impure --verbose -L --flake ."
+                  REBUILD_CMD="env NIXPKGS_ALLOW_UNFREE=1 ${darwinRebuildPath} switch --impure --verbose -L --flake ."
                 ''
             }
 
@@ -133,11 +134,11 @@ in
         ${
           if cfg.useSudo then
             ''
-              REBUILD_CMD="env NIXPKGS_ALLOW_UNFREE=1 sudo -E darwin-rebuild switch --impure --verbose -L --flake ."
+              REBUILD_CMD="env NIXPKGS_ALLOW_UNFREE=1 sudo -E ${darwinRebuildPath} switch --impure --verbose -L --flake ."
             ''
           else
             ''
-              REBUILD_CMD="env NIXPKGS_ALLOW_UNFREE=1 darwin-rebuild switch --impure --verbose -L --flake ."
+              REBUILD_CMD="env NIXPKGS_ALLOW_UNFREE=1 ${darwinRebuildPath} switch --impure --verbose -L --flake ."
             ''
         }
 
