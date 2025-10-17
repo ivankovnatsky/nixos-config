@@ -22,6 +22,13 @@
     dataDir = "audiobookshelf";
   };
 
+  # Disable SSRF filter for trusted local network environment
+  # Allows podcast feeds from any source including private IPs
+  # See: https://github.com/advplyr/audiobookshelf/issues/3742
+  systemd.services.audiobookshelf.environment = {
+    DISABLE_SSRF_REQUEST_FILTER = "1";
+  };
+
   # Ensure Audiobookshelf can access media directories
   users.users.audiobookshelf.extraGroups = [ "media" ];
 

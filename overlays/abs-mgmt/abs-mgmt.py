@@ -49,7 +49,16 @@ class AudiobookshelfClient:
                         f"API request failed with status {response.status_code}"
                     )
 
-            return response.json()
+            # Try to parse JSON, but accept plain text responses for successful requests
+            try:
+                return response.json()
+            except ValueError:
+                # Some endpoints return plain text (e.g., "OK") for success
+                if response.text.strip() in ("OK", "Success"):
+                    return {"success": True, "message": response.text.strip()}
+                # For other non-JSON responses, log and return text
+                print(f"DEBUG: Non-JSON response: {response.text[:200]}", file=sys.stderr)
+                return {"success": True, "message": response.text}
         except requests.exceptions.RequestException as e:
             raise Exception(f"Network error: {e}")
 
@@ -116,10 +125,50 @@ class AudiobookshelfClient:
         """Delete a user."""
         return self._api_call("DELETE", f"/api/users/{user_id}")
 
-    def sync_from_file(self, config_file: str, dry_run: bool = False):
+    def parse_opml(self, opml_text: str):
+        """Parse OPML text and return feed URLs."""
+        data = {"opmlText": opml_text}
+        return self._api_call("POST", "/api/podcasts/opml/parse", data=data)
+
+    def bulk_create_from_opml_feeds(self, feeds: list, library_id: str, folder_id: str, auto_download: bool = True):
+        """Bulk create podcasts from OPML feed URLs."""
+        data = {
+            "feeds": feeds,
+            "libraryId": library_id,
+            "folderId": folder_id,
+            "autoDownloadEpisodes": auto_download
+        }
+        return self._api_call("POST", "/api/podcasts/opml/create", data=data)
+
+    def get_library_podcasts(self, library_id: str):
+        """Get all podcast items in a library."""
+        data = self._api_call("GET", f"/api/libraries/{library_id}/items")
+        return data.get("results", [])
+
+    def get_library_by_name(self, library_name: str):
+        """Get library ID and folder ID by library name.
+
+        Returns:
+            Tuple of (library_id, folder_id) or (None, None) if not found
+        """
+        libraries_data = self.list_libraries()
+
+        for library in libraries_data:
+            if library["name"] == library_name:
+                library_id = library["id"]
+                # Get first folder ID
+                if library.get("folders") and len(library["folders"]) > 0:
+                    folder_id = library["folders"][0]["id"]
+                    return library_id, folder_id
+                return library_id, None
+
+        return None, None
+
+    def sync_from_file(self, config_file: str, dry_run: bool = False, opml_url: str = None, opml_library_name: str = "Podcasts", opml_auto_download: bool = True):
         """
         Sync libraries and users from a JSON configuration file.
         Creates missing items, updates existing ones.
+        Optionally syncs OPML feeds if opml_url is provided.
         """
         try:
             with open(config_file, "r") as f:
@@ -134,6 +183,10 @@ class AudiobookshelfClient:
         # Sync users if present
         if "users" in config:
             self._sync_users(config["users"], dry_run)
+
+        # Sync OPML if URL provided (library name defaults to "Podcasts")
+        if opml_url:
+            self._sync_opml(opml_url, opml_library_name, opml_auto_download, dry_run)
 
     def _sync_libraries(self, libraries_config: list, dry_run: bool = False):
         """Sync libraries from configuration."""
@@ -271,6 +324,100 @@ class AudiobookshelfClient:
             print("", file=sys.stderr)
             print("User sync complete!", file=sys.stderr)
 
+    def _sync_opml(self, opml_url: str, library_name: str, auto_download: bool = True, dry_run: bool = False):
+        """Sync podcasts from OPML URL."""
+        try:
+            # Resolve library name to ID/folder
+            print(f"Resolving library name '{library_name}'...", file=sys.stderr)
+            library_id, folder_id = self.get_library_by_name(library_name)
+            if not library_id:
+                print(f"Error: Library '{library_name}' not found", file=sys.stderr)
+                return
+            if not folder_id:
+                print(f"Error: No folders found in library '{library_name}'", file=sys.stderr)
+                return
+            print(f"Resolved to library ID: {library_id}, folder ID: {folder_id}", file=sys.stderr)
+
+            # Fetch OPML from URL
+            print(f"Fetching OPML from {opml_url}...", file=sys.stderr)
+            response = requests.get(opml_url, timeout=30)
+            response.raise_for_status()
+            opml_text = response.text
+
+            # Parse OPML to get feed URLs
+            print("Parsing OPML...", file=sys.stderr)
+            parsed = self.parse_opml(opml_text)
+            feeds = parsed.get("feeds", [])
+
+            if not feeds:
+                print("No feeds found in OPML", file=sys.stderr)
+                return
+
+            print(f"Found {len(feeds)} feeds in OPML", file=sys.stderr)
+
+            # Get existing podcasts in library
+            print("Fetching existing podcasts from library...", file=sys.stderr)
+            existing_podcasts = self.get_library_podcasts(library_id)
+            existing_feed_urls = set()
+            for podcast in existing_podcasts:
+                feed_url = podcast.get("media", {}).get("metadata", {}).get("feedUrl")
+                if feed_url:
+                    existing_feed_urls.add(feed_url)
+
+            print(f"Found {len(existing_podcasts)} existing podcasts in library", file=sys.stderr)
+
+            # Extract feed URLs from OPML feeds (API returns dict objects with 'feedUrl' key)
+            opml_feed_urls = []
+            for feed in feeds:
+                feed_url = feed.get("feedUrl") if isinstance(feed, dict) else feed
+                if feed_url:
+                    opml_feed_urls.append(feed_url)
+
+            # Filter out feeds that already exist
+            new_feeds = [feed_url for feed_url in opml_feed_urls if feed_url not in existing_feed_urls]
+
+            print("", file=sys.stderr)
+            print(f"OPML Sync summary:", file=sys.stderr)
+            print(f"  Total feeds in OPML: {len(opml_feed_urls)}", file=sys.stderr)
+            print(f"  Already imported: {len(opml_feed_urls) - len(new_feeds)}", file=sys.stderr)
+            print(f"  New feeds to import: {len(new_feeds)}", file=sys.stderr)
+
+            if new_feeds:
+                print("", file=sys.stderr)
+                print("New feeds to import:", file=sys.stderr)
+                for feed in new_feeds:
+                    print(f"  - {feed}", file=sys.stderr)
+
+            if not new_feeds:
+                print("\nNo new feeds to import - already up to date!", file=sys.stderr)
+                return
+
+            if dry_run:
+                print("\nDry-run mode - no changes will be made", file=sys.stderr)
+                return
+
+            # Bulk create podcasts from new feeds only
+            print(f"\nCreating {len(new_feeds)} new podcasts in library {library_id}, folder {folder_id}...", file=sys.stderr)
+            print(f"Auto-download episodes: {auto_download}", file=sys.stderr)
+
+            self.bulk_create_from_opml_feeds(
+                feeds=new_feeds,
+                library_id=library_id,
+                folder_id=folder_id,
+                auto_download=auto_download
+            )
+
+            print("", file=sys.stderr)
+            print("OPML sync request sent successfully!", file=sys.stderr)
+            print("Note: Podcast creation happens asynchronously. Check Audiobookshelf logs if podcasts don't appear.", file=sys.stderr)
+
+        except requests.exceptions.RequestException as e:
+            print(f"Error fetching OPML: {e}", file=sys.stderr)
+            raise
+        except Exception as e:
+            print(f"Error syncing OPML: {e}", file=sys.stderr)
+            raise
+
 
 def cmd_list(args, client):
     """List all libraries."""
@@ -306,7 +453,38 @@ def cmd_create(args, client):
 def cmd_sync(args, client):
     """Sync libraries from configuration file."""
     try:
-        client.sync_from_file(args.config_file, dry_run=args.dry_run)
+        client.sync_from_file(
+            args.config_file,
+            dry_run=args.dry_run,
+            opml_url=getattr(args, 'opml_url', None),
+            opml_library_name=getattr(args, 'opml_library_name', None),
+            opml_auto_download=getattr(args, 'opml_auto_download', True)
+        )
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+def cmd_sync_opml(args, client):
+    """Sync podcasts from Podsync OPML URL."""
+    try:
+        # Get library name (defaults to "Podcasts")
+        library_name = args.library_name
+
+        # Warn about deprecated library_id/folder_id
+        if hasattr(args, 'library_id') and args.library_id:
+            print("Warning: --library-id is deprecated, use --library-name instead", file=sys.stderr)
+        if hasattr(args, 'folder_id') and args.folder_id:
+            print("Warning: --folder-id is deprecated, use --library-name instead", file=sys.stderr)
+
+        # Call shared OPML sync logic
+        client._sync_opml(
+            opml_url=args.opml_url,
+            library_name=library_name,
+            auto_download=args.auto_download,
+            dry_run=args.dry_run
+        )
+
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
@@ -364,6 +542,36 @@ def main():
         action="store_true",
         help="Show what would be changed without making changes",
     )
+    sync_parser.add_argument("--opml-url", help="Optional: Podsync OPML URL to sync")
+    sync_parser.add_argument("--opml-library-name", default="Podcasts", help="Optional: Target library name for OPML sync (default: Podcasts)")
+    sync_parser.add_argument(
+        "--opml-auto-download",
+        action="store_true",
+        default=True,
+        help="Enable automatic episode downloads for OPML sync (default: true)",
+    )
+
+    # Sync OPML command (from Podsync)
+    sync_opml_parser = subparsers.add_parser(
+        "sync-opml", help="Sync podcasts from Podsync OPML URL"
+    )
+    sync_opml_parser.add_argument("--base-url", required=True, help="Audiobookshelf URL")
+    sync_opml_parser.add_argument("--token", required=True, help="API token")
+    sync_opml_parser.add_argument("--opml-url", required=True, help="Podsync OPML URL")
+    sync_opml_parser.add_argument("--library-name", default="Podcasts", help="Target library name (auto-detects ID and folder, default: Podcasts)")
+    sync_opml_parser.add_argument("--library-id", help="Target library ID (use with --folder-id, deprecated)")
+    sync_opml_parser.add_argument("--folder-id", help="Target folder ID (use with --library-id, deprecated)")
+    sync_opml_parser.add_argument(
+        "--auto-download",
+        action="store_true",
+        default=True,
+        help="Enable automatic episode downloads (default: true)",
+    )
+    sync_opml_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Show what would be synced without making changes",
+    )
 
     args = parser.parse_args()
 
@@ -375,6 +583,8 @@ def main():
         cmd_create(args, client)
     elif args.command == "sync":
         cmd_sync(args, client)
+    elif args.command == "sync-opml":
+        cmd_sync_opml(args, client)
 
 
 if __name__ == "__main__":
