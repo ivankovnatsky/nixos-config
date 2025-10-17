@@ -3,6 +3,8 @@
 {
   home.packages = with pkgs; [
     dust # A more intuitive version of du
+    genpass # Password generator
+    username # Username generator
     lsof # List open files
     wl-clipboard # Wayland clipboard utilities
     pigz # Parallel gzip compression
