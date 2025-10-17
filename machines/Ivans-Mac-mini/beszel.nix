@@ -27,7 +27,7 @@
           echo "Starting Beszel Hub..."
 
           # Launch beszel-hub
-          exec ${pkgs.beszel}/bin/beszel-hub serve \
+          exec ${pkgs.nixpkgs-master.beszel}/bin/beszel-hub serve \
             --http ${config.flags.miniIp}:8091 \
             --dir /Volumes/Storage/Data/.beszel-hub
         '';
@@ -43,6 +43,7 @@
   # Beszel Agent (monitoring mini itself)
   local.services.beszel-agent = {
     enable = true;
+    package = pkgs.nixpkgs-master.beszel;
     port = 45876;
     listenAddress = config.flags.miniIp;
     hubPublicKey = config.secrets.beszel.hubPublicKey;
