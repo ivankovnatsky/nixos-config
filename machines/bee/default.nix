@@ -58,6 +58,7 @@
     ./home-automation
 
     # Matrix
+    ../../modules/nixos/mautrix-linkedin
     ./matrix
 
     # Audio

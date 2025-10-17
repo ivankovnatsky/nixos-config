@@ -464,6 +464,7 @@ Had to `nix-collect-garbage -d` and run rebuild once again and after that it cle
 - mautrix-whatsapp (port 29318)
 - mautrix-discord (port 29319)
 - mautrix-meta: Instagram (port 29320), Messenger (port 29322)
+- mautrix-linkedin (port 29321)
 
 **See**: [docs/matrix.md](./matrix.md) for current Matrix configuration on bee.
 
