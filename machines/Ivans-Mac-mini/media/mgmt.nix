@@ -37,7 +37,7 @@
         }
       ];
       rootFolders = [
-        "/Volumes/Storage/Data/media/movies"
+        "/Volumes/Storage/Data/Media/Movies"
       ];
     };
 
@@ -59,7 +59,7 @@
         }
       ];
       rootFolders = [
-        "/Volumes/Storage/Data/media/tv"
+        "/Volumes/Storage/Data/Media/TV"
       ];
     };
 

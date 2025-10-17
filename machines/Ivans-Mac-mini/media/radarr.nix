@@ -25,13 +25,13 @@
 #   * General
 #   * Save Changes
 # * Configure media library:
-#   * Movies → Add Root Folder → /Volumes/Storage/Data/media/movies
+#   * Movies → Add Root Folder → /Volumes/Storage/Data/Media/Movies
 
 let
   volumePath = "/Volumes/Storage";
   dataDir = "${volumePath}/Data/.radarr";
-  moviesDir = "${volumePath}/Data/media/movies";
-  downloadsDir = "${volumePath}/Data/media/downloads/radarr";
+  moviesDir = "${volumePath}/Data/Media/Movies";
+  downloadsDir = "${volumePath}/Data/Media/Downloads/Radarr";
 in
 {
   launchd.user.agents.radarr = {
