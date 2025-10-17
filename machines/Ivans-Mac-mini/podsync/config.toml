@@ -4,7 +4,7 @@
 [server]
 port = 8082
 hostname = "https://podsync.@externalDomain@"
-bind_address = "127.0.0.1"
+bind_address = "@miniIp@"
 web_ui = true
 
 [storage]
@@ -22,8 +22,10 @@ vimeo = "@vimeoApiKey@"
 keep_last = 50
 
 [downloader]
-# Auto-update yt-dlp every 24 hours
-self_update = true
+# Use yt-dlp instead of youtube-dl
+custom_binary = "@ytDlpPath@"
+# Disable self-update for custom binary
+self_update = false
 # Download timeout in minutes
 timeout = 15
 
