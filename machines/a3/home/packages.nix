@@ -34,5 +34,6 @@
 
     nodejs
     gnumake
+    delta
   ];
 }
