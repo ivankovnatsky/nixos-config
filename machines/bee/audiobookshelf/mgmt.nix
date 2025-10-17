@@ -22,5 +22,14 @@
         libraries = [ ]; # Empty = access to all libraries
       }
     ];
+
+    # OPML sync from Podsync
+    opmlSync = {
+      enable = true;
+      opmlUrl = "https://podsync.${config.secrets.externalDomain}/podsync.opml";
+      libraryName = "Podcasts"; # Auto-detects library and folder IDs
+      autoDownload = true;
+      interval = "hourly"; # Run every hour
+    };
   };
 }

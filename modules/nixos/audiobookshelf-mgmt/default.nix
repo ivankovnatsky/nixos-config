@@ -98,6 +98,40 @@ in
       default = [ ];
       description = "Users to sync to Audiobookshelf instance";
     };
+
+    opmlSync = mkOption {
+      type = types.nullOr (types.submodule {
+        options = {
+          enable = mkEnableOption "automatic OPML synchronization from Podsync";
+
+          opmlUrl = mkOption {
+            type = types.str;
+            example = "https://podsync.example.com/podsync.opml";
+            description = "URL to fetch OPML file from (e.g., Podsync)";
+          };
+
+          libraryName = mkOption {
+            type = types.str;
+            default = "Podcasts";
+            description = "Target library name for podcast imports (library and folder IDs auto-detected)";
+          };
+
+          autoDownload = mkOption {
+            type = types.bool;
+            default = true;
+            description = "Enable automatic episode downloads for imported podcasts";
+          };
+
+          interval = mkOption {
+            type = types.str;
+            default = "hourly";
+            description = "Systemd timer interval (e.g., 'hourly', 'daily', '*:0/15' for every 15 min)";
+          };
+        };
+      });
+      default = null;
+      description = "OPML synchronization configuration (e.g., from Podsync)";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -106,7 +140,33 @@ in
       ${pkgs.abs-mgmt}/bin/abs-mgmt sync \
         --base-url "${cfg.baseUrl}" \
         --token "${cfg.apiToken}" \
-        --config-file "${configJson}" || echo "Warning: Audiobookshelf sync failed"
+        --config-file "${configJson}"${optionalString (cfg.opmlSync != null && cfg.opmlSync.enable) '' \
+        --opml-url "${cfg.opmlSync.opmlUrl}" \
+        --opml-library-name "${cfg.opmlSync.libraryName}"${optionalString cfg.opmlSync.autoDownload " --opml-auto-download"}''} || echo "Warning: Audiobookshelf sync failed"
     '';
+
+    # OPML sync service and timer
+    systemd.services.audiobookshelf-opml-sync = mkIf (cfg.opmlSync != null && cfg.opmlSync.enable) {
+      description = "Audiobookshelf OPML synchronization from Podsync";
+      after = [ "network-online.target" ];
+      wants = [ "network-online.target" ];
+
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = "${pkgs.abs-mgmt}/bin/abs-mgmt sync-opml --base-url ${cfg.baseUrl} --token ${cfg.apiToken} --opml-url ${cfg.opmlSync.opmlUrl} --library-name ${cfg.opmlSync.libraryName}${optionalString cfg.opmlSync.autoDownload " --auto-download"}";
+        User = "root";
+      };
+    };
+
+    systemd.timers.audiobookshelf-opml-sync = mkIf (cfg.opmlSync != null && cfg.opmlSync.enable) {
+      description = "Timer for Audiobookshelf OPML synchronization";
+      wantedBy = [ "timers.target" ];
+
+      timerConfig = {
+        OnCalendar = cfg.opmlSync.interval;
+        Persistent = true;
+        RandomizedDelaySec = "5min";
+      };
+    };
   };
 }
