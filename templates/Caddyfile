@@ -62,14 +62,6 @@
 		header_up Host {host}
 	}
 
-	# FlareSolverr proxy server
-	# @flaresolverr host flaresolverr.@externalDomain@
-	# reverse_proxy @flaresolverr @beeIp@:8191 {
-	#	# Enable WebSocket support
-	#	header_up X-Real-IP {remote_host}
-	#	header_up Host {host}
-	# }
-
 	@audiobookshelf host audiobookshelf.@externalDomain@
 	reverse_proxy @audiobookshelf @beeIp@:8000 {
 		# Enable WebSocket support
