@@ -140,6 +140,24 @@ Same as Messenger bridge, but use `@instagrambot:matrix.${externalDomain}` and l
 
 Reference: https://docs.mau.fi/bridges/go/meta/authentication.html
 
+## LinkedIn Bridge (mautrix-linkedin)
+
+### Authentication
+
+Cookie-based authentication (same as Meta bridges):
+
+1. Start chat with: `@linkedinbot:matrix.${externalDomain}`
+2. Send: `login`
+3. Open LinkedIn in private browser window
+4. Open DevTools → Network tab
+5. Filter for "XHR" requests
+6. Login to LinkedIn, search for `graphql`
+7. Right-click a GraphQL request → Copy → Copy as cURL
+8. Paste the cURL command to the bot
+9. Bridge extracts cookies automatically
+
+Reference: https://docs.mau.fi/bridges/go/linkedin/authentication.html
+
 ### Important Notes
 
 - Phone must be online for WhatsApp Web API
