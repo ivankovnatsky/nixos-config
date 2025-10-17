@@ -11,7 +11,7 @@ let
     "mistral:7b"
   ];
 
-  ollamaModelsPath = "/Volumes/Storage/Data/Ollama";
+  ollamaModelsPath = "/Volumes/Storage/Data/.ollama";
 in
 {
   # Set system-wide environment variables for ollama commands
