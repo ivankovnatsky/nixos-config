@@ -21,6 +21,8 @@ let
       externalDomain = config.secrets.externalDomain;
       youtubeApiKey = config.secrets.podsync.youtubeApiKey;
       vimeoApiKey = config.secrets.podsync.vimeoApiKey;
+      ytDlpPath = "${pkgs.yt-dlp}/bin/yt-dlp";
+      miniIp = config.flags.miniIp;
     }
     ''
       substituteAll ${configTomlPath} $out
@@ -47,11 +49,11 @@ in
           mkdir -p ${dbDir}
           mkdir -p ${logDir}
 
-          # Copy processed config to config directory
-          cp ${configToml} ${configDir}/config.toml
+          # Copy processed config to config directory (force to overwrite read-only files)
+          cp -f ${configToml} ${configDir}/config.toml
 
-          # Add yt-dlp, ffmpeg, and deno to PATH
-          export PATH="${pkgs.yt-dlp}/bin:${pkgs.ffmpeg}/bin:${pkgs.deno}/bin:$PATH"
+          # Add ffmpeg and deno to PATH (yt-dlp path is in config)
+          export PATH="${pkgs.ffmpeg}/bin:${pkgs.deno}/bin:$PATH"
 
           # Run podsync with config file
           exec ${pkgs.podsync}/bin/podsync --config=${configDir}/config.toml
