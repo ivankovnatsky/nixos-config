@@ -42,7 +42,7 @@ debug = false
 [feeds.sternenko]
 url = "https://www.youtube.com/@STERNENKO"
 page_size = 50
-update_period = "12h"
+cron_schedule = "0 14 * * *"  # Daily at 14:00 (2:00 PM)
 quality = "high"
 format = "audio"
 opml = true
