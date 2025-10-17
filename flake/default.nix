@@ -11,7 +11,12 @@ in
 }
 // forAllSystems (system:
   let
-    pkgs = import inputs.nixpkgs-darwin-unstable { inherit system; };
+    # Use appropriate nixpkgs for the system (release channels for stability)
+    isDarwin = builtins.match ".*-darwin" system != null;
+    pkgsInput = if isDarwin
+      then inputs.nixpkgs-darwin-release
+      else inputs.nixpkgs-nixos-release;
+    pkgs = import pkgsInput { inherit system; };
   in
   {
     devShells.default = pkgs.mkShell {
