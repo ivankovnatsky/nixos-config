@@ -254,7 +254,7 @@
 	}
 
 	@podsync host podsync.@externalDomain@
-	reverse_proxy @podsync @miniIp@:8080 {
+	reverse_proxy @podsync @miniIp@:8082 {
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
 	}
