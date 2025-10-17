@@ -68,6 +68,10 @@ let
         # Zigbee credentials
         zigbeeUsername = config.secrets.zigbee.username;
         zigbeePassword = config.secrets.zigbee.password;
+
+        # Podsync credentials
+        podsyncUsername = config.secrets.podsync.username;
+        podsyncPassword = config.secrets.podsync.password;
       }
       ''
         substituteAll ${caddyfilePath} $out
