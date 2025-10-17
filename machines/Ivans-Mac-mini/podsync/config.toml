@@ -2,7 +2,7 @@
 # This file is managed by Nix - do not edit manually
 
 [server]
-port = 8080
+port = 8082
 hostname = "https://podsync.@externalDomain@"
 bind_address = "127.0.0.1"
 web_ui = true
