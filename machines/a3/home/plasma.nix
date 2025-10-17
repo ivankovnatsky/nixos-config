@@ -59,6 +59,7 @@
                   "applications:org.kde.plasma-systemmonitor.desktop"
                   "applications:org.kde.spectacle.desktop"
                   "applications:org.kde.kinfocenter.desktop"
+                  "applications:org.kde.krdc.desktop"
                   "applications:systemsettings.desktop"
                 ];
               };
