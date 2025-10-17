@@ -254,16 +254,9 @@
 	}
 
 	@podsync host podsync.@externalDomain@
-	handle @podsync {
-		# Basic authentication for all paths
-		basic_auth /* {
-			@podsyncUsername@ @podsyncPassword@
-		}
-		# Proxy to Podsync
-		reverse_proxy @miniIp@:8082 {
-			header_up X-Real-IP {remote_host}
-			header_up Host {host}
-		}
+	reverse_proxy @podsync @miniIp@:8082 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
 	}
 
 	# Default fallback for wildcard (original behavior)
