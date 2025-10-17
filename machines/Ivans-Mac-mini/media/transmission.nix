@@ -15,9 +15,9 @@
 let
   volumePath = "/Volumes/Storage";
   dataDir = "${volumePath}/Data/.transmission";
-  downloadsDir = "${volumePath}/Data/media/downloads";
-  incompleteDir = "${volumePath}/Data/media/downloads/.incomplete";
-  watchDir = "${volumePath}/Data/media/downloads/watchdir";
+  downloadsDir = "${volumePath}/Data/Media/Downloads";
+  incompleteDir = "${volumePath}/Data/Media/Downloads/.incomplete";
+  watchDir = "${volumePath}/Data/Media/Downloads/Watchdir";
 
   settingsJson = pkgs.writeText "transmission-settings.json" (
     builtins.toJSON {

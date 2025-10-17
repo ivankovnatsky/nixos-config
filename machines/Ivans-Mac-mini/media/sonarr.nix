@@ -32,13 +32,13 @@
 #   * Executables
 #   * Potentially dangerous
 # * Configure media library:
-#   * Series → Add Root Folder → /Volumes/Storage/Data/media/tv
+#   * Series → Add Root Folder → /Volumes/Storage/Data/Media/TV
 
 let
   volumePath = "/Volumes/Storage";
   dataDir = "${volumePath}/Data/.sonarr";
-  tvDir = "${volumePath}/Data/media/tv";
-  downloadsDir = "${volumePath}/Data/media/downloads/tv-sonarr";
+  tvDir = "${volumePath}/Data/Media/TV";
+  downloadsDir = "${volumePath}/Data/Media/Downloads/TV-Sonarr";
 in
 {
   launchd.user.agents.sonarr = {

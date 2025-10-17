@@ -12,13 +12,13 @@
         name = "Movies";
         type = "movies";
         # Co-located with Radarr media on mini
-        paths = [ "/Volumes/Storage/Data/media/movies" ];
+        paths = [ "/Volumes/Storage/Data/Media/Movies" ];
       }
       {
         name = "Shows";
         type = "tvshows";
         # Co-located with Sonarr media on mini
-        paths = [ "/Volumes/Storage/Data/media/tv" ];
+        paths = [ "/Volumes/Storage/Data/Media/TV" ];
       }
     ];
   };

@@ -49,13 +49,19 @@ class ArrClient:
                     raise Exception(
                         f"API error: {message} (Status: {response.status_code})"
                     )
-                except ValueError:
+                except (ValueError, requests.exceptions.JSONDecodeError):
                     print(f"DEBUG: Response text: {response.text}", file=sys.stderr)
                     raise Exception(
                         f"API request failed with status {response.status_code}"
                     )
 
-            return response.json()
+            try:
+                return response.json()
+            except (ValueError, requests.exceptions.JSONDecodeError) as e:
+                print(f"DEBUG: Failed to parse JSON response from {url}", file=sys.stderr)
+                print(f"DEBUG: Response status: {response.status_code}", file=sys.stderr)
+                print(f"DEBUG: Response text: {response.text[:200]}", file=sys.stderr)
+                raise Exception(f"Invalid JSON response: {e}")
         except requests.exceptions.RequestException as e:
             raise Exception(f"Network error: {e}")
 
@@ -134,13 +140,19 @@ class ProwlarrClient:
                     raise Exception(
                         f"API error: {message} (Status: {response.status_code})"
                     )
-                except ValueError:
+                except (ValueError, requests.exceptions.JSONDecodeError):
                     print(f"DEBUG: Response text: {response.text}", file=sys.stderr)
                     raise Exception(
                         f"API request failed with status {response.status_code}"
                     )
 
-            return response.json()
+            try:
+                return response.json()
+            except (ValueError, requests.exceptions.JSONDecodeError) as e:
+                print(f"DEBUG: Failed to parse JSON response from {url}", file=sys.stderr)
+                print(f"DEBUG: Response status: {response.status_code}", file=sys.stderr)
+                print(f"DEBUG: Response text: {response.text[:200]}", file=sys.stderr)
+                raise Exception(f"Invalid JSON response: {e}")
         except requests.exceptions.RequestException as e:
             raise Exception(f"Network error: {e}")
 
@@ -376,9 +388,18 @@ def _sync_downloadclients(client: ArrClient, desired_clients: list, service_type
 
 
 def _sync_rootfolders(client: ArrClient, desired_folders: list, dry_run: bool):
-    """Sync root folders."""
+    """Sync root folders (declarative - delete unmanaged, create missing)."""
     current_folders = {rf["path"]: rf for rf in client.list_rootfolders()}
+    desired_folders_set = set(desired_folders)
 
+    # Delete root folders not in desired config
+    for path, current in current_folders.items():
+        if path not in desired_folders_set:
+            print(f"  DELETE: {path} (not in config)", file=sys.stderr)
+            if not dry_run:
+                client.delete_rootfolder(current["id"])
+
+    # Create missing root folders
     for desired_path in desired_folders:
         if desired_path in current_folders:
             print(f"  OK: {desired_path} (already exists)", file=sys.stderr)
