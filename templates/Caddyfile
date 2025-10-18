@@ -197,6 +197,14 @@
 		}
 	}
 
+	# DNS over HTTPS for bee
+	@dns-bee host dns-bee.@externalDomain@
+	reverse_proxy @dns-bee http://@beeIp@:8053 {
+		# Enable client IP forwarding for EDNS
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
 	# DNS over HTTPS for mini
 	@dns-mini host dns-mini.@externalDomain@
 	reverse_proxy @dns-mini http://@miniIp@:8053 {
@@ -265,6 +273,10 @@
 	# Logging for ACME and DNS services
 	log {
 		output file @logPathPrefix@/caddy/acme-sync.log {
+			roll_size 10MB
+			roll_keep 5
+		}
+		output file @logPathPrefix@/caddy/dns-bee.log {
 			roll_size 10MB
 			roll_keep 5
 		}
