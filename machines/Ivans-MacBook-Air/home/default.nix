@@ -26,7 +26,6 @@
     ../../../home/shell.nix
     ../../../home/starship
     ../../../home/syncthing.nix
-    ../../../home/taskwarrior.nix
     ../../../home/tmux.nix
     ../../../home/vscode.nix
     ../../../home/yt-dlp.nix
