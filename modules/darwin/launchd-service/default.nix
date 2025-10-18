@@ -37,16 +37,15 @@ let
           description = "Command to execute";
         };
 
-        waitForStorage = mkOption {
-          type = types.bool;
-          default = false;
-          description = "Wait for /Volumes/Storage to be mounted before starting";
-        };
-
-        storagePath = mkOption {
-          type = types.str;
-          default = "/Volumes/Storage";
-          description = "Storage volume path to wait for";
+        waitForPath = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+          example = "/Volumes/Storage";
+          description = ''
+            Optional path to wait for before starting the service.
+            Uses /bin/wait4path to block until the path exists.
+            Useful for services that depend on external volumes being mounted.
+          '';
         };
 
         dataDir = mkOption {
@@ -127,10 +126,10 @@ let
         # Create log directory
         mkdir -p ${cfg.logDir}
 
-        ${optionalString cfg.waitForStorage ''
-          echo "Waiting for ${cfg.storagePath}..."
-          /bin/wait4path "${cfg.storagePath}"
-          echo "${cfg.storagePath} is available!"
+        ${optionalString (cfg.waitForPath != null) ''
+          echo "Waiting for ${cfg.waitForPath}..."
+          /bin/wait4path "${cfg.waitForPath}"
+          echo "${cfg.waitForPath} is available!"
         ''}
 
         ${optionalString (cfg.dataDir != null) ''
