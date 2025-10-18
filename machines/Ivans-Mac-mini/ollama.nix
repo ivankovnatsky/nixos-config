@@ -22,35 +22,24 @@ in
   };
 
   # Ollama server running as user agent (port 11434 is non-privileged)
-  launchd.user.agents.ollama = {
-    serviceConfig = {
-      Label = "com.ivankovnatsky.ollama";
-      RunAtLoad = true;
-      KeepAlive = true;
-      StandardOutPath = "/tmp/agents/log/launchd/ollama.log";
-      StandardErrorPath = "/tmp/agents/log/launchd/ollama.error.log";
-      ThrottleInterval = 10;
-
-      ProgramArguments = [
-        "/opt/homebrew/bin/ollama"
-        "serve"
-      ];
-
-      EnvironmentVariables = {
-        HOME = config.users.users.ivan.home;
-        PATH = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin";
-        OLLAMA_MODELS = ollamaModelsPath;
-        OLLAMA_HOST = "${config.flags.miniIp}:11434";
-      };
+  local.launchd.services.ollama = {
+    enable = true;
+    type = "user-agent";
+    waitForPath = config.flags.miniStoragePath;
+    dataDir = ollamaModelsPath;
+    environment = {
+      HOME = config.users.users.ivan.home;
+      PATH = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin";
+      OLLAMA_MODELS = ollamaModelsPath;
+      OLLAMA_HOST = "${config.flags.miniIp}:11434";
     };
+    command = ''
+      /opt/homebrew/bin/ollama serve
+    '';
   };
 
-  # System activation script to set up directories and pull models
+  # System activation script to pull models
   system.activationScripts.ollama.text = ''
-    echo "Setting up Ollama directories..."
-    mkdir -p /tmp/agents/log/launchd
-    mkdir -p ${ollamaModelsPath}
-
     # Set environment variables for ollama
     export OLLAMA_MODELS="${ollamaModelsPath}"
     export OLLAMA_HOST="${config.flags.miniIp}:11434"
