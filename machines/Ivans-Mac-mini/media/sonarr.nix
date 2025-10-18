@@ -35,34 +35,19 @@
 #   * Series → Add Root Folder → /Volumes/Storage/Data/Media/TV
 
 let
-  volumePath = "/Volumes/Storage";
-  dataDir = "${volumePath}/Data/.sonarr";
-  tvDir = "${volumePath}/Data/Media/TV";
-  downloadsDir = "${volumePath}/Data/Media/Downloads/TV-Sonarr";
+  dataDir = "${config.flags.miniStoragePath}/.sonarr";
+  tvDir = "${config.flags.miniStoragePath}/Media/TV";
+  downloadsDir = "${config.flags.miniStoragePath}/Media/Downloads/TV-Sonarr";
 in
 {
-  launchd.user.agents.sonarr = {
-    serviceConfig = {
-      Label = "com.ivankovnatsky.sonarr";
-      RunAtLoad = true;
-      KeepAlive = true;
-      StandardOutPath = "/tmp/agents/log/launchd/sonarr.log";
-      StandardErrorPath = "/tmp/agents/log/launchd/sonarr.error.log";
-      ThrottleInterval = 10;
-    };
-
-    command =
-      let
-        sonarrScript = pkgs.writeShellScriptBin "sonarr-starter" ''
-          /bin/wait4path "${volumePath}"
-
-          mkdir -p ${dataDir}
-          mkdir -p ${tvDir}
-          mkdir -p ${downloadsDir}
-
-          exec ${pkgs.sonarr}/bin/Sonarr -nobrowser -data=${dataDir}
-        '';
-      in
-      "${sonarrScript}/bin/sonarr-starter";
+  local.launchd.services.sonarr = {
+    enable = true;
+    waitForPath = config.flags.miniStoragePath;
+    dataDir = dataDir;
+    extraDirs = [
+      tvDir
+      downloadsDir
+    ];
+    command = "${pkgs.sonarr}/bin/Sonarr -nobrowser -data=${dataDir}";
   };
 }
