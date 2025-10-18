@@ -144,6 +144,12 @@ with lib;
       default = "~";
     };
 
+    miniStoragePath = mkOption {
+      type = types.str;
+      description = "Mac mini external storage data path";
+      default = "/Volumes/Storage/Data";
+    };
+
     hotkeys = {
       terminal = mkOption {
         type = types.enum [

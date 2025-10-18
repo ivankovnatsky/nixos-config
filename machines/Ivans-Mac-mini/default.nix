@@ -11,6 +11,7 @@
     ../../modules/darwin/dnsmasq
     ../../modules/darwin/dock
     ../../modules/darwin/doh-server
+    ../../modules/darwin/launchd-service
     ../../modules/darwin/logrotate
     ../../modules/darwin/pam
     ../../modules/darwin/pmset
