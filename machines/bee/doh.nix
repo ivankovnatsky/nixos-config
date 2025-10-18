@@ -14,4 +14,6 @@
       upstream = [ "udp:127.0.0.1:53" ];
     };
   };
+
+  networking.firewall.allowedTCPPorts = [ 8053 ];
 }
