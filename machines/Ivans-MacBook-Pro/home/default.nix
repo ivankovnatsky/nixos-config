@@ -1,10 +1,10 @@
 {
   imports = [
     # ../../../home/bash.nix
-    ../../../darwin/home/activation.nix
     ../../../darwin/home/flags.nix
     ../../../darwin/home/nixvim.nix
     ../../../darwin/home/packages.nix
+    ../../../modules/home/manual-packages
     ../../../home/amethyst
     ../../../home/bat.nix
     ../../../home/btop.nix
@@ -33,6 +33,7 @@
     ../../../home/yt-dlp.nix
     ../../../modules/flags
     ../../../modules/secrets
+    ./manual-packages.nix
     ./packages.nix
   ];
 }
