@@ -82,62 +82,13 @@ let
 in
 {
   # Configure launchd service for Caddy web server
-  launchd.daemons.caddy = {
-    serviceConfig = {
-      Label = "org.nixos.caddy";
-      RunAtLoad = true;
-      KeepAlive = true;
-      StandardOutPath = "/tmp/log/launchd/caddy.out.log";
-      StandardErrorPath = "/tmp/log/launchd/caddy.error.log";
-      ThrottleInterval = 10; # Restart on failure after 10 seconds
-    };
-
-    # Using command instead of ProgramArguments to utilize wait4path
-    command =
-      let
-        # Create the Caddy starter script that waits for the volume
-        caddyScript = pkgs.writeShellScriptBin "caddy-starter" ''
-          # Wait for the Storage volume to be mounted using the built-in wait4path utility
-          echo "Waiting for ${volumePath} to be available..."
-          /bin/wait4path "${volumePath}"
-
-          echo "${volumePath} is now available!"
-
-          # Wait for network connectivity before starting Caddy
-          echo "Waiting for network connectivity..."
-
-          # Function to check if we have a valid IP address
-          check_network() {
-            # Check if we have a valid IP on en0 (typical main interface on Mac)
-            # that matches our expected IP
-            ip=$(ipconfig getifaddr en0)
-            [ "$ip" = "${bindAddress}" ]
-          }
-
-          # Wait for network connectivity with a timeout
-          TIMEOUT=60
-          COUNTER=0
-          while ! check_network; do
-            if [ $COUNTER -ge $TIMEOUT ]; then
-              echo "Network connectivity timeout after $TIMEOUT seconds!"
-              echo "Starting Caddy anyway, but it may fail to bind to IP addresses..."
-              break
-            fi
-            echo "Waiting for network connectivity... ($COUNTER/$TIMEOUT)"
-            sleep 1
-            COUNTER=$((COUNTER+1))
-          done
-
-          if [ $COUNTER -lt $TIMEOUT ]; then
-            echo "Network connectivity established!"
-          fi
-
-          echo "Starting Caddy server..."
-
-          # Launch caddy with our Caddyfile - specifying the caddyfile adapter
-          exec ${caddyWithPlugins}/bin/caddy run --config ${Caddyfile} --adapter=caddyfile
-        '';
-      in
-      "${caddyScript}/bin/caddy-starter";
+  local.launchd.services.caddy = {
+    enable = true;
+    type = "daemon";
+    waitForPath = volumePath;
+    extraDirs = [ "/tmp/log/caddy" ];
+    command = ''
+      ${caddyWithPlugins}/bin/caddy run --config ${Caddyfile} --adapter=caddyfile
+    '';
   };
 }
