@@ -188,10 +188,10 @@ in
           serviceConfig = {
             Label = "com.ivankovnatsky.tmux-rebuild";
             RunAtLoad = true;
-            KeepAlive = false;
+            KeepAlive = true;
             StandardOutPath = "/tmp/agents/log/launchd/tmux-rebuild.log";
             StandardErrorPath = "/tmp/agents/log/launchd/tmux-rebuild.error.log";
-            ThrottleInterval = 10;
+            ThrottleInterval = 3;
           };
 
           command = "${startTmuxScript}/bin/rebuild-tmux";
@@ -215,8 +215,8 @@ in
             KillMode = "none";
             RemainAfterExit = true;
             ExecStart = "${startTmuxScript}/bin/rebuild-tmux";
-            Restart = "on-failure";
-            RestartSec = 10;
+            Restart = "always";
+            RestartSec = 3;
             StandardOutput = "journal";
             StandardError = "journal";
           };

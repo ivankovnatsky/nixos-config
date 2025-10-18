@@ -36,11 +36,10 @@ in
       serviceConfig = {
         Label = "com.ivankovnatsky.tmux-darwin-config";
         RunAtLoad = true;
-        KeepAlive = false;
+        KeepAlive = true;
         StandardOutPath = "/tmp/agents/log/launchd/tmux-darwin-config.log";
         StandardErrorPath = "/tmp/agents/log/launchd/tmux-darwin-config.error.log";
-        # Restart on failure
-        ThrottleInterval = 10;
+        ThrottleInterval = 3;
       };
 
       # Using command instead of ProgramArguments to automatically utilize wait4path
