@@ -7,8 +7,6 @@
     npm.packages = {
       "@anthropic-ai/claude-code" = "claude";
       "@openai/codex" = "codex";
-      "@google/gemini-cli" = "gemini";
-      "happy-coder" = "happy";
     };
 
     # .npmrc is already provided via `home/npm.nix` for this machine
@@ -18,4 +16,3 @@
     mcp.servers = { };
   };
 }
-
