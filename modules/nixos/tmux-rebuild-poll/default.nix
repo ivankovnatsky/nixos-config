@@ -52,7 +52,7 @@ in
               echo "Starting polling-based rebuild for NixOS..."
               echo "Press Ctrl+C to stop watching."
 
-              REBUILD_CMD="env NIXPKGS_ALLOW_UNFREE=1 nixos-rebuild switch --use-remote-sudo --impure --verbose -L --flake ."
+              REBUILD_CMD="sudo -E NIXPKGS_ALLOW_UNFREE=1 ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch --impure --verbose -L --flake ."
 
               echo ""
               echo "Performing initial build..."
