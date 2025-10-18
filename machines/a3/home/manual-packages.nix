@@ -5,7 +5,7 @@
 
     npm.packages = {
       "@anthropic-ai/claude-code" = "claude";
-      "happy-coder" = "happy";
+      "@openai/codex" = "codex";
     };
 
     mcp.servers = { };
