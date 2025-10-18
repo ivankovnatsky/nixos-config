@@ -136,6 +136,12 @@
 
       # DNS services (check /dns-query endpoint with example query)
       {
+        name = "dns-bee";
+        url = "https://dns-bee.${config.secrets.externalDomain}/dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB";
+        expectedStatus = 200;
+        description = "DNS over HTTPS on bee (bee:8053) - queries www.example.com";
+      }
+      {
         name = "dns-mini";
         url = "https://dns-mini.${config.secrets.externalDomain}/dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB";
         expectedStatus = 200;
