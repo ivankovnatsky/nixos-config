@@ -28,34 +28,19 @@
 #   * Movies → Add Root Folder → /Volumes/Storage/Data/Media/Movies
 
 let
-  volumePath = "/Volumes/Storage";
-  dataDir = "${volumePath}/Data/.radarr";
-  moviesDir = "${volumePath}/Data/Media/Movies";
-  downloadsDir = "${volumePath}/Data/Media/Downloads/Radarr";
+  dataDir = "${config.flags.miniStoragePath}/.radarr";
+  moviesDir = "${config.flags.miniStoragePath}/Media/Movies";
+  downloadsDir = "${config.flags.miniStoragePath}/Media/Downloads/Radarr";
 in
 {
-  launchd.user.agents.radarr = {
-    serviceConfig = {
-      Label = "com.ivankovnatsky.radarr";
-      RunAtLoad = true;
-      KeepAlive = true;
-      StandardOutPath = "/tmp/agents/log/launchd/radarr.log";
-      StandardErrorPath = "/tmp/agents/log/launchd/radarr.error.log";
-      ThrottleInterval = 10;
-    };
-
-    command =
-      let
-        radarrScript = pkgs.writeShellScriptBin "radarr-starter" ''
-          /bin/wait4path "${volumePath}"
-
-          mkdir -p ${dataDir}
-          mkdir -p ${moviesDir}
-          mkdir -p ${downloadsDir}
-
-          exec ${pkgs.radarr}/bin/Radarr -nobrowser -data=${dataDir}
-        '';
-      in
-      "${radarrScript}/bin/radarr-starter";
+  local.launchd.services.radarr = {
+    enable = true;
+    waitForPath = config.flags.miniStoragePath;
+    dataDir = dataDir;
+    extraDirs = [
+      moviesDir
+      downloadsDir
+    ];
+    command = "${pkgs.radarr}/bin/Radarr -nobrowser -data=${dataDir}";
   };
 }
