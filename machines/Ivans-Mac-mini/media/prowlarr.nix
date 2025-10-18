@@ -25,30 +25,13 @@
 # * https://www.reddit.com/r/trackers/comments/1h4l0sa/comment/lzzkwaj/
 
 let
-  volumePath = "/Volumes/Storage";
-  dataDir = "${volumePath}/Data/.prowlarr";
+  dataDir = "${config.flags.miniStoragePath}/.prowlarr";
 in
 {
-  launchd.user.agents.prowlarr = {
-    serviceConfig = {
-      Label = "com.ivankovnatsky.prowlarr";
-      RunAtLoad = true;
-      KeepAlive = true;
-      StandardOutPath = "/tmp/agents/log/launchd/prowlarr.log";
-      StandardErrorPath = "/tmp/agents/log/launchd/prowlarr.error.log";
-      ThrottleInterval = 10;
-    };
-
-    command =
-      let
-        prowlarrScript = pkgs.writeShellScriptBin "prowlarr-starter" ''
-          /bin/wait4path "${volumePath}"
-
-          mkdir -p ${dataDir}
-
-          exec ${pkgs.prowlarr}/bin/Prowlarr -nobrowser -data=${dataDir}
-        '';
-      in
-      "${prowlarrScript}/bin/prowlarr-starter";
+  local.launchd.services.prowlarr = {
+    enable = true;
+    waitForPath = config.flags.miniStoragePath;
+    dataDir = dataDir;
+    command = "${pkgs.prowlarr}/bin/Prowlarr -nobrowser -data=${dataDir}";
   };
 }
