@@ -14,6 +14,7 @@
     ../../../home/mpv.nix
     ../../../home/nixvim
     ../../../home/nixvim/plugins/copilot-lua
+    ../../../home/npm.nix
     ../../../home/rebuild-diff.nix
     ../../../home/scripts.nix
     ../../../home/shell.nix
@@ -21,13 +22,14 @@
     ../../../home/tmux.nix
     ../../../home/tweety.nix
     ../../../modules/flags
+    ../../../modules/home/manual-packages
     ../../../modules/secrets
-    ./activation.nix
     ./btop.nix
     ../../../home/chromium.nix
     ./firefox.nix
     ./flags.nix
     ./gpg.nix
+    ./manual-packages.nix
     ./packages.nix
     ./syncthing.nix
 
