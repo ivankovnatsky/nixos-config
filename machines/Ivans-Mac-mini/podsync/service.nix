@@ -5,8 +5,7 @@
 }:
 
 let
-  volumePath = "/Volumes/Storage";
-  podsyncDir = "${volumePath}/Data/.podsync";
+  podsyncDir = "${config.flags.miniStoragePath}/.podsync";
   configDir = "${podsyncDir}/config";
   dataDir = "${podsyncDir}/data";
   dbDir = "${podsyncDir}/db";
@@ -29,36 +28,22 @@ let
     '';
 in
 {
-  launchd.user.agents.podsync = {
-    serviceConfig = {
-      Label = "com.ivankovnatsky.podsync";
-      RunAtLoad = true;
-      KeepAlive = true;
-      StandardOutPath = "/tmp/agents/log/launchd/podsync.log";
-      StandardErrorPath = "/tmp/agents/log/launchd/podsync.error.log";
-      ThrottleInterval = 10;
-    };
-
-    command =
-      let
-        podsyncScript = pkgs.writeShellScriptBin "podsync-starter" ''
-          /bin/wait4path "${volumePath}"
-
-          mkdir -p ${configDir}
-          mkdir -p ${dataDir}
-          mkdir -p ${dbDir}
-          mkdir -p ${logDir}
-
-          # Copy processed config to config directory (force to overwrite read-only files)
-          cp -f ${configToml} ${configDir}/config.toml
-
-          # Add ffmpeg and deno to PATH (yt-dlp path is in config)
-          export PATH="${pkgs.ffmpeg}/bin:${pkgs.deno}/bin:$PATH"
-
-          # Run podsync with config file
-          exec ${pkgs.podsync}/bin/podsync --config=${configDir}/config.toml
-        '';
-      in
-      "${podsyncScript}/bin/podsync-starter";
+  local.launchd.services.podsync = {
+    enable = true;
+    waitForPath = config.flags.miniStoragePath;
+    dataDir = podsyncDir;
+    extraDirs = [
+      configDir
+      dataDir
+      dbDir
+      logDir
+    ];
+    preStart = ''
+      export PATH="${pkgs.ffmpeg}/bin:${pkgs.deno}/bin:$PATH"
+      cp -f ${configToml} ${configDir}/config.toml
+    '';
+    command = ''
+      ${pkgs.podsync}/bin/podsync --config=${configDir}/config.toml
+    '';
   };
 }
