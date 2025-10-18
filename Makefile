@@ -32,7 +32,6 @@ NIX_EXTRA_FLAGS := --extra-experimental-features flakes --extra-experimental-fea
 
 # Common flags for rebuild commands
 COMMON_REBUILD_FLAGS := --verbose -L --flake .
-NIXOS_EXTRA_FLAGS := --use-remote-sudo
 
 # Default target will run rebuild and start watchman based on platform
 ifeq (${PLATFORM}, Darwin)
@@ -86,12 +85,12 @@ endef
 
 # NixOS rebuild targets
 rebuild-nixos/generic:
-	nixos-rebuild switch $(NIXOS_EXTRA_FLAGS) $(COMMON_REBUILD_FLAGS) && \
+	sudo -E nixos-rebuild switch $(COMMON_REBUILD_FLAGS) && \
 		$(call notify_linux,🟢 NixOS rebuild successful!) || \
 		$(call notify_linux,🔴 NixOS rebuild failed!)
 
 rebuild-nixos/impure:
-	nixos-rebuild switch --impure $(NIXOS_EXTRA_FLAGS) $(COMMON_REBUILD_FLAGS) && \
+	sudo -E nixos-rebuild switch --impure $(COMMON_REBUILD_FLAGS) && \
 		$(call notify_linux,🟢 NixOS rebuild successful!) || \
 		$(call notify_linux,🔴 NixOS rebuild failed!)
 
