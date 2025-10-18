@@ -199,7 +199,7 @@
 
 	# DNS over HTTPS for mini
 	@dns-mini host dns-mini.@externalDomain@
-	reverse_proxy @dns-mini /dns-query http://@miniIp@:8053 {
+	reverse_proxy @dns-mini http://@miniIp@:8053 {
 		# Enable client IP forwarding for EDNS
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
