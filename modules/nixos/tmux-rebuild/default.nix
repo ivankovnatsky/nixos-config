@@ -100,8 +100,8 @@ in
           in
           "${startTmuxScript}/bin/nixos-rebuild-watchman-tmux";
 
-        Restart = "on-failure";
-        RestartSec = 10;
+        Restart = "always";
+        RestartSec = 3;
         StandardOutput = "journal";
         StandardError = "journal";
       };
