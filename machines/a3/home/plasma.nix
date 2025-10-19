@@ -84,7 +84,7 @@
                 launchers = [
                   "applications:org.kde.dolphin.desktop"
                   "applications:kitty.desktop"
-                  "applications:firefox-devedition.desktop"
+                  "applications:firefox.desktop"
                   "applications:chromium-browser.desktop"
                   "applications:steam.desktop"
                   "applications:org.kde.plasma-systemmonitor.desktop"
