@@ -1,18 +1,20 @@
 { pkgs, ... }:
 
+let
+  defaultBrowserDesktop = "firefox.desktop";
+  defaultBrowserBin =  "${pkgs.firefox}/bin/firefox";
+in
 {
   # Default application associations
-
-  # Set Firefox Developer Edition as the default browser
   xdg.mime.defaultApplications = {
-    "text/html" = "firefox-devedition.desktop";
-    "x-scheme-handler/http" = "firefox-devedition.desktop";
-    "x-scheme-handler/https" = "firefox-devedition.desktop";
-    "x-scheme-handler/about" = "firefox-devedition.desktop";
-    "x-scheme-handler/unknown" = "firefox-devedition.desktop";
+    "text/html" = defaultBrowserDesktop;
+    "x-scheme-handler/http" = defaultBrowserDesktop;
+    "x-scheme-handler/https" = defaultBrowserDesktop;
+    "x-scheme-handler/about" = defaultBrowserDesktop;
+    "x-scheme-handler/unknown" = defaultBrowserDesktop;
   };
 
   environment.sessionVariables = {
-    DEFAULT_BROWSER = "${pkgs.nixpkgs-master.firefox-devedition}/bin/firefox";
+    DEFAULT_BROWSER = defaultBrowserBin;
   };
 }
