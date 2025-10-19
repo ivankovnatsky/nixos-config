@@ -1,8 +1,8 @@
 { pkgs, ... }:
 
 let
-  defaultBrowserDesktop = "firefox.desktop";
-  defaultBrowserBin =  "${pkgs.firefox}/bin/firefox";
+  defaultBrowserDesktop = "firefox-devedition.desktop";
+  defaultBrowserBin =  "${pkgs.firefox-devedition}/bin/firefox";
 in
 {
   # Default application associations

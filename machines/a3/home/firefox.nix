@@ -22,14 +22,11 @@ let
 
 in
 {
-  home.packages = [
-    pkgs.tweety
-    pkgs.nixpkgs-master.firefox-devedition
-  ];
+  home.packages = [ pkgs.tweety ];
 
   programs.firefox = {
     enable = true;
-    # package = pkgs.nixpkgs-master.firefox-devedition;
+    package = pkgs.firefox-devedition;
 
     policies = {
       ExtensionSettings = {
