@@ -5,7 +5,7 @@
 }:
 stdenv.mkDerivation rec {
   pname = "tweety";
-  version = "2.1.10";
+  version = "2.2.2";
 
   src =
     let
@@ -16,7 +16,7 @@ stdenv.mkDerivation rec {
       sources = {
         x86_64-linux = {
           url = "https://github.com/pomdtr/tweety/releases/download/v${version}/tweety-${version}-linux_amd64.tar.gz";
-          sha256 = "sha256-8T+Bg2LDBWyAvNRxDIbLG72EE4g4J6hzq9nNvKV4czY=";
+          sha256 = "sha256-llMiQNR0be6NvOksT0jRehpAf8VFMclxxc1/2GGDV3E=";
         };
         aarch64-darwin = {
           url = "https://github.com/pomdtr/tweety/releases/download/v${version}/tweety-${version}-darwin_arm64.tar.gz";
