@@ -1,31 +1,44 @@
 { config, pkgs, ... }:
 
+let
+  commonSettings = {
+    settings = {
+      # Enable vertical tabs
+      "sidebar.verticalTabs" = true;
+
+      # Restore previous session (tabs and windows)
+      "browser.startup.page" = 3;
+
+      # Enable Ctrl+Tab to cycle through recent tabs
+      "browser.ctrlTab.recentlyUsedOrder" = true;
+      "browser.ctrlTab.sortByRecentlyUsed" = true;
+    };
+
+    extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
+      darkreader
+      bitwarden
+    ];
+  };
+
+in
 {
   home.packages = [ pkgs.tweety ];
 
   programs.firefox = {
     enable = true;
-    package = pkgs.nixpkgs-master.firefox-devedition;
-    profiles."dev-edition-default" = {
-      settings = {
-        # Disable extension signature requirement for Tweety
-        "xpinstall.signatures.required" = false;
-
-        # Enable vertical tabs
-        "sidebar.verticalTabs" = true;
-
-        # Restore previous session (tabs and windows)
-        "browser.startup.page" = 3;
-
-        # Enable Ctrl+Tab to cycle through recent tabs
-        "browser.ctrlTab.recentlyUsedOrder" = true;
-        "browser.ctrlTab.sortByRecentlyUsed" = true;
+    # package = pkgs.nixpkgs-master.firefox-devedition;
+    profiles = {
+      "dev-edition-default" = commonSettings // {
+        id = 0;
+        isDefault = true;
+        settings = commonSettings.settings // {
+          # Disable extension signature requirement for Tweety
+          "xpinstall.signatures.required" = false;
+        };
       };
-
-      extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
-        darkreader
-        bitwarden
-      ];
+      "default" = commonSettings // {
+        id = 1;
+      };
     };
   };
 
