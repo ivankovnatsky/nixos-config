@@ -22,17 +22,34 @@ let
 
 in
 {
-  home.packages = [ pkgs.tweety ];
+  home.packages = [
+    pkgs.tweety
+    pkgs.nixpkgs-master.firefox-devedition
+  ];
 
   programs.firefox = {
     enable = true;
     # package = pkgs.nixpkgs-master.firefox-devedition;
+
+    policies = {
+      ExtensionSettings = {
+        "selecttab@ivankovnatsky.net" = {
+          installation_mode = "force_installed";
+          install_url = "file://${config.home.homeDirectory}/.mozilla/firefox/dev-edition-default/extensions/selecttab@ivankovnatsky.net.xpi";
+        };
+        "tweety@pomdtr.me" = {
+          installation_mode = "force_installed";
+          install_url = "file://${config.home.homeDirectory}/.mozilla/firefox/dev-edition-default/extensions/tweety@pomdtr.me.xpi";
+        };
+      };
+    };
+
     profiles = {
       "dev-edition-default" = commonSettings // {
         id = 0;
         isDefault = true;
         settings = commonSettings.settings // {
-          # Disable extension signature requirement for Tweety
+          # Disable extension signature requirement for unsigned extensions
           "xpinstall.signatures.required" = false;
         };
       };
@@ -43,9 +60,14 @@ in
   };
 
   home.file = {
-    # Install Tweety extension manually
     ".mozilla/firefox/dev-edition-default/extensions/tweety@pomdtr.me.xpi" = {
       source = "${pkgs.tweety}/share/extensions/firefox.zip";
+    };
+    ".mozilla/firefox/dev-edition-default/extensions/selecttab@ivankovnatsky.net.xpi" = {
+      source = "${pkgs.firefox-selecttab}/share/extensions/firefox.zip";
+    };
+    ".mozilla/firefox/default/extensions/selecttab@ivankovnatsky.net.xpi" = {
+      source = "${pkgs.firefox-selecttab}/share/extensions/firefox.zip";
     };
   };
 }
