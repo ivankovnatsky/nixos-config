@@ -39,6 +39,7 @@
 
         "PasswordManagerEnabled" = false;
         "RestoreOnStartup" = 1; # 5 = Open New Tab Page 1 = Restore the last session 4 = Open a list of URLs
+        "SearchSuggestEnabled" = false;
         "SpellcheckEnabled" = true;
         "SpellcheckLanguage" = [ "en-US" ];
         "SyncDisabled" = true;
