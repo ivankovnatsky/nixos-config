@@ -1,29 +1,39 @@
 # SMB Password Management
 
-This document describes how to change SMB/CIFS passwords for shared storage access between machines.
+This document describes how to configure and manage SMB/CIFS shares for storage access between machines.
 
 ## Overview
 
-The a3 machine mounts SMB shares from:
+The a3 machine mounts SMB shares from mini machine using macOS built-in File Sharing:
 
-- **bee machine**: Linux Samba share at `//bee/storage`
+- **macOS File Sharing**: Standard SMB port 445
+- **Security**: Uses dedicated sharing-only user `samba` (separate from system user `ivan`)
+- **User Management**: Manually configured in System Settings
+- **File ownership**: All files owned by user `ivan`
 
-## Changing Passwords
+## Configuration
 
-### Bee Machine (Linux/Samba)
+**Mini machine** - Manual user setup required:
 
-To change the SMB password for the `ivan` user on the bee machine:
+1. Create sharing-only user via System Settings → Users & Groups:
+   - Username: `samba`
+   - Password: (from `modules/secrets/default.nix -> secrets.smb.mini.password`)
+   - Shell: `/bin/zsh`
+   - Home: `/Users/samba`
 
-```console
-# Change Samba password for user ivan
-sudo smbpasswd ivan
-```
+2. Enable File Sharing in System Settings → General → Sharing:
+   - Turn on "File Sharing"
+   - Click (i) button → Add folder: `/Volumes/Storage/Data`
+   - Share name: `Storage`
+   - Add user `samba` with Read & Write permissions
 
-You'll be prompted to enter the new password twice.
+**A3 machine** mounts the share configured in `machines/a3/smb.nix`:
+- Mount point: `/mnt/smb/mini-storage`
+- Share: `//ivans-mac-mini.local/Storage`
+- Standard SMB port: 445
+- Credentials: Stored in Nix store (referenced from `modules/secrets/default.nix`)
+- SMB username: `samba` (separate from system user `ivan`)
 
-### Test SMB Connection
+## Notes
 
-```console
-# Test connection to bee share
-smbclient -L //bee -A /etc/nixos/smb-credentials-bee
-```
+- The `samba` user is a sharing-only user managed manually in System Settings
