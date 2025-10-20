@@ -4,6 +4,7 @@
   imports = [
     # ../../../home/bash.nix
     ../../../home/claude.nix
+    ../../../home/gemini.nix
     ../../../home/codex.nix
     ../../../home/gamescope-session.nix
     ../../../home/ghostty.nix
