@@ -28,7 +28,6 @@ in
 
         # Additional macOS apps
         { path = "/System/Applications/Utilities/Terminal.app/"; }
-        { path = "/System/Applications/Passwords.app/"; }
         { path = "/System/Applications/Utilities/Activity Monitor.app/"; }
 
         {
