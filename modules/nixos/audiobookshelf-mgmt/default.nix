@@ -140,9 +140,7 @@ in
       ${pkgs.abs-mgmt}/bin/abs-mgmt sync \
         --base-url "${cfg.baseUrl}" \
         --token "${cfg.apiToken}" \
-        --config-file "${configJson}"${optionalString (cfg.opmlSync != null && cfg.opmlSync.enable) '' \
-        --opml-url "${cfg.opmlSync.opmlUrl}" \
-        --opml-library-name "${cfg.opmlSync.libraryName}"${optionalString cfg.opmlSync.autoDownload " --opml-auto-download"}''} || echo "Warning: Audiobookshelf sync failed"
+        --config-file "${configJson}" || echo "Warning: Audiobookshelf sync failed"
     '';
 
     # OPML sync service and timer

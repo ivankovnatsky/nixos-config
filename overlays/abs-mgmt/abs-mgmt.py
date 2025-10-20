@@ -164,11 +164,10 @@ class AudiobookshelfClient:
 
         return None, None
 
-    def sync_from_file(self, config_file: str, dry_run: bool = False, opml_url: str = None, opml_library_name: str = "Podcasts", opml_auto_download: bool = True):
+    def sync_from_file(self, config_file: str, dry_run: bool = False):
         """
         Sync libraries and users from a JSON configuration file.
         Creates missing items, updates existing ones.
-        Optionally syncs OPML feeds if opml_url is provided.
         """
         try:
             with open(config_file, "r") as f:
@@ -183,10 +182,6 @@ class AudiobookshelfClient:
         # Sync users if present
         if "users" in config:
             self._sync_users(config["users"], dry_run)
-
-        # Sync OPML if URL provided (library name defaults to "Podcasts")
-        if opml_url:
-            self._sync_opml(opml_url, opml_library_name, opml_auto_download, dry_run)
 
     def _sync_libraries(self, libraries_config: list, dry_run: bool = False):
         """Sync libraries from configuration."""
@@ -455,10 +450,7 @@ def cmd_sync(args, client):
     try:
         client.sync_from_file(
             args.config_file,
-            dry_run=args.dry_run,
-            opml_url=getattr(args, 'opml_url', None),
-            opml_library_name=getattr(args, 'opml_library_name', None),
-            opml_auto_download=getattr(args, 'opml_auto_download', True)
+            dry_run=args.dry_run
         )
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
@@ -541,14 +533,6 @@ def main():
         "--dry-run",
         action="store_true",
         help="Show what would be changed without making changes",
-    )
-    sync_parser.add_argument("--opml-url", help="Optional: Podsync OPML URL to sync")
-    sync_parser.add_argument("--opml-library-name", default="Podcasts", help="Optional: Target library name for OPML sync (default: Podcasts)")
-    sync_parser.add_argument(
-        "--opml-auto-download",
-        action="store_true",
-        default=True,
-        help="Enable automatic episode downloads for OPML sync (default: true)",
     )
 
     # Sync OPML command (from Podsync)
