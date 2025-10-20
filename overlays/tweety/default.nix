@@ -20,7 +20,7 @@ stdenv.mkDerivation rec {
         };
         aarch64-darwin = {
           url = "https://github.com/pomdtr/tweety/releases/download/v${version}/tweety-${version}-darwin_arm64.tar.gz";
-          sha256 = "sha256-0ubtR67K/+S246PDWkIl/ABiAllXCjrjUgCvaBKOgdU=";
+          sha256 = "sha256-k1o1AkbNoCdbjJ9/Z7gHFZzioaKA1oZU6oHLL7Xxb9o=";
         };
       };
 
