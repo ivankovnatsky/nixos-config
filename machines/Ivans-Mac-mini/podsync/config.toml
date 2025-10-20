@@ -42,7 +42,7 @@ debug = false
 [feeds.sternenko]
 url = "https://www.youtube.com/@STERNENKO"
 page_size = 50
-cron_schedule = "0 14 * * *"  # Daily at 14:00 (2:00 PM)
+cron_schedule = "48 13 * * *"
 quality = "high"
 format = "audio"
 opml = true
@@ -51,7 +51,7 @@ clean = { keep_last = 10 }
 [feeds.tze_vzhe_bulo]
 url = "https://www.youtube.com/@tze_vzhe_bulo"
 page_size = 3
-cron_schedule = "0 14 * * *"  # Daily at 14:00 (2:00 PM)
+cron_schedule = "34 0 * * *"
 quality = "high"
 format = "audio"
 opml = true
