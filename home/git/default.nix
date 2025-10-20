@@ -43,12 +43,12 @@
       "**/claude/"
       "**/.serena"
     ];
-    # delta = {
-    #   enable = true;
-    #   options = {
-    #     features = "interactive";
-    #   };
-    # };
+    delta = {
+      enable = true;
+      options = {
+        features = "interactive";
+      };
+    };
     # diff-highlight.enable = true;
     # difftastic.enable = true;
     # diff-so-fancy.enable = true;
