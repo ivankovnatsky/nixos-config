@@ -9,6 +9,7 @@
     ../../../home/bat.nix
     ../../../home/btop.nix
     ../../../home/claude.nix
+    ../../../home/gemini.nix
     ../../../home/direnv.nix
     ../../../home/ghostty.nix
     ../../../home/git
