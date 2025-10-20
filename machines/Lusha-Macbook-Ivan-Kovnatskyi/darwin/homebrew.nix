@@ -22,7 +22,6 @@
       "chromium"
       "cursor"
       "dbeaver-community"
-      "firefox"
       "firefox@developer-edition"
       {
         name = "ghostty@tip";
