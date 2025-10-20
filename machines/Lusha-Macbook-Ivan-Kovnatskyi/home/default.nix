@@ -8,6 +8,7 @@
     ../../../home/btop.nix
     ../../../home/claude.nix
     # ../../../home/codex.nix
+    ../../../home/gemini.nix
     ../../../home/direnv.nix
     ../../../home/ghorg.nix
     ../../../home/ghostty.nix
