@@ -20,5 +20,6 @@
     ../../modules/secrets
     ../../system/documentation.nix
     ../../system/nix.nix
+    ../../system/scripts
   ];
 }
