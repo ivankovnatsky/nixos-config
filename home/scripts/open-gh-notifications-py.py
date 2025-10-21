@@ -63,19 +63,30 @@ def fetch_notifications() -> List[Notification]:
     return notifications
 
 
-def to_html_url(n: Notification) -> Tuple[str, bool]:
-    """Return (url, is_pr) for supported types by converting API URL to HTML URL."""
+def resolve_html_url(n: Notification) -> str:
+    """Resolve a browser URL for a notification subject.
+
+    Tries `gh api <subject.url> --jq .html_url` first (works for PR, Issue,
+    WorkflowRun, etc). Falls back to simple API->HTML URL conversion.
+    """
     api = n.subject_api_url
     if not api:
-        return ("", False)
-    # Convert API URL to web URL
-    # https://api.github.com/repos/OWNER/REPO/issues/123 -> https://github.com/OWNER/REPO/issues/123
-    # https://api.github.com/repos/OWNER/REPO/pulls/123  -> https://github.com/OWNER/REPO/pull/123
+        return ""
+
+    # First try to fetch the object's html_url via gh (most objects provide it)
+    try:
+        html = run_gh(["api", api, "--jq", ".html_url // empty"]).strip()
+        if html:
+            return html
+    except Exception:
+        # Ignore and fall back
+        pass
+
+    # Fallback: Convert API URL to web URL
     url = api.replace("api.github.com/repos", "github.com")
-    is_pr = n.subject_type == "PullRequest"
-    if is_pr:
-        url = url.replace("/pulls/", "/pull/")
-    return (url, is_pr)
+    # Normalize PR path
+    url = url.replace("/pulls/", "/pull/")
+    return url
 
 
 def open_in_browser(url: str) -> bool:
@@ -98,22 +109,27 @@ def mark_thread_read(thread_id: str) -> None:
     ])
 
 
-def group_urls(ns: Iterable[Notification]) -> Tuple[List[Tuple[str, str]], List[Tuple[str, str]]]:
-    """Return (issues, prs) where each is list of (url, thread_id)."""
+def group_urls(ns: Iterable[Notification]) -> Tuple[List[Tuple[str, str]], List[Tuple[str, str]], List[Tuple[str, str]]]:
+    """Return (issues, prs, others) each as list of (url, thread_id).
+
+    - PRs will later open with /files
+    - Others include Actions workflow runs and any supported subject with html_url
+    """
     issue_urls: List[Tuple[str, str]] = []
     pr_urls: List[Tuple[str, str]] = []
+    other_urls: List[Tuple[str, str]] = []
 
     for n in ns:
-        if n.subject_type not in ("Issue", "PullRequest"):
-            continue
-        url, is_pr = to_html_url(n)
+        url = resolve_html_url(n)
         if not url:
             continue
-        if is_pr:
+        if n.subject_type == "PullRequest":
             pr_urls.append((url, n.thread_id))
-        else:
+        elif n.subject_type == "Issue":
             issue_urls.append((url, n.thread_id))
-    return issue_urls, pr_urls
+        else:
+            other_urls.append((url, n.thread_id))
+    return issue_urls, pr_urls, other_urls
 
 
 def main(argv: List[str]) -> int:
@@ -138,8 +154,8 @@ def main(argv: List[str]) -> int:
         print(f"Failed to fetch notifications via gh: {e}", file=sys.stderr)
         return 1
 
-    issues, prs = group_urls(notifications)
-    all_urls = [u for u, _ in issues] + [u for u, _ in prs]
+    issues, prs, others = group_urls(notifications)
+    all_urls = [u for u, _ in issues] + [u for u, _ in prs] + [u for u, _ in others]
 
     if not all_urls:
         print("No notifications found.")
@@ -153,7 +169,7 @@ def main(argv: List[str]) -> int:
         print("Would open URLs in a new browser window")
         return 0
 
-    # Open issues first, then PRs on /files
+    # Open issues first, then PRs on /files, then other types (e.g., Actions runs)
     for url, thread_id in issues:
         opened = open_in_browser(url)
         if opened:
@@ -170,10 +186,17 @@ def main(argv: List[str]) -> int:
             except Exception as e:
                 print(f"Warning: failed to mark thread {thread_id} read: {e}", file=sys.stderr)
 
+    for url, thread_id in others:
+        opened = open_in_browser(url)
+        if opened:
+            try:
+                mark_thread_read(thread_id)
+            except Exception as e:
+                print(f"Warning: failed to mark thread {thread_id} read: {e}", file=sys.stderr)
+
     print("Opening URLs in a new browser window")
     return 0
 
 
 if __name__ == "__main__":
     raise SystemExit(main(sys.argv[1:]))
-
