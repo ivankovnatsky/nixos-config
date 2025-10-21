@@ -25,6 +25,36 @@
                 "transform": "Normal",
                 "vrrPolicy": "Automatic",
                 "wideColorGamut": false
+            },
+            {
+                "allowDdcCi": true,
+                "allowSdrSoftwareBrightness": true,
+                "autoRotation": "InTabletMode",
+                "brightness": 1,
+                "colorPowerTradeoff": "PreferEfficiency",
+                "colorProfileSource": "sRGB",
+                "connectorName": "HDMI-A-1",
+                "detectedDdcCi": false,
+                "edidHash": "5776d284b619c8879a2826ec76b21e5f",
+                "edidIdentifier": "DEL 16590 859387468 36 2016 0",
+                "edrPolicy": "always",
+                "highDynamicRange": false,
+                "iccProfilePath": "",
+                "maxBitsPerColor": 0,
+                "mode": {
+                    "height": 2160,
+                    "refreshRate": 60000,
+                    "width": 3840
+                },
+                "overscan": 0,
+                "rgbRange": "Automatic",
+                "scale": 2,
+                "sdrBrightness": 200,
+                "sdrGamutWideness": 0,
+                "transform": "Normal",
+                "uuid": "3e9606ac-3259-4343-8947-709d7688e54b",
+                "vrrPolicy": "Never",
+                "wideColorGamut": false
             }
         ],
         "name": "outputs"
@@ -41,7 +71,23 @@
                             "x": 0,
                             "y": 0
                         },
-                        "priority": 0
+                        "priority": 0,
+                        "replicationSource": ""
+                    }
+                ]
+            },
+            {
+                "lidClosed": false,
+                "outputs": [
+                    {
+                        "enabled": true,
+                        "outputIndex": 1,
+                        "position": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "priority": 0,
+                        "replicationSource": ""
                     }
                 ]
             }
