@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import argparse
+import json
+import re
 import subprocess
 import sys
 import webbrowser
@@ -13,6 +15,8 @@ class Notification:
     thread_id: str
     subject_type: str
     subject_api_url: str
+    repo_full_name: str
+    subject_title: str
 
 
 def run_gh(args: List[str]) -> str:
@@ -32,8 +36,8 @@ def run_gh(args: List[str]) -> str:
 
 def fetch_notifications() -> List[Notification]:
     """Fetch unread notifications via gh api, returning basic fields per thread."""
-    # Using --jq to avoid streaming-JSON parsing; returns TSV: id, type, subject.url
-    jq = ".[] | [.id, .subject.type, .subject.url] | @tsv"
+    # Using --jq to avoid streaming-JSON parsing; returns TSV: id, type, url, repo, title
+    jq = ".[] | [.id, .subject.type, .subject.url // \"\", .repository.full_name, .subject.title] | @tsv"
     out = run_gh([
         "api",
         "/notifications",
@@ -49,27 +53,93 @@ def fetch_notifications() -> List[Notification]:
         if not line.strip():
             continue
         parts = line.split("\t")
-        if len(parts) != 3:
+        if len(parts) != 5:
             # Skip malformed lines rather than crashing
             continue
-        thread_id, subject_type, subject_api_url = parts
+        thread_id, subject_type, subject_api_url, repo_full_name, subject_title = parts
         notifications.append(
             Notification(
                 thread_id=thread_id.strip(),
                 subject_type=subject_type.strip(),
                 subject_api_url=subject_api_url.strip(),
+                repo_full_name=repo_full_name.strip(),
+                subject_title=subject_title.strip(),
             )
         )
     return notifications
+
+
+def _resolve_check_suite_by_workflow_name(repo_full_name: str, workflow_name: str) -> str:
+    """Find recent workflow run matching the given name.
+
+    For CheckSuite notifications without a subject.url, query recent workflow runs
+    and match by workflow name to get the html_url.
+    """
+    try:
+        # Extract workflow name from notification title (e.g., "Terragrunt CI - PR | ...")
+        # Query recent workflow runs
+        runs_json = run_gh([
+            "api",
+            f"/repos/{repo_full_name}/actions/runs",
+            "--jq",
+            ".workflow_runs[0:10] | .[] | {name: .name, html_url: .html_url}",
+        ])
+
+        # Parse JSON lines and find matching workflow
+        for line in runs_json.splitlines():
+            if not line.strip():
+                continue
+            try:
+                run_data = json.loads(line)
+                if run_data.get("name") == workflow_name:
+                    return run_data.get("html_url", "")
+            except json.JSONDecodeError:
+                continue
+
+        return ""
+    except Exception:
+        return ""
+
+
+def _resolve_check_suite_url_fallback(api: str) -> str:
+    """Construct a UI URL for a Check Suite when html_url is missing."""
+    m = re.match(r"https://api\.github\.com/repos/([^/]+)/([^/]+)/check-suites/(\d+)", api)
+    if not m:
+        return ""
+    owner, repo, suite_id = m.groups()
+    try:
+        sha = run_gh(["api", api, "--jq", ".head_sha // empty"]).strip()
+        if not sha:
+            return ""
+        return f"https://github.com/{owner}/{repo}/commit/{sha}/checks?check_suite_id={suite_id}"
+    except Exception:
+        return ""
 
 
 def resolve_html_url(n: Notification) -> str:
     """Resolve a browser URL for a notification subject.
 
     Tries `gh api <subject.url> --jq .html_url` first (works for PR, Issue,
-    WorkflowRun, etc). Falls back to simple API->HTML URL conversion.
+    WorkflowRun, etc). Falls back to workflow run matching for CheckSuite
+    notifications, then to simple API->HTML URL conversion.
     """
     api = n.subject_api_url
+
+    # Special case: CheckSuite with null subject.url
+    if not api and n.subject_type == "CheckSuite":
+        # Extract workflow name from title
+        # Title format: "<workflow_name> workflow run <status> for <branch>"
+        # Extract everything before " workflow run"
+        workflow_name = n.subject_title
+        if " workflow run" in workflow_name:
+            workflow_name = workflow_name.split(" workflow run")[0].strip()
+
+        workflow_url = _resolve_check_suite_by_workflow_name(n.repo_full_name, workflow_name)
+        if workflow_url:
+            return workflow_url
+        # Final fallback for CheckSuite: open Actions page
+        return f"https://github.com/{n.repo_full_name}/actions"
+
     if not api:
         return ""
 
@@ -82,7 +152,12 @@ def resolve_html_url(n: Notification) -> str:
         # Ignore and fall back
         pass
 
-    # Fallback: Convert API URL to web URL
+    # Fallback: special-case Check Suite (no html_url in some responses)
+    check_suite_url = _resolve_check_suite_url_fallback(api)
+    if check_suite_url:
+        return check_suite_url
+
+    # Generic fallback: Convert API URL to web URL
     url = api.replace("api.github.com/repos", "github.com")
     # Normalize PR path
     url = url.replace("/pulls/", "/pull/")
