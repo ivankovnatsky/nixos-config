@@ -83,6 +83,7 @@
     opsy
     oras
     parallel
+    perplexity
     pigz
     pnpm
     poetry
