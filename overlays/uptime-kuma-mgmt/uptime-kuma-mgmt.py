@@ -35,6 +35,19 @@ class UptimeKumaClient:
         except:
             pass
 
+    def enable_trust_proxy(self):
+        """Enable Trust Proxy setting for reverse proxy support."""
+        try:
+            current_settings = self.api.get_settings()
+            if not current_settings.get("trustProxy"):
+                print("Enabling Trust Proxy setting...", file=sys.stderr)
+                self.api.set_settings(trustProxy=True)
+                print("Trust Proxy enabled successfully", file=sys.stderr)
+            else:
+                print("Trust Proxy already enabled", file=sys.stderr)
+        except Exception as e:
+            raise Exception(f"Failed to enable trust proxy: {e}")
+
     def list_monitors(self):
         """List all monitors."""
         try:
@@ -88,6 +101,10 @@ class UptimeKumaClient:
 
         if "monitors" not in config:
             raise ValueError('Config file must contain "monitors" array')
+
+        # Always enable trust proxy for reverse proxy support
+        if not dry_run:
+            self.enable_trust_proxy()
 
         desired_monitors = {m["name"]: m for m in config["monitors"]}
         current_monitors = {m["name"]: m for m in self.list_monitors()}
