@@ -19,7 +19,7 @@
 
     ./networking.nix
     ./nixpkgs.nix
-    ./nvidia.nix
+    # ./nvidia.nix
     ./power-management.nix
     ./security.nix
     # ./smb.nix
