@@ -7,7 +7,7 @@ Supports listing, creating, updating, and deleting monitors via declarative conf
 import sys
 import json
 import argparse
-from uptime_kuma_api import UptimeKumaApi, MonitorType
+from uptime_kuma_api import UptimeKumaApi, MonitorType, NotificationType
 
 USER_AGENT = "uptime-kuma-mgmt/1.0.0"
 
@@ -47,6 +47,39 @@ class UptimeKumaClient:
                 print("Trust Proxy already enabled", file=sys.stderr)
         except Exception as e:
             raise Exception(f"Failed to enable trust proxy: {e}")
+
+    def setup_discord_notification(self, webhook_url: str, name: str = "Discord"):
+        """Setup Discord notification with default settings."""
+        try:
+            # Check if notification already exists
+            notifications = self.api.get_notifications()
+            existing = next((n for n in notifications if n["name"] == name), None)
+
+            notification_config = {
+                "name": name,
+                "type": NotificationType.DISCORD,
+                "isDefault": True,
+                "applyExisting": True,
+                "discordWebhookUrl": webhook_url,
+            }
+
+            if existing:
+                notification_id = existing["id"]
+                # Check if update is needed
+                if (existing.get("discordWebhookUrl") != webhook_url or
+                    not existing.get("isDefault") or
+                    existing.get("type") != NotificationType.DISCORD):
+                    print(f"Updating notification: {name}", file=sys.stderr)
+                    self.api.edit_notification(notification_id, **notification_config)
+                    print(f"Notification '{name}' updated successfully", file=sys.stderr)
+                else:
+                    print(f"Notification '{name}' already configured", file=sys.stderr)
+            else:
+                print(f"Creating notification: {name}", file=sys.stderr)
+                self.api.add_notification(**notification_config)
+                print(f"Notification '{name}' created successfully", file=sys.stderr)
+        except Exception as e:
+            raise Exception(f"Failed to setup Discord notification: {e}")
 
     def list_monitors(self):
         """List all monitors."""
@@ -88,7 +121,7 @@ class UptimeKumaClient:
         except Exception as e:
             raise Exception(f"Failed to delete monitor: {e}")
 
-    def sync_from_file(self, config_file: str, dry_run: bool = False):
+    def sync_from_file(self, config_file: str, dry_run: bool = False, discord_webhook: str = None):
         """
         Sync monitors from a JSON configuration file.
         Creates missing monitors, updates existing ones, deletes extras.
@@ -105,6 +138,10 @@ class UptimeKumaClient:
         # Always enable trust proxy for reverse proxy support
         if not dry_run:
             self.enable_trust_proxy()
+
+            # Setup Discord notification if webhook URL is provided
+            if discord_webhook:
+                self.setup_discord_notification(discord_webhook)
 
         desired_monitors = {m["name"]: m for m in config["monitors"]}
         current_monitors = {m["name"]: m for m in self.list_monitors()}
@@ -343,7 +380,11 @@ def cmd_get(args, client):
 def cmd_sync(args, client):
     """Sync monitors from configuration file."""
     try:
-        client.sync_from_file(args.config_file, dry_run=args.dry_run)
+        client.sync_from_file(
+            args.config_file,
+            dry_run=args.dry_run,
+            discord_webhook=args.discord_webhook
+        )
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
@@ -386,6 +427,9 @@ def main():
     sync_parser.add_argument("--password", required=True, help="Password")
     sync_parser.add_argument(
         "--config-file", required=True, help="JSON configuration file"
+    )
+    sync_parser.add_argument(
+        "--discord-webhook", help="Discord webhook URL for notifications"
     )
     sync_parser.add_argument(
         "--dry-run",

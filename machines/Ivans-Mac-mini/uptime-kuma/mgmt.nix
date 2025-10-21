@@ -2,7 +2,7 @@
 
 {
   # Uptime Kuma declarative monitor management
-  # Automatically syncs monitors from Nix configuration on system activation
+  # Automatically syncs monitors and Discord notifications from Nix configuration on system activation
   #
   # Manual operations:
   # - List monitors: uptime-kuma-mgmt list --base-url https://uptime.${config.secrets.externalDomain} --username ${config.secrets.uptimeKuma.username} --password ${config.secrets.uptimeKuma.password}
@@ -11,13 +11,14 @@
   # Initial setup required:
   # 1. Access https://uptime.${config.secrets.externalDomain}
   # 2. Create admin account matching credentials in config.secrets.uptimeKuma
-  # 3. Monitors will auto-sync on next rebuild
+  # 3. Monitors and Discord notifications will auto-sync on next rebuild
 
   local.services.uptime-kuma-mgmt = {
     enable = true;
     baseUrl = "https://uptime.${config.secrets.externalDomain}";
     username = config.secrets.uptimeKuma.username;
     password = config.secrets.uptimeKuma.password;
+    discordWebhook = config.secrets.discordWebHook;
 
     monitors = [
       # Media Stack (mini)
