@@ -19,6 +19,7 @@
     ../../../home/nixvim/plugins/copilot-lua
     ../../../home/npm.nix
     ../../../home/rebuild-diff.nix
+    ../../../home/scripts.nix
     ../../../home/shell.nix
     ../../../home/starship
     ../../../home/tmux.nix
