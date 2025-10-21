@@ -24,7 +24,6 @@
     ../../../home/npm.nix
     ../../../home/pass.nix
     ../../../home/rebuild-diff.nix
-    ../../../home/scripts.nix
     ../../../home/shell.nix
     ../../../home/starship
     ../../../home/syncthing.nix

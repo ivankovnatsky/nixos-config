@@ -12,6 +12,7 @@
     ../../../modules/secrets
     ../../../system/documentation.nix
     ../../../system/nix.nix
+    ../../../system/scripts
     ./dock.nix
     ./flags.nix
     ./fonts.nix

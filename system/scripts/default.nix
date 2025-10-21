@@ -1,7 +1,7 @@
 { pkgs, lib, ... }:
 let
-  scriptFiles = builtins.readDir ./scripts;
-  scriptPath = ./scripts;
+  scriptFiles = builtins.readDir ../../scripts;
+  scriptPath = ../../scripts;
 
   # Define your aliases here as an attribute set
   # Format: "original-name" = [ "alias1" "alias2" ... ]
@@ -43,19 +43,7 @@ let
     map (alias: createAlias originalDerivation alias) aliases;
 
   allAliases = lib.flatten (map makeAliases scriptNames);
-
-  # Create an attribute set mapping script names to their derivations
-  scriptDerivations = builtins.listToAttrs (
-    map (script: {
-      name = lib.removeSuffix ".sh" script;
-      value = builtins.head (
-        builtins.filter (p: p.name == lib.removeSuffix ".sh" script) scriptPackages
-      );
-    }) scriptNames
-  );
 in
 {
-  home.packages = scriptPackages ++ allAliases;
-  # Export the script derivations for use in other modules
-  _module.args.scripts = scriptDerivations;
+  environment.systemPackages = scriptPackages ++ allAliases;
 }
