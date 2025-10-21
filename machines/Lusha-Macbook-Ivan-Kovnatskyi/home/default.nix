@@ -1,5 +1,6 @@
 {
   imports = [
+    ../../../home/scripts.nix
     ../../../home/aichat-server.nix
     ../../../home/aichat.nix
     # ../../../home/aider.nix
