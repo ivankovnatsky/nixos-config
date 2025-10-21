@@ -102,6 +102,12 @@ in
       default = [ ];
       description = "Monitors to configure in Uptime Kuma";
     };
+
+    discordWebhook = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "Discord webhook URL for notifications (optional)";
+    };
   };
 
   config = mkMerge [
@@ -113,7 +119,8 @@ in
           --base-url "${cfg.baseUrl}" \
           --username "${cfg.username}" \
           --password "${cfg.password}" \
-          --config-file "${configJson}" || echo "Warning: Uptime Kuma sync failed"
+          --config-file "${configJson}" \
+          ${optionalString (cfg.discordWebhook != null) ''--discord-webhook "${cfg.discordWebhook}"''} || echo "Warning: Uptime Kuma sync failed"
       '';
     })
 
@@ -126,7 +133,8 @@ in
             --base-url "${cfg.baseUrl}" \
             --username "${cfg.username}" \
             --password "${cfg.password}" \
-            --config-file "${configJson}" || echo "Warning: Uptime Kuma sync failed"
+            --config-file "${configJson}" \
+            ${optionalString (cfg.discordWebhook != null) ''--discord-webhook "${cfg.discordWebhook}"''} || echo "Warning: Uptime Kuma sync failed"
         '';
       };
     })
