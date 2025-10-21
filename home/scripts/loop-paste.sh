@@ -7,6 +7,16 @@ fi
 
 filename="$1"
 
+# Detect clipboard command
+if command -v pbpaste &>/dev/null; then
+  PASTE_CMD="pbpaste"
+elif command -v wl-paste &>/dev/null; then
+  PASTE_CMD="wl-paste"
+else
+  echo "Error: No clipboard tool found (pbpaste or wl-paste)" >&2
+  exit 1
+fi
+
 # Create file if it doesn't exist
 touch "$filename"
 
@@ -14,7 +24,7 @@ touch "$filename"
 paste_loop() {
   while true; do
     sleep 1
-    paste_content="$(pbpaste)"
+    paste_content="$($PASTE_CMD)"
     if ! grep -Fxq "$paste_content" "$filename" 2>/dev/null; then
       echo "$paste_content" >>"$filename"
     fi
