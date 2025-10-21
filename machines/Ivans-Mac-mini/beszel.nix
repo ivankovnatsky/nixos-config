@@ -35,6 +35,7 @@ in
     enable = true;
     email = config.secrets.beszel.email;
     password = config.secrets.beszel.password;
+    discordWebhook = config.secrets.discordWebHook;
     systems = [
       {
         name = "bee";

@@ -55,6 +55,12 @@ in
       default = [ ];
       description = "List of systems to sync to Beszel hub";
     };
+
+    discordWebhook = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "Discord webhook URL for notifications (optional)";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -64,7 +70,8 @@ in
         --base-url "${cfg.baseUrl}" \
         --email "${cfg.email}" \
         --password "${cfg.password}" \
-        --config-file "${beszelConfig}" || echo "Warning: Beszel update failed"
+        --config-file "${beszelConfig}" \
+        ${optionalString (cfg.discordWebhook != null) ''--discord-webhook "${cfg.discordWebhook}"''} || echo "Warning: Beszel update failed"
     '';
   };
 }

@@ -6,6 +6,7 @@ Supports listing, creating, updating, and deleting systems (machines).
 
 import sys
 import json
+import re
 import requests
 import argparse
 
@@ -90,6 +91,16 @@ class BeszelClient:
         except requests.exceptions.RequestException as e:
             raise Exception(f"Network error: {e}")
 
+    @staticmethod
+    def _discord_webhook_to_shoutrrr(webhook_url: str) -> str:
+        """Convert Discord webhook URL to Shoutrrr format."""
+        pattern = r"https://discord\.com/api/webhooks/(\d+)/([A-Za-z0-9_-]+)"
+        match = re.match(pattern, webhook_url)
+        if not match:
+            raise ValueError(f"Invalid Discord webhook URL format: {webhook_url}")
+        webhook_id, token = match.groups()
+        return f"discord://{token}@{webhook_id}"
+
     def list_systems(self):
         """List all systems."""
         data = self._api_call("GET", "/api/collections/systems/records")
@@ -130,7 +141,78 @@ class BeszelClient:
         """Delete a system."""
         return self._api_call("DELETE", f"/api/collections/systems/records/{system_id}")
 
-    def sync_from_file(self, config_file: str, dry_run: bool = False):
+    def get_user_settings(self):
+        """Get user notification settings."""
+        data = self._api_call(
+            "GET",
+            f"/api/collections/user_settings/records?filter=user='{self.user_id}'"
+        )
+        items = data.get("items", [])
+        if not items:
+            return None
+        return items[0]
+
+    def setup_discord_notification(self, discord_webhook_url: str):
+        """Setup Discord notification via Shoutrrr webhook."""
+        try:
+            # Convert Discord webhook URL to Shoutrrr format
+            shoutrrr_url = self._discord_webhook_to_shoutrrr(discord_webhook_url)
+
+            # Get current user settings
+            user_settings = self.get_user_settings()
+
+            if user_settings:
+                # Parse existing settings
+                settings = user_settings.get("settings", {})
+                if isinstance(settings, str):
+                    settings = json.loads(settings)
+
+                webhooks = settings.get("webhooks", [])
+                emails = settings.get("emails", [])
+
+                # Check if webhook already exists
+                if shoutrrr_url in webhooks:
+                    print(f"Discord webhook already configured", file=sys.stderr)
+                    return
+
+                # Add Discord webhook
+                webhooks.append(shoutrrr_url)
+                print(f"Adding Discord webhook to existing settings", file=sys.stderr)
+
+                # Update user settings
+                updated_settings = {
+                    "emails": emails,
+                    "webhooks": webhooks
+                }
+
+                self._api_call(
+                    "PATCH",
+                    f"/api/collections/user_settings/records/{user_settings['id']}",
+                    data={"settings": updated_settings}
+                )
+                print(f"Discord webhook configured successfully", file=sys.stderr)
+            else:
+                # Create new user settings
+                print(f"Creating new user settings with Discord webhook", file=sys.stderr)
+                settings = {
+                    "emails": [],
+                    "webhooks": [shoutrrr_url]
+                }
+
+                self._api_call(
+                    "POST",
+                    "/api/collections/user_settings/records",
+                    data={
+                        "user": self.user_id,
+                        "settings": settings
+                    }
+                )
+                print(f"Discord webhook configured successfully", file=sys.stderr)
+
+        except Exception as e:
+            raise Exception(f"Failed to setup Discord notification: {e}")
+
+    def sync_from_file(self, config_file: str, dry_run: bool = False, discord_webhook: str = None):
         """
         Sync systems from a JSON configuration file.
         Creates missing systems, updates existing ones, deletes extras.
@@ -143,6 +225,10 @@ class BeszelClient:
 
         if "systems" not in config:
             raise ValueError('Config file must contain "systems" array')
+
+        # Setup Discord notification if webhook URL is provided
+        if discord_webhook and not dry_run:
+            self.setup_discord_notification(discord_webhook)
 
         desired_systems = {s["name"]: s for s in config["systems"]}
         current_systems = {s["name"]: s for s in self.list_systems()}
@@ -259,7 +345,11 @@ def cmd_delete(args, client):
 def cmd_sync(args, client):
     """Sync systems from configuration file."""
     try:
-        client.sync_from_file(args.config_file, dry_run=args.dry_run)
+        client.sync_from_file(
+            args.config_file,
+            dry_run=args.dry_run,
+            discord_webhook=args.discord_webhook
+        )
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
@@ -328,6 +418,9 @@ def main():
     sync_parser.add_argument("--password", required=True, help="User password")
     sync_parser.add_argument(
         "--config-file", required=True, help="JSON configuration file"
+    )
+    sync_parser.add_argument(
+        "--discord-webhook", help="Discord webhook URL for notifications"
     )
     sync_parser.add_argument(
         "--dry-run",
