@@ -80,6 +80,7 @@
     nodePackages.aws-cdk
     nodePackages.prettier
     nodejs
+    open-gh-notifications-py
     opsy
     oras
     parallel
@@ -106,6 +107,7 @@
     sshpass
     ssm-session-manager-plugin
     stylua
+    switch-appearance
     terraformer
     terragrunt-atlantis-config
     treefmt

@@ -29,6 +29,7 @@
     rust-analyzer
     rustc
     smctemp # Local overlay
+    switch-appearance
     syncthing
     typst
     typstfmt

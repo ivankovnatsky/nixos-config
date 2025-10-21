@@ -35,5 +35,7 @@
     nodejs
     gnumake
     delta
+
+    switch-appearance
   ];
 }
