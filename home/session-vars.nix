@@ -8,5 +8,6 @@
     TERM = "xterm-256color";
     # This is needed for aiac
     OPENAI_API_KEY = "${config.secrets.openaiApikey}";
+    PERPLEXITY_API_KEY = "${config.secrets.perplexityApiToken}";
   };
 }
