@@ -1,0 +1,24 @@
+{
+  imports = [
+    ../../../darwin/darwin.nix
+    ../../../darwin/dock.nix
+    ../../../darwin/flags.nix
+    ../../../darwin/fonts.nix
+    ../../../darwin/homebrew.nix
+    ../../../darwin/nix.nix
+    ../../../darwin/security.nix
+    ../../../darwin/shell.nix
+    ../../../darwin/sudo.nix
+    ../../../darwin/system.nix
+    ../../../darwin/tmux-rebuild.nix
+    ../../../modules/darwin/dock
+    ../../../modules/darwin/pam
+    ../../../modules/darwin/sudo
+    ../../../modules/darwin/tmux-rebuild
+    ../../../modules/flags
+    ../../../modules/secrets
+    ../../../system/documentation.nix
+    ../../../system/nix.nix
+    ../../../system/scripts
+  ];
+}
