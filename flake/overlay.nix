@@ -13,7 +13,19 @@ let
     }
   ) { } (builtins.filter (dir: dir.type == "directory") (builtins.attrValues overlayList));
 
-  # 2. Nixpkgs-master and unstable packages
+  # 2. Automatic packages from packages/ directory
+  packageDirs = builtins.readDir ../packages;
+  packageList = builtins.mapAttrs (name: type: { inherit name type; }) packageDirs;
+
+  autoPackages = builtins.foldl' (
+    acc: dir:
+    acc
+    // {
+      ${dir.name} = prev.callPackage (../packages + "/${dir.name}") { };
+    }
+  ) { } (builtins.filter (dir: dir.type == "directory") (builtins.attrValues packageList));
+
+  # 3. Nixpkgs-master and unstable packages
   masterOverlays = {
     nixpkgs-master = import inputs.nixpkgs-master {
       inherit (final) system config;
@@ -23,7 +35,7 @@ let
     };
   };
 
-  # 3. Direct packages from other flakes
+  # 4. Direct packages from other flakes
   flakeOverlays = {
     inherit (inputs.username.packages.${final.system}) username;
     inherit (inputs.backup-home.packages.${final.system}) backup-home;
@@ -31,7 +43,7 @@ let
     pyenv-nix-install = inputs.pyenv-nix-install.packages.${final.system}.default;
   };
 
-  # 4. Custom functions
+  # 5. Custom functions
   customFunctions = {
     # Element Web configured for Matrix homeserver
     # Args:
@@ -53,4 +65,4 @@ let
       };
   };
 in
-autoOverlays // masterOverlays // flakeOverlays // customFunctions
+autoOverlays // autoPackages // masterOverlays // flakeOverlays // customFunctions
