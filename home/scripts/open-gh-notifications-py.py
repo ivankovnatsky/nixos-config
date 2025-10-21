@@ -164,6 +164,20 @@ def resolve_html_url(n: Notification) -> str:
     return url
 
 
+def add_notification_context(url: str) -> str:
+    """Add notification context query parameters to URL.
+
+    Adds notifications_query parameter to help GitHub highlight the notification
+    you came from in the UI.
+    """
+    if not url:
+        return url
+
+    # Add notifications_query parameter (is:unread URL-encoded)
+    separator = "&" if "?" in url else "?"
+    return f"{url}{separator}notifications_query=is%3Aunread"
+
+
 def open_in_browser(url: str) -> bool:
     # Use default browser; open in a new tab if possible
     try:
@@ -189,6 +203,7 @@ def group_urls(ns: Iterable[Notification]) -> Tuple[List[Tuple[str, str]], List[
 
     - PRs will later open with /files
     - Others include Actions workflow runs and any supported subject with html_url
+    - All URLs include notification context query parameters
     """
     issue_urls: List[Tuple[str, str]] = []
     pr_urls: List[Tuple[str, str]] = []
@@ -198,6 +213,8 @@ def group_urls(ns: Iterable[Notification]) -> Tuple[List[Tuple[str, str]], List[
         url = resolve_html_url(n)
         if not url:
             continue
+        # Add notification context to all URLs
+        url = add_notification_context(url)
         if n.subject_type == "PullRequest":
             pr_urls.append((url, n.thread_id))
         elif n.subject_type == "Issue":
