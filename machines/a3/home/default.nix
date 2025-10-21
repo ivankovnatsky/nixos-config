@@ -3,15 +3,16 @@
 {
   imports = [
     # ../../../home/bash.nix
+    ../../../home/chromium.nix
     ../../../home/claude.nix
-    ../../../home/gemini.nix
     ../../../home/codex.nix
     ../../../home/gamescope-session.nix
+    ../../../home/gemini.nix
     ../../../home/ghostty.nix
-    ../../../home/kitty
     ../../../home/git
     ../../../home/go.nix
     ../../../home/home-session-vars.nix
+    ../../../home/kitty
     ../../../home/lsd.nix
     ../../../home/mpv.nix
     ../../../home/nixvim
@@ -26,15 +27,12 @@
     ../../../modules/home/manual-packages
     ../../../modules/secrets
     ./btop.nix
-    ../../../home/chromium.nix
+    ./desktop.nix # Desktop environment home configs
     ./firefox.nix
     ./flags.nix
     ./gpg.nix
     ./manual-packages.nix
     ./packages.nix
     ./syncthing.nix
-
-    # Desktop environment home configs
-    ./desktop.nix
   ];
 }
