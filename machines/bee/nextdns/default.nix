@@ -1,7 +1,7 @@
 { config, ... }:
 
 {
-  local.services.nextdns-mgmt = {
+  local.services.nextdns-mgmt.bee = {
     enable = true;
     apiKey = config.secrets.nextDnsApiKey;
     profileId = config.secrets.nextDnsProfileBee;
