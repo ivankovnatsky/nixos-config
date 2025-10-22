@@ -50,7 +50,7 @@
     ./flags.nix
     ./nixvim.nix
     ./packages.nix
-    ./prevent-sleep.nix
+    # ./prevent-sleep.nix
     ./programs.nix
   ];
 }
