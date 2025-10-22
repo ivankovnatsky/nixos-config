@@ -6,7 +6,7 @@
     ../../../home/btop.nix
     ../../../home/claude.nix
     ../../../home/direnv.nix
-    ../../../home/git.nix
+    ../../../home/git
     ../../../home/go.nix
     ../../../home/home-session-vars.nix
     ../../../home/lsd.nix
