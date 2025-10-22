@@ -10,6 +10,7 @@
     ../../../home/btop.nix
     ../../../home/claude.nix
     ../../../home/gemini.nix
+    ../../../home/scripts.nix
     ../../../home/direnv.nix
     ../../../home/ghostty.nix
     ../../../home/git
