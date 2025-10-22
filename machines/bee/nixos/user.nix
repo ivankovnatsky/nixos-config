@@ -2,6 +2,8 @@
 
 {
   users.users.ivan = {
-    shell = pkgs.bash;
+    shell = pkgs.fish;
   };
+
+  programs.fish.enable = true;
 }
