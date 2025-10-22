@@ -11,7 +11,6 @@
     ../../../home/shell.nix
     ../../../home/starship
     ../../../home/tmux.nix
-    ../../../home/tmuxinator.nix
     ../../../modules/flags
     ../../../modules/secrets
     ./env.nix
