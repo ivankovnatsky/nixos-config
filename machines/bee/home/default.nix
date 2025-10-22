@@ -1,7 +1,7 @@
 {
   imports = [
     ../../../home/btop.nix
-    ../../../home/git.nix
+    ../../../home/git
     ../../../home/gpg.nix
     ../../../home/home-session-vars.nix
     ../../../home/lsd.nix
