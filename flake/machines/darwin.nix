@@ -215,6 +215,37 @@
           };
         }
       )
+
+      # Home Manager module
+      inputs.home-manager-darwin-release.darwinModules.home-manager
+      {
+        home-manager = {
+          useGlobalPkgs = true;
+          useUserPackages = true;
+          users.ivan = {
+            imports = [
+              ../../machines/Ivans-Mac-mini/home
+              inputs.nixvim-release-darwin.homeManagerModules.nixvim
+              {
+                programs.home-manager.enable = true;
+                home.username = "ivan";
+                home.stateVersion = "25.05";
+              }
+            ];
+          };
+          extraSpecialArgs = {
+            inherit inputs;
+            system = "aarch64-darwin";
+            username = "ivan";
+          };
+          sharedModules = [
+            {
+              # Prevent nix.package error in home-manager
+              nix.enable = false;
+            }
+          ];
+        };
+      }
     ];
     specialArgs = {
       system = "aarch64-darwin";
