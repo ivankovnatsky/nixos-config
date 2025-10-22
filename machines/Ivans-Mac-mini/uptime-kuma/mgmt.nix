@@ -221,6 +221,22 @@
         interval = 60;
         description = "Tailscale VPN connectivity for bee";
       }
+
+      # SSH Services
+      {
+        name = "ssh-bee";
+        type = "tcp";
+        url = "${config.flags.beeIp}:22";
+        interval = 60;
+        description = "SSH service on bee";
+      }
+      {
+        name = "ssh-mini";
+        type = "tcp";
+        url = "${config.flags.miniIp}:22";
+        interval = 60;
+        description = "SSH service on mini";
+      }
     ];
   };
 }
