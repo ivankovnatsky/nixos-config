@@ -20,7 +20,7 @@
     casks = [
       "amethyst"
       "chromium"
-      "comet"
+      "ivankovnatsky/homebrew-tap/comet"
       "cursor"
       "dbeaver-community"
       "firefox@developer-edition"
