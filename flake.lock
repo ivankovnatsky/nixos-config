@@ -385,7 +385,7 @@
       "locked": {
         "dir": "homebrew",
         "lastModified": 1761227241,
-        "narHash": "sha256-MVRWwfXr/LEEeldVZvJvxBS+BB0PcJJJRNM+82YWBM4=",
+        "narHash": "sha256-+cFYI7MrYCLUfskv3ddojORes9jP0MjLACN13uCONnA=",
         "owner": "ivankovnatsky",
         "repo": "nixos-config",
         "rev": "fb63515147ee88d284f8a7a3fb399e07457a3735",
