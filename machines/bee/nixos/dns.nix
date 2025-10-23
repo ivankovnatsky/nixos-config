@@ -131,4 +131,15 @@
     # Ensure the firewall is enabled
     enable = true;
   };
+
+  # Wait for network to be online before starting (DHCP must assign IP first)
+  systemd.services.stubby = {
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+  };
+
+  systemd.services.dnsmasq = {
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+  };
 }
