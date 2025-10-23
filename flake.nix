@@ -5,6 +5,9 @@
     # This is used to pin packages from master channel.
     nixpkgs-master.url = "github:nixos/nixpkgs/master";
 
+    # Pinned master commit for nix develop (2025-10-23)
+    nixpkgs-master-pinned.url = "github:nixos/nixpkgs/3f173303fa32419a05ef1c0138045b03987adc05";
+
     # Unstable NixOS packages (for bee machine - binary cache available)
     nixpkgs-nixos-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
