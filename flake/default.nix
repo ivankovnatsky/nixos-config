@@ -11,12 +11,8 @@ in
 }
 // forAllSystems (system:
   let
-    # Use appropriate nixpkgs for the system (release channels for stability)
-    isDarwin = builtins.match ".*-darwin" system != null;
-    pkgsInput = if isDarwin
-      then inputs.nixpkgs-darwin-release
-      else inputs.nixpkgs-nixos-release;
-    pkgs = import pkgsInput { inherit system; };
+    # Use pinned master commit for development shell
+    pkgs = import inputs.nixpkgs-master-pinned { inherit system; };
   in
   {
     devShells.default = pkgs.mkShell {
