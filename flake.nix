@@ -66,7 +66,7 @@
       flake = false;
     };
     ivankovnatsky-homebrew-tap = {
-      url = "github:ivankovnatsky/nixos-config?dir=homebrew";
+      url = "github:ivankovnatsky/nixos-config";
       flake = false;
     };
 

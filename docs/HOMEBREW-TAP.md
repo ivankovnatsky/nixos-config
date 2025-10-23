@@ -1,6 +1,6 @@
 # Local Homebrew Tap
 
-This directory contains local Homebrew casks for applications not available in official taps.
+Local Homebrew casks stored in the `Casks/` directory at the root of this repository.
 
 ## Integration with nix-homebrew
 
@@ -10,7 +10,7 @@ Add to `flake.nix` inputs:
 
 ```nix
 ivankovnatsky-homebrew-tap = {
-  url = "github:ivankovnatsky/nixos-config?dir=homebrew";
+  url = "github:ivankovnatsky/nixos-config";
   flake = false;
 };
 ```
@@ -30,7 +30,7 @@ Use in machine configuration:
 
 ```nix
 homebrew.casks = [
-  "comet"
+  "ivankovnatsky/homebrew-tap/comet"
 ];
 ```
 
