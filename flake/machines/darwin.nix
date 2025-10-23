@@ -72,6 +72,7 @@
               "homebrew/homebrew-cask" = inputs.homebrew-cask;
               "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
               "pomdtr/homebrew-tap" = inputs.pomdtr-homebrew-tap;
+              "ivankovnatsky/homebrew-tap" = inputs.ivankovnatsky-homebrew-tap;
             };
             mutableTaps = false;
           };
@@ -156,6 +157,7 @@
               "homebrew/homebrew-cask" = inputs.homebrew-cask;
               "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
               "pomdtr/homebrew-tap" = inputs.pomdtr-homebrew-tap;
+              "ivankovnatsky/homebrew-tap" = inputs.ivankovnatsky-homebrew-tap;
             };
             mutableTaps = false;
           };
@@ -210,6 +212,7 @@
               "homebrew/homebrew-cask" = inputs.homebrew-cask;
               "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
               "pomdtr/homebrew-tap" = inputs.pomdtr-homebrew-tap;
+              "ivankovnatsky/homebrew-tap" = inputs.ivankovnatsky-homebrew-tap;
             };
             mutableTaps = false;
           };
@@ -362,6 +365,7 @@
               "homebrew/homebrew-cask" = inputs.homebrew-cask;
               "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
               "pomdtr/homebrew-tap" = inputs.pomdtr-homebrew-tap;
+              "ivankovnatsky/homebrew-tap" = inputs.ivankovnatsky-homebrew-tap;
             };
             mutableTaps = false;
           };

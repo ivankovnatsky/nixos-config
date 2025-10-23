@@ -65,6 +65,10 @@
       url = "github:pomdtr/homebrew-tap";
       flake = false;
     };
+    ivankovnatsky-homebrew-tap = {
+      url = "github:ivankovnatsky/nixos-config?dir=homebrew";
+      flake = false;
+    };
 
     nur.url = "github:nix-community/NUR";
 
