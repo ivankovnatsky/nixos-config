@@ -14,6 +14,7 @@
     # ../../../home/nixvim
     # ../../../home/nixvim/plugins/copilot-lua
     ../../../home/npm.nix
+    ../../../home/kitty
     ../../../home/pass.nix
     ../../../home/rebuild-diff.nix
     ../../../home/scripts.nix
