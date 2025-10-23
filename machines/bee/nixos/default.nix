@@ -13,6 +13,7 @@
     ../../../nixos/rebuild-diff.nix
     ../../../system/documentation.nix # Disable documentation to avoid mautrix module mismatch issues
     ../../../system/nix.nix
+    ../../../system/scripts
     ./audiobookshelf
     ./beszel.nix # Monitoring
     ./configuration.nix # Base configuration.
