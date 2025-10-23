@@ -20,6 +20,7 @@
     casks = [
       "amethyst"
       "chromium"
+      "comet"
       "cursor"
       "dbeaver-community"
       "firefox@developer-edition"
