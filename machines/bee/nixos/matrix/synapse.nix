@@ -104,4 +104,15 @@
     8008 # Matrix Synapse
     5432 # PostgreSQL (for monitoring from mini)
   ];
+
+  # Wait for network to be online before starting (DHCP must assign IP first)
+  systemd.services.postgresql = {
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+  };
+
+  systemd.services.matrix-synapse = {
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+  };
 }

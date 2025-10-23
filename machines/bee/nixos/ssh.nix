@@ -48,4 +48,10 @@
 
   # Open firewall port for SSH
   networking.firewall.allowedTCPPorts = [ 22 ];
+
+  # Wait for network to be online before starting (DHCP must assign IP first)
+  systemd.services.sshd = {
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+  };
 }
