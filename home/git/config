@@ -12,6 +12,7 @@
 
 [core]
 	filemode = true
+	commentChar = ";"
 
 [init]
 	defaultBranch = main
