@@ -1,0 +1,8 @@
+# Per-repository Starship configuration
+# Disables git modules for this repo to improve performance
+
+[git_branch]
+disabled = true
+
+[git_status]
+disabled = true
