@@ -380,6 +380,24 @@
         "type": "github"
       }
     },
+    "ivankovnatsky-homebrew-tap": {
+      "flake": false,
+      "locked": {
+        "dir": "homebrew",
+        "lastModified": 1761227241,
+        "narHash": "sha256-MVRWwfXr/LEEeldVZvJvxBS+BB0PcJJJRNM+82YWBM4=",
+        "owner": "ivankovnatsky",
+        "repo": "nixos-config",
+        "rev": "fb63515147ee88d284f8a7a3fb399e07457a3735",
+        "type": "github"
+      },
+      "original": {
+        "dir": "homebrew",
+        "owner": "ivankovnatsky",
+        "repo": "nixos-config",
+        "type": "github"
+      }
+    },
     "ixx": {
       "inputs": {
         "flake-utils": [
@@ -978,6 +996,7 @@
         "homebrew-bundle": "homebrew-bundle",
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
+        "ivankovnatsky-homebrew-tap": "ivankovnatsky-homebrew-tap",
         "nix-darwin-darwin-release": "nix-darwin-darwin-release",
         "nix-darwin-darwin-unstable": "nix-darwin-darwin-unstable",
         "nix-homebrew": "nix-homebrew",
