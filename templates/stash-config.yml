@@ -1,0 +1,115 @@
+autostart_video: true
+blobs_path: @dataDir@/blobs
+blobs_storage: FILESYSTEM
+cache: @dataDir@/cache
+calculate_md5: false
+create_image_clip_from_videos: false
+dangerous_allow_public_without_auth: false
+database: @dataDir@/config/stash-go.sqlite
+defaults:
+    delete_file: true
+gallery_cover_regex: (poster|cover|folder|board)\\.[^\\.]+$
+generated: @dataDir@/generated
+host: @host@
+image_lightbox:
+    scale_up: true
+    scroll_attempts_before_change: 0
+    slideshow_delay: 5
+max_session_age: 36000000
+menu_items:
+    - scenes
+no_proxy: localhost,127.0.0.1,192.168.0.0/16,10.0.0.0/8,172.16.0.0/12
+nobrowser: true
+notifications_enabled: true
+parallel_tasks: 1
+password: @password@
+plugins:
+    package_sources:
+        - localpath: community
+          name: Community (stable)
+          url: https://stashapp.github.io/CommunityScripts/stable/index.yml
+plugins_path: @dataDir@/config/plugins
+port: 9999
+preview_audio: true
+preview_exclude_end: "0"
+preview_exclude_start: "0"
+preview_segment_duration: 0.75
+preview_segments: 12
+scrapers:
+    package_sources:
+        - localpath: community
+          name: Community (stable)
+          url: https://stashapp.github.io/CommunityScrapers/stable/index.yml
+scrapers_path: @dataDir@/config/scrapers
+security_tripwipe_accessed_from_public_internet: ""
+sequential_scanning: false
+show_one_time_moved_notification: false
+show_scrubber: false
+sound_on_preview: true
+stash:
+    - excludeimage: false
+      excludevideo: false
+      path: @mediaDir@
+    - excludeimage: false
+      excludevideo: false
+      path: @youtubeDir@
+    - excludeimage: false
+      excludevideo: false
+      path: @mediaDir2@
+theme_color: '#202b33'
+ui:
+    abbreviateCounters: true
+    advancedMode: true
+    compactExpandedDetails: true
+    frontPageContent:
+        - __typename: CustomFilter
+          direction: DESC
+          message:
+            id: recently_added_objects
+            values:
+                objects: Scenes
+          mode: SCENES
+          sortBy: created_at
+    lastNoteSeen: 20240826
+    showRangeMarkers: false
+    taskDefaults:
+        cleanGenerated:
+            blobFiles: true
+            dryRun: false
+            imageThumbnails: true
+            markers: true
+            screenshots: true
+            sprites: true
+            transcodes: true
+        generate:
+            clipPreviews: true
+            covers: true
+            imagePreviews: true
+            imageThumbnails: true
+            interactiveHeatmapsSpeeds: true
+            markerImagePreviews: true
+            markerScreenshots: true
+            markers: true
+            phashes: true
+            previewOptions:
+                previewExcludeEnd: "0"
+                previewExcludeStart: "0"
+                previewPreset: slow
+                previewSegmentDuration: "0.75"
+                previewSegments: "12"
+            previews: true
+            sprites: true
+            transcodes: true
+        scan:
+            rescan: true
+            scanGenerateClipPreviews: true
+            scanGenerateCovers: true
+            scanGenerateImagePreviews: true
+            scanGeneratePhashes: true
+            scanGeneratePreviews: true
+            scanGenerateSprites: true
+            scanGenerateThumbnails: true
+username: @username@
+video_file_naming_algorithm: OSHASH
+wall_playback: video
+write_image_thumbnails: true
