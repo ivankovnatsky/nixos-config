@@ -124,6 +124,12 @@
       inputs.nixpkgs.follows = "nixpkgs-nixos-unstable";
       inputs.home-manager.follows = "home-manager-nixos-unstable";
     };
+
+    # Secrets management with SOPS
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs-darwin-release";
+    };
   };
 
   outputs = { self, ... }@inputs: import ./flake { inherit inputs; };
