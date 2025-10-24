@@ -19,6 +19,7 @@
     ../../../../modules/darwin/stubby
     ../../../../modules/darwin/sudo
     ../../../../modules/darwin/tmux-rebuild
+    ../../../../modules/darwin/rebuild-daemon
     ../../../../modules/flags
     ../../../../modules/secrets
     ../../../../modules/shared/arr-mgmt
@@ -52,5 +53,6 @@
     ./system.nix
     ./tailscale.nix
     ./tmux-rebuild.nix
+    ./rebuild-daemon.nix
   ];
 }
