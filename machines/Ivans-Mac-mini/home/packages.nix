@@ -1,6 +1,7 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
+    neovim
     aria2
     bat
     beszel-mgmt
