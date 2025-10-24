@@ -1,7 +1,1 @@
 modules/secrets/default.nix filter=git-crypt diff=git-crypt
-machines/orb-nixos/configuration.nix filter=git-crypt diff=git-crypt
-machines/mini-vm/configuration.nix filter=git-crypt diff=git-crypt
-machines/Ivans-Mac-mini/darwin/server/k8s/clusters/orbstack/openwebui/secret-openwebui-config.yaml filter=git-crypt diff=git-crypt
-machines/Ivans-Mac-mini/darwin/server/k8s/clusters/orbstack/openwebui/secret-openwebui-config-secret.yaml filter=git-crypt diff=git-crypt
-machines/Ivans-Mac-mini/darwin/server/nextdns/profile.json filter=git-crypt diff=git-crypt
-.envrc filter=git-crypt diff=git-crypt
