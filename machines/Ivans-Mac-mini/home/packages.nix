@@ -38,6 +38,7 @@
     shellcheck
     shfmt
     smctemp # Local overlay
+    sops
     stylua
     syncthing
     treefmt
