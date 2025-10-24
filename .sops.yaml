@@ -1,8 +1,11 @@
 keys:
   - &home 6BD3724830BD941E9180C1A33A33FA4C82ED674F
+  - &mini age1nxsvvlxhutf7kr26ucc60r48lge779dducnknyr9pceej52nqgnqlvqe25
 
 creation_rules:
   - path_regex: secrets/.*\.yaml$
     key_groups:
     - pgp:
       - *home
+      age:
+      - *mini
