@@ -123,8 +123,9 @@ let
         #!/bin/bash
         set -e
 
-        # Create log directory
+        # Create log directory with proper permissions
         mkdir -p ${cfg.logDir}
+        chmod 755 ${cfg.logDir}
 
         ${optionalString (cfg.waitForPath != null) ''
           echo "Waiting for ${cfg.waitForPath}..."
