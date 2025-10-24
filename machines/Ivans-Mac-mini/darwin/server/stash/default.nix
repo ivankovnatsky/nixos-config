@@ -14,19 +14,22 @@ let
   # - Hide sidebar in options permanently
   #   See: https://github.com/stashapp/stash/issues/2879
 
-  # Stash configuration template (will be processed with variable substitution)
-  stashConfig = pkgs.replaceVars ../../../../../templates/stash-config.yml {
-    inherit
-      dataDir
-      mediaDir
-      youtubeDir
-      mediaDir2
-      ;
-    host = config.flags.miniIp;
-    inherit (config.secrets.stash) username password;
-  };
+  # Template path (all substitutions happen at runtime to avoid secrets in /nix/store)
+  stashConfigTemplate = ../../../../../templates/stash-config.yml;
 in
 {
+  sops.defaultSopsFile = ../../../../../secrets/default.yaml;
+  sops.secrets = {
+    stash-username = {
+      key = "stash/username";
+      owner = "ivan";
+    };
+    stash-password = {
+      key = "stash/password";
+      owner = "ivan";
+    };
+  };
+
   local.launchd.services.stash = {
     enable = true;
     waitForPath = config.flags.miniStoragePath;
@@ -45,7 +48,21 @@ in
       if [ -f "${dataDir}/config/config.yml" ]; then
         cp "${dataDir}/config/config.yml" "${dataDir}/config/config.yml.backup.$(date +%Y%m%d-%H%M%S)"
       fi
-      cp ${stashConfig} ${dataDir}/config/config.yml
+
+      # Read secrets from sops-decrypted files at runtime
+      STASH_USERNAME=$(cat ${config.sops.secrets.stash-username.path})
+      STASH_PASSWORD=$(cat ${config.sops.secrets.stash-password.path})
+
+      # Substitute all values at runtime (keeps secrets out of /nix/store)
+      sed -e "s|@dataDir@|${dataDir}|g" \
+          -e "s|@mediaDir@|${mediaDir}|g" \
+          -e "s|@youtubeDir@|${youtubeDir}|g" \
+          -e "s|@mediaDir2@|${mediaDir2}|g" \
+          -e "s|@host@|${config.flags.miniIp}|g" \
+          -e "s|@username@|$STASH_USERNAME|g" \
+          -e "s|@password@|$STASH_PASSWORD|g" \
+          ${stashConfigTemplate} > ${dataDir}/config/config.yml
+
       chmod 644 ${dataDir}/config/config.yml
     '';
     command = ''
