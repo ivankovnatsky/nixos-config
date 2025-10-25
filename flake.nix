@@ -126,9 +126,14 @@
     };
 
     # Secrets management with SOPS
-    sops-nix = {
+    sops-nix-darwin-release = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs-darwin-release";
+    };
+
+    sops-nix-nixos-release = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs-nixos-release";
     };
   };
 

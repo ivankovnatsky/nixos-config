@@ -220,7 +220,7 @@
       )
 
       # SOPS secrets management module
-      inputs.sops-nix.darwinModules.sops
+      inputs.sops-nix-darwin-release.darwinModules.sops
 
       # Home Manager module
       inputs.home-manager-darwin-release.darwinModules.home-manager
