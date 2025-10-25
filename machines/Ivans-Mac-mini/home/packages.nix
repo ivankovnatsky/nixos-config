@@ -40,6 +40,7 @@
     shfmt
     smctemp # Local overlay
     sops
+    ssh-to-age
     stylua
     syncthing
     treefmt

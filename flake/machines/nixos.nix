@@ -24,6 +24,9 @@
         system.stateVersion = "24.11";
       }
 
+      # Secrets management
+      inputs.sops-nix-nixos-release.nixosModules.sops
+
       # Home Manager module
       inputs.home-manager-nixos-release.nixosModules.home-manager
       {

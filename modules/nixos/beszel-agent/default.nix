@@ -26,9 +26,17 @@ in
     };
 
     hubPublicKey = lib.mkOption {
-      type = lib.types.str;
+      type = lib.types.nullOr lib.types.str;
+      default = null;
       example = "ssh-ed25519 AAAAC3...";
-      description = "Public key from the Beszel Hub for agent authentication";
+      description = "Public key from the Beszel Hub for agent authentication (use hubPublicKeyFile for sops)";
+    };
+
+    hubPublicKeyFile = lib.mkOption {
+      type = lib.types.nullOr lib.types.path;
+      default = null;
+      example = "/run/secrets/beszel-hub-key";
+      description = "Path to file containing the Beszel Hub public key (for use with sops-nix)";
     };
 
     openFirewall = lib.mkOption {
@@ -39,6 +47,13 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = (cfg.hubPublicKey != null) != (cfg.hubPublicKeyFile != null);
+        message = "Exactly one of hubPublicKey or hubPublicKeyFile must be set for beszel-agent";
+      }
+    ];
+
     systemd.services.beszel-agent = {
       description = "Beszel Agent - System monitoring agent";
       wantedBy = [ "multi-user.target" ];
@@ -57,11 +72,14 @@ in
         StateDirectory = "beszel-agent";
         SupplementaryGroups = [ "docker" ];
 
-        Environment = [ "LISTEN=${cfg.listenAddress}:${toString cfg.port}" ];
-
-        EnvironmentFile = pkgs.writeText "beszel-agent.env" ''
-          KEY=${cfg.hubPublicKey}
-        '';
+        Environment =
+          [ "LISTEN=${cfg.listenAddress}:${toString cfg.port}" ]
+          ++ (
+            if cfg.hubPublicKeyFile != null then
+              [ "KEY_FILE=${cfg.hubPublicKeyFile}" ]
+            else
+              [ "KEY=${cfg.hubPublicKey}" ]
+          );
 
         ExecStart = "${pkgs.beszel}/bin/beszel-agent";
 
