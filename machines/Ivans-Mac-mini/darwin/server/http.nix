@@ -46,49 +46,102 @@ let
   # Path to the Caddyfile template
   caddyfilePath = ../../../../templates/Caddyfile;
 
-  # Process the Caddyfile template with the local variables
-  Caddyfile =
-    pkgs.runCommand "caddyfile"
-      {
-        inherit bindAddress externalDomain;
-        inherit (config.secrets) letsEncryptEmail;
-        inherit (config.secrets) cloudflareApiToken;
-        inherit (config.flags) beeIp;
-        inherit (config.flags) miniIp;
-        inherit (config.flags) a3wIp;
-        logPathPrefix = "/tmp/log";
-
-        # Element Web path
-        elementWebPath = pkgs.mkElementWeb config.secrets.externalDomain "matrix";
-
-        # Netdata credentials
-        netdataBeeUsername = config.secrets.netdata.bee.username;
-        netdataBeePassword = config.secrets.netdata.bee.password;
-        netdataMiniUsername = config.secrets.netdata.mini.username;
-        netdataMiniPassword = config.secrets.netdata.mini.password;
-
-        # Zigbee credentials
-        zigbeeUsername = config.secrets.zigbee.username;
-        zigbeePassword = config.secrets.zigbee.password;
-
-        # Podsync credentials
-        podsyncUsername = config.secrets.podsync.username;
-        podsyncPassword = config.secrets.podsync.password;
-      }
-      ''
-        # Process main Caddyfile template
-        substituteAll ${caddyfilePath} $out
-      '';
+  # Runtime Caddyfile path
+  runtimeCaddyfile = "/tmp/caddy/Caddyfile";
 in
 {
+  # Sops secrets for Caddy basic auth credentials
+  sops.secrets.zigbee-username = {
+    key = "zigbee/username";
+  };
+
+  sops.secrets.zigbee-password = {
+    key = "zigbee/password";
+  };
+
+  sops.secrets.podsync-username = {
+    key = "podsync/username";
+  };
+
+  sops.secrets.podsync-password = {
+    key = "podsync/password";
+  };
+
+  sops.secrets.netdata-mini-username = {
+    key = "netdata/mini/username";
+  };
+
+  sops.secrets.netdata-mini-password = {
+    key = "netdata/mini/password";
+  };
+
+  sops.secrets.netdata-bee-username = {
+    key = "netdata/bee/username";
+  };
+
+  sops.secrets.netdata-bee-password = {
+    key = "netdata/bee/password";
+  };
+
+  sops.secrets.cloudflare-api-token = {
+    key = "cloudflareApiToken";
+  };
+
+  sops.secrets.lets-encrypt-email = {
+    key = "letsEncryptEmail";
+  };
+
   # Configure launchd service for Caddy web server
   local.launchd.services.caddy = {
     enable = true;
     type = "daemon";
     waitForPath = volumePath;
-    extraDirs = [ "/tmp/log/caddy" ];
+    extraDirs = [
+      "/tmp/log/caddy"
+      "/tmp/caddy"
+    ];
+    preStart = ''
+      # Element Web path
+      ELEMENT_WEB_PATH="${pkgs.mkElementWeb config.secrets.externalDomain "matrix"}"
+
+      # Read secrets from files
+      LETS_ENCRYPT_EMAIL=$(cat ${config.sops.secrets.lets-encrypt-email.path})
+      CLOUDFLARE_API_TOKEN=$(cat ${config.sops.secrets.cloudflare-api-token.path})
+      ZIGBEE_USERNAME=$(cat ${config.sops.secrets.zigbee-username.path})
+      ZIGBEE_PASSWORD=$(cat ${config.sops.secrets.zigbee-password.path})
+      PODSYNC_USERNAME=$(cat ${config.sops.secrets.podsync-username.path})
+      PODSYNC_PASSWORD=$(cat ${config.sops.secrets.podsync-password.path})
+      NETDATA_BEE_USERNAME=$(cat ${config.sops.secrets.netdata-bee-username.path})
+      NETDATA_BEE_PASSWORD=$(cat ${config.sops.secrets.netdata-bee-password.path})
+      NETDATA_MINI_USERNAME=$(cat ${config.sops.secrets.netdata-mini-username.path})
+      NETDATA_MINI_PASSWORD=$(cat ${config.sops.secrets.netdata-mini-password.path})
+
+      # Substitute variables in Caddyfile template
+      ${pkgs.gnused}/bin/sed \
+        -e "s|@bindAddress@|${bindAddress}|g" \
+        -e "s|@externalDomain@|${externalDomain}|g" \
+        -e "s|@letsEncryptEmail@|$LETS_ENCRYPT_EMAIL|g" \
+        -e "s|@cloudflareApiToken@|$CLOUDFLARE_API_TOKEN|g" \
+        -e "s|@beeIp@|${config.flags.beeIp}|g" \
+        -e "s|@miniIp@|${config.flags.miniIp}|g" \
+        -e "s|@a3wIp@|${config.flags.a3wIp}|g" \
+        -e "s|@logPathPrefix@|/tmp/log|g" \
+        -e "s|@elementWebPath@|$ELEMENT_WEB_PATH|g" \
+        -e "s|@zigbeeUsername@|$ZIGBEE_USERNAME|g" \
+        -e "s|@zigbeePassword@|$ZIGBEE_PASSWORD|g" \
+        -e "s|@podsyncUsername@|$PODSYNC_USERNAME|g" \
+        -e "s|@podsyncPassword@|$PODSYNC_PASSWORD|g" \
+        -e "s|@netdataBeeUsername@|$NETDATA_BEE_USERNAME|g" \
+        -e "s|@netdataBeePassword@|$NETDATA_BEE_PASSWORD|g" \
+        -e "s|@netdataMiniUsername@|$NETDATA_MINI_USERNAME|g" \
+        -e "s|@netdataMiniPassword@|$NETDATA_MINI_PASSWORD|g" \
+        ${caddyfilePath} > ${runtimeCaddyfile}
+
+      # Set permissions
+      chmod 600 ${runtimeCaddyfile}
+    '';
     command = ''
-      ${caddyWithPlugins}/bin/caddy run --config ${Caddyfile} --adapter=caddyfile
+      ${caddyWithPlugins}/bin/caddy run --config ${runtimeCaddyfile} --adapter=caddyfile
     '';
   };
 }

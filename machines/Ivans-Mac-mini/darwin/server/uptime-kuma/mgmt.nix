@@ -204,6 +204,36 @@
         description = "Stubby DoT resolver on mini (upstream for dnsmasq)";
       }
 
+      # Reverse Proxy Infrastructure
+      {
+        name = "caddy-bee-http";
+        type = "tcp";
+        url = "${config.flags.beeIp}:80";
+        interval = 60;
+        description = "Caddy HTTP on bee (reverse proxy)";
+      }
+      {
+        name = "caddy-bee-https";
+        type = "tcp";
+        url = "${config.flags.beeIp}:443";
+        interval = 60;
+        description = "Caddy HTTPS on bee (reverse proxy)";
+      }
+      {
+        name = "caddy-mini-http";
+        type = "tcp";
+        url = "${config.flags.miniIp}:80";
+        interval = 60;
+        description = "Caddy HTTP on mini (reverse proxy)";
+      }
+      {
+        name = "caddy-mini-https";
+        type = "tcp";
+        url = "${config.flags.miniIp}:443";
+        interval = 60;
+        description = "Caddy HTTPS on mini (reverse proxy)";
+      }
+
       # Home Automation Infrastructure
       {
         name = "matter-server-bee";
