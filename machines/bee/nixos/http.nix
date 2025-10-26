@@ -27,9 +27,6 @@
 let
   bindAddress = config.flags.beeIp;
 
-  # External domain from secrets module for easier reference
-  inherit (config.secrets) externalDomain;
-
   # Create a Caddy package with the required DNS plugin
   # Use the caddy-with-plugins overlay to get the withPlugins functionality
   caddyWithPlugins = pkgs.caddy-with-plugins.withPlugins {
@@ -47,7 +44,13 @@ let
   runtimeCaddyfile = "/run/caddy/Caddyfile";
 in
 {
-  # Sops secrets for Caddy basic auth credentials
+  # Sops secrets for Caddy configuration
+  sops.secrets.external-domain = {
+    key = "externalDomain";
+    owner = "caddy";
+    group = "caddy";
+  };
+
   sops.secrets.zigbee-username = {
     key = "zigbee/username";
     owner = "caddy";
@@ -139,10 +142,8 @@ in
       # Create runtime directory
       mkdir -p /run/caddy
 
-      # Element Web path
-      ELEMENT_WEB_PATH="${pkgs.mkElementWeb config.secrets.externalDomain "matrix"}"
-
       # Read secrets from files
+      EXTERNAL_DOMAIN=$(cat ${config.sops.secrets.external-domain.path})
       LETS_ENCRYPT_EMAIL=$(cat ${config.sops.secrets.lets-encrypt-email.path})
       CLOUDFLARE_API_TOKEN=$(cat ${config.sops.secrets.cloudflare-api-token.path})
       ZIGBEE_USERNAME=$(cat ${config.sops.secrets.zigbee-username.path})
@@ -154,10 +155,13 @@ in
       NETDATA_MINI_USERNAME=$(cat ${config.sops.secrets.netdata-mini-username.path})
       NETDATA_MINI_PASSWORD=$(cat ${config.sops.secrets.netdata-mini-password.path})
 
+      # Element Web path using external domain from sops
+      ELEMENT_WEB_PATH="${pkgs.mkElementWeb "$EXTERNAL_DOMAIN" "matrix"}"
+
       # Substitute variables in Caddyfile template
       ${pkgs.gnused}/bin/sed \
         -e "s|@bindAddress@|${bindAddress}|g" \
-        -e "s|@externalDomain@|${externalDomain}|g" \
+        -e "s|@externalDomain@|$EXTERNAL_DOMAIN|g" \
         -e "s|@letsEncryptEmail@|$LETS_ENCRYPT_EMAIL|g" \
         -e "s|@cloudflareApiToken@|$CLOUDFLARE_API_TOKEN|g" \
         -e "s|@beeIp@|${config.flags.beeIp}|g" \
