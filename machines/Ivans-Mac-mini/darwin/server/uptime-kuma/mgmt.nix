@@ -5,17 +5,17 @@
   # Automatically syncs monitors and Discord notifications from Nix configuration on system activation
   #
   # Manual operations:
-  # - List monitors: uptime-kuma-mgmt list --base-url https://uptime.${config.secrets.externalDomain} --username ${config.secrets.uptimeKuma.username} --password ${config.secrets.uptimeKuma.password}
+  # - List monitors: uptime-kuma-mgmt list --base-url https://kuma.${config.secrets.externalDomain} --username ${config.secrets.uptimeKuma.username} --password ${config.secrets.uptimeKuma.password}
   # - Dry-run sync: Temporarily set enable = false and run manually with --dry-run
   #
   # Initial setup required:
-  # 1. Access https://uptime.${config.secrets.externalDomain}
+  # 1. Access https://kuma.${config.secrets.externalDomain}
   # 2. Create admin account matching credentials in config.secrets.uptimeKuma
   # 3. Monitors and Discord notifications will auto-sync on next rebuild
 
   local.services.uptime-kuma-mgmt = {
     enable = true;
-    baseUrl = "https://uptime.${config.secrets.externalDomain}";
+    baseUrl = "https://kuma.${config.secrets.externalDomain}";
     username = config.secrets.uptimeKuma.username;
     password = config.secrets.uptimeKuma.password;
     discordWebhook = config.secrets.discordWebHook;
@@ -83,8 +83,8 @@
         description = "OpenWebUI with WebSocket (bee:8090)";
       }
       {
-        name = "sync-bee";
-        url = "https://sync-bee.${config.secrets.externalDomain}";
+        name = "syncthing-bee";
+        url = "https://syncthing-bee.${config.secrets.externalDomain}";
         description = "Syncthing on bee (bee:8384)";
       }
       {
@@ -100,8 +100,8 @@
 
       # Infrastructure Services (mini)
       {
-        name = "sync-mini";
-        url = "https://sync-mini.${config.secrets.externalDomain}";
+        name = "syncthing-mini";
+        url = "https://syncthing-mini.${config.secrets.externalDomain}";
         description = "Syncthing on mini (mini:8384)";
       }
       {
@@ -110,8 +110,8 @@
         description = "Beszel monitoring hub (mini:8091)";
       }
       {
-        name = "files-mini";
-        url = "https://files-mini.${config.secrets.externalDomain}";
+        name = "miniserve-mini";
+        url = "https://miniserve-mini.${config.secrets.externalDomain}";
         expectedStatus = 401;
         description = "Miniserve file server with auth (mini:8080)";
       }
@@ -137,14 +137,14 @@
 
       # DNS services (check /dns-query endpoint with example query)
       {
-        name = "dns-bee";
-        url = "https://dns-bee.${config.secrets.externalDomain}/dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB";
+        name = "doh-bee";
+        url = "https://doh-bee.${config.secrets.externalDomain}/dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB";
         expectedStatus = 200;
         description = "DNS over HTTPS on bee (bee:8053) - queries www.example.com";
       }
       {
-        name = "dns-mini";
-        url = "https://dns-mini.${config.secrets.externalDomain}/dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB";
+        name = "doh-mini";
+        url = "https://doh-mini.${config.secrets.externalDomain}/dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB";
         expectedStatus = 200;
         description = "DNS over HTTPS on mini (mini:8053) - queries www.example.com";
       }
