@@ -85,8 +85,16 @@ in
           };
 
           password = mkOption {
-            type = types.str;
+            type = types.nullOr types.str;
+            default = null;
             description = "Password for the user account (only used during creation)";
+          };
+
+          passwordFile = mkOption {
+            type = types.nullOr types.path;
+            default = null;
+            example = "/run/secrets/textcast-password";
+            description = "Path to file containing password for the user account";
           };
 
           type = mkOption {
@@ -148,7 +156,10 @@ in
         assertion = (cfg.apiToken != null) != (cfg.apiTokenFile != null);
         message = "Exactly one of apiToken or apiTokenFile must be set for audiobookshelf-mgmt";
       }
-    ];
+    ] ++ (map (user: {
+      assertion = (user.password != null) != (user.passwordFile != null);
+      message = "Exactly one of password or passwordFile must be set for user ${user.username}";
+    }) cfg.users);
 
     # Use systemd service instead of activation script when using file-based secrets
     # to ensure proper ordering with sops-nix secret installation
@@ -172,10 +183,38 @@ in
         User = "root";
         ExecStart = pkgs.writeShellScript "audiobookshelf-mgmt-sync" ''
           echo "Syncing Audiobookshelf configuration..."
+
+          # Build config JSON with secrets substituted from files
+          CONFIG_FILE=$(mktemp)
+          trap "rm -f $CONFIG_FILE" EXIT
+
+          ${pkgs.jq}/bin/jq -n \
+            --argjson libraries '${builtins.toJSON (map (lib: {
+              name = lib.name;
+              folders = lib.folders;
+              mediaType = lib.mediaType;
+              provider = lib.provider;
+            }) cfg.libraries)}' \
+            --argjson users '${builtins.toJSON (map (user: {
+              username = user.username;
+              password = if user.passwordFile != null then "__PASSWORD_${user.username}__" else user.password;
+              type = user.type;
+              libraries = user.libraries;
+            }) cfg.users)}' \
+            '{libraries: $libraries, users: $users}' > "$CONFIG_FILE"
+
+          # Substitute passwords from files
+          ${concatMapStrings (user:
+            if user.passwordFile != null then ''
+              PASSWORD_${user.username}=$(cat ${user.passwordFile})
+              ${pkgs.gnused}/bin/sed -i "s|__PASSWORD_${user.username}__|$PASSWORD_${user.username}|g" "$CONFIG_FILE"
+            '' else ""
+          ) cfg.users}
+
           ${pkgs.abs-mgmt}/bin/abs-mgmt sync \
             --base-url "${cfg.baseUrl}" \
             --token "$(cat ${cfg.apiTokenFile})" \
-            --config-file "${configJson}" || echo "Warning: Audiobookshelf sync failed"
+            --config-file "$CONFIG_FILE" || echo "Warning: Audiobookshelf sync failed"
         '';
       };
     };
