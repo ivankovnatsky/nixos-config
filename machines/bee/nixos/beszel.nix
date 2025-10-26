@@ -6,6 +6,8 @@
   sops.defaultSopsFile = ../../../secrets/default.yaml;
   sops.secrets.beszel-hub-public-key = {
     key = "beszel/hubPublicKey";
+    owner = "beszel-agent";
+    group = "beszel-agent";
   };
 
   local.services.beszel-agent = {
