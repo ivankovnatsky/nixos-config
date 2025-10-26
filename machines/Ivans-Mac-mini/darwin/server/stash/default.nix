@@ -18,7 +18,6 @@ let
   stashConfigTemplate = ../../../../../templates/stash-config.yml;
 in
 {
-  sops.defaultSopsFile = ../../../../../secrets/default.yaml;
   sops.secrets = {
     stash-username = {
       key = "stash/username";

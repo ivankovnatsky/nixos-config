@@ -3,7 +3,6 @@
   # Beszel hub migrated to mini
   # Only keep beszel-agent on bee for monitoring
 
-  sops.defaultSopsFile = ../../../secrets/default.yaml;
   sops.secrets.beszel-hub-public-key = {
     key = "beszel/hubPublicKey";
     owner = "beszel-agent";
