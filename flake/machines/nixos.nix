@@ -6,6 +6,10 @@
       # Import machine-specific configuration
       ../../machines/bee
 
+      # SOPS secrets management
+      inputs.sops-nix-nixos-release.nixosModules.sops
+      ../../shared/sops-nix.nix
+
       # Basic system configuration
       {
         nixpkgs.overlays = [ inputs.self.overlay ];
@@ -23,9 +27,6 @@
         users.users.ivan.home = "/home/ivan";
         system.stateVersion = "24.11";
       }
-
-      # Secrets management
-      inputs.sops-nix-nixos-release.nixosModules.sops
 
       # Home Manager module
       inputs.home-manager-nixos-release.nixosModules.home-manager

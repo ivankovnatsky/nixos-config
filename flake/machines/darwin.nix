@@ -176,6 +176,10 @@
       # Import machine-specific configuration
       ../../machines/Ivans-Mac-mini
 
+      # SOPS secrets management
+      inputs.sops-nix-darwin-release.darwinModules.sops
+      ../../shared/sops-nix.nix
+
       # Basic system configuration
       {
         nixpkgs.overlays = [ inputs.self.overlay ];
@@ -218,9 +222,6 @@
           };
         }
       )
-
-      # SOPS secrets management module
-      inputs.sops-nix-darwin-release.darwinModules.sops
 
       # Home Manager module
       inputs.home-manager-darwin-release.darwinModules.home-manager
