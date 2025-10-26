@@ -34,7 +34,7 @@
     # OPML sync from Podsync
     opmlSync = {
       enable = false;
-      opmlUrl = "https://podsync.${config.secrets.externalDomain}/podsync.opml";
+      opmlUrl = "https://podsync.${config.sops.placeholder.external-domain}/podsync.opml";
       libraryName = "Podcasts"; # Auto-detects library and folder IDs
       autoDownload = true;
       interval = "hourly"; # Run every hour
