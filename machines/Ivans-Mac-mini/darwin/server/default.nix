@@ -53,6 +53,6 @@
     ./system.nix
     ./tailscale.nix
     ./tmux-rebuild.nix
-    # ./rebuild-daemon.nix
+    ./rebuild-daemon.nix
   ];
 }
