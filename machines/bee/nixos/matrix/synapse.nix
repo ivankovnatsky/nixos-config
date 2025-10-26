@@ -1,5 +1,11 @@
 { config, lib, ... }:
 {
+  sops.secrets.postgres-monitoring-password = {
+    key = "postgres/monitoring/password";
+    owner = "postgres";
+    group = "postgres";
+  };
+
   services.matrix-synapse = {
     enable = true;
     settings = {
@@ -93,7 +99,8 @@
       Group = "postgres";
     };
     script = ''
-      ${config.services.postgresql.package}/bin/psql -c "ALTER USER postgres_monitor WITH PASSWORD '${config.secrets.postgres.monitoring.password}';" || true
+      PASSWORD=$(cat ${config.sops.secrets.postgres-monitoring-password.path})
+      ${config.services.postgresql.package}/bin/psql -c "ALTER USER postgres_monitor WITH PASSWORD '$PASSWORD';" || true
       ${config.services.postgresql.package}/bin/psql -c "GRANT pg_monitor TO postgres_monitor;" || true
       touch /var/lib/postgresql/.monitoring-setup-done
     '';
