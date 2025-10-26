@@ -54,6 +54,14 @@ in
       }
     ];
 
+    users.users.beszel-agent = {
+      isSystemUser = true;
+      group = "beszel-agent";
+      description = "Beszel Agent service user";
+    };
+
+    users.groups.beszel-agent = { };
+
     systemd.services.beszel-agent = {
       description = "Beszel Agent - System monitoring agent";
       wantedBy = [ "multi-user.target" ];
@@ -68,7 +76,8 @@ in
         Restart = "on-failure";
         RestartSec = "5s";
 
-        DynamicUser = true;
+        User = "beszel-agent";
+        Group = "beszel-agent";
         StateDirectory = "beszel-agent";
         SupplementaryGroups = [ "docker" ];
 
