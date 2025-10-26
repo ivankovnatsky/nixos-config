@@ -31,14 +31,12 @@
     # Configure settings
     settings = {
       # GUI settings
+      # Note: credentials are managed by syncthing-mgmt service (see syncthing-mgmt.nix)
       gui = {
         theme = "default";
         insecureAdminAccess = false;
         insecureSkipHostcheck = false;
         insecureAllowFrameLoading = false;
-
-        user = config.secrets.syncthing.credentials.username;
-        password = config.secrets.syncthing.credentials.hashedPassword;
       };
 
       # Global options
@@ -52,36 +50,13 @@
         urAccepted = -1;
       };
 
-      # Define your devices here
-      devices = {
-        "Ivans-Mac-mini" = {
-          id = config.secrets.syncthing.devices.IvansMacMini;
-        };
-        "Ivans-MacBook-Air" = {
-          id = config.secrets.syncthing.devices.IvansMacBookAir;
-        };
-        "Ivans-MacBook-Pro" = {
-          id = config.secrets.syncthing.devices.IvansMacBookPro;
-        };
-        "Lusha-Macbook-Ivan-Kovnatskyi" = {
-          id = config.secrets.syncthing.devices.LushaMacbookIvanKovnatskyi;
-        };
-      };
+      # Devices are managed by syncthing-mgmt service (see syncthing-mgmt.nix)
+      # overrideDevices defaults to false, so NixOS won't override API-managed devices
+      devices = {};
 
-      # Define your folders here
-      folders = {
-        "Sources/github.com/ivankovnatsky/nixos-config" = {
-          id = "shtdy-s2c9s";
-          label = "Sources/github.com/ivankovnatsky/nixos-config";
-          path = "/home/ivan/Sources/github.com/ivankovnatsky/nixos-config";
-          devices = [
-            "Ivans-Mac-mini"
-            "Ivans-MacBook-Air"
-            "Ivans-MacBook-Pro"
-            "Lusha-Macbook-Ivan-Kovnatskyi"
-          ];
-        };
-      };
+      # Folders are managed via Syncthing UI
+      # overrideFolders defaults to false, so NixOS won't override manually configured folders
+      folders = {};
     };
   };
 

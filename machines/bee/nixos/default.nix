@@ -7,6 +7,7 @@
     ../../../modules/nixos/mautrix-linkedin
     ../../../modules/nixos/mautrix-whatsapp
     ../../../modules/nixos/rebuild-daemon
+    ../../../modules/nixos/syncthing-mgmt
     ../../../modules/nixos/tmux-rebuild
     ../../../modules/secrets
     ../../../modules/shared/arr-mgmt
@@ -36,6 +37,7 @@
     ./sops.nix # Shared sops secrets
     ./ssh.nix
     ./sudo.nix # Security
+    ./syncthing-mgmt.nix
     ./syncthing.nix
     ./tailscale.nix
     ./tmux-rebuild.nix
