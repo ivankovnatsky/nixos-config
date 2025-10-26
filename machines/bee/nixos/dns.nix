@@ -1,10 +1,49 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 
 {
+  # Sops secrets for DNS configuration
+  sops.secrets.external-domain.key = "externalDomain";
+  sops.secrets.nextdns-endpoint.key = "nextDnsEndpoint";
+  sops.secrets.nextdns-server-1.key = "nextDnsServer1";
+  sops.secrets.nextdns-server-2.key = "nextDnsServer2";
+
+  # Sops templates for DNS service configurations
+  sops.templates."stubby.yml" = {
+    content = ''
+      resolution_type: GETDNS_RESOLUTION_STUB
+      dns_transport_list:
+        - GETDNS_TRANSPORT_TLS
+      tls_authentication: GETDNS_AUTHENTICATION_REQUIRED
+      tls_query_padding_blocksize: 128
+      round_robin_upstreams: 1
+      idle_timeout: 10000
+      listen_addresses:
+        - 127.0.0.1@5453
+        - ${config.flags.beeIp}@5453
+      upstream_recursive_servers:
+        - address_data: ${config.sops.placeholder.nextdns-server-1}
+          tls_auth_name: ${config.sops.placeholder.nextdns-endpoint}
+        - address_data: ${config.sops.placeholder.nextdns-server-2}
+          tls_auth_name: ${config.sops.placeholder.nextdns-endpoint}
+    '';
+    mode = "0444"; # World-readable
+  };
+
+  sops.templates."dnsmasq-domain.conf" = {
+    content = ''
+      domain=${config.sops.placeholder.external-domain}
+      local=/${config.sops.placeholder.external-domain}/
+      dhcp-option=option:domain-search,${config.sops.placeholder.external-domain}
+      address=/${config.sops.placeholder.external-domain}/${config.flags.beeIp}
+    '';
+    mode = "0444"; # World-readable
+  };
+
   # Configure dnsmasq user and log directory
   users.groups.dnsmasq = { };
   users.users.dnsmasq = {
@@ -22,6 +61,7 @@
   services.stubby = {
     enable = true;
     logLevel = "info";
+    # Minimal settings - actual config generated in preStart from sops
     settings = {
       resolution_type = "GETDNS_RESOLUTION_STUB";
       dns_transport_list = [ "GETDNS_TRANSPORT_TLS" ];
@@ -43,17 +83,19 @@
         "127.0.0.1@5453"
         "${config.flags.beeIp}@5453"
       ];
+      # Dummy upstream - will be overridden by runtime config
       upstream_recursive_servers = [
         {
-          address_data = lib.elemAt config.secrets.nextDnsServers 0;
-          tls_auth_name = config.secrets.nextDnsEndpoint;
-        }
-        {
-          address_data = lib.elemAt config.secrets.nextDnsServers 1;
-          tls_auth_name = config.secrets.nextDnsEndpoint;
+          address_data = "1.1.1.1";
+          tls_auth_name = "cloudflare-dns.com";
         }
       ];
     };
+  };
+
+  # Override stubby to use sops template config
+  systemd.services.stubby.serviceConfig = {
+    ExecStart = lib.mkForce "${pkgs.stubby}/bin/stubby -C ${config.sops.templates."stubby.yml".path} -l";
   };
 
   # Enable dnsmasq for local DNS resolution
@@ -75,41 +117,25 @@
       # Don't use /etc/resolv.conf
       no-resolv = true;
 
-      # Use NextDNS servers directly for now
-      # server = config.secrets.nextDnsServers;
-
       # Use stubby as upstream DNS-over-TLS resolver
       server = [ "127.0.0.1#5453" ];
 
       # Set default TTL to 60 seconds
       max-ttl = 60;
 
-      # Local domain configuration
-      domain = "${config.secrets.externalDomain}";
-      local = "/${config.secrets.externalDomain}/";
+      # Domain configuration loaded from sops template
       domain-needed = true;
       expand-hosts = true;
       bogus-priv = true;
-
-      # Add search domain for clients
-      dhcp-option = [ "option:domain-search,${config.secrets.externalDomain}" ];
-
-      # Make it explicitly authoritative for external domain
-      # This don't align with wildcard records, commenting out.
-      # auth-zone = "${config.secrets.externalDomain}";
-      # auth-server = "${config.secrets.externalDomain}";
 
       # Enable DNS forwarding
       dns-forward-max = 150;
 
       # Local DNS entries - using host-record for better multi-level domain support
-      host-record = [
-      ];
+      host-record = [ ];
 
-      # Wildcard domain support
-      address = [
-        "/${config.secrets.externalDomain}/${config.flags.beeIp}" # This will match all *.externalDomain records
-      ];
+      # Include domain-specific config from sops template
+      conf-file = [ "${config.sops.templates."dnsmasq-domain.conf".path}" ];
 
       # Log queries (useful for debugging)
       log-queries = true;
@@ -117,6 +143,7 @@
       log-dhcp = true;
     };
   };
+
 
   # Open DNS ports in the firewall
   networking.firewall = {
