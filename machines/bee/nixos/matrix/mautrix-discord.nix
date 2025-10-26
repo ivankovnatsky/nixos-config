@@ -3,6 +3,21 @@
   # Use updated module from nixpkgs unstable (not available in nixos-25.05)
   disabledModules = [ "services/matrix/mautrix-discord.nix" ];
 
+  # Sops secrets for Matrix bridge
+  sops.secrets.external-domain = {
+    key = "externalDomain";
+  };
+
+  sops.secrets.matrix-username = {
+    key = "matrix/username";
+  };
+
+  # Create environment file from sops secrets for mautrix-discord
+  sops.templates."mautrix-discord.env".content = ''
+    EXTERNAL_DOMAIN=${config.sops.placeholder."external-domain"}
+    MATRIX_USERNAME=${config.sops.placeholder."matrix-username"}
+  '';
+
   # https://docs.mau.fi/bridges/go/discord/index.html
   # Using local module from nixpkgs unstable (not nixos-25.05)
   local.services.mautrix-discord = {
@@ -17,10 +32,14 @@
     # Synapse will fail to start, breaking ALL bridges (including Telegram, WhatsApp).
     registerToSynapse = true;
 
+    # Load secrets from sops-generated environment file
+    environmentFile = config.sops.templates."mautrix-discord.env".path;
+
     settings = {
       homeserver = {
         address = "http://${config.flags.beeIp}:8008";
-        domain = "matrix.${config.secrets.externalDomain}";
+        # Using environment variable from sops template
+        domain = "matrix.$EXTERNAL_DOMAIN";
       };
 
       appservice = {
@@ -39,7 +58,8 @@
 
       bridge = {
         permissions = {
-          "@${config.secrets.matrix.username}:matrix.${config.secrets.externalDomain}" = "admin";
+          # Using environment variables from sops template
+          "@$MATRIX_USERNAME:matrix.$EXTERNAL_DOMAIN" = "admin";
           "*" = "relay";
         };
       };
