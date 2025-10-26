@@ -1,17 +1,29 @@
 { config, ... }:
 
 {
+  sops.secrets = {
+    nextdns-api-key = {
+      key = "nextDnsApiKey";
+    };
+    nextdns-profile-mini = {
+      key = "nextDnsProfileMini";
+    };
+    nextdns-profile-router = {
+      key = "nextDnsProfileRouter";
+    };
+  };
+
   local.services.nextdns-mgmt.mini = {
     enable = true;
-    apiKey = config.secrets.nextDnsApiKey;
-    profileId = config.secrets.nextDnsProfileMini;
+    apiKeyFile = config.sops.secrets.nextdns-api-key.path;
+    profileIdFile = config.sops.secrets.nextdns-profile-mini.path;
     profileFile = ../../../../../configs/nextdns-profile.json;
   };
 
   local.services.nextdns-mgmt.router = {
     enable = true;
-    apiKey = config.secrets.nextDnsApiKey;
-    profileId = config.secrets.nextDnsProfileRouter;
+    apiKeyFile = config.sops.secrets.nextdns-api-key.path;
+    profileIdFile = config.sops.secrets.nextdns-profile-router.path;
     profileFile = ../../../../../configs/nextdns-profile.json;
   };
 }
