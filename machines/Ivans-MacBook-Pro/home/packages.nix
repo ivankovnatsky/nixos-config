@@ -4,5 +4,8 @@
     nodePackages.prettier
     swiftformat
     treefmt
+    sops
+    age
+    ssh-to-age
   ];
 }
