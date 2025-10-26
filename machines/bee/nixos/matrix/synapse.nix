@@ -1,15 +1,34 @@
 { config, lib, ... }:
 {
+  # Sops secrets for Synapse
+  sops.secrets.external-domain = {
+    key = "externalDomain";
+  };
+
   sops.secrets.postgres-monitoring-password = {
     key = "postgres/monitoring/password";
     owner = "postgres";
     group = "postgres";
   };
 
+  # Create Synapse config fragment with server_name from sops
+  sops.templates."synapse-server-name.yaml" = {
+    content = ''
+      server_name: "matrix.${config.sops.placeholder."external-domain"}"
+    '';
+    owner = "matrix-synapse";
+    group = "matrix-synapse";
+  };
+
   services.matrix-synapse = {
     enable = true;
+
+    # Load server_name from sops template
+    extraConfigFiles = [
+      config.sops.templates."synapse-server-name.yaml".path
+    ];
+
     settings = {
-      server_name = "matrix.${config.secrets.externalDomain}";
 
       listeners = [
         {
