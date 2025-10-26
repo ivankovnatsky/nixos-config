@@ -38,46 +38,76 @@ let
     hash = "sha256-q0Y5l2Dan7lqNDLB/G7IYsBa1a9Vc/bCLyymOCTH/Jg=";
   };
 
-  # Path to the Caddyfile
+  # Path to the Caddyfile template
   # Using Caddyfile seperately to have a proper formatting to avoid ridiculous
   # warnings and for consistency
   caddyfilePath = ../../../templates/Caddyfile;
 
-  # Process the Caddyfile to substitute variables
-  Caddyfile =
-    pkgs.runCommand "caddyfile"
-      {
-        inherit bindAddress externalDomain;
-        inherit (config.secrets) letsEncryptEmail;
-        inherit (config.secrets) cloudflareApiToken;
-        inherit (config.flags) beeIp;
-        inherit (config.flags) miniIp;
-        inherit (config.flags) a3wIp;
-        inherit (config.flags) miniVmIp;
-        logPathPrefix = "/var/log";
-
-        # Element Web path
-        elementWebPath = pkgs.mkElementWeb config.secrets.externalDomain "matrix";
-
-        # Netdata credentials
-        netdataBeeUsername = config.secrets.netdata.bee.username;
-        netdataBeePassword = config.secrets.netdata.bee.password;
-        netdataMiniUsername = config.secrets.netdata.mini.username;
-        netdataMiniPassword = config.secrets.netdata.mini.password;
-
-        # Zigbee credentials
-        zigbeeUsername = config.secrets.zigbee.username;
-        zigbeePassword = config.secrets.zigbee.password;
-
-        # Podsync credentials
-        podsyncUsername = config.secrets.podsync.username;
-        podsyncPassword = config.secrets.podsync.password;
-      }
-      ''
-        substituteAll ${caddyfilePath} $out
-      '';
+  # Runtime Caddyfile path
+  runtimeCaddyfile = "/run/caddy/Caddyfile";
 in
 {
+  # Sops secrets for Caddy basic auth credentials
+  sops.secrets.zigbee-username = {
+    key = "zigbee/username";
+    owner = "caddy";
+    group = "caddy";
+  };
+
+  sops.secrets.zigbee-password = {
+    key = "zigbee/password";
+    owner = "caddy";
+    group = "caddy";
+  };
+
+  sops.secrets.podsync-username = {
+    key = "podsync/username";
+    owner = "caddy";
+    group = "caddy";
+  };
+
+  sops.secrets.podsync-password = {
+    key = "podsync/password";
+    owner = "caddy";
+    group = "caddy";
+  };
+
+  sops.secrets.netdata-mini-username = {
+    key = "netdata/mini/username";
+    owner = "caddy";
+    group = "caddy";
+  };
+
+  sops.secrets.netdata-mini-password = {
+    key = "netdata/mini/password";
+    owner = "caddy";
+    group = "caddy";
+  };
+
+  sops.secrets.netdata-bee-username = {
+    key = "netdata/bee/username";
+    owner = "caddy";
+    group = "caddy";
+  };
+
+  sops.secrets.netdata-bee-password = {
+    key = "netdata/bee/password";
+    owner = "caddy";
+    group = "caddy";
+  };
+
+  sops.secrets.cloudflare-api-token = {
+    key = "cloudflareApiToken";
+    owner = "caddy";
+    group = "caddy";
+  };
+
+  sops.secrets.lets-encrypt-email = {
+    key = "letsEncryptEmail";
+    owner = "caddy";
+    group = "caddy";
+  };
+
   # https://github.com/NixOS/nixpkgs/blob/nixos-25.05/nixos/modules/services/web-servers/caddy/default.nix
   # Create the caddy user and group
   users.users.caddy = {
@@ -104,20 +134,67 @@ in
     startLimitIntervalSec = 14400;
     startLimitBurst = 10;
 
+    # Generate Caddyfile at runtime with secrets substituted from sops
+    preStart = ''
+      # Create runtime directory
+      mkdir -p /run/caddy
+
+      # Element Web path
+      ELEMENT_WEB_PATH="${pkgs.mkElementWeb config.secrets.externalDomain "matrix"}"
+
+      # Read secrets from files
+      LETS_ENCRYPT_EMAIL=$(cat ${config.sops.secrets.lets-encrypt-email.path})
+      CLOUDFLARE_API_TOKEN=$(cat ${config.sops.secrets.cloudflare-api-token.path})
+      ZIGBEE_USERNAME=$(cat ${config.sops.secrets.zigbee-username.path})
+      ZIGBEE_PASSWORD=$(cat ${config.sops.secrets.zigbee-password.path})
+      PODSYNC_USERNAME=$(cat ${config.sops.secrets.podsync-username.path})
+      PODSYNC_PASSWORD=$(cat ${config.sops.secrets.podsync-password.path})
+      NETDATA_BEE_USERNAME=$(cat ${config.sops.secrets.netdata-bee-username.path})
+      NETDATA_BEE_PASSWORD=$(cat ${config.sops.secrets.netdata-bee-password.path})
+      NETDATA_MINI_USERNAME=$(cat ${config.sops.secrets.netdata-mini-username.path})
+      NETDATA_MINI_PASSWORD=$(cat ${config.sops.secrets.netdata-mini-password.path})
+
+      # Substitute variables in Caddyfile template
+      ${pkgs.gnused}/bin/sed \
+        -e "s|@bindAddress@|${bindAddress}|g" \
+        -e "s|@externalDomain@|${externalDomain}|g" \
+        -e "s|@letsEncryptEmail@|$LETS_ENCRYPT_EMAIL|g" \
+        -e "s|@cloudflareApiToken@|$CLOUDFLARE_API_TOKEN|g" \
+        -e "s|@beeIp@|${config.flags.beeIp}|g" \
+        -e "s|@miniIp@|${config.flags.miniIp}|g" \
+        -e "s|@a3wIp@|${config.flags.a3wIp}|g" \
+        -e "s|@logPathPrefix@|/var/log|g" \
+        -e "s|@elementWebPath@|$ELEMENT_WEB_PATH|g" \
+        -e "s|@zigbeeUsername@|$ZIGBEE_USERNAME|g" \
+        -e "s|@zigbeePassword@|$ZIGBEE_PASSWORD|g" \
+        -e "s|@podsyncUsername@|$PODSYNC_USERNAME|g" \
+        -e "s|@podsyncPassword@|$PODSYNC_PASSWORD|g" \
+        -e "s|@netdataBeeUsername@|$NETDATA_BEE_USERNAME|g" \
+        -e "s|@netdataBeePassword@|$NETDATA_BEE_PASSWORD|g" \
+        -e "s|@netdataMiniUsername@|$NETDATA_MINI_USERNAME|g" \
+        -e "s|@netdataMiniPassword@|$NETDATA_MINI_PASSWORD|g" \
+        ${caddyfilePath} > ${runtimeCaddyfile}
+
+      # Set ownership
+      chown caddy:caddy ${runtimeCaddyfile}
+      chmod 600 ${runtimeCaddyfile}
+    '';
+
     serviceConfig = {
       User = "caddy";
       Group = "caddy";
       # Explicitly specify the caddyfile adapter to ensure proper parsing
       ExecStart = [
         ""
-        "${caddyWithPlugins}/bin/caddy run --config ${Caddyfile} --adapter caddyfile"
+        "${caddyWithPlugins}/bin/caddy run --config ${runtimeCaddyfile} --adapter caddyfile"
       ];
       ExecReload = [
         ""
-        "${caddyWithPlugins}/bin/caddy reload --config ${Caddyfile} --adapter caddyfile --force"
+        "${caddyWithPlugins}/bin/caddy reload --config ${runtimeCaddyfile} --adapter caddyfile --force"
       ];
 
       # Directories
+      RuntimeDirectory = "caddy";
       StateDirectory = "caddy";
       LogsDirectory = "caddy";
       ReadWritePaths = [
