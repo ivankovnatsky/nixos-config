@@ -7,6 +7,10 @@
   ];
 
   # Sops secrets for Matrix bridge
+  sops.secrets.external-domain = {
+    key = "externalDomain";
+  };
+
   sops.secrets.matrix-username = {
     key = "matrix/username";
   };
@@ -23,6 +27,8 @@
   sops.templates."mautrix-telegram.env".content = ''
     MAUTRIX_TELEGRAM_TELEGRAM_API_ID=${config.sops.placeholder."telegram-api-id"}
     MAUTRIX_TELEGRAM_TELEGRAM_API_HASH=${config.sops.placeholder."telegram-api-hash"}
+    EXTERNAL_DOMAIN=${config.sops.placeholder."external-domain"}
+    MATRIX_USERNAME=${config.sops.placeholder."matrix-username"}
   '';
 
   # NOTE: If changing appservice settings (port, etc), delete the data dir to regenerate:
@@ -44,7 +50,8 @@
     settings = {
       homeserver = {
         address = "http://${config.flags.beeIp}:8008";
-        domain = "matrix.${config.secrets.externalDomain}";
+        # Using environment variable from sops template
+        domain = "matrix.$EXTERNAL_DOMAIN";
       };
 
       appservice = {
@@ -57,7 +64,8 @@
 
       bridge = {
         permissions = {
-          "@${config.secrets.matrix.username}:matrix.${config.secrets.externalDomain}" = "admin";
+          # Using environment variables from sops template
+          "@$MATRIX_USERNAME:matrix.$EXTERNAL_DOMAIN" = "admin";
           "*" = "relaybot";
         };
       };

@@ -1,5 +1,20 @@
 { config, pkgs, ... }:
 {
+  # Sops secrets for Matrix bridge
+  sops.secrets.external-domain = {
+    key = "externalDomain";
+  };
+
+  sops.secrets.matrix-username = {
+    key = "matrix/username";
+  };
+
+  # Create environment file from sops secrets for mautrix-meta
+  sops.templates."mautrix-meta.env".content = ''
+    EXTERNAL_DOMAIN=${config.sops.placeholder."external-domain"}
+    MATRIX_USERNAME=${config.sops.placeholder."matrix-username"}
+  '';
+
   services.mautrix-meta = {
     package = pkgs.nixpkgs-nixos-unstable.mautrix-meta;
 
@@ -9,12 +24,16 @@
 
         registerToSynapse = true;
 
+        # Load secrets from sops-generated environment file
+        environmentFile = config.sops.templates."mautrix-meta.env".path;
+
         settings = {
           network.mode = "messenger";
 
           homeserver = {
             address = "http://${config.flags.beeIp}:8008";
-            domain = "matrix.${config.secrets.externalDomain}";
+            # Using environment variable from sops template
+            domain = "matrix.$EXTERNAL_DOMAIN";
           };
 
           appservice = {
@@ -39,7 +58,8 @@
 
           bridge = {
             permissions = {
-              "@${config.secrets.matrix.username}:matrix.${config.secrets.externalDomain}" = "admin";
+              # Using environment variables from sops template
+              "@$MATRIX_USERNAME:matrix.$EXTERNAL_DOMAIN" = "admin";
               "*" = "relay";
             };
           };
@@ -51,12 +71,16 @@
 
         registerToSynapse = true;
 
+        # Load secrets from sops-generated environment file
+        environmentFile = config.sops.templates."mautrix-meta.env".path;
+
         settings = {
           network.mode = "instagram";
 
           homeserver = {
             address = "http://${config.flags.beeIp}:8008";
-            domain = "matrix.${config.secrets.externalDomain}";
+            # Using environment variable from sops template
+            domain = "matrix.$EXTERNAL_DOMAIN";
           };
 
           appservice = {
@@ -81,7 +105,8 @@
 
           bridge = {
             permissions = {
-              "@${config.secrets.matrix.username}:matrix.${config.secrets.externalDomain}" = "admin";
+              # Using environment variables from sops template
+              "@$MATRIX_USERNAME:matrix.$EXTERNAL_DOMAIN" = "admin";
               "*" = "relay";
             };
           };
