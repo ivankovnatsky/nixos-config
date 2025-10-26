@@ -31,8 +31,16 @@ in
     };
 
     apiToken = mkOption {
-      type = types.str;
+      type = types.nullOr types.str;
+      default = null;
       description = "API token for Audiobookshelf authentication";
+    };
+
+    apiTokenFile = mkOption {
+      type = types.nullOr types.path;
+      default = null;
+      example = "/run/secrets/audiobookshelf-api-token";
+      description = "Path to file containing API token for Audiobookshelf authentication";
     };
 
     libraries = mkOption {
@@ -135,7 +143,16 @@ in
   };
 
   config = mkIf cfg.enable {
-    system.activationScripts.audiobookshelf-mgmt = ''
+    assertions = [
+      {
+        assertion = (cfg.apiToken != null) != (cfg.apiTokenFile != null);
+        message = "Exactly one of apiToken or apiTokenFile must be set for audiobookshelf-mgmt";
+      }
+    ];
+
+    # Use systemd service instead of activation script when using file-based secrets
+    # to ensure proper ordering with sops-nix secret installation
+    system.activationScripts.audiobookshelf-mgmt = mkIf (cfg.apiTokenFile == null) ''
       echo "Syncing Audiobookshelf configuration..."
       ${pkgs.abs-mgmt}/bin/abs-mgmt sync \
         --base-url "${cfg.baseUrl}" \
@@ -143,18 +160,44 @@ in
         --config-file "${configJson}" || echo "Warning: Audiobookshelf sync failed"
     '';
 
-    # OPML sync service and timer
-    systemd.services.audiobookshelf-opml-sync = mkIf (cfg.opmlSync != null && cfg.opmlSync.enable) {
-      description = "Audiobookshelf OPML synchronization from Podsync";
+    systemd.services.audiobookshelf-mgmt-sync = mkIf (cfg.apiTokenFile != null) {
+      description = "Audiobookshelf configuration synchronization";
+      wantedBy = [ "multi-user.target" ];
       after = [ "network-online.target" ];
       wants = [ "network-online.target" ];
 
       serviceConfig = {
         Type = "oneshot";
-        ExecStart = "${pkgs.abs-mgmt}/bin/abs-mgmt sync-opml --base-url ${cfg.baseUrl} --token ${cfg.apiToken} --opml-url ${cfg.opmlSync.opmlUrl} --library-name ${cfg.opmlSync.libraryName}${optionalString cfg.opmlSync.autoDownload " --auto-download"}";
+        RemainAfterExit = true;
         User = "root";
+        ExecStart = pkgs.writeShellScript "audiobookshelf-mgmt-sync" ''
+          echo "Syncing Audiobookshelf configuration..."
+          ${pkgs.abs-mgmt}/bin/abs-mgmt sync \
+            --base-url "${cfg.baseUrl}" \
+            --token "$(cat ${cfg.apiTokenFile})" \
+            --config-file "${configJson}" || echo "Warning: Audiobookshelf sync failed"
+        '';
       };
     };
+
+    # OPML sync service and timer
+    systemd.services.audiobookshelf-opml-sync = mkIf (cfg.opmlSync != null && cfg.opmlSync.enable) (
+      let
+        tokenArg = if cfg.apiTokenFile != null
+          then ''"$(cat ${cfg.apiTokenFile})"''
+          else cfg.apiToken;
+      in {
+        description = "Audiobookshelf OPML synchronization from Podsync";
+        after = [ "network-online.target" ];
+        wants = [ "network-online.target" ];
+
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = "${pkgs.abs-mgmt}/bin/abs-mgmt sync-opml --base-url ${cfg.baseUrl} --token ${tokenArg} --opml-url ${cfg.opmlSync.opmlUrl} --library-name ${cfg.opmlSync.libraryName}${optionalString cfg.opmlSync.autoDownload " --auto-download"}";
+          User = "root";
+        };
+      }
+    );
 
     systemd.timers.audiobookshelf-opml-sync = mkIf (cfg.opmlSync != null && cfg.opmlSync.enable) {
       description = "Timer for Audiobookshelf OPML synchronization";
