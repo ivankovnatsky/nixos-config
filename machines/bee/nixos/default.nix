@@ -6,6 +6,7 @@
     ../../../modules/nixos/mautrix-discord
     ../../../modules/nixos/mautrix-linkedin
     ../../../modules/nixos/mautrix-whatsapp
+    ../../../modules/nixos/rebuild-daemon
     ../../../modules/nixos/tmux-rebuild
     ../../../modules/secrets
     ../../../modules/shared/arr-mgmt
@@ -31,6 +32,7 @@
     ./open-webui.nix
     ./packages.nix
     ./power.nix
+    ./rebuild-daemon.nix
     ./ssh.nix
     ./sudo.nix # Security
     ./syncthing.nix
