@@ -7,7 +7,7 @@
 
 {
   # Sops secrets for DNS configuration
-  sops.secrets.external-domain.key = "externalDomain";
+  # Note: external-domain is declared in sops.nix (shared across services)
   sops.secrets.nextdns-endpoint.key = "nextDnsEndpoint";
   sops.secrets.nextdns-server-1.key = "nextDnsServer1";
   sops.secrets.nextdns-server-2.key = "nextDnsServer2";

@@ -1,5 +1,13 @@
 { config, pkgs, ... }:
 {
+  # Sops template for timezone (secret declared in sops.nix)
+  sops.templates."matterbridge.env" = {
+    content = ''
+      TZ=${config.sops.placeholder.timezone}
+    '';
+    mode = "0444";
+  };
+
   virtualisation.oci-containers = {
     backend = "docker";
     containers = {
@@ -8,9 +16,9 @@
           "/var/lib/matterbridge/plugins:/root/Matterbridge"
           "/var/lib/matterbridge/storage:/root/.matterbridge"
         ];
-        environment = {
-          TZ = config.secrets.time_zone;
-        };
+        environmentFiles = [
+          config.sops.templates."matterbridge.env".path
+        ];
         image = "luligu/matterbridge:3.1.4";
         extraOptions = [
           # Network access for Matter mdns

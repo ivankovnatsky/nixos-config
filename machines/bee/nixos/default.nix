@@ -33,6 +33,7 @@
     ./packages.nix
     ./power.nix
     ./rebuild-daemon.nix
+    ./sops.nix # Shared sops secrets
     ./ssh.nix
     ./sudo.nix # Security
     ./syncthing.nix

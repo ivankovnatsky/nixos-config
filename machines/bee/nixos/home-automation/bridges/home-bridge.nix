@@ -53,6 +53,14 @@ let
   );
 in
 {
+  # Sops template for timezone (secret declared in sops.nix)
+  sops.templates."homebridge.env" = {
+    content = ''
+      TZ=${config.sops.placeholder.timezone}
+    '';
+    mode = "0444";
+  };
+
   virtualisation.oci-containers = {
     backend = "docker";
     containers = {
@@ -60,9 +68,9 @@ in
         volumes = [
           "/var/lib/homebridge:/homebridge"
         ];
-        environment = {
-          TZ = config.secrets.time_zone;
-        };
+        environmentFiles = [
+          config.sops.templates."homebridge.env".path
+        ];
         image = "homebridge/homebridge:2025-07-12";
         extraOptions = [
           # Network access for HomeKit and device discovery
