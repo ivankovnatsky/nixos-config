@@ -6,6 +6,25 @@
     "olm-3.2.16"
   ];
 
+  # Sops secrets for Matrix bridge
+  sops.secrets.matrix-username = {
+    key = "matrix/username";
+  };
+
+  sops.secrets.telegram-api-id = {
+    key = "telegram/apiId";
+  };
+
+  sops.secrets.telegram-api-hash = {
+    key = "telegram/apiHash";
+  };
+
+  # Create environment file from sops secrets for mautrix-telegram
+  sops.templates."mautrix-telegram.env".content = ''
+    MAUTRIX_TELEGRAM_TELEGRAM_API_ID=${config.sops.placeholder."telegram-api-id"}
+    MAUTRIX_TELEGRAM_TELEGRAM_API_HASH=${config.sops.placeholder."telegram-api-hash"}
+  '';
+
   # NOTE: If changing appservice settings (port, etc), delete the data dir to regenerate:
   #   sudo systemctl stop mautrix-telegram.service matrix-synapse.service
   #   sudo rm -rf /var/lib/mautrix-telegram
@@ -18,6 +37,9 @@
     # WARNING: When enabled, if this bridge fails to generate its registration file,
     # Synapse will fail to start, breaking ALL bridges.
     registerToSynapse = true;
+
+    # Load Telegram API credentials from sops-generated environment file
+    environmentFile = config.sops.templates."mautrix-telegram.env".path;
 
     settings = {
       homeserver = {
@@ -41,8 +63,9 @@
       };
 
       telegram = {
-        api_id = config.secrets.telegram.apiId;
-        api_hash = config.secrets.telegram.apiHash;
+        # Telegram API credentials loaded from environmentFile
+        # The module will substitute $MAUTRIX_TELEGRAM_TELEGRAM_API_ID and $MAUTRIX_TELEGRAM_TELEGRAM_API_HASH
+        # from the environment file at runtime
       };
     };
   };
