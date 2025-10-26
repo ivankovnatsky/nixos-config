@@ -28,6 +28,8 @@ class RebuildDaemon:
         self.config_path = Path(config_path)
         self.platform = platform.system()
 
+        # FIXME: Remove log handling if we're using launchd and systemd log
+        # management.
         if log_dir:
             self.log_dir = Path(log_dir)
         else:
