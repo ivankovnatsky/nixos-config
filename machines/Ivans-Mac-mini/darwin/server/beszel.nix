@@ -22,12 +22,16 @@ in
   };
 
   # Beszel Agent (monitoring mini itself)
+  sops.secrets.beszel-hub-public-key = {
+    key = "beszel/hubPublicKey";
+  };
+
   local.services.beszel-agent = {
     enable = true;
     package = pkgs.nixpkgs-master.beszel;
     port = 45876;
     listenAddress = config.flags.miniIp;
-    hubPublicKey = config.secrets.beszel.hubPublicKey;
+    hubPublicKeyFile = config.sops.secrets.beszel-hub-public-key.path;
   };
 
   # Beszel management (declarative system sync)
