@@ -4,6 +4,10 @@
     key = "audiobookshelf/apiToken";
   };
 
+  sops.secrets.audiobookshelf-textcast-password = {
+    key = "audiobookshelf/textcastPassword";
+  };
+
   local.services.audiobookshelf-mgmt = {
     enable = true;
     baseUrl = "http://${config.flags.beeIp}:8000";
@@ -21,7 +25,7 @@
     users = [
       {
         username = "textcast";
-        password = config.secrets.audiobookshelf.textcastPassword;
+        passwordFile = config.sops.secrets.audiobookshelf-textcast-password.path;
         type = "user";
         libraries = [ ]; # Empty = access to all libraries
       }
