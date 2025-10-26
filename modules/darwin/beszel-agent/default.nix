@@ -35,12 +35,27 @@ in
     };
 
     hubPublicKey = mkOption {
-      type = types.str;
+      type = types.nullOr types.str;
+      default = null;
       description = "SSH public key from the beszel hub";
+    };
+
+    hubPublicKeyFile = mkOption {
+      type = types.nullOr types.path;
+      default = null;
+      example = "/var/run/secrets.d/1/beszel-hub-public-key";
+      description = "Path to file containing SSH public key from the beszel hub";
     };
   };
 
   config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = (cfg.hubPublicKey != null) != (cfg.hubPublicKeyFile != null);
+        message = "Exactly one of hubPublicKey or hubPublicKeyFile must be set for beszel-agent";
+      }
+    ];
+
     environment.systemPackages = [ cfg.package ];
 
     launchd.daemons.beszel-agent = {
@@ -60,9 +75,14 @@ in
         StandardErrorPath = "/tmp/log/launchd/beszel-agent.error.log";
         EnvironmentVariables = {
           LISTEN = "${cfg.listenAddress}:${toString cfg.port}";
-          KEY = cfg.hubPublicKey;
           PATH = "${pkgs.coreutils}/bin:${cfg.package}/bin:${pkgs.bash}/bin";
-        };
+        } // (
+          if cfg.hubPublicKeyFile != null then {
+            KEY_FILE = cfg.hubPublicKeyFile;
+          } else {
+            KEY = cfg.hubPublicKey;
+          }
+        );
       };
     };
   };
