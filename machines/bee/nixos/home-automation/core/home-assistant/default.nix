@@ -1,5 +1,22 @@
 { config, pkgs, ... }:
 {
+  # Home Assistant location secrets (converted to strings in secrets file)
+  sops.secrets = {
+    latitude.key = "latitude";
+    longitude.key = "longitude";
+  };
+
+  # Sops template for home-assistant location secrets
+  sops.templates."home-assistant-location.env" = {
+    content = ''
+      LATITUDE=${config.sops.placeholder.latitude}
+      LONGITUDE=${config.sops.placeholder.longitude}
+      TIME_ZONE=${config.sops.placeholder.timezone}
+    '';
+    owner = "root";
+    mode = "0400";
+  };
+
   services.home-assistant = {
     enable = true;
     package =
@@ -41,10 +58,8 @@
       default_config = { };
       recorder.db_url = "postgresql://@/hass";
 
-      # Set location information in the correct format
       homeassistant = {
         name = "Home";
-        inherit (config.secrets) latitude longitude time_zone;
         elevation = 0;
         unit_system = "metric";
       };
@@ -136,6 +151,29 @@
     serviceConfig = {
       AmbientCapabilities = "CAP_NET_BIND_SERVICE CAP_NET_RAW"; # Add network capabilities
       Environment = "PYTHONUNBUFFERED=1";
+    };
+  };
+
+  # Inject location secrets into Home Assistant configuration
+  systemd.services.home-assistant-inject-secrets = {
+    description = "Inject location secrets into Home Assistant configuration";
+    before = [ "home-assistant.service" ];
+    wantedBy = [ "home-assistant.service" ];
+    partOf = [ "home-assistant.service" ];
+
+    script = ''
+      # Source location secrets from sops template
+      source ${config.sops.templates."home-assistant-location.env".path}
+
+      # Use yq to inject the values into configuration.yaml
+      ${pkgs.yq-go}/bin/yq eval ".homeassistant.latitude = $LATITUDE | .homeassistant.longitude = $LONGITUDE | .homeassistant.time_zone = \"$TIME_ZONE\"" -i /var/lib/hass/configuration.yaml
+
+      # Ensure hass user can read the file
+      chown hass:hass /var/lib/hass/configuration.yaml
+    '';
+
+    serviceConfig = {
+      Type = "oneshot";
     };
   };
 
