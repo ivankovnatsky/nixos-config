@@ -22,6 +22,14 @@
           $DRY_RUN_CMD "$TWEETY_BIN" completion fish > "${config.home.homeDirectory}/.config/fish/completions/tweety.fish"
         fi
       '';
+
+      installTweety = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        TWEETY_BIN="${pkgs.tweety}/bin/tweety"
+
+        if [[ -x "$TWEETY_BIN" ]]; then
+          $DRY_RUN_CMD "$TWEETY_BIN" install
+        fi
+      '';
     };
 
     file.".config/tweety/config.json".text = builtins.toJSON {
