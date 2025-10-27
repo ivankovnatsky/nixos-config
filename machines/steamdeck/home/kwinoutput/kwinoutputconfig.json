@@ -53,7 +53,7 @@
                 },
                 "overscan": 0,
                 "rgbRange": "Automatic",
-                "scale": 1.5,
+                "scale": 1.4,
                 "sdrBrightness": 200,
                 "sdrGamutWideness": 0,
                 "transform": "Normal",
