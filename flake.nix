@@ -135,6 +135,12 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs-nixos-release";
     };
+
+    # Jovian-NixOS for Steam Deck
+    jovian-nixos-unstable = {
+      url = "github:Jovian-Experiments/Jovian-NixOS";
+      inputs.nixpkgs.follows = "nixpkgs-nixos-unstable";
+    };
   };
 
   outputs = { self, ... }@inputs: import ./flake { inherit inputs; };

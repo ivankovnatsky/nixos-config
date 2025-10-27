@@ -125,6 +125,9 @@
       # Import machine-specific configuration
       ../../machines/steamdeck
 
+      # Jovian-NixOS modules for Steam Deck
+      inputs.jovian-nixos-unstable.nixosModules.default
+
       # Basic system configuration
       {
         nixpkgs.overlays = [
