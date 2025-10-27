@@ -1,6 +1,26 @@
 {
   imports = [
+    ../../../modules/flags
+    ../../../modules/nixos/tmux-rebuild
+    ../../../modules/secrets
+    ../../../nixos/chromium.nix
+    ../../../system/nix.nix
+    ../../../system/scripts
+    ./bluetooth.nix
+    ./boot.nix
     ./configuration.nix
-    ./crypted.nix
+    ./cryptenroll.nix
+    ./default-apps.nix
+    ./desktop.nix
+    ./fonts.nix
+    ./kde.nix
+    ./networking.nix
+    ./nixpkgs.nix
+    ./plasma.nix
+    ./security.nix
+    ./sudo.nix
+    ./tmux-rebuild.nix
+    ./tpm2.nix
+    ./user.nix
   ];
 }
