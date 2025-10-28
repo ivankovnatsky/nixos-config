@@ -47,6 +47,7 @@ quality = "high"
 format = "audio"
 opml = true
 clean = { keep_last = 10 }
+filters = { min_duration = 300 }
 
 [feeds.tze_vzhe_bulo]
 url = "https://www.youtube.com/@tze_vzhe_bulo"
@@ -56,3 +57,4 @@ quality = "high"
 format = "audio"
 opml = true
 clean = { keep_last = 3 }
+filters = { min_duration = 300 }
