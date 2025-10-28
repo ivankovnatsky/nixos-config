@@ -1,6 +1,7 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
+    asusrouter-cli
     nodePackages.prettier
     swiftformat
     treefmt
