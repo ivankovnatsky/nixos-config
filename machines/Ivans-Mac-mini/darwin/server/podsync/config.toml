@@ -42,7 +42,7 @@ debug = false
 [feeds.sternenko]
 url = "https://www.youtube.com/@STERNENKO"
 page_size = 50
-cron_schedule = "48 13 * * *"
+cron_schedule = "@every 15m"
 quality = "high"
 format = "audio"
 opml = true
