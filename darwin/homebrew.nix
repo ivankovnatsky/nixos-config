@@ -18,7 +18,6 @@
       "bitwarden"
       "chromium"
       "coconutbattery"
-      "comet"
       "cursor"
       "firefox"
       "ghostty"
