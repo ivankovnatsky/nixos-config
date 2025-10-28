@@ -69,3 +69,8 @@ sudo nixos-rebuild switch --flake .#steamdeck
 
 When asked on Monitor setup, choosen to disable built-in when plugged-in,
 replicate that in code?
+
+## Switching to Steam Gaming Mode
+
+Log out, select "SteamOS (gamescope)" at SDDM login screen. Don't run
+`start-gamescope-session` from within KDE.
