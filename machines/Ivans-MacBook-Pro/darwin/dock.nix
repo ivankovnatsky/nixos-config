@@ -68,6 +68,7 @@ in
       { path = "/Applications/Ghostty.app/"; }
       { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Chromium.app/"; }
+      { path = "/Applications/Comet.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }
