@@ -48,20 +48,23 @@ local function get_plasma_appearance()
     end
   end
 
-  -- Fallback: check ColorScheme in kdeglobals
-  handle = io.popen("grep -i 'ColorScheme' ~/.config/kdeglobals 2>/dev/null")
+  -- Fallback: check ColorScheme in kdeglobals (but not ColorSchemeHash)
+  handle = io.popen("grep -i '^ColorScheme=' ~/.config/kdeglobals 2>/dev/null")
   if handle then
     local result = handle:read("*a")
     handle:close()
-    if result and (result:match("dark") or result:match("Dark") or result:match("black") or result:match("Black")) then
-      return "dark"
-    elseif result and result:len() > 0 then
-      return "light"
+    -- Only consider it if we found an actual ColorScheme= line (not ColorSchemeHash)
+    if result and not result:match("Hash") then
+      if result:match("dark") or result:match("Dark") or result:match("black") or result:match("Black") then
+        return "dark"
+      elseif result:len() > 0 then
+        return "light"
+      end
     end
   end
 
-  -- Check if we have dark colors in the General section
-  handle = io.popen("grep -A 10 '\\[General\\]' ~/.config/kdeglobals | grep -i 'BackgroundNormal' 2>/dev/null")
+  -- Check if we have dark colors in the Colors:Window section
+  handle = io.popen("grep -A 10 '\\[Colors:Window\\]' ~/.config/kdeglobals | grep 'BackgroundNormal' 2>/dev/null")
   if handle then
     local result = handle:read("*a")
     handle:close()
