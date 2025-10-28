@@ -170,12 +170,8 @@ def add_notification_context(url: str) -> str:
     Adds notifications_query parameter to help GitHub highlight the notification
     you came from in the UI.
     """
-    if not url:
-        return url
-
-    # Add notifications_query parameter (is:unread URL-encoded)
-    separator = "&" if "?" in url else "?"
-    return f"{url}{separator}notifications_query=is%3Aunread"
+    # Disabled: just return the URL unchanged
+    return url
 
 
 def open_in_browser(url: str) -> bool:
