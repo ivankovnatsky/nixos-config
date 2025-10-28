@@ -83,9 +83,13 @@ prevent_sleep_macos() {
 
 # Function to prevent sleep on Linux
 prevent_sleep_linux() {
-  if command -v systemctl &>/dev/null; then
+  if command -v systemd-inhibit &>/dev/null; then
     echo "Preventing sleep on Linux using systemd-inhibit for ${TIMEOUT} seconds..."
-    systemd-inhibit --what=sleep:idle --who="caffeinate" --why="User requested to prevent sleep" --mode=block sleep "${TIMEOUT}"
+    # Inhibit multiple lock types to match macOS caffeinate behavior:
+    # - idle: prevents the system from going idle
+    # - sleep: prevents system suspend/sleep
+    # - handle-lid-switch: prevents lid close from triggering sleep
+    sudo systemd-inhibit --what=idle:sleep:handle-lid-switch --who="prevent-sleep" --why="User requested to prevent sleep" --mode=block sleep "${TIMEOUT}"
   elif command -v xset &>/dev/null; then
     echo "Preventing sleep on Linux using xset..."
     while true; do
