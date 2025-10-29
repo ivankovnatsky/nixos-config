@@ -14,12 +14,9 @@ in
     ./keymaps
     ./opts
     ./plugins
-    ./plugins/git-blame
-    ./plugins/gitsigns
     ./plugins/lsp
     ./plugins/lspsaga
     ./plugins/none-ls
-    ./plugins/vgit
   ];
   # https://github.com/elythh/nixvim
   programs.nixvim = {
