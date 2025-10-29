@@ -15,6 +15,7 @@ let
     # TODO: add function nix-prefetch-url $url | xargs nix hash to-sri --type sha256
     g = "${pkgs.git}/bin/git";
     fd = "${pkgs.fd}/bin/fd --hidden --no-ignore";
+    erd = "${pkgs.erdtree}/bin/erd --color auto --human -L 1 --layout inverted --icons --long --hidden";
     # Let's not use GNU Coreutils mkdir for now.
     mkdir = "mkdir -p";
     less = "less -RS";
