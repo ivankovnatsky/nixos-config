@@ -35,7 +35,19 @@ let
       headers = mkOption {
         type = types.listOf types.str;
         default = [ ];
-        description = "HTTP headers for the MCP server";
+        description = ''
+          HTTP headers for the MCP server.
+          Supports @VARIABLE@ placeholders for secrets (use with secretPaths).
+        '';
+      };
+      secretPaths = mkOption {
+        type = types.attrsOf types.path;
+        default = { };
+        description = ''
+          Map of variable names to secret file paths for header substitution.
+          Example: { TOKEN = config.sops.secrets.token.path; }
+          Used to replace @TOKEN@ in headers at runtime.
+        '';
       };
       command = mkOption {
         type = types.nullOr types.str;

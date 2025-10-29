@@ -131,6 +131,11 @@
       inputs.nixpkgs.follows = "nixpkgs-darwin-release";
     };
 
+    sops-nix-darwin-unstable = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs-darwin-unstable";
+    };
+
     sops-nix-nixos-release = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs-nixos-release";

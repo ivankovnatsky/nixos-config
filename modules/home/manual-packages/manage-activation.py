@@ -157,6 +157,21 @@ def install_npm_packages(
     return True
 
 
+def substitute_secrets(text: str, secret_paths: Dict[str, str]) -> str:
+    """Replace @VARIABLE@ placeholders with content from secret files."""
+    result = text
+    for var_name, file_path in secret_paths.items():
+        placeholder = f"@{var_name}@"
+        if placeholder in result:
+            try:
+                with open(file_path, "r") as f:
+                    secret_value = f.read().strip()
+                result = result.replace(placeholder, secret_value)
+            except Exception as e:
+                log(f"Failed to read secret file {file_path}: {e}", Color.RED)
+    return result
+
+
 def install_mcp_servers(servers: Dict, paths: Dict, state: Dict):
     claude_cli = paths["claudeCli"]
 
@@ -207,8 +222,10 @@ def install_mcp_servers(servers: Dict, paths: Dict, state: Dict):
                     server_name,
                     server_config["url"],
                 ]
+                secret_paths = server_config.get("secretPaths", {})
                 for header in server_config.get("headers", []):
-                    cmd.extend(["-H", header])
+                    processed_header = substitute_secrets(header, secret_paths)
+                    cmd.extend(["-H", processed_header])
 
             returncode, _, stderr = run_command(cmd, env)
             if returncode != 0:
