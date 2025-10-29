@@ -11,16 +11,20 @@
       ]
     ))
     (wrapHelm kubernetes-helm { plugins = with pkgs.kubernetes-helmPlugins; [ helm-secrets ]; })
+    # jsonnet # ruby3.3-nokogiri build fails: fatal error: 'nokogiri_gumbo.h' file not found
+    # kcat # avro-c++ build fails with fmt 11.2.0: error: no matching member function for call to 'format' in fmt::formatter<avro::Type>
     argocd
     aws-sso-cli
     aws-sso-creds
     awscli2
     backup-home
+    bat
     cargo
     cloudflared
     confluent-cli
     coreutils
     crane
+    curlie
     defaultbrowser
     delta
     devbox
@@ -29,6 +33,7 @@
     docker-compose
     docker-credential-helpers
     dockutil # macOS related CLI
+    doggo
     duf
     dust
     eks-node-viewer
@@ -48,15 +53,13 @@
     hclfmt
     home-manager
     iam-policy-json-to-terraform
-    jcli
     imagemagick
     infra
     infracost
+    jcli
     jq
-    # jsonnet # ruby3.3-nokogiri build fails: fatal error: 'nokogiri_gumbo.h' file not found
     k8sgpt
     kail
-    # kcat # avro-c++ build fails with fmt 11.2.0: error: no matching member function for call to 'format' in fmt::formatter<avro::Type>
     kdash
     krew
     kubecolor
@@ -67,6 +70,7 @@
     kubectx
     kubepug
     kustomize
+    lsd
     magic-wormhole
     mariadb
     mkpasswd
@@ -77,9 +81,9 @@
     nixpkgs-master.cursor-cli
     nixpkgs-master.fluxcd
     nixpkgs-master.jira-cli-go
+    nodejs
     nodePackages.aws-cdk
     nodePackages.prettier
-    nodejs
     open-gh-notifications-py
     opsy
     oras
@@ -110,6 +114,7 @@
     switch-appearance
     terraformer
     terragrunt-atlantis-config
+    tree
     treefmt
     username # Installed as flake
     uv
