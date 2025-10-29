@@ -55,7 +55,6 @@
       lastplace.enable = true;
       commentary.enable = true;
       fugitive.enable = true;
-      git-conflict.enable = true;
       auto-session = {
         enable = true;
       };
@@ -166,7 +165,6 @@
             "menu"
           ];
           sources = [
-            { name = "git"; }
             { name = "emoji"; }
             { name = "spell"; }
             { name = "nvim_lsp"; }
@@ -224,7 +222,6 @@
         #   };
         # };
       };
-      diffview.enable = true;
       web-devicons.enable = true;
     };
     extraConfigLua = builtins.readFile ./telescope.lua;
