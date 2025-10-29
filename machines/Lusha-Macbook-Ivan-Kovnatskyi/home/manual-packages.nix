@@ -22,7 +22,10 @@
       github = {
         transport = "http";
         url = "https://api.githubcopilot.com/mcp";
-        headers = [ "Authorization: Bearer ${config.secrets.ghMcpToken}" ];
+        headers = [ "Authorization: Bearer @GH_MCP_TOKEN@" ];
+        secretPaths = {
+          GH_MCP_TOKEN = config.sops.secrets.gh-mcp-token.path;
+        };
       };
     };
   };

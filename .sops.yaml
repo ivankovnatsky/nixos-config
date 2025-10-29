@@ -2,6 +2,7 @@ keys:
   - &home 6BD3724830BD941E9180C1A33A33FA4C82ED674F
   - &mini age1nxsvvlxhutf7kr26ucc60r48lge779dducnknyr9pceej52nqgnqlvqe25
   - &bee age1sxcheqlg4ztsu6ly3mfzmx7a2s7ht4znkez7q0g2rcmwr92tjfqqf29plr
+  - &lusha age1d8zecgxstqurz80ecn0x55neucxss7dgpm63pkspzae7wtud5qtse0xcqy
 
 creation_rules:
   - path_regex: secrets/.*\.yaml$
@@ -11,3 +12,4 @@ creation_rules:
       age:
       - *mini
       - *bee
+      - *lusha
