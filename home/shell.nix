@@ -14,20 +14,12 @@ let
   commonShellAliases = {
     # TODO: add function nix-prefetch-url $url | xargs nix hash to-sri --type sha256
     g = "${pkgs.git}/bin/git";
-    cat = "${pkgs.bat}/bin/bat";
-    curl = "${pkgs.curlie}/bin/curlie";
-    dig = "${pkgs.doggo}/bin/doggo";
-    dog = "${pkgs.doggo}/bin/doggo";
     fd = "${pkgs.fd}/bin/fd --hidden --no-ignore";
-    ls = "${pkgs.lsd}/bin/lsd";
     # Let's not use GNU Coreutils mkdir for now.
     mkdir = "mkdir -p";
-    tree = "${pkgs.lsd}/bin/lsd --tree --color=always";
     less = "less -RS";
     syncthing = "${pkgs.syncthing}/bin/syncthing serve --no-browser";
     stc = "${pkgs.stc-cli}/bin/stc -homedir ${syncthingHomeDir}";
-
-    top = if isDarwin then "top -o cpu" else "top";
   };
 
   shellAliases =
