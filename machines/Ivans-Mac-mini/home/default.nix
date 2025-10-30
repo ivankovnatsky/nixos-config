@@ -24,10 +24,10 @@
     ../../../home/vscode.nix
     ../../../home/yt-dlp.nix
     ../../../modules/flags
-    ../../../modules/secrets
+    ./activation.nix
     ./flags.nix
     ./packages.nix
+    ./sops.nix
     ./tmux.nix
-    ./activation.nix
   ];
 }

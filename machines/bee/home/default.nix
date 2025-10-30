@@ -12,10 +12,10 @@
     ../../../home/starship
     ../../../home/tmux.nix
     ../../../modules/flags
-    ../../../modules/secrets
     ./env.nix
     ./flags.nix
     ./packages.nix
+    ./sops.nix
     ./vim.nix
   ];
 }

@@ -233,6 +233,7 @@
             imports = [
               ../../machines/Ivans-Mac-mini/home
               inputs.nixvim-darwin-release.homeManagerModules.nixvim
+              inputs.sops-nix-darwin-release.homeManagerModules.sops
               {
                 programs.home-manager.enable = true;
                 home.username = "ivan";
