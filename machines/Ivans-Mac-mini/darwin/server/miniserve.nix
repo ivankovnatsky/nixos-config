@@ -4,10 +4,19 @@
   ...
 }:
 
-let
-  authFile = pkgs.writeText "miniserve-auth" "${config.secrets.miniserve.mini.username}:${config.secrets.miniserve.mini.password}";
-in
 {
+  sops.secrets.miniserve-username = {
+    key = "miniserve/mini/username";
+  };
+
+  sops.secrets.miniserve-password = {
+    key = "miniserve/mini/password";
+  };
+
+  sops.templates."miniserve-auth".content = ''
+    ${config.sops.placeholder.miniserve-username}:${config.sops.placeholder.miniserve-password}
+  '';
+
   local.launchd.services.miniserve = {
     enable = true;
     waitForPath = config.flags.miniStoragePath;
@@ -16,7 +25,7 @@ in
         --interfaces 127.0.0.1 \
         --interfaces ::1 \
         --interfaces ${config.flags.miniIp} \
-        --auth-file ${authFile} \
+        --auth-file ${config.sops.templates."miniserve-auth".path} \
         ${config.flags.miniStoragePath}
     '';
   };
