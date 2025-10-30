@@ -27,7 +27,7 @@
     ./activation.nix
     ./flags.nix
     ./packages.nix
-    ./sops.nix
+    ../../../home/sops.nix
     ./tmux.nix
   ];
 }

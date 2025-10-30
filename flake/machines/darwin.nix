@@ -35,6 +35,7 @@
             imports = [
               ../../machines/Ivans-MacBook-Pro/home
               inputs.nixvim-darwin-unstable.homeModules.nixvim
+              inputs.sops-nix-darwin-unstable.homeManagerModules.sops
               {
                 programs.home-manager.enable = true;
                 home.username = "ivan";

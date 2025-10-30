@@ -6,6 +6,7 @@ keys:
   - &bee-user age13gw88tu64vjr0gmy442yaf7c6zd3ph96epqktr8ka4v5zea494mq9whmjw
   - &lusha age1d8zecgxstqurz80ecn0x55neucxss7dgpm63pkspzae7wtud5qtse0xcqy
   - &lusha-user age1rgdpf0u4mfpe74xwecknex6u3lcdpxm8jfydu4n8ftk4yjsngpdqp5rqa2
+  - &macbook-pro-user age1x42q97xw3synk305twvsxkslld2205h97t8d9z8hy8vl8hzcpgas6d48rh
 
 creation_rules:
   - path_regex: secrets/.*\.yaml$
@@ -19,3 +20,4 @@ creation_rules:
       - *bee-user
       - *lusha
       - *lusha-user
+      - *macbook-pro-user

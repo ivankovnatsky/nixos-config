@@ -51,6 +51,6 @@
     ./packages.nix
     # ./prevent-sleep.nix
     ./programs.nix
-    ./sops.nix
+    ../../../home/sops.nix
   ];
 }
