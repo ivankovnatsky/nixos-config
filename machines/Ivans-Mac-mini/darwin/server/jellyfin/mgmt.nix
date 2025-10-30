@@ -1,10 +1,14 @@
 { config, ... }:
 
 {
+  sops.secrets.jellyfin-api-key = {
+    key = "jellyfin/apiKey";
+  };
+
   local.services.jellyfin-mgmt = {
     enable = true;
     baseUrl = "http://${config.flags.miniIp}:8096";
-    apiKey = config.secrets.jellyfin.apiKey;
+    apiKeyFile = config.sops.secrets.jellyfin-api-key.path;
     bindAddress = config.flags.miniIp;
 
     libraries = [
