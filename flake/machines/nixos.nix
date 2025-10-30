@@ -39,6 +39,7 @@
             imports = [
               ../../machines/bee/home
               inputs.nixvim-nixos-release.homeModules.nixvim
+              inputs.sops-nix-nixos-release.homeManagerModules.sops
             ];
           };
           extraSpecialArgs = {
