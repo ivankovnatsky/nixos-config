@@ -43,7 +43,6 @@
     ../../../home/zellij.nix
     ../../../modules/flags
     ../../../modules/home/manual-packages
-    ../../../modules/secrets
     ./manual-packages.nix
     ./scripts.nix
     ./firefox.nix
