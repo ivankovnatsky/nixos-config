@@ -58,3 +58,23 @@ format = "audio"
 opml = true
 clean = { keep_last = 3 }
 filters = { min_duration = 300 }
+
+[feeds.uttoronto]
+url = "https://www.youtube.com/@uttoronto"
+page_size = 50
+cron_schedule = "@every 1h"
+quality = "high"
+format = "audio"
+opml = true
+clean = { keep_last = 50 }
+filters = { min_duration = 300 }
+
+[feeds.liga_net]
+url = "https://www.youtube.com/@liga_net"
+page_size = 50
+cron_schedule = "@every 1h"
+quality = "high"
+format = "audio"
+opml = true
+clean = { keep_last = 50 }
+filters = { min_duration = 300 }
