@@ -5,9 +5,9 @@ with lib;
 let
   cfg = config.local.services.jellyfin-mgmt;
 
-  configJson = pkgs.writeText "jellyfin-config.json" (builtins.toJSON {
+  # Base config without secrets (for use with apiKeyFile)
+  baseConfig = {
     baseUrl = cfg.baseUrl;
-    apiKey = cfg.apiKey;
     networkConfig = optionalAttrs (cfg.bindAddress != null) {
       localNetworkAddresses = [ cfg.bindAddress ];
     };
@@ -16,7 +16,23 @@ let
       type = lib.type;
       paths = lib.paths;
     }) cfg.libraries;
-  });
+  };
+
+  # Static config (only used when apiKey is set directly)
+  configJson = pkgs.writeText "jellyfin-config.json" (builtins.toJSON (baseConfig // {
+    apiKey = cfg.apiKey;
+  }));
+
+  # Runtime config generation script (used with apiKeyFile)
+  runtimeConfigScript = ''
+    TEMP_CONFIG=$(mktemp)
+    API_KEY=$(cat ${cfg.apiKeyFile})
+    cat > "$TEMP_CONFIG" << 'EOF'
+    ${builtins.toJSON baseConfig}
+    EOF
+    ${pkgs.jq}/bin/jq --arg apiKey "$API_KEY" '. + {apiKey: $apiKey}' "$TEMP_CONFIG"
+    rm -f "$TEMP_CONFIG"
+  '';
 in
 {
   options.local.services.jellyfin-mgmt = {
@@ -29,8 +45,15 @@ in
     };
 
     apiKey = mkOption {
-      type = types.str;
-      description = "Jellyfin API key";
+      type = types.nullOr types.str;
+      default = null;
+      description = "Jellyfin API key (use apiKeyFile instead for secrets)";
+    };
+
+    apiKeyFile = mkOption {
+      type = types.nullOr types.path;
+      default = null;
+      description = "Path to file containing Jellyfin API key";
     };
 
     bindAddress = mkOption {
@@ -68,12 +91,27 @@ in
   };
 
   config = mkMerge [
+    # Assertions
+    (mkIf cfg.enable {
+      assertions = [
+        {
+          assertion = (cfg.apiKey != null) != (cfg.apiKeyFile != null);
+          message = "Exactly one of apiKey or apiKeyFile must be set for jellyfin-mgmt";
+        }
+      ];
+    })
+
     # Darwin configuration
     (mkIf (cfg.enable && pkgs.stdenv.isDarwin) {
       system.activationScripts.postActivation.text = ''
         echo "Syncing Jellyfin configuration..."
-        ${pkgs.jellyfin-mgmt}/bin/jellyfin-mgmt sync \
-          --config-file "${configJson}" || echo "Warning: Jellyfin sync failed"
+        ${if cfg.apiKeyFile != null then ''
+          CONFIG_JSON=$(${runtimeConfigScript})
+          echo "$CONFIG_JSON" | ${pkgs.jellyfin-mgmt}/bin/jellyfin-mgmt sync --config-file /dev/stdin || echo "Warning: Jellyfin sync failed"
+        '' else ''
+          ${pkgs.jellyfin-mgmt}/bin/jellyfin-mgmt sync \
+            --config-file "${configJson}" || echo "Warning: Jellyfin sync failed"
+        ''}
       '';
     })
 
@@ -82,8 +120,13 @@ in
       system.activationScripts.jellyfin-mgmt = {
         text = ''
           echo "Syncing Jellyfin configuration..."
-          ${pkgs.jellyfin-mgmt}/bin/jellyfin-mgmt sync \
-            --config-file "${configJson}" || echo "Warning: Jellyfin sync failed"
+          ${if cfg.apiKeyFile != null then ''
+            CONFIG_JSON=$(${runtimeConfigScript})
+            echo "$CONFIG_JSON" | ${pkgs.jellyfin-mgmt}/bin/jellyfin-mgmt sync --config-file /dev/stdin || echo "Warning: Jellyfin sync failed"
+          '' else ''
+            ${pkgs.jellyfin-mgmt}/bin/jellyfin-mgmt sync \
+              --config-file "${configJson}" || echo "Warning: Jellyfin sync failed"
+          ''}
         '';
       };
     })
