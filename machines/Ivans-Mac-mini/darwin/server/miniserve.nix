@@ -7,15 +7,20 @@
 {
   sops.secrets.miniserve-username = {
     key = "miniserve/mini/username";
+    owner = "ivan";
   };
 
   sops.secrets.miniserve-password = {
     key = "miniserve/mini/password";
+    owner = "ivan";
   };
 
-  sops.templates."miniserve-auth".content = ''
-    ${config.sops.placeholder.miniserve-username}:${config.sops.placeholder.miniserve-password}
-  '';
+  sops.templates."miniserve-auth" = {
+    content = ''
+      ${config.sops.placeholder.miniserve-username}:${config.sops.placeholder.miniserve-password}
+    '';
+    owner = "ivan";
+  };
 
   local.launchd.services.miniserve = {
     enable = true;
