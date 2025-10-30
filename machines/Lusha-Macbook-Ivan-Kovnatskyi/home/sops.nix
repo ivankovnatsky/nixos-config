@@ -2,12 +2,9 @@
 {
   imports = [
     ../../../shared/sops-nix.nix
+    ../../../home/sops-secrets.nix
   ];
 
-  # Use SSH host key for age decryption
-  sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
-
-  sops.secrets.gh-mcp-token = {
-    key = "ghMcpToken";
-  };
+  # Use user SSH key for age decryption (home-manager needs user-owned secrets)
+  sops.age.sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
 }
