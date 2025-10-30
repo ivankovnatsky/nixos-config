@@ -15,7 +15,7 @@
     ./env.nix
     ./flags.nix
     ./packages.nix
-    ./sops.nix
+    ../../../home/sops.nix
     ./vim.nix
   ];
 }

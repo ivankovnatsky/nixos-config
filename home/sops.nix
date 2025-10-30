@@ -1,8 +1,8 @@
 { config, ... }:
 {
   imports = [
-    ../../../shared/sops-nix.nix
-    ../../../home/sops-secrets.nix
+    ../shared/sops-nix.nix
+    ./sops-secrets.nix
   ];
 
   # Use user SSH key for age decryption (home-manager needs user-owned secrets)
