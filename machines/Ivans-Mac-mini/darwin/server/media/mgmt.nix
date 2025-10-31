@@ -16,13 +16,26 @@
   #
   # See machines/bee/media/mgmt.nix for reference
 
+  # Sops secrets for arr services
+  sops.secrets.radarr-api-key = {
+    key = "arrMini/radarr/apiKey";
+  };
+
+  sops.secrets.sonarr-api-key = {
+    key = "arrMini/sonarr/apiKey";
+  };
+
+  sops.secrets.prowlarr-api-key = {
+    key = "arrMini/prowlarr/apiKey";
+  };
+
   local.services.arr-mgmt = {
     enable = true;
 
     radarr = {
       enable = true;
       baseUrl = "http://${config.flags.miniIp}:7878";
-      apiKey = config.secrets.arrMini.radarr.apiKey;
+      apiKeyFile = config.sops.secrets.radarr-api-key.path;
       bindAddress = config.flags.miniIp;
       downloadClients = [
         {
@@ -31,8 +44,8 @@
           port = 9091;
           useSsl = false;
           urlBase = "/transmission/";
-          username = config.secrets.transmission.username;
-          password = config.secrets.transmission.password;
+          usernameFile = config.sops.secrets.transmission-username.path;
+          passwordFile = config.sops.secrets.transmission-password.path;
           category = "radarr";
         }
       ];
@@ -44,7 +57,7 @@
     sonarr = {
       enable = true;
       baseUrl = "http://${config.flags.miniIp}:8989";
-      apiKey = config.secrets.arrMini.sonarr.apiKey;
+      apiKeyFile = config.sops.secrets.sonarr-api-key.path;
       bindAddress = config.flags.miniIp;
       downloadClients = [
         {
@@ -53,8 +66,8 @@
           port = 9091;
           useSsl = false;
           urlBase = "/transmission/";
-          username = config.secrets.transmission.username;
-          password = config.secrets.transmission.password;
+          usernameFile = config.sops.secrets.transmission-username.path;
+          passwordFile = config.sops.secrets.transmission-password.path;
           category = "tv-sonarr";
         }
       ];
@@ -66,7 +79,7 @@
     prowlarr = {
       enable = true;
       baseUrl = "http://${config.flags.miniIp}:9696";
-      apiKey = config.secrets.arrMini.prowlarr.apiKey;
+      apiKeyFile = config.sops.secrets.prowlarr-api-key.path;
       bindAddress = config.flags.miniIp;
       indexers = [
         { name = "EZTV"; definitionName = "eztv"; enable = true; priority = 25; }
@@ -77,7 +90,7 @@
         {
           name = "Radarr";
           baseUrl = "http://${config.flags.miniIp}:7878";
-          apiKey = config.secrets.arrMini.radarr.apiKey;
+          apiKeyFile = config.sops.secrets.radarr-api-key.path;
           prowlarrUrl = "http://${config.flags.miniIp}:9696";
           syncLevel = "fullSync";
           syncCategories = [
@@ -97,7 +110,7 @@
         {
           name = "Sonarr";
           baseUrl = "http://${config.flags.miniIp}:8989";
-          apiKey = config.secrets.arrMini.sonarr.apiKey;
+          apiKeyFile = config.sops.secrets.sonarr-api-key.path;
           prowlarrUrl = "http://${config.flags.miniIp}:9696";
           syncLevel = "fullSync";
           syncCategories = [
