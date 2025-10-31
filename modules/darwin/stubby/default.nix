@@ -21,7 +21,7 @@ let
 
   # Convert settings to YAML for stubby config
   settingsFormat = pkgs.formats.yaml { };
-  configFile = settingsFormat.generate "stubby.yml" cfg.settings;
+  configFile = if cfg.configFile != null then cfg.configFile else settingsFormat.generate "stubby.yml" cfg.settings;
 
 in
 {
@@ -90,6 +90,12 @@ in
         }
       '';
       description = "Stubby configuration. See https://dnsprivacy.org/dns_privacy_daemon_-_stubby/configuring_stubby/ for details.";
+    };
+
+    configFile = mkOption {
+      type = types.nullOr types.path;
+      default = null;
+      description = "Path to stubby configuration file (overrides settings option if specified)";
     };
   };
 
