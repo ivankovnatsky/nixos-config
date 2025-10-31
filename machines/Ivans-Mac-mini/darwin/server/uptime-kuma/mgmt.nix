@@ -5,132 +5,155 @@
   # Automatically syncs monitors and Discord notifications from Nix configuration on system activation
   #
   # Manual operations:
-  # - List monitors: uptime-kuma-mgmt list --base-url https://kuma.${config.secrets.externalDomain} --username ${config.secrets.uptimeKuma.username} --password ${config.secrets.uptimeKuma.password}
+  # - List monitors: uptime-kuma-mgmt list --base-url $(cat /run/secrets/uptime-kuma-base-url) --username $(cat /run/secrets/uptime-kuma-username) --password $(cat /run/secrets/uptime-kuma-password)
   # - Dry-run sync: Temporarily set enable = false and run manually with --dry-run
   #
   # Initial setup required:
-  # 1. Access https://kuma.${config.secrets.externalDomain}
-  # 2. Create admin account matching credentials in config.secrets.uptimeKuma
+  # 1. Access the Uptime Kuma URL (from /run/secrets/uptime-kuma-base-url)
+  # 2. Create admin account matching credentials in sops secrets
   # 3. Monitors and Discord notifications will auto-sync on next rebuild
+
+  # Sops secrets for Uptime Kuma management
+  sops.secrets.external-domain = {
+    key = "externalDomain";
+    owner = "root";
+  };
+  sops.secrets.uptime-kuma-username = {
+    key = "uptimeKuma/username";
+    owner = "root";
+  };
+  sops.secrets.uptime-kuma-password = {
+    key = "uptimeKuma/password";
+    owner = "root";
+  };
+  sops.secrets.discord-webhook = {
+    key = "discordWebHook";
+    owner = "root";
+  };
+  sops.secrets.postgres-monitoring-password = {
+    key = "postgres/monitoring/password";
+    owner = "root";
+  };
 
   local.services.uptime-kuma-mgmt = {
     enable = true;
-    baseUrl = "https://kuma.${config.secrets.externalDomain}";
-    username = config.secrets.uptimeKuma.username;
-    password = config.secrets.uptimeKuma.password;
-    discordWebhook = config.secrets.discordWebHook;
+    # Base URL will be constructed at runtime from external-domain secret
+    baseUrl = "https://kuma.@EXTERNAL_DOMAIN@";
+    usernameFile = config.sops.secrets.uptime-kuma-username.path;
+    passwordFile = config.sops.secrets.uptime-kuma-password.path;
+    discordWebhookFile = config.sops.secrets.discord-webhook.path;
 
     monitors = [
       # Media Stack (mini)
       {
         name = "prowlarr";
-        url = "https://prowlarr.${config.secrets.externalDomain}";
+        url = "https://prowlarr.@EXTERNAL_DOMAIN@";
         description = "Prowlarr indexer manager (mini:9696)";
       }
       {
         name = "radarr";
-        url = "https://radarr.${config.secrets.externalDomain}";
+        url = "https://radarr.@EXTERNAL_DOMAIN@";
         description = "Radarr movie manager (mini:7878)";
       }
       {
         name = "sonarr";
-        url = "https://sonarr.${config.secrets.externalDomain}";
+        url = "https://sonarr.@EXTERNAL_DOMAIN@";
         description = "Sonarr TV manager (mini:8989)";
       }
       {
         name = "transmission";
-        url = "https://transmission.${config.secrets.externalDomain}";
+        url = "https://transmission.@EXTERNAL_DOMAIN@";
         expectedStatus = 401;
         description = "Transmission torrent client with RPC auth (mini:9091)";
       }
       {
         name = "jellyfin";
-        url = "https://jellyfin.${config.secrets.externalDomain}";
+        url = "https://jellyfin.@EXTERNAL_DOMAIN@";
         description = "Jellyfin media server with WebSocket (mini:8096)";
       }
       {
         name = "stash";
-        url = "https://stash.${config.secrets.externalDomain}";
+        url = "https://stash.@EXTERNAL_DOMAIN@";
         description = "Stash media organizer with WebSocket (mini:9999)";
       }
 
       # Infrastructure Services (bee)
       {
         name = "audiobookshelf";
-        url = "https://audiobookshelf.${config.secrets.externalDomain}";
+        url = "https://audiobookshelf.@EXTERNAL_DOMAIN@";
         description = "Audiobookshelf with WebSocket (bee:8000)";
       }
       {
         name = "homeassistant";
-        url = "https://homeassistant.${config.secrets.externalDomain}";
+        url = "https://homeassistant.@EXTERNAL_DOMAIN@";
         interval = 30;
         description = "Home Assistant (bee:8123) - Critical service";
       }
       {
         name = "matrix";
-        url = "https://matrix.${config.secrets.externalDomain}";
+        url = "https://matrix.@EXTERNAL_DOMAIN@";
         interval = 30;
         description = "Matrix Synapse server (bee:8008) - Critical service";
       }
       {
         name = "element";
-        url = "https://element.${config.secrets.externalDomain}";
+        url = "https://element.@EXTERNAL_DOMAIN@";
         description = "Element web client - Static files";
       }
       {
         name = "openwebui";
-        url = "https://openwebui.${config.secrets.externalDomain}";
+        url = "https://openwebui.@EXTERNAL_DOMAIN@";
         description = "OpenWebUI with WebSocket (bee:8090)";
       }
       {
         name = "syncthing-bee";
-        url = "https://syncthing-bee.${config.secrets.externalDomain}";
+        url = "https://syncthing-bee.@EXTERNAL_DOMAIN@";
         description = "Syncthing on bee (bee:8384)";
       }
       {
         name = "homebridge";
-        url = "https://homebridge.${config.secrets.externalDomain}";
+        url = "https://homebridge.@EXTERNAL_DOMAIN@";
         description = "Homebridge UI (bee:8581)";
       }
       {
         name = "matterbridge";
-        url = "https://matterbridge.${config.secrets.externalDomain}";
+        url = "https://matterbridge.@EXTERNAL_DOMAIN@";
         description = "Matterbridge UI (bee:8283)";
       }
 
       # Infrastructure Services (mini)
       {
         name = "syncthing-mini";
-        url = "https://syncthing-mini.${config.secrets.externalDomain}";
+        url = "https://syncthing-mini.@EXTERNAL_DOMAIN@";
         description = "Syncthing on mini (mini:8384)";
       }
       {
         name = "beszel";
-        url = "https://beszel.${config.secrets.externalDomain}";
+        url = "https://beszel.@EXTERNAL_DOMAIN@";
         description = "Beszel monitoring hub (mini:8091)";
       }
       {
         name = "miniserve-mini";
-        url = "https://miniserve-mini.${config.secrets.externalDomain}";
+        url = "https://miniserve-mini.@EXTERNAL_DOMAIN@";
         expectedStatus = 401;
         description = "Miniserve file server with auth (mini:8080)";
       }
       {
         name = "bin";
-        url = "https://bin.${config.secrets.externalDomain}";
+        url = "https://bin.@EXTERNAL_DOMAIN@";
         description = "Pastebin service (mini:8820)";
       }
 
       # Auth-protected services (expect 401)
       {
         name = "zigbee";
-        url = "https://zigbee.${config.secrets.externalDomain}";
+        url = "https://zigbee.@EXTERNAL_DOMAIN@";
         expectedStatus = 401;
         description = "Zigbee2MQTT with basic auth (bee:8081)";
       }
       {
         name = "netdata-mini";
-        url = "https://netdata-mini.${config.secrets.externalDomain}";
+        url = "https://netdata-mini.@EXTERNAL_DOMAIN@";
         expectedStatus = 401;
         description = "Netdata monitoring with basic auth (mini:19999)";
       }
@@ -138,13 +161,13 @@
       # DNS services (check /dns-query endpoint with example query)
       {
         name = "doh-bee";
-        url = "https://doh-bee.${config.secrets.externalDomain}/dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB";
+        url = "https://doh-bee.@EXTERNAL_DOMAIN@/dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB";
         expectedStatus = 200;
         description = "DNS over HTTPS on bee (bee:8053) - queries www.example.com";
       }
       {
         name = "doh-mini";
-        url = "https://doh-mini.${config.secrets.externalDomain}/dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB";
+        url = "https://doh-mini.@EXTERNAL_DOMAIN@/dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB";
         expectedStatus = 200;
         description = "DNS over HTTPS on mini (mini:8053) - queries www.example.com";
       }
@@ -152,7 +175,7 @@
       # Ollama (load balanced with failover)
       {
         name = "ollama";
-        url = "https://ollama.${config.secrets.externalDomain}";
+        url = "https://ollama.@EXTERNAL_DOMAIN@";
         description = "Ollama LLM API with failover (a3w:11434 → mini:11434)";
       }
 
@@ -160,7 +183,7 @@
       {
         name = "postgresql-bee";
         type = "postgres";
-        url = "postgres://postgres_monitor:${config.secrets.postgres.monitoring.password}@${config.flags.beeIp}:5432/postgres";
+        url = "postgres://postgres_monitor:@POSTGRES_PASSWORD@@@BEE_IP@:5432/postgres";
         interval = 60;
         description = "PostgreSQL database on bee (Home Assistant, Matrix)";
       }
