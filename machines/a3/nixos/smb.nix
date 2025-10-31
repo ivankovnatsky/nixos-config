@@ -8,6 +8,15 @@
   # - Share: //ivans-mac-mini.local/Storage
   # - Authenticated with 'samba' sharing-only user
 
+  # Sops secrets for SMB credentials
+  sops.secrets.smb-mini-username = {
+    key = "smb/mini/username";
+  };
+
+  sops.secrets.smb-mini-password = {
+    key = "smb/mini/password";
+  };
+
   # Enable CIFS support for mounting Windows/SMB shares
   boot.supportedFilesystems = [ "cifs" ];
 
@@ -17,11 +26,30 @@
     samba # SMB client tools (smbclient, etc.)
   ];
 
-  # Create mount points for SMB shares
+  # Create SMB credentials file at runtime using sops secrets
   systemd.tmpfiles.rules = [
     "d /mnt/smb 0755 root root -" # Main SMB mount directory
     "d /mnt/smb/mini-storage 0755 root root -" # Mini storage share
+    "d /root/.smb 0700 root root -" # Directory for credentials files
   ];
+
+  # Generate credentials file at boot using sops secrets
+  systemd.services.smb-credentials-mini = {
+    description = "Generate SMB credentials file for mini share";
+    wantedBy = [ "multi-user.target" ];
+    before = [ "mnt-smb-mini\\x2dstorage.mount" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      cat > /root/.smb/mini-credentials <<EOF
+      username=$(cat ${config.sops.secrets.smb-mini-username.path})
+      password=$(cat ${config.sops.secrets.smb-mini-password.path})
+      EOF
+      chmod 600 /root/.smb/mini-credentials
+    '';
+  };
 
   # Configure systemd mount units for automatic mounting
   systemd.mounts = [
@@ -30,13 +58,10 @@
       what = "//ivans-mac-mini.local/Storage";
       where = "/mnt/smb/mini-storage";
       type = "cifs";
-      options = let
-        credFile = pkgs.writeText "smb-credentials-mini" ''
-          username=${config.secrets.smb.mini.username}
-          password=${config.secrets.smb.mini.password}
-        '';
-      in "credentials=${credFile},uid=1000,gid=100,iocharset=utf8,file_mode=0644,dir_mode=0755,vers=3.0,ip=${config.flags.miniIp}";
+      options = "credentials=/root/.smb/mini-credentials,uid=1000,gid=100,iocharset=utf8,file_mode=0644,dir_mode=0755,vers=3.0,ip=${config.flags.miniIp}";
       wantedBy = [ "multi-user.target" ];
+      after = [ "smb-credentials-mini.service" ];
+      requires = [ "smb-credentials-mini.service" ];
     }
   ];
 
