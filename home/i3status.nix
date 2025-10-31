@@ -149,20 +149,6 @@ in
           };
         };
 
-        weatherBlock = {
-          block = "weather";
-          service = {
-            name = "openweathermap";
-            api_key = "${config.secrets.openWeatherMapApikey}";
-            place = "${config.secrets.openWeatherMapPlace}";
-            units = "metric";
-          };
-
-          format = {
-            full = "$icon $temp $apparent  $humidity  $wind_kmh km/h $direction";
-            short = "";
-          };
-        };
 
         timeBlock = {
           block = "time";
@@ -205,7 +191,6 @@ in
             soundBlock
             (if isLaptop then [ batteryBlock ] else [ ])
             kbdBlock
-            weatherBlock
             timeBlock
           ];
         };
