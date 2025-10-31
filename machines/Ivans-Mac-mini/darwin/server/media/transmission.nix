@@ -18,15 +18,16 @@ let
   incompleteDir = "${config.flags.miniStoragePath}/Media/Downloads/.incomplete";
   watchDir = "${config.flags.miniStoragePath}/Media/Downloads/Watchdir";
 
-  settingsJson = pkgs.writeText "transmission-settings.json" (
+  # Base settings template without secrets
+  settingsTemplate = pkgs.writeText "transmission-settings-template.json" (
     builtins.toJSON {
       rpc-enabled = true;
       rpc-bind-address = config.flags.miniIp;
       rpc-port = 9091;
       rpc-host-whitelist-enabled = false;
       rpc-authentication-required = true;
-      rpc-username = config.secrets.transmission.username;
-      rpc-password = config.secrets.transmission.password;
+      rpc-username = "@TRANSMISSION_USERNAME@";
+      rpc-password = "@TRANSMISSION_PASSWORD@";
       rpc-whitelist-enabled = false;
       rpc-whitelist = "192.168.*.*";
 
@@ -69,6 +70,16 @@ let
   );
 in
 {
+  sops.secrets.transmission-username = {
+    key = "transmission/username";
+    owner = "ivan";
+  };
+
+  sops.secrets.transmission-password = {
+    key = "transmission/password";
+    owner = "ivan";
+  };
+
   local.launchd.services.transmission = {
     enable = true;
     waitForPath = config.flags.miniStoragePath;
@@ -79,9 +90,17 @@ in
       watchDir
     ];
     preStart = ''
-      if [ ! -f "${dataDir}/settings.json" ]; then
-        cp ${settingsJson} ${dataDir}/settings.json
-      fi
+      # Read secrets from sops
+      TRANSMISSION_USERNAME=$(cat ${config.sops.secrets.transmission-username.path})
+      TRANSMISSION_PASSWORD=$(cat ${config.sops.secrets.transmission-password.path})
+
+      # Generate settings.json with secrets substituted
+      ${pkgs.gnused}/bin/sed \
+        -e "s|@TRANSMISSION_USERNAME@|$TRANSMISSION_USERNAME|g" \
+        -e "s|@TRANSMISSION_PASSWORD@|$TRANSMISSION_PASSWORD|g" \
+        ${settingsTemplate} > ${dataDir}/settings.json
+
+      chmod 600 ${dataDir}/settings.json
     '';
     command = ''
       ${pkgs.transmission_4}/bin/transmission-daemon \
