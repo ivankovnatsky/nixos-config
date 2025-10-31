@@ -33,7 +33,7 @@ let
     );
 
   # Build the main configuration file content
-  configFile = pkgs.writeText "dnsmasq.conf" ''
+  configFile = if cfg.configFile != null then cfg.configFile else pkgs.writeText "dnsmasq.conf" ''
     ${settingsToConf cfg.settings}
   '';
 
@@ -83,6 +83,12 @@ in
       type = types.bool;
       default = true;
       description = "Whether to restart dnsmasq if it stops for any reason.";
+    };
+
+    configFile = mkOption {
+      type = types.nullOr types.path;
+      default = null;
+      description = "Path to dnsmasq configuration file (overrides settings option if specified)";
     };
   };
 
