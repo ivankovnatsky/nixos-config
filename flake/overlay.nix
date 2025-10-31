@@ -47,7 +47,7 @@ let
   customFunctions = {
     # Element Web configured for Matrix homeserver
     # Args:
-    #   domain: external domain (e.g., config.secrets.externalDomain)
+    #   domain: external domain (pass from runtime sops secret or string literal)
     #   homeserverSubdomain: subdomain for homeserver (e.g., "matrix", "matrix-mini")
     mkElementWeb =
       domain: homeserverSubdomain:
