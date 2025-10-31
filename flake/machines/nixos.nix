@@ -67,6 +67,10 @@
       # Import machine-specific configuration
       ../../machines/a3
 
+      # SOPS secrets management
+      inputs.sops-nix-nixos-unstable.nixosModules.sops
+      ../../shared/sops-nix.nix
+
       # Basic system configuration
       {
         nixpkgs.overlays = [
