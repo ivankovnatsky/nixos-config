@@ -34,12 +34,30 @@ in
     hubPublicKeyFile = config.sops.secrets.beszel-hub-public-key.path;
   };
 
+  # Sops secrets for beszel-mgmt
+  sops.secrets.beszel-email = {
+    key = "beszel/email";
+  };
+
+  sops.secrets.beszel-password = {
+    key = "beszel/password";
+  };
+
+  sops.secrets.discord-webhook = {
+    key = "discordWebHook";
+  };
+
+  sops.secrets.external-domain = {
+    key = "externalDomain";
+  };
+
   # Beszel management (declarative system sync)
   local.services.beszel-mgmt = {
     enable = true;
-    email = config.secrets.beszel.email;
-    password = config.secrets.beszel.password;
-    discordWebhook = config.secrets.discordWebHook;
+    externalDomainFile = config.sops.secrets.external-domain.path;
+    emailFile = config.sops.secrets.beszel-email.path;
+    passwordFile = config.sops.secrets.beszel-password.path;
+    discordWebhookFile = config.sops.secrets.discord-webhook.path;
     systems = [
       {
         name = "bee";
