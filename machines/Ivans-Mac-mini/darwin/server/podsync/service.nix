@@ -28,7 +28,7 @@ let
     '';
 in
 {
-  # Sops secrets for podsync API keys
+  # Sops secrets for podsync
   sops.secrets.podsync-youtube-api-key = {
     key = "podsync/youtubeApiKey";
     owner = "ivan";
@@ -38,6 +38,10 @@ in
     key = "podsync/vimeoApiKey";
     owner = "ivan";
   };
+
+  # external-domain is defined in uptime-kuma/mgmt.nix as root-owned
+  # but we need to make it readable by ivan for podsync preStart
+  sops.secrets.external-domain.mode = "0444";
 
   local.launchd.services.podsync = {
     enable = true;
@@ -53,6 +57,7 @@ in
       export PATH="${pkgs.ffmpeg}/bin:${pkgs.deno}/bin:$PATH"
 
       # Read secrets from sops at runtime
+      EXTERNAL_DOMAIN=$(cat ${config.sops.secrets.external-domain.path})
       YOUTUBE_API_KEY=$(cat ${config.sops.secrets.podsync-youtube-api-key.path})
       VIMEO_API_KEY=$(cat ${config.sops.secrets.podsync-vimeo-api-key.path})
 
@@ -61,7 +66,7 @@ in
 
       # Substitute secrets and config values at runtime (keeps secrets out of /nix/store)
       ${pkgs.gnused}/bin/sed \
-        -e "s|@externalDomain@|${config.secrets.externalDomain}|g" \
+        -e "s|@externalDomain@|$EXTERNAL_DOMAIN|g" \
         -e "s|@youtubeApiKey@|$YOUTUBE_API_KEY|g" \
         -e "s|@vimeoApiKey@|$VIMEO_API_KEY|g" \
         ${configTomlTemplate} > ${configDir}/config.toml
