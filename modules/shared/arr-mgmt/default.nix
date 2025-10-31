@@ -38,13 +38,27 @@ let
       };
 
       username = mkOption {
-        type = types.str;
-        description = "Authentication username";
+        type = types.nullOr types.str;
+        default = null;
+        description = "Authentication username (use usernameFile for sops secrets)";
+      };
+
+      usernameFile = mkOption {
+        type = types.nullOr types.path;
+        default = null;
+        description = "Path to file containing authentication username";
       };
 
       password = mkOption {
-        type = types.str;
-        description = "Authentication password";
+        type = types.nullOr types.str;
+        default = null;
+        description = "Authentication password (use passwordFile for sops secrets)";
+      };
+
+      passwordFile = mkOption {
+        type = types.nullOr types.path;
+        default = null;
+        description = "Path to file containing authentication password";
       };
 
       category = mkOption {
@@ -100,8 +114,15 @@ let
       };
 
       apiKey = mkOption {
-        type = types.str;
-        description = "Application API key";
+        type = types.nullOr types.str;
+        default = null;
+        description = "Application API key (use apiKeyFile for sops secrets)";
+      };
+
+      apiKeyFile = mkOption {
+        type = types.nullOr types.path;
+        default = null;
+        description = "Path to file containing application API key";
       };
 
       prowlarrUrl = mkOption {
@@ -159,11 +180,12 @@ let
     };
   };
 
-  configJson = pkgs.writeText "arr-config.json" (builtins.toJSON (
+  # Base config template without secrets (for reference, not used directly)
+  baseConfigTemplate = pkgs.writeText "arr-config-template.json" (builtins.toJSON (
     optionalAttrs cfg.radarr.enable {
       radarr = {
         baseUrl = cfg.radarr.baseUrl;
-        apiKey = cfg.radarr.apiKey;
+        apiKey = "@RADARR_API_KEY@";
         hostConfig = {
           bindAddress = cfg.radarr.bindAddress;
         };
@@ -173,8 +195,8 @@ let
           port = dc.port;
           useSsl = dc.useSsl;
           urlBase = dc.urlBase;
-          username = dc.username;
-          password = dc.password;
+          username = "@DC_${dc.name}_USERNAME@";
+          password = "@DC_${dc.name}_PASSWORD@";
           category = dc.category;
           addPaused = dc.addPaused;
           enable = dc.enable;
@@ -188,7 +210,7 @@ let
     // optionalAttrs cfg.sonarr.enable {
       sonarr = {
         baseUrl = cfg.sonarr.baseUrl;
-        apiKey = cfg.sonarr.apiKey;
+        apiKey = "@SONARR_API_KEY@";
         hostConfig = {
           bindAddress = cfg.sonarr.bindAddress;
         };
@@ -198,8 +220,8 @@ let
           port = dc.port;
           useSsl = dc.useSsl;
           urlBase = dc.urlBase;
-          username = dc.username;
-          password = dc.password;
+          username = "@DC_${dc.name}_USERNAME@";
+          password = "@DC_${dc.name}_PASSWORD@";
           category = dc.category;
           addPaused = dc.addPaused;
           enable = dc.enable;
@@ -213,7 +235,7 @@ let
     // optionalAttrs cfg.prowlarr.enable {
       prowlarr = {
         baseUrl = cfg.prowlarr.baseUrl;
-        apiKey = cfg.prowlarr.apiKey;
+        apiKey = "@PROWLARR_API_KEY@";
         hostConfig = {
           bindAddress = cfg.prowlarr.bindAddress;
         };
@@ -226,7 +248,7 @@ let
         applications = map (app: {
           name = app.name;
           baseUrl = app.baseUrl;
-          apiKey = app.apiKey;
+          apiKey = "@APP_${app.name}_API_KEY@";
           prowlarrUrl = app.prowlarrUrl;
           syncLevel = app.syncLevel;
           syncCategories = app.syncCategories;
@@ -250,8 +272,15 @@ in
       };
 
       apiKey = mkOption {
-        type = types.str;
-        description = "Radarr API key";
+        type = types.nullOr types.str;
+        default = null;
+        description = "Radarr API key (use apiKeyFile for sops secrets)";
+      };
+
+      apiKeyFile = mkOption {
+        type = types.nullOr types.path;
+        default = null;
+        description = "Path to file containing Radarr API key";
       };
 
       bindAddress = mkOption {
@@ -284,8 +313,15 @@ in
       };
 
       apiKey = mkOption {
-        type = types.str;
-        description = "Sonarr API key";
+        type = types.nullOr types.str;
+        default = null;
+        description = "Sonarr API key (use apiKeyFile for sops secrets)";
+      };
+
+      apiKeyFile = mkOption {
+        type = types.nullOr types.path;
+        default = null;
+        description = "Path to file containing Sonarr API key";
       };
 
       bindAddress = mkOption {
@@ -318,8 +354,15 @@ in
       };
 
       apiKey = mkOption {
-        type = types.str;
-        description = "Prowlarr API key";
+        type = types.nullOr types.str;
+        default = null;
+        description = "Prowlarr API key (use apiKeyFile for sops secrets)";
+      };
+
+      apiKeyFile = mkOption {
+        type = types.nullOr types.path;
+        default = null;
+        description = "Path to file containing Prowlarr API key";
       };
 
       bindAddress = mkOption {
@@ -346,25 +389,152 @@ in
     };
   };
 
-  config = mkMerge [
-    # Darwin configuration
-    (mkIf (cfg.enable && pkgs.stdenv.isDarwin) {
-      system.activationScripts.postActivation.text = ''
-        echo "Syncing *arr configuration..."
-        ${pkgs.arr-mgmt}/bin/arr-mgmt sync \
-          --config-file "${configJson}" || echo "Warning: *arr sync failed"
-      '';
-    })
+  config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = !cfg.radarr.enable || (cfg.radarr.apiKey != null) != (cfg.radarr.apiKeyFile != null);
+        message = "Exactly one of 'apiKey' or 'apiKeyFile' must be set for radarr";
+      }
+      {
+        assertion = !cfg.sonarr.enable || (cfg.sonarr.apiKey != null) != (cfg.sonarr.apiKeyFile != null);
+        message = "Exactly one of 'apiKey' or 'apiKeyFile' must be set for sonarr";
+      }
+      {
+        assertion = !cfg.prowlarr.enable || (cfg.prowlarr.apiKey != null) != (cfg.prowlarr.apiKeyFile != null);
+        message = "Exactly one of 'apiKey' or 'apiKeyFile' must be set for prowlarr";
+      }
+    ] ++ (lib.optionals cfg.radarr.enable (
+      map (dc: {
+        assertion = (dc.username != null) != (dc.usernameFile != null);
+        message = "Exactly one of 'username' or 'usernameFile' must be set for download client '${dc.name}' in radarr";
+      }) cfg.radarr.downloadClients
+    )) ++ (lib.optionals cfg.radarr.enable (
+      map (dc: {
+        assertion = (dc.password != null) != (dc.passwordFile != null);
+        message = "Exactly one of 'password' or 'passwordFile' must be set for download client '${dc.name}' in radarr";
+      }) cfg.radarr.downloadClients
+    )) ++ (lib.optionals cfg.sonarr.enable (
+      map (dc: {
+        assertion = (dc.username != null) != (dc.usernameFile != null);
+        message = "Exactly one of 'username' or 'usernameFile' must be set for download client '${dc.name}' in sonarr";
+      }) cfg.sonarr.downloadClients
+    )) ++ (lib.optionals cfg.sonarr.enable (
+      map (dc: {
+        assertion = (dc.password != null) != (dc.passwordFile != null);
+        message = "Exactly one of 'password' or 'passwordFile' must be set for download client '${dc.name}' in sonarr";
+      }) cfg.sonarr.downloadClients
+    )) ++ (lib.optionals cfg.prowlarr.enable (
+      map (app: {
+        assertion = (app.apiKey != null) != (app.apiKeyFile != null);
+        message = "Exactly one of 'apiKey' or 'apiKeyFile' must be set for prowlarr application '${app.name}'";
+      }) cfg.prowlarr.applications
+    ));
 
-    # NixOS configuration
-    (mkIf (cfg.enable && !pkgs.stdenv.isDarwin) {
-      system.activationScripts.arr-mgmt = {
-        text = ''
-          echo "Syncing *arr configuration..."
-          ${pkgs.arr-mgmt}/bin/arr-mgmt sync \
-            --config-file "${configJson}" || echo "Warning: *arr sync failed"
-        '';
-      };
-    })
-  ];
+    # Common activation script for both Darwin and NixOS
+    system.activationScripts = lib.mkIf pkgs.stdenv.isDarwin {
+      postActivation.text = ''
+        echo "Syncing *arr configuration..."
+
+        # Read secrets from files at runtime
+        ${lib.optionalString cfg.radarr.enable (
+          if cfg.radarr.apiKeyFile != null
+          then ''RADARR_API_KEY="$(cat ${cfg.radarr.apiKeyFile})"''
+          else ''RADARR_API_KEY="${cfg.radarr.apiKey}"''
+        )}
+        ${lib.optionalString cfg.sonarr.enable (
+          if cfg.sonarr.apiKeyFile != null
+          then ''SONARR_API_KEY="$(cat ${cfg.sonarr.apiKeyFile})"''
+          else ''SONARR_API_KEY="${cfg.sonarr.apiKey}"''
+        )}
+        ${lib.optionalString cfg.prowlarr.enable (
+          if cfg.prowlarr.apiKeyFile != null
+          then ''PROWLARR_API_KEY="$(cat ${cfg.prowlarr.apiKeyFile})"''
+          else ''PROWLARR_API_KEY="${cfg.prowlarr.apiKey}"''
+        )}
+        ${lib.concatMapStrings (dc:
+          (if dc.usernameFile != null
+           then ''DC_${dc.name}_USERNAME="$(cat ${dc.usernameFile})"'' + "\n"
+           else ''DC_${dc.name}_USERNAME="${dc.username}"'' + "\n") +
+          (if dc.passwordFile != null
+           then ''DC_${dc.name}_PASSWORD="$(cat ${dc.passwordFile})"'' + "\n"
+           else ''DC_${dc.name}_PASSWORD="${dc.password}"'' + "\n")
+        ) (cfg.radarr.downloadClients ++ cfg.sonarr.downloadClients)}
+        ${lib.concatMapStrings (app:
+          if app.apiKeyFile != null
+          then ''APP_${app.name}_API_KEY="$(cat ${app.apiKeyFile})"'' + "\n"
+          else ''APP_${app.name}_API_KEY="${app.apiKey}"'' + "\n"
+        ) cfg.prowlarr.applications}
+
+        # Substitute secrets into template
+        ${pkgs.gnused}/bin/sed \
+          ${lib.optionalString cfg.radarr.enable ''-e "s|@RADARR_API_KEY@|$RADARR_API_KEY|g" \''}
+          ${lib.optionalString cfg.sonarr.enable ''-e "s|@SONARR_API_KEY@|$SONARR_API_KEY|g" \''}
+          ${lib.optionalString cfg.prowlarr.enable ''-e "s|@PROWLARR_API_KEY@|$PROWLARR_API_KEY|g" \''}
+          ${lib.concatMapStringsSep " \\\n          " (dc:
+            ''-e "s|@DC_${dc.name}_USERNAME@|$DC_${dc.name}_USERNAME|g" -e "s|@DC_${dc.name}_PASSWORD@|$DC_${dc.name}_PASSWORD|g"''
+          ) (cfg.radarr.downloadClients ++ cfg.sonarr.downloadClients)}
+          ${lib.concatMapStringsSep " \\\n          " (app:
+            ''-e "s|@APP_${app.name}_API_KEY@|$APP_${app.name}_API_KEY|g"''
+          ) cfg.prowlarr.applications}
+          ${baseConfigTemplate} > /tmp/arr-config.json
+
+        ${pkgs.arr-mgmt}/bin/arr-mgmt sync \
+          --config-file /tmp/arr-config.json || echo "Warning: *arr sync failed"
+
+        rm -f /tmp/arr-config.json
+      '';
+    } // lib.mkIf (!pkgs.stdenv.isDarwin) {
+      arr-mgmt.text = ''
+        echo "Syncing *arr configuration..."
+
+        # Read secrets from files at runtime
+        ${lib.optionalString cfg.radarr.enable (
+          if cfg.radarr.apiKeyFile != null
+          then ''RADARR_API_KEY="$(cat ${cfg.radarr.apiKeyFile})"''
+          else ''RADARR_API_KEY="${cfg.radarr.apiKey}"''
+        )}
+        ${lib.optionalString cfg.sonarr.enable (
+          if cfg.sonarr.apiKeyFile != null
+          then ''SONARR_API_KEY="$(cat ${cfg.sonarr.apiKeyFile})"''
+          else ''SONARR_API_KEY="${cfg.sonarr.apiKey}"''
+        )}
+        ${lib.optionalString cfg.prowlarr.enable (
+          if cfg.prowlarr.apiKeyFile != null
+          then ''PROWLARR_API_KEY="$(cat ${cfg.prowlarr.apiKeyFile})"''
+          else ''PROWLARR_API_KEY="${cfg.prowlarr.apiKey}"''
+        )}
+        ${lib.concatMapStrings (dc:
+          (if dc.usernameFile != null
+           then ''DC_${dc.name}_USERNAME="$(cat ${dc.usernameFile})"'' + "\n"
+           else ''DC_${dc.name}_USERNAME="${dc.username}"'' + "\n") +
+          (if dc.passwordFile != null
+           then ''DC_${dc.name}_PASSWORD="$(cat ${dc.passwordFile})"'' + "\n"
+           else ''DC_${dc.name}_PASSWORD="${dc.password}"'' + "\n")
+        ) (cfg.radarr.downloadClients ++ cfg.sonarr.downloadClients)}
+        ${lib.concatMapStrings (app:
+          if app.apiKeyFile != null
+          then ''APP_${app.name}_API_KEY="$(cat ${app.apiKeyFile})"'' + "\n"
+          else ''APP_${app.name}_API_KEY="${app.apiKey}"'' + "\n"
+        ) cfg.prowlarr.applications}
+
+        # Substitute secrets into template
+        ${pkgs.gnused}/bin/sed \
+          ${lib.optionalString cfg.radarr.enable ''-e "s|@RADARR_API_KEY@|$RADARR_API_KEY|g" \''}
+          ${lib.optionalString cfg.sonarr.enable ''-e "s|@SONARR_API_KEY@|$SONARR_API_KEY|g" \''}
+          ${lib.optionalString cfg.prowlarr.enable ''-e "s|@PROWLARR_API_KEY@|$PROWLARR_API_KEY|g" \''}
+          ${lib.concatMapStringsSep " \\\n          " (dc:
+            ''-e "s|@DC_${dc.name}_USERNAME@|$DC_${dc.name}_USERNAME|g" -e "s|@DC_${dc.name}_PASSWORD@|$DC_${dc.name}_PASSWORD|g"''
+          ) (cfg.radarr.downloadClients ++ cfg.sonarr.downloadClients)}
+          ${lib.concatMapStringsSep " \\\n          " (app:
+            ''-e "s|@APP_${app.name}_API_KEY@|$APP_${app.name}_API_KEY|g"''
+          ) cfg.prowlarr.applications}
+          ${baseConfigTemplate} > /tmp/arr-config.json
+
+        ${pkgs.arr-mgmt}/bin/arr-mgmt sync \
+          --config-file /tmp/arr-config.json || echo "Warning: *arr sync failed"
+
+        rm -f /tmp/arr-config.json
+      '';
+    };
+  };
 }
