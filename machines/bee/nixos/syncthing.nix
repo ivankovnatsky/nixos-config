@@ -24,9 +24,10 @@
     # Open the required ports in the firewall
     openDefaultPorts = true;
 
-    # IMPORTANT: These control whether NixOS will override your manual configurations
-    # overrideDevices = true;  # Set to true if you want to manage devices in this file
-    # overrideFolders = true;  # Set to true if you want to manage folders in this file
+    # Devices and folders managed by syncthing-mgmt service (see syncthing-mgmt.nix)
+    # CRITICAL: Set these to false to prevent NixOS from wiping API-managed config
+    overrideDevices = false;
+    overrideFolders = false;
 
     # Configure settings
     settings = {
@@ -49,14 +50,6 @@
         # Don't report usage data
         urAccepted = -1;
       };
-
-      # Devices are managed by syncthing-mgmt service (see syncthing-mgmt.nix)
-      # overrideDevices defaults to false, so NixOS won't override API-managed devices
-      devices = {};
-
-      # Folders are managed via Syncthing UI
-      # overrideFolders defaults to false, so NixOS won't override manually configured folders
-      folders = {};
     };
   };
 

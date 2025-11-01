@@ -147,6 +147,27 @@ in
         ExecStart = pkgs.writeShellScript "syncthing-mgmt-sync" ''
           echo "Syncing Syncthing configuration..."
 
+          # Wait for Syncthing API to be ready with retry logic
+          MAX_RETRIES=30
+          RETRY_DELAY=2
+          API_KEY=$(${pkgs.gnugrep}/bin/grep -m1 "<apikey>" "${cfg.configDir}/config.xml" | ${pkgs.gnused}/bin/sed 's/.*<apikey>\(.*\)<\/apikey>.*/\1/')
+
+          echo "Waiting for Syncthing API to be ready..."
+          for i in $(${pkgs.coreutils}/bin/seq 1 $MAX_RETRIES); do
+            if ${pkgs.curl}/bin/curl -sf -H "X-API-Key: $API_KEY" "${cfg.baseUrl}/rest/system/status" >/dev/null 2>&1; then
+              echo "Syncthing API is ready (attempt $i/$MAX_RETRIES)"
+              break
+            fi
+
+            if [ $i -eq $MAX_RETRIES ]; then
+              echo "ERROR: Syncthing API not ready after $MAX_RETRIES attempts (${cfg.baseUrl})"
+              exit 1
+            fi
+
+            echo "Waiting for Syncthing API... (attempt $i/$MAX_RETRIES, retrying in ''${RETRY_DELAY}s)"
+            ${pkgs.coreutils}/bin/sleep $RETRY_DELAY
+          done
+
           # Build config JSON with secrets substituted from files
           CONFIG_FILE=$(mktemp)
           trap "rm -f $CONFIG_FILE" EXIT
@@ -193,7 +214,7 @@ in
             --base-url "${cfg.baseUrl}" \
             --config-xml "${cfg.configDir}/config.xml" \
             --config-file "$CONFIG_FILE" \
-            ${optionalString cfg.restart "--restart"} || echo "Warning: Syncthing sync failed"
+            ${optionalString cfg.restart "--restart"}
         '';
       };
     };
