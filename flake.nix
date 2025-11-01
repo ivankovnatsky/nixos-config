@@ -141,6 +141,11 @@
       inputs.nixpkgs.follows = "nixpkgs-nixos-release";
     };
 
+    sops-nix-nixos-unstable = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs-nixos-unstable";
+    };
+
     # Jovian-NixOS for Steam Deck
     jovian-nixos-unstable = {
       url = "github:Jovian-Experiments/Jovian-NixOS";

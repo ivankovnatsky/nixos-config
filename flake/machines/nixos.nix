@@ -103,6 +103,7 @@
               ../../machines/a3/home
               inputs.nixvim-nixos-unstable.homeModules.nixvim
               inputs.plasma-manager-nixos-unstable.homeModules.plasma-manager
+              inputs.sops-nix-nixos-unstable.homeManagerModules.sops
             ];
           };
           extraSpecialArgs = {
@@ -132,6 +133,10 @@
 
       # Jovian-NixOS modules for Steam Deck
       inputs.jovian-nixos-unstable.nixosModules.default
+
+      # SOPS secrets management
+      inputs.sops-nix-nixos-unstable.nixosModules.sops
+      ../../shared/sops-nix.nix
 
       # Basic system configuration
       {
@@ -165,6 +170,7 @@
               ../../machines/steamdeck/home
               inputs.nixvim-nixos-unstable.homeModules.nixvim
               inputs.plasma-manager-nixos-unstable.homeModules.plasma-manager
+              inputs.sops-nix-nixos-unstable.homeManagerModules.sops
             ];
           };
           extraSpecialArgs = {
