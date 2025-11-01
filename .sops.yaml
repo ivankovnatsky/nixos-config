@@ -7,6 +7,8 @@ keys:
   - &lusha age1d8zecgxstqurz80ecn0x55neucxss7dgpm63pkspzae7wtud5qtse0xcqy
   - &lusha-user age1rgdpf0u4mfpe74xwecknex6u3lcdpxm8jfydu4n8ftk4yjsngpdqp5rqa2
   - &macbook-pro-user age1x42q97xw3synk305twvsxkslld2205h97t8d9z8hy8vl8hzcpgas6d48rh
+  - &steamdeck age1elhe3mnpf6fh5rcquljslu4j8rh0mk5wxraftf8gumgd47m9r5kq2wk2gx
+  - &steamdeck-user age170z7hk7s4xyzq2s8s5dmhduusgpmpvhgfnjtuqhxkn76gg4pnayqzsrz7h
 
 creation_rules:
   - path_regex: secrets/.*\.yaml$
@@ -21,3 +23,5 @@ creation_rules:
       - *lusha
       - *lusha-user
       - *macbook-pro-user
+      - *steamdeck
+      - *steamdeck-user

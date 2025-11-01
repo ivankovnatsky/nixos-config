@@ -1077,6 +1077,7 @@
         "sops-nix-darwin-release": "sops-nix-darwin-release",
         "sops-nix-darwin-unstable": "sops-nix-darwin-unstable",
         "sops-nix-nixos-release": "sops-nix-nixos-release",
+        "sops-nix-nixos-unstable": "sops-nix-nixos-unstable",
         "username": "username"
       }
     },
@@ -1124,6 +1125,26 @@
       "inputs": {
         "nixpkgs": [
           "nixpkgs-nixos-release"
+        ]
+      },
+      "locked": {
+        "lastModified": 1760998189,
+        "narHash": "sha256-ee2e1/AeGL5X8oy/HXsZQvZnae6XfEVdstGopKucYLY=",
+        "owner": "Mic92",
+        "repo": "sops-nix",
+        "rev": "5a7d18b5c55642df5c432aadb757140edfeb70b3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "sops-nix",
+        "type": "github"
+      }
+    },
+    "sops-nix-nixos-unstable": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-nixos-unstable"
         ]
       },
       "locked": {
