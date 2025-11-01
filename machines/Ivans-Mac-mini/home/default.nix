@@ -11,6 +11,7 @@
     ../../../home/home-session-vars.nix
     ../../../home/lsd.nix
     ../../../home/mpv.nix
+    ../../../home/neovim-minimal.nix
     # ../../../home/nixvim
     # ../../../home/nixvim/plugins/copilot-lua
     ../../../home/npm.nix
