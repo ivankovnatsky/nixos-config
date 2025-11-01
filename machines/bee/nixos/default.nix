@@ -9,7 +9,6 @@
     ../../../modules/nixos/rebuild-daemon
     ../../../modules/nixos/syncthing-mgmt
     ../../../modules/nixos/tmux-rebuild
-    ../../../modules/secrets
     ../../../modules/shared/arr-mgmt
     ../../../modules/shared/nextdns-mgmt
     ../../../nixos/rebuild-diff.nix

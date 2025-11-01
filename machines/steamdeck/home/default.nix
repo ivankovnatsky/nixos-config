@@ -23,7 +23,6 @@
     ../../../home/tmux.nix
     ../../../modules/flags
     ../../../modules/home/manual-packages
-    ../../../modules/secrets
     ./btop.nix
     ./firefox.nix
     ./flags.nix
