@@ -29,6 +29,5 @@
     ../../../home/vscode.nix
     ../../../home/yt-dlp.nix
     ../../../modules/flags
-    ../../../modules/secrets
   ];
 }

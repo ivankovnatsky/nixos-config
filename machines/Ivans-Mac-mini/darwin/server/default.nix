@@ -20,7 +20,6 @@
     ../../../../modules/darwin/sudo
     ../../../../modules/darwin/rebuild-daemon
     ../../../../modules/flags
-    ../../../../modules/secrets
     ../../../../modules/shared/arr-mgmt
     ../../../../modules/shared/jellyfin-mgmt
     ../../../../modules/shared/nextdns-mgmt

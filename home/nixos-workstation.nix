@@ -2,7 +2,6 @@
 
 {
   imports = [
-    ../modules/secrets
     ./alacritty.nix
     ./firefox-config.nix
     ./firefox.nix
@@ -52,5 +51,4 @@
 
   inherit (super) device;
   inherit (super) flags;
-  inherit (super) secrets;
 }

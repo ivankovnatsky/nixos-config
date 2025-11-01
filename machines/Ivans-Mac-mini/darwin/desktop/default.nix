@@ -13,7 +13,6 @@
     ../../../../modules/darwin/pam
     ../../../../modules/darwin/sudo
     ../../../../modules/flags
-    ../../../../modules/secrets
     ../../../../system/documentation.nix
     ../../../../system/nix.nix
     ../../../../system/scripts

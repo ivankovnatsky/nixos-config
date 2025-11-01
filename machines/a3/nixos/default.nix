@@ -6,7 +6,6 @@
     # ./smb.nix
     ../../../modules/flags
     ../../../modules/nixos/tmux-rebuild
-    ../../../modules/secrets
     ../../../nixos/chromium.nix
     ../../../system/nix.nix
     ../../../system/scripts

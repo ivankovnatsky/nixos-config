@@ -16,7 +16,6 @@
     ../../../modules/darwin/sudo
     ../../../modules/darwin/tmux-rebuild
     ../../../modules/flags
-    ../../../modules/secrets
     ../../../system/documentation.nix
     ../../../system/nix.nix
     ../../../system/scripts

@@ -26,7 +26,6 @@
     ../../../home/tweety.nix
     ../../../modules/flags
     ../../../modules/home/manual-packages
-    ../../../modules/secrets
     ./btop.nix
     ./desktop.nix # Desktop environment home configs
     ./firefox.nix

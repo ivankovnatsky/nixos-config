@@ -19,7 +19,6 @@ in
       buildInputs = with pkgs; [
         # Version control
         git
-        git-crypt
         gh
         gnupg
         pinentry-tty
