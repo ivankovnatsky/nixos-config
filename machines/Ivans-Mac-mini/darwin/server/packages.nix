@@ -17,9 +17,6 @@
     yt-dlp
     gallery-dl
 
-    # To make `git add .` work.
-    git-crypt
-
     # Required for Uptime Kuma tailscale-ping monitors
     tailscale
   ];

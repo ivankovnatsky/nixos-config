@@ -12,7 +12,6 @@
   # $ nix-env -qaP | grep wget
   environment.systemPackages = with pkgs; [
     gnupg
-    git-crypt
 
     # https://github.com/nix-darwin/nix-darwin/pull/553#issuecomment-1348696468
     ncurses

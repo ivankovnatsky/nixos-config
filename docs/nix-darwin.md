@@ -23,13 +23,6 @@ Configure your new machine if needed:
 nix develop "https://flakehub.com/f/NixOS/nixpkgs/*#git"
 ```
 
-Run this if needed to tackle with git-crypt:
-
-```console
-/nix/store/1y3m89x5sl3bwag9lk4fdbqmswzjp9is-git-2.44.1/bin/git -c \
-  filter.git-crypt.clean=cat add .
-```
-
 Check instructions here:
 
 <https://github.com/nix-darwin/nix-darwin>
