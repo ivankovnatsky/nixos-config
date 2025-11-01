@@ -6,7 +6,6 @@
     file
     gallery-dl
     git
-    git-crypt
     gnumake
     jq
     lm_sensors
