@@ -17,6 +17,7 @@
     ./networking.nix
     ./nixpkgs.nix
     ./plasma.nix
+    ./sd-card.nix
     ./security.nix
     ./sudo.nix
     ./tmux-rebuild.nix
