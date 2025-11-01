@@ -30,10 +30,9 @@
   systemd.tmpfiles.rules = [
     "d /mnt/smb 0755 root root -" # Main SMB mount directory
     "d /mnt/smb/mini-storage 0755 root root -" # Mini storage share
-    "d /root/.smb 0700 root root -" # Directory for credentials files
   ];
 
-  # Generate credentials file at boot using sops secrets
+  # Generate credentials file at boot using sops secrets (stored in tmpfs)
   systemd.services.smb-credentials-mini = {
     description = "Generate SMB credentials file for mini share";
     wantedBy = [ "multi-user.target" ];
@@ -43,11 +42,11 @@
       RemainAfterExit = true;
     };
     script = ''
-      cat > /root/.smb/mini-credentials <<EOF
+      cat > /run/smb-mini-credentials <<EOF
       username=$(cat ${config.sops.secrets.smb-mini-username.path})
       password=$(cat ${config.sops.secrets.smb-mini-password.path})
       EOF
-      chmod 600 /root/.smb/mini-credentials
+      chmod 600 /run/smb-mini-credentials
     '';
   };
 
@@ -58,7 +57,7 @@
       what = "//ivans-mac-mini.local/Storage";
       where = "/mnt/smb/mini-storage";
       type = "cifs";
-      options = "credentials=/root/.smb/mini-credentials,uid=1000,gid=100,iocharset=utf8,file_mode=0644,dir_mode=0755,vers=3.0,ip=${config.flags.miniIp}";
+      options = "credentials=/run/smb-mini-credentials,uid=1000,gid=100,iocharset=utf8,file_mode=0644,dir_mode=0755,vers=3.0,ip=${config.flags.miniIp}";
       wantedBy = [ "multi-user.target" ];
       after = [ "smb-credentials-mini.service" ];
       requires = [ "smb-credentials-mini.service" ];
