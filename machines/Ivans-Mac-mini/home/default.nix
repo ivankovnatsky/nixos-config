@@ -2,6 +2,7 @@
   imports = [
     ../../../darwin/home/nixvim.nix
     ../../../home/aichat.nix
+    ../../../home/amethyst
     ../../../home/bat.nix
     ../../../home/btop.nix
     ../../../home/claude.nix
