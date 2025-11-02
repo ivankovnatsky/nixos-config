@@ -137,6 +137,10 @@
             quality = 1;
           };
         };
+
+        kwinrc = {
+          Wayland.InputMethod = "/run/current-system/sw/share/applications/com.github.maliit.keyboard.desktop";
+        };
       };
     };
     konsole = {
