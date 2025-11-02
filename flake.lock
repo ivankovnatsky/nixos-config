@@ -383,11 +383,11 @@
     "ivankovnatsky-homebrew-tap": {
       "flake": false,
       "locked": {
-        "lastModified": 1761242811,
-        "narHash": "sha256-NaN7te9K0xYMr2Fs4nfvmF+KulilzVBSwJ0GiWYMFrw=",
+        "lastModified": 1761994104,
+        "narHash": "sha256-O+yon+wpnK9WmbDmC+oYdJf18sDXiIgGXh/4rAnWJvg=",
         "owner": "ivankovnatsky",
         "repo": "nixos-config",
-        "rev": "2dce252ab09b716463ceb2c33dee93cb939e4d60",
+        "rev": "17082cc37a1d0e18b46b75b5c4f78ec9923fb138",
         "type": "github"
       },
       "original": {
@@ -516,11 +516,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1761376732,
-        "narHash": "sha256-wavx9gROyuRZKSvPCCBh78gOur7o88ndRi545njNRrM=",
+        "lastModified": 1761748321,
+        "narHash": "sha256-hD5mVzmUeyVppjArdy2uVdQe/CQUR9i3WgZB05onE7A=",
         "owner": "Jovian-Experiments",
         "repo": "Jovian-NixOS",
-        "rev": "8bef482d65425d0cff6b20c11a5f054f85569a38",
+        "rev": "533db5857c9e00ca352558a928417116ee08a824",
         "type": "github"
       },
       "original": {
