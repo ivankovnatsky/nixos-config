@@ -2,7 +2,7 @@
   imports = [
     # ./gamemode.nix
     # ./gamescope.nix
-    # ./nvidia.nix
+    ./nvidia.nix
     # ./smb.nix
     ../../../modules/flags
     ../../../modules/nixos/tmux-rebuild
