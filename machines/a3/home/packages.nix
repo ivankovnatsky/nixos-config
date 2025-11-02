@@ -14,6 +14,11 @@
     nvtopPackages.nvidia # GPU monitoring (like htop for GPUs)
     smartmontools # Disk health monitoring (smartctl)
 
+    # Secrets management
+    age
+    sops
+    ssh-to-age
+
     # KDE Wallet integration
     kwalletcli # Provides pinentry-kwallet for GPG integration
 
