@@ -78,6 +78,61 @@ class AsusRouterClient:
         except Exception as e:
             raise Exception(f"Failed to get WAN data: {e}")
 
+    async def export_all_data(self) -> dict[str, Any]:
+        """Export all available router configuration data."""
+        if not self.router:
+            raise Exception("Not connected to router")
+
+        all_data = {}
+        data_types = [
+            AsusData.AIMESH,
+            AsusData.AURA,
+            AsusData.BOOTTIME,
+            AsusData.CLIENTS,
+            AsusData.CPU,
+            AsusData.DDNS,
+            AsusData.DEVICEMAP,
+            AsusData.DSL,
+            AsusData.FIRMWARE,
+            AsusData.FIRMWARE_NOTE,
+            AsusData.FLAGS,
+            AsusData.GWLAN,
+            AsusData.LED,
+            AsusData.NETWORK,
+            AsusData.NODE_INFO,
+            AsusData.OPENVPN,
+            AsusData.OPENVPN_CLIENT,
+            AsusData.OPENVPN_SERVER,
+            AsusData.PARENTAL_CONTROL,
+            AsusData.PING,
+            AsusData.PORT_FORWARDING,
+            AsusData.PORTS,
+            AsusData.RAM,
+            AsusData.SPEEDTEST,
+            AsusData.SPEEDTEST_RESULT,
+            AsusData.SYSINFO,
+            AsusData.SYSTEM,
+            AsusData.TEMPERATURE,
+            AsusData.VPNC,
+            AsusData.VPNC_CLIENTLIST,
+            AsusData.WAN,
+            AsusData.WIREGUARD,
+            AsusData.WIREGUARD_CLIENT,
+            AsusData.WIREGUARD_SERVER,
+            AsusData.WLAN,
+        ]
+
+        for data_type in data_types:
+            try:
+                data = await self.router.async_get_data(data_type)
+                all_data[data_type.value] = data
+                print(f"  ✓ {data_type.value}", file=sys.stderr)
+            except Exception as e:
+                print(f"  ✗ {data_type.value}: {e}", file=sys.stderr)
+                all_data[data_type.value] = {"error": str(e)}
+
+        return all_data
+
     async def set_wan_dns(
         self, dns_servers: list[str], wan_unit: int = 0
     ) -> dict[str, Any]:
@@ -236,6 +291,56 @@ def cmd_set_dns(args):
     asyncio.run(_set_dns())
 
 
+def cmd_export_all(args):
+    """Export all router configuration command handler."""
+
+    async def _export_all():
+        client = AsusRouterClient(
+            hostname=args.hostname,
+            username=args.username,
+            password=args.password,
+            use_ssl=args.use_ssl,
+            port=args.port,
+        )
+
+        try:
+            await client.connect()
+            print("Connected to router successfully", file=sys.stderr)
+            print("Exporting all configuration data...", file=sys.stderr)
+
+            all_data = await client.export_all_data()
+
+            output_dir = args.output_dir
+            if not os.path.exists(output_dir):
+                os.makedirs(output_dir)
+                print(f"Created directory: {output_dir}", file=sys.stderr)
+
+            timestamp = asyncio.get_event_loop().time()
+            from datetime import datetime
+            timestamp_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+            output_file = os.path.join(output_dir, f"router-config-{timestamp_str}.json")
+            with open(output_file, "w") as f:
+                json.dump(all_data, f, indent=2, default=str)
+
+            print(f"\n✓ All configuration exported to: {output_file}", file=sys.stderr)
+
+            for data_type, data in all_data.items():
+                individual_file = os.path.join(output_dir, f"{data_type}.json")
+                with open(individual_file, "w") as f:
+                    json.dump(data, f, indent=2, default=str)
+
+            print(f"✓ Individual data files saved to: {output_dir}", file=sys.stderr)
+
+        except Exception as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
+        finally:
+            await client.cleanup()
+
+    asyncio.run(_export_all())
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="ASUS Router management tool for WAN DNS configuration"
@@ -287,12 +392,33 @@ def main():
         help="Show what would be changed without making changes",
     )
 
+    # Export all configuration command
+    export_all_parser = subparsers.add_parser(
+        "export-all", help="Export all router configuration data"
+    )
+    export_all_parser.add_argument(
+        "--hostname", required=True, help="Router hostname or IP address"
+    )
+    export_all_parser.add_argument("--username", required=True, help="Router username")
+    export_all_parser.add_argument("--password", required=True, help="Router password")
+    export_all_parser.add_argument(
+        "--use-ssl", action="store_true", help="Use HTTPS (default: HTTP)"
+    )
+    export_all_parser.add_argument("--port", type=int, help="Router port (optional, default: 80 for HTTP, 443 for HTTPS)")
+    export_all_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Output directory for configuration backup files",
+    )
+
     args = parser.parse_args()
 
     if args.command == "get-wan":
         cmd_get_wan(args)
     elif args.command == "set-dns":
         cmd_set_dns(args)
+    elif args.command == "export-all":
+        cmd_export_all(args)
 
 
 if __name__ == "__main__":
