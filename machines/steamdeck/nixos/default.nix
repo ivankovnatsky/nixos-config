@@ -3,6 +3,7 @@
     ../../../modules/flags
     ../../../modules/nixos/tmux-rebuild
     ../../../nixos/chromium.nix
+    ../../../nixos/keyboard.nix
     ../../../system/nix.nix
     ../../../system/scripts
     ./bluetooth.nix
