@@ -6,8 +6,6 @@
     fsType = "ext4";
     options = [
       "nofail"
-      "x-systemd.automount"
-      "x-systemd.idle-timeout=60"
       "nosuid"
       "nodev"
       "relatime"
