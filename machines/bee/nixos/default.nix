@@ -8,7 +8,6 @@
     ../../../modules/nixos/mautrix-whatsapp
     ../../../modules/nixos/rebuild-daemon
     ../../../modules/nixos/syncthing-mgmt
-    ../../../modules/nixos/tmux-rebuild
     ../../../modules/shared/arr-mgmt
     ../../../modules/shared/nextdns-mgmt
     ../../../nixos/rebuild-diff.nix
@@ -39,7 +38,6 @@
     ./syncthing-mgmt.nix
     ./syncthing.nix
     ./tailscale.nix
-    ./tmux-rebuild.nix
     ./tpm2.nix # Enable TPM2 support (required for TPM2 enrollment)
     ./user.nix # User configuration
   ];
