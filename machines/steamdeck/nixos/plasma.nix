@@ -19,4 +19,9 @@
     extraPortals = [ pkgs.kdePackages.xdg-desktop-portal-kde ];
     config.common.default = "*";
   };
+
+  environment.systemPackages = with pkgs; [
+    maliit-keyboard
+    maliit-framework
+  ];
 }
