@@ -386,13 +386,13 @@
         "lastModified": 1762190613,
         "narHash": "sha256-RsiBbP9cI7Z4gsuz9SZ2LCLNnMQ2uxIfbASml1C6+KY=",
         "owner": "ivankovnatsky",
-        "repo": "homebrew-taps",
+        "repo": "homebrew-tap",
         "rev": "e858b703b7af19b23e873a903f9f31fb315d37b8",
         "type": "github"
       },
       "original": {
         "owner": "ivankovnatsky",
-        "repo": "homebrew-taps",
+        "repo": "homebrew-tap",
         "type": "github"
       }
     },
