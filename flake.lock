@@ -383,16 +383,16 @@
     "ivankovnatsky-homebrew-tap": {
       "flake": false,
       "locked": {
-        "lastModified": 1762111632,
-        "narHash": "sha256-bLsfAjd4nTN2Ud9NGOPTiVEml7n8QTbgvOXoUdb1DGY=",
+        "lastModified": 1762190613,
+        "narHash": "sha256-RsiBbP9cI7Z4gsuz9SZ2LCLNnMQ2uxIfbASml1C6+KY=",
         "owner": "ivankovnatsky",
-        "repo": "nixos-config",
-        "rev": "cb6f2d8db22518a59e2de26517f4bfb3373e6fd2",
+        "repo": "homebrew-taps",
+        "rev": "e858b703b7af19b23e873a903f9f31fb315d37b8",
         "type": "github"
       },
       "original": {
         "owner": "ivankovnatsky",
-        "repo": "nixos-config",
+        "repo": "homebrew-taps",
         "type": "github"
       }
     },
