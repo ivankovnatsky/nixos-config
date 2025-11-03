@@ -208,13 +208,13 @@ in
             --username "$USERNAME" \
             --password "$PASSWORD" \
             --config-file "$RUNTIME_CONFIG" \
-            --discord-webhook "$DISCORD_WEBHOOK" || echo "Warning: Uptime Kuma sync failed"
+            --discord-webhook "$DISCORD_WEBHOOK" 2>&1 || echo "Warning: Uptime Kuma sync failed with exit code $?"
         '' else ''
           ${pkgs.uptime-kuma-mgmt}/bin/uptime-kuma-mgmt sync \
             --base-url "$BASE_URL" \
             --username "$USERNAME" \
             --password "$PASSWORD" \
-            --config-file "$RUNTIME_CONFIG" || echo "Warning: Uptime Kuma sync failed"
+            --config-file "$RUNTIME_CONFIG" 2>&1 || echo "Warning: Uptime Kuma sync failed with exit code $?"
         ''}
 
         # Cleanup runtime config
@@ -268,13 +268,13 @@ in
               --username "$USERNAME" \
               --password "$PASSWORD" \
               --config-file "$RUNTIME_CONFIG" \
-              --discord-webhook "$DISCORD_WEBHOOK" || echo "Warning: Uptime Kuma sync failed"
+              --discord-webhook "$DISCORD_WEBHOOK" 2>&1 || echo "Warning: Uptime Kuma sync failed with exit code $?"
           '' else ''
             ${pkgs.uptime-kuma-mgmt}/bin/uptime-kuma-mgmt sync \
               --base-url "$BASE_URL" \
               --username "$USERNAME" \
               --password "$PASSWORD" \
-              --config-file "$RUNTIME_CONFIG" || echo "Warning: Uptime Kuma sync failed"
+              --config-file "$RUNTIME_CONFIG" 2>&1 || echo "Warning: Uptime Kuma sync failed with exit code $?"
           ''}
 
           # Cleanup runtime config
