@@ -39,6 +39,7 @@ let
   flakeOverlays = {
     inherit (inputs.username.packages.${final.system}) username;
     inherit (inputs.backup-home.packages.${final.system}) backup-home;
+    inherit (inputs.podservice.packages.${final.system}) podservice;
 
     pyenv-nix-install = inputs.pyenv-nix-install.packages.${final.system}.default;
   };

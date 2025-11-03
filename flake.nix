@@ -151,6 +151,13 @@
       url = "github:Jovian-Experiments/Jovian-NixOS";
       inputs.nixpkgs.follows = "nixpkgs-nixos-unstable";
     };
+
+    # Pod Service - YouTube to Podcast Feed Service
+    podservice = {
+      url = "github:ivankovnatsky/podservice";
+      inputs.nixpkgs.follows = "nixpkgs-darwin-release";
+      inputs.flake-utils.follows = "flake-utils";
+    };
   };
 
   outputs = { self, ... }@inputs: import ./flake { inherit inputs; };

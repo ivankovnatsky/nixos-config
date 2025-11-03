@@ -1007,6 +1007,29 @@
         "type": "github"
       }
     },
+    "podservice": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs-darwin-release"
+        ]
+      },
+      "locked": {
+        "lastModified": 1762197867,
+        "narHash": "sha256-xPVS3SRMbtLyxkvmkfzR+muPHB/8A3Bj4VIC9Anq5Dw=",
+        "owner": "ivankovnatsky",
+        "repo": "podservice",
+        "rev": "1007551369ed18a880087eb7c81396267a628edf",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ivankovnatsky",
+        "repo": "podservice",
+        "type": "github"
+      }
+    },
     "pomdtr-homebrew-tap": {
       "flake": false,
       "locked": {
@@ -1072,6 +1095,7 @@
         "nur": "nur",
         "plasma-manager-nixos-release": "plasma-manager-nixos-release",
         "plasma-manager-nixos-unstable": "plasma-manager-nixos-unstable",
+        "podservice": "podservice",
         "pomdtr-homebrew-tap": "pomdtr-homebrew-tap",
         "pyenv-nix-install": "pyenv-nix-install",
         "sops-nix-darwin-release": "sops-nix-darwin-release",

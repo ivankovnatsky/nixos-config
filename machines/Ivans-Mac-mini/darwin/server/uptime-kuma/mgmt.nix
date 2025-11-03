@@ -143,6 +143,11 @@
         url = "https://bin.@EXTERNAL_DOMAIN@";
         description = "Pastebin service (mini:8820)";
       }
+      {
+        name = "podservice";
+        url = "https://podservice.@EXTERNAL_DOMAIN@";
+        description = "YouTube to Podcast service (mini:8083)";
+      }
 
       # Auth-protected services (expect 401)
       {
