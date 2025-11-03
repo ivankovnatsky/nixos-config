@@ -27,3 +27,37 @@ After updating `.sops.yaml` (adding/removing keys) or when sops-nix auto-discove
 ```console
 sops updatekeys secrets/default.yaml
 ```
+
+## macOS/Darwin setup
+
+### Full Disk Access requirement
+
+On macOS, `sops-install-secrets` requires **Full Disk Access** permission to read the SSH host key at `/etc/ssh/ssh_host_ed25519_key`.
+
+To grant Full Disk Access:
+
+1. Open **System Settings** → **Privacy & Security** → **Full Disk Access**
+2. Click the **+** button
+3. Navigate to `/nix/store/` and find the `sops-install-secrets` binary
+4. Or add `/bin/sh` (which runs the launchd service)
+
+After granting access, restart the service:
+
+```console
+sudo launchctl kickstart -k system/org.nixos.sops-install-secrets
+```
+
+Verify secrets were created:
+
+```console
+ls -la /run/secrets/
+```
+
+### Troubleshooting
+
+If secrets fail to deploy:
+
+- Check service status: `launchctl print system/org.nixos.sops-install-secrets`
+- Verify Full Disk Access is granted in System Settings
+- Check the service ran successfully (exit code 0)
+- Secrets are stored in `/run/secrets.d/1/` and symlinked to `/run/secrets/`
