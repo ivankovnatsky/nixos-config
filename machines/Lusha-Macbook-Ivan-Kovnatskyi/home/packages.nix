@@ -114,6 +114,7 @@
     switch-appearance
     terraformer
     terragrunt-atlantis-config
+    opentofu
     tree
     treefmt
     username # Installed as flake
