@@ -25,8 +25,14 @@
   # Disable SSRF filter for trusted local network environment
   # Allows podcast feeds from any source including private IPs
   # See: https://github.com/advplyr/audiobookshelf/issues/3742
-  systemd.services.audiobookshelf.environment = {
-    DISABLE_SSRF_REQUEST_FILTER = "1";
+  systemd.services.audiobookshelf = {
+    environment = {
+      DISABLE_SSRF_REQUEST_FILTER = "1";
+    };
+
+    # Wait for network to be fully online (DHCP IP assigned)
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
   };
 
   # Ensure Audiobookshelf can access media directories
