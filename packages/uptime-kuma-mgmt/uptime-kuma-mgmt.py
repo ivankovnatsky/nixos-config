@@ -48,8 +48,8 @@ class UptimeKumaClient:
         except Exception as e:
             raise Exception(f"Failed to enable trust proxy: {e}")
 
-    def setup_discord_notification(self, webhook_url: str, name: str = "Discord"):
-        """Setup Discord notification with default settings."""
+    def setup_discord_notification(self, webhook_url: str, name: str = "Discord") -> int:
+        """Setup Discord notification with default settings. Returns notification ID."""
         try:
             # Check if notification already exists
             notifications = self.api.get_notifications()
@@ -71,13 +71,16 @@ class UptimeKumaClient:
                     existing.get("type") != NotificationType.DISCORD):
                     print(f"Updating notification: {name}", file=sys.stderr)
                     self.api.edit_notification(notification_id, **notification_config)
-                    print(f"Notification '{name}' updated successfully", file=sys.stderr)
+                    print(f"Notification '{name}' updated successfully (ID: {notification_id})", file=sys.stderr)
                 else:
-                    print(f"Notification '{name}' already configured", file=sys.stderr)
+                    print(f"Notification '{name}' already configured (ID: {notification_id})", file=sys.stderr)
             else:
                 print(f"Creating notification: {name}", file=sys.stderr)
-                self.api.add_notification(**notification_config)
-                print(f"Notification '{name}' created successfully", file=sys.stderr)
+                result = self.api.add_notification(**notification_config)
+                notification_id = result["id"]
+                print(f"Notification '{name}' created successfully (ID: {notification_id})", file=sys.stderr)
+
+            return notification_id
         except Exception as e:
             raise Exception(f"Failed to setup Discord notification: {e}")
 
@@ -136,12 +139,13 @@ class UptimeKumaClient:
             raise ValueError('Config file must contain "monitors" array')
 
         # Always enable trust proxy for reverse proxy support
+        notification_id = None
         if not dry_run:
             self.enable_trust_proxy()
 
-            # Setup Discord notification if webhook URL is provided
+            # Setup Discord notification if webhook URL is provided and get its ID
             if discord_webhook:
-                self.setup_discord_notification(discord_webhook)
+                notification_id = self.setup_discord_notification(discord_webhook)
 
         desired_monitors = {m["name"]: m for m in config["monitors"]}
         current_monitors = {m["name"]: m for m in self.list_monitors()}
@@ -162,14 +166,14 @@ class UptimeKumaClient:
                 if needs_update:
                     print(f"  UPDATE: {name} ({reason})", file=sys.stderr)
                     if not dry_run:
-                        monitor_config = self._prepare_monitor_config(desired)
+                        monitor_config = self._prepare_monitor_config(desired, notification_id)
                         self.update_monitor(current["id"], monitor_config)
                 else:
                     print(f"  OK: {name} (no changes)", file=sys.stderr)
             else:
                 print(f"  CREATE: {name}", file=sys.stderr)
                 if not dry_run:
-                    monitor_config = self._prepare_monitor_config(desired)
+                    monitor_config = self._prepare_monitor_config(desired, notification_id)
                     self.create_monitor(monitor_config)
 
         # Delete monitors not in desired state (declarative)
@@ -272,7 +276,7 @@ class UptimeKumaClient:
 
         return False, ""
 
-    def _prepare_monitor_config(self, monitor: dict) -> dict:
+    def _prepare_monitor_config(self, monitor: dict, notification_id: int = None) -> dict:
         """Prepare monitor configuration for API call."""
         monitor_type = self._get_monitor_type(monitor.get("type", "http"))
 
@@ -283,6 +287,10 @@ class UptimeKumaClient:
             "maxretries": monitor.get("maxretries", 3),
             "retryInterval": monitor.get("retryInterval", 60),
         }
+
+        # Add notification if provided
+        if notification_id is not None:
+            config["notificationIDList"] = [notification_id]
 
         # Handle different monitor types
         if monitor_type == MonitorType.PORT:  # TCP port monitoring
