@@ -267,6 +267,12 @@
 		header_up Host {host}
 	}
 
+	@podservice host podservice.@externalDomain@
+	reverse_proxy @podservice @miniIp@:8083 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
 	# Default fallback for wildcard (original behavior)
 	reverse_proxy @beeIp@:80
 

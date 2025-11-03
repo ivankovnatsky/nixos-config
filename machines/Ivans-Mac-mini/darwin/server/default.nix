@@ -43,6 +43,7 @@
     ./ollama.nix
     ./openssh.nix
     ./packages.nix
+    ./podservice
     ./podsync
     ./power.nix
     ./sharing.nix
