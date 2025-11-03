@@ -84,6 +84,27 @@ class UptimeKumaClient:
         except Exception as e:
             raise Exception(f"Failed to setup Discord notification: {e}")
 
+    def cleanup_all(self):
+        """Delete all monitors and notifications."""
+        try:
+            # Delete all monitors
+            monitors = self.api.get_monitors()
+            print(f"Deleting {len(monitors)} monitors...", file=sys.stderr)
+            for monitor in monitors:
+                print(f"  Deleting monitor: {monitor['name']}", file=sys.stderr)
+                self.api.delete_monitor(monitor['id'])
+
+            # Delete all notifications
+            notifications = self.api.get_notifications()
+            print(f"Deleting {len(notifications)} notifications...", file=sys.stderr)
+            for notification in notifications:
+                print(f"  Deleting notification: {notification['name']}", file=sys.stderr)
+                self.api.delete_notification(notification['id'])
+
+            print("Cleanup completed successfully", file=sys.stderr)
+        except Exception as e:
+            raise Exception(f"Failed to cleanup: {e}")
+
     def list_monitors(self):
         """List all monitors."""
         try:
@@ -146,9 +167,31 @@ class UptimeKumaClient:
             # Setup Discord notification if webhook URL is provided and get its ID
             if discord_webhook:
                 notification_id = self.setup_discord_notification(discord_webhook)
+                if notification_id is None:
+                    raise Exception("Failed to setup Discord notification - no notification ID returned")
+                print(f"Notification configured successfully (ID: {notification_id}), proceeding with monitor setup...", file=sys.stderr)
 
         desired_monitors = {m["name"]: m for m in config["monitors"]}
-        current_monitors = {m["name"]: m for m in self.list_monitors()}
+        current_monitors_list = self.list_monitors()
+        current_monitors = {m["name"]: m for m in current_monitors_list}
+
+        # Check if any current monitors lack the notification
+        if notification_id is not None and current_monitors_list and not dry_run:
+            monitors_without_notif = []
+            for monitor in current_monitors_list:
+                monitor_notifs = monitor.get("notificationIDList", {})
+                if notification_id not in monitor_notifs:
+                    monitors_without_notif.append(monitor["name"])
+
+            if monitors_without_notif:
+                print(f"\nFound {len(monitors_without_notif)} monitors without notification configured", file=sys.stderr)
+                print(f"Deleting all {len(current_monitors_list)} monitors to reconfigure with notifications...", file=sys.stderr)
+                for monitor in current_monitors_list:
+                    print(f"  Deleting: {monitor['name']}", file=sys.stderr)
+                    self.delete_monitor(monitor["id"])
+                # Clear current monitors so they'll all be recreated
+                current_monitors = {}
+                print("All monitors deleted, will recreate with notifications\n", file=sys.stderr)
 
         print(f"\nSync Plan:", file=sys.stderr)
         print(f"  Desired monitors: {len(desired_monitors)}", file=sys.stderr)
