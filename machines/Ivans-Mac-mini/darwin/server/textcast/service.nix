@@ -96,8 +96,5 @@ in
       ${runtimeConfigFile} > ${dataDir}/config.yaml
     '';
     command = "${textcastWrapper}";
-    environment = {
-      PATH = "${pkgs.coreutils}/bin:${pkgs.ffmpeg}/bin";
-    };
   };
 }
