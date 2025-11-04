@@ -1017,11 +1017,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1762255361,
-        "narHash": "sha256-gYdPThOk6itEjrsjfC24zI30/boFgozaCAV3XtOG60A=",
+        "lastModified": 1762258992,
+        "narHash": "sha256-PgWqzCXVsv6qQ2NW97ZMsHHkSLzMUQGY0cRqSn/mDVY=",
         "owner": "ivankovnatsky",
         "repo": "podservice",
-        "rev": "0daa186635fed98e79f8bf8f9d985453cf6ffed9",
+        "rev": "3cbe2d4ca2aef02c605c22a6d8fe8abe97446654",
         "type": "github"
       },
       "original": {
