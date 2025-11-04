@@ -148,6 +148,11 @@
         url = "https://podservice.@EXTERNAL_DOMAIN@";
         description = "YouTube to Podcast service (mini:8083)";
       }
+      {
+        name = "textcast";
+        url = "https://textcast.@EXTERNAL_DOMAIN@";
+        description = "Article to audiobook service (mini:8084)";
+      }
 
       # Auth-protected services (expect 401)
       {

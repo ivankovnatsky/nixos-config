@@ -273,6 +273,12 @@
 		header_up Host {host}
 	}
 
+	@textcast host textcast.@externalDomain@
+	reverse_proxy @textcast @miniIp@:8084 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
 	# Default fallback for wildcard (original behavior)
 	reverse_proxy @beeIp@:80
 
