@@ -108,6 +108,10 @@
         "active": true
       },
       {
+        "id": "2.pool.ntp.org",
+        "active": true
+      },
+      {
         "id": "aliexpress.com",
         "active": true
       },
@@ -156,7 +160,15 @@
         "active": true
       },
       {
+        "id": "roistat.com",
+        "active": true
+      },
+      {
         "id": "tildacdn.com",
+        "active": true
+      },
+      {
+        "id": "tildaapi.one",
         "active": true
       },
       {
