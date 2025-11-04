@@ -57,9 +57,6 @@
     ];
 
     extraConfig = {
-      safe = {
-        directory = "${config.flags.homeWorkPath}/Sources/github.com/ivankovnatsky/nixos-config-worktrees";
-      };
       mergetool =
         let
           vimCommand = "vim -f -d -c 'wincmd J' \"$LOCAL\" \"$BASE\" \"$REMOTE\" \"$MERGED\"";
