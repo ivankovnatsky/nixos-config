@@ -35,7 +35,7 @@ let
       commonShellAliases
       // {
         # We tenv version manager so pkgs interpolation is not needed.
-        tf = "terraform";
+        tf = "tofu";
         tg = "terragrunt";
         k = "${pkgs.kubectl}/bin/kubectl";
         argocd = "${pkgs.argocd}/bin/argocd --grpc-web";
