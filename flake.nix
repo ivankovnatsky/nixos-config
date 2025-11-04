@@ -153,11 +153,7 @@
     };
 
     # Pod Service - YouTube to Podcast Feed Service
-    podservice = {
-      url = "github:ivankovnatsky/podservice";
-      inputs.nixpkgs.follows = "nixpkgs-darwin-release";
-      inputs.flake-utils.follows = "flake-utils";
-    };
+    podservice.url = "github:ivankovnatsky/podservice";
   };
 
   outputs = { self, ... }@inputs: import ./flake { inherit inputs; };
