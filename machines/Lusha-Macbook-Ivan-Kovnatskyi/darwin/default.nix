@@ -16,6 +16,7 @@
     ./flags.nix
     ./fonts.nix
     ./homebrew.nix
+    ./no-dock-restart.nix
     ./openssh.nix
     ./security.nix
     ./shell.nix

@@ -106,15 +106,36 @@ in
       system.activationScripts.postActivation.text = ''
           echo >&2 "Setting up the Dock for ${cfg.username}..."
           sudo -u ${cfg.username} /bin/bash <<'USERBLOCK'
+        # Get current dock items
         haveURIs="$(${dockutil}/bin/dockutil --list | ${pkgs.coreutils}/bin/cut -f2)"
-        if ! diff -wu <(echo -n "$haveURIs") <(echo -n '${wantURIs}') >&2 ; then
-          echo >&2 "Resetting Dock."
-          ${dockutil}/bin/dockutil --no-restart --remove all
-          ${createEntries}
-          killall Dock
-        else
-          echo >&2 "Dock setup complete."
+        wantURIs='${wantURIs}'
+
+        # Check if dock needs updating
+        if diff -q <(echo -n "$haveURIs") <(echo -n "$wantURIs") >/dev/null 2>&1; then
+          echo >&2 "Dock is already up to date."
+          exit 0
         fi
+
+        echo >&2 "Updating Dock (adding missing items only, no restart)..."
+
+        # Check each wanted item and add if missing
+        ${concatMapStrings (
+          entry:
+          if entry.type == "spacer" then
+            ""
+          else
+            let
+              uri = entryURI entry;
+            in
+            ''
+              if ! echo "$haveURIs" | grep -Fxq '${uri}'; then
+                echo >&2 "Adding: ${entry.path}"
+                ${dockutil}/bin/dockutil --no-restart --add '${entry.path}' --section ${entry.section} ${entry.options} 2>/dev/null || echo >&2 "Warning: Failed to add ${entry.path}"
+              fi
+            ''
+        ) cfg.entries}
+
+        echo >&2 "Dock updated without restart. Changes will appear shortly."
         USERBLOCK
       '';
     }
