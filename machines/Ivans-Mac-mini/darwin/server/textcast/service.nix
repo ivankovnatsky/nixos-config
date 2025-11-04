@@ -44,6 +44,11 @@ let
       server: "@ABS_URL@"
       api_key: "@ABS_API_KEY@"
       library_name: ""
+
+    server:
+      enabled: true
+      host: ${config.flags.miniIp}
+      port: 8084
   '';
 
   # Substitute secrets at runtime
