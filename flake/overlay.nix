@@ -40,6 +40,7 @@ let
     inherit (inputs.username.packages.${final.system}) username;
     inherit (inputs.backup-home.packages.${final.system}) backup-home;
     inherit (inputs.podservice.packages.${final.system}) podservice;
+    inherit (inputs.textcast.packages.${final.system}) textcast;
 
     pyenv-nix-install = inputs.pyenv-nix-install.packages.${final.system}.default;
   };

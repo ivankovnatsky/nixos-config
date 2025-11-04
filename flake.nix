@@ -154,6 +154,9 @@
 
     # Pod Service - YouTube to Podcast Feed Service
     podservice.url = "github:ivankovnatsky/podservice";
+
+    # Textcast - Text to Audio Service
+    textcast.url = "github:ivankovnatsky/textcast";
   };
 
   outputs = { self, ... }@inputs: import ./flake { inherit inputs; };

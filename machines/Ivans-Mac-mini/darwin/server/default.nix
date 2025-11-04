@@ -46,6 +46,7 @@
     ./podservice
     ./podsync
     ./power.nix
+    ./textcast
     ./sharing.nix
     ./stash
     ./sudo.nix
