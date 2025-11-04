@@ -1438,11 +1438,11 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1759307718,
-        "narHash": "sha256-8Lh/jIph5XytECS1ufiji9XbKpHofdYNxyQKVNa41Hc=",
+        "lastModified": 1762266049,
+        "narHash": "sha256-vAuRUJpgGpRutcEcXdELkqTyHPLlVTqEcDI5RTZSb4w=",
         "owner": "ivankovnatsky",
         "repo": "textcast",
-        "rev": "719ad975b18d39b8824824ee6dceb148aeb68f81",
+        "rev": "df52f703e2ae2146353965ca15e57ca495e51c95",
         "type": "github"
       },
       "original": {
