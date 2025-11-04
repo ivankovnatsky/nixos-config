@@ -61,21 +61,25 @@ let
     export OPENAI_API_KEY=$(cat ${config.sops.secrets.openai-api-key.path})
     export ABS_URL=$(cat ${config.sops.secrets.audiobookshelf-url.path})
     export ABS_API_KEY=$(cat ${config.sops.secrets.audiobookshelf-api-token.path})
-    exec ${pkgs.textcast}/bin/textcast serve --config=${dataDir}/config.yaml
+    exec ${pkgs.textcast}/bin/textcast service daemon --config=${dataDir}/config.yaml
   '';
 in
 {
   # Declare sops secrets for system-level access
+  # textcast runs as user agent (ivan), so set owner to ivan
   sops.secrets.openai-api-key = {
     key = "openaiApiKey";
+    owner = "ivan";
   };
 
   sops.secrets.audiobookshelf-url = {
     key = "audiobookshelf/url";
+    owner = "ivan";
   };
 
   sops.secrets.audiobookshelf-api-token = {
     key = "audiobookshelf/apiToken";
+    owner = "ivan";
   };
 
   local.launchd.services.textcast = {
