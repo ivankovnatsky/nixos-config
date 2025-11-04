@@ -5,7 +5,7 @@
 }:
 
 let
-  dataDir = "${config.flags.miniStoragePath}/Data/Media/Textcast";
+  dataDir = "${config.flags.miniStoragePath}/Media/Textcast";
   audioDir = "${dataDir}/Audio";
   textsDir = "${dataDir}/Texts";
   logsDir = "${dataDir}/Logs";
