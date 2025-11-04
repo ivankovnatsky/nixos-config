@@ -65,6 +65,19 @@ let
   '';
 in
 {
+  # Declare sops secrets for system-level access
+  sops.secrets.openai-api-key = {
+    key = "openaiApiKey";
+  };
+
+  sops.secrets.audiobookshelf-url = {
+    key = "audiobookshelf/url";
+  };
+
+  sops.secrets.audiobookshelf-api-token = {
+    key = "audiobookshelf/apiToken";
+  };
+
   local.launchd.services.textcast = {
     enable = true;
     waitForPath = config.flags.miniStoragePath;
