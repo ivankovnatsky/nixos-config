@@ -220,10 +220,8 @@ in
         { inherit (grc) name src; }
         { inherit (plugin-git) name src; }
         { inherit (forgit) name src; }
-        { inherit (autopair) name src; }
         { inherit (git-abbr) name src; }
         { inherit (fish-bd) name src; }
-        { inherit (pisces) name src; }
         { inherit (done) name src; }
         { inherit (bass) name src; }
       ];
