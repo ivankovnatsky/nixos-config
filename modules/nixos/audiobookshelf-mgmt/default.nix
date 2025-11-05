@@ -161,17 +161,8 @@ in
       message = "Exactly one of password or passwordFile must be set for user ${user.username}";
     }) cfg.users);
 
-    # Use systemd service instead of activation script when using file-based secrets
-    # to ensure proper ordering with sops-nix secret installation
-    system.activationScripts.audiobookshelf-mgmt = mkIf (cfg.apiTokenFile == null) ''
-      echo "Syncing Audiobookshelf configuration..."
-      ${pkgs.abs-mgmt}/bin/abs-mgmt sync \
-        --base-url "${cfg.baseUrl}" \
-        --token "${cfg.apiToken}" \
-        --config-file "${configJson}" || echo "Warning: Audiobookshelf sync failed"
-    '';
-
-    systemd.services.audiobookshelf-mgmt-sync = mkIf (cfg.apiTokenFile != null) {
+    # Systemd service for configuration synchronization
+    systemd.services.audiobookshelf-mgmt-sync = {
       description = "Audiobookshelf configuration synchronization";
       wantedBy = [ "multi-user.target" ];
       after = [ "network-online.target" ];
@@ -181,42 +172,52 @@ in
         Type = "oneshot";
         RemainAfterExit = true;
         User = "root";
-        ExecStart = pkgs.writeShellScript "audiobookshelf-mgmt-sync" ''
-          echo "Syncing Audiobookshelf configuration..."
-
-          # Build config JSON with secrets substituted from files
-          CONFIG_FILE=$(mktemp)
-          trap "rm -f $CONFIG_FILE" EXIT
-
-          ${pkgs.jq}/bin/jq -n \
-            --argjson libraries '${builtins.toJSON (map (lib: {
-              name = lib.name;
-              folders = lib.folders;
-              mediaType = lib.mediaType;
-              provider = lib.provider;
-            }) cfg.libraries)}' \
-            --argjson users '${builtins.toJSON (map (user: {
-              username = user.username;
-              password = if user.passwordFile != null then "__PASSWORD_${user.username}__" else user.password;
-              type = user.type;
-              libraries = user.libraries;
-            }) cfg.users)}' \
-            '{libraries: $libraries, users: $users}' > "$CONFIG_FILE"
-
-          # Substitute passwords from files
-          ${concatMapStrings (user:
-            if user.passwordFile != null then ''
-              PASSWORD_${user.username}=$(cat ${user.passwordFile})
-              ${pkgs.gnused}/bin/sed -i "s|__PASSWORD_${user.username}__|$PASSWORD_${user.username}|g" "$CONFIG_FILE"
-            '' else ""
-          ) cfg.users}
-
-          ${pkgs.abs-mgmt}/bin/abs-mgmt sync \
-            --base-url "${cfg.baseUrl}" \
-            --token "$(cat ${cfg.apiTokenFile})" \
-            --config-file "$CONFIG_FILE" || echo "Warning: Audiobookshelf sync failed"
-        '';
       };
+
+      script = ''
+        echo "Syncing Audiobookshelf configuration..."
+
+        # Build config JSON with secrets substituted from files
+        CONFIG_FILE=$(mktemp)
+        trap "rm -f $CONFIG_FILE" EXIT
+
+        ${pkgs.jq}/bin/jq -n \
+          --argjson libraries '${builtins.toJSON (map (lib: {
+            name = lib.name;
+            folders = lib.folders;
+            mediaType = lib.mediaType;
+            provider = lib.provider;
+          }) cfg.libraries)}' \
+          --argjson users '${builtins.toJSON (map (user: {
+            username = user.username;
+            password = if user.passwordFile != null then "__PASSWORD_${user.username}__" else user.password;
+            type = user.type;
+            libraries = user.libraries;
+          }) cfg.users)}' \
+          '{libraries: $libraries, users: $users}' > "$CONFIG_FILE"
+
+        # Substitute passwords from files
+        ${concatMapStrings (user:
+          if user.passwordFile != null then ''
+            PASSWORD_${user.username}=$(cat ${user.passwordFile})
+            ${pkgs.gnused}/bin/sed -i "s|__PASSWORD_${user.username}__|$PASSWORD_${user.username}|g" "$CONFIG_FILE"
+          '' else ""
+        ) cfg.users}
+
+        # Read token from file or use direct value
+        ${if cfg.apiTokenFile != null then ''
+          TOKEN="$(cat ${cfg.apiTokenFile})"
+        '' else ''
+          TOKEN="${cfg.apiToken}"
+        ''}
+
+        ${pkgs.abs-mgmt}/bin/abs-mgmt sync \
+          --base-url "${cfg.baseUrl}" \
+          --token "$TOKEN" \
+          --config-file "$CONFIG_FILE" 2>&1 || echo "Warning: Audiobookshelf sync failed with exit code $?"
+
+        echo "Audiobookshelf configuration sync completed"
+      '';
     };
 
     # OPML sync service and timer
