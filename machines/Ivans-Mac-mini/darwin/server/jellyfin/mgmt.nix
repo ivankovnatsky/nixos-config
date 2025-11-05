@@ -3,6 +3,7 @@
 {
   sops.secrets.jellyfin-api-key = {
     key = "jellyfin/apiKey";
+    owner = "ivan";
   };
 
   local.services.jellyfin-mgmt = {

@@ -4,12 +4,15 @@
   sops.secrets = {
     nextdns-api-key = {
       key = "nextDnsApiKey";
+      owner = "ivan";
     };
     nextdns-profile-mini = {
       key = "nextDnsProfileMini";
+      owner = "ivan";
     };
     nextdns-profile-router = {
       key = "nextDnsProfileRouter";
+      owner = "ivan";
     };
   };
 

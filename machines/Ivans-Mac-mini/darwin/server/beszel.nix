@@ -37,18 +37,22 @@ in
   # Sops secrets for beszel-mgmt
   sops.secrets.beszel-email = {
     key = "beszel/email";
+    owner = "ivan";
   };
 
   sops.secrets.beszel-password = {
     key = "beszel/password";
+    owner = "ivan";
   };
 
   sops.secrets.discord-webhook = {
     key = "discordWebHook";
+    owner = "ivan";
   };
 
   sops.secrets.external-domain = {
     key = "externalDomain";
+    owner = "ivan";
   };
 
   # Beszel management (declarative system sync)
