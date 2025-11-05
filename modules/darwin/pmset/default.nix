@@ -15,6 +15,20 @@ in
   options.local.services.pmset = {
     enable = mkEnableOption "pmset power management scheduling";
 
+    powerMode = {
+      battery = mkOption {
+        type = types.nullOr types.bool;
+        default = null;
+        description = "Enable low power mode when on battery (true = enabled, false = disabled, null = no change)";
+      };
+
+      ac = mkOption {
+        type = types.nullOr types.bool;
+        default = null;
+        description = "Enable low power mode when on AC power (true = enabled, false = disabled, null = no change)";
+      };
+    };
+
     schedules = mkOption {
       default = { };
       description = "Power management schedules";
@@ -57,6 +71,22 @@ in
           # Filter enabled schedules
           enabledSchedules = filterAttrs (name: schedule: schedule.enable) cfg.schedules;
 
+          # Generate power mode settings
+          powerModeSettings = ''
+            ${optionalString (cfg.powerMode.battery != null) ''
+              echo "Setting low power mode for battery: ${if cfg.powerMode.battery then "enabled" else "disabled"}"
+              /usr/bin/pmset -b lowpowermode ${if cfg.powerMode.battery then "1" else "0"}
+            ''}
+            ${optionalString (cfg.powerMode.ac != null) ''
+              echo "Setting low power mode for AC: ${if cfg.powerMode.ac then "enabled" else "disabled"}"
+              /usr/bin/pmset -c lowpowermode ${if cfg.powerMode.ac then "1" else "0"}
+            ''}
+            ${optionalString (cfg.powerMode.battery != null || cfg.powerMode.ac != null) ''
+              echo "Verifying power mode settings:"
+              /usr/bin/pmset -g custom
+            ''}
+          '';
+
           # Generate a single pmset repeat command with all schedules
           generateAllSchedules =
             schedules:
@@ -80,7 +110,7 @@ in
               /usr/bin/pmset -g sched
             '';
         in
-        generateAllSchedules enabledSchedules
+        powerModeSettings + generateAllSchedules enabledSchedules
       else
         ''
           echo "Disabling power management schedules"
