@@ -19,14 +19,17 @@
   # Sops secrets for arr services
   sops.secrets.radarr-api-key = {
     key = "arrMini/radarr/apiKey";
+    owner = "ivan";
   };
 
   sops.secrets.sonarr-api-key = {
     key = "arrMini/sonarr/apiKey";
+    owner = "ivan";
   };
 
   sops.secrets.prowlarr-api-key = {
     key = "arrMini/prowlarr/apiKey";
+    owner = "ivan";
   };
 
   local.services.arr-mgmt = {

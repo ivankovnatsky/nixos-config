@@ -16,23 +16,23 @@
   # Sops secrets for Uptime Kuma management
   sops.secrets.external-domain = {
     key = "externalDomain";
-    owner = "root";
+    owner = "ivan";
   };
   sops.secrets.uptime-kuma-username = {
     key = "uptimeKuma/username";
-    owner = "root";
+    owner = "ivan";
   };
   sops.secrets.uptime-kuma-password = {
     key = "uptimeKuma/password";
-    owner = "root";
+    owner = "ivan";
   };
   sops.secrets.discord-webhook = {
     key = "discordWebHook";
-    owner = "root";
+    owner = "ivan";
   };
   sops.secrets.postgres-monitoring-password = {
     key = "postgres/monitoring/password";
-    owner = "root";
+    owner = "ivan";
   };
 
   local.services.uptime-kuma-mgmt = {

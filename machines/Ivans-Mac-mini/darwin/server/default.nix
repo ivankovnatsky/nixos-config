@@ -20,10 +20,10 @@
     ../../../../modules/darwin/sudo
     ../../../../modules/darwin/rebuild-daemon
     ../../../../modules/flags
-    ../../../../modules/shared/arr-mgmt
-    ../../../../modules/shared/jellyfin-mgmt
-    ../../../../modules/shared/nextdns-mgmt
-    ../../../../modules/shared/uptime-kuma-mgmt
+    ../../../../modules/darwin/arr-mgmt
+    ../../../../modules/darwin/jellyfin-mgmt
+    ../../../../modules/darwin/nextdns-mgmt
+    ../../../../modules/darwin/uptime-kuma-mgmt
     ../../../../system/documentation.nix
     ../../../../system/nix.nix
     ./beszel.nix

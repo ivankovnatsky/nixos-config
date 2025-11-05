@@ -90,45 +90,36 @@ in
     };
   };
 
-  config = mkMerge [
-    # Assertions
-    (mkIf cfg.enable {
-      assertions = [
-        {
-          assertion = (cfg.apiKey != null) != (cfg.apiKeyFile != null);
-          message = "Exactly one of apiKey or apiKeyFile must be set for jellyfin-mgmt";
-        }
-      ];
-    })
+  config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = (cfg.apiKey != null) != (cfg.apiKeyFile != null);
+        message = "Exactly one of apiKey or apiKeyFile must be set for jellyfin-mgmt";
+      }
+    ];
 
-    # Darwin configuration
-    (mkIf (cfg.enable && pkgs.stdenv.isDarwin) {
-      system.activationScripts.postActivation.text = ''
-        echo "Syncing Jellyfin configuration..."
-        ${if cfg.apiKeyFile != null then ''
-          CONFIG_JSON=$(${runtimeConfigScript})
-          echo "$CONFIG_JSON" | ${pkgs.jellyfin-mgmt}/bin/jellyfin-mgmt sync --config-file /dev/stdin || echo "Warning: Jellyfin sync failed"
-        '' else ''
-          ${pkgs.jellyfin-mgmt}/bin/jellyfin-mgmt sync \
-            --config-file "${configJson}" || echo "Warning: Jellyfin sync failed"
-        ''}
-      '';
-    })
+    # Darwin launchd service
+    local.launchd.services.jellyfin-mgmt = {
+      enable = true;
+      keepAlive = false;
+      runAtLoad = true;
 
-    # NixOS configuration
-    (mkIf (cfg.enable && !pkgs.stdenv.isDarwin) {
-      system.activationScripts.jellyfin-mgmt = {
-        text = ''
-          echo "Syncing Jellyfin configuration..."
-          ${if cfg.apiKeyFile != null then ''
-            CONFIG_JSON=$(${runtimeConfigScript})
-            echo "$CONFIG_JSON" | ${pkgs.jellyfin-mgmt}/bin/jellyfin-mgmt sync --config-file /dev/stdin || echo "Warning: Jellyfin sync failed"
-          '' else ''
-            ${pkgs.jellyfin-mgmt}/bin/jellyfin-mgmt sync \
-              --config-file "${configJson}" || echo "Warning: Jellyfin sync failed"
-          ''}
-        '';
-      };
-    })
-  ];
+        command = let
+          syncScript = pkgs.writeShellScript "jellyfin-mgmt-sync" ''
+            set -e
+
+            echo "Syncing Jellyfin configuration..."
+            ${if cfg.apiKeyFile != null then ''
+              CONFIG_JSON=$(${runtimeConfigScript})
+              echo "$CONFIG_JSON" | ${pkgs.jellyfin-mgmt}/bin/jellyfin-mgmt sync --config-file /dev/stdin 2>&1 || echo "Warning: Jellyfin sync failed with exit code $?"
+            '' else ''
+              ${pkgs.jellyfin-mgmt}/bin/jellyfin-mgmt sync \
+                --config-file "${configJson}" 2>&1 || echo "Warning: Jellyfin sync failed with exit code $?"
+            ''}
+
+            echo "Jellyfin configuration sync completed"
+          '';
+        in "${syncScript}";
+    };
+  };
 }

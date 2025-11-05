@@ -9,7 +9,7 @@
     ../../../modules/nixos/rebuild-daemon
     ../../../modules/nixos/syncthing-mgmt
     ../../../modules/shared/arr-mgmt
-    ../../../modules/shared/nextdns-mgmt
+    ../../../modules/nixos/nextdns-mgmt
     ../../../nixos/rebuild-diff.nix
     ../../../system/documentation.nix # Disable documentation to avoid mautrix module mismatch issues
     ../../../system/nix.nix
