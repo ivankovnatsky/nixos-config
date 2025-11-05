@@ -6,6 +6,7 @@
     ../../../darwin/sudo.nix
     ../../../modules/darwin/dock
     ../../../modules/darwin/pam
+    ../../../modules/darwin/pmset
     ../../../modules/darwin/sudo
     ../../../modules/darwin/tmux-rebuild
     ../../../modules/flags
@@ -18,6 +19,7 @@
     ./homebrew.nix
     ./no-dock-restart.nix
     ./openssh.nix
+    ./power.nix
     ./security.nix
     ./shell.nix
     ./sudo.nix
