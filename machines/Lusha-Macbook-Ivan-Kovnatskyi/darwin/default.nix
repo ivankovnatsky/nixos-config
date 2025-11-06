@@ -5,10 +5,11 @@
     ../../../darwin/nix.nix
     ../../../darwin/sudo.nix
     ../../../modules/darwin/dock
+    ../../../modules/darwin/launchd-service
     ../../../modules/darwin/pam
     ../../../modules/darwin/pmset
+    ../../../modules/darwin/rebuild-daemon
     ../../../modules/darwin/sudo
-    ../../../modules/darwin/tmux-rebuild
     ../../../modules/flags
     ../../../system/documentation.nix
     ../../../system/nix.nix
@@ -16,14 +17,15 @@
     ./dock.nix
     ./flags.nix
     ./fonts.nix
+    ./git.nix
     ./homebrew.nix
     ./no-dock-restart.nix
     ./openssh.nix
     ./power.nix
+    ./rebuild-daemon.nix
     ./security.nix
     ./shell.nix
     ./sudo.nix
     ./system.nix
-    ./tmux-rebuild.nix
   ];
 }
