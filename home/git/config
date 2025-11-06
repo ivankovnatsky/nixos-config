@@ -61,7 +61,3 @@
 
 [worktree]
 	useRelativePaths = true
-
-[safe]
-	directory = /home/ivan/Sources/github.com/ivankovnatsky/nixos-config
-	directory = /Volumes/Storage/Data/Sources/github.com/ivankovnatsky/nixos-config
