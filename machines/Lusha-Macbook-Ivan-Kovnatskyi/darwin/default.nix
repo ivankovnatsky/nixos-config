@@ -8,6 +8,7 @@
     ../../../modules/darwin/launchd-service
     ../../../modules/darwin/pam
     ../../../modules/darwin/pmset
+    ../../../modules/darwin/tmux-rebuild
     ../../../modules/darwin/rebuild-daemon
     ../../../modules/darwin/sudo
     ../../../modules/flags
@@ -27,5 +28,6 @@
     ./shell.nix
     ./sudo.nix
     ./system.nix
+    ./tmux-rebuild.nix
   ];
 }
