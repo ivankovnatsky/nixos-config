@@ -59,6 +59,9 @@
 	# Search everything (commits, diffs, files)
 	grep-all = "!f() { git log --all --grep=\"$1\"; git log --all -S \"$1\"; git grep \"$1\"; }; f"
 
+[worktree]
+	useRelativePaths = true
+
 [safe]
 	directory = /home/ivan/Sources/github.com/ivankovnatsky/nixos-config
 	directory = /Volumes/Storage/Data/Sources/github.com/ivankovnatsky/nixos-config
