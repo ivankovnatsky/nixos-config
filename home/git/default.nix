@@ -84,6 +84,9 @@
       core = {
         editor = "${config.flags.editor}";
       };
+      safe = {
+        directory = "${config.flags.homeWorkPath}/Sources/github.com/ivankovnatsky/nixos-config";
+      };
     };
   };
 }
