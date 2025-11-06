@@ -105,9 +105,10 @@
 		# Enable WebSocket support for real-time updates
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
-		# Increase timeouts for large model responses
+		# Increase timeouts for large model responses and WebSocket connections
 		transport http {
-			keepalive 30s
+			keepalive 12h
+			keepalive_idle_conns 100
 			response_header_timeout 300s
 		}
 	}
