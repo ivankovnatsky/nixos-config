@@ -20,7 +20,7 @@
     ./fonts.nix
     ./git.nix
     ./homebrew.nix
-    ./no-dock-restart.nix
+    ../../../darwin/no-dock-restart.nix
     ./openssh.nix
     ./power.nix
     ./rebuild-daemon.nix

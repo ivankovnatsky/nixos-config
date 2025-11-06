@@ -19,5 +19,6 @@
     ../../../system/documentation.nix
     ../../../system/nix.nix
     ../../../system/scripts
+    ../../../darwin/no-dock-restart.nix
   ];
 }
