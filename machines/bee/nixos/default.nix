@@ -25,6 +25,7 @@
     ./loader.nix
     ./logrotate.nix
     ./matrix
+    ./mosh.nix
     ./networking.nix # FIXME: Did not work yet
     ./nextdns
     ./open-webui.nix

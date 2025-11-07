@@ -38,6 +38,7 @@
     ./logrotate.nix
     ./media
     ./miniserve.nix
+    ./mosh.nix
     ./nextdns
     ./nix.nix
     ./ollama.nix

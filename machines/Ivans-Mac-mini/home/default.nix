@@ -3,6 +3,7 @@
     ../../../darwin/home/nixvim.nix
     ../../../home/aichat.nix
     ../../../home/amethyst
+    ../../../home/bash.nix
     ../../../home/bat.nix
     ../../../home/btop.nix
     ../../../home/claude.nix
