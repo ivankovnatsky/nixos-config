@@ -12,7 +12,14 @@
       HISTSIZE = "0";
       HISTFILESIZE = "0";
     };
+    initExtra = ''
+      # Ensure Nix paths are available in SSH sessions (for mosh-server)
+      export PATH="/run/current-system/sw/bin:$PATH"
+    '';
     profileExtra = ''
+      # Ensure Nix paths are available in SSH sessions (for mosh-server)
+      export PATH="/run/current-system/sw/bin:$PATH"
+
       # Added by OrbStack: command-line tools and integration
       # This won't be added again if you remove it.
       source ~/.orbstack/shell/init.bash 2>/dev/null || :
