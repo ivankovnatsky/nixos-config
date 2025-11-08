@@ -20,6 +20,35 @@
 
 set -euo pipefail
 
+# Handle --help before any redirection
+for arg in "$@"; do
+  if [[ "$arg" == "--help" ]] || [[ "$arg" == "-h" ]]; then
+    cat <<EOF
+Usage: $0 [OPTIONS]
+
+Backup script for home directory with automatic exclusions and remote upload.
+
+Options:
+  --skip-backup           Skip backup creation, use existing archive
+  --skip-upload           Skip upload to remote machine, keep backup local
+  --backup-path <path>    Custom path for backup archive
+  --target-machine <ip>   Custom target machine (default: 192.168.50.4)
+  --no-log-file           Disable logging, output to stdout/stderr
+  --help, -h              Show this help message
+
+Examples:
+  $0                                        # Normal backup and upload
+  $0 --skip-upload                          # Create backup locally only
+  $0 --target-machine 192.168.50.5          # Upload to different machine
+  $0 --skip-backup --skip-upload            # Use existing backup, no upload
+  $0 --no-log-file                          # Show output in terminal
+
+By default, logs to: /tmp/backup-home-simple-YYYYMMDD-HHMMSS.log
+EOF
+    exit 0
+  fi
+done
+
 # Handle log file redirection
 if [[ "${BACKUP_LOG_REDIRECTED:-}" != "1" ]]; then
   # Check if --no-log-file is present
@@ -44,9 +73,14 @@ fi
 SKIP_BACKUP=false
 SKIP_UPLOAD=false
 CUSTOM_ARCHIVE_PATH=""
+CUSTOM_TARGET_MACHINE=""
 
 while [[ $# -gt 0 ]]; do
   case $1 in
+  --help|-h)
+    # Already handled at the top of the script
+    exit 0
+    ;;
   --skip-backup)
     SKIP_BACKUP=true
     shift
@@ -59,13 +93,18 @@ while [[ $# -gt 0 ]]; do
     CUSTOM_ARCHIVE_PATH="$2"
     shift 2
     ;;
+  --target-machine)
+    CUSTOM_TARGET_MACHINE="$2"
+    shift 2
+    ;;
   --no-log-file)
     # Already handled at the top of the script, just skip
     shift
     ;;
   *)
     echo "Unknown option: $1"
-    echo "Usage: $0 [--skip-backup] [--skip-upload] [--backup-path <path>] [--no-log-file]"
+    echo "Usage: $0 [--skip-backup] [--skip-upload] [--backup-path <path>] [--target-machine <ip>] [--no-log-file]"
+    echo "Run '$0 --help' for more information."
     exit 1
     ;;
   esac
@@ -130,6 +169,7 @@ else
     --exclude='**/Library/Mobile Documents/**' \
     --exclude='**/Library/Metadata/**' \
     --exclude='**/Library/pnpm/**' \
+    --exclude='**/Library/Containers/com.apple.AccessibilitySettingsWidgetExtension/**' \
     --exclude='**/Library/Containers/com.apple.AvatarUI.AvatarPickerMemojiPicker/**' \
     --exclude='**/Library/Containers/com.apple.Safari/**' \
     --exclude='**/Library/Containers/com.apple.Safari.WebApp/**' \
@@ -150,9 +190,14 @@ else
 fi
 
 if [[ "$SKIP_UPLOAD" == "true" ]]; then
-  echo "Skipping upload to mini, backup saved at: $ARCHIVE_PATH"
+  echo "Skipping upload, backup saved at: $ARCHIVE_PATH"
 else
-  export TARGET_MACHINE=192.168.50.4
+  # Set target machine (use custom if provided, otherwise default)
+  if [[ -n "$CUSTOM_TARGET_MACHINE" ]]; then
+    export TARGET_MACHINE="$CUSTOM_TARGET_MACHINE"
+  else
+    export TARGET_MACHINE=192.168.50.4
+  fi
   export BACKUP_PATH=/Volumes/Storage/Data/Drive/Crypt/Machines/
   HOSTNAME=$(hostname)
   export HOSTNAME
@@ -170,7 +215,12 @@ else
   else
     # shellcheck disable=SC2029
     ssh "ivan@$TARGET_MACHINE" "mkdir -p $BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR"
-    scp "$ARCHIVE_PATH" ivan@"$TARGET_MACHINE:$BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR/$USER.tar.gz"
-    rm "$ARCHIVE_PATH"
+    if scp "$ARCHIVE_PATH" ivan@"$TARGET_MACHINE:$BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR/$USER.tar.gz"; then
+      echo "Upload successful, removing local backup"
+      rm "$ARCHIVE_PATH"
+    else
+      echo "Upload failed, keeping local backup at: $ARCHIVE_PATH"
+      exit 1
+    fi
   fi
 fi
