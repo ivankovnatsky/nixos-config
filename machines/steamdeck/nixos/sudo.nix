@@ -14,6 +14,10 @@
             command = "${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch *";
             options = [ "NOPASSWD" "SETENV" ];
           }
+          {
+            command = "/run/current-system/sw/bin/nixos-rebuild switch *";
+            options = [ "NOPASSWD" "SETENV" ];
+          }
         ];
       }
     ];
