@@ -20,6 +20,7 @@
     ./networking.nix
     ./nixpkgs.nix
     ./power-management.nix
+    ./remote-build.nix
     ./security.nix
     ./steam.nix
     ./sudo.nix
