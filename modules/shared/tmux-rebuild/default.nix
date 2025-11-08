@@ -17,6 +17,18 @@ in
     local.services.tmuxRebuild = {
       enable = mkEnableOption "tmux rebuild service with polling";
 
+      autoStart = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Whether to automatically start the tmux rebuild service on boot/login";
+      };
+
+      autoRebuild = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Whether to automatically run the rebuild watcher in the tmux session. If false, creates an empty session for manual rebuilds.";
+      };
+
       username = mkOption {
         type = types.str;
         default = "";
@@ -147,7 +159,12 @@ in
 
         ${pkgs.tmux}/bin/tmux new-session -d -s "$SESSION_NAME" -n rebuild -c ${cfg.nixosConfigPath}
         ${pkgs.tmux}/bin/tmux set-option -g status-left-length ${if isDarwin then "40" else "30"}
-        ${pkgs.tmux}/bin/tmux send-keys -t "$SESSION_NAME" "${rebuildWatchScript}/bin/rebuild-watch" C-m
+        ${
+          if cfg.autoRebuild then
+            ''${pkgs.tmux}/bin/tmux send-keys -t "$SESSION_NAME" "${rebuildWatchScript}/bin/rebuild-watch" C-m''
+          else
+            ""
+        }
         ${pkgs.tmux}/bin/tmux select-window -t "$SESSION_NAME:rebuild"
 
         exit 0
@@ -187,8 +204,8 @@ in
         launchd.user.agents.tmux-rebuild = {
           serviceConfig = {
             Label = "com.ivankovnatsky.tmux-rebuild";
-            RunAtLoad = true;
-            KeepAlive = true;
+            RunAtLoad = cfg.autoStart;
+            KeepAlive = cfg.autoStart;
             StandardOutPath = "/tmp/agents/log/launchd/tmux-rebuild.log";
             StandardErrorPath = "/tmp/agents/log/launchd/tmux-rebuild.error.log";
             ThrottleInterval = 3;
@@ -206,7 +223,7 @@ in
       {
         systemd.services.tmux-rebuild = {
           description = "Tmux session for NixOS config rebuilds with polling";
-          wantedBy = [ "multi-user.target" ];
+          wantedBy = mkIf cfg.autoStart [ "multi-user.target" ];
           after = [ "network.target" ];
 
           serviceConfig = {
