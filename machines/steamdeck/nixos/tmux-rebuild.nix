@@ -5,7 +5,7 @@ in
 {
   local.services.tmuxRebuild = {
     enable = true;
-    autoStart = false;
+    autoStart = true;
     autoRebuild = false;
     username = username;
     nixosConfigPath = "${homePath}/Sources/github.com/ivankovnatsky/nixos-config";
