@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, username, ... }:
 
 {
   jovian = {
@@ -10,6 +10,7 @@
     steam = {
       enable = true;
       autoStart = true;
+      user = username;
       desktopSession = "plasma";
     };
 
