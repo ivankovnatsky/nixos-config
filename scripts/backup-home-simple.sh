@@ -20,8 +20,29 @@
 
 set -euo pipefail
 
+# Handle log file redirection
+if [[ "${BACKUP_LOG_REDIRECTED:-}" != "1" ]]; then
+  # Check if --no-log-file is present
+  DISABLE_LOGGING=false
+  for arg in "$@"; do
+    if [[ "$arg" == "--no-log-file" ]]; then
+      DISABLE_LOGGING=true
+      break
+    fi
+  done
+
+  # Enable logging by default
+  if [[ "$DISABLE_LOGGING" == "false" ]]; then
+    LOG_FILE="/tmp/backup-home-simple-$(date +%Y%m%d-%H%M%S).log"
+    echo "Logging to: $LOG_FILE"
+    export BACKUP_LOG_REDIRECTED=1
+    exec "$0" "$@" &> "$LOG_FILE"
+  fi
+fi
+
 # Parse command line arguments
 SKIP_BACKUP=false
+SKIP_UPLOAD=false
 CUSTOM_ARCHIVE_PATH=""
 
 while [[ $# -gt 0 ]]; do
@@ -30,13 +51,21 @@ while [[ $# -gt 0 ]]; do
     SKIP_BACKUP=true
     shift
     ;;
+  --skip-upload)
+    SKIP_UPLOAD=true
+    shift
+    ;;
   --backup-path)
     CUSTOM_ARCHIVE_PATH="$2"
     shift 2
     ;;
+  --no-log-file)
+    # Already handled at the top of the script, just skip
+    shift
+    ;;
   *)
     echo "Unknown option: $1"
-    echo "Usage: $0 [--skip-backup] [--backup-path <path>]"
+    echo "Usage: $0 [--skip-backup] [--skip-upload] [--backup-path <path>] [--no-log-file]"
     exit 1
     ;;
   esac
@@ -101,6 +130,7 @@ else
     --exclude='**/Library/Mobile Documents/**' \
     --exclude='**/Library/Metadata/**' \
     --exclude='**/Library/pnpm/**' \
+    --exclude='**/Library/Containers/com.apple.AvatarUI.AvatarPickerMemojiPicker/**' \
     --exclude='**/Library/Containers/com.apple.Safari/**' \
     --exclude='**/Library/Containers/com.apple.Safari.WebApp/**' \
     --exclude='**/Library/Containers/com.apple.wallpaper.extension.video/**' \
@@ -119,24 +149,28 @@ else
     pigz >"$ARCHIVE_PATH"
 fi
 
-export TARGET_MACHINE=192.168.50.4
-export BACKUP_PATH=/Volumes/Storage/Data/Drive/Crypt/Machines/
-HOSTNAME=$(hostname)
-export HOSTNAME
-DATE_DIR=$(date +%Y-%m-%d)
-export DATE_DIR
-
-# Extract the parent directory name from $HOME (e.g., "Users" on macOS, "home" on Linux)
-# This handles both /Users/ivan and /home/ivan cases
-HOME_PARENT_DIR=$(basename "$(dirname "$HOME")")
-export HOME_PARENT_DIR
-
-if [[ ${TARGET_MACHINE,,} == ${HOSTNAME,,}.local ]]; then
-  mkdir -p "$BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR"
-  mv "$ARCHIVE_PATH" "$BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR/$USER.tar.gz"
+if [[ "$SKIP_UPLOAD" == "true" ]]; then
+  echo "Skipping upload to mini, backup saved at: $ARCHIVE_PATH"
 else
-  # shellcheck disable=SC2029
-  ssh "ivan@$TARGET_MACHINE" "mkdir -p $BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR"
-  scp "$ARCHIVE_PATH" ivan@"$TARGET_MACHINE:$BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR/$USER.tar.gz"
-  rm "$ARCHIVE_PATH"
+  export TARGET_MACHINE=192.168.50.4
+  export BACKUP_PATH=/Volumes/Storage/Data/Drive/Crypt/Machines/
+  HOSTNAME=$(hostname)
+  export HOSTNAME
+  DATE_DIR=$(date +%Y-%m-%d)
+  export DATE_DIR
+
+  # Extract the parent directory name from $HOME (e.g., "Users" on macOS, "home" on Linux)
+  # This handles both /Users/ivan and /home/ivan cases
+  HOME_PARENT_DIR=$(basename "$(dirname "$HOME")")
+  export HOME_PARENT_DIR
+
+  if [[ ${TARGET_MACHINE,,} == ${HOSTNAME,,}.local ]]; then
+    mkdir -p "$BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR"
+    mv "$ARCHIVE_PATH" "$BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR/$USER.tar.gz"
+  else
+    # shellcheck disable=SC2029
+    ssh "ivan@$TARGET_MACHINE" "mkdir -p $BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR"
+    scp "$ARCHIVE_PATH" ivan@"$TARGET_MACHINE:$BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR/$USER.tar.gz"
+    rm "$ARCHIVE_PATH"
+  fi
 fi
