@@ -9,7 +9,7 @@
 
     steam = {
       enable = true;
-      autoStart = false;
+      autoStart = true;
       desktopSession = "plasma";
     };
 
