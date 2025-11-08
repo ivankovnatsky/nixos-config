@@ -18,6 +18,7 @@
     ./networking.nix
     ./nixpkgs.nix
     ./plasma.nix
+    ./remote-build.nix
     ./sd-card.nix
     ./security.nix
     ./sudo.nix
