@@ -13,6 +13,7 @@
 	\
 	rebuild-nixos/generic \
 	rebuild-nixos/impure \
+	rebuild-nixos/a3 \
 	\
 	rebuild-darwin \
 	rebuild-darwin-sudo \
@@ -92,6 +93,11 @@ rebuild-nixos/generic:
 rebuild-nixos/impure:
 	sudo -E nixos-rebuild switch --impure $(COMMON_REBUILD_FLAGS) && \
 		$(call notify_linux,🟢 NixOS rebuild successful!) || \
+		$(call notify_linux,🔴 NixOS rebuild failed!)
+
+rebuild-nixos/a3:
+	sudo -E nixos-rebuild switch $(COMMON_REBUILD_FLAGS) --build-host a3 && \
+		$(call notify_linux,🟢 NixOS rebuild successful (built on a3)!) || \
 		$(call notify_linux,🔴 NixOS rebuild failed!)
 
 # Darwin-specific rebuild target
