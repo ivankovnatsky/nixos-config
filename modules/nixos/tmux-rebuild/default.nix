@@ -15,6 +15,18 @@ in
     local.services.tmuxRebuild = {
       enable = mkEnableOption "tmux rebuild service";
 
+      autoStart = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Whether to automatically start the tmux rebuild service on boot";
+      };
+
+      autoRebuild = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Whether to automatically run the rebuild watcher in the tmux session. If false, creates an empty session for manual rebuilds.";
+      };
+
       username = mkOption {
         type = types.str;
         description = "Username for the tmux rebuild service";
@@ -31,7 +43,7 @@ in
     # Create a systemd service that starts a tmux session on boot
     systemd.services.tmux-nixos-config = {
       description = "Tmux session for NixOS config rebuilds";
-      wantedBy = [ "multi-user.target" ];
+      wantedBy = mkIf cfg.autoStart [ "multi-user.target" ];
       after = [ "network.target" ];
 
       serviceConfig = {
@@ -89,8 +101,15 @@ in
               # Increase session name length to show full name
               ${pkgs.tmux}/bin/tmux set-option -g status-left-length 30
 
-              # Set up the window with our rebuild script - use the script from the Nix store
-              ${pkgs.tmux}/bin/tmux send-keys -t "$SESSION_NAME" "${rebuildWatchScript}/bin/nixos-rebuild-watch" C-m
+              ${
+                if cfg.autoRebuild then
+                  ''
+                    # Set up the window with our rebuild script - use the script from the Nix store
+                    ${pkgs.tmux}/bin/tmux send-keys -t "$SESSION_NAME" "${rebuildWatchScript}/bin/nixos-rebuild-watch" C-m
+                  ''
+                else
+                  ""
+              }
 
               # Switch back to the first window
               ${pkgs.tmux}/bin/tmux select-window -t "$SESSION_NAME:rebuild"
