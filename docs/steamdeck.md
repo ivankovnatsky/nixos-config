@@ -28,7 +28,42 @@ tmux new -s steamdeck
 syncthing -gui-address="0.0.0.0:8384"
 ```
 
-Share nixos-config from mini.
+Share nixos-config and Sources folders from a3 using curl commands:
+
+On a3, set up environment variables (get steamdeck's device ID from its Syncthing UI: Actions > Show ID):
+
+```console
+export API_KEY=$(grep -oP '<apikey>\K[^<]+' ~/.local/state/syncthing/config.xml)
+export A3_HOST='127.0.0.1:8384'
+export STEAMDECK_DEVICE_ID="YOUR_STEAMDECK_DEVICE_ID"
+```
+
+Add steamdeck as a device on a3:
+
+```console
+curl -X POST -H "X-API-Key: $API_KEY" -H "Content-Type: application/json" -d "{\"deviceID\":\"$STEAMDECK_DEVICE_ID\",\"name\":\"steamdeck\"}" http://$A3_HOST/rest/config/devices
+```
+
+Add nixos-config folder and share it with steamdeck:
+
+```console
+curl -X PUT -H "X-API-Key: $API_KEY" -H "Content-Type: application/json" -d "{\"id\":\"shtdy-s2c9s\",\"label\":\"nixos-config\",\"path\":\"~/Sources/github.com/ivankovnatsky/nixos-config\",\"devices\":[{\"deviceID\":\"$STEAMDECK_DEVICE_ID\"}]}" http://$A3_HOST/rest/config/folders/shtdy-s2c9s
+```
+
+Share Sources folder with steamdeck (update existing folder to add steamdeck device):
+
+```console
+curl -X PATCH -H "X-API-Key: $API_KEY" -H "Content-Type: application/json" -d "{\"devices\":[{\"deviceID\":\"$STEAMDECK_DEVICE_ID\"}]}" http://$A3_HOST/rest/config/folders/fpbxa-6zw5z
+```
+
+Note: This PATCH will add steamdeck while preserving other devices that Syncthing automatically includes.
+
+Trigger folder scans:
+
+```console
+curl --max-time 5 -X POST -H "X-API-Key: $API_KEY" http://$A3_HOST/rest/db/scan?folder=shtdy-s2c9s
+curl --max-time 5 -X POST -H "X-API-Key: $API_KEY" http://$A3_HOST/rest/db/scan?folder=fpbxa-6zw5z
+```
 
 ## Copy hardware and base configuration
 
@@ -53,6 +88,16 @@ sudo systemd-cryptenroll --tpm2-device=auto /dev/disk/by-uuid/2b9052dc-f819-4ff3
 After enrolling TPM2, enable the `cryptenroll.nix` module in
 `machines/steamdeck/nixos/default.nix` to automatically unlock during boot
 without requiring a passphrase.
+
+## SSH Key Setup
+
+Set up SSH key access to a3 for remote building:
+
+```console
+ssh-copy-id a3
+```
+
+This allows steamdeck to use a3 as a remote build host without password prompts.
 
 ## Rebuild
 
