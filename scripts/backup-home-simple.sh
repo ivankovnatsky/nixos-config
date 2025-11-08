@@ -20,7 +20,7 @@
 
 set -euo pipefail
 
-# Handle --help before any redirection
+# Handle --help
 for arg in "$@"; do
   if [[ "$arg" == "--help" ]] || [[ "$arg" == "-h" ]]; then
     cat <<EOF
@@ -33,7 +33,6 @@ Options:
   --skip-upload           Skip upload to remote machine, keep backup local
   --backup-path <path>    Custom path for backup archive
   --target-machine <ip>   Custom target machine (default: 192.168.50.4)
-  --no-log-file           Disable logging, output to stdout/stderr
   --help, -h              Show this help message
 
 Examples:
@@ -41,33 +40,13 @@ Examples:
   $0 --skip-upload                          # Create backup locally only
   $0 --target-machine 192.168.50.5          # Upload to different machine
   $0 --skip-backup --skip-upload            # Use existing backup, no upload
-  $0 --no-log-file                          # Show output in terminal
 
-By default, logs to: /tmp/backup-home-simple-YYYYMMDD-HHMMSS.log
+To redirect output to a log file, use shell redirection:
+  $0 > /tmp/backup.log 2>&1
 EOF
     exit 0
   fi
 done
-
-# Handle log file redirection
-if [[ "${BACKUP_LOG_REDIRECTED:-}" != "1" ]]; then
-  # Check if --no-log-file is present
-  DISABLE_LOGGING=false
-  for arg in "$@"; do
-    if [[ "$arg" == "--no-log-file" ]]; then
-      DISABLE_LOGGING=true
-      break
-    fi
-  done
-
-  # Enable logging by default
-  if [[ "$DISABLE_LOGGING" == "false" ]]; then
-    LOG_FILE="/tmp/backup-home-simple-$(date +%Y%m%d-%H%M%S).log"
-    echo "Logging to: $LOG_FILE"
-    export BACKUP_LOG_REDIRECTED=1
-    exec "$0" "$@" &> "$LOG_FILE"
-  fi
-fi
 
 # Parse command line arguments
 SKIP_BACKUP=false
@@ -97,13 +76,9 @@ while [[ $# -gt 0 ]]; do
     CUSTOM_TARGET_MACHINE="$2"
     shift 2
     ;;
-  --no-log-file)
-    # Already handled at the top of the script, just skip
-    shift
-    ;;
   *)
     echo "Unknown option: $1"
-    echo "Usage: $0 [--skip-backup] [--skip-upload] [--backup-path <path>] [--target-machine <ip>] [--no-log-file]"
+    echo "Usage: $0 [--skip-backup] [--skip-upload] [--backup-path <path>] [--target-machine <ip>]"
     echo "Run '$0 --help' for more information."
     exit 1
     ;;
