@@ -17,7 +17,7 @@
             options = [ "NOPASSWD" "SETENV" ];
           }
           {
-            command = "/run/current-system/sw/bin/shutdown -h now";
+            command = "/etc/profiles/per-user/${username}/bin/shutdown -h now";
             options = [ "NOPASSWD" ];
           }
         ];
