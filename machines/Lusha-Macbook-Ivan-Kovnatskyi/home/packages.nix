@@ -85,6 +85,7 @@
     nodePackages.aws-cdk
     nodePackages.prettier
     open-gh-notifications-py
+    opentofu
     opsy
     oras
     parallel
@@ -100,6 +101,7 @@
     rabbitmq-server # Needed for the CLI
     rabbitmqadmin-ng # Overlay
     rclone
+    redis
     rust-analyzer
     rustc
     sesh
@@ -114,7 +116,6 @@
     switch-appearance
     terraformer
     terragrunt-atlantis-config
-    opentofu
     tree
     treefmt
     username # Installed as flake
