@@ -6,21 +6,35 @@ The NextDNS API key is now managed through sops-nix for secure secret management
 
 NextDNS API documentation: https://nextdns.github.io/api/
 
-### Verify
+## Automated Profile Management
 
-## Tools
+Launchd jobs are configured to automatically sync NextDNS profiles on system startup:
 
-### NextDNS Management
+- **mini**: Two profiles (mini, asus)
+- **pro**: Four profiles (pro, air, phone, asus)
 
-The `nextdns-mgmt` tool is available after home-manager rebuild:
+The jobs run at system startup and apply the configuration from `configs/nextdns-profile.json`.
 
-```console
-# Export a profile
-nextdns-mgmt --api-key $NEXTDNS_API_KEY export --profile-id <profile-id>
+## Manual CLI Usage
 
-# List all profiles
-nextdns-mgmt --api-key $NEXTDNS_API_KEY export --list-profiles
+### Quick Examples
 
-# Sync profile from local JSON
-nextdns-mgmt --api-key $NEXTDNS_API_KEY sync --profile-id <profile-id> --profile-file machines/bee/nextdns/profile.json --dry-run
+```bash
+# Update pro profile (dry-run)
+API_KEY=$(sops -d --extract '["nextDnsApiKey"]' secrets/secrets.yaml) \
+PROFILE_ID=$(sops -d --extract '["nextDnsProfilePro"]' secrets/secrets.yaml) \
+nextdns-mgmt update --api-key "$API_KEY" --profile-id "$PROFILE_ID" \
+  --profile-file configs/nextdns-profile.json --dry-run
+```
+
+### Ad-Hoc Usage Without Rebuild
+
+If you don't want to add the package to home packages, use this one-liner:
+
+```bash
+# One-liner to update a specific profile (no rebuild needed)
+API_KEY=$(sops -d --extract '["nextDnsApiKey"]' secrets/secrets.yaml) \
+PROFILE_ID=$(sops -d --extract '["nextDnsProfilePro"]' secrets/secrets.yaml) \
+$(nix-build --no-out-link -E 'with import <nixpkgs> {}; callPackage ./packages/nextdns-mgmt/default.nix {}')/bin/nextdns-mgmt \
+  update --api-key "$API_KEY" --profile-id "$PROFILE_ID" --profile-file configs/nextdns-profile.json --dry-run
 ```
