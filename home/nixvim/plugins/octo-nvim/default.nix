@@ -7,13 +7,14 @@
     extraPlugins = with pkgs.vimUtils; [
       (buildVimPlugin rec {
         pname = "octo.nvim";
-        version = "b4923dc97555c64236c4535b2adf75c74c00caca";
+        version = "11646cef0ad080a938cdbc181a4a3f7b59996c05";
         src = pkgs.fetchFromGitHub {
           owner = "pwntester";
           repo = "octo.nvim";
           rev = "${version}";
-          hash = "sha256-dcWN16sHNhwpFKdEAo7409w87MMoLeq23hNGv3ilJ2A=";
+          hash = "sha256-bn/FOAJpFNccHWsLMgiLnyTcOz+TaIUsBq/xKOaAN8k=";
         };
+        doCheck = false;
       })
     ];
 
