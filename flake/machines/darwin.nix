@@ -6,6 +6,10 @@
       # Import machine-specific configuration
       ../../machines/Ivans-MacBook-Pro
 
+      # SOPS secrets management
+      inputs.sops-nix-darwin-unstable.darwinModules.sops
+      ../../shared/sops-nix.nix
+
       # Basic system configuration
       {
         nixpkgs.overlays = [ inputs.self.overlay ];
