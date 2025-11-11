@@ -5,9 +5,9 @@
     extraPackages = with pkgs; [ rustfmt ];
     editorconfig.enable = true;
     plugins = {
-      # Enable when it will be update to at least this version:
-      # https://github.com/pwntester/octo.nvim/commit/b4923dc97555c64236c4535b2adf75c74c00caca
-      octo.enable = true;
+      # Using custom pinned version from home/nixvim/plugins/octo-nvim
+      # Latest commit: https://github.com/pwntester/octo.nvim/commit/11646cef0ad080a938cdbc181a4a3f7b59996c05
+      # octo.enable = true;
       notify.enable = true;
       # TODO: Enable again after tmux all sessions and tmux itself is restarted.
       # image.enable = true;
