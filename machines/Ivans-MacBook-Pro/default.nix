@@ -17,6 +17,7 @@
     ../../modules/darwin/nextdns-mgmt
     ../../modules/darwin/pam
     ../../modules/darwin/sudo
+    ../../modules/darwin/syncthing-mgmt
     ../../modules/darwin/tmux-rebuild
     ../../modules/flags
     ../../system/documentation.nix
