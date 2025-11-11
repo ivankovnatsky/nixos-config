@@ -10,6 +10,7 @@ import requests
 import argparse
 import xml.etree.ElementTree as ET
 import bcrypt
+import traceback
 
 USER_AGENT = "syncthing-mgmt/1.0.0"
 
@@ -155,7 +156,7 @@ def cmd_sync(args):
         print("Syncing Syncthing configuration...", file=sys.stderr)
 
         # Sync GUI credentials if present
-        if "gui" in config:
+        if "gui" in config and config["gui"] is not None:
             gui_config = config["gui"]
             username = gui_config.get("username")
             password = gui_config.get("password")
@@ -183,7 +184,7 @@ def cmd_sync(args):
         # Sync devices if present (fully declarative - add and remove)
         if "devices" in config:
             devices_config = config["devices"]
-            current_devices = {dev["deviceID"]: dev for dev in client.get_devices()}
+            current_devices = {dev["deviceID"]: dev for dev in client.get_devices() if dev and isinstance(dev, dict) and "deviceID" in dev}
             configured_device_ids = set(devices_config.values())
 
             print(f"  Syncing devices ({len(devices_config)} configured)...", file=sys.stderr)
@@ -223,7 +224,7 @@ def cmd_sync(args):
         # Sync folders if present (fully declarative - add and remove)
         if "folders" in config:
             folders_config = config["folders"]
-            current_folders = {f["id"]: f for f in client.get_folders()}
+            current_folders = {f["id"]: f for f in client.get_folders() if f and isinstance(f, dict) and "id" in f}
             configured_folder_ids = set(folders_config.keys())
 
             # Build device name to ID mapping for resolving device references
@@ -250,7 +251,7 @@ def cmd_sync(args):
                     current_folder = current_folders[folder_id]
                     current_label = current_folder.get("label", "")
                     current_path = current_folder.get("path", "")
-                    current_devices = set(d.get("deviceID") for d in current_folder.get("devices", []))
+                    current_devices = set(d.get("deviceID") for d in current_folder.get("devices", []) if d and isinstance(d, dict))
 
                     new_label = folder_cfg.get("label", folder_id)
                     new_path = folder_cfg["path"]
@@ -314,6 +315,8 @@ def cmd_sync(args):
 
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
+        print("\nFull traceback:", file=sys.stderr)
+        traceback.print_exc(file=sys.stderr)
         sys.exit(1)
 
 

@@ -4,14 +4,6 @@ with lib;
 
 let
   cfg = config.local.services.syncthing-mgmt;
-
-  configJson = pkgs.writeText "syncthing-config.json" (builtins.toJSON {
-    gui = optionalAttrs (cfg.gui != null) {
-      username = cfg.gui.username;
-      password = cfg.gui.password;
-    };
-    devices = cfg.devices;
-  });
 in
 {
   options.local.services.syncthing-mgmt = {
@@ -25,8 +17,21 @@ in
 
     configDir = mkOption {
       type = types.path;
-      default = "/var/lib/syncthing/.config/syncthing";
       description = "Path to Syncthing config directory (for reading config.xml)";
+      example = "/Users/username/Library/Application Support/Syncthing";
+    };
+
+    apiKey = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "Syncthing API key (use apiKeyFile for sops secrets)";
+    };
+
+    apiKeyFile = mkOption {
+      type = types.nullOr types.path;
+      default = null;
+      example = "/run/secrets/syncthing-api-key";
+      description = "Path to file containing Syncthing API key (alternative to using config.xml)";
     };
 
     gui = mkOption {
@@ -101,16 +106,16 @@ in
           devices = mkOption {
             type = types.listOf types.str;
             default = [];
-            description = "List of device IDs to share this folder with";
+            description = "List of device names or IDs to share this folder with";
           };
         };
       });
       default = {};
       example = {
         "shtdy-s2c9s" = {
-          path = "/home/user/Documents";
+          path = "/Users/user/Documents";
           label = "Documents";
-          devices = [ "AAAA111-BBBB222-..." ];
+          devices = [ "Device-Name" ];
         };
       };
       description = "Folders to sync (folder ID = config)";
@@ -128,36 +133,55 @@ in
       default = false;
       description = "Restart Syncthing after applying configuration changes";
     };
+
+    interval = mkOption {
+      type = types.int;
+      default = 86400;
+      description = "Sync interval in seconds (default: 86400 = once per day)";
+    };
   };
 
   config = mkIf cfg.enable {
     assertions = [
       {
         assertion = cfg.gui != null -> (
-          (cfg.gui.username != null) != (cfg.gui.usernameFile != null) &&
-          (cfg.gui.password != null) != (cfg.gui.passwordFile != null)
+          ((cfg.gui.username != null) != (cfg.gui.usernameFile != null)) &&
+          ((cfg.gui.password != null) != (cfg.gui.passwordFile != null))
         );
         message = "Exactly one of username/usernameFile and password/passwordFile must be set for syncthing-mgmt GUI config";
       }
+      {
+        assertion = (cfg.apiKey == null && cfg.apiKeyFile == null) ||
+                    (cfg.apiKey != null && cfg.apiKeyFile == null) ||
+                    (cfg.apiKey == null && cfg.apiKeyFile != null);
+        message = "Either apiKey or apiKeyFile can be set, but not both";
+      }
     ];
 
-    systemd.services.syncthing-mgmt-sync = {
-      description = "Syncthing GUI and device configuration synchronization";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "syncthing.service" ];
-      wants = [ "syncthing.service" ];
+    # Darwin launchd service
+    local.launchd.services.syncthing-mgmt = {
+      enable = true;
+      keepAlive = false;
+      runAtLoad = true;
 
-      serviceConfig = {
-        Type = "oneshot";
-        RemainAfterExit = true;
-        User = "root";
-        ExecStart = pkgs.writeShellScript "syncthing-mgmt-sync" ''
+      command = let
+        syncScript = pkgs.writeShellScript "syncthing-mgmt-sync" ''
+          set -e
+
           echo "Syncing Syncthing configuration..."
 
           # Wait for Syncthing API to be ready with retry logic
           MAX_RETRIES=30
           RETRY_DELAY=2
-          API_KEY=$(${pkgs.gnugrep}/bin/grep -m1 "<apikey>" "${cfg.configDir}/config.xml" | ${pkgs.gnused}/bin/sed 's/.*<apikey>\(.*\)<\/apikey>.*/\1/')
+
+          # Get API key from file, option, or config.xml
+          ${if cfg.apiKeyFile != null then ''
+            API_KEY=$(cat "${cfg.apiKeyFile}")
+          '' else if cfg.apiKey != null then ''
+            API_KEY="${cfg.apiKey}"
+          '' else ''
+            API_KEY=$(${pkgs.gnugrep}/bin/grep -m1 "<apikey>" "${cfg.configDir}/config.xml" | ${pkgs.gnused}/bin/sed 's/.*<apikey>\(.*\)<\/apikey>.*/\1/')
+          ''}
 
           echo "Waiting for Syncthing API to be ready..."
           for i in $(${pkgs.coreutils}/bin/seq 1 $MAX_RETRIES); do
@@ -235,13 +259,24 @@ in
             --argjson folders "$FOLDERS_JSON" \
             '{gui: $gui, devices: $devices, folders: $folders}' > "$CONFIG_FILE"
 
-          ${pkgs.syncthing-mgmt}/bin/syncthing-mgmt sync \
-            --base-url "${cfg.baseUrl}" \
-            --config-xml "${cfg.configDir}/config.xml" \
-            --config-file "$CONFIG_FILE" \
-            ${optionalString cfg.restart "--restart"}
+          # Run sync with API key
+          ${if cfg.apiKeyFile != null || cfg.apiKey != null then ''
+            ${pkgs.syncthing-mgmt}/bin/syncthing-mgmt sync \
+              --base-url "${cfg.baseUrl}" \
+              --api-key "$API_KEY" \
+              --config-file "$CONFIG_FILE" \
+              ${optionalString cfg.restart "--restart"} 2>&1 || echo "Warning: Syncthing sync failed with exit code $?"
+          '' else ''
+            ${pkgs.syncthing-mgmt}/bin/syncthing-mgmt sync \
+              --base-url "${cfg.baseUrl}" \
+              --config-xml "${cfg.configDir}/config.xml" \
+              --config-file "$CONFIG_FILE" \
+              ${optionalString cfg.restart "--restart"} 2>&1 || echo "Warning: Syncthing sync failed with exit code $?"
+          ''}
+
+          echo "Syncthing sync completed"
         '';
-      };
+      in "${syncScript}";
     };
   };
 }
