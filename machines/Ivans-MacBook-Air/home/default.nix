@@ -1,7 +1,8 @@
 {
   imports = [
     ../../../darwin/home/flags.nix
-    ../../../darwin/home/activation.nix
+    ../../../modules/home/manual-packages
+    ./manual-packages.nix
     ../../../darwin/home/nixvim.nix
     ../../../darwin/home/packages.nix
     ../../../home/amethyst
