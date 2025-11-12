@@ -13,7 +13,7 @@
     ../../darwin/system.nix
     ../../darwin/tmux-rebuild.nix
     ../../modules/darwin/dock
-    ../../modules/darwin/launchd-service
+    ../../modules/darwin/launchd
     ../../modules/darwin/nextdns-mgmt
     ../../modules/darwin/pam
     ../../modules/darwin/sudo

@@ -5,7 +5,7 @@
     ../../../darwin/nix.nix
     ../../../darwin/sudo.nix
     ../../../modules/darwin/dock
-    ../../../modules/darwin/launchd-service
+    ../../../modules/darwin/launchd
     ../../../modules/darwin/pam
     ../../../modules/darwin/pmset
     ../../../modules/darwin/tmux-rebuild
