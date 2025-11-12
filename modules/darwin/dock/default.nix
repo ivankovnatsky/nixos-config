@@ -61,12 +61,17 @@ in
       entriesJSON = builtins.toJSON cfg.entries;
     in
     {
-      system.activationScripts.postActivation.text = ''
-          echo >&2 "Setting up the Dock for ${cfg.username}..."
-          sudo -u ${cfg.username} ${pkgs.python3}/bin/python ${./dock.py} \
-            "${dockutil}/bin/dockutil" \
-            '${entriesJSON}'
-      '';
+      local.launchd.services.dock-mgmt = {
+        enable = true;
+        type = "user-agent";
+        label = "com.ivankovnatsky.dock-mgmt";
+        command = "${pkgs.python3}/bin/python ${./dock.py} ${dockutil}/bin/dockutil '${entriesJSON}'";
+        runAtLoad = true; # Run when agent is loaded/reloaded on rebuild
+        keepAlive = false; # One-shot job - exit after completion
+        environment = {
+          PATH = "${pkgs.python3}/bin:${dockutil}/bin:/usr/bin:/bin";
+        };
+      };
     }
   );
 }
