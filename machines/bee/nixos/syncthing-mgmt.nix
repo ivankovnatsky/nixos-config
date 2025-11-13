@@ -2,9 +2,12 @@
 {
   # Sops secrets for Syncthing management
   sops.secrets = {
-    syncthing-gui-username.key = "syncthing/credentials/username";
-    syncthing-gui-password.key = "syncthing/credentials/hashedPassword";
-    syncthing-devices.key = "syncthing/devices";
+    syncthing-api-key-bee = {
+      key = "syncthing/apiKeys/bee";
+    };
+    syncthing-devices = {
+      key = "syncthing/devices";
+    };
   };
 
   # Syncthing management service
@@ -13,14 +16,22 @@
     baseUrl = "http://${config.flags.beeIp}:8384";
     configDir = config.services.syncthing.configDir;
 
-    gui = {
-      usernameFile = config.sops.secrets.syncthing-gui-username.path;
-      passwordFile = config.sops.secrets.syncthing-gui-password.path;
-    };
+    # Use API key from secrets
+    apiKeyFile = config.sops.secrets.syncthing-api-key-bee.path;
 
-    devicesFile = config.sops.secrets.syncthing-devices.path;
+    # Device registry (all known devices)
+    deviceDefinitionsFile = config.sops.secrets.syncthing-devices.path;
 
-    # Folders can reference devices by name (resolved from devicesFile)
+    # Devices this machine connects to (auto-includes devices from folders)
+    devices = [
+      "bee" # This machine (required for local-only folders if any)
+      "Ivans-Mac-mini"
+      "Ivans-MacBook-Air"
+      "Ivans-MacBook-Pro"
+      "Lusha-Macbook-Ivan-Kovnatskyi"
+    ];
+
+    # Folders can reference devices by name (resolved from deviceDefinitionsFile)
     folders = {
       "shtdy-s2c9s" = {
         path = "/home/ivan/Sources/github.com/ivankovnatsky/nixos-config";
