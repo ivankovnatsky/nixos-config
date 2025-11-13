@@ -1,9 +1,9 @@
 {
   imports = [
     # ../../../home/bash.nix
-    ../../../darwin/home/flags.nix
-    ../../../darwin/home/nixvim.nix
-    ../../../darwin/home/packages.nix
+    ../../../home/flags.nix
+    ../../../home/nixvim.nix
+    ../../../home/packages-darwin.nix
     ../../../modules/home/manual-packages
     ../../../home/amethyst
     ../../../home/bat.nix

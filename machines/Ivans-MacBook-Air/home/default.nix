@@ -1,10 +1,10 @@
 {
   imports = [
-    ../../../darwin/home/flags.nix
+    ../../../home/flags.nix
     ../../../modules/home/manual-packages
     ./manual-packages.nix
-    ../../../darwin/home/nixvim.nix
-    ../../../darwin/home/packages.nix
+    ../../../home/nixvim.nix
+    ../../../home/packages-darwin.nix
     ../../../home/amethyst
     # ../../../home/bash.nix
     ../../../home/bat.nix
