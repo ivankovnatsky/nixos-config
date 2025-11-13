@@ -164,11 +164,19 @@ in
           # Wait for Syncthing API to be ready with retry logic
           MAX_RETRIES=30
           RETRY_DELAY=2
-          ${if cfg.apiKeyFile != null then ''
+
+          # Try to read API key from config.xml first (always use current key)
+          if ${pkgs.libxml2}/bin/xmllint --xpath 'string(configuration/gui/apikey)' "${cfg.configDir}/config.xml" > /tmp/syncthing-api-key 2>/dev/null && [ -s /tmp/syncthing-api-key ]; then
+            API_KEY=$(cat /tmp/syncthing-api-key)
+            rm -f /tmp/syncthing-api-key
+          ${optionalString (cfg.apiKeyFile != null) ''
+          elif [ -f "${cfg.apiKeyFile}" ]; then
             API_KEY=$(cat ${cfg.apiKeyFile})
-          '' else ''
-            API_KEY=$(${pkgs.gnugrep}/bin/grep -m1 "<apikey>" "${cfg.configDir}/config.xml" | ${pkgs.gnused}/bin/sed 's/.*<apikey>\(.*\)<\/apikey>.*/\1/')
           ''}
+          else
+            echo "ERROR: Could not read API key"
+            exit 1
+          fi
 
           echo "Waiting for Syncthing API to be ready..."
           for i in $(${pkgs.coreutils}/bin/seq 1 $MAX_RETRIES); do
