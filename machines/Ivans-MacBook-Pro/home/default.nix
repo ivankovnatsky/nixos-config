@@ -25,6 +25,7 @@
     ../../../home/npm.nix
     ../../../home/pass.nix
     ../../../home/rebuild-diff.nix
+    ../../../home/safari.nix
     ../../../home/shell.nix
     ../../../home/starship
     ../../../home/syncthing.nix
