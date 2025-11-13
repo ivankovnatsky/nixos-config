@@ -15,7 +15,7 @@
     dust # For disk usage analysis
 
     wget
-    yt-dlp
+    nixpkgs-master.yt-dlp
     gallery-dl
 
     # Required for Uptime Kuma tailscale-ping monitors
