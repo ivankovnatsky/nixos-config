@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
+{ config
+, lib
+, pkgs
+, ...
 }:
 
 let
@@ -215,9 +214,9 @@ in
           { app_id = "Alacritty"; }
           { app_id = "foot"; }
         ];
-        "2" = [ { app_id = "firefox"; } ];
-        "3" = [ { app_id = "chromium-browser"; } ];
-        "4" = [ { app_id = "google-chrome"; } ];
+        "2" = [{ app_id = "firefox"; }];
+        "3" = [{ app_id = "chromium-browser"; }];
+        "4" = [{ app_id = "google-chrome"; }];
       };
 
       workspaceLayout = "tabbed";

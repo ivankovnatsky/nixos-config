@@ -324,7 +324,7 @@ def _sync_host_config(client, desired_config: dict, dry_run: bool):
                 update_data["bindAddress"] = desired_config["bindAddress"]
             client.update_host_config(update_data)
     else:
-        print(f"  OK: host config (no changes)", file=sys.stderr)
+        print("  OK: host config (no changes)", file=sys.stderr)
 
 
 def _sync_downloadclients(client: ArrClient, desired_clients: list, service_type: str, dry_run: bool):

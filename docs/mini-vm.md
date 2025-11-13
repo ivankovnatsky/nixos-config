@@ -42,6 +42,7 @@ The VM uses Orbstack's networking with NAT:
 Services running inside mini-vm should bind to `0.0.0.0` (all interfaces) to be accessible from the Mac mini host. This is the correct pattern for OrbStack VMs.
 
 **Example from Jellyfin:**
+
 ```console
 [ivan@mini-vm]$ netstat -tepan|grep 8096
 tcp  0  0  0.0.0.0:8096  0.0.0.0:*  LISTEN

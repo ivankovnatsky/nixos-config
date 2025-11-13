@@ -1,8 +1,8 @@
-{
-  lib,
-  buildGoModule,
-  fetchFromGitHub,
-  nodejs,
+{ lib
+, buildGoModule
+, fetchFromGitHub
+, nodejs
+,
 }:
 buildGoModule rec {
   pname = "tweety";

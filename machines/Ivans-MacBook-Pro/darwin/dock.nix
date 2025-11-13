@@ -1,8 +1,7 @@
-{
-  config,
-  pkgs,
-  username,
-  ...
+{ config
+, pkgs
+, username
+, ...
 }:
 
 let

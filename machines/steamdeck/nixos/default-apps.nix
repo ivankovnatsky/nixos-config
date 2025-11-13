@@ -2,7 +2,7 @@
 
 let
   defaultBrowserDesktop = "firefox-devedition.desktop";
-  defaultBrowserBin =  "${pkgs.firefox-devedition}/bin/firefox";
+  defaultBrowserBin = "${pkgs.firefox-devedition}/bin/firefox";
 in
 {
   xdg.mime.defaultApplications = {

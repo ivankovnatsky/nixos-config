@@ -162,7 +162,7 @@ def cmd_sync(args):
             password = gui_config.get("password")
 
             if username or password:
-                print(f"  Updating GUI credentials...", file=sys.stderr)
+                print("  Updating GUI credentials...", file=sys.stderr)
 
                 # Hash password if needed
                 password_hash = None
@@ -170,16 +170,16 @@ def cmd_sync(args):
                     # Check if it's already a bcrypt hash
                     if password.startswith("$2"):
                         password_hash = password
-                        print(f"    Using pre-hashed password", file=sys.stderr)
+                        print("    Using pre-hashed password", file=sys.stderr)
                     else:
                         password_hash = hash_password(password)
-                        print(f"    Hashed plain text password with bcrypt", file=sys.stderr)
+                        print("    Hashed plain text password with bcrypt", file=sys.stderr)
 
                 if not args.dry_run:
                     client.update_gui_config(username=username, password_hash=password_hash)
-                    print(f"    ✓ GUI credentials updated", file=sys.stderr)
+                    print("    ✓ GUI credentials updated", file=sys.stderr)
                 else:
-                    print(f"    [DRY-RUN] Would update GUI credentials", file=sys.stderr)
+                    print("    [DRY-RUN] Would update GUI credentials", file=sys.stderr)
 
         # Sync devices if present (fully declarative - add and remove)
         if "devices" in config:
@@ -197,18 +197,18 @@ def cmd_sync(args):
                         print(f"    UPDATE: {current_name} -> {device_name} ({device_id[:7]}...)", file=sys.stderr)
                         if not args.dry_run:
                             client.update_device(device_id, {"name": device_name})
-                            print(f"      ✓ Device name updated", file=sys.stderr)
+                            print("      ✓ Device name updated", file=sys.stderr)
                         else:
-                            print(f"      [DRY-RUN] Would update device name", file=sys.stderr)
+                            print("      [DRY-RUN] Would update device name", file=sys.stderr)
                     else:
                         print(f"    OK: {device_name} ({device_id[:7]}...) already configured", file=sys.stderr)
                 else:
                     print(f"    ADD: {device_name} ({device_id[:7]}...)", file=sys.stderr)
                     if not args.dry_run:
                         client.add_device(device_id, device_name)
-                        print(f"      ✓ Device added", file=sys.stderr)
+                        print("      ✓ Device added", file=sys.stderr)
                     else:
-                        print(f"      [DRY-RUN] Would add device", file=sys.stderr)
+                        print("      [DRY-RUN] Would add device", file=sys.stderr)
 
             # Remove devices that are in Syncthing but not in config
             for device_id, device in current_devices.items():
@@ -217,9 +217,9 @@ def cmd_sync(args):
                     print(f"    REMOVE: {device_name} ({device_id[:7]}...)", file=sys.stderr)
                     if not args.dry_run:
                         client.remove_device(device_id)
-                        print(f"      ✓ Device removed", file=sys.stderr)
+                        print("      ✓ Device removed", file=sys.stderr)
                     else:
-                        print(f"      [DRY-RUN] Would remove device", file=sys.stderr)
+                        print("      [DRY-RUN] Would remove device", file=sys.stderr)
 
         # Sync folders if present (fully declarative - add and remove)
         if "folders" in config:
@@ -269,9 +269,9 @@ def cmd_sync(args):
                                 "devices": devices_list,
                             }
                             client.update_folder(folder_id, update_data)
-                            print(f"      ✓ Folder updated", file=sys.stderr)
+                            print("      ✓ Folder updated", file=sys.stderr)
                         else:
-                            print(f"      [DRY-RUN] Would update folder", file=sys.stderr)
+                            print("      [DRY-RUN] Would update folder", file=sys.stderr)
                     else:
                         print(f"    OK: {folder_id} already configured", file=sys.stderr)
                 else:
@@ -286,9 +286,9 @@ def cmd_sync(args):
                             "devices": devices_list,
                         }
                         client.add_folder(folder_id, add_data)
-                        print(f"      ✓ Folder added", file=sys.stderr)
+                        print("      ✓ Folder added", file=sys.stderr)
                     else:
-                        print(f"      [DRY-RUN] Would add folder", file=sys.stderr)
+                        print("      [DRY-RUN] Would add folder", file=sys.stderr)
 
             # Remove folders that are in Syncthing but not in config
             for folder_id, folder in current_folders.items():
@@ -297,9 +297,9 @@ def cmd_sync(args):
                     print(f"    REMOVE: {folder_label} ({folder_id})", file=sys.stderr)
                     if not args.dry_run:
                         client.remove_folder(folder_id)
-                        print(f"      ✓ Folder removed", file=sys.stderr)
+                        print("      ✓ Folder removed", file=sys.stderr)
                     else:
-                        print(f"      [DRY-RUN] Would remove folder", file=sys.stderr)
+                        print("      [DRY-RUN] Would remove folder", file=sys.stderr)
 
         if args.dry_run:
             print("", file=sys.stderr)

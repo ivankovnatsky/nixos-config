@@ -1,9 +1,9 @@
-{
-  lib,
-  buildGoModule,
-  makeWrapper,
-  imagemagick,
-  exiftool,
+{ lib
+, buildGoModule
+, makeWrapper
+, imagemagick
+, exiftool
+,
 }:
 buildGoModule {
   pname = "convert-to-jpg";

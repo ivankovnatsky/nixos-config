@@ -31,11 +31,10 @@
 # - Creating a privileged helper tool (most proper but complex solution)
 #
 
-{
-  config,
-  lib,
-  pkgs,
-  ...
+{ config
+, lib
+, pkgs
+, ...
 }:
 let
   # Create an askpass script that will return the sudo password

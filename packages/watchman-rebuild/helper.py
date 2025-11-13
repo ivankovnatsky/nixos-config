@@ -134,7 +134,7 @@ def watch_and_rebuild(config_path, command=None):
         sub_name = 'watchman-rebuild'
         client.query('subscribe', root, sub_name, query)
 
-        print(f"\nWatching for changes...\n")
+        print("\nWatching for changes...\n")
 
         # Wait for changes
         while True:
@@ -174,8 +174,8 @@ def watch_and_rebuild(config_path, command=None):
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print(f"Usage: {sys.argv[0]} <config_path> [command]")
-        print(f"  If command is not provided, it will be auto-detected")
-        print(f"  (sudo is automatically used when not running as root)")
+        print("  If command is not provided, it will be auto-detected")
+        print("  (sudo is automatically used when not running as root)")
         sys.exit(1)
 
     config_path = sys.argv[1]

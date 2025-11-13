@@ -65,17 +65,19 @@ let
 
   # Template JSON with placeholders (to be substituted at runtime)
   configJsonTemplate = pkgs.writeText "uptime-kuma-monitors-template.json" (builtins.toJSON {
-    monitors = map (m: {
-      name = m.name;
-      type = m.type;
-      url = m.url;
-      interval = m.interval;
-      maxretries = m.maxretries;
-      retryInterval = m.retryInterval;
-      timeout = m.timeout;
-      expectedStatus = m.expectedStatus;
-      description = m.description;
-    }) cfg.monitors;
+    monitors = map
+      (m: {
+        name = m.name;
+        type = m.type;
+        url = m.url;
+        interval = m.interval;
+        maxretries = m.maxretries;
+        retryInterval = m.retryInterval;
+        timeout = m.timeout;
+        expectedStatus = m.expectedStatus;
+        description = m.description;
+      })
+      cfg.monitors;
   });
 in
 {
@@ -160,8 +162,8 @@ in
       }
       {
         assertion = (cfg.discordWebhook == null && cfg.discordWebhookFile == null) ||
-                    (cfg.discordWebhook != null && cfg.discordWebhookFile == null) ||
-                    (cfg.discordWebhook == null && cfg.discordWebhookFile != null);
+          (cfg.discordWebhook != null && cfg.discordWebhookFile == null) ||
+          (cfg.discordWebhook == null && cfg.discordWebhookFile != null);
         message = "Either discordWebhook or discordWebhookFile can be set, but not both";
       }
     ];
@@ -172,7 +174,8 @@ in
       keepAlive = false;
       runAtLoad = true;
 
-        command = let
+      command =
+        let
           syncScript = pkgs.writeShellScript "uptime-kuma-mgmt-sync" ''
             set -e
 
@@ -232,7 +235,8 @@ in
 
             echo "Uptime Kuma sync completed"
           '';
-        in "${syncScript}";
+        in
+        "${syncScript}";
     };
   };
 }

@@ -22,7 +22,7 @@ class UptimeKumaClient:
         """Authenticate with username and password."""
         try:
             self.api.login(username, password)
-            print(f"Authenticated successfully", file=sys.stderr)
+            print("Authenticated successfully", file=sys.stderr)
         except Exception as e:
             raise Exception(f"Authentication failed: {e}")
 
@@ -193,7 +193,7 @@ class UptimeKumaClient:
                 current_monitors = {}
                 print("All monitors deleted, will recreate with notifications\n", file=sys.stderr)
 
-        print(f"\nSync Plan:", file=sys.stderr)
+        print("\nSync Plan:", file=sys.stderr)
         print(f"  Desired monitors: {len(desired_monitors)}", file=sys.stderr)
         print(f"  Current monitors: {len(current_monitors)}", file=sys.stderr)
 

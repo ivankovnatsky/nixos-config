@@ -1,12 +1,10 @@
-{
-  name,
-  version,
-  platform,
-  sha256,
-
-  stdenv,
-  fetchurl,
-  ...
+{ name
+, version
+, platform
+, sha256
+, stdenv
+, fetchurl
+, ...
 }:
 
 let

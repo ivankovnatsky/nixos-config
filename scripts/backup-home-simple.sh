@@ -56,7 +56,7 @@ CUSTOM_TARGET_MACHINE=""
 
 while [[ $# -gt 0 ]]; do
   case $1 in
-  --help|-h)
+  --help | -h)
     # Already handled at the top of the script
     exit 0
     ;;

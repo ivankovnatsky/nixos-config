@@ -1,8 +1,7 @@
-{
-  config,
-  pkgs,
-  osConfig,
-  ...
+{ config
+, pkgs
+, osConfig
+, ...
 }:
 
 let

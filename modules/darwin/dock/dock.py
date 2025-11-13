@@ -8,7 +8,6 @@ import sys
 import subprocess
 import json
 import urllib.parse
-from pathlib import Path
 
 
 def normalize_path_to_uri(path: str) -> str:

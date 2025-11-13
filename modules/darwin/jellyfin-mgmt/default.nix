@@ -11,11 +11,13 @@ let
     networkConfig = optionalAttrs (cfg.bindAddress != null) {
       localNetworkAddresses = [ cfg.bindAddress ];
     };
-    libraries = map (lib: {
-      name = lib.name;
-      type = lib.type;
-      paths = lib.paths;
-    }) cfg.libraries;
+    libraries = map
+      (lib: {
+        name = lib.name;
+        type = lib.type;
+        paths = lib.paths;
+      })
+      cfg.libraries;
   };
 
   # Static config (only used when apiKey is set directly)
@@ -104,7 +106,8 @@ in
       keepAlive = false;
       runAtLoad = true;
 
-        command = let
+      command =
+        let
           syncScript = pkgs.writeShellScript "jellyfin-mgmt-sync" ''
             set -e
 
@@ -119,7 +122,8 @@ in
 
             echo "Jellyfin configuration sync completed"
           '';
-        in "${syncScript}";
+        in
+        "${syncScript}";
     };
   };
 }

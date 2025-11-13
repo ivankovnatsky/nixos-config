@@ -1,15 +1,13 @@
-{
-  name,
-  owner,
-  repo,
-  version,
-  platform,
-  sha256,
-
-  stdenv,
-  fetchurl,
-  unzip,
-  ...
+{ name
+, owner
+, repo
+, version
+, platform
+, sha256
+, stdenv
+, fetchurl
+, unzip
+, ...
 }:
 
 let

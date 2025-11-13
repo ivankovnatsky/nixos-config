@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
+{ config
+, lib
+, pkgs
+, ...
 }:
 
 with lib;
@@ -64,10 +63,12 @@ in
             "--port"
             (toString cfg.port)
           ]
-          ++ (lib.concatMap (upstream: [
-            "--upstream"
-            upstream
-          ]) cfg.upstreamServers);
+          ++ (lib.concatMap
+            (upstream: [
+              "--upstream"
+              upstream
+            ])
+            cfg.upstreamServers);
         RunAtLoad = true;
         KeepAlive = cfg.alwaysKeepRunning;
         StandardOutPath = "/tmp/log/launchd/cloudflared.log";

@@ -169,7 +169,7 @@ def _sync_network_config(client: JellyfinClient, network_config: dict, dry_run: 
     print("=== Network Configuration Sync ===", file=sys.stderr)
 
     if set(current_addresses) != set(desired_addresses):
-        print(f"  UPDATE: LocalNetworkAddresses", file=sys.stderr)
+        print("  UPDATE: LocalNetworkAddresses", file=sys.stderr)
         print(f"    Current: {current_addresses}", file=sys.stderr)
         print(f"    Desired: {desired_addresses}", file=sys.stderr)
         if not dry_run:
@@ -181,7 +181,7 @@ def _sync_network_config(client: JellyfinClient, network_config: dict, dry_run: 
                 print(f"  ERROR: Failed to update network config: {e}", file=sys.stderr)
                 raise
     else:
-        print(f"  OK: LocalNetworkAddresses (no changes)", file=sys.stderr)
+        print("  OK: LocalNetworkAddresses (no changes)", file=sys.stderr)
 
 
 def _sync_libraries(client: JellyfinClient, libraries_config: list, dry_run: bool = False):

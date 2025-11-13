@@ -1,13 +1,13 @@
-{
-  lib,
-  buildGoModule,
-  callPackage,
-  fetchFromGitHub,
-  nixosTests,
-  caddy,
-  testers,
-  installShellFiles,
-  stdenv,
+{ lib
+, buildGoModule
+, callPackage
+, fetchFromGitHub
+, nixosTests
+, caddy
+, testers
+, installShellFiles
+, stdenv
+,
 }:
 let
   version = "2.9.1";

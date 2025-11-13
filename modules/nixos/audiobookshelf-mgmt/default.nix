@@ -6,18 +6,22 @@ let
   cfg = config.local.services.audiobookshelf-mgmt;
 
   configJson = pkgs.writeText "audiobookshelf-config.json" (builtins.toJSON {
-    libraries = map (lib: {
-      name = lib.name;
-      folders = lib.folders;
-      mediaType = lib.mediaType;
-      provider = lib.provider;
-    }) cfg.libraries;
-    users = map (user: {
-      username = user.username;
-      password = user.password;
-      type = user.type;
-      libraries = user.libraries;
-    }) cfg.users;
+    libraries = map
+      (lib: {
+        name = lib.name;
+        folders = lib.folders;
+        mediaType = lib.mediaType;
+        provider = lib.provider;
+      })
+      cfg.libraries;
+    users = map
+      (user: {
+        username = user.username;
+        password = user.password;
+        type = user.type;
+        libraries = user.libraries;
+      })
+      cfg.users;
   });
 in
 {
@@ -156,10 +160,12 @@ in
         assertion = (cfg.apiToken != null) != (cfg.apiTokenFile != null);
         message = "Exactly one of apiToken or apiTokenFile must be set for audiobookshelf-mgmt";
       }
-    ] ++ (map (user: {
-      assertion = (user.password != null) != (user.passwordFile != null);
-      message = "Exactly one of password or passwordFile must be set for user ${user.username}";
-    }) cfg.users);
+    ] ++ (map
+      (user: {
+        assertion = (user.password != null) != (user.passwordFile != null);
+        message = "Exactly one of password or passwordFile must be set for user ${user.username}";
+      })
+      cfg.users);
 
     # Systemd service for configuration synchronization
     systemd.services.audiobookshelf-mgmt-sync = {
@@ -223,10 +229,12 @@ in
     # OPML sync service and timer
     systemd.services.audiobookshelf-opml-sync = mkIf (cfg.opmlSync != null && cfg.opmlSync.enable) (
       let
-        tokenArg = if cfg.apiTokenFile != null
+        tokenArg =
+          if cfg.apiTokenFile != null
           then ''"$(cat ${cfg.apiTokenFile})"''
           else cfg.apiToken;
-      in {
+      in
+      {
         description = "Audiobookshelf OPML synchronization from Podsync";
         after = [ "network-online.target" ];
         wants = [ "network-online.target" ];

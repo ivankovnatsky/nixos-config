@@ -1,7 +1,7 @@
-{
-  lib,
-  stdenv,
-  fetchurl,
+{ lib
+, stdenv
+, fetchurl
+,
 }:
 stdenv.mkDerivation rec {
   pname = "tweety";
@@ -11,7 +11,7 @@ stdenv.mkDerivation rec {
     let
       selectSystem =
         attrs:
-        attrs.${stdenv.hostPlatform.system} or (throw "Unsupported system: ${stdenv.hostPlatform.system}");
+          attrs.${stdenv.hostPlatform.system} or (throw "Unsupported system: ${stdenv.hostPlatform.system}");
 
       sources = {
         x86_64-linux = {

@@ -210,7 +210,9 @@ class AudiobookshelfClient:
             library_id = library_name_or_id
             if not folder_id:
                 print("Warning: Library ID provided without folder ID, upload may fail")
-                print("Consider using library name instead for automatic folder detection")
+                print(
+                    "Consider using library name instead for automatic folder detection"
+                )
         else:
             # Assume it's a library name, look it up
             library_id, detected_folder_id = self.get_library(library_name_or_id)

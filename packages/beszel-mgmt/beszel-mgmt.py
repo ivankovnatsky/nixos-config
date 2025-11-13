@@ -54,7 +54,7 @@ class BeszelClient:
                 raise Exception("No user ID received from authentication")
 
             self.headers["Authorization"] = self.token
-            print(f"Authenticated successfully", file=sys.stderr)
+            print("Authenticated successfully", file=sys.stderr)
 
         except requests.exceptions.RequestException as e:
             raise Exception(f"Authentication network error: {e}")
@@ -145,7 +145,7 @@ class BeszelClient:
         """Get user notification settings."""
         data = self._api_call(
             "GET",
-            f"/api/collections/user_settings/records?filter=user='{self.user_id}'"
+            f"/api/collections/user_settings/records?filter=user='{self.user_id}'",
         )
         items = data.get("items", [])
         if not items:
@@ -172,47 +172,42 @@ class BeszelClient:
 
                 # Check if webhook already exists
                 if shoutrrr_url in webhooks:
-                    print(f"Discord webhook already configured", file=sys.stderr)
+                    print("Discord webhook already configured", file=sys.stderr)
                     return
 
                 # Add Discord webhook
                 webhooks.append(shoutrrr_url)
-                print(f"Adding Discord webhook to existing settings", file=sys.stderr)
+                print("Adding Discord webhook to existing settings", file=sys.stderr)
 
                 # Update user settings
-                updated_settings = {
-                    "emails": emails,
-                    "webhooks": webhooks
-                }
+                updated_settings = {"emails": emails, "webhooks": webhooks}
 
                 self._api_call(
                     "PATCH",
                     f"/api/collections/user_settings/records/{user_settings['id']}",
-                    data={"settings": updated_settings}
+                    data={"settings": updated_settings},
                 )
-                print(f"Discord webhook configured successfully", file=sys.stderr)
+                print("Discord webhook configured successfully", file=sys.stderr)
             else:
                 # Create new user settings
-                print(f"Creating new user settings with Discord webhook", file=sys.stderr)
-                settings = {
-                    "emails": [],
-                    "webhooks": [shoutrrr_url]
-                }
+                print(
+                    "Creating new user settings with Discord webhook", file=sys.stderr
+                )
+                settings = {"emails": [], "webhooks": [shoutrrr_url]}
 
                 self._api_call(
                     "POST",
                     "/api/collections/user_settings/records",
-                    data={
-                        "user": self.user_id,
-                        "settings": settings
-                    }
+                    data={"user": self.user_id, "settings": settings},
                 )
-                print(f"Discord webhook configured successfully", file=sys.stderr)
+                print("Discord webhook configured successfully", file=sys.stderr)
 
         except Exception as e:
             raise Exception(f"Failed to setup Discord notification: {e}")
 
-    def sync_from_file(self, config_file: str, dry_run: bool = False, discord_webhook: str = None):
+    def sync_from_file(
+        self, config_file: str, dry_run: bool = False, discord_webhook: str = None
+    ):
         """
         Sync systems from a JSON configuration file.
         Creates missing systems, updates existing ones, deletes extras.
@@ -233,7 +228,7 @@ class BeszelClient:
         desired_systems = {s["name"]: s for s in config["systems"]}
         current_systems = {s["name"]: s for s in self.list_systems()}
 
-        print(f"\nSync Plan:", file=sys.stderr)
+        print("\nSync Plan:", file=sys.stderr)
         print(f"  Desired systems: {len(desired_systems)}", file=sys.stderr)
         print(f"  Current systems: {len(current_systems)}", file=sys.stderr)
 
@@ -244,10 +239,9 @@ class BeszelClient:
         for name, desired in desired_systems.items():
             if name in current_systems:
                 current = current_systems[name]
-                needs_update = (
-                    desired.get("host") != current.get("host")
-                    or desired.get("port", "45876") != current.get("port")
-                )
+                needs_update = desired.get("host") != current.get(
+                    "host"
+                ) or desired.get("port", "45876") != current.get("port")
 
                 if needs_update:
                     print(f"  UPDATE: {name}", file=sys.stderr)
@@ -346,9 +340,7 @@ def cmd_sync(args, client):
     """Sync systems from configuration file."""
     try:
         client.sync_from_file(
-            args.config_file,
-            dry_run=args.dry_run,
-            discord_webhook=args.discord_webhook
+            args.config_file, dry_run=args.dry_run, discord_webhook=args.discord_webhook
         )
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)

@@ -97,17 +97,17 @@
           prowlarrUrl = "http://${config.flags.miniIp}:9696";
           syncLevel = "fullSync";
           syncCategories = [
-            2000  # Movies
-            2010  # Movies/Foreign
-            2020  # Movies/Other
-            2030  # Movies/SD
-            2040  # Movies/HD
-            2045  # Movies/UHD
-            2050  # Movies/BluRay
-            2060  # Movies/3D
-            2070  # Movies/DVD
-            2080  # Movies/WEB-DL
-            2090  # Movies/x265
+            2000 # Movies
+            2010 # Movies/Foreign
+            2020 # Movies/Other
+            2030 # Movies/SD
+            2040 # Movies/HD
+            2045 # Movies/UHD
+            2050 # Movies/BluRay
+            2060 # Movies/3D
+            2070 # Movies/DVD
+            2080 # Movies/WEB-DL
+            2090 # Movies/x265
           ];
         }
         {
@@ -117,14 +117,14 @@
           prowlarrUrl = "http://${config.flags.miniIp}:9696";
           syncLevel = "fullSync";
           syncCategories = [
-            5000  # TV
-            5010  # TV/WEB-DL
-            5020  # TV/Foreign
-            5030  # TV/SD
-            5040  # TV/HD
-            5045  # TV/UHD
-            5050  # TV/Other
-            5090  # TV/x265
+            5000 # TV
+            5010 # TV/WEB-DL
+            5020 # TV/Foreign
+            5030 # TV/SD
+            5040 # TV/HD
+            5045 # TV/UHD
+            5050 # TV/Other
+            5090 # TV/x265
           ];
         }
       ];

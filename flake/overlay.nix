@@ -5,25 +5,31 @@ let
   overlayDirs = builtins.readDir ../overlays;
   overlayList = builtins.mapAttrs (name: type: { inherit name type; }) overlayDirs;
 
-  autoOverlays = builtins.foldl' (
-    acc: dir:
-    acc
-    // {
-      ${dir.name} = prev.callPackage (../overlays + "/${dir.name}") { };
-    }
-  ) { } (builtins.filter (dir: dir.type == "directory") (builtins.attrValues overlayList));
+  autoOverlays = builtins.foldl'
+    (
+      acc: dir:
+        acc
+        // {
+          ${dir.name} = prev.callPackage (../overlays + "/${dir.name}") { };
+        }
+    )
+    { }
+    (builtins.filter (dir: dir.type == "directory") (builtins.attrValues overlayList));
 
   # 2. Automatic packages from packages/ directory
   packageDirs = builtins.readDir ../packages;
   packageList = builtins.mapAttrs (name: type: { inherit name type; }) packageDirs;
 
-  autoPackages = builtins.foldl' (
-    acc: dir:
-    acc
-    // {
-      ${dir.name} = prev.callPackage (../packages + "/${dir.name}") { };
-    }
-  ) { } (builtins.filter (dir: dir.type == "directory") (builtins.attrValues packageList));
+  autoPackages = builtins.foldl'
+    (
+      acc: dir:
+        acc
+        // {
+          ${dir.name} = prev.callPackage (../packages + "/${dir.name}") { };
+        }
+    )
+    { }
+    (builtins.filter (dir: dir.type == "directory") (builtins.attrValues packageList));
 
   # 3. Nixpkgs-master and unstable packages
   masterOverlays = {

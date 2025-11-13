@@ -173,20 +173,17 @@ If you encounter issues with authentication methods:
 The media server setup consists of four main components working together:
 
 1. **Radarr**: Manages movie downloads and library organization
-
    - Monitors for new movies
    - Sends download requests to Transmission
    - Manages movie files after download
    - API Key found in Settings -> General
 
 2. **Prowlarr**: Indexer management
-
    - Manages and proxies requests to torrent trackers
    - Integrates with Radarr via API
    - Supports multiple trackers (e.g., Toloka.to)
 
 3. **Transmission**: Download client
-
    - Handles torrent downloads
    - Downloads to `/storage/Data/media/downloads`
    - Configured without authentication for local network access
@@ -199,7 +196,6 @@ The media server setup consists of four main components working together:
 ### Initial Setup
 
 1. **Prowlarr Setup**:
-
    - Access at `http://prowlarr.{externalDomain}`
    - Add indexers (e.g., Toloka.to):
      - Go to Settings -> Indexers
@@ -212,7 +208,6 @@ The media server setup consists of four main components working together:
      - Set Radarr URL: `http://localhost:7878`
 
 2. **Radarr Setup**:
-
    - Access at `http://radarr.{externalDomain}`
    - Add Transmission as download client:
      - Settings -> Download Clients
@@ -224,7 +219,6 @@ The media server setup consists of four main components working together:
      - Library path: `/storage/Data/media/movies`
 
 3. **Transmission Setup**:
-
    - Access at `http://transmission.{externalDomain}`
    - Downloads automatically go to configured paths
    - No authentication required on local network
@@ -459,6 +453,7 @@ Had to `nix-collect-garbage -d` and run rebuild once again and after that it cle
 **Current Status**: Running natively on bee
 
 **Current Services** (on bee):
+
 - matrix-synapse (PostgreSQL-backed homeserver, port 8008)
 - mautrix-telegram (port 29317)
 - mautrix-whatsapp (port 29318)

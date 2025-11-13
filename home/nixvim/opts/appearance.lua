@@ -14,17 +14,13 @@ local debounce_time = 10000 -- 10 seconds in milliseconds
 
 -- Function to check macOS appearance asynchronously
 local function get_macos_appearance(callback)
-  vim.system(
-    { "defaults", "read", "-g", "AppleInterfaceStyle" },
-    { text = true },
-    function(obj)
-      if obj.code == 0 and obj.stdout:match("Dark") then
-        callback("dark")
-      else
-        callback("light")
-      end
+  vim.system({ "defaults", "read", "-g", "AppleInterfaceStyle" }, { text = true }, function(obj)
+    if obj.code == 0 and obj.stdout:match("Dark") then
+      callback("dark")
+    else
+      callback("light")
     end
-  )
+  end)
 end
 
 -- Function to check KDE Plasma appearance asynchronously
@@ -72,7 +68,11 @@ local function get_plasma_appearance(callback)
 
             -- Final fallback: check BackgroundNormal RGB values
             vim.system(
-              { "sh", "-c", "grep -A 10 '\\[Colors:Window\\]' " .. kdeglobals_file .. " | grep 'BackgroundNormal' 2>/dev/null" },
+              {
+                "sh",
+                "-c",
+                "grep -A 10 '\\[Colors:Window\\]' " .. kdeglobals_file .. " | grep 'BackgroundNormal' 2>/dev/null",
+              },
               { text = true },
               function(obj3)
                 if obj3.code == 0 and obj3.stdout then
@@ -98,41 +98,29 @@ end
 -- Function to check GNOME appearance asynchronously
 local function get_gnome_appearance(callback)
   -- Check if gsettings is available
-  vim.system(
-    { "command", "-v", "gsettings" },
-    { text = true },
-    function(obj)
-      if obj.code ~= 0 then
-        callback("light")
+  vim.system({ "command", "-v", "gsettings" }, { text = true }, function(obj)
+    if obj.code ~= 0 then
+      callback("light")
+      return
+    end
+
+    -- Check GNOME color scheme
+    vim.system({ "gsettings", "get", "org.gnome.desktop.interface", "color-scheme" }, { text = true }, function(obj2)
+      if obj2.code == 0 and obj2.stdout:match("dark") then
+        callback("dark")
         return
       end
 
-      -- Check GNOME color scheme
-      vim.system(
-        { "gsettings", "get", "org.gnome.desktop.interface", "color-scheme" },
-        { text = true },
-        function(obj2)
-          if obj2.code == 0 and obj2.stdout:match("dark") then
-            callback("dark")
-            return
-          end
-
-          -- Fallback: check gtk-theme
-          vim.system(
-            { "gsettings", "get", "org.gnome.desktop.interface", "gtk-theme" },
-            { text = true },
-            function(obj3)
-              if obj3.code == 0 and (obj3.stdout:match("dark") or obj3.stdout:match("Dark")) then
-                callback("dark")
-              else
-                callback("light")
-              end
-            end
-          )
+      -- Fallback: check gtk-theme
+      vim.system({ "gsettings", "get", "org.gnome.desktop.interface", "gtk-theme" }, { text = true }, function(obj3)
+        if obj3.code == 0 and (obj3.stdout:match("dark") or obj3.stdout:match("Dark")) then
+          callback("dark")
+        else
+          callback("light")
         end
-      )
-    end
-  )
+      end)
+    end)
+  end)
 end
 
 -- Function to get current system appearance based on OS (async)
@@ -141,17 +129,13 @@ local function get_system_appearance(callback)
     get_macos_appearance(callback)
   elseif current_os == "Linux" then
     -- Check if we're in a GNOME environment first
-    vim.system(
-      { "command", "-v", "gsettings" },
-      { text = true },
-      function(obj)
-        if obj.code == 0 then
-          get_gnome_appearance(callback)
-        else
-          get_plasma_appearance(callback)
-        end
+    vim.system({ "command", "-v", "gsettings" }, { text = true }, function(obj)
+      if obj.code == 0 then
+        get_gnome_appearance(callback)
+      else
+        get_plasma_appearance(callback)
       end
-    )
+    end)
   else
     callback("light") -- Default for other OSes
   end
@@ -197,5 +181,5 @@ vim.api.nvim_create_augroup("SystemAppearance", { clear = true })
 vim.api.nvim_create_autocmd("FocusGained", {
   group = "SystemAppearance",
   callback = _G.system_appearance.check_appearance,
-  desc = "Check system appearance when window gains focus"
+  desc = "Check system appearance when window gains focus",
 })

@@ -1,7 +1,6 @@
-{
-  pkgs,
-  config,
-  ...
+{ pkgs
+, config
+, ...
 }:
 
 # Mac Mini Caddy configuration with waiting for volume mount

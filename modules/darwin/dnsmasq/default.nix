@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
+{ config
+, lib
+, pkgs
+, ...
 }:
 
 with lib;
@@ -18,22 +17,25 @@ let
     settings:
     concatStringsSep "\n" (
       flatten (
-        mapAttrsToList (
-          name: value:
-          if value == true then
-            [ name ]
-          else if value == false then
-            [ ]
-          else if isList value then
-            map (v: "${name}=${toString v}") value
-          else
-            [ "${name}=${toString value}" ]
-        ) settings
+        mapAttrsToList
+          (
+            name: value:
+            if value == true then
+              [ name ]
+            else if value == false then
+              [ ]
+            else if isList value then
+              map (v: "${name}=${toString v}") value
+            else
+              [ "${name}=${toString value}" ]
+          )
+          settings
       )
     );
 
   # Build the main configuration file content
-  configFile = if cfg.configFile != null then cfg.configFile else pkgs.writeText "dnsmasq.conf" ''
+  configFile = if cfg.configFile != null then cfg.configFile else
+  pkgs.writeText "dnsmasq.conf" ''
     ${settingsToConf cfg.settings}
   '';
 

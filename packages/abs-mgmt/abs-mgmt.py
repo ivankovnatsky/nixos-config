@@ -372,7 +372,7 @@ class AudiobookshelfClient:
             new_feeds = [feed_url for feed_url in opml_feed_urls if feed_url not in existing_feed_urls]
 
             print("", file=sys.stderr)
-            print(f"OPML Sync summary:", file=sys.stderr)
+            print("OPML Sync summary:", file=sys.stderr)
             print(f"  Total feeds in OPML: {len(opml_feed_urls)}", file=sys.stderr)
             print(f"  Already imported: {len(opml_feed_urls) - len(new_feeds)}", file=sys.stderr)
             print(f"  New feeds to import: {len(new_feeds)}", file=sys.stderr)

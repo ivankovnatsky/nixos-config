@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
+{ config
+, lib
+, pkgs
+, ...
 }:
 
 with lib;
@@ -178,18 +177,22 @@ in
   config = mkMerge [
     # Generate user agents
     (mkIf (any (s: s.enable && s.type == "user-agent") (attrValues cfg.services)) {
-      launchd.user.agents = mapAttrs' (
-        name: service:
-        nameValuePair name (mkService name service)
-      ) (filterAttrs (_: s: s.enable && s.type == "user-agent") cfg.services);
+      launchd.user.agents = mapAttrs'
+        (
+          name: service:
+            nameValuePair name (mkService name service)
+        )
+        (filterAttrs (_: s: s.enable && s.type == "user-agent") cfg.services);
     })
 
     # Generate daemons
     (mkIf (any (s: s.enable && s.type == "daemon") (attrValues cfg.services)) {
-      launchd.daemons = mapAttrs' (
-        name: service:
-        nameValuePair name (mkService name service)
-      ) (filterAttrs (_: s: s.enable && s.type == "daemon") cfg.services);
+      launchd.daemons = mapAttrs'
+        (
+          name: service:
+            nameValuePair name (mkService name service)
+        )
+        (filterAttrs (_: s: s.enable && s.type == "daemon") cfg.services);
     })
   ];
 }

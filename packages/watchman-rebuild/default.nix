@@ -1,9 +1,9 @@
-{
-  lib,
-  stdenv,
-  makeWrapper,
-  python3,
-  watchman,
+{ lib
+, stdenv
+, makeWrapper
+, python3
+, watchman
+,
 }:
 
 let

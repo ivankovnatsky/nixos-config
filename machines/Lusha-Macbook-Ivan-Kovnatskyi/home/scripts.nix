@@ -22,13 +22,15 @@ let
 
   # Create packages for scripts with dependencies
   depsPackages = builtins.attrValues (
-    builtins.mapAttrs (
-      name: config:
-      if config.type == "python" then
-        wrapPythonScript name config
-      else
-        throw "Unknown script type: ${config.type}"
-    ) scriptsWithDeps
+    builtins.mapAttrs
+      (
+        name: config:
+          if config.type == "python" then
+            wrapPythonScript name config
+          else
+            throw "Unknown script type: ${config.type}"
+      )
+      scriptsWithDeps
   );
 in
 {

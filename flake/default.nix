@@ -9,7 +9,7 @@ in
   inherit (machines) darwinConfigurations nixosConfigurations;
   overlay = import ./overlay.nix { inherit inputs; };
 }
-// forAllSystems (system:
+  // forAllSystems (system:
   let
     # Use pinned master commit for development shell
     pkgs = import inputs.nixpkgs-master-pinned { inherit system; };

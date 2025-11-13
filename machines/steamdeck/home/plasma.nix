@@ -48,8 +48,7 @@
           height = 26;
           widgets = [
             {
-              kickoff = {
-              };
+              kickoff = { };
             }
             "org.kde.plasma.appmenu"
             {
@@ -103,7 +102,7 @@
       shortcuts = {
         "KDE Keyboard Layout Switcher" = {
           # Disable KDE's shortcut to let XKB options (grp:caps_toggle) work
-          "Switch to Next Keyboard Layout" = [];
+          "Switch to Next Keyboard Layout" = [ ];
         };
       };
 

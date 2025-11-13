@@ -14,7 +14,7 @@
     ];
   };
 
-  users.groups.nixbuilder = {};
+  users.groups.nixbuilder = { };
 
   nix.settings = {
     # Allow nixbuilder user to act as a trusted user for remote builds

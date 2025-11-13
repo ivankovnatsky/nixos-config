@@ -1,7 +1,6 @@
-{
-  config,
-  pkgs,
-  ...
+{ config
+, pkgs
+, ...
 }:
 let
   preventSleepWrapper = pkgs.writeScriptBin "prevent-sleep-wrapper" ''

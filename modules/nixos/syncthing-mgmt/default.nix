@@ -65,7 +65,7 @@ in
 
     devices = mkOption {
       type = types.listOf types.str;
-      default = [];
+      default = [ ];
       example = [ "Device-Name" "Another-Device" ];
       description = ''
         List of device names to connect to on this machine.
@@ -100,12 +100,12 @@ in
           };
           devices = mkOption {
             type = types.listOf types.str;
-            default = [];
+            default = [ ];
             description = "List of device IDs to share this folder with";
           };
         };
       });
-      default = {};
+      default = { };
       example = {
         "shtdy-s2c9s" = {
           path = "/home/user/Documents";
@@ -135,7 +135,7 @@ in
       {
         assertion = cfg.gui != null -> (
           (cfg.gui.username != null) != (cfg.gui.usernameFile != null) &&
-          (cfg.gui.password != null) != (cfg.gui.passwordFile != null)
+            (cfg.gui.password != null) != (cfg.gui.passwordFile != null)
         );
         message = "Exactly one of username/usernameFile and password/passwordFile must be set for syncthing-mgmt GUI config";
       }

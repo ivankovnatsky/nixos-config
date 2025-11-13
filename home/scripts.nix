@@ -20,12 +20,14 @@ let
 
   # Create an attribute set mapping script names to their derivations
   scriptDerivations = builtins.listToAttrs (
-    map (script: {
-      name = lib.removeSuffix ".sh" script;
-      value = builtins.head (
-        builtins.filter (p: p.name == lib.removeSuffix ".sh" script) scriptPackages
-      );
-    }) scriptNames
+    map
+      (script: {
+        name = lib.removeSuffix ".sh" script;
+        value = builtins.head (
+          builtins.filter (p: p.name == lib.removeSuffix ".sh" script) scriptPackages
+        );
+      })
+      scriptNames
   );
 in
 {

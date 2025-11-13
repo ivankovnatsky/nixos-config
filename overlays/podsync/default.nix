@@ -1,9 +1,9 @@
-{
-  lib,
-  buildGo125Module,
-  fetchFromGitHub,
-  ffmpeg,
-  yt-dlp,
+{ lib
+, buildGo125Module
+, fetchFromGitHub
+, ffmpeg
+, yt-dlp
+,
 }:
 buildGo125Module rec {
   pname = "podsync";

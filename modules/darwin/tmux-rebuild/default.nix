@@ -1,9 +1,8 @@
-{
-  pkgs,
-  config,
-  lib,
-  username,
-  ...
+{ pkgs
+, config
+, lib
+, username
+, ...
 }:
 
 with lib;

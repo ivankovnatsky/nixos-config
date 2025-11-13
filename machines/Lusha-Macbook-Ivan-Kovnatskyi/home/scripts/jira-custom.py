@@ -102,7 +102,9 @@ def main():
     )
 
     # comment list
-    list_parser = comment_subparsers.add_parser("list", help="List comments on an issue")
+    list_parser = comment_subparsers.add_parser(
+        "list", help="List comments on an issue"
+    )
     list_parser.add_argument("issue_key", help="Issue key (e.g., DOPS-12345)")
 
     # comment add

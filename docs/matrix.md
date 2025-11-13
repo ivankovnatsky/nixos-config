@@ -36,6 +36,7 @@ Homeserver URL: `https://matrix.${externalDomain}`
 2. Caddy on bee → Synapse on bee (192.168.50.3:8008)
 
 **Historical**: When Matrix ran on mini-vm (Oct 2025), routing required two hops due to OrbStack NAT networking:
+
 1. Client → matrix-mini.${externalDomain}
 2. Caddy on bee (192.168.50.3) → Caddy on mini (192.168.50.4:8008)
 3. Caddy on mini → mini-vm Synapse (mini-vm.orb.local:8008)

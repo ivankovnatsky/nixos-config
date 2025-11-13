@@ -11,11 +11,10 @@
 # - Start service: `launchctl start org.grafana.promtail`
 # - Reload config: `launchctl stop org.grafana.promtail && launchctl start org.grafana.promtail`
 #
-{
-  config,
-  lib,
-  pkgs,
-  ...
+{ config
+, lib
+, pkgs
+, ...
 }:
 
 with lib;

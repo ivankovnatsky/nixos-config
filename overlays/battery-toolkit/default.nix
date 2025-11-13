@@ -1,8 +1,8 @@
-{
-  lib,
-  fetchurl,
-  unzip,
-  stdenv,
+{ lib
+, fetchurl
+, unzip
+, stdenv
+,
 }:
 
 # https://github.com/mhaeuser/Battery-Toolkit/issues/105#issuecomment-2797029669

@@ -28,6 +28,7 @@ The a3 machine mounts SMB shares from mini machine using macOS built-in File Sha
    - Add user `samba` with Read & Write permissions
 
 **A3 machine** mounts the share configured in `machines/a3/smb.nix`:
+
 - Mount point: `/mnt/smb/mini-storage`
 - Share: `//ivans-mac-mini.local/Storage`
 - Standard SMB port: 445

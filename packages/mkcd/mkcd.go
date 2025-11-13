@@ -50,7 +50,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err := os.MkdirAll(arg, 0755); err != nil {
+	if err := os.MkdirAll(arg, 0o755); err != nil {
 		fmt.Printf("Error creating directory: %v\n", err)
 		os.Exit(1)
 	}
