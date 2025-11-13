@@ -18,5 +18,6 @@
     smartmontools
     tmux
     yt-dlp
+    nodejs
   ];
 }
