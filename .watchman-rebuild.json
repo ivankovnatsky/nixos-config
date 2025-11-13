@@ -1,3 +1,13 @@
 {
-  "ignore_patterns": [".git", "docs", "result*", "*.tmp.*", ".watchman-cookie-*", "*.md", "Makefile", ".syncthing.*.tmp", ".claude"]
+  "ignore_patterns": [
+    "*.md",
+    "*.tmp.*",
+    ".claude",
+    ".git",
+    ".syncthing.*.tmp",
+    ".watchman-cookie-*",
+    "Makefile",
+    "docs",
+    "result*"
+  ]
 }
