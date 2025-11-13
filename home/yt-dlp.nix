@@ -2,7 +2,7 @@
 
 {
   home.packages = with pkgs; [
-    yt-dlp
+    nixpkgs-master.yt-dlp
   ];
 
   home.file = {
