@@ -38,6 +38,7 @@ in
         watchman
         nixos-rebuild
         git
+        python3
       ];
 
       # Allow root to access git repo owned by user
