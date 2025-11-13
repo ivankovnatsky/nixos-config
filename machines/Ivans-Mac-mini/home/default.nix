@@ -1,6 +1,6 @@
 {
   imports = [
-    ../../../darwin/home/nixvim.nix
+    ../../../home/nixvim.nix
     ../../../home/aichat.nix
     ../../../home/amethyst
     ../../../home/bash.nix
