@@ -32,6 +32,7 @@
     ../../../home/pgcli.nix
     ../../../home/pyenv.nix
     ../../../home/rebuild-diff.nix
+    ../../../home/safari.nix
     ../../../home/shell.nix
     ../../../home/starship
     ../../../home/syncthing.nix

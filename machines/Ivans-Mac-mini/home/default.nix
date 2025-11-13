@@ -21,6 +21,7 @@
     ../../../home/kitty
     ../../../home/pass.nix
     ../../../home/rebuild-diff.nix
+    ../../../home/safari.nix
     ../../../home/scripts.nix
     ../../../home/shell.nix
     ../../../home/starship
