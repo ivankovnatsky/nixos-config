@@ -7,6 +7,7 @@
       dock = {
         # https://github.com/nix-darwin/nix-darwin/blob/6cb36e8327421c61e5a3bbd08ed63491b616364a/modules/system/defaults/dock.nix#L114
         mru-spaces = true;
+        tilesize = 64;
       };
       finder = {
         FXRemoveOldTrashItems = true;
@@ -26,14 +27,6 @@
         EnableTiledWindowMargins = true;
       };
       CustomUserPreferences = {
-        "com.apple.Safari" = {
-          "ShowFullURLInSmartSearchField" = true;
-          "ShowStandaloneTabBar" = true; # false enables compact tabs
-          "AutoOpenSafeDownloads" = false; # Disable automatic downloads
-          "AlwaysPromptForDownloadLocation" = true; # Ask where to save downloads
-          # Enable Web Inspector and developer features
-          "DeveloperPreferences" = 836;
-        };
         "NSGlobalDomain" = {
           # Auto-switch icon style based on appearance mode
           AppleIconAppearanceTheme = "RegularAutomatic";
