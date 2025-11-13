@@ -32,11 +32,11 @@ PLATFORM := $(shell uname)
 NIX_EXTRA_FLAGS := --extra-experimental-features flakes --extra-experimental-features nix-command
 
 # Common flags for rebuild commands
-COMMON_REBUILD_FLAGS := --verbose -L --flake .
+COMMON_REBUILD_FLAGS := -L --flake .
 
 # Default target will run rebuild and start watchman based on platform
 ifeq (${PLATFORM}, Darwin)
-default: rebuild-darwin rebuild-watchman-darwin
+default: rebuild-darwin-sudo rebuild-watchman-darwin-sudo
 else
 default: rebuild-nixos/generic rebuild-watchman-nixos
 endif
@@ -116,36 +116,15 @@ rebuild-darwin-sudo:
 
 # NixOS-specific watchman rebuild target
 rebuild-watchman-nixos:
-	while true; do \
-		watchman-make \
-			--pattern \
-				'**/*' \
-			--target rebuild-nixos/generic; \
-		echo "watchman-make exited, restarting..."; \
-		sleep 1; \
-	done
+	@watchman-rebuild $(CURDIR)
 
 # Darwin-specific watchman rebuild target
 rebuild-watchman-darwin:
-	while true; do \
-		watchman-make \
-			--pattern \
-				'**/*' \
-			--target rebuild-darwin; \
-		echo "watchman-make exited, restarting..."; \
-		sleep 1; \
-	done
+	@watchman-rebuild $(CURDIR)
 
 # Darwin-specific watchman rebuild target with sudo
 rebuild-watchman-darwin-sudo:
-	while true; do \
-		watchman-make \
-			--pattern \
-				'**/*' \
-			--target rebuild-darwin-sudo; \
-		echo "watchman-make exited, restarting..."; \
-		sleep 1; \
-	done
+	@watchman-rebuild $(CURDIR)
 
 # Devcontainer: start and exec into container with Claude Code
 devcontainer:

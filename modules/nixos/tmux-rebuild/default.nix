@@ -60,27 +60,7 @@ in
               echo "Starting watchman-based rebuild for NixOS..."
               echo "Press Ctrl+C to stop watching."
 
-              # Define the rebuild command as a variable for consistency
-              # Use sudo to run entire nixos-rebuild (matches NOPASSWD rule in sudo.nix)
-              REBUILD_CMD="sudo -E NIXPKGS_ALLOW_UNFREE=1 ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch --impure --verbose -L --flake ."
-
-              # Initial build
-              echo ""
-              echo "Performing initial build..."
-              $REBUILD_CMD
-
-              # Then watch for changes
-              while true; do
-                echo ""
-                echo "Watching for changes..."
-                # Use watchman-make to watch for changes
-                ${pkgs.watchman-make}/bin/watchman-make \
-                    --pattern "**/*" \
-                    --run "$REBUILD_CMD"
-
-                echo "watchman-make exited, restarting in 3 seconds..."
-                sleep 3
-              done
+              ${pkgs.watchman-rebuild}/bin/watchman-rebuild "${cfg.nixosConfigPath}"
             '';
 
             # Create the tmux starter script
@@ -137,10 +117,6 @@ in
         # Use the hostname as session name
         SESSION_NAME="${config.networking.hostName}"
 
-        # Define the rebuild command for consistency
-        # Use sudo to run entire nixos-rebuild (matches NOPASSWD rule in sudo.nix)
-        REBUILD_CMD="sudo -E NIXPKGS_ALLOW_UNFREE=1 ${config.system.build.nixos-rebuild}/bin/nixos-rebuild switch --impure --verbose -L --flake ."
-
         # Attach to the tmux session or notify if it doesn't exist
         ${tmux}/bin/tmux has-session -t "$SESSION_NAME" 2>/dev/null
         if [ $? -eq 0 ]; then
@@ -152,8 +128,7 @@ in
           echo "Check the logs with: journalctl -u tmux-nixos-config"
           echo ""
           echo "To start it manually, run:"
-          echo "cd ${cfg.nixosConfigPath}"
-          echo "$REBUILD_CMD"
+          echo "cd ${cfg.nixosConfigPath} && ${pkgs.watchman-rebuild}/bin/watchman-rebuild ."
           echo ""
           echo "Or restart the tmux service with:"
           echo "sudo systemctl restart tmux-nixos-config"

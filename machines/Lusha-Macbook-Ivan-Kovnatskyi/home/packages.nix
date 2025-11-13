@@ -123,6 +123,7 @@
     vault
     watchman
     watchman-make
+    watchman-rebuild
     wget
     yq
     zoxide

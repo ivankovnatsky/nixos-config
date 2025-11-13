@@ -31,8 +31,7 @@ in
         PATH = "/run/current-system/sw/bin:/usr/bin:/bin:/usr/sbin:/sbin";
       };
       command = ''
-        ${pkgs.rebuild-daemon}/bin/rebuild-daemon \
-          --config ${cfg.configPath}
+        ${pkgs.watchman-rebuild}/bin/watchman-rebuild ${cfg.configPath}
       '';
       keepAlive = true;
       throttleInterval = 10;

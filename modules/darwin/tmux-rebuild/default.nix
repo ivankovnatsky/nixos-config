@@ -9,7 +9,6 @@
 with lib;
 
 let
-  darwinRebuildPath = "/run/current-system/sw/bin/darwin-rebuild";
   cfg = config.local.services.tmuxRebuild;
 in
 {
@@ -21,11 +20,6 @@ in
         type = types.str;
         default = "${config.users.users.${username}.home}/Sources/github.com/ivankovnatsky/nixos-config";
         description = "Path to the nixos-config repository";
-      };
-      useSudo = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Whether to use sudo for darwin-rebuild (needed for newer nixpkgs versions)";
       };
     };
   };
@@ -58,37 +52,7 @@ in
             echo "Starting watchman-based rebuild for Darwin..."
             echo "Press Ctrl+C to stop watching."
 
-            # Define the rebuild command as a variable for consistency
-            # Make sure to cd into the nixos-config directory first
-            # REBUILD_CMD="cd \"${cfg.nixosConfigPath}\" && env NIXPKGS_ALLOW_UNFREE=1 darwin-rebuild switch --impure --verbose -L --flake ."
-            ${
-              if cfg.useSudo then
-                ''
-                  REBUILD_CMD="env NIXPKGS_ALLOW_UNFREE=1 sudo -E ${darwinRebuildPath} switch --impure --verbose -L --flake ."
-                ''
-              else
-                ''
-                  REBUILD_CMD="env NIXPKGS_ALLOW_UNFREE=1 ${darwinRebuildPath} switch --impure --verbose -L --flake ."
-                ''
-            }
-
-            # Initial build
-            echo ""
-            echo "Performing initial build..."
-            $REBUILD_CMD
-
-            # Then watch for changes
-            while true; do
-              echo ""
-              echo "Watching for changes..."
-              # Use watchman-make to watch for changes
-              ${pkgs.watchman-make}/bin/watchman-make \
-                  --pattern "**/*" \
-                  --run "$REBUILD_CMD"
-
-              echo "watchman-make exited, restarting in 3 seconds..."
-              sleep 3
-            done
+            ${pkgs.watchman-rebuild}/bin/watchman-rebuild "${cfg.nixosConfigPath}"
           '';
 
           # Create the tmux starter script
@@ -129,18 +93,6 @@ in
         # Use the hostname as session name
         SESSION_NAME="${config.networking.hostName}"
 
-        # Define the rebuild command for consistency
-        ${
-          if cfg.useSudo then
-            ''
-              REBUILD_CMD="env NIXPKGS_ALLOW_UNFREE=1 sudo -E ${darwinRebuildPath} switch --impure --verbose -L --flake ."
-            ''
-          else
-            ''
-              REBUILD_CMD="env NIXPKGS_ALLOW_UNFREE=1 ${darwinRebuildPath} switch --impure --verbose -L --flake ."
-            ''
-        }
-
         # Attach to the tmux session or notify if it doesn't exist
         ${tmux}/bin/tmux has-session -t "$SESSION_NAME" 2>/dev/null
         if [ $? -eq 0 ]; then
@@ -149,11 +101,10 @@ in
         else
           echo "The $SESSION_NAME tmux session is not running."
           echo "It may have been stopped or failed to start."
-          echo "Check the logs with: cat /tmp/tmux-darwin-config.log"
+          echo "Check the logs with: cat /tmp/agents/log/launchd/tmux-darwin-config.log"
           echo ""
           echo "To start it manually, run:"
-          echo "cd ${cfg.nixosConfigPath}"
-          echo "$REBUILD_CMD"
+          echo "cd ${cfg.nixosConfigPath} && ${pkgs.watchman-rebuild}/bin/watchman-rebuild ."
           echo ""
           echo "Or restart the tmux agent with:"
           echo "launchctl unload ~/Library/LaunchAgents/com.ivankovnatsky.tmux-darwin-config.plist"

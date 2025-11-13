@@ -6,7 +6,7 @@
 # Activating report-changes
 # /nix/store/lddi4qxinncymkws68dmsbsnnb7c4i5p-home-manager-generation/activate: line 348: oldGenPath: unbound variable
 # # waiting for changes
-# # Execute: `env NIXPKGS_ALLOW_UNFREE=1 darwin-rebuild switch --impure --verbose -L --flake .`
+# # Execute: `env NIXPKGS_ALLOW_UNFREE=1 darwin-rebuild switch --impure -L --flake .`
 # building the system configuration...
 # warning: Git tree '/Users/ivan/Sources/github.com/ivankovnatsky/nixos-config' is dirty    waiting for changes
 

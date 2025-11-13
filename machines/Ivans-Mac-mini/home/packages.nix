@@ -48,6 +48,7 @@
     username # Installed as flake
     watchman
     watchman-make
+    watchman-rebuild
     wget
     yt-dlp
     zsh-forgit
