@@ -9,7 +9,7 @@
     ../../../modules/darwin/pam
     ../../../modules/darwin/pmset
     ../../../modules/darwin/tmux-rebuild
-    # ../../../modules/darwin/rebuild-daemon
+    ../../../modules/darwin/rebuild-daemon
     ../../../modules/darwin/sudo
     ../../../modules/flags
     ../../../system/documentation.nix
@@ -23,7 +23,7 @@
     ../../../darwin/no-dock-restart.nix
     ./openssh.nix
     ./power.nix
-    # ./rebuild-daemon.nix
+    ./rebuild-daemon.nix
     ./security.nix
     ./shell.nix
     ./sudo.nix

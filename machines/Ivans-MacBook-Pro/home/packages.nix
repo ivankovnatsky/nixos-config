@@ -9,5 +9,6 @@
     sops
     age
     ssh-to-age
+    watchman-rebuild
   ];
 }

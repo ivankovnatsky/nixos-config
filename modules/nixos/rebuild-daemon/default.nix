@@ -34,7 +34,7 @@ in
       after = [ "network.target" ];
 
       path = with pkgs; [
-        rebuild-daemon
+        watchman-rebuild
         watchman
         nixos-rebuild
         git
@@ -52,7 +52,7 @@ in
         Environment = "HOME=/root";
         Restart = "always";
         RestartSec = 10;
-        ExecStart = "${pkgs.rebuild-daemon}/bin/rebuild-daemon --config ${cfg.configPath}";
+        ExecStart = "${pkgs.watchman-rebuild}/bin/watchman-rebuild ${cfg.configPath}";
         # Redirect output to files like Darwin launchd
         StandardOutput = "append:/tmp/log/rebuild-daemon.log";
         StandardError = "append:/tmp/log/rebuild-daemon.error.log";
