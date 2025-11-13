@@ -1,12 +1,31 @@
 {
   imports = [
-    ./dock.nix
-    ./homebrew.nix
-    ../../../modules/darwin/rebuild-daemon
-    ./nextdns
-    ./syncthing-mgmt.nix
-    ./rebuild-daemon.nix
-    ./git.nix
+    ../../../darwin/darwin.nix
+    ../../../darwin/flags.nix
+    ../../../darwin/fonts.nix
+    ../../../darwin/homebrew.nix
+    ../../../darwin/nix.nix
     ../../../darwin/no-dock-restart.nix
+    ../../../darwin/security.nix
+    ../../../darwin/shell.nix
+    ../../../darwin/sudo.nix
+    ../../../darwin/system.nix
+    ../../../modules/darwin/dock
+    ../../../modules/darwin/launchd
+    ../../../modules/darwin/nextdns-mgmt
+    ../../../modules/darwin/pam
+    ../../../modules/darwin/rebuild-daemon
+    ../../../modules/darwin/sudo
+    ../../../modules/darwin/syncthing-mgmt
+    ../../../modules/flags
+    ../../../system/documentation.nix
+    ../../../system/nix.nix
+    ../../../system/scripts
+    ./dock.nix
+    ./git.nix
+    ./homebrew.nix
+    ./nextdns
+    ./rebuild-daemon.nix
+    ./syncthing-mgmt.nix
   ];
 }
