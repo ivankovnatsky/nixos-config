@@ -17,7 +17,7 @@ let
   # Template config without secrets (substituted at runtime)
   configTomlTemplate = pkgs.runCommand "podsync-config.toml.template"
     {
-      ytDlpPath = "${pkgs.yt-dlp}/bin/yt-dlp";
+      ytDlpPath = "${pkgs.nixpkgs-master.yt-dlp}/bin/yt-dlp";
       miniIp = config.flags.miniIp;
     }
     ''

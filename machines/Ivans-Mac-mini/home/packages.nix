@@ -50,7 +50,7 @@
     watchman-make
     watchman-rebuild
     wget
-    yt-dlp
+    nixpkgs-master.yt-dlp
     zsh-forgit
   ];
 }
