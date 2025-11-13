@@ -29,6 +29,13 @@ in
       description = "Path to Syncthing config directory (for reading config.xml)";
     };
 
+    apiKeyFile = mkOption {
+      type = types.nullOr types.path;
+      default = null;
+      example = "/run/secrets/syncthing-api-key";
+      description = "Path to file containing Syncthing API key. If not provided, will be read from config.xml";
+    };
+
     gui = mkOption {
       type = types.nullOr (types.submodule {
         options = {
@@ -157,7 +164,11 @@ in
           # Wait for Syncthing API to be ready with retry logic
           MAX_RETRIES=30
           RETRY_DELAY=2
-          API_KEY=$(${pkgs.gnugrep}/bin/grep -m1 "<apikey>" "${cfg.configDir}/config.xml" | ${pkgs.gnused}/bin/sed 's/.*<apikey>\(.*\)<\/apikey>.*/\1/')
+          ${if cfg.apiKeyFile != null then ''
+            API_KEY=$(cat ${cfg.apiKeyFile})
+          '' else ''
+            API_KEY=$(${pkgs.gnugrep}/bin/grep -m1 "<apikey>" "${cfg.configDir}/config.xml" | ${pkgs.gnused}/bin/sed 's/.*<apikey>\(.*\)<\/apikey>.*/\1/')
+          ''}
 
           echo "Waiting for Syncthing API to be ready..."
           for i in $(${pkgs.coreutils}/bin/seq 1 $MAX_RETRIES); do
