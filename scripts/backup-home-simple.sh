@@ -146,6 +146,7 @@ else
     --exclude='**/Library/pnpm/**' \
     --exclude='**/Library/Containers/com.apple.AccessibilitySettingsWidgetExtension/**' \
     --exclude='**/Library/Containers/com.apple.AvatarUI.AvatarPickerMemojiPicker/**' \
+    --exclude='**/Library/Containers/com.apple.photoanalysisd/**' \
     --exclude='**/Library/Containers/com.apple.Safari/**' \
     --exclude='**/Library/Containers/com.apple.Safari.WebApp/**' \
     --exclude='**/Library/Containers/com.apple.wallpaper.extension.video/**' \
