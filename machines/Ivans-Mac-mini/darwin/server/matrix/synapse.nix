@@ -90,84 +90,68 @@ in
     mode = "0444";  # Readable by user services
   };
 
-  launchd.user.agents.matrix-synapse = {
-    serviceConfig = {
-      Label = "org.nixos.matrix-synapse";
-      RunAtLoad = true;
-      KeepAlive = true;
-      StandardOutPath = "/tmp/agents/log/launchd/matrix-synapse.out.log";
-      StandardErrorPath = "/tmp/agents/log/launchd/matrix-synapse.error.log";
-      ThrottleInterval = 10;
-    };
+  local.launchd.services.matrix-synapse = {
+    enable = true;
+    waitForPath = "/Volumes/Storage";
+    dataDir = dataDir;
+    extraDirs = [ "${dataDir}/media_store" ];
+
+    preStart =
+      let
+        synapsePackage = pkgs.matrix-synapse.override {
+          extras = [ "postgres" "url-preview" ];
+        };
+      in
+      ''
+        # Read secrets from sops
+        EXTERNAL_DOMAIN=$(cat ${config.sops.secrets.external-domain.path})
+        SERVER_NAME="matrix.$EXTERNAL_DOMAIN"
+
+        # Wait for PostgreSQL to be available
+        echo "Waiting for PostgreSQL..."
+        until [ -S /tmp/.s.PGSQL.5433 ]; do
+          echo "PostgreSQL is unavailable - sleeping"
+          sleep 1
+        done
+        echo "PostgreSQL socket found!"
+        sleep 2
+        echo "PostgreSQL is up!"
+
+        # Setup database and user (idempotent)
+        echo "Setting up Matrix database..."
+        ${pkgs.postgresql}/bin/psql -h /tmp -p 5433 -U postgres postgres <<'EOSQL' || true
+        ${builtins.readFile ./setup-matrix-db.sql}
+        EOSQL
+        echo "Database setup complete!"
+
+        # Generate config with server_name from sops at runtime
+        # Add server_name to the base config
+        cat ${configFile} > /tmp/synapse-config-temp.yaml
+        echo "server_name: $SERVER_NAME" >> /tmp/synapse-config-temp.yaml
+
+        # Initialize database if needed
+        if [ ! -f ${dataDir}/homeserver.yaml ]; then
+          echo "Generating Synapse config..."
+          ${synapsePackage}/bin/synapse_homeserver \
+            --config-path /tmp/synapse-config-temp.yaml \
+            --generate-config \
+            --server-name "$SERVER_NAME" \
+            --data-directory ${dataDir} \
+            --report-stats no
+        fi
+
+        # Copy our configuration (make writable) with server_name
+        cp /tmp/synapse-config-temp.yaml ${dataDir}/homeserver.yaml
+        chmod 644 ${dataDir}/homeserver.yaml
+        cp ${logConfig} ${dataDir}/log.config
+      '';
 
     command =
       let
         synapsePackage = pkgs.matrix-synapse.override {
           extras = [ "postgres" "url-preview" ];
         };
-
-        initScript = pkgs.writeShellScript "matrix-synapse-init" ''
-          set -e
-
-          # Create log directory
-          mkdir -p /tmp/agents/log/launchd
-
-          # Wait for the Storage volume to be mounted
-          echo "Waiting for /Volumes/Storage to be available..."
-          /bin/wait4path "/Volumes/Storage"
-          echo "/Volumes/Storage is now available!"
-
-          # Read secrets from sops
-          EXTERNAL_DOMAIN=$(cat ${config.sops.secrets.external-domain.path})
-          SERVER_NAME="matrix.$EXTERNAL_DOMAIN"
-
-          # Wait for PostgreSQL to be available
-          echo "Waiting for PostgreSQL..."
-          until [ -S /tmp/.s.PGSQL.5433 ]; do
-            echo "PostgreSQL is unavailable - sleeping"
-            sleep 1
-          done
-          echo "PostgreSQL socket found!"
-          sleep 2
-          echo "PostgreSQL is up!"
-
-          # Setup database and user (idempotent)
-          echo "Setting up Matrix database..."
-          ${pkgs.postgresql}/bin/psql -h /tmp -p 5433 -U postgres postgres <<'EOSQL' || true
-          ${builtins.readFile ./setup-matrix-db.sql}
-          EOSQL
-          echo "Database setup complete!"
-
-          # Create data directory
-          mkdir -p ${dataDir}
-          mkdir -p ${dataDir}/media_store
-
-          # Generate config with server_name from sops at runtime
-          # Add server_name to the base config
-          cat ${configFile} > /tmp/synapse-config-temp.yaml
-          echo "server_name: $SERVER_NAME" >> /tmp/synapse-config-temp.yaml
-
-          # Initialize database if needed
-          if [ ! -f ${dataDir}/homeserver.yaml ]; then
-            echo "Generating Synapse config..."
-            ${synapsePackage}/bin/synapse_homeserver \
-              --config-path /tmp/synapse-config-temp.yaml \
-              --generate-config \
-              --server-name "$SERVER_NAME" \
-              --data-directory ${dataDir} \
-              --report-stats no
-          fi
-
-          # Copy our configuration (make writable) with server_name
-          cp /tmp/synapse-config-temp.yaml ${dataDir}/homeserver.yaml
-          chmod 644 ${dataDir}/homeserver.yaml
-          cp ${logConfig} ${dataDir}/log.config
-
-          # Start Synapse
-          exec ${synapsePackage}/bin/synapse_homeserver \
-            --config-path ${dataDir}/homeserver.yaml
-        '';
       in
-      "${initScript}";
+      "${synapsePackage}/bin/synapse_homeserver --config-path ${dataDir}/homeserver.yaml";
   };
 }

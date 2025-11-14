@@ -124,155 +124,113 @@ let
 in
 {
   # Messenger bridge
-  launchd.user.agents.mautrix-meta-messenger = {
-    serviceConfig = {
-      Label = "org.nixos.mautrix-meta-messenger";
-      RunAtLoad = true;
-      KeepAlive = true;
-      StandardOutPath = "/tmp/agents/log/launchd/mautrix-meta-messenger.out.log";
-      StandardErrorPath = "/tmp/agents/log/launchd/mautrix-meta-messenger.error.log";
-      ThrottleInterval = 10;
+  local.launchd.services.mautrix-meta-messenger = {
+    enable = true;
+    waitForPath = "/Volumes/Storage";
+    dataDir = messengerDataDir;
+
+    environment = {
+      HOME = messengerDataDir;
     };
 
-    command =
-      let
-        initScript = pkgs.writeShellScript "mautrix-meta-messenger-init" ''
-          set -e
+    preStart = ''
+      # Read secrets from sops
+      EXTERNAL_DOMAIN=$(cat ${config.sops.secrets.external-domain.path})
+      MATRIX_USERNAME=$(cat ${config.sops.secrets.matrix-username.path})
+      SERVER_NAME="matrix.$EXTERNAL_DOMAIN"
+      ADMIN_USER="@$MATRIX_USERNAME:$SERVER_NAME"
 
-          # Create log directory
-          mkdir -p /tmp/agents/log/launchd
+      # Copy base config and update with runtime values
+      test -f '${messengerSettingsFile}' && rm -f '${messengerSettingsFile}'
+      old_umask=$(umask)
+      umask 0177
+      cp '${messengerSettingsFileUnsubstituted}' '${messengerSettingsFile}'
 
-          # Wait for the Storage volume to be mounted
-          echo "Waiting for /Volumes/Storage to be available..."
-          /bin/wait4path "/Volumes/Storage"
-          echo "/Volumes/Storage is now available!"
+      # Update config with server_name and permissions using jq
+      ${pkgs.jq}/bin/jq \
+        --arg domain "$SERVER_NAME" \
+        --arg admin "$ADMIN_USER" \
+        '.homeserver.domain = $domain | .bridge.permissions[$admin] = "admin"' \
+        '${messengerSettingsFile}' > '${messengerSettingsFile}.tmp'
+      mv '${messengerSettingsFile}.tmp' '${messengerSettingsFile}'
+      umask $old_umask
 
-          # Read secrets from sops
-          EXTERNAL_DOMAIN=$(cat ${config.sops.secrets.external-domain.path})
-          MATRIX_USERNAME=$(cat ${config.sops.secrets.matrix-username.path})
-          SERVER_NAME="matrix.$EXTERNAL_DOMAIN"
-          ADMIN_USER="@$MATRIX_USERNAME:$SERVER_NAME"
+      # Generate the appservice's registration file if absent
+      if [ ! -f '${messengerRegistrationFile}' ]; then
+        echo "Generating registration file..."
+        ${pkgs.mautrix-meta}/bin/mautrix-meta \
+          --generate-registration \
+          --config='${messengerSettingsFile}' \
+          --registration='${messengerRegistrationFile}'
+      fi
 
-          # Create data directory
-          mkdir -p ${messengerDataDir}
+      # Sync registration tokens back to config
+      old_umask=$(umask)
+      umask 0177
+      ${pkgs.yq}/bin/yq -s '.[0].appservice.as_token = .[1].as_token
+        | .[0].appservice.hs_token = .[1].hs_token
+        | .[0]' \
+        '${messengerSettingsFile}' '${messengerRegistrationFile}' > '${messengerSettingsFile}.tmp'
+      mv '${messengerSettingsFile}.tmp' '${messengerSettingsFile}'
+      umask $old_umask
+    '';
 
-          # Copy base config and update with runtime values
-          test -f '${messengerSettingsFile}' && rm -f '${messengerSettingsFile}'
-          old_umask=$(umask)
-          umask 0177
-          cp '${messengerSettingsFileUnsubstituted}' '${messengerSettingsFile}'
-
-          # Update config with server_name and permissions using jq
-          ${pkgs.jq}/bin/jq \
-            --arg domain "$SERVER_NAME" \
-            --arg admin "$ADMIN_USER" \
-            '.homeserver.domain = $domain | .bridge.permissions[$admin] = "admin"' \
-            '${messengerSettingsFile}' > '${messengerSettingsFile}.tmp'
-          mv '${messengerSettingsFile}.tmp' '${messengerSettingsFile}'
-          umask $old_umask
-
-          # Generate the appservice's registration file if absent
-          if [ ! -f '${messengerRegistrationFile}' ]; then
-            echo "Generating registration file..."
-            ${pkgs.mautrix-meta}/bin/mautrix-meta \
-              --generate-registration \
-              --config='${messengerSettingsFile}' \
-              --registration='${messengerRegistrationFile}'
-          fi
-
-          # Sync registration tokens back to config
-          old_umask=$(umask)
-          umask 0177
-          ${pkgs.yq}/bin/yq -s '.[0].appservice.as_token = .[1].as_token
-            | .[0].appservice.hs_token = .[1].hs_token
-            | .[0]' \
-            '${messengerSettingsFile}' '${messengerRegistrationFile}' > '${messengerSettingsFile}.tmp'
-          mv '${messengerSettingsFile}.tmp' '${messengerSettingsFile}'
-          umask $old_umask
-
-          # Start bridge
-          export HOME=${messengerDataDir}
-          exec ${pkgs.mautrix-meta}/bin/mautrix-meta \
-            --config='${messengerSettingsFile}'
-        '';
-      in
-      "${initScript}";
+    command = "${pkgs.mautrix-meta}/bin/mautrix-meta --config='${messengerSettingsFile}'";
   };
 
   # Instagram bridge
-  launchd.user.agents.mautrix-meta-instagram = {
-    serviceConfig = {
-      Label = "org.nixos.mautrix-meta-instagram";
-      RunAtLoad = true;
-      KeepAlive = true;
-      StandardOutPath = "/tmp/agents/log/launchd/mautrix-meta-instagram.out.log";
-      StandardErrorPath = "/tmp/agents/log/launchd/mautrix-meta-instagram.error.log";
-      ThrottleInterval = 10;
+  local.launchd.services.mautrix-meta-instagram = {
+    enable = true;
+    waitForPath = "/Volumes/Storage";
+    dataDir = instagramDataDir;
+
+    environment = {
+      HOME = instagramDataDir;
     };
 
-    command =
-      let
-        initScript = pkgs.writeShellScript "mautrix-meta-instagram-init" ''
-          set -e
+    preStart = ''
+      # Read secrets from sops
+      EXTERNAL_DOMAIN=$(cat ${config.sops.secrets.external-domain.path})
+      MATRIX_USERNAME=$(cat ${config.sops.secrets.matrix-username.path})
+      SERVER_NAME="matrix.$EXTERNAL_DOMAIN"
+      ADMIN_USER="@$MATRIX_USERNAME:$SERVER_NAME"
 
-          # Create log directory
-          mkdir -p /tmp/agents/log/launchd
+      # Copy base config and update with runtime values
+      test -f '${instagramSettingsFile}' && rm -f '${instagramSettingsFile}'
+      old_umask=$(umask)
+      umask 0177
+      cp '${instagramSettingsFileUnsubstituted}' '${instagramSettingsFile}'
 
-          # Wait for the Storage volume to be mounted
-          echo "Waiting for /Volumes/Storage to be available..."
-          /bin/wait4path "/Volumes/Storage"
-          echo "/Volumes/Storage is now available!"
+      # Update config with server_name and permissions using jq
+      ${pkgs.jq}/bin/jq \
+        --arg domain "$SERVER_NAME" \
+        --arg admin "$ADMIN_USER" \
+        '.homeserver.domain = $domain | .bridge.permissions[$admin] = "admin"' \
+        '${instagramSettingsFile}' > '${instagramSettingsFile}.tmp'
+      mv '${instagramSettingsFile}.tmp' '${instagramSettingsFile}'
+      umask $old_umask
 
-          # Read secrets from sops
-          EXTERNAL_DOMAIN=$(cat ${config.sops.secrets.external-domain.path})
-          MATRIX_USERNAME=$(cat ${config.sops.secrets.matrix-username.path})
-          SERVER_NAME="matrix.$EXTERNAL_DOMAIN"
-          ADMIN_USER="@$MATRIX_USERNAME:$SERVER_NAME"
+      # Generate the appservice's registration file if absent
+      if [ ! -f '${instagramRegistrationFile}' ]; then
+        echo "Generating registration file..."
+        ${pkgs.mautrix-meta}/bin/mautrix-meta \
+          --generate-registration \
+          --config='${instagramSettingsFile}' \
+          --registration='${instagramRegistrationFile}'
+      fi
 
-          # Create data directory
-          mkdir -p ${instagramDataDir}
+      # Sync registration tokens back to config
+      old_umask=$(umask)
+      umask 0177
+      ${pkgs.yq}/bin/yq -s '.[0].appservice.as_token = .[1].as_token
+        | .[0].appservice.hs_token = .[1].hs_token
+        | .[0]' \
+        '${instagramSettingsFile}' '${instagramRegistrationFile}' > '${instagramSettingsFile}.tmp'
+      mv '${instagramSettingsFile}.tmp' '${instagramSettingsFile}'
+      umask $old_umask
+    '';
 
-          # Copy base config and update with runtime values
-          test -f '${instagramSettingsFile}' && rm -f '${instagramSettingsFile}'
-          old_umask=$(umask)
-          umask 0177
-          cp '${instagramSettingsFileUnsubstituted}' '${instagramSettingsFile}'
-
-          # Update config with server_name and permissions using jq
-          ${pkgs.jq}/bin/jq \
-            --arg domain "$SERVER_NAME" \
-            --arg admin "$ADMIN_USER" \
-            '.homeserver.domain = $domain | .bridge.permissions[$admin] = "admin"' \
-            '${instagramSettingsFile}' > '${instagramSettingsFile}.tmp'
-          mv '${instagramSettingsFile}.tmp' '${instagramSettingsFile}'
-          umask $old_umask
-
-          # Generate the appservice's registration file if absent
-          if [ ! -f '${instagramRegistrationFile}' ]; then
-            echo "Generating registration file..."
-            ${pkgs.mautrix-meta}/bin/mautrix-meta \
-              --generate-registration \
-              --config='${instagramSettingsFile}' \
-              --registration='${instagramRegistrationFile}'
-          fi
-
-          # Sync registration tokens back to config
-          old_umask=$(umask)
-          umask 0177
-          ${pkgs.yq}/bin/yq -s '.[0].appservice.as_token = .[1].as_token
-            | .[0].appservice.hs_token = .[1].hs_token
-            | .[0]' \
-            '${instagramSettingsFile}' '${instagramRegistrationFile}' > '${instagramSettingsFile}.tmp'
-          mv '${instagramSettingsFile}.tmp' '${instagramSettingsFile}'
-          umask $old_umask
-
-          # Start bridge
-          export HOME=${instagramDataDir}
-          exec ${pkgs.mautrix-meta}/bin/mautrix-meta \
-            --config='${instagramSettingsFile}'
-        '';
-      in
-      "${initScript}";
+    command = "${pkgs.mautrix-meta}/bin/mautrix-meta --config='${instagramSettingsFile}'";
   };
 
   environment.systemPackages = [
