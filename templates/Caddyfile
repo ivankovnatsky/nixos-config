@@ -74,6 +74,22 @@
 		}
 	}
 
+	@matrix host matrix.@externalDomain@
+	reverse_proxy @matrix @miniIp@:8009 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		transport http {
+			keepalive 5m
+			keepalive_idle_conns 100
+		}
+	}
+
+	@element host element.@externalDomain@
+	handle @element {
+		root * @elementWebPath@
+		file_server
+	}
+
 	# Beszel monitoring hub
 	@beszel host beszel.@externalDomain@
 	reverse_proxy @beszel @miniIp@:8091 {

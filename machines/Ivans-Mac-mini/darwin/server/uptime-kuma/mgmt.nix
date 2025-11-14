@@ -14,10 +14,6 @@
   # 3. Monitors and Discord notifications will auto-sync on next rebuild
 
   # Sops secrets for Uptime Kuma management
-  sops.secrets.external-domain = {
-    key = "externalDomain";
-    owner = "ivan";
-  };
   sops.secrets.uptime-kuma-username = {
     key = "uptimeKuma/username";
     owner = "ivan";
@@ -37,8 +33,8 @@
 
   local.services.uptime-kuma-mgmt = {
     enable = true;
-    # Base URL will be constructed at runtime from external-domain secret
-    baseUrl = "https://kuma.@EXTERNAL_DOMAIN@";
+    # Connect to local instance using miniIp (matches service binding)
+    baseUrl = "http://${config.flags.miniIp}:3001";
     usernameFile = config.sops.secrets.uptime-kuma-username.path;
     passwordFile = config.sops.secrets.uptime-kuma-password.path;
     discordWebhookFile = config.sops.secrets.discord-webhook.path;
@@ -108,6 +104,47 @@
         name = "textcast";
         url = "https://textcast.@EXTERNAL_DOMAIN@";
         description = "Article to audiobook service (mini:8084)";
+      }
+      {
+        name = "matrix";
+        url = "https://matrix.@EXTERNAL_DOMAIN@";
+        interval = 30;
+        description = "Matrix Synapse server (mini:8009) - Critical service";
+      }
+      {
+        name = "element";
+        url = "https://element.@EXTERNAL_DOMAIN@";
+        description = "Element web client - Static files";
+      }
+
+      # Matrix Bridges (TCP port monitoring - localhost only)
+      {
+        name = "mautrix-whatsapp";
+        type = "tcp";
+        url = "127.0.0.1:29321";
+        interval = 60;
+        description = "WhatsApp bridge appservice port (localhost:29321)";
+      }
+      {
+        name = "mautrix-discord";
+        type = "tcp";
+        url = "127.0.0.1:29323";
+        interval = 60;
+        description = "Discord bridge appservice port (localhost:29323)";
+      }
+      {
+        name = "mautrix-meta-messenger";
+        type = "tcp";
+        url = "127.0.0.1:29324";
+        interval = 60;
+        description = "Messenger bridge appservice port (localhost:29324)";
+      }
+      {
+        name = "mautrix-meta-instagram";
+        type = "tcp";
+        url = "127.0.0.1:29325";
+        interval = 60;
+        description = "Instagram bridge appservice port (localhost:29325)";
       }
 
       # DNS services (check /dns-query endpoint with example query)
