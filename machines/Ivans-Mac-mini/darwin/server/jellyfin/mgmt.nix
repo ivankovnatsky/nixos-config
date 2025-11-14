@@ -17,13 +17,13 @@
         name = "Movies";
         type = "movies";
         # Co-located with Radarr media on mini
-        paths = [ "/Volumes/Storage/Data/Media/Movies" ];
+        paths = [ "${config.flags.miniStoragePath}/Media/Movies" ];
       }
       {
         name = "Shows";
         type = "tvshows";
         # Co-located with Sonarr media on mini
-        paths = [ "/Volumes/Storage/Data/Media/TV" ];
+        paths = [ "${config.flags.miniStoragePath}/Media/TV" ];
       }
     ];
   };

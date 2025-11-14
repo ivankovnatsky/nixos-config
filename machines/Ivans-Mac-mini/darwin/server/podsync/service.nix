@@ -19,11 +19,15 @@ let
     {
       ytDlpPath = "${pkgs.nixpkgs-master.yt-dlp}/bin/yt-dlp";
       miniIp = config.flags.miniIp;
+      dataDir = dataDir;
+      logDir = logDir;
     }
     ''
       ${pkgs.gnused}/bin/sed \
         -e "s|@ytDlpPath@|$ytDlpPath|g" \
         -e "s|@miniIp@|$miniIp|g" \
+        -e "s|@dataDir@|$dataDir|g" \
+        -e "s|@logDir@|$logDir|g" \
         ${configTomlPath} > $out
     '';
 in

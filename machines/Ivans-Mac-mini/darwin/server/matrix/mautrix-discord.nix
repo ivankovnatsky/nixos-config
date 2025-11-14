@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 
 let
-  dataDir = "/Volumes/Storage/Data/.matrix/bridges/discord";
+  dataDir = "${config.flags.miniStoragePath}/.matrix/bridges/discord";
   port = 29323;
   registrationFile = "${dataDir}/discord-registration.yaml";
   settingsFormat = pkgs.formats.json { };
@@ -62,7 +62,7 @@ in
 {
   local.launchd.services.mautrix-discord = {
     enable = true;
-    waitForPath = "/Volumes/Storage";
+    waitForPath = config.flags.miniStoragePath;
     dataDir = dataDir;
 
     environment = {

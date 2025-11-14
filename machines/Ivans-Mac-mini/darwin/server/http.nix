@@ -29,9 +29,6 @@
 let
   bindAddress = config.flags.miniIp;
 
-  # Storage path for data access
-  volumePath = "/Volumes/Storage";
-
   # Create a Caddy package with the required DNS plugin
   # Use the caddy-with-plugins overlay to get the withPlugins functionality
   caddyWithPlugins = pkgs.caddy-with-plugins.withPlugins {
@@ -72,7 +69,7 @@ in
   local.launchd.services.caddy = {
     enable = true;
     type = "daemon";
-    waitForPath = volumePath;
+    waitForPath = config.flags.miniStoragePath;
     extraDirs = [
       "/tmp/log/caddy"
       "/tmp/caddy"

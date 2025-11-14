@@ -20,6 +20,9 @@
 
 set -euo pipefail
 
+# Storage path - can be overridden via environment variable
+STORAGE_DATA_PATH="${STORAGE_DATA_PATH:-/Volumes/Storage/Data}"
+
 # Handle --help
 for arg in "$@"; do
   if [[ "$arg" == "--help" ]] || [[ "$arg" == "-h" ]]; then
@@ -88,8 +91,8 @@ done
 # Set archive path
 if [[ -n "$CUSTOM_ARCHIVE_PATH" ]]; then
   ARCHIVE_PATH="$CUSTOM_ARCHIVE_PATH"
-elif [[ -d "/Volumes/Storage/Data" ]] && [[ -w "/Volumes/Storage/Data" ]]; then
-  TEMP_DIR="/Volumes/Storage/Data/Tmp"
+elif [[ -d "$STORAGE_DATA_PATH" ]] && [[ -w "$STORAGE_DATA_PATH" ]]; then
+  TEMP_DIR="$STORAGE_DATA_PATH/Tmp"
   mkdir -p "$TEMP_DIR"
   ARCHIVE_PATH="$TEMP_DIR/$USER.tar.gz"
 else
@@ -145,6 +148,7 @@ else
     --exclude='**/Library/Metadata/**' \
     --exclude='**/Library/pnpm/**' \
     --exclude='**/Library/Containers/com.apple.AccessibilitySettingsWidgetExtension/**' \
+    --exclude='**/Library/Containers/com.apple.AppStore/**' \
     --exclude='**/Library/Containers/com.apple.AvatarUI.AvatarPickerMemojiPicker/**' \
     --exclude='**/Library/Containers/com.apple.photoanalysisd/**' \
     --exclude='**/Library/Containers/com.apple.Safari/**' \
@@ -174,7 +178,7 @@ else
   else
     export TARGET_MACHINE=192.168.50.4
   fi
-  export BACKUP_PATH=/Volumes/Storage/Data/Drive/Crypt/Machines/
+  export BACKUP_PATH=$STORAGE_DATA_PATH/Drive/Crypt/Machines/
   HOSTNAME=$(hostname)
   export HOSTNAME
   DATE_DIR=$(date +%Y-%m-%d)

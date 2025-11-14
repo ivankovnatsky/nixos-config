@@ -3,7 +3,7 @@
   services.postgresql = {
     enable = true;
     package = pkgs.postgresql_17;
-    dataDir = "/Volumes/Storage/Data/.postgresql/${config.services.postgresql.package.psqlSchema}";
+    dataDir = "${config.flags.miniStoragePath}/.postgresql/${config.services.postgresql.package.psqlSchema}";
     enableTCPIP = false;
     port = 5433;
 
@@ -31,10 +31,10 @@
       # Create log directory
       mkdir -p /tmp/agents/log/launchd
 
-      # Wait for the Storage volume to be mounted
-      echo "Waiting for /Volumes/Storage to be available..."
-      /bin/wait4path "/Volumes/Storage"
-      echo "/Volumes/Storage is now available!"
+      # Wait for the storage path to be available
+      echo "Waiting for ${config.flags.miniStoragePath} to be available..."
+      /bin/wait4path "${config.flags.miniStoragePath}"
+      echo "${config.flags.miniStoragePath} is now available!"
     '';
   };
 }

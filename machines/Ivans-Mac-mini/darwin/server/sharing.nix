@@ -1,3 +1,4 @@
+{ config, ... }:
 {
   # Manual configuration:
   # Enabled Windows File Sharing to be able to connect with user/password
@@ -7,7 +8,7 @@
     enable = true;
     shares = {
       "Storage" = {
-        path = "/Volumes/Storage/Data";
+        path = config.flags.miniStoragePath;
       };
     };
   };
