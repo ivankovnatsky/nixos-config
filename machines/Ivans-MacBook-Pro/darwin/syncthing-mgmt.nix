@@ -28,7 +28,6 @@
     devices = [
       "Ivans-MacBook-Pro" # This machine (required for local-only folders)
       "a3"
-      "bee"
       "Ivans-Mac-mini"
       "Ivans-MacBook-Air"
       "Lusha-Macbook-Ivan-Kovnatskyi"
@@ -77,7 +76,6 @@
         devices = [
           "a3"
           "Ivans-Mac-mini"
-          "bee"
           "Lusha-Macbook-Ivan-Kovnatskyi"
           "steamdeck"
         ];

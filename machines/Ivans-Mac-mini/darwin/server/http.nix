@@ -48,14 +48,6 @@ let
 in
 {
   # Sops secrets for Caddy basic auth credentials
-  sops.secrets.zigbee-username = {
-    key = "zigbee/username";
-  };
-
-  sops.secrets.zigbee-password = {
-    key = "zigbee/password";
-  };
-
   sops.secrets.podsync-username = {
     key = "podsync/username";
   };
@@ -90,8 +82,6 @@ in
       EXTERNAL_DOMAIN=$(cat ${config.sops.secrets.external-domain.path})
       LETS_ENCRYPT_EMAIL=$(cat ${config.sops.secrets.lets-encrypt-email.path})
       CLOUDFLARE_API_TOKEN=$(cat ${config.sops.secrets.cloudflare-api-token.path})
-      ZIGBEE_USERNAME=$(cat ${config.sops.secrets.zigbee-username.path})
-      ZIGBEE_PASSWORD=$(cat ${config.sops.secrets.zigbee-password.path})
       PODSYNC_USERNAME=$(cat ${config.sops.secrets.podsync-username.path})
       PODSYNC_PASSWORD=$(cat ${config.sops.secrets.podsync-password.path})
 
@@ -104,13 +94,10 @@ in
         -e "s|@externalDomain@|$EXTERNAL_DOMAIN|g" \
         -e "s|@letsEncryptEmail@|$LETS_ENCRYPT_EMAIL|g" \
         -e "s|@cloudflareApiToken@|$CLOUDFLARE_API_TOKEN|g" \
-        -e "s|@beeIp@|${config.flags.beeIp}|g" \
         -e "s|@miniIp@|${config.flags.miniIp}|g" \
         -e "s|@a3wIp@|${config.flags.a3wIp}|g" \
         -e "s|@logPathPrefix@|/tmp/log|g" \
         -e "s|@elementWebPath@|$ELEMENT_WEB_PATH|g" \
-        -e "s|@zigbeeUsername@|$ZIGBEE_USERNAME|g" \
-        -e "s|@zigbeePassword@|$ZIGBEE_PASSWORD|g" \
         -e "s|@podsyncUsername@|$PODSYNC_USERNAME|g" \
         -e "s|@podsyncPassword@|$PODSYNC_PASSWORD|g" \
         ${caddyfilePath} > ${runtimeCaddyfile}

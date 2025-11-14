@@ -39,10 +39,6 @@ HOSTNAME=$(hostname)
 
 if [[ -n "$CUSTOM_ARCHIVE_PATH" ]]; then
   ARCHIVE_PATH="$CUSTOM_ARCHIVE_PATH"
-elif [[ ${HOSTNAME,,} == "bee" ]]; then
-  TEMP_DIR="/storage/Data/tmp"
-  mkdir -p "$TEMP_DIR"
-  ARCHIVE_PATH="$TEMP_DIR/system.tar.gz"
 elif [[ -d "/Volumes/Storage/Data" ]] && [[ -w "/Volumes/Storage/Data" ]]; then
   TEMP_DIR="/Volumes/Storage/Data/Tmp"
   mkdir -p "$TEMP_DIR"

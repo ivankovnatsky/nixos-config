@@ -12,8 +12,6 @@ let
   sourcesPath =
     if hostName == "Ivans-Mac-mini" then
       "/Volumes/Storage/Data/Sources"
-    else if hostName == "bee" then
-      "/storage/Data/Sources"
     else
       "${homePath}/Sources";
 

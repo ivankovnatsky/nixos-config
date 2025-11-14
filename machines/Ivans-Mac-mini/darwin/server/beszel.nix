@@ -64,11 +64,6 @@ in
     discordWebhookFile = config.sops.secrets.discord-webhook.path;
     systems = [
       {
-        name = "bee";
-        host = config.flags.beeIp;
-        port = "45876";
-      }
-      {
         name = "Ivans-Mac-mini";
         host = config.flags.miniIp;
         port = "45876";
