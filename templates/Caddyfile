@@ -128,25 +128,6 @@
 	@syncthing-mini host syncthing-mini.@externalDomain@
 	reverse_proxy @syncthing-mini @miniIp@:8384
 
-	# Netdata mini
-	@netdata-mini host netdata-mini.@externalDomain@
-	handle @netdata-mini {
-		# Basic authentication for all paths
-		basic_auth /* {
-			@netdataMiniUsername@ @netdataMiniPassword@
-		}
-		# FIXME: Should be fixed in nix-darwin or upstream?
-		# Redirect root to v1 dashboard
-		redir / /v1/ 302
-		redir /index.html /v1/ 302
-		# Proxy to Netdata
-		reverse_proxy @miniIp@:19999 {
-			# Enable WebSocket support
-			header_up X-Real-IP {remote_host}
-			header_up Host {host}
-		}
-	}
-
 	# Miniserve on Mac mini
 	@miniserve-mini host miniserve-mini.@externalDomain@
 	reverse_proxy @miniserve-mini @miniIp@:8080 {

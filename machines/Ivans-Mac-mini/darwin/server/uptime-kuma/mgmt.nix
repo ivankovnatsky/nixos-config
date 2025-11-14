@@ -138,14 +138,6 @@
         description = "Article to audiobook service (mini:8084)";
       }
 
-      # Auth-protected services (expect 401)
-      {
-        name = "netdata-mini";
-        url = "https://netdata-mini.@EXTERNAL_DOMAIN@";
-        expectedStatus = 401;
-        description = "Netdata monitoring with basic auth (mini:19999)";
-      }
-
       # DNS services (check /dns-query endpoint with example query)
       {
         name = "doh-bee";

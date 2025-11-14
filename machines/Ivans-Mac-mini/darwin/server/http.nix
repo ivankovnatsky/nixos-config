@@ -64,22 +64,6 @@ in
     key = "podsync/password";
   };
 
-  sops.secrets.netdata-mini-username = {
-    key = "netdata/mini/username";
-  };
-
-  sops.secrets.netdata-mini-password = {
-    key = "netdata/mini/password";
-  };
-
-  sops.secrets.netdata-bee-username = {
-    key = "netdata/bee/username";
-  };
-
-  sops.secrets.netdata-bee-password = {
-    key = "netdata/bee/password";
-  };
-
   sops.secrets.cloudflare-api-token = {
     key = "cloudflareApiToken";
   };
@@ -110,10 +94,6 @@ in
       ZIGBEE_PASSWORD=$(cat ${config.sops.secrets.zigbee-password.path})
       PODSYNC_USERNAME=$(cat ${config.sops.secrets.podsync-username.path})
       PODSYNC_PASSWORD=$(cat ${config.sops.secrets.podsync-password.path})
-      NETDATA_BEE_USERNAME=$(cat ${config.sops.secrets.netdata-bee-username.path})
-      NETDATA_BEE_PASSWORD=$(cat ${config.sops.secrets.netdata-bee-password.path})
-      NETDATA_MINI_USERNAME=$(cat ${config.sops.secrets.netdata-mini-username.path})
-      NETDATA_MINI_PASSWORD=$(cat ${config.sops.secrets.netdata-mini-password.path})
 
       # Element Web path using external domain from sops
       ELEMENT_WEB_PATH="${pkgs.mkElementWeb "$EXTERNAL_DOMAIN" "matrix"}"
@@ -133,10 +113,6 @@ in
         -e "s|@zigbeePassword@|$ZIGBEE_PASSWORD|g" \
         -e "s|@podsyncUsername@|$PODSYNC_USERNAME|g" \
         -e "s|@podsyncPassword@|$PODSYNC_PASSWORD|g" \
-        -e "s|@netdataBeeUsername@|$NETDATA_BEE_USERNAME|g" \
-        -e "s|@netdataBeePassword@|$NETDATA_BEE_PASSWORD|g" \
-        -e "s|@netdataMiniUsername@|$NETDATA_MINI_USERNAME|g" \
-        -e "s|@netdataMiniPassword@|$NETDATA_MINI_PASSWORD|g" \
         ${caddyfilePath} > ${runtimeCaddyfile}
 
       # Set permissions
