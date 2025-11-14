@@ -36,6 +36,7 @@
     ./http.nix
     ./jellyfin
     ./logrotate.nix
+    ./matrix
     ./media
     ./miniserve.nix
     ./mosh.nix

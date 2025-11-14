@@ -50,11 +50,6 @@ in
     owner = "ivan";
   };
 
-  sops.secrets.external-domain = {
-    key = "externalDomain";
-    owner = "ivan";
-  };
-
   # Beszel management (declarative system sync)
   local.services.beszel-mgmt = {
     enable = true;
