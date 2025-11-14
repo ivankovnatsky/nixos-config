@@ -26,25 +26,17 @@ in
 
   config = {
     # Create a launchd service that starts a tmux session on boot
-    launchd.user.agents.tmux-darwin-config = {
-      serviceConfig = {
-        Label = "com.ivankovnatsky.tmux-darwin-config";
-        RunAtLoad = true;
-        KeepAlive = true;
-        StandardOutPath = "/tmp/agents/log/launchd/tmux-darwin-config.log";
-        StandardErrorPath = "/tmp/agents/log/launchd/tmux-darwin-config.error.log";
-        ThrottleInterval = 3;
-      };
+    local.launchd.services.tmux-darwin-config = {
+      enable = true;
+      type = "user-agent";
+      keepAlive = true;
+      throttleInterval = 3;
+      waitForPath = cfg.nixosConfigPath;
 
-      # Using command instead of ProgramArguments to automatically utilize wait4path
       command =
         let
           # Create the rebuild watch script
           rebuildWatchScript = pkgs.writeShellScriptBin "darwin-rebuild-watch" ''
-            # Wait for the Samsung2TB volume to be mounted using the built-in wait4path utility
-            echo "Waiting for ${cfg.nixosConfigPath} to be available..."
-            /bin/wait4path "${cfg.nixosConfigPath}"
-
             # Now we can safely cd into it
             cd ${cfg.nixosConfigPath}
             echo "${cfg.nixosConfigPath} is now available!"

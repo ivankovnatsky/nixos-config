@@ -8,6 +8,7 @@
     ../../../modules/darwin/launchd
     ../../../modules/darwin/pam
     ../../../modules/darwin/pmset
+    ../../../modules/darwin/prevent-sleep
     ../../../modules/darwin/tmux-rebuild
     ../../../modules/darwin/rebuild-daemon
     ../../../modules/darwin/sudo
@@ -23,6 +24,7 @@
     ../../../darwin/no-dock-restart.nix
     ./openssh.nix
     ./power.nix
+    ./prevent-sleep.nix
     ./rebuild-daemon.nix
     ./security.nix
     ./shell.nix

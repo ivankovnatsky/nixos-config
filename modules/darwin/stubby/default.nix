@@ -102,28 +102,15 @@ in
   config = mkIf cfg.enable {
     environment.systemPackages = [ cfg.package ];
 
-    launchd.daemons.stubby = {
-      command =
-        let
-          startDnsmasqScript = pkgs.writeShellScriptBin "start-stubby" ''
-            # Create the required directories
-            echo "Setting up log directories..."
-            mkdir -p /tmp/log/stubby
-            chmod 755 /tmp/log/stubby
+    local.launchd.services.stubby = {
+      enable = true;
+      type = "daemon";
+      keepAlive = cfg.alwaysKeepRunning;
 
-            echo "Starting stubby..."
-            exec ${cfg.package}/bin/stubby -C ${configFile} -l ${cfg.logLevel} -v
-          '';
-        in
-        "${startDnsmasqScript}/bin/start-stubby";
+      command = "${cfg.package}/bin/stubby -C ${configFile} -l ${cfg.logLevel} -v";
 
-      serviceConfig = {
-        Label = "org.nixos.stubby";
-        RunAtLoad = true;
-        KeepAlive = cfg.alwaysKeepRunning;
+      extraServiceConfig = {
         AbandonProcessGroup = false;
-        StandardOutPath = "/tmp/log/launchd/stubby.log";
-        StandardErrorPath = "/tmp/log/launchd/stubby.error.log";
         SoftResourceLimits = {
           NumberOfFiles = 1024;
         };

@@ -258,10 +258,19 @@ in
     '';
 
     # Run logrotate via launchd
-    launchd.daemons.logrotate = {
-      serviceConfig = {
-        Label = "org.nixos.logrotate";
-        ProgramArguments = [ "${rotateLogs}" ];
+    local.launchd.services.logrotate = {
+      enable = true;
+      type = "daemon";
+      runAtLoad = false; # Don't run immediately on system boot
+      keepAlive = false; # Only run on schedule
+
+      command = "${rotateLogs}";
+
+      environment = {
+        PATH = "${pkgs.coreutils}/bin:${pkgs.gzip}/bin:${logrotatePackage}/bin:/usr/bin:/bin";
+      };
+
+      extraServiceConfig = {
         # Production schedule based on configured frequency
         StartCalendarInterval =
           if cfg.frequency == "hourly" then
@@ -301,12 +310,6 @@ in
                 Minute = 0;
               }
             ];
-        RunAtLoad = false; # Don't run immediately on system boot
-        StandardOutPath = "/tmp/log/launchd/logrotate.log";
-        StandardErrorPath = "/tmp/log/launchd/logrotate.error.log";
-        EnvironmentVariables = {
-          PATH = "${pkgs.coreutils}/bin:${pkgs.gzip}/bin:${logrotatePackage}/bin:/usr/bin:/bin";
-        };
         ProcessType = "Background";
         Nice = 19; # Lower priority
       };

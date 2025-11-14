@@ -68,7 +68,6 @@ in
     local.launchd.services.pmset-mgmt = {
       enable = true;
       type = "daemon"; # Requires root for pmset commands
-      label = "org.nixos.pmset-mgmt";
       runAtLoad = true; # Run when daemon is loaded/reloaded on rebuild
       keepAlive = false; # One-shot job - exit after completion
 

@@ -58,31 +58,27 @@ in
 
     environment.systemPackages = [ cfg.package ];
 
-    launchd.daemons.beszel-agent = {
-      script = ''
-        #!/bin/bash
-        mkdir -p /tmp/log/launchd
-        exec ${cfg.package}/bin/beszel-agent
-      '';
+    local.launchd.services.beszel-agent = {
+      enable = true;
+      type = "daemon";
 
-      serviceConfig = {
-        Label = "dev.beszel.agent";
-        RunAtLoad = true;
+      command = "${cfg.package}/bin/beszel-agent";
+
+      environment = {
+        LISTEN = "${cfg.listenAddress}:${toString cfg.port}";
+        PATH = "${pkgs.coreutils}/bin:${cfg.package}/bin:${pkgs.bash}/bin";
+      } // (
+        if cfg.hubPublicKeyFile != null then {
+          KEY_FILE = cfg.hubPublicKeyFile;
+        } else {
+          KEY = cfg.hubPublicKey;
+        }
+      );
+
+      extraServiceConfig = {
         KeepAlive = {
           SuccessfulExit = false;
         };
-        StandardOutPath = "/tmp/log/launchd/beszel-agent.log";
-        StandardErrorPath = "/tmp/log/launchd/beszel-agent.error.log";
-        EnvironmentVariables = {
-          LISTEN = "${cfg.listenAddress}:${toString cfg.port}";
-          PATH = "${pkgs.coreutils}/bin:${cfg.package}/bin:${pkgs.bash}/bin";
-        } // (
-          if cfg.hubPublicKeyFile != null then {
-            KEY_FILE = cfg.hubPublicKeyFile;
-          } else {
-            KEY = cfg.hubPublicKey;
-          }
-        );
       };
     };
   };
