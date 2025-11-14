@@ -54,7 +54,7 @@ in
 
           folders = mkOption {
             type = types.listOf types.str;
-            example = [ "/mnt/mac/Volumes/Storage/Data/media/podcasts" ];
+            example = [ "/mnt/mac/Volumes/ExternalDrive/media/podcasts" ];
             description = "List of folder paths for this library";
           };
 

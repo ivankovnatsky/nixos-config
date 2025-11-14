@@ -7,6 +7,9 @@
 
 set -euo pipefail
 
+# Storage path - can be overridden via environment variable
+STORAGE_DATA_PATH="${STORAGE_DATA_PATH:-/Volumes/Storage/Data}"
+
 # Check if running as root, if not re-exec with sudo
 if [[ $EUID -ne 0 ]]; then
   exec sudo bash "$0" "$@"
@@ -39,8 +42,8 @@ HOSTNAME=$(hostname)
 
 if [[ -n "$CUSTOM_ARCHIVE_PATH" ]]; then
   ARCHIVE_PATH="$CUSTOM_ARCHIVE_PATH"
-elif [[ -d "/Volumes/Storage/Data" ]] && [[ -w "/Volumes/Storage/Data" ]]; then
-  TEMP_DIR="/Volumes/Storage/Data/Tmp"
+elif [[ -d "$STORAGE_DATA_PATH" ]] && [[ -w "$STORAGE_DATA_PATH" ]]; then
+  TEMP_DIR="$STORAGE_DATA_PATH/Tmp"
   mkdir -p "$TEMP_DIR"
   ARCHIVE_PATH="$TEMP_DIR/system.tar.gz"
 else
@@ -84,7 +87,7 @@ DATE_DIR=$(date +%Y-%m-%d)
 export DATE_DIR
 
 # Always copy to mini regardless of machine
-BACKUP_PATH=/Volumes/Storage/Data/Drive/Crypt/Machines/
+BACKUP_PATH=$STORAGE_DATA_PATH/Drive/Crypt/Machines/
 # shellcheck disable=SC2029
 ssh "ivan@$TARGET_MACHINE" "mkdir -p $BACKUP_PATH/$HOSTNAME/system/$DATE_DIR"
 scp "$ARCHIVE_PATH" ivan@"$TARGET_MACHINE:$BACKUP_PATH/$HOSTNAME/system/$DATE_DIR/system.tar.gz"

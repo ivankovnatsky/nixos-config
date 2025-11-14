@@ -1,6 +1,7 @@
+{ config, ... }:
 {
   local.services.rebuildDaemon = {
     enable = true;
-    configPath = "/Volumes/Storage/Data/Sources/github.com/ivankovnatsky/nixos-config";
+    configPath = "${config.flags.miniStoragePath}/Sources/github.com/ivankovnatsky/nixos-config";
   };
 }

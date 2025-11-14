@@ -53,7 +53,7 @@
         }
       ];
       rootFolders = [
-        "/Volumes/Storage/Data/Media/Movies"
+        "${config.flags.miniStoragePath}/Media/Movies"
       ];
     };
 
@@ -75,7 +75,7 @@
         }
       ];
       rootFolders = [
-        "/Volumes/Storage/Data/Media/TV"
+        "${config.flags.miniStoragePath}/Media/TV"
       ];
     };
 

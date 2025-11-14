@@ -22,7 +22,7 @@
 # ```
 
 let
-  workingDirectory = "/Volumes/Storage/Data"; # External volume to wait for
+  workingDirectory = config.flags.miniStoragePath; # External volume to wait for
   guiAddress = "${config.flags.miniIp}:8384";
 in
 {

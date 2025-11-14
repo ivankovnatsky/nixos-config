@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 
 let
-  dataDir = "/Volumes/Storage/Data/.matrix/core/synapse";
+  dataDir = "${config.flags.miniStoragePath}/.matrix/core/synapse";
   format = pkgs.formats.yaml { };
 
   # Base config without server_name (will be added at runtime)
@@ -45,10 +45,10 @@ let
     media_store_path = "${dataDir}/media_store";
 
     app_service_config_files = [
-      "/Volumes/Storage/Data/.matrix/bridges/whatsapp/whatsapp-registration.yaml"
-      "/Volumes/Storage/Data/.matrix/bridges/discord/discord-registration.yaml"
-      "/Volumes/Storage/Data/.matrix/bridges/messenger/messenger-registration.yaml"
-      "/Volumes/Storage/Data/.matrix/bridges/instagram/instagram-registration.yaml"
+      "${config.flags.miniStoragePath}/.matrix/bridges/whatsapp/whatsapp-registration.yaml"
+      "${config.flags.miniStoragePath}/.matrix/bridges/discord/discord-registration.yaml"
+      "${config.flags.miniStoragePath}/.matrix/bridges/messenger/messenger-registration.yaml"
+      "${config.flags.miniStoragePath}/.matrix/bridges/instagram/instagram-registration.yaml"
     ];
   };
 
@@ -92,7 +92,7 @@ in
 
   local.launchd.services.matrix-synapse = {
     enable = true;
-    waitForPath = "/Volumes/Storage";
+    waitForPath = config.flags.miniStoragePath;
     dataDir = dataDir;
     extraDirs = [ "${dataDir}/media_store" ];
 

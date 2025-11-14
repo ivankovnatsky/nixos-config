@@ -11,7 +11,7 @@ let
     "mistral:7b"
   ];
 
-  ollamaModelsPath = "/Volumes/Storage/Data/.ollama";
+  ollamaModelsPath = "${config.flags.miniStoragePath}/.ollama";
 in
 {
   # Set system-wide environment variables for ollama commands

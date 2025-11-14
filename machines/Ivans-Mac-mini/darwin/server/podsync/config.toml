@@ -11,7 +11,7 @@ web_ui = true
   type = "local"
 
   [storage.local]
-  data_dir = "/Volumes/Storage/Data/.podsync/data"
+  data_dir = "@dataDir@"
 
 [tokens]
 youtube = "@youtubeApiKey@"
@@ -31,7 +31,7 @@ timeout = 15
 
 [log]
 # Log to file instead of stdout
-filename = "/Volumes/Storage/Data/.podsync/log/podsync.log"
+filename = "@logDir@/podsync.log"
 max_size = 50      # MB
 max_age = 30       # days
 max_backups = 7

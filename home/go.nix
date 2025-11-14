@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   osConfig,
   pkgs,
@@ -8,7 +9,7 @@
 let
   hostName = osConfig.networking.hostName;
   useAbsolutePath = hostName == "Ivans-Mac-mini";
-  absoluteGoPath = "/Volumes/Storage/Data/go";
+  absoluteGoPath = "${config.flags.miniStoragePath}/go";
   relativeGoPath = "go";
 
   # Machines using home-manager release (25.05) - use old goPath format

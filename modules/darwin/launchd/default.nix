@@ -40,7 +40,7 @@ let
         waitForPath = mkOption {
           type = types.nullOr types.str;
           default = null;
-          example = "/Volumes/Storage";
+          example = "/Volumes/ExternalDrive";
           description = ''
             Optional path to wait for before starting the service.
             Uses /bin/wait4path to block until the path exists.
@@ -51,7 +51,7 @@ let
         dataDir = mkOption {
           type = types.nullOr types.str;
           default = null;
-          example = "/Volumes/Storage/Data/.sonarr";
+          example = "/Volumes/ExternalDrive/Data/.myservice";
           description = "Primary data directory to create";
         };
 
@@ -59,8 +59,8 @@ let
           type = types.listOf types.str;
           default = [ ];
           example = [
-            "/Volumes/Storage/Data/Media/TV"
-            "/Volumes/Storage/Data/Media/Downloads"
+            "/Volumes/ExternalDrive/Data/Media/TV"
+            "/Volumes/ExternalDrive/Data/Media/Downloads"
           ];
           description = "Additional directories to create on startup";
         };
