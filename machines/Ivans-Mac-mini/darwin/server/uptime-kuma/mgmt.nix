@@ -140,12 +140,6 @@
 
       # DNS services (check /dns-query endpoint with example query)
       {
-        name = "doh-bee";
-        url = "https://doh-bee.@EXTERNAL_DOMAIN@/dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB";
-        expectedStatus = 200;
-        description = "DNS over HTTPS on bee (bee:8053) - queries www.example.com";
-      }
-      {
         name = "doh-mini";
         url = "https://doh-mini.@EXTERNAL_DOMAIN@/dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB";
         expectedStatus = 200;
@@ -170,13 +164,6 @@
 
       # DNS Infrastructure
       {
-        name = "dnsmasq-bee";
-        type = "dns";
-        url = "example.com@${config.flags.beeIp}";
-        interval = 60;
-        description = "dnsmasq DNS resolver on bee";
-      }
-      {
         name = "dnsmasq-mini";
         type = "dns";
         url = "example.com@${config.flags.miniIp}";
@@ -186,13 +173,6 @@
 
       # DNS-over-TLS (Stubby) - Upstream for dnsmasq
       {
-        name = "stubby-bee";
-        type = "tcp";
-        url = "${config.flags.beeIp}:5453";
-        interval = 60;
-        description = "Stubby DoT resolver on bee (upstream for dnsmasq)";
-      }
-      {
         name = "stubby-mini";
         type = "tcp";
         url = "${config.flags.miniIp}:5453";
@@ -201,20 +181,6 @@
       }
 
       # Reverse Proxy Infrastructure
-      {
-        name = "caddy-bee-http";
-        type = "tcp";
-        url = "${config.flags.beeIp}:80";
-        interval = 60;
-        description = "Caddy HTTP on bee (reverse proxy)";
-      }
-      {
-        name = "caddy-bee-https";
-        type = "tcp";
-        url = "${config.flags.beeIp}:443";
-        interval = 60;
-        description = "Caddy HTTPS on bee (reverse proxy)";
-      }
       {
         name = "caddy-mini-http";
         type = "tcp";
