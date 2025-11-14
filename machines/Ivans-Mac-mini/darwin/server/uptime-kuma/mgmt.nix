@@ -84,12 +84,6 @@
         description = "Audiobookshelf with WebSocket (bee:8000)";
       }
       {
-        name = "homeassistant";
-        url = "https://homeassistant.@EXTERNAL_DOMAIN@";
-        interval = 30;
-        description = "Home Assistant (bee:8123) - Critical service";
-      }
-      {
         name = "matrix";
         url = "https://matrix.@EXTERNAL_DOMAIN@";
         interval = 30;
@@ -109,16 +103,6 @@
         name = "syncthing-bee";
         url = "https://syncthing-bee.@EXTERNAL_DOMAIN@";
         description = "Syncthing on bee (bee:8384)";
-      }
-      {
-        name = "homebridge";
-        url = "https://homebridge.@EXTERNAL_DOMAIN@";
-        description = "Homebridge UI (bee:8581)";
-      }
-      {
-        name = "matterbridge";
-        url = "https://matterbridge.@EXTERNAL_DOMAIN@";
-        description = "Matterbridge UI (bee:8283)";
       }
 
       # Infrastructure Services (mini)
@@ -156,12 +140,6 @@
 
       # Auth-protected services (expect 401)
       {
-        name = "zigbee";
-        url = "https://zigbee.@EXTERNAL_DOMAIN@";
-        expectedStatus = 401;
-        description = "Zigbee2MQTT with basic auth (bee:8081)";
-      }
-      {
         name = "netdata-mini";
         url = "https://netdata-mini.@EXTERNAL_DOMAIN@";
         expectedStatus = 401;
@@ -196,13 +174,6 @@
         url = "postgres://postgres_monitor:@POSTGRES_PASSWORD@@@BEE_IP@:5432/postgres";
         interval = 60;
         description = "PostgreSQL database on bee (Home Assistant, Matrix)";
-      }
-      {
-        name = "mosquitto-bee";
-        type = "tcp";
-        url = "${config.flags.beeIp}:1883";
-        interval = 60;
-        description = "Mosquitto MQTT broker on bee (Zigbee2MQTT, IoT)";
       }
 
       # DNS Infrastructure
@@ -265,15 +236,6 @@
         url = "${config.flags.miniIp}:443";
         interval = 60;
         description = "Caddy HTTPS on mini (reverse proxy)";
-      }
-
-      # Home Automation Infrastructure
-      {
-        name = "matter-server-bee";
-        type = "tcp";
-        url = "${config.flags.beeIp}:5580";
-        interval = 60;
-        description = "Matter Server WebSocket on bee (Home Assistant integration)";
       }
 
       # VPN Mesh Network

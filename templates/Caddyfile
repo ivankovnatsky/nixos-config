@@ -1,4 +1,4 @@
-# Global settings
+# Global settingscaddy
 {
 	# Log configuration
 	log {
@@ -81,9 +81,6 @@
 		}
 	}
 
-	@homeassistant host homeassistant.@externalDomain@
-	reverse_proxy @homeassistant @beeIp@:8123
-
 	@matrix host matrix.@externalDomain@
 	reverse_proxy @matrix @beeIp@:8008 {
 		header_up X-Real-IP {remote_host}
@@ -128,21 +125,6 @@
 	@kuma host kuma.@externalDomain@
 	reverse_proxy @kuma @miniIp@:3001
 
-	# Zigbee2MQTT web interface
-	@zigbee host zigbee.@externalDomain@
-	handle @zigbee {
-		# Basic authentication for all paths
-		basic_auth /* {
-			@zigbeeUsername@ @zigbeePassword@
-		}
-		# Proxy to Zigbee2MQTT web interface
-		reverse_proxy @beeIp@:8081 {
-			# Enable WebSocket support for live updates
-			header_up X-Real-IP {remote_host}
-			header_up Host {host}
-		}
-	}
-
 	@syncthing-mini host syncthing-mini.@externalDomain@
 	reverse_proxy @syncthing-mini @miniIp@:8384
 
@@ -175,26 +157,6 @@
 		transport http {
 			keepalive 30s
 			response_header_timeout 30s
-		}
-	}
-
-	# Homebridge UI
-	@homebridge host homebridge.@externalDomain@
-	handle @homebridge {
-		# Proxy to Homebridge UI
-		reverse_proxy @beeIp@:8581 {
-			header_up X-Real-IP {remote_host}
-			header_up Host {host}
-		}
-	}
-
-	# Matterbridge UI
-	@matterbridge host matterbridge.@externalDomain@
-	handle @matterbridge {
-		# Proxy to Matterbridge UI
-		reverse_proxy @beeIp@:8283 {
-			header_up X-Real-IP {remote_host}
-			header_up Host {host}
 		}
 	}
 

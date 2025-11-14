@@ -51,18 +51,6 @@ in
     group = "caddy";
   };
 
-  sops.secrets.zigbee-username = {
-    key = "zigbee/username";
-    owner = "caddy";
-    group = "caddy";
-  };
-
-  sops.secrets.zigbee-password = {
-    key = "zigbee/password";
-    owner = "caddy";
-    group = "caddy";
-  };
-
   sops.secrets.podsync-username = {
     key = "podsync/username";
     owner = "caddy";
@@ -146,8 +134,6 @@ in
       EXTERNAL_DOMAIN=$(cat ${config.sops.secrets.external-domain.path})
       LETS_ENCRYPT_EMAIL=$(cat ${config.sops.secrets.lets-encrypt-email.path})
       CLOUDFLARE_API_TOKEN=$(cat ${config.sops.secrets.cloudflare-api-token.path})
-      ZIGBEE_USERNAME=$(cat ${config.sops.secrets.zigbee-username.path})
-      ZIGBEE_PASSWORD=$(cat ${config.sops.secrets.zigbee-password.path})
       PODSYNC_USERNAME=$(cat ${config.sops.secrets.podsync-username.path})
       PODSYNC_PASSWORD=$(cat ${config.sops.secrets.podsync-password.path})
       NETDATA_BEE_USERNAME=$(cat ${config.sops.secrets.netdata-bee-username.path})
@@ -169,8 +155,6 @@ in
         -e "s|@a3wIp@|${config.flags.a3wIp}|g" \
         -e "s|@logPathPrefix@|/var/log|g" \
         -e "s|@elementWebPath@|$ELEMENT_WEB_PATH|g" \
-        -e "s|@zigbeeUsername@|$ZIGBEE_USERNAME|g" \
-        -e "s|@zigbeePassword@|$ZIGBEE_PASSWORD|g" \
         -e "s|@podsyncUsername@|$PODSYNC_USERNAME|g" \
         -e "s|@podsyncPassword@|$PODSYNC_PASSWORD|g" \
         -e "s|@netdataBeeUsername@|$NETDATA_BEE_USERNAME|g" \

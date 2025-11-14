@@ -1,7 +1,2 @@
-{
-  imports = [
-    ./bridges
-    ./core
-    ./devices
-  ];
-}
+{ }
+
