@@ -123,9 +123,12 @@ let
         #!/bin/bash
         set -e
 
+        # Add basic Darwin utilities to PATH for preStart scripts
+        export PATH="/bin:/usr/bin:$PATH"
+
         # Create log directory with proper permissions
-        mkdir -p ${cfg.logDir}
-        chmod 755 ${cfg.logDir}
+        /bin/mkdir -p ${cfg.logDir}
+        /bin/chmod 755 ${cfg.logDir}
 
         ${optionalString (cfg.waitForPath != null) ''
           echo "Waiting for ${cfg.waitForPath}..."
@@ -134,11 +137,11 @@ let
         ''}
 
         ${optionalString (cfg.dataDir != null) ''
-          mkdir -p ${cfg.dataDir}
+          /bin/mkdir -p ${cfg.dataDir}
         ''}
 
         ${optionalString (cfg.extraDirs != [ ]) ''
-          ${concatMapStringsSep "\n" (dir: "mkdir -p ${dir}") cfg.extraDirs}
+          ${concatMapStringsSep "\n" (dir: "/bin/mkdir -p ${dir}") cfg.extraDirs}
         ''}
 
         ${cfg.preStart}

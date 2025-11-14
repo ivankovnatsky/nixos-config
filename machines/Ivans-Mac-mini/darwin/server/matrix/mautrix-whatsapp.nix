@@ -99,82 +99,59 @@ in
     "olm-3.2.16"
   ];
 
-  launchd.user.agents.mautrix-whatsapp = {
-    serviceConfig = {
-      Label = "org.nixos.mautrix-whatsapp";
-      RunAtLoad = true;
-      KeepAlive = true;
-      StandardOutPath = "/tmp/agents/log/launchd/mautrix-whatsapp.out.log";
-      StandardErrorPath = "/tmp/agents/log/launchd/mautrix-whatsapp.error.log";
-      ThrottleInterval = 10;
+  local.launchd.services.mautrix-whatsapp = {
+    enable = true;
+    waitForPath = "/Volumes/Storage";
+    dataDir = dataDir;
+
+    environment = {
+      PATH = "${pkgs.ffmpeg-headless}/bin";
+      HOME = dataDir;
     };
 
-    command =
-      let
-        initScript = pkgs.writeShellScript "mautrix-whatsapp-init" ''
-          set -e
+    preStart = ''
+      # Read secrets from sops
+      EXTERNAL_DOMAIN=$(cat ${config.sops.secrets.external-domain.path})
+      MATRIX_USERNAME=$(cat ${config.sops.secrets.matrix-username.path})
+      SERVER_NAME="matrix.$EXTERNAL_DOMAIN"
+      ADMIN_USER="@$MATRIX_USERNAME:$SERVER_NAME"
 
-          # Add ffmpeg to PATH for voice message conversion
-          export PATH="${pkgs.ffmpeg-headless}/bin:$PATH"
+      # Copy base config and update with runtime values
+      test -f '${settingsFile}' && rm -f '${settingsFile}'
+      old_umask=$(umask)
+      umask 0177
+      cp '${settingsFileUnsubstituted}' '${settingsFile}'
 
-          # Create log directory
-          mkdir -p /tmp/agents/log/launchd
+      # Update config with server_name and permissions using jq
+      ${pkgs.jq}/bin/jq \
+        --arg domain "$SERVER_NAME" \
+        --arg admin "$ADMIN_USER" \
+        '.homeserver.domain = $domain | .bridge.permissions[$admin] = "admin"' \
+        '${settingsFile}' > '${settingsFile}.tmp'
+      mv '${settingsFile}.tmp' '${settingsFile}'
+      umask $old_umask
 
-          # Wait for the Storage volume to be mounted
-          echo "Waiting for /Volumes/Storage to be available..."
-          /bin/wait4path "/Volumes/Storage"
-          echo "/Volumes/Storage is now available!"
+      # Generate the appservice's registration file if absent
+      if [ ! -f '${registrationFile}' ]; then
+        echo "Generating registration file..."
+        ${whatsappPackage}/bin/mautrix-whatsapp \
+          --generate-registration \
+          --config='${settingsFile}' \
+          --registration='${registrationFile}'
+      fi
 
-          # Read secrets from sops
-          EXTERNAL_DOMAIN=$(cat ${config.sops.secrets.external-domain.path})
-          MATRIX_USERNAME=$(cat ${config.sops.secrets.matrix-username.path})
-          SERVER_NAME="matrix.$EXTERNAL_DOMAIN"
-          ADMIN_USER="@$MATRIX_USERNAME:$SERVER_NAME"
+      # Sync registration tokens back to config
+      old_umask=$(umask)
+      umask 0177
+      ${pkgs.yq}/bin/yq -s '.[0].appservice.as_token = .[1].as_token
+        | .[0].appservice.hs_token = .[1].hs_token
+        | .[0]' \
+        '${settingsFile}' '${registrationFile}' > '${settingsFile}.tmp'
+      mv '${settingsFile}.tmp' '${settingsFile}'
+      umask $old_umask
+    '';
 
-          # Create data directory
-          mkdir -p ${dataDir}
-
-          # Copy base config and update with runtime values
-          test -f '${settingsFile}' && rm -f '${settingsFile}'
-          old_umask=$(umask)
-          umask 0177
-          cp '${settingsFileUnsubstituted}' '${settingsFile}'
-
-          # Update config with server_name and permissions using jq
-          ${pkgs.jq}/bin/jq \
-            --arg domain "$SERVER_NAME" \
-            --arg admin "$ADMIN_USER" \
-            '.homeserver.domain = $domain | .bridge.permissions[$admin] = "admin"' \
-            '${settingsFile}' > '${settingsFile}.tmp'
-          mv '${settingsFile}.tmp' '${settingsFile}'
-          umask $old_umask
-
-          # Generate the appservice's registration file if absent
-          if [ ! -f '${registrationFile}' ]; then
-            echo "Generating registration file..."
-            ${whatsappPackage}/bin/mautrix-whatsapp \
-              --generate-registration \
-              --config='${settingsFile}' \
-              --registration='${registrationFile}'
-          fi
-
-          # Sync registration tokens back to config
-          old_umask=$(umask)
-          umask 0177
-          ${pkgs.yq}/bin/yq -s '.[0].appservice.as_token = .[1].as_token
-            | .[0].appservice.hs_token = .[1].hs_token
-            | .[0]' \
-            '${settingsFile}' '${registrationFile}' > '${settingsFile}.tmp'
-          mv '${settingsFile}.tmp' '${settingsFile}'
-          umask $old_umask
-
-          # Start bridge
-          export HOME=${dataDir}
-          exec ${whatsappPackage}/bin/mautrix-whatsapp \
-            --config='${settingsFile}'
-        '';
-      in
-      "${initScript}";
+    command = "${whatsappPackage}/bin/mautrix-whatsapp --config='${settingsFile}'";
   };
 
   environment.systemPackages = [
