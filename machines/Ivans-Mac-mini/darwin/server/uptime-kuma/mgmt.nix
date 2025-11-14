@@ -79,27 +79,6 @@
 
       # Infrastructure Services (bee)
       {
-        name = "audiobookshelf";
-        url = "https://audiobookshelf.@EXTERNAL_DOMAIN@";
-        description = "Audiobookshelf with WebSocket (bee:8000)";
-      }
-      {
-        name = "matrix";
-        url = "https://matrix.@EXTERNAL_DOMAIN@";
-        interval = 30;
-        description = "Matrix Synapse server (bee:8008) - Critical service";
-      }
-      {
-        name = "element";
-        url = "https://element.@EXTERNAL_DOMAIN@";
-        description = "Element web client - Static files";
-      }
-      {
-        name = "openwebui";
-        url = "https://openwebui.@EXTERNAL_DOMAIN@";
-        description = "OpenWebUI with WebSocket (bee:8090)";
-      }
-      {
         name = "syncthing-bee";
         url = "https://syncthing-bee.@EXTERNAL_DOMAIN@";
         description = "Syncthing on bee (bee:8384)";
@@ -151,15 +130,6 @@
         name = "ollama";
         url = "https://ollama.@EXTERNAL_DOMAIN@";
         description = "Ollama LLM API with failover (a3w:11434 → mini:11434)";
-      }
-
-      # Backend Infrastructure - Database & Message Broker
-      {
-        name = "postgresql-bee";
-        type = "postgres";
-        url = "postgres://postgres_monitor:@POSTGRES_PASSWORD@@@BEE_IP@:5432/postgres";
-        interval = 60;
-        description = "PostgreSQL database on bee (Home Assistant, Matrix)";
       }
 
       # DNS Infrastructure
