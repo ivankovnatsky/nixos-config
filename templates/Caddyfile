@@ -141,14 +141,6 @@
 		}
 	}
 
-	# DNS over HTTPS for bee
-	@doh-bee host doh-bee.@externalDomain@
-	reverse_proxy @doh-bee http://@beeIp@:8053 {
-		# Enable client IP forwarding for EDNS
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-
 	# DNS over HTTPS for mini
 	@doh-mini host doh-mini.@externalDomain@
 	reverse_proxy @doh-mini http://@miniIp@:8053 {
@@ -223,16 +215,9 @@
 		header_up Host {host}
 	}
 
-	# Default fallback for wildcard (original behavior)
-	reverse_proxy @beeIp@:80
-
 	# Logging for ACME and DNS services
 	log {
 		output file @logPathPrefix@/caddy/acme-sync.log {
-			roll_size 10MB
-			roll_keep 5
-		}
-		output file @logPathPrefix@/caddy/dns-bee.log {
 			roll_size 10MB
 			roll_keep 5
 		}
