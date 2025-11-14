@@ -98,28 +98,19 @@ in
   config = mkIf cfg.enable {
     environment.systemPackages = [ cfg.package ];
 
-    launchd.daemons.doh-server = {
+    local.launchd.services.doh-server = {
+      enable = true;
+      type = "daemon";
+      keepAlive = cfg.alwaysKeepRunning;
+
       command =
         let
           configFile = toml.generate "doh-server.conf" cfg.settings;
-          startScript = pkgs.writeShellScriptBin "start-doh-server" ''
-            # Create log directory
-            mkdir -p /tmp/log/doh-server
-            chmod 755 /tmp/log/doh-server
-
-            echo "Starting doh-server..."
-            exec ${cfg.package}/bin/doh-server -conf ${configFile}
-          '';
         in
-        "${startScript}/bin/start-doh-server";
+        "${cfg.package}/bin/doh-server -conf ${configFile}";
 
-      serviceConfig = {
-        Label = "org.nixos.doh-server";
-        RunAtLoad = true;
-        KeepAlive = cfg.alwaysKeepRunning;
+      extraServiceConfig = {
         AbandonProcessGroup = false;
-        StandardOutPath = "/tmp/log/launchd/doh-server.log";
-        StandardErrorPath = "/tmp/log/launchd/doh-server.error.log";
       };
     };
   };

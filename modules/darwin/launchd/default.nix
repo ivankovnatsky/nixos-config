@@ -27,8 +27,7 @@ let
 
         label = mkOption {
           type = types.str;
-          default =
-            if config.type == "daemon" then "org.nixos.${name}" else "com.ivankovnatsky.${name}";
+          default = "com.ivankovnatsky.${name}";
           description = "LaunchD label for the service";
         };
 

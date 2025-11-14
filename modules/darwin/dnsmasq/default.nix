@@ -114,28 +114,15 @@ in
       '')
     );
 
-    launchd.daemons.dnsmasq = {
-      command =
-        let
-          startDnsmasqScript = pkgs.writeShellScriptBin "start-dnsmasq" ''
-            # Create the required directories
-            echo "Setting up log directories..."
-            mkdir -p /tmp/log/dnsmasq
-            chmod 755 /tmp/log/dnsmasq
+    local.launchd.services.dnsmasq = {
+      enable = true;
+      type = "daemon";
+      keepAlive = cfg.alwaysKeepRunning;
 
-            echo "Starting dnsmasq..."
-            exec ${cfg.package}/bin/dnsmasq -k -C ${configFile}
-          '';
-        in
-        "${startDnsmasqScript}/bin/start-dnsmasq";
+      command = "${cfg.package}/bin/dnsmasq -k -C ${configFile}";
 
-      serviceConfig = {
-        Label = "org.nixos.dnsmasq";
-        RunAtLoad = true;
-        KeepAlive = cfg.alwaysKeepRunning;
+      extraServiceConfig = {
         AbandonProcessGroup = false;
-        StandardOutPath = "/tmp/log/launchd/dnsmasq.log";
-        StandardErrorPath = "/tmp/log/launchd/dnsmasq.error.log";
       };
     };
   };

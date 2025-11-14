@@ -7,7 +7,7 @@
 # Syncthing configuration for Darwin systems
 #
 # Syncthing will be available at http://localnetworkIp:8384 after reboot or running:
-# launchctl kickstart -k gui/$(id -u)/net.syncthing.syncthing
+# launchctl kickstart -k gui/$(id -u)/com.ivankovnatsky.syncthing
 #
 # Configuration will be stored in ~/Library/Application Support/Syncthing
 # Log file will be at ~/Library/Logs/syncthing.log
@@ -28,33 +28,20 @@ in
 {
 
   # Configure launchd service for Syncthing
-  launchd.user.agents.syncthing = {
-    serviceConfig = {
-      Label = "net.syncthing.syncthing";
-      RunAtLoad = true;
-      KeepAlive = true;
-      StandardOutPath = "/tmp/agents/log/launchd/syncthing.log";
-      StandardErrorPath = "/tmp/agents/log/launchd/syncthing.error.log";
-      ThrottleInterval = 10; # Restart on failure after 10 seconds
-    };
+  local.launchd.services.syncthing = {
+    enable = true;
+    type = "user-agent";
+    keepAlive = true;
+    throttleInterval = 10; # Restart on failure after 10 seconds
+    waitForPath = workingDirectory;
 
-    # Using command instead of ProgramArguments to utilize wait4path
-    command =
-      let
-        # Create a startup script that waits for external volume to be fully available
-        startupScript = pkgs.writeShellScriptBin "syncthing-start" ''
-          # Wait for the external volume to be available
-          /bin/wait4path "${workingDirectory}"
-
-          # Execute Syncthing with parameters
-          exec ${pkgs.syncthing}/bin/syncthing \
-            -no-browser \
-            -no-restart \
-            -no-upgrade \
-            -gui-address=${guiAddress} \
-            -logflags=0
-        '';
-      in
-      "${startupScript}/bin/syncthing-start";
+    command = ''
+      ${pkgs.syncthing}/bin/syncthing \
+        -no-browser \
+        -no-restart \
+        -no-upgrade \
+        -gui-address=${guiAddress} \
+        -logflags=0
+    '';
   };
 }

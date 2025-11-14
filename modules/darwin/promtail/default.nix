@@ -66,21 +66,17 @@ in
     '';
     environment.systemPackages = [ cfg.package ];
 
-    launchd.daemons.promtail = {
-      script = ''
-        #!/bin/bash
-        mkdir -p ${cfg.dataDir}
-        ${promtailBinary} -config.file=${configFile} -config.expand-env=true
-      '';
-      serviceConfig = {
-        Label = "org.grafana.promtail";
-        RunAtLoad = true;
-        KeepAlive = true;
-        StandardOutPath = "/tmp/log/launchd/promtail.log";
-        StandardErrorPath = "/tmp/log/launchd/promtail.error.log";
-        EnvironmentVariables = {
-          PATH = "${pkgs.coreutils}/bin:${cfg.package}/bin:${pkgs.bash}/bin";
-        };
+    local.launchd.services.promtail = {
+      enable = true;
+      type = "daemon";
+      keepAlive = true;
+
+      dataDir = cfg.dataDir;
+
+      command = "${promtailBinary} -config.file=${configFile} -config.expand-env=true";
+
+      environment = {
+        PATH = "${pkgs.coreutils}/bin:${cfg.package}/bin:${pkgs.bash}/bin";
       };
     };
 
