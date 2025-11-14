@@ -114,12 +114,6 @@ with lib;
       };
     };
 
-    beeIp = mkOption {
-      type = types.str;
-      description = "Bee IP address";
-      default = "192.168.50.3";
-    };
-
     miniIp = mkOption {
       type = types.str;
       description = "Mac mini IP address";

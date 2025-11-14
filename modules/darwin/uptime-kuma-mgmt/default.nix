@@ -181,7 +181,6 @@ in
             # Read additional secrets for placeholder substitution
             EXTERNAL_DOMAIN=$(cat /run/secrets/external-domain)
             POSTGRES_PASSWORD=$(cat /run/secrets/postgres-monitoring-password)
-            BEE_IP="${config.flags.beeIp}"
 
             # Read secrets from files or use direct values (with runtime substitution)
             ${if cfg.baseUrlFile != null then ''
@@ -204,7 +203,6 @@ in
             RUNTIME_CONFIG="/tmp/uptime-kuma-monitors-$$.json"
             sed "s|@EXTERNAL_DOMAIN@|$EXTERNAL_DOMAIN|g" "${configJsonTemplate}" | \
               sed "s|@POSTGRES_PASSWORD@|$POSTGRES_PASSWORD|g" | \
-              sed "s|@BEE_IP@|$BEE_IP|g" > "$RUNTIME_CONFIG"
 
             # Build command with optional Discord webhook
             ${if cfg.discordWebhook != null || cfg.discordWebhookFile != null then ''
