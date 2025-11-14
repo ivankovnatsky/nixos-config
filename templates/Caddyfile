@@ -74,9 +74,6 @@
 		}
 	}
 
-	@syncthing-bee host syncthing-bee.@externalDomain@
-	reverse_proxy @syncthing-bee @beeIp@:8384
-
 	# Beszel monitoring hub
 	@beszel host beszel.@externalDomain@
 	reverse_proxy @beszel @miniIp@:8091 {
