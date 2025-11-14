@@ -87,18 +87,9 @@ export TARGET_MACHINE=192.168.50.4
 DATE_DIR=$(date +%Y-%m-%d)
 export DATE_DIR
 
-# Determine backup path based on hostname
-if [[ ${HOSTNAME,,} == "bee" ]]; then
-  BACKUP_PATH=/storage/Data/Drive/Crypt/Machines/
-  mkdir -p "$BACKUP_PATH/$HOSTNAME/system/$DATE_DIR"
-  chown -R ivan:users "$BACKUP_PATH/$HOSTNAME"
-  mv "$ARCHIVE_PATH" "$BACKUP_PATH/$HOSTNAME/system/$DATE_DIR/system.tar.gz"
-  chmod 644 "$BACKUP_PATH/$HOSTNAME/system/$DATE_DIR/system.tar.gz"
-  chown ivan:users "$BACKUP_PATH/$HOSTNAME/system/$DATE_DIR/system.tar.gz"
-else
-  BACKUP_PATH=/Volumes/Storage/Data/Drive/Crypt/Machines/
-  # shellcheck disable=SC2029
-  ssh "ivan@$TARGET_MACHINE" "mkdir -p $BACKUP_PATH/$HOSTNAME/system/$DATE_DIR"
-  scp "$ARCHIVE_PATH" ivan@"$TARGET_MACHINE:$BACKUP_PATH/$HOSTNAME/system/$DATE_DIR/system.tar.gz"
-  rm "$ARCHIVE_PATH"
-fi
+# Always copy to mini regardless of machine
+BACKUP_PATH=/Volumes/Storage/Data/Drive/Crypt/Machines/
+# shellcheck disable=SC2029
+ssh "ivan@$TARGET_MACHINE" "mkdir -p $BACKUP_PATH/$HOSTNAME/system/$DATE_DIR"
+scp "$ARCHIVE_PATH" ivan@"$TARGET_MACHINE:$BACKUP_PATH/$HOSTNAME/system/$DATE_DIR/system.tar.gz"
+rm "$ARCHIVE_PATH"
