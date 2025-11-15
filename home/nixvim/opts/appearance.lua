@@ -99,7 +99,7 @@ end
 local function get_gnome_appearance(callback)
   -- Check if gsettings is available
   vim.system(
-    { "command", "-v", "gsettings" },
+    { "sh", "-c", "command -v gsettings" },
     { text = true },
     function(obj)
       if obj.code ~= 0 then
@@ -142,7 +142,7 @@ local function get_system_appearance(callback)
   elseif current_os == "Linux" then
     -- Check if we're in a GNOME environment first
     vim.system(
-      { "command", "-v", "gsettings" },
+      { "sh", "-c", "command -v gsettings" },
       { text = true },
       function(obj)
         if obj.code == 0 then
