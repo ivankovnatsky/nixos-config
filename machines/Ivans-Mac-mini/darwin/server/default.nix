@@ -27,6 +27,7 @@
     ../../../../system/documentation.nix
     ../../../../system/nix.nix
     ./beszel.nix
+    ./audiobookshelf
     ./bin.nix
     ./uptime-kuma
     ./dns.nix

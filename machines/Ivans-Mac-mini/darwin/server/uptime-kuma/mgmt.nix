@@ -72,6 +72,11 @@
         url = "https://stash.@EXTERNAL_DOMAIN@";
         description = "Stash media organizer with WebSocket (mini:9999)";
       }
+      {
+        name = "audiobookshelf";
+        url = "https://audiobookshelf.@EXTERNAL_DOMAIN@";
+        description = "Audiobookshelf audiobook and podcast server (mini:8000)";
+      }
 
       # Infrastructure Services (mini)
       {
