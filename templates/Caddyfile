@@ -205,6 +205,18 @@
 		header_up Host {host}
 	}
 
+	@audiobookshelf host audiobookshelf.@externalDomain@
+	reverse_proxy @audiobookshelf @miniIp@:8000 {
+		# Enable WebSocket support for real-time updates
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		# Increase timeouts for streaming
+		transport http {
+			keepalive 12h
+			keepalive_idle_conns 100
+		}
+	}
+
 	# Logging for ACME and DNS services
 	log {
 		output file @logPathPrefix@/caddy/acme-sync.log {
