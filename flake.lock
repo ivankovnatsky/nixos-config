@@ -1083,11 +1083,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1763220683,
-        "narHash": "sha256-4NxZ+AhY8L2GmPuJXIO60QK17xjMSozAf5OKxQnX6KQ=",
+        "lastModified": 1763221085,
+        "narHash": "sha256-px/Sr+Q00epxMDpscxvjvfezxVunSha7ZF4wrv/uGe0=",
         "owner": "ivankovnatsky",
         "repo": "podservice",
-        "rev": "71e6a6c4c18ed03e06002e0469c6a09d5edb8792",
+        "rev": "a1543233adaef1bdc078e9dde7fbd8f9b7034f6b",
         "type": "github"
       },
       "original": {
