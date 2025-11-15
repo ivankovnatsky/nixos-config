@@ -9,6 +9,7 @@
     ../../../nixos/chromium.nix
     ../../../nixos/keyboard.nix
     ../../../system/nix.nix
+    ../../../system/rebuild-daemon.nix
     ../../../system/scripts
     ./bluetooth.nix
     ./boot.nix
@@ -20,7 +21,6 @@
     ./networking.nix
     ./nixpkgs.nix
     ./power-management.nix
-    ./rebuild-daemon.nix
     ./remote-build.nix
     ./security.nix
     ./steam.nix

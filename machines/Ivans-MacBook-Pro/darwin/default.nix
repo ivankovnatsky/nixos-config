@@ -20,12 +20,12 @@
     ../../../modules/flags
     ../../../system/documentation.nix
     ../../../system/nix.nix
+    ../../../system/rebuild-daemon.nix
     ../../../system/scripts
     ./dock.nix
     ./git.nix
     ./homebrew.nix
     ./nextdns
-    ./rebuild-daemon.nix
     ./syncthing-mgmt.nix
   ];
 }
