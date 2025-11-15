@@ -14,7 +14,7 @@
     ../../../home/lsd.nix
     ../../../home/mpv.nix
     ../../../home/nixvim
-    ../../../home/nixvim/plugins/copilot-lua
+    # ../../../home/nixvim/plugins/copilot-lua
     ../../../home/npm.nix
     ../../../home/rebuild-diff.nix
     ../../../home/scripts.nix
