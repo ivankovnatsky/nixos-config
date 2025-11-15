@@ -5,7 +5,7 @@
     ./nvidia.nix
     # ./smb.nix
     ../../../modules/flags
-    ../../../modules/nixos/tmux-rebuild
+    ../../../modules/nixos/rebuild-daemon
     ../../../nixos/chromium.nix
     ../../../nixos/keyboard.nix
     ../../../system/nix.nix
@@ -20,11 +20,11 @@
     ./networking.nix
     ./nixpkgs.nix
     ./power-management.nix
+    ./rebuild-daemon.nix
     ./remote-build.nix
     ./security.nix
     ./steam.nix
     ./sudo.nix
-    ./tmux-rebuild.nix
     ./tpm2.nix
     ./user.nix
   ];
