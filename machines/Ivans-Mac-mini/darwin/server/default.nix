@@ -26,6 +26,7 @@
     ../../../../modules/darwin/uptime-kuma-mgmt
     ../../../../system/documentation.nix
     ../../../../system/nix.nix
+    ../../../../system/rebuild-daemon.nix
     ./beszel.nix
     ./audiobookshelf
     ./bin.nix
@@ -56,6 +57,5 @@
     ./sudo.nix
     ./system.nix
     ./tailscale.nix
-    ./rebuild-daemon.nix
   ];
 }

@@ -15,6 +15,7 @@
     ../../../modules/flags
     ../../../system/documentation.nix
     ../../../system/nix.nix
+    ../../../system/rebuild-daemon.nix
     ../../../system/scripts
     ./dock.nix
     ./flags.nix
@@ -25,7 +26,6 @@
     ./openssh.nix
     ./power.nix
     ./prevent-sleep.nix
-    ./rebuild-daemon.nix
     ./security.nix
     ./shell.nix
     ./sudo.nix
