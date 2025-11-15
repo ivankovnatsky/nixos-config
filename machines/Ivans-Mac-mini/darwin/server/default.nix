@@ -43,6 +43,7 @@
     ./nextdns
     ./nix.nix
     ./ollama.nix
+    ./open-webui.nix
     ./openssh.nix
     ./packages.nix
     ./podservice

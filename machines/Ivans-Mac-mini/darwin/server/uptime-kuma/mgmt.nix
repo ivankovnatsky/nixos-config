@@ -161,6 +161,11 @@
         url = "https://ollama.@EXTERNAL_DOMAIN@";
         description = "Ollama LLM API with failover (a3w:11434 → mini:11434)";
       }
+      {
+        name = "openwebui";
+        url = "https://openwebui.@EXTERNAL_DOMAIN@";
+        description = "Open WebUI with WebSocket (mini:8090)";
+      }
 
       # DNS Infrastructure
       {
