@@ -121,6 +121,13 @@ in
 
       command = "${cfg.package}/bin/dnsmasq -k -C ${configFile}";
 
+      # Create dnsmasq's log directory if log-facility is configured
+      extraDirs =
+        let
+          logFacility = cfg.settings."log-facility" or null;
+        in
+        optional (logFacility != null) (dirOf logFacility);
+
       extraServiceConfig = {
         AbandonProcessGroup = false;
       };
