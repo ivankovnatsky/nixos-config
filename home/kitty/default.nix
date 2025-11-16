@@ -41,6 +41,9 @@ let
     tab_title_template "{index}: {tab.active_exe}"
     macos_option_as_alt yes
 
+    # Shell integration for tracking pwd in new tabs
+    shell_integration enabled
+
     enabled_layouts tall, grid
 
     map ctrl+shift+k neighboring_window up
