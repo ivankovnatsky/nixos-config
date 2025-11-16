@@ -26,6 +26,7 @@
     ./git.nix
     ./homebrew.nix
     ./nextdns
+    ./podservice
     ./syncthing-mgmt.nix
   ];
 }
