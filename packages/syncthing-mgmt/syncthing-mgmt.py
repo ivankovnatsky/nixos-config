@@ -13,9 +13,17 @@ import bcrypt
 import traceback
 import os
 import socket
+import logging
 from typing import Optional, Tuple, List
 
 USER_AGENT = "syncthing-mgmt/1.0.0"
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(message)s',
+    stream=sys.stderr
+)
 
 
 class SyncthingClient:
@@ -38,13 +46,13 @@ class SyncthingClient:
             if response.status_code not in (200, 201, 204):
                 try:
                     error_data = response.json()
-                    print(f"DEBUG: Error response: {error_data}", file=sys.stderr)
+                    logging.debug(f"DEBUG: Error response: {error_data}")
                     message = error_data.get("error", "Unknown error")
                     raise Exception(
                         f"API error: {message} (Status: {response.status_code})"
                     )
                 except ValueError:
-                    print(f"DEBUG: Response text: {response.text}", file=sys.stderr)
+                    logging.debug(f"DEBUG: Response text: {response.text}")
                     raise Exception(
                         f"API request failed with status {response.status_code}"
                     )
@@ -259,12 +267,12 @@ def get_client(args, use_fallback: bool = True):
     if use_fallback and hasattr(args, 'mode') and args.mode == 'cli':
         # Check if primary URL is reachable
         if not check_syncthing_reachable(base_url, api_key):
-            print(f"Primary Syncthing URL ({base_url}) is not reachable, trying fallbacks...", file=sys.stderr)
+            logging.info(f"Primary Syncthing URL ({base_url}) is not reachable, trying fallbacks...")
 
             fallback_url, source = find_reachable_syncthing_url(base_url, api_key)
 
             if fallback_url:
-                print(f"Found reachable Syncthing instance at {source}: {fallback_url}", file=sys.stderr)
+                logging.info(f"Found reachable Syncthing instance at {source}: {fallback_url}")
                 base_url = fallback_url
             else:
                 # List what we tried
@@ -278,7 +286,7 @@ Please check that:
   2. The correct URL is specified with --base-url
   3. You have network connectivity to the Syncthing instance
 """
-                print(error_msg, file=sys.stderr)
+                logging.error(error_msg)
                 raise Exception(f"Syncthing API not reachable at {base_url}")
 
     return SyncthingClient(base_url, api_key)
@@ -297,39 +305,39 @@ def sync_devices(client, devices_config, dry_run=False):
                        if dev and isinstance(dev, dict) and "deviceID" in dev}
     configured_device_ids = set(devices_config.values())
 
-    print(f"  Syncing devices ({len(devices_config)} configured)...", file=sys.stderr)
+    logging.info(f"  Syncing devices ({len(devices_config)} configured)...")
 
     # Add or update devices that are in config
     for device_name, device_id in devices_config.items():
         if device_id in current_devices:
             current_name = current_devices[device_id].get("name", "")
             if current_name != device_name:
-                print(f"    UPDATE: {current_name} -> {device_name} ({device_id[:7]}...)", file=sys.stderr)
+                logging.info(f"    UPDATE: {current_name} -> {device_name} ({device_id[:7]}...)")
                 if not dry_run:
                     client.update_device(device_id, {"name": device_name})
-                    print(f"      ✓ Device name updated", file=sys.stderr)
+                    logging.info(f"      ✓ Device name updated")
                 else:
-                    print(f"      [DRY-RUN] Would update device name", file=sys.stderr)
+                    logging.info(f"      [DRY-RUN] Would update device name")
             else:
-                print(f"    OK: {device_name} ({device_id[:7]}...) already configured", file=sys.stderr)
+                logging.info(f"    OK: {device_name} ({device_id[:7]}...) already configured")
         else:
-            print(f"    ADD: {device_name} ({device_id[:7]}...)", file=sys.stderr)
+            logging.info(f"    ADD: {device_name} ({device_id[:7]}...)")
             if not dry_run:
                 client.add_device(device_id, device_name)
-                print(f"      ✓ Device added", file=sys.stderr)
+                logging.info(f"      ✓ Device added")
             else:
-                print(f"      [DRY-RUN] Would add device", file=sys.stderr)
+                logging.info(f"      [DRY-RUN] Would add device")
 
     # Remove devices that are in Syncthing but not in config
     for device_id, device in current_devices.items():
         if device_id not in configured_device_ids:
             device_name = device.get("name", "Unknown")
-            print(f"    REMOVE: {device_name} ({device_id[:7]}...)", file=sys.stderr)
+            logging.info(f"    REMOVE: {device_name} ({device_id[:7]}...)")
             if not dry_run:
                 client.remove_device(device_id)
-                print(f"      ✓ Device removed", file=sys.stderr)
+                logging.info(f"      ✓ Device removed")
             else:
-                print(f"      [DRY-RUN] Would remove device", file=sys.stderr)
+                logging.info(f"      [DRY-RUN] Would remove device")
 
 
 def sync_folders(client, folders_config, devices_config, dry_run=False):
@@ -349,7 +357,7 @@ def sync_folders(client, folders_config, devices_config, dry_run=False):
     # Build device name to ID mapping for resolving device references
     device_name_to_id = {name: dev_id for name, dev_id in devices_config.items()}
 
-    print(f"  Syncing folders ({len(folders_config)} configured)...", file=sys.stderr)
+    logging.info(f"  Syncing folders ({len(folders_config)} configured)...")
 
     # Add or update folders that are in config
     for folder_id, folder_cfg in folders_config.items():
@@ -377,7 +385,7 @@ def sync_folders(client, folders_config, devices_config, dry_run=False):
 
             # Check if anything changed
             if current_label != new_label or current_path != new_path or current_devices != new_devices:
-                print(f"    UPDATE: {folder_id}", file=sys.stderr)
+                logging.info(f"    UPDATE: {folder_id}")
                 if not dry_run:
                     # Build device list for API
                     devices_list = [{"deviceID": dev_id} for dev_id in new_devices]
@@ -387,13 +395,13 @@ def sync_folders(client, folders_config, devices_config, dry_run=False):
                         "devices": devices_list,
                     }
                     client.update_folder(folder_id, update_data)
-                    print(f"      ✓ Folder updated", file=sys.stderr)
+                    logging.info(f"      ✓ Folder updated")
                 else:
-                    print(f"      [DRY-RUN] Would update folder", file=sys.stderr)
+                    logging.info(f"      [DRY-RUN] Would update folder")
             else:
-                print(f"    OK: {folder_id} already configured", file=sys.stderr)
+                logging.info(f"    OK: {folder_id} already configured")
         else:
-            print(f"    ADD: {folder_id}", file=sys.stderr)
+            logging.info(f"    ADD: {folder_id}")
             if not dry_run:
                 # Build device list for API
                 devices_list = [{"deviceID": dev_id} for dev_id in resolved_device_ids]
@@ -404,20 +412,20 @@ def sync_folders(client, folders_config, devices_config, dry_run=False):
                     "devices": devices_list,
                 }
                 client.add_folder(folder_id, add_data)
-                print(f"      ✓ Folder added", file=sys.stderr)
+                logging.info(f"      ✓ Folder added")
             else:
-                print(f"      [DRY-RUN] Would add folder", file=sys.stderr)
+                logging.info(f"      [DRY-RUN] Would add folder")
 
     # Remove folders that are in Syncthing but not in config
     for folder_id, folder in current_folders.items():
         if folder_id not in configured_folder_ids:
             folder_label = folder.get("label", folder_id)
-            print(f"    REMOVE: {folder_label} ({folder_id})", file=sys.stderr)
+            logging.info(f"    REMOVE: {folder_label} ({folder_id})")
             if not dry_run:
                 client.remove_folder(folder_id)
-                print(f"      ✓ Folder removed", file=sys.stderr)
+                logging.info(f"      ✓ Folder removed")
             else:
-                print(f"      [DRY-RUN] Would remove folder", file=sys.stderr)
+                logging.info(f"      [DRY-RUN] Would remove folder")
 
 
 def cmd_sync(args):
@@ -429,7 +437,7 @@ def cmd_sync(args):
 
         client = get_client(args)
 
-        print("Syncing Syncthing configuration...", file=sys.stderr)
+        logging.info("Syncing Syncthing configuration...")
 
         # Sync GUI credentials if present
         if "gui" in config and config["gui"] is not None:
@@ -438,7 +446,7 @@ def cmd_sync(args):
             password = gui_config.get("password")
 
             if username or password:
-                print(f"  Updating GUI credentials...", file=sys.stderr)
+                logging.info(f"  Updating GUI credentials...")
 
                 # Hash password if needed
                 password_hash = None
@@ -446,16 +454,16 @@ def cmd_sync(args):
                     # Check if it's already a bcrypt hash
                     if password.startswith("$2"):
                         password_hash = password
-                        print(f"    Using pre-hashed password", file=sys.stderr)
+                        logging.info(f"    Using pre-hashed password")
                     else:
                         password_hash = hash_password(password)
-                        print(f"    Hashed plain text password with bcrypt", file=sys.stderr)
+                        logging.info(f"    Hashed plain text password with bcrypt")
 
                 if not args.dry_run:
                     client.update_gui_config(username=username, password_hash=password_hash)
-                    print(f"    ✓ GUI credentials updated", file=sys.stderr)
+                    logging.info(f"    ✓ GUI credentials updated")
                 else:
-                    print(f"    [DRY-RUN] Would update GUI credentials", file=sys.stderr)
+                    logging.info(f"    [DRY-RUN] Would update GUI credentials")
 
         # Sync devices if present (fully declarative - add and remove)
         if "devices" in config:
@@ -467,20 +475,20 @@ def cmd_sync(args):
             sync_folders(client, config["folders"], devices_config, dry_run=args.dry_run)
 
         if args.dry_run:
-            print("", file=sys.stderr)
-            print("Dry-run complete - no changes made", file=sys.stderr)
+            logging.info("")
+            logging.info("Dry-run complete - no changes made")
         else:
-            print("", file=sys.stderr)
-            print("Sync complete!", file=sys.stderr)
+            logging.info("")
+            logging.info("Sync complete!")
 
             if args.restart:
-                print("Restarting Syncthing...", file=sys.stderr)
+                logging.info("Restarting Syncthing...")
                 client.restart_syncthing()
-                print("Restart initiated", file=sys.stderr)
+                logging.info("Restart initiated")
 
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
-        print("\nFull traceback:", file=sys.stderr)
+        logging.error(f"Error: {e}")
+        logging.info("\nFull traceback:")
         traceback.print_exc(file=sys.stderr)
         sys.exit(1)
 
@@ -614,7 +622,7 @@ def cmd_list_devices(args):
         display_devices(devices, detailed=True, connections=connections, completions=completions)
 
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        logging.error(f"Error: {e}")
         sys.exit(1)
 
 
@@ -646,7 +654,7 @@ def cmd_list_folders(args):
         display_folders(folders, detailed=True, device_map=device_map, folder_statuses=folder_statuses)
 
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        logging.error(f"Error: {e}")
         sys.exit(1)
 
 
@@ -709,7 +717,7 @@ def cmd_status(args):
         display_folders(folders, detailed=False, device_map=device_map, folder_statuses=folder_statuses)
 
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        logging.error(f"Error: {e}")
         sys.exit(1)
 
 
