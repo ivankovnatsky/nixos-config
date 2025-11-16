@@ -6,6 +6,7 @@
     # Declarative equivalents of the previous imperative installs
     npm.packages = {
       "@anthropic-ai/claude-code" = "claude";
+      "ccstatusline" = "ccstatusline";
       "@google/gemini-cli" = "gemini";
       "@openai/codex" = "codex";
     };
