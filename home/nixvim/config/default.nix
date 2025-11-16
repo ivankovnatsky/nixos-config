@@ -54,6 +54,18 @@ in
         command = 'set filetype=typst'
     })
 
+    -- Disable focus reporting mode when leaving Neovim to prevent [I and [O escape sequences
+    -- from leaking into Claude Code
+    vim.api.nvim_create_autocmd("VimLeavePre", {
+      callback = function()
+        if vim.env.TMUX then
+          io.stdout:write("\x1bPtmux;\x1b\x1b[?1004l\x1b\\")
+        else
+          io.stdout:write("\x1b[?1004l")
+        end
+      end,
+    })
+
     -- Apple Terminal now supports truecolor (24-bit) in macOS Tahoe
     vim.opt.termguicolors = true
     vim.o.background = ${neovimBackground}
