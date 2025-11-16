@@ -136,9 +136,12 @@ class SyncthingClient:
         """Get folder status (sync state)."""
         return self._api_call("GET", f"/rest/db/status?folder={folder_id}")
 
-    def get_completion(self, device_id: str):
+    def get_completion(self, device_id: str, folder_id: str = None):
         """Get completion status for a device (syncing progress)."""
-        return self._api_call("GET", f"/rest/db/completion?device={device_id}")
+        endpoint = f"/rest/db/completion?device={device_id}"
+        if folder_id:
+            endpoint += f"&folder={folder_id}"
+        return self._api_call("GET", endpoint)
 
     def get_system_status(self):
         """Get system status (includes local device ID)."""
@@ -540,7 +543,7 @@ def display_devices(devices, detailed=False, connections=None, completions=None)
             print(f"  • {name} ({device_id[:7]}...){status_str}")
 
 
-def display_folders(folders, detailed=False, device_map=None, folder_statuses=None, local_device_id=None):
+def display_folders(folders, detailed=False, device_map=None, folder_statuses=None, local_device_id=None, device_completions=None):
     """
     Display folders in a formatted list.
 
@@ -550,6 +553,7 @@ def display_folders(folders, detailed=False, device_map=None, folder_statuses=No
         device_map: Dict mapping device IDs to device names (for resolving shared devices)
         folder_statuses: Dict mapping folder IDs to status info
         local_device_id: Local device ID to filter out from shared devices
+        device_completions: Dict mapping (device_id, folder_id) tuples to completion info
     """
     if not folders:
         print("  (none)")
@@ -585,21 +589,33 @@ def display_folders(folders, detailed=False, device_map=None, folder_statuses=No
             print(f"  • {label}{status_str}")
             print(f"    Path: {path}")
             if devices:
-                # Resolve device IDs to names
-                device_list = []
+                # Display each device with its sync status
                 for d in devices:
                     if d and isinstance(d, dict):
                         dev_id = d.get("deviceID", "")
                         # Skip local device
                         if local_device_id and dev_id == local_device_id:
                             continue
-                        if device_map and dev_id in device_map:
-                            device_list.append(device_map[dev_id])
-                        else:
-                            device_list.append(dev_id[:7] + "...")
 
-                if device_list:
-                    print(f"    Shared with: {', '.join(device_list)}")
+                        # Get device name
+                        if device_map and dev_id in device_map:
+                            dev_name = device_map[dev_id]
+                        else:
+                            dev_name = dev_id[:7] + "..."
+
+                        # Get completion/sync status for this device-folder pair
+                        sync_info = ""
+                        if device_completions and (dev_id, folder_id) in device_completions:
+                            comp = device_completions[(dev_id, folder_id)]
+                            need_items = comp.get("needItems", 0)
+                            need_bytes = comp.get("needBytes", 0)
+
+                            if need_items > 0:
+                                items_str = f"{need_items:,} item{'s' if need_items != 1 else ''}"
+                                bytes_str = format_bytes(need_bytes)
+                                sync_info = f"     Out of Sync Items     {items_str}, ~{bytes_str}"
+
+                        print(f"    Shared with: {dev_name}{sync_info}")
 
 
 def cmd_list_devices(args):
@@ -677,9 +693,28 @@ def cmd_list_folders(args):
                 except Exception:
                     pass
 
+        # Get device-folder completion status
+        device_completions = {}
+        for folder in folders:
+            if folder and isinstance(folder, dict) and "id" in folder:
+                folder_id = folder["id"]
+                folder_devices = folder.get("devices", [])
+                for d in folder_devices:
+                    if d and isinstance(d, dict):
+                        dev_id = d.get("deviceID", "")
+                        # Skip local device
+                        if local_device_id and dev_id == local_device_id:
+                            continue
+                        try:
+                            comp = client.get_completion(dev_id, folder_id)
+                            if comp:
+                                device_completions[(dev_id, folder_id)] = comp
+                        except Exception:
+                            pass
+
         print(f"Configured folders ({len(folders) if folders else 0}):")
         print()
-        display_folders(folders, detailed=True, device_map=device_map, folder_statuses=folder_statuses, local_device_id=local_device_id)
+        display_folders(folders, detailed=True, device_map=device_map, folder_statuses=folder_statuses, local_device_id=local_device_id, device_completions=device_completions)
 
     except Exception as e:
         logging.error(f"Error: {e}")
@@ -741,6 +776,25 @@ def cmd_status(args):
                 except Exception:
                     pass
 
+        # Get device-folder completion status
+        device_completions = {}
+        for folder in folders:
+            if folder and isinstance(folder, dict) and "id" in folder:
+                folder_id = folder["id"]
+                folder_devices = folder.get("devices", [])
+                for d in folder_devices:
+                    if d and isinstance(d, dict):
+                        dev_id = d.get("deviceID", "")
+                        # Skip local device
+                        if local_device_id and dev_id == local_device_id:
+                            continue
+                        try:
+                            comp = client.get_completion(dev_id, folder_id)
+                            if comp:
+                                device_completions[(dev_id, folder_id)] = comp
+                        except Exception:
+                            pass
+
         # Display devices
         print(f"Devices ({len(devices) if devices else 0}):")
         if devices:
@@ -753,7 +807,7 @@ def cmd_status(args):
         print(f"Folders ({len(folders) if folders else 0}):")
         if folders:
             print()
-        display_folders(folders, detailed=False, device_map=device_map, folder_statuses=folder_statuses, local_device_id=local_device_id)
+        display_folders(folders, detailed=False, device_map=device_map, folder_statuses=folder_statuses, local_device_id=local_device_id, device_completions=device_completions)
 
     except Exception as e:
         logging.error(f"Error: {e}")
