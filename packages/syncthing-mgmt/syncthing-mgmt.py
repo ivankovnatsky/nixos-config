@@ -140,6 +140,10 @@ class SyncthingClient:
         """Get completion status for a device (syncing progress)."""
         return self._api_call("GET", f"/rest/db/completion?device={device_id}")
 
+    def get_system_status(self):
+        """Get system status (includes local device ID)."""
+        return self._api_call("GET", "/rest/system/status")
+
 
 def hash_password(password: str) -> str:
     """Hash password using bcrypt (cost factor 10)."""
@@ -536,7 +540,7 @@ def display_devices(devices, detailed=False, connections=None, completions=None)
             print(f"  • {name} ({device_id[:7]}...){status_str}")
 
 
-def display_folders(folders, detailed=False, device_map=None, folder_statuses=None):
+def display_folders(folders, detailed=False, device_map=None, folder_statuses=None, local_device_id=None):
     """
     Display folders in a formatted list.
 
@@ -545,6 +549,7 @@ def display_folders(folders, detailed=False, device_map=None, folder_statuses=No
         detailed: Show detailed info including folder IDs
         device_map: Dict mapping device IDs to device names (for resolving shared devices)
         folder_statuses: Dict mapping folder IDs to status info
+        local_device_id: Local device ID to filter out from shared devices
     """
     if not folders:
         print("  (none)")
@@ -571,8 +576,10 @@ def display_folders(folders, detailed=False, device_map=None, folder_statuses=No
             print(f"    ID: {folder_id}")
             print(f"    Path: {path}")
             if devices:
-                device_names = [d.get("deviceID", "")[:7] + "..." for d in devices if d and isinstance(d, dict)]
-                print(f"    Devices: {', '.join(device_names)}")
+                device_names = [d.get("deviceID", "")[:7] + "..." for d in devices
+                               if d and isinstance(d, dict) and d.get("deviceID") != local_device_id]
+                if device_names:
+                    print(f"    Devices: {', '.join(device_names)}")
             print()
         else:
             print(f"  • {label}{status_str}")
@@ -583,6 +590,9 @@ def display_folders(folders, detailed=False, device_map=None, folder_statuses=No
                 for d in devices:
                     if d and isinstance(d, dict):
                         dev_id = d.get("deviceID", "")
+                        # Skip local device
+                        if local_device_id and dev_id == local_device_id:
+                            continue
                         if device_map and dev_id in device_map:
                             device_list.append(device_map[dev_id])
                         else:
@@ -597,6 +607,17 @@ def cmd_list_devices(args):
     try:
         client = get_client(args)
         devices = client.get_devices()
+
+        # Get local device ID to filter it out
+        try:
+            system_status = client.get_system_status()
+            local_device_id = system_status.get("myID") if system_status else None
+        except Exception:
+            local_device_id = None
+
+        # Filter out the local device
+        if local_device_id:
+            devices = [d for d in devices if d.get("deviceID") != local_device_id]
 
         # Get connection status
         try:
@@ -633,6 +654,13 @@ def cmd_list_folders(args):
         devices = client.get_devices()
         folders = client.get_folders()
 
+        # Get local device ID to filter it out
+        try:
+            system_status = client.get_system_status()
+            local_device_id = system_status.get("myID") if system_status else None
+        except Exception:
+            local_device_id = None
+
         # Build device ID to name map
         device_map = {d.get("deviceID"): d.get("name", "Unknown")
                       for d in devices if d and isinstance(d, dict) and "deviceID" in d}
@@ -651,7 +679,7 @@ def cmd_list_folders(args):
 
         print(f"Configured folders ({len(folders) if folders else 0}):")
         print()
-        display_folders(folders, detailed=True, device_map=device_map, folder_statuses=folder_statuses)
+        display_folders(folders, detailed=True, device_map=device_map, folder_statuses=folder_statuses, local_device_id=local_device_id)
 
     except Exception as e:
         logging.error(f"Error: {e}")
@@ -666,6 +694,17 @@ def cmd_status(args):
         # Get devices and folders
         devices = client.get_devices()
         folders = client.get_folders()
+
+        # Get local device ID to filter it out
+        try:
+            system_status = client.get_system_status()
+            local_device_id = system_status.get("myID") if system_status else None
+        except Exception:
+            local_device_id = None
+
+        # Filter out the local device
+        if local_device_id:
+            devices = [d for d in devices if d.get("deviceID") != local_device_id]
 
         # Get connection status
         try:
@@ -714,7 +753,7 @@ def cmd_status(args):
         print(f"Folders ({len(folders) if folders else 0}):")
         if folders:
             print()
-        display_folders(folders, detailed=False, device_map=device_map, folder_statuses=folder_statuses)
+        display_folders(folders, detailed=False, device_map=device_map, folder_statuses=folder_statuses, local_device_id=local_device_id)
 
     except Exception as e:
         logging.error(f"Error: {e}")
