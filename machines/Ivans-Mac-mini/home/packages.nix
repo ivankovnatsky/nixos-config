@@ -25,6 +25,7 @@
     nixfmt-rfc-style
     nodePackages.prettier
     nodejs
+    open-gh-notifications-py
     pandoc
     parallel
     pigz
