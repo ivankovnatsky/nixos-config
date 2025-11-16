@@ -136,11 +136,11 @@ let
         ''}
 
         ${optionalString (cfg.dataDir != null) ''
-          /bin/mkdir -p ${cfg.dataDir}
+          /bin/mkdir -p "${cfg.dataDir}"
         ''}
 
         ${optionalString (cfg.extraDirs != [ ]) ''
-          ${concatMapStringsSep "\n" (dir: "/bin/mkdir -p ${dir}") cfg.extraDirs}
+          ${concatMapStringsSep "\n" (dir: "/bin/mkdir -p \"${dir}\"") cfg.extraDirs}
         ''}
 
         ${cfg.preStart}
