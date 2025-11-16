@@ -259,15 +259,15 @@ in
             --argjson folders "$FOLDERS_JSON" \
             '{gui: $gui, devices: $devices, folders: $folders}' > "$CONFIG_FILE"
 
-          # Run sync with API key
+          # Run declarative sync with API key
           ${if cfg.apiKeyFile != null || cfg.apiKey != null then ''
-            ${pkgs.syncthing-mgmt}/bin/syncthing-mgmt sync \
+            ${pkgs.syncthing-mgmt}/bin/syncthing-mgmt declarative \
               --base-url "${cfg.baseUrl}" \
               --api-key "$API_KEY" \
               --config-file "$CONFIG_FILE" \
               ${optionalString cfg.restart "--restart"} 2>&1 || echo "Warning: Syncthing sync failed with exit code $?"
           '' else ''
-            ${pkgs.syncthing-mgmt}/bin/syncthing-mgmt sync \
+            ${pkgs.syncthing-mgmt}/bin/syncthing-mgmt declarative \
               --base-url "${cfg.baseUrl}" \
               --config-xml "${cfg.configDir}/config.xml" \
               --config-file "$CONFIG_FILE" \
