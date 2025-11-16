@@ -15,6 +15,9 @@ import os
 import socket
 import logging
 from typing import Optional, Tuple, List
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
 
 USER_AGENT = "syncthing-mgmt/1.0.0"
 
@@ -501,24 +504,38 @@ def cmd_sync(args):
 
 
 def display_devices(devices, detailed=False, connections=None, completions=None):
-    """Display devices in a formatted list."""
+    """Display devices in a formatted table."""
     if not devices:
         print("  (none)")
         return
+
+    # Create table
+    table = Table(
+        show_header=True,
+        header_style="bold cyan",
+        show_lines=False
+    )
+    table.add_column("Device", style="bold yellow")
+    table.add_column("Device ID", style="dim")
+    table.add_column("Connection Status", justify="center")
+    table.add_column("Sync Status")
 
     for device in devices:
         if not device or not isinstance(device, dict):
             continue
         name = device.get("name", "Unknown")
         device_id = device.get("deviceID", "")
+        device_id_short = device_id[:7] + "..." if device_id else ""
 
         # Get connection status
-        status_str = ""
+        conn_status = ""
+        sync_status = ""
         if connections and device_id in connections:
             conn = connections[device_id]
             if conn.get("paused"):
-                status_str = " [paused]"
+                conn_status = "[yellow]Paused[/yellow]"
             elif conn.get("connected"):
+                conn_status = "[green]Connected[/green]"
                 # Check if syncing
                 if completions and device_id in completions:
                     comp = completions[device_id]
@@ -527,25 +544,24 @@ def display_devices(devices, detailed=False, connections=None, completions=None)
                         # Show syncing progress
                         need_bytes = comp.get("needBytes", 0)
                         need_size = format_bytes(need_bytes)
-                        status_str = f" [syncing {completion_pct:.0f}%, {need_size}]"
+                        sync_status = f"[cyan]Syncing {completion_pct:.0f}%[/cyan], {need_size}"
                     else:
-                        status_str = " [connected]"
-                else:
-                    status_str = " [connected]"
+                        sync_status = "[green]Up to Date[/green]"
             else:
-                status_str = " [disconnected]"
-
-        if detailed:
-            print(f"  • {name}{status_str}")
-            print(f"    ID: {device_id}")
-            print()
+                conn_status = "[red]Disconnected[/red]"
         else:
-            print(f"  • {name} ({device_id[:7]}...){status_str}")
+            conn_status = "[dim]Unknown[/dim]"
+
+        table.add_row(name, device_id_short, conn_status, sync_status)
+
+    # Print the table
+    console = Console()
+    console.print(table)
 
 
 def display_folders(folders, detailed=False, device_map=None, folder_statuses=None, local_device_id=None, device_completions=None):
     """
-    Display folders in a formatted list.
+    Display folders in a formatted table.
 
     Args:
         folders: List of folder configs
@@ -559,65 +575,86 @@ def display_folders(folders, detailed=False, device_map=None, folder_statuses=No
         print("  (none)")
         return
 
+    # Create table
+    table = Table(
+        show_header=True,
+        header_style="bold cyan",
+        show_lines=False
+    )
+    table.add_column("Folder", style="bold")
+    table.add_column("Path", style="dim")
+    table.add_column("Device", style="yellow")
+    table.add_column("State", justify="center")
+    table.add_column("Sync Status", style="green")
+
+    first_folder = True
     for folder in folders:
         if not folder or not isinstance(folder, dict):
             continue
+
+        # Add section divider between folders
+        if not first_folder:
+            table.add_section()
+        first_folder = False
+
         folder_id = folder.get("id", "")
         label = folder.get("label", folder_id)
         path = folder.get("path", "")
         devices = folder.get("devices", [])
 
         # Get folder status
-        status_str = ""
+        state = ""
         if folder_statuses and folder_id in folder_statuses:
             status_info = folder_statuses[folder_id]
             state = status_info.get("state", "unknown")
-            if state:
-                status_str = f" [{state}]"
 
-        if detailed:
-            print(f"  • {label}{status_str}")
-            print(f"    ID: {folder_id}")
-            print(f"    Path: {path}")
-            if devices:
-                device_names = [d.get("deviceID", "")[:7] + "..." for d in devices
-                               if d and isinstance(d, dict) and d.get("deviceID") != local_device_id]
-                if device_names:
-                    print(f"    Devices: {', '.join(device_names)}")
-            print()
+        # Get devices to display (excluding local device)
+        devices_to_show = []
+        for d in devices:
+            if d and isinstance(d, dict):
+                dev_id = d.get("deviceID", "")
+                if local_device_id and dev_id == local_device_id:
+                    continue
+                devices_to_show.append(d)
+
+        # Add rows for each device
+        if devices_to_show:
+            for idx, d in enumerate(devices_to_show):
+                dev_id = d.get("deviceID", "")
+
+                # Get device name
+                if device_map and dev_id in device_map:
+                    dev_name = device_map[dev_id]
+                else:
+                    dev_name = dev_id[:7] + "..."
+
+                # Get sync status
+                sync_status = ""
+                status_style = "green"
+                if device_completions and (dev_id, folder_id) in device_completions:
+                    comp = device_completions[(dev_id, folder_id)]
+                    need_items = comp.get("needItems", 0)
+                    need_bytes = comp.get("needBytes", 0)
+
+                    if need_items > 0:
+                        items_str = f"{need_items:,} item{'s' if need_items != 1 else ''}"
+                        bytes_str = format_bytes(need_bytes)
+                        sync_status = f"[red]Out of Sync:[/red] {items_str}, ~{bytes_str}"
+                    else:
+                        sync_status = "[green]Up to Date[/green]"
+
+                # Only show folder name and path on first row for each folder
+                if idx == 0:
+                    table.add_row(label, path, dev_name, state, sync_status)
+                else:
+                    table.add_row("", "", dev_name, "", sync_status)
         else:
-            print(f"  • {label}{status_str}")
-            print(f"    Path: {path}")
-            if devices:
-                # Display each device with its sync status
-                for d in devices:
-                    if d and isinstance(d, dict):
-                        dev_id = d.get("deviceID", "")
-                        # Skip local device
-                        if local_device_id and dev_id == local_device_id:
-                            continue
+            # No devices to show
+            table.add_row(label, path, "(none)", state, "")
 
-                        # Get device name
-                        if device_map and dev_id in device_map:
-                            dev_name = device_map[dev_id]
-                        else:
-                            dev_name = dev_id[:7] + "..."
-
-                        # Display device
-                        print(f"    Shared with: {dev_name}")
-
-                        # Get completion/sync status for this device-folder pair
-                        if device_completions and (dev_id, folder_id) in device_completions:
-                            comp = device_completions[(dev_id, folder_id)]
-                            need_items = comp.get("needItems", 0)
-                            need_bytes = comp.get("needBytes", 0)
-
-                            if need_items > 0:
-                                items_str = f"{need_items:,} item{'s' if need_items != 1 else ''}"
-                                bytes_str = format_bytes(need_bytes)
-                                print(f"      Out of Sync Items: {items_str}, ~{bytes_str}")
-                            else:
-                                print(f"      Up to Date")
+    # Print the table
+    console = Console()
+    console.print(table)
 
 
 def cmd_list_devices(args):
@@ -656,8 +693,6 @@ def cmd_list_devices(args):
                     except Exception:
                         pass
 
-        print(f"Configured devices ({len(devices) if devices else 0}):")
-        print()
         display_devices(devices, detailed=True, connections=connections, completions=completions)
 
     except Exception as e:
@@ -714,8 +749,6 @@ def cmd_list_folders(args):
                         except Exception:
                             pass
 
-        print(f"Configured folders ({len(folders) if folders else 0}):")
-        print()
         display_folders(folders, detailed=True, device_map=device_map, folder_statuses=folder_statuses, local_device_id=local_device_id, device_completions=device_completions)
 
     except Exception as e:
@@ -798,17 +831,9 @@ def cmd_status(args):
                             pass
 
         # Display devices
-        print(f"Devices ({len(devices) if devices else 0}):")
-        if devices:
-            print()
         display_devices(devices, detailed=False, connections=connections, completions=completions)
 
-        print()
-
         # Display folders with device name resolution
-        print(f"Folders ({len(folders) if folders else 0}):")
-        if folders:
-            print()
         display_folders(folders, detailed=False, device_map=device_map, folder_statuses=folder_statuses, local_device_id=local_device_id, device_completions=device_completions)
 
     except Exception as e:
