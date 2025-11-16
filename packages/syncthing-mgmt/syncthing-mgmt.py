@@ -120,10 +120,42 @@ class SyncthingClient:
         """Restart Syncthing to apply configuration changes."""
         return self._api_call("POST", "/rest/system/restart")
 
+    def get_connections(self):
+        """Get device connection status."""
+        return self._api_call("GET", "/rest/system/connections")
+
+    def get_folder_status(self, folder_id: str):
+        """Get folder status (sync state)."""
+        return self._api_call("GET", f"/rest/db/status?folder={folder_id}")
+
+    def get_completion(self, device_id: str):
+        """Get completion status for a device (syncing progress)."""
+        return self._api_call("GET", f"/rest/db/completion?device={device_id}")
+
 
 def hash_password(password: str) -> str:
     """Hash password using bcrypt (cost factor 10)."""
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(rounds=10)).decode('utf-8')
+
+
+def format_bytes(bytes_val: int) -> str:
+    """Format bytes into human-readable format (KB, MB, GB, TB)."""
+    if bytes_val == 0:
+        return "0 B"
+
+    units = ["B", "KB", "MB", "GB", "TB"]
+    unit_index = 0
+    size = float(bytes_val)
+
+    while size >= 1024 and unit_index < len(units) - 1:
+        size /= 1024
+        unit_index += 1
+
+    # Show 2 decimal places for values < 10, 1 decimal for >= 10
+    if size < 10:
+        return f"{size:.2f} {units[unit_index]}"
+    else:
+        return f"{size:.1f} {units[unit_index]}"
 
 
 def get_api_key_from_config(config_path: str) -> str:
@@ -453,7 +485,7 @@ def cmd_sync(args):
         sys.exit(1)
 
 
-def display_devices(devices, detailed=False):
+def display_devices(devices, detailed=False, connections=None, completions=None):
     """Display devices in a formatted list."""
     if not devices:
         print("  (none)")
@@ -465,15 +497,38 @@ def display_devices(devices, detailed=False):
         name = device.get("name", "Unknown")
         device_id = device.get("deviceID", "")
 
+        # Get connection status
+        status_str = ""
+        if connections and device_id in connections:
+            conn = connections[device_id]
+            if conn.get("paused"):
+                status_str = " [paused]"
+            elif conn.get("connected"):
+                # Check if syncing
+                if completions and device_id in completions:
+                    comp = completions[device_id]
+                    completion_pct = comp.get("completion", 100)
+                    if completion_pct < 100:
+                        # Show syncing progress
+                        need_bytes = comp.get("needBytes", 0)
+                        need_size = format_bytes(need_bytes)
+                        status_str = f" [syncing {completion_pct:.0f}%, {need_size}]"
+                    else:
+                        status_str = " [connected]"
+                else:
+                    status_str = " [connected]"
+            else:
+                status_str = " [disconnected]"
+
         if detailed:
-            print(f"  • {name}")
+            print(f"  • {name}{status_str}")
             print(f"    ID: {device_id}")
             print()
         else:
-            print(f"  • {name} ({device_id[:7]}...)")
+            print(f"  • {name} ({device_id[:7]}...){status_str}")
 
 
-def display_folders(folders, detailed=False, device_map=None):
+def display_folders(folders, detailed=False, device_map=None, folder_statuses=None):
     """
     Display folders in a formatted list.
 
@@ -481,6 +536,7 @@ def display_folders(folders, detailed=False, device_map=None):
         folders: List of folder configs
         detailed: Show detailed info including folder IDs
         device_map: Dict mapping device IDs to device names (for resolving shared devices)
+        folder_statuses: Dict mapping folder IDs to status info
     """
     if not folders:
         print("  (none)")
@@ -494,8 +550,16 @@ def display_folders(folders, detailed=False, device_map=None):
         path = folder.get("path", "")
         devices = folder.get("devices", [])
 
+        # Get folder status
+        status_str = ""
+        if folder_statuses and folder_id in folder_statuses:
+            status_info = folder_statuses[folder_id]
+            state = status_info.get("state", "unknown")
+            if state:
+                status_str = f" [{state}]"
+
         if detailed:
-            print(f"  • {label}")
+            print(f"  • {label}{status_str}")
             print(f"    ID: {folder_id}")
             print(f"    Path: {path}")
             if devices:
@@ -503,7 +567,7 @@ def display_folders(folders, detailed=False, device_map=None):
                 print(f"    Devices: {', '.join(device_names)}")
             print()
         else:
-            print(f"  • {label}")
+            print(f"  • {label}{status_str}")
             print(f"    Path: {path}")
             if devices:
                 # Resolve device IDs to names
@@ -526,9 +590,28 @@ def cmd_list_devices(args):
         client = get_client(args)
         devices = client.get_devices()
 
+        # Get connection status
+        try:
+            connections_data = client.get_connections()
+            connections = connections_data.get("connections", {}) if connections_data else {}
+        except Exception:
+            connections = None
+
+        # Get completion status for connected devices
+        completions = {}
+        if connections:
+            for device_id in connections:
+                if connections[device_id].get("connected"):
+                    try:
+                        comp = client.get_completion(device_id)
+                        if comp:
+                            completions[device_id] = comp
+                    except Exception:
+                        pass
+
         print(f"Configured devices ({len(devices) if devices else 0}):")
         print()
-        display_devices(devices, detailed=True)
+        display_devices(devices, detailed=True, connections=connections, completions=completions)
 
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
@@ -546,9 +629,21 @@ def cmd_list_folders(args):
         device_map = {d.get("deviceID"): d.get("name", "Unknown")
                       for d in devices if d and isinstance(d, dict) and "deviceID" in d}
 
+        # Get folder statuses
+        folder_statuses = {}
+        for folder in folders:
+            if folder and isinstance(folder, dict) and "id" in folder:
+                folder_id = folder["id"]
+                try:
+                    status = client.get_folder_status(folder_id)
+                    if status:
+                        folder_statuses[folder_id] = status
+                except Exception:
+                    pass
+
         print(f"Configured folders ({len(folders) if folders else 0}):")
         print()
-        display_folders(folders, detailed=True, device_map=device_map)
+        display_folders(folders, detailed=True, device_map=device_map, folder_statuses=folder_statuses)
 
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
@@ -564,15 +659,46 @@ def cmd_status(args):
         devices = client.get_devices()
         folders = client.get_folders()
 
+        # Get connection status
+        try:
+            connections_data = client.get_connections()
+            connections = connections_data.get("connections", {}) if connections_data else {}
+        except Exception:
+            connections = None
+
+        # Get completion status for connected devices
+        completions = {}
+        if connections:
+            for device_id in connections:
+                if connections[device_id].get("connected"):
+                    try:
+                        comp = client.get_completion(device_id)
+                        if comp:
+                            completions[device_id] = comp
+                    except Exception:
+                        pass
+
         # Build device ID to name map for folder display
         device_map = {d.get("deviceID"): d.get("name", "Unknown")
                       for d in devices if d and isinstance(d, dict) and "deviceID" in d}
+
+        # Get folder statuses
+        folder_statuses = {}
+        for folder in folders:
+            if folder and isinstance(folder, dict) and "id" in folder:
+                folder_id = folder["id"]
+                try:
+                    status = client.get_folder_status(folder_id)
+                    if status:
+                        folder_statuses[folder_id] = status
+                except Exception:
+                    pass
 
         # Display devices
         print(f"Devices ({len(devices) if devices else 0}):")
         if devices:
             print()
-        display_devices(devices, detailed=False)
+        display_devices(devices, detailed=False, connections=connections, completions=completions)
 
         print()
 
@@ -580,7 +706,7 @@ def cmd_status(args):
         print(f"Folders ({len(folders) if folders else 0}):")
         if folders:
             print()
-        display_folders(folders, detailed=False, device_map=device_map)
+        display_folders(folders, detailed=False, device_map=device_map, folder_statuses=folder_statuses)
 
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
