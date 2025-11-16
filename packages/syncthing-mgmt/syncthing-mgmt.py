@@ -252,6 +252,142 @@ Please check that:
     return SyncthingClient(base_url, api_key)
 
 
+def sync_devices(client, devices_config, dry_run=False):
+    """
+    Sync devices declaratively (add, update, remove).
+
+    Args:
+        client: SyncthingClient instance
+        devices_config: Dict mapping device names to device IDs
+        dry_run: If True, only show what would be changed
+    """
+    current_devices = {dev["deviceID"]: dev for dev in client.get_devices()
+                       if dev and isinstance(dev, dict) and "deviceID" in dev}
+    configured_device_ids = set(devices_config.values())
+
+    print(f"  Syncing devices ({len(devices_config)} configured)...", file=sys.stderr)
+
+    # Add or update devices that are in config
+    for device_name, device_id in devices_config.items():
+        if device_id in current_devices:
+            current_name = current_devices[device_id].get("name", "")
+            if current_name != device_name:
+                print(f"    UPDATE: {current_name} -> {device_name} ({device_id[:7]}...)", file=sys.stderr)
+                if not dry_run:
+                    client.update_device(device_id, {"name": device_name})
+                    print(f"      ✓ Device name updated", file=sys.stderr)
+                else:
+                    print(f"      [DRY-RUN] Would update device name", file=sys.stderr)
+            else:
+                print(f"    OK: {device_name} ({device_id[:7]}...) already configured", file=sys.stderr)
+        else:
+            print(f"    ADD: {device_name} ({device_id[:7]}...)", file=sys.stderr)
+            if not dry_run:
+                client.add_device(device_id, device_name)
+                print(f"      ✓ Device added", file=sys.stderr)
+            else:
+                print(f"      [DRY-RUN] Would add device", file=sys.stderr)
+
+    # Remove devices that are in Syncthing but not in config
+    for device_id, device in current_devices.items():
+        if device_id not in configured_device_ids:
+            device_name = device.get("name", "Unknown")
+            print(f"    REMOVE: {device_name} ({device_id[:7]}...)", file=sys.stderr)
+            if not dry_run:
+                client.remove_device(device_id)
+                print(f"      ✓ Device removed", file=sys.stderr)
+            else:
+                print(f"      [DRY-RUN] Would remove device", file=sys.stderr)
+
+
+def sync_folders(client, folders_config, devices_config, dry_run=False):
+    """
+    Sync folders declaratively (add, update, remove).
+
+    Args:
+        client: SyncthingClient instance
+        folders_config: Dict mapping folder IDs to folder configurations
+        devices_config: Dict mapping device names to device IDs (for resolution)
+        dry_run: If True, only show what would be changed
+    """
+    current_folders = {f["id"]: f for f in client.get_folders()
+                       if f and isinstance(f, dict) and "id" in f}
+    configured_folder_ids = set(folders_config.keys())
+
+    # Build device name to ID mapping for resolving device references
+    device_name_to_id = {name: dev_id for name, dev_id in devices_config.items()}
+
+    print(f"  Syncing folders ({len(folders_config)} configured)...", file=sys.stderr)
+
+    # Add or update folders that are in config
+    for folder_id, folder_cfg in folders_config.items():
+        # Resolve device names/IDs to device IDs
+        configured_devices = folder_cfg.get("devices", [])
+        resolved_device_ids = []
+        for dev in configured_devices:
+            # Check if it's a device name (exists in mapping) or already a device ID
+            if dev in device_name_to_id:
+                resolved_device_ids.append(device_name_to_id[dev])
+            else:
+                # Assume it's already a device ID
+                resolved_device_ids.append(dev)
+
+        if folder_id in current_folders:
+            current_folder = current_folders[folder_id]
+            current_label = current_folder.get("label", "")
+            current_path = current_folder.get("path", "")
+            current_devices = set(d.get("deviceID") for d in current_folder.get("devices", [])
+                                  if d and isinstance(d, dict))
+
+            new_label = folder_cfg.get("label", folder_id)
+            new_path = folder_cfg["path"]
+            new_devices = set(resolved_device_ids)
+
+            # Check if anything changed
+            if current_label != new_label or current_path != new_path or current_devices != new_devices:
+                print(f"    UPDATE: {folder_id}", file=sys.stderr)
+                if not dry_run:
+                    # Build device list for API
+                    devices_list = [{"deviceID": dev_id} for dev_id in new_devices]
+                    update_data = {
+                        "label": new_label,
+                        "path": new_path,
+                        "devices": devices_list,
+                    }
+                    client.update_folder(folder_id, update_data)
+                    print(f"      ✓ Folder updated", file=sys.stderr)
+                else:
+                    print(f"      [DRY-RUN] Would update folder", file=sys.stderr)
+            else:
+                print(f"    OK: {folder_id} already configured", file=sys.stderr)
+        else:
+            print(f"    ADD: {folder_id}", file=sys.stderr)
+            if not dry_run:
+                # Build device list for API
+                devices_list = [{"deviceID": dev_id} for dev_id in resolved_device_ids]
+                add_data = {
+                    "id": folder_id,
+                    "label": folder_cfg.get("label", folder_id),
+                    "path": folder_cfg["path"],
+                    "devices": devices_list,
+                }
+                client.add_folder(folder_id, add_data)
+                print(f"      ✓ Folder added", file=sys.stderr)
+            else:
+                print(f"      [DRY-RUN] Would add folder", file=sys.stderr)
+
+    # Remove folders that are in Syncthing but not in config
+    for folder_id, folder in current_folders.items():
+        if folder_id not in configured_folder_ids:
+            folder_label = folder.get("label", folder_id)
+            print(f"    REMOVE: {folder_label} ({folder_id})", file=sys.stderr)
+            if not dry_run:
+                client.remove_folder(folder_id)
+                print(f"      ✓ Folder removed", file=sys.stderr)
+            else:
+                print(f"      [DRY-RUN] Would remove folder", file=sys.stderr)
+
+
 def cmd_sync(args):
     """Sync GUI credentials and devices from configuration file."""
     try:
@@ -291,123 +427,12 @@ def cmd_sync(args):
 
         # Sync devices if present (fully declarative - add and remove)
         if "devices" in config:
-            devices_config = config["devices"]
-            current_devices = {dev["deviceID"]: dev for dev in client.get_devices() if dev and isinstance(dev, dict) and "deviceID" in dev}
-            configured_device_ids = set(devices_config.values())
-
-            print(f"  Syncing devices ({len(devices_config)} configured)...", file=sys.stderr)
-
-            # Add or update devices that are in config
-            for device_name, device_id in devices_config.items():
-                if device_id in current_devices:
-                    current_name = current_devices[device_id].get("name", "")
-                    if current_name != device_name:
-                        print(f"    UPDATE: {current_name} -> {device_name} ({device_id[:7]}...)", file=sys.stderr)
-                        if not args.dry_run:
-                            client.update_device(device_id, {"name": device_name})
-                            print(f"      ✓ Device name updated", file=sys.stderr)
-                        else:
-                            print(f"      [DRY-RUN] Would update device name", file=sys.stderr)
-                    else:
-                        print(f"    OK: {device_name} ({device_id[:7]}...) already configured", file=sys.stderr)
-                else:
-                    print(f"    ADD: {device_name} ({device_id[:7]}...)", file=sys.stderr)
-                    if not args.dry_run:
-                        client.add_device(device_id, device_name)
-                        print(f"      ✓ Device added", file=sys.stderr)
-                    else:
-                        print(f"      [DRY-RUN] Would add device", file=sys.stderr)
-
-            # Remove devices that are in Syncthing but not in config
-            for device_id, device in current_devices.items():
-                if device_id not in configured_device_ids:
-                    device_name = device.get("name", "Unknown")
-                    print(f"    REMOVE: {device_name} ({device_id[:7]}...)", file=sys.stderr)
-                    if not args.dry_run:
-                        client.remove_device(device_id)
-                        print(f"      ✓ Device removed", file=sys.stderr)
-                    else:
-                        print(f"      [DRY-RUN] Would remove device", file=sys.stderr)
+            sync_devices(client, config["devices"], dry_run=args.dry_run)
 
         # Sync folders if present (fully declarative - add and remove)
         if "folders" in config:
-            folders_config = config["folders"]
-            current_folders = {f["id"]: f for f in client.get_folders() if f and isinstance(f, dict) and "id" in f}
-            configured_folder_ids = set(folders_config.keys())
-
-            # Build device name to ID mapping for resolving device references
             devices_config = config.get("devices", {})
-            device_name_to_id = {name: dev_id for name, dev_id in devices_config.items()}
-            device_id_to_name = {dev_id: name for name, dev_id in devices_config.items()}
-
-            print(f"  Syncing folders ({len(folders_config)} configured)...", file=sys.stderr)
-
-            # Add or update folders that are in config
-            for folder_id, folder_cfg in folders_config.items():
-                # Resolve device names/IDs to device IDs
-                configured_devices = folder_cfg.get("devices", [])
-                resolved_device_ids = []
-                for dev in configured_devices:
-                    # Check if it's a device name (exists in mapping) or already a device ID
-                    if dev in device_name_to_id:
-                        resolved_device_ids.append(device_name_to_id[dev])
-                    else:
-                        # Assume it's already a device ID
-                        resolved_device_ids.append(dev)
-
-                if folder_id in current_folders:
-                    current_folder = current_folders[folder_id]
-                    current_label = current_folder.get("label", "")
-                    current_path = current_folder.get("path", "")
-                    current_devices = set(d.get("deviceID") for d in current_folder.get("devices", []) if d and isinstance(d, dict))
-
-                    new_label = folder_cfg.get("label", folder_id)
-                    new_path = folder_cfg["path"]
-                    new_devices = set(resolved_device_ids)
-
-                    # Check if anything changed
-                    if current_label != new_label or current_path != new_path or current_devices != new_devices:
-                        print(f"    UPDATE: {folder_id}", file=sys.stderr)
-                        if not args.dry_run:
-                            # Build device list for API
-                            devices_list = [{"deviceID": dev_id} for dev_id in new_devices]
-                            update_data = {
-                                "label": new_label,
-                                "path": new_path,
-                                "devices": devices_list,
-                            }
-                            client.update_folder(folder_id, update_data)
-                            print(f"      ✓ Folder updated", file=sys.stderr)
-                        else:
-                            print(f"      [DRY-RUN] Would update folder", file=sys.stderr)
-                    else:
-                        print(f"    OK: {folder_id} already configured", file=sys.stderr)
-                else:
-                    print(f"    ADD: {folder_id}", file=sys.stderr)
-                    if not args.dry_run:
-                        # Build device list for API
-                        devices_list = [{"deviceID": dev_id} for dev_id in resolved_device_ids]
-                        add_data = {
-                            "id": folder_id,
-                            "label": folder_cfg.get("label", folder_id),
-                            "path": folder_cfg["path"],
-                            "devices": devices_list,
-                        }
-                        client.add_folder(folder_id, add_data)
-                        print(f"      ✓ Folder added", file=sys.stderr)
-                    else:
-                        print(f"      [DRY-RUN] Would add folder", file=sys.stderr)
-
-            # Remove folders that are in Syncthing but not in config
-            for folder_id, folder in current_folders.items():
-                if folder_id not in configured_folder_ids:
-                    folder_label = folder.get("label", folder_id)
-                    print(f"    REMOVE: {folder_label} ({folder_id})", file=sys.stderr)
-                    if not args.dry_run:
-                        client.remove_folder(folder_id)
-                        print(f"      ✓ Folder removed", file=sys.stderr)
-                    else:
-                        print(f"      [DRY-RUN] Would remove folder", file=sys.stderr)
+            sync_folders(client, config["folders"], devices_config, dry_run=args.dry_run)
 
         if args.dry_run:
             print("", file=sys.stderr)
