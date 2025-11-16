@@ -27,7 +27,6 @@
     ./btop.nix
     ./firefox.nix
     ./flags.nix
-    ./games.nix
     ./gpg.nix
     ./kwinoutput
     ./manual-packages.nix
