@@ -1,7 +1,7 @@
 {
   imports = [
     # ./gamemode.nix
-    # ./gamescope.nix
+    ./gamescope.nix
     ./nvidia.nix
     # ./smb.nix
     ../../../modules/flags
