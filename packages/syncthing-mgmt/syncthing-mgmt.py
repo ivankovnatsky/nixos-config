@@ -11,6 +11,9 @@ import argparse
 import xml.etree.ElementTree as ET
 import bcrypt
 import traceback
+import os
+import socket
+from typing import Optional, Tuple, List
 
 USER_AGENT = "syncthing-mgmt/1.0.0"
 
@@ -136,6 +139,119 @@ def get_api_key_from_config(config_path: str) -> str:
         raise Exception(f"Failed to read API key from {config_path}: {e}")
 
 
+def get_local_ip_addresses() -> List[str]:
+    """Get all local IP addresses (excluding loopback)."""
+    ips = []
+    try:
+        # Get hostname and resolve all associated IPs
+        hostname = socket.gethostname()
+        for info in socket.getaddrinfo(hostname, None):
+            ip = info[4][0]
+            # Skip loopback and IPv6
+            if not ip.startswith('127.') and ':' not in ip:
+                if ip not in ips:
+                    ips.append(ip)
+    except Exception:
+        pass
+    return ips
+
+
+def check_syncthing_reachable(base_url: str, api_key: str, timeout: int = 3) -> bool:
+    """Check if Syncthing API is reachable at the given URL."""
+    try:
+        url = f"{base_url.rstrip('/')}/rest/system/status"
+        headers = {
+            "User-Agent": USER_AGENT,
+            "X-API-Key": api_key,
+        }
+        response = requests.get(url, headers=headers, timeout=timeout)
+        return response.status_code == 200
+    except (requests.exceptions.ConnectionError,
+            requests.exceptions.Timeout,
+            requests.exceptions.RequestException):
+        return False
+
+
+def find_reachable_syncthing_url(primary_url: str, api_key: str) -> Tuple[str, str]:
+    """
+    Find a reachable Syncthing instance.
+    Returns (base_url, source_description).
+    Tries: primary URL -> loopback -> local IPs
+    """
+    # Try primary URL first
+    if check_syncthing_reachable(primary_url, api_key):
+        return (primary_url, "primary URL")
+
+    # Build fallback URLs in order of preference:
+    # 1. Loopback (127.0.0.1, localhost)
+    # 2. Local network IPs (auto-detected)
+    fallback_urls = [
+        "http://127.0.0.1:8384",
+        "http://localhost:8384",
+    ]
+
+    # Add local IP addresses (e.g., 192.168.x.x, 10.x.x.x)
+    local_ips = get_local_ip_addresses()
+    for ip in local_ips:
+        fallback_urls.append(f"http://{ip}:8384")
+
+    # Try fallback URLs
+    for fallback_url in fallback_urls:
+        if fallback_url == primary_url:
+            continue
+        if check_syncthing_reachable(fallback_url, api_key):
+            return (fallback_url, f"fallback ({fallback_url})")
+
+    # Nothing reachable
+    return (None, None)
+
+
+def get_client(args, use_fallback: bool = True):
+    """
+    Get a configured SyncthingClient from args.
+
+    If use_fallback is True (default for CLI mode), will try to find a reachable
+    Syncthing instance if the primary URL is not accessible.
+    """
+    # Get API key
+    if hasattr(args, 'api_key') and args.api_key:
+        api_key = args.api_key
+    elif hasattr(args, 'config_xml') and args.config_xml:
+        api_key = get_api_key_from_config(args.config_xml)
+    else:
+        raise Exception("Either --api-key or --config-xml must be provided")
+
+    base_url = args.base_url
+
+    # For CLI mode, try to find a reachable instance
+    if use_fallback and hasattr(args, 'mode') and args.mode == 'cli':
+        # Check if primary URL is reachable
+        if not check_syncthing_reachable(base_url, api_key):
+            print(f"Primary Syncthing URL ({base_url}) is not reachable, trying fallbacks...", file=sys.stderr)
+
+            fallback_url, source = find_reachable_syncthing_url(base_url, api_key)
+
+            if fallback_url:
+                print(f"Found reachable Syncthing instance at {source}: {fallback_url}", file=sys.stderr)
+                base_url = fallback_url
+            else:
+                # List what we tried
+                error_msg = f"""
+Could not connect to Syncthing at any known location:
+  - Primary: {base_url}
+  - Tried fallbacks: http://127.0.0.1:8384, http://localhost:8384
+
+Please check that:
+  1. Syncthing is running
+  2. The correct URL is specified with --base-url
+  3. You have network connectivity to the Syncthing instance
+"""
+                print(error_msg, file=sys.stderr)
+                raise Exception(f"Syncthing API not reachable at {base_url}")
+
+    return SyncthingClient(base_url, api_key)
+
+
 def cmd_sync(args):
     """Sync GUI credentials and devices from configuration file."""
     try:
@@ -143,15 +259,7 @@ def cmd_sync(args):
         with open(args.config_file, "r") as f:
             config = json.load(f)
 
-        # Get API key
-        if args.api_key:
-            api_key = args.api_key
-        elif args.config_xml:
-            api_key = get_api_key_from_config(args.config_xml)
-        else:
-            raise Exception("Either --api-key or --config-xml must be provided")
-
-        client = SyncthingClient(args.base_url, api_key)
+        client = get_client(args)
 
         print("Syncing Syncthing configuration...", file=sys.stderr)
 
@@ -320,31 +428,172 @@ def cmd_sync(args):
         sys.exit(1)
 
 
+def cmd_list_devices(args):
+    """List all configured devices."""
+    try:
+        client = get_client(args)
+        devices = client.get_devices()
+
+        if not devices:
+            print("No devices configured")
+            return
+
+        print(f"Configured devices ({len(devices)}):")
+        print()
+        for device in devices:
+            if not device or not isinstance(device, dict):
+                continue
+            name = device.get("name", "Unknown")
+            device_id = device.get("deviceID", "")
+            print(f"  • {name}")
+            print(f"    ID: {device_id}")
+            print()
+
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+def cmd_list_folders(args):
+    """List all configured folders."""
+    try:
+        client = get_client(args)
+        folders = client.get_folders()
+
+        if not folders:
+            print("No folders configured")
+            return
+
+        print(f"Configured folders ({len(folders)}):")
+        print()
+        for folder in folders:
+            if not folder or not isinstance(folder, dict):
+                continue
+            folder_id = folder.get("id", "")
+            label = folder.get("label", folder_id)
+            path = folder.get("path", "")
+            devices = folder.get("devices", [])
+
+            print(f"  • {label}")
+            print(f"    ID: {folder_id}")
+            print(f"    Path: {path}")
+            if devices:
+                device_names = [d.get("deviceID", "")[:7] + "..." for d in devices if d and isinstance(d, dict)]
+                print(f"    Devices: {', '.join(device_names)}")
+            print()
+
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+def cmd_status(args):
+    """Show status of configured devices and folders."""
+    try:
+        client = get_client(args)
+
+        # Get devices
+        devices = client.get_devices()
+        print(f"Devices ({len(devices) if devices else 0}):")
+        if devices:
+            print()
+            for device in devices:
+                if not device or not isinstance(device, dict):
+                    continue
+                name = device.get("name", "Unknown")
+                device_id = device.get("deviceID", "")
+                print(f"  • {name} ({device_id[:7]}...)")
+        else:
+            print("  (none)")
+
+        print()
+
+        # Get folders
+        folders = client.get_folders()
+        print(f"Folders ({len(folders) if folders else 0}):")
+        if folders:
+            print()
+            for folder in folders:
+                if not folder or not isinstance(folder, dict):
+                    continue
+                folder_id = folder.get("id", "")
+                label = folder.get("label", folder_id)
+                path = folder.get("path", "")
+                devices = folder.get("devices", [])
+
+                print(f"  • {label}")
+                print(f"    Path: {path}")
+                if devices:
+                    device_count = len([d for d in devices if d and isinstance(d, dict)])
+                    print(f"    Shared with {device_count} device(s)")
+        else:
+            print("  (none)")
+
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
 def main():
     parser = argparse.ArgumentParser(
-        description="Syncthing configuration management tool"
+        description="Syncthing configuration management tool",
+        epilog="Default mode: CLI (use 'syncthing-mgmt' or 'syncthing-mgmt cli status')"
     )
 
-    subparsers = parser.add_subparsers(
-        dest="command", required=True, help="Command to execute"
+    # Main subparsers for declarative vs cli mode
+    mode_subparsers = parser.add_subparsers(
+        dest="mode", help="Operation mode"
     )
 
-    # Sync command
-    sync_parser = subparsers.add_parser(
-        "sync", help="Sync GUI credentials and devices from configuration file"
+    # ===== CLI Mode (interactive, default) =====
+    cli_parser = mode_subparsers.add_parser(
+        "cli", help="CLI mode for interactive use (default)"
     )
-    sync_parser.add_argument("--base-url", required=True, help="Syncthing URL")
-    sync_parser.add_argument("--api-key", help="Syncthing API key")
-    sync_parser.add_argument("--config-xml", help="Path to Syncthing config.xml (to extract API key)")
-    sync_parser.add_argument(
+    cli_subparsers = cli_parser.add_subparsers(
+        dest="cli_command", help="CLI command to execute"
+    )
+
+    # Common arguments for CLI commands
+    def add_cli_args(subparser):
+        subparser.add_argument("--base-url",
+                             help="Syncthing URL (default: http://127.0.0.1:8384, with fallback to local IPs)")
+        subparser.add_argument("--api-key", help="Syncthing API key")
+        subparser.add_argument("--config-xml", help="Path to Syncthing config.xml (to extract API key)")
+
+    # CLI: status command
+    status_parser = cli_subparsers.add_parser(
+        "status", help="Show status of configured devices and folders (default)"
+    )
+    add_cli_args(status_parser)
+
+    # CLI: list-devices command
+    list_devices_parser = cli_subparsers.add_parser(
+        "list-devices", help="List all configured devices"
+    )
+    add_cli_args(list_devices_parser)
+
+    # CLI: list-folders command
+    list_folders_parser = cli_subparsers.add_parser(
+        "list-folders", help="List all configured folders"
+    )
+    add_cli_args(list_folders_parser)
+
+    # ===== Declarative Mode (for NixOS/Darwin modules) =====
+    declarative_parser = mode_subparsers.add_parser(
+        "declarative", help="Declarative mode for NixOS/Darwin modules"
+    )
+    declarative_parser.add_argument("--base-url", required=True, help="Syncthing URL")
+    declarative_parser.add_argument("--api-key", help="Syncthing API key")
+    declarative_parser.add_argument("--config-xml", help="Path to Syncthing config.xml (to extract API key)")
+    declarative_parser.add_argument(
         "--config-file", required=True, help="JSON configuration file"
     )
-    sync_parser.add_argument(
+    declarative_parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Show what would be changed without making changes",
     )
-    sync_parser.add_argument(
+    declarative_parser.add_argument(
         "--restart",
         action="store_true",
         help="Restart Syncthing after applying changes",
@@ -352,8 +601,50 @@ def main():
 
     args = parser.parse_args()
 
-    if args.command == "sync":
+    # Default to CLI mode with status command if no mode specified
+    if not args.mode:
+        args.mode = "cli"
+        args.cli_command = "status"
+        args.base_url = None
+        args.api_key = None
+        args.config_xml = None
+
+    # Default to status for CLI mode if no command specified
+    if args.mode == "cli" and not args.cli_command:
+        args.cli_command = "status"
+
+    # Try to auto-detect config.xml for CLI mode
+    if args.mode == "cli":
+        if not args.config_xml and not args.api_key:
+            # Try common config locations (Linux and Darwin)
+            possible_configs = [
+                # Linux (user)
+                os.path.expanduser("~/.local/state/syncthing/config.xml"),
+                os.path.expanduser("~/.config/syncthing/config.xml"),
+                # Linux (system)
+                "/var/lib/syncthing/.config/syncthing/config.xml",
+                # Darwin (macOS)
+                os.path.expanduser("~/Library/Application Support/Syncthing/config.xml"),
+            ]
+            for config_path in possible_configs:
+                if os.path.exists(config_path):
+                    args.config_xml = config_path
+                    break
+
+        # Default base URL to localhost if not provided
+        if not args.base_url:
+            args.base_url = "http://127.0.0.1:8384"
+
+    # Route to appropriate command
+    if args.mode == "declarative":
         cmd_sync(args)
+    elif args.mode == "cli":
+        if args.cli_command == "list-devices":
+            cmd_list_devices(args)
+        elif args.cli_command == "list-folders":
+            cmd_list_folders(args)
+        elif args.cli_command == "status":
+            cmd_status(args)
 
 
 if __name__ == "__main__":
