@@ -1,6 +1,7 @@
 {
   imports = [
     ../../../modules/flags
+    ../../../modules/nixos/syncthing-mgmt
     ../../../nixos/chromium.nix
     ../../../nixos/keyboard.nix
     ../../../system/nix.nix
@@ -21,6 +22,7 @@
     ./sd-card.nix
     ./security.nix
     ../../../nixos/sudo.nix
+    ./syncthing-mgmt.nix
     ./tpm2.nix
     ./user.nix
   ];
