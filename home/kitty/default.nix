@@ -44,6 +44,9 @@ let
     # Shell integration for tracking pwd in new tabs
     shell_integration enabled
 
+    # Action alias for launching tabs in current directory
+    action_alias launch_tab launch --cwd=current --type=tab
+
     enabled_layouts tall, grid
 
     map ctrl+shift+k neighboring_window up
@@ -63,9 +66,13 @@ let
     # Was ctrl+shift+l
     map ctrl+shift+space next_layout
 
+    # New tab in current directory
+    map kitty_mod+t launch_tab
+
     ${
       if isDarwin then
         ''
+          map cmd+t launch_tab
           map cmd+1 goto_tab 1
           map cmd+2 goto_tab 2
           map cmd+3 goto_tab 3
