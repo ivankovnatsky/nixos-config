@@ -12,7 +12,6 @@
         login = {
           kwallet = {
             enable = true;
-            package = pkgs.kdePackages.kwallet-pam;
           };
         };
         # Enable for systemd-user to handle jovian autoStart autologin scenarios
