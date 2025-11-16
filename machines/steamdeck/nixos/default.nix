@@ -1,7 +1,6 @@
 {
   imports = [
     ../../../modules/flags
-    ../../../modules/nixos/tmux-rebuild
     ../../../nixos/chromium.nix
     ../../../nixos/keyboard.nix
     ../../../system/nix.nix
@@ -22,7 +21,6 @@
     ./sd-card.nix
     ./security.nix
     ../../../nixos/sudo.nix
-    ./tmux-rebuild.nix
     ./tpm2.nix
     ./user.nix
   ];
