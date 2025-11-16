@@ -428,26 +428,82 @@ def cmd_sync(args):
         sys.exit(1)
 
 
+def display_devices(devices, detailed=False):
+    """Display devices in a formatted list."""
+    if not devices:
+        print("  (none)")
+        return
+
+    for device in devices:
+        if not device or not isinstance(device, dict):
+            continue
+        name = device.get("name", "Unknown")
+        device_id = device.get("deviceID", "")
+
+        if detailed:
+            print(f"  • {name}")
+            print(f"    ID: {device_id}")
+            print()
+        else:
+            print(f"  • {name} ({device_id[:7]}...)")
+
+
+def display_folders(folders, detailed=False, device_map=None):
+    """
+    Display folders in a formatted list.
+
+    Args:
+        folders: List of folder configs
+        detailed: Show detailed info including folder IDs
+        device_map: Dict mapping device IDs to device names (for resolving shared devices)
+    """
+    if not folders:
+        print("  (none)")
+        return
+
+    for folder in folders:
+        if not folder or not isinstance(folder, dict):
+            continue
+        folder_id = folder.get("id", "")
+        label = folder.get("label", folder_id)
+        path = folder.get("path", "")
+        devices = folder.get("devices", [])
+
+        if detailed:
+            print(f"  • {label}")
+            print(f"    ID: {folder_id}")
+            print(f"    Path: {path}")
+            if devices:
+                device_names = [d.get("deviceID", "")[:7] + "..." for d in devices if d and isinstance(d, dict)]
+                print(f"    Devices: {', '.join(device_names)}")
+            print()
+        else:
+            print(f"  • {label}")
+            print(f"    Path: {path}")
+            if devices:
+                # Resolve device IDs to names
+                device_list = []
+                for d in devices:
+                    if d and isinstance(d, dict):
+                        dev_id = d.get("deviceID", "")
+                        if device_map and dev_id in device_map:
+                            device_list.append(device_map[dev_id])
+                        else:
+                            device_list.append(dev_id[:7] + "...")
+
+                if device_list:
+                    print(f"    Shared with: {', '.join(device_list)}")
+
+
 def cmd_list_devices(args):
     """List all configured devices."""
     try:
         client = get_client(args)
         devices = client.get_devices()
 
-        if not devices:
-            print("No devices configured")
-            return
-
-        print(f"Configured devices ({len(devices)}):")
+        print(f"Configured devices ({len(devices) if devices else 0}):")
         print()
-        for device in devices:
-            if not device or not isinstance(device, dict):
-                continue
-            name = device.get("name", "Unknown")
-            device_id = device.get("deviceID", "")
-            print(f"  • {name}")
-            print(f"    ID: {device_id}")
-            print()
+        display_devices(devices, detailed=True)
 
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
@@ -458,29 +514,16 @@ def cmd_list_folders(args):
     """List all configured folders."""
     try:
         client = get_client(args)
+        devices = client.get_devices()
         folders = client.get_folders()
 
-        if not folders:
-            print("No folders configured")
-            return
+        # Build device ID to name map
+        device_map = {d.get("deviceID"): d.get("name", "Unknown")
+                      for d in devices if d and isinstance(d, dict) and "deviceID" in d}
 
-        print(f"Configured folders ({len(folders)}):")
+        print(f"Configured folders ({len(folders) if folders else 0}):")
         print()
-        for folder in folders:
-            if not folder or not isinstance(folder, dict):
-                continue
-            folder_id = folder.get("id", "")
-            label = folder.get("label", folder_id)
-            path = folder.get("path", "")
-            devices = folder.get("devices", [])
-
-            print(f"  • {label}")
-            print(f"    ID: {folder_id}")
-            print(f"    Path: {path}")
-            if devices:
-                device_names = [d.get("deviceID", "")[:7] + "..." for d in devices if d and isinstance(d, dict)]
-                print(f"    Devices: {', '.join(device_names)}")
-            print()
+        display_folders(folders, detailed=True, device_map=device_map)
 
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
@@ -492,42 +535,27 @@ def cmd_status(args):
     try:
         client = get_client(args)
 
-        # Get devices
+        # Get devices and folders
         devices = client.get_devices()
+        folders = client.get_folders()
+
+        # Build device ID to name map for folder display
+        device_map = {d.get("deviceID"): d.get("name", "Unknown")
+                      for d in devices if d and isinstance(d, dict) and "deviceID" in d}
+
+        # Display devices
         print(f"Devices ({len(devices) if devices else 0}):")
         if devices:
             print()
-            for device in devices:
-                if not device or not isinstance(device, dict):
-                    continue
-                name = device.get("name", "Unknown")
-                device_id = device.get("deviceID", "")
-                print(f"  • {name} ({device_id[:7]}...)")
-        else:
-            print("  (none)")
+        display_devices(devices, detailed=False)
 
         print()
 
-        # Get folders
-        folders = client.get_folders()
+        # Display folders with device name resolution
         print(f"Folders ({len(folders) if folders else 0}):")
         if folders:
             print()
-            for folder in folders:
-                if not folder or not isinstance(folder, dict):
-                    continue
-                folder_id = folder.get("id", "")
-                label = folder.get("label", folder_id)
-                path = folder.get("path", "")
-                devices = folder.get("devices", [])
-
-                print(f"  • {label}")
-                print(f"    Path: {path}")
-                if devices:
-                    device_count = len([d for d in devices if d and isinstance(d, dict)])
-                    print(f"    Shared with {device_count} device(s)")
-        else:
-            print("  (none)")
+        display_folders(folders, detailed=False, device_map=device_map)
 
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
