@@ -3,6 +3,7 @@ Shared watchman functionality that reads config from .watchman-rebuild.json.
 """
 
 import json
+import logging
 from pathlib import Path
 
 
@@ -18,7 +19,7 @@ def load_watchman_ignores(config_path):
                 config = json.load(f)
                 patterns.extend(config.get('ignore_patterns', []))
         except Exception as e:
-            print(f"Warning: Failed to parse .watchman-rebuild.json: {e}")
+            logging.warning(f"Failed to parse .watchman-rebuild.json: {e}")
 
     return patterns
 

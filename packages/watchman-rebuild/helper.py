@@ -7,10 +7,19 @@ import sys
 import subprocess
 import platform
 import os
+import logging
 from pathlib import Path
 
 import pywatchman
 from watchman_rebuild import load_watchman_ignores, build_watchman_expression
+
+# Configure logging to write to stdout instead of stderr
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
 
 
 def detect_rebuild_command():
@@ -69,16 +78,16 @@ def send_notification(success):
 
 def run_rebuild(config_path, command):
     """Run the rebuild command."""
-    print(f"Running: {command}")
+    logging.info(f"Running: {command}")
     env = os.environ.copy()
     env['NIXPKGS_ALLOW_UNFREE'] = '1'
     # Redirect stderr to stdout so all output goes to the same log file
     result = subprocess.run(command, shell=True, cwd=config_path, env=env, stderr=subprocess.STDOUT)
     if result.returncode == 0:
-        print("✅ Rebuild successful")
+        logging.info("✅ Rebuild successful")
         send_notification(True)
     else:
-        print(f"❌ Rebuild failed with exit code {result.returncode}")
+        logging.error(f"❌ Rebuild failed with exit code {result.returncode}")
         send_notification(False)
     return result.returncode
 
@@ -90,13 +99,13 @@ def watch_and_rebuild(config_path, command=None):
     # Wait for path on Darwin (for volume mounts)
     if platform.system() == 'Darwin':
         if not config_path_obj.exists():
-            print(f"Waiting for {config_path} to be available...")
+            logging.info(f"Waiting for {config_path} to be available...")
             subprocess.run(['/bin/wait4path', str(config_path)], check=True)
-            print(f"{config_path} is now available!")
+            logging.info(f"{config_path} is now available!")
 
     # Verify path exists
     if not config_path_obj.exists():
-        print(f"Error: Config path does not exist: {config_path}")
+        logging.error(f"Config path does not exist: {config_path}")
         sys.exit(1)
 
     # Change to config directory
@@ -105,10 +114,10 @@ def watch_and_rebuild(config_path, command=None):
     # Auto-detect command if not provided
     if command is None:
         command = detect_rebuild_command()
-        print(f"Auto-detected rebuild command: {command}")
+        logging.info(f"Auto-detected rebuild command: {command}")
 
     ignore_dirs = load_watchman_ignores(config_path)
-    print(f"Loaded ignore patterns from .watchman-rebuild.json: {ignore_dirs}")
+    logging.info(f"Loaded ignore patterns from .watchman-rebuild.json: {ignore_dirs}")
 
     client = pywatchman.client()
 
@@ -116,12 +125,12 @@ def watch_and_rebuild(config_path, command=None):
         # Watch the config path
         watch_result = client.query('watch-project', config_path)
         if 'warning' in watch_result:
-            print(f"Watchman warning: {watch_result['warning']}")
+            logging.warning(f"Watchman warning: {watch_result['warning']}")
 
         root = watch_result['watch']
         relative_path = watch_result.get('relative_path', '')
 
-        print(f"Watchman watching: {root}")
+        logging.info(f"Watchman watching: {root}")
 
         # Subscribe to file changes
         query = {
@@ -135,7 +144,7 @@ def watch_and_rebuild(config_path, command=None):
         sub_name = 'watchman-rebuild'
         client.query('subscribe', root, sub_name, query)
 
-        print(f"\nWatching for changes...\n")
+        logging.info("Watching for changes...")
 
         # Wait for changes
         while True:
@@ -144,27 +153,27 @@ def watch_and_rebuild(config_path, command=None):
 
                 if 'subscription' in result and result['subscription'] == sub_name:
                     if result.get('is_fresh_instance'):
-                        print("Fresh watchman instance")
+                        logging.info("Fresh watchman instance")
                         continue
 
                     files = result.get('files', [])
                     if files:
-                        print(f"\n{'='*60}")
-                        print(f"Detected {len(files)} file change(s):")
+                        logging.info("=" * 60)
+                        logging.info(f"Detected {len(files)} file change(s):")
                         for f in files[:10]:  # Show first 10 files
                             fname = f if isinstance(f, str) else f.get('name', str(f))
-                            print(f"  - {fname}")
+                            logging.info(f"  - {fname}")
                         if len(files) > 10:
-                            print(f"  ... and {len(files) - 10} more")
-                        print(f"{'='*60}")
+                            logging.info(f"  ... and {len(files) - 10} more")
+                        logging.info("=" * 60)
                         run_rebuild(config_path, command)
-                        print(f"{'='*60}\n")
+                        logging.info("=" * 60)
 
             except pywatchman.SocketTimeout:
                 continue
 
     except KeyboardInterrupt:
-        print("\nReceived interrupt, stopping...")
+        logging.info("Received interrupt, stopping...")
     finally:
         try:
             client.close()
@@ -174,9 +183,9 @@ def watch_and_rebuild(config_path, command=None):
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print(f"Usage: {sys.argv[0]} <config_path> [command]")
-        print(f"  If command is not provided, it will be auto-detected")
-        print(f"  (sudo is automatically used when not running as root)")
+        logging.error(f"Usage: {sys.argv[0]} <config_path> [command]")
+        logging.error(f"  If command is not provided, it will be auto-detected")
+        logging.error(f"  (sudo is automatically used when not running as root)")
         sys.exit(1)
 
     config_path = sys.argv[1]
