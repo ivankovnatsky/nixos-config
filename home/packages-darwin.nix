@@ -20,6 +20,7 @@
     mkpasswd
     nixfmt-rfc-style
     nodejs
+    open-gh-notifications-py
     pandoc
     parallel
     pigz

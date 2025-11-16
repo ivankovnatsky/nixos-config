@@ -10,6 +10,7 @@
     age
     ssh-to-age
     syncthing-mgmt
+    open-gh-notifications-py
     watchman-rebuild
   ];
 }
