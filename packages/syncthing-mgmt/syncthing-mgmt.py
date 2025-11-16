@@ -603,8 +603,10 @@ def display_folders(folders, detailed=False, device_map=None, folder_statuses=No
                         else:
                             dev_name = dev_id[:7] + "..."
 
+                        # Display device
+                        print(f"    Shared with: {dev_name}")
+
                         # Get completion/sync status for this device-folder pair
-                        sync_info = ""
                         if device_completions and (dev_id, folder_id) in device_completions:
                             comp = device_completions[(dev_id, folder_id)]
                             need_items = comp.get("needItems", 0)
@@ -613,9 +615,9 @@ def display_folders(folders, detailed=False, device_map=None, folder_statuses=No
                             if need_items > 0:
                                 items_str = f"{need_items:,} item{'s' if need_items != 1 else ''}"
                                 bytes_str = format_bytes(need_bytes)
-                                sync_info = f"     Out of Sync Items     {items_str}, ~{bytes_str}"
-
-                        print(f"    Shared with: {dev_name}{sync_info}")
+                                print(f"      Out of Sync Items: {items_str}, ~{bytes_str}")
+                            else:
+                                print(f"      Up to Date")
 
 
 def cmd_list_devices(args):
