@@ -156,6 +156,10 @@
         "active": true
       },
       {
+        "id": "pool.ntp.org",
+        "active": true
+      },
+      {
         "id": "ru.anker.com",
         "active": true
       },
@@ -169,6 +173,10 @@
       },
       {
         "id": "tildaapi.one",
+        "active": true
+      },
+      {
+        "id": "tildacdn.one",
         "active": true
       },
       {
