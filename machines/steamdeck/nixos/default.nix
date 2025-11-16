@@ -13,6 +13,7 @@
     ./default-apps.nix
     ./desktop.nix
     ./fonts.nix
+    ./games.nix
     ./jovian.nix
     ./kde.nix
     ./networking.nix

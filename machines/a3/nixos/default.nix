@@ -18,6 +18,7 @@
     ./default-apps.nix
     ./desktop.nix
     ./fonts.nix
+    ./games.nix
     ./networking.nix
     ./nixpkgs.nix
     ./power-management.nix
