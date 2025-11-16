@@ -24,7 +24,7 @@
     ./remote-build.nix
     ./security.nix
     ./steam.nix
-    ./sudo.nix
+    ../../../nixos/sudo.nix
     ./tpm2.nix
     ./user.nix
   ];

@@ -21,7 +21,7 @@
     ./remote-build.nix
     ./sd-card.nix
     ./security.nix
-    ./sudo.nix
+    ../../../nixos/sudo.nix
     ./tmux-rebuild.nix
     ./tpm2.nix
     ./user.nix
