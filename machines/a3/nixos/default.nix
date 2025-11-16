@@ -6,6 +6,7 @@
     # ./smb.nix
     ../../../modules/flags
     ../../../modules/nixos/rebuild-daemon
+    ../../../modules/nixos/syncthing-mgmt
     ../../../nixos/chromium.nix
     ../../../nixos/keyboard.nix
     ../../../system/nix.nix
@@ -25,6 +26,7 @@
     ./security.nix
     ./steam.nix
     ../../../nixos/sudo.nix
+    ./syncthing-mgmt.nix
     ./tpm2.nix
     ./user.nix
   ];
