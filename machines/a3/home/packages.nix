@@ -9,6 +9,9 @@
     wl-clipboard # Wayland clipboard utilities
     pigz # Parallel gzip compression
 
+    # Syncthing management CLI
+    syncthing-mgmt
+
     # Hardware monitoring tools
     lm_sensors # Provides the 'sensors' command for monitoring temperatures
     nvtopPackages.nvidia # GPU monitoring (like htop for GPUs)
