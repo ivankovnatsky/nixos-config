@@ -9,6 +9,9 @@
     wl-clipboard # Wayland clipboard utilities
     pigz # Parallel gzip compression
 
+    # Syncthing management CLI
+    syncthing-mgmt
+
     # Secrets management
     sops
     ssh-to-age
