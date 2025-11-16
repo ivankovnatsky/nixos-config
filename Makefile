@@ -16,12 +16,10 @@
 	rebuild-nixos/a3 \
 	\
 	rebuild-darwin \
-	rebuild-darwin-sudo \
 	\
 	rebuild-watchman-nixos \
 	\
 	rebuild-watchman-darwin \
-	rebuild-watchman-darwin-sudo \
 	\
 	devcontainer
 
@@ -36,7 +34,7 @@ COMMON_REBUILD_FLAGS := -L --flake .
 
 # Default target will run rebuild and start watchman based on platform
 ifeq (${PLATFORM}, Darwin)
-default: rebuild-darwin-sudo rebuild-watchman-darwin-sudo
+default: rebuild-darwin rebuild-watchman-darwin
 else
 default: rebuild-nixos/generic rebuild-watchman-nixos
 endif
@@ -103,13 +101,6 @@ rebuild-nixos/a3:
 # Darwin-specific rebuild target
 rebuild-darwin:
 	# NIXPKGS_ALLOW_UNFREE=1 is needed for unfree packages like codeium when using --impure
-	NIXPKGS_ALLOW_UNFREE=1 darwin-rebuild switch --impure $(COMMON_REBUILD_FLAGS) && \
-		osascript -e 'display notification "🟢 Darwin rebuild successful!" with title "Nix configuration"' || \
-		osascript -e 'display notification "🔴 Darwin rebuild failed!" with title "Nix configuration"'
-
-# Darwin-specific rebuild target with sudo
-rebuild-darwin-sudo:
-	# NIXPKGS_ALLOW_UNFREE=1 is needed for unfree packages like codeium when using --impure
 	NIXPKGS_ALLOW_UNFREE=1 sudo -E darwin-rebuild switch --impure $(COMMON_REBUILD_FLAGS) && \
 		osascript -e 'display notification "🟢 Darwin rebuild successful!" with title "Nix configuration"' || \
 		osascript -e 'display notification "🔴 Darwin rebuild failed!" with title "Nix configuration"'
@@ -120,10 +111,6 @@ rebuild-watchman-nixos:
 
 # Darwin-specific watchman rebuild target
 rebuild-watchman-darwin:
-	@watchman-rebuild $(CURDIR)
-
-# Darwin-specific watchman rebuild target with sudo
-rebuild-watchman-darwin-sudo:
 	@watchman-rebuild $(CURDIR)
 
 # Devcontainer: start and exec into container with Claude Code
