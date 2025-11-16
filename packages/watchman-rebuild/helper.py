@@ -72,7 +72,8 @@ def run_rebuild(config_path, command):
     print(f"Running: {command}")
     env = os.environ.copy()
     env['NIXPKGS_ALLOW_UNFREE'] = '1'
-    result = subprocess.run(command, shell=True, cwd=config_path, env=env)
+    # Redirect stderr to stdout so all output goes to the same log file
+    result = subprocess.run(command, shell=True, cwd=config_path, env=env, stderr=subprocess.STDOUT)
     if result.returncode == 0:
         print("✅ Rebuild successful")
         send_notification(True)
