@@ -42,6 +42,7 @@
     ssh-to-age
     stylua
     syncthing
+    syncthing-mgmt
     treefmt
     typst
     typstfmt

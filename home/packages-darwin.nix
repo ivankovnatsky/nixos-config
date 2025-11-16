@@ -31,6 +31,7 @@
     smctemp # Local overlay
     switch-appearance
     syncthing
+    syncthing-mgmt
     typst
     typstfmt
     username # Installed as flake

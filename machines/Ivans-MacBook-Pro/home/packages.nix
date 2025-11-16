@@ -9,6 +9,7 @@
     sops
     age
     ssh-to-age
+    syncthing-mgmt
     watchman-rebuild
   ];
 }
