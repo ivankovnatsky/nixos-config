@@ -31,6 +31,7 @@
     ./desktop.nix # Desktop environment home configs
     ./firefox.nix
     ./flags.nix
+    ./games.nix
     ./gpg.nix
     ./manual-packages.nix
     ./packages.nix
