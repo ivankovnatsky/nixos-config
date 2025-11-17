@@ -364,6 +364,10 @@ def sync_folders(client, folders_config, devices_config, dry_run=False):
                        if f and isinstance(f, dict) and "id" in f}
     configured_folder_ids = set(folders_config.keys())
 
+    # Get current devices from Syncthing to validate references
+    current_devices = {dev["deviceID"]: dev for dev in client.get_devices()
+                       if dev and isinstance(dev, dict) and "deviceID" in dev}
+
     # Build device name to ID mapping for resolving device references
     device_name_to_id = {name: dev_id for name, dev_id in devices_config.items()}
 
@@ -374,13 +378,24 @@ def sync_folders(client, folders_config, devices_config, dry_run=False):
         # Resolve device names/IDs to device IDs
         configured_devices = folder_cfg.get("devices", [])
         resolved_device_ids = []
+        invalid_devices = []
         for dev in configured_devices:
             # Check if it's a device name (exists in mapping) or already a device ID
             if dev in device_name_to_id:
-                resolved_device_ids.append(device_name_to_id[dev])
+                dev_id = device_name_to_id[dev]
+                # Validate that this device exists in Syncthing
+                if dev_id in current_devices:
+                    resolved_device_ids.append(dev_id)
+                else:
+                    invalid_devices.append(dev)
+                    logging.warning(f"      ⚠ Skipping device '{dev}' for folder {folder_id}: device not found in Syncthing")
             else:
-                # Assume it's already a device ID
-                resolved_device_ids.append(dev)
+                # Assume it's already a device ID and validate
+                if dev in current_devices:
+                    resolved_device_ids.append(dev)
+                else:
+                    invalid_devices.append(dev)
+                    logging.warning(f"      ⚠ Skipping device ID '{dev[:7]}...' for folder {folder_id}: device not found in Syncthing")
 
         if folder_id in current_folders:
             current_folder = current_folders[folder_id]
@@ -396,6 +411,8 @@ def sync_folders(client, folders_config, devices_config, dry_run=False):
             # Check if anything changed
             if current_label != new_label or current_path != new_path or current_devices != new_devices:
                 logging.info(f"    UPDATE: {folder_id}")
+                if invalid_devices:
+                    logging.info(f"      Note: Excluded {len(invalid_devices)} invalid device(s): {', '.join(invalid_devices)}")
                 if not dry_run:
                     # Build device list for API
                     devices_list = [{"deviceID": dev_id} for dev_id in new_devices]
@@ -410,8 +427,12 @@ def sync_folders(client, folders_config, devices_config, dry_run=False):
                     logging.info(f"      [DRY-RUN] Would update folder")
             else:
                 logging.info(f"    OK: {folder_id} already configured")
+                if invalid_devices:
+                    logging.info(f"      Note: Would exclude {len(invalid_devices)} invalid device(s): {', '.join(invalid_devices)}")
         else:
             logging.info(f"    ADD: {folder_id}")
+            if invalid_devices:
+                logging.info(f"      Note: Excluded {len(invalid_devices)} invalid device(s): {', '.join(invalid_devices)}")
             if not dry_run:
                 # Build device list for API
                 devices_list = [{"deviceID": dev_id} for dev_id in resolved_device_ids]
