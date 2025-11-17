@@ -1,8 +1,8 @@
 {
   imports = [
     ../../../home/flags.nix
+    ../../../home/scripts.nix
     ../../../modules/home/manual-packages
-    ./manual-packages.nix
     ../../../home/nixvim.nix
     ../../../home/packages-darwin.nix
     ../../../home/amethyst
@@ -25,6 +25,7 @@
     ../../../home/rebuild-diff.nix
     ../../../home/safari.nix
     ../../../home/shell.nix
+    ../../../home/sops.nix
     ../../../home/starship
     ../../../home/syncthing.nix
     ../../../home/tmux.nix

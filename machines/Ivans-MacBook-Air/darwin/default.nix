@@ -12,13 +12,16 @@
     ../../../darwin/system.nix
     ../../../darwin/tmux-rebuild.nix
     ../../../modules/darwin/dock
+    ../../../modules/darwin/launchd
     ../../../modules/darwin/pam
     ../../../modules/darwin/sudo
+    ../../../modules/darwin/syncthing-mgmt
     ../../../modules/darwin/tmux-rebuild
     ../../../modules/flags
     ../../../system/documentation.nix
     ../../../system/nix.nix
     ../../../system/scripts
     ../../../darwin/no-dock-restart.nix
+    ./syncthing-mgmt.nix
   ];
 }
