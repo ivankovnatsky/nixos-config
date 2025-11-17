@@ -17,6 +17,7 @@
     ../../../system/nix.nix
     ../../../system/rebuild-daemon.nix
     ../../../system/scripts
+    ./dns.nix
     ./dock.nix
     ./flags.nix
     ./fonts.nix
