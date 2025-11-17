@@ -31,6 +31,8 @@
         path = "${config.users.users.${username}.home}/Sources/github.com/NixOS/nixpkgs";
         label = "Sources/github.com/NixOS/nixpkgs";
         devices = [
+          "Ivans-MacBook-Pro"
+          "Ivans-MacBook-Air"
           "Ivans-Mac-mini"
         ];
       };
@@ -40,6 +42,7 @@
         label = "Sources/github.com/ivankovnatsky/nixos-config-ai-docs";
         devices = [
           "Ivans-MacBook-Pro"
+          "Ivans-MacBook-Air"
         ];
       };
 
@@ -48,6 +51,7 @@
         label = "Sources/github.com/ivankovnatsky/notes";
         devices = [
           "Ivans-MacBook-Pro"
+          "Ivans-MacBook-Air"
           "Ivans-Mac-mini"
         ];
       };
@@ -57,6 +61,7 @@
         label = "Sources/github.com/ivankovnatsky/nixos-config";
         devices = [
           "Ivans-MacBook-Pro"
+          "Ivans-MacBook-Air"
           "Ivans-Mac-mini"
         ];
       };
