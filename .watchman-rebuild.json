@@ -1,6 +1,7 @@
 {
   "ignore_patterns": [
     "*.md",
+    "*.sync-conflict-*",
     "*.tmp.*",
     ".claude",
     ".git",
