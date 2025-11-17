@@ -18,6 +18,7 @@ from typing import Optional, Tuple, List
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
+from rich import box
 
 USER_AGENT = "syncthing-mgmt/1.0.0"
 
@@ -534,7 +535,8 @@ def display_devices(devices, detailed=False, connections=None, completions=None)
     table = Table(
         show_header=True,
         header_style="bold cyan",
-        show_lines=False
+        show_lines=False,
+        box=box.ROUNDED
     )
     table.add_column("Device", style="bold yellow")
     table.add_column("Device ID", style="dim")
@@ -600,7 +602,8 @@ def display_folders(folders, detailed=False, device_map=None, folder_statuses=No
     table = Table(
         show_header=True,
         header_style="bold cyan",
-        show_lines=False
+        show_lines=False,
+        box=box.ROUNDED
     )
     table.add_column("Folder", style="bold")
     table.add_column("Path", style="dim")
@@ -851,11 +854,11 @@ def cmd_status(args):
                         except Exception:
                             pass
 
-        # Display devices
-        display_devices(devices, detailed=False, connections=connections, completions=completions)
-
         # Display folders with device name resolution
         display_folders(folders, detailed=False, device_map=device_map, folder_statuses=folder_statuses, local_device_id=local_device_id, device_completions=device_completions)
+
+        # Display devices
+        display_devices(devices, detailed=False, connections=connections, completions=completions)
 
     except Exception as e:
         logging.error(f"Error: {e}")
