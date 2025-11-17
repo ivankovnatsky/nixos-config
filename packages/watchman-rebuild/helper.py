@@ -167,7 +167,6 @@ def watch_and_rebuild(config_path, command=None):
                             logging.info(f"  ... and {len(files) - 10} more")
                         logging.info("=" * 60)
                         run_rebuild(config_path, command)
-                        logging.info("=" * 60)
 
             except pywatchman.SocketTimeout:
                 continue
