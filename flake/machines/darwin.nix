@@ -96,6 +96,10 @@
       # Import machine-specific configuration
       ../../machines/Ivans-MacBook-Air
 
+      # SOPS secrets management
+      inputs.sops-nix-darwin-unstable.darwinModules.sops
+      ../../shared/sops-nix.nix
+
       # Basic system configuration
       {
         nixpkgs.overlays = [ inputs.self.overlay ];
@@ -125,6 +129,7 @@
             imports = [
               ../../machines/Ivans-MacBook-Air/home
               inputs.nixvim-darwin-unstable.homeModules.nixvim
+              inputs.sops-nix-darwin-unstable.homeManagerModules.sops
               {
                 programs.home-manager.enable = true;
                 home.username = "ivan";

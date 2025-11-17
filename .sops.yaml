@@ -12,6 +12,8 @@ keys:
   - &macbook-pro-user age1x42q97xw3synk305twvsxkslld2205h97t8d9z8hy8vl8hzcpgas6d48rh
   - &steamdeck age1elhe3mnpf6fh5rcquljslu4j8rh0mk5wxraftf8gumgd47m9r5kq2wk2gx
   - &steamdeck-user age170z7hk7s4xyzq2s8s5dmhduusgpmpvhgfnjtuqhxkn76gg4pnayqzsrz7h
+  - &macbook-air age13sfhwx56gvfzprjzg2guzf5l27jsk5szu2n54tfc80q7s84w8etsfw550z
+  - &macbook-air-user age13qs0kqn9gnyuv30xehzls8cvshs372j0g02lthfvn36s53erp4tsy2n854
 
 creation_rules:
   - path_regex: secrets/.*\.yaml$
@@ -31,3 +33,5 @@ creation_rules:
       - *macbook-pro-user
       - *steamdeck
       - *steamdeck-user
+      - *macbook-air
+      - *macbook-air-user
