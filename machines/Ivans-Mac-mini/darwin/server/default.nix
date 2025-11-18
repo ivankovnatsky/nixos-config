@@ -54,6 +54,7 @@
     ./textcast
     ./sharing.nix
     ./stash
+    ./stash-media
     ./sudo.nix
     ./system.nix
     ./tailscale.nix

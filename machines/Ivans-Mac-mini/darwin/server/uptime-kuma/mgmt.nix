@@ -73,6 +73,11 @@
         description = "Stash media organizer with WebSocket (mini:9999)";
       }
       {
+        name = "media";
+        url = "https://media.@EXTERNAL_DOMAIN@";
+        description = "Stash media organizer for general Media with WebSocket (mini:9998)";
+      }
+      {
         name = "audiobookshelf";
         url = "https://audiobookshelf.@EXTERNAL_DOMAIN@";
         description = "Audiobookshelf audiobook and podcast server (mini:8000)";
