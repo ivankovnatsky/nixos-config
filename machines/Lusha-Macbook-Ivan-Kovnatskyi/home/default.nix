@@ -7,6 +7,7 @@
     ../../../home/amethyst
     ../../../home/bat.nix
     ../../../home/btop.nix
+    ../../../home/ccstatusline.nix
     ../../../home/claude.nix
     # ../../../home/codex.nix
     ../../../home/gemini.nix

@@ -43,7 +43,7 @@ in
             },
             "statusLine": {
               "type": "command",
-              "command": "printf '\\e[?1004l'; bunx ccstatusline@latest",
+              "command": "printf '\\e[?1004l'; npx ccstatusline@latest",
               "padding": 0
             },
             "includeCoAuthoredBy": false,

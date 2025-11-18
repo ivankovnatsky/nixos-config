@@ -3,6 +3,7 @@
 {
   imports = [
     ../../../home/chromium.nix
+    ../../../home/ccstatusline.nix
     ../../../home/claude.nix
     ../../../home/codex.nix
     ../../../home/gemini.nix
