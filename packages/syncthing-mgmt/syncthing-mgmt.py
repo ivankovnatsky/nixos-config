@@ -504,8 +504,89 @@ def cmd_sync(args):
         sys.exit(1)
 
 
+def display_this_device(system_status, connections_data=None):
+    """Display information about this device."""
+    if not system_status:
+        return
+
+    console = Console()
+    console.print()  # Add blank line
+    console.print("[bold cyan]This Device[/bold cyan]")
+
+    # Create table
+    table = Table(
+        show_header=False,
+        show_lines=False,
+        box=box.ROUNDED,
+        padding=(0, 1)
+    )
+    table.add_column("Property", style="dim", width=25)
+    table.add_column("Value", style="bold")
+
+    # Download/Upload Rate
+    if connections_data:
+        total_in_rate = connections_data.get("total", {}).get("inBytesTotal", 0)
+        total_out_rate = connections_data.get("total", {}).get("outBytesTotal", 0)
+        in_rate = format_bytes(0)  # Current rate not available in REST API
+        out_rate = format_bytes(0)
+        total_in_str = format_bytes(total_in_rate)
+        total_out_str = format_bytes(total_out_rate)
+        table.add_row("Download Rate", f"0 B/s ({total_in_str})")
+        table.add_row("Upload Rate", f"0 B/s ({total_out_str})")
+
+    # Local State (Total) - we'll need to aggregate folder stats
+    # For now, skip this as it requires iterating through all folders
+
+    # Listeners
+    num_listeners = system_status.get("connectionServiceStatus", {})
+    if num_listeners:
+        active = sum(1 for svc, status in num_listeners.items() if status.get("error") is None)
+        total = len(num_listeners)
+        table.add_row("Listeners", f"{active}/{total}")
+
+    # Discovery
+    discovery_status = system_status.get("discoveryStatus", {})
+    if discovery_status:
+        active = sum(1 for svc, status in discovery_status.items() if status.get("error") is None)
+        total = len(discovery_status)
+        table.add_row("Discovery", f"{active}/{total}")
+
+    # Uptime
+    uptime_sec = system_status.get("uptime", 0)
+    if uptime_sec:
+        days = uptime_sec // 86400
+        hours = (uptime_sec % 86400) // 3600
+        minutes = (uptime_sec % 3600) // 60
+        uptime_str = f"{days}d {hours}h {minutes}m"
+        table.add_row("Uptime", uptime_str)
+
+    # Identification (short device ID)
+    device_id = system_status.get("myID", "")
+    if device_id:
+        short_id = device_id[:7]
+        table.add_row("Identification", short_id)
+
+    # Version
+    version = system_status.get("version", "")
+    os_info = system_status.get("os", "")
+    arch = system_status.get("arch", "")
+    if version:
+        version_str = f"{version}"
+        if os_info or arch:
+            version_str += f", {os_info}"
+            if arch:
+                version_str += f" ({arch})"
+        table.add_row("Version", version_str)
+
+    console.print(table)
+
+
 def display_devices(devices, detailed=False, connections=None, completions=None):
     """Display devices in a formatted table."""
+    console = Console()
+    console.print()  # Add blank line
+    console.print("[bold cyan]Remote Devices[/bold cyan]")
+
     if not devices:
         print("  (none)")
         return
@@ -517,7 +598,7 @@ def display_devices(devices, detailed=False, connections=None, completions=None)
         show_lines=False,
         box=box.ROUNDED
     )
-    table.add_column("Device", style="bold yellow")
+    table.add_column("Devices", style="bold yellow")
     table.add_column("Device ID", style="dim")
     table.add_column("Connection Status", justify="center")
     table.add_column("Sync Status")
@@ -557,7 +638,6 @@ def display_devices(devices, detailed=False, connections=None, completions=None)
         table.add_row(name, device_id_short, conn_status, sync_status)
 
     # Print the table
-    console = Console()
     console.print(table)
 
 
@@ -573,6 +653,9 @@ def display_folders(folders, detailed=False, device_map=None, folder_statuses=No
         local_device_id: Local device ID to filter out from shared devices
         device_completions: Dict mapping (device_id, folder_id) tuples to completion info
     """
+    console = Console()
+    console.print("[bold cyan]Folders[/bold cyan]")
+
     if not folders:
         print("  (none)")
         return
@@ -584,9 +667,8 @@ def display_folders(folders, detailed=False, device_map=None, folder_statuses=No
         show_lines=False,
         box=box.ROUNDED
     )
-    table.add_column("Folder", style="bold")
-    table.add_column("Path", style="dim")
-    table.add_column("Device", style="yellow")
+    table.add_column("Folders", style="bold")
+    table.add_column("Devices", style="yellow")
     table.add_column("State", justify="center")
     table.add_column("Sync Status", style="green")
 
@@ -648,15 +730,16 @@ def display_folders(folders, detailed=False, device_map=None, folder_statuses=No
 
                 # Only show folder name and path on first row for each folder
                 if idx == 0:
-                    table.add_row(label, path, dev_name, state, sync_status)
+                    folder_label = f"{label}\n[dim]{path}[/dim]"
+                    table.add_row(folder_label, dev_name, state, sync_status)
                 else:
-                    table.add_row("", "", dev_name, "", sync_status)
+                    table.add_row("", dev_name, "", sync_status)
         else:
             # No devices to show
-            table.add_row(label, path, "(none)", state, "")
+            folder_label = f"{label}\n[dim]{path}[/dim]"
+            table.add_row(folder_label, "(none)", state, "")
 
     # Print the table
-    console = Console()
     console.print(table)
 
 
@@ -835,6 +918,9 @@ def cmd_status(args):
 
         # Display folders with device name resolution
         display_folders(folders, detailed=False, device_map=device_map, folder_statuses=folder_statuses, local_device_id=local_device_id, device_completions=device_completions)
+
+        # Display this device
+        display_this_device(system_status, connections_data)
 
         # Display devices
         display_devices(devices, detailed=False, connections=connections, completions=completions)
