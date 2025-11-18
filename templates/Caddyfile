@@ -187,6 +187,18 @@
 		}
 	}
 
+	@media host media.@externalDomain@
+	reverse_proxy @media @miniIp@:9998 {
+		# Enable WebSocket support
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		# Increase timeouts for streaming
+		transport http {
+			keepalive 12h
+			keepalive_idle_conns 100
+		}
+	}
+
 	@podsync host podsync.@externalDomain@
 	reverse_proxy @podsync @miniIp@:8082 {
 		header_up X-Real-IP {remote_host}
