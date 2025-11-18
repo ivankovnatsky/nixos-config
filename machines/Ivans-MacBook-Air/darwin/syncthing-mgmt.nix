@@ -81,10 +81,19 @@
         ];
       };
 
+      "qxvnf-blpvx" = {
+        path = "/Users/${username}/.password-store";
+        label = "~/.password-store";
+        devices = [
+          "Ivans-Mac-mini"
+        ];
+      };
+
       "shtdy-s2c9s" = {
         path = "/Users/${username}/Sources/github.com/ivankovnatsky/nixos-config";
         label = "Sources/github.com/ivankovnatsky/nixos-config";
         devices = [
+          "Ivans-Mac-mini"
           "Lusha-Macbook-Ivan-Kovnatskyi"
         ];
       };
