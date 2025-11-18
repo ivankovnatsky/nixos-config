@@ -8,6 +8,7 @@
     ../../../home/amethyst
     ../../../home/bat.nix
     ../../../home/btop.nix
+    ../../../home/ccstatusline.nix
     ../../../home/claude.nix
     ../../../home/gemini.nix
     ../../../home/scripts.nix
