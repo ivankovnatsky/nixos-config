@@ -36,6 +36,7 @@
     rust-analyzer
     rustc
     sesh
+    set-dns
     shellcheck
     shfmt
     smctemp # Local overlay
