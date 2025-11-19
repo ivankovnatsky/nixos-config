@@ -11,7 +11,7 @@ let
   cfg = config.local.services.prevent-sleep;
 
   # Package the prevent-sleep script
-  preventSleepScript = pkgs.writeScriptBin "prevent-sleep" (builtins.readFile ../../../scripts/prevent-sleep.sh);
+  preventSleepScript = pkgs.writeScriptBin "prevent-sleep" (builtins.readFile ../../../system/scripts/prevent-sleep.sh);
 
   # Wrapper to check if already running
   preventSleepWrapper = pkgs.writeScriptBin "prevent-sleep-wrapper" ''

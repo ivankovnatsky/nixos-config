@@ -1,7 +1,7 @@
 { pkgs, lib, ... }:
 let
-  scriptFiles = builtins.readDir ../../scripts;
-  scriptPath = ../../scripts;
+  scriptFiles = builtins.readDir ./.;
+  scriptPath = ./.;
 
   # Define your aliases here as an attribute set
   # Format: "original-name" = [ "alias1" "alias2" ... ]
@@ -21,7 +21,8 @@ let
     in
     pkgs.writeScriptBin binaryName scriptWithFixedShebang;
 
-  scriptNames = builtins.attrNames scriptFiles;
+  # Filter out non-script files (default.nix)
+  scriptNames = builtins.filter (name: lib.hasSuffix ".sh" name) (builtins.attrNames scriptFiles);
   scriptPackages = map processScript scriptNames;
 
   # Helper function to create an alias script
