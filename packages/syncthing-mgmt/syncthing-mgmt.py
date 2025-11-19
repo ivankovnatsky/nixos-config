@@ -695,42 +695,49 @@ def display_folders(folders, detailed=False, device_map=None, folder_statuses=No
                     continue
                 devices_to_show.append(d)
 
-        # Add rows for each device
-        if devices_to_show:
-            for idx, d in enumerate(devices_to_show):
-                dev_id = d.get("deviceID", "")
+        # Build device info list
+        device_rows = []
+        for d in devices_to_show:
+            dev_id = d.get("deviceID", "")
 
-                # Get device name
-                if device_map and dev_id in device_map:
-                    dev_name = device_map[dev_id]
+            # Get device name
+            if device_map and dev_id in device_map:
+                dev_name = device_map[dev_id]
+            else:
+                dev_name = dev_id[:7] + "..."
+
+            # Get sync status
+            sync_status = ""
+            if device_completions and (dev_id, folder_id) in device_completions:
+                comp = device_completions[(dev_id, folder_id)]
+                need_items = comp.get("needItems", 0)
+                need_bytes = comp.get("needBytes", 0)
+
+                if need_items > 0:
+                    items_str = f"{need_items:,} item{'s' if need_items != 1 else ''}"
+                    bytes_str = format_bytes(need_bytes)
+                    sync_status = f"[red]Out of Sync:[/red] {items_str}, ~{bytes_str}"
                 else:
-                    dev_name = dev_id[:7] + "..."
+                    sync_status = "[green]Up to Date[/green]"
 
-                # Get sync status
-                sync_status = ""
-                status_style = "green"
-                if device_completions and (dev_id, folder_id) in device_completions:
-                    comp = device_completions[(dev_id, folder_id)]
-                    need_items = comp.get("needItems", 0)
-                    need_bytes = comp.get("needBytes", 0)
+            device_rows.append((dev_name, sync_status))
 
-                    if need_items > 0:
-                        items_str = f"{need_items:,} item{'s' if need_items != 1 else ''}"
-                        bytes_str = format_bytes(need_bytes)
-                        sync_status = f"[red]Out of Sync:[/red] {items_str}, ~{bytes_str}"
-                    else:
-                        sync_status = "[green]Up to Date[/green]"
-
-                # Only show folder name and path on first row for each folder
-                if idx == 0:
-                    folder_label = f"{label}\n[dim]{path}[/dim]"
-                    table.add_row(folder_label, dev_name, sync_status)
-                else:
-                    table.add_row("", dev_name, sync_status)
+        # Add rows: first row has label, second row has path, rest are empty
+        if device_rows:
+            # First row: folder label + first device
+            table.add_row(label, device_rows[0][0], device_rows[0][1])
+            # Second row: path + second device (or just path if only one device)
+            if len(device_rows) > 1:
+                table.add_row(f"[dim]{path}[/dim]", device_rows[1][0], device_rows[1][1])
+            else:
+                table.add_row(f"[dim]{path}[/dim]", "", "")
+            # Remaining devices
+            for idx in range(2, len(device_rows)):
+                table.add_row("", device_rows[idx][0], device_rows[idx][1])
         else:
             # No devices to show
-            folder_label = f"{label}\n[dim]{path}[/dim]"
-            table.add_row(folder_label, "(none)", "")
+            table.add_row(label, "(none)", "")
+            table.add_row(f"[dim]{path}[/dim]", "", "")
 
     # Print the table
     console.print(table)
