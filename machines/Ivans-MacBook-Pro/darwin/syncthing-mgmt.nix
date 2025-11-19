@@ -102,6 +102,14 @@
         label = "~/.gnupg";
         devices = [ "Ivans-MacBook-Pro" ]; # Local only
       };
+
+      "kwhyl-jbqmu" = {
+        path = "/Users/${username}/Sources/github.com/NixOS/nixpkgs";
+        label = "Sources/github.com/NixOS/nixpkgs";
+        devices = [
+          "Lusha-Macbook-Ivan-Kovnatskyi"
+        ];
+      };
     };
 
     restart = false;
