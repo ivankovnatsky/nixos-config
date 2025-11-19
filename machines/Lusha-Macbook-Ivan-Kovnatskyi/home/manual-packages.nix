@@ -16,10 +16,6 @@
     '';
 
     mcp.servers = {
-      atlassian = {
-        transport = "sse";
-        url = "https://mcp.atlassian.com/v1/sse";
-      };
       github = {
         transport = "http";
         url = "https://api.githubcopilot.com/mcp";
