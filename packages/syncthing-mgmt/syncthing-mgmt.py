@@ -669,7 +669,6 @@ def display_folders(folders, detailed=False, device_map=None, folder_statuses=No
     )
     table.add_column("Folders", style="bold")
     table.add_column("Devices", style="yellow")
-    table.add_column("State", justify="center")
     table.add_column("Sync Status", style="green")
 
     first_folder = True
@@ -686,12 +685,6 @@ def display_folders(folders, detailed=False, device_map=None, folder_statuses=No
         label = folder.get("label", folder_id)
         path = folder.get("path", "")
         devices = folder.get("devices", [])
-
-        # Get folder status
-        state = ""
-        if folder_statuses and folder_id in folder_statuses:
-            status_info = folder_statuses[folder_id]
-            state = status_info.get("state", "unknown")
 
         # Get devices to display (excluding local device)
         devices_to_show = []
@@ -731,13 +724,13 @@ def display_folders(folders, detailed=False, device_map=None, folder_statuses=No
                 # Only show folder name and path on first row for each folder
                 if idx == 0:
                     folder_label = f"{label}\n[dim]{path}[/dim]"
-                    table.add_row(folder_label, dev_name, state, sync_status)
+                    table.add_row(folder_label, dev_name, sync_status)
                 else:
-                    table.add_row("", dev_name, "", sync_status)
+                    table.add_row("", dev_name, sync_status)
         else:
             # No devices to show
             folder_label = f"{label}\n[dim]{path}[/dim]"
-            table.add_row(folder_label, "(none)", state, "")
+            table.add_row(folder_label, "(none)", "")
 
     # Print the table
     console.print(table)
