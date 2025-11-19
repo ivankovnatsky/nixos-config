@@ -2,8 +2,8 @@
 # Required by: home/nixvim/commands (uses scripts.pr)
 { pkgs, lib, ... }:
 let
-  scriptFiles = builtins.readDir ../scripts;
-  scriptPath = ../scripts;
+  scriptFiles = builtins.readDir ../system/scripts;
+  scriptPath = ../system/scripts;
 
   processScript =
     scriptName:
@@ -15,7 +15,8 @@ let
     in
     pkgs.writeScriptBin binaryName scriptWithFixedShebang;
 
-  scriptNames = builtins.attrNames scriptFiles;
+  # Filter out non-script files (default.nix)
+  scriptNames = builtins.filter (name: lib.hasSuffix ".sh" name) (builtins.attrNames scriptFiles);
   scriptPackages = map processScript scriptNames;
 
   # Create an attribute set mapping script names to their derivations
