@@ -20,6 +20,7 @@
     # Devices this machine connects to
     devices = [
       "Lusha-Macbook-Ivan-Kovnatskyi" # This machine (required for local-only folders)
+      "a3"
       "Ivans-MacBook-Pro"
       "Ivans-Mac-mini"
       "Ivans-MacBook-Air"
@@ -31,6 +32,7 @@
         path = "${config.users.users.${username}.home}/Sources/github.com/NixOS/nixpkgs";
         label = "Sources/github.com/NixOS/nixpkgs";
         devices = [
+          "a3"
           "Ivans-MacBook-Pro"
           "Ivans-MacBook-Air"
           "Ivans-Mac-mini"
@@ -41,8 +43,10 @@
         path = "${config.users.users.${username}.home}/Sources/github.com/ivankovnatsky/nixos-config-ai-docs";
         label = "Sources/github.com/ivankovnatsky/nixos-config-ai-docs";
         devices = [
+          "a3"
           "Ivans-MacBook-Pro"
           "Ivans-MacBook-Air"
+          "Ivans-Mac-mini"
         ];
       };
 
@@ -50,6 +54,7 @@
         path = "${config.users.users.${username}.home}/Sources/github.com/ivankovnatsky/notes";
         label = "Sources/github.com/ivankovnatsky/notes";
         devices = [
+          "a3"
           "Ivans-MacBook-Pro"
           "Ivans-MacBook-Air"
           "Ivans-Mac-mini"
@@ -60,6 +65,7 @@
         path = "${config.users.users.${username}.home}/Sources/github.com/ivankovnatsky/nixos-config";
         label = "Sources/github.com/ivankovnatsky/nixos-config";
         devices = [
+          "a3"
           "Ivans-MacBook-Pro"
           "Ivans-MacBook-Air"
           "Ivans-Mac-mini"

@@ -26,6 +26,7 @@
       "a3" # This machine
       "Ivans-Mac-mini"
       "Ivans-MacBook-Pro"
+      "Lusha-Macbook-Ivan-Kovnatskyi"
       "steamdeck"
     ];
 
@@ -49,7 +50,32 @@
           "a3"
           "Ivans-Mac-mini"
           "Ivans-MacBook-Pro"
+          "Lusha-Macbook-Ivan-Kovnatskyi"
           "steamdeck"
+        ];
+      };
+
+      "kwhyl-jbqmu" = {
+        path = "/home/${username}/Sources/github.com/NixOS/nixpkgs";
+        label = "Sources/github.com/NixOS/nixpkgs";
+        devices = [
+          "Lusha-Macbook-Ivan-Kovnatskyi"
+        ];
+      };
+
+      "nixos-config-ai-docs" = {
+        path = "/home/${username}/Sources/github.com/ivankovnatsky/nixos-config-ai-docs";
+        label = "Sources/github.com/ivankovnatsky/nixos-config-ai-docs";
+        devices = [
+          "Lusha-Macbook-Ivan-Kovnatskyi"
+        ];
+      };
+
+      "ryjnn-fdrug" = {
+        path = "/home/${username}/Sources/github.com/ivankovnatsky/notes";
+        label = "Sources/github.com/ivankovnatsky/notes";
+        devices = [
+          "Lusha-Macbook-Ivan-Kovnatskyi"
         ];
       };
     };
