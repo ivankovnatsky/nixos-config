@@ -11,6 +11,7 @@
     ssh-to-age
     syncthing-mgmt
     open-gh-notifications-py
+    set-dns
     watchman-rebuild
   ];
 }
