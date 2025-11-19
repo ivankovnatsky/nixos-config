@@ -26,6 +26,7 @@
       "a3" # This machine
       "Ivans-Mac-mini"
       "Ivans-MacBook-Pro"
+      "Ivans-MacBook-Air"
       "Lusha-Macbook-Ivan-Kovnatskyi"
       "steamdeck"
     ];
@@ -39,6 +40,7 @@
           "a3"
           "Ivans-Mac-mini"
           "Ivans-MacBook-Pro"
+          "Ivans-MacBook-Air"
           "steamdeck"
         ];
       };
