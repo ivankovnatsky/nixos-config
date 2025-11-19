@@ -22,6 +22,7 @@
       "Ivans-MacBook-Air" # This machine (required for local-only folders)
       "Ivans-MacBook-Pro"
       "Ivans-Mac-mini"
+      "a3"
       "Lusha-Macbook-Ivan-Kovnatskyi"
     ];
 
@@ -48,6 +49,7 @@
         devices = [
           "Ivans-MacBook-Pro"
           "Ivans-Mac-mini"
+          "a3"
         ];
       };
 
