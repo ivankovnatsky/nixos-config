@@ -33,7 +33,8 @@
       # Other metrics
       ram = true;
 
-      # Layout
+      # Layout - single horizontal line at top
+      horizontal = true;
       position = "top-left";
       font_size = 24;
     };
