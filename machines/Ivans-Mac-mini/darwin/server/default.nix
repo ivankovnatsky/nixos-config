@@ -23,6 +23,7 @@
     ../../../../modules/darwin/arr-mgmt
     ../../../../modules/darwin/jellyfin-mgmt
     ../../../../modules/darwin/nextdns-mgmt
+    ../../../../modules/darwin/syncthing-mgmt
     ../../../../modules/darwin/uptime-kuma-mgmt
     ../../../../system/documentation.nix
     ../../../../system/nix.nix
@@ -56,6 +57,7 @@
     ./stash
     ./stash-media
     ./sudo.nix
+    ./syncthing-mgmt.nix
     ./system.nix
     ./tailscale.nix
   ];
