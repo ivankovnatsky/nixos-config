@@ -29,7 +29,7 @@
     ripgrep
     rust-analyzer
     rustc
-    set-dns
+    dns
     smctemp # Local overlay
     switch-appearance
     syncthing

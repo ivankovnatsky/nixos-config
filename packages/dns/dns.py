@@ -88,13 +88,13 @@ def clear_dns_servers():
 
 def show_help():
     """Display help message."""
-    print("Usage: set-dns [dns1 dns2 ...] | clear")
+    print("Usage: dns [dns1 dns2 ...] | clear")
     print()
     print("Examples:")
-    print("  set-dns                        # Show current DNS configuration")
-    print("  set-dns 1.1.1.1 1.0.0.1        # Set DNS for all interfaces")
-    print("  set-dns 8.8.8.8 8.8.4.4        # Set DNS for all interfaces")
-    print("  set-dns clear                  # Clear DNS (use DHCP)")
+    print("  dns                        # Show current DNS configuration")
+    print("  dns 1.1.1.1 1.0.0.1        # Set DNS for all interfaces")
+    print("  dns 8.8.8.8 8.8.4.4        # Set DNS for all interfaces")
+    print("  dns clear                  # Clear DNS (use DHCP)")
 
 
 def main():
