@@ -14,17 +14,14 @@
       "pam-reattach"
     ];
     casks = [
-      "amethyst"
       "bitwarden"
       "chromium"
       "coconutbattery"
       "cursor"
       "firefox"
       "ghostty"
-      "hammerspoon"
       "keycastr"
       "kitty"
-      "mos"
       "silicon-labs-vcp-driver"
       "windsurf"
     ];
