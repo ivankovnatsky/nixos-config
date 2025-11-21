@@ -60,3 +60,7 @@
 	grep-all = "!f() { git log --all --grep=\"$1\"; git log --all -S \"$1\"; git grep \"$1\"; }; f"
 	# Show the last commit
 	last = show HEAD
+	# View all changes (alias for diff-all)
+	view = diff --unified=10 HEAD
+	# View all changes with bat pager
+	view-pager = "!git diff --unified=10 HEAD | bat"
