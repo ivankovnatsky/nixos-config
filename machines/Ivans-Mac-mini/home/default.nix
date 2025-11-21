@@ -2,7 +2,6 @@
   imports = [
     ../../../home/nixvim.nix
     ../../../home/aichat.nix
-    ../../../home/amethyst
     ../../../home/bash.nix
     ../../../home/bat.nix
     ../../../home/btop.nix
@@ -14,7 +13,6 @@
     ../../../home/home-session-vars.nix
     ../../../home/lsd.nix
     ../../../home/mpv.nix
-    ../../../home/hammerspoon
     ../../../home/neovim-minimal.nix
     # ../../../home/nixvim
     # ../../../home/nixvim/plugins/copilot-lua
