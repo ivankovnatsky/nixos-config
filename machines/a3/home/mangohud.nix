@@ -18,7 +18,9 @@
       frame_timing = true;
 
       # CPU information
-      cpu_temp = true;
+      # cpu_temp disabled - causes cpu_power to show 0W on Zen 5 (9800x3d)
+      # https://github.com/flightlessmango/MangoHud/issues/1794
+      # cpu_temp = true;
       cpu_power = true;
       cpu_stats = true;
       cpu_mhz = true;
