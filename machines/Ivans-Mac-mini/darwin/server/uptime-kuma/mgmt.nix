@@ -156,6 +156,13 @@
         interval = 60;
         description = "Instagram bridge appservice port (localhost:29325)";
       }
+      {
+        name = "mautrix-linkedin";
+        type = "tcp";
+        url = "127.0.0.1:29326";
+        interval = 60;
+        description = "LinkedIn bridge appservice port (localhost:29326)";
+      }
 
       # DNS services (check /dns-query endpoint with example query)
       {
