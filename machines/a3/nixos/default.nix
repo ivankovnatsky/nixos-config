@@ -22,6 +22,7 @@
     ./networking.nix
     ./nixpkgs.nix
     ./power-management.nix
+    ./power-monitoring.nix
     ./remote-build.nix
     ./security.nix
     ./steam.nix
