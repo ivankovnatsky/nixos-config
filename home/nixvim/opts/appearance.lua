@@ -11,6 +11,7 @@ local current_os = get_os()
 local current_appearance = "light" -- Default appearance
 local last_check = 0
 local debounce_time = 10000 -- 10 seconds in milliseconds
+local is_closing = false
 
 -- Function to check macOS appearance asynchronously
 local function get_macos_appearance(callback)
@@ -166,6 +167,11 @@ end
 
 -- Function to check and update appearance with debouncing
 function _G.system_appearance.check_appearance()
+  -- Skip if vim is closing to avoid async issues during exit
+  if is_closing then
+    return
+  end
+
   local now = vim.loop.now()
 
   -- Debounce: don't check if we checked recently
@@ -192,8 +198,19 @@ get_system_appearance(function(appearance)
   set_background(appearance)
 end)
 
--- Set up the autocommand (only check on focus, no aggressive timer)
+-- Set up autocommands
 vim.api.nvim_create_augroup("SystemAppearance", { clear = true })
+
+-- Mark as closing to prevent async calls during exit
+vim.api.nvim_create_autocmd("VimLeavePre", {
+  group = "SystemAppearance",
+  callback = function()
+    is_closing = true
+  end,
+  desc = "Prevent appearance checks during exit"
+})
+
+-- Check appearance on focus
 vim.api.nvim_create_autocmd("FocusGained", {
   group = "SystemAppearance",
   callback = _G.system_appearance.check_appearance,
