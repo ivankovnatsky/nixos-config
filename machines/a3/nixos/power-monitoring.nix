@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   # Enable MSR (Model Specific Registers) for CPU power monitoring
@@ -8,5 +8,9 @@
   # Make RAPL energy files readable for MangoHud CPU power display
   systemd.tmpfiles.rules = [
     "z /sys/class/powercap/intel-rapl*/*/energy_uj 0444 root root -"
+  ];
+
+  environment.systemPackages = with pkgs; [
+    powerstat
   ];
 }
