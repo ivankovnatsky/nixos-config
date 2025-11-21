@@ -49,6 +49,7 @@ let
       "${config.flags.miniStoragePath}/.matrix/bridges/discord/discord-registration.yaml"
       "${config.flags.miniStoragePath}/.matrix/bridges/messenger/messenger-registration.yaml"
       "${config.flags.miniStoragePath}/.matrix/bridges/instagram/instagram-registration.yaml"
+      "${config.flags.miniStoragePath}/.matrix/bridges/linkedin/linkedin-registration.yaml"
     ];
   };
 
