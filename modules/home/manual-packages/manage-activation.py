@@ -114,10 +114,10 @@ def install_npm_packages(
     if to_remove:
         log(f"Removing NPM packages: {', '.join(to_remove)}", Color.RED)
         env = os.environ.copy()
-        env["PATH"] = f"{paths['nodejs']}:{env.get('PATH', '')}"
+        env["PATH"] = f"{paths['bun']}:{env.get('PATH', '')}"
 
-        npm_cmd = [f"{paths['nodejs']}/npm", "uninstall", "--global"] + list(to_remove)
-        returncode, stdout, stderr = run_command(npm_cmd, env)
+        cmd = [f"{paths['bun']}/bun", "remove", "-g"] + list(to_remove)
+        returncode, stdout, stderr = run_command(cmd, env)
 
         if returncode != 0:
             log(f"Failed to remove NPM packages: {stderr}", Color.RED)
@@ -130,14 +130,10 @@ def install_npm_packages(
     if to_install:
         log(f"Installing NPM packages: {', '.join(to_install)}", Color.GREEN)
         env = os.environ.copy()
-        env["PATH"] = (
-            f"{paths['nodejs']}:{paths['tar']}:{paths['gzip']}:{paths['curl']}:{env.get('PATH', '')}"
-        )
+        env["PATH"] = f"{paths['bun']}:{env.get('PATH', '')}"
 
-        npm_cmd = [f"{paths['nodejs']}/npm", "install", "--global", "--force"] + list(
-            to_install
-        )
-        returncode, stdout, stderr = run_command(npm_cmd, env)
+        cmd = [f"{paths['bun']}/bun", "install", "-g"] + list(to_install)
+        returncode, stdout, stderr = run_command(cmd, env)
 
         if returncode != 0:
             log(f"Failed to install NPM packages: {stderr}", Color.RED)

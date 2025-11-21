@@ -69,6 +69,7 @@ let
       paths = {
         npmBin = "${config.home.homeDirectory}/.npm/bin";
         claudeCli = "${config.home.homeDirectory}/.npm/bin/claude";
+        bun = "${pkgs.bun}/bin";
         nodejs = "${pkgs.nodejs}/bin";
         python = "${pkgs.python313}/bin";
         tar = "${pkgs.gnutar}/bin";
