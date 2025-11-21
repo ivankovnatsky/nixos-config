@@ -4,7 +4,7 @@
     ../../../../darwin/dock.nix
     ../../../../darwin/flags.nix
     ../../../../darwin/fonts.nix
-    ../../../../darwin/homebrew.nix
+    ./homebrew.nix
     ../../../../darwin/security.nix
     ../../../../darwin/shell.nix
     ../../../../darwin/sudo.nix
