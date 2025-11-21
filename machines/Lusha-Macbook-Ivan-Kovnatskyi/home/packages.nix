@@ -105,7 +105,7 @@
     rust-analyzer
     rustc
     sesh
-    set-dns
+    dns
     shellcheck
     shfmt
     skopeo
