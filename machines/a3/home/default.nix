@@ -34,7 +34,7 @@
     ./flags.nix
     ./games.nix
     ./gpg.nix
-    ./mangohud.nix
+    # ./mangohud.nix
     ./manual-packages.nix
     ./packages.nix
     ./syncthing.nix
