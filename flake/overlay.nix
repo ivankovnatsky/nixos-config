@@ -5,11 +5,19 @@ let
   overlayDirs = builtins.readDir ../overlays;
   overlayList = builtins.mapAttrs (name: type: { inherit name type; }) overlayDirs;
 
+  # Special arguments for specific overlays (like nixpkgs all-packages.nix)
+  overlayArgs = {
+    mangohud = {
+      libXNVCtrl = prev.linuxPackages.nvidia_x11.settings.libXNVCtrl;
+      mangohud32 = prev.pkgsi686Linux.mangohud;
+    };
+  };
+
   autoOverlays = builtins.foldl' (
     acc: dir:
     acc
     // {
-      ${dir.name} = prev.callPackage (../overlays + "/${dir.name}") { };
+      ${dir.name} = prev.callPackage (../overlays + "/${dir.name}") (overlayArgs.${dir.name} or { });
     }
   ) { } (builtins.filter (dir: dir.type == "directory") (builtins.attrValues overlayList));
 
