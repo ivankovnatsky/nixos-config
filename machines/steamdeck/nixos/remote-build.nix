@@ -21,6 +21,7 @@
   # Configure root's SSH to connect to a3's nixbuilder user
   programs.ssh.extraConfig = ''
     Host a3
+      HostName 192.168.50.6
       IdentitiesOnly yes
       IdentityFile /root/.ssh/nixbuilder
       User nixbuilder
