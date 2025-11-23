@@ -97,8 +97,13 @@ stdenv.mkDerivation (finalAttrs: {
   pname = "mangohud";
   version = "0.8.1";
 
-  # Use local git repo with Zen 5 RAPL fix
-  src = /home/ivan/Sources/github.com/flightlessmango/MangoHud;
+  # Use fork with Zen 5 RAPL fix
+  src = fetchFromGitHub {
+    owner = "ivankovnatsky";
+    repo = "MangoHud";
+    rev = "40d9f23793685815240c5938bd64a162f1517f08";
+    hash = "sha256-RzW8AiexKMP894jxxDI3e0VnO4qveCUta+TovcFBLXs=";
+  };
 
   outputs = [
     "out"
