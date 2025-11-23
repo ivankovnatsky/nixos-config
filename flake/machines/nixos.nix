@@ -80,7 +80,13 @@
       # Basic system configuration
       {
         nixpkgs.overlays = [
-          inputs.self.overlay
+          # Use self.overlay but exclude mangohud (causes build issues on steamdeck)
+          (final: prev:
+            let
+              baseOverlay = inputs.self.overlay final prev;
+            in
+            builtins.removeAttrs baseOverlay [ "mangohud" ]
+          )
           inputs.nur.overlay
         ];
         nixpkgs.config.allowUnfree = true;
