@@ -12,6 +12,7 @@
         setenv = true;
         commands = [
           "/run/current-system/sw/bin/darwin-rebuild switch *"
+          "/sbin/reboot"
         ];
       };
     };
