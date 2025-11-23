@@ -94,7 +94,7 @@ rebuild-nixos/impure:
 		$(call notify_linux,🔴 NixOS rebuild failed!)
 
 rebuild-nixos/a3:
-	sudo -E nixos-rebuild switch $(COMMON_REBUILD_FLAGS) --build-host a3 && \
+	sudo nixos-rebuild switch $(COMMON_REBUILD_FLAGS) --build-host a3 && \
 		$(call notify_linux,🟢 NixOS rebuild successful (built on a3)!) || \
 		$(call notify_linux,🔴 NixOS rebuild failed!)
 
