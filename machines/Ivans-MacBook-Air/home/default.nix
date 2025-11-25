@@ -4,6 +4,7 @@
     ../../../home/scripts.nix
     ../../../modules/home/manual-packages
     ../../../home/nixvim.nix
+    ../../../home/ccstatusline.nix
     ../../../home/packages-darwin.nix
     ../../../home/amethyst
     # ../../../home/bash.nix
