@@ -178,13 +178,12 @@ create)
     --head "$HEAD" \
     --title "$TITLE" \
     --base "$DEFAULT_BRANCH" \
+    --fill \
+    --web \
     ${REVIEWER:+--reviewer "$REVIEWER"} \
     ${LABEL:+--label "$LABEL"} \
     ${DRAFT:+--draft}; then
-    PR_URL=$(gh pr view --json url -q .url)
     echo "Pull request created successfully!"
-    echo "View it here: $PR_URL"
-    open_url "$PR_URL/files"
   else
     echo "Failed to create pull request"
     exit 1
