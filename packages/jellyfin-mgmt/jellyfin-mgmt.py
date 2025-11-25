@@ -141,6 +141,30 @@ class JellyfinClient:
         # POST the network configuration back to the network endpoint
         return self._api_call("POST", "/System/Configuration/network", data=current_network_config)
 
+    def get_library_id(self, name: str):
+        """Get library ID by name."""
+        libraries = self.list_libraries()
+        for lib in libraries:
+            if lib.get("Name") == name:
+                return lib.get("ItemId")
+        return None
+
+    def get_library_options(self, library_id: str):
+        """Get current library options for a library."""
+        libraries = self.list_libraries()
+        for lib in libraries:
+            if lib.get("ItemId") == library_id:
+                return lib.get("LibraryOptions", {})
+        return {}
+
+    def update_library_options(self, library_id: str, library_options: dict):
+        """Update library options for a specific library."""
+        data = {
+            "Id": library_id,
+            "LibraryOptions": library_options
+        }
+        return self._api_call("POST", "/Library/VirtualFolders/LibraryOptions", data=data)
+
 
 
 def sync_from_config(config, dry_run=False):
@@ -226,6 +250,56 @@ def _sync_libraries(client: JellyfinClient, libraries_config: list, dry_run: boo
             print(f"  CREATE: {name} (type: {library_type})", file=sys.stderr)
             if not dry_run:
                 client.create_library(name=name, paths=paths, collection_type=library_type)
+
+    # Sync library options (after all libraries are created/updated)
+    if "libraryOptions" in desired or any("libraryOptions" in lib for lib in desired_libraries.values()):
+        print("", file=sys.stderr)
+        print("=== Library Options Sync ===", file=sys.stderr)
+        for name, desired in desired_libraries.items():
+            desired_lib_options = desired.get("libraryOptions", {})
+            if not desired_lib_options:
+                continue
+
+            library_id = client.get_library_id(name)
+            if not library_id:
+                print(f"  WARNING: Could not find library ID for {name}", file=sys.stderr)
+                continue
+
+            current_lib_options = client.get_library_options(library_id)
+
+            # Check if library options need update
+            options_changed = False
+            changes = []
+
+            if "enableRealtimeMonitor" in desired_lib_options:
+                desired_monitor = desired_lib_options["enableRealtimeMonitor"]
+                current_monitor = current_lib_options.get("EnableRealtimeMonitor", False)
+                if desired_monitor != current_monitor:
+                    options_changed = True
+                    changes.append(f"EnableRealtimeMonitor: {current_monitor} -> {desired_monitor}")
+
+            if "automaticRefreshIntervalDays" in desired_lib_options:
+                desired_interval = desired_lib_options["automaticRefreshIntervalDays"]
+                current_interval = current_lib_options.get("AutomaticRefreshIntervalDays", 0)
+                if desired_interval != current_interval:
+                    options_changed = True
+                    changes.append(f"AutomaticRefreshIntervalDays: {current_interval} -> {desired_interval}")
+
+            if options_changed:
+                print(f"  UPDATE: {name} library options", file=sys.stderr)
+                for change in changes:
+                    print(f"    {change}", file=sys.stderr)
+                if not dry_run:
+                    # Merge desired options into current options
+                    updated_options = current_lib_options.copy()
+                    if "enableRealtimeMonitor" in desired_lib_options:
+                        updated_options["EnableRealtimeMonitor"] = desired_lib_options["enableRealtimeMonitor"]
+                    if "automaticRefreshIntervalDays" in desired_lib_options:
+                        updated_options["AutomaticRefreshIntervalDays"] = desired_lib_options["automaticRefreshIntervalDays"]
+
+                    client.update_library_options(library_id, updated_options)
+            else:
+                print(f"  OK: {name} library options (no changes)", file=sys.stderr)
 
     if dry_run:
         print("", file=sys.stderr)
