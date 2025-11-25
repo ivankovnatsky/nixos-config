@@ -15,6 +15,10 @@ let
       name = lib.name;
       type = lib.type;
       paths = lib.paths;
+      libraryOptions = optionalAttrs (lib.enableRealtimeMonitor != null || lib.automaticRefreshIntervalDays != null) {
+        enableRealtimeMonitor = lib.enableRealtimeMonitor;
+        automaticRefreshIntervalDays = lib.automaticRefreshIntervalDays;
+      };
     }) cfg.libraries;
   };
 
@@ -82,6 +86,18 @@ in
             type = types.listOf types.str;
             example = [ "/var/lib/jellyfin/media/movies" ];
             description = "Media paths for this library";
+          };
+
+          enableRealtimeMonitor = mkOption {
+            type = types.nullOr types.bool;
+            default = null;
+            description = "Enable real-time file system monitoring for this library";
+          };
+
+          automaticRefreshIntervalDays = mkOption {
+            type = types.nullOr types.int;
+            default = null;
+            description = "Automatic metadata refresh interval in days (0 = disabled)";
           };
         };
       });
