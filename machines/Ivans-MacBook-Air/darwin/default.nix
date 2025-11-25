@@ -22,6 +22,7 @@
     ../../../system/rebuild-daemon.nix
     ../../../system/scripts
     ../../../darwin/no-dock-restart.nix
+    ./git.nix
     ./syncthing-mgmt.nix
   ];
 }
