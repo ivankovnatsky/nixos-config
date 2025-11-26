@@ -23,6 +23,7 @@
     ../../../system/scripts
     ../../../darwin/no-dock-restart.nix
     ./git.nix
+    ./podservice
     ./syncthing-mgmt.nix
   ];
 }
