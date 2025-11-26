@@ -6,8 +6,7 @@
 }:
 
 let
-  homePath = "${config.users.users.${username}.home}";
-  dataDir = "${homePath}/Library/Application Support/Podservice";
+  dataDir = "${config.users.users.${username}.home}/Library/Application Support/Podservice";
   audioDir = "${dataDir}/audio";
   metadataDir = "${dataDir}/metadata";
   urlsFile = "${dataDir}/urls.txt";
@@ -19,12 +18,11 @@ let
       base_url = "http://192.168.50.7:8083";
     };
     podcast = {
-      title = "My YouTube Podcast";
+      title = "Pro: My YouTube Podcast";
       description = "YouTube videos converted to podcast episodes";
       author = "Ivan Kovnatsky";
       language = "en-us";
       category = "Technology";
-      image_url = null;
     };
     storage = {
       data_dir = dataDir;

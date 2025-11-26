@@ -17,9 +17,9 @@ let
       base_url = "https://podservice.@EXTERNAL_DOMAIN@";
     };
     podcast = {
-      title = "YouTube Podcast";
-      description = "Converted YouTube videos as podcast episodes";
-      author = "Pod Service";
+      title = "Mini: My YouTube Podcast";
+      description = "YouTube videos converted to podcast episodes";
+      author = "Ivan Kovnatsky";
       language = "en-us";
       category = "Technology";
     };
