@@ -5,6 +5,7 @@
     ../../../modules/home/manual-packages
     ../../../home/nixvim.nix
     ../../../home/ccstatusline.nix
+    ../../../home/claude.nix
     ../../../home/packages-darwin.nix
     ../../../home/amethyst
     # ../../../home/bash.nix
