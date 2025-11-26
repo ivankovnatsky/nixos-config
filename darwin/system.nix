@@ -36,10 +36,6 @@
             "Move focus to active or next window" = "~`";
           };
         };
-        # Screen Sharing: High Performance mode (2)
-        "com.apple.ScreenSharing" = {
-          controlObserveQuality = 2;
-        };
       };
     };
   };
