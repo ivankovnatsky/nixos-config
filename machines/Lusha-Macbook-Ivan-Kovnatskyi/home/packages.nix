@@ -106,6 +106,7 @@
     rustc
     sesh
     dns
+    jira-custom
     shellcheck
     shfmt
     skopeo

@@ -48,7 +48,6 @@
     ../../../modules/flags
     ../../../modules/home/manual-packages
     ./manual-packages.nix
-    ./scripts.nix
     ./firefox.nix
     ./flags.nix
     ./nixvim.nix
