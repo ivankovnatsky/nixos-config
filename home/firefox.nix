@@ -9,7 +9,6 @@
       # granted-containers
       bitwarden
       clearurls
-      darkreader
       decentraleyes
       duckduckgo-privacy-essentials
       # https-everywhere

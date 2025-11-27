@@ -11,7 +11,6 @@
 
     extensions = [
       { id = "aeblfdkhhhdcdjpifhhbdiojplfjncoa"; } # 1password
-      { id = "eimadpbcbfnmbkopoojfekhnkhdbieeh"; } # dark-reader
       { id = "pkehgijcmpdhfbdbbnkijodmdjhbjlgp"; } # privacy-badger
       { id = "lckanjgmijmafbedllaakclkaicjfmnk"; } # clearurls
       { id = "ldpochfccmkkmhdbclfhpagapcfdljkj"; } # decentraleyes
