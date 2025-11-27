@@ -7,7 +7,7 @@ in
 {
   programs.nixvim = {
     globals = {
-      pr_script = "${scripts.pr}/bin/pr";
+      pr_script = "${scripts.gh-pr}/bin/gh-pr";
     };
 
     extraConfigVim = completionScript + "\n" + copyPathScript + "\n" + prScript;
