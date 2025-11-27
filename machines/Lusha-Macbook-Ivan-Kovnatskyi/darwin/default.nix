@@ -10,7 +10,6 @@
     ../../../modules/darwin/pmset
     ../../../modules/darwin/prevent-sleep
     ../../../modules/darwin/syncthing-mgmt
-    ../../../modules/darwin/tmux-rebuild
     ../../../modules/darwin/rebuild-daemon
     ../../../modules/darwin/sudo
     ../../../modules/flags
@@ -33,6 +32,5 @@
     ./sudo.nix
     ./syncthing-mgmt.nix
     ./system.nix
-    ./tmux-rebuild.nix
   ];
 }
