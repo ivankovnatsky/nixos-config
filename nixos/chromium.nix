@@ -15,7 +15,6 @@
 
       extensions = [
         "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1password-–-password-mana
-        "eimadpbcbfnmbkopoojfekhnkhdbieeh" # dark-reader
         "pkehgijcmpdhfbdbbnkijodmdjhbjlgp" # privacy-badger
         "lckanjgmijmafbedllaakclkaicjfmnk" # clearurls
         "ldpochfccmkkmhdbclfhpagapcfdljkj" # decentraleyes
