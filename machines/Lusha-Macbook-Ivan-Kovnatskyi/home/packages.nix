@@ -119,6 +119,7 @@
     syncthing-mgmt
     terraformer
     terragrunt-atlantis-config
+    tmux-spawn
     tree
     treefmt
     username # Installed as flake
