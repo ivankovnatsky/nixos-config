@@ -153,6 +153,7 @@ else
     --exclude='**/Library/Containers/com.apple.photoanalysisd/**' \
     --exclude='**/Library/Containers/com.apple.Safari/**' \
     --exclude='**/Library/Containers/com.apple.Safari.WebApp/**' \
+    --exclude='**/Library/Containers/com.apple.mail.SpotlightIndexExtension/**' \
     --exclude='**/Library/Containers/com.apple.wallpaper.extension.video/**' \
     --exclude='**/Library/Containers/com.microsoft.teams2/**' \
     --exclude='**/Library/Containers/com.utmapp.UTM/**' \
