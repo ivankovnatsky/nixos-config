@@ -31,7 +31,6 @@
       "Ivans-Mac-mini"
       "Ivans-MacBook-Air"
       "Lusha-Macbook-Ivan-Kovnatskyi"
-      "steamdeck"
     ];
 
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
@@ -65,7 +64,6 @@
         devices = [
           "a3"
           "Ivans-Mac-mini"
-          "steamdeck"
           "Ivans-MacBook-Air"
         ];
       };
@@ -77,7 +75,6 @@
           "a3"
           "Ivans-Mac-mini"
           "Lusha-Macbook-Ivan-Kovnatskyi"
-          "steamdeck"
         ];
       };
 
