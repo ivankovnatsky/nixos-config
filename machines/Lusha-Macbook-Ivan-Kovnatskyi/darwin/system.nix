@@ -6,8 +6,12 @@
       };
       dock = {
         # https://github.com/nix-darwin/nix-darwin/blob/6cb36e8327421c61e5a3bbd08ed63491b616364a/modules/system/defaults/dock.nix#L114
-        mru-spaces = true;
+        # Disable automatic rearranging of spaces based on most recent use
+        mru-spaces = false;
         tilesize = 64;
+        # Auto-hide dock with a huge delay (effectively hidden unless you wait)
+        autohide = true;
+        autohide-delay = 1000.0;
       };
       finder = {
         FXRemoveOldTrashItems = true;
