@@ -8,6 +8,8 @@
     };
     global.brewfile = true;
     brews = [
+      # CLI tool to configure display resolutions and arrangements
+      "displayplacer"
       # Since nix places it's new installs under newly generated nix store
       # path, we can't rely on nixpkgs pam-reattach, because after nixpkgs
       # upgrades PAM auth is broken for a common user. To fix it we need to

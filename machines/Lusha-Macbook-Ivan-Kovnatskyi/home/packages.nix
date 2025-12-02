@@ -116,6 +116,7 @@
     ssm-session-manager-plugin
     stylua
     switch-appearance
+    switch-scaling
     syncthing-mgmt
     terraformer
     terragrunt-atlantis-config
