@@ -8,9 +8,14 @@ import subprocess
 import platform
 import os
 import logging
+import time
+import threading
 from pathlib import Path
 
 import pywatchman
+
+# Debounce delay in seconds - wait this long after last change before rebuilding
+DEBOUNCE_DELAY = 5.0
 from watchman_rebuild import load_watchman_ignores, build_watchman_expression
 
 # Configure logging to write to stdout instead of stderr
@@ -146,6 +151,31 @@ def watch_and_rebuild(config_path, command=None):
 
         logging.info("Watching for changes...")
 
+        # Debounce state
+        pending_files = []
+        debounce_timer = None
+        timer_lock = threading.Lock()
+
+        def trigger_rebuild():
+            """Called after debounce delay to actually run the rebuild."""
+            nonlocal pending_files
+            with timer_lock:
+                if pending_files:
+                    logging.info("=" * 60)
+                    logging.info(f"Rebuilding after {len(pending_files)} file change(s):")
+                    for f in pending_files[:10]:  # Show first 10 files
+                        logging.info(f"  - {f}")
+                    if len(pending_files) > 10:
+                        logging.info(f"  ... and {len(pending_files) - 10} more")
+                    logging.info("=" * 60)
+                    files_to_rebuild = pending_files
+                    pending_files = []
+                else:
+                    files_to_rebuild = []
+
+            if files_to_rebuild:
+                run_rebuild(config_path, command)
+
         # Wait for changes
         while True:
             try:
@@ -158,15 +188,20 @@ def watch_and_rebuild(config_path, command=None):
 
                     files = result.get('files', [])
                     if files:
-                        logging.info("=" * 60)
-                        logging.info(f"Detected {len(files)} file change(s):")
-                        for f in files[:10]:  # Show first 10 files
-                            fname = f if isinstance(f, str) else f.get('name', str(f))
-                            logging.info(f"  - {fname}")
-                        if len(files) > 10:
-                            logging.info(f"  ... and {len(files) - 10} more")
-                        logging.info("=" * 60)
-                        run_rebuild(config_path, command)
+                        with timer_lock:
+                            # Add new files to pending list
+                            for f in files:
+                                fname = f if isinstance(f, str) else f.get('name', str(f))
+                                if fname not in pending_files:
+                                    pending_files.append(fname)
+
+                            # Cancel existing timer and start a new one
+                            if debounce_timer is not None:
+                                debounce_timer.cancel()
+
+                            logging.info(f"Change detected, waiting {DEBOUNCE_DELAY}s for more changes...")
+                            debounce_timer = threading.Timer(DEBOUNCE_DELAY, trigger_rebuild)
+                            debounce_timer.start()
 
             except pywatchman.SocketTimeout:
                 continue
@@ -174,6 +209,9 @@ def watch_and_rebuild(config_path, command=None):
     except KeyboardInterrupt:
         logging.info("Received interrupt, stopping...")
     finally:
+        # Cancel any pending debounce timer
+        if debounce_timer is not None:
+            debounce_timer.cancel()
         try:
             client.close()
         except:
