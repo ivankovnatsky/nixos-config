@@ -119,6 +119,29 @@ def desc_update(issue_key, body):
     print(f"Description updated for {issue_key}", file=sys.stderr)
 
 
+def status_get(issue_key):
+    """Get issue status"""
+    jira = get_jira_client()
+    issue = jira.issue(issue_key)
+    print(issue.fields.status.name)
+
+
+def transition_list(issue_key):
+    """List available transitions for an issue"""
+    jira = get_jira_client()
+    transitions = jira.transitions(issue_key)
+    for t in transitions:
+        print(f"{t['id']}: {t['name']}")
+
+
+def transition_issue(issue_key, transition_name):
+    """Transition an issue to a new status"""
+    jira = get_jira_client()
+    jira.transition_issue(issue_key, transition_name)
+    issue = jira.issue(issue_key)
+    print(f"Transitioned to: {issue.fields.status.name}", file=sys.stderr)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Custom JIRA operations")
     subparsers = parser.add_subparsers(dest="command", help="Command to execute")
@@ -151,6 +174,19 @@ def main():
     desc_update_parser = desc_subparsers.add_parser("update", help="Update issue description")
     desc_update_parser.add_argument("issue_key", help="Issue key (e.g., DOPS-12345)")
     desc_update_parser.add_argument("body", help="New description text")
+
+    # issue status
+    status_parser = issue_subparsers.add_parser("status", help="Get issue status")
+    status_parser.add_argument("issue_key", help="Issue key (e.g., DOPS-12345)")
+
+    # issue transition
+    transition_parser = issue_subparsers.add_parser("transition", help="Transition an issue")
+    transition_parser.add_argument("issue_key", help="Issue key (e.g., DOPS-12345)")
+    transition_parser.add_argument("transition_name", help="Transition name (e.g., 'In Progress', 'Done')")
+
+    # issue transitions (list available)
+    transitions_parser = issue_subparsers.add_parser("transitions", help="List available transitions for an issue")
+    transitions_parser.add_argument("issue_key", help="Issue key (e.g., DOPS-12345)")
 
     # issue comment
     comment_parser = issue_subparsers.add_parser("comment", help="Manage issue comments")
@@ -191,6 +227,12 @@ def main():
                 desc_update(args.issue_key, args.body)
             else:
                 desc_parser.print_help()
+        elif args.issue_action == "status":
+            status_get(args.issue_key)
+        elif args.issue_action == "transition":
+            transition_issue(args.issue_key, args.transition_name)
+        elif args.issue_action == "transitions":
+            transition_list(args.issue_key)
         elif args.issue_action == "comment":
             if args.comment_action == "list":
                 comment_list(args.issue_key)
