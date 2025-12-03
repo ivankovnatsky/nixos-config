@@ -38,6 +38,16 @@ local function should_auto_capitalize()
   return is_in_comment()
 end
 
+-- Words that should always be capitalized
+local always_capitalize = {
+  ["i"] = "I",
+  ["i'm"] = "I'm",
+  ["i've"] = "I've",
+  ["i'll"] = "I'll",
+  ["i'd"] = "I'd",
+}
+
+-- Auto-capitalize after sentence endings
 vim.api.nvim_create_autocmd("InsertCharPre", {
   callback = function()
     if not should_auto_capitalize() then return end
@@ -59,6 +69,35 @@ vim.api.nvim_create_autocmd("InsertCharPre", {
       if prev_line:match('[%.%?!]%s*$') or prev_line == '' then
         vim.v.char = vim.v.char:upper()
       end
+    end
+  end,
+})
+
+-- Auto-capitalize words like "I", "I'm", etc. after typing space or punctuation
+vim.api.nvim_create_autocmd("InsertCharPre", {
+  callback = function()
+    if not should_auto_capitalize() then return end
+    -- Trigger on space or punctuation after a word
+    if not vim.v.char:match('[%s%p]') then return end
+
+    local line = vim.fn.getline('.')
+    local col = vim.fn.col('.') - 1
+    local before = line:sub(1, col)
+
+    -- Get the last word before cursor
+    local word = before:match('(%S+)$')
+    if not word then return end
+
+    local replacement = always_capitalize[word:lower()]
+    if replacement and word ~= replacement then
+      local lnum = vim.fn.line('.')
+      local start_col = col - #word
+      -- Schedule the replacement since we can't modify text in InsertCharPre
+      vim.schedule(function()
+        local current_line = vim.fn.getline(lnum)
+        local new_line = current_line:sub(1, start_col) .. replacement .. current_line:sub(start_col + #word + 1)
+        vim.fn.setline(lnum, new_line)
+      end)
     end
   end,
 })
