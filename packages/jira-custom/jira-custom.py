@@ -87,6 +87,20 @@ def comment_delete(issue_key, comment_id):
     print(f"Comment {comment_id} deleted successfully", file=sys.stderr)
 
 
+def issue_create(project, summary, issue_type="Task", description=None):
+    """Create a new issue"""
+    jira = get_jira_client()
+    fields = {
+        "project": {"key": project},
+        "summary": summary,
+        "issuetype": {"name": issue_type},
+    }
+    if description:
+        fields["description"] = description
+    issue = jira.create_issue(fields=fields)
+    print(issue.key)
+
+
 def desc_get(issue_key):
     """Get issue description"""
     jira = get_jira_client()
@@ -114,6 +128,13 @@ def main():
     # Issue commands
     issue_parser = subparsers.add_parser("issue", help="Manage issues")
     issue_subparsers = issue_parser.add_subparsers(dest="issue_action", help="Issue action")
+
+    # issue create
+    create_parser = issue_subparsers.add_parser("create", help="Create a new issue")
+    create_parser.add_argument("project", help="Project key (e.g., DOPS)")
+    create_parser.add_argument("summary", help="Issue summary/title")
+    create_parser.add_argument("--type", dest="issue_type", default="Task", help="Issue type (default: Task)")
+    create_parser.add_argument("--description", "-d", help="Issue description")
 
     # issue desc
     desc_parser = issue_subparsers.add_parser("desc", help="Manage issue description")
@@ -158,7 +179,9 @@ def main():
     if args.command == "filter":
         search_filters(args.query)
     elif args.command == "issue":
-        if args.issue_action == "desc":
+        if args.issue_action == "create":
+            issue_create(args.project, args.summary, args.issue_type, args.description)
+        elif args.issue_action == "desc":
             if args.desc_action == "get":
                 desc_get(args.issue_key)
             elif args.desc_action == "update":
