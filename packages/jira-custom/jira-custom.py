@@ -87,7 +87,7 @@ def comment_delete(issue_key, comment_id):
     print(f"Comment {comment_id} deleted successfully", file=sys.stderr)
 
 
-def issue_create(project, summary, issue_type="Task", description=None):
+def issue_create(project, summary, issue_type="Task", description=None, parent=None):
     """Create a new issue"""
     jira = get_jira_client()
     fields = {
@@ -97,6 +97,8 @@ def issue_create(project, summary, issue_type="Task", description=None):
     }
     if description:
         fields["description"] = description
+    if parent:
+        fields["parent"] = {"key": parent}
     issue = jira.create_issue(fields=fields)
     print(issue.key)
 
@@ -135,6 +137,7 @@ def main():
     create_parser.add_argument("summary", help="Issue summary/title")
     create_parser.add_argument("--type", dest="issue_type", default="Task", help="Issue type (default: Task)")
     create_parser.add_argument("--description", "-d", help="Issue description")
+    create_parser.add_argument("--parent", "-p", help="Parent issue key for sub-tasks (e.g., PROJ-12345)")
 
     # issue desc
     desc_parser = issue_subparsers.add_parser("desc", help="Manage issue description")
@@ -180,7 +183,7 @@ def main():
         search_filters(args.query)
     elif args.command == "issue":
         if args.issue_action == "create":
-            issue_create(args.project, args.summary, args.issue_type, args.description)
+            issue_create(args.project, args.summary, args.issue_type, args.description, args.parent)
         elif args.issue_action == "desc":
             if args.desc_action == "get":
                 desc_get(args.issue_key)
