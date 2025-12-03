@@ -47,8 +47,8 @@ vim.api.nvim_create_autocmd("InsertCharPre", {
     local col = vim.fn.col('.') - 1
     local before = line:sub(1, col)
 
-    -- Check current line for sentence ending
-    if before:match('[%.%?!]%s*$') then
+    -- Check current line for sentence ending (requires space after punctuation)
+    if before:match('[%.%?!]%s+$') then
       vim.v.char = vim.v.char:upper()
       return
     end
