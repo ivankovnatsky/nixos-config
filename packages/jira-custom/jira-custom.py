@@ -87,6 +87,22 @@ def comment_delete(issue_key, comment_id):
     print(f"Comment {comment_id} deleted successfully", file=sys.stderr)
 
 
+def desc_get(issue_key):
+    """Get issue description"""
+    jira = get_jira_client()
+    issue = jira.issue(issue_key)
+    description = issue.fields.description or ""
+    print(description)
+
+
+def desc_update(issue_key, body):
+    """Update issue description"""
+    jira = get_jira_client()
+    issue = jira.issue(issue_key)
+    issue.update(fields={"description": body})
+    print(f"Description updated for {issue_key}", file=sys.stderr)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Custom JIRA operations")
     subparsers = parser.add_subparsers(dest="command", help="Command to execute")
@@ -95,28 +111,43 @@ def main():
     filter_parser = subparsers.add_parser("filter", help="Search for JIRA filters")
     filter_parser.add_argument("query", nargs="?", help="Filter name query")
 
-    # Comment commands
-    comment_parser = subparsers.add_parser("comment", help="Manage issue comments")
-    comment_subparsers = comment_parser.add_subparsers(
-        dest="comment_action", help="Comment action"
-    )
+    # Issue commands
+    issue_parser = subparsers.add_parser("issue", help="Manage issues")
+    issue_subparsers = issue_parser.add_subparsers(dest="issue_action", help="Issue action")
 
-    # comment list
+    # issue desc
+    desc_parser = issue_subparsers.add_parser("desc", help="Manage issue description")
+    desc_subparsers = desc_parser.add_subparsers(dest="desc_action", help="Description action")
+
+    # issue desc get
+    desc_get_parser = desc_subparsers.add_parser("get", help="Get issue description")
+    desc_get_parser.add_argument("issue_key", help="Issue key (e.g., DOPS-12345)")
+
+    # issue desc update
+    desc_update_parser = desc_subparsers.add_parser("update", help="Update issue description")
+    desc_update_parser.add_argument("issue_key", help="Issue key (e.g., DOPS-12345)")
+    desc_update_parser.add_argument("body", help="New description text")
+
+    # issue comment
+    comment_parser = issue_subparsers.add_parser("comment", help="Manage issue comments")
+    comment_subparsers = comment_parser.add_subparsers(dest="comment_action", help="Comment action")
+
+    # issue comment list
     list_parser = comment_subparsers.add_parser("list", help="List comments on an issue")
     list_parser.add_argument("issue_key", help="Issue key (e.g., DOPS-12345)")
 
-    # comment add
+    # issue comment add
     add_parser = comment_subparsers.add_parser("add", help="Add a comment to an issue")
     add_parser.add_argument("issue_key", help="Issue key (e.g., DOPS-12345)")
     add_parser.add_argument("body", help="Comment body text")
 
-    # comment update
+    # issue comment update
     update_parser = comment_subparsers.add_parser("update", help="Update a comment")
     update_parser.add_argument("issue_key", help="Issue key (e.g., DOPS-12345)")
     update_parser.add_argument("comment_id", help="Comment ID")
     update_parser.add_argument("body", help="New comment body text")
 
-    # comment delete
+    # issue comment delete
     delete_parser = comment_subparsers.add_parser("delete", help="Delete a comment")
     delete_parser.add_argument("issue_key", help="Issue key (e.g., DOPS-12345)")
     delete_parser.add_argument("comment_id", help="Comment ID")
@@ -126,23 +157,29 @@ def main():
     # Handle commands
     if args.command == "filter":
         search_filters(args.query)
-    elif args.command == "comment":
-        if args.comment_action == "list":
-            comment_list(args.issue_key)
-        elif args.comment_action == "add":
-            comment_add(args.issue_key, args.body)
-        elif args.comment_action == "update":
-            comment_update(args.issue_key, args.comment_id, args.body)
-        elif args.comment_action == "delete":
-            comment_delete(args.issue_key, args.comment_id)
+    elif args.command == "issue":
+        if args.issue_action == "desc":
+            if args.desc_action == "get":
+                desc_get(args.issue_key)
+            elif args.desc_action == "update":
+                desc_update(args.issue_key, args.body)
+            else:
+                desc_parser.print_help()
+        elif args.issue_action == "comment":
+            if args.comment_action == "list":
+                comment_list(args.issue_key)
+            elif args.comment_action == "add":
+                comment_add(args.issue_key, args.body)
+            elif args.comment_action == "update":
+                comment_update(args.issue_key, args.comment_id, args.body)
+            elif args.comment_action == "delete":
+                comment_delete(args.issue_key, args.comment_id)
+            else:
+                comment_parser.print_help()
         else:
-            comment_parser.print_help()
+            issue_parser.print_help()
     else:
-        # Backward compatibility: if no subcommand, treat as filter search
-        if len(sys.argv) > 1:
-            search_filters(sys.argv[1])
-        else:
-            parser.print_help()
+        parser.print_help()
 
 
 if __name__ == "__main__":
