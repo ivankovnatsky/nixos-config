@@ -42,6 +42,7 @@
     genpass
     ggh
     ghorg
+    git-pull-all
     gitleaks
     glow
     go-grip
