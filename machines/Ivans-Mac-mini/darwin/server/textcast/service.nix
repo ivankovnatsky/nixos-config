@@ -34,17 +34,23 @@ let
     processing:
       strategy: condense
       condense_ratio: 0.5
-      text_model: gpt-4-turbo-preview
+      text_model: gpt-5.1
       speech_model: tts-1-hd
       voice: nova
       audio_format: mp3
       output_dir: ${audioDir}
       vendor: openai
 
-    audiobookshelf:
-      server: "@ABS_URL@"
-      api_key: "@ABS_API_KEY@"
-      library_name: ""
+    destinations:
+      - type: podservice
+        enabled: true
+        url: https://podservice.@EXTERNAL_DOMAIN@
+
+      - type: audiobookshelf
+        enabled: true
+        server: "@ABS_URL@"
+        api_key: "@ABS_API_KEY@"
+        library_name: ""
 
     server:
       enabled: true
@@ -56,9 +62,11 @@ let
   runtimeConfigFile = pkgs.writeShellScript "textcast-config-gen" ''
     ABS_URL=$(cat ${config.sops.secrets.audiobookshelf-url.path})
     ABS_API_KEY=$(cat ${config.sops.secrets.audiobookshelf-api-token.path})
+    EXTERNAL_DOMAIN=$(cat ${config.sops.secrets.external-domain.path})
     ${pkgs.gnused}/bin/sed \
       -e "s|@ABS_URL@|$ABS_URL|g" \
       -e "s|@ABS_API_KEY@|$ABS_API_KEY|g" \
+      -e "s|@EXTERNAL_DOMAIN@|$EXTERNAL_DOMAIN|g" \
       ${configFile}
   '';
 
@@ -85,6 +93,11 @@ in
 
   sops.secrets.audiobookshelf-api-token = {
     key = "audiobookshelf/apiToken";
+    owner = "ivan";
+  };
+
+  sops.secrets.external-domain = {
+    key = "externalDomain";
     owner = "ivan";
   };
 
