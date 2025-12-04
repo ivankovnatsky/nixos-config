@@ -26,6 +26,6 @@
     ./git.nix
     ./podservice
     ./syncthing-mgmt.nix
-    # ./textcast
+    ./textcast
   ];
 }
