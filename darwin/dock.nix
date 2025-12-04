@@ -37,6 +37,7 @@ in
 
       { path = "/System/Applications/Utilities/Terminal.app/"; }
       { path = "/System/Applications/Utilities/Activity Monitor.app/"; }
+      { path = "/System/Applications/Utilities/System Information.app/"; }
       { path = "/System/Applications/Utilities/Audio MIDI Setup.app/"; }
       { path = "/System/Applications/Preview.app"; }
       { path = "/System/Applications/Passwords.app/"; }
