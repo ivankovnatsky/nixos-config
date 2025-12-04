@@ -3,6 +3,7 @@
     ../../../darwin/aerospace.nix
     ../../../darwin/darwin.nix
     ../../../darwin/nix.nix
+    ../../../darwin/no-dock-restart.nix
     ../../../darwin/sudo.nix
     ../../../darwin/system.nix
     ../../../modules/darwin/dock
@@ -10,9 +11,9 @@
     ../../../modules/darwin/pam
     ../../../modules/darwin/pmset
     ../../../modules/darwin/prevent-sleep
-    ../../../modules/darwin/syncthing-mgmt
     ../../../modules/darwin/rebuild-daemon
     ../../../modules/darwin/sudo
+    ../../../modules/darwin/syncthing-mgmt
     ../../../modules/flags
     ../../../system/documentation.nix
     ../../../system/nix.nix
@@ -24,7 +25,6 @@
     ./fonts.nix
     ./git.nix
     ./homebrew.nix
-    ../../../darwin/no-dock-restart.nix
     ./openssh.nix
     ./power.nix
     ./prevent-sleep.nix
