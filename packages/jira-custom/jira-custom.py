@@ -126,6 +126,80 @@ def status_get(issue_key):
     print(issue.fields.status.name)
 
 
+def issue_view(issue_key):
+    """View issue details"""
+    jira = get_jira_client()
+    issue = jira.issue(issue_key)
+    fields = issue.fields
+
+    # Header
+    print(f"Issue:       {issue.key}")
+    print(f"Summary:     {fields.summary}")
+    print(f"Status:      {fields.status.name}")
+    print(f"Type:        {fields.issuetype.name}")
+    print(f"Priority:    {fields.priority.name if fields.priority else 'None'}")
+
+    # Assignee and Reporter
+    assignee = fields.assignee.displayName if fields.assignee else "Unassigned"
+    reporter = fields.reporter.displayName if fields.reporter else "Unknown"
+    print(f"Assignee:    {assignee}")
+    print(f"Reporter:    {reporter}")
+
+    # Labels
+    if hasattr(fields, 'labels') and fields.labels:
+        print(f"Labels:      {', '.join(fields.labels)}")
+
+    # Components
+    if hasattr(fields, 'components') and fields.components:
+        components = [c.name for c in fields.components]
+        print(f"Components:  {', '.join(components)}")
+
+    # Dates
+    print(f"Created:     {fields.created}")
+    print(f"Updated:     {fields.updated}")
+    if fields.resolutiondate:
+        print(f"Resolved:    {fields.resolutiondate}")
+
+    # Parent (for sub-tasks)
+    if hasattr(fields, 'parent') and fields.parent:
+        print(f"Parent:      {fields.parent.key}")
+
+    # Description
+    print()
+    print("-" * 60)
+    print("Description:")
+    print()
+    if fields.description:
+        print(fields.description)
+    else:
+        print("  (No description)")
+
+    # Linked issues
+    if hasattr(fields, 'issuelinks') and fields.issuelinks:
+        print()
+        print("-" * 60)
+        print("Linked Issues:")
+        print()
+        for link in fields.issuelinks:
+            if hasattr(link, 'outwardIssue'):
+                print(f"{link.type.outward} {link.outwardIssue.key}: {link.outwardIssue.fields.summary}")
+            if hasattr(link, 'inwardIssue'):
+                print(f"{link.type.inward} {link.inwardIssue.key}: {link.inwardIssue.fields.summary}")
+
+    # Top comment
+    comments = jira.comments(issue)
+    if comments:
+        top_comment = comments[-1]  # Most recent comment
+        print()
+        print("-" * 60)
+        print(f"Latest Comment ({len(comments)} total):")
+        print()
+        print(f"Author:  {top_comment.author.displayName}")
+        print(f"Created: {top_comment.created}")
+        print()
+        print(top_comment.body)
+
+
 def transition_list(issue_key):
     """List available transitions for an issue"""
     jira = get_jira_client()
@@ -160,7 +234,7 @@ def main():
     create_parser.add_argument("summary", help="Issue summary/title")
     create_parser.add_argument("--type", dest="issue_type", default="Task", help="Issue type (default: Task)")
     create_parser.add_argument("--description", "-d", help="Issue description")
-    create_parser.add_argument("--parent", "-p", help="Parent issue key for sub-tasks (e.g., DOPS-12345)")
+    create_parser.add_argument("--parent", "-p", help="Parent issue key for sub-tasks (e.g., KEY-12345)")
 
     # issue desc
     desc_parser = issue_subparsers.add_parser("desc", help="Manage issue description")
@@ -168,25 +242,29 @@ def main():
 
     # issue desc get
     desc_get_parser = desc_subparsers.add_parser("get", help="Get issue description")
-    desc_get_parser.add_argument("issue_key", help="Issue key (e.g., DOPS-12345)")
+    desc_get_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
 
     # issue desc update
     desc_update_parser = desc_subparsers.add_parser("update", help="Update issue description")
-    desc_update_parser.add_argument("issue_key", help="Issue key (e.g., DOPS-12345)")
+    desc_update_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
     desc_update_parser.add_argument("body", help="New description text")
+
+    # issue view
+    view_parser = issue_subparsers.add_parser("view", help="View issue details")
+    view_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
 
     # issue status
     status_parser = issue_subparsers.add_parser("status", help="Get issue status")
-    status_parser.add_argument("issue_key", help="Issue key (e.g., DOPS-12345)")
+    status_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
 
     # issue transition
     transition_parser = issue_subparsers.add_parser("transition", help="Transition an issue")
-    transition_parser.add_argument("issue_key", help="Issue key (e.g., DOPS-12345)")
+    transition_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
     transition_parser.add_argument("transition_name", help="Transition name (e.g., 'In Progress', 'Done')")
 
     # issue transitions (list available)
     transitions_parser = issue_subparsers.add_parser("transitions", help="List available transitions for an issue")
-    transitions_parser.add_argument("issue_key", help="Issue key (e.g., DOPS-12345)")
+    transitions_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
 
     # issue comment
     comment_parser = issue_subparsers.add_parser("comment", help="Manage issue comments")
@@ -194,22 +272,22 @@ def main():
 
     # issue comment list
     list_parser = comment_subparsers.add_parser("list", help="List comments on an issue")
-    list_parser.add_argument("issue_key", help="Issue key (e.g., DOPS-12345)")
+    list_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
 
     # issue comment add
     add_parser = comment_subparsers.add_parser("add", help="Add a comment to an issue")
-    add_parser.add_argument("issue_key", help="Issue key (e.g., DOPS-12345)")
+    add_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
     add_parser.add_argument("body", help="Comment body text")
 
     # issue comment update
     update_parser = comment_subparsers.add_parser("update", help="Update a comment")
-    update_parser.add_argument("issue_key", help="Issue key (e.g., DOPS-12345)")
+    update_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
     update_parser.add_argument("comment_id", help="Comment ID")
     update_parser.add_argument("body", help="New comment body text")
 
     # issue comment delete
     delete_parser = comment_subparsers.add_parser("delete", help="Delete a comment")
-    delete_parser.add_argument("issue_key", help="Issue key (e.g., DOPS-12345)")
+    delete_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
     delete_parser.add_argument("comment_id", help="Comment ID")
 
     args = parser.parse_args()
@@ -227,6 +305,8 @@ def main():
                 desc_update(args.issue_key, args.body)
             else:
                 desc_parser.print_help()
+        elif args.issue_action == "view":
+            issue_view(args.issue_key)
         elif args.issue_action == "status":
             status_get(args.issue_key)
         elif args.issue_action == "transition":
