@@ -421,11 +421,11 @@
     "ivankovnatsky-homebrew-tap": {
       "flake": false,
       "locked": {
-        "lastModified": 1762190613,
-        "narHash": "sha256-RsiBbP9cI7Z4gsuz9SZ2LCLNnMQ2uxIfbASml1C6+KY=",
+        "lastModified": 1764861546,
+        "narHash": "sha256-Ni4+M5pf3piJUYegTIzKINumCR9C7IZTlqc08iGfM3Q=",
         "owner": "ivankovnatsky",
         "repo": "homebrew-tap",
-        "rev": "e858b703b7af19b23e873a903f9f31fb315d37b8",
+        "rev": "c0425bd30ec06a6da29708942ff277ce6f62b215",
         "type": "github"
       },
       "original": {
