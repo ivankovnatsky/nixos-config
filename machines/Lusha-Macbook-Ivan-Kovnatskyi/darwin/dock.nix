@@ -46,23 +46,9 @@ in
         }
 
         # Installed using homebrew
-        { path = "/Applications/kitty.app/"; }
-        { path = "/Applications/Ghostty.app/"; }
-        { path = "/Applications/Firefox Developer Edition.app/"; }
         { path = "/Applications/Chromium.app/"; }
         { path = "/Applications/Vivaldi.app/"; }
         { path = "/Applications/DBeaver.app/"; }
-        { path = "/Applications/Visual Studio Code.app/"; }
-        { path = "/Applications/Cursor.app/"; }
-        { path = "/Applications/Windsurf.app/"; }
-
-        {
-          type = "spacer";
-          section = "apps";
-        }
-
-        # Local taps
-        { path = "/Applications/Comet.app/"; }
 
         {
           path = "${config.users.users.${username}.home}/Downloads/";

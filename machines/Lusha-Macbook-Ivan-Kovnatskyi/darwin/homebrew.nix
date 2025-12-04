@@ -22,26 +22,13 @@
     casks = [
       "amethyst"
       "chromium"
-      "ivankovnatsky/homebrew-tap/comet"
-      "cursor"
       "dbeaver-community"
-      "firefox@developer-edition"
-      {
-        name = "ghostty@tip";
-        greedy = true;
-      }
       "hammerspoon"
       "keycastr"
-      {
-        name = "kitty";
-        greedy = true;
-      }
       "mos"
       "stats"
       "twingate"
-      "visual-studio-code"
       "vivaldi"
-      "windsurf"
     ];
     masApps = {
       # Installed using Kandji
