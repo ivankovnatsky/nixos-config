@@ -65,6 +65,14 @@ in
         { path = "/Applications/Comet.app/"; }
 
         {
+          type = "spacer";
+          section = "apps";
+        }
+
+        # masApps
+        { path = "/Applications/Perplexity.app/"; }
+
+        {
           path = "${config.users.users.${username}.home}/Downloads/";
           section = "others";
         }
