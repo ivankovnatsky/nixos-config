@@ -48,7 +48,7 @@ let
 
       - type: audiobookshelf
         enabled: true
-        server: "@ABS_URL@"
+        url: "@ABS_URL@"
         api_key: "@ABS_API_KEY@"
         library_name: ""
 
