@@ -43,10 +43,6 @@ in
     owner = "ivan";
   };
 
-  # external-domain is defined in uptime-kuma/mgmt.nix as root-owned
-  # but we need to make it readable by ivan for podsync preStart
-  sops.secrets.external-domain.mode = "0444";
-
   local.launchd.services.podsync = {
     enable = true;
     waitForPath = config.flags.miniStoragePath;

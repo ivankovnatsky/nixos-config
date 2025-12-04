@@ -1,5 +1,6 @@
 {
   imports = [
+    ../../../../system/sops-secrets.nix
     ../../../../darwin/darwin.nix
     ../../../../darwin/fonts.nix
     ../../../../darwin/shell.nix
