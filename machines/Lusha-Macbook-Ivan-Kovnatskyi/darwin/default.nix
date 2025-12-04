@@ -4,6 +4,7 @@
     ../../../darwin/darwin.nix
     ../../../darwin/nix.nix
     ../../../darwin/sudo.nix
+    ../../../darwin/system.nix
     ../../../modules/darwin/dock
     ../../../modules/darwin/launchd
     ../../../modules/darwin/pam
@@ -31,6 +32,5 @@
     ./shell.nix
     ./sudo.nix
     ./syncthing-mgmt.nix
-    ./system.nix
   ];
 }
