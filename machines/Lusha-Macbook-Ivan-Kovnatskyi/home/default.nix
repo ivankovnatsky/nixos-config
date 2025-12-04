@@ -13,6 +13,7 @@
     ../../../home/gemini.nix
     ../../../home/direnv.nix
     ../../../home/ghorg.nix
+    ../../../home/ghostty.nix
     ../../../home/git
     ../../../home/go.nix
     ../../../home/gpg.nix
@@ -20,6 +21,7 @@
     ../../../home/home-session-vars.nix
     ../../../home/jujutsu.nix
     ../../../home/k9s.nix
+    ../../../home/kitty
     ../../../home/lsd.nix
     ../../../home/mpv.nix
     ../../../home/nixvim
@@ -40,12 +42,14 @@
     ../../../home/pay-respects.nix
     ../../../home/tmux.nix
     ../../../home/tweety.nix
+    ../../../home/vscode.nix
     ../../../home/yamlint.nix
     ../../../home/yt-dlp.nix
     ../../../home/zellij.nix
     ../../../modules/flags
     ../../../modules/home/manual-packages
     ./manual-packages.nix
+    ./firefox.nix
     ./flags.nix
     ./nixvim.nix
     ./packages.nix
