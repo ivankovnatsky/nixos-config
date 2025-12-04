@@ -66,11 +66,6 @@ in
     owner = "ivan";
   };
 
-  sops.secrets.external-domain = {
-    key = "externalDomain";
-    owner = "ivan";
-  };
-
   local.launchd.services.textcast = {
     enable = true;
     dataDir = dataDir;

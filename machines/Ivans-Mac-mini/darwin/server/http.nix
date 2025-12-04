@@ -61,10 +61,6 @@ in
     key = "letsEncryptEmail";
   };
 
-  sops.secrets.external-domain = {
-    key = "externalDomain";
-  };
-
   # Configure launchd service for Caddy web server
   local.launchd.services.caddy = {
     enable = true;
