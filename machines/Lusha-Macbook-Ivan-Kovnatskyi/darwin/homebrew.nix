@@ -48,6 +48,7 @@
       # "Okta Verify" = 490179405;
       # "Slack for Desktop" = 803453959;
       # "Okta Extension App" = 1439967473;
+      "Perplexity: Ask Anything" = 6714467650;
     };
     caskArgs = {
       no_quarantine = true;
