@@ -10,7 +10,7 @@
         mru-spaces = false;
         tilesize = 64;
         # Auto-hide dock with a huge delay (effectively hidden unless you wait)
-        autohide = true;
+        autohide = false;
         autohide-delay = 1000.0;
       };
       finder = {
