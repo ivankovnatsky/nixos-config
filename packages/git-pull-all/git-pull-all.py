@@ -92,9 +92,30 @@ def get_default_branch(repo_path: Path) -> str | None:
     return get_default_branch_git(repo_path)
 
 
+def has_no_commits(repo_path: Path) -> bool:
+    """Check if repository has no commits yet."""
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=repo_path,
+            capture_output=True,
+            timeout=10,
+        )
+        return result.returncode != 0
+    except (subprocess.TimeoutExpired, subprocess.SubprocessError):
+        return False
+
+
 def has_uncommitted_changes(repo_path: Path) -> bool:
     """Check if repository has uncommitted changes."""
     try:
+        # Refresh the index first to avoid false positives from stale stat info
+        subprocess.run(
+            ["git", "update-index", "--refresh"],
+            cwd=repo_path,
+            capture_output=True,
+            timeout=30,
+        )
         result = subprocess.run(
             ["git", "diff-index", "--quiet", "HEAD", "--"],
             cwd=repo_path,
@@ -108,6 +129,15 @@ def has_uncommitted_changes(repo_path: Path) -> bool:
 
 def pull_repo(repo_path: Path) -> PullResult:
     """Pull a single git repository."""
+    # Check for empty repository (no commits)
+    if has_no_commits(repo_path):
+        return PullResult(
+            path=repo_path,
+            success=False,
+            message="empty repository (no commits)",
+            skipped=True,
+        )
+
     # Check for uncommitted changes
     if has_uncommitted_changes(repo_path):
         return PullResult(
