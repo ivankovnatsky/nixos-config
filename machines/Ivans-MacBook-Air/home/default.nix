@@ -14,6 +14,7 @@
     ../../../home/btop.nix
     ../../../home/direnv.nix
     ../../../home/ghostty.nix
+    ../../../home/giffer.nix
     ../../../home/git
     ../../../home/go.nix
     ../../../home/hammerspoon
