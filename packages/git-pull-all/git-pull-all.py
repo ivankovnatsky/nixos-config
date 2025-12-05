@@ -18,6 +18,7 @@ class PullResult:
     success: bool
     message: str
     skipped: bool = False
+    branch: str | None = None
 
 
 def find_git_repos(base_dir: Path) -> list[Path]:
@@ -127,7 +128,7 @@ def has_uncommitted_changes(repo_path: Path) -> bool:
         return True  # Assume dirty if we can't check
 
 
-def pull_repo(repo_path: Path) -> PullResult:
+def pull_repo(repo_path: Path, progress_callback=None) -> PullResult:
     """Pull a single git repository."""
     # Check for empty repository (no commits)
     if has_no_commits(repo_path):
@@ -203,24 +204,28 @@ def pull_repo(repo_path: Path) -> PullResult:
                 path=repo_path,
                 success=True,
                 message=f"pulled {default_branch}",
+                branch=default_branch,
             )
         else:
             return PullResult(
                 path=repo_path,
                 success=False,
                 message=f"pull failed: {result.stderr.strip()}",
+                branch=default_branch,
             )
     except subprocess.TimeoutExpired:
         return PullResult(
             path=repo_path,
             success=False,
             message="pull timed out",
+            branch=default_branch,
         )
     except subprocess.SubprocessError as e:
         return PullResult(
             path=repo_path,
             success=False,
             message=f"pull error: {e}",
+            branch=default_branch,
         )
 
 
@@ -256,7 +261,9 @@ def main() -> int:
 
     print(f"Searching for git repositories in {base_dir}...")
     repos = find_git_repos(base_dir)
-    print(f"Found {len(repos)} repositories")
+    total = len(repos)
+    print(f"Found {total} repositories")
+    print()
 
     if not repos:
         return 0
@@ -264,24 +271,30 @@ def main() -> int:
     success_count = 0
     error_count = 0
     skipped_count = 0
+    completed = 0
 
     with ThreadPoolExecutor(max_workers=args.jobs) as executor:
         futures = {executor.submit(pull_repo, repo): repo for repo in repos}
 
         for future in as_completed(futures):
             result = future.result()
+            completed += 1
             rel_path = result.path.relative_to(base_dir)
+            branch_info = f" ({result.branch})" if result.branch else ""
+
+            # Clear line and show progress (zero-pad to align)
+            width = len(str(total))
+            progress = f"[{completed:0{width}d}/{total}]"
 
             if result.skipped:
                 skipped_count += 1
-                print(f"SKIPPED {rel_path}: {result.message}")
+                print(f"{progress} SKIP    {rel_path}{branch_info} - {result.message}")
             elif result.success:
                 success_count += 1
-                if args.verbose:
-                    print(f"OK      {rel_path}: {result.message}")
+                print(f"{progress} OK      {rel_path}{branch_info}")
             else:
                 error_count += 1
-                print(f"ERROR   {rel_path}: {result.message}")
+                print(f"{progress} ERROR   {rel_path}{branch_info} - {result.message}")
 
     print()
     print("=" * 40)
