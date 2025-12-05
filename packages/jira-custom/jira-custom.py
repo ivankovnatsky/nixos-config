@@ -103,20 +103,20 @@ def issue_create(project, summary, issue_type="Task", description=None, parent=N
     print(issue.key)
 
 
-def desc_get(issue_key):
-    """Get issue description"""
+def issue_update(issue_key, summary=None, description=None):
+    """Update an existing issue"""
     jira = get_jira_client()
     issue = jira.issue(issue_key)
-    description = issue.fields.description or ""
-    print(description)
-
-
-def desc_update(issue_key, body):
-    """Update issue description"""
-    jira = get_jira_client()
-    issue = jira.issue(issue_key)
-    issue.update(fields={"description": body})
-    print(f"Description updated for {issue_key}", file=sys.stderr)
+    fields = {}
+    if summary:
+        fields["summary"] = summary
+    if description:
+        fields["description"] = description
+    if not fields:
+        print("No fields to update", file=sys.stderr)
+        sys.exit(1)
+    issue.update(fields=fields)
+    print(f"Updated {issue_key}", file=sys.stderr)
 
 
 def status_get(issue_key):
@@ -236,18 +236,11 @@ def main():
     create_parser.add_argument("--description", "-d", help="Issue description")
     create_parser.add_argument("--parent", "-p", help="Parent issue key for sub-tasks (e.g., KEY-12345)")
 
-    # issue desc
-    desc_parser = issue_subparsers.add_parser("desc", help="Manage issue description")
-    desc_subparsers = desc_parser.add_subparsers(dest="desc_action", help="Description action")
-
-    # issue desc get
-    desc_get_parser = desc_subparsers.add_parser("get", help="Get issue description")
-    desc_get_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
-
-    # issue desc update
-    desc_update_parser = desc_subparsers.add_parser("update", help="Update issue description")
-    desc_update_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
-    desc_update_parser.add_argument("body", help="New description text")
+    # issue update
+    update_issue_parser = issue_subparsers.add_parser("update", help="Update an existing issue")
+    update_issue_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
+    update_issue_parser.add_argument("--summary", "-s", help="New issue summary/title")
+    update_issue_parser.add_argument("--description", "-d", help="New issue description")
 
     # issue view
     view_parser = issue_subparsers.add_parser("view", help="View issue details")
@@ -258,13 +251,17 @@ def main():
     status_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
 
     # issue transition
-    transition_parser = issue_subparsers.add_parser("transition", help="Transition an issue")
-    transition_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
-    transition_parser.add_argument("transition_name", help="Transition name (e.g., 'In Progress', 'Done')")
+    transition_parser = issue_subparsers.add_parser("transition", help="Manage issue transitions")
+    transition_subparsers = transition_parser.add_subparsers(dest="transition_action", help="Transition action")
 
-    # issue transitions (list available)
-    transitions_parser = issue_subparsers.add_parser("transitions", help="List available transitions for an issue")
-    transitions_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
+    # issue transition list
+    transition_list_parser = transition_subparsers.add_parser("list", help="List available transitions")
+    transition_list_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
+
+    # issue transition to
+    transition_to_parser = transition_subparsers.add_parser("to", help="Transition issue to a new status")
+    transition_to_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
+    transition_to_parser.add_argument("transition_name", help="Transition name (e.g., 'In Progress', 'Done')")
 
     # issue comment
     comment_parser = issue_subparsers.add_parser("comment", help="Manage issue comments")
@@ -298,21 +295,19 @@ def main():
     elif args.command == "issue":
         if args.issue_action == "create":
             issue_create(args.project, args.summary, args.issue_type, args.description, args.parent)
-        elif args.issue_action == "desc":
-            if args.desc_action == "get":
-                desc_get(args.issue_key)
-            elif args.desc_action == "update":
-                desc_update(args.issue_key, args.body)
-            else:
-                desc_parser.print_help()
+        elif args.issue_action == "update":
+            issue_update(args.issue_key, args.summary, args.description)
         elif args.issue_action == "view":
             issue_view(args.issue_key)
         elif args.issue_action == "status":
             status_get(args.issue_key)
         elif args.issue_action == "transition":
-            transition_issue(args.issue_key, args.transition_name)
-        elif args.issue_action == "transitions":
-            transition_list(args.issue_key)
+            if args.transition_action == "list":
+                transition_list(args.issue_key)
+            elif args.transition_action == "to":
+                transition_issue(args.issue_key, args.transition_name)
+            else:
+                transition_parser.print_help()
         elif args.issue_action == "comment":
             if args.comment_action == "list":
                 comment_list(args.issue_key)
