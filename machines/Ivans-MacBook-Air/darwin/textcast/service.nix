@@ -13,7 +13,7 @@ let
   configDir = "${dataDir}/Config";
   textsFile = "${textsDir}/Texts.txt";
 
-  configFileTemplate = pkgs.writeText "textcast-config.yaml" ''
+  configFile = pkgs.writeText "textcast-config.yaml" ''
     check_interval: 5m
     log_level: INFO
     log_file: ${logsDir}/textcast-service.log
@@ -38,7 +38,7 @@ let
     destinations:
       - type: podservice
         enabled: true
-        url: https://podservice.@EXTERNAL_DOMAIN@
+        url: http://192.168.50.8:8083
 
     server:
       enabled: true
@@ -46,18 +46,10 @@ let
       port: 8084
   '';
 
-  # Substitute secrets at runtime
-  runtimeConfigFile = pkgs.writeShellScript "textcast-config-gen" ''
-    EXTERNAL_DOMAIN=$(cat ${config.sops.secrets.external-domain.path})
-    ${pkgs.gnused}/bin/sed \
-      -e "s|@EXTERNAL_DOMAIN@|$EXTERNAL_DOMAIN|g" \
-      ${configFileTemplate}
-  '';
-
   # Wrapper script to set environment variables from secrets
   textcastWrapper = pkgs.writeShellScript "textcast-wrapper" ''
     export OPENAI_API_KEY=$(cat ${config.sops.secrets.openai-api-key.path})
-    exec ${pkgs.textcast}/bin/textcast service daemon --config="${configDir}/config.yaml"
+    exec ${pkgs.textcast}/bin/textcast service daemon --config="${configFile}"
   '';
 in
 {
@@ -75,10 +67,6 @@ in
       logsDir
       configDir
     ];
-    preStart = ''
-      # Generate runtime config with secrets
-      ${runtimeConfigFile} > "${configDir}/config.yaml"
-    '';
     command = "${textcastWrapper}";
   };
 }
