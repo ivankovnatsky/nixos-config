@@ -149,7 +149,7 @@ def split_path(path, segment_duration, skip_start=0, skip_end=0, output_dir=None
 
 
 def download_and_split(url, segment_duration, skip_start=0, skip_end=0, output_dir=None):
-    """Download video using yt-dlp and split it"""
+    """Download video(s) using yt-dlp and split them (supports playlists)"""
     if output_dir:
         out_dir = Path(output_dir)
         out_dir.mkdir(parents=True, exist_ok=True)
@@ -162,6 +162,7 @@ def download_and_split(url, segment_duration, skip_start=0, skip_end=0, output_d
     print(f"Downloading video from: {url}")
     cmd = [
         "yt-dlp",
+        "--yes-playlist",
         "-f", "mp4/best[ext=mp4]/best",
         "-o", output_template,
         "--print", "after_move:filepath",
@@ -173,15 +174,26 @@ def download_and_split(url, segment_duration, skip_start=0, skip_end=0, output_d
         print(f"Error downloading video: {result.stderr}", file=sys.stderr)
         return False
 
-    downloaded_file = result.stdout.strip().split('\n')[-1]
-    if not downloaded_file or not Path(downloaded_file).exists():
-        print("Error: Could not determine downloaded file path", file=sys.stderr)
+    # Get all downloaded files (supports playlists)
+    downloaded_files = [
+        line.strip() for line in result.stdout.strip().split('\n')
+        if line.strip() and Path(line.strip()).exists()
+    ]
+
+    if not downloaded_files:
+        print("Error: No files downloaded", file=sys.stderr)
         return False
 
-    print(f"Downloaded: {downloaded_file}")
+    print(f"Downloaded {len(downloaded_files)} video(s)")
 
-    # Split the downloaded video and remove source
-    return split_single_video(downloaded_file, segment_duration, skip_start, skip_end, output_dir, cleanup=True)
+    # Split each downloaded video
+    success = True
+    for downloaded_file in downloaded_files:
+        print(f"\nProcessing: {downloaded_file}")
+        if not split_single_video(downloaded_file, segment_duration, skip_start, skip_end, output_dir, cleanup=True):
+            success = False
+
+    return success
 
 
 def download_only(url, output_dir=None, embed_subs=True, max_height=1080):
