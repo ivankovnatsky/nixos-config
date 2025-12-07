@@ -22,10 +22,6 @@
           app = config.flags.hotkeys.browser;
         }
         {
-          key = "4";
-          app = "Cursor";
-        }
-        {
           key = "9";
           app = "System Settings";
         }
