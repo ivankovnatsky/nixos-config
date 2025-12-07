@@ -2,6 +2,7 @@
 
 {
   home.packages = with pkgs; [
+    aria2
     tree
     asusrouter-cli
     nodePackages.prettier
