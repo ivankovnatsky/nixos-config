@@ -2,6 +2,7 @@
 {
   home.packages = with pkgs; [
     aria2
+    switch-scaling
     tree
     asusrouter-cli
     nodePackages.prettier
