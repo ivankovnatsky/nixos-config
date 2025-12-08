@@ -240,14 +240,17 @@ def toggle_scaling() -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Toggle display scaling and dock visibility on macOS. "
-        "Switches between 'more space' and 'larger text' display modes, "
-        "and toggles dock auto-hide accordingly."
+        description="Toggle display scaling on macOS. "
+        "Switches between 'more space' and 'larger text' display modes."
     )
-    parser.parse_args()
+    parser.add_argument(
+        "--dock", action="store_true",
+        help="Also toggle dock auto-hide when scaling changes"
+    )
+    args = parser.parse_args()
 
     result = toggle_scaling()
-    if result == 0:
+    if result == 0 and args.dock:
         toggle_dock()
     return result
 
