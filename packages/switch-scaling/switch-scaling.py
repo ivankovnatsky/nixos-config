@@ -247,7 +247,8 @@ def main() -> int:
     parser.parse_args()
 
     result = toggle_scaling()
-    toggle_dock()
+    if result == 0:
+        toggle_dock()
     return result
 
 
