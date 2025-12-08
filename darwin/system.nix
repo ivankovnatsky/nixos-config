@@ -1,8 +1,10 @@
-{ ... }:
+{ config, ... }:
 
 let
+  hostName = config.networking.hostName or "";
+
   # Disable automatic rearranging of spaces based on most recent use
-  mruSpaces = true;
+  mruSpaces = if hostName == "Lusha-Macbook-Ivan-Kovnatskyi" then false else true;
 in
 {
   system = {
