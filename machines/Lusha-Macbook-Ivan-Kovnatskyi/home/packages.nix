@@ -81,11 +81,7 @@
     nixfmt-rfc-style
     nixpkgs-master.cursor-cli
     nixpkgs-master.fluxcd
-    (nixpkgs-master.jira-cli-go.overrideAttrs (old: {
-      postInstall = (old.postInstall or "") + ''
-        mv $out/bin/jira $out/bin/jira-go
-      '';
-    }))
+    nixpkgs-master.jira-cli-go
     nodejs
     nodePackages.aws-cdk
     nodePackages.prettier
