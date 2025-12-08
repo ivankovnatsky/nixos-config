@@ -41,8 +41,8 @@ def search_filters(query=None):
         print()
 
 
-def comment_list(issue_key):
-    """List all comments on an issue"""
+def comment_list(issue_key, last=None):
+    """List comments on an issue"""
     jira = get_jira_client()
     issue = jira.issue(issue_key)
     comments = jira.comments(issue)
@@ -50,6 +50,10 @@ def comment_list(issue_key):
     if not comments:
         print(f"No comments on {issue_key}")
         return
+
+    # Show last N comments if specified
+    if last is not None:
+        comments = comments[-last:]
 
     for comment in comments:
         print(f"ID: {comment.id}")
@@ -270,6 +274,7 @@ def main():
     # issue comment list
     list_parser = comment_subparsers.add_parser("list", help="List comments on an issue")
     list_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
+    list_parser.add_argument("--last", type=int, help="Show only last N comments")
 
     # issue comment add
     add_parser = comment_subparsers.add_parser("add", help="Add a comment to an issue")
@@ -310,7 +315,7 @@ def main():
                 transition_parser.print_help()
         elif args.issue_action == "comment":
             if args.comment_action == "list":
-                comment_list(args.issue_key)
+                comment_list(args.issue_key, args.last)
             elif args.comment_action == "add":
                 comment_add(args.issue_key, args.body)
             elif args.comment_action == "update":
