@@ -12,10 +12,10 @@
     nixpkgs-nixos-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # Stable NixOS release
-    nixpkgs-nixos-release.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs-nixos-release.url = "github:nixos/nixpkgs/nixos-25.11";
 
     # Stable Darwin release
-    nixpkgs-darwin-release.url = "github:nixos/nixpkgs/nixpkgs-25.05-darwin";
+    nixpkgs-darwin-release.url = "github:nixos/nixpkgs/nixpkgs-25.11-darwin";
 
     # Unstable Darwin packages
     nixpkgs-darwin-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
@@ -26,7 +26,7 @@
     };
 
     nix-darwin-darwin-release = {
-      url = "github:nix-darwin/nix-darwin/nix-darwin-25.05";
+      url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
       inputs.nixpkgs.follows = "nixpkgs-darwin-release";
     };
 
@@ -36,12 +36,12 @@
     };
 
     home-manager-darwin-release = {
-      url = "github:nix-community/home-manager/release-25.05";
+      url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs-darwin-release";
     };
 
     home-manager-nixos-release = {
-      url = "github:nix-community/home-manager/release-25.05";
+      url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs-nixos-release";
     };
 
@@ -82,7 +82,7 @@
     };
 
     nixvim-darwin-release = {
-      url = "github:nix-community/nixvim/nixos-25.05";
+      url = "github:nix-community/nixvim/nixos-25.11";
       inputs.nixpkgs.follows = "nixpkgs-darwin-release";
     };
 
@@ -92,7 +92,7 @@
     };
 
     nixvim-nixos-release = {
-      url = "github:nix-community/nixvim/nixos-25.05";
+      url = "github:nix-community/nixvim/nixos-25.11";
       inputs.nixpkgs.follows = "nixpkgs-nixos-release";
     };
 
