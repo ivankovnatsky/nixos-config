@@ -56,6 +56,16 @@ def open_url(url: str) -> None:
     webbrowser.open(url)
 
 
+def open_pr_in_browser(path: str = "") -> None:
+    """Get current PR URL and open in browser."""
+    result = run_cmd(["gh", "pr", "view", "--json", "url", "-q", ".url"])
+    if result.returncode == 0:
+        url = result.stdout.strip()
+        if path:
+            url = f"{url}/{path}"
+        open_url(url)
+
+
 def unset_github_tokens() -> None:
     """Unset GitHub tokens to use gh CLI authentication."""
     os.environ.pop("GH_TOKEN", None)
@@ -106,6 +116,8 @@ def cmd_create(config: Config) -> int:
     result = run_cmd(cmd, capture=False)
     if result.returncode == 0:
         print("Pull request created successfully!")
+        if config.draft:
+            open_pr_in_browser()
         return 0
     else:
         print("Failed to create pull request")
@@ -120,13 +132,8 @@ def cmd_merge(config: Config) -> int:
 
     result = run_cmd(cmd, capture=True)
     if result.returncode == 0:
-        # Get PR URL
-        url_result = run_cmd(["gh", "pr", "view", "--json", "url", "-q", ".url"])
-        if url_result.returncode == 0:
-            pr_url = url_result.stdout.strip()
-            print("Pull request merged successfully!")
-            print(f"View it here: {pr_url}")
-            open_url(f"{pr_url}/files")
+        print("Pull request merged successfully!")
+        open_pr_in_browser("files")
         return 0
     else:
         print("Failed to merge pull request:")
@@ -136,15 +143,9 @@ def cmd_merge(config: Config) -> int:
 
 def cmd_view() -> int:
     """View pull request files in browser."""
-    result = run_cmd(["gh", "pr", "view", "--json", "url", "-q", ".url"])
-    if result.returncode == 0:
-        pr_url = result.stdout.strip()
-        print("Opening pull request in browser...")
-        open_url(f"{pr_url}/files")
-        return 0
-    else:
-        print("Failed to get pull request URL. Are you in a PR branch?")
-        return 1
+    print("Opening pull request in browser...")
+    open_pr_in_browser("files")
+    return 0
 
 
 def main() -> int:
