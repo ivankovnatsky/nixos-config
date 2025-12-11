@@ -216,10 +216,12 @@ def transition_list(issue_key):
         print(f"{t['id']}: {t['name']}")
 
 
-def transition_issue(issue_key, transition_name):
+def transition_issue(issue_key, transition_name, comment=None):
     """Transition an issue to a new status"""
     jira = get_jira_client()
     jira.transition_issue(issue_key, transition_name)
+    if comment:
+        jira.add_comment(issue_key, comment)
     issue = jira.issue(issue_key)
     print(f"Transitioned to: {issue.fields.status.name}", file=sys.stderr)
 
@@ -270,6 +272,7 @@ def main():
     transition_to_parser = transition_subparsers.add_parser("to", help="Transition issue to a new status")
     transition_to_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
     transition_to_parser.add_argument("transition_name", help="Transition name (e.g., 'In Progress', 'Done')")
+    transition_to_parser.add_argument("--comment", "-c", help="Add a comment when transitioning")
 
     # issue comment
     comment_parser = issue_subparsers.add_parser("comment", help="Manage issue comments")
@@ -315,7 +318,7 @@ def main():
             if args.transition_action == "list":
                 transition_list(args.issue_key)
             elif args.transition_action == "to":
-                transition_issue(args.issue_key, args.transition_name)
+                transition_issue(args.issue_key, args.transition_name, args.comment)
             else:
                 transition_parser.print_help()
         elif args.issue_action == "comment":
