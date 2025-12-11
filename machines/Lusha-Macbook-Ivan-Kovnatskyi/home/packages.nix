@@ -41,6 +41,7 @@
     exiftool
     genpass
     ggh
+    gh-pr
     ghorg
     git-pull-all
     gitleaks
