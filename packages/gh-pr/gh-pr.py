@@ -92,7 +92,6 @@ def cmd_create(config: Config) -> int:
         "--title", title,
         "--base", default_branch,
         "--fill",
-        "--web",
     ]
 
     if config.reviewer:
@@ -101,6 +100,8 @@ def cmd_create(config: Config) -> int:
         cmd.extend(["--label", config.label])
     if config.draft:
         cmd.append("--draft")
+    else:
+        cmd.append("--web")
 
     result = run_cmd(cmd, capture=False)
     if result.returncode == 0:
