@@ -1,6 +1,7 @@
 {
   imports = [
     ./packages.nix
+    ./manual-packages.nix
     ../../../home/flags.nix
     ../../../home/scripts.nix
     ../../../modules/home/manual-packages
