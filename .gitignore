@@ -9,6 +9,7 @@ overlays/ghostty/ghostty-macos-universal.zip
 
 **/*.swp
 **/.syncthing.*.tmp
+**/__pycache__/
 
 .aider*
 
