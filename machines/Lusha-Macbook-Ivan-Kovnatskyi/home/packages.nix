@@ -74,6 +74,7 @@
     lsd
     magic-wormhole
     mariadb
+    mkcd
     mkpasswd
     mongosh
     mycli
