@@ -1,4 +1,4 @@
-{ scripts, ... }:
+{ pkgs, ... }:
 let
   copyPathScript = builtins.readFile ./copy-path.vim;
   prScript = builtins.readFile ./pr.vim;
@@ -7,7 +7,7 @@ in
 {
   programs.nixvim = {
     globals = {
-      pr_script = "${scripts.gh-pr}/bin/gh-pr";
+      pr_script = "${pkgs.gh-pr}/bin/gh-pr";
     };
 
     extraConfigVim = completionScript + "\n" + copyPathScript + "\n" + prScript;
