@@ -216,12 +216,46 @@ def transition_list(issue_key):
         print(f"{t['id']}: {t['name']}")
 
 
+def transition_fields(issue_key, transition_name):
+    """List fields available for a transition"""
+    jira = get_jira_client()
+    transitions = jira.transitions(issue_key, expand="transitions.fields")
+
+    # Find the matching transition
+    target = None
+    for t in transitions:
+        if t['name'].lower() == transition_name.lower() or t['id'] == transition_name:
+            target = t
+            break
+
+    if not target:
+        print(f"Transition '{transition_name}' not found", file=sys.stderr)
+        print("Available transitions:", file=sys.stderr)
+        for t in transitions:
+            print(f"  {t['id']}: {t['name']}", file=sys.stderr)
+        sys.exit(1)
+
+    print(f"Transition: {target['name']} (id: {target['id']})")
+    print()
+
+    fields = target.get('fields', {})
+    if not fields:
+        print("No fields available for this transition")
+        return
+
+    print("Fields:")
+    for field_id, field_info in fields.items():
+        required = field_info.get('required', False)
+        name = field_info.get('name', field_id)
+        field_type = field_info.get('schema', {}).get('type', 'unknown')
+        req_marker = " (required)" if required else ""
+        print(f"  {field_id}: {name} [{field_type}]{req_marker}")
+
+
 def transition_issue(issue_key, transition_name, comment=None, fields=None):
     """Transition an issue to a new status"""
     jira = get_jira_client()
-    jira.transition_issue(issue_key, transition_name, fields=fields)
-    if comment:
-        jira.add_comment(issue_key, comment)
+    jira.transition_issue(issue_key, transition_name, fields=fields, comment=comment)
     issue = jira.issue(issue_key)
     print(f"Transitioned to: {issue.fields.status.name}", file=sys.stderr)
 
@@ -267,6 +301,11 @@ def main():
     # issue transition list
     transition_list_parser = transition_subparsers.add_parser("list", help="List available transitions")
     transition_list_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
+
+    # issue transition fields
+    transition_fields_parser = transition_subparsers.add_parser("fields", help="List fields for a transition")
+    transition_fields_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
+    transition_fields_parser.add_argument("transition_name", help="Transition name or ID")
 
     # issue transition to
     transition_to_parser = transition_subparsers.add_parser("to", help="Transition issue to a new status")
@@ -318,6 +357,8 @@ def main():
         elif args.issue_action == "transition":
             if args.transition_action == "list":
                 transition_list(args.issue_key)
+            elif args.transition_action == "fields":
+                transition_fields(args.issue_key, args.transition_name)
             elif args.transition_action == "to":
                 fields = None
                 if args.field:
