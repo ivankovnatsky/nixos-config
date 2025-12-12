@@ -6,7 +6,7 @@
     btop
     cargo
     delta
-    du-dust
+    dust
     duf
     erdtree
     exiftool

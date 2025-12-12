@@ -7,7 +7,7 @@
     beszel-mgmt
     cargo
     delta
-    du-dust
+    dust
     duf
     exiftool
     fzf

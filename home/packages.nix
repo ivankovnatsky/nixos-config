@@ -22,7 +22,7 @@
     dhall-json
     difftastic
     doggo
-    du-dust
+    dust
     eks-node-viewer
     exiftool
     genpass
