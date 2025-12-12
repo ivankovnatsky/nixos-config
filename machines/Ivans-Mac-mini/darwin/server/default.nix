@@ -40,7 +40,7 @@
     ./http.nix
     ./jellyfin
     ./logrotate.nix
-    ./matrix
+    # ./matrix
     ./media
     ./miniserve.nix
     ./mosh.nix
