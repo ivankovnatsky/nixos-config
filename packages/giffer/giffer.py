@@ -9,6 +9,62 @@ from pathlib import Path
 DEFAULT_URL_FILE = ".list.txt"
 
 
+def parse_duration(value):
+    """Parse human-readable duration string to seconds.
+
+    Supports formats like: 5m30s, 1h30m, 90s, 2m, 30, 1h2m3s
+    Plain numbers are treated as seconds.
+    """
+    if value is None:
+        return None
+
+    # If it's already a number, return it
+    try:
+        return float(value)
+    except (ValueError, TypeError):
+        pass
+
+    value = str(value).strip().lower()
+
+    # Parse hours, minutes, seconds
+    pattern = r'(?:(\d+(?:\.\d+)?)h)?(?:(\d+(?:\.\d+)?)m)?(?:(\d+(?:\.\d+)?)s)?'
+    match = re.fullmatch(pattern, value)
+
+    if not match or not any(match.groups()):
+        raise argparse.ArgumentTypeError(
+            f"Invalid duration format: '{value}'. "
+            "Use formats like: 5m30s, 1h30m, 90s, 2m, or plain seconds (e.g., 90)"
+        )
+
+    hours = float(match.group(1) or 0)
+    minutes = float(match.group(2) or 0)
+    seconds = float(match.group(3) or 0)
+
+    return hours * 3600 + minutes * 60 + seconds
+
+
+def format_duration(seconds):
+    """Format seconds as human-readable duration string."""
+    if seconds < 60:
+        return f"{seconds:.1f}s"
+    elif seconds < 3600:
+        mins = int(seconds // 60)
+        secs = seconds % 60
+        if secs > 0:
+            return f"{mins}m{secs:.0f}s"
+        return f"{mins}m"
+    else:
+        hours = int(seconds // 3600)
+        mins = int((seconds % 3600) // 60)
+        secs = seconds % 60
+        result = f"{hours}h"
+        if mins > 0:
+            result += f"{mins}m"
+        if secs > 0:
+            result += f"{secs:.0f}s"
+        return result
+
+
 def get_video_duration(file_path):
     """Get video duration in seconds using ffprobe"""
     cmd = [
@@ -44,7 +100,7 @@ def split_single_video(input_file, segment_duration, skip_start=0, skip_end=0, o
     effective_duration = effective_end - effective_start
 
     if effective_duration <= 0:
-        print(f"Error: Skip values exceed video duration ({total_duration:.1f}s)", file=sys.stderr)
+        print(f"Error: Skip values exceed video duration ({format_duration(total_duration)})", file=sys.stderr)
         return False
 
     # Determine output directory
@@ -59,10 +115,10 @@ def split_single_video(input_file, segment_duration, skip_start=0, skip_end=0, o
     if effective_duration % segment_duration > 0:
         num_segments += 1
 
-    print(f"Splitting {input_path.name} into {num_segments} segments of {segment_duration}s each")
-    print(f"  Total duration: {total_duration:.1f}s")
-    print(f"  Skip start: {skip_start}s, Skip end: {skip_end}s")
-    print(f"  Effective duration: {effective_duration:.1f}s")
+    print(f"Splitting {input_path.name} into {num_segments} segments of {format_duration(segment_duration)} each")
+    print(f"  Total duration: {format_duration(total_duration)}")
+    print(f"  Skip start: {format_duration(skip_start)}, Skip end: {format_duration(skip_end)}")
+    print(f"  Effective duration: {format_duration(effective_duration)}")
 
     stem = input_path.stem
     suffix = input_path.suffix
@@ -88,7 +144,7 @@ def split_single_video(input_file, segment_duration, skip_start=0, skip_end=0, o
             str(output_file)
         ]
 
-        print(f"  Creating {output_file.name} (start: {start_time:.1f}s, duration: {duration:.1f}s)")
+        print(f"  Creating {output_file.name} (start: {format_duration(start_time)}, duration: {format_duration(duration)})")
         result = subprocess.run(cmd, capture_output=True, text=True)
         if result.returncode != 0:
             print(f"Error creating segment: {result.stderr}", file=sys.stderr)
@@ -286,23 +342,26 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  giffer download "https://youtube.com/watch?v=xxx" --duration 10
-  giffer process video.mp4 --duration 20 --skip-start 5 --skip-end 10
-  giffer process ./videos --duration 15 --recursive
+  giffer download "https://youtube.com/watch?v=xxx" --duration 30s
+  giffer download "https://youtube.com/watch?v=xxx" -d 2m30s
+  giffer process video.mp4 --duration 1m --skip-start 5s --skip-end 10s
+  giffer process ./videos --duration 45s --recursive
   giffer batch                          # Download from .list.txt
   giffer batch --file urls.txt          # Download from custom file
+
+Duration formats: 30 (seconds), 30s, 2m, 1m30s, 1h, 1h30m, 1h2m3s
 """
     )
     subparsers = parser.add_subparsers(dest="command", help="Command to execute")
 
     # Common arguments
     def add_common_args(p):
-        p.add_argument("-d", "--duration", type=int, default=10,
-                       help="Segment duration in seconds (default: 10)")
-        p.add_argument("--skip-start", type=float, default=0,
-                       help="Seconds to skip from start (default: 0)")
-        p.add_argument("--skip-end", type=float, default=0,
-                       help="Seconds to skip from end (default: 0)")
+        p.add_argument("-d", "--duration", type=parse_duration, default=10,
+                       help="Segment duration (e.g., 10, 30s, 2m, 1m30s) (default: 10s)")
+        p.add_argument("--skip-start", type=parse_duration, default=0,
+                       help="Duration to skip from start (e.g., 5s, 1m) (default: 0)")
+        p.add_argument("--skip-end", type=parse_duration, default=0,
+                       help="Duration to skip from end (e.g., 10s, 30s) (default: 0)")
 
     # Download command
     download_parser = subparsers.add_parser("download", help="Download video and split it")
