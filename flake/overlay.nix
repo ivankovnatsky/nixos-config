@@ -34,23 +34,26 @@ let
   ) { } (builtins.filter (dir: dir.type == "directory") (builtins.attrValues packageList));
 
   # 3. Nixpkgs-master and unstable packages
+  system = final.stdenv.hostPlatform.system;
   masterOverlays = {
     nixpkgs-master = import inputs.nixpkgs-master {
-      inherit (final) system config;
+      inherit system;
+      inherit (final) config;
     };
     nixpkgs-nixos-unstable = import inputs.nixpkgs-nixos-unstable {
-      inherit (final) system config;
+      inherit system;
+      inherit (final) config;
     };
   };
 
   # 4. Direct packages from other flakes
   flakeOverlays = {
-    inherit (inputs.username.packages.${final.system}) username;
-    inherit (inputs.backup-home.packages.${final.system}) backup-home;
-    inherit (inputs.podservice.packages.${final.system}) podservice;
-    inherit (inputs.textcast.packages.${final.system}) textcast;
+    inherit (inputs.username.packages.${system}) username;
+    inherit (inputs.backup-home.packages.${system}) backup-home;
+    inherit (inputs.podservice.packages.${system}) podservice;
+    inherit (inputs.textcast.packages.${system}) textcast;
 
-    pyenv-nix-install = inputs.pyenv-nix-install.packages.${final.system}.default;
+    pyenv-nix-install = inputs.pyenv-nix-install.packages.${system}.default;
   };
 
   # 5. Custom functions
