@@ -47,7 +47,7 @@
     syncthing-mgmt
     treefmt
     typst
-    typstfmt
+    typstyle
     username # Installed as flake
     watchman
     watchman-make
