@@ -150,6 +150,7 @@ else
     --exclude='**/Library/Containers/com.apple.AccessibilitySettingsWidgetExtension/**' \
     --exclude='**/Library/Containers/com.apple.AppStore/**' \
     --exclude='**/Library/Containers/com.apple.AvatarUI.AvatarPickerMemojiPicker/**' \
+    --exclude='**/Library/Containers/com.apple.findmy.FindMyWidgetItems/**' \
     --exclude='**/Library/Containers/com.apple.photoanalysisd/**' \
     --exclude='**/Library/Containers/com.apple.Safari/**' \
     --exclude='**/Library/Containers/com.apple.Safari.WebApp/**' \
