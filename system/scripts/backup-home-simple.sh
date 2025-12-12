@@ -158,6 +158,7 @@ else
     --exclude='**/Library/Containers/com.microsoft.teams2/**' \
     --exclude='**/Library/Containers/com.utmapp.UTM/**' \
     --exclude='**/Library/Group Containers/BJ4HAAB9B3.ZoomClient3rd/**' \
+    --exclude='**/Library/Group Containers/UBF8T346G9.ms/**' \
     --exclude='**/Library/Group Containers/group.com.apple.CoreSpeech/**' \
     --exclude='**/Library/Group Containers/group.com.apple.secure-control-center-preferences/**' \
     --exclude='**/OrbStack/**' \
