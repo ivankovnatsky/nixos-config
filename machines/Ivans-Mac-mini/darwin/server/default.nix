@@ -25,14 +25,14 @@
     ../../../../modules/darwin/jellyfin-mgmt
     ../../../../modules/darwin/nextdns-mgmt
     ../../../../modules/darwin/syncthing-mgmt
-    ../../../../modules/darwin/uptime-kuma-mgmt
+    # ../../../../modules/darwin/uptime-kuma-mgmt
     ../../../../system/documentation.nix
     ../../../../system/nix.nix
     ../../../../system/rebuild-daemon.nix
     ./beszel.nix
     ./audiobookshelf
     ./bin.nix
-    ./uptime-kuma
+    # ./uptime-kuma
     ./dns.nix
     ./doh.nix
     ./git.nix
