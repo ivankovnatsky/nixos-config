@@ -24,6 +24,14 @@
     settings = { };
   };
 
+  programs.delta = {
+    enable = true;
+    enableGitIntegration = true;
+    options = {
+      features = "interactive";
+    };
+  };
+
   # https://github.com/nix-community/home-manager/blob/master/modules/programs/git.nix#L102
   programs.git = {
     enable = true;
@@ -42,12 +50,6 @@
       "**/claude/"
       "**/.serena"
     ];
-    delta = {
-      enable = true;
-      options = {
-        features = "interactive";
-      };
-    };
     # diff-highlight.enable = true;
     # difftastic.enable = true;
     # diff-so-fancy.enable = true;
@@ -56,7 +58,7 @@
       { path = "${./config}"; }
     ];
 
-    extraConfig = {
+    settings = {
       mergetool =
         let
           vimCommand = "vim -f -d -c 'wincmd J' \"$LOCAL\" \"$BASE\" \"$REMOTE\" \"$MERGED\"";
