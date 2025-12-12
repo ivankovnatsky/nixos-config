@@ -242,7 +242,7 @@
           users.ivan = {
             imports = [
               ../../machines/Ivans-Mac-mini/home
-              inputs.nixvim-darwin-release.homeManagerModules.nixvim
+              inputs.nixvim-darwin-release.homeModules.nixvim
               inputs.sops-nix-darwin-release.homeManagerModules.sops
               {
                 programs.home-manager.enable = true;
