@@ -20,8 +20,7 @@ in
   programs.go = if isRelease then {
     # Old format for release (home-manager 25.05)
     enable = true;
-    goPath = if useAbsolutePath then null else relativeGoPath;
-  } else {
+  } // (if useAbsolutePath then { } else { goPath = relativeGoPath; }) else {
     # New format for unstable (home-manager with env support)
     enable = true;
     env = {
