@@ -6,6 +6,7 @@ Applies GUI credentials and device IDs via Syncthing REST API.
 
 import sys
 import json
+import time
 import requests
 import argparse
 import xml.etree.ElementTree as ET
@@ -31,45 +32,58 @@ logging.basicConfig(
 
 
 class SyncthingClient:
-    def __init__(self, base_url: str, api_key: str, timeout: int = 30):
+    def __init__(self, base_url: str, api_key: str, timeout: int = 30,
+                 max_retries: int = 5, retry_delay: float = 2.0):
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
+        self.max_retries = max_retries
+        self.retry_delay = retry_delay
         self.headers = {
             "User-Agent": USER_AGENT,
             "X-API-Key": api_key,
         }
 
     def _api_call(self, method: str, endpoint: str, data=None):
-        """Make API request with error handling."""
+        """Make API request with error handling and retry logic."""
         url = f"{self.base_url}{endpoint}"
-        try:
-            response = requests.request(
-                method, url, json=data, headers=self.headers, timeout=self.timeout
-            )
+        last_error = None
 
-            if response.status_code not in (200, 201, 204):
-                try:
-                    error_data = response.json()
-                    logging.debug(f"DEBUG: Error response: {error_data}")
-                    message = error_data.get("error", "Unknown error")
-                    raise Exception(
-                        f"API error: {message} (Status: {response.status_code})"
-                    )
-                except ValueError:
-                    logging.debug(f"DEBUG: Response text: {response.text}")
-                    raise Exception(
-                        f"API request failed with status {response.status_code}"
-                    )
-
-            if response.status_code == 204:
-                return None
-
+        for attempt in range(self.max_retries):
             try:
-                return response.json()
-            except ValueError:
-                return {"success": True}
-        except requests.exceptions.RequestException as e:
-            raise Exception(f"Network error: {e}")
+                response = requests.request(
+                    method, url, json=data, headers=self.headers, timeout=self.timeout
+                )
+
+                if response.status_code not in (200, 201, 204):
+                    try:
+                        error_data = response.json()
+                        logging.debug(f"DEBUG: Error response: {error_data}")
+                        message = error_data.get("error", "Unknown error")
+                        raise Exception(
+                            f"API error: {message} (Status: {response.status_code})"
+                        )
+                    except ValueError:
+                        logging.debug(f"DEBUG: Response text: {response.text}")
+                        raise Exception(
+                            f"API request failed with status {response.status_code}"
+                        )
+
+                if response.status_code == 204:
+                    return None
+
+                try:
+                    return response.json()
+                except ValueError:
+                    return {"success": True}
+
+            except requests.exceptions.RequestException as e:
+                last_error = e
+                if attempt < self.max_retries - 1:
+                    wait_time = self.retry_delay * (2 ** attempt)  # Exponential backoff
+                    logging.info(f"    Connection error, retrying in {wait_time:.1f}s... (attempt {attempt + 1}/{self.max_retries})")
+                    time.sleep(wait_time)
+                    continue
+                raise Exception(f"Network error after {self.max_retries} attempts: {last_error}")
 
     def get_config(self):
         """Get current Syncthing configuration."""
