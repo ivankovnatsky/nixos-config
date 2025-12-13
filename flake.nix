@@ -174,12 +174,6 @@
       inputs.nixpkgs.follows = "nixpkgs-nixos-unstable";
     };
 
-    # Jovian-NixOS for Steam Deck
-    jovian-nixos-unstable = {
-      url = "github:Jovian-Experiments/Jovian-NixOS";
-      inputs.nixpkgs.follows = "nixpkgs-nixos-unstable";
-    };
-
     # Pod Service - YouTube to Podcast Feed Service
     podservice = {
       url = "github:ivankovnatsky/podservice";
