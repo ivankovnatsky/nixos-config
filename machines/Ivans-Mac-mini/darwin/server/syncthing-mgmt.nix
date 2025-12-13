@@ -83,13 +83,6 @@
         ];
       };
 
-      "nixos-config-ai-docs" = {
-        path = "/Volumes/Storage/Data/Sources/github.com/ivankovnatsky/nixos-config-ai-docs";
-        label = "Sources/github.com/ivankovnatsky/nixos-config-ai-docs";
-        devices = [
-          "Lusha-Macbook-Ivan-Kovnatskyi"
-        ];
-      };
     };
 
     restart = false;

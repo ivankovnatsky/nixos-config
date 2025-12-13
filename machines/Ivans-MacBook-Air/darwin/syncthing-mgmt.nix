@@ -67,14 +67,6 @@
         ];
       };
 
-      "nixos-config-ai-docs" = {
-        path = "/Users/${username}/Sources/github.com/ivankovnatsky/nixos-config-ai-docs";
-        label = "Sources/github.com/ivankovnatsky/nixos-config-ai-docs";
-        devices = [
-          "Lusha-Macbook-Ivan-Kovnatskyi"
-        ];
-      };
-
       "ryjnn-fdrug" = {
         path = "/Users/${username}/Sources/github.com/ivankovnatsky/notes";
         label = "Sources/github.com/ivankovnatsky/notes";
