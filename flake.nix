@@ -3,22 +3,34 @@
 
   inputs = {
     # This is used to pin packages from master channel.
-    nixpkgs-master.url = "github:nixos/nixpkgs/master";
+    nixpkgs-master = {
+      url = "github:nixos/nixpkgs/master";
+    };
 
     # Pinned master commit for nix develop (2025-10-23)
-    nixpkgs-master-pinned.url = "github:nixos/nixpkgs/3f173303fa32419a05ef1c0138045b03987adc05";
+    nixpkgs-master-pinned = {
+      url = "github:nixos/nixpkgs/3f173303fa32419a05ef1c0138045b03987adc05";
+    };
 
     # Unstable NixOS packages (binary cache available)
-    nixpkgs-nixos-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-nixos-unstable = {
+      url = "github:nixos/nixpkgs/nixos-unstable";
+    };
 
     # Stable NixOS release
-    nixpkgs-nixos-release.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs-nixos-release = {
+      url = "github:nixos/nixpkgs/nixos-25.11";
+    };
 
     # Stable Darwin release
-    nixpkgs-darwin-release.url = "github:nixos/nixpkgs/nixpkgs-25.11-darwin";
+    nixpkgs-darwin-release = {
+      url = "github:nixos/nixpkgs/nixpkgs-25.11-darwin";
+    };
 
     # Unstable Darwin packages
-    nixpkgs-darwin-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs-darwin-unstable = {
+      url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    };
 
     nix-darwin-darwin-unstable = {
       url = "github:nix-darwin/nix-darwin/master";
@@ -51,29 +63,38 @@
     };
 
     # https://github.com/zhaofengli/nix-homebrew
-    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+    nix-homebrew = {
+      url = "github:zhaofengli-wip/nix-homebrew";
+    };
+
     homebrew-core = {
       url = "github:homebrew/homebrew-core";
       flake = false;
     };
+
     homebrew-cask = {
       url = "github:homebrew/homebrew-cask";
       flake = false;
     };
+
     homebrew-bundle = {
       url = "github:homebrew/homebrew-bundle";
       flake = false;
     };
+
     pomdtr-homebrew-tap = {
       url = "github:pomdtr/homebrew-tap";
       flake = false;
     };
+
     ivankovnatsky-homebrew-tap = {
       url = "github:ivankovnatsky/homebrew-tap";
       flake = false;
     };
 
-    nur.url = "github:nix-community/NUR";
+    nur = {
+      url = "github:nix-community/NUR";
+    };
 
     # https://discourse.nixos.org/t/error-atopile-cannot-be-found-in-pkgs/70461
     nixvim-darwin-unstable = {
@@ -96,7 +117,10 @@
       inputs.nixpkgs.follows = "nixpkgs-nixos-release";
     };
 
-    flake-utils.url = "github:numtide/flake-utils";
+    flake-utils = {
+      url = "github:numtide/flake-utils";
+    };
+
     username = {
       url = "github:ivankovnatsky/username";
       inputs.nixpkgs.follows = "nixpkgs-darwin-unstable";
@@ -109,8 +133,12 @@
       inputs.flake-utils.follows = "flake-utils";
     };
 
-    nixpkgs-python.url = "github:cachix/nixpkgs-python";
-    pyenv-nix-install.url = "github:sirno/pyenv-nix-install";
+    nixpkgs-python = {
+      url = "github:cachix/nixpkgs-python";
+    };
+    pyenv-nix-install = {
+      url = "github:sirno/pyenv-nix-install";
+    };
 
     # KDE Plasma configuration manager
     plasma-manager-nixos-release = {
@@ -153,10 +181,14 @@
     };
 
     # Pod Service - YouTube to Podcast Feed Service
-    podservice.url = "github:ivankovnatsky/podservice";
+    podservice = {
+      url = "github:ivankovnatsky/podservice";
+    };
 
     # Textcast - Text to Audio Service
-    textcast.url = "github:ivankovnatsky/textcast";
+    textcast = {
+      url = "github:ivankovnatsky/textcast";
+    };
   };
 
   outputs = { self, ... }@inputs: import ./flake { inherit inputs; };
