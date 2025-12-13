@@ -36,6 +36,7 @@ in
         }
 
         # Installed using Kandji
+        { path = "/Applications/Kandji Self Service.app/"; }
         { path = "/Applications/Google Chrome.app/"; }
         { path = "/Applications/Slack.app/"; }
         { path = "/Applications/zoom.us.app/"; }
