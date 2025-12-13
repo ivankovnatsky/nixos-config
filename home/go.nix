@@ -1,50 +1,24 @@
 {
-  config,
-  lib,
-  osConfig,
   pkgs,
   ...
 }:
 
 let
-  hostName = osConfig.networking.hostName;
-  useAbsolutePath = hostName == "Ivans-Mac-mini";
-  absoluteGoPath = "${config.flags.miniStoragePath}/go";
   relativeGoPath = "go";
-
-  # Machines using home-manager release (25.05) - use old goPath format
-  # Machines using home-manager unstable - use new env format
-  isRelease = lib.elem hostName [ "Ivans-Mac-mini" "bee" ];
 in
 {
-  programs.go = if isRelease then {
-    # Old format for release (home-manager 25.05)
-    enable = true;
-  } // (if useAbsolutePath then { } else { goPath = relativeGoPath; }) else {
-    # New format for unstable (home-manager with env support)
+  programs.go =  {
     enable = true;
     env = {
-      GOPATH = if useAbsolutePath then absoluteGoPath else "$HOME/${relativeGoPath}";
+      GOPATH = "$HOME/${relativeGoPath}";
       GO111MODULE = "on";
     };
   };
 
-  home.sessionVariables = if isRelease then (
-    {
-      GO111MODULE = "on";
-    }
-    // (
-      if useAbsolutePath then
-        {
-          GOPATH = absoluteGoPath;
-        }
-      else
-        { }
-    )
-  ) else { };
+  home.sessionVariables = { };
 
   home.sessionPath = [
-    (if useAbsolutePath then "${absoluteGoPath}/bin" else "$HOME/${relativeGoPath}/bin")
+    "$HOME/${relativeGoPath}/bin"
   ];
 
   home.packages = with pkgs; [

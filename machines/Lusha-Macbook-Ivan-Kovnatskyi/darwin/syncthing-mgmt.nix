@@ -22,7 +22,6 @@
       "Lusha-Macbook-Ivan-Kovnatskyi" # This machine (required for local-only folders)
       "a3"
       "Ivans-MacBook-Pro"
-      "Ivans-Mac-mini"
       "Ivans-MacBook-Air"
     ];
 
@@ -35,7 +34,6 @@
           "a3"
           "Ivans-MacBook-Pro"
           "Ivans-MacBook-Air"
-          "Ivans-Mac-mini"
         ];
       };
 
@@ -46,7 +44,6 @@
           "a3"
           "Ivans-MacBook-Pro"
           "Ivans-MacBook-Air"
-          "Ivans-Mac-mini"
         ];
       };
 
@@ -57,7 +54,6 @@
           "a3"
           "Ivans-MacBook-Pro"
           "Ivans-MacBook-Air"
-          "Ivans-Mac-mini"
         ];
       };
     };
