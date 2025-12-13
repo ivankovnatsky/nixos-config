@@ -41,13 +41,11 @@ def run_command(cmd: List[str], env: Dict = None) -> tuple[int, str, str]:
 
 
 def get_installed_npm_packages(npm_bin: str, packages: Dict[str, str]) -> Set[str]:
-    npm_path = Path(npm_bin).parent.parent
-    if not npm_path.exists():
-        return set()
+    bun_bin = Path.home() / ".bun" / "bin"
 
     installed = set()
     for package, binary in packages.items():
-        if (Path(npm_bin) / binary).exists():
+        if (bun_bin / binary).exists() or (Path(npm_bin) / binary).exists():
             installed.add(package)
     return installed
 
