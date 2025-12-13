@@ -20,6 +20,30 @@
 
 set -euo pipefail
 
+# Check if target machine is the local machine (by hostname or IP)
+is_local_target() {
+  local target="$1"
+  local hostname_lower="${HOSTNAME,,}"
+
+  # Check hostname matches (with or without .local)
+  if [[ "${target,,}" == "${hostname_lower}.local" ]] || [[ "${target,,}" == "${hostname_lower}" ]]; then
+    return 0
+  fi
+
+  # Check if target is a local IP address
+  if command -v ifconfig &>/dev/null; then
+    local local_ips
+    local_ips=$(ifconfig | grep "inet " | awk '{print $2}')
+    for ip in $local_ips; do
+      if [[ "$target" == "$ip" ]]; then
+        return 0
+      fi
+    done
+  fi
+
+  return 1
+}
+
 # Storage path - can be overridden via environment variable
 STORAGE_DATA_PATH="${STORAGE_DATA_PATH:-/Volumes/Storage/Data}"
 
@@ -192,9 +216,11 @@ else
   HOME_PARENT_DIR=$(basename "$(dirname "$HOME")")
   export HOME_PARENT_DIR
 
-  if [[ ${TARGET_MACHINE,,} == ${HOSTNAME,,}.local ]]; then
+  if is_local_target "$TARGET_MACHINE"; then
+    echo "Target is local machine, moving backup locally"
     mkdir -p "$BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR"
     mv "$ARCHIVE_PATH" "$BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR/$USER.tar.gz"
+    echo "Backup saved to: $BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR/$USER.tar.gz"
   else
     # shellcheck disable=SC2029
     ssh "ivan@$TARGET_MACHINE" "mkdir -p $BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR"
