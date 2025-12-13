@@ -39,7 +39,7 @@
       };
 
       "shtdy-s2c9s" = {
-        path = "/Volumes/Storage/Data/Sources/github.com/ivankovnatsky/nixos-config";
+        path = "${config.users.users.${username}.home}/Sources/github.com/ivankovnatsky/nixos-config";
         label = "Sources/github.com/ivankovnatsky/nixos-config";
         devices = [
           "a3"
