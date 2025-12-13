@@ -63,14 +63,13 @@
     {
       mode = "n";
       key = "<leader>rg";
-      action = ''
+      action.__raw = ''
         function()
           require("telescope.builtin").live_grep({
             default_text = vim.fn.expand("<cword>")
           })
         end
       '';
-      lua = true;
       options = {
         silent = true;
         desc = "Search word under cursor";
@@ -79,14 +78,13 @@
     {
       mode = "v";
       key = "<leader>rg";
-      action = ''
+      action.__raw = ''
         function()
           require("telescope.builtin").live_grep({
             default_text = vim.fn.expand("<cword>")
           })
         end
       '';
-      lua = true;
       options = {
         silent = true;
         desc = "Search word under cursor";
@@ -95,14 +93,13 @@
     {
       mode = "n";
       key = "<leader>fi";
-      action = ''
+      action.__raw = ''
         function()
           require("telescope.builtin").find_files({
             default_text = vim.fn.expand("<cword>")
           })
         end
       '';
-      lua = true;
       options = {
         silent = true;
         desc = "Find files with word under cursor";
@@ -111,14 +108,13 @@
     {
       mode = "v";
       key = "<leader>fi";
-      action = ''
+      action.__raw = ''
         function()
           require("telescope.builtin").find_files({
             default_text = vim.fn.expand("<cword>")
           })
         end
       '';
-      lua = true;
       options = {
         silent = true;
         desc = "Find files with selected text";
