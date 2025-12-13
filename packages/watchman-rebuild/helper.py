@@ -125,6 +125,7 @@ def watch_and_rebuild(config_path, command=None):
     logging.info(f"Loaded ignore patterns from .watchman-rebuild.json: {ignore_dirs}")
 
     client = pywatchman.client()
+    debounce_timer = None
 
     try:
         # Watch the config path
@@ -153,7 +154,6 @@ def watch_and_rebuild(config_path, command=None):
 
         # Debounce state
         pending_files = []
-        debounce_timer = None
         timer_lock = threading.Lock()
 
         def trigger_rebuild():
