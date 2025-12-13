@@ -36,12 +36,11 @@ in
     waitForPath = workingDirectory;
 
     command = ''
-      ${pkgs.syncthing}/bin/syncthing \
-        -no-browser \
-        -no-restart \
-        -no-upgrade \
-        -gui-address=${guiAddress} \
-        -logflags=0
+      ${pkgs.syncthing}/bin/syncthing serve \
+        --no-browser \
+        --no-restart \
+        --no-upgrade \
+        --gui-address=${guiAddress}
     '';
   };
 }
