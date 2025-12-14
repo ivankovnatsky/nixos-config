@@ -1,18 +1,15 @@
 {
   imports = [
     # ../../../home/bash.nix
-    ../../../home/flags.nix
-    ../../../home/nixvim.nix
-    ../../../home/packages-darwin.nix
-    ../../../modules/home/manual-packages
+    # ../../../home/nixvim/plugins/copilot-lua
     ../../../home/amethyst
     ../../../home/bat.nix
     ../../../home/btop.nix
     ../../../home/ccstatusline.nix
     ../../../home/claude.nix
-    ../../../home/gemini.nix
-    ../../../home/scripts.nix
     ../../../home/direnv.nix
+    ../../../home/flags.nix
+    ../../../home/gemini.nix
     ../../../home/ghostty.nix
     ../../../home/git
     ../../../home/go.nix
@@ -22,20 +19,23 @@
     ../../../home/lsd.nix
     ../../../home/mpv.nix
     ../../../home/nixvim
-    # ../../../home/nixvim/plugins/copilot-lua
+    ../../../home/nixvim.nix
     ../../../home/npm.nix
+    ../../../home/packages-darwin.nix
     ../../../home/pass.nix
     ../../../home/rebuild-diff.nix
     ../../../home/safari.nix
+    ../../../home/scripts.nix
     ../../../home/shell.nix
+    ../../../home/sops.nix
     ../../../home/starship
     ../../../home/syncthing.nix
     ../../../home/tmux.nix
     ../../../home/vscode.nix
     ../../../home/yt-dlp.nix
     ../../../modules/flags
+    ../../../modules/home/manual-packages
     ./manual-packages.nix
     ./packages.nix
-    ../../../home/sops.nix
   ];
 }
