@@ -3,8 +3,10 @@
 {
   imports = [
     # ../../../home/bash.nix
-    ../../../home/chromium.nix
+    # ../../../home/nixvim/plugins/copilot-lua
+    # ./mangohud.nix
     ../../../home/ccstatusline.nix
+    ../../../home/chromium.nix
     ../../../home/claude.nix
     ../../../home/codex.nix
     ../../../home/gamescope-session.nix
@@ -17,7 +19,6 @@
     ../../../home/lsd.nix
     ../../../home/mpv.nix
     ../../../home/nixvim
-    # ../../../home/nixvim/plugins/copilot-lua
     ../../../home/npm.nix
     ../../../home/rebuild-diff.nix
     ../../../home/scripts.nix
@@ -34,7 +35,6 @@
     ./flags.nix
     ./games.nix
     ./gpg.nix
-    # ./mangohud.nix
     ./manual-packages.nix
     ./packages.nix
     ./syncthing.nix
