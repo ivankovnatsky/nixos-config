@@ -13,6 +13,7 @@
     ssh-to-age
     syncthing-mgmt
     dns
+    download-torrent
     watchman-rebuild
   ];
 }

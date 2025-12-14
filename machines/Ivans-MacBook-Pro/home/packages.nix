@@ -14,6 +14,7 @@
     syncthing-mgmt
     open-gh-notifications-py
     dns
+    download-torrent
     watchman-rebuild
   ];
 }
