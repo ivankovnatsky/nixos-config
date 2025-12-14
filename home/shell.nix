@@ -175,6 +175,9 @@ in
       enable = config.flags.enableFishShell;
       shellInit = ''
         set -U fish_term24bit 1
+
+        # Disable Fish's native completions to let carapace handle everything
+        set -g fish_complete_path
       '';
 
       interactiveShellInit = ''
@@ -216,6 +219,10 @@ in
             complete -c ai -w aichat
         end
 
+        # forgit completions - only show subcommands when no subcommand entered yet
+        complete -c git-forgit -n "__fish_is_first_arg" -a "add attributes blame branch_delete checkout_branch checkout_commit checkout_file checkout_tag cherry_pick cherry_pick_from_branch clean diff fixup squash reword ignore log reflog rebase reset_head revert_commit show stash_show stash_push"
+        complete -c git-forgit -n "__fish_is_first_arg" -f
+
         # Source ~/.env.fish if exists
         # if test -f $HOME/.env.fish
         #     source $HOME/.env.fish
@@ -225,7 +232,7 @@ in
       plugins = with pkgs.fishPlugins; [
         { inherit (fzf-fish) name src; }
         { inherit (grc) name src; }
-        { inherit (plugin-git) name src; }
+        # { inherit (plugin-git) name src; }  # Disabled - using carapace for git completions
         { inherit (forgit) name src; }
         { inherit (git-abbr) name src; }
         { inherit (fish-bd) name src; }
