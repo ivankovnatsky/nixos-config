@@ -21,6 +21,7 @@
     ../../../home/nixvim
     ../../../home/nixvim.nix
     ../../../home/npm.nix
+    ../../../home/nushell.nix
     ../../../home/packages-darwin.nix
     ../../../home/pass.nix
     ../../../home/rebuild-diff.nix
