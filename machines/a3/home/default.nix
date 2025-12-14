@@ -20,6 +20,7 @@
     ../../../home/mpv.nix
     ../../../home/nixvim
     ../../../home/npm.nix
+    ../../../home/nushell.nix
     ../../../home/rebuild-diff.nix
     ../../../home/scripts.nix
     ../../../home/shell.nix
