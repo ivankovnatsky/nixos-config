@@ -175,9 +175,6 @@ in
       enable = config.flags.enableFishShell;
       shellInit = ''
         set -U fish_term24bit 1
-
-        # Disable Fish's native completions to let carapace handle everything
-        set -g fish_complete_path
       '';
 
       interactiveShellInit = ''
