@@ -14,6 +14,7 @@
     syncthing-mgmt
     dns
     download-torrent
+    ps-top-nu
     watchman-rebuild
   ];
 }
