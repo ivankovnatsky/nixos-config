@@ -1224,11 +1224,11 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1765265607,
-        "narHash": "sha256-QJKuwxKa/VykWEbPQQUFBWHF13LtpA4Bj1sWlPE+shs=",
+        "lastModified": 1765786807,
+        "narHash": "sha256-oOd+A/C1e5HuBJAhbOtsasm1uPaimyFFsVq8UMuP87o=",
         "owner": "ivankovnatsky",
         "repo": "textcast",
-        "rev": "527e863126fb28941ce2c56b5e7a33a5b4f6d286",
+        "rev": "86c0689590dbec469fd4ad591fddf3f02398b6df",
         "type": "github"
       },
       "original": {
