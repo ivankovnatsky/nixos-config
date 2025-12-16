@@ -214,7 +214,7 @@
 #macosx-control-itunes=1
 
 # Continue playback where you left off (integer)
-#macosx-continue-playback=0
+macosx-continue-playback=1
 
 # Control playback with the Apple Remote (boolean)
 #macosx-appleremote=1
@@ -3702,10 +3702,10 @@ auhal-audio-device=0
 #sub-track=-1
 
 # Audio language (string)
-audio-language=en,eng,english
+audio-language=en,eng
 
 # Subtitle language (string)
-sub-language=en,eng,english
+sub-language=en,eng
 
 # Menu language (string)
 #menu-language=
