@@ -3702,10 +3702,10 @@ auhal-audio-device=0
 #sub-track=-1
 
 # Audio language (string)
-#audio-language=
+audio-language=en
 
 # Subtitle language (string)
-#sub-language=
+sub-language=en
 
 # Menu language (string)
 #menu-language=
