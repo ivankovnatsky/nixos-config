@@ -20,7 +20,5 @@ end
 # Set default download directory to current $PWD
 set download_dir .
 
-# Download each argument using aria2c
-for arg in $argv
-    aria2c --dir $download_dir "$arg"
-end
+# Download all arguments using aria2c (parallel)
+aria2c --dir $download_dir $argv
