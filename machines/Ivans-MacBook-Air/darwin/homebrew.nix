@@ -3,5 +3,8 @@
     brews = [
       "displayplacer"
     ];
+    casks = [
+      "vlc"
+    ];
   };
 }
