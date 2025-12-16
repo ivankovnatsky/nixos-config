@@ -33,6 +33,7 @@
     ../../../home/starship
     ../../../home/syncthing.nix
     ../../../home/tmux.nix
+    ../../../home/vlc
     ../../../home/vscode.nix
     ../../../home/yt-dlp.nix
     ../../../modules/flags
