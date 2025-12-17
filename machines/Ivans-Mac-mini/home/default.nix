@@ -23,6 +23,7 @@
     ../../../home/safari.nix
     ../../../home/scripts.nix
     ../../../home/shell.nix
+    ../../../home/ssh.nix
     ../../../home/starship
     ../../../home/tmux.nix
     ../../../home/vscode.nix
