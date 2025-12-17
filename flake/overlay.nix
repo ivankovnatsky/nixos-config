@@ -36,7 +36,11 @@ let
   # 3. Nixpkgs-master and unstable packages
   system = final.stdenv.hostPlatform.system;
   masterOverlays = {
-    nixpkgs-master = import inputs.nixpkgs-master {
+    nixpkgs-darwin-master = import inputs.nixpkgs-darwin-master {
+      inherit system;
+      inherit (final) config;
+    };
+    nixpkgs-nixos-master = import inputs.nixpkgs-nixos-master {
       inherit system;
       inherit (final) config;
     };

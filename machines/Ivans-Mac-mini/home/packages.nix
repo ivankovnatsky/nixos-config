@@ -53,7 +53,7 @@
     watchman-make
     watchman-rebuild
     wget
-    nixpkgs-master.yt-dlp
+    nixpkgs-darwin-master.yt-dlp
     zsh-forgit
   ];
 }

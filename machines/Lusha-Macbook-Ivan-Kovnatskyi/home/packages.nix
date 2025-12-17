@@ -81,9 +81,9 @@
     mycli
     nh # https://github.com/nix-community/nh
     nixfmt-rfc-style
-    nixpkgs-master.cursor-cli
-    nixpkgs-master.fluxcd
-    nixpkgs-master.jira-cli-go
+    nixpkgs-darwin-master.cursor-cli
+    nixpkgs-darwin-master.fluxcd
+    nixpkgs-darwin-master.jira-cli-go
     nodejs
     nodePackages.aws-cdk
     nodePackages.prettier
