@@ -3,6 +3,7 @@
     ../../../../system/sops-secrets.nix
     ../../../../darwin/darwin.nix
     ../../../../darwin/fonts.nix
+    ../../../../darwin/mos.nix
     ../../../../darwin/shell.nix
     ../../../../darwin/sudo.nix
     ../../../../darwin/syncthing.nix
