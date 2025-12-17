@@ -2,7 +2,7 @@
 {
   users.knownUsers = [ "ivan" ];
   users.users.ivan = {
-    uid = 501;
+    uid = 502;
     shell = pkgs.fish;
   };
 }
