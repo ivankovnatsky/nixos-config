@@ -1,12 +1,19 @@
 {
   config,
+  pkgs,
+  osConfig,
   ...
 }:
 
 let
+  inherit (osConfig.networking) hostName;
   homePath = config.home.homeDirectory;
 
-  sourcesPath = "${homePath}/Sources";
+  sourcesPath =
+    if hostName == "Ivans-Mac-mini" then
+      "${config.flags.miniStoragePath}/Sources"
+    else
+      "${homePath}/Sources";
 
   claudeConfigPath = ".claude/settings.json";
 in

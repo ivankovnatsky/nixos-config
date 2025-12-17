@@ -114,16 +114,34 @@ with lib;
       };
     };
 
+    miniIp = mkOption {
+      type = types.str;
+      description = "Mac mini IP address";
+      default = "192.168.50.4";
+    };
+
     a3wIp = mkOption {
       type = types.str;
       description = "a3w IP address";
       default = "192.168.50.6";
     };
 
+    miniVmIp = mkOption {
+      type = types.str;
+      description = "mini-vm OrbStack VM IP address";
+      default = "192.168.138.4";
+    };
+
     homeWorkPath = mkOption {
       type = types.str;
       description = "Base path for work directories (git sources, password store, etc.)";
       default = "~";
+    };
+
+    miniStoragePath = mkOption {
+      type = types.str;
+      description = "Mac mini external storage data path";
+      default = "/Volumes/Storage/Data";
     };
 
     hotkeys = {

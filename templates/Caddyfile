@@ -1,0 +1,243 @@
+# Global settingscaddy
+{
+	# Log configuration
+	log {
+		output file @logPathPrefix@/caddy/caddy.log {
+			roll_size 10MB
+			roll_keep 10
+			roll_keep_for 48h
+		}
+		format json
+		level INFO
+	}
+
+	# Configure storage location explicitly
+	storage file_system {
+		root /var/lib/caddy
+	}
+
+	# Configure ACME for external domains
+	email @letsEncryptEmail@
+
+	# Default ACME configuration - use cloudflare DNS challenge globally
+	acme_dns cloudflare @cloudflareApiToken@
+}
+
+# Single wildcard certificate for all subdomains
+# Use *.externalDomain to request a wildcard certificate
+*.@externalDomain@ {
+	bind @bindAddress@
+
+	# Enable proper TLS with Let's Encrypt using DNS challenge for wildcard cert
+	# https://caddyserver.com/docs/automatic-https#wildcard-certificates
+	# https://caddy.community/t/how-to-use-dns-provider-modules-in-caddy-2/8148
+	tls {
+		dns cloudflare @cloudflareApiToken@
+		# Use external DNS resolvers for ACME challenges
+		# https://caddy.community/t/could-not-determine-zone-for-domain/18720/7
+		resolvers 1.1.1.1 8.8.8.8
+	}
+
+	@prowlarr host prowlarr.@externalDomain@
+	reverse_proxy @prowlarr @miniIp@:9696 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
+	@radarr host radarr.@externalDomain@
+	reverse_proxy @radarr @miniIp@:7878 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
+	@sonarr host sonarr.@externalDomain@
+	reverse_proxy @sonarr @miniIp@:8989 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
+	@transmission host transmission.@externalDomain@
+	reverse_proxy @transmission @miniIp@:9091 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
+	@jellyfin host jellyfin.@externalDomain@
+	reverse_proxy @jellyfin @miniIp@:8096 {
+		# Enable WebSocket support
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		# Increase timeouts for streaming
+		transport http {
+			keepalive 12h
+			keepalive_idle_conns 100
+		}
+	}
+
+	# @matrix host matrix.@externalDomain@
+	# reverse_proxy @matrix @miniIp@:8009 {
+	# 	header_up X-Real-IP {remote_host}
+	# 	header_up Host {host}
+	# 	transport http {
+	# 		keepalive 5m
+	# 		keepalive_idle_conns 100
+	# 	}
+	# }
+
+	# @element host element.@externalDomain@
+	# handle @element {
+	# 	root * @elementWebPath@
+	# 	file_server
+	# }
+
+	# Beszel monitoring hub
+	@beszel host beszel.@externalDomain@
+	reverse_proxy @beszel @miniIp@:8091 {
+		# Route to Beszel Hub on mini
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
+	# Uptime Kuma synthetic monitoring
+	# @kuma host kuma.@externalDomain@
+	# reverse_proxy @kuma @miniIp@:3001
+
+	@syncthing-mini host syncthing-mini.@externalDomain@
+	reverse_proxy @syncthing-mini @miniIp@:8384
+
+	# Miniserve on Mac mini
+	@miniserve-mini host miniserve-mini.@externalDomain@
+	reverse_proxy @miniserve-mini @miniIp@:8080 {
+		# Headers for proper operation
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		# Increase timeouts and buffer sizes for large directories and files
+		transport http {
+			keepalive 30s
+			response_header_timeout 30s
+		}
+	}
+
+	# DNS over HTTPS for mini
+	@doh-mini host doh-mini.@externalDomain@
+	reverse_proxy @doh-mini http://@miniIp@:8053 {
+		# Enable client IP forwarding for EDNS
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
+	@bin host bin.@externalDomain@
+	reverse_proxy @bin @miniIp@:8820 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
+	@ollama host ollama.@externalDomain@
+	reverse_proxy @ollama {
+		# Primary backend (a3w) listed first, failover to mini
+		to @a3wIp@:11434 @miniIp@:11434
+
+		# Use first available backend (a3w priority)
+		lb_policy first
+		lb_try_duration 5s
+		lb_try_interval 250ms
+
+		# Health checks for both backends
+		health_uri /
+		health_interval 30s
+		health_timeout 5s
+
+		# Fail to next backend if primary is unhealthy
+		fail_duration 30s
+
+		# Headers for proper operation
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+
+		# Increase timeouts for large model responses
+		transport http {
+			keepalive 300s
+			response_header_timeout 300s
+			read_timeout 300s
+		}
+	}
+
+	# @openwebui host openwebui.@externalDomain@
+	# reverse_proxy @openwebui @miniIp@:8090 {
+	# 	# Enable WebSocket support for real-time updates
+	# 	header_up X-Real-IP {remote_host}
+	# 	header_up Host {host}
+	# 	# Increase timeouts for large model responses and WebSocket connections
+	# 	transport http {
+	# 		keepalive 12h
+	# 		keepalive_idle_conns 100
+	# 		response_header_timeout 300s
+	# 	}
+	# }
+
+	@stash host stash.@externalDomain@
+	reverse_proxy @stash @miniIp@:9999 {
+		# Enable WebSocket support
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		# Increase timeouts for streaming
+		transport http {
+			keepalive 12h
+			keepalive_idle_conns 100
+		}
+	}
+
+	@media host media.@externalDomain@
+	reverse_proxy @media @miniIp@:9998 {
+		# Enable WebSocket support
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		# Increase timeouts for streaming
+		transport http {
+			keepalive 12h
+			keepalive_idle_conns 100
+		}
+	}
+
+	@podsync host podsync.@externalDomain@
+	reverse_proxy @podsync @miniIp@:8082 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
+	@podservice host podservice.@externalDomain@
+	reverse_proxy @podservice @miniIp@:8083 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
+	@textcast host textcast.@externalDomain@
+	reverse_proxy @textcast @miniIp@:8084 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
+	@audiobookshelf host audiobookshelf.@externalDomain@
+	reverse_proxy @audiobookshelf @miniIp@:8000 {
+		# Enable WebSocket support for real-time updates
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		# Increase timeouts for streaming
+		transport http {
+			keepalive 12h
+			keepalive_idle_conns 100
+		}
+	}
+
+	# Logging for ACME and DNS services
+	log {
+		output file @logPathPrefix@/caddy/acme-sync.log {
+			roll_size 10MB
+			roll_keep 5
+		}
+		output file @logPathPrefix@/caddy/dns-mini.log {
+			roll_size 10MB
+			roll_keep 5
+		}
+	}
+}

@@ -1,0 +1,32 @@
+{ config, ... }:
+
+{
+  sops.secrets = {
+    nextdns-api-key = {
+      key = "nextDnsApiKey";
+      owner = "ivan";
+    };
+    nextdns-profile-mini = {
+      key = "nextDnsProfileMini";
+      owner = "ivan";
+    };
+    nextdns-profile-asus = {
+      key = "nextDnsProfileAsus";
+      owner = "ivan";
+    };
+  };
+
+  local.services.nextdns-mgmt.mini = {
+    enable = true;
+    apiKeyFile = config.sops.secrets.nextdns-api-key.path;
+    profileIdFile = config.sops.secrets.nextdns-profile-mini.path;
+    profileFile = ../../../../../configs/nextdns-profile.json;
+  };
+
+  local.services.nextdns-mgmt.asus = {
+    enable = true;
+    apiKeyFile = config.sops.secrets.nextdns-api-key.path;
+    profileIdFile = config.sops.secrets.nextdns-profile-asus.path;
+    profileFile = ../../../../../configs/nextdns-profile.json;
+  };
+}

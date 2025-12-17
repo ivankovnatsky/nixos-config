@@ -180,6 +180,97 @@
     };
   };
 
+  "Ivans-Mac-mini" = inputs.nix-darwin-darwin-release.lib.darwinSystem {
+    system = "aarch64-darwin";
+    modules = [
+      # Import machine-specific configuration
+      ../../machines/Ivans-Mac-mini
+
+      # SOPS secrets management
+      inputs.sops-nix-darwin-release.darwinModules.sops
+      ../../shared/sops-nix.nix
+
+      # Basic system configuration
+      {
+        nixpkgs.overlays = [ inputs.self.overlay ];
+        nixpkgs.config.allowUnfree = true;
+        nix.nixPath = [
+          "nixpkgs=${inputs.nixpkgs-darwin-release}"
+          "nixpkgs-release=${inputs.nixpkgs-darwin-release}"
+        ];
+        _module.args = {
+          flake-inputs = inputs;
+        };
+
+        # System settings
+        networking.hostName = "Ivans-Mac-mini";
+        users.users.ivan.home = "/Users/ivan";
+        system.stateVersion = 5;
+
+        system.primaryUser = "ivan";
+      }
+
+      # Homebrew module
+      inputs.nix-homebrew.darwinModules.nix-homebrew
+      (
+        { config, ... }:
+        {
+          homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
+          nix-homebrew = {
+            enable = true;
+            enableRosetta = true;
+            user = "ivan";
+            autoMigrate = true;
+            taps = {
+              "homebrew/homebrew-core" = inputs.homebrew-core;
+              "homebrew/homebrew-cask" = inputs.homebrew-cask;
+              "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
+              "pomdtr/homebrew-tap" = inputs.pomdtr-homebrew-tap;
+              "ivankovnatsky/homebrew-tap" = inputs.ivankovnatsky-homebrew-tap;
+            };
+            mutableTaps = false;
+          };
+        }
+      )
+
+      # Home Manager module
+      inputs.home-manager-darwin-release.darwinModules.home-manager
+      {
+        home-manager = {
+          useGlobalPkgs = true;
+          useUserPackages = true;
+          users.ivan = {
+            imports = [
+              ../../machines/Ivans-Mac-mini/home
+              inputs.nixvim-darwin-release.homeModules.nixvim
+              inputs.sops-nix-darwin-release.homeManagerModules.sops
+              {
+                programs.home-manager.enable = true;
+                home.username = "ivan";
+                home.stateVersion = "25.05";
+              }
+            ];
+          };
+          extraSpecialArgs = {
+            inherit inputs;
+            system = "aarch64-darwin";
+            username = "ivan";
+          };
+          sharedModules = [
+            {
+              # Prevent nix.package error in home-manager
+              nix.enable = false;
+            }
+          ];
+        };
+      }
+    ];
+    specialArgs = {
+      system = "aarch64-darwin";
+      username = "ivan";
+    };
+  };
+
   "Lusha-Macbook-Ivan-Kovnatskyi" = inputs.nix-darwin-darwin-unstable.lib.darwinSystem {
     system = "aarch64-darwin";
     modules = [

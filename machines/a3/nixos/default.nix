@@ -3,6 +3,7 @@
     # ./gamemode.nix
     ./gamescope.nix
     ./nvidia.nix
+    # ./smb.nix
     ../../../modules/flags
     ../../../modules/nixos/rebuild-daemon
     ../../../modules/nixos/syncthing-mgmt
