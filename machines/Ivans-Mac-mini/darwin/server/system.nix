@@ -15,14 +15,6 @@
           # Auto-switch icon style based on appearance mode
           AppleIconAppearanceTheme = "RegularAutomatic";
         };
-        "com.apple.HIToolbox" = {
-          # Use Caps Lock to switch input sources
-          TISRomanSwitchState = 1;
-          # Automatically switch to a document's input source
-          AppleGlobalTextInputProperties = {
-            TextInputGlobalPropertyPerContextInput = 1;
-          };
-        };
       };
     };
   };
