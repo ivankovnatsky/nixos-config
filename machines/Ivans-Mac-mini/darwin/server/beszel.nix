@@ -19,6 +19,10 @@ in
         --http ${config.flags.miniIp}:8091 \
         --dir ${dataDir}
     '';
+    extraServiceConfig = {
+      UserName = "ivan";
+      GroupName = "staff";
+    };
   };
 
   # Beszel Agent (monitoring mini itself)
