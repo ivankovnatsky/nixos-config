@@ -2,10 +2,12 @@
 {
   programs.ssh = {
     enable = true;
-    extraConfig = ''
-      Host *
-        StrictHostKeyChecking accept-new
-    '';
+    enableDefaultConfig = false;
+    matchBlocks."*" = {
+      extraOptions = {
+        StrictHostKeyChecking = "accept-new";
+      };
+    };
   };
 
   home.activation.generateSshKey = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
