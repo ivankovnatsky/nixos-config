@@ -115,54 +115,54 @@
         url = "https://textcast.@EXTERNAL_DOMAIN@";
         description = "Article to audiobook service (mini:8084)";
       }
-      # {
-      #   name = "matrix";
-      #   url = "https://matrix.@EXTERNAL_DOMAIN@";
-      #   interval = 30;
-      #   description = "Matrix Synapse server (mini:8009) - Critical service";
-      # }
-      # {
-      #   name = "element";
-      #   url = "https://element.@EXTERNAL_DOMAIN@";
-      #   description = "Element web client - Static files";
-      # }
+      {
+        name = "matrix";
+        url = "https://matrix.@EXTERNAL_DOMAIN@";
+        interval = 30;
+        description = "Matrix Synapse server (mini:8009) - Critical service";
+      }
+      {
+        name = "element";
+        url = "https://element.@EXTERNAL_DOMAIN@";
+        description = "Element web client - Static files";
+      }
 
       # Matrix Bridges (TCP port monitoring - localhost only)
-      # {
-      #   name = "mautrix-whatsapp";
-      #   type = "tcp";
-      #   url = "127.0.0.1:29321";
-      #   interval = 60;
-      #   description = "WhatsApp bridge appservice port (localhost:29321)";
-      # }
-      # {
-      #   name = "mautrix-discord";
-      #   type = "tcp";
-      #   url = "127.0.0.1:29323";
-      #   interval = 60;
-      #   description = "Discord bridge appservice port (localhost:29323)";
-      # }
-      # {
-      #   name = "mautrix-meta-messenger";
-      #   type = "tcp";
-      #   url = "127.0.0.1:29324";
-      #   interval = 60;
-      #   description = "Messenger bridge appservice port (localhost:29324)";
-      # }
-      # {
-      #   name = "mautrix-meta-instagram";
-      #   type = "tcp";
-      #   url = "127.0.0.1:29325";
-      #   interval = 60;
-      #   description = "Instagram bridge appservice port (localhost:29325)";
-      # }
-      # {
-      #   name = "mautrix-linkedin";
-      #   type = "tcp";
-      #   url = "127.0.0.1:29326";
-      #   interval = 60;
-      #   description = "LinkedIn bridge appservice port (localhost:29326)";
-      # }
+      {
+        name = "mautrix-whatsapp";
+        type = "tcp";
+        url = "127.0.0.1:29321";
+        interval = 60;
+        description = "WhatsApp bridge appservice port (localhost:29321)";
+      }
+      {
+        name = "mautrix-discord";
+        type = "tcp";
+        url = "127.0.0.1:29323";
+        interval = 60;
+        description = "Discord bridge appservice port (localhost:29323)";
+      }
+      {
+        name = "mautrix-meta-messenger";
+        type = "tcp";
+        url = "127.0.0.1:29324";
+        interval = 60;
+        description = "Messenger bridge appservice port (localhost:29324)";
+      }
+      {
+        name = "mautrix-meta-instagram";
+        type = "tcp";
+        url = "127.0.0.1:29325";
+        interval = 60;
+        description = "Instagram bridge appservice port (localhost:29325)";
+      }
+      {
+        name = "mautrix-linkedin";
+        type = "tcp";
+        url = "127.0.0.1:29326";
+        interval = 60;
+        description = "LinkedIn bridge appservice port (localhost:29326)";
+      }
 
       # DNS services (check /dns-query endpoint with example query)
       {
