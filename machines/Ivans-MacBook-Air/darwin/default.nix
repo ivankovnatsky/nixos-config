@@ -28,5 +28,6 @@
     ./podservice
     ./syncthing-mgmt.nix
     ./textcast
+    ./nextdns
   ];
 }
