@@ -1,0 +1,59 @@
+{ pkgs, ... }:
+{
+  home.packages = with pkgs; [
+    age
+    aria2
+    bat
+    beszel-mgmt
+    cargo
+    delta
+    dust
+    duf
+    exiftool
+    fzf
+    gallery-dl
+    genpass
+    gofumpt
+    golangci-lint
+    home-manager
+    imagemagick
+    jq
+    macmon
+    magic-wormhole
+    mkpasswd
+    nextdns-mgmt
+    nixfmt-rfc-style
+    nodePackages.prettier
+    nodejs
+    open-gh-notifications-py
+    pandoc
+    parallel
+    pigz
+    pv
+    rclone
+    ripgrep
+    ruff
+    rust-analyzer
+    rustc
+    sesh
+    dns
+    shellcheck
+    shfmt
+    smctemp # Local overlay
+    sops
+    ssh-to-age
+    stylua
+    syncthing
+    syncthing-mgmt
+    treefmt
+    typst
+    typstyle
+    username # Installed as flake
+    watchman
+    watchman-make
+    watchman-rebuild
+    wget
+    nixpkgs-master.yt-dlp
+    zsh-forgit
+  ];
+}

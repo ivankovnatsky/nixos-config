@@ -24,6 +24,7 @@
     # Only devices referenced in folders will be configured
     devices = [
       "a3" # This machine
+      "Ivans-Mac-mini"
       "Ivans-MacBook-Pro"
       "Ivans-MacBook-Air"
       "Lusha-Macbook-Ivan-Kovnatskyi"
@@ -36,6 +37,7 @@
         label = "Sources";
         devices = [
           "a3"
+          "Ivans-Mac-mini"
           "Ivans-MacBook-Pro"
           "Ivans-MacBook-Air"
         ];
@@ -46,6 +48,7 @@
         label = "Sources/github.com/ivankovnatsky/nixos-config";
         devices = [
           "a3"
+          "Ivans-Mac-mini"
           "Ivans-MacBook-Pro"
           "Lusha-Macbook-Ivan-Kovnatskyi"
         ];

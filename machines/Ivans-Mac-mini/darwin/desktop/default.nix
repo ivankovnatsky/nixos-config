@@ -1,0 +1,21 @@
+{
+  imports = [
+    ../../../../darwin/darwin.nix
+    ../../../../darwin/dock.nix
+    ../../../../darwin/flags.nix
+    ../../../../darwin/fonts.nix
+    ./homebrew.nix
+    ../../../../darwin/security.nix
+    ../../../../darwin/shell.nix
+    ../../../../darwin/sudo.nix
+    ../../../../darwin/system.nix
+    ../../../../modules/darwin/dock
+    ../../../../modules/darwin/pam
+    ../../../../modules/darwin/sudo
+    ../../../../modules/flags
+    ../../../../system/documentation.nix
+    ../../../../system/nix.nix
+    ../../../../system/scripts
+    ../../../../darwin/no-dock-restart.nix
+  ];
+}

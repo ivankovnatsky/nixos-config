@@ -21,6 +21,7 @@
     devices = [
       "Ivans-MacBook-Air" # This machine (required for local-only folders)
       "Ivans-MacBook-Pro"
+      "Ivans-Mac-mini"
       "a3"
       "Lusha-Macbook-Ivan-Kovnatskyi"
     ];
@@ -31,6 +32,7 @@
         path = "/Users/${username}/.config/rclone";
         label = ".config/rclone";
         devices = [
+          "Ivans-Mac-mini"
           "Ivans-MacBook-Pro"
         ];
       };
@@ -46,6 +48,7 @@
         label = "Sources";
         devices = [
           "Ivans-MacBook-Pro"
+          "Ivans-Mac-mini"
           "a3"
         ];
       };
@@ -76,7 +79,7 @@
         path = "/Users/${username}/.password-store";
         label = "~/.password-store";
         devices = [
-          "Ivans-MacBook-Air" # Local only
+          "Ivans-Mac-mini"
         ];
       };
 
@@ -84,6 +87,7 @@
         path = "/Users/${username}/Sources/github.com/ivankovnatsky/nixos-config";
         label = "Sources/github.com/ivankovnatsky/nixos-config";
         devices = [
+          "Ivans-Mac-mini"
           "Lusha-Macbook-Ivan-Kovnatskyi"
         ];
       };
