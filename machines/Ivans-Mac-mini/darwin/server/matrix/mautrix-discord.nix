@@ -66,7 +66,7 @@ in
     dataDir = dataDir;
 
     environment = {
-      PATH = "${pkgs.lottieconverter}/bin:${pkgs.ffmpeg-headless}/bin";
+      PATH = "${pkgs.nixpkgs-darwin-old-release.lottieconverter}/bin:${pkgs.ffmpeg-headless}/bin";
       HOME = dataDir;
     };
 
