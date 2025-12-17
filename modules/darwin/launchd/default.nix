@@ -47,6 +47,16 @@ let
           '';
         };
 
+        waitForSecrets = mkOption {
+          type = types.bool;
+          default = false;
+          description = ''
+            Wait for sops-nix secrets to be available before starting the service.
+            Uses /bin/wait4path to block until /run/secrets/rendered exists.
+            Enable this for services that depend on sops secrets or templates.
+          '';
+        };
+
         dataDir = mkOption {
           type = types.nullOr types.str;
           default = null;
@@ -128,6 +138,12 @@ let
         # Create log directory with proper permissions
         /bin/mkdir -p ${cfg.logDir}
         /bin/chmod 755 ${cfg.logDir}
+
+        ${optionalString cfg.waitForSecrets ''
+          echo "Waiting for sops secrets to be available..."
+          /bin/wait4path /run/secrets/rendered
+          echo "Sops secrets are available!"
+        ''}
 
         ${optionalString (cfg.waitForPath != null) ''
           echo "Waiting for ${cfg.waitForPath}..."

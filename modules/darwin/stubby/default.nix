@@ -97,6 +97,12 @@ in
       default = null;
       description = "Path to stubby configuration file (overrides settings option if specified)";
     };
+
+    waitForSecrets = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Wait for sops-nix secrets before starting. Enable when using sops templates in config.";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -106,6 +112,7 @@ in
       enable = true;
       type = "daemon";
       keepAlive = cfg.alwaysKeepRunning;
+      waitForSecrets = cfg.waitForSecrets;
 
       command = "${cfg.package}/bin/stubby -C ${configFile} -l ${cfg.logLevel} -v";
 

@@ -36,6 +36,7 @@ in
     port = 45876;
     listenAddress = config.flags.miniIp;
     hubPublicKeyFile = config.sops.secrets.beszel-hub-public-key.path;
+    waitForSecrets = true;
   };
 
   # Sops secrets for beszel-mgmt
