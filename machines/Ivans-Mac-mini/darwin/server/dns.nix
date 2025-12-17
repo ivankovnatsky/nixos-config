@@ -6,6 +6,16 @@
 }:
 
 {
+  # Configure system to use local dnsmasq as DNS resolver
+  networking.knownNetworkServices = [
+    "Ethernet"
+    "AX88179A"
+    "Wi-Fi"
+  ];
+  networking.dns = [
+    "127.0.0.1"
+  ];
+
   # Sops secrets for DNS configuration
   # Note: external-domain is declared in http.nix and beszel.nix (shared across services)
   sops.secrets.nextdns-endpoint-mini.key = "nextDnsEndpointMini";
