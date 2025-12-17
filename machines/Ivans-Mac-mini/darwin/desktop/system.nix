@@ -6,9 +6,11 @@
       };
 
       CustomUserPreferences = {
-        "com.apple.HIToolbox" = {
+        "NSGlobalDomain" = {
           # Use Caps Lock to switch input sources
           TISRomanSwitchState = 1;
+        };
+        "com.apple.HIToolbox" = {
           # Automatically switch to a document's input source
           AppleGlobalTextInputProperties = {
             TextInputGlobalPropertyPerContextInput = 1;
