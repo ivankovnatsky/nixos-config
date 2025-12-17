@@ -12,6 +12,10 @@ in
     type = "daemon";
     waitForPath = config.flags.miniStoragePath;
     dataDir = dataDir;
+    extraServiceConfig = {
+      UserName = "ivan";
+      GroupName = "staff";
+    };
     preStart = ''
       export PATH="${pkgs.nixpkgs-darwin-old-release.tailscale}/bin:${pkgs.coreutils}/bin:$PATH"
     '';
