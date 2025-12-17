@@ -11,10 +11,6 @@
           "device" = false;
           "auto_opt_in" = false;
         };
-        "NSGlobalDomain" = {
-          # Auto-switch icon style based on appearance mode
-          AppleIconAppearanceTheme = "RegularAutomatic";
-        };
       };
     };
   };
