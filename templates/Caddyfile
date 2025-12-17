@@ -162,18 +162,18 @@
 		}
 	}
 
-	# @openwebui host openwebui.@externalDomain@
-	# reverse_proxy @openwebui @miniIp@:8090 {
-	# 	# Enable WebSocket support for real-time updates
-	# 	header_up X-Real-IP {remote_host}
-	# 	header_up Host {host}
-	# 	# Increase timeouts for large model responses and WebSocket connections
-	# 	transport http {
-	# 		keepalive 12h
-	# 		keepalive_idle_conns 100
-	# 		response_header_timeout 300s
-	# 	}
-	# }
+	@openwebui host openwebui.@externalDomain@
+	reverse_proxy @openwebui @miniIp@:8090 {
+		# Enable WebSocket support for real-time updates
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		# Increase timeouts for large model responses and WebSocket connections
+		transport http {
+			keepalive 12h
+			keepalive_idle_conns 100
+			response_header_timeout 300s
+		}
+	}
 
 	@stash host stash.@externalDomain@
 	reverse_proxy @stash @miniIp@:9999 {
