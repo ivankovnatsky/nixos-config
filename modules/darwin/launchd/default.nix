@@ -167,6 +167,30 @@ let
       command = "${script}/bin/${name}-starter";
       inherit serviceConfig;
     };
+  # Generate activation script for log file ownership
+  mkLogOwnershipScript =
+    let
+      servicesWithUser = filterAttrs (
+        _: s: s.enable && s.extraServiceConfig ? UserName
+      ) cfg.services;
+    in
+    concatStringsSep "\n" (
+      mapAttrsToList (
+        name: service:
+        let
+          userName = service.extraServiceConfig.UserName;
+          groupName = service.extraServiceConfig.GroupName or "staff";
+          logPath = "${service.logDir}/${name}.log";
+          errorLogPath = "${service.logDir}/${name}.error.log";
+        in
+        ''
+          # Ensure log files for ${name} are owned by ${userName}:${groupName}
+          /bin/mkdir -p ${service.logDir}
+          /usr/bin/touch ${logPath} ${errorLogPath}
+          /usr/sbin/chown ${userName}:${groupName} ${logPath} ${errorLogPath}
+        ''
+      ) servicesWithUser
+    );
 in
 {
   options.local.launchd = {
@@ -192,6 +216,11 @@ in
         name: service:
         nameValuePair name (mkService name service)
       ) (filterAttrs (_: s: s.enable && s.type == "daemon") cfg.services);
+    })
+
+    # Activation script to fix log file ownership for services with UserName
+    (mkIf (any (s: s.enable && s.extraServiceConfig ? UserName) (attrValues cfg.services)) {
+      system.activationScripts.postActivation.text = mkLogOwnershipScript;
     })
   ];
 }
