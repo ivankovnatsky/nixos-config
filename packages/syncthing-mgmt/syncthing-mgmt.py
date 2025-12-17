@@ -165,6 +165,14 @@ class SyncthingClient:
         """Get system status (includes local device ID)."""
         return self._api_call("GET", "/rest/system/status")
 
+    def get_options(self):
+        """Get Syncthing options configuration."""
+        return self._api_call("GET", "/rest/config/options")
+
+    def update_options(self, options: dict):
+        """Update Syncthing options configuration."""
+        return self._api_call("PATCH", "/rest/config/options", data=options)
+
 
 def hash_password(password: str) -> str:
     """Hash password using bcrypt (cost factor 10)."""
@@ -453,6 +461,49 @@ def sync_folders(client, folders_config, devices_config, dry_run=False):
                 logging.info(f"      [DRY-RUN] Would remove folder")
 
 
+def sync_local_device_name(client, device_name: str, dry_run=False):
+    """
+    Sync the local device name.
+
+    Args:
+        client: SyncthingClient instance
+        device_name: Desired name for this device
+        dry_run: If True, only show what would be changed
+    """
+    logging.info(f"  Syncing local device name...")
+
+    # Get local device ID
+    system_status = client.get_system_status()
+    local_device_id = system_status.get("myID")
+    if not local_device_id:
+        logging.error("    Could not determine local device ID")
+        return
+
+    # Get current device config
+    devices = client.get_devices()
+    local_device = None
+    for dev in devices:
+        if dev and isinstance(dev, dict) and dev.get("deviceID") == local_device_id:
+            local_device = dev
+            break
+
+    if not local_device:
+        logging.error(f"    Could not find local device config for ID {local_device_id[:7]}...")
+        return
+
+    current_name = local_device.get("name", "")
+    if current_name == device_name:
+        logging.info(f"    OK: Local device name already set to '{device_name}'")
+        return
+
+    logging.info(f"    UPDATE: '{current_name}' -> '{device_name}' ({local_device_id[:7]}...)")
+    if not dry_run:
+        client.update_device(local_device_id, {"name": device_name})
+        logging.info(f"      ✓ Local device name updated")
+    else:
+        logging.info(f"      [DRY-RUN] Would update local device name")
+
+
 def cmd_sync(args):
     """Sync GUI credentials and devices from configuration file."""
     try:
@@ -463,6 +514,10 @@ def cmd_sync(args):
         client = get_client(args)
 
         logging.info("Syncing Syncthing configuration...")
+
+        # Sync local device name if present
+        if "localDeviceName" in config and config["localDeviceName"]:
+            sync_local_device_name(client, config["localDeviceName"], dry_run=args.dry_run)
 
         # Sync GUI credentials if present
         if "gui" in config and config["gui"] is not None:
