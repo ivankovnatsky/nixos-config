@@ -260,3 +260,4 @@ kubectl exec -n homebridge pod-name -- curl --connect-timeout 5 http://169.254.1
 
 - [ ] Add /Volumes/Storage to /etc/fstab
 - [ ] Research OrbStack DNS reliability issues or evaluate alternatives (Lima VM, Colima, UTM)
+- [ ] Make sure that name in System Settings is "Ivan’s Mac mini"
