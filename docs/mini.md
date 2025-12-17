@@ -256,6 +256,10 @@ ping 169.254.1.144
 kubectl exec -n homebridge pod-name -- curl --connect-timeout 5 http://169.254.1.144:9123
 ```
 
+### Re-install 2025-12-17
+
+- Remove user: `user`
+
 ## TODO
 
 - [ ] Add /Volumes/Storage to /etc/fstab
