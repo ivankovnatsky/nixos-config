@@ -99,8 +99,8 @@
 	}
 
 	# Uptime Kuma synthetic monitoring
-	# @kuma host kuma.@externalDomain@
-	# reverse_proxy @kuma @miniIp@:3001
+	@kuma host kuma.@externalDomain@
+	reverse_proxy @kuma @miniIp@:3001
 
 	@syncthing-mini host syncthing-mini.@externalDomain@
 	reverse_proxy @syncthing-mini @miniIp@:8384
