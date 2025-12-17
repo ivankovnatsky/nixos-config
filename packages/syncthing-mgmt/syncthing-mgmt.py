@@ -215,8 +215,9 @@ def get_api_key_from_config(config_path: str) -> str:
 def get_local_ip_addresses() -> List[str]:
     """Get all local IP addresses (excluding loopback)."""
     ips = []
+
+    # Method 1: Try hostname resolution (works on some systems)
     try:
-        # Get hostname and resolve all associated IPs
         hostname = socket.gethostname()
         for info in socket.getaddrinfo(hostname, None):
             ip = info[4][0]
@@ -226,6 +227,21 @@ def get_local_ip_addresses() -> List[str]:
                     ips.append(ip)
     except Exception:
         pass
+
+    # Method 2: Connect to external address to discover local IP
+    # This is reliable and doesn't actually send any data
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.settimeout(0.1)
+        # Connect to a well-known address (doesn't actually send data for UDP)
+        s.connect(('8.8.8.8', 80))
+        local_ip = s.getsockname()[0]
+        s.close()
+        if local_ip and local_ip not in ips and not local_ip.startswith('127.'):
+            ips.append(local_ip)
+    except Exception:
+        pass
+
     return ips
 
 
