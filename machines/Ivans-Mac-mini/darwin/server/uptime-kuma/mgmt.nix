@@ -225,6 +225,13 @@
         interval = 60;
         description = "SSH service on mini";
       }
+      {
+        name = "smb-mini";
+        type = "tcp";
+        url = "${config.flags.miniIp}:445";
+        interval = 60;
+        description = "macOS built-in Samba/SMB service on mini";
+      }
     ];
   };
 }
