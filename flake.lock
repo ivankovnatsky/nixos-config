@@ -546,6 +546,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-darwin-old-release": {
+      "locked": {
+        "lastModified": 1765855791,
+        "narHash": "sha256-WHSSamtQ323siJNg5qX5er0BRyPWvNjFqnBoyNSDF0Q=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "276741e17d9a6dea89ee46d6954ace8a156f0c28",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixpkgs-25.05-darwin",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-darwin-release": {
       "locked": {
         "lastModified": 1765120625,
@@ -980,6 +996,7 @@
         "nix-darwin-darwin-unstable": "nix-darwin-darwin-unstable",
         "nix-homebrew": "nix-homebrew",
         "nixpkgs-darwin-master": "nixpkgs-darwin-master",
+        "nixpkgs-darwin-old-release": "nixpkgs-darwin-old-release",
         "nixpkgs-darwin-release": "nixpkgs-darwin-release",
         "nixpkgs-darwin-unstable": "nixpkgs-darwin-unstable",
         "nixpkgs-master-pinned": "nixpkgs-master-pinned",
