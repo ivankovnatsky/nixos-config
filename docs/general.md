@@ -12,3 +12,8 @@ After cloning the repository, enable direnv:
 direnv allow
 ```
 
+## Terminal.app Configuration
+
+- Set font to Hack Nerd Font
+- Close window if shell exits cleanly
+- Set Option key as Meta (Profiles → Keyboard → Use Option as Meta key)
