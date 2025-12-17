@@ -14,6 +14,7 @@
     ../../../darwin/system.nix
     ../../../modules/darwin/dock
     ../../../modules/darwin/launchd
+    ../../../modules/darwin/nextdns-mgmt
     ../../../modules/darwin/pam
     ../../../modules/darwin/sudo
     ../../../modules/darwin/syncthing-mgmt
