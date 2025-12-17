@@ -6,7 +6,7 @@
 }:
 
 let
-  aichatPkg = pkgs.nixpkgs-master.aichat;
+  aichatPkg = pkgs.nixpkgs-darwin-master.aichat;
 
 in
 {

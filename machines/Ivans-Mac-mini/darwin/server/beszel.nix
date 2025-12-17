@@ -15,7 +15,7 @@ in
     waitForPath = config.flags.miniStoragePath;
     dataDir = dataDir;
     command = ''
-      ${pkgs.nixpkgs-master.beszel}/bin/beszel-hub serve \
+      ${pkgs.nixpkgs-darwin-master.beszel}/bin/beszel-hub serve \
         --http ${config.flags.miniIp}:8091 \
         --dir ${dataDir}
     '';
@@ -32,7 +32,7 @@ in
 
   local.services.beszel-agent = {
     enable = true;
-    package = pkgs.nixpkgs-master.beszel;
+    package = pkgs.nixpkgs-darwin-master.beszel;
     port = 45876;
     listenAddress = config.flags.miniIp;
     hubPublicKeyFile = config.sops.secrets.beszel-hub-public-key.path;

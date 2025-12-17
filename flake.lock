@@ -530,6 +530,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-darwin-master": {
+      "locked": {
+        "lastModified": 1765975662,
+        "narHash": "sha256-tAy+/R6cqAhdlncSGor0EQVjh+51033eBkwQXLX2yyc=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "0fc6414b45da07a3f57a64f4ce6426b1fd015c1f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "master",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-darwin-release": {
       "locked": {
         "lastModified": 1765120625,
@@ -562,22 +578,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-master": {
-      "locked": {
-        "lastModified": 1764915887,
-        "narHash": "sha256-CeBCJ9BMsuzVgn8GVfuSRZ6xeau7szzG0Xn6O/OxP9M=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "42e29df35be6ef54091d3a3b4e97056ce0a98ce8",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "master",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs-master-pinned": {
       "locked": {
         "lastModified": 1761234062,
@@ -591,6 +591,22 @@
         "owner": "nixos",
         "repo": "nixpkgs",
         "rev": "3f173303fa32419a05ef1c0138045b03987adc05",
+        "type": "github"
+      }
+    },
+    "nixpkgs-nixos-master": {
+      "locked": {
+        "lastModified": 1765975662,
+        "narHash": "sha256-tAy+/R6cqAhdlncSGor0EQVjh+51033eBkwQXLX2yyc=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "0fc6414b45da07a3f57a64f4ce6426b1fd015c1f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "master",
+        "repo": "nixpkgs",
         "type": "github"
       }
     },
@@ -963,10 +979,11 @@
         "nix-darwin-darwin-release": "nix-darwin-darwin-release",
         "nix-darwin-darwin-unstable": "nix-darwin-darwin-unstable",
         "nix-homebrew": "nix-homebrew",
+        "nixpkgs-darwin-master": "nixpkgs-darwin-master",
         "nixpkgs-darwin-release": "nixpkgs-darwin-release",
         "nixpkgs-darwin-unstable": "nixpkgs-darwin-unstable",
-        "nixpkgs-master": "nixpkgs-master",
         "nixpkgs-master-pinned": "nixpkgs-master-pinned",
+        "nixpkgs-nixos-master": "nixpkgs-nixos-master",
         "nixpkgs-nixos-release": "nixpkgs-nixos-release",
         "nixpkgs-nixos-unstable": "nixpkgs-nixos-unstable",
         "nixpkgs-python": "nixpkgs-python",

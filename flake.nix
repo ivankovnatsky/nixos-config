@@ -2,8 +2,13 @@
   description = "NixOS configuration";
 
   inputs = {
-    # This is used to pin packages from master channel.
-    nixpkgs-master = {
+    # This is used to pin packages from master channel (NixOS).
+    nixpkgs-nixos-master = {
+      url = "github:nixos/nixpkgs/master";
+    };
+
+    # This is used to pin packages from master channel (Darwin).
+    nixpkgs-darwin-master = {
       url = "github:nixos/nixpkgs/master";
     };
 

@@ -41,7 +41,7 @@ in
           - name: mistral:7b
   '';
 
-  home.packages = with pkgs; [ nixpkgs-master.aichat ];
+  home.packages = with pkgs; [ nixpkgs-darwin-master.aichat ];
 
   home.activation.linkAichatConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     $DRY_RUN_CMD mkdir -p "${config.home.homeDirectory}/${aichatConfigPath}"

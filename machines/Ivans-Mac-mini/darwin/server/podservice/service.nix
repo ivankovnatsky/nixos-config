@@ -57,7 +57,7 @@ in
       ${pkgs.podservice}/bin/podservice serve --config=${dataDir}/config.yaml
     '';
     environment = {
-      PATH = "${pkgs.coreutils}/bin:${pkgs.ffmpeg}/bin:${pkgs.nixpkgs-master.yt-dlp}/bin";
+      PATH = "${pkgs.coreutils}/bin:${pkgs.ffmpeg}/bin:${pkgs.nixpkgs-darwin-master.yt-dlp}/bin";
     };
   };
 }

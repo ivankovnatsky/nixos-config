@@ -16,7 +16,7 @@ in
     dataDir = openWebuiDataPath;
     environment = {
       HOME = config.users.users.ivan.home;
-      PATH = "${pkgs.nixpkgs-master.open-webui}/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin";
+      PATH = "${pkgs.nixpkgs-darwin-master.open-webui}/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin";
 
       # State directories
       DATA_DIR = "${openWebuiDataPath}/data";
@@ -61,7 +61,7 @@ in
 
       # Start Open WebUI
       export WEBUI_SECRET_KEY=$(cat "${openWebuiDataPath}/config/secret_key")
-      ${pkgs.nixpkgs-master.open-webui}/bin/open-webui serve --host "${config.flags.miniIp}" --port 8090
+      ${pkgs.nixpkgs-darwin-master.open-webui}/bin/open-webui serve --host "${config.flags.miniIp}" --port 8090
     '';
   };
 }

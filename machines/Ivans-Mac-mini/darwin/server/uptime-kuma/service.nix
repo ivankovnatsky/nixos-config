@@ -22,7 +22,7 @@ in
       NODE_ENV = "production";
     };
     command = ''
-      ${pkgs.uptime-kuma}/bin/uptime-kuma-server
+      ${pkgs.nixpkgs-darwin-master.uptime-kuma}/bin/uptime-kuma-server
     '';
   };
 }
