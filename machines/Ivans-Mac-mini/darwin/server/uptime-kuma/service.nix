@@ -13,7 +13,7 @@ in
     waitForPath = config.flags.miniStoragePath;
     dataDir = dataDir;
     preStart = ''
-      export PATH="${pkgs.tailscale}/bin:${pkgs.coreutils}/bin:$PATH"
+      export PATH="${pkgs.nixpkgs-darwin-old-release.tailscale}/bin:${pkgs.coreutils}/bin:$PATH"
     '';
     environment = {
       DATA_DIR = dataDir;
@@ -22,7 +22,7 @@ in
       NODE_ENV = "production";
     };
     command = ''
-      ${pkgs.nixpkgs-darwin-master.uptime-kuma}/bin/uptime-kuma-server
+      ${pkgs.nixpkgs-darwin-old-release.uptime-kuma}/bin/uptime-kuma-server
     '';
   };
 }

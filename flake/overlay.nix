@@ -40,6 +40,10 @@ let
       inherit system;
       inherit (final) config;
     };
+    nixpkgs-darwin-old-release = import inputs.nixpkgs-darwin-old-release {
+      inherit system;
+      inherit (final) config;
+    };
     nixpkgs-nixos-master = import inputs.nixpkgs-nixos-master {
       inherit system;
       inherit (final) config;

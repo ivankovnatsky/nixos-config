@@ -32,6 +32,11 @@
       url = "github:nixos/nixpkgs/nixpkgs-25.11-darwin";
     };
 
+    # Legacy Darwin release (for packages broken on 25.11)
+    nixpkgs-darwin-old-release = {
+      url = "github:nixos/nixpkgs/nixpkgs-25.05-darwin";
+    };
+
     # Unstable Darwin packages
     nixpkgs-darwin-unstable = {
       url = "github:nixos/nixpkgs/nixpkgs-unstable";
