@@ -46,6 +46,12 @@ in
       example = "/var/run/secrets.d/1/beszel-hub-public-key";
       description = "Path to file containing SSH public key from the beszel hub";
     };
+
+    waitForSecrets = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Wait for sops-nix secrets before starting. Enable when using hubPublicKeyFile with sops.";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -61,6 +67,7 @@ in
     local.launchd.services.beszel-agent = {
       enable = true;
       type = "daemon";
+      waitForSecrets = cfg.waitForSecrets;
 
       command = "${cfg.package}/bin/beszel-agent";
 

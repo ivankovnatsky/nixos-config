@@ -65,6 +65,7 @@ in
   local.launchd.services.caddy = {
     enable = true;
     type = "daemon";
+    waitForSecrets = true;
     waitForPath = config.flags.miniStoragePath;
     extraDirs = [
       "/tmp/log/caddy"

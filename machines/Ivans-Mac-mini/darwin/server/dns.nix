@@ -57,6 +57,7 @@
     enable = true;
     logLevel = "info";
     configFile = config.sops.templates."stubby.yml".path;
+    waitForSecrets = true;
   };
 
   # Enable dnsmasq for local DNS resolution
@@ -64,6 +65,7 @@
     enable = true;
     resolveLocalQueries = true;
     alwaysKeepRunning = true;
+    waitForSecrets = true;
     settings = {
       # Listen on specific addresses
       "listen-address" = [
