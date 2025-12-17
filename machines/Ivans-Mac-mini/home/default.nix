@@ -28,7 +28,6 @@
     ../../../home/vscode.nix
     ../../../home/yt-dlp.nix
     ../../../modules/flags
-    ./activation.nix
     ./flags.nix
     ./packages.nix
     ../../../home/sops.nix
