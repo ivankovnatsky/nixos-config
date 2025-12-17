@@ -37,3 +37,13 @@ Note: System binaries in `/bin`, `/usr/bin` with the `restricted` flag (SIP-prot
 #### Change keybinding for "Move focus to next window or next window
 
 `` Option + ` `` (Scope of single desktop)
+
+## Mos
+
+### Start from Console
+
+To fix natural scrolling for an external mouse, start Mos from the terminal:
+
+```console
+open -a Mos
+```
