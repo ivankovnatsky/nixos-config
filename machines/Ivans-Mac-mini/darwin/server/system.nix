@@ -1,4 +1,6 @@
 {
+  time.timeZone = "Europe/Kyiv";
+
   system = {
     defaults = {
       CustomUserPreferences = {
