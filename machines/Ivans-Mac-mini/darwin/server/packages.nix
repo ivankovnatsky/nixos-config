@@ -19,6 +19,6 @@
     gallery-dl
 
     # Required for Uptime Kuma tailscale-ping monitors
-    # tailscale
+    tailscale
   ];
 }

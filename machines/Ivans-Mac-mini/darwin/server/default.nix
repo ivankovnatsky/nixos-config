@@ -60,6 +60,6 @@
     ./sudo.nix
     ./syncthing-mgmt.nix
     ./system.nix
-    # ./tailscale.nix
+    ./tailscale.nix
   ];
 }
