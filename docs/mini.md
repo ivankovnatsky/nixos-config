@@ -10,6 +10,17 @@
 - Enabled remote login -- this was enabled by `services.openssh.enable = true`
   - Enabled allow full disk access for remote users under `Remote Login`
 - Enabled Screen Sharing
+  - Enable via System Settings → General → Sharing → Screen Sharing
+  - Or via command line:
+    ```console
+    sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.screensharing.plist
+    ```
+  - Check status:
+    ```console
+    sudo launchctl list | grep screensharing
+    ```
+  - VNC port: 5900 (default)
+  - Connect from another Mac: Finder → Go → Connect to Server → `vnc://mini.local` or `vnc://192.168.x.x`
 - Disabled for now: Enabled remote management, can't enable it using any automation clearly
   (https://www.reddit.com/r/macsysadmin/comments/13dhnmb/enable_remote_management_through_shell_script/?rdt=53927)
 - Enabled file sharing
