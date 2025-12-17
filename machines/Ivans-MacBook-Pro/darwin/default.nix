@@ -4,6 +4,7 @@
     ../../../darwin/flags.nix
     ../../../darwin/fonts.nix
     ../../../darwin/homebrew.nix
+    ../../../darwin/nextdns.nix
     ../../../darwin/nix.nix
     ../../../darwin/no-dock-restart.nix
     ../../../darwin/security.nix

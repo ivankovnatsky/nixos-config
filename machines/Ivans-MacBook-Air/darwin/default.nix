@@ -6,6 +6,7 @@
     ../../../darwin/flags.nix
     ../../../darwin/fonts.nix
     ../../../darwin/homebrew.nix
+    ../../../darwin/nextdns.nix
     ../../../darwin/nix.nix
     ../../../darwin/security.nix
     ../../../darwin/shell.nix
@@ -28,6 +29,5 @@
     ./podservice
     ./syncthing-mgmt.nix
     ./textcast
-    ./nextdns
   ];
 }
