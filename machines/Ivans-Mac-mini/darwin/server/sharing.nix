@@ -6,6 +6,7 @@
   # Configure file sharing
   local.services.macosFileSharing = {
     enable = true;
+    allowFullDiskAccess = true;
     shares = {
       "Storage" = {
         path = config.flags.miniStoragePath;

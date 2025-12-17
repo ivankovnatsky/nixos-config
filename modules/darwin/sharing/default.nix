@@ -32,6 +32,12 @@ in
   options.local.services.macosFileSharing = {
     enable = mkEnableOption "macOS file sharing service";
 
+    allowFullDiskAccess = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Allow full disk access for all users (global SMB setting)";
+    };
+
     shares = mkOption {
       type = types.attrsOf (types.submodule shareOpts);
       default = { };
@@ -67,6 +73,15 @@ in
           "com.apple.smb.server" -bool true
         echo "File sharing service has been enabled."
       fi
+
+      # Configure "Allow full disk access for all users" setting
+      ${if cfg.allowFullDiskAccess then ''
+        echo "Enabling full disk access for all users..."
+        sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server VirtualAdminShares -bool YES
+      '' else ''
+        echo "Disabling full disk access for all users..."
+        sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server VirtualAdminShares -bool NO
+      ''}
 
       # Use a system-wide location for tracking shared folders
       TRACKING_DIR="/var/lib/nix-darwin-shared"
