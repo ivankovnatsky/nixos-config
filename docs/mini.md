@@ -1,5 +1,9 @@
 # mini
 
+## Apple
+
+Login in apple account
+
 ## Manual configuration
 
 - Cleaned up GarageBand and other non-used non-default apps
