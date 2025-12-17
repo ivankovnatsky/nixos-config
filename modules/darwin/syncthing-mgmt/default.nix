@@ -263,8 +263,8 @@ in
           ${pkgs.jq}/bin/jq -n \
             --argjson gui "$GUI_JSON" \
             --argjson devices "$DEVICES_JSON" \
-            --argjson folders "$FOLDERS_JSON" \
-            ${optionalString (cfg.localDeviceName != null) ''--arg localDeviceName "${cfg.localDeviceName}" \''}
+            --argjson folders "$FOLDERS_JSON"${optionalString (cfg.localDeviceName != null) '' \
+            --arg localDeviceName "${cfg.localDeviceName}"''} \
             '{gui: $gui, devices: $devices, folders: $folders${optionalString (cfg.localDeviceName != null) ", localDeviceName: $localDeviceName"}}' > "$CONFIG_FILE"
 
           # Run declarative sync with API key
