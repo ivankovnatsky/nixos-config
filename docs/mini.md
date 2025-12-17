@@ -264,6 +264,11 @@ kubectl exec -n homebridge pod-name -- curl --connect-timeout 5 http://169.254.1
 
 - Remove user: `user`
 
+### Terminal.app Configuration
+
+- Set font to Hack Nerd Font
+- Close window if shell exits cleanly
+
 ## TODO
 
 - [ ] Add /Volumes/Storage to /etc/fstab
