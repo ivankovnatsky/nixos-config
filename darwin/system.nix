@@ -8,6 +8,17 @@ let
 in
 {
   system = {
+    activationScripts.postActivation.text = ''
+      echo "Setting desktop wallpaper to solid black..." >&2
+      osascript -e '
+      tell application "System Events"
+          tell every desktop
+              set picture to "/System/Library/Desktop Pictures/Solid Colors/Black.png"
+          end tell
+      end tell
+      '
+    '';
+
     defaults = {
       controlcenter = {
         Bluetooth = false;
@@ -29,6 +40,7 @@ in
         # Repeatable space is killing me.
         InitialKeyRepeat = 120;
         KeyRepeat = 120;
+        AppleInterfaceStyle = "Dark";
       };
       # https://github.com/nix-darwin/nix-darwin/blob/master/modules/system/defaults/WindowManager.nix#L6
       WindowManager = {
@@ -46,6 +58,27 @@ in
           "NSUserKeyEquivalents" = {
             "Move focus to active or next window" = "~`";
           };
+          # Use Caps Lock to switch input sources
+          TISRomanSwitchState = 1;
+        };
+        "com.apple.HIToolbox" = {
+          # Automatically switch to a document's input source
+          AppleGlobalTextInputProperties = {
+            TextInputGlobalPropertyPerContextInput = 1;
+          };
+          # Only ABC and Ukrainian layouts
+          AppleEnabledInputSources = [
+            {
+              InputSourceKind = "Keyboard Layout";
+              "KeyboardLayout ID" = 252;
+              "KeyboardLayout Name" = "ABC";
+            }
+            {
+              InputSourceKind = "Keyboard Layout";
+              "KeyboardLayout ID" = -2354;
+              "KeyboardLayout Name" = "Ukrainian-PC";
+            }
+          ];
         };
       };
     };
