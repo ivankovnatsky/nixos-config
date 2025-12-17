@@ -6,6 +6,7 @@
     ../../../darwin/flags.nix
     ../../../darwin/fonts.nix
     ../../../darwin/homebrew.nix
+    ../../../darwin/mos.nix
     ../../../darwin/nextdns.nix
     ../../../darwin/nix.nix
     ../../../darwin/security.nix
