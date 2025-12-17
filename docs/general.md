@@ -11,3 +11,11 @@ After cloning the repository, enable direnv:
 ```console
 direnv allow
 ```
+
+## GitHub CLI
+
+### Authentication
+
+```console
+gh auth login
+```
