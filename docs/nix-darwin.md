@@ -7,6 +7,8 @@ Install nix using determinate system:
 ```console
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix \
   | sh -s -- install
+
+. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 ```
 
 Run syncthing to fetch local network copy of nixos-config:
@@ -14,6 +16,14 @@ Run syncthing to fetch local network copy of nixos-config:
 ```console
 nix run "https://flakehub.com/f/NixOS/nixpkgs/*#syncthing"
 ```
+
+Share dirs:
+
+- nixos-config
+- gnupg
+
+Install Developer tools, they still needed for brew to work normally, run any
+git command for that.
 
 Configure your new machine if needed:
 
@@ -23,19 +33,61 @@ Configure your new machine if needed:
 nix develop "https://flakehub.com/f/NixOS/nixpkgs/*#git"
 ```
 
+
 Check instructions here:
 
 <https://github.com/nix-darwin/nix-darwin>
 
+Install rosetta:
+
+```console
+softwareupdate --install-rosetta
+```
+
+Enable Remote Login (SSH) to generate host keys for sops-nix:
+
+```console
+sudo systemsetup -setremotelogin on
+```
+
+SSH from another machine to trigger host key generation:
+
+```console
+ssh <hostname>.local
+```
+
+If sops secrets were encrypted with old machine's SSH host keys (e.g., after macOS
+reinstall), re-encrypt with the new host key:
+
+```console
+nix shell nixpkgs#ssh-to-age -c ssh-to-age < /etc/ssh/ssh_host_ed25519_key.pub
+```
+
+Update `.sops.yaml` with the new age key, then re-encrypt:
+
+```console
+nix shell nixpkgs#sops nixpkgs#gnupg
+gpg --list-secret-keys
+sops updatekeys secrets/default.yaml
+```
+
 Finally:
 
 ```console
-nix --extra-experimental-features nix-command --extra-experimental-features \
+sudo nix --extra-experimental-features nix-command --extra-experimental-features \
   flakes run nix-darwin -- switch  --flake ".#Ivans-MacBook-Pro"
 sudo mv /etc/nix/nix.conf /etc/nix/nix.conf.before-nix-darwin
 sudo mv /etc/zshenv /etc/zshenv.before-nix-darwin
-nix --extra-experimental-features nix-command --extra-experimental-features \
+sudo nix --extra-experimental-features nix-command --extra-experimental-features \
   flakes run nix-darwin -- switch  --flake ".#Ivans-MacBook-Pro"
+```
+
+Install Claude Code for help:
+
+```console
+nix shell nixpkgs#nodejs
+npm install -g @anthropic-ai/claude-codeo
+~/.npm/bin/claude
 ```
 
 ## Homebrew Package Management
