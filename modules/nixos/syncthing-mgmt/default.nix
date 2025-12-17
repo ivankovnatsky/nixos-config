@@ -23,6 +23,13 @@ in
       description = "Syncthing instance base URL";
     };
 
+    localDeviceName = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      example = "bee";
+      description = "Name to set for this device (the local Syncthing instance)";
+    };
+
     configDir = mkOption {
       type = types.path;
       default = "/var/lib/syncthing/.config/syncthing";
@@ -252,7 +259,8 @@ in
             --argjson gui "$GUI_JSON" \
             --argjson devices "$DEVICES_JSON" \
             --argjson folders "$FOLDERS_JSON" \
-            '{gui: $gui, devices: $devices, folders: $folders}' > "$CONFIG_FILE"
+            ${optionalString (cfg.localDeviceName != null) ''--arg localDeviceName "${cfg.localDeviceName}" \''}
+            '{gui: $gui, devices: $devices, folders: $folders${optionalString (cfg.localDeviceName != null) ", localDeviceName: $localDeviceName"}}' > "$CONFIG_FILE"
 
           ${pkgs.syncthing-mgmt}/bin/syncthing-mgmt declarative \
             --base-url "${cfg.baseUrl}" \

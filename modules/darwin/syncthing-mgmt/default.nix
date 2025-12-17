@@ -15,6 +15,13 @@ in
       description = "Syncthing instance base URL";
     };
 
+    localDeviceName = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      example = "Ivans-Mac-mini";
+      description = "Name to set for this device (the local Syncthing instance)";
+    };
+
     configDir = mkOption {
       type = types.path;
       description = "Path to Syncthing config directory (for reading config.xml)";
@@ -257,7 +264,8 @@ in
             --argjson gui "$GUI_JSON" \
             --argjson devices "$DEVICES_JSON" \
             --argjson folders "$FOLDERS_JSON" \
-            '{gui: $gui, devices: $devices, folders: $folders}' > "$CONFIG_FILE"
+            ${optionalString (cfg.localDeviceName != null) ''--arg localDeviceName "${cfg.localDeviceName}" \''}
+            '{gui: $gui, devices: $devices, folders: $folders${optionalString (cfg.localDeviceName != null) ", localDeviceName: $localDeviceName"}}' > "$CONFIG_FILE"
 
           # Run declarative sync with API key
           ${if cfg.apiKeyFile != null || cfg.apiKey != null then ''

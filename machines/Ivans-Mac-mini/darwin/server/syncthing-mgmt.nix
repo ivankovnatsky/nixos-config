@@ -13,6 +13,7 @@
     enable = true;
     baseUrl = "http://192.168.50.4:8384";
     configDir = "${config.users.users.${username}.home}/Library/Application Support/Syncthing";
+    localDeviceName = "Ivans-Mac-mini";
 
     # Device registry (all known devices)
     deviceDefinitionsFile = config.sops.secrets.syncthing-devices.path;
