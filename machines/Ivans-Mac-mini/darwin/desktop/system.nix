@@ -1,6 +1,10 @@
 {
   system = {
     defaults = {
+      NSGlobalDomain = {
+        AppleInterfaceStyle = "Dark";
+      };
+
       CustomUserPreferences = {
         "com.apple.HIToolbox" = {
           # Use Caps Lock to switch input sources
@@ -25,5 +29,16 @@
         };
       };
     };
+
+    activationScripts.postActivation.text = ''
+      echo "Setting desktop wallpaper to solid black..." >&2
+      osascript -e '
+      tell application "System Events"
+          tell every desktop
+              set picture to "/System/Library/Desktop Pictures/Solid Colors/Black.png"
+          end tell
+      end tell
+      '
+    '';
   };
 }
