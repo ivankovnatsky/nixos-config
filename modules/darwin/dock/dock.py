@@ -157,13 +157,12 @@ def main():
     Usage: dock.py <dockutil_path> <entries_json>
 
     Exit codes:
-    0 - Dock is up to date (no changes needed)
-    1 - Dock was rebuilt
-    2 - Error
+    0 - Success (dock is up to date or was rebuilt)
+    1 - Error
     """
     if len(sys.argv) != 3:
         print("Usage: dock.py <dockutil_path> <entries_json>", file=sys.stderr)
-        sys.exit(2)
+        sys.exit(1)
 
     dockutil_path = sys.argv[1]
     entries_json = sys.argv[2]
@@ -173,7 +172,7 @@ def main():
         entries = json.loads(entries_json)
     except json.JSONDecodeError as e:
         print(f"Error parsing entries JSON: {e}", file=sys.stderr)
-        sys.exit(2)
+        sys.exit(1)
 
     # Get current dock state
     current = get_current_dock(dockutil_path)
@@ -186,7 +185,7 @@ def main():
 
     # Dock needs updating - rebuild it
     rebuild_dock(dockutil_path, entries_json)
-    sys.exit(1)
+    sys.exit(0)
 
 
 if __name__ == '__main__':
