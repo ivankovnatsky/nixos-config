@@ -1,6 +1,12 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
+  home.activation.ghAuth = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    if ! ${pkgs.gh}/bin/gh auth status >/dev/null 2>&1; then
+      ${pkgs.gh}/bin/gh auth login --git-protocol https --web
+    fi
+  '';
+
   home.packages = with pkgs; [
     git-extras
     ghq
