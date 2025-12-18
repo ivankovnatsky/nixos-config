@@ -15,7 +15,8 @@ import traceback
 import os
 import subprocess
 import logging
-from typing import Optional, List
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import Optional, List, Dict, Any, Tuple
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
@@ -309,6 +310,75 @@ Please check that:
             raise Exception("Syncthing is not running (nothing listening on port 8384)")
 
     return SyncthingClient(base_url, api_key)
+
+
+def fetch_completions_parallel(
+    client,
+    tasks: List[Tuple[str, Optional[str]]],
+    max_workers: int = 10
+) -> Dict[Tuple[str, Optional[str]], Any]:
+    """
+    Fetch completion status for multiple device/folder combinations in parallel.
+
+    Args:
+        client: SyncthingClient instance
+        tasks: List of (device_id, folder_id) tuples. folder_id can be None for device-level completion.
+        max_workers: Maximum parallel requests
+
+    Returns:
+        Dict mapping (device_id, folder_id) to completion data
+    """
+    results = {}
+
+    def fetch_one(task):
+        device_id, folder_id = task
+        try:
+            return task, client.get_completion(device_id, folder_id)
+        except Exception:
+            return task, None
+
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(fetch_one, task): task for task in tasks}
+        for future in as_completed(futures):
+            task, result = future.result()
+            if result:
+                results[task] = result
+
+    return results
+
+
+def fetch_folder_statuses_parallel(
+    client,
+    folder_ids: List[str],
+    max_workers: int = 10
+) -> Dict[str, Any]:
+    """
+    Fetch folder statuses in parallel.
+
+    Args:
+        client: SyncthingClient instance
+        folder_ids: List of folder IDs
+        max_workers: Maximum parallel requests
+
+    Returns:
+        Dict mapping folder_id to status data
+    """
+    results = {}
+
+    def fetch_one(folder_id):
+        try:
+            return folder_id, client.get_folder_status(folder_id)
+        except Exception:
+            return folder_id, None
+
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(fetch_one, fid): fid for fid in folder_ids}
+        for future in as_completed(futures):
+            folder_id, result = future.result()
+            if result:
+                results[folder_id] = result
+
+    return results
 
 
 def sync_devices(client, devices_config, dry_run=False):
@@ -822,17 +892,15 @@ def cmd_list_devices(args):
         except Exception:
             connections = None
 
-        # Get completion status for connected devices
-        completions = {}
+        # Get completion status for connected devices in parallel
+        completion_tasks = []
         if connections:
-            for device_id in connections:
-                if connections[device_id].get("connected"):
-                    try:
-                        comp = client.get_completion(device_id)
-                        if comp:
-                            completions[device_id] = comp
-                    except Exception:
-                        pass
+            for device_id, conn in connections.items():
+                if conn.get("connected"):
+                    completion_tasks.append((device_id, None))
+
+        all_completions = fetch_completions_parallel(client, completion_tasks)
+        completions = {dev_id: comp for (dev_id, _), comp in all_completions.items()}
 
         display_devices(devices, detailed=True, connections=connections, completions=completions)
 
@@ -859,20 +927,8 @@ def cmd_list_folders(args):
         device_map = {d.get("deviceID"): d.get("name", "Unknown")
                       for d in devices if d and isinstance(d, dict) and "deviceID" in d}
 
-        # Get folder statuses
-        folder_statuses = {}
-        for folder in folders:
-            if folder and isinstance(folder, dict) and "id" in folder:
-                folder_id = folder["id"]
-                try:
-                    status = client.get_folder_status(folder_id)
-                    if status:
-                        folder_statuses[folder_id] = status
-                except Exception:
-                    pass
-
-        # Get device-folder completion status
-        device_completions = {}
+        # Collect completion tasks for parallel fetching
+        completion_tasks = []
         for folder in folders:
             if folder and isinstance(folder, dict) and "id" in folder:
                 folder_id = folder["id"]
@@ -880,15 +936,14 @@ def cmd_list_folders(args):
                 for d in folder_devices:
                     if d and isinstance(d, dict):
                         dev_id = d.get("deviceID", "")
-                        # Skip local device
                         if local_device_id and dev_id == local_device_id:
                             continue
-                        try:
-                            comp = client.get_completion(dev_id, folder_id)
-                            if comp:
-                                device_completions[(dev_id, folder_id)] = comp
-                        except Exception:
-                            pass
+                        completion_tasks.append((dev_id, folder_id))
+
+        # Fetch all completions and folder statuses in parallel
+        device_completions = fetch_completions_parallel(client, completion_tasks)
+        folder_ids = [f["id"] for f in folders if f and isinstance(f, dict) and "id" in f]
+        folder_statuses = fetch_folder_statuses_parallel(client, folder_ids)
 
         display_folders(folders, detailed=True, device_map=device_map, folder_statuses=folder_statuses, local_device_id=local_device_id, device_completions=device_completions)
 
@@ -924,36 +979,20 @@ def cmd_status(args):
         except Exception:
             connections = None
 
-        # Get completion status for connected devices
-        completions = {}
-        if connections:
-            for device_id in connections:
-                if connections[device_id].get("connected"):
-                    try:
-                        comp = client.get_completion(device_id)
-                        if comp:
-                            completions[device_id] = comp
-                    except Exception:
-                        pass
-
         # Build device ID to name map for folder display
         device_map = {d.get("deviceID"): d.get("name", "Unknown")
                       for d in devices if d and isinstance(d, dict) and "deviceID" in d}
 
-        # Get folder statuses
-        folder_statuses = {}
-        for folder in folders:
-            if folder and isinstance(folder, dict) and "id" in folder:
-                folder_id = folder["id"]
-                try:
-                    status = client.get_folder_status(folder_id)
-                    if status:
-                        folder_statuses[folder_id] = status
-                except Exception:
-                    pass
+        # Collect all completion tasks for parallel fetching
+        completion_tasks = []
 
-        # Get device-folder completion status
-        device_completions = {}
+        # Device-level completions (for connected devices only)
+        if connections:
+            for device_id, conn in connections.items():
+                if conn.get("connected"):
+                    completion_tasks.append((device_id, None))
+
+        # Device-folder completions
         for folder in folders:
             if folder and isinstance(folder, dict) and "id" in folder:
                 folder_id = folder["id"]
@@ -961,15 +1000,25 @@ def cmd_status(args):
                 for d in folder_devices:
                     if d and isinstance(d, dict):
                         dev_id = d.get("deviceID", "")
-                        # Skip local device
                         if local_device_id and dev_id == local_device_id:
                             continue
-                        try:
-                            comp = client.get_completion(dev_id, folder_id)
-                            if comp:
-                                device_completions[(dev_id, folder_id)] = comp
-                        except Exception:
-                            pass
+                        completion_tasks.append((dev_id, folder_id))
+
+        # Fetch all completions in parallel
+        all_completions = fetch_completions_parallel(client, completion_tasks)
+
+        # Split results into device-level and folder-level completions
+        completions = {}
+        device_completions = {}
+        for (dev_id, folder_id), comp in all_completions.items():
+            if folder_id is None:
+                completions[dev_id] = comp
+            else:
+                device_completions[(dev_id, folder_id)] = comp
+
+        # Get folder statuses in parallel
+        folder_ids = [f["id"] for f in folders if f and isinstance(f, dict) and "id" in f]
+        folder_statuses = fetch_folder_statuses_parallel(client, folder_ids)
 
         # Display folders with device name resolution
         display_folders(folders, detailed=False, device_map=device_map, folder_statuses=folder_statuses, local_device_id=local_device_id, device_completions=device_completions)
