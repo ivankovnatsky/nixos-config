@@ -36,6 +36,7 @@
     ../../../home/vlc
     ../../../home/vscode.nix
     ../../../home/yt-dlp.nix
+    ../../../home/uptime-kuma-mgmt.nix
     ../../../modules/flags
     ../../../modules/home/manual-packages
     ./manual-packages.nix
