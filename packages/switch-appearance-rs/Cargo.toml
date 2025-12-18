@@ -1,0 +1,10 @@
+[package]
+name = "switch-appearance-rs"
+version = "1.0.0"
+edition = "2021"
+
+[dependencies]
+
+[profile.release]
+lto = true
+strip = true

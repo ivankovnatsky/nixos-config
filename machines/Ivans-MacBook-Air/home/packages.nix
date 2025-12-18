@@ -16,5 +16,14 @@
     download-torrent
     ps-top-nu
     watchman-rebuild
+
+    switch-appearance
+    switch-appearance-go
+    switch-appearance-py
+    switch-appearance-rs
+    switch-appearance-zig
+    switch-appearance-c
+
+    hyperfine
   ];
 }
