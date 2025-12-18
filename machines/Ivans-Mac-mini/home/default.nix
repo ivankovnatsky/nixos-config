@@ -27,6 +27,7 @@
     ../../../home/tmux.nix
     ../../../home/vscode.nix
     ../../../home/yt-dlp.nix
+    ../../../home/uptime-kuma-mgmt.nix
     ../../../modules/flags
     ./flags.nix
     ./packages.nix

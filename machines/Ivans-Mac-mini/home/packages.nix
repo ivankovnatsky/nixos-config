@@ -45,7 +45,6 @@
     stylua
     syncthing
     syncthing-mgmt
-    uptime-kuma-mgmt
     treefmt
     typst
     typstyle
