@@ -19,7 +19,7 @@ in
     font-size = ${builtins.toString fontSize}
     font-thicken = true
     # `ghostty +list-themes`
-    theme = dark:Apple System Colors,light:Apple System Colors Light
+    theme = dark:Builtin Dark,light:Builtin Light
     auto-update = off
     # window-decoration = false
     # macos-titlebar-style = hidden
