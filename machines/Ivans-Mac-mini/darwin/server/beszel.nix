@@ -4,14 +4,12 @@ let
   dataDir = "${config.flags.miniStoragePath}/.beszel-hub";
 in
 {
-  # Beszel Hub service
-  # Note: Requires Full Disk Access in System Settings → Privacy & Security
-  # to write to /Volumes/Storage (granted manually, testing if works)
-  #
-  # Manual restart: sudo launchctl kickstart -k system/org.nixos.beszel-hub
+  # Beszel Hub service - user-agent to access /Volumes/Storage after login
+  # See: claude/issues/LAUNCHD-BOOT-FAILURE.md
+  # Manual restart: launchctl kickstart -k gui/$(id -u)/com.ivankovnatsky.beszel-hub
   local.launchd.services.beszel-hub = {
     enable = true;
-    type = "daemon";
+    type = "user-agent";
     waitForPath = config.flags.miniStoragePath;
     dataDir = dataDir;
     command = ''
@@ -19,10 +17,6 @@ in
         --http ${config.flags.miniIp}:8091 \
         --dir ${dataDir}
     '';
-    extraServiceConfig = {
-      UserName = "ivan";
-      GroupName = "staff";
-    };
   };
 
   # Beszel Agent (monitoring mini itself)

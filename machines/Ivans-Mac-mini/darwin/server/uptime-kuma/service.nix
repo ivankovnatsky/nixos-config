@@ -6,16 +6,13 @@ in
 {
   # Uptime Kuma HTTP synthetic monitoring service
   # Web UI: https://uptime.@externalDomain@
-  # Co-located with Beszel hub for centralized monitoring
+  # User-agent to access /Volumes/Storage after login
+  # See: claude/issues/LAUNCHD-BOOT-FAILURE.md
   local.launchd.services.uptime-kuma = {
     enable = true;
-    type = "daemon";
+    type = "user-agent";
     waitForPath = config.flags.miniStoragePath;
     dataDir = dataDir;
-    extraServiceConfig = {
-      UserName = "ivan";
-      GroupName = "staff";
-    };
     preStart = ''
       export PATH="${pkgs.nixpkgs-darwin-old-release.tailscale}/bin:${pkgs.coreutils}/bin:$PATH"
     '';
