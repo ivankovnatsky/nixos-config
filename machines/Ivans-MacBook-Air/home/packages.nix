@@ -12,6 +12,9 @@
     age
     ssh-to-age
     syncthing-mgmt
+    syncthing-mgmt-go
+    syncthing-mgmt-rs
+    syncthing-mgmt-zig
     dns
     download-torrent
     ps-top-nu
