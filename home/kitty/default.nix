@@ -33,6 +33,7 @@ let
 
     allow_remote_control yes
     adjust_line_height 115%
+    window_padding_width 8
     hide_window_decorations titlebar-only
     cursor_blink_interval 0
     copy_on_select yes
