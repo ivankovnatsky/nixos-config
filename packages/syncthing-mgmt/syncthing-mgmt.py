@@ -13,9 +13,9 @@ import xml.etree.ElementTree as ET
 import bcrypt
 import traceback
 import os
-import socket
+import subprocess
 import logging
-from typing import Optional, Tuple, List
+from typing import Optional, List
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
@@ -212,87 +212,58 @@ def get_api_key_from_config(config_path: str) -> str:
         raise Exception(f"Failed to read API key from {config_path}: {e}")
 
 
-def get_local_ip_addresses() -> List[str]:
-    """Get all local IP addresses (excluding loopback)."""
-    ips = []
-
-    # Method 1: Try hostname resolution (works on some systems)
-    try:
-        hostname = socket.gethostname()
-        for info in socket.getaddrinfo(hostname, None):
-            ip = info[4][0]
-            # Skip loopback and IPv6
-            if not ip.startswith('127.') and ':' not in ip:
-                if ip not in ips:
-                    ips.append(ip)
-    except Exception:
-        pass
-
-    # Method 2: Connect to external address to discover local IP
-    # This is reliable and doesn't actually send any data
-    try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.settimeout(0.1)
-        # Connect to a well-known address (doesn't actually send data for UDP)
-        s.connect(('8.8.8.8', 80))
-        local_ip = s.getsockname()[0]
-        s.close()
-        if local_ip and local_ip not in ips and not local_ip.startswith('127.'):
-            ips.append(local_ip)
-    except Exception:
-        pass
-
-    return ips
-
-
-def check_syncthing_reachable(base_url: str, api_key: str, timeout: int = 3) -> bool:
-    """Check if Syncthing API is reachable at the given URL."""
-    try:
-        url = f"{base_url.rstrip('/')}/rest/system/status"
-        headers = {
-            "User-Agent": USER_AGENT,
-            "X-API-Key": api_key,
-        }
-        response = requests.get(url, headers=headers, timeout=timeout)
-        return response.status_code == 200
-    except (requests.exceptions.ConnectionError,
-            requests.exceptions.Timeout,
-            requests.exceptions.RequestException):
-        return False
-
-
-def find_reachable_syncthing_url(primary_url: str, api_key: str) -> Tuple[str, str]:
+def find_listening_address(port: int = 8384) -> Optional[str]:
     """
-    Find a reachable Syncthing instance.
-    Returns (base_url, source_description).
-    Tries: primary URL -> loopback -> local IPs
+    Find what address is listening on the given port using system tools.
+    Returns the listening address (e.g., '127.0.0.1', '0.0.0.0', '192.168.1.10') or None.
     """
-    # Try primary URL first
-    if check_syncthing_reachable(primary_url, api_key):
-        return (primary_url, "primary URL")
+    if sys.platform == "darwin":
+        # macOS: use lsof
+        try:
+            result = subprocess.run(
+                ["lsof", "-i", f":{port}", "-sTCP:LISTEN", "-n", "-P"],
+                capture_output=True, text=True, timeout=5
+            )
+            if result.returncode == 0 and result.stdout:
+                # Parse lsof output - format: COMMAND PID USER FD TYPE DEVICE SIZE/OFF NODE NAME (STATE)
+                # Example: syncthing 13446 ivan 17u IPv4 ... TCP 127.0.0.1:8384 (LISTEN)
+                for line in result.stdout.strip().split('\n')[1:]:  # Skip header
+                    parts = line.split()
+                    if len(parts) >= 9:
+                        # Find the address:port part (contains : and is before (LISTEN))
+                        for part in reversed(parts):
+                            if ':' in part and not part.startswith('('):
+                                addr = part.rsplit(':', 1)[0]
+                                if addr == '*':
+                                    return '0.0.0.0'
+                                return addr
+        except (subprocess.TimeoutExpired, FileNotFoundError):
+            pass
+    else:
+        # Linux: use ss
+        try:
+            result = subprocess.run(
+                ["ss", "-tlnH", "sport", "=", f":{port}"],
+                capture_output=True, text=True, timeout=5
+            )
+            if result.returncode == 0 and result.stdout:
+                # Parse ss output - format: State Recv-Q Send-Q Local Address:Port Peer Address:Port
+                for line in result.stdout.strip().split('\n'):
+                    parts = line.split()
+                    if len(parts) >= 4:
+                        local_addr = parts[3]  # Local Address:Port
+                        if ':' in local_addr:
+                            addr = local_addr.rsplit(':', 1)[0]
+                            # Handle IPv6 bracket notation
+                            if addr.startswith('[') and addr.endswith(']'):
+                                addr = addr[1:-1]
+                            if addr == '*' or addr == '0.0.0.0' or addr == '::':
+                                return '0.0.0.0'
+                            return addr
+        except (subprocess.TimeoutExpired, FileNotFoundError):
+            pass
 
-    # Build fallback URLs in order of preference:
-    # 1. Loopback (127.0.0.1, localhost)
-    # 2. Local network IPs (auto-detected)
-    fallback_urls = [
-        "http://127.0.0.1:8384",
-        "http://localhost:8384",
-    ]
-
-    # Add local IP addresses (e.g., 192.168.x.x, 10.x.x.x)
-    local_ips = get_local_ip_addresses()
-    for ip in local_ips:
-        fallback_urls.append(f"http://{ip}:8384")
-
-    # Try fallback URLs
-    for fallback_url in fallback_urls:
-        if fallback_url == primary_url:
-            continue
-        if check_syncthing_reachable(fallback_url, api_key):
-            return (fallback_url, f"fallback ({fallback_url})")
-
-    # Nothing reachable
-    return (None, None)
+    return None
 
 
 def get_client(args, use_fallback: bool = True):
@@ -300,7 +271,7 @@ def get_client(args, use_fallback: bool = True):
     Get a configured SyncthingClient from args.
 
     If use_fallback is True (default for CLI mode), will try to find a reachable
-    Syncthing instance if the primary URL is not accessible.
+    Syncthing instance by checking what's listening on port 8384.
     """
     # Get API key
     if hasattr(args, 'api_key') and args.api_key:
@@ -312,31 +283,30 @@ def get_client(args, use_fallback: bool = True):
 
     base_url = args.base_url
 
-    # For CLI mode, try to find a reachable instance
+    # For CLI mode, auto-detect Syncthing address from port listener
     if use_fallback and hasattr(args, 'mode') and args.mode == 'cli':
-        # Check if primary URL is reachable
-        if not check_syncthing_reachable(base_url, api_key):
-            logging.info(f"Primary Syncthing URL ({base_url}) is not reachable, trying fallbacks...")
+        listening_addr = find_listening_address(8384)
 
-            fallback_url, source = find_reachable_syncthing_url(base_url, api_key)
-
-            if fallback_url:
-                logging.info(f"Found reachable Syncthing instance at {source}: {fallback_url}")
-                base_url = fallback_url
+        if listening_addr:
+            # If bound to 0.0.0.0, use localhost
+            if listening_addr == '0.0.0.0':
+                detected_url = "http://127.0.0.1:8384"
             else:
-                # List what we tried
-                error_msg = f"""
-Could not connect to Syncthing at any known location:
-  - Primary: {base_url}
-  - Tried fallbacks: http://127.0.0.1:8384, http://localhost:8384
+                detected_url = f"http://{listening_addr}:8384"
+
+            if detected_url != base_url:
+                logging.info(f"Detected Syncthing at {detected_url}")
+            base_url = detected_url
+        else:
+            error_msg = """
+No process listening on port 8384.
 
 Please check that:
   1. Syncthing is running
   2. The correct URL is specified with --base-url
-  3. You have network connectivity to the Syncthing instance
 """
-                logging.error(error_msg)
-                raise Exception(f"Syncthing API not reachable at {base_url}")
+            logging.error(error_msg)
+            raise Exception("Syncthing is not running (nothing listening on port 8384)")
 
     return SyncthingClient(base_url, api_key)
 
