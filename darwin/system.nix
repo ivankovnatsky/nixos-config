@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 let
   hostName = config.networking.hostName or "";
@@ -9,14 +9,16 @@ in
 {
   system = {
     activationScripts.postActivation.text = ''
-      echo "Setting desktop wallpaper to solid black..." >&2
-      osascript -e '
-      tell application "System Events"
-          tell every desktop
-              set picture to "/System/Library/Desktop Pictures/Solid Colors/Black.png"
-          end tell
-      end tell
-      '
+      # Skip if switch-appearance was run today (user manually set appearance)
+      STATE_FILE="$HOME/.local/state/switch-appearance/last-run"
+      TODAY=$(date "+%Y-%m-%d")
+
+      if [ -f "$STATE_FILE" ] && [ "$(cat "$STATE_FILE")" = "$TODAY" ]; then
+        echo "Skipping appearance setup (switch-appearance was run today)" >&2
+      else
+        ${pkgs.switch-appearance}/bin/switch-appearance init 2>&1 || \
+          echo "Warning: Could not set appearance (TCC access may be required)" >&2
+      fi
     '';
 
     defaults = {
@@ -40,7 +42,6 @@ in
         # Repeatable space is killing me.
         InitialKeyRepeat = 120;
         KeyRepeat = 120;
-        AppleInterfaceStyle = "Dark";
       };
       # https://github.com/nix-darwin/nix-darwin/blob/master/modules/system/defaults/WindowManager.nix#L6
       WindowManager = {

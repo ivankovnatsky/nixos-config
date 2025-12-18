@@ -103,7 +103,46 @@ function open_settings_kde
     systemsettings appearance &
 end
 
-# Main logic
+# State file to track manual appearance changes
+set state_dir "$HOME/.local/state/switch-appearance"
+set state_file "$state_dir/last-run"
+
+function write_state
+    mkdir -p $state_dir
+    date "+%Y-%m-%d" > $state_file
+end
+
+function remove_state
+    rm -f $state_file
+end
+
+function set_dark_macos
+    osascript -e 'tell application "System Events" to tell appearance preferences to set dark mode to true'
+    set_wallpaper_macos "Black"
+end
+
+function set_dark_kde
+    set_theme_kde "dark"
+    set_wallpaper_kde "Black"
+end
+
+# Handle init subcommand (for activation scripts)
+if test (count $argv) -gt 0 && test "$argv[1]" = "init"
+    if is_macos
+        set_dark_macos
+        echo "Set dark mode and wallpaper (init)"
+    else if is_kde
+        set_dark_kde
+        echo "Set dark mode and wallpaper (init)"
+    else
+        echo "Unsupported platform"
+        exit 1
+    end
+    remove_state
+    exit 0
+end
+
+# Main logic (toggle)
 if is_macos
     set current_theme (get_current_theme_macos)
 
@@ -117,6 +156,7 @@ if is_macos
         echo "Switched to Dark appearance"
     end
 
+    write_state
     open_settings_macos
 else if is_kde
     set current_theme (get_current_theme_kde)
@@ -131,6 +171,7 @@ else if is_kde
         echo "Switched to Dark appearance"
     end
 
+    write_state
     open_settings_kde
 else
     echo "Unsupported platform or desktop environment"
