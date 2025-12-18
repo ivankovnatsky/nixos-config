@@ -24,33 +24,24 @@ let
         file: ${textsFile}
         check_duplicates: true
 
-      - type: upload
-        name: textcast_audio_upload
-        enabled: true
-        watch_dir: ${audioDir}
-        file_patterns: ["*.mp3", "*.m4a", "*.wav", "*.flac"]
-        check_duplicates: false
-
     processing:
-      strategy: condense
-      condense_ratio: 0.5
-      text_model: gpt-5.1
-      speech_model: tts-1-hd
-      voice: nova
-      audio_format: mp3
-      output_dir: ${audioDir}
-      vendor: openai
+      text:
+        provider: anthropic
+        model: claude-sonnet-4-5-20250929
+        strategy: condense
+        condense_ratio: 0.5
+
+      audio:
+        vendor: openai
+        model: tts-1-hd
+        voice: nova
+        format: mp3
+        output_dir: ${audioDir}
 
     destinations:
       - type: podservice
         enabled: true
         url: https://podservice.@EXTERNAL_DOMAIN@
-
-      - type: audiobookshelf
-        enabled: true
-        url: "@ABS_URL@"
-        api_key: "@ABS_API_KEY@"
-        library_name: ""
 
     server:
       enabled: true
@@ -60,39 +51,29 @@ let
 
   # Substitute secrets at runtime
   runtimeConfigFile = pkgs.writeShellScript "textcast-config-gen" ''
-    ABS_URL=$(cat ${config.sops.secrets.audiobookshelf-url.path})
-    ABS_API_KEY=$(cat ${config.sops.secrets.audiobookshelf-api-token.path})
     EXTERNAL_DOMAIN=$(cat ${config.sops.secrets.external-domain.path})
     ${pkgs.gnused}/bin/sed \
-      -e "s|@ABS_URL@|$ABS_URL|g" \
-      -e "s|@ABS_API_KEY@|$ABS_API_KEY|g" \
       -e "s|@EXTERNAL_DOMAIN@|$EXTERNAL_DOMAIN|g" \
       ${configFile}
   '';
 
   # Wrapper script to set environment variables from secrets
   textcastWrapper = pkgs.writeShellScript "textcast-wrapper" ''
+    export ANTHROPIC_API_KEY=$(cat ${config.sops.secrets.anthropic-api-key.path})
     export OPENAI_API_KEY=$(cat ${config.sops.secrets.openai-api-key.path})
-    export ABS_URL=$(cat ${config.sops.secrets.audiobookshelf-url.path})
-    export ABS_API_KEY=$(cat ${config.sops.secrets.audiobookshelf-api-token.path})
     exec ${pkgs.textcast}/bin/textcast service daemon --config=${configDir}/config.yaml
   '';
 in
 {
   # Declare sops secrets for system-level access
   # textcast runs as user agent (ivan), so set owner to ivan
+  sops.secrets.anthropic-api-key = {
+    key = "anthropicApiKey";
+    owner = "ivan";
+  };
+
   sops.secrets.openai-api-key = {
     key = "openaiApiKey";
-    owner = "ivan";
-  };
-
-  sops.secrets.audiobookshelf-url = {
-    key = "audiobookshelf/url";
-    owner = "ivan";
-  };
-
-  sops.secrets.audiobookshelf-api-token = {
-    key = "audiobookshelf/apiToken";
     owner = "ivan";
   };
 
