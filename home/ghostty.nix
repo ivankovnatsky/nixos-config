@@ -24,6 +24,7 @@ in
     # window-decoration = false
     # macos-titlebar-style = hidden
     copy-on-select = true
+    window-padding-x = 8
     macos-option-as-alt = true
     # keybind = global:cmd+escape=toggle_quick_terminal
     keybind = cmd+down=jump_to_prompt:1
