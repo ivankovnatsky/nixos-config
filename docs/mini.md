@@ -260,6 +260,16 @@ ping 169.254.1.144
 kubectl exec -n homebridge pod-name -- curl --connect-timeout 5 http://169.254.1.144:9123
 ```
 
+### Reboot Unlock Process
+
+After reboot, the FileVault encrypted disk requires unlock:
+
+1. **SSH** to mini (192.168.50.4) - connection will work but disk is locked
+2. **VNC** to mini to unlock FileVault with Apple account credentials
+   - Finder → Go → Connect to Server → `vnc://192.168.50.4`
+   - Or use Screen Sharing app
+3. After unlock, auto-login proceeds and launchd services start
+
 ### Re-install 2025-12-17
 
 - Remove user: `user`
