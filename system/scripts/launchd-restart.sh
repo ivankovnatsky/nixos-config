@@ -21,16 +21,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 restart_agent() {
-    local uid svc="$1"
-    uid=$(id -u)
-
-    if ! launchctl list | grep -q "^[0-9-]*[[:space:]]*[0-9-]*[[:space:]]*${svc}$"; then
-        echo "Agent not found: $svc"
-        return 1
-    fi
-
-    echo "Restarting agent: $svc"
-    launchctl kickstart -k "gui/${uid}/${svc}"
+    launchctl kickstart -k "gui/$(id -u)/$1"
 }
 
 restart_agents() {
@@ -54,15 +45,7 @@ restart_agents() {
 }
 
 restart_daemon() {
-    local svc="$1"
-
-    if ! sudo launchctl list | grep -q "^[0-9-]*[[:space:]]*[0-9-]*[[:space:]]*${svc}$"; then
-        echo "Daemon not found: $svc"
-        return 1
-    fi
-
-    echo "Restarting daemon: $svc (requires sudo)"
-    sudo launchctl kickstart -k "system/${svc}"
+    sudo launchctl kickstart -k "system/$1"
 }
 
 restart_daemons() {
