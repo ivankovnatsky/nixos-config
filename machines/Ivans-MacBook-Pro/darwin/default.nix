@@ -9,6 +9,7 @@
     ../../../darwin/mos.nix
     ../../../darwin/nextdns.nix
     ../../../darwin/stats.nix
+    ../../../darwin/syncthing.nix
     ../../../darwin/nix.nix
     ../../../darwin/no-dock-restart.nix
     ../../../darwin/security.nix

@@ -26,6 +26,7 @@
     ../../../home/shell.nix
     ../../../home/sops.nix
     ../../../home/starship
+    ../../../home/syncthing-ignore.nix
     ../../../home/tmux.nix
     ../../../home/tweety.nix
     ../../../modules/flags

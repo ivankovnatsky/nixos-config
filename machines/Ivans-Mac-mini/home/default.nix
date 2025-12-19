@@ -24,6 +24,7 @@
     ../../../home/shell.nix
     ../../../home/ssh.nix
     ../../../home/starship
+    ../../../home/syncthing-ignore.nix
     ../../../home/tmux.nix
     ../../../home/vscode.nix
     ../../../home/yt-dlp.nix
