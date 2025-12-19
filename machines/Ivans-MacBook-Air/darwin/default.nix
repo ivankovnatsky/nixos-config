@@ -14,6 +14,7 @@
     ../../../darwin/security.nix
     ../../../darwin/shell.nix
     ../../../darwin/sudo.nix
+    ../../../darwin/users.nix
     ../../../darwin/system.nix
     ../../../modules/darwin/dock
     ../../../modules/darwin/launchd
@@ -31,5 +32,6 @@
     ./git.nix
     ./homebrew.nix
     ./syncthing-mgmt.nix
+    ./users.nix
   ];
 }

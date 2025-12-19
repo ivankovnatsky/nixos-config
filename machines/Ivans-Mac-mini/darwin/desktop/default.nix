@@ -9,6 +9,7 @@
     ../../../../darwin/security.nix
     ../../../../darwin/shell.nix
     ../../../../darwin/sudo.nix
+    ../../../../darwin/users.nix
     ../../../../darwin/system.nix
     ../../../../modules/darwin/dock
     ../../../../modules/darwin/pam
