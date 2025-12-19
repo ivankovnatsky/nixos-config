@@ -228,6 +228,27 @@ let
       ''
     ) enabledUserAgents
   );
+
+  # Generate activation script to ensure daemons are loaded
+  # This fixes the issue where nix-darwin skips loading if file unchanged
+  enabledDaemons = filterAttrs (_: s: s.enable && s.type == "daemon") cfg.services;
+
+  mkEnsureDaemonsLoadedScript = concatStringsSep "\n" (
+    mapAttrsToList (
+      name: service:
+      let
+        label = service.label;
+        plistPath = "/Library/LaunchDaemons/${label}.plist";
+      in
+      ''
+        # Ensure ${name} daemon is loaded
+        if ! /bin/launchctl list "${label}" &>/dev/null; then
+          echo "Loading daemon ${label}..."
+          /bin/launchctl load -w "${plistPath}" 2>/dev/null || true
+        fi
+      ''
+    ) enabledDaemons
+  );
 in
 {
   options.local.launchd = {
@@ -264,6 +285,12 @@ in
     # This fixes the issue where nix-darwin skips loading if file unchanged
     (mkIf (enabledUserAgents != { }) {
       system.activationScripts.postActivation.text = mkAfter mkEnsureAgentsLoadedScript;
+    })
+
+    # Activation script to ensure daemons are loaded
+    # This fixes the issue where nix-darwin skips loading if file unchanged
+    (mkIf (enabledDaemons != { }) {
+      system.activationScripts.postActivation.text = mkAfter mkEnsureDaemonsLoadedScript;
     })
   ];
 }
