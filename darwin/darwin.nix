@@ -41,12 +41,6 @@
   # ```console
   # sudo mv /etc/shells /etc/shells..before-nix-darwin
   # ```
-  #
-  # Set default shell to fish:
-  #
-  # ```console
-  # chsh -s /run/current-system/sw/bin/fish
-  # ```
   environment.shells =
     with pkgs;
     [
