@@ -7,7 +7,7 @@ Supports listing, creating, updating, and deleting monitors via declarative conf
 import sys
 import json
 import argparse
-from uptime_kuma_api import UptimeKumaApi, MonitorType, NotificationType
+from uptime_kuma_api import UptimeKumaApi, MonitorType, NotificationType, UptimeKumaException
 
 USER_AGENT = "uptime-kuma-mgmt/1.0.0"
 
@@ -490,13 +490,26 @@ def main():
 
     args = parser.parse_args()
 
-    with UptimeKumaClient(args.base_url, args.username, args.password) as client:
-        if args.command == "list":
-            cmd_list(args, client)
-        elif args.command == "get":
-            cmd_get(args, client)
-        elif args.command == "sync":
-            cmd_sync(args, client)
+    try:
+        with UptimeKumaClient(args.base_url, args.username, args.password) as client:
+            if args.command == "list":
+                cmd_list(args, client)
+            elif args.command == "get":
+                cmd_get(args, client)
+            elif args.command == "sync":
+                cmd_sync(args, client)
+    except UptimeKumaException as e:
+        print(f"Error: Failed to connect to Uptime Kuma at {args.base_url}", file=sys.stderr)
+        print(f"  Please verify the server is running and accessible.", file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+        error_msg = str(e)
+        if "Connection refused" in error_msg or "unable to connect" in error_msg.lower():
+            print(f"Error: Failed to connect to Uptime Kuma at {args.base_url}", file=sys.stderr)
+            print(f"  Please verify the server is running and accessible.", file=sys.stderr)
+        else:
+            print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
