@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, username, ... }:
 
 {
   # Uptime Kuma declarative monitor management
@@ -16,19 +16,19 @@
   # Sops secrets for Uptime Kuma management
   sops.secrets.uptime-kuma-username = {
     key = "uptimeKuma/username";
-    owner = "ivan";
+    owner = username;
   };
   sops.secrets.uptime-kuma-password = {
     key = "uptimeKuma/password";
-    owner = "ivan";
+    owner = username;
   };
   sops.secrets.discord-webhook = {
     key = "discordWebHook";
-    owner = "ivan";
+    owner = username;
   };
   sops.secrets.postgres-monitoring-password = {
     key = "postgres/monitoring/password";
-    owner = "ivan";
+    owner = username;
   };
 
   local.services.uptime-kuma-mgmt = {

@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, username, ... }:
 
 let
   dataDir = "${config.flags.miniStoragePath}/.matrix/core/synapse";
@@ -87,8 +87,8 @@ in
   # Sops secrets for Matrix services (used by all Matrix services)
   sops.secrets.matrix-username = {
     key = "matrix/username";
-    owner = "ivan";
-    mode = "0444";  # Readable by user services
+    owner = username;
+    mode = "0444"; # Readable by user services
   };
 
   local.launchd.services.matrix-synapse = {

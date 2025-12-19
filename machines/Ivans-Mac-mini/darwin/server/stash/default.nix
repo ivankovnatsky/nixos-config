@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  username,
   ...
 }:
 
@@ -25,11 +26,11 @@ in
   sops.secrets = {
     stash-username = {
       key = "stash/username";
-      owner = "ivan";
+      owner = username;
     };
     stash-password = {
       key = "stash/password";
-      owner = "ivan";
+      owner = username;
     };
   };
 

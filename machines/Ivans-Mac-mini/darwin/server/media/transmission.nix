@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  username,
   ...
 }:
 
@@ -72,12 +73,12 @@ in
 {
   sops.secrets.transmission-username = {
     key = "transmission/username";
-    owner = "ivan";
+    owner = username;
   };
 
   sops.secrets.transmission-password = {
     key = "transmission/password";
-    owner = "ivan";
+    owner = username;
   };
 
   local.launchd.services.transmission = {

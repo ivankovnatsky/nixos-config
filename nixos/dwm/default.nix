@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, username, ... }:
 
 {
   programs = {
@@ -22,7 +22,7 @@
   # Option 2: Auto-login (boots directly into dwm session)
   # services.xserver.displayManager.autoLogin = {
   #   enable = true;
-  #   user = "ivan";
+  #   user = username;
   # };
 
   # Option 3: startx/xinit (manual start from console)

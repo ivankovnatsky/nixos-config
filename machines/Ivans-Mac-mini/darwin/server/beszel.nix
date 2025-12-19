@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, username, ... }:
 
 let
   dataDir = "${config.flags.miniStoragePath}/.beszel-hub";
@@ -36,17 +36,17 @@ in
   # Sops secrets for beszel-mgmt
   sops.secrets.beszel-email = {
     key = "beszel/email";
-    owner = "ivan";
+    owner = username;
   };
 
   sops.secrets.beszel-password = {
     key = "beszel/password";
-    owner = "ivan";
+    owner = username;
   };
 
   sops.secrets.discord-webhook = {
     key = "discordWebHook";
-    owner = "ivan";
+    owner = username;
   };
 
   # Beszel management (declarative system sync)

@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  username,
   ...
 }:
 
@@ -69,12 +70,12 @@ in
   # textcast runs as user agent (ivan), so set owner to ivan
   sops.secrets.anthropic-api-key = {
     key = "anthropicApiKey";
-    owner = "ivan";
+    owner = username;
   };
 
   sops.secrets.openai-api-key = {
     key = "openaiApiKey";
-    owner = "ivan";
+    owner = username;
   };
 
   local.launchd.services.textcast = {

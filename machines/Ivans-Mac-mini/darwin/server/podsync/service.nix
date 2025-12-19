@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  username,
   ...
 }:
 
@@ -35,12 +36,12 @@ in
   # Sops secrets for podsync
   sops.secrets.podsync-youtube-api-key = {
     key = "podsync/youtubeApiKey";
-    owner = "ivan";
+    owner = username;
   };
 
   sops.secrets.podsync-vimeo-api-key = {
     key = "podsync/vimeoApiKey";
-    owner = "ivan";
+    owner = username;
   };
 
   local.launchd.services.podsync = {

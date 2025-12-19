@@ -1,25 +1,26 @@
 {
   config,
   pkgs,
+  username,
   ...
 }:
 
 {
   sops.secrets.miniserve-username = {
     key = "miniserve/mini/username";
-    owner = "ivan";
+    owner = username;
   };
 
   sops.secrets.miniserve-password = {
     key = "miniserve/mini/password";
-    owner = "ivan";
+    owner = username;
   };
 
   sops.templates."miniserve-auth" = {
     content = ''
       ${config.sops.placeholder.miniserve-username}:${config.sops.placeholder.miniserve-password}
     '';
-    owner = "ivan";
+    owner = username;
   };
 
   local.launchd.services.miniserve = {

@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  username,
   ...
 }:
 
@@ -28,7 +29,7 @@ in
     waitForPath = config.flags.miniStoragePath;
     dataDir = ollamaModelsPath;
     environment = {
-      HOME = config.users.users.ivan.home;
+      HOME = config.users.users.${username}.home;
       PATH = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin";
       OLLAMA_MODELS = ollamaModelsPath;
       OLLAMA_HOST = "${config.flags.miniIp}:11434";

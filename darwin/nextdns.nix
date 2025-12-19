@@ -1,30 +1,30 @@
-{ config, ... }:
+{ config, username, ... }:
 
 {
   sops.secrets = {
     nextdns-api-key = {
       key = "nextDnsApiKey";
-      owner = "ivan";
+      owner = username;
     };
     nextdns-profile-pro = {
       key = "nextDnsProfilePro";
-      owner = "ivan";
+      owner = username;
     };
     nextdns-profile-air = {
       key = "nextDnsProfileAir";
-      owner = "ivan";
+      owner = username;
     };
     nextdns-profile-mini = {
       key = "nextDnsProfileMini";
-      owner = "ivan";
+      owner = username;
     };
     nextdns-profile-phone = {
       key = "nextDnsProfilePhone";
-      owner = "ivan";
+      owner = username;
     };
     nextdns-profile-asus = {
       key = "nextDnsProfileAsus";
-      owner = "ivan";
+      owner = username;
     };
   };
 

@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, username, ... }:
 
 {
   # Vanilla dwm with no patches or customizations
@@ -13,6 +13,6 @@
   # Optional: Auto-login for testing
   # services.xserver.displayManager.autoLogin = {
   #   enable = true;
-  #   user = "ivan";
+  #   user = username;
   # };
 }

@@ -1,9 +1,9 @@
-{ config, ... }:
+{ config, username, ... }:
 
 {
   sops.secrets.jellyfin-api-key = {
     key = "jellyfin/apiKey";
-    owner = "ivan";
+    owner = username;
   };
 
   local.services.jellyfin-mgmt = {
