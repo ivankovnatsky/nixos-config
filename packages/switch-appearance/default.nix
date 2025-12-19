@@ -1,5 +1,5 @@
-{ pkgs }:
+{ pkgs, ... }:
 
 pkgs.writeShellScriptBin "switch-appearance" ''
-  exec ${pkgs.fish}/bin/fish ${./switch-appearance.fish} "$@"
+  exec ${pkgs.python3}/bin/python ${./switch-appearance.py} "$@"
 ''
