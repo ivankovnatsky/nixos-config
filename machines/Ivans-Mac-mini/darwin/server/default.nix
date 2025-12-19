@@ -5,7 +5,7 @@
     ../../../../darwin/fonts.nix
     ../../../../darwin/mos.nix
     ../../../../darwin/shell.nix
-    ../../../../darwin/nextdns
+    ../../../../darwin/nextdns.nix
     ../../../../darwin/sudo.nix
     ../../../../darwin/syncthing.nix
     ../../../../darwin/system.nix
