@@ -36,6 +36,7 @@
     ./uptime-kuma
     ./dns.nix
     ./doh.nix
+    ./download-youtube
     ./git.nix
     ./homebrew.nix
     ./http.nix
