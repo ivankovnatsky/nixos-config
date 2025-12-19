@@ -1,39 +1,35 @@
 {
   config,
+  lib,
   pkgs,
   ...
 }:
 
+# https://docs.syncthing.net/v1.29.0/users/config#config-option-folder.maxconflicts
+#
 # Syncthing configuration for Darwin systems
 #
-# Syncthing will be available at http://localnetworkIp:8384 after reboot or running:
+# For servers (mini): binds to network IP, waits for external storage
+# For laptops (air/pro): binds to localhost only
+#
+# Syncthing will be available at the configured address after reboot or running:
 # launchctl kickstart -k gui/$(id -u)/com.ivankovnatsky.syncthing
 #
 # Configuration will be stored in ~/Library/Application Support/Syncthing
-# Log file will be at ~/Library/Logs/syncthing.log
-#
-# Note: This module only sets up the launchd service. You'll need to manually
-# configure Syncthing devices and folders using the web interface.
-#
-# Assign only user permissions to dirs:
-# ```console
-# chmod 0700 $DIR1
-# chmod 0700 $DIR2
-# ```
+# Log file will be at /tmp/agents/log/launchd/syncthing.log
 
 let
-  workingDirectory = config.flags.miniStoragePath; # External volume to wait for
-  guiAddress = "${config.flags.miniIp}:8384";
+  isServer = config.device.type == "server";
+  guiAddress =
+    if isServer then "${config.flags.miniIp}:8384" else "127.0.0.1:8384";
 in
 {
-
-  # Configure launchd service for Syncthing
   local.launchd.services.syncthing = {
     enable = true;
     type = "user-agent";
     keepAlive = true;
-    throttleInterval = 10; # Restart on failure after 10 seconds
-    waitForPath = workingDirectory;
+    throttleInterval = 10;
+    waitForPath = lib.mkIf isServer config.flags.miniStoragePath;
 
     command = ''
       ${pkgs.syncthing}/bin/syncthing serve \

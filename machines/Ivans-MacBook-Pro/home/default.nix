@@ -30,7 +30,7 @@
     ../../../home/shell.nix
     ../../../home/sops.nix
     ../../../home/starship
-    ../../../home/syncthing.nix
+    ../../../home/syncthing-ignore.nix
     ../../../home/tmux.nix
     ../../../home/vscode.nix
     ../../../home/yt-dlp.nix

@@ -31,7 +31,7 @@
     ../../../home/shell.nix
     ../../../home/sops.nix
     ../../../home/starship
-    ../../../home/syncthing.nix
+    ../../../home/syncthing-ignore.nix
     ../../../home/tmux.nix
     ../../../home/vlc
     ../../../home/vscode.nix

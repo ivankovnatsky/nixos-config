@@ -1,11 +1,4 @@
 {
-  # https://github.com/nix-community/home-manager/blob/master/modules/services/syncthing.nix
-  # https://docs.syncthing.net/v1.29.0/users/config#config-option-folder.maxconflicts
-  services.syncthing = {
-    enable = true;
-    guiAddress = "127.0.0.1:8384";
-  };
-
   home.file.".config/syncthing/ignore".text = ''
     // Rust-specific ignores
     target/

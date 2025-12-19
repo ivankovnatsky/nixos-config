@@ -207,6 +207,27 @@ let
         ''
       ) servicesWithUser
     );
+
+  # Generate activation script to ensure agents are loaded
+  # This fixes the issue where nix-darwin skips loading if file unchanged
+  enabledUserAgents = filterAttrs (_: s: s.enable && s.type == "user-agent") cfg.services;
+
+  mkEnsureAgentsLoadedScript = concatStringsSep "\n" (
+    mapAttrsToList (
+      name: service:
+      let
+        label = service.label;
+        plistPath = "$HOME/Library/LaunchAgents/${label}.plist";
+      in
+      ''
+        # Ensure ${name} is loaded
+        if ! /bin/launchctl list "${label}" &>/dev/null; then
+          echo "Loading agent ${label}..."
+          /bin/launchctl load -w "${plistPath}" 2>/dev/null || true
+        fi
+      ''
+    ) enabledUserAgents
+  );
 in
 {
   options.local.launchd = {
@@ -237,6 +258,12 @@ in
     # Activation script to fix log file ownership for services with UserName
     (mkIf (any (s: s.enable && s.extraServiceConfig ? UserName) (attrValues cfg.services)) {
       system.activationScripts.postActivation.text = mkLogOwnershipScript;
+    })
+
+    # Activation script to ensure user agents are loaded
+    # This fixes the issue where nix-darwin skips loading if file unchanged
+    (mkIf (enabledUserAgents != { }) {
+      system.activationScripts.postActivation.text = mkAfter mkEnsureAgentsLoadedScript;
     })
   ];
 }

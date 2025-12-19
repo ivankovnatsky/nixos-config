@@ -8,6 +8,7 @@
     ../../../darwin/fonts.nix
     ../../../darwin/mos.nix
     ../../../darwin/stats.nix
+    ../../../darwin/syncthing.nix
     ../../../darwin/nextdns.nix
     ../../../darwin/nix.nix
     ../../../darwin/security.nix

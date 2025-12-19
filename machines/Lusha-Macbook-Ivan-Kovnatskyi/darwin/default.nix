@@ -5,6 +5,7 @@
     ../../../darwin/nix.nix
     ../../../darwin/no-dock-restart.nix
     ../../../darwin/sudo.nix
+    ../../../darwin/syncthing.nix
     ../../../darwin/system.nix
     ../../../modules/darwin/dock
     ../../../modules/darwin/launchd
