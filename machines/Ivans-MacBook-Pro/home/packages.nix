@@ -1,20 +1,20 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
-    aria2
-    switch-scaling
-    tree
-    asusrouter-cli
-    nodePackages.prettier
-    swiftformat
-    treefmt
-    sops
     age
-    ssh-to-age
-    syncthing-mgmt
-    open-gh-notifications-py
+    aria2
+    asusrouter-cli
     dns
     download-torrent
+    nodePackages.prettier
+    open-gh-notifications-py
+    sops
+    ssh-to-age
+    swiftformat
+    switch-scaling
+    syncthing-mgmt
+    tree
+    treefmt
     watchman-rebuild
   ];
 }
