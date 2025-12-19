@@ -29,8 +29,6 @@
     ../../../darwin/no-dock-restart.nix
     ./git.nix
     ./homebrew.nix
-    ./podservice
     ./syncthing-mgmt.nix
-    ./textcast
   ];
 }

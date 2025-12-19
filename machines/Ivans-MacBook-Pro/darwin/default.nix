@@ -30,7 +30,6 @@
     ./dock.nix
     ./git.nix
     ./homebrew.nix
-    ./podservice
     ./syncthing-mgmt.nix
   ];
 }
