@@ -1,11 +1,37 @@
 #!/usr/bin/env bash
 
 # Restart launchd services (agents or daemons) that have non-zero exit codes
-# Usage: launchd-restart [--agents|--daemons|--all]
+# Usage: launchd-restart [--filter <pattern>] [--agents|--daemons|--all|--list|--status]
 
 set -euo pipefail
 
-FILTER="ivankovnats"
+FILTER="${LAUNCHD_FILTER:-ivankovnats}"
+
+# Parse --filter option
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --filter)
+            FILTER="$2"
+            shift 2
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
+restart_agent() {
+    local uid svc="$1"
+    uid=$(id -u)
+
+    if ! launchctl list | grep -q "^[0-9-]*[[:space:]]*[0-9-]*[[:space:]]*${svc}$"; then
+        echo "Agent not found: $svc"
+        return 1
+    fi
+
+    echo "Restarting agent: $svc"
+    launchctl kickstart -k "gui/${uid}/${svc}"
+}
 
 restart_agents() {
     local uid
@@ -25,6 +51,18 @@ restart_agents() {
         echo "  → $svc"
         launchctl kickstart -k "gui/${uid}/${svc}"
     done
+}
+
+restart_daemon() {
+    local svc="$1"
+
+    if ! sudo launchctl list | grep -q "^[0-9-]*[[:space:]]*[0-9-]*[[:space:]]*${svc}$"; then
+        echo "Daemon not found: $svc"
+        return 1
+    fi
+
+    echo "Restarting daemon: $svc (requires sudo)"
+    sudo launchctl kickstart -k "system/${svc}"
 }
 
 restart_daemons() {
@@ -52,28 +90,60 @@ show_status() {
     sudo launchctl list | grep "$FILTER" | awk '$2 != 0' || echo "All healthy"
 }
 
+list_services() {
+    echo "=== User Agents ==="
+    launchctl list | grep "$FILTER" | awk '{print $3}' || echo "None found"
+    echo ""
+    echo "=== System Daemons ==="
+    sudo launchctl list | grep "$FILTER" | awk '{print $3}' || echo "None found"
+}
+
 usage() {
-    echo "Usage: launchd-restart [OPTION]"
+    echo "Usage: launchd-restart [--filter <pattern>] [OPTION] [SERVICE_NAME]"
     echo ""
     echo "Options:"
-    echo "  --agents   Restart unhealthy user agents"
-    echo "  --daemons  Restart unhealthy system daemons (requires sudo)"
-    echo "  --all      Restart both agents and daemons"
-    echo "  --status   Show unhealthy services without restarting"
-    echo "  -h, --help Show this help"
+    echo "  --filter <pattern>  Filter services by pattern (default: ivankovnats)"
+    echo "  --agents            Restart all unhealthy user agents"
+    echo "  --agent <name>      Restart a specific user agent"
+    echo "  --daemons           Restart all unhealthy system daemons (requires sudo)"
+    echo "  --daemon <name>     Restart a specific system daemon (requires sudo)"
+    echo "  --all               Restart both unhealthy agents and daemons"
+    echo "  --list              List all services matching filter"
+    echo "  --status            Show unhealthy services without restarting"
+    echo "  -h, --help          Show this help"
+    echo ""
+    echo "Environment:"
+    echo "  LAUNCHD_FILTER      Default filter pattern (overridden by --filter)"
 }
 
 case "${1:-}" in
     --agents)
         restart_agents
         ;;
+    --agent)
+        if [ -z "${2:-}" ]; then
+            echo "Error: --agent requires a service name"
+            exit 1
+        fi
+        restart_agent "$2"
+        ;;
     --daemons)
         restart_daemons
+        ;;
+    --daemon)
+        if [ -z "${2:-}" ]; then
+            echo "Error: --daemon requires a service name"
+            exit 1
+        fi
+        restart_daemon "$2"
         ;;
     --all)
         restart_agents
         echo ""
         restart_daemons
+        ;;
+    --list)
+        list_services
         ;;
     --status)
         show_status
