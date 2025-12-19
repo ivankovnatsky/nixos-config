@@ -1,11 +1,14 @@
 {
   imports = [
+    ../../../darwin/amethyst.nix
     ../../../darwin/darwin.nix
     ../../../darwin/flags.nix
     ../../../darwin/fonts.nix
+    ../../../darwin/hammerspoon.nix
     ../../../darwin/homebrew.nix
     ../../../darwin/mos.nix
     ../../../darwin/nextdns.nix
+    ../../../darwin/stats.nix
     ../../../darwin/nix.nix
     ../../../darwin/no-dock-restart.nix
     ../../../darwin/security.nix
