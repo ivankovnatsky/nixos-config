@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Restart launchd services (agents or daemons) that have non-zero exit codes
-# Usage: launchd-restart [--filter <pattern>] [--agents|--daemons|--all|--list|--status]
+# Usage: launchd-restart [--filter <pattern>] <command>
 
 set -euo pipefail
 
@@ -90,12 +90,20 @@ show_status() {
     sudo launchctl list | grep "$FILTER" | awk '$2 != 0' || echo "All healthy"
 }
 
+list_agents() {
+    launchctl list | grep "$FILTER" | awk '{print $3}' || echo "None found"
+}
+
+list_daemons() {
+    sudo launchctl list | grep "$FILTER" | awk '{print $3}' || echo "None found"
+}
+
 list_services() {
     echo "=== User Agents ==="
-    launchctl list | grep "$FILTER" | awk '{print $3}' || echo "None found"
+    list_agents
     echo ""
     echo "=== System Daemons ==="
-    sudo launchctl list | grep "$FILTER" | awk '{print $3}' || echo "None found"
+    list_daemons
 }
 
 usage() {
@@ -109,6 +117,8 @@ usage() {
     echo "  --daemon <name>     Restart a specific system daemon (requires sudo)"
     echo "  --all               Restart both unhealthy agents and daemons"
     echo "  --list              List all services matching filter"
+    echo "  --list-agents       List only user agents matching filter"
+    echo "  --list-daemons      List only system daemons matching filter"
     echo "  --status            Show unhealthy services without restarting"
     echo "  -h, --help          Show this help"
     echo ""
@@ -144,6 +154,12 @@ case "${1:-}" in
         ;;
     --list)
         list_services
+        ;;
+    --list-agents)
+        list_agents
+        ;;
+    --list-daemons)
+        list_daemons
         ;;
     --status)
         show_status
