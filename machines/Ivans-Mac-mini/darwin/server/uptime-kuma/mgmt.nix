@@ -40,91 +40,116 @@
     discordWebhookFile = config.sops.secrets.discord-webhook.path;
 
     monitors = [
-      # Media Stack (mini)
+      # External Domain Health Check
+      # Single check to verify DNS + Caddy + TLS chain works end-to-end
+      {
+        name = "external-domain";
+        url = "https://beszel.@EXTERNAL_DOMAIN@";
+        interval = 60;
+        description = "External domain health check (DNS + Caddy + TLS)";
+      }
+
+      # Media Stack - Local HTTP monitoring
       {
         name = "prowlarr";
-        url = "https://prowlarr.@EXTERNAL_DOMAIN@";
-        description = "Prowlarr indexer manager (mini:9696)";
+        url = "http://${config.flags.miniIp}:9696";
+        description = "Prowlarr indexer manager";
       }
       {
         name = "radarr";
-        url = "https://radarr.@EXTERNAL_DOMAIN@";
-        description = "Radarr movie manager (mini:7878)";
+        url = "http://${config.flags.miniIp}:7878";
+        description = "Radarr movie manager";
       }
       {
         name = "sonarr";
-        url = "https://sonarr.@EXTERNAL_DOMAIN@";
-        description = "Sonarr TV manager (mini:8989)";
+        url = "http://${config.flags.miniIp}:8989";
+        description = "Sonarr TV manager";
       }
       {
         name = "transmission";
-        url = "https://transmission.@EXTERNAL_DOMAIN@";
+        url = "http://${config.flags.miniIp}:9091";
         expectedStatus = 401;
-        description = "Transmission torrent client with RPC auth (mini:9091)";
+        description = "Transmission torrent client (RPC auth required)";
       }
       {
         name = "jellyfin";
-        url = "https://jellyfin.@EXTERNAL_DOMAIN@";
-        description = "Jellyfin media server with WebSocket (mini:8096)";
+        url = "http://${config.flags.miniIp}:8096";
+        description = "Jellyfin media server";
       }
       {
         name = "stash";
-        url = "https://stash.@EXTERNAL_DOMAIN@";
-        description = "Stash media organizer with WebSocket (mini:9999)";
+        url = "http://${config.flags.miniIp}:9999";
+        description = "Stash media organizer";
       }
       {
         name = "media";
-        url = "https://media.@EXTERNAL_DOMAIN@";
-        description = "Stash media organizer for general Media with WebSocket (mini:9998)";
+        url = "http://${config.flags.miniIp}:9998";
+        description = "Stash media organizer (general)";
       }
       {
         name = "audiobookshelf";
-        url = "https://audiobookshelf.@EXTERNAL_DOMAIN@";
-        description = "Audiobookshelf audiobook and podcast server (mini:8000)";
+        url = "http://${config.flags.miniIp}:8000";
+        description = "Audiobookshelf audiobook/podcast server";
       }
 
-      # Infrastructure Services (mini)
+      # Infrastructure Services - Local HTTP monitoring
       {
-        name = "syncthing-mini";
-        url = "https://syncthing-mini.@EXTERNAL_DOMAIN@";
-        description = "Syncthing on mini (mini:8384)";
+        name = "syncthing";
+        url = "http://${config.flags.miniIp}:8384";
+        description = "Syncthing file sync";
       }
       {
         name = "beszel";
-        url = "https://beszel.@EXTERNAL_DOMAIN@";
-        description = "Beszel monitoring hub (mini:8091)";
+        url = "http://${config.flags.miniIp}:8091";
+        description = "Beszel monitoring hub";
       }
       {
-        name = "miniserve-mini";
-        url = "https://miniserve-mini.@EXTERNAL_DOMAIN@";
+        name = "miniserve";
+        url = "http://${config.flags.miniIp}:8080";
         expectedStatus = 401;
-        description = "Miniserve file server with auth (mini:8080)";
+        description = "Miniserve file server (auth required)";
       }
       {
         name = "bin";
-        url = "https://bin.@EXTERNAL_DOMAIN@";
-        description = "Pastebin service (mini:8820)";
+        url = "http://${config.flags.miniIp}:8820";
+        description = "Pastebin service";
       }
       {
         name = "podservice";
-        url = "https://podservice.@EXTERNAL_DOMAIN@";
-        description = "YouTube to Podcast service (mini:8083)";
+        url = "http://${config.flags.miniIp}:8083";
+        description = "YouTube to Podcast service";
       }
       {
         name = "textcast";
-        url = "https://textcast.@EXTERNAL_DOMAIN@";
-        description = "Article to audiobook service (mini:8084)";
+        url = "http://${config.flags.miniIp}:8084";
+        description = "Article to audiobook service";
       }
       {
         name = "matrix";
-        url = "https://matrix.@EXTERNAL_DOMAIN@";
+        url = "http://${config.flags.miniIp}:8009";
         interval = 30;
-        description = "Matrix Synapse server (mini:8009) - Critical service";
+        description = "Matrix Synapse server (critical)";
       }
       {
-        name = "element";
-        url = "https://element.@EXTERNAL_DOMAIN@";
-        description = "Element web client - Static files";
+        name = "uptime-kuma";
+        url = "http://${config.flags.miniIp}:3001";
+        description = "Uptime Kuma monitoring";
+      }
+      {
+        name = "doh";
+        url = "http://${config.flags.miniIp}:8053/dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB";
+        expectedStatus = 200;
+        description = "DNS over HTTPS service";
+      }
+      {
+        name = "ollama";
+        url = "http://${config.flags.miniIp}:11434";
+        description = "Ollama LLM API";
+      }
+      {
+        name = "openwebui";
+        url = "http://${config.flags.miniIp}:8090";
+        description = "Open WebUI";
       }
 
       # Matrix Bridges (TCP port monitoring - localhost only)
@@ -133,104 +158,83 @@
         type = "tcp";
         url = "127.0.0.1:29321";
         interval = 60;
-        description = "WhatsApp bridge appservice port (localhost:29321)";
+        description = "WhatsApp bridge appservice port";
       }
       {
         name = "mautrix-discord";
         type = "tcp";
         url = "127.0.0.1:29323";
         interval = 60;
-        description = "Discord bridge appservice port (localhost:29323)";
+        description = "Discord bridge appservice port";
       }
       {
         name = "mautrix-meta-messenger";
         type = "tcp";
         url = "127.0.0.1:29324";
         interval = 60;
-        description = "Messenger bridge appservice port (localhost:29324)";
+        description = "Messenger bridge appservice port";
       }
       {
         name = "mautrix-meta-instagram";
         type = "tcp";
         url = "127.0.0.1:29325";
         interval = 60;
-        description = "Instagram bridge appservice port (localhost:29325)";
+        description = "Instagram bridge appservice port";
       }
       {
         name = "mautrix-linkedin";
         type = "tcp";
         url = "127.0.0.1:29326";
         interval = 60;
-        description = "LinkedIn bridge appservice port (localhost:29326)";
-      }
-
-      # DNS services (check /dns-query endpoint with example query)
-      {
-        name = "doh-mini";
-        url = "https://doh-mini.@EXTERNAL_DOMAIN@/dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB";
-        expectedStatus = 200;
-        description = "DNS over HTTPS on mini (mini:8053) - queries www.example.com";
-      }
-
-      # Ollama (load balanced with failover)
-      {
-        name = "ollama";
-        url = "https://ollama.@EXTERNAL_DOMAIN@";
-        description = "Ollama LLM API with failover (a3w:11434 → mini:11434)";
-      }
-      {
-        name = "openwebui";
-        url = "https://openwebui.@EXTERNAL_DOMAIN@";
-        description = "Open WebUI with WebSocket (mini:8090)";
+        description = "LinkedIn bridge appservice port";
       }
 
       # DNS Infrastructure
       {
-        name = "dnsmasq-mini";
+        name = "dnsmasq";
         type = "dns";
         url = "example.com@${config.flags.miniIp}";
         interval = 60;
-        description = "dnsmasq DNS resolver on mini";
+        description = "dnsmasq DNS resolver";
       }
-
-      # DNS-over-TLS (Stubby) - Upstream for dnsmasq
       {
-        name = "stubby-mini";
+        name = "stubby";
         type = "tcp";
         url = "${config.flags.miniIp}:5453";
         interval = 60;
-        description = "Stubby DoT resolver on mini (upstream for dnsmasq)";
+        description = "Stubby DoT resolver (upstream for dnsmasq)";
       }
 
       # Reverse Proxy Infrastructure
       {
-        name = "caddy-mini-http";
+        name = "caddy-http";
         type = "tcp";
         url = "${config.flags.miniIp}:80";
         interval = 60;
-        description = "Caddy HTTP on mini (reverse proxy)";
+        description = "Caddy HTTP reverse proxy";
       }
       {
-        name = "caddy-mini-https";
+        name = "caddy-https";
         type = "tcp";
         url = "${config.flags.miniIp}:443";
         interval = 60;
-        description = "Caddy HTTPS on mini (reverse proxy)";
+        description = "Caddy HTTPS reverse proxy";
       }
 
+      # System Services
       {
-        name = "ssh-mini";
+        name = "ssh";
         type = "tcp";
         url = "${config.flags.miniIp}:22";
         interval = 60;
-        description = "SSH service on mini";
+        description = "SSH service";
       }
       {
-        name = "smb-mini";
+        name = "smb";
         type = "tcp";
         url = "${config.flags.miniIp}:445";
         interval = 60;
-        description = "macOS built-in Samba/SMB service on mini";
+        description = "macOS built-in SMB service";
       }
     ];
   };
