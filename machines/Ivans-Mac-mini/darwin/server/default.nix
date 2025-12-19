@@ -5,6 +5,7 @@
     ../../../../darwin/fonts.nix
     ../../../../darwin/mos.nix
     ../../../../darwin/shell.nix
+    ../../../../darwin/nextdns
     ../../../../darwin/sudo.nix
     ../../../../darwin/syncthing.nix
     ../../../../darwin/system.nix
@@ -46,7 +47,6 @@
     ./media
     ./miniserve.nix
     ./mosh.nix
-    ./nextdns
     ./nix.nix
     ./ollama.nix
     ./open-webui.nix
