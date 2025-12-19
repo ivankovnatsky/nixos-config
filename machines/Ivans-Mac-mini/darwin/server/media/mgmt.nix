@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, username, ... }:
 
 {
   # NOTE: This file is for Phase 3 of the migration (declarative configuration)
@@ -19,17 +19,17 @@
   # Sops secrets for arr services
   sops.secrets.radarr-api-key = {
     key = "arrMini/radarr/apiKey";
-    owner = "ivan";
+    owner = username;
   };
 
   sops.secrets.sonarr-api-key = {
     key = "arrMini/sonarr/apiKey";
-    owner = "ivan";
+    owner = username;
   };
 
   sops.secrets.prowlarr-api-key = {
     key = "arrMini/prowlarr/apiKey";
-    owner = "ivan";
+    owner = username;
   };
 
   local.services.arr-mgmt = {

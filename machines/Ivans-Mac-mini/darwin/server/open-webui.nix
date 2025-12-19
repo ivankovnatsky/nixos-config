@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  username,
   ...
 }:
 
@@ -15,7 +16,7 @@ in
     waitForPath = config.flags.miniStoragePath;
     dataDir = openWebuiDataPath;
     environment = {
-      HOME = config.users.users.ivan.home;
+      HOME = config.users.users.${username}.home;
       PATH = "${pkgs.nixpkgs-darwin-master.open-webui}/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin";
 
       # State directories

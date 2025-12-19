@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, username, ... }:
 
 let
   termName = import ../home/tmux.nix { inherit config pkgs; };
@@ -40,7 +40,7 @@ in
 
       initial_session = {
         command = "${greetdSessionRun}";
-        user = "ivan";
+        user = username;
       };
     };
   };

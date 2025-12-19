@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  username,
   ...
 }:
 
@@ -55,11 +56,11 @@ in
   sops.secrets = {
     stash-media-username = {
       key = "media/username";
-      owner = "ivan";
+      owner = username;
     };
     stash-media-password = {
       key = "media/password";
-      owner = "ivan";
+      owner = username;
     };
   };
 

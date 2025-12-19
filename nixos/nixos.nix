@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, username, ... }:
 
 {
   imports = [
@@ -12,10 +12,10 @@
     '';
   };
 
-  users.users.ivan = {
+  users.users.${username} = {
     description = "Ivan Kovnatsky";
     isNormalUser = true;
-    home = "/home/ivan";
+    home = "/home/${username}";
     shell = if config.flags.enableFishShell then pkgs.fish else pkgs.zsh;
     extraGroups = [
       "wheel"
