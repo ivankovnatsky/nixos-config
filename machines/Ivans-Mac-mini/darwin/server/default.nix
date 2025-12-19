@@ -23,6 +23,7 @@
     ../../../../modules/darwin/sudo
     ../../../../modules/darwin/rebuild-daemon
     ../../../../modules/flags
+    ./flags.nix
     ../../../../modules/darwin/arr-mgmt
     ../../../../modules/darwin/jellyfin-mgmt
     ../../../../modules/darwin/nextdns-mgmt
