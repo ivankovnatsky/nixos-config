@@ -81,20 +81,54 @@ def send_notification(success):
             pass
 
 
+LOCK_FILE = Path("/tmp/watchman-rebuild.lock")
+
+
+def cleanup_stale_lock():
+    """Remove stale lock file from previous run."""
+    if LOCK_FILE.exists():
+        logging.info(f"Removing stale lock file from previous run: {LOCK_FILE}")
+        LOCK_FILE.unlink()
+
+
+def acquire_lock():
+    """Acquire rebuild lock. Returns True if acquired, False if already locked."""
+    if LOCK_FILE.exists():
+        logging.info(f"Lock file exists, rebuild already in progress: {LOCK_FILE}")
+        return False
+    LOCK_FILE.touch()
+    logging.info(f"Acquired rebuild lock: {LOCK_FILE}")
+    return True
+
+
+def release_lock():
+    """Release rebuild lock."""
+    if LOCK_FILE.exists():
+        LOCK_FILE.unlink()
+        logging.info(f"Released rebuild lock: {LOCK_FILE}")
+
+
 def run_rebuild(config_path, command):
     """Run the rebuild command."""
-    logging.info(f"Running: {command}")
-    env = os.environ.copy()
-    env['NIXPKGS_ALLOW_UNFREE'] = '1'
-    # Redirect stderr to stdout so all output goes to the same log file
-    result = subprocess.run(command, shell=True, cwd=config_path, env=env, stderr=subprocess.STDOUT)
-    if result.returncode == 0:
-        logging.info("✅ Rebuild successful")
-        send_notification(True)
-    else:
-        logging.error(f"❌ Rebuild failed with exit code {result.returncode}")
-        send_notification(False)
-    return result.returncode
+    if not acquire_lock():
+        logging.info("Skipping rebuild - another rebuild is in progress")
+        return 0
+
+    try:
+        logging.info(f"Running: {command}")
+        env = os.environ.copy()
+        env['NIXPKGS_ALLOW_UNFREE'] = '1'
+        # Redirect stderr to stdout so all output goes to the same log file
+        result = subprocess.run(command, shell=True, cwd=config_path, env=env, stderr=subprocess.STDOUT)
+        if result.returncode == 0:
+            logging.info("✅ Rebuild successful")
+            send_notification(True)
+        else:
+            logging.error(f"❌ Rebuild failed with exit code {result.returncode}")
+            send_notification(False)
+        return result.returncode
+    finally:
+        release_lock()
 
 
 def setup_watchman_subscription(client, config_path, ignore_dirs):
@@ -127,6 +161,9 @@ def setup_watchman_subscription(client, config_path, ignore_dirs):
 def watch_and_rebuild(config_path, command=None):
     """Watch for changes and rebuild."""
     config_path_obj = Path(config_path)
+
+    # Clean up any stale lock from previous daemon run
+    cleanup_stale_lock()
 
     # Wait for path on Darwin (for volume mounts)
     if platform.system() == 'Darwin':
