@@ -81,20 +81,38 @@ def send_notification(success):
             pass
 
 
+def get_lock_file():
+    """Get the path to the rebuild lock file."""
+    state_dir = Path.home() / ".local/state/watchman-rebuild"
+    state_dir.mkdir(parents=True, exist_ok=True)
+    return state_dir / "rebuild.lock"
+
+
 def run_rebuild(config_path, command):
     """Run the rebuild command."""
-    logging.info(f"Running: {command}")
-    env = os.environ.copy()
-    env['NIXPKGS_ALLOW_UNFREE'] = '1'
-    # Redirect stderr to stdout so all output goes to the same log file
-    result = subprocess.run(command, shell=True, cwd=config_path, env=env, stderr=subprocess.STDOUT)
-    if result.returncode == 0:
-        logging.info("✅ Rebuild successful")
-        send_notification(True)
-    else:
-        logging.error(f"❌ Rebuild failed with exit code {result.returncode}")
-        send_notification(False)
-    return result.returncode
+    lock_file = get_lock_file()
+
+    # Check if rebuild is already running
+    if lock_file.exists():
+        logging.info("Rebuild already in progress (lock file exists), skipping")
+        return 0
+
+    try:
+        lock_file.touch()
+        logging.info(f"Running: {command}")
+        env = os.environ.copy()
+        env['NIXPKGS_ALLOW_UNFREE'] = '1'
+        # Redirect stderr to stdout so all output goes to the same log file
+        result = subprocess.run(command, shell=True, cwd=config_path, env=env, stderr=subprocess.STDOUT)
+        if result.returncode == 0:
+            logging.info("✅ Rebuild successful")
+            send_notification(True)
+        else:
+            logging.error(f"❌ Rebuild failed with exit code {result.returncode}")
+            send_notification(False)
+        return result.returncode
+    finally:
+        lock_file.unlink(missing_ok=True)
 
 
 def setup_watchman_subscription(client, config_path, ignore_dirs):
@@ -158,10 +176,19 @@ def watch_and_rebuild(config_path, command=None):
     debounce_timer = None
     pending_files = []
     timer_lock = threading.Lock()
+    lock_file = get_lock_file()
 
     def trigger_rebuild():
         """Called after debounce delay to actually run the rebuild."""
         nonlocal pending_files
+
+        # Check if rebuild is already running
+        if lock_file.exists():
+            logging.info("Rebuild already in progress (lock file exists), skipping")
+            with timer_lock:
+                pending_files = []
+            return
+
         with timer_lock:
             if pending_files:
                 logging.info("=" * 60)
@@ -212,6 +239,10 @@ def watch_and_rebuild(config_path, command=None):
                     files = result.get('files', [])
                     if files:
                         with timer_lock:
+                            # Skip if lock file exists (rebuild in progress)
+                            if lock_file.exists():
+                                continue
+
                             # Add new files to pending list
                             for f in files:
                                 fname = f if isinstance(f, str) else f.get('name', str(f))
