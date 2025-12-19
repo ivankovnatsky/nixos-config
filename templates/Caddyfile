@@ -217,6 +217,12 @@
 		header_up Host {host}
 	}
 
+	@youtube host youtube.@externalDomain@
+	reverse_proxy @youtube @miniIp@:8085 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
 	@audiobookshelf host audiobookshelf.@externalDomain@
 	reverse_proxy @audiobookshelf @miniIp@:8000 {
 		# Enable WebSocket support for real-time updates

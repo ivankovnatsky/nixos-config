@@ -125,6 +125,11 @@
         description = "Article to audiobook service";
       }
       {
+        name = "youtube";
+        url = "https://youtube.@EXTERNAL_DOMAIN@";
+        description = "YouTube video downloader (mini:8085)";
+      }
+      {
         name = "matrix";
         url = "http://${config.flags.miniIp}:8009";
         interval = 30;
