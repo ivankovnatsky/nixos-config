@@ -97,6 +97,33 @@ def run_rebuild(config_path, command):
     return result.returncode
 
 
+def setup_watchman_subscription(client, config_path, ignore_dirs):
+    """Set up watchman watch and subscription. Returns (root, sub_name) or raises on failure."""
+    watch_result = client.query('watch-project', config_path)
+    if 'warning' in watch_result:
+        logging.warning(f"Watchman warning: {watch_result['warning']}")
+
+    root = watch_result['watch']
+    relative_path = watch_result.get('relative_path', '')
+
+    logging.info(f"Watchman watching: {root}")
+
+    # Subscribe to file changes
+    query = {
+        'expression': build_watchman_expression(ignore_dirs),
+        'fields': ['name'],
+    }
+
+    if relative_path:
+        query['relative_root'] = relative_path
+
+    sub_name = 'watchman-rebuild'
+    client.query('subscribe', root, sub_name, query)
+
+    logging.info("Watching for changes...")
+    return root, sub_name
+
+
 def watch_and_rebuild(config_path, command=None):
     """Watch for changes and rebuild."""
     config_path_obj = Path(config_path)
@@ -124,60 +151,56 @@ def watch_and_rebuild(config_path, command=None):
     ignore_dirs = load_watchman_ignores(config_path)
     logging.info(f"Loaded ignore patterns from .watchman-rebuild.json: {ignore_dirs}")
 
-    client = pywatchman.client()
+    # Reconnection settings
+    RECONNECT_DELAY = 5  # seconds to wait before reconnecting
+    MAX_RECONNECT_ATTEMPTS = 10
+
     debounce_timer = None
+    pending_files = []
+    timer_lock = threading.Lock()
+
+    def trigger_rebuild():
+        """Called after debounce delay to actually run the rebuild."""
+        nonlocal pending_files
+        with timer_lock:
+            if pending_files:
+                logging.info("=" * 60)
+                logging.info(f"Rebuilding after {len(pending_files)} file change(s):")
+                for f in pending_files[:10]:  # Show first 10 files
+                    logging.info(f"  - {f}")
+                if len(pending_files) > 10:
+                    logging.info(f"  ... and {len(pending_files) - 10} more")
+                logging.info("=" * 60)
+                files_to_rebuild = pending_files
+                pending_files = []
+            else:
+                files_to_rebuild = []
+
+        if files_to_rebuild:
+            run_rebuild(config_path, command)
+
+    client = None
+    reconnect_attempts = 0
 
     try:
-        # Watch the config path
-        watch_result = client.query('watch-project', config_path)
-        if 'warning' in watch_result:
-            logging.warning(f"Watchman warning: {watch_result['warning']}")
-
-        root = watch_result['watch']
-        relative_path = watch_result.get('relative_path', '')
-
-        logging.info(f"Watchman watching: {root}")
-
-        # Subscribe to file changes
-        query = {
-            'expression': build_watchman_expression(ignore_dirs),
-            'fields': ['name'],
-        }
-
-        if relative_path:
-            query['relative_root'] = relative_path
-
-        sub_name = 'watchman-rebuild'
-        client.query('subscribe', root, sub_name, query)
-
-        logging.info("Watching for changes...")
-
-        # Debounce state
-        pending_files = []
-        timer_lock = threading.Lock()
-
-        def trigger_rebuild():
-            """Called after debounce delay to actually run the rebuild."""
-            nonlocal pending_files
-            with timer_lock:
-                if pending_files:
-                    logging.info("=" * 60)
-                    logging.info(f"Rebuilding after {len(pending_files)} file change(s):")
-                    for f in pending_files[:10]:  # Show first 10 files
-                        logging.info(f"  - {f}")
-                    if len(pending_files) > 10:
-                        logging.info(f"  ... and {len(pending_files) - 10} more")
-                    logging.info("=" * 60)
-                    files_to_rebuild = pending_files
-                    pending_files = []
-                else:
-                    files_to_rebuild = []
-
-            if files_to_rebuild:
-                run_rebuild(config_path, command)
-
-        # Wait for changes
         while True:
+            # Connect/reconnect to watchman
+            if client is None:
+                try:
+                    client = pywatchman.client()
+                    root, sub_name = setup_watchman_subscription(client, config_path, ignore_dirs)
+                    reconnect_attempts = 0  # Reset on successful connection
+                except (pywatchman.WatchmanError, Exception) as e:
+                    reconnect_attempts += 1
+                    if reconnect_attempts >= MAX_RECONNECT_ATTEMPTS:
+                        logging.error(f"Failed to connect to watchman after {MAX_RECONNECT_ATTEMPTS} attempts, exiting")
+                        sys.exit(1)
+                    logging.error(f"Failed to connect to watchman: {e}")
+                    logging.info(f"Retrying in {RECONNECT_DELAY}s (attempt {reconnect_attempts}/{MAX_RECONNECT_ATTEMPTS})...")
+                    time.sleep(RECONNECT_DELAY)
+                    continue
+
+            # Wait for changes
             try:
                 result = client.receive()
 
@@ -205,6 +228,15 @@ def watch_and_rebuild(config_path, command=None):
 
             except pywatchman.SocketTimeout:
                 continue
+            except pywatchman.WatchmanError as e:
+                logging.warning(f"Watchman error: {e}")
+                logging.info(f"Reconnecting in {RECONNECT_DELAY}s...")
+                try:
+                    client.close()
+                except:
+                    pass
+                client = None
+                time.sleep(RECONNECT_DELAY)
 
     except KeyboardInterrupt:
         logging.info("Received interrupt, stopping...")
@@ -212,10 +244,11 @@ def watch_and_rebuild(config_path, command=None):
         # Cancel any pending debounce timer
         if debounce_timer is not None:
             debounce_timer.cancel()
-        try:
-            client.close()
-        except:
-            pass
+        if client is not None:
+            try:
+                client.close()
+            except:
+                pass
 
 
 if __name__ == '__main__':
