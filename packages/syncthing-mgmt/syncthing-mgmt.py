@@ -28,7 +28,7 @@ USER_AGENT = "syncthing-mgmt/1.0.0"
 logging.basicConfig(
     level=logging.INFO,
     format='%(message)s',
-    stream=sys.stderr
+    stream=sys.stdout
 )
 
 
