@@ -8,6 +8,7 @@
     download-torrent
     nodePackages.prettier
     open-gh-notifications-py
+    ps-top-nu
     sops
     ssh-to-age
     swiftformat
