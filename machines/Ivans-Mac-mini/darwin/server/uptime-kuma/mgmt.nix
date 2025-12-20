@@ -157,6 +157,28 @@
         description = "Open WebUI";
       }
 
+      # Logging & Monitoring Stack
+      {
+        name = "grafana";
+        url = "http://${config.flags.miniIp}:3000";
+        description = "Grafana dashboard";
+      }
+      {
+        name = "loki";
+        url = "http://${config.flags.miniIp}:3100/ready";
+        description = "Loki log aggregation";
+      }
+      {
+        name = "prometheus";
+        url = "http://${config.flags.miniIp}:9090";
+        description = "Prometheus metrics";
+      }
+      {
+        name = "promtail";
+        url = "http://${config.flags.miniIp}:9080/ready";
+        description = "Promtail log collector";
+      }
+
       # Matrix Bridges (TCP port monitoring - localhost only)
       {
         name = "mautrix-whatsapp";

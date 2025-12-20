@@ -235,6 +235,30 @@
 		}
 	}
 
+	@grafana host grafana.@externalDomain@
+	reverse_proxy @grafana @miniIp@:3000 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
+	@loki host loki.@externalDomain@
+	reverse_proxy @loki @miniIp@:3100 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
+	@prometheus host prometheus.@externalDomain@
+	reverse_proxy @prometheus @miniIp@:9090 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
+	@promtail host promtail.@externalDomain@
+	reverse_proxy @promtail @miniIp@:9080 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
 	# Logging for ACME and DNS services
 	log {
 		output file @logPathPrefix@/caddy/acme-sync.log {
