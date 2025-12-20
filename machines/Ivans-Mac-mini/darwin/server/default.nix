@@ -43,6 +43,7 @@
     ./homebrew.nix
     ./http.nix
     ./jellyfin
+    ./monitoring
     ./logrotate.nix
     ./matrix
     ./media
