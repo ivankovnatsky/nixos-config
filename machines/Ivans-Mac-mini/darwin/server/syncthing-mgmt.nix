@@ -84,6 +84,14 @@
         ];
       };
 
+      "simcity4" = {
+        path = "/Volumes/Storage/Data/Drive/Crypt/GameSaves/SimCity4";
+        label = "Drive/Crypt/GameSaves/SimCity4";
+        devices = [
+          "a3"
+        ];
+      };
+
     };
 
     restart = false;
