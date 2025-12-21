@@ -205,7 +205,7 @@ else
   else
     export TARGET_MACHINE=192.168.50.4
   fi
-  export BACKUP_PATH=$STORAGE_DATA_PATH/Drive/Crypt/Machines/
+  export BACKUP_PATH=$STORAGE_DATA_PATH/Backup/Machines/
   HOSTNAME=$(hostname)
   export HOSTNAME
   DATE_DIR=$(date +%Y-%m-%d)

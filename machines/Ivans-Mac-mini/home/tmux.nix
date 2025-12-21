@@ -9,8 +9,8 @@
         root: ${config.flags.miniStoragePath}
 
         windows:
-          - crypt:
-              root: ${config.flags.miniStoragePath}/Drive/Crypt
+          - backup:
+              root: ${config.flags.miniStoragePath}/Backup
               layout: main-horizontal
               panes:
                 - ls -lah
