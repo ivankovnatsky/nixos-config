@@ -106,6 +106,26 @@
         };
       };
 
+      # Window rules for specific applications
+      window-rules = [
+        {
+          description = "Kitty - No titlebar";
+          match = {
+            window-class = {
+              value = "kitty";
+              type = "exact";
+              match-whole = false;
+            };
+          };
+          apply = {
+            noborder = {
+              value = true;
+              apply = "force";
+            };
+          };
+        }
+      ];
+
       # Configure KDE Wallet for GPG passphrases
       configFile = {
         kwalletrc = {
