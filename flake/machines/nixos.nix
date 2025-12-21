@@ -14,7 +14,7 @@
       {
         nixpkgs.overlays = [
           inputs.self.overlay
-          inputs.nur.overlay
+          inputs.nur-nixos-unstable.overlays.default
         ];
         nixpkgs.config.allowUnfree = true;
         nix.nixPath = [
