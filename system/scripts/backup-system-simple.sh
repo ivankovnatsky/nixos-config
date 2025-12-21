@@ -87,7 +87,7 @@ DATE_DIR=$(date +%Y-%m-%d)
 export DATE_DIR
 
 # Always copy to mini regardless of machine
-BACKUP_PATH=$STORAGE_DATA_PATH/Drive/Crypt/Machines/
+BACKUP_PATH=$STORAGE_DATA_PATH/Backup/Machines/
 # shellcheck disable=SC2029
 ssh "ivan@$TARGET_MACHINE" "mkdir -p $BACKUP_PATH/$HOSTNAME/system/$DATE_DIR"
 scp "$ARCHIVE_PATH" ivan@"$TARGET_MACHINE:$BACKUP_PATH/$HOSTNAME/system/$DATE_DIR/system.tar.gz"

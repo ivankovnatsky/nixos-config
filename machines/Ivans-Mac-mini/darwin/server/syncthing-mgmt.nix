@@ -85,8 +85,8 @@
       };
 
       "simcity4" = {
-        path = "/Volumes/Storage/Data/Drive/Crypt/GameSaves/SimCity4";
-        label = "Drive/Crypt/GameSaves/SimCity4";
+        path = "/Volumes/Storage/Data/Backup/GameSaves/SimCity4";
+        label = "Backup/GameSaves/SimCity4";
         devices = [
           "a3"
         ];
