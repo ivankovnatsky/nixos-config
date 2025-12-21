@@ -3,7 +3,7 @@
 {
   home.activation.ghAuth = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     if ! ${pkgs.gh}/bin/gh auth status >/dev/null 2>&1; then
-      ${pkgs.gh}/bin/gh auth login --git-protocol https --web
+      PATH="/usr/bin:$PATH" ${pkgs.gh}/bin/gh auth login --git-protocol https --web
     fi
   '';
 
