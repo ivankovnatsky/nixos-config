@@ -102,8 +102,8 @@
       flake = false;
     };
 
-    nur = {
-      url = "github:nix-community/NUR";
+    nur-nixos-unstable = {
+      url = "github:nix-community/NUR/main";
     };
 
     # https://discourse.nixos.org/t/error-atopile-cannot-be-found-in-pkgs/70461
