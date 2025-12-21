@@ -932,11 +932,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1764841609,
-        "narHash": "sha256-pIz2ynDe/Fyr/x5WjCdAwm5QC7pGJlYYdrOckL8E4hc=",
+        "lastModified": 1766305689,
+        "narHash": "sha256-D2fi55Rmd9jx3Vuka9DA9ev5S4FA7wu+T3oXmfgsjsg=",
         "owner": "ivankovnatsky",
         "repo": "podservice",
-        "rev": "60da9f112e9426e9013c5caf88d4395558e20256",
+        "rev": "895fe16ea7d6d37331802dd65092a77fdd95907b",
         "type": "github"
       },
       "original": {
