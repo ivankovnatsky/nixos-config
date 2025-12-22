@@ -974,11 +974,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1766398281,
-        "narHash": "sha256-QMcg+NQ7yHLeyvjKFI9YEXgJbnTcSnRtI7xGxh91S2M=",
+        "lastModified": 1766398582,
+        "narHash": "sha256-KCzsodoSKteGfVA7P3ggdmuqHSJGBdU+VZk+Gj58PM8=",
         "owner": "ivankovnatsky",
         "repo": "podservice",
-        "rev": "cbc00726284cec8fab67fb2e940395eae366c6c0",
+        "rev": "c8130cc8107b7ff31cb3785842deafebcdd7c9fd",
         "type": "github"
       },
       "original": {
