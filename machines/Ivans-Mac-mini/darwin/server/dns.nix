@@ -8,8 +8,9 @@
 {
   # Configure system to use local dnsmasq as DNS resolver
   networking.knownNetworkServices = [
-    "Ethernet"
     "AX88179A"
+    "Ethernet"
+    "Thunderbolt Bridge"
     "Wi-Fi"
   ];
   networking.dns = [
