@@ -1,15 +1,19 @@
 #!/usr/bin/env bash
 
-# Define a function for finding only Syncthing-related conflict files
-find_syncthing_files() {
-  find . -type f \( \
-    -name "*sync-conflict*" -o \
-    -name ".syncthing.*.tmp" \
-    \) "$@"
-}
+set -e
 
-# First show files that will be deleted
-find_syncthing_files
+# Clean Syncthing conflict files from specified directories (or current directory)
+dirs=("${@:-.}")
 
-# Then delete them
-find_syncthing_files -delete
+for dir in "${dirs[@]}"; do
+  if [ -d "$dir" ]; then
+    echo "Cleaning Syncthing files in: $dir"
+    fd --hidden --no-ignore --type f \
+      '(sync-conflict|\.syncthing\..*\.tmp$)' "$dir" \
+      --exec rm -v {}
+  else
+    echo "Skipping (not found): $dir"
+  fi
+done
+
+echo "Syncthing cleanup complete at $(date)"
