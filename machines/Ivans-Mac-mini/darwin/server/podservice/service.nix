@@ -6,8 +6,9 @@
 
 let
   dataDir = "${config.flags.miniStoragePath}/Media/Podservice";
-  audioDir = "${dataDir}/audio";
-  metadataDir = "${dataDir}/metadata";
+  audioDir = "${dataDir}/Audio";
+  metadataDir = "${dataDir}/Metadata";
+  thumbnailsDir = "${dataDir}/Thumbnails";
   urlsFile = "${dataDir}/urls.txt";
 
   configFile = pkgs.writeText "podservice-config.yaml" (builtins.toJSON {
@@ -26,6 +27,8 @@ let
     storage = {
       data_dir = dataDir;
       audio_dir = audioDir;
+      metadata_dir = metadataDir;
+      thumbnails_dir = thumbnailsDir;
     };
     watch = {
       enabled = true;
@@ -48,6 +51,7 @@ in
     extraDirs = [
       audioDir
       metadataDir
+      thumbnailsDir
     ];
     preStart = ''
       # Generate runtime config with secrets
