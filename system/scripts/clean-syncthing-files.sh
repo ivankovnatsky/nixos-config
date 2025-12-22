@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -ex
 
 # Clean Syncthing conflict files from specified directories (or current directory)
 dirs=("${@:-.}")
