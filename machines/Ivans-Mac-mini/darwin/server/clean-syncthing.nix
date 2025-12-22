@@ -14,7 +14,7 @@ in
   local.launchd.services.clean-syncthing = {
     enable = true;
     type = "user-agent";
-    command = "clean-syncthing-files ${pathArgs}";
+    command = "clean-syncthing-files --delete ${pathArgs}";
     runAtLoad = false;
     keepAlive = false;
     waitForPath = "/Volumes/Storage";
