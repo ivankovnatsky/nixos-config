@@ -10,7 +10,7 @@ for dir in "${dirs[@]}"; do
     echo "Cleaning Syncthing files in: $dir"
     fd --hidden --no-ignore --type f \
       '(sync-conflict|\.syncthing\..*\.tmp$)' "$dir" \
-      --exec rm -v {}
+      -X rm -v
   else
     echo "Skipping (not found): $dir"
   fi
