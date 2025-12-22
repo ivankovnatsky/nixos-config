@@ -36,6 +36,7 @@
       "mos"
       "silicon-labs-vcp-driver"
       "stats"
+      "steam"
       "windsurf"
       "mullvad-vpn"
     ];
