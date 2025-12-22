@@ -3,7 +3,7 @@
 set -euo pipefail
 
 DELETE=false
-MAX_FILES=50
+MAX_FILES=10
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
