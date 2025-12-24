@@ -6,4 +6,7 @@
 
 set -e
 
+# Clear local DNS settings before shutting down Mini (which hosts DNS)
+dns clear
+
 ssh ivan@ivans-mac-mini.local "sudo shutdown -h now"
