@@ -7,15 +7,15 @@
     ../../../darwin/hammerspoon.nix
     ../../../darwin/mos.nix
     ../../../darwin/nextdns.nix
-    ../../../darwin/stats.nix
-    ../../../darwin/syncthing.nix
     ../../../darwin/nix.nix
     ../../../darwin/no-dock-restart.nix
     ../../../darwin/security.nix
     ../../../darwin/shell.nix
+    ../../../darwin/stats.nix
     ../../../darwin/sudo.nix
-    ../../../darwin/users.nix
+    ../../../darwin/syncthing.nix
     ../../../darwin/system.nix
+    ../../../darwin/users.nix
     ../../../modules/darwin/dock
     ../../../modules/darwin/launchd
     ../../../modules/darwin/nextdns-mgmt
