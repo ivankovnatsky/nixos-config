@@ -3,7 +3,7 @@
 {
   home.packages = with pkgs; [
     aria2
-    switch-scaling
+    settings
     tree
     asusrouter-cli
     nodePackages.prettier
@@ -16,8 +16,6 @@
     download-torrent
     ps-top-nu
     watchman-rebuild
-
-    switch-appearance
 
     hyperfine
   ];

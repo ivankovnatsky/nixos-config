@@ -12,7 +12,7 @@
     sops
     ssh-to-age
     swiftformat
-    switch-scaling
+    settings
     syncthing-mgmt
     tree
     treefmt
