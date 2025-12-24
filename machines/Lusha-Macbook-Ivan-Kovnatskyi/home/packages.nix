@@ -118,8 +118,7 @@
     sshpass
     ssm-session-manager-plugin
     stylua
-    switch-appearance
-    switch-scaling
+    settings
     syncthing-mgmt
     terraformer
     terragrunt-atlantis-config

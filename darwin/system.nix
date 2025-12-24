@@ -9,14 +9,14 @@ in
 {
   system = {
     activationScripts.postActivation.text = ''
-      # Skip if switch-appearance was run today (user manually set appearance)
-      STATE_FILE="$HOME/.local/state/switch-appearance/last-run"
+      # Skip if settings appearance was run today (user manually set appearance)
+      STATE_FILE="$HOME/.local/state/settings/appearance/last-run"
       TODAY=$(date "+%Y-%m-%d")
 
       if [ -f "$STATE_FILE" ] && [ "$(cat "$STATE_FILE")" = "$TODAY" ]; then
-        echo "Skipping appearance setup (switch-appearance was run today)" >&2
+        echo "Skipping appearance setup (settings appearance was run today)" >&2
       else
-        ${pkgs.switch-appearance}/bin/switch-appearance init 2>&1 || \
+        ${pkgs.settings}/bin/settings appearance --init 2>&1 || \
           echo "Warning: Could not set appearance (TCC access may be required)" >&2
       fi
     '';

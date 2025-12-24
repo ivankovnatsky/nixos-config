@@ -31,7 +31,7 @@
     rustc
     dns
     smctemp # Local overlay
-    switch-appearance
+    settings
     syncthing
     syncthing-mgmt
     typst
