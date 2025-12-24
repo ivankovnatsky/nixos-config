@@ -5,6 +5,7 @@
     ../../../darwin/dock.nix
     ../../../darwin/flags.nix
     ../../../darwin/fonts.nix
+    ../../../darwin/hammerspoon.nix
     ../../../darwin/mos.nix
     ../../../darwin/nextdns.nix
     ../../../darwin/nix.nix
