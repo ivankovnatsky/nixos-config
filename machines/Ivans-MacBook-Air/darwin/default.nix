@@ -1,34 +1,34 @@
 {
   imports = [
-    ../../../system/sops-secrets.nix
     ../../../darwin/amethyst.nix
     ../../../darwin/darwin.nix
     ../../../darwin/dock.nix
     ../../../darwin/flags.nix
     ../../../darwin/fonts.nix
     ../../../darwin/mos.nix
-    ../../../darwin/stats.nix
-    ../../../darwin/syncthing.nix
     ../../../darwin/nextdns.nix
     ../../../darwin/nix.nix
+    ../../../darwin/no-dock-restart.nix
     ../../../darwin/security.nix
     ../../../darwin/shell.nix
+    ../../../darwin/stats.nix
     ../../../darwin/sudo.nix
-    ../../../darwin/users.nix
+    ../../../darwin/syncthing.nix
     ../../../darwin/system.nix
+    ../../../darwin/users.nix
     ../../../modules/darwin/dock
     ../../../modules/darwin/launchd
     ../../../modules/darwin/nextdns-mgmt
     ../../../modules/darwin/pam
+    ../../../modules/darwin/rebuild-daemon
     ../../../modules/darwin/sudo
     ../../../modules/darwin/syncthing-mgmt
-    ../../../modules/darwin/rebuild-daemon
     ../../../modules/flags
     ../../../system/documentation.nix
     ../../../system/nix.nix
     ../../../system/rebuild-daemon.nix
     ../../../system/scripts
-    ../../../darwin/no-dock-restart.nix
+    ../../../system/sops-secrets.nix
     ./git.nix
     ./homebrew.nix
     ./syncthing-mgmt.nix
