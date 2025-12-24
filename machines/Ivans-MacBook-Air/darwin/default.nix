@@ -29,7 +29,6 @@
     ../../../system/nix.nix
     ../../../system/rebuild-daemon.nix
     ../../../system/scripts
-    ../../../system/sops-secrets.nix
     ./git.nix
     ./homebrew.nix
     ./syncthing-mgmt.nix
