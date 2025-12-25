@@ -248,14 +248,6 @@ MENUBAR_MODE_DESCRIPTIONS = {
     "desktop": "On Desktop Only",
 }
 
-MENUBAR_MODE_TO_MENU_ITEM = {
-    "never": "Never",
-    "always": "Always",
-    "fullscreen": "In Full Screen Only",
-    "desktop": "On Desktop Only",
-}
-
-
 def menubar_get_current_mode() -> str:
     """Get current menubar visibility mode via osascript."""
     subprocess.run(
@@ -279,7 +271,7 @@ end tell
     )
     value = result.stdout.strip()
 
-    for mode, menu_text in MENUBAR_MODE_TO_MENU_ITEM.items():
+    for mode, menu_text in MENUBAR_MODE_DESCRIPTIONS.items():
         if menu_text == value:
             return mode
     return "unknown"
@@ -287,7 +279,7 @@ end tell
 
 def menubar_set_mode(mode: str) -> None:
     """Set menubar visibility mode via osascript."""
-    menu_item = MENUBAR_MODE_TO_MENU_ITEM[mode]
+    menu_item = MENUBAR_MODE_DESCRIPTIONS[mode]
 
     subprocess.run(
         ["open", "x-apple.systempreferences:com.apple.ControlCenter-Settings.extension"],
@@ -335,7 +327,7 @@ def cmd_menubar(args: argparse.Namespace) -> int:
         return 0
 
     if args.mode:
-        if args.mode not in MENUBAR_MODE_TO_MENU_ITEM:
+        if args.mode not in MENUBAR_MODE_DESCRIPTIONS:
             print(f"Unknown mode: {args.mode}", file=sys.stderr)
             return 1
         menubar_set_mode(args.mode)
