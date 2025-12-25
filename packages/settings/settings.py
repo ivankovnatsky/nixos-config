@@ -654,7 +654,7 @@ def main() -> int:
     # Scaling subcommand
     scaling_parser = subparsers.add_parser(
         "scaling",
-        aliases=["s"],
+        aliases=["s", "scale"],
         help="Toggle display scaling (macOS only)",
     )
     scaling_parser.add_argument(
