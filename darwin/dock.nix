@@ -67,6 +67,7 @@ in
       { path = "/Applications/Windsurf.app/"; }
       { path = "/Applications/coconutBattery.app/"; }
       { path = "/Applications/KeyCastr.app/"; }
+      { path = "/Applications/Steam.app/"; }
 
       {
         path = "${homePath}/Downloads/";
