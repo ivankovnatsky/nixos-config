@@ -34,3 +34,8 @@ case "$response" in
         echo "Skipping Screen Sharing."
         ;;
 esac
+
+# Wait for user to unlock via UI, then set DNS
+printf "Press Enter after unlocking Mini via Screen Sharing... "
+read -r
+dns "$MINI_IP"
