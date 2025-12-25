@@ -258,11 +258,13 @@ MENUBAR_MODE_TO_MENU_ITEM = {
 
 def menubar_get_current_mode() -> str:
     """Get current menubar visibility mode via osascript."""
+    subprocess.run(
+        ["open", "x-apple.systempreferences:com.apple.ControlCenter-Settings.extension"],
+        check=True,
+    )
+
     script = '''
-tell application "System Settings"
-    activate
-    delay 0.5
-end tell
+delay 0.8
 tell application "System Events"
     tell process "System Settings"
         set thePopup to pop up button "Automatically hide and show the menu bar" of group 1 of scroll area 1 of group 1 of group 3 of splitter group 1 of group 1 of window 1
@@ -594,19 +596,32 @@ def cmd_autohide(args: argparse.Namespace) -> int:
         print("Autohide settings only available on macOS", file=sys.stderr)
         return 1
 
-    dock_hidden = dock_get_autohide()
-    menubar_mode = menubar_get_current_mode()
-
-    if dock_hidden or menubar_mode == "desktop":
-        dock_set_autohide(False)
-        print("Dock: visible")
-        menubar_set_mode("fullscreen")
-        print(f"Menubar: {MENUBAR_MODE_DESCRIPTIONS['fullscreen']}")
+    if args.mode:
+        # Explicit mode specified
+        mode = args.mode
     else:
+        # Toggle between always and fullscreen
+        dock_hidden = dock_get_autohide()
+        menubar_mode = menubar_get_current_mode()
+
+        if dock_hidden or menubar_mode == "always":
+            mode = "fullscreen"
+        elif menubar_mode == "fullscreen":
+            mode = "always"
+        else:
+            # Default to fullscreen for other modes (desktop, never)
+            mode = "fullscreen"
+
+    # Set dock based on mode
+    if mode == "always":
         dock_set_autohide(True)
         print("Dock: hidden")
-        menubar_set_mode("desktop")
-        print(f"Menubar: {MENUBAR_MODE_DESCRIPTIONS['desktop']}")
+    else:
+        dock_set_autohide(False)
+        print("Dock: visible")
+
+    menubar_set_mode(mode)
+    print(f"Menubar: {MENUBAR_MODE_DESCRIPTIONS[mode]}")
 
     return 0
 
@@ -682,6 +697,12 @@ def main() -> int:
         "autohide",
         aliases=["ah"],
         help="Toggle dock and menubar autohide (macOS only)",
+    )
+    autohide_parser.add_argument(
+        "mode",
+        nargs="?",
+        choices=["always", "desktop", "fullscreen", "never"],
+        help="Set specific mode (default: toggle between always/fullscreen)",
     )
     autohide_parser.set_defaults(func=cmd_autohide)
 
