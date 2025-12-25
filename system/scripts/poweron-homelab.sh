@@ -4,8 +4,6 @@
 # Usage: ./poweron-homelab.sh
 # This script will unlock Mini and optionally open Screen Sharing
 
-set -e
-
 MINI_IP="192.168.50.4"
 MINI_USER="ivan"
 
