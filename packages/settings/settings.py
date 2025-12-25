@@ -309,15 +309,13 @@ tell application "System Settings" to quit
 
 
 def menubar_cycle_mode() -> None:
-    """Cycle through modes in order: never -> fullscreen -> desktop -> always -> never."""
-    cycle_order = ["never", "fullscreen", "desktop", "always"]
+    """Toggle between fullscreen and desktop modes."""
     current = menubar_get_current_mode()
 
-    if current in cycle_order:
-        idx = cycle_order.index(current)
-        next_mode = cycle_order[(idx + 1) % len(cycle_order)]
+    if current == "fullscreen":
+        next_mode = "desktop"
     else:
-        next_mode = "never"
+        next_mode = "fullscreen"
 
     menubar_set_mode(next_mode)
     print(f"Menubar: {MENUBAR_MODE_DESCRIPTIONS[next_mode]}")
@@ -498,7 +496,7 @@ def scaling_set_resolution(display: dict, mode: dict) -> bool:
         return False
 
 
-def scaling_get_dock_autohide() -> bool:
+def dock_get_autohide() -> bool:
     """Check if dock autohide is enabled."""
     try:
         result = subprocess.run(
@@ -511,7 +509,7 @@ def scaling_get_dock_autohide() -> bool:
         return False
 
 
-def scaling_set_dock_autohide(enabled: bool) -> bool:
+def dock_set_autohide(enabled: bool) -> bool:
     """Set dock autohide and restart dock."""
     try:
         subprocess.run(
@@ -525,10 +523,10 @@ def scaling_set_dock_autohide(enabled: bool) -> bool:
         return False
 
 
-def scaling_toggle_dock() -> int:
+def dock_toggle() -> int:
     """Toggle dock visibility."""
-    current = scaling_get_dock_autohide()
-    if scaling_set_dock_autohide(not current):
+    current = dock_get_autohide()
+    if dock_set_autohide(not current):
         status = "hidden" if not current else "visible"
         print(f"Dock is now {status}")
         return 0
@@ -571,8 +569,46 @@ def cmd_scaling(args: argparse.Namespace) -> int:
 
     result = scaling_toggle()
     if result == 0 and args.dock:
-        scaling_toggle_dock()
+        dock_toggle()
     return result
+
+
+# Dock: Toggle dock autohide (macOS only)
+def cmd_dock(args: argparse.Namespace) -> int:
+    if not is_macos():
+        print("Dock settings only available on macOS", file=sys.stderr)
+        return 1
+
+    if args.status:
+        hidden = dock_get_autohide()
+        status = "hidden (auto-hide enabled)" if hidden else "visible"
+        print(f"Dock: {status}")
+        return 0
+
+    return dock_toggle()
+
+
+# Autohide: Toggle dock and menubar autohide (macOS only)
+def cmd_autohide(args: argparse.Namespace) -> int:
+    if not is_macos():
+        print("Autohide settings only available on macOS", file=sys.stderr)
+        return 1
+
+    dock_hidden = dock_get_autohide()
+    menubar_mode = menubar_get_current_mode()
+
+    if dock_hidden or menubar_mode == "desktop":
+        dock_set_autohide(False)
+        print("Dock: visible")
+        menubar_set_mode("fullscreen")
+        print(f"Menubar: {MENUBAR_MODE_DESCRIPTIONS['fullscreen']}")
+    else:
+        dock_set_autohide(True)
+        print("Dock: hidden")
+        menubar_set_mode("desktop")
+        print(f"Menubar: {MENUBAR_MODE_DESCRIPTIONS['desktop']}")
+
+    return 0
 
 
 # Main CLI
@@ -610,8 +646,8 @@ def main() -> int:
     menubar_parser.add_argument(
         "mode",
         nargs="?",
-        choices=["never", "always", "fullscreen", "desktop"],
-        help="Set specific mode (default: cycle through modes)",
+        choices=["always", "desktop", "fullscreen", "never"],
+        help="Set specific mode (default: toggle fullscreen/desktop)",
     )
     menubar_parser.set_defaults(func=cmd_menubar)
 
@@ -627,6 +663,27 @@ def main() -> int:
         help="Also toggle dock auto-hide",
     )
     scaling_parser.set_defaults(func=cmd_scaling)
+
+    # Dock subcommand
+    dock_parser = subparsers.add_parser(
+        "dock",
+        aliases=["d"],
+        help="Toggle dock autohide (macOS only)",
+    )
+    dock_parser.add_argument(
+        "--status",
+        action="store_true",
+        help="Show current dock autohide status",
+    )
+    dock_parser.set_defaults(func=cmd_dock)
+
+    # Autohide subcommand
+    autohide_parser = subparsers.add_parser(
+        "autohide",
+        aliases=["ah"],
+        help="Toggle dock and menubar autohide (macOS only)",
+    )
+    autohide_parser.set_defaults(func=cmd_autohide)
 
     args = parser.parse_args()
 
