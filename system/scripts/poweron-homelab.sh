@@ -37,3 +37,6 @@ esac
 printf "Press Enter after unlocking Mini via Screen Sharing... "
 read -r
 dns "$MINI_IP"
+
+# Open kuma dashboard to make sure all services are running
+open http://${MINI_IP}:3001
