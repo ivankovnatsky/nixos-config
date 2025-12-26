@@ -37,30 +37,27 @@ def is_kde() -> bool:
 
 
 # Appearance: Dark/Light Mode + Wallpaper
+def _get_skylight():
+    """Load SkyLight framework for immediate dark mode changes."""
+    from ctypes import CDLL, c_bool
+
+    lib = CDLL("/System/Library/PrivateFrameworks/SkyLight.framework/SkyLight")
+    lib.SLSGetAppearanceThemeLegacy.argtypes = []
+    lib.SLSGetAppearanceThemeLegacy.restype = c_bool
+    lib.SLSSetAppearanceThemeLegacy.argtypes = [c_bool]
+    return lib
+
+
 def appearance_get_theme_macos() -> bool:
     """Returns True if dark mode is enabled."""
-    result = subprocess.run(
-        [
-            "osascript",
-            "-e",
-            'tell application "System Events" to tell appearance preferences to get dark mode',
-        ],
-        capture_output=True,
-        text=True,
-    )
-    return result.stdout.strip() == "true"
+    lib = _get_skylight()
+    return lib.SLSGetAppearanceThemeLegacy()
 
 
 def appearance_set_dark_mode_macos(dark: bool) -> None:
-    mode = "true" if dark else "false"
-    subprocess.run(
-        [
-            "osascript",
-            "-e",
-            f'tell application "System Events" to tell appearance preferences to set dark mode to {mode}',
-        ],
-        check=True,
-    )
+    """Set dark mode using SkyLight framework (takes effect immediately)."""
+    lib = _get_skylight()
+    lib.SLSSetAppearanceThemeLegacy(dark)
 
 
 def appearance_set_wallpaper_macos(color: str) -> None:
