@@ -21,7 +21,6 @@
     ../../../../modules/darwin/sharing
     ../../../../modules/darwin/stubby
     ../../../../modules/darwin/sudo
-    ../../../../modules/darwin/rebuild-daemon
     ../../../../modules/darwin/rebuild-terminal
     ../../../../modules/flags
     ./flags.nix
@@ -32,7 +31,6 @@
     ../../../../modules/darwin/uptime-kuma-mgmt
     ../../../../system/documentation.nix
     ../../../../system/nix.nix
-    ../../../../system/rebuild-daemon.nix
     ../../../../darwin/rebuild-terminal.nix
     ./beszel.nix
     ./audiobookshelf
