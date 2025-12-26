@@ -64,9 +64,9 @@
 	view = diff --unified=10 HEAD
 	# View all changes with bat pager
 	view-pager = "!git diff --unified=10 HEAD | bat"
-	# Get single changed file (staged, unstaged, or untracked) - fails if not exactly 1 file
-	single-file = "!f() { files=$( { git diff --name-only; git diff --staged --name-only; git ls-files --others --exclude-standard; } | sort -u ); if [ -z \"$files\" ]; then echo 'No changes detected' >&2; return 1; fi; count=$(echo \"$files\" | wc -l | tr -d ' '); if [ \"$count\" -ne 1 ]; then echo \"Expected 1 file, found $count:\" >&2; echo \"$files\" >&2; return 1; fi; echo \"$files\"; }; f"
-	# Get commit message prefix from single changed file (strips .nix extension)
+	# Get single staged file - fails if not exactly 1 file staged
+	single-file = "!f() { files=$(git diff --staged --name-only); if [ -z \"$files\" ]; then echo 'No staged files' >&2; return 1; fi; count=$(echo \"$files\" | wc -l | tr -d ' '); if [ \"$count\" -ne 1 ]; then echo \"Expected 1 staged file, found $count:\" >&2; echo \"$files\" >&2; return 1; fi; echo \"$files\"; }; f"
+	# Get commit message prefix from single staged file (strips .nix extension)
 	commit-prefix = "!f() { file=$(git single-file) || return 1; echo \"$file\" | sed 's/\\.nix$//'; }; f"
-	# Commit single file with auto-generated prefix: git message "description"
-	message = "!f() { prefix=$(git commit-prefix) || return 1; file=$(git single-file); git add \"$file\" && git commit -m \"$prefix: $1\"; }; f"
+	# Commit single staged file with auto-generated prefix: git add <file> && git message "subject"
+	message = "!f() { prefix=$(git commit-prefix) || return 1; git commit -m \"$prefix: $1\"; }; f"
