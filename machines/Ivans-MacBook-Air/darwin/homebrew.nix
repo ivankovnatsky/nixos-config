@@ -34,7 +34,6 @@
       }
       "mos"
       "silicon-labs-vcp-driver"
-      "steam"
       "stats"
       "vlc"
       "windsurf"
