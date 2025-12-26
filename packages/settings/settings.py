@@ -587,6 +587,15 @@ def cmd_autohide(args: argparse.Namespace) -> int:
         print("Autohide settings only available on macOS", file=sys.stderr)
         return 1
 
+    if args.status:
+        dock_hidden = dock_get_autohide()
+        menubar_mode = menubar_get_current_mode()
+        dock_status = "hidden (auto-hide enabled)" if dock_hidden else "visible"
+        menubar_desc = MENUBAR_MODE_DESCRIPTIONS.get(menubar_mode, "Unknown")
+        print(f"Dock: {dock_status}")
+        print(f"Menubar: {menubar_mode} ({menubar_desc})")
+        return 0
+
     if args.mode:
         # Explicit mode specified
         mode = args.mode
@@ -735,6 +744,11 @@ def main() -> int:
         "autohide",
         aliases=["ah"],
         help="Toggle dock and menubar autohide (macOS only)",
+    )
+    autohide_parser.add_argument(
+        "--status",
+        action="store_true",
+        help="Show current autohide status",
     )
     autohide_parser.add_argument(
         "mode",
