@@ -7,8 +7,9 @@
     beszel-mgmt
     cargo
     delta
-    dust
+    dns
     duf
+    dust
     exiftool
     fzf
     gallery-dl
@@ -23,6 +24,7 @@
     mkpasswd
     nextdns-mgmt
     nixfmt-rfc-style
+    nixpkgs-darwin-master.yt-dlp
     nodePackages.prettier
     nodejs
     open-gh-notifications-py
@@ -36,7 +38,6 @@
     rust-analyzer
     rustc
     sesh
-    dns
     shellcheck
     shfmt
     smctemp # Local overlay
@@ -53,7 +54,6 @@
     watchman-make
     watchman-rebuild
     wget
-    nixpkgs-darwin-master.yt-dlp
     zsh-forgit
   ];
 }
