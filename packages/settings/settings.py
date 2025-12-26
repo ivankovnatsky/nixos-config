@@ -6,6 +6,7 @@ Subcommands:
   menubar     Toggle menubar visibility modes (macOS only)
   scaling     Toggle display scaling resolution (macOS only)
   scrolling   Toggle natural scrolling on/off (macOS only)
+  awake       Prevent system from sleeping (macOS + Linux)
 """
 
 from __future__ import annotations
@@ -23,6 +24,11 @@ from pathlib import Path
 def is_macos() -> bool:
     import platform
     return platform.system() == "Darwin"
+
+
+def is_linux() -> bool:
+    import platform
+    return platform.system() == "Linux"
 
 
 def is_kde() -> bool:
@@ -667,6 +673,101 @@ def cmd_scrolling(args: argparse.Namespace) -> int:
     return 0
 
 
+# Awake: Prevent system from sleeping (macOS + Linux)
+DEFAULT_AWAKE_TIMEOUT = 43200  # 12 hours in seconds
+
+
+def awake_macos(timeout: int) -> int:
+    """Prevent sleep on macOS using caffeinate."""
+    print(f"Preventing sleep on macOS for {timeout} seconds...")
+    print("Press Ctrl+C to stop")
+    try:
+        subprocess.run(
+            ["/usr/bin/caffeinate", "-d", "-i", "-m", "-s", "-t", str(timeout)],
+            check=True,
+        )
+        return 0
+    except KeyboardInterrupt:
+        print("\nStopped")
+        return 0
+    except subprocess.CalledProcessError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 1
+
+
+def awake_linux_systemd(timeout: int) -> int:
+    """Prevent sleep on Linux using systemd-inhibit."""
+    print(f"Preventing sleep on Linux for {timeout} seconds...")
+    print("Press Ctrl+C to stop")
+    try:
+        subprocess.run(
+            [
+                "systemd-inhibit",
+                "--what=idle:sleep:handle-lid-switch",
+                "--who=settings-awake",
+                "--why=User requested to prevent sleep",
+                "--mode=block",
+                "sleep",
+                str(timeout),
+            ],
+            check=True,
+        )
+        return 0
+    except KeyboardInterrupt:
+        print("\nStopped")
+        return 0
+    except subprocess.CalledProcessError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 1
+
+
+def awake_linux_xset(timeout: int) -> int:
+    """Prevent sleep on Linux using xset (X11)."""
+    print(f"Preventing sleep on Linux using xset for {timeout} seconds...")
+    print("Press Ctrl+C to stop")
+    import time
+
+    start = time.time()
+    try:
+        while time.time() - start < timeout:
+            subprocess.run(["xset", "s", "off", "-dpms"], check=True, capture_output=True)
+            time.sleep(60)
+        return 0
+    except KeyboardInterrupt:
+        print("\nStopped")
+        return 0
+    except subprocess.CalledProcessError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 1
+
+
+def cmd_awake(args: argparse.Namespace) -> int:
+    timeout = args.timeout
+
+    if is_macos():
+        return awake_macos(timeout)
+    elif is_linux():
+        result = subprocess.run(
+            ["which", "systemd-inhibit"],
+            capture_output=True,
+        )
+        if result.returncode == 0:
+            return awake_linux_systemd(timeout)
+
+        result = subprocess.run(
+            ["which", "xset"],
+            capture_output=True,
+        )
+        if result.returncode == 0:
+            return awake_linux_xset(timeout)
+
+        print("Error: Could not find systemd-inhibit or xset", file=sys.stderr)
+        return 1
+    else:
+        print("Unsupported platform", file=sys.stderr)
+        return 1
+
+
 # Main CLI
 def main() -> int:
     parser = argparse.ArgumentParser(
@@ -770,6 +871,21 @@ def main() -> int:
         help="Set specific mode (default: toggle)",
     )
     scrolling_parser.set_defaults(func=cmd_scrolling)
+
+    # Awake subcommand
+    awake_parser = subparsers.add_parser(
+        "awake",
+        aliases=["w"],
+        help="Prevent system from sleeping (macOS + Linux)",
+    )
+    awake_parser.add_argument(
+        "-t",
+        "--timeout",
+        type=int,
+        default=DEFAULT_AWAKE_TIMEOUT,
+        help=f"Timeout in seconds (default: {DEFAULT_AWAKE_TIMEOUT} = 12 hours)",
+    )
+    awake_parser.set_defaults(func=cmd_awake)
 
     args = parser.parse_args()
 
