@@ -69,4 +69,5 @@
 	# Get commit message prefix from single staged file (strips .nix extension)
 	commit-prefix = "!f() { file=$(git single-file) || return 1; echo \"$file\" | sed 's/\\.nix$//'; }; f"
 	# Commit single staged file with auto-generated prefix: git add <file> && git message "subject"
-	message = "!f() { prefix=$(git commit-prefix) || return 1; git commit -m \"$prefix: $1\"; }; f"
+	# Fails if total message exceeds 72 chars
+	message = "!f() { prefix=$(git commit-prefix) || return 1; msg=\"$prefix: $1\"; len=${#msg}; if [ \"$len\" -gt 72 ]; then echo \"Commit message too long: $len chars (max 72)\" >&2; echo \"Message: $msg\" >&2; return 1; fi; git commit -m \"$msg\"; }; f"
