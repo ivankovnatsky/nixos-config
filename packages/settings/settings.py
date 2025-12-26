@@ -5,6 +5,7 @@ Subcommands:
   appearance  Toggle dark/light mode and wallpaper (macOS + KDE)
   menubar     Toggle menubar visibility modes (macOS only)
   scaling     Toggle display scaling resolution (macOS only)
+  scrolling   Toggle natural scrolling on/off (macOS only)
 """
 
 from __future__ import annotations
@@ -619,6 +620,53 @@ def cmd_autohide(args: argparse.Namespace) -> int:
     return 0
 
 
+# Scrolling: Natural scrolling toggle (macOS only)
+def scrolling_get_natural() -> bool:
+    """Get current natural scrolling state using private framework."""
+    from ctypes import cdll
+
+    lib = cdll.LoadLibrary(
+        "/System/Library/PrivateFrameworks/PreferencePanesSupport.framework/Versions/A/PreferencePanesSupport"
+    )
+    return lib.swipeScrollDirection() == 1
+
+
+def scrolling_set_natural(enabled: bool) -> None:
+    """Set natural scrolling state using private framework (takes effect immediately)."""
+    from ctypes import cdll
+
+    lib = cdll.LoadLibrary(
+        "/System/Library/PrivateFrameworks/PreferencePanesSupport.framework/Versions/A/PreferencePanesSupport"
+    )
+    lib.setSwipeScrollDirection(1 if enabled else 0)
+
+
+def cmd_scrolling(args: argparse.Namespace) -> int:
+    if not is_macos():
+        print("Scrolling settings only available on macOS", file=sys.stderr)
+        return 1
+
+    if args.status:
+        natural = scrolling_get_natural()
+        status = "natural" if natural else "traditional"
+        print(f"Scrolling: {status}")
+        return 0
+
+    if args.mode:
+        enabled = args.mode == "natural"
+        scrolling_set_natural(enabled)
+        status = "natural" if enabled else "traditional"
+        print(f"Scrolling: {status}")
+        return 0
+
+    # Toggle
+    current = scrolling_get_natural()
+    scrolling_set_natural(not current)
+    status = "traditional" if current else "natural"
+    print(f"Scrolling: {status}")
+    return 0
+
+
 # Main CLI
 def main() -> int:
     parser = argparse.ArgumentParser(
@@ -698,6 +746,25 @@ def main() -> int:
         help="Set specific mode (default: toggle between always/fullscreen)",
     )
     autohide_parser.set_defaults(func=cmd_autohide)
+
+    # Scrolling subcommand
+    scrolling_parser = subparsers.add_parser(
+        "scrolling",
+        aliases=["scroll"],
+        help="Toggle natural scrolling (macOS only)",
+    )
+    scrolling_parser.add_argument(
+        "--status",
+        action="store_true",
+        help="Show current scrolling mode",
+    )
+    scrolling_parser.add_argument(
+        "mode",
+        nargs="?",
+        choices=["natural", "traditional"],
+        help="Set specific mode (default: toggle)",
+    )
+    scrolling_parser.set_defaults(func=cmd_scrolling)
 
     args = parser.parse_args()
 
