@@ -82,6 +82,36 @@ def send_notification(success):
 
 
 LOCK_FILE = Path("/tmp/watchman-rebuild.lock")
+INSTANCE_FILE = Path("/tmp/watchman-rebuild.instance")
+
+
+def check_existing_instance():
+    """Check if another instance is already running. Returns True if should exit."""
+    if INSTANCE_FILE.exists():
+        try:
+            pid = int(INSTANCE_FILE.read_text().strip())
+            # Check if process is still running
+            os.kill(pid, 0)
+            logging.info(f"Another instance is already running (PID {pid}), exiting")
+            return True
+        except (ValueError, ProcessLookupError, PermissionError):
+            # PID file is invalid or process is dead - clean up stale file
+            logging.info(f"Removing stale instance file (PID not running)")
+            INSTANCE_FILE.unlink(missing_ok=True)
+    return False
+
+
+def write_instance_file():
+    """Write current PID to instance file."""
+    INSTANCE_FILE.write_text(str(os.getpid()))
+    logging.info(f"Created instance file: {INSTANCE_FILE} (PID {os.getpid()})")
+
+
+def cleanup_instance_file():
+    """Remove instance file on exit."""
+    if INSTANCE_FILE.exists():
+        INSTANCE_FILE.unlink(missing_ok=True)
+        logging.info(f"Removed instance file: {INSTANCE_FILE}")
 
 
 def cleanup_stale_lock():
@@ -161,6 +191,13 @@ def setup_watchman_subscription(client, config_path, ignore_dirs):
 def watch_and_rebuild(config_path, command=None):
     """Watch for changes and rebuild."""
     config_path_obj = Path(config_path)
+
+    # Check if another instance is already running
+    if check_existing_instance():
+        sys.exit(0)
+
+    # Write instance file
+    write_instance_file()
 
     # Clean up any stale lock from previous daemon run
     cleanup_stale_lock()
@@ -286,6 +323,8 @@ def watch_and_rebuild(config_path, command=None):
                 client.close()
             except:
                 pass
+        # Clean up instance file
+        cleanup_instance_file()
 
 
 if __name__ == '__main__':
