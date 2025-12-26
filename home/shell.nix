@@ -174,6 +174,14 @@ in
     fish = {
       enable = config.flags.enableFishShell;
       shellInit = ''
+        # Add Nix paths early to ensure tools are available before plugins load
+        if test -d /etc/profiles/per-user/$USER/bin
+            fish_add_path --prepend /etc/profiles/per-user/$USER/bin
+        end
+        if test -d /run/current-system/sw/bin
+            fish_add_path --prepend /run/current-system/sw/bin
+        end
+
         set -U fish_term24bit 1
       '';
 
