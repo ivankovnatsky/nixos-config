@@ -22,7 +22,6 @@
       "ghostty"
       "keycastr"
       "kitty"
-      "steam"
       "silicon-labs-vcp-driver"
       "windsurf"
     ];
