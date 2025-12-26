@@ -239,45 +239,39 @@ def cmd_appearance(args: argparse.Namespace) -> int:
 
 
 # Menubar: Visibility Modes (macOS only)
-MENUBAR_MODE_DESCRIPTIONS = {
-    "never": "Never",
-    "always": "Always",
-    "fullscreen": "In Full Screen Only",
-    "desktop": "On Desktop Only",
+# Maps mode name -> (defaults option value, UI description)
+MENUBAR_MODES = {
+    "never": (0, "Never"),
+    "always": (1, "Always"),
+    "fullscreen": (2, "In Full Screen Only"),
+    "desktop": (3, "On Desktop Only"),
 }
 
+MENUBAR_OPTION_TO_MODE = {v[0]: k for k, v in MENUBAR_MODES.items()}
+
+
 def menubar_get_current_mode() -> str:
-    """Get current menubar visibility mode via osascript."""
-    subprocess.run(
-        ["open", "x-apple.systempreferences:com.apple.ControlCenter-Settings.extension"],
-        check=True,
-    )
+    """Get current menubar visibility mode via defaults."""
+    try:
+        result = subprocess.run(
+            ["defaults", "read", "com.apple.controlcenter", "AutoHideMenuBarOption"],
+            capture_output=True,
+            text=True,
+        )
+        option = int(result.stdout.strip())
+        return MENUBAR_OPTION_TO_MODE.get(option, "unknown")
+    except (subprocess.CalledProcessError, ValueError):
+        return "unknown"
 
-    script = '''
-delay 0.8
-tell application "System Events"
-    tell process "System Settings"
-        set thePopup to pop up button "Automatically hide and show the menu bar" of group 1 of scroll area 1 of group 1 of group 3 of splitter group 1 of group 1 of window 1
-        return value of thePopup
-    end tell
-end tell
-'''
-    result = subprocess.run(
-        ["osascript", "-e", script],
-        capture_output=True,
-        text=True,
-    )
-    value = result.stdout.strip()
 
-    for mode, menu_text in MENUBAR_MODE_DESCRIPTIONS.items():
-        if menu_text == value:
-            return mode
-    return "unknown"
+def menubar_get_description(mode: str) -> str:
+    """Get human-readable description for a menubar mode."""
+    return MENUBAR_MODES.get(mode, (None, "Unknown"))[1]
 
 
 def menubar_set_mode(mode: str) -> None:
     """Set menubar visibility mode via osascript."""
-    menu_item = MENUBAR_MODE_DESCRIPTIONS[mode]
+    menu_item = menubar_get_description(mode)
 
     subprocess.run(
         ["open", "x-apple.systempreferences:com.apple.ControlCenter-Settings.extension"],
@@ -310,7 +304,7 @@ def menubar_cycle_mode() -> None:
         next_mode = "fullscreen"
 
     menubar_set_mode(next_mode)
-    print(f"Menubar: {MENUBAR_MODE_DESCRIPTIONS[next_mode]}")
+    print(f"Menubar: {menubar_get_description(next_mode)}")
 
 
 def cmd_menubar(args: argparse.Namespace) -> int:
@@ -320,16 +314,16 @@ def cmd_menubar(args: argparse.Namespace) -> int:
 
     if args.status:
         current = menubar_get_current_mode()
-        desc = MENUBAR_MODE_DESCRIPTIONS.get(current, "Unknown")
+        desc = menubar_get_description(current)
         print(f"Current: {current} ({desc})")
         return 0
 
     if args.mode:
-        if args.mode not in MENUBAR_MODE_DESCRIPTIONS:
+        if args.mode not in MENUBAR_MODES:
             print(f"Unknown mode: {args.mode}", file=sys.stderr)
             return 1
         menubar_set_mode(args.mode)
-        print(f"Menubar: {MENUBAR_MODE_DESCRIPTIONS[args.mode]}")
+        print(f"Menubar: {menubar_get_description(args.mode)}")
         return 0
 
     menubar_cycle_mode()
@@ -591,7 +585,7 @@ def cmd_autohide(args: argparse.Namespace) -> int:
         dock_hidden = dock_get_autohide()
         menubar_mode = menubar_get_current_mode()
         dock_status = "hidden (auto-hide enabled)" if dock_hidden else "visible"
-        menubar_desc = MENUBAR_MODE_DESCRIPTIONS.get(menubar_mode, "Unknown")
+        menubar_desc = menubar_get_description(menubar_mode)
         print(f"Dock: {dock_status}")
         print(f"Menubar: {menubar_mode} ({menubar_desc})")
         return 0
@@ -621,7 +615,7 @@ def cmd_autohide(args: argparse.Namespace) -> int:
         print("Dock: visible")
 
     menubar_set_mode(mode)
-    print(f"Menubar: {MENUBAR_MODE_DESCRIPTIONS[mode]}")
+    print(f"Menubar: {menubar_get_description(mode)}")
 
     return 0
 
