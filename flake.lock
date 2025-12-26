@@ -1300,11 +1300,11 @@
         "nixpkgs": "nixpkgs_5"
       },
       "locked": {
-        "lastModified": 1766757777,
-        "narHash": "sha256-z3+NO0OH3ZBW09RPUsLiBgwq4lZmD0tM56pxDYWqi5U=",
+        "lastModified": 1766758668,
+        "narHash": "sha256-+Picp8OEc5VT53cQ3Fw3Zkv599HTNXq+NdVEE6vyEwI=",
         "owner": "ivankovnatsky",
         "repo": "textcast",
-        "rev": "00cca71f3b4ca977dcfba0ebae13ddc5bed2c792",
+        "rev": "19f34d85b69f2dec4151f643569282e4f05f2838",
         "type": "github"
       },
       "original": {
