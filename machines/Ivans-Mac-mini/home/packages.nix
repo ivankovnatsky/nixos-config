@@ -38,6 +38,7 @@
     rust-analyzer
     rustc
     sesh
+    settings
     shellcheck
     shfmt
     smctemp # Local overlay
