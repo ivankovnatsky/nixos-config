@@ -1084,15 +1084,23 @@ def main():
     )
     add_cli_args(status_parser)
 
-    # CLI: list-devices command
-    list_devices_parser = cli_subparsers.add_parser(
-        "list-devices", help="List all configured devices"
+    # CLI: list command with subcommands
+    list_parser = cli_subparsers.add_parser(
+        "list", help="List configured resources"
+    )
+    list_subparsers = list_parser.add_subparsers(
+        dest="list_command", help="Resource type to list"
+    )
+
+    # CLI: list devices
+    list_devices_parser = list_subparsers.add_parser(
+        "devices", help="List all configured devices"
     )
     add_cli_args(list_devices_parser)
 
-    # CLI: list-folders command
-    list_folders_parser = cli_subparsers.add_parser(
-        "list-folders", help="List all configured folders"
+    # CLI: list folders
+    list_folders_parser = list_subparsers.add_parser(
+        "folders", help="List all configured folders"
     )
     add_cli_args(list_folders_parser)
 
@@ -1157,10 +1165,13 @@ def main():
     if args.mode == "declarative":
         cmd_sync(args)
     elif args.mode == "cli":
-        if args.cli_command == "list-devices":
-            cmd_list_devices(args)
-        elif args.cli_command == "list-folders":
-            cmd_list_folders(args)
+        if args.cli_command == "list":
+            if hasattr(args, 'list_command') and args.list_command == "devices":
+                cmd_list_devices(args)
+            elif hasattr(args, 'list_command') and args.list_command == "folders":
+                cmd_list_folders(args)
+            else:
+                list_parser.print_help()
         elif args.cli_command == "status":
             cmd_status(args)
 
