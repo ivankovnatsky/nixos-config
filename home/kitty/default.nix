@@ -9,6 +9,7 @@ let
   inherit (pkgs.stdenv.targetPlatform) isDarwin;
   fontSizeT = if config.device.graphicsEnv == "xorg" then 7.5 else 9.5;
   fontSize = if isDarwin then 13 else fontSizeT;
+  windowPaddingWidth = if isDarwin then 8 else 4;
 
   # Keybindings:
   # Ctrl + Shift + g -- opens a Pager of the last output
@@ -33,7 +34,7 @@ let
 
     allow_remote_control yes
     adjust_line_height 115%
-    window_padding_width 8
+    window_padding_width ${builtins.toString windowPaddingWidth}
     hide_window_decorations titlebar-only
     cursor_blink_interval 0
     copy_on_select yes
