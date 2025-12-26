@@ -342,6 +342,7 @@ def cmd_menubar(args: argparse.Namespace) -> int:
 SCALING_MODEL_RESOLUTIONS = {
     "Mac14,2": ("1470x956", "1280x832"),  # MacBook Air 13" M2
     "Mac15,7": ("1728x1117", "1496x967"),  # MacBook Pro 16" M3
+    "MacBookPro18,1": ("1728x1117", "1496x967"),  # MacBook Pro 16" M1 Pro/Max
 }
 
 
