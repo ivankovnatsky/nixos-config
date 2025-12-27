@@ -15,6 +15,13 @@ MACHINE_MAPPINGS = {
     "Lusha-Macbook-Ivan-Kovnatskyi": "work",
 }
 
+DIRECTORY_MAPPINGS = {
+    "packages": "pkg",
+    "modules": "mod",
+    "overlays": "ovl",
+    "machines": "m",
+}
+
 MAX_MESSAGE_LENGTH = 72
 MAX_PREFIX_LENGTH = MAX_MESSAGE_LENGTH // 2
 
@@ -53,6 +60,13 @@ def shorten_path(path: str) -> str:
     return result
 
 
+def shorten_directories(path: str) -> str:
+    """Apply aggressive directory shortening (packages->pkg, modules->mod, etc.)."""
+    parts = path.split("/")
+    shortened = [DIRECTORY_MAPPINGS.get(p, p) for p in parts]
+    return "/".join(shortened)
+
+
 def create_commit_message(prefix: str, subject: str) -> str:
     return f"{prefix}: {subject}"
 
@@ -71,6 +85,7 @@ Features:
   - Shortens machine names (e.g., Ivans-Mac-mini -> mini)
   - Removes duplicate path components (e.g., pkg/foo/foo -> pkg/foo)
   - Strips "default" filename (e.g., mod/foo/default -> mod/foo)
+  - Shortens directories if prefix > 36 (packages->pkg, modules->mod, etc.)
   - Validates prefix length (max 36 chars)
   - Validates commit message length (max 72 chars)
 """,
@@ -99,6 +114,10 @@ Features:
 
     staged_file = staged_files[0]
     prefix = shorten_path(staged_file)
+
+    # Apply aggressive directory shortening only if prefix exceeds limit
+    if len(prefix) > MAX_PREFIX_LENGTH:
+        prefix = shorten_directories(prefix)
 
     if len(prefix) > MAX_PREFIX_LENGTH:
         print(
