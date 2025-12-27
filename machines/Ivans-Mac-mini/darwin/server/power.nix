@@ -14,12 +14,14 @@
     # ```console
     # sudo pmset -g sched
     # ```
-    schedules = {
-      ShutDown = {
-        enable = true;
-        time = "22:30:00";
-        action = "shutdown";
-      };
-    };
+    # pmset repeat shutdown does not work forcefully - apps can block it via
+    # power assertions (e.g., screensharingd, sharingd)
+    # schedules = {
+    #   ShutDown = {
+    #     enable = true;
+    #     time = "22:30:00";
+    #     action = "shutdown";
+    #   };
+    # };
   };
 }
