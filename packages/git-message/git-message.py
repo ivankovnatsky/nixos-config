@@ -31,11 +31,18 @@ def get_staged_files() -> list[str]:
 def shorten_path(path: str) -> str:
     result = path
 
-    if result.endswith(".nix"):
-        result = result[:-4]
+    # Strip file extension
+    if "." in result.split("/")[-1]:
+        result = result.rsplit(".", 1)[0]
 
+    # Shorten machine names
     for long_name, short_name in MACHINE_MAPPINGS.items():
         result = result.replace(long_name, short_name)
+
+    # Remove duplicate path component (e.g., packages/git-message/git-message -> packages/git-message)
+    parts = result.split("/")
+    if len(parts) >= 2 and parts[-1] == parts[-2]:
+        result = "/".join(parts[:-1])
 
     return result
 
@@ -54,8 +61,9 @@ Examples:
 
 Features:
   - Requires exactly one staged file
-  - Strips .nix extension from file path
+  - Strips file extensions (e.g., .nix, .py)
   - Shortens machine names (e.g., Ivans-Mac-mini -> mini)
+  - Removes duplicate path components (e.g., pkg/foo/foo -> pkg/foo)
   - Validates commit message length (max 72 chars)
 """,
         formatter_class=argparse.RawDescriptionHelpFormatter,
