@@ -1,18 +1,9 @@
 #!/usr/bin/env python3
 """
 Git commit message helper that auto-generates commit prefixes from staged files.
-
-Usage:
-    git-message "commit subject"
-
-Features:
-- Requires exactly one staged file
-- Strips .nix extension from file path
-- Shortens machine names (e.g., Ivans-Mac-mini -> mini)
-- Validates commit message length (max 72 chars)
-- Runs git commit with formatted message
 """
 
+import argparse
 import subprocess
 import sys
 
@@ -53,22 +44,24 @@ def create_commit_message(prefix: str, subject: str) -> str:
     return f"{prefix}: {subject}"
 
 
-def print_help() -> None:
-    print(__doc__.strip())
-
-
 def main() -> int:
-    if len(sys.argv) == 2 and sys.argv[1] in ("-h", "--help"):
-        print_help()
-        return 0
+    parser = argparse.ArgumentParser(
+        description="Auto-generate git commit messages from staged file paths.",
+        epilog="""
+Examples:
+  git-message "add feature"     Commits with "<staged-file>: add feature"
+  git-message "fix bug"         Commits with "<staged-file>: fix bug"
 
-    if len(sys.argv) != 2:
-        print("Usage: git-message <subject>", file=sys.stderr)
-        print('Example: git-message "add new feature"', file=sys.stderr)
-        print('Run "git-message --help" for more information', file=sys.stderr)
-        return 1
-
-    subject = sys.argv[1]
+Features:
+  - Requires exactly one staged file
+  - Strips .nix extension from file path
+  - Shortens machine names (e.g., Ivans-Mac-mini -> mini)
+  - Validates commit message length (max 72 chars)
+""",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument("subject", help="commit message subject")
+    args = parser.parse_args()
 
     try:
         staged_files = get_staged_files()
@@ -90,7 +83,7 @@ def main() -> int:
 
     staged_file = staged_files[0]
     prefix = shorten_path(staged_file)
-    message = create_commit_message(prefix, subject)
+    message = create_commit_message(prefix, args.subject)
 
     if len(message) > MAX_MESSAGE_LENGTH:
         print(
