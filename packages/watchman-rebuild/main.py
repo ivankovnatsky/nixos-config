@@ -16,7 +16,7 @@ import pywatchman
 
 # Debounce delay in seconds - wait this long after last change before rebuilding
 DEBOUNCE_DELAY = 10.0
-from watchman_rebuild import load_watchman_ignores, build_watchman_expression
+from lib import load_watchman_ignores, build_watchman_expression
 
 # Configure logging to write to stdout instead of stderr
 logging.basicConfig(
