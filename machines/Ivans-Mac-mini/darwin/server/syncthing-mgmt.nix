@@ -92,6 +92,16 @@
         ];
       };
 
+      "taskwarrior" = {
+        path = "${config.users.users.${username}.home}/.task";
+        label = ".task";
+        devices = [
+          "Ivans-MacBook-Pro"
+          "Ivans-MacBook-Air"
+          "a3"
+        ];
+      };
+
     };
 
     restart = false;

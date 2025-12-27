@@ -99,6 +99,16 @@
           "Lusha-Macbook-Ivan-Kovnatskyi"
         ];
       };
+
+      "taskwarrior" = {
+        path = "/Users/${username}/.task";
+        label = ".task";
+        devices = [
+          "Ivans-Mac-mini"
+          "Ivans-MacBook-Air"
+          "a3"
+        ];
+      };
     };
 
     restart = false;
