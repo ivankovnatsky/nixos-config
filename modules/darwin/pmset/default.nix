@@ -101,13 +101,16 @@ in
             # Join all schedule parameters
             scheduleParams = concatStringsSep " " (mapAttrsToList formatSchedule schedules);
           in
-          optionalString (scheduleParams != "") ''
-            echo "Setting power management schedules"
+          ''
             # Cancel any existing schedules first
+            echo "Cancelling existing power management schedules"
             /usr/bin/pmset repeat cancel
 
-            # Set all schedules in a single command
-            /usr/bin/pmset repeat ${scheduleParams}
+            ${optionalString (scheduleParams != "") ''
+              # Set all schedules in a single command
+              echo "Setting power management schedules"
+              /usr/bin/pmset repeat ${scheduleParams}
+            ''}
 
             # Verify the schedules
             echo "Verifying schedules:"
