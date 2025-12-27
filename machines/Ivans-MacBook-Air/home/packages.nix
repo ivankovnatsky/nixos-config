@@ -15,7 +15,7 @@
     dns
     download-torrent
     git-message
-    poweron-homelab
+    homelab
     ps-top-nu
     watchman-rebuild
 
