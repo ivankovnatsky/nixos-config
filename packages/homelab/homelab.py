@@ -4,10 +4,12 @@
 import argparse
 import subprocess
 import sys
+import time
 import webbrowser
 
 MINI_IP = "192.168.50.4"
 MINI_USER = "ivan"
+RETRY_INTERVAL = 5  # seconds between retries
 
 
 def read_tty(prompt: str) -> str:
@@ -22,16 +24,28 @@ def power_on() -> int:
     """Unlock and connect to Mini."""
     print(f"Attempting to unlock Mini at {MINI_IP}...")
 
+    # First attempt - this handles the unlock prompt
     result = subprocess.run(
-        ["ssh", "-o", "ConnectTimeout=10", f"{MINI_USER}@{MINI_IP}", "echo 'System unlocked'"],
+        ["ssh", "-o", "ConnectTimeout=10", f"{MINI_USER}@{MINI_IP}", "echo 'Connected'"],
         check=False,
     )
 
+    # If first attempt failed, retry until successful
     if result.returncode != 0:
-        print("Failed to connect to Mini. Is it powered on?")
-        return 1
+        print("Waiting for Mini to become available...")
+        attempt = 1
+        while True:
+            print(f"Retry attempt {attempt}...")
+            time.sleep(RETRY_INTERVAL)
+            result = subprocess.run(
+                ["ssh", "-o", "ConnectTimeout=10", f"{MINI_USER}@{MINI_IP}", "echo 'Connected'"],
+                check=False,
+            )
+            if result.returncode == 0:
+                break
+            attempt += 1
 
-    print("Mini should now be unlocked.")
+    print("Mini is now unlocked and accessible.")
 
     response = read_tty("Open Screen Sharing? [Y/n] ")
     if response.lower() not in ("n", "no"):
