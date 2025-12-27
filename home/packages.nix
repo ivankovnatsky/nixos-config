@@ -29,6 +29,7 @@
     ghq
     ghz
     git-ignore
+    git-message
     gitleaks
     glances
     gnumake

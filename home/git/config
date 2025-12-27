@@ -64,10 +64,3 @@
 	view = diff --unified=10 HEAD
 	# View all changes with bat pager
 	view-pager = "!git diff --unified=10 HEAD | bat"
-	# Get single staged file - fails if not exactly 1 file staged
-	single-file = "!f() { files=$(git diff --staged --name-only); if [ -z \"$files\" ]; then echo 'No staged files' >&2; return 1; fi; count=$(echo \"$files\" | wc -l | tr -d ' '); if [ \"$count\" -ne 1 ]; then echo \"Expected 1 staged file, found $count:\" >&2; echo \"$files\" >&2; return 1; fi; echo \"$files\"; }; f"
-	# Get commit message prefix from single staged file (strips .nix extension)
-	commit-prefix = "!f() { file=$(git single-file) || return 1; echo \"$file\" | sed 's/\\.nix$//'; }; f"
-	# Commit single staged file with auto-generated prefix: git add <file> && git message "subject"
-	# Fails if total message exceeds 72 chars
-	message = "!f() { prefix=$(git commit-prefix) || return 1; msg=\"$prefix: $1\"; len=${#msg}; if [ \"$len\" -gt 72 ]; then echo \"Commit message too long: $len chars (max 72)\" >&2; echo \"Message: $msg\" >&2; return 1; fi; git commit -m \"$msg\"; }; f"
