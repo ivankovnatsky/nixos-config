@@ -3,9 +3,9 @@
     ./postgresql.nix
     ./synapse.nix
     ./setup-db.nix
-    ./mautrix-whatsapp.nix
-    ./mautrix-discord.nix
-    ./mautrix-meta.nix
-    ./mautrix-linkedin.nix
+    ./whatsapp.nix
+    ./discord.nix
+    ./meta.nix
+    ./linkedin.nix
   ];
 }

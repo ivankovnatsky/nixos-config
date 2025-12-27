@@ -121,7 +121,7 @@ in
         # Setup database and user (idempotent)
         echo "Setting up Matrix database..."
         ${pkgs.postgresql}/bin/psql -h /tmp -p 5433 -U postgres postgres <<'EOSQL' || true
-        ${builtins.readFile ./setup-matrix-db.sql}
+        ${builtins.readFile ./setup-db.sql}
         EOSQL
         echo "Database setup complete!"
 
