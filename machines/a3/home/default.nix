@@ -30,7 +30,7 @@
     ../../../home/tmux.nix
     ../../../home/tweety.nix
     ../../../modules/flags
-    ../../../modules/home/manual-packages
+    ../../../modules/home/packages
     ./btop.nix
     ./desktop.nix # Desktop environment home configs
     ./firefox.nix

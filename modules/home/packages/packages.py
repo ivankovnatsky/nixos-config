@@ -254,7 +254,7 @@ def install_mcp_servers(servers: Dict, paths: Dict, state: Dict):
 
 def main():
     if len(sys.argv) < 3 or sys.argv[1] != "--config":
-        log("Usage: manage-activation.py --config <config.json>", Color.RED)
+        log("Usage: packages.py --config <config.json>", Color.RED)
         sys.exit(1)
 
     config_path = sys.argv[2]

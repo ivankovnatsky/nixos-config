@@ -49,7 +49,7 @@
     ../../../home/yt-dlp.nix
     ../../../home/zellij.nix
     ../../../modules/flags
-    ../../../modules/home/manual-packages
+    ../../../modules/home/packages
     ./firefox.nix
     ./flags.nix
     ./manual-packages.nix

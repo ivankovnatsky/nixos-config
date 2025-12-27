@@ -114,7 +114,7 @@ in
 
   config = mkIf cfg.enable {
     home.activation.manageManualPackages = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      ${pkgs.python3}/bin/python3 ${./manage-activation.py} \
+      ${pkgs.python3}/bin/python3 ${./packages.py} \
         --config ${configJson}
     '';
   };

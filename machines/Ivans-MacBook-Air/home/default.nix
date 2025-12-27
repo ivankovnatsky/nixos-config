@@ -38,7 +38,7 @@
     ../../../home/yt-dlp.nix
     ../../../home/uptime-kuma-mgmt.nix
     ../../../modules/flags
-    ../../../modules/home/manual-packages
+    ../../../modules/home/packages
     ./manual-packages.nix
     ./packages.nix
   ];
