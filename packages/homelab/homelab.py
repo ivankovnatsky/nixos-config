@@ -58,6 +58,15 @@ def power_on() -> int:
                     activate
                     open location "vnc://{MINI_USER}@{MINI_IP}"
                 end tell
+
+                -- Wait for the Screen Sharing Type dialog and press Enter
+                delay 2
+                tell application "System Events"
+                    tell process "Screen Sharing"
+                        set frontmost to true
+                        keystroke return
+                    end tell
+                end tell
                 ''',
             ],
             check=False,
