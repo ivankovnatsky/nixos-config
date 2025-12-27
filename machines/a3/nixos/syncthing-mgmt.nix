@@ -78,6 +78,16 @@
           "Ivans-Mac-mini"
         ];
       };
+
+      "taskwarrior" = {
+        path = "${config.users.users.${username}.home}/.task";
+        label = ".task";
+        devices = [
+          "Ivans-Mac-mini"
+          "Ivans-MacBook-Pro"
+          "Ivans-MacBook-Air"
+        ];
+      };
     };
 
     restart = false;

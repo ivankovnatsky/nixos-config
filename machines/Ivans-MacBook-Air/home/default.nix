@@ -32,6 +32,7 @@
     ../../../home/sops.nix
     ../../../home/starship
     ../../../home/syncthing-ignore.nix
+    ../../../home/taskwarrior.nix
     ../../../home/tmux.nix
     ../../../home/vlc
     ../../../home/vscode.nix
