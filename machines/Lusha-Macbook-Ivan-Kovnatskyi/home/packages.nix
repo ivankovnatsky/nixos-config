@@ -43,6 +43,7 @@
     ggh
     gh-pr
     ghorg
+    git-message
     git-pull-all
     gitleaks
     glow

@@ -14,6 +14,7 @@
     syncthing-mgmt
     dns
     download-torrent
+    git-message
     poweron-homelab
     ps-top-nu
     watchman-rebuild

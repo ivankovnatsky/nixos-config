@@ -39,6 +39,7 @@
     libnotify # Provides notify-send command
 
     ghostty
+    git-message
 
     nodejs
     gnumake
