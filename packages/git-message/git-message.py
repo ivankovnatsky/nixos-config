@@ -53,10 +53,19 @@ def create_commit_message(prefix: str, subject: str) -> str:
     return f"{prefix}: {subject}"
 
 
+def print_help() -> None:
+    print(__doc__.strip())
+
+
 def main() -> int:
+    if len(sys.argv) == 2 and sys.argv[1] in ("-h", "--help"):
+        print_help()
+        return 0
+
     if len(sys.argv) != 2:
         print("Usage: git-message <subject>", file=sys.stderr)
         print('Example: git-message "add new feature"', file=sys.stderr)
+        print('Run "git-message --help" for more information', file=sys.stderr)
         return 1
 
     subject = sys.argv[1]
