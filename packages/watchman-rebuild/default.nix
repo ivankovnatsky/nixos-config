@@ -19,11 +19,11 @@ stdenv.mkDerivation {
   installPhase = ''
     # Install Python module
     mkdir -p $out/${pythonEnv.sitePackages}
-    cp watchman_rebuild.py $out/${pythonEnv.sitePackages}/
+    cp lib.py $out/${pythonEnv.sitePackages}/
 
     # Install script
     mkdir -p $out/bin
-    cp helper.py $out/bin/watchman-rebuild
+    cp main.py $out/bin/watchman-rebuild
     chmod +x $out/bin/watchman-rebuild
 
     # Wrap script with correct Python environment
