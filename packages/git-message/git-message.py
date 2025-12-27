@@ -4,6 +4,7 @@ Git commit message helper that auto-generates commit prefixes from staged files.
 """
 
 import argparse
+import re
 import subprocess
 import sys
 
@@ -31,9 +32,8 @@ def get_staged_files() -> list[str]:
 def shorten_path(path: str) -> str:
     result = path
 
-    # Strip file extension
-    if "." in result.split("/")[-1]:
-        result = result.rsplit(".", 1)[0]
+    # Strip file extension (requires word char before dot, e.g., file.py but not .gitconfig)
+    result = re.sub(r"(?<=\w)\.[a-zA-Z0-9]+$", "", result)
 
     # Shorten machine names
     for long_name, short_name in MACHINE_MAPPINGS.items():
