@@ -28,7 +28,7 @@ DIRECTORY_MAPPINGS = {
 }
 
 MAX_MESSAGE_LENGTH = 72
-MAX_PREFIX_LENGTH = MAX_MESSAGE_LENGTH // 2
+MAX_PREFIX_LENGTH = 40
 
 
 def get_staged_files() -> list[str]:
@@ -90,8 +90,8 @@ Features:
   - Shortens machine names (e.g., Ivans-Mac-mini -> mini)
   - Removes duplicate path components (e.g., pkg/foo/foo -> pkg/foo)
   - Strips "default" filename (e.g., mod/foo/default -> mod/foo)
-  - Shortens directories if prefix > 36 (packages->pkg, modules->mod, etc.)
-  - Validates prefix length (max 36 chars)
+  - Shortens directories if prefix > 40 (packages->pkg, modules->mod, etc.)
+  - Validates prefix length (max 40 chars)
   - Validates commit message length (max 72 chars)
 """,
         formatter_class=argparse.RawDescriptionHelpFormatter,
