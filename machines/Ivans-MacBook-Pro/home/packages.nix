@@ -8,6 +8,7 @@
     download-torrent
     nodePackages.prettier
     open-gh-notifications-py
+    poweron-homelab
     ps-top-nu
     sops
     ssh-to-age
