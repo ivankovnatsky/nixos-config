@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Remotely unlock and connect to homelab Mini."""
+"""Manage homelab machines (power on/off Mini)."""
 
+import argparse
 import subprocess
 import sys
 import webbrowser
@@ -17,7 +18,8 @@ def read_tty(prompt: str) -> str:
         return tty.readline().strip()
 
 
-def main() -> int:
+def power_on() -> int:
+    """Unlock and connect to Mini."""
     print(f"Attempting to unlock Mini at {MINI_IP}...")
 
     result = subprocess.run(
@@ -54,6 +56,45 @@ def main() -> int:
 
     webbrowser.open(f"http://{MINI_IP}:3001")
     return 0
+
+
+def power_off() -> int:
+    """Power off Mini."""
+    print("Clearing local DNS settings before shutting down Mini...")
+    result = subprocess.run(["dns", "clear"], check=False)
+    if result.returncode != 0:
+        print("Warning: Failed to clear DNS settings")
+
+    print(f"Shutting down Mini at {MINI_IP}...")
+    result = subprocess.run(
+        ["ssh", f"{MINI_USER}@{MINI_IP}", "sudo", "shutdown", "-h", "now"],
+        check=False,
+    )
+
+    if result.returncode != 0:
+        print("Failed to shutdown Mini.")
+        return 1
+
+    print("Mini shutdown initiated.")
+    return 0
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Manage homelab machines")
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+    subparsers.add_parser("on", help="Power on and unlock Mini")
+    subparsers.add_parser("off", help="Power off Mini")
+
+    args = parser.parse_args()
+
+    if args.command == "on":
+        return power_on()
+    elif args.command == "off":
+        return power_off()
+    else:
+        parser.print_help()
+        return 1
 
 
 if __name__ == "__main__":

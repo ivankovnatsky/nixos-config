@@ -9,7 +9,7 @@
     git-message
     nodePackages.prettier
     open-gh-notifications-py
-    poweron-homelab
+    homelab
     ps-top-nu
     sops
     ssh-to-age
