@@ -18,6 +18,7 @@
     ../../../../modules/darwin/logrotate
     ../../../../modules/darwin/pam
     ../../../../modules/darwin/pmset
+    ../../../../modules/darwin/scheduled-shutdown
     ../../../../modules/darwin/sharing
     ../../../../modules/darwin/stubby
     ../../../../modules/darwin/sudo
@@ -57,6 +58,7 @@
     ./podservice
     ./podsync
     ./power.nix
+    ./shutdown.nix
     ./textcast
     ./sharing.nix
     ./stash
