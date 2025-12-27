@@ -45,6 +45,11 @@ def shorten_path(path: str) -> str:
     if len(parts) >= 2 and parts[-1] == parts[-2]:
         result = "/".join(parts[:-1])
 
+    # Strip "default" filename (default.nix is conventional entry point)
+    parts = result.split("/")
+    if len(parts) >= 2 and parts[-1] == "default":
+        result = "/".join(parts[:-1])
+
     return result
 
 
@@ -65,6 +70,7 @@ Features:
   - Strips file extensions (e.g., .nix, .py)
   - Shortens machine names (e.g., Ivans-Mac-mini -> mini)
   - Removes duplicate path components (e.g., pkg/foo/foo -> pkg/foo)
+  - Strips "default" filename (e.g., mod/foo/default -> mod/foo)
   - Validates prefix length (max 36 chars)
   - Validates commit message length (max 72 chars)
 """,
