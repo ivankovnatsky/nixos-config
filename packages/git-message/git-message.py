@@ -20,6 +20,11 @@ DIRECTORY_MAPPINGS = {
     "modules": "mod",
     "overlays": "ovl",
     "machines": "m",
+    "darwin": "drw",
+    "server": "srv",
+    "service": "svc",
+    "home": "hm",
+    "nixvim": "nvim",
 }
 
 MAX_MESSAGE_LENGTH = 72
