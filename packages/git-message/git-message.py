@@ -16,6 +16,7 @@ MACHINE_MAPPINGS = {
 }
 
 MAX_MESSAGE_LENGTH = 72
+MAX_PREFIX_LENGTH = MAX_MESSAGE_LENGTH // 2
 
 
 def get_staged_files() -> list[str]:
@@ -64,6 +65,7 @@ Features:
   - Strips file extensions (e.g., .nix, .py)
   - Shortens machine names (e.g., Ivans-Mac-mini -> mini)
   - Removes duplicate path components (e.g., pkg/foo/foo -> pkg/foo)
+  - Validates prefix length (max 36 chars)
   - Validates commit message length (max 72 chars)
 """,
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -91,6 +93,15 @@ Features:
 
     staged_file = staged_files[0]
     prefix = shorten_path(staged_file)
+
+    if len(prefix) > MAX_PREFIX_LENGTH:
+        print(
+            f"Prefix too long: {len(prefix)} chars (max {MAX_PREFIX_LENGTH})",
+            file=sys.stderr,
+        )
+        print(f"Prefix: {prefix}", file=sys.stderr)
+        return 1
+
     message = create_commit_message(prefix, args.subject)
 
     if len(message) > MAX_MESSAGE_LENGTH:
