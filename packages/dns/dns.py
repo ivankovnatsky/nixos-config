@@ -86,15 +86,28 @@ def clear_dns_servers():
             print(f"    Error: {e.stderr.decode().strip()}", file=sys.stderr)
 
 
+def flush_dns_cache():
+    """Flush the DNS cache."""
+    print("Flushing DNS cache...")
+    try:
+        subprocess.run(["dscacheutil", "-flushcache"], check=True)
+        subprocess.run(["killall", "-HUP", "mDNSResponder"], check=True)
+        print("DNS cache flushed successfully")
+    except subprocess.CalledProcessError as e:
+        print(f"Error flushing DNS cache: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
 def show_help():
     """Display help message."""
-    print("Usage: dns [dns1 dns2 ...] | clear")
+    print("Usage: dns [dns1 dns2 ...] | clear | flush")
     print()
     print("Examples:")
     print("  dns                        # Show current DNS configuration")
     print("  dns 1.1.1.1 1.0.0.1        # Set DNS for all interfaces")
     print("  dns 8.8.8.8 8.8.4.4        # Set DNS for all interfaces")
     print("  dns clear                  # Clear DNS (use DHCP)")
+    print("  dns flush                  # Flush DNS cache")
 
 
 def main():
@@ -113,6 +126,11 @@ def main():
         clear_dns_servers()
         print()
         show_current_dns()
+        return
+
+    # Handle flush case
+    if len(sys.argv) == 2 and sys.argv[1].lower() == "flush":
+        flush_dns_cache()
         return
 
     # Set DNS servers
