@@ -28,6 +28,7 @@
     ../../../system/nix.nix
     ../../../system/rebuild-daemon.nix
     ../../../system/scripts
+    ../../../darwin/dns-clear.nix
     ./dock.nix
     ./git.nix
     ./homebrew.nix

@@ -29,6 +29,7 @@
     ../../../system/nix.nix
     ../../../system/rebuild-daemon.nix
     ../../../system/scripts
+    ../../../darwin/dns-clear.nix
     ./git.nix
     ./homebrew.nix
     ./syncthing-mgmt.nix
