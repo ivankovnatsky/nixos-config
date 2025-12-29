@@ -94,10 +94,17 @@ def check_existing_instance():
             os.kill(pid, 0)
             logging.info(f"Another instance is already running (PID {pid}), exiting")
             return True
-        except (ValueError, ProcessLookupError, PermissionError):
+        except PermissionError:
+            # Process exists but owned by another user - still running
+            logging.info(f"Another instance is already running (PID {pid}, different user), exiting")
+            return True
+        except (ValueError, ProcessLookupError):
             # PID file is invalid or process is dead - clean up stale file
-            logging.info(f"Removing stale instance file (PID not running)")
-            INSTANCE_FILE.unlink(missing_ok=True)
+            logging.info("Removing stale instance file (PID not running)")
+            try:
+                INSTANCE_FILE.unlink(missing_ok=True)
+            except PermissionError:
+                logging.warning("Cannot remove stale instance file (owned by another user), continuing anyway")
     return False
 
 
