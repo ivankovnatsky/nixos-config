@@ -21,13 +21,13 @@
     ../../../modules/darwin/launchd
     ../../../modules/darwin/nextdns-mgmt
     ../../../modules/darwin/pam
-    ../../../modules/darwin/rebuild-daemon
+    ../../../modules/darwin/rebuild-terminal
     ../../../modules/darwin/sudo
     ../../../modules/darwin/syncthing-mgmt
     ../../../modules/flags
     ../../../system/documentation.nix
     ../../../system/nix.nix
-    ../../../system/rebuild-daemon.nix
+    ../../../darwin/rebuild-terminal.nix
     ../../../system/scripts
     ../../../darwin/dns-clear.nix
     ./git.nix
