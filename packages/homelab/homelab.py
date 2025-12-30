@@ -59,11 +59,12 @@ def power_on() -> int:
                     open location "vnc://{MINI_USER}@{MINI_IP}"
                 end tell
 
-                -- Wait for the Screen Sharing Type dialog and press Enter
+                -- Wait for the Screen Sharing Type dialog, select High Quality, and press Enter
                 delay 2
                 tell application "System Events"
                     tell process "Screen Sharing"
                         set frontmost to true
+                        key code 125  -- down arrow to select High Quality
                         keystroke return
                     end tell
                 end tell
