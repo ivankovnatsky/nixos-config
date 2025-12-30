@@ -10,6 +10,11 @@ import webbrowser
 MINI_IP = "192.168.50.4"
 MINI_USER = "ivan"
 RETRY_INTERVAL = 5  # seconds between retries
+SERVICE_CHECK_TIMEOUT = 60  # max seconds to wait for services
+SERVICES_TO_CHECK = [
+    ("DNS", f"dig @{MINI_IP} google.com +short +timeout=2"),
+    ("Uptime Kuma", f"curl -s -o /dev/null -w '%{{http_code}}' --connect-timeout 2 http://{MINI_IP}:3001"),
+]
 
 
 def read_tty(prompt: str) -> str:
@@ -18,6 +23,44 @@ def read_tty(prompt: str) -> str:
     sys.stdout.flush()
     with open("/dev/tty", "r") as tty:
         return tty.readline().strip()
+
+
+def check_service(name: str, command: str) -> bool:
+    """Check if a service is responding."""
+    result = subprocess.run(command, shell=True, capture_output=True, text=True)
+    if name == "DNS":
+        return result.returncode == 0 and result.stdout.strip() != ""
+    elif name == "Uptime Kuma":
+        return result.stdout.strip() == "200"
+    return result.returncode == 0
+
+
+def wait_for_services() -> bool:
+    """Wait for all services to be ready."""
+    print("Waiting for services to come up...")
+    start_time = time.time()
+    ready_services: set[str] = set()
+
+    while time.time() - start_time < SERVICE_CHECK_TIMEOUT:
+        pending = []
+        for name, command in SERVICES_TO_CHECK:
+            if name in ready_services:
+                continue
+            if check_service(name, command):
+                print(f"  ✓ {name} is ready")
+                ready_services.add(name)
+            else:
+                pending.append(name)
+
+        if not pending:
+            print("All services are ready!")
+            return True
+
+        print(f"  Waiting for: {', '.join(pending)}...")
+        time.sleep(RETRY_INTERVAL)
+
+    print("Timeout waiting for services.")
+    return False
 
 
 def power_on() -> int:
@@ -77,6 +120,8 @@ def power_on() -> int:
 
     read_tty("Press Enter after unlocking Mini via Screen Sharing... ")
     subprocess.run(["dns", MINI_IP], check=False)
+
+    wait_for_services()
 
     webbrowser.open(f"http://{MINI_IP}:3001")
     return 0
