@@ -26,7 +26,7 @@ in
     audio-channels=2
 
     slang=eng
-    sub-scale=0.5
+    # sub-scale=0.5
 
     # OnScreen Controller at the bottom, terriable UI, disable it.
     osc=no
