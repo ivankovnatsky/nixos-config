@@ -35,5 +35,11 @@
     ./sudo.nix
     ./syncthing-mgmt.nix
     ./users.nix
+
+    ../../../darwin/amethyst.nix
+    ../../../darwin/hammerspoon.nix
+    ../../../darwin/mos.nix
+    ../../../darwin/stats.nix
+    ../../../darwin/twingate.nix
   ];
 }
