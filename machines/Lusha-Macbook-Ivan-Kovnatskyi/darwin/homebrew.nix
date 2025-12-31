@@ -38,7 +38,12 @@
       }
       "mos"
       "stats"
-      "twingate"
+      # Need to keep twingate always latest version, sometimes it fails to
+      # connect no matter what.
+      {
+        name = "twingate";
+        greedy = true;
+      }
       "visual-studio-code"
       "vivaldi"
       "windsurf"
