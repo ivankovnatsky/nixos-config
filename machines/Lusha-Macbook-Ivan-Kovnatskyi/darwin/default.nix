@@ -35,6 +35,7 @@
     ./sudo.nix
     ./syncthing-mgmt.nix
     ./users.nix
+    ./close-zscaler.nix
 
     ../../../darwin/amethyst.nix
     ../../../darwin/hammerspoon.nix
