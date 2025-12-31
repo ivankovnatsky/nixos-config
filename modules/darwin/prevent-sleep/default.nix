@@ -10,8 +10,7 @@ with lib;
 let
   cfg = config.local.services.prevent-sleep;
 
-  # Package the prevent-sleep script
-  preventSleepScript = pkgs.writeScriptBin "prevent-sleep" (builtins.readFile ../../../system/scripts/prevent-sleep.sh);
+  settingsPackage = pkgs.callPackage ../../../packages/settings { };
 
   # Wrapper to check if already running
   preventSleepWrapper = pkgs.writeScriptBin "prevent-sleep-wrapper" ''
@@ -23,8 +22,8 @@ let
         exit 0
     fi
 
-    # Start prevent-sleep
-    exec ${preventSleepScript}/bin/prevent-sleep
+    # Start prevent-sleep via settings awake
+    exec ${settingsPackage}/bin/settings awake
   '';
 in
 {
@@ -61,7 +60,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = [ preventSleepScript ];
+    environment.systemPackages = [ settingsPackage ];
 
     local.launchd.services.prevent-sleep = {
       enable = true;
