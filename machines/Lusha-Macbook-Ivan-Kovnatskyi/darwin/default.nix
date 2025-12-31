@@ -34,5 +34,6 @@
     ./shell.nix
     ./sudo.nix
     ./syncthing-mgmt.nix
+    ./users.nix
   ];
 }
