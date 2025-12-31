@@ -67,26 +67,37 @@ def power_on() -> int:
     """Unlock and connect to Mini."""
     print(f"Attempting to unlock Mini at {MINI_IP}...")
 
-    # First attempt - this handles the unlock prompt
-    result = subprocess.run(
+    # First attempt - this handles the FileVault unlock prompt
+    # Note: FileVault unlock always closes the connection after success,
+    # so we can't rely on return code here
+    subprocess.run(
         ["ssh", "-o", "ConnectTimeout=10", f"{MINI_USER}@{MINI_IP}", "echo 'Connected'"],
         check=False,
     )
 
-    # If first attempt failed, retry until successful
-    if result.returncode != 0:
-        print("Waiting for Mini to become available...")
-        attempt = 1
-        while True:
-            print(f"Retry attempt {attempt}...")
-            time.sleep(RETRY_INTERVAL)
-            result = subprocess.run(
-                ["ssh", "-o", "ConnectTimeout=10", f"{MINI_USER}@{MINI_IP}", "echo 'Connected'"],
-                check=False,
-            )
-            if result.returncode == 0:
-                break
-            attempt += 1
+    # Wait for system to boot after FileVault unlock
+    print("Waiting for Mini to boot...")
+    time.sleep(RETRY_INTERVAL)
+
+    # Now wait for SSH to be ready with key-based auth
+    attempt = 1
+    while True:
+        result = subprocess.run(
+            [
+                "ssh",
+                "-o", "ConnectTimeout=10",
+                "-o", "BatchMode=yes",
+                f"{MINI_USER}@{MINI_IP}",
+                "echo 'Connected'",
+            ],
+            capture_output=True,
+            check=False,
+        )
+        if result.returncode == 0:
+            break
+        print(f"Waiting for SSH... (attempt {attempt})")
+        time.sleep(RETRY_INTERVAL)
+        attempt += 1
 
     print("Mini is now unlocked and accessible.")
 
