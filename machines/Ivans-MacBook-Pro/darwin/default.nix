@@ -9,6 +9,7 @@
     ../../../darwin/nextdns.nix
     ../../../darwin/nix.nix
     ../../../darwin/no-dock-restart.nix
+    ../../../darwin/rebuild-terminal.nix
     ../../../darwin/security.nix
     ../../../darwin/shell.nix
     ../../../darwin/stats.nix
@@ -21,6 +22,7 @@
     ../../../modules/darwin/nextdns-mgmt
     ../../../modules/darwin/pam
     ../../../modules/darwin/rebuild-daemon
+    ../../../modules/darwin/rebuild-terminal
     ../../../modules/darwin/sudo
     ../../../modules/darwin/syncthing-mgmt
     ../../../modules/flags
