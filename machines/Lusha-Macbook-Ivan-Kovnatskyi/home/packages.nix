@@ -19,7 +19,6 @@
     awscli2
     backup-home
     bat
-    bitwarden-cli
     cargo
     cloudflared
     confluent-cli
