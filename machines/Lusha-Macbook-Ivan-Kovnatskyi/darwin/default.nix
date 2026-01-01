@@ -2,6 +2,7 @@
   imports = [
     ../../../darwin/aerospace.nix
     ../../../darwin/darwin.nix
+    ../../../darwin/rebuild-terminal.nix
     ../../../darwin/nix.nix
     ../../../darwin/no-dock-restart.nix
     ../../../darwin/sudo.nix
@@ -14,6 +15,7 @@
     ../../../modules/darwin/pmset
     ../../../modules/darwin/prevent-sleep
     ../../../modules/darwin/rebuild-daemon
+    ../../../modules/darwin/rebuild-terminal
     ../../../modules/darwin/sudo
     ../../../modules/darwin/syncthing-mgmt
     ../../../modules/flags
