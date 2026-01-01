@@ -79,6 +79,7 @@ end tell
 
 
 def appearance_open_settings_macos() -> None:
+    """Open Wallpaper settings and click 'Show on all Spaces' toggle."""
     script = '''
 tell application "System Settings"
     activate
@@ -86,9 +87,13 @@ tell application "System Settings"
     tell application "System Events"
         tell process "System Settings"
             click menu item "Wallpaper" of menu "View" of menu bar 1
+            delay 0.5
+            click checkbox "Show on all Spaces" of group 1 of scroll area 1 of group 1 of group 3 of splitter group 1 of group 1 of window 1
         end tell
     end tell
 end tell
+delay 0.2
+tell application "System Settings" to quit
 '''
     subprocess.run(["osascript", "-e", script], capture_output=True)
 
