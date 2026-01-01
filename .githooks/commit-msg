@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+MAX_LENGTH=72
+subject=$(head -1 "$1")
+
+if [ ${#subject} -gt $MAX_LENGTH ]; then
+  echo "Error: Commit subject is ${#subject} chars (max $MAX_LENGTH)" >&2
+  echo "Subject: $subject" >&2
+  exit 1
+fi
