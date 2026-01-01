@@ -117,6 +117,7 @@
     skopeo
     slack-cli-go
     smctemp
+    ssh-to-age
     sshpass
     ssm-session-manager-plugin
     stylua
