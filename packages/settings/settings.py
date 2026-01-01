@@ -223,7 +223,7 @@ def cmd_appearance(args: argparse.Namespace) -> int:
             print("Skipping appearance init (manual toggle was run today)")
             return 0
         appearance_set_dark_mode(True)
-        print("Set dark mode and wallpaper (init)")
+        print("Initialized appearance")
         appearance_remove_state()
         return 0
 
