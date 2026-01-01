@@ -42,6 +42,7 @@
     ../../../home/ssh.nix
     ../../../home/starship
     ../../../home/syncthing-ignore.nix
+    ../../../home/taskwarrior.nix
     ../../../home/terraform.nix
     ../../../home/tmux.nix
     ../../../home/tweety.nix
