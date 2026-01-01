@@ -887,9 +887,16 @@ def main() -> int:
     )
     awake_parser.set_defaults(func=cmd_awake)
 
+    # Help subcommand
+    subparsers.add_parser(
+        "help",
+        aliases=["h"],
+        help="Show this help message",
+    )
+
     args = parser.parse_args()
 
-    if not args.command:
+    if not args.command or args.command in ("help", "h"):
         parser.print_help()
         return 0
 
