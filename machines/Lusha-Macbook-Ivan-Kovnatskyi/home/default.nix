@@ -39,6 +39,7 @@
     ../../../home/scripts.nix
     ../../../home/shell.nix
     ../../../home/sops.nix
+    ../../../home/ssh.nix
     ../../../home/starship
     ../../../home/syncthing-ignore.nix
     ../../../home/terraform.nix
