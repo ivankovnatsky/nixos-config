@@ -32,3 +32,13 @@ Configured screen sharing via System Settings with the following options:
 - **Anyone may request permission to control screen**: Enabled
 
 Enables remote desktop access via VNC/Apple Remote Desktop for system maintenance and troubleshooting.
+
+## App macOS settings
+
+### Zoom
+
+- Approve local network access
+
+### Kitty
+
+- Open app from the internet -- Allow
