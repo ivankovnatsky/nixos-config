@@ -217,6 +217,11 @@ def cmd_appearance(args: argparse.Namespace) -> int:
         return 1
 
     if args.init:
+        state_file = appearance_get_state_file()
+        today = date.today().isoformat()
+        if state_file.exists() and state_file.read_text().strip() == today:
+            print("Skipping appearance init (manual toggle was run today)")
+            return 0
         appearance_set_dark_mode(True)
         print("Set dark mode and wallpaper (init)")
         appearance_remove_state()
