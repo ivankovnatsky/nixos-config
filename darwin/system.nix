@@ -9,16 +9,7 @@ in
 {
   system = {
     activationScripts.postActivation.text = ''
-      # Skip if settings appearance was run today (user manually set appearance)
-      STATE_FILE="/tmp/settings/appearance/last-run"
-      TODAY=$(date "+%Y-%m-%d")
-
-      if [ -f "$STATE_FILE" ] && [ "$(cat "$STATE_FILE")" = "$TODAY" ]; then
-        echo "Skipping appearance setup (settings appearance was run today)" >&2
-      else
-        ${pkgs.settings}/bin/settings appearance --init 2>&1 || \
-          echo "Warning: Could not set appearance (TCC access may be required)" >&2
-      fi
+      ${pkgs.settings}/bin/settings appearance --init
     '';
 
     defaults = {
