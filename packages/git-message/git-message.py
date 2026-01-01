@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Git commit message helper that auto-generates commit prefixes from staged files.
+Git commit subject scope helper that auto-generates scope from staged file paths.
 """
 
 import argparse
@@ -78,11 +78,11 @@ def create_commit_message(prefix: str, subject: str) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Auto-generate git commit messages from staged file paths.",
+        description="Auto-generate git commit subject scope from staged file paths.",
         epilog="""
 Examples:
-  git-message "add feature"     Commits with "<staged-file>: add feature"
-  git-message "fix bug"         Commits with "<staged-file>: fix bug"
+  git-message "add feature"     Commits with "<scope>: add feature"
+  git-message "fix bug"         Commits with "<scope>: fix bug"
 
 Features:
   - Requires exactly one staged file
@@ -90,13 +90,13 @@ Features:
   - Shortens machine names (e.g., Ivans-Mac-mini -> mini)
   - Removes duplicate path components (e.g., pkg/foo/foo -> pkg/foo)
   - Strips "default" filename (e.g., mod/foo/default -> mod/foo)
-  - Shortens directories if prefix > 40 (packages->pkg, modules->mod, etc.)
-  - Validates prefix length (max 40 chars)
-  - Validates commit message length (max 72 chars)
+  - Shortens directories if scope > 40 (packages->pkg, modules->mod, etc.)
+  - Validates scope length (max 40 chars)
+  - Validates subject length (max 72 chars)
 """,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument("subject", help="commit message subject")
+    parser.add_argument("subject", help="commit subject (without scope prefix)")
     args = parser.parse_args()
 
     try:
@@ -120,26 +120,26 @@ Features:
     staged_file = staged_files[0]
     prefix = shorten_path(staged_file)
 
-    # Apply aggressive directory shortening only if prefix exceeds limit
+    # Apply aggressive directory shortening only if scope exceeds limit
     if len(prefix) > MAX_PREFIX_LENGTH:
         prefix = shorten_directories(prefix)
 
     if len(prefix) > MAX_PREFIX_LENGTH:
         print(
-            f"Prefix too long: {len(prefix)} chars (max {MAX_PREFIX_LENGTH})",
+            f"Scope too long: {len(prefix)} chars (max {MAX_PREFIX_LENGTH})",
             file=sys.stderr,
         )
-        print(f"Prefix: {prefix}", file=sys.stderr)
+        print(f"Scope: {prefix}", file=sys.stderr)
         return 1
 
     message = create_commit_message(prefix, args.subject)
 
     if len(message) > MAX_MESSAGE_LENGTH:
         print(
-            f"Commit message too long: {len(message)} chars (max {MAX_MESSAGE_LENGTH})",
+            f"Subject too long: {len(message)} chars (max {MAX_MESSAGE_LENGTH})",
             file=sys.stderr,
         )
-        print(f"Message: {message}", file=sys.stderr)
+        print(f"Subject: {message}", file=sys.stderr)
         return 1
 
     try:
