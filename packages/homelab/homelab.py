@@ -5,7 +5,6 @@ import argparse
 import subprocess
 import sys
 import time
-import webbrowser
 
 MINI_IP = "192.168.50.4"
 MINI_USER = "ivan"
@@ -134,7 +133,8 @@ def power_on() -> int:
 
     wait_for_services()
 
-    webbrowser.open(f"http://{MINI_IP}:3001")
+    print("\nMonitor status:")
+    subprocess.run(["uptime-kuma-mgmt", "list"], check=False)
     return 0
 
 
