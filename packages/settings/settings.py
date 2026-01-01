@@ -162,7 +162,7 @@ def appearance_open_settings_kde() -> None:
 
 
 def appearance_get_state_dir() -> Path:
-    return Path.home() / ".local" / "state" / "settings" / "appearance"
+    return Path("/tmp") / "settings" / "appearance"
 
 
 def appearance_get_state_file() -> Path:
