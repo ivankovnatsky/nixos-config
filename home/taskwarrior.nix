@@ -10,5 +10,8 @@ in
     enable = true;
     dataLocation = "${homeDir}/${username}/.task/";
     colorTheme = if config.flags.darkMode then "no-color" else "light-256";
+    config = {
+      "default.due" = "eod";
+    };
   };
 }
