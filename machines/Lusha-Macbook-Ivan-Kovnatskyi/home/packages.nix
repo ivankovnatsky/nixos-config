@@ -21,6 +21,7 @@
     bat
     cargo
     cloudflared
+    confluence
     confluent-cli
     coreutils
     crane
