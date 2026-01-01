@@ -26,13 +26,10 @@
 # bw unlock --raw | pass insert -e vault.bitwarden.eu/<email>/session
 # ```
 #
-# In ~/.envrc, load credentials and session from pass:
+# Store BW_SESSION under envrc/secrets
 #
 # ```console
-# export BW_CLIENTID=$(pass vault.bitwarden.eu/<email>/client_id)
-# export BW_CLIENTSECRET=$(pass vault.bitwarden.eu/<email>/client_secret)
-# bw login --check &>/dev/null || bw login --apikey
-# export BW_SESSION=$(pass vault.bitwarden.eu/<email>/session)
+# pass edit envrc/secrets
 # ```
 
 {
