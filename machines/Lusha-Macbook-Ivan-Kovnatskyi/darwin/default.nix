@@ -14,14 +14,12 @@
     ../../../modules/darwin/pam
     ../../../modules/darwin/pmset
     ../../../modules/darwin/prevent-sleep
-    ../../../modules/darwin/rebuild-daemon
     ../../../modules/darwin/rebuild-terminal
     ../../../modules/darwin/sudo
     ../../../modules/darwin/syncthing-mgmt
     ../../../modules/flags
     ../../../system/documentation.nix
     ../../../system/nix.nix
-    ../../../system/rebuild-daemon.nix
     ../../../system/scripts
     ./dns.nix
     ./dock.nix
