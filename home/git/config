@@ -44,6 +44,7 @@
 	d = diff --unified=10
 	# Show staged changes (index vs HEAD)
 	diff-staged = diff --staged --unified=10
+	staged = diff --staged --unified=10
 	# Show all changes (both staged and unstaged, working tree vs HEAD)
 	diff-all = diff --unified=10 HEAD
 	l = log --oneline -n 20
