@@ -10,7 +10,7 @@ in
   system = {
     activationScripts.postActivation.text = ''
       # Skip if settings appearance was run today (user manually set appearance)
-      STATE_FILE="$HOME/.local/state/settings/appearance/last-run"
+      STATE_FILE="/tmp/settings/appearance/last-run"
       TODAY=$(date "+%Y-%m-%d")
 
       if [ -f "$STATE_FILE" ] && [ "$(cat "$STATE_FILE")" = "$TODAY" ]; then
