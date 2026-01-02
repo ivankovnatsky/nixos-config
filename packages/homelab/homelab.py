@@ -142,7 +142,10 @@ def power_on() -> int:
     wait_for_services()
 
     print("\nMonitor status:")
-    subprocess.run(["uptime-kuma-mgmt", "list"], check=False)
+    try:
+        subprocess.run(["uptime-kuma-mgmt", "list"], check=False)
+    except FileNotFoundError:
+        print("  (uptime-kuma-mgmt not available)")
     return 0
 
 
