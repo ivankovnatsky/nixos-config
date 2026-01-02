@@ -47,6 +47,7 @@ in
       { path = "/System/Applications/Weather.app/"; }
       { path = "/System/Applications/Home.app/"; }
       { path = "/System/Applications/Utilities/Screen Sharing.app/"; }
+      { path = "/Applications/Xcode.app/Contents/Applications/Icon Composer.app/"; }
 
       {
         type = "spacer";
@@ -56,7 +57,6 @@ in
       # Installed from App Store later on
       { path = "/Applications/Xcode.app/"; }
       { path = "/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/"; }
-      { path = "/Applications/Xcode.app/Contents/Applications/Icon Composer.app/"; }
       { path = "/Applications/Numbers.app/"; }
 
       {
