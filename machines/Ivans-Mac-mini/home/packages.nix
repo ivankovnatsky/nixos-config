@@ -14,6 +14,7 @@
     fzf
     gallery-dl
     genpass
+    git-message
     gofumpt
     golangci-lint
     home-manager
