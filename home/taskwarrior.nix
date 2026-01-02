@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 let
   inherit (pkgs.stdenv.targetPlatform) isDarwin;
 
@@ -111,6 +111,12 @@ in
   # rm ~/Library/Mobile\ Documents/iCloud~com~mav~taskchamp/Documents/taskchamp/taskchampion.sqlite3*
   # task sync
   # ```
+  #
+  # 8. Remove empty .data files (leftover from v2 format that cause warnings):
+  #
+  # ```console
+  # rm ~/Library/Mobile\ Documents/iCloud~com~mav~taskchamp/Documents/taskchamp/*.data
+  # ```
   programs.taskwarrior = {
     enable = true;
     package = pkgs.taskwarrior3;
@@ -118,8 +124,35 @@ in
     colorTheme = if config.flags.darkMode then "no-color" else "light-256";
     config = {
       "default.due" = "eod";
+      # Use home-manager managed hooks directory
+      "hooks.location" = "${config.xdg.configHome}/task/hooks";
     } // (if isDarwin then {
       "sync.local.server_dir" = iCloudTaskDir;
     } else { });
+  };
+
+  # Auto-sync hooks: run after task modifications to sync with local server
+  # https://taskwarrior.org/docs/hooks/
+  # on-add and on-modify only trigger when data changes, unlike on-exit
+  home.file."${config.xdg.configHome}/task/hooks/on-add-sync" = {
+    executable = true;
+    text = ''
+      #!/usr/bin/env bash
+      # Pass through the task JSON (required for on-add hooks)
+      cat
+      ${pkgs.taskwarrior3}/bin/task rc.hooks=off rc.verbose=sync sync
+    '';
+  };
+
+  home.file."${config.xdg.configHome}/task/hooks/on-modify-sync" = {
+    executable = true;
+    text = ''
+      #!/usr/bin/env bash
+      # on-modify receives 2 lines: original + modified, must output 1 line: modified
+      read original
+      read modified
+      echo "$modified"
+      ${pkgs.taskwarrior3}/bin/task rc.hooks=off rc.verbose=sync sync
+    '';
   };
 }
