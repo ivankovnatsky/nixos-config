@@ -10,6 +10,27 @@ MINI_IP = "192.168.50.4"
 MINI_USER = "ivan"
 RETRY_INTERVAL = 5  # seconds between retries
 SERVICE_CHECK_TIMEOUT = 60  # max seconds to wait for services
+SSH_TIMEOUT = 10  # seconds for SSH connection timeout
+
+
+def ssh_run(
+    command: str,
+    timeout: int = SSH_TIMEOUT,
+    batch_mode: bool = False,
+    capture_output: bool = False,
+) -> subprocess.CompletedProcess[str]:
+    """Run SSH command on Mini with standard options."""
+    ssh_args = [
+        "ssh",
+        "-o", f"ConnectTimeout={timeout}",
+    ]
+    if batch_mode:
+        ssh_args.extend(["-o", "BatchMode=yes"])
+    ssh_args.append(f"{MINI_USER}@{MINI_IP}")
+    ssh_args.append(command)
+    return subprocess.run(ssh_args, capture_output=capture_output, text=True, check=False)
+
+
 SERVICES_TO_CHECK = [
     ("DNS", f"dig @{MINI_IP} google.com +short +timeout=2"),
     ("Uptime Kuma", f"curl -s -o /dev/null -w '%{{http_code}}' --connect-timeout 2 http://{MINI_IP}:3001"),
@@ -69,10 +90,7 @@ def power_on() -> int:
     # First attempt - this handles the FileVault unlock prompt
     # Note: FileVault unlock always closes the connection after success,
     # so we can't rely on return code here
-    subprocess.run(
-        ["ssh", "-o", "ConnectTimeout=10", f"{MINI_USER}@{MINI_IP}", "echo 'Connected'"],
-        check=False,
-    )
+    ssh_run("echo 'Connected'")
 
     # Wait for system to boot after FileVault unlock
     print("Waiting for Mini to boot...")
@@ -81,17 +99,7 @@ def power_on() -> int:
     # Now wait for SSH to be ready with key-based auth
     attempt = 1
     while True:
-        result = subprocess.run(
-            [
-                "ssh",
-                "-o", "ConnectTimeout=10",
-                "-o", "BatchMode=yes",
-                f"{MINI_USER}@{MINI_IP}",
-                "echo 'Connected'",
-            ],
-            capture_output=True,
-            check=False,
-        )
+        result = ssh_run("echo 'Connected'", batch_mode=True, capture_output=True)
         if result.returncode == 0:
             break
         print(f"Waiting for SSH... (attempt {attempt})")
@@ -138,6 +146,12 @@ def power_on() -> int:
     return 0
 
 
+def is_mini_up() -> bool:
+    """Check if Mini is currently accessible."""
+    result = ssh_run("echo 'ok'", timeout=3, batch_mode=True, capture_output=True)
+    return result.returncode == 0
+
+
 def power_off() -> int:
     """Power off Mini."""
     print("Clearing local DNS settings before shutting down Mini...")
@@ -146,10 +160,7 @@ def power_off() -> int:
         print("Warning: Failed to clear DNS settings")
 
     print(f"Shutting down Mini at {MINI_IP}...")
-    result = subprocess.run(
-        ["ssh", f"{MINI_USER}@{MINI_IP}", "sudo", "shutdown", "-h", "now"],
-        check=False,
-    )
+    result = ssh_run("sudo shutdown -h now")
 
     if result.returncode != 0:
         print("Failed to shutdown Mini.")
@@ -160,7 +171,9 @@ def power_off() -> int:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Manage homelab machines")
+    parser = argparse.ArgumentParser(
+        description="Manage homelab machines. Run without arguments to toggle Mini on/off."
+    )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     subparsers.add_parser("on", help="Power on and unlock Mini")
@@ -173,8 +186,14 @@ def main() -> int:
     elif args.command == "off":
         return power_off()
     else:
-        parser.print_help()
-        return 1
+        # Toggle: check current state and switch
+        print("Checking Mini status...")
+        if is_mini_up():
+            print("Mini is up, powering off...")
+            return power_off()
+        else:
+            print("Mini is down, powering on...")
+            return power_on()
 
 
 if __name__ == "__main__":
