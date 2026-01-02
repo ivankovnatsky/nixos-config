@@ -1,5 +1,12 @@
 { pkgs }:
 
-pkgs.writeShellScriptBin "homelab" ''
-  exec ${pkgs.python3}/bin/python3 ${./homelab.py} "$@"
-''
+pkgs.writeShellApplication {
+  name = "homelab";
+  runtimeInputs = [
+    pkgs.dns
+    pkgs.uptime-kuma-mgmt
+  ];
+  text = ''
+    exec ${pkgs.python3}/bin/python3 ${./homelab.py} "$@"
+  '';
+}
