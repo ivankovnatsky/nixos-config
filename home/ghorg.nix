@@ -1,6 +1,8 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 {
+  home.packages = [ pkgs.ghorg ];
+
   # https://github.com/gabrie30/ghorg/blob/master/sample-conf.yaml
   sops.templates."ghorg-conf.yaml".content = ''
     # General Configuration
