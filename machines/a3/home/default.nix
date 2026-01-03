@@ -11,6 +11,7 @@
     ../../../home/codex.nix
     ../../../home/gamescope-session.nix
     ../../../home/gemini.nix
+    ../../../home/ghorg.nix
     ../../../home/ghostty.nix
     ../../../home/git
     ../../../home/go.nix
