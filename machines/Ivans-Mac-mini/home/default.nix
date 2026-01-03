@@ -8,6 +8,7 @@
     ../../../home/ccstatusline.nix
     ../../../home/claude.nix
     ../../../home/direnv.nix
+    ../../../home/ghorg.nix
     ../../../home/git
     ../../../home/go.nix
     ../../../home/home-session-vars.nix

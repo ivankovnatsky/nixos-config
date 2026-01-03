@@ -10,6 +10,7 @@
     ../../../home/claude.nix
     ../../../home/direnv.nix
     ../../../home/flags.nix
+    ../../../home/ghorg.nix
     ../../../home/ghostty.nix
     ../../../home/giffer.nix
     ../../../home/git
