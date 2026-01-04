@@ -14,6 +14,7 @@
     fzf
     gallery-dl
     genpass
+    giffer
     git-message
     gofumpt
     golangci-lint
