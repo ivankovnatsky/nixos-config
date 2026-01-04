@@ -79,6 +79,8 @@
               "pomdtr/homebrew-tap" = inputs.pomdtr-homebrew-tap;
               "ivankovnatsky/homebrew-tap" = inputs.ivankovnatsky-homebrew-tap;
               "keith/homebrew-formulae" = inputs.keith-homebrew-tap;
+              "antoniorodr/homebrew-memo" = inputs.antoniorodr-homebrew-tap;
+              "xwmx/homebrew-taps" = inputs.xwmx-homebrew-tap;
             };
             mutableTaps = false;
           };
@@ -170,6 +172,8 @@
               "pomdtr/homebrew-tap" = inputs.pomdtr-homebrew-tap;
               "ivankovnatsky/homebrew-tap" = inputs.ivankovnatsky-homebrew-tap;
               "keith/homebrew-formulae" = inputs.keith-homebrew-tap;
+              "antoniorodr/homebrew-memo" = inputs.antoniorodr-homebrew-tap;
+              "xwmx/homebrew-taps" = inputs.xwmx-homebrew-tap;
             };
             mutableTaps = false;
           };
@@ -230,6 +234,8 @@
               "pomdtr/homebrew-tap" = inputs.pomdtr-homebrew-tap;
               "ivankovnatsky/homebrew-tap" = inputs.ivankovnatsky-homebrew-tap;
               "keith/homebrew-formulae" = inputs.keith-homebrew-tap;
+              "antoniorodr/homebrew-memo" = inputs.antoniorodr-homebrew-tap;
+              "xwmx/homebrew-taps" = inputs.xwmx-homebrew-tap;
             };
             mutableTaps = false;
           };
