@@ -1,48 +1,56 @@
 #!/usr/bin/env python3
+"""
+giffer - A wrapper for yt-dlp and gallery-dl with optional video splitting.
 
-import argparse
+By default, this tool passes all arguments directly to yt-dlp or gallery-dl.
+Use subcommands for additional functionality like splitting.
+"""
+
 import re
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from urllib.parse import urljoin
+
+import click
 
 DEFAULT_URL_FILE = ".list.txt"
 
 
-def parse_duration(value):
-    """Parse human-readable duration string to seconds.
+class DurationType(click.ParamType):
+    """Custom Click type for duration parsing."""
 
-    Supports formats like: 5m30s, 1h30m, 90s, 2m, 30, 1h2m3s
-    Plain numbers are treated as seconds.
-    """
-    if value is None:
-        return None
+    name = "duration"
 
-    # If it's already a number, return it
-    try:
-        return float(value)
-    except (ValueError, TypeError):
-        pass
+    def convert(self, value, param, ctx):
+        if value is None:
+            return None
 
-    value = str(value).strip().lower()
+        try:
+            return float(value)
+        except (ValueError, TypeError):
+            pass
 
-    # Parse hours, minutes, seconds
-    pattern = r'(?:(\d+(?:\.\d+)?)h)?(?:(\d+(?:\.\d+)?)m)?(?:(\d+(?:\.\d+)?)s)?'
-    match = re.fullmatch(pattern, value)
+        value = str(value).strip().lower()
+        pattern = r"(?:(\d+(?:\.\d+)?)h)?(?:(\d+(?:\.\d+)?)m)?(?:(\d+(?:\.\d+)?)s)?"
+        match = re.fullmatch(pattern, value)
 
-    if not match or not any(match.groups()):
-        raise argparse.ArgumentTypeError(
-            f"Invalid duration format: '{value}'. "
-            "Use formats like: 5m30s, 1h30m, 90s, 2m, or plain seconds (e.g., 90)"
-        )
+        if not match or not any(match.groups()):
+            self.fail(
+                f"Invalid duration format: '{value}'. "
+                "Use formats like: 5m30s, 1h30m, 90s, 2m, or plain seconds",
+                param,
+                ctx,
+            )
 
-    hours = float(match.group(1) or 0)
-    minutes = float(match.group(2) or 0)
-    seconds = float(match.group(3) or 0)
+        hours = float(match.group(1) or 0)
+        minutes = float(match.group(2) or 0)
+        seconds = float(match.group(3) or 0)
 
-    return hours * 3600 + minutes * 60 + seconds
+        return hours * 3600 + minutes * 60 + seconds
+
+
+DURATION = DurationType()
 
 
 def format_duration(seconds):
@@ -71,63 +79,68 @@ def get_video_duration(file_path):
     """Get video duration in seconds using ffprobe"""
     cmd = [
         "ffprobe",
-        "-v", "error",
-        "-show_entries", "format=duration",
-        "-of", "default=noprint_wrappers=1:nokey=1",
-        str(file_path)
+        "-v",
+        "error",
+        "-show_entries",
+        "format=duration",
+        "-of",
+        "default=noprint_wrappers=1:nokey=1",
+        str(file_path),
     ]
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
-        print(f"Error getting duration for {file_path}: {result.stderr}", file=sys.stderr)
+        click.echo(f"Error getting duration for {file_path}: {result.stderr}", err=True)
         return None
     return float(result.stdout.strip())
 
 
-def split_single_video(input_file, segment_duration, skip_start=0, skip_end=0, output_dir=None, cleanup=False):
+def split_single_video(
+    input_file, segment_duration, skip_start=0, skip_end=0, output_dir=None, cleanup=False
+):
     """Split a video file into segments"""
     input_path = Path(input_file)
 
     if not input_path.exists():
-        print(f"Error: File not found: {input_file}", file=sys.stderr)
+        click.echo(f"Error: File not found: {input_file}", err=True)
         return False
 
-    # Get total duration
     total_duration = get_video_duration(input_path)
     if total_duration is None:
         return False
 
-    # Calculate effective duration
     effective_start = skip_start
     effective_end = total_duration - skip_end
     effective_duration = effective_end - effective_start
 
     if effective_duration <= 0:
-        print(f"Error: Skip values exceed video duration ({format_duration(total_duration)})", file=sys.stderr)
+        click.echo(
+            f"Error: Skip values exceed video duration ({format_duration(total_duration)})",
+            err=True,
+        )
         return False
 
-    # Determine output directory
     if output_dir:
         out_dir = Path(output_dir)
         out_dir.mkdir(parents=True, exist_ok=True)
     else:
         out_dir = input_path.parent
 
-    # Calculate number of segments
     num_segments = int(effective_duration // segment_duration)
     if effective_duration % segment_duration > 0:
         num_segments += 1
 
-    print(f"Splitting {input_path.name} into {num_segments} segments of {format_duration(segment_duration)} each")
-    print(f"  Total duration: {format_duration(total_duration)}")
-    print(f"  Skip start: {format_duration(skip_start)}, Skip end: {format_duration(skip_end)}")
-    print(f"  Effective duration: {format_duration(effective_duration)}")
+    click.echo(
+        f"Splitting {input_path.name} into {num_segments} segments of {format_duration(segment_duration)} each"
+    )
+    click.echo(f"  Total duration: {format_duration(total_duration)}")
+    click.echo(f"  Skip start: {format_duration(skip_start)}, Skip end: {format_duration(skip_end)}")
+    click.echo(f"  Effective duration: {format_duration(effective_duration)}")
 
     stem = input_path.stem
     suffix = input_path.suffix
 
     for i in range(num_segments):
         start_time = effective_start + (i * segment_duration)
-        # For the last segment, use remaining duration
         if i == num_segments - 1:
             duration = effective_end - start_time
         else:
@@ -138,46 +151,61 @@ def split_single_video(input_file, segment_duration, skip_start=0, skip_end=0, o
         cmd = [
             "ffmpeg",
             "-y",
-            "-ss", str(start_time),
-            "-i", str(input_path),
-            "-t", str(duration),
-            "-c", "copy",
-            "-avoid_negative_ts", "1",
-            str(output_file)
+            "-ss",
+            str(start_time),
+            "-i",
+            str(input_path),
+            "-t",
+            str(duration),
+            "-c",
+            "copy",
+            "-avoid_negative_ts",
+            "1",
+            str(output_file),
         ]
 
-        print(f"  Creating {output_file.name} (start: {format_duration(start_time)}, duration: {format_duration(duration)})")
+        click.echo(
+            f"  Creating {output_file.name} (start: {format_duration(start_time)}, duration: {format_duration(duration)})"
+        )
         result = subprocess.run(cmd, capture_output=True, text=True)
         if result.returncode != 0:
-            print(f"Error creating segment: {result.stderr}", file=sys.stderr)
+            click.echo(f"Error creating segment: {result.stderr}", err=True)
             return False
 
-    print(f"Successfully created {num_segments} segments")
+    click.echo(f"Successfully created {num_segments} segments")
 
     if cleanup:
         input_path.unlink()
-        print(f"Removed source file: {input_path.name}")
+        click.echo(f"Removed source file: {input_path.name}")
 
     return True
 
 
-def split_path(path, segment_duration, skip_start=0, skip_end=0, output_dir=None, cleanup=False, recursive=True, extensions=None):
+def split_path(
+    path,
+    segment_duration,
+    skip_start=0,
+    skip_end=0,
+    output_dir=None,
+    cleanup=False,
+    recursive=True,
+    extensions=None,
+):
     """Split video file(s) - handles both single files and directories"""
     input_path = Path(path)
 
     if not input_path.exists():
-        print(f"Error: Path not found: {path}", file=sys.stderr)
+        click.echo(f"Error: Path not found: {path}", err=True)
         return False
 
-    # Single file
     if input_path.is_file():
-        return split_single_video(input_path, segment_duration, skip_start, skip_end, output_dir, cleanup)
+        return split_single_video(
+            input_path, segment_duration, skip_start, skip_end, output_dir, cleanup
+        )
 
-    # Directory
     if extensions is None:
-        extensions = ['.mp4', '.mkv', '.avi', '.mov', '.webm', '.m4v']
+        extensions = [".mp4", ".mkv", ".avi", ".mov", ".webm", ".m4v"]
 
-    # Find video files
     if recursive:
         files = []
         for ext in extensions:
@@ -187,101 +215,94 @@ def split_path(path, segment_duration, skip_start=0, skip_end=0, output_dir=None
         for ext in extensions:
             files.extend(input_path.glob(f"*{ext}"))
 
-    # Filter out already split files (those with _partXXX pattern)
-    part_pattern = re.compile(r'_part\d{3}\.')
+    part_pattern = re.compile(r"_part\d{3}\.")
     files = [f for f in files if not part_pattern.search(f.name)]
 
     if not files:
-        print(f"No video files found in {path}")
+        click.echo(f"No video files found in {path}")
         return True
 
-    print(f"Found {len(files)} video file(s) to process")
+    click.echo(f"Found {len(files)} video file(s) to process")
 
     success = True
     for video_file in sorted(files):
-        print(f"\nProcessing: {video_file}")
-        if not split_single_video(video_file, segment_duration, skip_start, skip_end, cleanup=cleanup):
+        click.echo(f"\nProcessing: {video_file}")
+        if not split_single_video(
+            video_file, segment_duration, skip_start, skip_end, cleanup=cleanup
+        ):
             success = False
 
     return success
 
 
-def download_and_split(url, segment_duration, skip_start=0, skip_end=0, output_dir=None, no_split=False):
-    """Download video(s) using yt-dlp and optionally split them (supports playlists)"""
+def run_yt_dlp(args, capture_output=False):
+    """Run yt-dlp with given arguments"""
+    cmd = ["yt-dlp"] + list(args)
+    if capture_output:
+        return subprocess.run(cmd, text=True, stdout=subprocess.PIPE)
+    return subprocess.run(cmd)
+
+
+def run_gallery_dl(args):
+    """Run gallery-dl with given arguments"""
+    cmd = ["gallery-dl"] + list(args)
+    return subprocess.run(cmd)
+
+
+def download_with_split(
+    url, segment_duration, skip_start=0, skip_end=0, output_dir=None, extra_args=None
+):
+    """Download video using yt-dlp and split into segments"""
     if output_dir:
         out_dir = Path(output_dir)
         out_dir.mkdir(parents=True, exist_ok=True)
     else:
         out_dir = Path.cwd()
 
-    # Download with yt-dlp
     output_template = str(out_dir / "%(title)s.%(ext)s")
 
-    print(f"Downloading video from: {url}")
-    cmd = [
-        "yt-dlp",
+    click.echo(f"Downloading video from: {url}")
+    cmd_args = [
         "--yes-playlist",
-        "-f", "mp4/best[ext=mp4]/best",
-        "-o", output_template,
-        "--print", "after_move:filepath",
-        url
+        "-f",
+        "mp4/best[ext=mp4]/best",
+        "-o",
+        output_template,
+        "--print",
+        "after_move:filepath",
     ]
 
-    # Run with output visible, capture stdout for file paths
-    result = subprocess.run(cmd, text=True, stdout=subprocess.PIPE)
+    if extra_args:
+        cmd_args.extend(extra_args)
+
+    cmd_args.append(url)
+
+    result = run_yt_dlp(cmd_args, capture_output=True)
     if result.returncode != 0:
-        print(f"Error downloading video", file=sys.stderr)
+        click.echo("Error downloading video", err=True)
         return False
 
-    # Get all downloaded files (supports playlists)
     downloaded_files = [
-        line.strip() for line in result.stdout.strip().split('\n')
+        line.strip()
+        for line in result.stdout.strip().split("\n")
         if line.strip() and Path(line.strip()).exists()
     ]
 
     if not downloaded_files:
-        print("Error: No files downloaded", file=sys.stderr)
+        click.echo("Error: No files downloaded", err=True)
         return False
 
-    print(f"Downloaded {len(downloaded_files)} video(s)")
+    click.echo(f"Downloaded {len(downloaded_files)} video(s)")
 
-    if no_split:
-        return True
-
-    # Split each downloaded video
     success = True
     for downloaded_file in downloaded_files:
-        print(f"\nProcessing: {downloaded_file}")
-        if not split_single_video(downloaded_file, segment_duration, skip_start, skip_end, output_dir, cleanup=True):
+        click.echo(f"\nProcessing: {downloaded_file}")
+        if not split_single_video(
+            downloaded_file, segment_duration, skip_start, skip_end, output_dir, cleanup=True
+        ):
             success = False
 
     return success
-
-
-def download_only(url, output_dir=None, embed_subs=True, max_height=1080):
-    """Download video using yt-dlp without splitting"""
-    if output_dir:
-        out_dir = Path(output_dir)
-        out_dir.mkdir(parents=True, exist_ok=True)
-    else:
-        out_dir = Path.cwd()
-
-    output_template = str(out_dir / "%(title)s.%(ext)s")
-
-    print(f"Downloading video from: {url}")
-    cmd = ["yt-dlp"]
-
-    if embed_subs:
-        cmd.extend(["--write-auto-subs", "--embed-subs"])
-
-    cmd.extend([
-        "--format", f"best[height<={max_height}]",
-        "-o", output_template,
-        url
-    ])
-
-    result = subprocess.run(cmd, capture_output=False)
-    return result.returncode == 0
 
 
 def remove_url_from_file(url_to_remove, url_file):
@@ -295,17 +316,17 @@ def remove_url_from_file(url_to_remove, url_file):
                 if line.strip() != url_to_remove:
                     f.write(line)
     except Exception as e:
-        print(f"Warning: Could not remove URL from file: {e}", file=sys.stderr)
+        click.echo(f"Warning: Could not remove URL from file: {e}", err=True)
 
 
-def batch_download(url_file=None, output_dir=None, embed_subs=True, max_height=1080):
+def batch_download_impl(url_file=None, output_dir=None, embed_subs=True, max_height=1080):
     """Download videos from a list file, removing successfully downloaded URLs"""
     if url_file is None:
         url_file = DEFAULT_URL_FILE
 
     url_path = Path(url_file)
     if not url_path.exists():
-        print(f"No URLs to process: {url_file} not found")
+        click.echo(f"No URLs to process: {url_file} not found")
         return True
 
     success_count = 0
@@ -325,19 +346,34 @@ def batch_download(url_file=None, output_dir=None, embed_subs=True, max_height=1
         url = urls[0]
         total_count += 1
 
-        print(f"Downloading: {url}")
+        click.echo(f"Downloading: {url}")
 
-        if download_only(url, output_dir, embed_subs, max_height):
-            print(f"Successfully downloaded: {url}")
+        if output_dir:
+            out_dir = Path(output_dir)
+            out_dir.mkdir(parents=True, exist_ok=True)
+        else:
+            out_dir = Path.cwd()
+
+        output_template = str(out_dir / "%(title)s.%(ext)s")
+
+        cmd_args = []
+        if embed_subs:
+            cmd_args.extend(["--write-auto-subs", "--embed-subs"])
+
+        cmd_args.extend(["--format", f"best[height<={max_height}]", "-o", output_template, url])
+
+        result = run_yt_dlp(cmd_args)
+        if result.returncode == 0:
+            click.echo(f"Successfully downloaded: {url}")
             remove_url_from_file(url, url_file)
-            print(f"Removed URL from list: {url}")
+            click.echo(f"Removed URL from list: {url}")
             success_count += 1
         else:
-            print(f"Failed to download: {url}")
+            click.echo(f"Failed to download: {url}")
             break
 
     if total_count > 0:
-        print(f"Processing complete. {success_count}/{total_count} URLs downloaded successfully")
+        click.echo(f"Processing complete. {success_count}/{total_count} URLs downloaded successfully")
 
     return success_count == total_count
 
@@ -347,14 +383,16 @@ def extract_urls_from_page(page_url, pattern):
     cmd = ["curl", "-sL", page_url]
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
-        print(f"Error fetching page {page_url}: {result.stderr}", file=sys.stderr)
+        click.echo(f"Error fetching page {page_url}: {result.stderr}", err=True)
         return []
 
     matches = re.findall(pattern, result.stdout)
     return matches
 
 
-def download_single_video(url, output_dir, max_height=1080, split=True, segment_duration=10, skip_start=0, skip_end=0):
+def download_single_video(
+    url, output_dir, max_height=1080, split=False, segment_duration=10, skip_start=0, skip_end=0
+):
     """Download a single video and optionally split it, returns (url, success)"""
     if output_dir:
         out_dir = Path(output_dir)
@@ -364,32 +402,47 @@ def download_single_video(url, output_dir, max_height=1080, split=True, segment_
 
     output_template = str(out_dir / "%(title)s.%(ext)s")
 
-    cmd = [
-        "yt-dlp",
-        "--format", f"best[height<={max_height}]/best",
-        "-o", output_template,
-        "--print", "after_move:filepath",
-        url
+    cmd_args = [
+        "--format",
+        f"best[height<={max_height}]/best",
+        "-o",
+        output_template,
+        "--print",
+        "after_move:filepath",
+        url,
     ]
 
-    result = subprocess.run(cmd, text=True, stdout=subprocess.PIPE)
+    result = run_yt_dlp(cmd_args, capture_output=True)
     if result.returncode != 0:
         return (url, False)
 
     if not split:
         return (url, True)
 
-    # Get downloaded file path and split it
-    downloaded_file = result.stdout.strip().split('\n')[-1]
+    downloaded_file = result.stdout.strip().split("\n")[-1]
     if downloaded_file and Path(downloaded_file).exists():
-        success = split_single_video(downloaded_file, segment_duration, skip_start, skip_end, output_dir, cleanup=True)
+        success = split_single_video(
+            downloaded_file, segment_duration, skip_start, skip_end, output_dir, cleanup=True
+        )
         return (url, success)
 
     return (url, False)
 
 
-def scrape_and_download(base_url, start_page=1, end_page=None, pattern=None, workers=4, output_dir=None, max_height=1080, no_split=False, segment_duration=10, skip_start=0, skip_end=0):
-    """Scrape and download page by page - finish all downloads from one page before moving to next"""
+def scrape_and_download_impl(
+    base_url,
+    start_page=1,
+    end_page=None,
+    pattern=None,
+    workers=4,
+    output_dir=None,
+    max_height=1080,
+    split=False,
+    segment_duration=10,
+    skip_start=0,
+    skip_end=0,
+):
+    """Scrape and download page by page"""
     if pattern is None:
         pattern = r'<a class="title" href="([^"]+)"'
 
@@ -398,29 +451,30 @@ def scrape_and_download(base_url, start_page=1, end_page=None, pattern=None, wor
     total_success = 0
     total_failed = 0
 
-    print(f"Scraping and downloading from {base_url}")
-    print(f"Split: {'disabled' if no_split else f'enabled ({format_duration(segment_duration)} segments)'}")
-    print(f"Workers: {workers}\n")
+    click.echo(f"Scraping and downloading from {base_url}")
+    click.echo(f"Split: {'enabled' if split else 'disabled'}")
+    if split:
+        click.echo(f"  Segment duration: {format_duration(segment_duration)}")
+    click.echo(f"Workers: {workers}\n")
 
     while True:
         if page == 1:
-            page_url = base_url.rstrip('/')
+            page_url = base_url.rstrip("/")
         else:
             page_url = f"{base_url.rstrip('/')}/{page}"
 
-        print(f"=== Page {page}: {page_url} ===")
+        click.echo(f"=== Page {page}: {page_url} ===")
         urls = extract_urls_from_page(page_url, pattern)
 
         if not urls:
-            print(f"No URLs found, stopping\n")
+            click.echo("No URLs found, stopping\n")
             break
 
-        # Filter duplicates
         new_urls = [url for url in urls if url not in seen]
         for url in new_urls:
             seen.add(url)
 
-        print(f"Found {len(urls)} URLs, {len(new_urls)} new\n")
+        click.echo(f"Found {len(urls)} URLs, {len(new_urls)} new\n")
 
         if new_urls:
             page_success = 0
@@ -428,7 +482,16 @@ def scrape_and_download(base_url, start_page=1, end_page=None, pattern=None, wor
 
             with ThreadPoolExecutor(max_workers=workers) as executor:
                 futures = {
-                    executor.submit(download_single_video, url, output_dir, max_height, not no_split, segment_duration, skip_start, skip_end): url
+                    executor.submit(
+                        download_single_video,
+                        url,
+                        output_dir,
+                        max_height,
+                        split,
+                        segment_duration,
+                        skip_start,
+                        skip_end,
+                    ): url
                     for url in new_urls
                 }
 
@@ -436,159 +499,196 @@ def scrape_and_download(base_url, start_page=1, end_page=None, pattern=None, wor
                     url, success = future.result()
                     if success:
                         page_success += 1
-                        print(f"[{page_success}/{len(new_urls)}] Completed: {url}")
+                        click.echo(f"[{page_success}/{len(new_urls)}] Completed: {url}")
                     else:
                         page_failed.append(url)
-                        print(f"[FAILED] {url}")
+                        click.echo(f"[FAILED] {url}")
 
             total_success += page_success
             total_failed += len(page_failed)
-            print(f"\nPage {page} done: {page_success}/{len(new_urls)} successful\n")
+            click.echo(f"\nPage {page} done: {page_success}/{len(new_urls)} successful\n")
 
         if end_page and page >= end_page:
             break
 
         page += 1
 
-    print(f"=== All done: {total_success} successful, {total_failed} failed ===")
+    click.echo(f"=== All done: {total_success} successful, {total_failed} failed ===")
     return total_failed == 0
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        description="Video download and splitting tool",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  giffer download "https://youtube.com/watch?v=xxx" --duration 30s
-  giffer download "https://youtube.com/watch?v=xxx" -d 2m30s
-  giffer download "https://example.com/video" --no-split
-  giffer scrape "https://example.com/videos/page" --end-page 5 --workers 4
-  giffer scrape "https://example.com/videos/page" --no-split -w 4
-  giffer process video.mp4 --duration 1m --skip-start 5s --skip-end 10s
-  giffer process ./videos --duration 45s --recursive
-  giffer batch                          # Download from .list.txt
-  giffer batch --file urls.txt          # Download from custom file
+class GifferGroup(click.Group):
+    """Custom group that passes unknown commands to yt-dlp/gallery-dl."""
 
-Duration formats: 30 (seconds), 30s, 2m, 1m30s, 1h, 1h30m, 1h2m3s
-"""
-    )
-    subparsers = parser.add_subparsers(dest="command", help="Command to execute")
+    def parse_args(self, ctx, args):
+        # Check if first non-option arg is a subcommand
+        subcommands = set(self.commands.keys())
+        first_positional = None
+        for arg in args:
+            if not arg.startswith("-"):
+                first_positional = arg
+                break
 
-    # Common arguments
-    def add_common_args(p):
-        p.add_argument("-d", "--duration", type=parse_duration, default=10,
-                       help="Segment duration (e.g., 10, 30s, 2m, 1m30s) (default: 10s)")
-        p.add_argument("--skip-start", type=parse_duration, default=0,
-                       help="Duration to skip from start (e.g., 5s, 1m) (default: 0)")
-        p.add_argument("--skip-end", type=parse_duration, default=0,
-                       help="Duration to skip from end (e.g., 10s, 30s) (default: 0)")
+        if first_positional and first_positional not in subcommands:
+            # Not a subcommand, store args for passthrough
+            ctx.ensure_object(dict)
+            ctx.obj["passthrough_args"] = args
+            ctx.obj["passthrough_mode"] = True
+            return []
 
-    # Download command
-    download_parser = subparsers.add_parser("download", help="Download video and split it")
-    download_parser.add_argument("url", help="Video URL to download")
-    download_parser.add_argument("-o", "--output-dir", help="Output directory")
-    download_parser.add_argument("--no-split", action="store_true",
-                                 help="Download only, do not split into segments")
-    add_common_args(download_parser)
+        return super().parse_args(ctx, args)
 
-    # Process command (handles both files and directories)
-    process_parser = subparsers.add_parser("process", help="Process local video file(s)")
-    process_parser.add_argument("path", help="Video file or directory to process")
-    process_parser.add_argument("-o", "--output-dir", help="Output directory (default: same as input)")
-    process_parser.add_argument("--cleanup", action="store_true",
-                                help="Remove source file(s) after splitting")
-    process_parser.add_argument("-r", "--recursive", action="store_true", default=True,
-                                help="Process subdirectories recursively (default: True)")
-    process_parser.add_argument("--no-recursive", action="store_false", dest="recursive",
-                                help="Do not process subdirectories")
-    process_parser.add_argument("-e", "--extensions", nargs="+",
-                                help="File extensions to process (default: mp4 mkv avi mov webm m4v)")
-    add_common_args(process_parser)
+    def invoke(self, ctx):
+        ctx.ensure_object(dict)
+        if ctx.obj.get("passthrough_mode"):
+            # Handle passthrough mode
+            args = ctx.obj["passthrough_args"]
 
-    # Batch command (from download-youtube)
-    batch_parser = subparsers.add_parser("batch", help="Download videos from a URL list file")
-    batch_parser.add_argument("-f", "--file", default=DEFAULT_URL_FILE,
-                              help=f"URL list file (default: {DEFAULT_URL_FILE})")
-    batch_parser.add_argument("-o", "--output-dir", help="Output directory")
-    batch_parser.add_argument("--embed-subs", action="store_true", default=True,
-                              help="Embed subtitles (default: True)")
-    batch_parser.add_argument("--no-embed-subs", action="store_false", dest="embed_subs",
-                              help="Do not embed subtitles")
-    batch_parser.add_argument("--max-height", type=int, default=1080,
-                              help="Maximum video height (default: 1080)")
+            # Parse our flags manually
+            gallery = False
+            ytdlp = False
+            remaining = []
+            i = 0
+            while i < len(args):
+                if args[i] == "--gallery":
+                    gallery = True
+                elif args[i] == "--yt-dlp":
+                    ytdlp = True
+                elif args[i] in ("-h", "--help") and not remaining:
+                    return super().invoke(ctx)
+                else:
+                    remaining.append(args[i])
+                i += 1
 
-    # Scrape command for paginated downloads
-    scrape_parser = subparsers.add_parser("scrape", help="Scrape paginated pages and download videos in parallel")
-    scrape_parser.add_argument("url", help="Base URL of the listing page")
-    scrape_parser.add_argument("-o", "--output-dir", help="Output directory")
-    scrape_parser.add_argument("--start-page", type=int, default=1,
-                               help="Starting page number (default: 1)")
-    scrape_parser.add_argument("--end-page", type=int,
-                               help="Ending page number (default: scrape until no URLs found)")
-    scrape_parser.add_argument("-p", "--pattern",
-                               default=r'<a class="title" href="([^"]+)"',
-                               help='Regex pattern to extract URLs (default: \'<a class="title" href="([^"]+)"\')')
-    scrape_parser.add_argument("-w", "--workers", type=int, default=4,
-                               help="Number of parallel download workers (default: 4)")
-    scrape_parser.add_argument("--max-height", type=int, default=1080,
-                               help="Maximum video height (default: 1080)")
-    scrape_parser.add_argument("--no-split", action="store_true",
-                               help="Download only, do not split into segments")
-    add_common_args(scrape_parser)
+            if not remaining:
+                click.echo(ctx.get_help())
+                return
 
-    args = parser.parse_args()
+            if gallery and ytdlp:
+                click.echo("Error: Cannot use both --gallery and --yt-dlp", err=True)
+                ctx.exit(1)
 
-    if args.command == "download":
-        success = download_and_split(
-            args.url,
-            args.duration,
-            args.skip_start,
-            args.skip_end,
-            args.output_dir,
-            args.no_split
-        )
-    elif args.command == "process":
-        extensions = None
-        if args.extensions:
-            extensions = [f".{e.lstrip('.')}" for e in args.extensions]
-        success = split_path(
-            args.path,
-            args.duration,
-            args.skip_start,
-            args.skip_end,
-            args.output_dir,
-            args.cleanup,
-            args.recursive,
-            extensions
-        )
-    elif args.command == "batch":
-        success = batch_download(
-            args.file,
-            args.output_dir,
-            args.embed_subs,
-            args.max_height
-        )
-    elif args.command == "scrape":
-        success = scrape_and_download(
-            args.url,
-            args.start_page,
-            args.end_page,
-            args.pattern,
-            args.workers,
-            args.output_dir,
-            args.max_height,
-            args.no_split,
-            args.duration,
-            args.skip_start,
-            args.skip_end
-        )
+            if gallery:
+                result = run_gallery_dl(remaining)
+            elif ytdlp:
+                result = run_yt_dlp(remaining)
+            else:
+                result = run_yt_dlp(remaining)
+                if result.returncode != 0:
+                    click.echo("\nyt-dlp failed, trying gallery-dl as fallback...\n", err=True)
+                    result = run_gallery_dl(remaining)
+
+            ctx.exit(result.returncode)
+        else:
+            return super().invoke(ctx)
+
+
+@click.group(cls=GifferGroup, invoke_without_command=True)
+@click.option("--gallery", is_flag=True, help="Force using gallery-dl")
+@click.option("--yt-dlp", "ytdlp", is_flag=True, help="Force using yt-dlp")
+@click.pass_context
+def cli(ctx, gallery, ytdlp):
+    """Wrapper for yt-dlp and gallery-dl with optional video splitting.
+
+    By default, passes all arguments to yt-dlp.
+    If yt-dlp fails, automatically tries gallery-dl as fallback.
+    Use --gallery or --yt-dlp to force a specific tool (disables fallback).
+
+    \b
+    Default usage (passthrough):
+      giffer "https://youtube.com/watch?v=xxx"
+      giffer "https://youtube.com/watch?v=xxx" -f best
+      giffer --gallery "https://example.com"
+      giffer --yt-dlp "https://reddit.com/..."
+
+    \b
+    Duration formats: 30 (seconds), 30s, 2m, 1m30s, 1h, 1h30m, 1h2m3s
+    """
+    ctx.ensure_object(dict)
+    if ctx.invoked_subcommand is None and not ctx.obj.get("passthrough_mode"):
+        click.echo(ctx.get_help())
+
+
+@cli.command()
+@click.argument("url")
+@click.option("-o", "--output-dir", help="Output directory")
+@click.option("-d", "--duration", type=DURATION, default=10, help="Segment duration (default: 10s)")
+@click.option("--skip-start", type=DURATION, default=0, help="Skip from start (default: 0)")
+@click.option("--skip-end", type=DURATION, default=0, help="Skip from end (default: 0)")
+def split(url, output_dir, duration, skip_start, skip_end):
+    """Download video and split into segments."""
+    success = download_with_split(url, duration, skip_start, skip_end, output_dir)
+    sys.exit(0 if success else 1)
+
+
+@cli.command()
+@click.argument("url")
+@click.option("-o", "--output-dir", help="Output directory")
+@click.option("--no-split", is_flag=True, help="Download only, no splitting")
+@click.option("-d", "--duration", type=DURATION, default=10, help="Segment duration (default: 10s)")
+@click.option("--skip-start", type=DURATION, default=0, help="Skip from start (default: 0)")
+@click.option("--skip-end", type=DURATION, default=0, help="Skip from end (default: 0)")
+def download(url, output_dir, no_split, duration, skip_start, skip_end):
+    """Download video and optionally split it (splits by default)."""
+    if no_split:
+        args = [url]
+        if output_dir:
+            args.extend(["-o", f"{output_dir}/%(title)s.%(ext)s"])
+        result = run_yt_dlp(args)
+        sys.exit(result.returncode)
     else:
-        parser.print_help()
-        sys.exit(0)
+        success = download_with_split(url, duration, skip_start, skip_end, output_dir)
+        sys.exit(0 if success else 1)
 
+
+@cli.command()
+@click.argument("path")
+@click.option("-o", "--output-dir", help="Output directory")
+@click.option("--cleanup", is_flag=True, help="Remove source files after splitting")
+@click.option("-r/-R", "--recursive/--no-recursive", default=True, help="Process subdirectories")
+@click.option("-e", "--extensions", multiple=True, help="File extensions to process")
+@click.option("-d", "--duration", type=DURATION, default=10, help="Segment duration (default: 10s)")
+@click.option("--skip-start", type=DURATION, default=0, help="Skip from start (default: 0)")
+@click.option("--skip-end", type=DURATION, default=0, help="Skip from end (default: 0)")
+def process(path, output_dir, cleanup, recursive, extensions, duration, skip_start, skip_end):
+    """Split local video file(s)."""
+    exts = None
+    if extensions:
+        exts = [f".{e.lstrip('.')}" for e in extensions]
+    success = split_path(path, duration, skip_start, skip_end, output_dir, cleanup, recursive, exts)
+    sys.exit(0 if success else 1)
+
+
+@cli.command()
+@click.option("-f", "--file", "url_file", default=DEFAULT_URL_FILE, help=f"URL list file (default: {DEFAULT_URL_FILE})")
+@click.option("-o", "--output-dir", help="Output directory")
+@click.option("--embed-subs/--no-embed-subs", default=True, help="Embed subtitles")
+@click.option("--max-height", type=int, default=1080, help="Maximum video height (default: 1080)")
+def batch(url_file, output_dir, embed_subs, max_height):
+    """Download videos from a URL list file."""
+    success = batch_download_impl(url_file, output_dir, embed_subs, max_height)
+    sys.exit(0 if success else 1)
+
+
+@cli.command()
+@click.argument("url")
+@click.option("-o", "--output-dir", help="Output directory")
+@click.option("--start-page", type=int, default=1, help="Starting page (default: 1)")
+@click.option("--end-page", type=int, help="Ending page")
+@click.option("-p", "--pattern", default=r'<a class="title" href="([^"]+)"', help="Regex pattern for URLs")
+@click.option("-w", "--workers", type=int, default=4, help="Parallel workers (default: 4)")
+@click.option("--max-height", type=int, default=1080, help="Maximum video height (default: 1080)")
+@click.option("--split", "do_split", is_flag=True, help="Split videos after download")
+@click.option("-d", "--duration", type=DURATION, default=10, help="Segment duration (default: 10s)")
+@click.option("--skip-start", type=DURATION, default=0, help="Skip from start (default: 0)")
+@click.option("--skip-end", type=DURATION, default=0, help="Skip from end (default: 0)")
+def scrape(url, output_dir, start_page, end_page, pattern, workers, max_height, do_split, duration, skip_start, skip_end):
+    """Scrape paginated pages and download videos."""
+    success = scrape_and_download_impl(
+        url, start_page, end_page, pattern, workers, output_dir, max_height, do_split, duration, skip_start, skip_end
+    )
     sys.exit(0 if success else 1)
 
 
 if __name__ == "__main__":
-    main()
+    cli()
