@@ -16,6 +16,7 @@
     swiftformat
     settings
     syncthing-mgmt
+    uptime-kuma-mgmt
     tree
     treefmt
     watchman-rebuild
