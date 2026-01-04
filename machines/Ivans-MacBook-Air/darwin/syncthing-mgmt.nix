@@ -37,12 +37,6 @@
         ];
       };
 
-      "shared-notes" = {
-        path = "/Users/${username}/Library/Mobile Documents/com~apple~CloudDocs/Notes/Shared";
-        label = "Shared-Notes";
-        devices = [ "Ivans-MacBook-Air" ]; # Local only
-      };
-
       "fpbxa-6zw5z" = {
         path = "/Users/${username}/Sources";
         label = "Sources";
