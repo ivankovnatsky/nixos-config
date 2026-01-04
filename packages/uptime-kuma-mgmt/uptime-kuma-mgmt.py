@@ -4,12 +4,32 @@ Uptime Kuma monitor management tool.
 Supports listing, creating, updating, and deleting monitors via declarative configuration.
 """
 
+import os
 import sys
 import json
 import argparse
 from uptime_kuma_api import UptimeKumaApi, MonitorType, NotificationType, UptimeKumaException
 
 USER_AGENT = "uptime-kuma-mgmt/1.0.0"
+
+ENV_BASE_URL = "UPTIME_KUMA_BASE_URL"
+ENV_USERNAME = "UPTIME_KUMA_USERNAME"
+ENV_PASSWORD = "UPTIME_KUMA_PASSWORD"
+
+DEFAULT_SECRETS_PATH = "~/.config/sops-nix/secrets"
+DEFAULT_USERNAME_PATH = f"{DEFAULT_SECRETS_PATH}/uptime-kuma-username"
+DEFAULT_PASSWORD_PATH = f"{DEFAULT_SECRETS_PATH}/uptime-kuma-password"
+
+
+def read_secret(env_var: str, default_path: str) -> str | None:
+    """Read secret from env var or default file path."""
+    if value := os.environ.get(env_var):
+        return value
+
+    try:
+        return open(os.path.expanduser(default_path)).read().strip()
+    except (OSError, IOError):
+        return None
 
 
 class UptimeKumaClient:
@@ -497,6 +517,39 @@ def cmd_sync(args, client):
         sys.exit(1)
 
 
+def add_auth_args(subparser):
+    """Add common authentication arguments to a subparser."""
+    subparser.add_argument(
+        "--base-url",
+        default=os.environ.get(ENV_BASE_URL),
+        help=f"Uptime Kuma base URL (or set {ENV_BASE_URL})",
+    )
+    subparser.add_argument(
+        "--username",
+        default=read_secret(ENV_USERNAME, DEFAULT_USERNAME_PATH),
+        help=f"Username (or set {ENV_USERNAME}, default: {DEFAULT_USERNAME_PATH})",
+    )
+    subparser.add_argument(
+        "--password",
+        default=read_secret(ENV_PASSWORD, DEFAULT_PASSWORD_PATH),
+        help=f"Password (or set {ENV_PASSWORD}, default: {DEFAULT_PASSWORD_PATH})",
+    )
+
+
+def validate_auth_args(args):
+    """Validate that all required auth arguments are provided."""
+    missing = []
+    if not args.base_url:
+        missing.append(f"--base-url or {ENV_BASE_URL}")
+    if not args.username:
+        missing.append(f"--username or {ENV_USERNAME}")
+    if not args.password:
+        missing.append(f"--password or {ENV_PASSWORD}")
+    if missing:
+        print(f"Error: Missing required arguments: {', '.join(missing)}", file=sys.stderr)
+        sys.exit(1)
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Uptime Kuma monitor management tool"
@@ -508,9 +561,7 @@ def main():
 
     # List command
     list_parser = subparsers.add_parser("list", help="List all monitors")
-    list_parser.add_argument("--base-url", required=True, help="Uptime Kuma base URL")
-    list_parser.add_argument("--username", required=True, help="Username")
-    list_parser.add_argument("--password", required=True, help="Password")
+    add_auth_args(list_parser)
     list_parser.add_argument(
         "--output-format",
         choices=["table", "json"],
@@ -520,18 +571,14 @@ def main():
 
     # Get command
     get_parser = subparsers.add_parser("get", help="Get monitor details")
-    get_parser.add_argument("--base-url", required=True, help="Uptime Kuma base URL")
-    get_parser.add_argument("--username", required=True, help="Username")
-    get_parser.add_argument("--password", required=True, help="Password")
+    add_auth_args(get_parser)
     get_parser.add_argument("--monitor-id", required=True, type=int, help="Monitor ID")
 
     # Sync command (declarative configuration)
     sync_parser = subparsers.add_parser(
         "sync", help="Sync monitors from configuration file"
     )
-    sync_parser.add_argument("--base-url", required=True, help="Uptime Kuma base URL")
-    sync_parser.add_argument("--username", required=True, help="Username")
-    sync_parser.add_argument("--password", required=True, help="Password")
+    add_auth_args(sync_parser)
     sync_parser.add_argument(
         "--config-file", required=True, help="JSON configuration file"
     )
@@ -545,6 +592,7 @@ def main():
     )
 
     args = parser.parse_args()
+    validate_auth_args(args)
 
     try:
         with UptimeKumaClient(args.base_url, args.username, args.password) as client:

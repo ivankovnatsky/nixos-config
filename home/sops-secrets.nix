@@ -42,4 +42,12 @@
   sops.secrets.gh-mcp-token = {
     key = "ghMcpToken";
   };
+
+  sops.secrets.uptime-kuma-username = {
+    key = "uptimeKuma/username";
+  };
+
+  sops.secrets.uptime-kuma-password = {
+    key = "uptimeKuma/password";
+  };
 }
