@@ -12,6 +12,7 @@
     age
     ssh-to-age
     syncthing-mgmt
+    uptime-kuma-mgmt
     dns
     download-torrent
     git-message
