@@ -7,6 +7,7 @@
     };
     global.brewfile = true;
     brews = [
+      "keith/homebrew-formulae/reminders-cli"
       "ollama"
     ];
     casks = [

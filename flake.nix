@@ -105,6 +105,11 @@
       flake = false;
     };
 
+    keith-homebrew-tap = {
+      url = "github:keith/homebrew-formulae";
+      flake = false;
+    };
+
     nur-nixos-unstable = {
       url = "github:nix-community/NUR/main";
     };
