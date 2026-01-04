@@ -110,6 +110,16 @@
       flake = false;
     };
 
+    antoniorodr-homebrew-tap = {
+      url = "github:antoniorodr/homebrew-memo";
+      flake = false;
+    };
+
+    xwmx-homebrew-tap = {
+      url = "github:xwmx/homebrew-taps";
+      flake = false;
+    };
+
     nur-nixos-unstable = {
       url = "github:nix-community/NUR/main";
     };

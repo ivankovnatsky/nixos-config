@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "antoniorodr-homebrew-tap": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1746423901,
+        "narHash": "sha256-U/WA7zf6tIk+Gtg0pvGMmjm43vjDmnVSBedg+jkYhr8=",
+        "owner": "antoniorodr",
+        "repo": "homebrew-memo",
+        "rev": "59089e6bcd4ad45d0277c924c2e211525ac94edd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "antoniorodr",
+        "repo": "homebrew-memo",
+        "type": "github"
+      }
+    },
     "backup-home": {
       "inputs": {
         "flake-utils": [
@@ -1040,6 +1056,7 @@
     },
     "root": {
       "inputs": {
+        "antoniorodr-homebrew-tap": "antoniorodr-homebrew-tap",
         "backup-home": "backup-home",
         "flake-utils": "flake-utils",
         "home-manager-darwin-release": "home-manager-darwin-release",
@@ -1078,7 +1095,8 @@
         "sops-nix-nixos-release": "sops-nix-nixos-release",
         "sops-nix-nixos-unstable": "sops-nix-nixos-unstable",
         "textcast": "textcast",
-        "username": "username"
+        "username": "username",
+        "xwmx-homebrew-tap": "xwmx-homebrew-tap"
       }
     },
     "sops-nix-darwin-release": {
@@ -1350,6 +1368,22 @@
       "original": {
         "owner": "ivankovnatsky",
         "repo": "username",
+        "type": "github"
+      }
+    },
+    "xwmx-homebrew-tap": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1762467950,
+        "narHash": "sha256-gNZnOYvGV4oJdGnZ7bMLINW22ELVaJhsxbMHqMmXRQ0=",
+        "owner": "xwmx",
+        "repo": "homebrew-taps",
+        "rev": "b4b7e19b3a88bbbbcb177a6daf8ec13b948f57d5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "xwmx",
+        "repo": "homebrew-taps",
         "type": "github"
       }
     }
