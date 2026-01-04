@@ -3,6 +3,7 @@
 {
   home.packages = with pkgs; [
     aria2
+    giffer
     settings
     tree
     asusrouter-cli
