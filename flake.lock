@@ -475,6 +475,22 @@
         "type": "github"
       }
     },
+    "keith-homebrew-tap": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1755726936,
+        "narHash": "sha256-Ik4MD19rpDrHvdV6sklPGxKmDISAIFxcrs4SOHzYoZ4=",
+        "owner": "keith",
+        "repo": "homebrew-formulae",
+        "rev": "540c0348322e69d47ad7812d3902a457160130e7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "keith",
+        "repo": "homebrew-formulae",
+        "type": "github"
+      }
+    },
     "nix-darwin-darwin-release": {
       "inputs": {
         "nixpkgs": [
@@ -1034,6 +1050,7 @@
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
         "ivankovnatsky-homebrew-tap": "ivankovnatsky-homebrew-tap",
+        "keith-homebrew-tap": "keith-homebrew-tap",
         "nix-darwin-darwin-release": "nix-darwin-darwin-release",
         "nix-darwin-darwin-unstable": "nix-darwin-darwin-unstable",
         "nix-homebrew": "nix-homebrew",

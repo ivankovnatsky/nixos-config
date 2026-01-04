@@ -78,6 +78,7 @@
               "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
               "pomdtr/homebrew-tap" = inputs.pomdtr-homebrew-tap;
               "ivankovnatsky/homebrew-tap" = inputs.ivankovnatsky-homebrew-tap;
+              "keith/homebrew-formulae" = inputs.keith-homebrew-tap;
             };
             mutableTaps = false;
           };
@@ -168,6 +169,7 @@
               "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
               "pomdtr/homebrew-tap" = inputs.pomdtr-homebrew-tap;
               "ivankovnatsky/homebrew-tap" = inputs.ivankovnatsky-homebrew-tap;
+              "keith/homebrew-formulae" = inputs.keith-homebrew-tap;
             };
             mutableTaps = false;
           };
@@ -227,6 +229,7 @@
               "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
               "pomdtr/homebrew-tap" = inputs.pomdtr-homebrew-tap;
               "ivankovnatsky/homebrew-tap" = inputs.ivankovnatsky-homebrew-tap;
+              "keith/homebrew-formulae" = inputs.keith-homebrew-tap;
             };
             mutableTaps = false;
           };
