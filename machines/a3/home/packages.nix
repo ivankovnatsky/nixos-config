@@ -11,6 +11,7 @@
 
     # Syncthing management CLI
     syncthing-mgmt
+    uptime-kuma-mgmt
 
     # Hardware monitoring tools
     lm_sensors # Provides the 'sensors' command for monitoring temperatures
