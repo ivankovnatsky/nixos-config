@@ -130,6 +130,7 @@
     username # Installed as flake
     uv
     vault
+    vault-auth
     watchman
     watchman-make
     watchman-rebuild
