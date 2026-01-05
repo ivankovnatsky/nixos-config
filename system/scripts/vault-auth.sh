@@ -115,6 +115,45 @@ update_token_in_pass() {
   fi
 }
 
+# Function to patch VAULT_TOKEN in envrc/secrets (preserves other secrets)
+patch_envrc_secrets() {
+  local token="$1"
+  local envrc_path="envrc/secrets"
+
+  [[ -n "$token" ]] || {
+    echo "Error: Cannot patch with empty token." >&2
+    return 1
+  }
+
+  if ! command -v pass >/dev/null 2>&1; then
+    echo "Warning: 'pass' command not found. Cannot patch envrc/secrets." >&2
+    return 1
+  fi
+
+  # Check if envrc/secrets exists
+  if ! pass show "$envrc_path" >/dev/null 2>&1; then
+    echo "Warning: $envrc_path not found in pass. Skipping patch." >&2
+    return 0
+  fi
+
+  # Read current contents, replace VAULT_TOKEN line, and write back
+  local current_contents
+  current_contents=$(pass show "$envrc_path" 2>/dev/null)
+
+  local new_contents
+  if echo "$current_contents" | grep -q "^export VAULT_TOKEN="; then
+    # Replace existing VAULT_TOKEN line
+    new_contents=$(echo "$current_contents" | sed "s|^export VAULT_TOKEN=.*|export VAULT_TOKEN=\"$token\"|")
+  else
+    # Append VAULT_TOKEN if not present
+    new_contents="$current_contents"$'\n'"export VAULT_TOKEN=\"$token\""
+  fi
+
+  # Write back to pass
+  echo "$new_contents" | pass insert --echo --force "$envrc_path" >/dev/null 2>&1
+  return $?
+}
+
 # Try to fetch token from pass
 VAULT_TOKEN=$(fetch_token_from_pass)
 
@@ -136,6 +175,10 @@ if [[ -z "$VAULT_TOKEN" ]] || ! is_token_valid "$VAULT_TOKEN"; then
     # Update the new token in pass
     echo "Updating token in pass..." >&2
     update_token_in_pass "$VAULT_TOKEN"
+
+    # Also patch envrc/secrets to keep it in sync
+    echo "Patching envrc/secrets..." >&2
+    patch_envrc_secrets "$VAULT_TOKEN"
   else
     echo "Failed to fetch token from Vault" >&2
     exit 1
