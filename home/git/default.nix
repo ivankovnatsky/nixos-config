@@ -87,6 +87,8 @@
           }
           // mergetoolOptions;
       merge.tool = if config.flags.editor == "nvim" then "fugitive" else "vimdiff";
+      # ghq config options: root, user, completeUser, <url>.vcs, <url>.root
+      # https://github.com/x-motemen/ghq
       ghq = {
         root = "${config.flags.homeWorkPath}/Sources";
       };
