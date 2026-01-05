@@ -126,8 +126,8 @@
       }
       {
         name = "youtube";
-        url = "https://youtube.@EXTERNAL_DOMAIN@";
-        description = "YouTube video downloader (mini:8085)";
+        url = "http://${config.flags.miniIp}:8085";
+        description = "YouTube video downloader";
       }
       {
         name = "matrix";
