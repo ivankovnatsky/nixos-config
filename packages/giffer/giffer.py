@@ -390,6 +390,16 @@ def extract_urls_from_page(page_url, pattern):
     return matches
 
 
+def get_playlist_urls(url):
+    """Extract individual video URLs from a playlist using yt-dlp"""
+    cmd = ["yt-dlp", "--flat-playlist", "--print", "url", url]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode != 0:
+        return None
+    urls = [line.strip() for line in result.stdout.strip().split("\n") if line.strip()]
+    return urls if urls else None
+
+
 def download_single_video(
     url, output_dir, max_height=1080, split=False, segment_duration=10, skip_start=0, skip_end=0
 ):
@@ -624,21 +634,78 @@ def split(url, output_dir, duration, skip_start, skip_end):
 @cli.command()
 @click.argument("url")
 @click.option("-o", "--output-dir", help="Output directory")
-@click.option("--no-split", is_flag=True, help="Download only, no splitting")
-@click.option("-d", "--duration", type=DURATION, default=10, help="Segment duration (default: 10s)")
-@click.option("--skip-start", type=DURATION, default=0, help="Skip from start (default: 0)")
-@click.option("--skip-end", type=DURATION, default=0, help="Skip from end (default: 0)")
-def download(url, output_dir, no_split, duration, skip_start, skip_end):
-    """Download video and optionally split it (splits by default)."""
-    if no_split:
-        args = [url]
-        if output_dir:
-            args.extend(["-o", f"{output_dir}/%(title)s.%(ext)s"])
-        result = run_yt_dlp(args)
-        sys.exit(result.returncode)
+@click.option("-w", "--workers", type=int, default=1, help="Parallel workers for playlists (default: 1)")
+@click.option("--split", "do_split", is_flag=True, help="Split videos after download")
+@click.option("-d", "--duration", type=DURATION, default=10, help="Segment duration if splitting (default: 10s)")
+@click.option("--skip-start", type=DURATION, default=0, help="Skip from start if splitting (default: 0)")
+@click.option("--skip-end", type=DURATION, default=0, help="Skip from end if splitting (default: 0)")
+@click.option("--max-height", type=int, default=1080, help="Maximum video height (default: 1080)")
+def download(url, output_dir, workers, do_split, duration, skip_start, skip_end, max_height):
+    """Download video(s) from URL or playlist.
+
+    For playlist URLs, use -w/--workers to download videos in parallel.
+    Use --split to split videos into segments after download.
+    """
+    split = do_split
+
+    if workers > 1:
+        click.echo(f"Extracting video URLs from playlist...")
+        urls = get_playlist_urls(url)
+
+        if not urls:
+            click.echo("No videos found or not a playlist, downloading as single video")
+            if split:
+                success = download_with_split(url, duration, skip_start, skip_end, output_dir)
+                sys.exit(0 if success else 1)
+            else:
+                args = [url]
+                if output_dir:
+                    args.extend(["-o", f"{output_dir}/%(title)s.%(ext)s"])
+                result = run_yt_dlp(args)
+                sys.exit(result.returncode)
+
+        click.echo(f"Found {len(urls)} videos, downloading with {workers} workers")
+        click.echo(f"Split: {'enabled' if split else 'disabled'}\n")
+
+        success_count = 0
+        failed_urls = []
+
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            futures = {
+                executor.submit(
+                    download_single_video,
+                    video_url,
+                    output_dir,
+                    max_height,
+                    split,
+                    duration,
+                    skip_start,
+                    skip_end,
+                ): video_url
+                for video_url in urls
+            }
+
+            for future in as_completed(futures):
+                video_url, success = future.result()
+                if success:
+                    success_count += 1
+                    click.echo(f"[{success_count}/{len(urls)}] Completed: {video_url}")
+                else:
+                    failed_urls.append(video_url)
+                    click.echo(f"[FAILED] {video_url}")
+
+        click.echo(f"\n=== Done: {success_count}/{len(urls)} successful ===")
+        sys.exit(0 if not failed_urls else 1)
     else:
-        success = download_with_split(url, duration, skip_start, skip_end, output_dir)
-        sys.exit(0 if success else 1)
+        if split:
+            success = download_with_split(url, duration, skip_start, skip_end, output_dir)
+            sys.exit(0 if success else 1)
+        else:
+            args = [url]
+            if output_dir:
+                args.extend(["-o", f"{output_dir}/%(title)s.%(ext)s"])
+            result = run_yt_dlp(args)
+            sys.exit(result.returncode)
 
 
 @cli.command()
