@@ -139,5 +139,27 @@ in
         include ${pkgs.kitty-themes}/share/kitty-themes/themes/Tokyo_Night_Moon.conf
       '';
     };
+
+    # Quake-style quick access terminal configuration (requires kitty 0.42.0+)
+    # Toggle with: kitten quick-access-terminal
+    # On macOS: Set global shortcut F12 in System Settings → Keyboard → Shortcuts → Services → "Quick access to kitty"
+    ".config/kitty/quick-access-terminal.conf" = {
+      text = ''
+        # Position: top, bottom, left, right
+        edge top
+
+        # Size as percentage of screen (10-90)
+        size_in_percent 40
+
+        # Hide on focus loss
+        hide_on_focus_loss yes
+
+        # Animation speed in seconds (0 to disable)
+        animation_speed 0.15
+
+        # Override some kitty settings for quick terminal
+        kitty_override hide_window_decorations yes
+      '';
+    };
   };
 }
