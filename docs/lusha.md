@@ -42,3 +42,4 @@ Enables remote desktop access via VNC/Apple Remote Desktop for system maintenanc
 ### Kitty
 
 - Open app from the internet -- Allow
+- Notifications
