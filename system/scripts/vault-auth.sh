@@ -136,10 +136,20 @@ patch_envrc_secrets() {
     return 0
   fi
 
-  # Read current contents, replace VAULT_TOKEN line, and write back
+  # Read current contents
   local current_contents
   current_contents=$(pass show "$envrc_path" 2>/dev/null)
 
+  # Check if token is already up to date
+  local current_token
+  current_token=$(echo "$current_contents" | grep "^export VAULT_TOKEN=" | sed 's/^export VAULT_TOKEN="\(.*\)"$/\1/')
+  if [[ "$current_token" == "$token" ]]; then
+    echo "envrc/secrets already up to date" >&2
+    return 0
+  fi
+
+  # Token differs, update it
+  echo "Updating envrc/secrets..." >&2
   local new_contents
   if echo "$current_contents" | grep -q "^export VAULT_TOKEN="; then
     # Replace existing VAULT_TOKEN line
