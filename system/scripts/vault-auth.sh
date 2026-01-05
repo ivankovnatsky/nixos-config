@@ -106,6 +106,7 @@ update_token_in_pass() {
     local pass_path
     pass_path="${VAULT_ADDR#https://}/$VAULT_USER_EMAIL/token"
 
+    echo "Updating $pass_path..." >&2
     # Redirect all output to avoid fish shell issues with git commit messages
     echo "$token" | pass insert --echo --force "$pass_path" >/dev/null 2>&1
     return $?
@@ -136,31 +137,34 @@ patch_envrc_secrets() {
     return 0
   fi
 
-  # Read current contents
-  local current_contents
-  current_contents=$(pass show "$envrc_path" 2>/dev/null)
+  # Use temp file for safe multiline handling
+  local tmp_file
+  tmp_file=$(mktemp)
+  chmod 600 "$tmp_file"
+  trap "rm -f '$tmp_file'" RETURN
+
+  # Read current contents to temp file
+  pass show "$envrc_path" >"$tmp_file" 2>/dev/null
 
   # Check if token is already up to date
   local current_token
-  current_token=$(echo "$current_contents" | grep "^export VAULT_TOKEN=" | sed 's/^export VAULT_TOKEN="\(.*\)"$/\1/')
+  current_token=$(grep "^export VAULT_TOKEN=" "$tmp_file" | sed 's/^export VAULT_TOKEN="\(.*\)"$/\1/')
   if [[ "$current_token" == "$token" ]]; then
     echo "envrc/secrets already up to date" >&2
     return 0
   fi
 
   # Token differs, update it
-  echo "Updating envrc/secrets..." >&2
-  local new_contents
-  if echo "$current_contents" | grep -q "^export VAULT_TOKEN="; then
-    # Replace existing VAULT_TOKEN line
-    new_contents=$(echo "$current_contents" | sed "s|^export VAULT_TOKEN=.*|export VAULT_TOKEN=\"$token\"|")
+  if grep -q "^export VAULT_TOKEN=" "$tmp_file"; then
+    echo "Updating VAULT_TOKEN in envrc/secrets..." >&2
+    sed -i '' "s|^export VAULT_TOKEN=.*|export VAULT_TOKEN=\"$token\"|" "$tmp_file"
   else
-    # Append VAULT_TOKEN if not present
-    new_contents="$current_contents"$'\n'"export VAULT_TOKEN=\"$token\""
+    echo "Adding VAULT_TOKEN to envrc/secrets..." >&2
+    printf 'export VAULT_TOKEN="%s"\n' "$token" >>"$tmp_file"
   fi
 
   # Write back to pass
-  echo "$new_contents" | pass insert --echo --force "$envrc_path" >/dev/null 2>&1
+  pass insert --echo --force "$envrc_path" <"$tmp_file" >/dev/null 2>&1
   return $?
 }
 
@@ -181,13 +185,7 @@ if [[ -z "$VAULT_TOKEN" ]] || ! is_token_valid "$VAULT_TOKEN"; then
 
   if [[ -n "$VAULT_TOKEN" ]]; then
     echo "Token fetched successfully" >&2
-
-    # Update the new token in pass
-    echo "Updating token in pass..." >&2
     update_token_in_pass "$VAULT_TOKEN"
-
-    # Also patch envrc/secrets to keep it in sync
-    echo "Patching envrc/secrets..." >&2
     patch_envrc_secrets "$VAULT_TOKEN"
   else
     echo "Failed to fetch token from Vault" >&2
