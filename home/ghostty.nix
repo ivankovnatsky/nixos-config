@@ -26,8 +26,13 @@ in
     copy-on-select = true
     window-padding-x = 8
     macos-option-as-alt = true
-    # keybind = global:cmd+escape=toggle_quick_terminal
     keybind = cmd+down=jump_to_prompt:1
     keybind = cmd+up=jump_to_prompt:-1
+
+    # Quake-style quick terminal (F12 to toggle from anywhere)
+    keybind = global:f12=toggle_quick_terminal
+    quick-terminal-position = top
+    quick-terminal-size = 40%
+    quick-terminal-animation-duration = 0.15
   '';
 }
