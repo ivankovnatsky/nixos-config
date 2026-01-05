@@ -38,6 +38,7 @@ let
     hide_window_decorations titlebar-only
     cursor_blink_interval 0
     copy_on_select yes
+    paste_actions quote-urls-at-prompt
     draw_minimal_borders yes
     tab_bar_edge top
     tab_title_template "{index}: {tab.active_exe}"
