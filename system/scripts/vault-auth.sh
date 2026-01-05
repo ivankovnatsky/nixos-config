@@ -185,6 +185,8 @@ if [[ -z "$VAULT_TOKEN" ]] || ! is_token_valid "$VAULT_TOKEN"; then
   fi
 else
   echo "Using existing valid token" >&2
+  # Sync envrc/secrets in case it's out of date
+  patch_envrc_secrets "$VAULT_TOKEN"
 fi
 
 # Create a temporary file for the output
