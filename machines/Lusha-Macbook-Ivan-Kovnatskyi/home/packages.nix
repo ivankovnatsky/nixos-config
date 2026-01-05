@@ -131,6 +131,7 @@
     uv
     vault
     vault-auth
+    vkv
     watchman
     watchman-make
     watchman-rebuild
