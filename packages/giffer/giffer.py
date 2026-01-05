@@ -6,6 +6,7 @@ By default, this tool passes all arguments directly to yt-dlp or gallery-dl.
 Use subcommands for additional functionality like splitting.
 """
 
+import json
 import re
 import subprocess
 import sys
@@ -15,6 +16,13 @@ from pathlib import Path
 import click
 
 DEFAULT_URL_FILE = ".list.txt"
+
+SITE_CONFIGS = {
+    "3": {
+        "pattern": r'<a class="title" href="([^"]+)"',
+        "pagination": "/{page}",
+    },
+}
 
 
 class DurationType(click.ParamType):
@@ -400,6 +408,29 @@ def get_playlist_urls(url):
     return urls if urls else None
 
 
+def get_title(url):
+    """Get media title using yt-dlp, fallback to gallery-dl"""
+    cmd = ["yt-dlp", "--print", "title", "--no-download", url]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode == 0 and result.stdout.strip():
+        return result.stdout.strip()
+
+    cmd = ["gallery-dl", "--dump-json", url]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode == 0:
+        try:
+            for line in result.stdout.strip().split("\n"):
+                if line.strip():
+                    data = json.loads(line)
+                    if isinstance(data, list) and len(data) > 1:
+                        meta = data[1] if isinstance(data[1], dict) else {}
+                        return meta.get("title") or meta.get("album") or meta.get("filename", "")
+        except json.JSONDecodeError:
+            pass
+
+    return None
+
+
 def download_single_video(
     url, output_dir, max_height=1080, split=False, segment_duration=10, skip_start=0, skip_end=0
 ):
@@ -444,6 +475,7 @@ def scrape_and_download_impl(
     start_page=1,
     end_page=None,
     pattern=None,
+    pagination=None,
     workers=4,
     output_dir=None,
     max_height=1080,
@@ -451,10 +483,14 @@ def scrape_and_download_impl(
     segment_duration=10,
     skip_start=0,
     skip_end=0,
+    url_filter=None,
+    url_exclude=None,
 ):
     """Scrape and download page by page"""
     if pattern is None:
-        pattern = r'<a class="title" href="([^"]+)"'
+        pattern = SITE_CONFIGS["3"]["pattern"]
+    if pagination is None:
+        pagination = SITE_CONFIGS["3"]["pagination"]
 
     seen = set()
     page = start_page
@@ -471,7 +507,7 @@ def scrape_and_download_impl(
         if page == 1:
             page_url = base_url.rstrip("/")
         else:
-            page_url = f"{base_url.rstrip('/')}/{page}"
+            page_url = base_url.rstrip("/") + pagination.format(page=page)
 
         click.echo(f"=== Page {page}: {page_url} ===")
         urls = extract_urls_from_page(page_url, pattern)
@@ -484,7 +520,31 @@ def scrape_and_download_impl(
         for url in new_urls:
             seen.add(url)
 
-        click.echo(f"Found {len(urls)} URLs, {len(new_urls)} new\n")
+        click.echo(f"Found {len(urls)} URLs, {len(new_urls)} new")
+
+        if (url_filter or url_exclude) and new_urls:
+            click.echo("Fetching titles for filtering...")
+            url_titles = {}
+            with ThreadPoolExecutor(max_workers=workers) as executor:
+                futures = {executor.submit(get_title, url): url for url in new_urls}
+                for future in as_completed(futures):
+                    url = futures[future]
+                    title = future.result()
+                    url_titles[url] = title or ""
+
+            if url_filter:
+                filter_re = re.compile(url_filter, re.IGNORECASE)
+                before_count = len(new_urls)
+                new_urls = [url for url in new_urls if filter_re.search(url_titles.get(url, ""))]
+                click.echo(f"Filter '{url_filter}': {before_count} -> {len(new_urls)} URLs")
+
+            if url_exclude:
+                exclude_re = re.compile(url_exclude, re.IGNORECASE)
+                before_count = len(new_urls)
+                new_urls = [url for url in new_urls if not exclude_re.search(url_titles.get(url, ""))]
+                click.echo(f"Exclude '{url_exclude}': {before_count} -> {len(new_urls)} URLs")
+
+        click.echo(f"Downloading {len(new_urls)} URLs\n")
 
         if new_urls:
             page_success = 0
@@ -742,17 +802,32 @@ def batch(url_file, output_dir, embed_subs, max_height):
 @click.option("-o", "--output-dir", help="Output directory")
 @click.option("--start-page", type=int, default=1, help="Starting page (default: 1)")
 @click.option("--end-page", type=int, help="Ending page")
-@click.option("-p", "--pattern", default=r'<a class="title" href="([^"]+)"', help="Regex pattern for URLs")
+@click.option("-s", "--site", type=click.Choice(list(SITE_CONFIGS.keys())), help="Use preset config for site")
+@click.option("-p", "--pattern", help="Custom regex pattern for URLs (overrides --site)")
+@click.option("-f", "--filter", "url_filter", help="Regex to filter by video title (case-insensitive, include matching)")
+@click.option("-x", "--exclude", "url_exclude", help="Regex to filter by video title (case-insensitive, exclude matching)")
 @click.option("-w", "--workers", type=int, default=4, help="Parallel workers (default: 4)")
 @click.option("--max-height", type=int, default=1080, help="Maximum video height (default: 1080)")
 @click.option("--split", "do_split", is_flag=True, help="Split videos after download")
 @click.option("-d", "--duration", type=DURATION, default=10, help="Segment duration (default: 10s)")
 @click.option("--skip-start", type=DURATION, default=0, help="Skip from start (default: 0)")
 @click.option("--skip-end", type=DURATION, default=0, help="Skip from end (default: 0)")
-def scrape(url, output_dir, start_page, end_page, pattern, workers, max_height, do_split, duration, skip_start, skip_end):
-    """Scrape paginated pages and download videos."""
+def scrape(url, output_dir, start_page, end_page, site, pattern, url_filter, url_exclude, workers, max_height, do_split, duration, skip_start, skip_end):
+    """Scrape paginated pages and download videos.
+
+    Use --site to select a preset config, or --pattern for custom regex.
+    Use --filter to include only videos with titles matching a pattern (e.g., -f "pink").
+    Use --exclude to skip videos with titles matching a pattern.
+    """
+    pagination = None
+    if site:
+        config = SITE_CONFIGS.get(site, {})
+        if pattern is None:
+            pattern = config.get("pattern")
+        pagination = config.get("pagination")
     success = scrape_and_download_impl(
-        url, start_page, end_page, pattern, workers, output_dir, max_height, do_split, duration, skip_start, skip_end
+        url, start_page, end_page, pattern, pagination, workers, output_dir, max_height, do_split, duration, skip_start, skip_end,
+        url_filter=url_filter, url_exclude=url_exclude
     )
     sys.exit(0 if success else 1)
 
