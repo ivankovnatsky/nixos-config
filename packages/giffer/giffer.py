@@ -368,7 +368,7 @@ def batch_download_impl(url_file=None, output_dir=None, embed_subs=True, max_hei
         if embed_subs:
             cmd_args.extend(["--write-auto-subs", "--embed-subs"])
 
-        cmd_args.extend(["--format", f"best[height<={max_height}]", "-o", output_template, url])
+        cmd_args.extend(["--format", f"best[height<={max_height}]/best", "-o", output_template, url])
 
         result = run_yt_dlp(cmd_args)
         if result.returncode == 0:
