@@ -143,7 +143,10 @@ def power_on() -> int:
 
     print("\nMonitor status:")
     try:
-        subprocess.run(["uptime-kuma-mgmt", "list"], check=False)
+        subprocess.run(
+            ["uptime-kuma-mgmt", "list", "--base-url", f"http://{MINI_IP}:3001"],
+            check=False,
+        )
     except FileNotFoundError:
         print("  (uptime-kuma-mgmt not available)")
     return 0
