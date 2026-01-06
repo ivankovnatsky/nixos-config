@@ -498,6 +498,8 @@ def scrape_and_download_impl(
     total_failed = 0
 
     click.echo(f"Scraping and downloading from {base_url}")
+    page_range = f"{start_page}-{end_page}" if end_page else f"{start_page}-∞"
+    click.echo(f"Pages: {page_range}")
     click.echo(f"Split: {'enabled' if split else 'disabled'}")
     if split:
         click.echo(f"  Segment duration: {format_duration(segment_duration)}")
