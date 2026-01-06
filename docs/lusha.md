@@ -43,3 +43,7 @@ Enables remote desktop access via VNC/Apple Remote Desktop for system maintenanc
 
 - Open app from the internet -- Allow
 - Notifications
+
+### Hammerspoon
+
+- Allow access to control "System Events" (required for space management via osascript)
