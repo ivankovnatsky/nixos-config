@@ -19,6 +19,7 @@ import click
 DEFAULT_URL_FILE = ".list.txt"
 DEFAULT_MAX_HEIGHT = 1080
 DEFAULT_SUB_LANGS = "en"
+DEFAULT_SEGMENT_DURATION = 10
 
 SITE_CONFIGS = {
     "3": {
@@ -26,6 +27,17 @@ SITE_CONFIGS = {
         "pagination": "/{page}",
     },
 }
+
+
+def get_output_dir(output_dir: str | None, create: bool = True) -> Path:
+    """Get output directory path, creating it if needed."""
+    if output_dir:
+        out_dir = Path(output_dir)
+        if create:
+            out_dir.mkdir(parents=True, exist_ok=True)
+    else:
+        out_dir = Path.cwd()
+    return out_dir
 
 
 def get_format_string(max_height: int = DEFAULT_MAX_HEIGHT) -> str:
@@ -284,12 +296,7 @@ def download_with_split(
     url, segment_duration, skip_start=0, skip_end=0, output_dir=None, extra_args=None
 ):
     """Download video using yt-dlp and split into segments"""
-    if output_dir:
-        out_dir = Path(output_dir)
-        out_dir.mkdir(parents=True, exist_ok=True)
-    else:
-        out_dir = Path.cwd()
-
+    out_dir = get_output_dir(output_dir)
     output_template = str(out_dir / "%(title)s.%(ext)s")
 
     click.echo(f"Downloading video from: {url}")
@@ -379,12 +386,7 @@ def batch_download_impl(url_file=None, output_dir=None, embed_subs=True, max_hei
 
         click.echo(f"Downloading: {url}")
 
-        if output_dir:
-            out_dir = Path(output_dir)
-            out_dir.mkdir(parents=True, exist_ok=True)
-        else:
-            out_dir = Path.cwd()
-
+        out_dir = get_output_dir(output_dir)
         output_template = str(out_dir / "%(title)s.%(ext)s")
 
         cmd_args = []
@@ -492,13 +494,10 @@ def find_existing_file_by_url(url, search_dirs):
 
 def move_or_download_for_page(
     url, page, base_output_dir, all_page_dirs, max_height=DEFAULT_MAX_HEIGHT, split=False,
-    segment_duration=10, skip_start=0, skip_end=0
+    segment_duration=DEFAULT_SEGMENT_DURATION, skip_start=0, skip_end=0
 ):
     """Move existing file to correct page dir or download if not found. Returns (url, success)"""
-    if base_output_dir:
-        base_dir = Path(base_output_dir)
-    else:
-        base_dir = Path.cwd()
+    base_dir = get_output_dir(base_output_dir, create=False)
 
     page_dir = base_dir / f"page-{page}"
     page_dir.mkdir(parents=True, exist_ok=True)
@@ -521,15 +520,11 @@ def move_or_download_for_page(
 
 
 def download_single_video(
-    url, output_dir, max_height=DEFAULT_MAX_HEIGHT, split=False, segment_duration=10, skip_start=0, skip_end=0
+    url, output_dir, max_height=DEFAULT_MAX_HEIGHT, split=False,
+    segment_duration=DEFAULT_SEGMENT_DURATION, skip_start=0, skip_end=0
 ):
     """Download a single video and optionally split it, returns (url, success)"""
-    if output_dir:
-        out_dir = Path(output_dir)
-        out_dir.mkdir(parents=True, exist_ok=True)
-    else:
-        out_dir = Path.cwd()
-
+    out_dir = get_output_dir(output_dir)
     output_template = str(out_dir / "%(title)s.%(ext)s")
 
     cmd_args = [
@@ -582,7 +577,7 @@ def scrape_and_download_impl(
     output_dir=None,
     max_height=DEFAULT_MAX_HEIGHT,
     split=False,
-    segment_duration=10,
+    segment_duration=DEFAULT_SEGMENT_DURATION,
     skip_start=0,
     skip_end=0,
     url_filter=None,
@@ -600,10 +595,7 @@ def scrape_and_download_impl(
     total_success = 0
     total_failed = 0
 
-    if output_dir:
-        base_dir = Path(output_dir)
-    else:
-        base_dir = Path.cwd()
+    base_dir = get_output_dir(output_dir, create=False)
 
     # Disable split_pages if only 1 page requested
     if end_page is not None and end_page == start_page:
@@ -836,7 +828,7 @@ def cli(ctx, gallery, ytdlp):
 @cli.command()
 @click.argument("url")
 @click.option("-o", "--output-dir", help="Output directory")
-@click.option("-d", "--duration", type=DURATION, default=10, help="Segment duration (default: 10s)")
+@click.option("-d", "--duration", type=DURATION, default=DEFAULT_SEGMENT_DURATION, help=f"Segment duration (default: {DEFAULT_SEGMENT_DURATION}s)")
 @click.option("--skip-start", type=DURATION, default=0, help="Skip from start (default: 0)")
 @click.option("--skip-end", type=DURATION, default=0, help="Skip from end (default: 0)")
 def split(url, output_dir, duration, skip_start, skip_end):
@@ -850,7 +842,7 @@ def split(url, output_dir, duration, skip_start, skip_end):
 @click.option("-o", "--output-dir", help="Output directory")
 @click.option("-w", "--workers", type=int, default=1, help="Parallel workers for playlists (default: 1)")
 @click.option("--split", "do_split", is_flag=True, help="Split videos after download")
-@click.option("-d", "--duration", type=DURATION, default=10, help="Segment duration if splitting (default: 10s)")
+@click.option("-d", "--duration", type=DURATION, default=DEFAULT_SEGMENT_DURATION, help=f"Segment duration if splitting (default: {DEFAULT_SEGMENT_DURATION}s)")
 @click.option("--skip-start", type=DURATION, default=0, help="Skip from start if splitting (default: 0)")
 @click.option("--skip-end", type=DURATION, default=0, help="Skip from end if splitting (default: 0)")
 @click.option("--max-height", type=int, default=DEFAULT_MAX_HEIGHT, help=f"Maximum video height (default: {DEFAULT_MAX_HEIGHT})")
@@ -928,7 +920,7 @@ def download(url, output_dir, workers, do_split, duration, skip_start, skip_end,
 @click.option("--cleanup", is_flag=True, help="Remove source files after splitting")
 @click.option("-r/-R", "--recursive/--no-recursive", default=True, help="Process subdirectories")
 @click.option("-e", "--extensions", multiple=True, help="File extensions to process")
-@click.option("-d", "--duration", type=DURATION, default=10, help="Segment duration (default: 10s)")
+@click.option("-d", "--duration", type=DURATION, default=DEFAULT_SEGMENT_DURATION, help=f"Segment duration (default: {DEFAULT_SEGMENT_DURATION}s)")
 @click.option("--skip-start", type=DURATION, default=0, help="Skip from start (default: 0)")
 @click.option("--skip-end", type=DURATION, default=0, help="Skip from end (default: 0)")
 def process(path, output_dir, cleanup, recursive, extensions, duration, skip_start, skip_end):
@@ -964,7 +956,7 @@ def batch(url_file, output_dir, embed_subs, max_height):
 @click.option("--max-height", type=int, default=DEFAULT_MAX_HEIGHT, help=f"Maximum video height (default: {DEFAULT_MAX_HEIGHT})")
 @click.option("--split", "do_split", is_flag=True, help="Split videos after download")
 @click.option("--split-pages/--no-split-pages", default=True, help="Organize files into page-N directories (default: enabled)")
-@click.option("-d", "--duration", type=DURATION, default=10, help="Segment duration (default: 10s)")
+@click.option("-d", "--duration", type=DURATION, default=DEFAULT_SEGMENT_DURATION, help=f"Segment duration (default: {DEFAULT_SEGMENT_DURATION}s)")
 @click.option("--skip-start", type=DURATION, default=0, help="Skip from start (default: 0)")
 @click.option("--skip-end", type=DURATION, default=0, help="Skip from end (default: 0)")
 def scrape(url, output_dir, start_page, end_page, site, pattern, url_filter, url_exclude, workers, max_height, do_split, split_pages, duration, skip_start, skip_end):
