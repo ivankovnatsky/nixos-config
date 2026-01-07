@@ -36,6 +36,7 @@
     ./syncthing-mgmt.nix
     ./users.nix
     ./close-zscaler.nix
+    ./prevent-kandji.nix
 
     ../../../darwin/amethyst.nix
     ../../../darwin/hammerspoon.nix
