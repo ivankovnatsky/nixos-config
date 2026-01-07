@@ -8,6 +8,7 @@ Use subcommands for additional functionality like splitting.
 
 import json
 import re
+import shutil
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -431,6 +432,55 @@ def get_title(url):
     return None
 
 
+def find_existing_file_by_url(url, search_dirs):
+    """Find an existing downloaded file by checking yt-dlp's expected filename"""
+    cmd = ["yt-dlp", "--print", "filename", "-o", "%(title)s.%(ext)s", "--no-download", url]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode != 0:
+        return None
+
+    expected_filename = result.stdout.strip()
+    if not expected_filename:
+        return None
+
+    for search_dir in search_dirs:
+        candidate = Path(search_dir) / expected_filename
+        if candidate.exists():
+            return candidate
+
+    return None
+
+
+def move_or_download_for_page(
+    url, page, base_output_dir, all_page_dirs, max_height=1080, split=False,
+    segment_duration=10, skip_start=0, skip_end=0
+):
+    """Move existing file to correct page dir or download if not found. Returns (url, success)"""
+    if base_output_dir:
+        base_dir = Path(base_output_dir)
+    else:
+        base_dir = Path.cwd()
+
+    page_dir = base_dir / f"page-{page}"
+    page_dir.mkdir(parents=True, exist_ok=True)
+
+    existing_file = find_existing_file_by_url(url, all_page_dirs + [base_dir])
+
+    if existing_file:
+        target_path = page_dir / existing_file.name
+        if existing_file.parent == page_dir:
+            click.echo(f"[SKIP] Already in correct location: {existing_file.name}")
+            return (url, True)
+        else:
+            shutil.move(str(existing_file), str(target_path))
+            click.echo(f"[MOVE] {existing_file.parent.name}/{existing_file.name} -> page-{page}/")
+            return (url, True)
+
+    return download_single_video(
+        url, str(page_dir), max_height, split, segment_duration, skip_start, skip_end
+    )
+
+
 def download_single_video(
     url, output_dir, max_height=1080, split=False, segment_duration=10, skip_start=0, skip_end=0
 ):
@@ -485,6 +535,7 @@ def scrape_and_download_impl(
     skip_end=0,
     url_filter=None,
     url_exclude=None,
+    split_pages=False,
 ):
     """Scrape and download page by page"""
     if pattern is None:
@@ -497,12 +548,28 @@ def scrape_and_download_impl(
     total_success = 0
     total_failed = 0
 
+    if output_dir:
+        base_dir = Path(output_dir)
+    else:
+        base_dir = Path.cwd()
+
+    # Disable split_pages if only 1 page requested
+    if end_page is not None and end_page == start_page:
+        split_pages = False
+
+    all_page_dirs = []
+    if split_pages:
+        for p in base_dir.glob("page-*"):
+            if p.is_dir():
+                all_page_dirs.append(p)
+
     click.echo(f"Scraping and downloading from {base_url}")
     page_range = f"{start_page}-{end_page}" if end_page else f"{start_page}-∞"
     click.echo(f"Pages: {page_range}")
-    click.echo(f"Split: {'enabled' if split else 'disabled'}")
+    click.echo(f"Split videos: {'enabled' if split else 'disabled'}")
     if split:
         click.echo(f"  Segment duration: {format_duration(segment_duration)}")
+    click.echo(f"Split by pages: {'enabled' if split_pages else 'disabled'}")
     click.echo(f"Workers: {workers}\n")
 
     while True:
@@ -546,35 +613,66 @@ def scrape_and_download_impl(
                 new_urls = [url for url in new_urls if not exclude_re.search(url_titles.get(url, ""))]
                 click.echo(f"Exclude '{url_exclude}': {before_count} -> {len(new_urls)} URLs")
 
-        click.echo(f"Downloading {len(new_urls)} URLs\n")
+        click.echo(f"Processing {len(new_urls)} URLs\n")
 
         if new_urls:
             page_success = 0
             page_failed = []
 
-            with ThreadPoolExecutor(max_workers=workers) as executor:
-                futures = {
-                    executor.submit(
-                        download_single_video,
-                        url,
-                        output_dir,
-                        max_height,
-                        split,
-                        segment_duration,
-                        skip_start,
-                        skip_end,
-                    ): url
-                    for url in new_urls
-                }
+            if split_pages:
+                page_dir = base_dir / f"page-{page}"
+                if page_dir not in all_page_dirs:
+                    all_page_dirs.append(page_dir)
 
-                for future in as_completed(futures):
-                    url, success = future.result()
-                    if success:
-                        page_success += 1
-                        click.echo(f"[{page_success}/{len(new_urls)}] Completed: {url}")
-                    else:
-                        page_failed.append(url)
-                        click.echo(f"[FAILED] {url}")
+                with ThreadPoolExecutor(max_workers=workers) as executor:
+                    futures = {
+                        executor.submit(
+                            move_or_download_for_page,
+                            url,
+                            page,
+                            output_dir,
+                            [str(d) for d in all_page_dirs],
+                            max_height,
+                            split,
+                            segment_duration,
+                            skip_start,
+                            skip_end,
+                        ): url
+                        for url in new_urls
+                    }
+
+                    for future in as_completed(futures):
+                        url, success = future.result()
+                        if success:
+                            page_success += 1
+                            click.echo(f"[{page_success}/{len(new_urls)}] Completed: {url}")
+                        else:
+                            page_failed.append(url)
+                            click.echo(f"[FAILED] {url}")
+            else:
+                with ThreadPoolExecutor(max_workers=workers) as executor:
+                    futures = {
+                        executor.submit(
+                            download_single_video,
+                            url,
+                            output_dir,
+                            max_height,
+                            split,
+                            segment_duration,
+                            skip_start,
+                            skip_end,
+                        ): url
+                        for url in new_urls
+                    }
+
+                    for future in as_completed(futures):
+                        url, success = future.result()
+                        if success:
+                            page_success += 1
+                            click.echo(f"[{page_success}/{len(new_urls)}] Completed: {url}")
+                        else:
+                            page_failed.append(url)
+                            click.echo(f"[FAILED] {url}")
 
             total_success += page_success
             total_failed += len(page_failed)
@@ -811,15 +909,18 @@ def batch(url_file, output_dir, embed_subs, max_height):
 @click.option("-w", "--workers", type=int, default=4, help="Parallel workers (default: 4)")
 @click.option("--max-height", type=int, default=1080, help="Maximum video height (default: 1080)")
 @click.option("--split", "do_split", is_flag=True, help="Split videos after download")
+@click.option("--split-pages/--no-split-pages", default=True, help="Organize files into page-N directories (default: enabled)")
 @click.option("-d", "--duration", type=DURATION, default=10, help="Segment duration (default: 10s)")
 @click.option("--skip-start", type=DURATION, default=0, help="Skip from start (default: 0)")
 @click.option("--skip-end", type=DURATION, default=0, help="Skip from end (default: 0)")
-def scrape(url, output_dir, start_page, end_page, site, pattern, url_filter, url_exclude, workers, max_height, do_split, duration, skip_start, skip_end):
+def scrape(url, output_dir, start_page, end_page, site, pattern, url_filter, url_exclude, workers, max_height, do_split, split_pages, duration, skip_start, skip_end):
     """Scrape paginated pages and download videos.
 
     Use --site to select a preset config, or --pattern for custom regex.
     Use --filter to include only videos with titles matching a pattern (e.g., -f "pink").
     Use --exclude to skip videos with titles matching a pattern.
+    Use --split-pages to organize downloads into page-N directories. Re-running
+    with --split-pages will move existing files to their correct page directories.
     """
     pagination = None
     if site:
@@ -829,7 +930,7 @@ def scrape(url, output_dir, start_page, end_page, site, pattern, url_filter, url
         pagination = config.get("pagination")
     success = scrape_and_download_impl(
         url, start_page, end_page, pattern, pagination, workers, output_dir, max_height, do_split, duration, skip_start, skip_end,
-        url_filter=url_filter, url_exclude=url_exclude
+        url_filter=url_filter, url_exclude=url_exclude, split_pages=split_pages
     )
     sys.exit(0 if success else 1)
 
