@@ -15,7 +15,6 @@
     gallery-dl
     genpass
     giffer
-    git-annex # Haskell-based, ~5GB deps to download
     git-message
     gofumpt
     golangci-lint
