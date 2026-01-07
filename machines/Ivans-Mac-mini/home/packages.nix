@@ -15,6 +15,7 @@
     gallery-dl
     genpass
     giffer
+    git-annex # Haskell-based, ~5GB deps to download
     git-message
     gofumpt
     golangci-lint
@@ -50,10 +51,10 @@
     stylua
     syncthing
     syncthing-mgmt
-    uptime-kuma-mgmt
     treefmt
     typst
     typstyle
+    uptime-kuma-mgmt
     username # Installed as flake
     watchman
     watchman-make
