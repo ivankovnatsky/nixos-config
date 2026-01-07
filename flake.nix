@@ -15,6 +15,10 @@
       url = "github:nixos/nixpkgs/master";
     };
 
+    nixpkgs-darwin-master-beszel = {
+      url = "github:nixos/nixpkgs/master";
+    };
+
     # Pinned master commit for nix develop (2025-10-23)
     nixpkgs-master-pinned = {
       url = "github:nixos/nixpkgs/3f173303fa32419a05ef1c0138045b03987adc05";

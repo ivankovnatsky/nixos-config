@@ -30,7 +30,7 @@ in
               - $BESZEL_EMAIL
         EOF
 
-        exec ${pkgs.nixpkgs-darwin-master.beszel}/bin/beszel-hub serve \
+        exec ${pkgs.nixpkgs-darwin-master-beszel.beszel}/bin/beszel-hub serve \
           --http ${config.flags.miniIp}:8091 \
           --dir ${dataDir}
       '';
@@ -44,7 +44,7 @@ in
 
   local.services.beszel-agent = {
     enable = true;
-    package = pkgs.nixpkgs-darwin-master.beszel;
+    package = pkgs.nixpkgs-darwin-master-beszel.beszel;
     port = 45876;
     listenAddress = config.flags.miniIp;
     hubPublicKeyFile = config.sops.secrets.beszel-hub-public-key.path;
