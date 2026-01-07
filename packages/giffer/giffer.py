@@ -25,6 +25,19 @@ SITE_CONFIGS = {
     },
 }
 
+# Default yt-dlp options for passthrough mode (user args can override)
+DEFAULT_YTDLP_ARGS = [
+    "--write-auto-subs",
+    "--embed-subs",
+    "--sub-langs",
+    "en",
+    "--ignore-errors",
+    "-f",
+    "bestvideo[height<=1080]+bestaudio/best[height<=1080]",
+    "--merge-output-format",
+    "mp4",
+]
+
 
 class DurationType(click.ParamType):
     """Custom Click type for duration parsing."""
@@ -771,9 +784,11 @@ class GifferGroup(click.Group):
             if gallery:
                 result = run_gallery_dl(remaining)
             elif ytdlp:
-                result = run_yt_dlp(remaining)
+                # Prepend defaults, user args can override
+                result = run_yt_dlp(DEFAULT_YTDLP_ARGS + remaining)
             else:
-                result = run_yt_dlp(remaining)
+                # Prepend defaults, user args can override
+                result = run_yt_dlp(DEFAULT_YTDLP_ARGS + remaining)
                 if result.returncode != 0:
                     click.echo("\nyt-dlp failed, trying gallery-dl as fallback...\n", err=True)
                     result = run_gallery_dl(remaining)
