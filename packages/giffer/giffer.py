@@ -433,20 +433,37 @@ def get_title(url):
 
 
 def find_existing_file_by_url(url, search_dirs):
-    """Find an existing downloaded file by checking yt-dlp's expected filename"""
+    """Find an existing downloaded file by checking yt-dlp or gallery-dl's expected filename"""
+    # Try yt-dlp first
     cmd = ["yt-dlp", "--print", "filename", "-o", "%(title)s.%(ext)s", "--no-download", url]
     result = subprocess.run(cmd, capture_output=True, text=True)
-    if result.returncode != 0:
-        return None
+    if result.returncode == 0 and result.stdout.strip():
+        expected_filename = result.stdout.strip()
+        for search_dir in search_dirs:
+            candidate = Path(search_dir) / expected_filename
+            if candidate.exists():
+                return candidate
 
-    expected_filename = result.stdout.strip()
-    if not expected_filename:
-        return None
-
-    for search_dir in search_dirs:
-        candidate = Path(search_dir) / expected_filename
-        if candidate.exists():
-            return candidate
+    # Try gallery-dl
+    cmd = ["gallery-dl", "--dump-json", url]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode == 0:
+        try:
+            for line in result.stdout.strip().split("\n"):
+                if line.strip():
+                    data = json.loads(line)
+                    if isinstance(data, list) and len(data) > 1:
+                        meta = data[1] if isinstance(data[1], dict) else {}
+                        filename = meta.get("filename")
+                        ext = meta.get("extension", "")
+                        if filename:
+                            expected_filename = f"{filename}.{ext}" if ext else filename
+                            for search_dir in search_dirs:
+                                candidate = Path(search_dir) / expected_filename
+                                if candidate.exists():
+                                    return candidate
+        except json.JSONDecodeError:
+            pass
 
     return None
 
@@ -504,13 +521,26 @@ def download_single_video(
     ]
 
     result = run_yt_dlp(cmd_args, capture_output=True)
-    if result.returncode != 0:
+    downloaded_file = None
+
+    if result.returncode == 0:
+        downloaded_file = result.stdout.strip().split("\n")[-1]
+        if downloaded_file and not Path(downloaded_file).exists():
+            downloaded_file = None
+
+    # Fallback to gallery-dl if yt-dlp failed
+    if downloaded_file is None:
+        gallery_args = ["-d", str(out_dir), url]
+        gallery_result = run_gallery_dl(gallery_args)
+        if gallery_result.returncode == 0:
+            # Find the downloaded file by checking what's new in the directory
+            # gallery-dl doesn't have a --print option, so we rely on the download succeeding
+            return (url, True)
         return (url, False)
 
     if not split:
         return (url, True)
 
-    downloaded_file = result.stdout.strip().split("\n")[-1]
     if downloaded_file and Path(downloaded_file).exists():
         success = split_single_video(
             downloaded_file, segment_duration, skip_start, skip_end, output_dir, cleanup=True
