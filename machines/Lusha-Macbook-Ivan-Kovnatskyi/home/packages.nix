@@ -73,6 +73,7 @@
     kubectx
     kubepug
     kustomize
+    launchd-mgmt
     lsd
     magic-wormhole
     mariadb
