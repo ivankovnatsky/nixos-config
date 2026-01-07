@@ -5,13 +5,18 @@ import os
 import subprocess
 import sys
 import time
+from datetime import datetime
+
+
+def log(msg: str) -> None:
+    print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {msg}", flush=True)
 
 
 def is_root() -> bool:
     return os.geteuid() == 0
 
 
-def kill_processes(process_name: str, verbose: bool = False) -> int:
+def kill_processes(process_name: str) -> int:
     """Kill all processes matching the given name. Returns count of killed processes."""
     try:
         result = subprocess.run(
@@ -31,9 +36,8 @@ def kill_processes(process_name: str, verbose: bool = False) -> int:
                     subprocess.run(["kill", "-9", pid], check=True)
                 else:
                     subprocess.run(["sudo", "kill", "-9", pid], check=True)
+                log(f"killed PID {pid}")
                 killed += 1
-                if verbose:
-                    print(f"Killed process {pid}")
             except subprocess.CalledProcessError:
                 pass
 
@@ -54,26 +58,17 @@ def main() -> None:
         default=5,
         help="Interval between checks in seconds (default: 5)",
     )
-    parser.add_argument(
-        "--verbose",
-        "-v",
-        action="store_true",
-        help="Print when processes are killed",
-    )
     args = parser.parse_args()
 
     mode = "root" if is_root() else "user (via sudo)"
-    print(f"Preventing '{args.process_name}' from running (mode: {mode})")
-    print(f"Checking every {args.interval} seconds...")
+    log(f"started: blocking '{args.process_name}' (mode: {mode}, interval: {args.interval}s)")
 
     try:
         while True:
-            killed = kill_processes(args.process_name, args.verbose)
-            if killed > 0 and args.verbose:
-                print(f"Killed {killed} process(es)")
+            kill_processes(args.process_name)
             time.sleep(args.interval)
     except KeyboardInterrupt:
-        print("\nStopped")
+        log("stopped")
         sys.exit(0)
 
 
