@@ -21,6 +21,7 @@
     home-manager
     imagemagick
     jq
+    launchd-mgmt
     macmon
     magic-wormhole
     mkpasswd

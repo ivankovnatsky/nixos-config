@@ -18,6 +18,7 @@
     download-torrent
     git-message
     homelab
+    launchd-mgmt
     ps-top-nu
     watchman-rebuild
 

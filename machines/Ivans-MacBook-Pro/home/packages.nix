@@ -11,6 +11,7 @@
     nodePackages.prettier
     open-gh-notifications-py
     homelab
+    launchd-mgmt
     ps-top-nu
     sops
     ssh-to-age
