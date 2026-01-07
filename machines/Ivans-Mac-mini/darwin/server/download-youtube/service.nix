@@ -6,6 +6,16 @@
 
 let
   dataDir = "${config.flags.miniStoragePath}/Media/Youtube";
+
+  python = pkgs.python3.withPackages (ps: [
+    ps.flask
+    ps.watchdog
+  ]);
+
+  youtube-daemon = pkgs.writeShellScriptBin "youtube-daemon" ''
+    export PATH="${pkgs.giffer}/bin:$PATH"
+    exec ${python}/bin/python ${./daemon.py} "$@"
+  '';
 in
 {
   local.launchd.services.download-youtube = {
@@ -13,13 +23,10 @@ in
     waitForPath = config.flags.miniStoragePath;
     dataDir = dataDir;
     command = ''
-      ${pkgs.download-youtube}/bin/download-youtube daemon \
+      ${youtube-daemon}/bin/youtube-daemon \
         --host ${config.flags.miniIp} \
         --port 8085 \
         --output-dir ${dataDir}
     '';
-    environment = {
-      PATH = "${pkgs.coreutils}/bin:${pkgs.ffmpeg}/bin:${pkgs.nixpkgs-darwin-master.yt-dlp}/bin";
-    };
   };
 }
