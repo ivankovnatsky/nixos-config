@@ -12,11 +12,28 @@ in
     type = "user-agent";
     waitForPath = config.flags.miniStoragePath;
     dataDir = dataDir;
-    command = ''
-      ${pkgs.nixpkgs-darwin-master.beszel}/bin/beszel-hub serve \
-        --http ${config.flags.miniIp}:8091 \
-        --dir ${dataDir}
-    '';
+    command = let
+      startScript = pkgs.writeShellScript "beszel-hub-start" ''
+        set -e
+
+        BESZEL_TOKEN="$(cat ${config.sops.secrets.beszel-token.path})"
+        BESZEL_EMAIL="$(cat ${config.sops.secrets.beszel-email.path})"
+
+        cat > ${dataDir}/config.yml << EOF
+        systems:
+          - name: Ivans-Mac-mini
+            host: ${config.flags.miniIp}
+            port: 45876
+            token: $BESZEL_TOKEN
+            users:
+              - $BESZEL_EMAIL
+        EOF
+
+        exec ${pkgs.nixpkgs-darwin-master.beszel}/bin/beszel-hub serve \
+          --http ${config.flags.miniIp}:8091 \
+          --dir ${dataDir}
+      '';
+    in "${startScript}";
   };
 
   # Beszel Agent (monitoring mini itself)
@@ -41,6 +58,11 @@ in
 
   sops.secrets.beszel-password = {
     key = "beszel/password";
+    owner = username;
+  };
+
+  sops.secrets.beszel-token = {
+    key = "beszel/token";
     owner = username;
   };
 
