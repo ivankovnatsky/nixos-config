@@ -255,9 +255,12 @@ def transition_fields(issue_key, transition_name):
 def transition_issue(issue_key, transition_name, comment=None, fields=None):
     """Transition an issue to a new status"""
     jira = get_jira_client()
-    jira.transition_issue(issue_key, transition_name, fields=fields, comment=comment)
+    jira.transition_issue(issue_key, transition_name, fields=fields)
     issue = jira.issue(issue_key)
     print(f"Transitioned to: {issue.fields.status.name}", file=sys.stderr)
+    if comment:
+        jira.add_comment(issue_key, comment)
+        print("Comment added", file=sys.stderr)
 
 
 def main():
