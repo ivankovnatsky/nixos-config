@@ -17,6 +17,8 @@ from pathlib import Path
 import click
 
 DEFAULT_URL_FILE = ".list.txt"
+DEFAULT_MAX_HEIGHT = 1080
+DEFAULT_SUB_LANGS = "en"
 
 SITE_CONFIGS = {
     "3": {
@@ -25,18 +27,25 @@ SITE_CONFIGS = {
     },
 }
 
-# Default yt-dlp options for passthrough mode (user args can override)
-DEFAULT_YTDLP_ARGS = [
-    "--write-auto-subs",
-    "--embed-subs",
-    "--sub-langs",
-    "en",
-    "--ignore-errors",
-    "-f",
-    "bestvideo[height<=1080]+bestaudio/best[height<=1080]",
-    "--merge-output-format",
-    "mp4",
-]
+
+def get_format_string(max_height: int = DEFAULT_MAX_HEIGHT) -> str:
+    """Build yt-dlp format string for given max height."""
+    return f"bestvideo[height<={max_height}]+bestaudio/best[height<={max_height}]"
+
+
+def get_default_ytdlp_args(max_height: int = DEFAULT_MAX_HEIGHT) -> list:
+    """Get default yt-dlp args for passthrough mode."""
+    return [
+        "--write-auto-subs",
+        "--embed-subs",
+        "--sub-langs",
+        DEFAULT_SUB_LANGS,
+        "--ignore-errors",
+        "-f",
+        get_format_string(max_height),
+        "--merge-output-format",
+        "mp4",
+    ]
 
 
 class DurationType(click.ParamType):
@@ -341,7 +350,7 @@ def remove_url_from_file(url_to_remove, url_file):
         click.echo(f"Warning: Could not remove URL from file: {e}", err=True)
 
 
-def batch_download_impl(url_file=None, output_dir=None, embed_subs=True, max_height=1080):
+def batch_download_impl(url_file=None, output_dir=None, embed_subs=True, max_height=DEFAULT_MAX_HEIGHT):
     """Download videos from a list file, removing successfully downloaded URLs"""
     if url_file is None:
         url_file = DEFAULT_URL_FILE
@@ -380,9 +389,9 @@ def batch_download_impl(url_file=None, output_dir=None, embed_subs=True, max_hei
 
         cmd_args = []
         if embed_subs:
-            cmd_args.extend(["--write-auto-subs", "--embed-subs"])
+            cmd_args.extend(["--write-auto-subs", "--embed-subs", "--sub-langs", DEFAULT_SUB_LANGS])
 
-        cmd_args.extend(["--format", f"best[height<={max_height}]/best", "-o", output_template, url])
+        cmd_args.extend(["-f", get_format_string(max_height), "-o", output_template, url])
 
         result = run_yt_dlp(cmd_args)
         if result.returncode == 0:
@@ -482,7 +491,7 @@ def find_existing_file_by_url(url, search_dirs):
 
 
 def move_or_download_for_page(
-    url, page, base_output_dir, all_page_dirs, max_height=1080, split=False,
+    url, page, base_output_dir, all_page_dirs, max_height=DEFAULT_MAX_HEIGHT, split=False,
     segment_duration=10, skip_start=0, skip_end=0
 ):
     """Move existing file to correct page dir or download if not found. Returns (url, success)"""
@@ -512,7 +521,7 @@ def move_or_download_for_page(
 
 
 def download_single_video(
-    url, output_dir, max_height=1080, split=False, segment_duration=10, skip_start=0, skip_end=0
+    url, output_dir, max_height=DEFAULT_MAX_HEIGHT, split=False, segment_duration=10, skip_start=0, skip_end=0
 ):
     """Download a single video and optionally split it, returns (url, success)"""
     if output_dir:
@@ -524,8 +533,8 @@ def download_single_video(
     output_template = str(out_dir / "%(title)s.%(ext)s")
 
     cmd_args = [
-        "--format",
-        f"best[height<={max_height}]/best",
+        "-f",
+        get_format_string(max_height),
         "-o",
         output_template,
         "--print",
@@ -571,7 +580,7 @@ def scrape_and_download_impl(
     pagination=None,
     workers=4,
     output_dir=None,
-    max_height=1080,
+    max_height=DEFAULT_MAX_HEIGHT,
     split=False,
     segment_duration=10,
     skip_start=0,
@@ -785,10 +794,10 @@ class GifferGroup(click.Group):
                 result = run_gallery_dl(remaining)
             elif ytdlp:
                 # Prepend defaults, user args can override
-                result = run_yt_dlp(DEFAULT_YTDLP_ARGS + remaining)
+                result = run_yt_dlp(get_default_ytdlp_args() + remaining)
             else:
                 # Prepend defaults, user args can override
-                result = run_yt_dlp(DEFAULT_YTDLP_ARGS + remaining)
+                result = run_yt_dlp(get_default_ytdlp_args() + remaining)
                 if result.returncode != 0:
                     click.echo("\nyt-dlp failed, trying gallery-dl as fallback...\n", err=True)
                     result = run_gallery_dl(remaining)
@@ -844,7 +853,7 @@ def split(url, output_dir, duration, skip_start, skip_end):
 @click.option("-d", "--duration", type=DURATION, default=10, help="Segment duration if splitting (default: 10s)")
 @click.option("--skip-start", type=DURATION, default=0, help="Skip from start if splitting (default: 0)")
 @click.option("--skip-end", type=DURATION, default=0, help="Skip from end if splitting (default: 0)")
-@click.option("--max-height", type=int, default=1080, help="Maximum video height (default: 1080)")
+@click.option("--max-height", type=int, default=DEFAULT_MAX_HEIGHT, help=f"Maximum video height (default: {DEFAULT_MAX_HEIGHT})")
 def download(url, output_dir, workers, do_split, duration, skip_start, skip_end, max_height):
     """Download video(s) from URL or playlist.
 
@@ -935,7 +944,7 @@ def process(path, output_dir, cleanup, recursive, extensions, duration, skip_sta
 @click.option("-f", "--file", "url_file", default=DEFAULT_URL_FILE, help=f"URL list file (default: {DEFAULT_URL_FILE})")
 @click.option("-o", "--output-dir", help="Output directory")
 @click.option("--embed-subs/--no-embed-subs", default=True, help="Embed subtitles")
-@click.option("--max-height", type=int, default=1080, help="Maximum video height (default: 1080)")
+@click.option("--max-height", type=int, default=DEFAULT_MAX_HEIGHT, help=f"Maximum video height (default: {DEFAULT_MAX_HEIGHT})")
 def batch(url_file, output_dir, embed_subs, max_height):
     """Download videos from a URL list file."""
     success = batch_download_impl(url_file, output_dir, embed_subs, max_height)
@@ -952,7 +961,7 @@ def batch(url_file, output_dir, embed_subs, max_height):
 @click.option("-f", "--filter", "url_filter", help="Regex to filter by video title (case-insensitive, include matching)")
 @click.option("-x", "--exclude", "url_exclude", help="Regex to filter by video title (case-insensitive, exclude matching)")
 @click.option("-w", "--workers", type=int, default=4, help="Parallel workers (default: 4)")
-@click.option("--max-height", type=int, default=1080, help="Maximum video height (default: 1080)")
+@click.option("--max-height", type=int, default=DEFAULT_MAX_HEIGHT, help=f"Maximum video height (default: {DEFAULT_MAX_HEIGHT})")
 @click.option("--split", "do_split", is_flag=True, help="Split videos after download")
 @click.option("--split-pages/--no-split-pages", default=True, help="Organize files into page-N directories (default: enabled)")
 @click.option("-d", "--duration", type=DURATION, default=10, help="Segment duration (default: 10s)")
