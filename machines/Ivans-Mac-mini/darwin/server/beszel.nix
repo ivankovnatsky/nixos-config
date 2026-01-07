@@ -7,6 +7,7 @@ in
   # Beszel Hub service - user-agent to access /Volumes/Storage after login
   # See: claude/issues/LAUNCHD-BOOT-FAILURE.md
   # Manual restart: launchctl kickstart -k gui/$(id -u)/com.ivankovnatsky.beszel-hub
+  # FIXME: config.yml is declarative - systems not defined will be deleted on restart
   local.launchd.services.beszel-hub = {
     enable = true;
     type = "user-agent";
