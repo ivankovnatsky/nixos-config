@@ -80,10 +80,10 @@
 
     myWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig):start()
 
-    -- Quake-style kitty quick terminal (F12)
-    hs.hotkey.bind({}, "F12", function()
-      hs.execute("/opt/homebrew/bin/kitten quick-access-terminal", true)
-    end)
+    -- Quake-style kitty quick terminal (F12) - disabled
+    -- hs.hotkey.bind({}, "F12", function()
+    --   hs.execute("/opt/homebrew/bin/kitten quick-access-terminal", true)
+    -- end)
 
     hs.alert.show("Config loaded")
   '';
