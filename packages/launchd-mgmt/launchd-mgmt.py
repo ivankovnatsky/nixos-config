@@ -196,15 +196,34 @@ def cmd_restart(args: argparse.Namespace) -> int:
     return 1 if failed > 0 else 0
 
 
+def get_plist_path(name: str, service_type: ServiceType) -> Optional[str]:
+    """Get the plist path for a service."""
+    if service_type == ServiceType.AGENT:
+        # Check common agent locations
+        paths = [
+            os.path.expanduser(f"~/Library/LaunchAgents/{name}.plist"),
+            f"/Library/LaunchAgents/{name}.plist",
+        ]
+    else:
+        paths = [
+            f"/Library/LaunchDaemons/{name}.plist",
+        ]
+
+    for path in paths:
+        if os.path.exists(path):
+            return path
+    return None
+
+
 def stop_service(name: str, service_type: ServiceType) -> bool:
-    """Stop a single service."""
+    """Stop a single service using bootout (works with KeepAlive services)."""
     uid = get_uid()
     if service_type == ServiceType.AGENT:
         target = f"gui/{uid}/{name}"
-        cmd = ["launchctl", "stop", target]
+        cmd = ["launchctl", "bootout", target]
     else:
         target = f"system/{name}"
-        cmd = ["sudo", "launchctl", "stop", target]
+        cmd = ["sudo", "launchctl", "bootout", target]
 
     try:
         subprocess.run(cmd, check=True, capture_output=True, text=True)
@@ -215,14 +234,20 @@ def stop_service(name: str, service_type: ServiceType) -> bool:
 
 
 def start_service(name: str, service_type: ServiceType) -> bool:
-    """Start a single service."""
+    """Start a single service using bootstrap."""
     uid = get_uid()
+    plist_path = get_plist_path(name, service_type)
+
+    if not plist_path:
+        print(f"  Could not find plist for {name}", file=sys.stderr)
+        return False
+
     if service_type == ServiceType.AGENT:
-        target = f"gui/{uid}/{name}"
-        cmd = ["launchctl", "kickstart", target]
+        target = f"gui/{uid}"
+        cmd = ["launchctl", "bootstrap", target, plist_path]
     else:
-        target = f"system/{name}"
-        cmd = ["sudo", "launchctl", "kickstart", target]
+        target = "system"
+        cmd = ["sudo", "launchctl", "bootstrap", target, plist_path]
 
     try:
         subprocess.run(cmd, check=True, capture_output=True, text=True)
