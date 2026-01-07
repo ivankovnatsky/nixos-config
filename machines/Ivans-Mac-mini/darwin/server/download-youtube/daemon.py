@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
+"""
+YouTube download daemon - Web UI for queuing video downloads.
+
+Uses giffer for actual downloads, providing a web interface for adding URLs
+and monitoring download status.
+"""
 
 import argparse
 import logging
 import os
 import subprocess
-import sys
 import threading
 import time
 from datetime import datetime
 from pathlib import Path
-
-URL_FILE = "List.txt"
 
 downloads = []
 downloads_lock = threading.Lock()
@@ -198,23 +201,9 @@ def remove_url_from_file(url_to_remove, url_file):
 
 
 def download_video(url: str, output_dir: str):
-    """Download a video using yt-dlp. Returns True on success."""
+    """Download a video using giffer. Returns True on success."""
     try:
-        cmd = [
-            "yt-dlp",
-            "--write-auto-subs",
-            "--embed-subs",
-            "--sub-langs",
-            "en",
-            "--ignore-errors",
-            "--format",
-            "bestvideo[height<=1080]+bestaudio/best[height<=1080]",
-            "--merge-output-format",
-            "mp4",
-            "-o",
-            f"{output_dir}/%(title)s.%(ext)s",
-            url,
-        ]
+        cmd = ["giffer", url, "-o", f"{output_dir}/%(title)s.%(ext)s"]
         result = subprocess.run(cmd, capture_output=True, text=True)
         if result.returncode == 0:
             logging.info(f"Downloaded: {url}")
@@ -231,7 +220,6 @@ def process_queue(output_dir, url_file):
     """Background thread that processes the URL queue on file changes."""
     while True:
         try:
-            # Wait for signal or timeout (for failed URL retry)
             process_event.wait(timeout=60)
             process_event.clear()
 
@@ -260,7 +248,6 @@ def process_queue(output_dir, url_file):
                 if success:
                     remove_url_from_file(url, url_file)
                     logging.info(f"Removed from queue: {url}")
-                    # Check if more URLs to process
                     if get_urls_from_file(url_file):
                         process_event.set()
                 else:
@@ -302,62 +289,19 @@ def start_file_watcher(url_file, output_dir):
     return observer
 
 
-def cmd_batch(args):
-    """Process URLs from a file (original behavior)."""
-    url_file = args.file if args.file else URL_FILE
-    output_dir = args.output_dir if args.output_dir else os.getcwd()
-
-    if not os.path.exists(url_file):
-        print(f"No URLs to process: {url_file} not found")
-        return
-
-    success_count = 0
-    total_count = 0
-
-    while True:
-        urls = get_urls_from_file(url_file)
-        if not urls:
-            break
-
-        url = urls[0]
-        total_count += 1
-        print(f"Downloading: {url}")
-
-        try:
-            cmd = [
-                "yt-dlp",
-                "--write-auto-subs",
-                "--embed-subs",
-                "--sub-langs",
-                "en",
-                "--ignore-errors",
-                "--format",
-                "bestvideo[height<=1080]+bestaudio/best[height<=1080]",
-                "--merge-output-format",
-                "mp4",
-                "-o",
-                f"{output_dir}/%(title)s.%(ext)s",
-                url,
-            ]
-            subprocess.run(cmd, check=True, capture_output=False)
-            print(f"Successfully downloaded: {url}")
-            remove_url_from_file(url, url_file)
-            print(f"Removed URL from list: {url}")
-            success_count += 1
-        except subprocess.CalledProcessError:
-            print(f"Failed to download: {url}")
-            break
-        except FileNotFoundError:
-            print("Error: yt-dlp not found. Please install yt-dlp.")
-            sys.exit(1)
-
-    if total_count > 0:
-        print(f"Processing complete. {success_count}/{total_count} URLs downloaded")
-
-
-def cmd_daemon(args):
-    """Run as a web service with Flask UI."""
+def main():
     from flask import Flask, jsonify, render_template_string, request
+
+    parser = argparse.ArgumentParser(description="YouTube Download Daemon")
+    parser.add_argument("--host", default="0.0.0.0", help="Host to bind to")
+    parser.add_argument("--port", type=int, default=8085, help="Port to bind to")
+    parser.add_argument(
+        "--output-dir",
+        default="/Volumes/Storage/Data/Media/Youtube",
+        help="Output directory for downloads",
+    )
+    parser.add_argument("--debug", action="store_true", help="Enable debug mode")
+    args = parser.parse_args()
 
     app = Flask(__name__)
     output_dir = args.output_dir
@@ -370,16 +314,13 @@ def cmd_daemon(args):
         format="%(asctime)s - %(levelname)s - %(message)s",
     )
 
-    # Start file watcher
     observer = start_file_watcher(url_file, output_dir)
 
-    # Start background queue processor
     processor = threading.Thread(
         target=process_queue, args=(output_dir, url_file), daemon=True
     )
     processor.start()
 
-    # Trigger initial processing if file has URLs
     if get_urls_from_file(url_file):
         process_event.set()
 
@@ -407,7 +348,6 @@ def cmd_daemon(args):
                 downloads.insert(0, download_entry)
                 if len(downloads) > 50:
                     downloads.pop()
-            # Signal processor (file watcher will also trigger)
             process_event.set()
 
         return jsonify({"status": "queued" if added else "already_queued"})
@@ -431,42 +371,6 @@ def cmd_daemon(args):
     finally:
         observer.stop()
         observer.join()
-
-
-def main():
-    parser = argparse.ArgumentParser(description="YouTube Video Downloader")
-    subparsers = parser.add_subparsers(dest="command", help="Commands")
-
-    batch_parser = subparsers.add_parser("batch", help="Process URLs from a file")
-    batch_parser.add_argument(
-        "-f", "--file", default=URL_FILE, help="File containing URLs"
-    )
-    batch_parser.add_argument(
-        "-o", "--output-dir", default=".", help="Output directory"
-    )
-
-    daemon_parser = subparsers.add_parser("daemon", help="Run as web service")
-    daemon_parser.add_argument("--host", default="0.0.0.0", help="Host to bind to")
-    daemon_parser.add_argument(
-        "--port", type=int, default=8085, help="Port to bind to"
-    )
-    daemon_parser.add_argument(
-        "--output-dir",
-        default="/Volumes/Storage/Data/Media/Youtube",
-        help="Output directory for downloads",
-    )
-    daemon_parser.add_argument("--debug", action="store_true", help="Enable debug mode")
-
-    args = parser.parse_args()
-
-    if args.command == "batch":
-        cmd_batch(args)
-    elif args.command == "daemon":
-        cmd_daemon(args)
-    else:
-        args.file = URL_FILE
-        args.output_dir = "."
-        cmd_batch(args)
 
 
 if __name__ == "__main__":
