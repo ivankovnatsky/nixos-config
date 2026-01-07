@@ -99,6 +99,7 @@
     poetry
     popeye
     postgresql
+    pblock
     pre-commit
     pv
     pyenv-nix-install
