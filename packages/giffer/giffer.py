@@ -20,7 +20,6 @@ DEFAULT_URL_FILE = ".list.txt"
 DEFAULT_MAX_HEIGHT = 1080
 DEFAULT_SUB_LANGS = "en"
 DEFAULT_SEGMENT_DURATION = 10
-DEFAULT_MAX_EMPTY_PAGES = 3
 
 SITE_CONFIGS = {
     "3": {
@@ -605,7 +604,6 @@ def scrape_and_download_impl(
     url_filter=None,
     url_exclude=None,
     split_pages=False,
-    max_empty_pages=DEFAULT_MAX_EMPTY_PAGES,
 ):
     """Scrape and download page by page"""
     if pattern is None:
@@ -617,7 +615,6 @@ def scrape_and_download_impl(
     page = start_page
     total_success = 0
     total_failed = 0
-    consecutive_empty = 0
 
     base_dir = get_output_dir(output_dir, create=False)
 
@@ -662,15 +659,6 @@ def scrape_and_download_impl(
             seen.add(url)
 
         click.echo(f"Found {len(urls)} URLs, {len(new_urls)} new")
-
-        if len(new_urls) == 0:
-            consecutive_empty += 1
-            if max_empty_pages > 0 and consecutive_empty >= max_empty_pages:
-                click.echo(f"\n{consecutive_empty} consecutive pages with no new URLs, stopping")
-                click.echo("(Site likely has fewer pages than requested)\n")
-                break
-        else:
-            consecutive_empty = 0
 
         if (url_filter or url_exclude) and new_urls:
             click.echo("Fetching titles for filtering...")
@@ -996,8 +984,7 @@ def batch(url_file, output_dir, embed_subs, max_height):
 @click.option("-d", "--duration", type=DURATION, default=DEFAULT_SEGMENT_DURATION, help=f"Segment duration (default: {DEFAULT_SEGMENT_DURATION}s)")
 @click.option("--skip-start", type=DURATION, default=0, help="Skip from start (default: 0)")
 @click.option("--skip-end", type=DURATION, default=0, help="Skip from end (default: 0)")
-@click.option("--max-empty-pages", type=int, default=DEFAULT_MAX_EMPTY_PAGES, help=f"Stop after N consecutive pages with no new URLs (default: {DEFAULT_MAX_EMPTY_PAGES}, 0 to disable)")
-def scrape(url, output_dir, start_page, end_page, site, pattern, url_filter, url_exclude, workers, max_height, do_split, split_pages, duration, skip_start, skip_end, max_empty_pages):
+def scrape(url, output_dir, start_page, end_page, site, pattern, url_filter, url_exclude, workers, max_height, do_split, split_pages, duration, skip_start, skip_end):
     """Scrape paginated pages and download videos.
 
     Use --site to select a preset config, or --pattern for custom regex.
@@ -1014,7 +1001,7 @@ def scrape(url, output_dir, start_page, end_page, site, pattern, url_filter, url
         pagination = config.get("pagination")
     success = scrape_and_download_impl(
         url, start_page, end_page, pattern, pagination, workers, output_dir, max_height, do_split, duration, skip_start, skip_end,
-        url_filter=url_filter, url_exclude=url_exclude, split_pages=split_pages, max_empty_pages=max_empty_pages
+        url_filter=url_filter, url_exclude=url_exclude, split_pages=split_pages
     )
     sys.exit(0 if success else 1)
 
