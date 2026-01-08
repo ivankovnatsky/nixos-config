@@ -7,6 +7,7 @@ Subcommands:
   scaling     Toggle display scaling resolution (macOS only)
   scrolling   Toggle natural scrolling on/off (macOS only)
   awake       Prevent system from sleeping (macOS + Linux)
+  spaces      Add or remove desktop spaces (macOS only)
 """
 
 from __future__ import annotations
@@ -778,6 +779,104 @@ def cmd_awake(args: argparse.Namespace) -> int:
         return 1
 
 
+# Spaces: Add/remove desktop spaces (macOS only)
+SPACES_PLIST = Path.home() / "Library/Preferences/com.apple.spaces.plist"
+
+
+def spaces_get_current_index() -> int | None:
+    """Get the 1-based index of the current desktop space."""
+    import json
+
+    try:
+        result = subprocess.run(
+            ["plutil", "-convert", "json", "-o", "-", str(SPACES_PLIST)],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        data = json.loads(result.stdout)
+
+        config = data.get("SpacesDisplayConfiguration", {})
+        mgmt_data = config.get("Management Data", {})
+        monitors = mgmt_data.get("Monitors", [])
+
+        for monitor in monitors:
+            if "Current Space" not in monitor:
+                continue
+
+            current_id = monitor["Current Space"].get("ManagedSpaceID")
+            if current_id is None:
+                continue
+
+            spaces = [s for s in monitor.get("Spaces", []) if s.get("type") == 0]
+            for idx, space in enumerate(spaces):
+                if space.get("ManagedSpaceID") == current_id:
+                    return idx + 1
+
+        return None
+    except (subprocess.CalledProcessError, json.JSONDecodeError, KeyError):
+        return None
+
+
+def spaces_add() -> int:
+    """Add a new desktop space."""
+    script = '''
+tell application "Mission Control" to launch
+delay 0.7
+tell application "System Events"
+  tell group "Spaces Bar" of group 1 of group "Mission Control" of process "Dock"
+    click button 1
+  end tell
+end tell
+'''
+    try:
+        subprocess.run(["osascript", "-e", script], check=True)
+        print("Added new desktop space")
+        return 0
+    except subprocess.CalledProcessError as e:
+        print(f"Error adding space: {e}", file=sys.stderr)
+        return 1
+
+
+def spaces_remove() -> int:
+    """Remove the current desktop space."""
+    index = spaces_get_current_index()
+    if index is None:
+        print("Error: Could not determine current space index", file=sys.stderr)
+        return 1
+
+    script = f'''
+tell application "Mission Control" to launch
+delay 0.7
+tell application "System Events"
+  tell list 1 of group "Spaces Bar" of group 1 of group "Mission Control" of process "Dock"
+    perform action "AXRemoveDesktop" of button {index}
+  end tell
+end tell
+'''
+    try:
+        subprocess.run(["osascript", "-e", script], check=True)
+        print(f"Removed desktop space {index}")
+        return 0
+    except subprocess.CalledProcessError as e:
+        print(f"Error removing space: {e}", file=sys.stderr)
+        return 1
+
+
+def cmd_spaces(args: argparse.Namespace) -> int:
+    if not is_macos():
+        print("Spaces settings only available on macOS", file=sys.stderr)
+        return 1
+
+    if args.action == "add":
+        return spaces_add()
+    elif args.action == "remove":
+        return spaces_remove()
+    else:
+        print("Usage: settings spaces <add|remove>", file=sys.stderr)
+        return 1
+
+
 # Main CLI
 def main() -> int:
     parser = argparse.ArgumentParser(
@@ -896,6 +995,19 @@ def main() -> int:
         help=f"Timeout in seconds (default: {DEFAULT_AWAKE_TIMEOUT} = 12 hours)",
     )
     awake_parser.set_defaults(func=cmd_awake)
+
+    # Spaces subcommand
+    spaces_parser = subparsers.add_parser(
+        "spaces",
+        aliases=["sp"],
+        help="Add or remove desktop spaces (macOS only)",
+    )
+    spaces_parser.add_argument(
+        "action",
+        choices=["add", "remove"],
+        help="Action to perform",
+    )
+    spaces_parser.set_defaults(func=cmd_spaces)
 
     # Help subcommand
     subparsers.add_parser(
