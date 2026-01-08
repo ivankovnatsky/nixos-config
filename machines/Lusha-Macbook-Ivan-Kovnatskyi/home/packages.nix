@@ -7,6 +7,7 @@
         (jira.overridePythonAttrs (old: {
           propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ old.optional-dependencies.cli;
         }))
+        markitdown
         ruff
       ]
     ))
