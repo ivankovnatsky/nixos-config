@@ -83,13 +83,31 @@ def wait_for_services() -> bool:
     return False
 
 
+def wait_for_network() -> None:
+    """Wait until Mini is reachable on the network."""
+    attempt = 1
+    while True:
+        result = subprocess.run(
+            ["ping", "-c", "1", "-W", "1", MINI_IP],
+            capture_output=True,
+        )
+        if result.returncode == 0:
+            return
+        print(f"Waiting for network... (attempt {attempt})")
+        time.sleep(RETRY_INTERVAL)
+        attempt += 1
+
+
 def power_on() -> int:
     """Unlock and connect to Mini."""
+    # Wait for network connectivity before attempting SSH
+    wait_for_network()
+
     print(f"Attempting to unlock Mini at {MINI_IP}...")
 
     # First attempt - this handles the FileVault unlock prompt
     # Note: FileVault unlock always closes the connection after success,
-    # so we can't rely on return code here
+    # so we can't rely on return code here.
     ssh_run("echo 'Connected'")
 
     # Wait for system to boot after FileVault unlock
