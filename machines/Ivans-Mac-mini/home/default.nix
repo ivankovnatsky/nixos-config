@@ -32,6 +32,8 @@
     ../../../home/vscode.nix
     ../../../home/yt-dlp.nix
     ../../../modules/flags
+    ../../../modules/home/packages
+    ./manual-packages.nix
     ./flags.nix
     ./packages.nix
     ../../../home/sops.nix
