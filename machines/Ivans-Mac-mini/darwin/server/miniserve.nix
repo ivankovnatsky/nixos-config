@@ -32,6 +32,9 @@
         --interfaces ::1 \
         --interfaces ${config.flags.miniIp} \
         --auth-file ${config.sops.templates."miniserve-auth".path} \
+        --upload-files /Backup/Machines \
+        --mkdir \
+        --on-duplicate-files rename \
         ${config.flags.miniStoragePath}
     '';
   };
