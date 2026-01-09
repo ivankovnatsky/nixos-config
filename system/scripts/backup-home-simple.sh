@@ -269,10 +269,12 @@ else
       "$MINISERVE_URL/upload?path=/Backup/Machines/$HOSTNAME/$HOME_PARENT_DIR"
 
     echo "Uploading to miniserve: $MINISERVE_URL$UPLOAD_PATH"
-    if curl -u "$MINISERVE_USER:$MINISERVE_PASS" \
-      --progress-bar \
+    curl -u "$MINISERVE_USER:$MINISERVE_PASS" \
       -F "path=@$ARCHIVE_PATH" \
-      "$MINISERVE_URL/upload?path=$UPLOAD_PATH"; then
+      -o /dev/null \
+      "$MINISERVE_URL/upload?path=$UPLOAD_PATH"
+    CURL_EXIT=$?
+    if [[ $CURL_EXIT -eq 0 ]]; then
       echo "Upload successful"
       if [[ "$DELETE_BACKUP" == "true" ]]; then
         rm "$ARCHIVE_PATH"
