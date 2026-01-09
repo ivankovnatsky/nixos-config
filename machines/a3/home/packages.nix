@@ -2,6 +2,7 @@
 
 {
   home.packages = with pkgs; [
+    backup-home # Home directory backup tool
     dust # A more intuitive version of du
     genpass # Password generator
     username # Username generator
