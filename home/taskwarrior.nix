@@ -4,7 +4,8 @@ let
 
   homePath = config.home.homeDirectory;
   iCloudTaskDir = "${homePath}/Library/Mobile Documents/iCloud~com~mav~taskchamp/Documents/taskchamp";
-  dataLocation = if isDarwin then iCloudTaskDir else "${homePath}/.task";
+  isWork = config.flags.purpose == "work";
+  dataLocation = if isDarwin && !isWork then iCloudTaskDir else "${homePath}/.task";
 in
 {
   # https://github.com/nix-community/home-manager/blob/master/modules/programs/taskwarrior.nix
@@ -126,7 +127,7 @@ in
       "default.due" = "eod";
       # Use home-manager managed hooks directory
       "hooks.location" = "${config.xdg.configHome}/task/hooks";
-    } // (if isDarwin then {
+    } // (if isDarwin && !isWork then {
       "sync.local.server_dir" = iCloudTaskDir;
     } else { });
   };
