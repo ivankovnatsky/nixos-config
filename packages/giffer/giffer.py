@@ -42,7 +42,7 @@ def get_output_dir(output_dir: str | None, create: bool = True) -> Path:
 
 def get_format_string(max_height: int = DEFAULT_MAX_HEIGHT) -> str:
     """Build yt-dlp format string for given max height."""
-    return f"bestvideo[height<={max_height}]+bestaudio/best[height<={max_height}]"
+    return f"bestvideo[height<={max_height}]+bestaudio/best[height<={max_height}]/best"
 
 
 def get_default_ytdlp_args(max_height: int = DEFAULT_MAX_HEIGHT) -> list:
@@ -402,8 +402,17 @@ def batch_download_impl(url_file=None, output_dir=None, embed_subs=True, max_hei
             click.echo(f"Removed URL from list: {url}")
             success_count += 1
         else:
-            click.echo(f"Failed to download: {url}")
-            break
+            click.echo(f"yt-dlp failed, trying gallery-dl as fallback...")
+            gallery_args = ["-d", str(out_dir), url]
+            gallery_result = run_gallery_dl(gallery_args)
+            if gallery_result.returncode == 0:
+                click.echo(f"Successfully downloaded with gallery-dl: {url}")
+                remove_url_from_file(url, url_file)
+                click.echo(f"Removed URL from list: {url}")
+                success_count += 1
+            else:
+                click.echo(f"Failed to download: {url}")
+                break
 
     if total_count > 0:
         click.echo(f"Processing complete. {success_count}/{total_count} URLs downloaded successfully")
