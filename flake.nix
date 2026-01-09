@@ -159,12 +159,6 @@
       inputs.flake-utils.follows = "flake-utils";
     };
 
-    backup-home = {
-      url = "github:ivankovnatsky/backup-home-go";
-      inputs.nixpkgs.follows = "nixpkgs-darwin-unstable";
-      inputs.flake-utils.follows = "flake-utils";
-    };
-
     nixpkgs-python = {
       url = "github:cachix/nixpkgs-python";
     };

@@ -16,29 +16,6 @@
         "type": "github"
       }
     },
-    "backup-home": {
-      "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": [
-          "nixpkgs-darwin-unstable"
-        ]
-      },
-      "locked": {
-        "lastModified": 1756458650,
-        "narHash": "sha256-7H6mrHLwlTY0vo+/qUCMh99BAW8IZO0BQkTSE2pwoas=",
-        "owner": "ivankovnatsky",
-        "repo": "backup-home-go",
-        "rev": "81448919e6f900365c7f12d3d00db36cd7f49264",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ivankovnatsky",
-        "repo": "backup-home-go",
-        "type": "github"
-      }
-    },
     "brew-src": {
       "flake": false,
       "locked": {
@@ -1073,7 +1050,6 @@
     "root": {
       "inputs": {
         "antoniorodr-homebrew-tap": "antoniorodr-homebrew-tap",
-        "backup-home": "backup-home",
         "flake-utils": "flake-utils",
         "home-manager-darwin-release": "home-manager-darwin-release",
         "home-manager-darwin-unstable": "home-manager-darwin-unstable",
