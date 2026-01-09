@@ -357,7 +357,27 @@ def remove_url_from_file(url_to_remove, url_file):
         click.echo(f"Warning: Could not remove URL from file: {e}", err=True)
 
 
-def batch_download_impl(url_file=None, output_dir=None, embed_subs=True, max_height=DEFAULT_MAX_HEIGHT):
+def batch_download_single(url, output_dir, embed_subs=True, max_height=DEFAULT_MAX_HEIGHT):
+    """Download a single URL with yt-dlp, falling back to gallery-dl. Returns (url, success)."""
+    out_dir = get_output_dir(output_dir)
+    output_template = str(out_dir / "%(title)s.%(ext)s")
+
+    cmd_args = []
+    if embed_subs:
+        cmd_args.extend(["--write-auto-subs", "--embed-subs", "--sub-langs", DEFAULT_SUB_LANGS])
+
+    cmd_args.extend(["-f", get_format_string(max_height), "-o", output_template, url])
+
+    result = run_yt_dlp(cmd_args)
+    if result.returncode == 0:
+        return (url, True)
+
+    gallery_args = ["-d", str(out_dir), url]
+    gallery_result = run_gallery_dl(gallery_args)
+    return (url, gallery_result.returncode == 0)
+
+
+def batch_download_impl(url_file=None, output_dir=None, embed_subs=True, max_height=DEFAULT_MAX_HEIGHT, workers=1):
     """Download videos from a list file, removing successfully downloaded URLs"""
     if url_file is None:
         url_file = DEFAULT_URL_FILE
@@ -367,57 +387,61 @@ def batch_download_impl(url_file=None, output_dir=None, embed_subs=True, max_hei
         click.echo(f"No URLs to process: {url_file} not found")
         return True
 
-    success_count = 0
-    total_count = 0
+    with open(url_path, "r") as f:
+        urls = [
+            line.strip()
+            for line in f
+            if line.strip() and not line.strip().startswith("#")
+        ]
 
-    while True:
-        with open(url_path, "r") as f:
-            urls = [
-                line.strip()
-                for line in f
-                if line.strip() and not line.strip().startswith("#")
-            ]
+    if not urls:
+        click.echo("No URLs to process")
+        return True
 
-        if not urls:
-            break
+    total_count = len(urls)
+    click.echo(f"Processing {total_count} URLs with {workers} worker(s)")
 
-        url = urls[0]
-        total_count += 1
+    if workers > 1:
+        success_count = 0
+        failed_urls = []
 
-        click.echo(f"Downloading: {url}")
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            futures = {
+                executor.submit(
+                    batch_download_single, url, output_dir, embed_subs, max_height
+                ): url
+                for url in urls
+            }
 
-        out_dir = get_output_dir(output_dir)
-        output_template = str(out_dir / "%(title)s.%(ext)s")
+            for future in as_completed(futures):
+                url, success = future.result()
+                if success:
+                    success_count += 1
+                    remove_url_from_file(url, url_file)
+                    click.echo(f"[{success_count}/{total_count}] Completed: {url}")
+                else:
+                    failed_urls.append(url)
+                    click.echo(f"[FAILED] {url}")
 
-        cmd_args = []
-        if embed_subs:
-            cmd_args.extend(["--write-auto-subs", "--embed-subs", "--sub-langs", DEFAULT_SUB_LANGS])
-
-        cmd_args.extend(["-f", get_format_string(max_height), "-o", output_template, url])
-
-        result = run_yt_dlp(cmd_args)
-        if result.returncode == 0:
-            click.echo(f"Successfully downloaded: {url}")
-            remove_url_from_file(url, url_file)
-            click.echo(f"Removed URL from list: {url}")
-            success_count += 1
-        else:
-            click.echo(f"yt-dlp failed, trying gallery-dl as fallback...")
-            gallery_args = ["-d", str(out_dir), url]
-            gallery_result = run_gallery_dl(gallery_args)
-            if gallery_result.returncode == 0:
-                click.echo(f"Successfully downloaded with gallery-dl: {url}")
+        click.echo(f"Processing complete. {success_count}/{total_count} URLs downloaded successfully")
+        return len(failed_urls) == 0
+    else:
+        success_count = 0
+        for url in urls:
+            click.echo(f"Downloading: {url}")
+            _, success = batch_download_single(url, output_dir, embed_subs, max_height)
+            if success:
+                click.echo(f"Successfully downloaded: {url}")
                 remove_url_from_file(url, url_file)
-                click.echo(f"Removed URL from list: {url}")
                 success_count += 1
             else:
                 click.echo(f"Failed to download: {url}")
                 break
 
-    if total_count > 0:
-        click.echo(f"Processing complete. {success_count}/{total_count} URLs downloaded successfully")
+        if total_count > 0:
+            click.echo(f"Processing complete. {success_count}/{total_count} URLs downloaded successfully")
 
-    return success_count == total_count
+        return success_count == total_count
 
 
 def extract_urls_from_page(page_url, pattern):
@@ -969,11 +993,12 @@ def process(path, output_dir, cleanup, recursive, extensions, duration, skip_sta
 @cli.command()
 @click.option("-f", "--file", "url_file", default=DEFAULT_URL_FILE, help=f"URL list file (default: {DEFAULT_URL_FILE})")
 @click.option("-o", "--output-dir", help="Output directory")
+@click.option("-w", "--workers", type=int, default=1, help="Parallel workers (default: 1)")
 @click.option("--embed-subs/--no-embed-subs", default=True, help="Embed subtitles")
 @click.option("--max-height", type=int, default=DEFAULT_MAX_HEIGHT, help=f"Maximum video height (default: {DEFAULT_MAX_HEIGHT})")
-def batch(url_file, output_dir, embed_subs, max_height):
+def batch(url_file, output_dir, workers, embed_subs, max_height):
     """Download videos from a URL list file."""
-    success = batch_download_impl(url_file, output_dir, embed_subs, max_height)
+    success = batch_download_impl(url_file, output_dir, embed_subs, max_height, workers)
     sys.exit(0 if success else 1)
 
 
