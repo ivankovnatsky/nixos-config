@@ -61,13 +61,19 @@ Options:
   --backup-path <path>    Custom path for backup archive
   --target-machine <ip>   Custom target machine (default: 192.168.50.4)
   --rclone <remote>       Use rclone remote instead of scp (e.g., drive:Backup)
+  --miniserve <url>       Upload via curl to miniserve (e.g., http://192.168.50.4:8080)
   --help, -h              Show this help message
+
+Environment:
+  MINISERVE_USER          Username for miniserve authentication
+  MINISERVE_PASS          Password for miniserve authentication
 
 Examples:
   $0                                          # Normal backup and upload
   $0 --skip-upload                            # Create backup locally only
   $0 --target-machine 192.168.50.5            # Upload to different machine
   $0 --rclone drive:Backup                    # Upload to Google Drive
+  $0 --miniserve http://192.168.50.4:8080     # Upload via curl to miniserve
   $0 --skip-backup --skip-upload              # Use existing backup, no upload
 
 To redirect output to a log file, use shell redirection:
@@ -83,6 +89,7 @@ SKIP_UPLOAD=false
 CUSTOM_ARCHIVE_PATH=""
 CUSTOM_TARGET_MACHINE=""
 RCLONE_REMOTE=""
+MINISERVE_URL=""
 
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -108,6 +115,10 @@ while [[ $# -gt 0 ]]; do
     ;;
   --rclone)
     RCLONE_REMOTE="$2"
+    shift 2
+    ;;
+  --miniserve)
+    MINISERVE_URL="$2"
     shift 2
     ;;
   *)
@@ -221,6 +232,33 @@ else
     REMOTE_PATH="$RCLONE_REMOTE/$HOME_PARENT_DIR/$DATE_DIR"
     echo "Uploading to rclone remote: $REMOTE_PATH"
     if rclone copy "$ARCHIVE_PATH" "$REMOTE_PATH" --progress; then
+      echo "Upload successful, removing local backup"
+      rm "$ARCHIVE_PATH"
+    else
+      echo "Upload failed, keeping local backup at: $ARCHIVE_PATH"
+      exit 1
+    fi
+  elif [[ -n "$MINISERVE_URL" ]]; then
+    # Upload using curl to miniserve
+    if [[ -z "$MINISERVE_USER" ]] || [[ -z "$MINISERVE_PASS" ]]; then
+      echo "Error: MINISERVE_USER and MINISERVE_PASS environment variables required"
+      exit 1
+    fi
+
+    UPLOAD_PATH="/Backup/Machines/$HOME_PARENT_DIR/$DATE_DIR"
+    echo "Creating directory: $UPLOAD_PATH"
+    curl -s -u "$MINISERVE_USER:$MINISERVE_PASS" \
+      -F "mkdir=$HOME_PARENT_DIR" \
+      "$MINISERVE_URL/upload?path=/Backup/Machines"
+    curl -s -u "$MINISERVE_USER:$MINISERVE_PASS" \
+      -F "mkdir=$DATE_DIR" \
+      "$MINISERVE_URL/upload?path=/Backup/Machines/$HOME_PARENT_DIR"
+
+    echo "Uploading to miniserve: $MINISERVE_URL$UPLOAD_PATH"
+    if curl -u "$MINISERVE_USER:$MINISERVE_PASS" \
+      --progress-bar \
+      -F "path=@$ARCHIVE_PATH" \
+      "$MINISERVE_URL/upload?path=$UPLOAD_PATH"; then
       echo "Upload successful, removing local backup"
       rm "$ARCHIVE_PATH"
     else
