@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
+
 """
 Git commit subject scope helper that auto-generates scope from staged file paths.
 """
 
 import argparse
+import os
 import re
 import subprocess
 import sys
@@ -76,16 +78,44 @@ def create_commit_message(prefix: str, subject: str) -> str:
     return f"{prefix}: {subject}"
 
 
+def parse_args_flexible(args: list[str]) -> tuple[str | None, str]:
+    """Parse arguments flexibly: file can be before or after subject."""
+    if len(args) == 1:
+        return None, args[0]
+    elif len(args) == 2:
+        # Check which argument is an existing file
+        first_exists = os.path.exists(args[0])
+        second_exists = os.path.exists(args[1])
+
+        if first_exists and not second_exists:
+            return args[0], args[1]
+        elif second_exists and not first_exists:
+            return args[1], args[0]
+        elif first_exists and second_exists:
+            print("Error: Both arguments are existing files", file=sys.stderr)
+            sys.exit(1)
+        else:
+            print("Error: Neither argument is an existing file", file=sys.stderr)
+            print(f"  {args[0]}", file=sys.stderr)
+            print(f"  {args[1]}", file=sys.stderr)
+            sys.exit(1)
+    else:
+        print(f"Error: Expected 1 or 2 arguments, got {len(args)}", file=sys.stderr)
+        sys.exit(1)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Auto-generate git commit subject scope from staged file paths.",
         epilog="""
 Examples:
-  git-message "add feature"     Commits with "<scope>: add feature"
-  git-message "fix bug"         Commits with "<scope>: fix bug"
+  git-message "add feature"                     Commits staged file with "<scope>: add feature"
+  git-message file.nix "add feature"            Commits file.nix with "<scope>: add feature"
+  git-message "add feature" file.nix            Same as above (order doesn't matter)
 
 Features:
-  - Requires exactly one staged file
+  - Accepts file path in either position (auto-detected by existence)
+  - Without file arg, requires exactly one staged file
   - Strips file extensions (e.g., .nix, .py)
   - Shortens machine names (e.g., Ivans-Mac-mini -> mini)
   - Removes duplicate path components (e.g., pkg/foo/foo -> pkg/foo)
@@ -96,29 +126,39 @@ Features:
 """,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument("subject", help="commit subject (without scope prefix)")
-    args = parser.parse_args()
+    parser.add_argument(
+        "args", nargs="+", help="subject and optional file path (in any order)"
+    )
+    parsed = parser.parse_args()
 
-    try:
-        staged_files = get_staged_files()
-    except subprocess.CalledProcessError as e:
-        print(f"Failed to get staged files: {e}", file=sys.stderr)
-        return 1
+    file_path, subject = parse_args_flexible(parsed.args)
 
-    if not staged_files:
-        print("No staged files", file=sys.stderr)
-        return 1
+    if file_path:
+        # Use provided file path
+        target_file = file_path
+    else:
+        # Use staged files (original behavior)
+        try:
+            staged_files = get_staged_files()
+        except subprocess.CalledProcessError as e:
+            print(f"Failed to get staged files: {e}", file=sys.stderr)
+            return 1
 
-    if len(staged_files) != 1:
-        print(
-            f"Expected 1 staged file, found {len(staged_files)}:", file=sys.stderr
-        )
-        for f in staged_files:
-            print(f"  {f}", file=sys.stderr)
-        return 1
+        if not staged_files:
+            print("No staged files", file=sys.stderr)
+            return 1
 
-    staged_file = staged_files[0]
-    prefix = shorten_path(staged_file)
+        if len(staged_files) != 1:
+            print(
+                f"Expected 1 staged file, found {len(staged_files)}:", file=sys.stderr
+            )
+            for f in staged_files:
+                print(f"  {f}", file=sys.stderr)
+            return 1
+
+        target_file = staged_files[0]
+
+    prefix = shorten_path(target_file)
 
     # Apply aggressive directory shortening only if scope exceeds limit
     if len(prefix) > MAX_PREFIX_LENGTH:
@@ -132,7 +172,7 @@ Features:
         print(f"Scope: {prefix}", file=sys.stderr)
         return 1
 
-    message = create_commit_message(prefix, args.subject)
+    message = create_commit_message(prefix, subject)
 
     if len(message) > MAX_MESSAGE_LENGTH:
         print(
@@ -143,7 +183,12 @@ Features:
         return 1
 
     try:
-        subprocess.run(["git", "commit", "-m", message], check=True)
+        if file_path:
+            # Commit specific file (stages and commits in one step)
+            subprocess.run(["git", "commit", file_path, "-m", message], check=True)
+        else:
+            # Commit staged files
+            subprocess.run(["git", "commit", "-m", message], check=True)
     except subprocess.CalledProcessError as e:
         print(f"Git commit failed: {e}", file=sys.stderr)
         return 1
