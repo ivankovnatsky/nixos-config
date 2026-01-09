@@ -353,7 +353,7 @@ Environment:
         help="Filter services by pattern (default: $LAUNCHD_FILTER or none)",
     )
 
-    subparsers = parser.add_subparsers(dest="command", required=True)
+    subparsers = parser.add_subparsers(dest="command")
 
     # list command
     list_parser = subparsers.add_parser("list", aliases=["ls"], help="List services")
@@ -447,6 +447,9 @@ Environment:
     info_parser.set_defaults(func=cmd_info)
 
     args = parser.parse_args()
+    if args.command is None:
+        parser.print_help()
+        return 0
     return args.func(args)
 
 
