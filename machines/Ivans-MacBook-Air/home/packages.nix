@@ -3,6 +3,7 @@
 {
   home.packages = with pkgs; [
     aria2
+    backup-home
     giffer
     settings
     tree
