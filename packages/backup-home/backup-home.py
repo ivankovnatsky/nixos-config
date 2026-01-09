@@ -310,6 +310,7 @@ def main():
     check_tar_on_darwin()
 
     parser = argparse.ArgumentParser(
+        prog="backup-home",
         description="Backup home directory with automatic exclusions and remote upload.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
@@ -318,13 +319,13 @@ Environment variables:
   MINISERVE_PASS    Password for miniserve authentication
 
 Examples:
-  %(prog)s                              # Normal backup and upload via scp
-  %(prog)s --skip-upload                # Create backup locally only
-  %(prog)s --miniserve                  # Upload via miniserve (default URL)
-  %(prog)s --miniserve http://host:8080 # Upload via miniserve (custom URL)
-  %(prog)s --rclone drive:Backup        # Upload to Google Drive
-  %(prog)s --target-machine 192.168.50.5  # Upload via scp to different machine
-  %(prog)s --skip-backup --skip-upload  # Use existing backup, no upload
+  backup-home                              # Normal backup and upload via scp
+  backup-home --skip-upload                # Create backup locally only
+  backup-home --miniserve                  # Upload via miniserve (default URL)
+  backup-home --miniserve http://host:8080 # Upload via miniserve (custom URL)
+  backup-home --rclone drive:Backup        # Upload to Google Drive
+  backup-home --target-machine 192.168.50.5  # Upload via scp to different machine
+  backup-home --skip-backup --skip-upload  # Use existing backup, no upload
 """,
     )
 
