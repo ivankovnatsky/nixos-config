@@ -60,13 +60,15 @@ Options:
   --skip-upload           Skip upload to remote machine, keep backup local
   --backup-path <path>    Custom path for backup archive
   --target-machine <ip>   Custom target machine (default: 192.168.50.4)
+  --rclone <remote>       Use rclone remote instead of scp (e.g., drive:Backup)
   --help, -h              Show this help message
 
 Examples:
-  $0                                        # Normal backup and upload
-  $0 --skip-upload                          # Create backup locally only
-  $0 --target-machine 192.168.50.5          # Upload to different machine
-  $0 --skip-backup --skip-upload            # Use existing backup, no upload
+  $0                                          # Normal backup and upload
+  $0 --skip-upload                            # Create backup locally only
+  $0 --target-machine 192.168.50.5            # Upload to different machine
+  $0 --rclone drive:Backup                    # Upload to Google Drive
+  $0 --skip-backup --skip-upload              # Use existing backup, no upload
 
 To redirect output to a log file, use shell redirection:
   $0 > /tmp/backup.log 2>&1
@@ -80,6 +82,7 @@ SKIP_BACKUP=false
 SKIP_UPLOAD=false
 CUSTOM_ARCHIVE_PATH=""
 CUSTOM_TARGET_MACHINE=""
+RCLONE_REMOTE=""
 
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -101,6 +104,10 @@ while [[ $# -gt 0 ]]; do
     ;;
   --target-machine)
     CUSTOM_TARGET_MACHINE="$2"
+    shift 2
+    ;;
+  --rclone)
+    RCLONE_REMOTE="$2"
     shift 2
     ;;
   *)
@@ -199,37 +206,51 @@ fi
 if [[ "$SKIP_UPLOAD" == "true" ]]; then
   echo "Skipping upload, backup saved at: $ARCHIVE_PATH"
 else
-  # Set target machine (use custom if provided, otherwise default)
-  if [[ -n "$CUSTOM_TARGET_MACHINE" ]]; then
-    export TARGET_MACHINE="$CUSTOM_TARGET_MACHINE"
-  else
-    export TARGET_MACHINE=192.168.50.4
-  fi
-  export BACKUP_PATH=$STORAGE_DATA_PATH/Backup/Machines/
-  HOSTNAME=$(hostname)
-  export HOSTNAME
   DATE_DIR=$(date +%Y-%m-%d)
   export DATE_DIR
 
+  HOSTNAME=$(hostname)
+  export HOSTNAME
+
   # Extract the parent directory name from $HOME (e.g., "Users" on macOS, "home" on Linux)
-  # This handles both /Users/ivan and /home/ivan cases
   HOME_PARENT_DIR=$(basename "$(dirname "$HOME")")
   export HOME_PARENT_DIR
 
-  if is_local_target "$TARGET_MACHINE"; then
-    echo "Target is local machine, moving backup locally"
-    mkdir -p "$BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR"
-    mv "$ARCHIVE_PATH" "$BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR/$USER.tar.gz"
-    echo "Backup saved to: $BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR/$USER.tar.gz"
-  else
-    # shellcheck disable=SC2029
-    ssh "ivan@$TARGET_MACHINE" "mkdir -p $BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR"
-    if scp "$ARCHIVE_PATH" ivan@"$TARGET_MACHINE:$BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR/$USER.tar.gz"; then
+  if [[ -n "$RCLONE_REMOTE" ]]; then
+    # Upload using rclone
+    REMOTE_PATH="$RCLONE_REMOTE/$HOME_PARENT_DIR/$DATE_DIR"
+    echo "Uploading to rclone remote: $REMOTE_PATH"
+    if rclone copy "$ARCHIVE_PATH" "$REMOTE_PATH" --progress; then
       echo "Upload successful, removing local backup"
       rm "$ARCHIVE_PATH"
     else
       echo "Upload failed, keeping local backup at: $ARCHIVE_PATH"
       exit 1
+    fi
+  else
+    # Set target machine (use custom if provided, otherwise default)
+    if [[ -n "$CUSTOM_TARGET_MACHINE" ]]; then
+      export TARGET_MACHINE="$CUSTOM_TARGET_MACHINE"
+    else
+      export TARGET_MACHINE=192.168.50.4
+    fi
+    export BACKUP_PATH=$STORAGE_DATA_PATH/Backup/Machines/
+
+    if is_local_target "$TARGET_MACHINE"; then
+      echo "Target is local machine, moving backup locally"
+      mkdir -p "$BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR"
+      mv "$ARCHIVE_PATH" "$BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR/$USER.tar.gz"
+      echo "Backup saved to: $BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR/$USER.tar.gz"
+    else
+      # shellcheck disable=SC2029
+      ssh "ivan@$TARGET_MACHINE" "mkdir -p $BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR"
+      if scp "$ARCHIVE_PATH" ivan@"$TARGET_MACHINE:$BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR/$USER.tar.gz"; then
+        echo "Upload successful, removing local backup"
+        rm "$ARCHIVE_PATH"
+      else
+        echo "Upload failed, keeping local backup at: $ARCHIVE_PATH"
+        exit 1
+      fi
     fi
   fi
 fi
