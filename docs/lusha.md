@@ -47,3 +47,7 @@ Enables remote desktop access via VNC/Apple Remote Desktop for system maintenanc
 ### Hammerspoon
 
 - Allow access to control "System Events" (required for space management via osascript)
+
+### Ghostty
+
+- Approve local network access
