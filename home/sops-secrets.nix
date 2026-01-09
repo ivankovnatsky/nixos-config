@@ -50,4 +50,12 @@
   sops.secrets.uptime-kuma-password = {
     key = "uptimeKuma/password";
   };
+
+  sops.secrets.miniserve-username = {
+    key = "miniserve/mini/username";
+  };
+
+  sops.secrets.miniserve-password = {
+    key = "miniserve/mini/password";
+  };
 }
