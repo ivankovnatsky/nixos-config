@@ -57,6 +57,7 @@ def check_tar_on_darwin() -> None:
 # Default storage path
 DEFAULT_STORAGE_PATH = "/Volumes/Storage/Data"
 DEFAULT_TARGET_MACHINE = "192.168.50.4"
+DEFAULT_MINISERVE_URL = "http://192.168.50.4:8080"
 
 # Directories to exclude from backup
 EXCLUDE_PATTERNS = [
@@ -317,12 +318,13 @@ Environment variables:
   MINISERVE_PASS    Password for miniserve authentication
 
 Examples:
-  %(prog)s                                    # Normal backup and upload
-  %(prog)s --skip-upload                      # Create backup locally only
-  %(prog)s --target-machine 192.168.50.5      # Upload to different machine
-  %(prog)s --rclone drive:Backup              # Upload to Google Drive
-  %(prog)s --miniserve http://192.168.50.4:8080  # Upload via curl to miniserve
-  %(prog)s --skip-backup --skip-upload        # Use existing backup, no upload
+  %(prog)s                              # Normal backup and upload via scp
+  %(prog)s --skip-upload                # Create backup locally only
+  %(prog)s --miniserve                  # Upload via miniserve (default URL)
+  %(prog)s --miniserve http://host:8080 # Upload via miniserve (custom URL)
+  %(prog)s --rclone drive:Backup        # Upload to Google Drive
+  %(prog)s --target-machine 192.168.50.5  # Upload via scp to different machine
+  %(prog)s --skip-backup --skip-upload  # Use existing backup, no upload
 """,
     )
 
@@ -360,9 +362,10 @@ Examples:
     )
     parser.add_argument(
         "--miniserve",
-        type=str,
+        nargs="?",
+        const=DEFAULT_MINISERVE_URL,
         metavar="URL",
-        help="Upload via curl to miniserve (e.g., http://192.168.50.4:8080)",
+        help=f"Upload via curl to miniserve (default: {DEFAULT_MINISERVE_URL})",
     )
 
     args = parser.parse_args()
