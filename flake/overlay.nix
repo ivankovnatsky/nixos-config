@@ -61,7 +61,6 @@ let
   # 4. Direct packages from other flakes
   flakeOverlays = {
     inherit (inputs.username.packages.${system}) username;
-    inherit (inputs.backup-home.packages.${system}) backup-home;
     inherit (inputs.podservice.packages.${system}) podservice;
     inherit (inputs.textcast.packages.${system}) textcast;
 

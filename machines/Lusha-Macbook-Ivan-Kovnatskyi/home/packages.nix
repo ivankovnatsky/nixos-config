@@ -18,7 +18,6 @@
     aws-sso-cli
     aws-sso-creds
     awscli2
-    backup-home
     bat
     cargo
     cloudflared
