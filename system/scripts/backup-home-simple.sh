@@ -58,6 +58,7 @@ Backup script for home directory with automatic exclusions and remote upload.
 Options:
   --skip-backup           Skip backup creation, use existing archive
   --skip-upload           Skip upload to remote machine, keep backup local
+  --delete-backup         Delete local backup after successful upload
   --backup-path <path>    Custom path for backup archive
   --target-machine <ip>   Custom target machine (default: 192.168.50.4)
   --rclone <remote>       Use rclone remote instead of scp (e.g., drive:Backup)
@@ -86,6 +87,7 @@ done
 # Parse command line arguments
 SKIP_BACKUP=false
 SKIP_UPLOAD=false
+DELETE_BACKUP=false
 CUSTOM_ARCHIVE_PATH=""
 CUSTOM_TARGET_MACHINE=""
 RCLONE_REMOTE=""
@@ -103,6 +105,10 @@ while [[ $# -gt 0 ]]; do
     ;;
   --skip-upload)
     SKIP_UPLOAD=true
+    shift
+    ;;
+  --delete-backup)
+    DELETE_BACKUP=true
     shift
     ;;
   --backup-path)
@@ -232,8 +238,13 @@ else
     REMOTE_PATH="$RCLONE_REMOTE/$HOME_PARENT_DIR/$DATE_DIR"
     echo "Uploading to rclone remote: $REMOTE_PATH"
     if rclone copy "$ARCHIVE_PATH" "$REMOTE_PATH" --progress; then
-      echo "Upload successful, removing local backup"
-      rm "$ARCHIVE_PATH"
+      echo "Upload successful"
+      if [[ "$DELETE_BACKUP" == "true" ]]; then
+        rm "$ARCHIVE_PATH"
+        echo "Local backup deleted"
+      else
+        echo "Backup kept at: $ARCHIVE_PATH"
+      fi
     else
       echo "Upload failed, keeping local backup at: $ARCHIVE_PATH"
       exit 1
@@ -245,22 +256,30 @@ else
       exit 1
     fi
 
-    UPLOAD_PATH="/Backup/Machines/$HOME_PARENT_DIR/$DATE_DIR"
+    UPLOAD_PATH="/Backup/Machines/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR"
     echo "Creating directory: $UPLOAD_PATH"
     curl -s -u "$MINISERVE_USER:$MINISERVE_PASS" \
-      -F "mkdir=$HOME_PARENT_DIR" \
+      -F "mkdir=$HOSTNAME" \
       "$MINISERVE_URL/upload?path=/Backup/Machines"
     curl -s -u "$MINISERVE_USER:$MINISERVE_PASS" \
+      -F "mkdir=$HOME_PARENT_DIR" \
+      "$MINISERVE_URL/upload?path=/Backup/Machines/$HOSTNAME"
+    curl -s -u "$MINISERVE_USER:$MINISERVE_PASS" \
       -F "mkdir=$DATE_DIR" \
-      "$MINISERVE_URL/upload?path=/Backup/Machines/$HOME_PARENT_DIR"
+      "$MINISERVE_URL/upload?path=/Backup/Machines/$HOSTNAME/$HOME_PARENT_DIR"
 
     echo "Uploading to miniserve: $MINISERVE_URL$UPLOAD_PATH"
     if curl -u "$MINISERVE_USER:$MINISERVE_PASS" \
       --progress-bar \
       -F "path=@$ARCHIVE_PATH" \
       "$MINISERVE_URL/upload?path=$UPLOAD_PATH"; then
-      echo "Upload successful, removing local backup"
-      rm "$ARCHIVE_PATH"
+      echo "Upload successful"
+      if [[ "$DELETE_BACKUP" == "true" ]]; then
+        rm "$ARCHIVE_PATH"
+        echo "Local backup deleted"
+      else
+        echo "Backup kept at: $ARCHIVE_PATH"
+      fi
     else
       echo "Upload failed, keeping local backup at: $ARCHIVE_PATH"
       exit 1
@@ -283,8 +302,13 @@ else
       # shellcheck disable=SC2029
       ssh "ivan@$TARGET_MACHINE" "mkdir -p $BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR"
       if scp "$ARCHIVE_PATH" ivan@"$TARGET_MACHINE:$BACKUP_PATH/$HOSTNAME/$HOME_PARENT_DIR/$DATE_DIR/$USER.tar.gz"; then
-        echo "Upload successful, removing local backup"
-        rm "$ARCHIVE_PATH"
+        echo "Upload successful"
+        if [[ "$DELETE_BACKUP" == "true" ]]; then
+          rm "$ARCHIVE_PATH"
+          echo "Local backup deleted"
+        else
+          echo "Backup kept at: $ARCHIVE_PATH"
+        fi
       else
         echo "Upload failed, keeping local backup at: $ARCHIVE_PATH"
         exit 1
