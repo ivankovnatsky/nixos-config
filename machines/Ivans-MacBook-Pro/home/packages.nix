@@ -4,6 +4,7 @@
     age
     aria2
     asusrouter-cli
+    backup-home
     giffer
     dns
     download-torrent
