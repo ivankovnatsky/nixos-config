@@ -7,6 +7,8 @@
     export GOOGLE_CLOUD_PROJECT="${config.sops.placeholder.google-cloud-project}"
     export ANTHROPIC_API_KEY="${config.sops.placeholder.anthropic-api-key}"
     export BW_SESSION="${config.sops.placeholder.bitwarden-session}"
+    export MINISERVE_USER="${config.sops.placeholder.miniserve-username}"
+    export MINISERVE_PASS="${config.sops.placeholder.miniserve-password}"
   '';
 
   home.sessionVariables = {
