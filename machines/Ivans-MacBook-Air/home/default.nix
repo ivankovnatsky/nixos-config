@@ -36,6 +36,7 @@
     ../../../home/syncthing-ignore.nix
     ../../../home/taskwarrior.nix
     ../../../home/tmux.nix
+    ../../../home/treefmt.nix
     ../../../home/vlc
     ../../../home/vscode.nix
     ../../../home/yt-dlp.nix
