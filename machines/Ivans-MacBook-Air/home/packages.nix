@@ -21,6 +21,7 @@
     homelab
     launchd-mgmt
     ps-top-nu
+    python313Packages.osxphotos
     watchman-rebuild
 
     hyperfine

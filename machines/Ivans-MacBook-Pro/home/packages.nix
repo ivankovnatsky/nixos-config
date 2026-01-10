@@ -14,6 +14,7 @@
     homelab
     launchd-mgmt
     ps-top-nu
+    python313Packages.osxphotos
     sops
     ssh-to-age
     swiftformat
