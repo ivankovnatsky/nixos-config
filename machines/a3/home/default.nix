@@ -30,6 +30,7 @@
     ../../../home/syncthing-ignore.nix
     ../../../home/taskwarrior.nix
     ../../../home/tmux.nix
+    ../../../home/treefmt.nix
     ../../../home/tweety.nix
     ../../../modules/flags
     ../../../modules/home/packages
