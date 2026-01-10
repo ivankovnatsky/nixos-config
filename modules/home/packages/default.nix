@@ -62,14 +62,19 @@ let
       npm = {
         inherit (cfg.npm) packages configFile;
       };
+      uv = {
+        inherit (cfg.uv) packages;
+      };
       mcp = {
         inherit (cfg.mcp) servers;
       };
       inherit (cfg) stateFile;
       paths = {
         npmBin = "${config.home.homeDirectory}/.npm/bin";
+        uvBin = "${config.home.homeDirectory}/.local/bin";
         claudeCli = "${config.home.homeDirectory}/.npm/bin/claude";
         bun = "${pkgs.bun}/bin";
+        uv = "${pkgs.uv}/bin";
         nodejs = "${pkgs.nodejs}/bin";
         python = "${pkgs.python313}/bin";
         tar = "${pkgs.gnutar}/bin";
@@ -103,6 +108,16 @@ in
       type = types.nullOr types.str;
       default = null;
       description = "Content for .npmrc file (only created if doesn't exist)";
+    };
+
+    uv.packages = mkOption {
+      type = types.attrsOf types.str;
+      default = { };
+      description = "Python packages to install via uv (package name -> binary name)";
+      example = {
+        "osxphotos" = "osxphotos";
+        "ruff" = "ruff";
+      };
     };
 
     mcp.servers = mkOption {
