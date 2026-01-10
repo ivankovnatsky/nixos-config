@@ -167,6 +167,10 @@ in
           export PATH=$PATH:$HOME/.npm/bin
         fi
 
+        if [[ -d $HOME/.local/bin ]]; then
+          export PATH=$PATH:$HOME/.local/bin
+        fi
+
       '';
     };
 
@@ -208,6 +212,10 @@ in
 
         if test -d $HOME/.npm/bin
             set -gx PATH $PATH $HOME/.npm/bin
+        end
+
+        if test -d $HOME/.local/bin
+            set -gx PATH $PATH $HOME/.local/bin
         end
 
         # Git completions; FIXME: remove this once landed in upstream in
