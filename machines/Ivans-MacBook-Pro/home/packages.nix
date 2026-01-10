@@ -9,7 +9,6 @@
     dns
     download-torrent
     git-message
-    nodePackages.prettier
     open-gh-notifications-py
     homelab
     launchd-mgmt
@@ -22,7 +21,6 @@
     syncthing-mgmt
     uptime-kuma-mgmt
     tree
-    treefmt
     watchman-rebuild
   ];
 }
