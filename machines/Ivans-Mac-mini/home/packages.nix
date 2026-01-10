@@ -36,7 +36,6 @@
     parallel
     pigz
     pv
-    python313Packages.osxphotos
     rclone
     ripgrep
     ruff
