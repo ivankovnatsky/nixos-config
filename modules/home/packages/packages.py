@@ -50,6 +50,14 @@ def get_installed_npm_packages(npm_bin: str, packages: Dict[str, str]) -> Set[st
     return installed
 
 
+def get_installed_uv_packages(uv_bin: str, packages: Dict[str, str]) -> Set[str]:
+    installed = set()
+    for package, binary in packages.items():
+        if (Path(uv_bin) / binary).exists():
+            installed.add(package)
+    return installed
+
+
 def get_installed_mcp_servers(claude_cli: str, env: Dict = None) -> Set[str]:
     if not os.path.exists(claude_cli):
         return set()
@@ -144,6 +152,70 @@ def install_npm_packages(
     # Update state with current desired packages (including binary names)
     if state_changed or state_packages != desired:
         state.setdefault("npm", {})["packages"] = {
+            pkg: {"installed": True, "binary": binary}
+            for pkg, binary in packages.items()
+        }
+
+    return True
+
+
+def install_uv_packages(packages: Dict[str, str], paths: Dict, state: Dict):
+    desired = set(packages.keys())
+    state_packages = set(state.get("uv", {}).get("packages", {}).keys())
+
+    current = get_installed_uv_packages(paths["uvBin"], packages)
+
+    all_tracked = {}
+    for pkg, pkg_data in state.get("uv", {}).get("packages", {}).items():
+        all_tracked[pkg] = pkg_data.get("binary", pkg)
+    for pkg, binary in packages.items():
+        if pkg not in all_tracked:
+            all_tracked[pkg] = binary
+
+    to_remove = []
+    for pkg, binary in all_tracked.items():
+        if pkg not in desired and (Path(paths["uvBin"]) / binary).exists():
+            to_remove.append(pkg)
+
+    state_changed = False
+
+    if to_remove:
+        log(f"Removing UV packages: {', '.join(to_remove)}", Color.RED)
+        env = os.environ.copy()
+        env["PATH"] = f"{paths['uv']}:{env.get('PATH', '')}"
+
+        for pkg in to_remove:
+            cmd = [f"{paths['uv']}/uv", "tool", "uninstall", pkg]
+            returncode, stdout, stderr = run_command(cmd, env)
+
+            if returncode != 0:
+                log(f"Failed to remove UV package {pkg}: {stderr}", Color.RED)
+            else:
+                log(f"Removed: {pkg}", Color.GREEN)
+                state_changed = True
+
+    to_install = desired - current
+
+    if to_install:
+        log(f"Installing UV packages: {', '.join(to_install)}", Color.GREEN)
+        env = os.environ.copy()
+        env["PATH"] = f"{paths['uv']}:{env.get('PATH', '')}"
+
+        for pkg in to_install:
+            cmd = [f"{paths['uv']}/uv", "tool", "install", pkg]
+            returncode, stdout, stderr = run_command(cmd, env)
+
+            if returncode != 0:
+                log(f"Failed to install UV package {pkg}: {stderr}", Color.RED)
+                return False
+            else:
+                log(f"Installed: {pkg}", Color.GREEN)
+                state_changed = True
+    elif not to_remove:
+        log("All UV packages already installed", Color.BLUE)
+
+    if state_changed or state_packages != desired:
+        state.setdefault("uv", {})["packages"] = {
             pkg: {"installed": True, "binary": binary}
             for pkg, binary in packages.items()
         }
@@ -268,6 +340,11 @@ def main():
     if config.get("npm", {}).get("packages"):
         success &= install_npm_packages(
             config["npm"]["packages"], config["paths"], state, config["npm"]
+        )
+
+    if config.get("uv", {}).get("packages"):
+        success &= install_uv_packages(
+            config["uv"]["packages"], config["paths"], state
         )
 
     if config.get("mcp", {}).get("servers"):
