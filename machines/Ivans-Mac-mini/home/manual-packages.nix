@@ -11,6 +11,11 @@
       "@openai/codex" = "codex";
     };
 
+    # Python packages via uv tool install
+    uv.packages = {
+      "osxphotos" = "osxphotos";
+    };
+
     # .npmrc is already provided via `home/npm.nix` for this machine
     # npm.configFile = "";
 
