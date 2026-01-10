@@ -8,8 +8,6 @@
     settings
     tree
     asusrouter-cli
-    nodePackages.prettier
-    treefmt
     sops
     age
     ssh-to-age
