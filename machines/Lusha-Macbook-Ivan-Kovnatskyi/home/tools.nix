@@ -1,6 +1,6 @@
 { config, ... }:
 {
-  local.manualPackages = {
+  local.tools = {
     enable = true;
 
     npm.packages = {

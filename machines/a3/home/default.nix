@@ -33,14 +33,14 @@
     ../../../home/treefmt.nix
     ../../../home/tweety.nix
     ../../../modules/flags
-    ../../../modules/home/packages
+    ../../../modules/home/tools
     ./btop.nix
     ./desktop.nix # Desktop environment home configs
     ./firefox.nix
     ./flags.nix
     ./games.nix
     ./gpg.nix
-    ./manual-packages.nix
+    ./tools.nix
     ./packages.nix
     ./syncthing.nix
   ];

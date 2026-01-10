@@ -8,7 +8,7 @@
 with lib;
 
 let
-  cfg = config.local.manualPackages;
+  cfg = config.local.tools;
 
   mcpServerType = types.submodule {
     options = {
@@ -85,12 +85,12 @@ let
   );
 in
 {
-  options.local.manualPackages = {
-    enable = mkEnableOption "declarative manual package management";
+  options.local.tools = {
+    enable = mkEnableOption "declarative tools management (npm, uv, mcp)";
 
     stateFile = mkOption {
       type = types.path;
-      default = "${config.home.homeDirectory}/.config/home-manager/manual-packages/state.json";
+      default = "${config.home.homeDirectory}/.config/home-manager/tools/state.json";
       description = "Path to state file tracking installed components";
     };
 
@@ -128,7 +128,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.activation.manageManualPackages = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    home.activation.manageTools = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       ${pkgs.python3}/bin/python3 ${./packages.py} \
         --config ${configJson}
     '';
