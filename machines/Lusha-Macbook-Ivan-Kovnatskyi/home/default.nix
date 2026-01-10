@@ -46,6 +46,7 @@
     ../../../home/taskwarrior.nix
     ../../../home/terraform.nix
     ../../../home/tmux.nix
+    ../../../home/treefmt.nix
     ../../../home/tweety.nix
     ../../../home/vscode.nix
     ../../../home/yamlint.nix
