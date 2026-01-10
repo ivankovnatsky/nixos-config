@@ -53,10 +53,10 @@
     ../../../home/yt-dlp.nix
     ../../../home/zellij.nix
     ../../../modules/flags
-    ../../../modules/home/packages
+    ../../../modules/home/tools
     ./firefox.nix
     ./flags.nix
-    ./manual-packages.nix
+    ./tools.nix
     ./nixvim.nix
     ./packages.nix
     ./programs.nix

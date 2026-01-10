@@ -1,6 +1,6 @@
 { config, ... }:
 {
-  local.manualPackages = {
+  local.tools = {
     enable = true;
 
     # Declarative equivalents of the previous imperative installs

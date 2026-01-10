@@ -41,8 +41,8 @@
     ../../../home/vscode.nix
     ../../../home/yt-dlp.nix
     ../../../modules/flags
-    ../../../modules/home/packages
-    ./manual-packages.nix
+    ../../../modules/home/tools
+    ./tools.nix
     ./packages.nix
   ];
 }
