@@ -1,25 +1,30 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
+    (python313.withPackages (
+      ps: with ps; [
+        markitdown
+      ]
+    ))
     age
     aria2
     asusrouter-cli
     backup-home
-    giffer
     dns
     download-torrent
+    giffer
     git-message
-    open-gh-notifications-py
     homelab
     launchd-mgmt
+    open-gh-notifications-py
     ps-top-nu
+    settings
     sops
     ssh-to-age
     swiftformat
-    settings
     syncthing-mgmt
-    uptime-kuma-mgmt
     tree
+    uptime-kuma-mgmt
     watchman-rebuild
   ];
 }
