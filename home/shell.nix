@@ -167,6 +167,10 @@ in
           export PATH=$PATH:$HOME/.npm/bin
         fi
 
+        if [[ -d $HOME/.bun/bin ]]; then
+          export PATH=$PATH:$HOME/.bun/bin
+        fi
+
         if [[ -d $HOME/.local/bin ]]; then
           export PATH=$PATH:$HOME/.local/bin
         fi
@@ -212,6 +216,10 @@ in
 
         if test -d $HOME/.npm/bin
             set -gx PATH $PATH $HOME/.npm/bin
+        end
+
+        if test -d $HOME/.bun/bin
+            set -gx PATH $PATH $HOME/.bun/bin
         end
 
         if test -d $HOME/.local/bin
