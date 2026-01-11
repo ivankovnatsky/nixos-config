@@ -72,7 +72,7 @@ let
       paths = {
         npmBin = "${config.home.homeDirectory}/.npm/bin";
         uvBin = "${config.home.homeDirectory}/.local/bin";
-        claudeCli = "${config.home.homeDirectory}/.npm/bin/claude";
+        claudeCli = "${config.home.homeDirectory}/.bun/bin/claude";
         bun = "${pkgs.bun}/bin";
         uv = "${pkgs.uv}/bin";
         nodejs = "${pkgs.nodejs}/bin";
