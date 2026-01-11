@@ -2,25 +2,29 @@
 
 {
   home.packages = with pkgs; [
-    aria2
-    backup-home
-    giffer
-    settings
-    tree
-    asusrouter-cli
-    sops
+    (python313.withPackages (
+      ps: with ps; [
+        markitdown
+      ]
+    ))
     age
-    ssh-to-age
-    syncthing-mgmt
-    uptime-kuma-mgmt
+    aria2
+    asusrouter-cli
+    backup-home
     dns
     download-torrent
+    giffer
     git-message
     homelab
+    hyperfine
     launchd-mgmt
     ps-top-nu
+    settings
+    sops
+    ssh-to-age
+    syncthing-mgmt
+    tree
+    uptime-kuma-mgmt
     watchman-rebuild
-
-    hyperfine
   ];
 }
