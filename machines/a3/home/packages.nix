@@ -2,6 +2,11 @@
 
 {
   home.packages = with pkgs; [
+    (python313.withPackages (
+      ps: with ps; [
+        markitdown
+      ]
+    ))
     age # Secrets management
     backup-home # Home directory backup tool
     delta
