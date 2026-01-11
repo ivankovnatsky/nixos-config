@@ -2,53 +2,34 @@
 
 {
   home.packages = with pkgs; [
+    age # Secrets management
     backup-home # Home directory backup tool
+    delta
     dust # A more intuitive version of du
-    genpass # Password generator
-    username # Username generator
-    lsof # List open files
-    wl-clipboard # Wayland clipboard utilities
-    pigz # Parallel gzip compression
-
-    # Syncthing management CLI
-    syncthing-mgmt
-    uptime-kuma-mgmt
-
-    # Hardware monitoring tools
-    lm_sensors # Provides the 'sensors' command for monitoring temperatures
-    nvtopPackages.nvidia # GPU monitoring (like htop for GPUs)
-    smartmontools # Disk health monitoring (smartctl)
-
-    # Secrets management
-    age
-    sops
-    ssh-to-age
-
-    # KDE Wallet integration
-    kwalletcli # Provides pinentry-kwallet for GPG integration
-
-    # KDE Remote Desktop Client
-    kdePackages.krdc
-
-    sesh
-    gum
-
-    nixfmt-rfc-style
-
     fastfetch
-
-    # Desktop notifications
-    libnotify # Provides notify-send command
-
+    genpass # Password generator
     ghostty
     git-message
-
-    nodejs
     gnumake
-    delta
-
+    gum
+    kdePackages.krdc # KDE Remote Desktop Client
+    kwalletcli # KDE Wallet integration # Provides pinentry-kwallet for GPG integration
+    libnotify # Desktop notifications # Provides notify-send command
+    lm_sensors # Provides the 'sensors' command for monitoring temperatures
+    lsof # List open files
+    nixfmt-rfc-style
+    nodejs
+    nvtopPackages.nvidia # GPU monitoring (like htop for GPUs)
     open-gh-notifications-py
-
+    pigz # Parallel gzip compression
+    sesh
     settings
+    smartmontools # Disk health monitoring (smartctl)
+    sops # Secrets management
+    ssh-to-age # Secrets management
+    syncthing-mgmt # Syncthing management CLI
+    uptime-kuma-mgmt
+    username # Username generator
+    wl-clipboard # Wayland clipboard utilities
   ];
 }
