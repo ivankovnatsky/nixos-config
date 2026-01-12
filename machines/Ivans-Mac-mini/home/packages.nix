@@ -36,7 +36,7 @@
     nixpkgs-darwin-master.yt-dlp
     nodePackages.prettier
     nodejs
-    open-gh-notifications-py
+    gh-notifications
     pandoc
     parallel
     pigz
