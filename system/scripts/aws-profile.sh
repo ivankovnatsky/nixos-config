@@ -2,8 +2,8 @@
 
 # Under fish shell:
 # ```console
-# eval (switch-aws-profile.sh)             # interactive mode
-# eval (switch-aws-profile.sh profile-name) # direct mode
+# eval (aws-profile)             # interactive mode
+# eval (aws-profile profile-name) # direct mode
 # ```
 
 # Exit on error, but don't print commands
