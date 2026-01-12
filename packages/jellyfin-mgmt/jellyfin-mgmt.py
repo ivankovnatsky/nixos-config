@@ -69,7 +69,11 @@ class JellyfinClient:
         return data if data else []
 
     def create_library(
-        self, name: str, paths: list, collection_type: str = "movies", refresh: bool = True
+        self,
+        name: str,
+        paths: list,
+        collection_type: str = "movies",
+        refresh: bool = True,
     ):
         """Create a new virtual folder (library)."""
         params = {
@@ -92,7 +96,9 @@ class JellyfinClient:
             "Path": path,
         }
         params = {"refreshLibrary": refresh}
-        return self._api_call("POST", "/Library/VirtualFolders/Paths", data=data, params=params)
+        return self._api_call(
+            "POST", "/Library/VirtualFolders/Paths", data=data, params=params
+        )
 
     def update_library_paths(self, name: str, current_paths: list, desired_paths: list):
         """Update library paths by removing old and adding new paths.
@@ -111,7 +117,7 @@ class JellyfinClient:
         paths_to_add = set(desired_paths) - set(current_paths)
         for i, path in enumerate(paths_to_add):
             # Only refresh on the last path
-            refresh = (i == len(paths_to_add) - 1)
+            refresh = i == len(paths_to_add) - 1
             self.add_media_path(name, path, refresh=refresh)
 
     def delete_library(self, name: str):
@@ -139,7 +145,9 @@ class JellyfinClient:
         current_network_config["LocalNetworkAddresses"] = local_network_addresses
 
         # POST the network configuration back to the network endpoint
-        return self._api_call("POST", "/System/Configuration/network", data=current_network_config)
+        return self._api_call(
+            "POST", "/System/Configuration/network", data=current_network_config
+        )
 
     def get_library_id(self, name: str):
         """Get library ID by name."""
@@ -159,12 +167,10 @@ class JellyfinClient:
 
     def update_library_options(self, library_id: str, library_options: dict):
         """Update library options for a specific library."""
-        data = {
-            "Id": library_id,
-            "LibraryOptions": library_options
-        }
-        return self._api_call("POST", "/Library/VirtualFolders/LibraryOptions", data=data)
-
+        data = {"Id": library_id, "LibraryOptions": library_options}
+        return self._api_call(
+            "POST", "/Library/VirtualFolders/LibraryOptions", data=data
+        )
 
 
 def sync_from_config(config, dry_run=False):
@@ -193,22 +199,27 @@ def _sync_network_config(client: JellyfinClient, network_config: dict, dry_run: 
     print("=== Network Configuration Sync ===", file=sys.stderr)
 
     if set(current_addresses) != set(desired_addresses):
-        print(f"  UPDATE: LocalNetworkAddresses", file=sys.stderr)
+        print("  UPDATE: LocalNetworkAddresses", file=sys.stderr)
         print(f"    Current: {current_addresses}", file=sys.stderr)
         print(f"    Desired: {desired_addresses}", file=sys.stderr)
         if not dry_run:
             try:
                 result = client.update_network_config(desired_addresses)
                 print(f"  DEBUG: API call result: {result}", file=sys.stderr)
-                print("  NOTE: Jellyfin service must be restarted for changes to take effect", file=sys.stderr)
+                print(
+                    "  NOTE: Jellyfin service must be restarted for changes to take effect",
+                    file=sys.stderr,
+                )
             except Exception as e:
                 print(f"  ERROR: Failed to update network config: {e}", file=sys.stderr)
                 raise
     else:
-        print(f"  OK: LocalNetworkAddresses (no changes)", file=sys.stderr)
+        print("  OK: LocalNetworkAddresses (no changes)", file=sys.stderr)
 
 
-def _sync_libraries(client: JellyfinClient, libraries_config: list, dry_run: bool = False):
+def _sync_libraries(
+    client: JellyfinClient, libraries_config: list, dry_run: bool = False
+):
     """Sync libraries from configuration."""
     desired_libraries = {lib["name"]: lib for lib in libraries_config}
     current_libraries = {lib["Name"]: lib for lib in client.list_libraries()}
@@ -249,10 +260,14 @@ def _sync_libraries(client: JellyfinClient, libraries_config: list, dry_run: boo
         else:
             print(f"  CREATE: {name} (type: {library_type})", file=sys.stderr)
             if not dry_run:
-                client.create_library(name=name, paths=paths, collection_type=library_type)
+                client.create_library(
+                    name=name, paths=paths, collection_type=library_type
+                )
 
     # Sync library options (after all libraries are created/updated)
-    if "libraryOptions" in desired or any("libraryOptions" in lib for lib in desired_libraries.values()):
+    if "libraryOptions" in desired or any(
+        "libraryOptions" in lib for lib in desired_libraries.values()
+    ):
         print("", file=sys.stderr)
         print("=== Library Options Sync ===", file=sys.stderr)
         for name, desired in desired_libraries.items():
@@ -262,7 +277,9 @@ def _sync_libraries(client: JellyfinClient, libraries_config: list, dry_run: boo
 
             library_id = client.get_library_id(name)
             if not library_id:
-                print(f"  WARNING: Could not find library ID for {name}", file=sys.stderr)
+                print(
+                    f"  WARNING: Could not find library ID for {name}", file=sys.stderr
+                )
                 continue
 
             current_lib_options = client.get_library_options(library_id)
@@ -273,17 +290,25 @@ def _sync_libraries(client: JellyfinClient, libraries_config: list, dry_run: boo
 
             if "enableRealtimeMonitor" in desired_lib_options:
                 desired_monitor = desired_lib_options["enableRealtimeMonitor"]
-                current_monitor = current_lib_options.get("EnableRealtimeMonitor", False)
+                current_monitor = current_lib_options.get(
+                    "EnableRealtimeMonitor", False
+                )
                 if desired_monitor != current_monitor:
                     options_changed = True
-                    changes.append(f"EnableRealtimeMonitor: {current_monitor} -> {desired_monitor}")
+                    changes.append(
+                        f"EnableRealtimeMonitor: {current_monitor} -> {desired_monitor}"
+                    )
 
             if "automaticRefreshIntervalDays" in desired_lib_options:
                 desired_interval = desired_lib_options["automaticRefreshIntervalDays"]
-                current_interval = current_lib_options.get("AutomaticRefreshIntervalDays", 0)
+                current_interval = current_lib_options.get(
+                    "AutomaticRefreshIntervalDays", 0
+                )
                 if desired_interval != current_interval:
                     options_changed = True
-                    changes.append(f"AutomaticRefreshIntervalDays: {current_interval} -> {desired_interval}")
+                    changes.append(
+                        f"AutomaticRefreshIntervalDays: {current_interval} -> {desired_interval}"
+                    )
 
             if options_changed:
                 print(f"  UPDATE: {name} library options", file=sys.stderr)
@@ -293,9 +318,13 @@ def _sync_libraries(client: JellyfinClient, libraries_config: list, dry_run: boo
                     # Merge desired options into current options
                     updated_options = current_lib_options.copy()
                     if "enableRealtimeMonitor" in desired_lib_options:
-                        updated_options["EnableRealtimeMonitor"] = desired_lib_options["enableRealtimeMonitor"]
+                        updated_options["EnableRealtimeMonitor"] = desired_lib_options[
+                            "enableRealtimeMonitor"
+                        ]
                     if "automaticRefreshIntervalDays" in desired_lib_options:
-                        updated_options["AutomaticRefreshIntervalDays"] = desired_lib_options["automaticRefreshIntervalDays"]
+                        updated_options["AutomaticRefreshIntervalDays"] = (
+                            desired_lib_options["automaticRefreshIntervalDays"]
+                        )
 
                     client.update_library_options(library_id, updated_options)
             else:
@@ -378,7 +407,9 @@ def main():
     sync_parser = subparsers.add_parser(
         "sync", help="Sync libraries from configuration file"
     )
-    sync_parser.add_argument("--config-file", required=True, help="JSON configuration file")
+    sync_parser.add_argument(
+        "--config-file", required=True, help="JSON configuration file"
+    )
     sync_parser.add_argument(
         "--dry-run",
         action="store_true",

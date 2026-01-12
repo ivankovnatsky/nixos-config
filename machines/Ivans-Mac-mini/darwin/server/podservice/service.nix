@@ -11,31 +11,33 @@ let
   thumbnailsDir = "${dataDir}/Thumbnails";
   urlsFile = "${dataDir}/urls.txt";
 
-  configFile = pkgs.writeText "podservice-config.yaml" (builtins.toJSON {
-    server = {
-      port = 8083;
-      host = config.flags.miniIp;
-      base_url = "https://podservice.@EXTERNAL_DOMAIN@";
-    };
-    podcast = {
-      title = "Mini: My YouTube Podcast";
-      description = "YouTube videos converted to podcast episodes";
-      author = "Ivan Kovnatsky";
-      language = "en-us";
-      category = "Technology";
-    };
-    storage = {
-      data_dir = dataDir;
-      audio_dir = audioDir;
-      metadata_dir = metadataDir;
-      thumbnails_dir = thumbnailsDir;
-    };
-    watch = {
-      enabled = true;
-      file = urlsFile;
-    };
-    log_level = "INFO";
-  });
+  configFile = pkgs.writeText "podservice-config.yaml" (
+    builtins.toJSON {
+      server = {
+        port = 8083;
+        host = config.flags.miniIp;
+        base_url = "https://podservice.@EXTERNAL_DOMAIN@";
+      };
+      podcast = {
+        title = "Mini: My YouTube Podcast";
+        description = "YouTube videos converted to podcast episodes";
+        author = "Ivan Kovnatsky";
+        language = "en-us";
+        category = "Technology";
+      };
+      storage = {
+        data_dir = dataDir;
+        audio_dir = audioDir;
+        metadata_dir = metadataDir;
+        thumbnails_dir = thumbnailsDir;
+      };
+      watch = {
+        enabled = true;
+        file = urlsFile;
+      };
+      log_level = "INFO";
+    }
+  );
 
   # Substitute external domain at runtime
   runtimeConfigFile = pkgs.writeShellScript "podservice-config-gen" ''

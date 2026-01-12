@@ -16,7 +16,8 @@
 - **Size**: 186GB total, 176GB available
 - **Used**: 10GB (vs 23GB on internal - cleaned up metadata)
 
-**Key discovery**: Removing `noauto` flag from fstab was critical - this allowed the system to automatically mount the external volume at `/nix` on boot.
+**Key discovery**: Removing `noauto` flag from fstab was critical - this allowed
+the system to automatically mount the external volume at `/nix` on boot.
 
 ### Current fstab Configuration (2025-08-29)
 
@@ -29,7 +30,8 @@ UUID=99FFCF5F-7706-42CB-BC36-BD2C548AFCF8 /nix apfs rw,noatime,nobrowse,nosuid,o
 
 **Notes:**
 
-- Line 1: Original internal Nix Store UUID (commented out, preserved for rollback)
+- Line 1: Original internal Nix Store UUID (commented out, preserved for
+  rollback)
 - Line 2: External storage volume mounted at `/storage`
 - Line 3: Initial external Nix Store entry with `noauto` flag (commented out)
 - Line 4: Working external Nix Store entry without `noauto` flag (active)
@@ -87,14 +89,19 @@ sudo chmod 1775 "/Volumes/Nix Store/store"
 **Volume remount with ownership support:**
 
 - **Issue**: Initial volume mount didn't support ownership
-- **Fix**: `sudo diskutil unmount "/Volumes/Nix Store"` then `sudo diskutil mount -mountOptions owners "/dev/disk7s2"`
+- **Fix**: `sudo diskutil unmount "/Volumes/Nix Store"` then
+  `sudo diskutil mount -mountOptions owners "/dev/disk7s2"`
 - **Status**: Volume properly mounted with ownership support
 
 **Data copy with correct permissions:**
 
-1. **Clear incorrect data**: `sudo rm -rf "/Volumes/Nix Store"/{store,var,*.log,nix-installer,receipt.json,.Trashes,.nix-installer-hook.*}`
-2. **Copy with preserved permissions**: `sudo rsync -a --numeric-ids --progress /nix/ "/Volumes/Nix Store/"`
-3. **Fix store directory ownership**: `sudo chgrp nixbld "/Volumes/Nix Store/store"` and `sudo chmod 1775 "/Volumes/Nix Store/store"`
+1. **Clear incorrect data**:
+   `sudo rm -rf "/Volumes/Nix Store"/{store,var,*.log,nix-installer,receipt.json,.Trashes,.nix-installer-hook.*}`
+2. **Copy with preserved permissions**:
+   `sudo rsync -a --numeric-ids --progress /nix/ "/Volumes/Nix Store/"`
+3. **Fix store directory ownership**:
+   `sudo chgrp nixbld "/Volumes/Nix Store/store"` and
+   `sudo chmod 1775 "/Volumes/Nix Store/store"`
 
 **Results:**
 
@@ -107,8 +114,10 @@ sudo chmod 1775 "/Volumes/Nix Store/store"
 **fstab backup and update:**
 
 1. **Backup created**: `sudo cp /etc/fstab /etc/fstab.backup.20250829`
-2. **Original commented**: `#UUID=57dbf488-6645-4357-9356-8e7efc8ab1c9 /nix apfs rw,noatime,noauto,nobrowse,nosuid,owners # Added by the Determinate Nix Installer`
-3. **New entry added**: `UUID=7E5F5407-515C-45A8-8E9E-6F56F8DB53FF /nix apfs rw,noatime,noauto,nobrowse,nosuid,owners # External Nix Store`
+2. **Original commented**:
+   `#UUID=57dbf488-6645-4357-9356-8e7efc8ab1c9 /nix apfs rw,noatime,noauto,nobrowse,nosuid,owners # Added by the Determinate Nix Installer`
+3. **New entry added**:
+   `UUID=7E5F5407-515C-45A8-8E9E-6F56F8DB53FF /nix apfs rw,noatime,noauto,nobrowse,nosuid,owners # External Nix Store`
 
 **Status**: fstab updated, ready for reboot test
 
@@ -123,7 +132,8 @@ sudo chmod 1775 "/Volumes/Nix Store/store"
 **Root cause analysis:**
 
 1. **External drive dependency**: `/Volumes/Nix Store` must be mounted first
-2. **Manual mount limitation**: `sudo mount /nix` doesn't work with UUID-only reference
+2. **Manual mount limitation**: `sudo mount /nix` doesn't work with UUID-only
+   reference
 3. **Device path required**: Need explicit device path for manual mounting
 
 **Corrected approach needed:**
@@ -137,14 +147,16 @@ sudo chmod 1775 "/Volumes/Nix Store/store"
 
 ### 🔧 Troubleshooting Session (2025-08-29 17:19)
 
-**Issue confirmed**: External volume auto-remounts to `/Volumes/Nix Store` after unmount
-**Mount conflict**: Cannot mount `/dev/disk7s2` to `/nix` while it's mounted at `/Volumes/Nix Store`
-**Error**: `mount_apfs: volume could not be mounted: Resource busy`
+**Issue confirmed**: External volume auto-remounts to `/Volumes/Nix Store` after
+unmount **Mount conflict**: Cannot mount `/dev/disk7s2` to `/nix` while it's
+mounted at `/Volumes/Nix Store` **Error**:
+`mount_apfs: volume could not be mounted: Resource busy`
 
 **Working solution sequence:**
 
 1. `sudo diskutil unmount "/Volumes/Nix Store"` ✅ (successfully unmounted)
-2. `sudo mount -t apfs /dev/disk7s2 /nix` ✅ (SUCCESS - external volume mounted to /nix)
+2. `sudo mount -t apfs /dev/disk7s2 /nix` ✅ (SUCCESS - external volume mounted
+   to /nix)
 
 **⚠️ CRITICAL DISCOVERY**: Dual mount situation detected!
 
@@ -154,17 +166,19 @@ df -h | grep /nix
 /dev/disk7s2         186Gi    32Gi   154Gi    18%    3.8M  1.6G    0%   /nix  ← External (new)
 ```
 
-**Problem**: Both internal and external volumes mounted at `/nix` - external is shadowing internal
-**Unmount attempt**: `sudo diskutil unmount /dev/disk3s7` failed - system processes using internal /nix
-**Error**: `dissented by PID 390 (/System/Library/Frameworks/CoreServices.framework/.../mds)`
+**Problem**: Both internal and external volumes mounted at `/nix` - external is
+shadowing internal **Unmount attempt**: `sudo diskutil unmount /dev/disk3s7`
+failed - system processes using internal /nix **Error**:
+`dissented by PID 390 (/System/Library/Frameworks/CoreServices.framework/.../mds)`
 
 **SOLUTION**: Reboot required to cleanly switch from internal to external /nix
 
 ### 🔄 Phase 4: fstab Dependency Configuration (IN PROGRESS)
 
-**Current state**: Migration 95% complete - data copied, manual mount works, fstab updated
-**Issue**: External Storage volume needs to mount before `/nix` for proper dependency order
-**Discovery**: Storage volume UUID = `0B97C785-04A6-4D11-84EE-2FE2B120FB84`
+**Current state**: Migration 95% complete - data copied, manual mount works,
+fstab updated **Issue**: External Storage volume needs to mount before `/nix`
+for proper dependency order **Discovery**: Storage volume UUID =
+`0B97C785-04A6-4D11-84EE-2FE2B120FB84`
 
 **Next steps:**
 
@@ -179,8 +193,9 @@ df -h | grep /nix
 sudo bash -c 'echo "UUID=0B97C785-04A6-4D11-84EE-2FE2B120FB84 /Volumes/Storage apfs rw,noatime,nosuid,owners # External Storage Drive" >> /etc/fstab'
 ```
 
-**Key insight**: Manual `mount` command successfully changes mount point from `/Volumes/Nix Store` to `/nix`
-**Nix test result**: `nix-env --version` works (using external store - shadowing internal)
+**Key insight**: Manual `mount` command successfully changes mount point from
+`/Volumes/Nix Store` to `/nix` **Nix test result**: `nix-env --version` works
+(using external store - shadowing internal)
 
 ## Current System State
 
@@ -266,7 +281,7 @@ sudo cp /etc/fstab.backup.20250829 /etc/fstab
 
 ---
 
-_Migration started: 2025-08-29 16:01_
-_Session 2: 2025-08-29 17:19 - Manual mount testing_
-_Migration cancelled: 2025-08-29 - External volume deleted, keeping Nix on internal storage_
-_Recommendation: Upgrade internal SSD using expandmacmini.com instead_
+_Migration started: 2025-08-29 16:01_ _Session 2: 2025-08-29 17:19 - Manual
+mount testing_ _Migration cancelled: 2025-08-29 - External volume deleted,
+keeping Nix on internal storage_ _Recommendation: Upgrade internal SSD using
+expandmacmini.com instead_

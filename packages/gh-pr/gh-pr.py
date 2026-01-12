@@ -80,7 +80,9 @@ def cmd_create(config: Config) -> int:
 
     # Update branch
     if config.update == "rebase":
-        result = run_cmd(["git", "pull", "--rebase", "origin", default_branch], capture=False)
+        result = run_cmd(
+            ["git", "pull", "--rebase", "origin", default_branch], capture=False
+        )
     else:
         result = run_cmd(["git", "pull", "origin", default_branch], capture=False)
 
@@ -89,18 +91,26 @@ def cmd_create(config: Config) -> int:
         return 1
 
     # Push changes
-    result = run_cmd(["git", "push", "--force-with-lease", "origin", head], capture=False)
+    result = run_cmd(
+        ["git", "push", "--force-with-lease", "origin", head], capture=False
+    )
     if result.returncode != 0:
         print("Failed to push changes")
         return 1
 
     # Build gh pr create command
     cmd = [
-        "gh", "pr", "create",
-        "--assignee", config.assignee,
-        "--head", head,
-        "--title", title,
-        "--base", default_branch,
+        "gh",
+        "pr",
+        "create",
+        "--assignee",
+        config.assignee,
+        "--head",
+        head,
+        "--title",
+        title,
+        "--base",
+        default_branch,
         "--fill",
     ]
 
@@ -159,35 +169,39 @@ def main() -> int:
     # Create command
     create_parser = subparsers.add_parser("create", help="Create a new pull request")
     create_parser.add_argument(
-        "--assignee", default="@me",
-        help="Specify the assignee for the pull request (default: @me)"
+        "--assignee",
+        default="@me",
+        help="Specify the assignee for the pull request (default: @me)",
     )
     create_parser.add_argument(
-        "--reviewers",
-        help="Specify the reviewers for the pull request"
+        "--reviewers", help="Specify the reviewers for the pull request"
     )
     create_parser.add_argument(
-        "--labels",
-        help="Specify the label for the pull request"
+        "--labels", help="Specify the label for the pull request"
     )
     create_parser.add_argument(
-        "--update", choices=["rebase", "merge"], default="rebase",
-        help="Specify the update strategy (default: rebase)"
+        "--update",
+        choices=["rebase", "merge"],
+        default="rebase",
+        help="Specify the update strategy (default: rebase)",
     )
     create_parser.add_argument(
-        "--draft", action="store_true",
-        help="Create a draft pull request"
+        "--draft", action="store_true", help="Create a draft pull request"
     )
 
     # Merge command
     merge_parser = subparsers.add_parser("merge", help="Merge an existing pull request")
     merge_parser.add_argument(
-        "--strategy", choices=["squash", "merge", "rebase"], default="squash",
-        help="Specify the merge strategy (default: squash)"
+        "--strategy",
+        choices=["squash", "merge", "rebase"],
+        default="squash",
+        help="Specify the merge strategy (default: squash)",
     )
     merge_parser.add_argument(
-        "--admin", "--bypass", action="store_true",
-        help="Use administrator privileges to bypass merge queue requirements"
+        "--admin",
+        "--bypass",
+        action="store_true",
+        help="Use administrator privileges to bypass merge queue requirements",
     )
 
     # View command
@@ -207,8 +221,10 @@ def main() -> int:
     # Check if we're on main or master branch
     current_branch = get_current_branch()
     if current_branch in ("main", "master"):
-        print(f"Error: You are on the {current_branch} branch. "
-              "This script cannot be run on main or master branches.")
+        print(
+            f"Error: You are on the {current_branch} branch. "
+            "This script cannot be run on main or master branches."
+        )
         return 1
 
     # Unset GitHub tokens to use gh CLI authentication

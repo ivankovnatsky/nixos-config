@@ -138,7 +138,12 @@ def get_video_duration(file_path):
 
 
 def split_single_video(
-    input_file, segment_duration, skip_start=0, skip_end=0, output_dir=None, cleanup=False
+    input_file,
+    segment_duration,
+    skip_start=0,
+    skip_end=0,
+    output_dir=None,
+    cleanup=False,
 ):
     """Split a video file into segments"""
     input_path = Path(input_file)
@@ -176,7 +181,9 @@ def split_single_video(
         f"Splitting {input_path.name} into {num_segments} segments of {format_duration(segment_duration)} each"
     )
     click.echo(f"  Total duration: {format_duration(total_duration)}")
-    click.echo(f"  Skip start: {format_duration(skip_start)}, Skip end: {format_duration(skip_end)}")
+    click.echo(
+        f"  Skip start: {format_duration(skip_start)}, Skip end: {format_duration(skip_end)}"
+    )
     click.echo(f"  Effective duration: {format_duration(effective_duration)}")
 
     stem = input_path.stem
@@ -189,7 +196,7 @@ def split_single_video(
         else:
             duration = segment_duration
 
-        output_file = out_dir / f"{stem}_part{i+1:03d}{suffix}"
+        output_file = out_dir / f"{stem}_part{i + 1:03d}{suffix}"
 
         cmd = [
             "ffmpeg",
@@ -336,7 +343,12 @@ def download_with_split(
     for downloaded_file in downloaded_files:
         click.echo(f"\nProcessing: {downloaded_file}")
         if not split_single_video(
-            downloaded_file, segment_duration, skip_start, skip_end, output_dir, cleanup=True
+            downloaded_file,
+            segment_duration,
+            skip_start,
+            skip_end,
+            output_dir,
+            cleanup=True,
         ):
             success = False
 
@@ -357,14 +369,18 @@ def remove_url_from_file(url_to_remove, url_file):
         click.echo(f"Warning: Could not remove URL from file: {e}", err=True)
 
 
-def batch_download_single(url, output_dir, embed_subs=True, max_height=DEFAULT_MAX_HEIGHT):
+def batch_download_single(
+    url, output_dir, embed_subs=True, max_height=DEFAULT_MAX_HEIGHT
+):
     """Download a single URL with yt-dlp, falling back to gallery-dl. Returns (url, success)."""
     out_dir = get_output_dir(output_dir)
     output_template = str(out_dir / "%(title)s.%(ext)s")
 
     cmd_args = []
     if embed_subs:
-        cmd_args.extend(["--write-auto-subs", "--embed-subs", "--sub-langs", DEFAULT_SUB_LANGS])
+        cmd_args.extend(
+            ["--write-auto-subs", "--embed-subs", "--sub-langs", DEFAULT_SUB_LANGS]
+        )
 
     cmd_args.extend(["-f", get_format_string(max_height), "-o", output_template, url])
 
@@ -377,7 +393,13 @@ def batch_download_single(url, output_dir, embed_subs=True, max_height=DEFAULT_M
     return (url, gallery_result.returncode == 0)
 
 
-def batch_download_impl(url_file=None, output_dir=None, embed_subs=True, max_height=DEFAULT_MAX_HEIGHT, workers=1):
+def batch_download_impl(
+    url_file=None,
+    output_dir=None,
+    embed_subs=True,
+    max_height=DEFAULT_MAX_HEIGHT,
+    workers=1,
+):
     """Download videos from a list file, removing successfully downloaded URLs"""
     if url_file is None:
         url_file = DEFAULT_URL_FILE
@@ -423,7 +445,9 @@ def batch_download_impl(url_file=None, output_dir=None, embed_subs=True, max_hei
                     failed_urls.append(url)
                     click.echo(f"[FAILED] {url}")
 
-        click.echo(f"Processing complete. {success_count}/{total_count} URLs downloaded successfully")
+        click.echo(
+            f"Processing complete. {success_count}/{total_count} URLs downloaded successfully"
+        )
         return len(failed_urls) == 0
     else:
         success_count = 0
@@ -439,7 +463,9 @@ def batch_download_impl(url_file=None, output_dir=None, embed_subs=True, max_hei
                 break
 
         if total_count > 0:
-            click.echo(f"Processing complete. {success_count}/{total_count} URLs downloaded successfully")
+            click.echo(
+                f"Processing complete. {success_count}/{total_count} URLs downloaded successfully"
+            )
 
         return success_count == total_count
 
@@ -461,8 +487,12 @@ def extract_urls_from_page(page_url, pattern):
         if line.lower().startswith("location:"):
             redirect_url = line.split(":", 1)[1].strip()
             # Normalize URLs for comparison (remove trailing slash, http vs https)
-            norm_page = page_url.rstrip("/").replace("https://", "").replace("http://", "")
-            norm_redirect = redirect_url.rstrip("/").replace("https://", "").replace("http://", "")
+            norm_page = (
+                page_url.rstrip("/").replace("https://", "").replace("http://", "")
+            )
+            norm_redirect = (
+                redirect_url.rstrip("/").replace("https://", "").replace("http://", "")
+            )
             if norm_redirect != norm_page:
                 return [], True
 
@@ -503,7 +533,11 @@ def get_title(url):
                     data = json.loads(line)
                     if isinstance(data, list) and len(data) > 1:
                         meta = data[1] if isinstance(data[1], dict) else {}
-                        return meta.get("title") or meta.get("album") or meta.get("filename", "")
+                        return (
+                            meta.get("title")
+                            or meta.get("album")
+                            or meta.get("filename", "")
+                        )
         except json.JSONDecodeError:
             pass
 
@@ -513,7 +547,15 @@ def get_title(url):
 def find_existing_file_by_url(url, search_dirs):
     """Find an existing downloaded file by checking yt-dlp or gallery-dl's expected filename"""
     # Try yt-dlp first
-    cmd = ["yt-dlp", "--print", "filename", "-o", "%(title)s.%(ext)s", "--no-download", url]
+    cmd = [
+        "yt-dlp",
+        "--print",
+        "filename",
+        "-o",
+        "%(title)s.%(ext)s",
+        "--no-download",
+        url,
+    ]
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode == 0 and result.stdout.strip():
         expected_filename = result.stdout.strip()
@@ -547,8 +589,15 @@ def find_existing_file_by_url(url, search_dirs):
 
 
 def move_or_download_for_page(
-    url, page, base_output_dir, all_page_dirs, max_height=DEFAULT_MAX_HEIGHT, split=False,
-    segment_duration=DEFAULT_SEGMENT_DURATION, skip_start=0, skip_end=0
+    url,
+    page,
+    base_output_dir,
+    all_page_dirs,
+    max_height=DEFAULT_MAX_HEIGHT,
+    split=False,
+    segment_duration=DEFAULT_SEGMENT_DURATION,
+    skip_start=0,
+    skip_end=0,
 ):
     """Move existing file to correct page dir or download if not found. Returns (url, success)"""
     base_dir = get_output_dir(base_output_dir, create=False)
@@ -565,7 +614,9 @@ def move_or_download_for_page(
             return (url, True)
         else:
             shutil.move(str(existing_file), str(target_path))
-            click.echo(f"[MOVE] {existing_file.parent.name}/{existing_file.name} -> page-{page}/")
+            click.echo(
+                f"[MOVE] {existing_file.parent.name}/{existing_file.name} -> page-{page}/"
+            )
             return (url, True)
 
     return download_single_video(
@@ -574,8 +625,13 @@ def move_or_download_for_page(
 
 
 def download_single_video(
-    url, output_dir, max_height=DEFAULT_MAX_HEIGHT, split=False,
-    segment_duration=DEFAULT_SEGMENT_DURATION, skip_start=0, skip_end=0
+    url,
+    output_dir,
+    max_height=DEFAULT_MAX_HEIGHT,
+    split=False,
+    segment_duration=DEFAULT_SEGMENT_DURATION,
+    skip_start=0,
+    skip_end=0,
 ):
     """Download a single video and optionally split it, returns (url, success)"""
     out_dir = get_output_dir(output_dir)
@@ -614,7 +670,12 @@ def download_single_video(
 
     if downloaded_file and Path(downloaded_file).exists():
         success = split_single_video(
-            downloaded_file, segment_duration, skip_start, skip_end, output_dir, cleanup=True
+            downloaded_file,
+            segment_duration,
+            skip_start,
+            skip_end,
+            output_dir,
+            cleanup=True,
         )
         return (url, success)
 
@@ -706,14 +767,24 @@ def scrape_and_download_impl(
             if url_filter:
                 filter_re = re.compile(url_filter, re.IGNORECASE)
                 before_count = len(new_urls)
-                new_urls = [url for url in new_urls if filter_re.search(url_titles.get(url, ""))]
-                click.echo(f"Filter '{url_filter}': {before_count} -> {len(new_urls)} URLs")
+                new_urls = [
+                    url for url in new_urls if filter_re.search(url_titles.get(url, ""))
+                ]
+                click.echo(
+                    f"Filter '{url_filter}': {before_count} -> {len(new_urls)} URLs"
+                )
 
             if url_exclude:
                 exclude_re = re.compile(url_exclude, re.IGNORECASE)
                 before_count = len(new_urls)
-                new_urls = [url for url in new_urls if not exclude_re.search(url_titles.get(url, ""))]
-                click.echo(f"Exclude '{url_exclude}': {before_count} -> {len(new_urls)} URLs")
+                new_urls = [
+                    url
+                    for url in new_urls
+                    if not exclude_re.search(url_titles.get(url, ""))
+                ]
+                click.echo(
+                    f"Exclude '{url_exclude}': {before_count} -> {len(new_urls)} URLs"
+                )
 
         click.echo(f"Processing {len(new_urls)} URLs\n")
 
@@ -747,7 +818,9 @@ def scrape_and_download_impl(
                         url, success = future.result()
                         if success:
                             page_success += 1
-                            click.echo(f"[{page_success}/{len(new_urls)}] Completed: {url}")
+                            click.echo(
+                                f"[{page_success}/{len(new_urls)}] Completed: {url}"
+                            )
                         else:
                             page_failed.append(url)
                             click.echo(f"[FAILED] {url}")
@@ -771,14 +844,18 @@ def scrape_and_download_impl(
                         url, success = future.result()
                         if success:
                             page_success += 1
-                            click.echo(f"[{page_success}/{len(new_urls)}] Completed: {url}")
+                            click.echo(
+                                f"[{page_success}/{len(new_urls)}] Completed: {url}"
+                            )
                         else:
                             page_failed.append(url)
                             click.echo(f"[FAILED] {url}")
 
             total_success += page_success
             total_failed += len(page_failed)
-            click.echo(f"\nPage {page} done: {page_success}/{len(new_urls)} successful\n")
+            click.echo(
+                f"\nPage {page} done: {page_success}/{len(new_urls)} successful\n"
+            )
 
         if end_page and page >= end_page:
             break
@@ -849,7 +926,9 @@ class GifferGroup(click.Group):
                 # Prepend defaults, user args can override
                 result = run_yt_dlp(get_default_ytdlp_args() + remaining)
                 if result.returncode != 0:
-                    click.echo("\nyt-dlp failed, trying gallery-dl as fallback...\n", err=True)
+                    click.echo(
+                        "\nyt-dlp failed, trying gallery-dl as fallback...\n", err=True
+                    )
                     result = run_gallery_dl(remaining)
 
             ctx.exit(result.returncode)
@@ -886,8 +965,16 @@ def cli(ctx, gallery, ytdlp):
 @cli.command()
 @click.argument("url")
 @click.option("-o", "--output-dir", help="Output directory")
-@click.option("-d", "--duration", type=DURATION, default=DEFAULT_SEGMENT_DURATION, help=f"Segment duration (default: {DEFAULT_SEGMENT_DURATION}s)")
-@click.option("--skip-start", type=DURATION, default=0, help="Skip from start (default: 0)")
+@click.option(
+    "-d",
+    "--duration",
+    type=DURATION,
+    default=DEFAULT_SEGMENT_DURATION,
+    help=f"Segment duration (default: {DEFAULT_SEGMENT_DURATION}s)",
+)
+@click.option(
+    "--skip-start", type=DURATION, default=0, help="Skip from start (default: 0)"
+)
 @click.option("--skip-end", type=DURATION, default=0, help="Skip from end (default: 0)")
 def split(url, output_dir, duration, skip_start, skip_end):
     """Download video and split into segments."""
@@ -898,13 +985,42 @@ def split(url, output_dir, duration, skip_start, skip_end):
 @cli.command()
 @click.argument("url")
 @click.option("-o", "--output-dir", help="Output directory")
-@click.option("-w", "--workers", type=int, default=1, help="Parallel workers for playlists (default: 1)")
+@click.option(
+    "-w",
+    "--workers",
+    type=int,
+    default=1,
+    help="Parallel workers for playlists (default: 1)",
+)
 @click.option("--split", "do_split", is_flag=True, help="Split videos after download")
-@click.option("-d", "--duration", type=DURATION, default=DEFAULT_SEGMENT_DURATION, help=f"Segment duration if splitting (default: {DEFAULT_SEGMENT_DURATION}s)")
-@click.option("--skip-start", type=DURATION, default=0, help="Skip from start if splitting (default: 0)")
-@click.option("--skip-end", type=DURATION, default=0, help="Skip from end if splitting (default: 0)")
-@click.option("--max-height", type=int, default=DEFAULT_MAX_HEIGHT, help=f"Maximum video height (default: {DEFAULT_MAX_HEIGHT})")
-def download(url, output_dir, workers, do_split, duration, skip_start, skip_end, max_height):
+@click.option(
+    "-d",
+    "--duration",
+    type=DURATION,
+    default=DEFAULT_SEGMENT_DURATION,
+    help=f"Segment duration if splitting (default: {DEFAULT_SEGMENT_DURATION}s)",
+)
+@click.option(
+    "--skip-start",
+    type=DURATION,
+    default=0,
+    help="Skip from start if splitting (default: 0)",
+)
+@click.option(
+    "--skip-end",
+    type=DURATION,
+    default=0,
+    help="Skip from end if splitting (default: 0)",
+)
+@click.option(
+    "--max-height",
+    type=int,
+    default=DEFAULT_MAX_HEIGHT,
+    help=f"Maximum video height (default: {DEFAULT_MAX_HEIGHT})",
+)
+def download(
+    url, output_dir, workers, do_split, duration, skip_start, skip_end, max_height
+):
     """Download video(s) from URL or playlist.
 
     For playlist URLs, use -w/--workers to download videos in parallel.
@@ -913,13 +1029,15 @@ def download(url, output_dir, workers, do_split, duration, skip_start, skip_end,
     split = do_split
 
     if workers > 1:
-        click.echo(f"Extracting video URLs from playlist...")
+        click.echo("Extracting video URLs from playlist...")
         urls = get_playlist_urls(url)
 
         if not urls:
             click.echo("No videos found or not a playlist, downloading as single video")
             if split:
-                success = download_with_split(url, duration, skip_start, skip_end, output_dir)
+                success = download_with_split(
+                    url, duration, skip_start, skip_end, output_dir
+                )
                 sys.exit(0 if success else 1)
             else:
                 args = [url]
@@ -962,7 +1080,9 @@ def download(url, output_dir, workers, do_split, duration, skip_start, skip_end,
         sys.exit(0 if not failed_urls else 1)
     else:
         if split:
-            success = download_with_split(url, duration, skip_start, skip_end, output_dir)
+            success = download_with_split(
+                url, duration, skip_start, skip_end, output_dir
+            )
             sys.exit(0 if success else 1)
         else:
             args = [url]
@@ -976,26 +1096,53 @@ def download(url, output_dir, workers, do_split, duration, skip_start, skip_end,
 @click.argument("path")
 @click.option("-o", "--output-dir", help="Output directory")
 @click.option("--cleanup", is_flag=True, help="Remove source files after splitting")
-@click.option("-r/-R", "--recursive/--no-recursive", default=True, help="Process subdirectories")
+@click.option(
+    "-r/-R", "--recursive/--no-recursive", default=True, help="Process subdirectories"
+)
 @click.option("-e", "--extensions", multiple=True, help="File extensions to process")
-@click.option("-d", "--duration", type=DURATION, default=DEFAULT_SEGMENT_DURATION, help=f"Segment duration (default: {DEFAULT_SEGMENT_DURATION}s)")
-@click.option("--skip-start", type=DURATION, default=0, help="Skip from start (default: 0)")
+@click.option(
+    "-d",
+    "--duration",
+    type=DURATION,
+    default=DEFAULT_SEGMENT_DURATION,
+    help=f"Segment duration (default: {DEFAULT_SEGMENT_DURATION}s)",
+)
+@click.option(
+    "--skip-start", type=DURATION, default=0, help="Skip from start (default: 0)"
+)
 @click.option("--skip-end", type=DURATION, default=0, help="Skip from end (default: 0)")
-def process(path, output_dir, cleanup, recursive, extensions, duration, skip_start, skip_end):
+def process(
+    path, output_dir, cleanup, recursive, extensions, duration, skip_start, skip_end
+):
     """Split local video file(s)."""
     exts = None
     if extensions:
         exts = [f".{e.lstrip('.')}" for e in extensions]
-    success = split_path(path, duration, skip_start, skip_end, output_dir, cleanup, recursive, exts)
+    success = split_path(
+        path, duration, skip_start, skip_end, output_dir, cleanup, recursive, exts
+    )
     sys.exit(0 if success else 1)
 
 
 @cli.command()
-@click.option("-f", "--file", "url_file", default=DEFAULT_URL_FILE, help=f"URL list file (default: {DEFAULT_URL_FILE})")
+@click.option(
+    "-f",
+    "--file",
+    "url_file",
+    default=DEFAULT_URL_FILE,
+    help=f"URL list file (default: {DEFAULT_URL_FILE})",
+)
 @click.option("-o", "--output-dir", help="Output directory")
-@click.option("-w", "--workers", type=int, default=1, help="Parallel workers (default: 1)")
+@click.option(
+    "-w", "--workers", type=int, default=1, help="Parallel workers (default: 1)"
+)
 @click.option("--embed-subs/--no-embed-subs", default=True, help="Embed subtitles")
-@click.option("--max-height", type=int, default=DEFAULT_MAX_HEIGHT, help=f"Maximum video height (default: {DEFAULT_MAX_HEIGHT})")
+@click.option(
+    "--max-height",
+    type=int,
+    default=DEFAULT_MAX_HEIGHT,
+    help=f"Maximum video height (default: {DEFAULT_MAX_HEIGHT})",
+)
 def batch(url_file, output_dir, workers, embed_subs, max_height):
     """Download videos from a URL list file."""
     success = batch_download_impl(url_file, output_dir, embed_subs, max_height, workers)
@@ -1007,18 +1154,70 @@ def batch(url_file, output_dir, workers, embed_subs, max_height):
 @click.option("-o", "--output-dir", help="Output directory")
 @click.option("--start-page", type=int, default=1, help="Starting page (default: 1)")
 @click.option("--end-page", type=int, help="Ending page")
-@click.option("-s", "--site", type=click.Choice(list(SITE_CONFIGS.keys())), help="Use preset config for site")
-@click.option("-p", "--pattern", help="Custom regex pattern for URLs (overrides --site)")
-@click.option("-f", "--filter", "url_filter", help="Regex to filter by video title (case-insensitive, include matching)")
-@click.option("-x", "--exclude", "url_exclude", help="Regex to filter by video title (case-insensitive, exclude matching)")
-@click.option("-w", "--workers", type=int, default=4, help="Parallel workers (default: 4)")
-@click.option("--max-height", type=int, default=DEFAULT_MAX_HEIGHT, help=f"Maximum video height (default: {DEFAULT_MAX_HEIGHT})")
+@click.option(
+    "-s",
+    "--site",
+    type=click.Choice(list(SITE_CONFIGS.keys())),
+    help="Use preset config for site",
+)
+@click.option(
+    "-p", "--pattern", help="Custom regex pattern for URLs (overrides --site)"
+)
+@click.option(
+    "-f",
+    "--filter",
+    "url_filter",
+    help="Regex to filter by video title (case-insensitive, include matching)",
+)
+@click.option(
+    "-x",
+    "--exclude",
+    "url_exclude",
+    help="Regex to filter by video title (case-insensitive, exclude matching)",
+)
+@click.option(
+    "-w", "--workers", type=int, default=4, help="Parallel workers (default: 4)"
+)
+@click.option(
+    "--max-height",
+    type=int,
+    default=DEFAULT_MAX_HEIGHT,
+    help=f"Maximum video height (default: {DEFAULT_MAX_HEIGHT})",
+)
 @click.option("--split", "do_split", is_flag=True, help="Split videos after download")
-@click.option("--split-pages/--no-split-pages", default=True, help="Organize files into page-N directories (default: enabled)")
-@click.option("-d", "--duration", type=DURATION, default=DEFAULT_SEGMENT_DURATION, help=f"Segment duration (default: {DEFAULT_SEGMENT_DURATION}s)")
-@click.option("--skip-start", type=DURATION, default=0, help="Skip from start (default: 0)")
+@click.option(
+    "--split-pages/--no-split-pages",
+    default=True,
+    help="Organize files into page-N directories (default: enabled)",
+)
+@click.option(
+    "-d",
+    "--duration",
+    type=DURATION,
+    default=DEFAULT_SEGMENT_DURATION,
+    help=f"Segment duration (default: {DEFAULT_SEGMENT_DURATION}s)",
+)
+@click.option(
+    "--skip-start", type=DURATION, default=0, help="Skip from start (default: 0)"
+)
 @click.option("--skip-end", type=DURATION, default=0, help="Skip from end (default: 0)")
-def scrape(url, output_dir, start_page, end_page, site, pattern, url_filter, url_exclude, workers, max_height, do_split, split_pages, duration, skip_start, skip_end):
+def scrape(
+    url,
+    output_dir,
+    start_page,
+    end_page,
+    site,
+    pattern,
+    url_filter,
+    url_exclude,
+    workers,
+    max_height,
+    do_split,
+    split_pages,
+    duration,
+    skip_start,
+    skip_end,
+):
     """Scrape paginated pages and download videos.
 
     Use --site to select a preset config, or --pattern for custom regex.
@@ -1034,8 +1233,21 @@ def scrape(url, output_dir, start_page, end_page, site, pattern, url_filter, url
             pattern = config.get("pattern")
         pagination = config.get("pagination")
     success = scrape_and_download_impl(
-        url, start_page, end_page, pattern, pagination, workers, output_dir, max_height, do_split, duration, skip_start, skip_end,
-        url_filter=url_filter, url_exclude=url_exclude, split_pages=split_pages
+        url,
+        start_page,
+        end_page,
+        pattern,
+        pagination,
+        workers,
+        output_dir,
+        max_height,
+        do_split,
+        duration,
+        skip_start,
+        skip_end,
+        url_filter=url_filter,
+        url_exclude=url_exclude,
+        split_pages=split_pages,
     )
     sys.exit(0 if success else 1)
 

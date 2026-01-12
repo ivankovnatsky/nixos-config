@@ -71,7 +71,9 @@
       };
 
       "simcity4" = {
-        path = "${config.users.users.${username}.home}/.local/share/Steam/steamapps/compatdata/24780/pfx/drive_c/users/steamuser/Documents/SimCity 4";
+        path = "${
+          config.users.users.${username}.home
+        }/.local/share/Steam/steamapps/compatdata/24780/pfx/drive_c/users/steamuser/Documents/SimCity 4";
         label = ".local/share/Steam/steamapps/compatdata/24780/pfx/drive_c/users/steamuser/Documents/SimCity 4";
         devices = [
           "a3"

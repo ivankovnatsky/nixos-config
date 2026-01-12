@@ -2,14 +2,16 @@
 
 - Add binary cache for nix builds: https://nixos.wiki/wiki/Binary_Cache
 
-- Come up of a way to only re-run builds on changed files concerning particular machine
-
+- Come up of a way to only re-run builds on changed files concerning particular
+  machine
   - Need to handle the imports and other nuances somehow
   - Check if watchman can do it?
 
 - Optimize mini services
 
-  Screen saves some times is seen in top list of process. As there's no monitor to show it, it eats the resources and could be used more efficient, let's disable as much as possible.
+  Screen saves some times is seen in top list of process. As there's no monitor
+  to show it, it eats the resources and could be used more efficient, let's
+  disable as much as possible.
 
   https://medium.com/@rksingh0399/how-to-turn-off-screen-saver-in-mac-using-terminal-command-a3d3a84d7a6a
 
@@ -37,4 +39,5 @@
   - Add mDNS support
 - Mini
   - Differentiate daemons logs and agents logs under /tmp
-- Go over all https services in Caddy and see if we expose externally anything without a password
+- Go over all https services in Caddy and see if we expose externally anything
+  without a password

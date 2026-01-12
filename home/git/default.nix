@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   home.activation.ghAuth = lib.hm.dag.entryAfter [ "writeBoundary" ] ''

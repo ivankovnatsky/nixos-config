@@ -317,9 +317,12 @@ def cmd_export_all(args):
 
             timestamp = asyncio.get_event_loop().time()
             from datetime import datetime
+
             timestamp_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-            output_file = os.path.join(output_dir, f"router-config-{timestamp_str}.json")
+            output_file = os.path.join(
+                output_dir, f"router-config-{timestamp_str}.json"
+            )
             with open(output_file, "w") as f:
                 json.dump(all_data, f, indent=2, default=str)
 
@@ -362,7 +365,11 @@ def main():
     get_wan_parser.add_argument(
         "--use-ssl", action="store_true", help="Use HTTPS (default: HTTP)"
     )
-    get_wan_parser.add_argument("--port", type=int, help="Router port (optional, default: 80 for HTTP, 443 for HTTPS)")
+    get_wan_parser.add_argument(
+        "--port",
+        type=int,
+        help="Router port (optional, default: 80 for HTTP, 443 for HTTPS)",
+    )
     get_wan_parser.add_argument(
         "--output", help="Output file for WAN configuration (default: stdout)"
     )
@@ -377,7 +384,11 @@ def main():
     set_dns_parser.add_argument(
         "--use-ssl", action="store_true", help="Use HTTPS (default: HTTP)"
     )
-    set_dns_parser.add_argument("--port", type=int, help="Router port (optional, default: 80 for HTTP, 443 for HTTPS)")
+    set_dns_parser.add_argument(
+        "--port",
+        type=int,
+        help="Router port (optional, default: 80 for HTTP, 443 for HTTPS)",
+    )
     set_dns_parser.add_argument(
         "--dns-servers",
         required=True,
@@ -404,7 +415,11 @@ def main():
     export_all_parser.add_argument(
         "--use-ssl", action="store_true", help="Use HTTPS (default: HTTP)"
     )
-    export_all_parser.add_argument("--port", type=int, help="Router port (optional, default: 80 for HTTP, 443 for HTTPS)")
+    export_all_parser.add_argument(
+        "--port",
+        type=int,
+        help="Router port (optional, default: 80 for HTTP, 443 for HTTPS)",
+    )
     export_all_parser.add_argument(
         "--output-dir",
         required=True,

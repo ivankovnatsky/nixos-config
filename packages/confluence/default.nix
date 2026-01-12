@@ -23,7 +23,10 @@
 # ```
 
 let
-  python = pkgs.python3.withPackages (ps: [ ps.atlassian-python-api ps.markdown ]);
+  python = pkgs.python3.withPackages (ps: [
+    ps.atlassian-python-api
+    ps.markdown
+  ]);
 in
 pkgs.writeShellScriptBin "confluence" ''
   exec ${python}/bin/python ${./confluence.py} "$@"

@@ -61,7 +61,9 @@ def main() -> None:
     args = parser.parse_args()
 
     mode = "root" if is_root() else "user (via sudo)"
-    log(f"started: blocking '{args.process_name}' (mode: {mode}, interval: {args.interval}s)")
+    log(
+        f"started: blocking '{args.process_name}' (mode: {mode}, interval: {args.interval}s)"
+    )
 
     try:
         while True:

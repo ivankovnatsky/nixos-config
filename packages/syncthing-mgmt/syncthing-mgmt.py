@@ -19,22 +19,23 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Optional, List, Dict, Any, Tuple
 from rich.console import Console
 from rich.table import Table
-from rich.panel import Panel
 from rich import box
 
 USER_AGENT = "syncthing-mgmt/1.0.0"
 
 # Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(message)s',
-    stream=sys.stdout
-)
+logging.basicConfig(level=logging.INFO, format="%(message)s", stream=sys.stdout)
 
 
 class SyncthingClient:
-    def __init__(self, base_url: str, api_key: str, timeout: int = 30,
-                 max_retries: int = 5, retry_delay: float = 2.0):
+    def __init__(
+        self,
+        base_url: str,
+        api_key: str,
+        timeout: int = 30,
+        max_retries: int = 5,
+        retry_delay: float = 2.0,
+    ):
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
         self.max_retries = max_retries
@@ -80,11 +81,15 @@ class SyncthingClient:
             except requests.exceptions.RequestException as e:
                 last_error = e
                 if attempt < self.max_retries - 1:
-                    wait_time = self.retry_delay * (2 ** attempt)  # Exponential backoff
-                    logging.info(f"    Connection error, retrying in {wait_time:.1f}s... (attempt {attempt + 1}/{self.max_retries})")
+                    wait_time = self.retry_delay * (2**attempt)  # Exponential backoff
+                    logging.info(
+                        f"    Connection error, retrying in {wait_time:.1f}s... (attempt {attempt + 1}/{self.max_retries})"
+                    )
                     time.sleep(wait_time)
                     continue
-                raise Exception(f"Network error after {self.max_retries} attempts: {last_error}")
+                raise Exception(
+                    f"Network error after {self.max_retries} attempts: {last_error}"
+                )
 
     def get_config(self):
         """Get current Syncthing configuration."""
@@ -113,7 +118,9 @@ class SyncthingClient:
 
     def update_device(self, device_id: str, device_config: dict):
         """Update device configuration."""
-        return self._api_call("PATCH", f"/rest/config/devices/{device_id}", data=device_config)
+        return self._api_call(
+            "PATCH", f"/rest/config/devices/{device_id}", data=device_config
+        )
 
     def add_device(self, device_id: str, name: str):
         """Add a new device."""
@@ -133,11 +140,15 @@ class SyncthingClient:
 
     def update_folder(self, folder_id: str, folder_config: dict):
         """Update folder configuration."""
-        return self._api_call("PATCH", f"/rest/config/folders/{folder_id}", data=folder_config)
+        return self._api_call(
+            "PATCH", f"/rest/config/folders/{folder_id}", data=folder_config
+        )
 
     def add_folder(self, folder_id: str, folder_config: dict):
         """Add a new folder."""
-        return self._api_call("PUT", f"/rest/config/folders/{folder_id}", data=folder_config)
+        return self._api_call(
+            "PUT", f"/rest/config/folders/{folder_id}", data=folder_config
+        )
 
     def remove_folder(self, folder_id: str):
         """Remove a folder."""
@@ -177,7 +188,9 @@ class SyncthingClient:
 
 def hash_password(password: str) -> str:
     """Hash password using bcrypt (cost factor 10)."""
-    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(rounds=10)).decode('utf-8')
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt(rounds=10)).decode(
+        "utf-8"
+    )
 
 
 def format_bytes(bytes_val: int) -> str:
@@ -205,7 +218,7 @@ def get_api_key_from_config(config_path: str) -> str:
     try:
         tree = ET.parse(config_path)
         root = tree.getroot()
-        api_key = root.find('.//gui/apikey')
+        api_key = root.find(".//gui/apikey")
         if api_key is not None and api_key.text:
             return api_key.text
         raise Exception("API key not found in config.xml")
@@ -223,20 +236,22 @@ def find_listening_address(port: int = 8384) -> Optional[str]:
         try:
             result = subprocess.run(
                 ["lsof", "-i", f":{port}", "-sTCP:LISTEN", "-n", "-P"],
-                capture_output=True, text=True, timeout=5
+                capture_output=True,
+                text=True,
+                timeout=5,
             )
             if result.returncode == 0 and result.stdout:
                 # Parse lsof output - format: COMMAND PID USER FD TYPE DEVICE SIZE/OFF NODE NAME (STATE)
                 # Example: syncthing 13446 ivan 17u IPv4 ... TCP 127.0.0.1:8384 (LISTEN)
-                for line in result.stdout.strip().split('\n')[1:]:  # Skip header
+                for line in result.stdout.strip().split("\n")[1:]:  # Skip header
                     parts = line.split()
                     if len(parts) >= 9:
                         # Find the address:port part (contains : and is before (LISTEN))
                         for part in reversed(parts):
-                            if ':' in part and not part.startswith('('):
-                                addr = part.rsplit(':', 1)[0]
-                                if addr == '*':
-                                    return '0.0.0.0'
+                            if ":" in part and not part.startswith("("):
+                                addr = part.rsplit(":", 1)[0]
+                                if addr == "*":
+                                    return "0.0.0.0"
                                 return addr
         except (subprocess.TimeoutExpired, FileNotFoundError):
             pass
@@ -245,21 +260,23 @@ def find_listening_address(port: int = 8384) -> Optional[str]:
         try:
             result = subprocess.run(
                 ["ss", "-tlnH", "sport", "=", f":{port}"],
-                capture_output=True, text=True, timeout=5
+                capture_output=True,
+                text=True,
+                timeout=5,
             )
             if result.returncode == 0 and result.stdout:
                 # Parse ss output - format: State Recv-Q Send-Q Local Address:Port Peer Address:Port
-                for line in result.stdout.strip().split('\n'):
+                for line in result.stdout.strip().split("\n"):
                     parts = line.split()
                     if len(parts) >= 4:
                         local_addr = parts[3]  # Local Address:Port
-                        if ':' in local_addr:
-                            addr = local_addr.rsplit(':', 1)[0]
+                        if ":" in local_addr:
+                            addr = local_addr.rsplit(":", 1)[0]
                             # Handle IPv6 bracket notation
-                            if addr.startswith('[') and addr.endswith(']'):
+                            if addr.startswith("[") and addr.endswith("]"):
                                 addr = addr[1:-1]
-                            if addr == '*' or addr == '0.0.0.0' or addr == '::':
-                                return '0.0.0.0'
+                            if addr == "*" or addr == "0.0.0.0" or addr == "::":
+                                return "0.0.0.0"
                             return addr
         except (subprocess.TimeoutExpired, FileNotFoundError):
             pass
@@ -275,9 +292,9 @@ def get_client(args, use_fallback: bool = True):
     Syncthing instance by checking what's listening on port 8384.
     """
     # Get API key
-    if hasattr(args, 'api_key') and args.api_key:
+    if hasattr(args, "api_key") and args.api_key:
         api_key = args.api_key
-    elif hasattr(args, 'config_xml') and args.config_xml:
+    elif hasattr(args, "config_xml") and args.config_xml:
         api_key = get_api_key_from_config(args.config_xml)
     else:
         raise Exception("Either --api-key or --config-xml must be provided")
@@ -285,12 +302,12 @@ def get_client(args, use_fallback: bool = True):
     base_url = args.base_url
 
     # For CLI mode, auto-detect Syncthing address from port listener
-    if use_fallback and hasattr(args, 'mode') and args.mode == 'cli':
+    if use_fallback and hasattr(args, "mode") and args.mode == "cli":
         listening_addr = find_listening_address(8384)
 
         if listening_addr:
             # If bound to 0.0.0.0, use localhost
-            if listening_addr == '0.0.0.0':
+            if listening_addr == "0.0.0.0":
                 detected_url = "http://127.0.0.1:8384"
             else:
                 detected_url = f"http://{listening_addr}:8384"
@@ -313,9 +330,7 @@ Please check that:
 
 
 def fetch_completions_parallel(
-    client,
-    tasks: List[Tuple[str, Optional[str]]],
-    max_workers: int = 5
+    client, tasks: List[Tuple[str, Optional[str]]], max_workers: int = 5
 ) -> Dict[Tuple[str, Optional[str]], Any]:
     """
     Fetch completion status for multiple device/folder combinations in parallel.
@@ -348,9 +363,7 @@ def fetch_completions_parallel(
 
 
 def fetch_folder_statuses_parallel(
-    client,
-    folder_ids: List[str],
-    max_workers: int = 5
+    client, folder_ids: List[str], max_workers: int = 5
 ) -> Dict[str, Any]:
     """
     Fetch folder statuses in parallel.
@@ -390,8 +403,11 @@ def sync_devices(client, devices_config, dry_run=False):
         devices_config: Dict mapping device names to device IDs
         dry_run: If True, only show what would be changed
     """
-    current_devices = {dev["deviceID"]: dev for dev in client.get_devices()
-                       if dev and isinstance(dev, dict) and "deviceID" in dev}
+    current_devices = {
+        dev["deviceID"]: dev
+        for dev in client.get_devices()
+        if dev and isinstance(dev, dict) and "deviceID" in dev
+    }
     configured_device_ids = set(devices_config.values())
 
     logging.info(f"  Syncing devices ({len(devices_config)} configured)...")
@@ -401,21 +417,25 @@ def sync_devices(client, devices_config, dry_run=False):
         if device_id in current_devices:
             current_name = current_devices[device_id].get("name", "")
             if current_name != device_name:
-                logging.info(f"    UPDATE: {current_name} -> {device_name} ({device_id[:7]}...)")
+                logging.info(
+                    f"    UPDATE: {current_name} -> {device_name} ({device_id[:7]}...)"
+                )
                 if not dry_run:
                     client.update_device(device_id, {"name": device_name})
-                    logging.info(f"      ✓ Device name updated")
+                    logging.info("      ✓ Device name updated")
                 else:
-                    logging.info(f"      [DRY-RUN] Would update device name")
+                    logging.info("      [DRY-RUN] Would update device name")
             else:
-                logging.info(f"    OK: {device_name} ({device_id[:7]}...) already configured")
+                logging.info(
+                    f"    OK: {device_name} ({device_id[:7]}...) already configured"
+                )
         else:
             logging.info(f"    ADD: {device_name} ({device_id[:7]}...)")
             if not dry_run:
                 client.add_device(device_id, device_name)
-                logging.info(f"      ✓ Device added")
+                logging.info("      ✓ Device added")
             else:
-                logging.info(f"      [DRY-RUN] Would add device")
+                logging.info("      [DRY-RUN] Would add device")
 
     # Remove devices that are in Syncthing but not in config
     for device_id, device in current_devices.items():
@@ -424,9 +444,9 @@ def sync_devices(client, devices_config, dry_run=False):
             logging.info(f"    REMOVE: {device_name} ({device_id[:7]}...)")
             if not dry_run:
                 client.remove_device(device_id)
-                logging.info(f"      ✓ Device removed")
+                logging.info("      ✓ Device removed")
             else:
-                logging.info(f"      [DRY-RUN] Would remove device")
+                logging.info("      [DRY-RUN] Would remove device")
 
 
 def sync_folders(client, folders_config, devices_config, dry_run=False):
@@ -439,8 +459,11 @@ def sync_folders(client, folders_config, devices_config, dry_run=False):
         devices_config: Dict mapping device names to device IDs (for resolution)
         dry_run: If True, only show what would be changed
     """
-    current_folders = {f["id"]: f for f in client.get_folders()
-                       if f and isinstance(f, dict) and "id" in f}
+    current_folders = {
+        f["id"]: f
+        for f in client.get_folders()
+        if f and isinstance(f, dict) and "id" in f
+    }
     configured_folder_ids = set(folders_config.keys())
 
     # Build device name to ID mapping for resolving device references
@@ -465,15 +488,22 @@ def sync_folders(client, folders_config, devices_config, dry_run=False):
             current_folder = current_folders[folder_id]
             current_label = current_folder.get("label", "")
             current_path = current_folder.get("path", "")
-            current_devices = set(d.get("deviceID") for d in current_folder.get("devices", [])
-                                  if d and isinstance(d, dict))
+            current_devices = set(
+                d.get("deviceID")
+                for d in current_folder.get("devices", [])
+                if d and isinstance(d, dict)
+            )
 
             new_label = folder_cfg.get("label", folder_id)
             new_path = folder_cfg["path"]
             new_devices = set(resolved_device_ids)
 
             # Check if anything changed
-            if current_label != new_label or current_path != new_path or current_devices != new_devices:
+            if (
+                current_label != new_label
+                or current_path != new_path
+                or current_devices != new_devices
+            ):
                 logging.info(f"    UPDATE: {folder_id}")
                 if not dry_run:
                     # Build device list for API
@@ -484,9 +514,9 @@ def sync_folders(client, folders_config, devices_config, dry_run=False):
                         "devices": devices_list,
                     }
                     client.update_folder(folder_id, update_data)
-                    logging.info(f"      ✓ Folder updated")
+                    logging.info("      ✓ Folder updated")
                 else:
-                    logging.info(f"      [DRY-RUN] Would update folder")
+                    logging.info("      [DRY-RUN] Would update folder")
             else:
                 logging.info(f"    OK: {folder_id} already configured")
         else:
@@ -501,9 +531,9 @@ def sync_folders(client, folders_config, devices_config, dry_run=False):
                     "devices": devices_list,
                 }
                 client.add_folder(folder_id, add_data)
-                logging.info(f"      ✓ Folder added")
+                logging.info("      ✓ Folder added")
             else:
-                logging.info(f"      [DRY-RUN] Would add folder")
+                logging.info("      [DRY-RUN] Would add folder")
 
     # Remove folders that are in Syncthing but not in config
     for folder_id, folder in current_folders.items():
@@ -512,9 +542,9 @@ def sync_folders(client, folders_config, devices_config, dry_run=False):
             logging.info(f"    REMOVE: {folder_label} ({folder_id})")
             if not dry_run:
                 client.remove_folder(folder_id)
-                logging.info(f"      ✓ Folder removed")
+                logging.info("      ✓ Folder removed")
             else:
-                logging.info(f"      [DRY-RUN] Would remove folder")
+                logging.info("      [DRY-RUN] Would remove folder")
 
 
 def sync_local_device_name(client, device_name: str, dry_run=False):
@@ -526,7 +556,7 @@ def sync_local_device_name(client, device_name: str, dry_run=False):
         device_name: Desired name for this device
         dry_run: If True, only show what would be changed
     """
-    logging.info(f"  Syncing local device name...")
+    logging.info("  Syncing local device name...")
 
     # Get local device ID
     system_status = client.get_system_status()
@@ -544,7 +574,9 @@ def sync_local_device_name(client, device_name: str, dry_run=False):
             break
 
     if not local_device:
-        logging.error(f"    Could not find local device config for ID {local_device_id[:7]}...")
+        logging.error(
+            f"    Could not find local device config for ID {local_device_id[:7]}..."
+        )
         return
 
     current_name = local_device.get("name", "")
@@ -552,12 +584,14 @@ def sync_local_device_name(client, device_name: str, dry_run=False):
         logging.info(f"    OK: Local device name already set to '{device_name}'")
         return
 
-    logging.info(f"    UPDATE: '{current_name}' -> '{device_name}' ({local_device_id[:7]}...)")
+    logging.info(
+        f"    UPDATE: '{current_name}' -> '{device_name}' ({local_device_id[:7]}...)"
+    )
     if not dry_run:
         client.update_device(local_device_id, {"name": device_name})
-        logging.info(f"      ✓ Local device name updated")
+        logging.info("      ✓ Local device name updated")
     else:
-        logging.info(f"      [DRY-RUN] Would update local device name")
+        logging.info("      [DRY-RUN] Would update local device name")
 
 
 def cmd_sync(args):
@@ -573,7 +607,9 @@ def cmd_sync(args):
 
         # Sync local device name if present
         if "localDeviceName" in config and config["localDeviceName"]:
-            sync_local_device_name(client, config["localDeviceName"], dry_run=args.dry_run)
+            sync_local_device_name(
+                client, config["localDeviceName"], dry_run=args.dry_run
+            )
 
         # Sync GUI credentials if present
         if "gui" in config and config["gui"] is not None:
@@ -582,7 +618,7 @@ def cmd_sync(args):
             password = gui_config.get("password")
 
             if username or password:
-                logging.info(f"  Updating GUI credentials...")
+                logging.info("  Updating GUI credentials...")
 
                 # Hash password if needed
                 password_hash = None
@@ -590,16 +626,18 @@ def cmd_sync(args):
                     # Check if it's already a bcrypt hash
                     if password.startswith("$2"):
                         password_hash = password
-                        logging.info(f"    Using pre-hashed password")
+                        logging.info("    Using pre-hashed password")
                     else:
                         password_hash = hash_password(password)
-                        logging.info(f"    Hashed plain text password with bcrypt")
+                        logging.info("    Hashed plain text password with bcrypt")
 
                 if not args.dry_run:
-                    client.update_gui_config(username=username, password_hash=password_hash)
-                    logging.info(f"    ✓ GUI credentials updated")
+                    client.update_gui_config(
+                        username=username, password_hash=password_hash
+                    )
+                    logging.info("    ✓ GUI credentials updated")
                 else:
-                    logging.info(f"    [DRY-RUN] Would update GUI credentials")
+                    logging.info("    [DRY-RUN] Would update GUI credentials")
 
         # Sync devices if present (fully declarative - add and remove)
         if "devices" in config:
@@ -608,7 +646,9 @@ def cmd_sync(args):
         # Sync folders if present (fully declarative - add and remove)
         if "folders" in config:
             devices_config = config.get("devices", {})
-            sync_folders(client, config["folders"], devices_config, dry_run=args.dry_run)
+            sync_folders(
+                client, config["folders"], devices_config, dry_run=args.dry_run
+            )
 
         if args.dry_run:
             logging.info("")
@@ -639,12 +679,7 @@ def display_this_device(system_status, connections_data=None):
     console.print("[bold cyan]This Device[/bold cyan]")
 
     # Create table
-    table = Table(
-        show_header=False,
-        show_lines=False,
-        box=box.ROUNDED,
-        padding=(0, 1)
-    )
+    table = Table(show_header=False, show_lines=False, box=box.ROUNDED, padding=(0, 1))
     table.add_column("Property", style="dim", width=25)
     table.add_column("Value", style="bold")
 
@@ -665,14 +700,18 @@ def display_this_device(system_status, connections_data=None):
     # Listeners
     num_listeners = system_status.get("connectionServiceStatus", {})
     if num_listeners:
-        active = sum(1 for svc, status in num_listeners.items() if status.get("error") is None)
+        active = sum(
+            1 for svc, status in num_listeners.items() if status.get("error") is None
+        )
         total = len(num_listeners)
         table.add_row("Listeners", f"{active}/{total}")
 
     # Discovery
     discovery_status = system_status.get("discoveryStatus", {})
     if discovery_status:
-        active = sum(1 for svc, status in discovery_status.items() if status.get("error") is None)
+        active = sum(
+            1 for svc, status in discovery_status.items() if status.get("error") is None
+        )
         total = len(discovery_status)
         table.add_row("Discovery", f"{active}/{total}")
 
@@ -718,10 +757,7 @@ def display_devices(devices, detailed=False, connections=None, completions=None)
 
     # Create table
     table = Table(
-        show_header=True,
-        header_style="bold cyan",
-        show_lines=False,
-        box=box.ROUNDED
+        show_header=True, header_style="bold cyan", show_lines=False, box=box.ROUNDED
     )
     table.add_column("Devices", style="bold yellow")
     table.add_column("Device ID", style="dim")
@@ -752,7 +788,9 @@ def display_devices(devices, detailed=False, connections=None, completions=None)
                         # Show syncing progress
                         need_bytes = comp.get("needBytes", 0)
                         need_size = format_bytes(need_bytes)
-                        sync_status = f"[cyan]Syncing {completion_pct:.0f}%[/cyan], {need_size}"
+                        sync_status = (
+                            f"[cyan]Syncing {completion_pct:.0f}%[/cyan], {need_size}"
+                        )
                     else:
                         sync_status = "[green]Up to Date[/green]"
             else:
@@ -766,7 +804,14 @@ def display_devices(devices, detailed=False, connections=None, completions=None)
     console.print(table)
 
 
-def display_folders(folders, detailed=False, device_map=None, folder_statuses=None, local_device_id=None, device_completions=None):
+def display_folders(
+    folders,
+    detailed=False,
+    device_map=None,
+    folder_statuses=None,
+    local_device_id=None,
+    device_completions=None,
+):
     """
     Display folders in a formatted table.
 
@@ -787,10 +832,7 @@ def display_folders(folders, detailed=False, device_map=None, folder_statuses=No
 
     # Create table
     table = Table(
-        show_header=True,
-        header_style="bold cyan",
-        show_lines=False,
-        box=box.ROUNDED
+        show_header=True, header_style="bold cyan", show_lines=False, box=box.ROUNDED
     )
     table.add_column("Folders", style="bold")
     table.add_column("Devices", style="yellow")
@@ -853,7 +895,9 @@ def display_folders(folders, detailed=False, device_map=None, folder_statuses=No
             table.add_row(label, device_rows[0][0], device_rows[0][1])
             # Second row: path + second device (or just path if only one device)
             if len(device_rows) > 1:
-                table.add_row(f"[dim]{path}[/dim]", device_rows[1][0], device_rows[1][1])
+                table.add_row(
+                    f"[dim]{path}[/dim]", device_rows[1][0], device_rows[1][1]
+                )
             else:
                 table.add_row(f"[dim]{path}[/dim]", "", "")
             # Remaining devices
@@ -887,7 +931,9 @@ def cmd_list_devices(args):
                 local_device_id = None
             try:
                 connections_data = future_connections.result()
-                connections = connections_data.get("connections", {}) if connections_data else {}
+                connections = (
+                    connections_data.get("connections", {}) if connections_data else {}
+                )
             except Exception:
                 connections = None
 
@@ -905,7 +951,9 @@ def cmd_list_devices(args):
         all_completions = fetch_completions_parallel(client, completion_tasks)
         completions = {dev_id: comp for (dev_id, _), comp in all_completions.items()}
 
-        display_devices(devices, detailed=True, connections=connections, completions=completions)
+        display_devices(
+            devices, detailed=True, connections=connections, completions=completions
+        )
 
     except Exception as e:
         logging.error(f"Error: {e}")
@@ -932,8 +980,11 @@ def cmd_list_folders(args):
                 local_device_id = None
 
         # Build device ID to name map
-        device_map = {d.get("deviceID"): d.get("name", "Unknown")
-                      for d in devices if d and isinstance(d, dict) and "deviceID" in d}
+        device_map = {
+            d.get("deviceID"): d.get("name", "Unknown")
+            for d in devices
+            if d and isinstance(d, dict) and "deviceID" in d
+        }
 
         # Collect completion tasks for parallel fetching
         completion_tasks = []
@@ -949,15 +1000,28 @@ def cmd_list_folders(args):
                         completion_tasks.append((dev_id, folder_id))
 
         # Fetch all completions and folder statuses in parallel
-        folder_ids = [f["id"] for f in folders if f and isinstance(f, dict) and "id" in f]
+        folder_ids = [
+            f["id"] for f in folders if f and isinstance(f, dict) and "id" in f
+        ]
         with ThreadPoolExecutor(max_workers=2) as executor:
-            future_completions = executor.submit(fetch_completions_parallel, client, completion_tasks)
-            future_folder_statuses = executor.submit(fetch_folder_statuses_parallel, client, folder_ids)
+            future_completions = executor.submit(
+                fetch_completions_parallel, client, completion_tasks
+            )
+            future_folder_statuses = executor.submit(
+                fetch_folder_statuses_parallel, client, folder_ids
+            )
 
             device_completions = future_completions.result()
             folder_statuses = future_folder_statuses.result()
 
-        display_folders(folders, detailed=True, device_map=device_map, folder_statuses=folder_statuses, local_device_id=local_device_id, device_completions=device_completions)
+        display_folders(
+            folders,
+            detailed=True,
+            device_map=device_map,
+            folder_statuses=folder_statuses,
+            local_device_id=local_device_id,
+            device_completions=device_completions,
+        )
 
     except Exception as e:
         logging.error(f"Error: {e}")
@@ -986,7 +1050,9 @@ def cmd_status(args):
                 local_device_id = None
             try:
                 connections_data = future_connections.result()
-                connections = connections_data.get("connections", {}) if connections_data else {}
+                connections = (
+                    connections_data.get("connections", {}) if connections_data else {}
+                )
             except Exception:
                 connections_data = None
                 connections = None
@@ -996,8 +1062,11 @@ def cmd_status(args):
             devices = [d for d in devices if d.get("deviceID") != local_device_id]
 
         # Build device ID to name map for folder display
-        device_map = {d.get("deviceID"): d.get("name", "Unknown")
-                      for d in devices if d and isinstance(d, dict) and "deviceID" in d}
+        device_map = {
+            d.get("deviceID"): d.get("name", "Unknown")
+            for d in devices
+            if d and isinstance(d, dict) and "deviceID" in d
+        }
 
         # Collect all completion tasks for parallel fetching
         completion_tasks = []
@@ -1021,10 +1090,16 @@ def cmd_status(args):
                         completion_tasks.append((dev_id, folder_id))
 
         # Fetch completions and folder statuses in parallel
-        folder_ids = [f["id"] for f in folders if f and isinstance(f, dict) and "id" in f]
+        folder_ids = [
+            f["id"] for f in folders if f and isinstance(f, dict) and "id" in f
+        ]
         with ThreadPoolExecutor(max_workers=2) as executor:
-            future_completions = executor.submit(fetch_completions_parallel, client, completion_tasks)
-            future_folder_statuses = executor.submit(fetch_folder_statuses_parallel, client, folder_ids)
+            future_completions = executor.submit(
+                fetch_completions_parallel, client, completion_tasks
+            )
+            future_folder_statuses = executor.submit(
+                fetch_folder_statuses_parallel, client, folder_ids
+            )
 
             all_completions = future_completions.result()
             folder_statuses = future_folder_statuses.result()
@@ -1039,13 +1114,22 @@ def cmd_status(args):
                 device_completions[(dev_id, folder_id)] = comp
 
         # Display folders with device name resolution
-        display_folders(folders, detailed=False, device_map=device_map, folder_statuses=folder_statuses, local_device_id=local_device_id, device_completions=device_completions)
+        display_folders(
+            folders,
+            detailed=False,
+            device_map=device_map,
+            folder_statuses=folder_statuses,
+            local_device_id=local_device_id,
+            device_completions=device_completions,
+        )
 
         # Display this device
         display_this_device(system_status, connections_data)
 
         # Display devices
-        display_devices(devices, detailed=False, connections=connections, completions=completions)
+        display_devices(
+            devices, detailed=False, connections=connections, completions=completions
+        )
 
     except Exception as e:
         logging.error(f"Error: {e}")
@@ -1055,13 +1139,11 @@ def cmd_status(args):
 def main():
     parser = argparse.ArgumentParser(
         description="Syncthing configuration management tool",
-        epilog="Default mode: CLI (use 'syncthing-mgmt' or 'syncthing-mgmt cli status')"
+        epilog="Default mode: CLI (use 'syncthing-mgmt' or 'syncthing-mgmt cli status')",
     )
 
     # Main subparsers for declarative vs cli mode
-    mode_subparsers = parser.add_subparsers(
-        dest="mode", help="Operation mode"
-    )
+    mode_subparsers = parser.add_subparsers(dest="mode", help="Operation mode")
 
     # ===== CLI Mode (interactive, default) =====
     cli_parser = mode_subparsers.add_parser(
@@ -1073,10 +1155,14 @@ def main():
 
     # Common arguments for CLI commands
     def add_cli_args(subparser):
-        subparser.add_argument("--base-url",
-                             help="Syncthing URL (default: http://127.0.0.1:8384, with fallback to local IPs)")
+        subparser.add_argument(
+            "--base-url",
+            help="Syncthing URL (default: http://127.0.0.1:8384, with fallback to local IPs)",
+        )
         subparser.add_argument("--api-key", help="Syncthing API key")
-        subparser.add_argument("--config-xml", help="Path to Syncthing config.xml (to extract API key)")
+        subparser.add_argument(
+            "--config-xml", help="Path to Syncthing config.xml (to extract API key)"
+        )
 
     # CLI: status command
     status_parser = cli_subparsers.add_parser(
@@ -1085,9 +1171,7 @@ def main():
     add_cli_args(status_parser)
 
     # CLI: list command with subcommands
-    list_parser = cli_subparsers.add_parser(
-        "list", help="List configured resources"
-    )
+    list_parser = cli_subparsers.add_parser("list", help="List configured resources")
     list_subparsers = list_parser.add_subparsers(
         dest="list_command", help="Resource type to list"
     )
@@ -1110,7 +1194,9 @@ def main():
     )
     declarative_parser.add_argument("--base-url", required=True, help="Syncthing URL")
     declarative_parser.add_argument("--api-key", help="Syncthing API key")
-    declarative_parser.add_argument("--config-xml", help="Path to Syncthing config.xml (to extract API key)")
+    declarative_parser.add_argument(
+        "--config-xml", help="Path to Syncthing config.xml (to extract API key)"
+    )
     declarative_parser.add_argument(
         "--config-file", required=True, help="JSON configuration file"
     )
@@ -1150,7 +1236,9 @@ def main():
                 # Linux (system)
                 "/var/lib/syncthing/.config/syncthing/config.xml",
                 # Darwin (macOS)
-                os.path.expanduser("~/Library/Application Support/Syncthing/config.xml"),
+                os.path.expanduser(
+                    "~/Library/Application Support/Syncthing/config.xml"
+                ),
             ]
             for config_path in possible_configs:
                 if os.path.exists(config_path):
@@ -1166,9 +1254,9 @@ def main():
         cmd_sync(args)
     elif args.mode == "cli":
         if args.cli_command == "list":
-            if hasattr(args, 'list_command') and args.list_command == "devices":
+            if hasattr(args, "list_command") and args.list_command == "devices":
                 cmd_list_devices(args)
-            elif hasattr(args, 'list_command') and args.list_command == "folders":
+            elif hasattr(args, "list_command") and args.list_command == "folders":
                 cmd_list_folders(args)
             else:
                 list_parser.print_help()

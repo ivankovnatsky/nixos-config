@@ -1,4 +1,8 @@
-{ lib, stdenv, zip }:
+{
+  lib,
+  stdenv,
+  zip,
+}:
 
 # https://gist.github.com/zbraniecki/000268ea27154bbccaad190dd479d226
 stdenv.mkDerivation {

@@ -1,4 +1,10 @@
-{ config, pkgs, lib, username, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  username,
+  ...
+}:
 
 let
   dataDir = "${config.flags.miniStoragePath}/.matrix/core/synapse";
@@ -17,7 +23,10 @@ let
         x_forwarded = true;
         resources = [
           {
-            names = [ "client" "federation" ];
+            names = [
+              "client"
+              "federation"
+            ];
             compress = false;
           }
         ];
@@ -100,7 +109,10 @@ in
     preStart =
       let
         synapsePackage = pkgs.matrix-synapse.override {
-          extras = [ "postgres" "url-preview" ];
+          extras = [
+            "postgres"
+            "url-preview"
+          ];
         };
       in
       ''
@@ -150,7 +162,10 @@ in
     command =
       let
         synapsePackage = pkgs.matrix-synapse.override {
-          extras = [ "postgres" "url-preview" ];
+          extras = [
+            "postgres"
+            "url-preview"
+          ];
         };
       in
       "${synapsePackage}/bin/synapse_homeserver --config-path ${dataDir}/homeserver.yaml";

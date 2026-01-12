@@ -24,8 +24,10 @@ Login in apple account
     sudo launchctl list | grep screensharing
     ```
   - VNC port: 5900 (default)
-  - Connect from another Mac: Finder → Go → Connect to Server → `vnc://mini.local` or `vnc://192.168.x.x`
-- Disabled for now: Enabled remote management, can't enable it using any automation clearly
+  - Connect from another Mac: Finder → Go → Connect to Server →
+    `vnc://mini.local` or `vnc://192.168.x.x`
+- Disabled for now: Enabled remote management, can't enable it using any
+  automation clearly
   (https://www.reddit.com/r/macsysadmin/comments/13dhnmb/enable_remote_management_through_shell_script/?rdt=53927)
 - Enabled file sharing
   - Added `/Volume/[StorageName]` to shared folders
@@ -64,8 +66,8 @@ Login in apple account
 
 - Disabled encryption/FileVault to be able to autologin
   - Also faced at least once that system wanted to unlock encrypted /nix store
-    volume, which it turns out determinate encrypts by defaults and writes key to
-    system keychain
+    volume, which it turns out determinate encrypts by defaults and writes key
+    to system keychain
   - Decrypted /nix store to avoid issue above:
     ```console
     sudo diskutil apfs decryptVolume disk3s7
@@ -120,15 +122,18 @@ Still an issue.
 
 ### macOS Privacy Permissions After Nix Store Updates
 
-When Nix store paths change (after rebuilds/updates), macOS treats the executables as new applications and requires re-granting permissions:
+When Nix store paths change (after rebuilds/updates), macOS treats the
+executables as new applications and requires re-granting permissions:
 
 **Required Manual Steps After Rebuild:**
 
 1. **Local Network** (System Settings → Privacy & Security → Local Network)
    - Re-approve network access for services like Caddy
-   - This is especially important on macOS Sequoia (15.x) due to stricter privacy controls
+   - This is especially important on macOS Sequoia (15.x) due to stricter
+     privacy controls
 
-2. **Full Disk Access** (System Settings → Privacy & Security → Full Disk Access)
+2. **Full Disk Access** (System Settings → Privacy & Security → Full Disk
+   Access)
    - Re-approve access for services that need to read `/Volumes/Storage`
    - Affects services like Syncthing, tmux rebuild scripts, etc.
 
@@ -141,19 +146,25 @@ When Nix store paths change (after rebuilds/updates), macOS treats the executabl
 - Connection refused errors for locally running services
 - Services unable to access `/Volumes/Storage` data
 
-**Note**: This is a macOS security feature and cannot be automated. After every rebuild that changes service store paths, manually check and re-approve permissions in System Settings.
+**Note**: This is a macOS security feature and cannot be automated. After every
+rebuild that changes service store paths, manually check and re-approve
+permissions in System Settings.
 
 ## OrbStack Documentation (DEPRECATED)
 
-> **DEPRECATED** (Oct 2025): OrbStack and all VMs/K8s have been decommissioned. All services now run natively. The sections below are preserved for historical reference and troubleshooting knowledge.
+> **DEPRECATED** (Oct 2025): OrbStack and all VMs/K8s have been decommissioned.
+> All services now run natively. The sections below are preserved for historical
+> reference and troubleshooting knowledge.
 >
-> See: [claude/projects/deprecate-vms-and-run-natively-on-both/ORBSTACK-DECOMMISSION.md](../claude/projects/deprecate-vms-and-run-natively-on-both/ORBSTACK-DECOMMISSION.md)
+> See:
+> [claude/projects/deprecate-vms-and-run-natively-on-both/ORBSTACK-DECOMMISSION.md](../claude/projects/deprecate-vms-and-run-natively-on-both/ORBSTACK-DECOMMISSION.md)
 
 ## OrbStack Kubernetes Networking
 
 ### NodePort Localhost Binding
 
-OrbStack binds NodePorts to localhost only, unlike standard Kubernetes which binds to all interfaces:
+OrbStack binds NodePorts to localhost only, unlike standard Kubernetes which
+binds to all interfaces:
 
 ```console
 lsof -i :30080
@@ -161,9 +172,11 @@ COMMAND    PID USER   FD   TYPE            DEVICE SIZE/OFF NODE NAME
 OrbStack  1109 ivan  129u  IPv4 0xf5c8c1e43046b90      0t0  TCP localhost:30080 (LISTEN)
 ```
 
-This means NodePort services are not accessible from external machines (like bee) without additional forwarding.
+This means NodePort services are not accessible from external machines (like
+bee) without additional forwarding.
 
-**Solution**: Use Caddy to forward from external interface to localhost NodePort:
+**Solution**: Use Caddy to forward from external interface to localhost
+NodePort:
 
 ```caddyfile
 # K8s NodePort forwarding (mini machine only)
@@ -173,7 +186,8 @@ This means NodePort services are not accessible from external machines (like bee
 }
 ```
 
-This enables the routing chain: `External machine → Mini external IP:30080 → Mini localhost:30080 → OrbStack NodePort → K8s Service`
+This enables the routing chain:
+`External machine → Mini external IP:30080 → Mini localhost:30080 → OrbStack NodePort → K8s Service`
 
 ### OrbStack DNS Resolution Issues
 
@@ -192,24 +206,34 @@ PING mini-vm.orb.local (192.168.138.4): 56 data bytes
 64 bytes from 192.168.138.4: icmp_seq=0 ttl=64 time=0.325 ms
 ```
 
-**Root Cause**: OrbStack's DNS service occasionally crashes or becomes unresponsive, causing temporary resolution failures for `.orb.local` domains.
+**Root Cause**: OrbStack's DNS service occasionally crashes or becomes
+unresponsive, causing temporary resolution failures for `.orb.local` domains.
 
-**Workaround**: Restart OrbStack app - the DNS service does not recover automatically.
+**Workaround**: Restart OrbStack app - the DNS service does not recover
+automatically.
 
-**Note**: This is a known OrbStack bug (GitHub #1966, #1876, #1451, #1984). For detailed analysis, workarounds, and recommendations, see [`/claude/issues/ORBSTACK-DNS.md`](../claude/issues/ORBSTACK-DNS.md).
+**Note**: This is a known OrbStack bug (GitHub #1966, #1876, #1451, #1984). For
+detailed analysis, workarounds, and recommendations, see
+[`/claude/issues/ORBSTACK-DNS.md`](../claude/issues/ORBSTACK-DNS.md).
 
-**Recommendation**: For critical services or automation, use IP addresses or port forwards instead of `.orb.local` domains.
+**Recommendation**: For critical services or automation, use IP addresses or
+port forwards instead of `.orb.local` domains.
 
 ### OrbStack HTTPS/TLS Configuration
 
-OrbStack requests keychain access to automatically configure HTTPS for its local VM services using the `orb.local` domain.
+OrbStack requests keychain access to automatically configure HTTPS for its local
+VM services using the `orb.local` domain.
 
-**Keychain Access Request**: When granted, OrbStack can automatically manage TLS certificates for local development services, making them accessible via `https://service.orb.local`.
+**Keychain Access Request**: When granted, OrbStack can automatically manage TLS
+certificates for local development services, making them accessible via
+`https://service.orb.local`.
 
 **Implications for Caddy Routing**:
 
-- Services in mini-vm may be accessible via both `http://service.orb.local` and `https://service.orb.local`
-- When configuring Caddy to route to mini-vm services, consider the TLS termination:
+- Services in mini-vm may be accessible via both `http://service.orb.local` and
+  `https://service.orb.local`
+- When configuring Caddy to route to mini-vm services, consider the TLS
+  termination:
   - **Option 1**: Route to HTTP endpoint and let Caddy handle TLS
   - **Option 2**: Route to HTTPS endpoint (requires proper certificate handling)
 
@@ -227,28 +251,34 @@ service.externalDomain {
 }
 ```
 
-**Note**: The `orb.local` domain is only accessible from the mini machine, so external routing must go through Caddy on the mini host.
+**Note**: The `orb.local` domain is only accessible from the mini machine, so
+external routing must go through Caddy on the mini host.
 
 ## OrbStack VM Network Limitations
 
 ### Link-Local Address Access (169.254.0.0/16)
 
-- **Cannot reach** devices using link-local addresses from OrbStack VMs or K8s pods
+- **Cannot reach** devices using link-local addresses from OrbStack VMs or K8s
+  pods
 - Link-local addresses are not routable by design (RFC 3927)
 - Only work within the same network segment/broadcast domain
-- **hostNetwork: true** in K8s does NOT solve this - the "host" is still the OrbStack VM
+- **hostNetwork: true** in K8s does NOT solve this - the "host" is still the
+  OrbStack VM
 
 ### Services That Should NOT Be Moved to OrbStack K8s
 
-- **Homebridge with Elgato plugins** - Needs direct access to 169.254.x.x devices
+- **Homebridge with Elgato plugins** - Needs direct access to 169.254.x.x
+  devices
 - **Matter-bridge** - Requires mDNS discovery on physical network
 - **IoT device integrations** - Many devices fall back to link-local addressing
 - **Hardware coordinators** - Zigbee/Z-Wave need direct USB access
 
 ### Alternative Solutions
 
-1. **Keep on physical machines** - Deploy on bee/mini host with full network access
-2. **Docker with --network=host on physical host** - Container shares host networking (not VM host)
+1. **Keep on physical machines** - Deploy on bee/mini host with full network
+   access
+2. **Docker with --network=host on physical host** - Container shares host
+   networking (not VM host)
 
 ### Testing Connectivity
 
@@ -277,5 +307,6 @@ After reboot, the FileVault encrypted disk requires unlock:
 ## TODO
 
 - [ ] Add /Volumes/Storage to /etc/fstab
-- [ ] Research OrbStack DNS reliability issues or evaluate alternatives (Lima VM, Colima, UTM)
+- [ ] Research OrbStack DNS reliability issues or evaluate alternatives (Lima
+      VM, Colima, UTM)
 - [ ] Make sure that name in System Settings is "Ivan’s Mac mini"

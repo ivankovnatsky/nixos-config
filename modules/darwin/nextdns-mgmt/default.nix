@@ -54,53 +54,69 @@ in
 {
   options.local.services.nextdns-mgmt = mkOption {
     type = types.attrsOf profileOptions;
-    default = {};
+    default = { };
     description = "NextDNS profile management instances";
   };
 
-  config = mkIf (enabledProfiles != {}) {
-    assertions = flatten (mapAttrsToList (name: profile: [
-      {
-        assertion = (profile.apiKey != null) != (profile.apiKeyFile != null);
-        message = "Exactly one of apiKey or apiKeyFile must be set for nextdns-mgmt profile '${name}'";
-      }
-      {
-        assertion = (profile.profileId != null) != (profile.profileIdFile != null);
-        message = "Exactly one of profileId or profileIdFile must be set for nextdns-mgmt profile '${name}'";
-      }
-    ]) enabledProfiles);
+  config = mkIf (enabledProfiles != { }) {
+    assertions = flatten (
+      mapAttrsToList (name: profile: [
+        {
+          assertion = (profile.apiKey != null) != (profile.apiKeyFile != null);
+          message = "Exactly one of apiKey or apiKeyFile must be set for nextdns-mgmt profile '${name}'";
+        }
+        {
+          assertion = (profile.profileId != null) != (profile.profileIdFile != null);
+          message = "Exactly one of profileId or profileIdFile must be set for nextdns-mgmt profile '${name}'";
+        }
+      ]) enabledProfiles
+    );
 
     # Darwin launchd services (one per profile)
-    local.launchd.services = listToAttrs (mapAttrsToList (name: profile:
-      nameValuePair "nextdns-mgmt-${name}" {
-        enable = true;
-        keepAlive = false;
-        runAtLoad = true;
+    local.launchd.services = listToAttrs (
+      mapAttrsToList (
+        name: profile:
+        nameValuePair "nextdns-mgmt-${name}" {
+          enable = true;
+          keepAlive = false;
+          runAtLoad = true;
 
-          command = let
-            syncScript = pkgs.writeShellScript "nextdns-mgmt-${name}-sync" ''
-              set -e
+          command =
+            let
+              syncScript = pkgs.writeShellScript "nextdns-mgmt-${name}-sync" ''
+                set -e
 
-              ${if profile.profileIdFile != null
-                then ''echo "Updating NextDNS profile ${name}..."''
-                else ''echo "Updating NextDNS profile ${name} (${profile.profileId})..."''}
+                ${
+                  if profile.profileIdFile != null then
+                    ''echo "Updating NextDNS profile ${name}..."''
+                  else
+                    ''echo "Updating NextDNS profile ${name} (${profile.profileId})..."''
+                }
 
-              ${if profile.apiKeyFile != null
-                then ''API_KEY="$(cat ${profile.apiKeyFile})"''
-                else ''API_KEY="${profile.apiKey}"''}
-              ${if profile.profileIdFile != null
-                then ''PROFILE_ID="$(cat ${profile.profileIdFile})"''
-                else ''PROFILE_ID="${profile.profileId}"''}
+                ${
+                  if profile.apiKeyFile != null then
+                    ''API_KEY="$(cat ${profile.apiKeyFile})"''
+                  else
+                    ''API_KEY="${profile.apiKey}"''
+                }
+                ${
+                  if profile.profileIdFile != null then
+                    ''PROFILE_ID="$(cat ${profile.profileIdFile})"''
+                  else
+                    ''PROFILE_ID="${profile.profileId}"''
+                }
 
-              ${pkgs.nextdns-mgmt}/bin/nextdns-mgmt update \
-                --api-key "$API_KEY" \
-                --profile-id "$PROFILE_ID" \
-                --profile-file "${profile.profileFile}" 2>&1 || echo "Warning: NextDNS update for ${name} failed with exit code $?"
+                ${pkgs.nextdns-mgmt}/bin/nextdns-mgmt update \
+                  --api-key "$API_KEY" \
+                  --profile-id "$PROFILE_ID" \
+                  --profile-file "${profile.profileFile}" 2>&1 || echo "Warning: NextDNS update for ${name} failed with exit code $?"
 
-              echo "NextDNS profile ${name} update completed"
-            '';
-          in "${syncScript}";
+                echo "NextDNS profile ${name} update completed"
+              '';
+            in
+            "${syncScript}";
         }
-      ) enabledProfiles);
+      ) enabledProfiles
+    );
   };
 }

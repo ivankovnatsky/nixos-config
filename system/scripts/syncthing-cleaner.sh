@@ -28,9 +28,12 @@ EOF
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --delete) DELETE=true; shift ;;
-    --help|-h) usage ;;
-    *) break ;;
+  --delete)
+    DELETE=true
+    shift
+    ;;
+  --help | -h) usage ;;
+  *) break ;;
   esac
 done
 

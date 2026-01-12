@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 
@@ -14,7 +19,16 @@ let
       };
 
       type = mkOption {
-        type = types.enum [ "http" "https" "tcp" "ping" "dns" "postgres" "mqtt" "tailscale-ping" ];
+        type = types.enum [
+          "http"
+          "https"
+          "tcp"
+          "ping"
+          "dns"
+          "postgres"
+          "mqtt"
+          "tailscale-ping"
+        ];
         default = "http";
         description = "Monitor type";
       };
@@ -64,19 +78,21 @@ let
   };
 
   # Template JSON with placeholders (to be substituted at runtime)
-  configJsonTemplate = pkgs.writeText "uptime-kuma-monitors-template.json" (builtins.toJSON {
-    monitors = map (m: {
-      name = m.name;
-      type = m.type;
-      url = m.url;
-      interval = m.interval;
-      maxretries = m.maxretries;
-      retryInterval = m.retryInterval;
-      timeout = m.timeout;
-      expectedStatus = m.expectedStatus;
-      description = m.description;
-    }) cfg.monitors;
-  });
+  configJsonTemplate = pkgs.writeText "uptime-kuma-monitors-template.json" (
+    builtins.toJSON {
+      monitors = map (m: {
+        name = m.name;
+        type = m.type;
+        url = m.url;
+        interval = m.interval;
+        maxretries = m.maxretries;
+        retryInterval = m.retryInterval;
+        timeout = m.timeout;
+        expectedStatus = m.expectedStatus;
+        description = m.description;
+      }) cfg.monitors;
+    }
+  );
 in
 {
   options.local.services.uptime-kuma-mgmt = {
@@ -147,21 +163,28 @@ in
   config = mkIf cfg.enable {
     assertions = [
       {
-        assertion = (cfg.baseUrl != null && cfg.baseUrlFile == null) || (cfg.baseUrl == null && cfg.baseUrlFile != null);
+        assertion =
+          (cfg.baseUrl != null && cfg.baseUrlFile == null)
+          || (cfg.baseUrl == null && cfg.baseUrlFile != null);
         message = "Either baseUrl or baseUrlFile must be set, but not both";
       }
       {
-        assertion = (cfg.username != null && cfg.usernameFile == null) || (cfg.username == null && cfg.usernameFile != null);
+        assertion =
+          (cfg.username != null && cfg.usernameFile == null)
+          || (cfg.username == null && cfg.usernameFile != null);
         message = "Either username or usernameFile must be set, but not both";
       }
       {
-        assertion = (cfg.password != null && cfg.passwordFile == null) || (cfg.password == null && cfg.passwordFile != null);
+        assertion =
+          (cfg.password != null && cfg.passwordFile == null)
+          || (cfg.password == null && cfg.passwordFile != null);
         message = "Either password or passwordFile must be set, but not both";
       }
       {
-        assertion = (cfg.discordWebhook == null && cfg.discordWebhookFile == null) ||
-                    (cfg.discordWebhook != null && cfg.discordWebhookFile == null) ||
-                    (cfg.discordWebhook == null && cfg.discordWebhookFile != null);
+        assertion =
+          (cfg.discordWebhook == null && cfg.discordWebhookFile == null)
+          || (cfg.discordWebhook != null && cfg.discordWebhookFile == null)
+          || (cfg.discordWebhook == null && cfg.discordWebhookFile != null);
         message = "Either discordWebhook or discordWebhookFile can be set, but not both";
       }
     ];
@@ -172,7 +195,8 @@ in
       keepAlive = false;
       runAtLoad = true;
 
-        command = let
+      command =
+        let
           syncScript = pkgs.writeShellScript "uptime-kuma-mgmt-sync" ''
             set -e
 
@@ -183,21 +207,36 @@ in
             POSTGRES_PASSWORD=$(cat /run/secrets/postgres-monitoring-password)
 
             # Read secrets from files or use direct values (with runtime substitution)
-            ${if cfg.baseUrlFile != null then ''
-              BASE_URL=$(cat "${cfg.baseUrlFile}")
-            '' else ''
-              BASE_URL=$(echo "${cfg.baseUrl}" | sed "s|@EXTERNAL_DOMAIN@|$EXTERNAL_DOMAIN|g")
-            ''}
-            ${if cfg.usernameFile != null then ''
-              USERNAME=$(cat "${cfg.usernameFile}")
-            '' else ''
-              USERNAME="${cfg.username}"
-            ''}
-            ${if cfg.passwordFile != null then ''
-              PASSWORD=$(cat "${cfg.passwordFile}")
-            '' else ''
-              PASSWORD="${cfg.password}"
-            ''}
+            ${
+              if cfg.baseUrlFile != null then
+                ''
+                  BASE_URL=$(cat "${cfg.baseUrlFile}")
+                ''
+              else
+                ''
+                  BASE_URL=$(echo "${cfg.baseUrl}" | sed "s|@EXTERNAL_DOMAIN@|$EXTERNAL_DOMAIN|g")
+                ''
+            }
+            ${
+              if cfg.usernameFile != null then
+                ''
+                  USERNAME=$(cat "${cfg.usernameFile}")
+                ''
+              else
+                ''
+                  USERNAME="${cfg.username}"
+                ''
+            }
+            ${
+              if cfg.passwordFile != null then
+                ''
+                  PASSWORD=$(cat "${cfg.passwordFile}")
+                ''
+              else
+                ''
+                  PASSWORD="${cfg.password}"
+                ''
+            }
 
             # Create runtime config with substituted placeholders
             RUNTIME_CONFIG="/tmp/uptime-kuma-monitors-$$.json"
@@ -205,32 +244,43 @@ in
               sed "s|@POSTGRES_PASSWORD@|$POSTGRES_PASSWORD|g" > "$RUNTIME_CONFIG"
 
             # Build command with optional Discord webhook
-            ${if cfg.discordWebhook != null || cfg.discordWebhookFile != null then ''
-              ${if cfg.discordWebhookFile != null then ''
-                DISCORD_WEBHOOK=$(cat "${cfg.discordWebhookFile}")
-              '' else ''
-                DISCORD_WEBHOOK="${cfg.discordWebhook}"
-              ''}
-              ${pkgs.uptime-kuma-mgmt}/bin/uptime-kuma-mgmt sync \
-                --base-url "$BASE_URL" \
-                --username "$USERNAME" \
-                --password "$PASSWORD" \
-                --config-file "$RUNTIME_CONFIG" \
-                --discord-webhook "$DISCORD_WEBHOOK" 2>&1 || echo "Warning: Uptime Kuma sync failed with exit code $?"
-            '' else ''
-              ${pkgs.uptime-kuma-mgmt}/bin/uptime-kuma-mgmt sync \
-                --base-url "$BASE_URL" \
-                --username "$USERNAME" \
-                --password "$PASSWORD" \
-                --config-file "$RUNTIME_CONFIG" 2>&1 || echo "Warning: Uptime Kuma sync failed with exit code $?"
-            ''}
+            ${
+              if cfg.discordWebhook != null || cfg.discordWebhookFile != null then
+                ''
+                  ${
+                    if cfg.discordWebhookFile != null then
+                      ''
+                        DISCORD_WEBHOOK=$(cat "${cfg.discordWebhookFile}")
+                      ''
+                    else
+                      ''
+                        DISCORD_WEBHOOK="${cfg.discordWebhook}"
+                      ''
+                  }
+                  ${pkgs.uptime-kuma-mgmt}/bin/uptime-kuma-mgmt sync \
+                    --base-url "$BASE_URL" \
+                    --username "$USERNAME" \
+                    --password "$PASSWORD" \
+                    --config-file "$RUNTIME_CONFIG" \
+                    --discord-webhook "$DISCORD_WEBHOOK" 2>&1 || echo "Warning: Uptime Kuma sync failed with exit code $?"
+                ''
+              else
+                ''
+                  ${pkgs.uptime-kuma-mgmt}/bin/uptime-kuma-mgmt sync \
+                    --base-url "$BASE_URL" \
+                    --username "$USERNAME" \
+                    --password "$PASSWORD" \
+                    --config-file "$RUNTIME_CONFIG" 2>&1 || echo "Warning: Uptime Kuma sync failed with exit code $?"
+                ''
+            }
 
             # Cleanup runtime config
             rm -f "$RUNTIME_CONFIG"
 
             echo "Uptime Kuma sync completed"
           '';
-        in "${syncScript}";
+        in
+        "${syncScript}";
     };
   };
 }

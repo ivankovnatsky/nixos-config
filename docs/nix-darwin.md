@@ -33,7 +33,6 @@ Configure your new machine if needed:
 nix develop "https://flakehub.com/f/NixOS/nixpkgs/*#git"
 ```
 
-
 Check instructions here:
 
 <https://github.com/nix-darwin/nix-darwin>
@@ -56,8 +55,8 @@ SSH from another machine to trigger host key generation:
 ssh <hostname>.local
 ```
 
-If sops secrets were encrypted with old machine's SSH host keys (e.g., after macOS
-reinstall), re-encrypt with the new host key:
+If sops secrets were encrypted with old machine's SSH host keys (e.g., after
+macOS reinstall), re-encrypt with the new host key:
 
 ```console
 nix shell nixpkgs#ssh-to-age -c ssh-to-age < /etc/ssh/ssh_host_ed25519_key.pub
@@ -95,12 +94,14 @@ npm install -g @anthropic-ai/claude-codeo
 ### How Homebrew Updates Work with nix-darwin
 
 1. **Flake updates** control the available package versions (the "catalog")
-2. **`onActivation.upgrade`** controls whether to actually upgrade installed packages
+2. **`onActivation.upgrade`** controls whether to actually upgrade installed
+   packages
 3. **`greedy`** flag needed for auto-updating casks
 
 ### Upgrading Homebrew Packages
 
-By default, Homebrew skips auto-updating casks during `brew upgrade`. This includes:
+By default, Homebrew skips auto-updating casks during `brew upgrade`. This
+includes:
 
 - Casks with `version :latest`
 - Casks marked with `auto_updates` flag (like `ghostty@tip`)

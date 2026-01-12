@@ -37,6 +37,7 @@ sudo vim /etc/fstab
 ## fstab Change
 
 From:
+
 ```
 # UUID=57dbf488-6645-4357-9356-8e7efc8ab1c9 /nix apfs rw,noatime,noauto,nobrowse,nosuid,owners # Added by the Determinate Nix Installer
 UUID=2C8AA2DB-28C8-4D59-A271-E37924692C87 /storage apfs rw,noatime,nosuid,owners
@@ -45,6 +46,7 @@ UUID=99FFCF5F-7706-42CB-BC36-BD2C548AFCF8 /nix apfs rw,noatime,nobrowse,nosuid,o
 ```
 
 To:
+
 ```
 # UUID=57dbf488-6645-4357-9356-8e7efc8ab1c9 /nix apfs rw,noatime,noauto,nobrowse,nosuid,owners # Added by the Determinate Nix Installer
 UUID=2C8AA2DB-28C8-4D59-A271-E37924692C87 /storage apfs rw,noatime,nosuid,owners
@@ -61,7 +63,8 @@ sudo reboot
 
 ## Cleanup Old External Volume
 
-After verifying internal nix store works, delete the old external volume to reclaim 45GB:
+After verifying internal nix store works, delete the old external volume to
+reclaim 45GB:
 
 ```console
 # Verify disk7s2 is the old external Nix Store

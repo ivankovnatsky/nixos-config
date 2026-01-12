@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   home.packages = [ pkgs.ghorg ];
@@ -21,6 +26,8 @@
 
   home.activation.linkGhorgConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     $DRY_RUN_CMD mkdir -p ${config.home.homeDirectory}/.config/ghorg
-    $DRY_RUN_CMD ln -sf ${config.sops.templates."ghorg-conf.yaml".path} ${config.home.homeDirectory}/.config/ghorg/conf.yaml
+    $DRY_RUN_CMD ln -sf ${
+      config.sops.templates."ghorg-conf.yaml".path
+    } ${config.home.homeDirectory}/.config/ghorg/conf.yaml
   '';
 }

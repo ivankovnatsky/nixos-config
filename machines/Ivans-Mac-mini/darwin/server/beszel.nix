@@ -1,4 +1,9 @@
-{ config, pkgs, username, ... }:
+{
+  config,
+  pkgs,
+  username,
+  ...
+}:
 
 let
   dataDir = "${config.flags.miniStoragePath}/.beszel-hub";
@@ -13,28 +18,30 @@ in
     type = "user-agent";
     waitForPath = config.flags.miniStoragePath;
     dataDir = dataDir;
-    command = let
-      startScript = pkgs.writeShellScript "beszel-hub-start" ''
-        set -e
+    command =
+      let
+        startScript = pkgs.writeShellScript "beszel-hub-start" ''
+          set -e
 
-        BESZEL_TOKEN="$(cat ${config.sops.secrets.beszel-token.path})"
-        BESZEL_EMAIL="$(cat ${config.sops.secrets.beszel-email.path})"
+          BESZEL_TOKEN="$(cat ${config.sops.secrets.beszel-token.path})"
+          BESZEL_EMAIL="$(cat ${config.sops.secrets.beszel-email.path})"
 
-        cat > ${dataDir}/config.yml << EOF
-        systems:
-          - name: Ivans-Mac-mini
-            host: ${config.flags.miniIp}
-            port: 45876
-            token: $BESZEL_TOKEN
-            users:
-              - $BESZEL_EMAIL
-        EOF
+          cat > ${dataDir}/config.yml << EOF
+          systems:
+            - name: Ivans-Mac-mini
+              host: ${config.flags.miniIp}
+              port: 45876
+              token: $BESZEL_TOKEN
+              users:
+                - $BESZEL_EMAIL
+          EOF
 
-        exec ${pkgs.nixpkgs-darwin-master-beszel.beszel}/bin/beszel-hub serve \
-          --http ${config.flags.miniIp}:8091 \
-          --dir ${dataDir}
-      '';
-    in "${startScript}";
+          exec ${pkgs.nixpkgs-darwin-master-beszel.beszel}/bin/beszel-hub serve \
+            --http ${config.flags.miniIp}:8091 \
+            --dir ${dataDir}
+        '';
+      in
+      "${startScript}";
   };
 
   # Beszel Agent (monitoring mini itself)

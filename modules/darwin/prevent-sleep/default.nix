@@ -71,12 +71,14 @@ in
       command = "${preventSleepWrapper}/bin/prevent-sleep-wrapper";
 
       extraServiceConfig = {
-        StartCalendarInterval = builtins.concatMap (hour:
+        StartCalendarInterval = builtins.concatMap (
+          hour:
           map (weekday: {
             Hour = hour;
             Minute = 0;
             Weekday = weekday;
-          }) cfg.workDays) cfg.workHours;
+          }) cfg.workDays
+        ) cfg.workHours;
       };
     };
   };

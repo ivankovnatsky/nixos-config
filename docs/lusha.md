@@ -15,13 +15,15 @@ After adding Atlassian MCP server with `--user` scope, authenticated by running:
 claude /mcp
 ```
 
-Pressed `1` twice to trigger OAuth flow - browser opened automatically for authentication.
+Pressed `1` twice to trigger OAuth flow - browser opened automatically for
+authentication.
 
 ## Remote Login
 
 Configured SSH remote login for my user account only via System Settings.
 
-Allows terminal access for remote administration and troubleshooting from other devices on the network or via Tailscale VPN.
+Allows terminal access for remote administration and troubleshooting from other
+devices on the network or via Tailscale VPN.
 
 ## Screen Sharing
 
@@ -31,7 +33,8 @@ Configured screen sharing via System Settings with the following options:
 - **VNC viewers may control screen with password**: Enabled
 - **Anyone may request permission to control screen**: Enabled
 
-Enables remote desktop access via VNC/Apple Remote Desktop for system maintenance and troubleshooting.
+Enables remote desktop access via VNC/Apple Remote Desktop for system
+maintenance and troubleshooting.
 
 ## App macOS settings
 
@@ -46,7 +49,8 @@ Enables remote desktop access via VNC/Apple Remote Desktop for system maintenanc
 
 ### Hammerspoon
 
-- Allow access to control "System Events" (required for space management via osascript)
+- Allow access to control "System Events" (required for space management via
+  osascript)
 
 ### Ghostty
 

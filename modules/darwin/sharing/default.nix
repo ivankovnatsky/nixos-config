@@ -75,13 +75,18 @@ in
       fi
 
       # Configure "Allow full disk access for all users" setting
-      ${if cfg.allowFullDiskAccess then ''
-        echo "Enabling full disk access for all users..."
-        sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server VirtualAdminShares -bool YES
-      '' else ''
-        echo "Disabling full disk access for all users..."
-        sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server VirtualAdminShares -bool NO
-      ''}
+      ${
+        if cfg.allowFullDiskAccess then
+          ''
+            echo "Enabling full disk access for all users..."
+            sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server VirtualAdminShares -bool YES
+          ''
+        else
+          ''
+            echo "Disabling full disk access for all users..."
+            sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server VirtualAdminShares -bool NO
+          ''
+      }
 
       # Use a system-wide location for tracking shared folders
       TRACKING_DIR="/var/lib/nix-darwin-shared"

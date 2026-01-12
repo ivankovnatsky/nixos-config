@@ -2,7 +2,8 @@
 
 ## Xcode License Agreement
 
-During `darwin-rebuild switch` on a fresh MacBook Pro installation, Homebrew may fail with Xcode license errors:
+During `darwin-rebuild switch` on a fresh MacBook Pro installation, Homebrew may
+fail with Xcode license errors:
 
 ```console
 Error: You have not agreed to the Xcode license. Please resolve this by running:
@@ -15,11 +16,13 @@ Error: You have not agreed to the Xcode license. Please resolve this by running:
 sudo xcodebuild -license accept
 ```
 
-After accepting the license, re-run `darwin-rebuild switch` to complete the system configuration.
+After accepting the license, re-run `darwin-rebuild switch` to complete the
+system configuration.
 
 ## Xcode Component Selection
 
-When installing Xcode (version 26.0.1 or later), select the following components:
+When installing Xcode (version 26.0.1 or later), select the following
+components:
 
 **Platform Support:**
 
@@ -33,7 +36,8 @@ When installing Xcode (version 26.0.1 or later), select the following components
 
 - ✅ Predictive Code Completion Model (2 GB)
 
-This setup includes iOS development support while still saving approximately 14.4 GB by skipping watchOS, tvOS, and visionOS platforms.
+This setup includes iOS development support while still saving approximately
+14.4 GB by skipping watchOS, tvOS, and visionOS platforms.
 
 ## Xcode Notifications
 

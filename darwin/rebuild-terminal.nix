@@ -1,4 +1,8 @@
-{ config, username ? null, ... }:
+{
+  config,
+  username ? null,
+  ...
+}:
 {
   local.services.rebuildTerminal = {
     enable = true;

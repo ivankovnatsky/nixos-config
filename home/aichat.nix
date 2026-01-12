@@ -1,13 +1,20 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   inherit (pkgs.stdenv.targetPlatform) isDarwin;
 
-  aichatConfigPath =
-    if isDarwin then "Library/Application Support/aichat" else ".config/aichat";
+  aichatConfigPath = if isDarwin then "Library/Application Support/aichat" else ".config/aichat";
 
   aichatConfigFile =
-    if isDarwin then "${config.home.homeDirectory}/Library/Application Support/aichat/config.yaml" else "${config.home.homeDirectory}/.config/aichat/config.yaml";
+    if isDarwin then
+      "${config.home.homeDirectory}/Library/Application Support/aichat/config.yaml"
+    else
+      "${config.home.homeDirectory}/.config/aichat/config.yaml";
 in
 {
   # https://github.com/sigoden/aichat/blob/main/config.example.yaml

@@ -21,7 +21,11 @@ let
 
   # Convert settings to YAML for stubby config
   settingsFormat = pkgs.formats.yaml { };
-  configFile = if cfg.configFile != null then cfg.configFile else settingsFormat.generate "stubby.yml" cfg.settings;
+  configFile =
+    if cfg.configFile != null then
+      cfg.configFile
+    else
+      settingsFormat.generate "stubby.yml" cfg.settings;
 
 in
 {

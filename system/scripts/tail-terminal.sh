@@ -4,7 +4,7 @@
 set -euo pipefail
 
 list_windows() {
-    osascript -e '
+  osascript -e '
 tell application "Terminal"
     set windowCount to count of windows
     repeat with i from 1 to windowCount
@@ -28,7 +28,7 @@ end tell
 }
 
 show_help() {
-    cat << EOF
+  cat <<EOF
 Usage: tail-terminal.sh [OPTIONS]
 
 Get contents of a Terminal.app window
@@ -47,41 +47,41 @@ Examples:
   tail-terminal.sh -l 10 -w 2         # 10 lines from window 2
   tail-terminal.sh --list             # List all windows and tabs
 EOF
-    exit 0
+  exit 0
 }
 
 lines=20
 window="front"
 
 while [[ $# -gt 0 ]]; do
-    case "$1" in
-        -l|--lines)
-            lines="$2"
-            shift 2
-            ;;
-        -w|--window)
-            window="$2"
-            shift 2
-            ;;
-        --list)
-            list_windows
-            exit 0
-            ;;
-        -h|--help)
-            show_help
-            ;;
-        *)
-            echo "Unknown option: $1" >&2
-            echo "Use --help for usage information" >&2
-            exit 1
-            ;;
-    esac
+  case "$1" in
+  -l | --lines)
+    lines="$2"
+    shift 2
+    ;;
+  -w | --window)
+    window="$2"
+    shift 2
+    ;;
+  --list)
+    list_windows
+    exit 0
+    ;;
+  -h | --help)
+    show_help
+    ;;
+  *)
+    echo "Unknown option: $1" >&2
+    echo "Use --help for usage information" >&2
+    exit 1
+    ;;
+  esac
 done
 
 if [[ "$window" == "front" ]]; then
-    window_selector="front window"
+  window_selector="front window"
 else
-    window_selector="window $window"
+  window_selector="window $window"
 fi
 
 osascript -e "tell application \"Terminal\" to get contents of selected tab of $window_selector" | tail -"$lines"

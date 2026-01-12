@@ -38,7 +38,15 @@ def get_default_branch_gh(repo_path: Path) -> str | None:
     """Get the default branch using gh CLI."""
     try:
         result = subprocess.run(
-            ["gh", "repo", "view", "--json", "defaultBranchRef", "-q", ".defaultBranchRef.name"],
+            [
+                "gh",
+                "repo",
+                "view",
+                "--json",
+                "defaultBranchRef",
+                "-q",
+                ".defaultBranchRef.name",
+            ],
             cwd=repo_path,
             capture_output=True,
             text=True,

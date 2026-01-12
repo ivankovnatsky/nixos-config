@@ -1,4 +1,3 @@
 # nixos-config
 
-Refer to docs under [docs/](docs/) for installation on a specific
-platform.
+Refer to docs under [docs/](docs/) for installation on a specific platform.

@@ -20,8 +20,7 @@
 
 let
   isServer = config.device.type == "server";
-  guiAddress =
-    if isServer then "${config.flags.miniIp}:8384" else "127.0.0.1:8384";
+  guiAddress = if isServer then "${config.flags.miniIp}:8384" else "127.0.0.1:8384";
 in
 {
   local.launchd.services.syncthing = {

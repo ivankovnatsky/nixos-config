@@ -58,8 +58,12 @@ class ArrClient:
             try:
                 return response.json()
             except (ValueError, requests.exceptions.JSONDecodeError) as e:
-                print(f"DEBUG: Failed to parse JSON response from {url}", file=sys.stderr)
-                print(f"DEBUG: Response status: {response.status_code}", file=sys.stderr)
+                print(
+                    f"DEBUG: Failed to parse JSON response from {url}", file=sys.stderr
+                )
+                print(
+                    f"DEBUG: Response status: {response.status_code}", file=sys.stderr
+                )
                 print(f"DEBUG: Response text: {response.text[:200]}", file=sys.stderr)
                 raise Exception(f"Invalid JSON response: {e}")
         except requests.exceptions.RequestException as e:
@@ -149,8 +153,12 @@ class ProwlarrClient:
             try:
                 return response.json()
             except (ValueError, requests.exceptions.JSONDecodeError) as e:
-                print(f"DEBUG: Failed to parse JSON response from {url}", file=sys.stderr)
-                print(f"DEBUG: Response status: {response.status_code}", file=sys.stderr)
+                print(
+                    f"DEBUG: Failed to parse JSON response from {url}", file=sys.stderr
+                )
+                print(
+                    f"DEBUG: Response status: {response.status_code}", file=sys.stderr
+                )
                 print(f"DEBUG: Response text: {response.text[:200]}", file=sys.stderr)
                 raise Exception(f"Invalid JSON response: {e}")
         except requests.exceptions.RequestException as e:
@@ -324,10 +332,12 @@ def _sync_host_config(client, desired_config: dict, dry_run: bool):
                 update_data["bindAddress"] = desired_config["bindAddress"]
             client.update_host_config(update_data)
     else:
-        print(f"  OK: host config (no changes)", file=sys.stderr)
+        print("  OK: host config (no changes)", file=sys.stderr)
 
 
-def _sync_downloadclients(client: ArrClient, desired_clients: list, service_type: str, dry_run: bool):
+def _sync_downloadclients(
+    client: ArrClient, desired_clients: list, service_type: str, dry_run: bool
+):
     """Sync download clients for Radarr or Sonarr."""
     current_clients = {dc["name"]: dc for dc in client.list_downloadclients()}
     desired_clients_map = {dc["name"]: dc for dc in desired_clients}
@@ -375,7 +385,9 @@ def _sync_downloadclients(client: ArrClient, desired_clients: list, service_type
                     "enable": desired.get("enable", True),
                     "protocol": "torrent",
                     "priority": desired.get("priority", 1),
-                    "removeCompletedDownloads": desired.get("removeCompletedDownloads", True),
+                    "removeCompletedDownloads": desired.get(
+                        "removeCompletedDownloads", True
+                    ),
                     "removeFailedDownloads": desired.get("removeFailedDownloads", True),
                     "name": name,
                     "fields": _build_transmission_fields(desired, category_field),
@@ -424,7 +436,10 @@ def _sync_applications(client: ProwlarrClient, desired_apps: list, dry_run: bool
 
             # Build fields
             new_fields = [
-                {"name": "prowlarrUrl", "value": desired.get("prowlarrUrl", "http://localhost:9696")},
+                {
+                    "name": "prowlarrUrl",
+                    "value": desired.get("prowlarrUrl", "http://localhost:9696"),
+                },
                 {"name": "baseUrl", "value": desired["baseUrl"]},
                 {"name": "apiKey", "value": desired["apiKey"]},
                 {"name": "syncCategories", "value": desired.get("syncCategories", [])},
@@ -467,10 +482,18 @@ def _sync_applications(client: ProwlarrClient, desired_apps: list, dry_run: bool
                     "enable": desired.get("enable", True),
                     "name": name,
                     "fields": [
-                        {"name": "prowlarrUrl", "value": desired.get("prowlarrUrl", "http://localhost:9696")},
+                        {
+                            "name": "prowlarrUrl",
+                            "value": desired.get(
+                                "prowlarrUrl", "http://localhost:9696"
+                            ),
+                        },
                         {"name": "baseUrl", "value": desired["baseUrl"]},
                         {"name": "apiKey", "value": desired["apiKey"]},
-                        {"name": "syncCategories", "value": desired.get("syncCategories", [])},
+                        {
+                            "name": "syncCategories",
+                            "value": desired.get("syncCategories", []),
+                        },
                     ],
                     "implementationName": implementation,
                     "implementation": implementation,
@@ -504,12 +527,16 @@ def _sync_indexers(client: ProwlarrClient, desired_indexers: list, dry_run: bool
             # Check enable status
             if desired.get("enable", True) != current.get("enable"):
                 needs_update = True
-                update_parts.append(f"enable: {current.get('enable')} -> {desired.get('enable', True)}")
+                update_parts.append(
+                    f"enable: {current.get('enable')} -> {desired.get('enable', True)}"
+                )
 
             # Check priority
             if desired.get("priority", 25) != current.get("priority"):
                 needs_update = True
-                update_parts.append(f"priority: {current.get('priority')} -> {desired.get('priority', 25)}")
+                update_parts.append(
+                    f"priority: {current.get('priority')} -> {desired.get('priority', 25)}"
+                )
 
             if needs_update:
                 print(f"  UPDATE: {name} ({', '.join(update_parts)})", file=sys.stderr)
@@ -523,10 +550,16 @@ def _sync_indexers(client: ProwlarrClient, desired_indexers: list, dry_run: bool
         else:
             # Create new indexer
             if "definitionName" not in desired:
-                print(f"  ERROR: {name} (missing definitionName - required for creation)", file=sys.stderr)
+                print(
+                    f"  ERROR: {name} (missing definitionName - required for creation)",
+                    file=sys.stderr,
+                )
                 continue
 
-            print(f"  CREATE: {name} (definitionName: {desired['definitionName']})", file=sys.stderr)
+            print(
+                f"  CREATE: {name} (definitionName: {desired['definitionName']})",
+                file=sys.stderr,
+            )
             if not dry_run:
                 # Build create payload with implementation fields
                 # Most public indexers use Cardigann (generic indexer framework)
@@ -542,7 +575,7 @@ def _sync_indexers(client: ProwlarrClient, desired_indexers: list, dry_run: bool
                     "configContract": "CardigannSettings",
                     "fields": [
                         {"name": "definitionFile", "value": desired["definitionName"]}
-                    ]
+                    ],
                 }
                 client.create_indexer(create_data)
 

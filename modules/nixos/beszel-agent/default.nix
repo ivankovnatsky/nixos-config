@@ -81,14 +81,15 @@ in
         StateDirectory = "beszel-agent";
         SupplementaryGroups = [ "docker" ];
 
-        Environment =
-          [ "LISTEN=${cfg.listenAddress}:${toString cfg.port}" ]
-          ++ (
-            if cfg.hubPublicKeyFile != null then
-              [ "KEY_FILE=${cfg.hubPublicKeyFile}" ]
-            else
-              [ "KEY=${cfg.hubPublicKey}" ]
-          );
+        Environment = [
+          "LISTEN=${cfg.listenAddress}:${toString cfg.port}"
+        ]
+        ++ (
+          if cfg.hubPublicKeyFile != null then
+            [ "KEY_FILE=${cfg.hubPublicKeyFile}" ]
+          else
+            [ "KEY=${cfg.hubPublicKey}" ]
+        );
 
         ExecStart = "${pkgs.beszel}/bin/beszel-agent";
 

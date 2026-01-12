@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 # NOTE: WhatsApp frequently requires bridge updates to maintain compatibility.
 # If login fails with "Client outdated (405)" error, check for newer versions:

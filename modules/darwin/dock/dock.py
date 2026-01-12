@@ -8,7 +8,6 @@ import sys
 import subprocess
 import json
 import urllib.parse
-from pathlib import Path
 
 
 def normalize_path_to_uri(path: str) -> str:
@@ -20,12 +19,12 @@ def normalize_path_to_uri(path: str) -> str:
     path = path.strip()
 
     # Always add trailing slash to .app bundles if not present
-    if path.endswith('.app') or path.endswith('.app/'):
-        path = path.rstrip('/') + '/'
+    if path.endswith(".app") or path.endswith(".app/"):
+        path = path.rstrip("/") + "/"
 
     # Convert to file:// URI with proper encoding
-    encoded = urllib.parse.quote(path, safe='/:')
-    return f'file://{encoded}'
+    encoded = urllib.parse.quote(path, safe="/:")
+    return f"file://{encoded}"
 
 
 def normalize_uri_list(uris: str) -> list[str]:
@@ -34,14 +33,14 @@ def normalize_uri_list(uris: str) -> list[str]:
     Handles both raw paths (from dockutil) and file:// URIs (from config).
     """
     result = []
-    for line in uris.strip().split('\n'):
+    for line in uris.strip().split("\n"):
         line = line.strip()
         if not line:
-            result.append('')  # Preserve empty lines (spacers)
+            result.append("")  # Preserve empty lines (spacers)
             continue
 
         # If it's already a file:// URI, parse it back to path first
-        if line.startswith('file://'):
+        if line.startswith("file://"):
             parsed = urllib.parse.urlparse(line)
             path = urllib.parse.unquote(parsed.path)
         else:
@@ -66,12 +65,7 @@ def compare_dock_configs(have: str, want: str) -> bool:
 def run_command(cmd: list[str], check: bool = True) -> subprocess.CompletedProcess:
     """Run a shell command and return the result."""
     try:
-        return subprocess.run(
-            cmd,
-            check=check,
-            capture_output=True,
-            text=True
-        )
+        return subprocess.run(cmd, check=check, capture_output=True, text=True)
     except subprocess.CalledProcessError as e:
         print(f"Error running {' '.join(cmd)}: {e.stderr}", file=sys.stderr)
         raise
@@ -86,27 +80,33 @@ def rebuild_dock(dockutil_path: str, entries_json: str) -> None:
 
     # Remove all existing items
     print("Resetting Dock.", file=sys.stderr)
-    run_command([dockutil_path, '--no-restart', '--remove', 'all'])
+    run_command([dockutil_path, "--no-restart", "--remove", "all"])
 
     # Add all desired items
     for entry in entries:
-        entry_type = entry.get('type', '')
+        entry_type = entry.get("type", "")
 
-        if entry_type == 'spacer':
+        if entry_type == "spacer":
             # Add spacer
-            section = entry.get('section', 'apps')
+            section = entry.get("section", "apps")
             cmd = [
-                dockutil_path, '--no-restart', '--add', '',
-                '--type', 'spacer', '--section', section
+                dockutil_path,
+                "--no-restart",
+                "--add",
+                "",
+                "--type",
+                "spacer",
+                "--section",
+                section,
             ]
             run_command(cmd, check=False)
         else:
             # Add regular item
-            path = entry['path'].rstrip('/')  # Remove trailing slash for dockutil
-            section = entry.get('section', 'apps')
-            options = entry.get('options', '').strip()
+            path = entry["path"].rstrip("/")  # Remove trailing slash for dockutil
+            section = entry.get("section", "apps")
+            options = entry.get("options", "").strip()
 
-            cmd = [dockutil_path, '--no-restart', '--add', path, '--section', section]
+            cmd = [dockutil_path, "--no-restart", "--add", path, "--section", section]
 
             # Add additional options if present
             if options:
@@ -121,34 +121,34 @@ def rebuild_dock(dockutil_path: str, entries_json: str) -> None:
 
 def get_current_dock(dockutil_path: str) -> str:
     """Get current dock items using dockutil."""
-    result = run_command([dockutil_path, '--list'])
+    result = run_command([dockutil_path, "--list"])
     # Extract just the paths (second column)
-    lines = result.stdout.strip().split('\n')
+    lines = result.stdout.strip().split("\n")
     paths = []
     for line in lines:
         if not line.strip():
             continue
-        parts = line.split('\t')
+        parts = line.split("\t")
         if len(parts) >= 2:
             paths.append(parts[1])
-    return '\n'.join(paths)
+    return "\n".join(paths)
 
 
 def entries_to_uris(entries: list) -> str:
     """Convert entries list to URI string format for comparison."""
     uris = []
     for entry in entries:
-        if entry.get('type') == 'spacer':
-            uris.append('')
+        if entry.get("type") == "spacer":
+            uris.append("")
         else:
-            path = entry['path']
+            path = entry["path"]
             # Normalize path to URI
-            if path.endswith('.app') or path.endswith('.app/'):
-                path = path.rstrip('/') + '/'
+            if path.endswith(".app") or path.endswith(".app/"):
+                path = path.rstrip("/") + "/"
             # URL encode and add file:// prefix
-            encoded = urllib.parse.quote(path, safe='/:')
-            uris.append(f'file://{encoded}')
-    return '\n'.join(uris)
+            encoded = urllib.parse.quote(path, safe="/:")
+            uris.append(f"file://{encoded}")
+    return "\n".join(uris)
 
 
 def main():
@@ -188,5 +188,5 @@ def main():
     sys.exit(0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

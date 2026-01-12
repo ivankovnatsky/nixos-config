@@ -26,7 +26,9 @@ def log(msg: str) -> None:
     print(msg, file=sys.stderr)
 
 
-def run_cmd(cmd: list[str], capture: bool = True, env: dict | None = None) -> tuple[int, str]:
+def run_cmd(
+    cmd: list[str], capture: bool = True, env: dict | None = None
+) -> tuple[int, str]:
     """Run a command and return (returncode, stdout)."""
     merged_env = {**os.environ, **(env or {})}
     result = subprocess.run(

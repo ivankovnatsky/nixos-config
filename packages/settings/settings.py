@@ -24,11 +24,13 @@ from pathlib import Path
 # Platform Detection
 def is_macos() -> bool:
     import platform
+
     return platform.system() == "Darwin"
 
 
 def is_linux() -> bool:
     import platform
+
     return platform.system() == "Linux"
 
 
@@ -81,7 +83,7 @@ end tell
 
 def appearance_open_settings_macos() -> None:
     """Open Wallpaper settings and click 'Show on all Spaces' toggle."""
-    script = '''
+    script = """
 tell application "System Settings"
     activate
     delay 0.5
@@ -95,7 +97,7 @@ tell application "System Settings"
 end tell
 delay 0.2
 tell application "System Settings" to quit
-'''
+"""
     subprocess.run(["osascript", "-e", script], capture_output=True)
 
 
@@ -291,7 +293,10 @@ def menubar_set_mode(mode: str) -> None:
     menu_item = menubar_get_description(mode)
 
     subprocess.run(
-        ["open", "x-apple.systempreferences:com.apple.ControlCenter-Settings.extension"],
+        [
+            "open",
+            "x-apple.systempreferences:com.apple.ControlCenter-Settings.extension",
+        ],
         check=True,
     )
 
@@ -517,7 +522,14 @@ def dock_set_autohide(enabled: bool) -> bool:
     """Set dock autohide and restart dock."""
     try:
         subprocess.run(
-            ["defaults", "write", "com.apple.dock", "autohide", "-bool", str(enabled).lower()],
+            [
+                "defaults",
+                "write",
+                "com.apple.dock",
+                "autohide",
+                "-bool",
+                str(enabled).lower(),
+            ],
             check=True,
         )
         subprocess.run(["killall", "Dock"], check=True)
@@ -741,7 +753,9 @@ def awake_linux_xset(timeout: int) -> int:
     start = time.time()
     try:
         while time.time() - start < timeout:
-            subprocess.run(["xset", "s", "off", "-dpms"], check=True, capture_output=True)
+            subprocess.run(
+                ["xset", "s", "off", "-dpms"], check=True, capture_output=True
+            )
             time.sleep(60)
         return 0
     except KeyboardInterrupt:
@@ -820,7 +834,7 @@ def spaces_get_current_index() -> int | None:
 
 def spaces_add() -> int:
     """Add a new desktop space."""
-    script = '''
+    script = """
 tell application "Mission Control" to launch
 delay 0.7
 tell application "System Events"
@@ -828,7 +842,7 @@ tell application "System Events"
     click button 1
   end tell
 end tell
-'''
+"""
     try:
         subprocess.run(["osascript", "-e", script], check=True)
         print("Added new desktop space")
@@ -845,7 +859,7 @@ def spaces_remove() -> int:
         print("Error: Could not determine current space index", file=sys.stderr)
         return 1
 
-    script = f'''
+    script = f"""
 tell application "Mission Control" to launch
 delay 0.7
 tell application "System Events"
@@ -853,7 +867,7 @@ tell application "System Events"
     perform action "AXRemoveDesktop" of button {index}
   end tell
 end tell
-'''
+"""
     try:
         subprocess.run(["osascript", "-e", script], check=True)
         print(f"Removed desktop space {index}")

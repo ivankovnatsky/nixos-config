@@ -1,24 +1,31 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 
 let
   cfg = config.local.services.audiobookshelf-mgmt;
 
-  configJson = pkgs.writeText "audiobookshelf-config.json" (builtins.toJSON {
-    libraries = map (lib: {
-      name = lib.name;
-      folders = lib.folders;
-      mediaType = lib.mediaType;
-      provider = lib.provider;
-    }) cfg.libraries;
-    users = map (user: {
-      username = user.username;
-      password = user.password;
-      type = user.type;
-      libraries = user.libraries;
-    }) cfg.users;
-  });
+  configJson = pkgs.writeText "audiobookshelf-config.json" (
+    builtins.toJSON {
+      libraries = map (lib: {
+        name = lib.name;
+        folders = lib.folders;
+        mediaType = lib.mediaType;
+        provider = lib.provider;
+      }) cfg.libraries;
+      users = map (user: {
+        username = user.username;
+        password = user.password;
+        type = user.type;
+        libraries = user.libraries;
+      }) cfg.users;
+    }
+  );
 in
 {
   options.local.services.audiobookshelf-mgmt = {
@@ -44,107 +51,126 @@ in
     };
 
     libraries = mkOption {
-      type = types.listOf (types.submodule {
-        options = {
-          name = mkOption {
-            type = types.str;
-            example = "Podcasts";
-            description = "Library name";
-          };
+      type = types.listOf (
+        types.submodule {
+          options = {
+            name = mkOption {
+              type = types.str;
+              example = "Podcasts";
+              description = "Library name";
+            };
 
-          folders = mkOption {
-            type = types.listOf types.str;
-            example = [ "/mnt/mac/Volumes/ExternalDrive/media/podcasts" ];
-            description = "List of folder paths for this library";
-          };
+            folders = mkOption {
+              type = types.listOf types.str;
+              example = [ "/mnt/mac/Volumes/ExternalDrive/media/podcasts" ];
+              description = "List of folder paths for this library";
+            };
 
-          mediaType = mkOption {
-            type = types.enum [ "book" "podcast" ];
-            default = "podcast";
-            description = "Media type for this library";
-          };
+            mediaType = mkOption {
+              type = types.enum [
+                "book"
+                "podcast"
+              ];
+              default = "podcast";
+              description = "Media type for this library";
+            };
 
-          provider = mkOption {
-            type = types.enum [ "google" "itunes" "audible" "audnexus" ];
-            default = "itunes";
-            description = "Metadata provider for this library";
+            provider = mkOption {
+              type = types.enum [
+                "google"
+                "itunes"
+                "audible"
+                "audnexus"
+              ];
+              default = "itunes";
+              description = "Metadata provider for this library";
+            };
           };
-        };
-      });
+        }
+      );
       default = [ ];
       description = "Libraries to sync to Audiobookshelf instance";
     };
 
     users = mkOption {
-      type = types.listOf (types.submodule {
-        options = {
-          username = mkOption {
-            type = types.str;
-            example = "textcast";
-            description = "Username for the user account";
-          };
+      type = types.listOf (
+        types.submodule {
+          options = {
+            username = mkOption {
+              type = types.str;
+              example = "textcast";
+              description = "Username for the user account";
+            };
 
-          password = mkOption {
-            type = types.nullOr types.str;
-            default = null;
-            description = "Password for the user account (only used during creation)";
-          };
+            password = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "Password for the user account (only used during creation)";
+            };
 
-          passwordFile = mkOption {
-            type = types.nullOr types.path;
-            default = null;
-            example = "/run/secrets/textcast-password";
-            description = "Path to file containing password for the user account";
-          };
+            passwordFile = mkOption {
+              type = types.nullOr types.path;
+              default = null;
+              example = "/run/secrets/textcast-password";
+              description = "Path to file containing password for the user account";
+            };
 
-          type = mkOption {
-            type = types.enum [ "root" "admin" "user" "guest" ];
-            default = "user";
-            description = "User account type";
-          };
+            type = mkOption {
+              type = types.enum [
+                "root"
+                "admin"
+                "user"
+                "guest"
+              ];
+              default = "user";
+              description = "User account type";
+            };
 
-          libraries = mkOption {
-            type = types.listOf types.str;
-            default = [ ];
-            example = [ ];
-            description = "List of library IDs the user can access (empty = all libraries)";
+            libraries = mkOption {
+              type = types.listOf types.str;
+              default = [ ];
+              example = [ ];
+              description = "List of library IDs the user can access (empty = all libraries)";
+            };
           };
-        };
-      });
+        }
+      );
       default = [ ];
       description = "Users to sync to Audiobookshelf instance";
     };
 
     opmlSync = mkOption {
-      type = types.nullOr (types.submodule {
-        options = {
-          enable = mkEnableOption "automatic OPML synchronization from Podsync";
+      type = types.nullOr (
+        types.submodule {
+          options = {
+            enable = mkEnableOption "automatic OPML synchronization from Podsync";
 
-          opmlUrl = mkOption {
-            type = types.str;
-            example = "https://podsync.example.com/podsync.opml";
-            description = "URL to fetch OPML file from (e.g., Podsync)";
-          };
+            opmlUrl = mkOption {
+              type = types.str;
+              example = "https://podsync.example.com/podsync.opml";
+              description = "URL to fetch OPML file from (e.g., Podsync)";
+            };
 
-          libraryName = mkOption {
-            type = types.str;
-            default = "Podcasts";
-            description = "Target library name for podcast imports (library and folder IDs auto-detected)";
-          };
+            libraryName = mkOption {
+              type = types.str;
+              default = "Podcasts";
+              description = "Target library name for podcast imports (library and folder IDs auto-detected)";
+            };
 
-          autoDownload = mkOption {
-            type = types.bool;
-            default = true;
-            description = "Enable automatic episode downloads for imported podcasts";
-          };
+            autoDownload = mkOption {
+              type = types.bool;
+              default = true;
+              description = "Enable automatic episode downloads for imported podcasts";
+            };
 
-          interval = mkOption {
-            type = types.str;
-            default = "hourly";
-            description = "Systemd timer interval (e.g., 'hourly', 'daily', '*:0/15' for every 15 min)";
+            interval = mkOption {
+              type = types.str;
+              default = "hourly";
+              description = "Systemd timer interval (e.g., 'hourly', 'daily', '*:0/15' for every 15 min)";
+            };
           };
-        };
-      });
+        }
+      );
       default = null;
       description = "OPML synchronization configuration (e.g., from Podsync)";
     };
@@ -156,7 +182,8 @@ in
         assertion = (cfg.apiToken != null) != (cfg.apiTokenFile != null);
         message = "Exactly one of apiToken or apiTokenFile must be set for audiobookshelf-mgmt";
       }
-    ] ++ (map (user: {
+    ]
+    ++ (map (user: {
       assertion = (user.password != null) != (user.passwordFile != null);
       message = "Exactly one of password or passwordFile must be set for user ${user.username}";
     }) cfg.users);
@@ -182,34 +209,51 @@ in
         trap "rm -f $CONFIG_FILE" EXIT
 
         ${pkgs.jq}/bin/jq -n \
-          --argjson libraries '${builtins.toJSON (map (lib: {
-            name = lib.name;
-            folders = lib.folders;
-            mediaType = lib.mediaType;
-            provider = lib.provider;
-          }) cfg.libraries)}' \
-          --argjson users '${builtins.toJSON (map (user: {
-            username = user.username;
-            password = if user.passwordFile != null then "__PASSWORD_${user.username}__" else user.password;
-            type = user.type;
-            libraries = user.libraries;
-          }) cfg.users)}' \
+          --argjson libraries '${
+            builtins.toJSON (
+              map (lib: {
+                name = lib.name;
+                folders = lib.folders;
+                mediaType = lib.mediaType;
+                provider = lib.provider;
+              }) cfg.libraries
+            )
+          }' \
+          --argjson users '${
+            builtins.toJSON (
+              map (user: {
+                username = user.username;
+                password = if user.passwordFile != null then "__PASSWORD_${user.username}__" else user.password;
+                type = user.type;
+                libraries = user.libraries;
+              }) cfg.users
+            )
+          }' \
           '{libraries: $libraries, users: $users}' > "$CONFIG_FILE"
 
         # Substitute passwords from files
-        ${concatMapStrings (user:
-          if user.passwordFile != null then ''
-            PASSWORD_${user.username}=$(cat ${user.passwordFile})
-            ${pkgs.gnused}/bin/sed -i "s|__PASSWORD_${user.username}__|$PASSWORD_${user.username}|g" "$CONFIG_FILE"
-          '' else ""
+        ${concatMapStrings (
+          user:
+          if user.passwordFile != null then
+            ''
+              PASSWORD_${user.username}=$(cat ${user.passwordFile})
+              ${pkgs.gnused}/bin/sed -i "s|__PASSWORD_${user.username}__|$PASSWORD_${user.username}|g" "$CONFIG_FILE"
+            ''
+          else
+            ""
         ) cfg.users}
 
         # Read token from file or use direct value
-        ${if cfg.apiTokenFile != null then ''
-          TOKEN="$(cat ${cfg.apiTokenFile})"
-        '' else ''
-          TOKEN="${cfg.apiToken}"
-        ''}
+        ${
+          if cfg.apiTokenFile != null then
+            ''
+              TOKEN="$(cat ${cfg.apiTokenFile})"
+            ''
+          else
+            ''
+              TOKEN="${cfg.apiToken}"
+            ''
+        }
 
         ${pkgs.abs-mgmt}/bin/abs-mgmt sync \
           --base-url "${cfg.baseUrl}" \
@@ -223,10 +267,9 @@ in
     # OPML sync service and timer
     systemd.services.audiobookshelf-opml-sync = mkIf (cfg.opmlSync != null && cfg.opmlSync.enable) (
       let
-        tokenArg = if cfg.apiTokenFile != null
-          then ''"$(cat ${cfg.apiTokenFile})"''
-          else cfg.apiToken;
-      in {
+        tokenArg = if cfg.apiTokenFile != null then ''"$(cat ${cfg.apiTokenFile})"'' else cfg.apiToken;
+      in
+      {
         description = "Audiobookshelf OPML synchronization from Podsync";
         after = [ "network-online.target" ];
         wants = [ "network-online.target" ];

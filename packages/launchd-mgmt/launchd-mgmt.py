@@ -36,7 +36,9 @@ class Service:
         return self.exit_code == 0
 
 
-def run_cmd(cmd: list[str], capture: bool = True, check: bool = True) -> subprocess.CompletedProcess:
+def run_cmd(
+    cmd: list[str], capture: bool = True, check: bool = True
+) -> subprocess.CompletedProcess:
     """Run a command and return the result."""
     try:
         return subprocess.run(
@@ -51,7 +53,9 @@ def run_cmd(cmd: list[str], capture: bool = True, check: bool = True) -> subproc
         raise
 
 
-def run_sudo_cmd(cmd: list[str], capture: bool = True, check: bool = True) -> subprocess.CompletedProcess:
+def run_sudo_cmd(
+    cmd: list[str], capture: bool = True, check: bool = True
+) -> subprocess.CompletedProcess:
     """Run a command with sudo."""
     return run_cmd(["sudo"] + cmd, capture=capture, check=check)
 
@@ -348,7 +352,8 @@ Environment:
     )
 
     parser.add_argument(
-        "-f", "--filter",
+        "-f",
+        "--filter",
         default=os.environ.get("LAUNCHD_FILTER", ""),
         help="Filter services by pattern (default: $LAUNCHD_FILTER or none)",
     )
@@ -358,27 +363,33 @@ Environment:
     # list command
     list_parser = subparsers.add_parser("list", aliases=["ls"], help="List services")
     list_parser.add_argument(
-        "-t", "--type",
+        "-t",
+        "--type",
         choices=["all", "agents", "daemons"],
         default="all",
         help="Type of services to list",
     )
     list_parser.add_argument(
-        "-u", "--unhealthy",
+        "-u",
+        "--unhealthy",
         action="store_true",
         help="Show only unhealthy services",
     )
     list_parser.add_argument(
-        "-v", "--verbose",
+        "-v",
+        "--verbose",
         action="store_true",
         help="Show verbose output with PID and exit codes",
     )
     list_parser.set_defaults(func=cmd_list)
 
     # status command
-    status_parser = subparsers.add_parser("status", aliases=["st"], help="Show unhealthy services")
+    status_parser = subparsers.add_parser(
+        "status", aliases=["st"], help="Show unhealthy services"
+    )
     status_parser.add_argument(
-        "-t", "--type",
+        "-t",
+        "--type",
         choices=["all", "agents", "daemons"],
         default="all",
         help="Type of services to check",
@@ -386,19 +397,24 @@ Environment:
     status_parser.set_defaults(func=cmd_status)
 
     # restart command
-    restart_parser = subparsers.add_parser("restart", aliases=["rs"], help="Restart services")
+    restart_parser = subparsers.add_parser(
+        "restart", aliases=["rs"], help="Restart services"
+    )
     restart_parser.add_argument(
-        "-n", "--name",
+        "-n",
+        "--name",
         help="Specific service name to restart",
     )
     restart_parser.add_argument(
-        "-t", "--type",
+        "-t",
+        "--type",
         choices=["all", "agents", "daemons"],
         default="all",
         help="Type of services to restart (when no name specified)",
     )
     restart_parser.add_argument(
-        "-d", "--daemon",
+        "-d",
+        "--daemon",
         action="store_true",
         help="Treat named service as daemon (requires sudo)",
     )
@@ -407,12 +423,14 @@ Environment:
     # start command
     start_parser = subparsers.add_parser("start", help="Start a service")
     start_parser.add_argument(
-        "-n", "--name",
+        "-n",
+        "--name",
         required=True,
         help="Service name to start",
     )
     start_parser.add_argument(
-        "-d", "--daemon",
+        "-d",
+        "--daemon",
         action="store_true",
         help="Treat as daemon (requires sudo)",
     )
@@ -421,12 +439,14 @@ Environment:
     # stop command
     stop_parser = subparsers.add_parser("stop", help="Stop a service")
     stop_parser.add_argument(
-        "-n", "--name",
+        "-n",
+        "--name",
         required=True,
         help="Service name to stop",
     )
     stop_parser.add_argument(
-        "-d", "--daemon",
+        "-d",
+        "--daemon",
         action="store_true",
         help="Treat as daemon (requires sudo)",
     )
@@ -435,12 +455,14 @@ Environment:
     # info command
     info_parser = subparsers.add_parser("info", help="Show service details")
     info_parser.add_argument(
-        "-n", "--name",
+        "-n",
+        "--name",
         required=True,
         help="Service name",
     )
     info_parser.add_argument(
-        "-d", "--daemon",
+        "-d",
+        "--daemon",
         action="store_true",
         help="Treat as daemon (requires sudo)",
     )
