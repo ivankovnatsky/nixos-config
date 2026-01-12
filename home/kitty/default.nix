@@ -34,6 +34,8 @@ let
 
     allow_remote_control yes
     listen_on unix:/tmp/kitty
+    exe_search_path +/run/current-system/sw/bin
+    exe_search_path +/etc/profiles/per-user/${config.home.username}/bin
     adjust_line_height 115%
     window_padding_width ${builtins.toString windowPaddingWidth}
     hide_window_decorations titlebar-only
