@@ -4,6 +4,7 @@ let
   inherit (pkgs.stdenv.targetPlatform) isDarwin;
   fontSizeT = if config.device.graphicsEnv == "xorg" then 7.5 else 9.5;
   fontSize = if isDarwin then 13 else fontSizeT;
+  shellIntegration = if config.flags.enableFishShell then "fish" else "zsh";
 
 in
 {
@@ -28,6 +29,9 @@ in
     macos-option-as-alt = true
     keybind = cmd+down=jump_to_prompt:1
     keybind = cmd+up=jump_to_prompt:-1
+
+    shell-integration = ${shellIntegration}
+    window-inherit-working-directory = true
 
     # Quake-style quick terminal (F12 to toggle from anywhere)
     keybind = global:f12=toggle_quick_terminal
