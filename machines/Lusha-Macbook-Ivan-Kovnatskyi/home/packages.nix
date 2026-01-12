@@ -8,7 +8,6 @@
           propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ old.optional-dependencies.cli;
         }))
         markitdown
-        ruff
       ]
     ))
     (wrapHelm kubernetes-helm { plugins = with pkgs.kubernetes-helmPlugins; [ helm-secrets ]; })
