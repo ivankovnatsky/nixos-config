@@ -54,7 +54,8 @@ let
     enabled_layouts tall, grid
 
     # Open scrollback buffer in neovim via kitty-scrollback.nvim plugin
-    map ctrl+shift+b kitten kitty_scrollback_nvim
+    action_alias kitty_scrollback_nvim kitten ${pkgs.vimPlugins.kitty-scrollback-nvim}/python/kitty_scrollback_nvim.py
+    map ctrl+shift+b kitty_scrollback_nvim
 
     map ctrl+shift+k neighboring_window up
     map ctrl+shift+j neighboring_window down
