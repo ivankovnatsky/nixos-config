@@ -315,7 +315,6 @@ def cmd_export_all(args):
                 os.makedirs(output_dir)
                 print(f"Created directory: {output_dir}", file=sys.stderr)
 
-            timestamp = asyncio.get_event_loop().time()
             from datetime import datetime
 
             timestamp_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")

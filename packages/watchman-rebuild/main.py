@@ -14,9 +14,10 @@ from pathlib import Path
 
 import pywatchman
 
+from lib import load_watchman_ignores, build_watchman_expression
+
 # Debounce delay in seconds - wait this long after last change before rebuilding
 DEBOUNCE_DELAY = 10.0
-from lib import load_watchman_ignores, build_watchman_expression
 
 # Configure logging to write to stdout instead of stderr
 logging.basicConfig(
@@ -70,7 +71,7 @@ def send_notification(success):
                     check=False,
                     capture_output=True,
                 )
-        except:
+        except Exception:
             pass
     elif system == "Linux":
         try:
@@ -95,7 +96,7 @@ def send_notification(success):
                         check=False,
                         capture_output=True,
                     )
-        except:
+        except Exception:
             pass
 
 
@@ -350,7 +351,7 @@ def watch_and_rebuild(config_path, command=None):
                 logging.info(f"Reconnecting in {RECONNECT_DELAY}s...")
                 try:
                     client.close()
-                except:
+                except Exception:
                     pass
                 client = None
                 time.sleep(RECONNECT_DELAY)
@@ -364,7 +365,7 @@ def watch_and_rebuild(config_path, command=None):
         if client is not None:
             try:
                 client.close()
-            except:
+            except Exception:
                 pass
         # Clean up instance file
         cleanup_instance_file()
