@@ -2,8 +2,8 @@
 
 # Under fish shell:
 # ```console
-# eval (switch-k8s-context.sh)             # interactive mode
-# eval (switch-k8s-context.sh cluster-name) # direct mode
+# eval (k8s-context)             # interactive mode
+# eval (k8s-context cluster-name) # direct mode
 # ```
 
 # Exit on error, but don't print commands
