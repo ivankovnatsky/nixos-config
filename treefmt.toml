@@ -39,7 +39,6 @@ options = ["-w"]
 includes = ["*.go"]
 
 [formatter.golangci-lint]
-command = "golangci-lint"
-options = ["run", "--fix"]
+command = "bash"
+options = ["system/scripts/go-lint-wrapper.sh"]
 includes = ["*.go"]
-excludes = ["home/scripts/*.go"]
