@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # Script to list Kubernetes nodes by pod label
-# Usage: ./k-list-nodes-by-app-label.sh <label-selector>
-# Example: ./k-list-nodes-by-app-label.sh app.kubernetes.io/instance=lusha-accounts
+# Usage: k-nodes-by-label <label-selector>
+# Example: k-nodes-by-label app.kubernetes.io/instance=lusha-accounts
 
 if [ $# -eq 0 ]; then
   echo "Error: Label selector is required"
