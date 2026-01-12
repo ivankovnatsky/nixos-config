@@ -12,7 +12,7 @@
     asusrouter-cli
     backup-home
     dns
-    download-torrent
+    torrent-dl
     giffer
     git-message
     homelab

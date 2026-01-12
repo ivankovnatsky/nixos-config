@@ -1,7 +1,7 @@
 #!/usr/bin/env fish
 
 function show_help
-    echo "Usage: download-torrent [MAGNET_LINK|TORRENT_FILE...]"
+    echo "Usage: torrent-dl [MAGNET_LINK|TORRENT_FILE...]"
     echo ""
     echo "Downloads torrents using aria2c from magnet links or torrent files"
     echo "Default download location: current directory"
