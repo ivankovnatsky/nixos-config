@@ -1,7 +1,7 @@
 #!/usr/bin/env fish
 
 function show_help
-    echo "Usage: watch-torrent [MAGNET_LINK|TORRENT_FILE]"
+    echo "Usage: torrent-watcher [MAGNET_LINK|TORRENT_FILE]"
     echo ""
     echo "Streams a torrent directly to mpv using webtorrent-cli"
     echo ""
