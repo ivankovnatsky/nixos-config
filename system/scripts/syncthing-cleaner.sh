@@ -7,7 +7,7 @@ MAX_FILES=10
 
 usage() {
   cat <<EOF
-Usage: clean-syncthing-files [OPTIONS] [DIRS...]
+Usage: syncthing-cleaner [OPTIONS] [DIRS...]
 
 Clean Syncthing conflict and temp files from directories.
 
