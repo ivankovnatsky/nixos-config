@@ -6,7 +6,7 @@
   exiftool,
 }:
 buildGoModule {
-  pname = "convert-to-jpg";
+  pname = "jpg-converter";
   version = "1.0.0";
 
   src = ./.;
@@ -16,7 +16,7 @@ buildGoModule {
   nativeBuildInputs = [ makeWrapper ];
 
   postInstall = ''
-    wrapProgram $out/bin/convert-to-jpg \
+    wrapProgram $out/bin/jpg-converter \
       --prefix PATH : ${lib.makeBinPath [ imagemagick exiftool ]}
   '';
 
@@ -24,6 +24,6 @@ buildGoModule {
     description = "Convert images to JPG format with parallel processing";
     license = licenses.mit;
     maintainers = with maintainers; [ ivankovnatsky ];
-    mainProgram = "convert-to-jpg";
+    mainProgram = "jpg-converter";
   };
 }

@@ -11,9 +11,9 @@ import (
 	"sync"
 )
 
-const helpText = `convert-to-jpg - Convert images to JPG format in current directory
+const helpText = `jpg-converter - Convert images to JPG format in current directory
 
-Usage: convert-to-jpg [--help]
+Usage: jpg-converter [--help]
 
 Supported formats: HEIC, PNG, WEBP, TIFF, BMP
 
