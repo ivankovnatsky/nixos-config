@@ -36,32 +36,23 @@
 [alias]
 	a = add
 	# Add all files in git root
-	add-all = "!git add \"$(git rev-parse --show-toplevel)\""
+	addall = "!git add \"$(git rev-parse --show-toplevel)\""
 	co = checkout
 	c = commit -v
 	ca = commit -av
 	# Show unstaged changes (working tree vs index)
 	d = diff --unified=10
 	# Show staged changes (index vs HEAD)
-	diff-staged = diff --staged --unified=10
 	staged = diff --staged --unified=10
-	# Show all changes (both staged and unstaged, working tree vs HEAD)
-	diff-all = diff --unified=10 HEAD
 	l = log --oneline -n 20
 	p = push
 	pp = pull
 	s = status
 	# Review what would be committed without committing
-	review = "!git status --verbose && git diff --staged"
-	# Search commit messages (titles and body)
-	grep-commits = log --all --grep
-	# Search in diffs (code changes)
-	grep-diff = log --all -S
+	review = "!git status && git diff --staged | bat"
 	# Search everything (commits, diffs, files)
-	grep-all = "!f() { git log --all --grep=\"$1\"; git log --all -S \"$1\"; git grep \"$1\"; }; f"
+	search = "!f() { git log --all --grep=\"$1\"; git log --all -S \"$1\"; git grep \"$1\"; }; f"
 	# Show the last commit
 	last = show HEAD
-	# View all changes (alias for diff-all)
-	view = diff --unified=10 HEAD
-	# View all changes with bat pager
-	view-pager = "!git diff --unified=10 HEAD | bat"
+	# Show all changes (both staged and unstaged, working tree vs HEAD)
+	changes = diff --unified=10 HEAD
