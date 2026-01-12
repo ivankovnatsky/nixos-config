@@ -38,5 +38,8 @@ command = "gofumpt"
 options = ["-w"]
 includes = ["*.go"]
 
-# golangci-lint removed - requires Go project environment
-# gofumpt handles Go formatting, use golangci-lint manually when needed
+[formatter.golangci-lint]
+command = "golangci-lint"
+options = ["run", "--fix"]
+includes = ["*.go"]
+excludes = ["home/scripts/*.go"]
