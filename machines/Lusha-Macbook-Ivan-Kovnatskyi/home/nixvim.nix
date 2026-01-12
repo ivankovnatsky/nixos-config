@@ -9,6 +9,10 @@
       # Latest commit: https://github.com/pwntester/octo.nvim/commit/11646cef0ad080a938cdbc181a4a3f7b59996c05
       # octo.enable = true;
       notify.enable = true;
+      kitty-scrollback = {
+        enable = true;
+        settings.kitty_get_text.ansi = false;
+      };
       # TODO: Enable again after tmux all sessions and tmux itself is restarted.
       # image.enable = true;
       claude-code.enable = true;
