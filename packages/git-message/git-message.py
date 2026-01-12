@@ -78,8 +78,23 @@ def create_commit_message(prefix: str, subject: str) -> str:
     return f"{prefix}: {subject}"
 
 
-def parse_args_flexible(args: list[str]) -> tuple[str | None, str]:
+def parse_args_flexible(args: list[str], subject_flag: str | None) -> tuple[str | None, str]:
     """Parse arguments flexibly: file can be before or after subject."""
+    if subject_flag:
+        # Subject provided via -s flag
+        if len(args) == 0:
+            return None, subject_flag
+        elif len(args) == 1:
+            if os.path.exists(args[0]):
+                return args[0], subject_flag
+            else:
+                print(f"Error: File not found: {args[0]}", file=sys.stderr)
+                sys.exit(1)
+        else:
+            print(f"Error: Too many positional args with -s flag", file=sys.stderr)
+            sys.exit(1)
+
+    # Original behavior: subject from positional args
     if len(args) == 1:
         return None, args[0]
     elif len(args) == 2:
@@ -99,6 +114,9 @@ def parse_args_flexible(args: list[str]) -> tuple[str | None, str]:
             print(f"  {args[0]}", file=sys.stderr)
             print(f"  {args[1]}", file=sys.stderr)
             sys.exit(1)
+    elif len(args) == 0:
+        print("Error: Subject required (use -s or positional arg)", file=sys.stderr)
+        sys.exit(1)
     else:
         print(f"Error: Expected 1 or 2 arguments, got {len(args)}", file=sys.stderr)
         sys.exit(1)
@@ -111,7 +129,11 @@ def main() -> int:
 Examples:
   git-message "add feature"                     Commits staged file with "<scope>: add feature"
   git-message file.nix "add feature"            Commits file.nix with "<scope>: add feature"
-  git-message "add feature" file.nix            Same as above (order doesn't matter)
+  git-message "add feature" -b "Body text"      Commits with subject and body
+  git-message "add feature" -b "P1" -b "P2"     Multiple paragraphs (blank line between)
+  git-message -s "add feature" -b "Line 1
+
+  Line 2"                                       Multiline body with newlines
 
 Features:
   - Accepts file path in either position (auto-detected by existence)
@@ -127,11 +149,20 @@ Features:
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
-        "args", nargs="+", help="subject and optional file path (in any order)"
+        "args", nargs="*", help="subject and optional file path (in any order)"
+    )
+    parser.add_argument(
+        "-s", "--subject", help="commit subject (alternative to positional arg)"
+    )
+    parser.add_argument(
+        "-b", "--body", action="append", help="commit body (can use multiple times, can contain newlines)"
     )
     parsed = parser.parse_args()
 
-    file_path, subject = parse_args_flexible(parsed.args)
+    # Join multiple -b flags with blank lines
+    body = "\n\n".join(parsed.body) if parsed.body else None
+
+    file_path, subject = parse_args_flexible(parsed.args, parsed.subject)
 
     if file_path:
         # Use provided file path
@@ -185,10 +216,13 @@ Features:
     try:
         if file_path:
             # Commit specific file (stages and commits in one step)
-            subprocess.run(["git", "commit", file_path, "-m", message], check=True)
+            cmd = ["git", "commit", file_path, "-m", message]
         else:
             # Commit staged files
-            subprocess.run(["git", "commit", "-m", message], check=True)
+            cmd = ["git", "commit", "-m", message]
+        if body:
+            cmd.extend(["-m", body])
+        subprocess.run(cmd, check=True)
     except subprocess.CalledProcessError as e:
         print(f"Git commit failed: {e}", file=sys.stderr)
         return 1
