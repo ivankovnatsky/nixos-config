@@ -167,17 +167,16 @@ let
 
       script = pkgs.writeShellScriptBin "${name}-starter" scriptContent;
 
-      serviceConfig =
-        {
-          Label = cfg.label;
-          RunAtLoad = cfg.runAtLoad;
-          KeepAlive = cfg.keepAlive;
-          ThrottleInterval = cfg.throttleInterval;
-          StandardOutPath = logPath;
-          StandardErrorPath = errorLogPath;
-        }
-        // optionalAttrs (cfg.environment != { }) { EnvironmentVariables = cfg.environment; }
-        // cfg.extraServiceConfig;
+      serviceConfig = {
+        Label = cfg.label;
+        RunAtLoad = cfg.runAtLoad;
+        KeepAlive = cfg.keepAlive;
+        ThrottleInterval = cfg.throttleInterval;
+        StandardOutPath = logPath;
+        StandardErrorPath = errorLogPath;
+      }
+      // optionalAttrs (cfg.environment != { }) { EnvironmentVariables = cfg.environment; }
+      // cfg.extraServiceConfig;
     in
     {
       command = "${script}/bin/${name}-starter";
@@ -186,9 +185,7 @@ let
   # Generate activation script for log file ownership
   mkLogOwnershipScript =
     let
-      servicesWithUser = filterAttrs (
-        _: s: s.enable && s.extraServiceConfig ? UserName
-      ) cfg.services;
+      servicesWithUser = filterAttrs (_: s: s.enable && s.extraServiceConfig ? UserName) cfg.services;
     in
     concatStringsSep "\n" (
       mapAttrsToList (
@@ -262,18 +259,16 @@ in
   config = mkMerge [
     # Generate user agents
     (mkIf (any (s: s.enable && s.type == "user-agent") (attrValues cfg.services)) {
-      launchd.user.agents = mapAttrs' (
-        name: service:
-        nameValuePair name (mkService name service)
-      ) (filterAttrs (_: s: s.enable && s.type == "user-agent") cfg.services);
+      launchd.user.agents = mapAttrs' (name: service: nameValuePair name (mkService name service)) (
+        filterAttrs (_: s: s.enable && s.type == "user-agent") cfg.services
+      );
     })
 
     # Generate daemons
     (mkIf (any (s: s.enable && s.type == "daemon") (attrValues cfg.services)) {
-      launchd.daemons = mapAttrs' (
-        name: service:
-        nameValuePair name (mkService name service)
-      ) (filterAttrs (_: s: s.enable && s.type == "daemon") cfg.services);
+      launchd.daemons = mapAttrs' (name: service: nameValuePair name (mkService name service)) (
+        filterAttrs (_: s: s.enable && s.type == "daemon") cfg.services
+      );
     })
 
     # Activation script to fix log file ownership for services with UserName

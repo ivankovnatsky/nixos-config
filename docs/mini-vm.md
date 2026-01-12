@@ -1,12 +1,16 @@
 # mini-vm
 
-> **DEPRECATED** (Oct 2025): This VM has been decommissioned. All services migrated to run natively on bee (NixOS). This document is preserved for historical reference and troubleshooting knowledge about OrbStack VMs.
+> **DEPRECATED** (Oct 2025): This VM has been decommissioned. All services
+> migrated to run natively on bee (NixOS). This document is preserved for
+> historical reference and troubleshooting knowledge about OrbStack VMs.
 >
-> See: [claude/projects/deprecate-vms-and-run-natively-on-both/ORBSTACK-DECOMMISSION.md](../claude/projects/deprecate-vms-and-run-natively-on-both/ORBSTACK-DECOMMISSION.md)
+> See:
+> [claude/projects/deprecate-vms-and-run-natively-on-both/ORBSTACK-DECOMMISSION.md](../claude/projects/deprecate-vms-and-run-natively-on-both/ORBSTACK-DECOMMISSION.md)
 
 ## Overview
 
-`mini-vm` was a NixOS virtual machine running on Orbstack on Mac mini used for development and testing.
+`mini-vm` was a NixOS virtual machine running on Orbstack on Mac mini used for
+development and testing.
 
 ## Creation
 
@@ -18,7 +22,8 @@ To create a NixOS VM via command line, you would use:
 orb create nixos:25.05 mini-vm
 ```
 
-Note: After creation, the VM's configuration is managed entirely through NixOS flakes.
+Note: After creation, the VM's configuration is managed entirely through NixOS
+flakes.
 
 ## Manual
 
@@ -39,15 +44,18 @@ The VM uses Orbstack's networking with NAT:
 
 ### Service Binding Inside VM
 
-Services running inside mini-vm should bind to `0.0.0.0` (all interfaces) to be accessible from the Mac mini host. This is the correct pattern for OrbStack VMs.
+Services running inside mini-vm should bind to `0.0.0.0` (all interfaces) to be
+accessible from the Mac mini host. This is the correct pattern for OrbStack VMs.
 
 **Example from Jellyfin:**
+
 ```console
 [ivan@mini-vm]$ netstat -tepan|grep 8096
 tcp  0  0  0.0.0.0:8096  0.0.0.0:*  LISTEN
 ```
 
-OrbStack's NAT handles the translation from `mini-vm.orb.local` (192.168.138.4 gateway) to the actual VM IP (192.168.139.245).
+OrbStack's NAT handles the translation from `mini-vm.orb.local` (192.168.138.4
+gateway) to the actual VM IP (192.168.139.245).
 
 ## Services
 
@@ -56,9 +64,12 @@ OrbStack's NAT handles the translation from `mini-vm.orb.local` (192.168.138.4 g
 
 ## Network Limitations
 
-Mini-vm runs in OrbStack's NAT network (198.19.249.x) which provides isolation but has limitations for hardware-specific services.
+Mini-vm runs in OrbStack's NAT network (198.19.249.x) which provides isolation
+but has limitations for hardware-specific services.
 
-**See [docs/mini.md](./mini.md#orbstack-vm-network-limitations)** for detailed network limitations including link-local address access and service migration considerations.
+**See [docs/mini.md](./mini.md#orbstack-vm-network-limitations)** for detailed
+network limitations including link-local address access and service migration
+considerations.
 
 ## Management
 
@@ -82,11 +93,16 @@ sudo nixos-rebuild switch --flake .
 
 ## Troubleshooting
 
-Services on mini-vm are accessible via the hostname `mini-vm.orb.local`, which automatically resolves to the correct IP even after Orbstack restarts. No manual IP updates are needed.
+Services on mini-vm are accessible via the hostname `mini-vm.orb.local`, which
+automatically resolves to the correct IP even after Orbstack restarts. No manual
+IP updates are needed.
 
-**Important**: The `.orb.local` hostname is only resolvable from the Mac mini (OrbStack host). For services accessed from other machines (like bee), the Caddy configuration must:
+**Important**: The `.orb.local` hostname is only resolvable from the Mac mini
+(OrbStack host). For services accessed from other machines (like bee), the Caddy
+configuration must:
 
 1. Forward from bee to Mac mini IP (192.168.50.4)
 2. Mac mini then forwards to `mini-vm.orb.local`
 
-This two-hop forwarding is handled automatically by the shared Caddy templates - bee forwards to mini, mini forwards to the VM.
+This two-hop forwarding is handled automatically by the shared Caddy templates -
+bee forwards to mini, mini forwards to the VM.

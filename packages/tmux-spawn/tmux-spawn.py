@@ -26,7 +26,9 @@ def get_folders_from_stdin():
     return [line.strip() for line in sys.stdin if line.strip()]
 
 
-def run_tmux_command(args: list[str], check: bool = True) -> subprocess.CompletedProcess:
+def run_tmux_command(
+    args: list[str], check: bool = True
+) -> subprocess.CompletedProcess:
     """Run a tmux command."""
     return subprocess.run(["tmux"] + args, check=check, capture_output=True, text=True)
 
@@ -39,33 +41,47 @@ def session_exists(session_name: str) -> bool:
 
 def create_session(session_name: str, first_dir: str, command: str):
     """Create a new tmux session with the first window."""
-    run_tmux_command([
-        "new-session",
-        "-d",
-        "-s", session_name,
-        "-c", first_dir,
-    ])
-    run_tmux_command([
-        "send-keys",
-        "-t", session_name,
-        command,
-        "Enter",
-    ])
+    run_tmux_command(
+        [
+            "new-session",
+            "-d",
+            "-s",
+            session_name,
+            "-c",
+            first_dir,
+        ]
+    )
+    run_tmux_command(
+        [
+            "send-keys",
+            "-t",
+            session_name,
+            command,
+            "Enter",
+        ]
+    )
 
 
 def add_window(session_name: str, directory: str, command: str):
     """Add a new window to an existing session."""
-    run_tmux_command([
-        "new-window",
-        "-t", session_name,
-        "-c", directory,
-    ])
-    run_tmux_command([
-        "send-keys",
-        "-t", session_name,
-        command,
-        "Enter",
-    ])
+    run_tmux_command(
+        [
+            "new-window",
+            "-t",
+            session_name,
+            "-c",
+            directory,
+        ]
+    )
+    run_tmux_command(
+        [
+            "send-keys",
+            "-t",
+            session_name,
+            command,
+            "Enter",
+        ]
+    )
 
 
 def attach_session(session_name: str):
@@ -122,7 +138,10 @@ Examples:
         folders.extend(args.folders)
 
     if not folders:
-        print("Error: No folders provided. Use --folders or pipe folder paths.", file=sys.stderr)
+        print(
+            "Error: No folders provided. Use --folders or pipe folder paths.",
+            file=sys.stderr,
+        )
         sys.exit(1)
 
     # Generate session name
@@ -134,14 +153,20 @@ Examples:
         sys.exit(1)
 
     # Create session with first folder
-    print(f"Creating session '{session_name}' with {len(folders)} window(s)...", file=sys.stderr)
+    print(
+        f"Creating session '{session_name}' with {len(folders)} window(s)...",
+        file=sys.stderr,
+    )
     create_session(session_name, folders[0], args.command)
 
     # Add remaining folders as windows
     for folder in folders[1:]:
         add_window(session_name, folder, args.command)
 
-    print(f"Session '{session_name}' created with {len(folders)} window(s).", file=sys.stderr)
+    print(
+        f"Session '{session_name}' created with {len(folders)} window(s).",
+        file=sys.stderr,
+    )
 
     # Attach to session
     if not args.no_attach:

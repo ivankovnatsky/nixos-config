@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 
@@ -15,17 +20,24 @@ let
       name = lib.name;
       type = lib.type;
       paths = lib.paths;
-      libraryOptions = optionalAttrs (lib.enableRealtimeMonitor != null || lib.automaticRefreshIntervalDays != null) {
-        enableRealtimeMonitor = lib.enableRealtimeMonitor;
-        automaticRefreshIntervalDays = lib.automaticRefreshIntervalDays;
-      };
+      libraryOptions =
+        optionalAttrs (lib.enableRealtimeMonitor != null || lib.automaticRefreshIntervalDays != null)
+          {
+            enableRealtimeMonitor = lib.enableRealtimeMonitor;
+            automaticRefreshIntervalDays = lib.automaticRefreshIntervalDays;
+          };
     }) cfg.libraries;
   };
 
   # Static config (only used when apiKey is set directly)
-  configJson = pkgs.writeText "jellyfin-config.json" (builtins.toJSON (baseConfig // {
-    apiKey = cfg.apiKey;
-  }));
+  configJson = pkgs.writeText "jellyfin-config.json" (
+    builtins.toJSON (
+      baseConfig
+      // {
+        apiKey = cfg.apiKey;
+      }
+    )
+  );
 
   # Runtime config generation script (used with apiKeyFile)
   runtimeConfigScript = ''
@@ -68,39 +80,47 @@ in
     };
 
     libraries = mkOption {
-      type = types.listOf (types.submodule {
-        options = {
-          name = mkOption {
-            type = types.str;
-            example = "Movies";
-            description = "Library name";
-          };
+      type = types.listOf (
+        types.submodule {
+          options = {
+            name = mkOption {
+              type = types.str;
+              example = "Movies";
+              description = "Library name";
+            };
 
-          type = mkOption {
-            type = types.enum [ "movies" "tvshows" "music" "books" "photos" ];
-            default = "movies";
-            description = "Library type";
-          };
+            type = mkOption {
+              type = types.enum [
+                "movies"
+                "tvshows"
+                "music"
+                "books"
+                "photos"
+              ];
+              default = "movies";
+              description = "Library type";
+            };
 
-          paths = mkOption {
-            type = types.listOf types.str;
-            example = [ "/var/lib/jellyfin/media/movies" ];
-            description = "Media paths for this library";
-          };
+            paths = mkOption {
+              type = types.listOf types.str;
+              example = [ "/var/lib/jellyfin/media/movies" ];
+              description = "Media paths for this library";
+            };
 
-          enableRealtimeMonitor = mkOption {
-            type = types.nullOr types.bool;
-            default = null;
-            description = "Enable real-time file system monitoring for this library";
-          };
+            enableRealtimeMonitor = mkOption {
+              type = types.nullOr types.bool;
+              default = null;
+              description = "Enable real-time file system monitoring for this library";
+            };
 
-          automaticRefreshIntervalDays = mkOption {
-            type = types.nullOr types.int;
-            default = null;
-            description = "Automatic metadata refresh interval in days (0 = disabled)";
+            automaticRefreshIntervalDays = mkOption {
+              type = types.nullOr types.int;
+              default = null;
+              description = "Automatic metadata refresh interval in days (0 = disabled)";
+            };
           };
-        };
-      });
+        }
+      );
       default = [ ];
       description = "Jellyfin libraries to manage";
     };
@@ -120,22 +140,29 @@ in
       keepAlive = false;
       runAtLoad = true;
 
-        command = let
+      command =
+        let
           syncScript = pkgs.writeShellScript "jellyfin-mgmt-sync" ''
             set -e
 
             echo "Syncing Jellyfin configuration..."
-            ${if cfg.apiKeyFile != null then ''
-              CONFIG_JSON=$(${runtimeConfigScript})
-              echo "$CONFIG_JSON" | ${pkgs.jellyfin-mgmt}/bin/jellyfin-mgmt sync --config-file /dev/stdin 2>&1 || echo "Warning: Jellyfin sync failed with exit code $?"
-            '' else ''
-              ${pkgs.jellyfin-mgmt}/bin/jellyfin-mgmt sync \
-                --config-file "${configJson}" 2>&1 || echo "Warning: Jellyfin sync failed with exit code $?"
-            ''}
+            ${
+              if cfg.apiKeyFile != null then
+                ''
+                  CONFIG_JSON=$(${runtimeConfigScript})
+                  echo "$CONFIG_JSON" | ${pkgs.jellyfin-mgmt}/bin/jellyfin-mgmt sync --config-file /dev/stdin 2>&1 || echo "Warning: Jellyfin sync failed with exit code $?"
+                ''
+              else
+                ''
+                  ${pkgs.jellyfin-mgmt}/bin/jellyfin-mgmt sync \
+                    --config-file "${configJson}" 2>&1 || echo "Warning: Jellyfin sync failed with exit code $?"
+                ''
+            }
 
             echo "Jellyfin configuration sync completed"
           '';
-        in "${syncScript}";
+        in
+        "${syncScript}";
     };
   };
 }

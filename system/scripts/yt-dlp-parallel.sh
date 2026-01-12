@@ -26,29 +26,29 @@ URL=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -j|--jobs)
-      JOBS="$2"
-      shift 2
-      ;;
-    -o|--output)
-      OUTPUT_DIR="$2"
-      shift 2
-      ;;
-    -f|--format)
-      FORMAT="$2"
-      shift 2
-      ;;
-    -h|--help)
-      usage
-      ;;
-    -*)
-      echo "Unknown option: $1"
-      usage
-      ;;
-    *)
-      URL="$1"
-      shift
-      ;;
+  -j | --jobs)
+    JOBS="$2"
+    shift 2
+    ;;
+  -o | --output)
+    OUTPUT_DIR="$2"
+    shift 2
+    ;;
+  -f | --format)
+    FORMAT="$2"
+    shift 2
+    ;;
+  -h | --help)
+    usage
+    ;;
+  -*)
+    echo "Unknown option: $1"
+    usage
+    ;;
+  *)
+    URL="$1"
+    shift
+    ;;
   esac
 done
 

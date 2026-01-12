@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 let
   dataDir = "${config.flags.miniStoragePath}/.matrix/bridges/linkedin";

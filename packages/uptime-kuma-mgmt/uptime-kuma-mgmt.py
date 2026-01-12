@@ -8,7 +8,12 @@ import os
 import sys
 import json
 import argparse
-from uptime_kuma_api import UptimeKumaApi, MonitorType, NotificationType, UptimeKumaException
+from uptime_kuma_api import (
+    UptimeKumaApi,
+    MonitorType,
+    NotificationType,
+    UptimeKumaException,
+)
 
 USER_AGENT = "uptime-kuma-mgmt/1.0.0"
 
@@ -42,7 +47,7 @@ class UptimeKumaClient:
         """Authenticate with username and password."""
         try:
             self.api.login(username, password)
-            print(f"Authenticated successfully", file=sys.stderr)
+            print("Authenticated successfully", file=sys.stderr)
         except Exception as e:
             raise Exception(f"Authentication failed: {e}")
 
@@ -68,7 +73,9 @@ class UptimeKumaClient:
         except Exception as e:
             raise Exception(f"Failed to enable trust proxy: {e}")
 
-    def setup_discord_notification(self, webhook_url: str, name: str = "Discord") -> int:
+    def setup_discord_notification(
+        self, webhook_url: str, name: str = "Discord"
+    ) -> int:
         """Setup Discord notification with default settings. Returns notification ID."""
         try:
             # Check if notification already exists
@@ -86,19 +93,30 @@ class UptimeKumaClient:
             if existing:
                 notification_id = existing["id"]
                 # Check if update is needed
-                if (existing.get("discordWebhookUrl") != webhook_url or
-                    not existing.get("isDefault") or
-                    existing.get("type") != NotificationType.DISCORD):
+                if (
+                    existing.get("discordWebhookUrl") != webhook_url
+                    or not existing.get("isDefault")
+                    or existing.get("type") != NotificationType.DISCORD
+                ):
                     print(f"Updating notification: {name}", file=sys.stderr)
                     self.api.edit_notification(notification_id, **notification_config)
-                    print(f"Notification '{name}' updated successfully (ID: {notification_id})", file=sys.stderr)
+                    print(
+                        f"Notification '{name}' updated successfully (ID: {notification_id})",
+                        file=sys.stderr,
+                    )
                 else:
-                    print(f"Notification '{name}' already configured (ID: {notification_id})", file=sys.stderr)
+                    print(
+                        f"Notification '{name}' already configured (ID: {notification_id})",
+                        file=sys.stderr,
+                    )
             else:
                 print(f"Creating notification: {name}", file=sys.stderr)
                 result = self.api.add_notification(**notification_config)
                 notification_id = result["id"]
-                print(f"Notification '{name}' created successfully (ID: {notification_id})", file=sys.stderr)
+                print(
+                    f"Notification '{name}' created successfully (ID: {notification_id})",
+                    file=sys.stderr,
+                )
 
             return notification_id
         except Exception as e:
@@ -112,14 +130,16 @@ class UptimeKumaClient:
             print(f"Deleting {len(monitors)} monitors...", file=sys.stderr)
             for monitor in monitors:
                 print(f"  Deleting monitor: {monitor['name']}", file=sys.stderr)
-                self.api.delete_monitor(monitor['id'])
+                self.api.delete_monitor(monitor["id"])
 
             # Delete all notifications
             notifications = self.api.get_notifications()
             print(f"Deleting {len(notifications)} notifications...", file=sys.stderr)
             for notification in notifications:
-                print(f"  Deleting notification: {notification['name']}", file=sys.stderr)
-                self.api.delete_notification(notification['id'])
+                print(
+                    f"  Deleting notification: {notification['name']}", file=sys.stderr
+                )
+                self.api.delete_notification(notification["id"])
 
             print("Cleanup completed successfully", file=sys.stderr)
         except Exception as e:
@@ -165,7 +185,9 @@ class UptimeKumaClient:
         except Exception as e:
             raise Exception(f"Failed to delete monitor: {e}")
 
-    def sync_from_file(self, config_file: str, dry_run: bool = False, discord_webhook: str = None):
+    def sync_from_file(
+        self, config_file: str, dry_run: bool = False, discord_webhook: str = None
+    ):
         """
         Sync monitors from a JSON configuration file.
         Creates missing monitors, updates existing ones, deletes extras.
@@ -188,8 +210,13 @@ class UptimeKumaClient:
             if discord_webhook:
                 notification_id = self.setup_discord_notification(discord_webhook)
                 if notification_id is None:
-                    raise Exception("Failed to setup Discord notification - no notification ID returned")
-                print(f"Notification configured successfully (ID: {notification_id}), proceeding with monitor setup...", file=sys.stderr)
+                    raise Exception(
+                        "Failed to setup Discord notification - no notification ID returned"
+                    )
+                print(
+                    f"Notification configured successfully (ID: {notification_id}), proceeding with monitor setup...",
+                    file=sys.stderr,
+                )
 
         desired_monitors = {m["name"]: m for m in config["monitors"]}
         current_monitors_list = self.list_monitors()
@@ -204,16 +231,25 @@ class UptimeKumaClient:
                     monitors_without_notif.append(monitor["name"])
 
             if monitors_without_notif:
-                print(f"\nFound {len(monitors_without_notif)} monitors without notification configured", file=sys.stderr)
-                print(f"Deleting all {len(current_monitors_list)} monitors to reconfigure with notifications...", file=sys.stderr)
+                print(
+                    f"\nFound {len(monitors_without_notif)} monitors without notification configured",
+                    file=sys.stderr,
+                )
+                print(
+                    f"Deleting all {len(current_monitors_list)} monitors to reconfigure with notifications...",
+                    file=sys.stderr,
+                )
                 for monitor in current_monitors_list:
                     print(f"  Deleting: {monitor['name']}", file=sys.stderr)
                     self.delete_monitor(monitor["id"])
                 # Clear current monitors so they'll all be recreated
                 current_monitors = {}
-                print("All monitors deleted, will recreate with notifications\n", file=sys.stderr)
+                print(
+                    "All monitors deleted, will recreate with notifications\n",
+                    file=sys.stderr,
+                )
 
-        print(f"\nSync Plan:", file=sys.stderr)
+        print("\nSync Plan:", file=sys.stderr)
         print(f"  Desired monitors: {len(desired_monitors)}", file=sys.stderr)
         print(f"  Current monitors: {len(current_monitors)}", file=sys.stderr)
 
@@ -229,14 +265,18 @@ class UptimeKumaClient:
                 if needs_update:
                     print(f"  UPDATE: {name} ({reason})", file=sys.stderr)
                     if not dry_run:
-                        monitor_config = self._prepare_monitor_config(desired, notification_id)
+                        monitor_config = self._prepare_monitor_config(
+                            desired, notification_id
+                        )
                         self.update_monitor(current["id"], monitor_config)
                 else:
                     print(f"  OK: {name} (no changes)", file=sys.stderr)
             else:
                 print(f"  CREATE: {name}", file=sys.stderr)
                 if not dry_run:
-                    monitor_config = self._prepare_monitor_config(desired, notification_id)
+                    monitor_config = self._prepare_monitor_config(
+                        desired, notification_id
+                    )
                     self.create_monitor(monitor_config)
 
         # Delete monitors not in desired state (declarative)
@@ -276,11 +316,20 @@ class UptimeKumaClient:
         """Check if monitor configuration differs from current state. Returns (needs_update, reason)."""
         # Compare basic fields (use defaults from _prepare_monitor_config)
         if desired.get("interval", 60) != current.get("interval"):
-            return True, f"interval: {current.get('interval')} → {desired.get('interval', 60)}"
+            return (
+                True,
+                f"interval: {current.get('interval')} → {desired.get('interval', 60)}",
+            )
         if desired.get("maxretries", 3) != current.get("maxretries"):
-            return True, f"maxretries: {current.get('maxretries')} → {desired.get('maxretries', 3)}"
+            return (
+                True,
+                f"maxretries: {current.get('maxretries')} → {desired.get('maxretries', 3)}",
+            )
         if desired.get("retryInterval", 60) != current.get("retryInterval"):
-            return True, f"retryInterval: {current.get('retryInterval')} → {desired.get('retryInterval', 60)}"
+            return (
+                True,
+                f"retryInterval: {current.get('retryInterval')} → {desired.get('retryInterval', 60)}",
+            )
 
         # Compare monitor type (normalize both to MonitorType enum values)
         desired_type = self._get_monitor_type(desired.get("type", "http"))
@@ -310,18 +359,26 @@ class UptimeKumaClient:
                 if current.get("hostname") != hostname:
                     return True, f"hostname: {current.get('hostname')} → {hostname}"
                 if current.get("dns_resolve_server") != dns_server:
-                    return True, f"dns_server: {current.get('dns_resolve_server')} → {dns_server}"
+                    return (
+                        True,
+                        f"dns_server: {current.get('dns_resolve_server')} → {dns_server}",
+                    )
         elif monitor_type == "postgres":
             # For Postgres: compare connection string
             if desired.get("url") != current.get("databaseConnectionString"):
                 # Mask passwords in connection strings for display
-                current_masked = self._mask_password_in_url(current.get('databaseConnectionString', ''))
-                desired_masked = self._mask_password_in_url(desired.get('url', ''))
+                current_masked = self._mask_password_in_url(
+                    current.get("databaseConnectionString", "")
+                )
+                desired_masked = self._mask_password_in_url(desired.get("url", ""))
                 return True, f"connection: {current_masked} → {desired_masked}"
         elif monitor_type == "tailscale-ping":
             # For Tailscale: compare hostname
             if desired.get("url") != current.get("hostname"):
-                return True, f"hostname: {current.get('hostname')} → {desired.get('url')}"
+                return (
+                    True,
+                    f"hostname: {current.get('hostname')} → {desired.get('url')}",
+                )
         else:
             # For HTTP/HTTPS: compare URL
             if desired.get("url") != current.get("url"):
@@ -333,13 +390,17 @@ class UptimeKumaClient:
             current_status = current.get("accepted_statuscodes", ["200"])
             if desired_status != current_status:
                 return True, f"status: {current_status} → {desired_status}"
-        elif current.get("accepted_statuscodes") and current["accepted_statuscodes"] != ["200"]:
+        elif current.get("accepted_statuscodes") and current[
+            "accepted_statuscodes"
+        ] != ["200"]:
             # Current has non-default status but desired doesn't specify one
             return True, f"status: {current['accepted_statuscodes']} → ['200']"
 
         return False, ""
 
-    def _prepare_monitor_config(self, monitor: dict, notification_id: int = None) -> dict:
+    def _prepare_monitor_config(
+        self, monitor: dict, notification_id: int = None
+    ) -> dict:
         """Prepare monitor configuration for API call."""
         monitor_type = self._get_monitor_type(monitor.get("type", "http"))
 
@@ -363,7 +424,9 @@ class UptimeKumaClient:
                 config["hostname"] = hostname
                 config["port"] = int(port)
             else:
-                raise ValueError(f"TCP monitor requires hostname:port format, got: {monitor['url']}")
+                raise ValueError(
+                    f"TCP monitor requires hostname:port format, got: {monitor['url']}"
+                )
         elif monitor_type == MonitorType.DNS:
             # For DNS monitors, url format: "hostname@dns_server"
             if "@" in monitor["url"]:
@@ -373,7 +436,9 @@ class UptimeKumaClient:
                 config["dns_resolve_type"] = "A"
                 config["port"] = 53
             else:
-                raise ValueError(f"DNS monitor requires hostname@dns_server format, got: {monitor['url']}")
+                raise ValueError(
+                    f"DNS monitor requires hostname@dns_server format, got: {monitor['url']}"
+                )
         elif monitor_type == MonitorType.POSTGRES:
             # For PostgreSQL monitors, url is the connection string
             config["databaseConnectionString"] = monitor["url"]
@@ -384,9 +449,13 @@ class UptimeKumaClient:
                 hostname, port = monitor["url"].rsplit(":", 1)
                 config["hostname"] = hostname
                 config["port"] = int(port)
-                config["mqttTopic"] = "uptime-kuma/health"  # Default topic for health check
+                config["mqttTopic"] = (
+                    "uptime-kuma/health"  # Default topic for health check
+                )
             else:
-                raise ValueError(f"MQTT monitor requires hostname:port format, got: {monitor['url']}")
+                raise ValueError(
+                    f"MQTT monitor requires hostname:port format, got: {monitor['url']}"
+                )
         elif monitor_type == MonitorType.TAILSCALE_PING:
             # For Tailscale Ping monitors, url is the hostname
             config["hostname"] = monitor["url"]
@@ -431,9 +500,7 @@ def cmd_list(args, client):
             for monitor in monitors:
                 status = "✓" if monitor.get("active") else "✗"
                 target = _get_monitor_target(monitor)
-                print(
-                    f"  [{status}] {monitor['id']}: {monitor['name']} - {target}"
-                )
+                print(f"  [{status}] {monitor['id']}: {monitor['name']} - {target}")
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
@@ -508,9 +575,7 @@ def cmd_sync(args, client):
     """Sync monitors from configuration file."""
     try:
         client.sync_from_file(
-            args.config_file,
-            dry_run=args.dry_run,
-            discord_webhook=args.discord_webhook
+            args.config_file, dry_run=args.dry_run, discord_webhook=args.discord_webhook
         )
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
@@ -546,14 +611,14 @@ def validate_auth_args(args):
     if not args.password:
         missing.append(f"--password or {ENV_PASSWORD}")
     if missing:
-        print(f"Error: Missing required arguments: {', '.join(missing)}", file=sys.stderr)
+        print(
+            f"Error: Missing required arguments: {', '.join(missing)}", file=sys.stderr
+        )
         sys.exit(1)
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Uptime Kuma monitor management tool"
-    )
+    parser = argparse.ArgumentParser(description="Uptime Kuma monitor management tool")
 
     subparsers = parser.add_subparsers(
         dest="command", required=True, help="Command to execute"
@@ -602,15 +667,27 @@ def main():
                 cmd_get(args, client)
             elif args.command == "sync":
                 cmd_sync(args, client)
-    except UptimeKumaException as e:
-        print(f"Error: Failed to connect to Uptime Kuma at {args.base_url}", file=sys.stderr)
-        print(f"  Please verify the server is running and accessible.", file=sys.stderr)
+    except UptimeKumaException:
+        print(
+            f"Error: Failed to connect to Uptime Kuma at {args.base_url}",
+            file=sys.stderr,
+        )
+        print("  Please verify the server is running and accessible.", file=sys.stderr)
         sys.exit(1)
     except Exception as e:
         error_msg = str(e)
-        if "Connection refused" in error_msg or "unable to connect" in error_msg.lower():
-            print(f"Error: Failed to connect to Uptime Kuma at {args.base_url}", file=sys.stderr)
-            print(f"  Please verify the server is running and accessible.", file=sys.stderr)
+        if (
+            "Connection refused" in error_msg
+            or "unable to connect" in error_msg.lower()
+        ):
+            print(
+                f"Error: Failed to connect to Uptime Kuma at {args.base_url}",
+                file=sys.stderr,
+            )
+            print(
+                "  Please verify the server is running and accessible.",
+                file=sys.stderr,
+            )
         else:
             print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)

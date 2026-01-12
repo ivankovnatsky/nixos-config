@@ -1,4 +1,9 @@
-{ config, pkgs, username, ... }:
+{
+  config,
+  pkgs,
+  username,
+  ...
+}:
 
 let
   termName = import ../home/tmux.nix { inherit config pkgs; };

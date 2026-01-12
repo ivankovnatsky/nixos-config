@@ -22,18 +22,24 @@ def ssh_run(
     """Run SSH command on Mini with standard options."""
     ssh_args = [
         "ssh",
-        "-o", f"ConnectTimeout={timeout}",
+        "-o",
+        f"ConnectTimeout={timeout}",
     ]
     if batch_mode:
         ssh_args.extend(["-o", "BatchMode=yes"])
     ssh_args.append(f"{MINI_USER}@{MINI_IP}")
     ssh_args.append(command)
-    return subprocess.run(ssh_args, capture_output=capture_output, text=True, check=False)
+    return subprocess.run(
+        ssh_args, capture_output=capture_output, text=True, check=False
+    )
 
 
 SERVICES_TO_CHECK = [
     ("DNS", f"dig @{MINI_IP} google.com +short +timeout=2"),
-    ("Uptime Kuma", f"curl -s -o /dev/null -w '%{{http_code}}' --connect-timeout 2 http://{MINI_IP}:3001"),
+    (
+        "Uptime Kuma",
+        f"curl -s -o /dev/null -w '%{{http_code}}' --connect-timeout 2 http://{MINI_IP}:3001",
+    ),
 ]
 
 
@@ -132,7 +138,7 @@ def power_on() -> int:
             [
                 "osascript",
                 "-e",
-                f'''
+                f"""
                 tell application "Screen Sharing"
                     activate
                     open location "vnc://{MINI_USER}@{MINI_IP}"
@@ -147,7 +153,7 @@ def power_on() -> int:
                         keystroke return
                     end tell
                 end tell
-                ''',
+                """,
             ],
             check=False,
         )

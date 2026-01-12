@@ -10,4 +10,5 @@ To reset the cursor theme to the default (system-managed) setting:
 dconf reset /org/gnome/desktop/interface/cursor-theme
 ```
 
-This is useful when you want GNOME to use the cursor theme defined in your NixOS configuration instead of a user-specific override.
+This is useful when you want GNOME to use the cursor theme defined in your NixOS
+configuration instead of a user-specific override.

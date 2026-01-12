@@ -16,21 +16,22 @@ let
   configTomlPath = ./config.toml;
 
   # Template config without secrets (substituted at runtime)
-  configTomlTemplate = pkgs.runCommand "podsync-config.toml.template"
-    {
-      ytDlpPath = "${pkgs.nixpkgs-darwin-master.yt-dlp}/bin/yt-dlp";
-      miniIp = config.flags.miniIp;
-      dataDir = dataDir;
-      logDir = logDir;
-    }
-    ''
-      ${pkgs.gnused}/bin/sed \
-        -e "s|@ytDlpPath@|$ytDlpPath|g" \
-        -e "s|@miniIp@|$miniIp|g" \
-        -e "s|@dataDir@|$dataDir|g" \
-        -e "s|@logDir@|$logDir|g" \
-        ${configTomlPath} > $out
-    '';
+  configTomlTemplate =
+    pkgs.runCommand "podsync-config.toml.template"
+      {
+        ytDlpPath = "${pkgs.nixpkgs-darwin-master.yt-dlp}/bin/yt-dlp";
+        miniIp = config.flags.miniIp;
+        dataDir = dataDir;
+        logDir = logDir;
+      }
+      ''
+        ${pkgs.gnused}/bin/sed \
+          -e "s|@ytDlpPath@|$ytDlpPath|g" \
+          -e "s|@miniIp@|$miniIp|g" \
+          -e "s|@dataDir@|$dataDir|g" \
+          -e "s|@logDir@|$logDir|g" \
+          ${configTomlPath} > $out
+      '';
 in
 {
   # Sops secrets for podsync

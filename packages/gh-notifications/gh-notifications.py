@@ -37,16 +37,18 @@ def run_gh(args: List[str]) -> str:
 def fetch_notifications() -> List[Notification]:
     """Fetch unread notifications via gh api, returning basic fields per thread."""
     # Using --jq to avoid streaming-JSON parsing; returns TSV: id, type, url, repo, title
-    jq = ".[] | [.id, .subject.type, .subject.url // \"\", .repository.full_name, .subject.title] | @tsv"
-    out = run_gh([
-        "api",
-        "/notifications",
-        "--paginate",
-        "-H",
-        "Accept: application/vnd.github+json",
-        "--jq",
-        jq,
-    ])
+    jq = '.[] | [.id, .subject.type, .subject.url // "", .repository.full_name, .subject.title] | @tsv'
+    out = run_gh(
+        [
+            "api",
+            "/notifications",
+            "--paginate",
+            "-H",
+            "Accept: application/vnd.github+json",
+            "--jq",
+            jq,
+        ]
+    )
 
     notifications: List[Notification] = []
     for line in out.splitlines():
@@ -69,7 +71,9 @@ def fetch_notifications() -> List[Notification]:
     return notifications
 
 
-def _resolve_check_suite_by_workflow_name(repo_full_name: str, workflow_name: str) -> str:
+def _resolve_check_suite_by_workflow_name(
+    repo_full_name: str, workflow_name: str
+) -> str:
     """Find recent workflow run matching the given name.
 
     For CheckSuite notifications without a subject.url, query recent workflow runs
@@ -78,12 +82,14 @@ def _resolve_check_suite_by_workflow_name(repo_full_name: str, workflow_name: st
     try:
         # Extract workflow name from notification title (e.g., "Terragrunt CI - PR | ...")
         # Query recent workflow runs
-        runs_json = run_gh([
-            "api",
-            f"/repos/{repo_full_name}/actions/runs",
-            "--jq",
-            ".workflow_runs[0:10] | .[] | {name: .name, html_url: .html_url}",
-        ])
+        runs_json = run_gh(
+            [
+                "api",
+                f"/repos/{repo_full_name}/actions/runs",
+                "--jq",
+                ".workflow_runs[0:10] | .[] | {name: .name, html_url: .html_url}",
+            ]
+        )
 
         # Parse JSON lines and find matching workflow
         for line in runs_json.splitlines():
@@ -103,7 +109,9 @@ def _resolve_check_suite_by_workflow_name(repo_full_name: str, workflow_name: st
 
 def _resolve_check_suite_url_fallback(api: str) -> str:
     """Construct a UI URL for a Check Suite when html_url is missing."""
-    m = re.match(r"https://api\.github\.com/repos/([^/]+)/([^/]+)/check-suites/(\d+)", api)
+    m = re.match(
+        r"https://api\.github\.com/repos/([^/]+)/([^/]+)/check-suites/(\d+)", api
+    )
     if not m:
         return ""
     owner, repo, suite_id = m.groups()
@@ -134,7 +142,9 @@ def resolve_html_url(n: Notification) -> str:
         if " workflow run" in workflow_name:
             workflow_name = workflow_name.split(" workflow run")[0].strip()
 
-        workflow_url = _resolve_check_suite_by_workflow_name(n.repo_full_name, workflow_name)
+        workflow_url = _resolve_check_suite_by_workflow_name(
+            n.repo_full_name, workflow_name
+        )
         if workflow_url:
             return workflow_url
         # Final fallback for CheckSuite: open Actions page
@@ -184,17 +194,21 @@ def open_in_browser(url: str) -> bool:
 
 def mark_thread_read(thread_id: str) -> None:
     # Per API: PATCH /notifications/threads/{thread_id} marks as read
-    run_gh([
-        "api",
-        f"/notifications/threads/{thread_id}",
-        "-X",
-        "PATCH",
-        "-H",
-        "Accept: application/vnd.github+json",
-    ])
+    run_gh(
+        [
+            "api",
+            f"/notifications/threads/{thread_id}",
+            "-X",
+            "PATCH",
+            "-H",
+            "Accept: application/vnd.github+json",
+        ]
+    )
 
 
-def group_urls(ns: Iterable[Notification]) -> Tuple[List[Tuple[str, str]], List[Tuple[str, str]], List[Tuple[str, str]]]:
+def group_urls(
+    ns: Iterable[Notification],
+) -> Tuple[List[Tuple[str, str]], List[Tuple[str, str]], List[Tuple[str, str]]]:
     """Return (issues, prs, others) each as list of (url, thread_id).
 
     - PRs will later open with /files
@@ -264,7 +278,10 @@ def main(argv: List[str]) -> int:
             try:
                 mark_thread_read(thread_id)
             except Exception as e:
-                print(f"Warning: failed to mark thread {thread_id} read: {e}", file=sys.stderr)
+                print(
+                    f"Warning: failed to mark thread {thread_id} read: {e}",
+                    file=sys.stderr,
+                )
 
     for url, thread_id in prs:
         opened = open_in_browser(f"{url}/files")
@@ -272,7 +289,10 @@ def main(argv: List[str]) -> int:
             try:
                 mark_thread_read(thread_id)
             except Exception as e:
-                print(f"Warning: failed to mark thread {thread_id} read: {e}", file=sys.stderr)
+                print(
+                    f"Warning: failed to mark thread {thread_id} read: {e}",
+                    file=sys.stderr,
+                )
 
     for url, thread_id in others:
         opened = open_in_browser(url)
@@ -280,7 +300,10 @@ def main(argv: List[str]) -> int:
             try:
                 mark_thread_read(thread_id)
             except Exception as e:
-                print(f"Warning: failed to mark thread {thread_id} read: {e}", file=sys.stderr)
+                print(
+                    f"Warning: failed to mark thread {thread_id} read: {e}",
+                    file=sys.stderr,
+                )
 
     print("Opening URLs in a new browser window")
     return 0

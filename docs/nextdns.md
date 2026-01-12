@@ -1,6 +1,7 @@
 # NextDNS
 
-The NextDNS API key is now managed through sops-nix for secure secret management.
+The NextDNS API key is now managed through sops-nix for secure secret
+management.
 
 ## API Reference
 
@@ -8,12 +9,14 @@ NextDNS API documentation: https://nextdns.github.io/api/
 
 ## Automated Profile Management
 
-Launchd jobs are configured to automatically sync NextDNS profiles on system startup:
+Launchd jobs are configured to automatically sync NextDNS profiles on system
+startup:
 
 - **mini**: Two profiles (mini, asus)
 - **pro**: Four profiles (pro, air, phone, asus)
 
-The jobs run at system startup and apply the configuration from `configs/nextdns-profile.json`.
+The jobs run at system startup and apply the configuration from
+`configs/nextdns-profile.json`.
 
 ## Manual CLI Usage
 

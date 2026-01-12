@@ -200,8 +200,8 @@
       enabled = false;
       separators = [ "" ]; # \uE0B0
       separatorInvertBackground = [ false ];
-      startCaps = [];
-      endCaps = [];
+      startCaps = [ ];
+      endCaps = [ ];
       autoAlign = false;
     };
   };

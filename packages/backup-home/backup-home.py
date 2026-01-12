@@ -178,7 +178,7 @@ def create_backup(archive_path: Path, user: str) -> bool:
             tar_proc.wait()
 
         if tar_proc.returncode != 0 or pigz_proc.returncode != 0:
-            print(f"Backup creation failed", file=sys.stderr)
+            print("Backup creation failed", file=sys.stderr)
             return False
 
         return True

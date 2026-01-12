@@ -30,7 +30,8 @@ syncthing -gui-address="0.0.0.0:8384"
 
 Share nixos-config and Sources folders from a3 using curl commands:
 
-On a3, set up environment variables (get steamdeck's device ID from its Syncthing UI: Actions > Show ID):
+On a3, set up environment variables (get steamdeck's device ID from its
+Syncthing UI: Actions > Show ID):
 
 ```console
 export API_KEY=$(grep -oP '<apikey>\K[^<]+' ~/.local/state/syncthing/config.xml)
@@ -50,13 +51,15 @@ Add nixos-config folder and share it with steamdeck:
 curl -X PUT -H "X-API-Key: $API_KEY" -H "Content-Type: application/json" -d "{\"id\":\"shtdy-s2c9s\",\"label\":\"nixos-config\",\"path\":\"~/Sources/github.com/ivankovnatsky/nixos-config\",\"devices\":[{\"deviceID\":\"$STEAMDECK_DEVICE_ID\"}]}" http://$A3_HOST/rest/config/folders/shtdy-s2c9s
 ```
 
-Share Sources folder with steamdeck (update existing folder to add steamdeck device):
+Share Sources folder with steamdeck (update existing folder to add steamdeck
+device):
 
 ```console
 curl -X PATCH -H "X-API-Key: $API_KEY" -H "Content-Type: application/json" -d "{\"devices\":[{\"deviceID\":\"$STEAMDECK_DEVICE_ID\"}]}" http://$A3_HOST/rest/config/folders/fpbxa-6zw5z
 ```
 
-Note: This PATCH will add steamdeck while preserving other devices that Syncthing automatically includes.
+Note: This PATCH will add steamdeck while preserving other devices that
+Syncthing automatically includes.
 
 Trigger folder scans:
 
@@ -78,8 +81,7 @@ cp /etc/nixos/.* machines/steamdeck/nixos/
 ### Enrolling TPM2 (if available)
 
 The Steam Deck system uses a single LUKS-encrypted partition that contains both
-root and swap. You only need to enroll TPM2 for this single encrypted
-partition:
+root and swap. You only need to enroll TPM2 for this single encrypted partition:
 
 ```console
 sudo systemd-cryptenroll --tpm2-device=auto /dev/disk/by-uuid/2b9052dc-f819-4ff3-98e6-661a45a2cc3e

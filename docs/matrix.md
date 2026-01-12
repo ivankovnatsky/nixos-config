@@ -4,11 +4,13 @@
 
 **Status**: Matrix stack running natively on bee (Oct 2025)
 
-- **Production**: `matrix.${externalDomain}` and `element.${externalDomain}` - active on bee
+- **Production**: `matrix.${externalDomain}` and `element.${externalDomain}` -
+  active on bee
 
 Synapse homeserver runs on bee (192.168.50.3:8008).
 
-**When adding new bridges**: Check for port conflicts by searching the entire codebase:
+**When adding new bridges**: Check for port conflicts by searching the entire
+codebase:
 
 ```console
 grep -r "$portnumber" .
@@ -35,7 +37,9 @@ Homeserver URL: `https://matrix.${externalDomain}`
 1. Client → matrix.${externalDomain} (wildcard DNS)
 2. Caddy on bee → Synapse on bee (192.168.50.3:8008)
 
-**Historical**: When Matrix ran on mini-vm (Oct 2025), routing required two hops due to OrbStack NAT networking:
+**Historical**: When Matrix ran on mini-vm (Oct 2025), routing required two hops
+due to OrbStack NAT networking:
+
 1. Client → matrix-mini.${externalDomain}
 2. Caddy on bee (192.168.50.3) → Caddy on mini (192.168.50.4:8008)
 3. Caddy on mini → mini-vm Synapse (mini-vm.orb.local:8008)
@@ -58,7 +62,8 @@ After first login, immediately set up a security key:
 2. Click "Set up Secure Backup"
 3. Create and save your security key
 
-This allows logging in on new devices without needing confirmation from another device.
+This allows logging in on new devices without needing confirmation from another
+device.
 
 ## Telegram Bridge (mautrix-telegram)
 
@@ -80,7 +85,8 @@ Reference: https://docs.mau.fi/bridges/python/telegram/authentication.html
 2. Send: `login qr`
 3. Scan QR code with WhatsApp on phone
 
-**Method 2: Phone Pairing Code** (if using Matrix client on same phone as WhatsApp)
+**Method 2: Phone Pairing Code** (if using Matrix client on same phone as
+WhatsApp)
 
 1. Start chat with: `@whatsappbot:matrix.${externalDomain}`
 2. Send: `login phone`
@@ -103,7 +109,8 @@ Reference: https://docs.mau.fi/bridges/go/whatsapp/authentication.html
 2. Send: `login`
 3. Bot sends a QR code image
 4. Scan QR code with Discord mobile app:
-   - If using Matrix on same device: Save QR image to Photos, open on another device to scan
+   - If using Matrix on same device: Save QR image to Photos, open on another
+     device to scan
    - If using Matrix on different device: Scan QR directly from screen
 5. Approve login on Discord app
 
@@ -136,7 +143,8 @@ Reference: https://docs.mau.fi/bridges/go/meta/authentication.html
 
 ### Authentication
 
-Same as Messenger bridge, but use `@instagrambot:matrix.${externalDomain}` and login to `instagram.com`.
+Same as Messenger bridge, but use `@instagrambot:matrix.${externalDomain}` and
+login to `instagram.com`.
 
 Reference: https://docs.mau.fi/bridges/go/meta/authentication.html
 

@@ -74,12 +74,16 @@ in
       environment = {
         LISTEN = "${cfg.listenAddress}:${toString cfg.port}";
         PATH = "${pkgs.coreutils}/bin:${cfg.package}/bin:${pkgs.bash}/bin";
-      } // (
-        if cfg.hubPublicKeyFile != null then {
-          KEY_FILE = cfg.hubPublicKeyFile;
-        } else {
-          KEY = cfg.hubPublicKey;
-        }
+      }
+      // (
+        if cfg.hubPublicKeyFile != null then
+          {
+            KEY_FILE = cfg.hubPublicKeyFile;
+          }
+        else
+          {
+            KEY = cfg.hubPublicKey;
+          }
       );
 
       extraServiceConfig = {

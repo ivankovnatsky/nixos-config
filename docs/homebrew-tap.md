@@ -1,10 +1,12 @@
 # Local Homebrew Tap
 
-Local Homebrew casks stored in the `Casks/` directory at the root of this repository.
+Local Homebrew casks stored in the `Casks/` directory at the root of this
+repository.
 
 ## Integration with nix-homebrew
 
-This tap is integrated into the NixOS configuration via flake inputs and nix-homebrew.
+This tap is integrated into the NixOS configuration via flake inputs and
+nix-homebrew.
 
 Add to `flake.nix` inputs:
 

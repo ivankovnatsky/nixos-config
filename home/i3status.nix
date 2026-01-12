@@ -149,7 +149,6 @@ in
           };
         };
 
-
         timeBlock = {
           block = "time";
           format = " $icon $timestamp.datetime(f:'%a %b %d %H:%M') ";

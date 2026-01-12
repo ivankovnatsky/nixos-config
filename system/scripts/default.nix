@@ -16,7 +16,9 @@ let
     let
       scriptContents = builtins.readFile (scriptPath + "/${scriptName}");
       bashShebang = "#!${pkgs.bash}/bin/bash";
-      scriptWithFixedShebang = builtins.replaceStrings [ "#!/usr/bin/env bash" ] [ bashShebang ] scriptContents;
+      scriptWithFixedShebang =
+        builtins.replaceStrings [ "#!/usr/bin/env bash" ] [ bashShebang ]
+          scriptContents;
       binaryName = lib.removeSuffix ".sh" scriptName;
     in
     pkgs.writeScriptBin binaryName scriptWithFixedShebang;

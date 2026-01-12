@@ -250,21 +250,27 @@ in
         # end
 
       '';
-      plugins = with pkgs.fishPlugins; [
-        { inherit (fzf-fish) name src; }
-        { inherit (grc) name src; }
-        # { inherit (plugin-git) name src; }  # Disabled - using carapace for git completions
-        { inherit (forgit) name src; }
-        { inherit (autopair) name src; }
-        { inherit (puffer) name src; }
-        { inherit (colored-man-pages) name src; }
-        { inherit (git-abbr) name src; }
-        { inherit (fish-bd) name src; }
-        { inherit (done) name src; }
-        { inherit (bass) name src; }
-      ] ++ lib.optionals isDarwin (with pkgs.fishPlugins; [
-        { inherit (macos) name src; }
-      ]);
+      plugins =
+        with pkgs.fishPlugins;
+        [
+          { inherit (fzf-fish) name src; }
+          { inherit (grc) name src; }
+          # { inherit (plugin-git) name src; }  # Disabled - using carapace for git completions
+          { inherit (forgit) name src; }
+          { inherit (autopair) name src; }
+          { inherit (puffer) name src; }
+          { inherit (colored-man-pages) name src; }
+          { inherit (git-abbr) name src; }
+          { inherit (fish-bd) name src; }
+          { inherit (done) name src; }
+          { inherit (bass) name src; }
+        ]
+        ++ lib.optionals isDarwin (
+          with pkgs.fishPlugins;
+          [
+            { inherit (macos) name src; }
+          ]
+        );
 
       inherit shellAliases;
     };

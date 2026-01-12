@@ -1,4 +1,9 @@
-{ config, pkgs, username, ... }:
+{
+  config,
+  pkgs,
+  username,
+  ...
+}:
 let
   homeDir = config.users.users.${username}.home;
 
@@ -23,7 +28,7 @@ in
     };
     extraServiceConfig = {
       # Run every hour
-      StartCalendarInterval = [{ Minute = 0; }];
+      StartCalendarInterval = [ { Minute = 0; } ];
     };
   };
 }

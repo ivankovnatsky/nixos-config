@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   inherit (pkgs.stdenv.targetPlatform) isDarwin;
 
@@ -127,9 +132,15 @@ in
       "default.due" = "eod";
       # Use home-manager managed hooks directory
       "hooks.location" = "${config.xdg.configHome}/task/hooks";
-    } // (if isDarwin && !isWork then {
-      "sync.local.server_dir" = iCloudTaskDir;
-    } else { });
+    }
+    // (
+      if isDarwin && !isWork then
+        {
+          "sync.local.server_dir" = iCloudTaskDir;
+        }
+      else
+        { }
+    );
   };
 
   # Auto-sync hooks: run after task modifications to sync with local server

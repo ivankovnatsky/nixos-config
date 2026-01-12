@@ -1,17 +1,24 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 
 let
   cfg = config.local.services.syncthing-mgmt;
 
-  configJson = pkgs.writeText "syncthing-config.json" (builtins.toJSON {
-    gui = optionalAttrs (cfg.gui != null) {
-      username = cfg.gui.username;
-      password = cfg.gui.password;
-    };
-    devices = cfg.devices;
-  });
+  configJson = pkgs.writeText "syncthing-config.json" (
+    builtins.toJSON {
+      gui = optionalAttrs (cfg.gui != null) {
+        username = cfg.gui.username;
+        password = cfg.gui.password;
+      };
+      devices = cfg.devices;
+    }
+  );
 in
 {
   options.local.services.syncthing-mgmt = {
@@ -44,43 +51,48 @@ in
     };
 
     gui = mkOption {
-      type = types.nullOr (types.submodule {
-        options = {
-          username = mkOption {
-            type = types.nullOr types.str;
-            default = null;
-            description = "GUI username";
-          };
+      type = types.nullOr (
+        types.submodule {
+          options = {
+            username = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "GUI username";
+            };
 
-          usernameFile = mkOption {
-            type = types.nullOr types.path;
-            default = null;
-            example = "/run/secrets/syncthing-gui-username";
-            description = "Path to file containing GUI username";
-          };
+            usernameFile = mkOption {
+              type = types.nullOr types.path;
+              default = null;
+              example = "/run/secrets/syncthing-gui-username";
+              description = "Path to file containing GUI username";
+            };
 
-          password = mkOption {
-            type = types.nullOr types.str;
-            default = null;
-            description = "GUI password (will be bcrypt hashed if not already)";
-          };
+            password = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "GUI password (will be bcrypt hashed if not already)";
+            };
 
-          passwordFile = mkOption {
-            type = types.nullOr types.path;
-            default = null;
-            example = "/run/secrets/syncthing-gui-password";
-            description = "Path to file containing GUI password (bcrypt hash or plain text)";
+            passwordFile = mkOption {
+              type = types.nullOr types.path;
+              default = null;
+              example = "/run/secrets/syncthing-gui-password";
+              description = "Path to file containing GUI password (bcrypt hash or plain text)";
+            };
           };
-        };
-      });
+        }
+      );
       default = null;
       description = "GUI credentials configuration";
     };
 
     devices = mkOption {
       type = types.listOf types.str;
-      default = [];
-      example = [ "Device-Name" "Another-Device" ];
+      default = [ ];
+      example = [
+        "Device-Name"
+        "Another-Device"
+      ];
       description = ''
         List of device names to connect to on this machine.
         Device IDs are looked up from deviceDefinitionsFile.
@@ -101,25 +113,27 @@ in
     };
 
     folders = mkOption {
-      type = types.attrsOf (types.submodule {
-        options = {
-          path = mkOption {
-            type = types.str;
-            description = "Path to the folder on disk";
+      type = types.attrsOf (
+        types.submodule {
+          options = {
+            path = mkOption {
+              type = types.str;
+              description = "Path to the folder on disk";
+            };
+            label = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "Label for the folder (defaults to folder ID)";
+            };
+            devices = mkOption {
+              type = types.listOf types.str;
+              default = [ ];
+              description = "List of device IDs to share this folder with";
+            };
           };
-          label = mkOption {
-            type = types.nullOr types.str;
-            default = null;
-            description = "Label for the folder (defaults to folder ID)";
-          };
-          devices = mkOption {
-            type = types.listOf types.str;
-            default = [];
-            description = "List of device IDs to share this folder with";
-          };
-        };
-      });
-      default = {};
+        }
+      );
+      default = { };
       example = {
         "shtdy-s2c9s" = {
           path = "/home/user/Documents";
@@ -147,10 +161,12 @@ in
   config = mkIf cfg.enable {
     assertions = [
       {
-        assertion = cfg.gui != null -> (
-          (cfg.gui.username != null) != (cfg.gui.usernameFile != null) &&
-          (cfg.gui.password != null) != (cfg.gui.passwordFile != null)
-        );
+        assertion =
+          cfg.gui != null
+          -> (
+            (cfg.gui.username != null) != (cfg.gui.usernameFile != null)
+            && (cfg.gui.password != null) != (cfg.gui.passwordFile != null)
+          );
         message = "Exactly one of username/usernameFile and password/passwordFile must be set for syncthing-mgmt GUI config";
       }
     ];
@@ -177,8 +193,8 @@ in
             API_KEY=$(cat /tmp/syncthing-api-key)
             rm -f /tmp/syncthing-api-key
           ${optionalString (cfg.apiKeyFile != null) ''
-          elif [ -f "${cfg.apiKeyFile}" ]; then
-            API_KEY=$(cat ${cfg.apiKeyFile})
+            elif [ -f "${cfg.apiKeyFile}" ]; then
+              API_KEY=$(cat ${cfg.apiKeyFile})
           ''}
           else
             echo "ERROR: Could not read API key"
@@ -225,29 +241,34 @@ in
               '{username: $username, password: $password}')
           ''}
 
-          ${if cfg.deviceDefinitionsFile != null then ''
-            # Load full device registry from file
-            ALL_DEVICES=$(cat ${cfg.deviceDefinitionsFile} | ${pkgs.jq}/bin/jq -c .)
+          ${
+            if cfg.deviceDefinitionsFile != null then
+              ''
+                # Load full device registry from file
+                ALL_DEVICES=$(cat ${cfg.deviceDefinitionsFile} | ${pkgs.jq}/bin/jq -c .)
 
-            # Extract device names from folders configuration
-            FOLDERS_JSON_TMP='${builtins.toJSON cfg.folders}'
-            FOLDER_DEVICES=$(echo "$FOLDERS_JSON_TMP" | ${pkgs.jq}/bin/jq -r '[.[] | .devices[]] | unique | .[]')
+                # Extract device names from folders configuration
+                FOLDERS_JSON_TMP='${builtins.toJSON cfg.folders}'
+                FOLDER_DEVICES=$(echo "$FOLDERS_JSON_TMP" | ${pkgs.jq}/bin/jq -r '[.[] | .devices[]] | unique | .[]')
 
-            # Combine explicit devices list with folder devices
-            EXPLICIT_DEVICES='${builtins.toJSON cfg.devices}'
-            NEEDED_DEVICES=$(echo "$EXPLICIT_DEVICES" | ${pkgs.jq}/bin/jq -r '.[]'; echo "$FOLDER_DEVICES" | sort -u)
+                # Combine explicit devices list with folder devices
+                EXPLICIT_DEVICES='${builtins.toJSON cfg.devices}'
+                NEEDED_DEVICES=$(echo "$EXPLICIT_DEVICES" | ${pkgs.jq}/bin/jq -r '.[]'; echo "$FOLDER_DEVICES" | sort -u)
 
-            # Filter device registry to only needed devices
-            DEVICES_JSON=$(echo "$ALL_DEVICES" | ${pkgs.jq}/bin/jq -c \
-              --argjson needed "$(echo "$NEEDED_DEVICES" | ${pkgs.jq}/bin/jq -R -s 'split("\n") | map(select(length > 0)) | unique')" \
-              'with_entries(select(.key as $k | $needed | index($k)))')
+                # Filter device registry to only needed devices
+                DEVICES_JSON=$(echo "$ALL_DEVICES" | ${pkgs.jq}/bin/jq -c \
+                  --argjson needed "$(echo "$NEEDED_DEVICES" | ${pkgs.jq}/bin/jq -R -s 'split("\n") | map(select(length > 0)) | unique')" \
+                  'with_entries(select(.key as $k | $needed | index($k)))')
 
-            echo "Configured devices (from registry):" >&2
-            echo "$DEVICES_JSON" | ${pkgs.jq}/bin/jq -r 'keys[]' >&2
-          '' else ''
-            # No device registry, devices must be empty
-            DEVICES_JSON='{}'
-          ''}
+                echo "Configured devices (from registry):" >&2
+                echo "$DEVICES_JSON" | ${pkgs.jq}/bin/jq -r 'keys[]' >&2
+              ''
+            else
+              ''
+                # No device registry, devices must be empty
+                DEVICES_JSON='{}'
+              ''
+          }
 
           FOLDERS_JSON='${builtins.toJSON cfg.folders}'
           ${optionalString (cfg.foldersFile != null) ''
@@ -258,9 +279,14 @@ in
           ${pkgs.jq}/bin/jq -n \
             --argjson gui "$GUI_JSON" \
             --argjson devices "$DEVICES_JSON" \
-            --argjson folders "$FOLDERS_JSON" ${optionalString (cfg.localDeviceName != null) ''\
-            --arg localDeviceName "${cfg.localDeviceName}"''} \
-            '{gui: $gui, devices: $devices, folders: $folders${optionalString (cfg.localDeviceName != null) ", localDeviceName: $localDeviceName"}}' > "$CONFIG_FILE"
+            --argjson folders "$FOLDERS_JSON" ${
+              optionalString (cfg.localDeviceName != null) ''
+                \
+                            --arg localDeviceName "${cfg.localDeviceName}"''
+            } \
+            '{gui: $gui, devices: $devices, folders: $folders${
+              optionalString (cfg.localDeviceName != null) ", localDeviceName: $localDeviceName"
+            }}' > "$CONFIG_FILE"
 
           ${pkgs.syncthing-mgmt}/bin/syncthing-mgmt declarative \
             --base-url "${cfg.baseUrl}" \

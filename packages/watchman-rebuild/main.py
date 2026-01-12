@@ -21,9 +21,9 @@ from lib import load_watchman_ignores, build_watchman_expression
 # Configure logging to write to stdout instead of stderr
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    handlers=[logging.StreamHandler(sys.stdout)]
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[logging.StreamHandler(sys.stdout)],
 )
 
 
@@ -36,9 +36,9 @@ def detect_rebuild_command():
     is_root = os.geteuid() == 0
     sudo_prefix = "" if is_root else "sudo -E "
 
-    if system == 'Darwin':
+    if system == "Darwin":
         return f"{sudo_prefix}darwin-rebuild {args}"
-    elif system == 'Linux':
+    elif system == "Linux":
         return f"{sudo_prefix}nixos-rebuild {args}"
     else:
         raise RuntimeError(f"Unsupported platform: {system}")
@@ -48,35 +48,53 @@ def send_notification(success):
     """Send platform-specific notification."""
     system = platform.system()
 
-    if system == 'Darwin':
+    if system == "Darwin":
         try:
             if success:
-                subprocess.run([
-                    'osascript', '-e',
-                    'display notification "🟢 Darwin rebuild successful!" with title "Nix configuration"'
-                ], check=False, capture_output=True)
+                subprocess.run(
+                    [
+                        "osascript",
+                        "-e",
+                        'display notification "🟢 Darwin rebuild successful!" with title "Nix configuration"',
+                    ],
+                    check=False,
+                    capture_output=True,
+                )
             else:
-                subprocess.run([
-                    'osascript', '-e',
-                    'display notification "🔴 Darwin rebuild failed!" with title "Nix configuration"'
-                ], check=False, capture_output=True)
+                subprocess.run(
+                    [
+                        "osascript",
+                        "-e",
+                        'display notification "🔴 Darwin rebuild failed!" with title "Nix configuration"',
+                    ],
+                    check=False,
+                    capture_output=True,
+                )
         except:
             pass
-    elif system == 'Linux':
+    elif system == "Linux":
         try:
-            if os.environ.get('DISPLAY'):
+            if os.environ.get("DISPLAY"):
                 if success:
-                    subprocess.run([
-                        'notify-send',
-                        '🟢 NixOS rebuild successful!',
-                        'Nix configuration'
-                    ], check=False, capture_output=True)
+                    subprocess.run(
+                        [
+                            "notify-send",
+                            "🟢 NixOS rebuild successful!",
+                            "Nix configuration",
+                        ],
+                        check=False,
+                        capture_output=True,
+                    )
                 else:
-                    subprocess.run([
-                        'notify-send',
-                        '🔴 NixOS rebuild failed!',
-                        'Nix configuration'
-                    ], check=False, capture_output=True)
+                    subprocess.run(
+                        [
+                            "notify-send",
+                            "🔴 NixOS rebuild failed!",
+                            "Nix configuration",
+                        ],
+                        check=False,
+                        capture_output=True,
+                    )
         except:
             pass
 
@@ -96,7 +114,9 @@ def check_existing_instance():
             return True
         except PermissionError:
             # Process exists but owned by another user - still running
-            logging.info(f"Another instance is already running (PID {pid}, different user), exiting")
+            logging.info(
+                f"Another instance is already running (PID {pid}, different user), exiting"
+            )
             return True
         except (ValueError, ProcessLookupError):
             # PID file is invalid or process is dead - clean up stale file
@@ -104,7 +124,9 @@ def check_existing_instance():
             try:
                 INSTANCE_FILE.unlink(missing_ok=True)
             except PermissionError:
-                logging.warning("Cannot remove stale instance file (owned by another user), continuing anyway")
+                logging.warning(
+                    "Cannot remove stale instance file (owned by another user), continuing anyway"
+                )
     return False
 
 
@@ -154,9 +176,11 @@ def run_rebuild(config_path, command):
     try:
         logging.info(f"Running: {command}")
         env = os.environ.copy()
-        env['NIXPKGS_ALLOW_UNFREE'] = '1'
+        env["NIXPKGS_ALLOW_UNFREE"] = "1"
         # Redirect stderr to stdout so all output goes to the same log file
-        result = subprocess.run(command, shell=True, cwd=config_path, env=env, stderr=subprocess.STDOUT)
+        result = subprocess.run(
+            command, shell=True, cwd=config_path, env=env, stderr=subprocess.STDOUT
+        )
         if result.returncode == 0:
             logging.info("✅ Rebuild successful")
             send_notification(True)
@@ -170,26 +194,26 @@ def run_rebuild(config_path, command):
 
 def setup_watchman_subscription(client, config_path, ignore_dirs):
     """Set up watchman watch and subscription. Returns (root, sub_name) or raises on failure."""
-    watch_result = client.query('watch-project', config_path)
-    if 'warning' in watch_result:
+    watch_result = client.query("watch-project", config_path)
+    if "warning" in watch_result:
         logging.warning(f"Watchman warning: {watch_result['warning']}")
 
-    root = watch_result['watch']
-    relative_path = watch_result.get('relative_path', '')
+    root = watch_result["watch"]
+    relative_path = watch_result.get("relative_path", "")
 
     logging.info(f"Watchman watching: {root}")
 
     # Subscribe to file changes
     query = {
-        'expression': build_watchman_expression(ignore_dirs),
-        'fields': ['name'],
+        "expression": build_watchman_expression(ignore_dirs),
+        "fields": ["name"],
     }
 
     if relative_path:
-        query['relative_root'] = relative_path
+        query["relative_root"] = relative_path
 
-    sub_name = 'watchman-rebuild'
-    client.query('subscribe', root, sub_name, query)
+    sub_name = "watchman-rebuild"
+    client.query("subscribe", root, sub_name, query)
 
     logging.info("Watching for changes...")
     return root, sub_name
@@ -210,10 +234,10 @@ def watch_and_rebuild(config_path, command=None):
     cleanup_stale_lock()
 
     # Wait for path on Darwin (for volume mounts)
-    if platform.system() == 'Darwin':
+    if platform.system() == "Darwin":
         if not config_path_obj.exists():
             logging.info(f"Waiting for {config_path} to be available...")
-            subprocess.run(['/bin/wait4path', str(config_path)], check=True)
+            subprocess.run(["/bin/wait4path", str(config_path)], check=True)
             logging.info(f"{config_path} is now available!")
 
     # Verify path exists
@@ -269,15 +293,21 @@ def watch_and_rebuild(config_path, command=None):
             if client is None:
                 try:
                     client = pywatchman.client()
-                    root, sub_name = setup_watchman_subscription(client, config_path, ignore_dirs)
+                    root, sub_name = setup_watchman_subscription(
+                        client, config_path, ignore_dirs
+                    )
                     reconnect_attempts = 0  # Reset on successful connection
                 except (pywatchman.WatchmanError, Exception) as e:
                     reconnect_attempts += 1
                     if reconnect_attempts >= MAX_RECONNECT_ATTEMPTS:
-                        logging.error(f"Failed to connect to watchman after {MAX_RECONNECT_ATTEMPTS} attempts, exiting")
+                        logging.error(
+                            f"Failed to connect to watchman after {MAX_RECONNECT_ATTEMPTS} attempts, exiting"
+                        )
                         sys.exit(1)
                     logging.error(f"Failed to connect to watchman: {e}")
-                    logging.info(f"Retrying in {RECONNECT_DELAY}s (attempt {reconnect_attempts}/{MAX_RECONNECT_ATTEMPTS})...")
+                    logging.info(
+                        f"Retrying in {RECONNECT_DELAY}s (attempt {reconnect_attempts}/{MAX_RECONNECT_ATTEMPTS})..."
+                    )
                     time.sleep(RECONNECT_DELAY)
                     continue
 
@@ -285,17 +315,19 @@ def watch_and_rebuild(config_path, command=None):
             try:
                 result = client.receive()
 
-                if 'subscription' in result and result['subscription'] == sub_name:
-                    if result.get('is_fresh_instance'):
+                if "subscription" in result and result["subscription"] == sub_name:
+                    if result.get("is_fresh_instance"):
                         logging.info("Fresh watchman instance")
                         continue
 
-                    files = result.get('files', [])
+                    files = result.get("files", [])
                     if files:
                         with timer_lock:
                             # Add new files to pending list
                             for f in files:
-                                fname = f if isinstance(f, str) else f.get('name', str(f))
+                                fname = (
+                                    f if isinstance(f, str) else f.get("name", str(f))
+                                )
                                 if fname not in pending_files:
                                     pending_files.append(fname)
 
@@ -303,8 +335,12 @@ def watch_and_rebuild(config_path, command=None):
                             if debounce_timer is not None:
                                 debounce_timer.cancel()
 
-                            logging.info(f"Change detected, waiting {DEBOUNCE_DELAY}s for more changes...")
-                            debounce_timer = threading.Timer(DEBOUNCE_DELAY, trigger_rebuild)
+                            logging.info(
+                                f"Change detected, waiting {DEBOUNCE_DELAY}s for more changes..."
+                            )
+                            debounce_timer = threading.Timer(
+                                DEBOUNCE_DELAY, trigger_rebuild
+                            )
                             debounce_timer.start()
 
             except pywatchman.SocketTimeout:
@@ -334,11 +370,11 @@ def watch_and_rebuild(config_path, command=None):
         cleanup_instance_file()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     if len(sys.argv) < 2:
         logging.error(f"Usage: {sys.argv[0]} <config_path> [command]")
-        logging.error(f"  If command is not provided, it will be auto-detected")
-        logging.error(f"  (sudo is automatically used when not running as root)")
+        logging.error("  If command is not provided, it will be auto-detected")
+        logging.error("  (sudo is automatically used when not running as root)")
         sys.exit(1)
 
     config_path = sys.argv[1]

@@ -1,6 +1,8 @@
 # DNS-over-HTTPS Server {#module-service-doh-server}
 
-[DNS-over-HTTPS](https://github.com/m13253/dns-over-https) is a high performance DNS over HTTPS client & server. This module enables its server part (`doh-server`).
+[DNS-over-HTTPS](https://github.com/m13253/dns-over-https) is a high performance
+DNS over HTTPS client & server. This module enables its server part
+(`doh-server`).
 
 ## Quick Start {#module-service-doh-server-quick-start}
 
@@ -39,7 +41,9 @@ Setup with Nginx + ACME (recommended):
 }
 ```
 
-`doh-server` can also work as a standalone HTTPS web server (with SSL cert and key specified), but this is not recommended as `doh-server` does not do OCSP Stabbing.
+`doh-server` can also work as a standalone HTTPS web server (with SSL cert and
+key specified), but this is not recommended as `doh-server` does not do OCSP
+Stabbing.
 
 Setup a standalone instance with ACME:
 
@@ -66,4 +70,5 @@ in
 }
 ```
 
-See a full configuration in https://github.com/m13253/dns-over-https/blob/master/doh-server/doh-server.conf.
+See a full configuration in
+https://github.com/m13253/dns-over-https/blob/master/doh-server/doh-server.conf.

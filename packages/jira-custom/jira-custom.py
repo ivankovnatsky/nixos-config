@@ -154,11 +154,11 @@ def issue_view(issue_key):
     print(f"Reporter:    {reporter}")
 
     # Labels
-    if hasattr(fields, 'labels') and fields.labels:
+    if hasattr(fields, "labels") and fields.labels:
         print(f"Labels:      {', '.join(fields.labels)}")
 
     # Components
-    if hasattr(fields, 'components') and fields.components:
+    if hasattr(fields, "components") and fields.components:
         components = [c.name for c in fields.components]
         print(f"Components:  {', '.join(components)}")
 
@@ -169,7 +169,7 @@ def issue_view(issue_key):
         print(f"Resolved:    {fields.resolutiondate}")
 
     # Parent (for sub-tasks)
-    if hasattr(fields, 'parent') and fields.parent:
+    if hasattr(fields, "parent") and fields.parent:
         print(f"Parent:      {fields.parent.key}")
 
     # Description
@@ -183,16 +183,20 @@ def issue_view(issue_key):
         print("  (No description)")
 
     # Linked issues
-    if hasattr(fields, 'issuelinks') and fields.issuelinks:
+    if hasattr(fields, "issuelinks") and fields.issuelinks:
         print()
         print("-" * 60)
         print("Linked Issues:")
         print()
         for link in fields.issuelinks:
-            if hasattr(link, 'outwardIssue'):
-                print(f"{link.type.outward} {link.outwardIssue.key}: {link.outwardIssue.fields.summary}")
-            if hasattr(link, 'inwardIssue'):
-                print(f"{link.type.inward} {link.inwardIssue.key}: {link.inwardIssue.fields.summary}")
+            if hasattr(link, "outwardIssue"):
+                print(
+                    f"{link.type.outward} {link.outwardIssue.key}: {link.outwardIssue.fields.summary}"
+                )
+            if hasattr(link, "inwardIssue"):
+                print(
+                    f"{link.type.inward} {link.inwardIssue.key}: {link.inwardIssue.fields.summary}"
+                )
 
     # Top comment
     comments = jira.comments(issue)
@@ -224,7 +228,7 @@ def transition_fields(issue_key, transition_name):
     # Find the matching transition
     target = None
     for t in transitions:
-        if t['name'].lower() == transition_name.lower() or t['id'] == transition_name:
+        if t["name"].lower() == transition_name.lower() or t["id"] == transition_name:
             target = t
             break
 
@@ -238,16 +242,16 @@ def transition_fields(issue_key, transition_name):
     print(f"Transition: {target['name']} (id: {target['id']})")
     print()
 
-    fields = target.get('fields', {})
+    fields = target.get("fields", {})
     if not fields:
         print("No fields available for this transition")
         return
 
     print("Fields:")
     for field_id, field_info in fields.items():
-        required = field_info.get('required', False)
-        name = field_info.get('name', field_id)
-        field_type = field_info.get('schema', {}).get('type', 'unknown')
+        required = field_info.get("required", False)
+        name = field_info.get("name", field_id)
+        field_type = field_info.get("schema", {}).get("type", "unknown")
         req_marker = " (required)" if required else ""
         print(f"  {field_id}: {name} [{field_type}]{req_marker}")
 
@@ -273,21 +277,31 @@ def main():
 
     # Issue commands
     issue_parser = subparsers.add_parser("issue", help="Manage issues")
-    issue_subparsers = issue_parser.add_subparsers(dest="issue_action", help="Issue action")
+    issue_subparsers = issue_parser.add_subparsers(
+        dest="issue_action", help="Issue action"
+    )
 
     # issue create
     create_parser = issue_subparsers.add_parser("create", help="Create a new issue")
     create_parser.add_argument("project", help="Project key (e.g., DOPS)")
     create_parser.add_argument("summary", help="Issue summary/title")
-    create_parser.add_argument("--type", dest="issue_type", default="Task", help="Issue type (default: Task)")
+    create_parser.add_argument(
+        "--type", dest="issue_type", default="Task", help="Issue type (default: Task)"
+    )
     create_parser.add_argument("--description", "-d", help="Issue description")
-    create_parser.add_argument("--parent", "-p", help="Parent issue key for sub-tasks (e.g., KEY-12345)")
+    create_parser.add_argument(
+        "--parent", "-p", help="Parent issue key for sub-tasks (e.g., KEY-12345)"
+    )
 
     # issue update
-    update_issue_parser = issue_subparsers.add_parser("update", help="Update an existing issue")
+    update_issue_parser = issue_subparsers.add_parser(
+        "update", help="Update an existing issue"
+    )
     update_issue_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
     update_issue_parser.add_argument("--summary", "-s", help="New issue summary/title")
-    update_issue_parser.add_argument("--description", "-d", help="New issue description")
+    update_issue_parser.add_argument(
+        "--description", "-d", help="New issue description"
+    )
 
     # issue view
     view_parser = issue_subparsers.add_parser("view", help="View issue details")
@@ -298,34 +312,69 @@ def main():
     status_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
 
     # issue transition
-    transition_parser = issue_subparsers.add_parser("transition", help="Manage issue transitions")
-    transition_subparsers = transition_parser.add_subparsers(dest="transition_action", help="Transition action")
+    transition_parser = issue_subparsers.add_parser(
+        "transition", help="Manage issue transitions"
+    )
+    transition_subparsers = transition_parser.add_subparsers(
+        dest="transition_action", help="Transition action"
+    )
 
     # issue transition list
-    transition_list_parser = transition_subparsers.add_parser("list", help="List available transitions")
+    transition_list_parser = transition_subparsers.add_parser(
+        "list", help="List available transitions"
+    )
     transition_list_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
 
     # issue transition fields
-    transition_fields_parser = transition_subparsers.add_parser("fields", help="List fields for a transition")
-    transition_fields_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
-    transition_fields_parser.add_argument("transition_name", help="Transition name or ID")
+    transition_fields_parser = transition_subparsers.add_parser(
+        "fields", help="List fields for a transition"
+    )
+    transition_fields_parser.add_argument(
+        "issue_key", help="Issue key (e.g., KEY-12345)"
+    )
+    transition_fields_parser.add_argument(
+        "transition_name", help="Transition name or ID"
+    )
 
     # issue transition to
-    transition_to_parser = transition_subparsers.add_parser("to", help="Transition issue to a new status")
+    transition_to_parser = transition_subparsers.add_parser(
+        "to", help="Transition issue to a new status"
+    )
     transition_to_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
-    transition_to_parser.add_argument("transition_name", help="Transition name (e.g., 'In Progress', 'Done')")
-    transition_to_parser.add_argument("--comment", "-c", help="Add a comment after transitioning")
-    transition_to_parser.add_argument("--field", "-f", action="append", metavar="KEY=VALUE", help="Set field during transition (can be repeated)")
+    transition_to_parser.add_argument(
+        "transition_name", help="Transition name (e.g., 'In Progress', 'Done')"
+    )
+    transition_to_parser.add_argument(
+        "--comment", "-c", help="Add a comment after transitioning"
+    )
+    transition_to_parser.add_argument(
+        "--field",
+        "-f",
+        action="append",
+        metavar="KEY=VALUE",
+        help="Set field during transition (can be repeated)",
+    )
 
     # issue comment
-    comment_parser = issue_subparsers.add_parser("comment", help="Manage issue comments")
-    comment_subparsers = comment_parser.add_subparsers(dest="comment_action", help="Comment action")
+    comment_parser = issue_subparsers.add_parser(
+        "comment", help="Manage issue comments"
+    )
+    comment_subparsers = comment_parser.add_subparsers(
+        dest="comment_action", help="Comment action"
+    )
 
     # issue comment list
-    list_parser = comment_subparsers.add_parser("list", help="List comments on an issue")
+    list_parser = comment_subparsers.add_parser(
+        "list", help="List comments on an issue"
+    )
     list_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
     list_parser.add_argument("--last", type=int, help="Show only last N comments")
-    list_parser.add_argument("--order", choices=["asc", "desc"], default="desc", help="Sort order: asc (oldest first) or desc (newest first, default)")
+    list_parser.add_argument(
+        "--order",
+        choices=["asc", "desc"],
+        default="desc",
+        help="Sort order: asc (oldest first) or desc (newest first, default)",
+    )
 
     # issue comment add
     add_parser = comment_subparsers.add_parser("add", help="Add a comment to an issue")
@@ -350,7 +399,13 @@ def main():
         search_filters(args.query)
     elif args.command == "issue":
         if args.issue_action == "create":
-            issue_create(args.project, args.summary, args.issue_type, args.description, args.parent)
+            issue_create(
+                args.project,
+                args.summary,
+                args.issue_type,
+                args.description,
+                args.parent,
+            )
         elif args.issue_action == "update":
             issue_update(args.issue_key, args.summary, args.description)
         elif args.issue_action == "view":
@@ -368,11 +423,16 @@ def main():
                     fields = {}
                     for f in args.field:
                         if "=" not in f:
-                            print(f"Error: Invalid field format '{f}'. Use KEY=VALUE", file=sys.stderr)
+                            print(
+                                f"Error: Invalid field format '{f}'. Use KEY=VALUE",
+                                file=sys.stderr,
+                            )
                             sys.exit(1)
                         key, value = f.split("=", 1)
                         fields[key] = value
-                transition_issue(args.issue_key, args.transition_name, args.comment, fields)
+                transition_issue(
+                    args.issue_key, args.transition_name, args.comment, fields
+                )
             else:
                 transition_parser.print_help()
         elif args.issue_action == "comment":

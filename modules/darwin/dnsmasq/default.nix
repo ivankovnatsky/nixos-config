@@ -33,9 +33,13 @@ let
     );
 
   # Build the main configuration file content
-  configFile = if cfg.configFile != null then cfg.configFile else pkgs.writeText "dnsmasq.conf" ''
-    ${settingsToConf cfg.settings}
-  '';
+  configFile =
+    if cfg.configFile != null then
+      cfg.configFile
+    else
+      pkgs.writeText "dnsmasq.conf" ''
+        ${settingsToConf cfg.settings}
+      '';
 
 in
 {

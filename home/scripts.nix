@@ -10,7 +10,9 @@ let
     let
       scriptContents = builtins.readFile (scriptPath + "/${scriptName}");
       bashShebang = "#!${pkgs.bash}/bin/bash";
-      scriptWithFixedShebang = builtins.replaceStrings [ "#!/usr/bin/env bash" ] [ bashShebang ] scriptContents;
+      scriptWithFixedShebang =
+        builtins.replaceStrings [ "#!/usr/bin/env bash" ] [ bashShebang ]
+          scriptContents;
       binaryName = lib.removeSuffix ".sh" scriptName;
     in
     pkgs.writeScriptBin binaryName scriptWithFixedShebang;
@@ -23,9 +25,7 @@ let
   scriptDerivations = builtins.listToAttrs (
     map (script: {
       name = lib.removeSuffix ".sh" script;
-      value = builtins.head (
-        builtins.filter (p: p.name == lib.removeSuffix ".sh" script) scriptPackages
-      );
+      value = builtins.head (builtins.filter (p: p.name == lib.removeSuffix ".sh" script) scriptPackages);
     }) scriptNames
   );
 in

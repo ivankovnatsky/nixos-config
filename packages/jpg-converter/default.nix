@@ -17,7 +17,12 @@ buildGoModule {
 
   postInstall = ''
     wrapProgram $out/bin/jpg-converter \
-      --prefix PATH : ${lib.makeBinPath [ imagemagick exiftool ]}
+      --prefix PATH : ${
+        lib.makeBinPath [
+          imagemagick
+          exiftool
+        ]
+      }
   '';
 
   meta = with lib; {
