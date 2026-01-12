@@ -10,8 +10,8 @@
     gpg-agent = {
       enable = true;
       pinentry.package = pkgs.pinentry-tty;
-      defaultCacheTtl = 86400;
-      maxCacheTtl = 86400;
+      defaultCacheTtl = 259200;
+      maxCacheTtl = 259200;
     };
   };
 }
