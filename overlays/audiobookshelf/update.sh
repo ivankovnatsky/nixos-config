@@ -1,5 +1,6 @@
 #!/usr/bin/env nix-shell
 #!nix-shell -i bash -p curl gnused gawk nix-prefetch nix-prefetch-git common-updater-scripts jq prefetch-npm-deps
+# shellcheck shell=bash
 
 set -euo pipefail
 
