@@ -8,18 +8,18 @@ due to their length and formatting.
 Usage modes:
 
 1. Two-file mode (original):
-   python3 long-lines-diff.py --old-file old.txt --new-file new.txt
+   python3 diff-long-lines.py --old-file old.txt --new-file new.txt
 
 2. Single file with separators:
-   python3 long-lines-diff.py data.txt
+   python3 diff-long-lines.py data.txt
    (File should contain: old_csp\n---\nnew_csp or use ==OLD== and ==NEW== markers)
 
 3. Terraform diff mode:
-   python3 long-lines-diff.py --terraform-diff terraform-output.txt
+   python3 diff-long-lines.py --terraform-diff terraform-output.txt
    (Parses: ~ content_security_policy = "old" -> "new")
 
 4. Stdin (Terraform diff):
-   terraform plan | python3 long-lines-diff.py
+   terraform plan | python3 diff-long-lines.py
 
 The script will show:
 - New directives added [+]
