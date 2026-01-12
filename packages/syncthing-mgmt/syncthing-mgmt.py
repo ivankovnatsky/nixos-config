@@ -687,8 +687,6 @@ def display_this_device(system_status, connections_data=None):
     if connections_data:
         total_in_rate = connections_data.get("total", {}).get("inBytesTotal", 0)
         total_out_rate = connections_data.get("total", {}).get("outBytesTotal", 0)
-        in_rate = format_bytes(0)  # Current rate not available in REST API
-        out_rate = format_bytes(0)
         total_in_str = format_bytes(total_in_rate)
         total_out_str = format_bytes(total_out_rate)
         table.add_row("Download Rate", f"0 B/s ({total_in_str})")
