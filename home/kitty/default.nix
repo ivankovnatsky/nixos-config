@@ -52,6 +52,10 @@ let
 
     enabled_layouts tall, grid
 
+    # Open scrollback buffer in neovim (Ctrl+Shift+B)
+    scrollback_pager nvim -
+    map ctrl+shift+b show_scrollback
+
     map ctrl+shift+k neighboring_window up
     map ctrl+shift+j neighboring_window down
     map ctrl+shift+h neighboring_window left
