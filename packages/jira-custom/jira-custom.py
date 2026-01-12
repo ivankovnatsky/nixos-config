@@ -267,6 +267,58 @@ def transition_issue(issue_key, transition_name, comment=None, fields=None):
         print("Comment added", file=sys.stderr)
 
 
+def my_issues(
+    scope="sprint",
+    project=None,
+    exclude_done=True,
+    priority=None,
+    status=None,
+    limit=50,
+):
+    """List issues assigned to current user"""
+    jira = get_jira_client()
+    email = os.getenv("JIRA_EMAIL")
+
+    # Build JQL query
+    jql_parts = [f'assignee = "{email}"']
+
+    if scope == "sprint":
+        jql_parts.append("sprint in openSprints()")
+    elif scope == "project" and project:
+        jql_parts.append(f'project = "{project}"')
+
+    if exclude_done:
+        jql_parts.append('status NOT IN ("Done", "Closed", "removed")')
+
+    if priority:
+        jql_parts.append(f'priority = "{priority}"')
+
+    if status:
+        jql_parts.append(f'status = "{status}"')
+
+    jql = " AND ".join(jql_parts) + " ORDER BY priority DESC, updated DESC"
+
+    issues = jira.search_issues(jql, maxResults=limit)
+
+    if not issues:
+        print("No issues found", file=sys.stderr)
+        return
+
+    # Print header
+    print(f"{'KEY':<15} {'STATUS':<15} {'PRIORITY':<10} {'SUMMARY'}")
+    print("-" * 80)
+
+    for issue in issues:
+        key = issue.key
+        status_name = issue.fields.status.name
+        priority_name = issue.fields.priority.name if issue.fields.priority else "None"
+        summary = issue.fields.summary
+        # Truncate summary if too long
+        if len(summary) > 45:
+            summary = summary[:42] + "..."
+        print(f"{key:<15} {status_name:<15} {priority_name:<10} {summary}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Custom JIRA operations")
     subparsers = parser.add_subparsers(dest="command", help="Command to execute")
@@ -274,6 +326,32 @@ def main():
     # Filter command
     filter_parser = subparsers.add_parser("filter", help="Search for JIRA filters")
     filter_parser.add_argument("query", nargs="?", help="Filter name query")
+
+    # My command - list issues assigned to current user
+    my_parser = subparsers.add_parser("my", help="List my issues")
+    my_parser.add_argument(
+        "scope",
+        nargs="?",
+        choices=["sprint", "project", "all"],
+        default="sprint",
+        help="Scope: sprint (current sprint), project, or all (default: sprint)",
+    )
+    my_parser.add_argument(
+        "-p", "--project", help="Project key (required for 'project' scope)"
+    )
+    my_parser.add_argument(
+        "-a",
+        "--all-statuses",
+        action="store_true",
+        help="Include done/closed issues",
+    )
+    my_parser.add_argument(
+        "--priority", help="Filter by priority (e.g., High, Medium)"
+    )
+    my_parser.add_argument("--status", help="Filter by status (e.g., 'In Progress')")
+    my_parser.add_argument(
+        "-l", "--limit", type=int, default=50, help="Max results (default: 50)"
+    )
 
     # Issue commands
     issue_parser = subparsers.add_parser("issue", help="Manage issues")
@@ -397,6 +475,15 @@ def main():
     # Handle commands
     if args.command == "filter":
         search_filters(args.query)
+    elif args.command == "my":
+        my_issues(
+            scope=args.scope,
+            project=args.project,
+            exclude_done=not args.all_statuses,
+            priority=args.priority,
+            status=args.status,
+            limit=args.limit,
+        )
     elif args.command == "issue":
         if args.issue_action == "create":
             issue_create(
