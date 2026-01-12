@@ -14,7 +14,7 @@ includes = ["*.nix"]
 
 [formatter.prettier]
 command = "prettier"
-options = ["--write"]
+options = ["--write", "--prose-wrap", "always"]
 # TODO: Enable JSON and YAML formatting after reviewing changes
 # includes = ["*.md", "*.json", "*.yml", "*.yaml"]
 includes = ["*.md"]
