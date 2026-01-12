@@ -2,17 +2,19 @@
 
 ## Terminal.app
 
-Native macOS terminal with excellent session restoration - previous sessions are
-automatically restored after reboot, preserving your working context.
+- Native macOS terminal
+- Excellent session restoration after reboot
+- Preserves your working context automatically
 
 ## kitty
 
-Subjectively still faster than Ghostty. Shines with its minimalist UI where tabs
-are rendered as part of a single unified line, making the entire window feel
-like a pure terminal console experience without separate UI chrome. Supports
-desktop notifications.
+- Subjectively still faster than Ghostty
+- Minimalist UI with tabs rendered as a single unified line
+- Feels like a pure terminal without extra window decorations
+- Supports desktop notifications
 
 ## Ghostty
 
-Currently the terminal of choice for its macOS-leaning UI and very fast
-Quake-style terminal. Supports desktop notifications.
+- macOS-leaning UI
+- Very fast Quake-style terminal
+- Supports desktop notifications
