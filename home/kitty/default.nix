@@ -33,6 +33,7 @@ let
     # text_composition_strategy legacy
 
     allow_remote_control yes
+    listen_on unix:/tmp/kitty
     adjust_line_height 115%
     window_padding_width ${builtins.toString windowPaddingWidth}
     hide_window_decorations titlebar-only
@@ -52,9 +53,8 @@ let
 
     enabled_layouts tall, grid
 
-    # Open scrollback buffer in neovim (Ctrl+Shift+B)
-    scrollback_pager nvim -
-    map ctrl+shift+b show_scrollback
+    # Open scrollback buffer in neovim via kitty-scrollback.nvim plugin
+    map ctrl+shift+b kitten kitty_scrollback_nvim
 
     map ctrl+shift+k neighboring_window up
     map ctrl+shift+j neighboring_window down
