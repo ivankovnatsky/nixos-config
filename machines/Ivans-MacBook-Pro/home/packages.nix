@@ -16,7 +16,7 @@
     git-message
     homelab
     launchd-mgmt
-    open-gh-notifications-py
+    gh-notifications
     ps-top-nu
     settings
     sops

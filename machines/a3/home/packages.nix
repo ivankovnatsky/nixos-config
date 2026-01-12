@@ -25,7 +25,7 @@
     nixfmt-rfc-style
     nodejs
     nvtopPackages.nvidia # GPU monitoring (like htop for GPUs)
-    open-gh-notifications-py
+    gh-notifications
     pigz # Parallel gzip compression
     sesh
     settings

@@ -89,7 +89,7 @@
     nodejs
     nodePackages.aws-cdk
     nodePackages.prettier
-    open-gh-notifications-py
+    gh-notifications
     opentofu
     opsy
     oras
