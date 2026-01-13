@@ -22,6 +22,10 @@
     casks = [
       "amethyst"
       "chromium"
+      {
+        name = "claude";
+        greedy = true;
+      }
       "ivankovnatsky/homebrew-tap/comet"
       "cursor"
       "dbeaver-community"
