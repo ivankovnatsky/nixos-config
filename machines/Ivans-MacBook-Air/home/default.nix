@@ -26,6 +26,7 @@
     ../../../home/npm.nix
     ../../../home/nushell.nix
     ../../../home/packages-darwin.nix
+    ../../../home/ranger.nix
     ../../../home/pass.nix
     ../../../home/rebuild-diff.nix
     ../../../home/safari.nix
