@@ -104,21 +104,40 @@ LOCK_FILE = Path("/tmp/watchman-rebuild.lock")
 INSTANCE_FILE = Path("/tmp/watchman-rebuild.instance")
 
 
+INSTANCE_RETRY_DELAY = 5  # seconds between retries
+INSTANCE_MAX_RETRIES = 60  # max retries (5 minutes total)
+
+
 def check_existing_instance():
-    """Check if another instance is already running. Returns True if should exit."""
-    if INSTANCE_FILE.exists():
+    """Check if another instance is already running. Retries until it exits or timeout."""
+    retries = 0
+    while INSTANCE_FILE.exists():
         try:
             pid = int(INSTANCE_FILE.read_text().strip())
             # Check if process is still running
             os.kill(pid, 0)
-            logging.info(f"Another instance is already running (PID {pid}), exiting")
-            return True
+            retries += 1
+            if retries >= INSTANCE_MAX_RETRIES:
+                logging.error(
+                    f"Another instance (PID {pid}) still running after {INSTANCE_MAX_RETRIES} retries, exiting"
+                )
+                return True
+            logging.info(
+                f"Another instance is running (PID {pid}), waiting {INSTANCE_RETRY_DELAY}s (retry {retries}/{INSTANCE_MAX_RETRIES})..."
+            )
+            time.sleep(INSTANCE_RETRY_DELAY)
         except PermissionError:
             # Process exists but owned by another user - still running
+            retries += 1
+            if retries >= INSTANCE_MAX_RETRIES:
+                logging.error(
+                    f"Another instance (PID {pid}, different user) still running after {INSTANCE_MAX_RETRIES} retries, exiting"
+                )
+                return True
             logging.info(
-                f"Another instance is already running (PID {pid}, different user), exiting"
+                f"Another instance is running (PID {pid}, different user), waiting {INSTANCE_RETRY_DELAY}s (retry {retries}/{INSTANCE_MAX_RETRIES})..."
             )
-            return True
+            time.sleep(INSTANCE_RETRY_DELAY)
         except (ValueError, ProcessLookupError):
             # PID file is invalid or process is dead - clean up stale file
             logging.info("Removing stale instance file (PID not running)")
@@ -128,6 +147,7 @@ def check_existing_instance():
                 logging.warning(
                     "Cannot remove stale instance file (owned by another user), continuing anyway"
                 )
+            break
     return False
 
 
