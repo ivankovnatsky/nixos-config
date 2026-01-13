@@ -37,10 +37,14 @@ def detect_rebuild_command():
     is_root = os.geteuid() == 0
     sudo_prefix = "" if is_root else "sudo -E "
 
+    # Use full path for rebuild commands since sudo may not have nix paths
+    user = os.environ.get("USER", "")
+    nix_profile_bin = f"/etc/profiles/per-user/{user}/bin"
+
     if system == "Darwin":
-        return f"{sudo_prefix}darwin-rebuild {args}"
+        return f"{sudo_prefix}{nix_profile_bin}/darwin-rebuild {args}"
     elif system == "Linux":
-        return f"{sudo_prefix}nixos-rebuild {args}"
+        return f"{sudo_prefix}{nix_profile_bin}/nixos-rebuild {args}"
     else:
         raise RuntimeError(f"Unsupported platform: {system}")
 
