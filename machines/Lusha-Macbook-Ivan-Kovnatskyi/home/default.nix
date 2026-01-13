@@ -35,6 +35,7 @@
     ../../../home/pay-respects.nix
     ../../../home/pgcli.nix
     ../../../home/pyenv.nix
+    ../../../home/ranger.nix
     ../../../home/rebuild-diff.nix
     ../../../home/safari.nix
     ../../../home/scripts.nix

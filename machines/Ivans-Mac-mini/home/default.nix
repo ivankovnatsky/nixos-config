@@ -20,6 +20,7 @@
     ../../../home/npm.nix
     ../../../home/kitty
     ../../../home/pass.nix
+    ../../../home/ranger.nix
     ../../../home/rebuild-diff.nix
     ../../../home/safari.nix
     ../../../home/scripts.nix
