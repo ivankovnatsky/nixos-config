@@ -55,6 +55,7 @@ in
         { path = "/Applications/Visual Studio Code.app/"; }
         { path = "/Applications/Cursor.app/"; }
         { path = "/Applications/Windsurf.app/"; }
+        { path = "/Applications/Claude.app/"; }
 
         {
           type = "spacer";
