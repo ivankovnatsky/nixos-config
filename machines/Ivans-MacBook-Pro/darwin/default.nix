@@ -32,6 +32,7 @@
     ./dock.nix
     ./git.nix
     ./homebrew.nix
+    ./rebuild-terminal.nix
     ./syncthing-mgmt.nix
     ./users.nix
   ];
