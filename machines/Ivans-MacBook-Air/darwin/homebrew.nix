@@ -35,7 +35,7 @@
         name = "kitty@nightly";
         greedy = true;
       }
-      "mos"
+      "linearmouse"
       "silicon-labs-vcp-driver"
       "stats"
       "vlc"

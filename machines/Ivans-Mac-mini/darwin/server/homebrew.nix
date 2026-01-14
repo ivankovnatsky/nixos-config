@@ -13,7 +13,7 @@
       "xwmx/homebrew-taps/notes-app"
     ];
     casks = [
-      "mos"
+      "linearmouse"
     ];
     caskArgs = {
       no_quarantine = true;

@@ -40,7 +40,7 @@
 
     ../../../darwin/amethyst.nix
     ../../../darwin/hammerspoon.nix
-    ../../../darwin/mos.nix
+    ../../../darwin/linearmouse.nix
     ../../../darwin/stats.nix
     ../../../darwin/twingate.nix
   ];
