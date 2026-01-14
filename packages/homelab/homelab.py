@@ -57,7 +57,9 @@ def check_service(name: str, command: str) -> bool:
     if name == "DNS":
         return result.returncode == 0 and result.stdout.strip() != ""
     elif name == "Uptime Kuma":
-        return result.stdout.strip() == "200"
+        # Uptime Kuma returns 302 redirect to login page when ready
+        code = result.stdout.strip()
+        return code in ("200", "302")
     return result.returncode == 0
 
 
