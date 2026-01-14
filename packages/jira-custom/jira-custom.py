@@ -329,7 +329,7 @@ def transition_fields(issue_key, transition_name):
         print(f"  {field_id}: {name} [{field_type}]{req_marker}")
 
 
-def transition_issue(issue_key, transition_name, comment=None, fields=None):
+def transition_issue(issue_key, transition_name, comment=None, fields=None, open_web=False):
     """Transition an issue to a new status"""
     jira = get_jira_client()
     jira.transition_issue(issue_key, transition_name, fields=fields)
@@ -338,6 +338,11 @@ def transition_issue(issue_key, transition_name, comment=None, fields=None):
     if comment:
         jira.add_comment(issue_key, comment)
         print("Comment added", file=sys.stderr)
+    if open_web:
+        server = os.getenv("JIRA_SERVER")
+        url = f"{server}/browse/{issue_key}"
+        webbrowser.open(url)
+        print(f"Opened {url}", file=sys.stderr)
 
 
 def my_issues(
@@ -884,6 +889,12 @@ def main():
         metavar="KEY=VALUE",
         help="Set field during transition (can be repeated)",
     )
+    transition_to_parser.add_argument(
+        "--web",
+        "-w",
+        action="store_true",
+        help="Open issue in browser after transition",
+    )
 
     # issue comment
     comment_parser = issue_subparsers.add_parser(
@@ -1040,7 +1051,7 @@ def main():
                         key, value = f.split("=", 1)
                         fields[key] = value
                 transition_issue(
-                    args.issue_key, args.transition_name, args.comment, fields
+                    args.issue_key, args.transition_name, args.comment, fields, args.web
                 )
             else:
                 transition_parser.print_help()
