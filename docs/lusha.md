@@ -38,6 +38,10 @@ maintenance and troubleshooting.
 
 ## App macOS settings
 
+## bash
+
+- Allow “bash” to control “System Events”
+
 ### Zoom
 
 - Approve local network access
