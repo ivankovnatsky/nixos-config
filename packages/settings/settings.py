@@ -795,40 +795,60 @@ def cmd_awake(args: argparse.Namespace) -> int:
 
 
 # Windows: Close/hide app windows (macOS only)
+def windows_find_process(app_name: str) -> str | None:
+    """Find exact process name matching case-insensitively."""
+    script = '''
+tell application "System Events"
+    get name of every process
+end tell
+'''
+    try:
+        result = subprocess.run(
+            ["osascript", "-e", script],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        for name in result.stdout.strip().split(", "):
+            if name.strip().lower() == app_name.lower():
+                return name.strip()
+        return None
+    except subprocess.CalledProcessError:
+        return None
+
+
 def windows_close(app_name: str) -> bool:
     """Close all windows of an app using AppleScript.
 
     Activates the app first to bring windows from other Spaces,
     then closes all windows by clicking button 1 (close button),
     and finally hides the app so it doesn't stay in focus.
+    App name matching is case-insensitive.
     """
+    exact_name = windows_find_process(app_name)
+    if not exact_name:
+        return False
+
     script = f'''
 tell application "System Events"
-    if exists (process "{app_name}") then
-        -- Activate to bring windows from other Spaces
-        tell application "{app_name}" to activate
-        delay 0.5
-        tell process "{app_name}"
-            set windowCount to count of windows
-            if windowCount > 0 then
-                repeat with w in windows
-                    try
-                        click button 1 of w
-                    end try
-                end repeat
-                -- Hide the app so it doesn't stay in focus
-                delay 0.2
-                set visible to false
-                return "closed"
-            else
-                -- Hide even if no windows (was activated)
-                set visible to false
-                return "no windows"
-            end if
-        end tell
-    else
-        return "not running"
-    end if
+    tell application "{exact_name}" to activate
+    delay 0.5
+    tell process "{exact_name}"
+        set windowCount to count of windows
+        if windowCount > 0 then
+            repeat with w in windows
+                try
+                    click button 1 of w
+                end try
+            end repeat
+            delay 0.2
+            set visible to false
+            return "closed"
+        else
+            set visible to false
+            return "no windows"
+        end if
+    end tell
 end tell
 '''
     try:
@@ -843,15 +863,15 @@ end tell
 
 
 def windows_hide(app_name: str) -> bool:
-    """Hide an app (minimize all windows)."""
+    """Hide an app (minimize all windows). Case-insensitive."""
+    exact_name = windows_find_process(app_name)
+    if not exact_name:
+        return False
+
     script = f'''
 tell application "System Events"
-    if exists (process "{app_name}") then
-        set visible of process "{app_name}" to false
-        return "hidden"
-    else
-        return "not running"
-    end if
+    set visible of process "{exact_name}" to false
+    return "hidden"
 end tell
 '''
     try:
