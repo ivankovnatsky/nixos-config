@@ -191,10 +191,10 @@ def convert_storage_to_markdown(storage_content, generate_toc=False):
         flags=re.DOTALL,
     )
 
-    # Convert headings
+    # Convert headings (with optional attributes like local-id)
     for i in range(6, 0, -1):
         content = re.sub(
-            rf"<h{i}>(.*?)</h{i}>", r"\n" + "#" * i + r" \1\n", content
+            rf"<h{i}[^>]*>(.*?)</h{i}>", r"\n" + "#" * i + r" \1\n", content
         )
 
     # Convert bold/strong
@@ -211,10 +211,12 @@ def convert_storage_to_markdown(storage_content, generate_toc=False):
     # Convert links
     content = re.sub(r'<a href="([^"]+)"[^>]*>([^<]+)</a>', r"[\2](\1)", content)
 
-    # Convert tables
+    # Convert tables (with optional attributes, may have tbody wrapper)
     def convert_table(match):
         table_html = match.group(0)
-        rows = re.findall(r"<tr>(.*?)</tr>", table_html, re.DOTALL)
+        # Remove tbody wrapper if present
+        table_html = re.sub(r"</?tbody[^>]*>", "", table_html)
+        rows = re.findall(r"<tr[^>]*>(.*?)</tr>", table_html, re.DOTALL)
         if not rows:
             return ""
 
@@ -224,35 +226,48 @@ def convert_storage_to_markdown(storage_content, generate_toc=False):
             cells = re.findall(r"<td[^>]*>(.*?)</td>", row, re.DOTALL)
 
             if headers:
+                # Strip <p> and other tags from headers
                 headers = [re.sub(r"<[^>]+>", "", h).strip() for h in headers]
                 md_rows.append("| " + " | ".join(headers) + " |")
                 md_rows.append("|" + "|".join(["---"] * len(headers)) + "|")
             elif cells:
+                # Strip <p> and other tags from cells
                 cells = [re.sub(r"<[^>]+>", "", c).strip() for c in cells]
                 md_rows.append("| " + " | ".join(cells) + " |")
 
         return "\n" + "\n".join(md_rows) + "\n"
 
-    content = re.sub(r"<table>.*?</table>", convert_table, content, flags=re.DOTALL)
+    content = re.sub(r"<table[^>]*>.*?</table>", convert_table, content, flags=re.DOTALL)
 
-    # Convert unordered lists
-    content = re.sub(
-        r"<ul>(.*?)</ul>",
-        lambda m: "\n"
-        + re.sub(r"<li>(.*?)</li>", r"- \1\n", m.group(1), flags=re.DOTALL),
-        content,
-        flags=re.DOTALL,
-    )
+    # Convert unordered lists (with optional attributes)
+    # List items may contain <p> tags inside
+    def convert_ul(match):
+        items = re.findall(r"<li[^>]*>(.*?)</li>", match.group(1), re.DOTALL)
+        result = "\n"
+        for item in items:
+            # Strip <p> tags from inside list items
+            item = re.sub(r"<p[^>]*>(.*?)</p>", r"\1", item, flags=re.DOTALL)
+            item = re.sub(r"<[^>]+>", "", item).strip()
+            result += f"- {item}\n"
+        return result
 
-    # Convert ordered lists
+    content = re.sub(r"<ul[^>]*>(.*?)</ul>", convert_ul, content, flags=re.DOTALL)
+
+    # Convert ordered lists (with optional attributes)
     def convert_ol(match):
-        items = re.findall(r"<li>(.*?)</li>", match.group(1), re.DOTALL)
-        return "\n" + "\n".join(f"{i+1}. {item.strip()}" for i, item in enumerate(items)) + "\n"
+        items = re.findall(r"<li[^>]*>(.*?)</li>", match.group(1), re.DOTALL)
+        result = "\n"
+        for i, item in enumerate(items):
+            # Strip <p> tags from inside list items
+            item = re.sub(r"<p[^>]*>(.*?)</p>", r"\1", item, flags=re.DOTALL)
+            item = re.sub(r"<[^>]+>", "", item).strip()
+            result += f"{i+1}. {item}\n"
+        return result
 
-    content = re.sub(r"<ol>(.*?)</ol>", convert_ol, content, flags=re.DOTALL)
+    content = re.sub(r"<ol[^>]*>(.*?)</ol>", convert_ol, content, flags=re.DOTALL)
 
-    # Convert paragraphs
-    content = re.sub(r"<p>(.*?)</p>", r"\1\n", content, flags=re.DOTALL)
+    # Convert paragraphs (with optional attributes)
+    content = re.sub(r"<p[^>]*>(.*?)</p>", r"\1\n", content, flags=re.DOTALL)
 
     # Clean up remaining HTML tags
     content = re.sub(r"<[^>]+>", "", content)
