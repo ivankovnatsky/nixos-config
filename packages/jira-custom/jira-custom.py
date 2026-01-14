@@ -95,7 +95,9 @@ def comment_delete(issue_key, comment_id):
     print(f"Comment {comment_id} deleted successfully", file=sys.stderr)
 
 
-def issue_create(project, summary, issue_type="Task", description=None, parent=None):
+def issue_create(
+    project, summary, issue_type="Task", description=None, parent=None, assignee=None
+):
     """Create a new issue"""
     jira = get_jira_client()
     fields = {
@@ -107,11 +109,13 @@ def issue_create(project, summary, issue_type="Task", description=None, parent=N
         fields["description"] = description
     if parent:
         fields["parent"] = {"key": parent}
+    if assignee:
+        fields["assignee"] = {"name": assignee}
     issue = jira.create_issue(fields=fields)
     print(issue.key)
 
 
-def issue_update(issue_key, summary=None, description=None):
+def issue_update(issue_key, summary=None, description=None, assignee=None):
     """Update an existing issue"""
     jira = get_jira_client()
     issue = jira.issue(issue_key)
@@ -120,6 +124,8 @@ def issue_update(issue_key, summary=None, description=None):
         fields["summary"] = summary
     if description:
         fields["description"] = description
+    if assignee:
+        fields["assignee"] = {"name": assignee}
     if not fields:
         print("No fields to update", file=sys.stderr)
         sys.exit(1)
@@ -132,6 +138,21 @@ def status_get(issue_key):
     jira = get_jira_client()
     issue = jira.issue(issue_key)
     print(issue.fields.status.name)
+
+
+def issue_assign(issue_key, user):
+    """Assign or unassign an issue"""
+    jira = get_jira_client()
+    issue = jira.issue(issue_key)
+
+    if user.lower() == "x":
+        # Unassign
+        issue.update(assignee=None)
+        print(f"Unassigned {issue_key}", file=sys.stderr)
+    else:
+        # Assign - user can be email or accountId
+        issue.update(assignee={"name": user})
+        print(f"Assigned {issue_key} to {user}", file=sys.stderr)
 
 
 def issue_view(issue_key):
@@ -370,6 +391,7 @@ def main():
     create_parser.add_argument(
         "--parent", "-p", help="Parent issue key for sub-tasks (e.g., KEY-12345)"
     )
+    create_parser.add_argument("--assignee", "-a", help="Assignee email/name")
 
     # issue update
     update_issue_parser = issue_subparsers.add_parser(
@@ -380,6 +402,9 @@ def main():
     update_issue_parser.add_argument(
         "--description", "-d", help="New issue description"
     )
+    update_issue_parser.add_argument(
+        "--assignee", "-a", help="New assignee (email/name)"
+    )
 
     # issue view
     view_parser = issue_subparsers.add_parser("view", help="View issue details")
@@ -388,6 +413,11 @@ def main():
     # issue status
     status_parser = issue_subparsers.add_parser("status", help="Get issue status")
     status_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
+
+    # issue assign
+    assign_parser = issue_subparsers.add_parser("assign", help="Assign/unassign issue")
+    assign_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
+    assign_parser.add_argument("user", help="User email/name, or 'x' to unassign")
 
     # issue transition
     transition_parser = issue_subparsers.add_parser(
@@ -492,9 +522,14 @@ def main():
                 args.issue_type,
                 args.description,
                 args.parent,
+                args.assignee,
             )
         elif args.issue_action == "update":
-            issue_update(args.issue_key, args.summary, args.description)
+            issue_update(
+                args.issue_key, args.summary, args.description, args.assignee
+            )
+        elif args.issue_action == "assign":
+            issue_assign(args.issue_key, args.user)
         elif args.issue_action == "view":
             issue_view(args.issue_key)
         elif args.issue_action == "status":
