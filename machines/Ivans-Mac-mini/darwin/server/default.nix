@@ -3,7 +3,7 @@
     ../../../../system/sops-secrets.nix
     ../../../../darwin/darwin.nix
     ../../../../darwin/fonts.nix
-    ../../../../darwin/linearmouse.nix
+    ../../../../darwin/mos.nix
     ../../../../darwin/shell.nix
     ../../../../darwin/nextdns.nix
     ../../../../darwin/sudo.nix
