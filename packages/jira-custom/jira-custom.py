@@ -4,6 +4,7 @@ from jira import JIRA
 import sys
 import os
 import argparse
+import webbrowser
 
 
 def get_jira_client():
@@ -431,6 +432,43 @@ def link_types_list():
         print()
 
 
+def open_issue(issue_key=None):
+    """Open issue or project in browser"""
+    server = os.getenv("JIRA_SERVER")
+
+    if issue_key:
+        url = f"{server}/browse/{issue_key}"
+    else:
+        url = server
+
+    webbrowser.open(url)
+    print(f"Opened {url}", file=sys.stderr)
+
+
+def show_me():
+    """Show current user info"""
+    jira = get_jira_client()
+    user = jira.myself()
+
+    print(f"Name:     {user.displayName}")
+    print(f"Email:    {user.emailAddress}")
+    print(f"Account:  {user.accountId if hasattr(user, 'accountId') else user.name}")
+    print(f"Active:   {user.active}")
+    print(f"Timezone: {user.timeZone if hasattr(user, 'timeZone') else 'N/A'}")
+
+
+def show_serverinfo():
+    """Show Jira server information"""
+    jira = get_jira_client()
+    info = jira.server_info()
+
+    print(f"Server:      {info.get('baseUrl', 'N/A')}")
+    print(f"Version:     {info.get('version', 'N/A')}")
+    print(f"Build:       {info.get('buildNumber', 'N/A')}")
+    print(f"Deployment:  {info.get('deploymentType', 'N/A')}")
+    print(f"Server Time: {info.get('serverTime', 'N/A')}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Custom JIRA operations")
     subparsers = parser.add_subparsers(dest="command", help="Command to execute")
@@ -464,6 +502,16 @@ def main():
     my_parser.add_argument(
         "-l", "--limit", type=int, default=50, help="Max results (default: 50)"
     )
+
+    # open command
+    open_parser = subparsers.add_parser("open", help="Open issue in browser")
+    open_parser.add_argument("issue_key", nargs="?", help="Issue key (optional)")
+
+    # me command
+    subparsers.add_parser("me", help="Show current user")
+
+    # serverinfo command
+    subparsers.add_parser("serverinfo", help="Show server info")
 
     # Issue commands
     issue_parser = subparsers.add_parser("issue", help="Manage issues")
@@ -637,6 +685,12 @@ def main():
             status=args.status,
             limit=args.limit,
         )
+    elif args.command == "open":
+        open_issue(args.issue_key)
+    elif args.command == "me":
+        show_me()
+    elif args.command == "serverinfo":
+        show_serverinfo()
     elif args.command == "issue":
         if args.issue_action == "create":
             issue_create(
