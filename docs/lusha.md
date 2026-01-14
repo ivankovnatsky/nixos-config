@@ -59,3 +59,8 @@ maintenance and troubleshooting.
 ### Ghostty
 
 - Approve local network access
+
+### LinearMouse
+
+- Accessibility permissions granted
+- Configured reverse scrolling direction (natural scrolling for mouse)
