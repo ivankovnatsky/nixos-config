@@ -224,7 +224,7 @@ def page_update(
     print(f"Updated: {result['id']}", file=sys.stderr)
 
 
-def page_get(page_id=None, space_key=None, title=None, output_format="storage"):
+def page_get(page_id=None, space_key=None, title=None, output_format="storage", output_file=None):
     """Get page content"""
     confluence = get_confluence_client()
 
@@ -245,15 +245,21 @@ def page_get(page_id=None, space_key=None, title=None, output_format="storage"):
         print("Error: Page not found", file=sys.stderr)
         sys.exit(1)
 
+    # Prepare output content
     if output_format == "storage":
-        print(page["body"]["storage"]["value"])
+        content = page["body"]["storage"]["value"]
     elif output_format == "markdown":
-        print(convert_storage_to_markdown(page["body"]["storage"]["value"]))
+        content = convert_storage_to_markdown(page["body"]["storage"]["value"])
     elif output_format == "info":
-        print(f"ID: {page['id']}")
-        print(f"Title: {page['title']}")
-        print(f"Version: {page['version']['number']}")
-        print(f"Space: {page['space']['key'] if 'space' in page else 'N/A'}")
+        content = f"ID: {page['id']}\nTitle: {page['title']}\nVersion: {page['version']['number']}\nSpace: {page['space']['key'] if 'space' in page else 'N/A'}"
+
+    # Write to file or stdout
+    if output_file:
+        with open(output_file, "w") as f:
+            f.write(content)
+        print(f"Written to {output_file}", file=sys.stderr)
+    else:
+        print(content)
 
 
 def page_list(space_key, limit=25):
@@ -336,10 +342,14 @@ def main():
     get_parser.add_argument("--title", "-t", help="Page title")
     get_parser.add_argument(
         "--format",
-        "-o",
         choices=["storage", "info", "markdown"],
         default="storage",
         help="Output format",
+    )
+    get_parser.add_argument(
+        "--output",
+        "-o",
+        help="Output file path (default: stdout)",
     )
 
     # page list
@@ -387,7 +397,7 @@ def main():
                 args.minor,
             )
         elif args.page_action == "get":
-            page_get(args.page_id, args.space, args.title, args.format)
+            page_get(args.page_id, args.space, args.title, args.format, args.output)
         elif args.page_action == "list":
             page_list(args.space_key, args.limit)
         else:
