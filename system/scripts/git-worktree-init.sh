@@ -2,10 +2,35 @@
 
 set -e
 
+show_help() {
+  echo "Usage: $(basename "$0") <branch-name>"
+  echo ""
+  echo "Create or navigate to a git worktree for the specified branch."
+  echo ""
+  echo "Arguments:"
+  echo "  branch-name    The branch name for the worktree (e.g., feature/TICKET-123)"
+  echo ""
+  echo "Options:"
+  echo "  -h, --help     Show this help message"
+  echo ""
+  echo "The worktree is created at .git/__worktrees/<branch-name> relative to the"
+  echo "repository root. If the branch doesn't exist, it will be created."
+  echo ""
+  echo "Example:"
+  echo "  $(basename "$0") feature/PROJ-12345"
+}
+
+# Handle help flag
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+  show_help
+  exit 0
+fi
+
 # Check if branch name argument is provided
 if [ -z "$1" ]; then
   echo "Error: Please provide a branch name" >&2
-  echo "Usage: $(basename "$0") feature/BRANCH-NAME" >&2
+  echo "" >&2
+  show_help >&2
   exit 1
 fi
 
