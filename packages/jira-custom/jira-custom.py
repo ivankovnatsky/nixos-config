@@ -340,6 +340,46 @@ def my_issues(
         print(f"{key:<15} {status_name:<15} {priority_name:<10} {summary}")
 
 
+def issue_link(inward_key, outward_key, link_type):
+    """Link two issues"""
+    jira = get_jira_client()
+    jira.create_issue_link(
+        type=link_type, inwardIssue=inward_key, outwardIssue=outward_key
+    )
+    print(f"Linked {inward_key} -> {outward_key} ({link_type})", file=sys.stderr)
+
+
+def issue_unlink(key1, key2):
+    """Remove link between two issues"""
+    jira = get_jira_client()
+    issue = jira.issue(key1)
+
+    for link in issue.fields.issuelinks:
+        linked_key = None
+        if hasattr(link, "outwardIssue"):
+            linked_key = link.outwardIssue.key
+        elif hasattr(link, "inwardIssue"):
+            linked_key = link.inwardIssue.key
+
+        if linked_key == key2:
+            jira.delete_issue_link(link.id)
+            print(f"Unlinked {key1} <-> {key2}", file=sys.stderr)
+            return
+
+    print(f"No link found between {key1} and {key2}", file=sys.stderr)
+    sys.exit(1)
+
+
+def link_types_list():
+    """List available link types"""
+    jira = get_jira_client()
+    for lt in jira.issue_link_types():
+        print(f"{lt.name}")
+        print(f"  Inward:  {lt.inward}")
+        print(f"  Outward: {lt.outward}")
+        print()
+
+
 def main():
     parser = argparse.ArgumentParser(description="Custom JIRA operations")
     subparsers = parser.add_subparsers(dest="command", help="Command to execute")
@@ -500,6 +540,24 @@ def main():
     delete_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
     delete_parser.add_argument("comment_id", help="Comment ID")
 
+    # issue link
+    issue_link_parser = issue_subparsers.add_parser("link", help="Link two issues")
+    issue_link_parser.add_argument("inward_key", help="Inward issue key")
+    issue_link_parser.add_argument("outward_key", help="Outward issue key")
+    issue_link_parser.add_argument(
+        "link_type", help="Link type (e.g., 'Blocks', 'Relates')"
+    )
+
+    # issue unlink
+    unlink_parser = issue_subparsers.add_parser(
+        "unlink", help="Remove link between issues"
+    )
+    unlink_parser.add_argument("key1", help="First issue key")
+    unlink_parser.add_argument("key2", help="Second issue key")
+
+    # issue link-types
+    issue_subparsers.add_parser("link-types", help="List available link types")
+
     args = parser.parse_args()
 
     # Handle commands
@@ -568,6 +626,12 @@ def main():
                 comment_delete(args.issue_key, args.comment_id)
             else:
                 comment_parser.print_help()
+        elif args.issue_action == "link":
+            issue_link(args.inward_key, args.outward_key, args.link_type)
+        elif args.issue_action == "unlink":
+            issue_unlink(args.key1, args.key2)
+        elif args.issue_action == "link-types":
+            link_types_list()
         else:
             issue_parser.print_help()
     else:
