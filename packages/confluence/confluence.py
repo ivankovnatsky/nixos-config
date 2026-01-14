@@ -75,8 +75,9 @@ def convert_markdown_to_html(md_content):
     )
 
     # Convert [TOC] placeholder to Confluence TOC macro
+    # Markdown wraps [TOC] in <p> tags, so match <p>[TOC]</p>
     html = re.sub(
-        r"\[TOC\]",
+        r"<p>\[TOC\]</p>",
         '<ac:structured-macro ac:name="toc" ac:schema-version="1"><ac:parameter ac:name="minLevel">1</ac:parameter><ac:parameter ac:name="maxLevel">4</ac:parameter></ac:structured-macro>',
         html,
         flags=re.IGNORECASE,
@@ -85,17 +86,73 @@ def convert_markdown_to_html(md_content):
     return html
 
 
+def generate_slug(text):
+    """Generate GitHub-style anchor slug from heading text"""
+    # Lowercase
+    slug = text.lower()
+    # Replace spaces with hyphens
+    slug = re.sub(r"\s+", "-", slug)
+    # Remove special characters except hyphens
+    slug = re.sub(r"[^\w\-]", "", slug)
+    # Remove consecutive hyphens
+    slug = re.sub(r"-+", "-", slug)
+    # Strip leading/trailing hyphens
+    slug = slug.strip("-")
+    return slug
+
+
 def convert_storage_to_markdown(storage_content):
     """Convert Confluence storage format to markdown"""
     content = storage_content
 
-    # Convert TOC macro to markdown placeholder
-    content = re.sub(
+    # Check if TOC macro exists and generate real TOC from headings
+    has_toc = re.search(
         r'<ac:structured-macro ac:name="toc"[^>]*>.*?</ac:structured-macro>',
-        "[TOC]\n",
         content,
         flags=re.DOTALL,
     )
+
+    if has_toc:
+        # Extract TOC parameters (minLevel, maxLevel)
+        min_level = 1
+        max_level = 4
+        min_match = re.search(r'<ac:parameter ac:name="minLevel">(\d+)</ac:parameter>', has_toc.group(0))
+        max_match = re.search(r'<ac:parameter ac:name="maxLevel">(\d+)</ac:parameter>', has_toc.group(0))
+        if min_match:
+            min_level = int(min_match.group(1))
+        if max_match:
+            max_level = int(max_match.group(1))
+
+        # Extract all headings from content
+        headings = []
+        for level in range(min_level, max_level + 1):
+            for match in re.finditer(rf"<h{level}[^>]*>(.*?)</h{level}>", content, re.DOTALL):
+                # Strip HTML tags from heading text
+                heading_text = re.sub(r"<[^>]+>", "", match.group(1)).strip()
+                if heading_text:
+                    headings.append((match.start(), level, heading_text))
+
+        # Sort by position in document
+        headings.sort(key=lambda x: x[0])
+
+        # Generate markdown TOC
+        if headings:
+            toc_lines = ["## Table of Contents\n"]
+            for _, level, text in headings:
+                indent = "  " * (level - min_level)
+                slug = generate_slug(text)
+                toc_lines.append(f"{indent}- [{text}](#{slug})")
+            toc_md = "\n".join(toc_lines) + "\n"
+        else:
+            toc_md = ""
+
+        # Replace TOC macro with generated TOC
+        content = re.sub(
+            r'<ac:structured-macro ac:name="toc"[^>]*>.*?</ac:structured-macro>',
+            toc_md,
+            content,
+            flags=re.DOTALL,
+        )
 
     # Convert code blocks
     def replace_code_block(match):
