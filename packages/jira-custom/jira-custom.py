@@ -516,6 +516,79 @@ def sprint_add(sprint_id, issue_keys):
         print(f"  {key}")
 
 
+def epic_list(project=None, limit=50):
+    """List epics in a project"""
+    jira = get_jira_client()
+
+    jql_parts = ["issuetype = Epic"]
+    if project:
+        jql_parts.append(f'project = "{project}"')
+
+    jql = " AND ".join(jql_parts) + " ORDER BY created DESC"
+
+    epics = jira.search_issues(jql, maxResults=limit)
+
+    if not epics:
+        print("No epics found", file=sys.stderr)
+        return
+
+    print(f"{'KEY':<15} {'STATUS':<15} {'SUMMARY'}")
+    print("-" * 80)
+
+    for epic in epics:
+        key = epic.key
+        status = epic.fields.status.name
+        summary = epic.fields.summary
+        if len(summary) > 45:
+            summary = summary[:42] + "..."
+        print(f"{key:<15} {status:<15} {summary}")
+
+
+def epic_create(project, name, summary=None):
+    """Create an epic"""
+    jira = get_jira_client()
+
+    fields = {
+        "project": {"key": project},
+        "summary": summary or name,
+        "issuetype": {"name": "Epic"},
+    }
+
+    # Try to set epic name (Cloud Jira customfield_10011)
+    try:
+        fields["customfield_10011"] = name
+    except Exception:
+        pass
+
+    epic = jira.create_issue(fields=fields)
+    print(epic.key)
+
+
+def epic_add(epic_key, issue_keys):
+    """Add issues to an epic"""
+    jira = get_jira_client()
+
+    epic = jira.issue(epic_key)
+    jira.add_issues_to_epic(epic.id, issue_keys)
+
+    print(f"Added {len(issue_keys)} issue(s) to epic {epic_key}", file=sys.stderr)
+    for key in issue_keys:
+        print(f"  {key}")
+
+
+def epic_remove(issue_keys):
+    """Remove issues from their epic"""
+    jira = get_jira_client()
+
+    for key in issue_keys:
+        try:
+            issue = jira.issue(key)
+            issue.update(fields={"customfield_10014": None})
+            print(f"Removed {key} from epic", file=sys.stderr)
+        except Exception as e:
+            print(f"Error removing {key}: {e}", file=sys.stderr)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Custom JIRA operations")
     subparsers = parser.add_subparsers(dest="command", help="Command to execute")
@@ -587,6 +660,38 @@ def main():
     )
     sprint_add_parser.add_argument("sprint_id", help="Sprint ID")
     sprint_add_parser.add_argument("issue_keys", nargs="+", help="Issue keys to add")
+
+    # epic command
+    epic_parser = subparsers.add_parser("epic", help="Manage epics")
+    epic_subparsers = epic_parser.add_subparsers(dest="epic_action", help="Epic action")
+
+    # epic list
+    epic_list_parser = epic_subparsers.add_parser("list", help="List epics")
+    epic_list_parser.add_argument("-p", "--project", help="Project key")
+    epic_list_parser.add_argument(
+        "-l", "--limit", type=int, default=50, help="Max results"
+    )
+
+    # epic create
+    epic_create_parser = epic_subparsers.add_parser("create", help="Create an epic")
+    epic_create_parser.add_argument("project", help="Project key")
+    epic_create_parser.add_argument("-n", "--name", required=True, help="Epic name")
+    epic_create_parser.add_argument(
+        "-s", "--summary", help="Epic summary (defaults to name)"
+    )
+
+    # epic add
+    epic_add_parser = epic_subparsers.add_parser("add", help="Add issues to epic")
+    epic_add_parser.add_argument("epic_key", help="Epic key")
+    epic_add_parser.add_argument("issue_keys", nargs="+", help="Issue keys to add")
+
+    # epic remove
+    epic_remove_parser = epic_subparsers.add_parser(
+        "remove", help="Remove issues from epic"
+    )
+    epic_remove_parser.add_argument(
+        "issue_keys", nargs="+", help="Issue keys to remove"
+    )
 
     # Issue commands
     issue_parser = subparsers.add_parser("issue", help="Manage issues")
@@ -774,6 +879,17 @@ def main():
             sprint_add(args.sprint_id, args.issue_keys)
         else:
             sprint_parser.print_help()
+    elif args.command == "epic":
+        if args.epic_action == "list":
+            epic_list(args.project, args.limit)
+        elif args.epic_action == "create":
+            epic_create(args.project, args.name, args.summary)
+        elif args.epic_action == "add":
+            epic_add(args.epic_key, args.issue_keys)
+        elif args.epic_action == "remove":
+            epic_remove(args.issue_keys)
+        else:
+            epic_parser.print_help()
     elif args.command == "issue":
         if args.issue_action == "create":
             issue_create(
