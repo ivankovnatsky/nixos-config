@@ -101,18 +101,18 @@ def generate_slug(text):
     return slug
 
 
-def convert_storage_to_markdown(storage_content):
+def convert_storage_to_markdown(storage_content, generate_toc=False):
     """Convert Confluence storage format to markdown"""
     content = storage_content
 
-    # Check if TOC macro exists and generate real TOC from headings
+    # Check if TOC macro exists
     has_toc = re.search(
         r'<ac:structured-macro ac:name="toc"[^>]*>.*?</ac:structured-macro>',
         content,
         flags=re.DOTALL,
     )
 
-    if has_toc:
+    if has_toc and generate_toc:
         # Extract TOC parameters (minLevel, maxLevel)
         min_level = 1
         max_level = 4
@@ -150,6 +150,14 @@ def convert_storage_to_markdown(storage_content):
         content = re.sub(
             r'<ac:structured-macro ac:name="toc"[^>]*>.*?</ac:structured-macro>',
             toc_md,
+            content,
+            flags=re.DOTALL,
+        )
+    elif has_toc:
+        # Strip TOC macro when not generating
+        content = re.sub(
+            r'<ac:structured-macro ac:name="toc"[^>]*>.*?</ac:structured-macro>',
+            "",
             content,
             flags=re.DOTALL,
         )
@@ -335,7 +343,7 @@ def page_update(
     print(f"Updated: {result['id']}", file=sys.stderr)
 
 
-def page_get(page_id=None, space_key=None, title=None, output_format="storage", output_file=None):
+def page_get(page_id=None, space_key=None, title=None, output_format="storage", output_file=None, generate_toc=False):
     """Get page content"""
     confluence = get_confluence_client()
 
@@ -360,7 +368,7 @@ def page_get(page_id=None, space_key=None, title=None, output_format="storage", 
     if output_format == "storage":
         content = page["body"]["storage"]["value"]
     elif output_format == "markdown":
-        content = convert_storage_to_markdown(page["body"]["storage"]["value"])
+        content = convert_storage_to_markdown(page["body"]["storage"]["value"], generate_toc=generate_toc)
     elif output_format == "info":
         content = f"ID: {page['id']}\nTitle: {page['title']}\nVersion: {page['version']['number']}\nSpace: {page['space']['key'] if 'space' in page else 'N/A'}"
 
@@ -462,6 +470,11 @@ def main():
         "-o",
         help="Output file path (default: stdout)",
     )
+    get_parser.add_argument(
+        "--toc",
+        action="store_true",
+        help="Generate table of contents from headings (markdown format only)",
+    )
 
     # page list
     list_parser = page_subparsers.add_parser("list", help="List pages in a space")
@@ -508,7 +521,7 @@ def main():
                 args.minor,
             )
         elif args.page_action == "get":
-            page_get(args.page_id, args.space, args.title, args.format, args.output)
+            page_get(args.page_id, args.space, args.title, args.format, args.output, args.toc)
         elif args.page_action == "list":
             page_list(args.space_key, args.limit)
         else:
