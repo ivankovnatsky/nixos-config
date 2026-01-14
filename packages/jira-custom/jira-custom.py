@@ -589,6 +589,66 @@ def epic_remove(issue_keys):
             print(f"Error removing {key}: {e}", file=sys.stderr)
 
 
+def board_list(project=None, board_type=None):
+    """List boards"""
+    jira = get_jira_client()
+
+    boards = jira.boards(projectKeyOrID=project, type=board_type)
+
+    if not boards:
+        print("No boards found", file=sys.stderr)
+        return
+
+    print(f"{'ID':<10} {'TYPE':<10} {'NAME'}")
+    print("-" * 60)
+
+    for board in boards:
+        board_id = board.id
+        btype = board.type
+        name = board.name
+        print(f"{board_id:<10} {btype:<10} {name}")
+
+
+def project_list():
+    """List projects"""
+    jira = get_jira_client()
+
+    projects = jira.projects()
+
+    if not projects:
+        print("No projects found", file=sys.stderr)
+        return
+
+    print(f"{'KEY':<15} {'NAME'}")
+    print("-" * 60)
+
+    for project in projects:
+        key = project.key
+        name = project.name
+        print(f"{key:<15} {name}")
+
+
+def release_list(project):
+    """List releases/versions for a project"""
+    jira = get_jira_client()
+
+    versions = jira.project_versions(project)
+
+    if not versions:
+        print(f"No releases found for {project}", file=sys.stderr)
+        return
+
+    print(f"{'ID':<10} {'NAME':<30} {'RELEASED':<10} {'RELEASE DATE'}")
+    print("-" * 70)
+
+    for version in versions:
+        vid = version.id
+        name = version.name[:28] + ".." if len(version.name) > 30 else version.name
+        released = "Yes" if version.released else "No"
+        release_date = getattr(version, "releaseDate", "N/A") or "N/A"
+        print(f"{vid:<10} {name:<30} {released:<10} {release_date}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Custom JIRA operations")
     subparsers = parser.add_subparsers(dest="command", help="Command to execute")
@@ -692,6 +752,35 @@ def main():
     epic_remove_parser.add_argument(
         "issue_keys", nargs="+", help="Issue keys to remove"
     )
+
+    # board command
+    board_parser = subparsers.add_parser("board", help="Manage boards")
+    board_subparsers = board_parser.add_subparsers(
+        dest="board_action", help="Board action"
+    )
+
+    board_list_parser = board_subparsers.add_parser("list", help="List boards")
+    board_list_parser.add_argument("-p", "--project", help="Filter by project")
+    board_list_parser.add_argument(
+        "-t", "--type", choices=["scrum", "kanban"], help="Board type"
+    )
+
+    # project command
+    project_parser = subparsers.add_parser("project", help="Manage projects")
+    project_subparsers = project_parser.add_subparsers(
+        dest="project_action", help="Project action"
+    )
+
+    project_subparsers.add_parser("list", help="List projects")
+
+    # release command
+    release_parser = subparsers.add_parser("release", help="Manage releases")
+    release_subparsers = release_parser.add_subparsers(
+        dest="release_action", help="Release action"
+    )
+
+    release_list_parser = release_subparsers.add_parser("list", help="List releases")
+    release_list_parser.add_argument("project", help="Project key")
 
     # Issue commands
     issue_parser = subparsers.add_parser("issue", help="Manage issues")
@@ -890,6 +979,21 @@ def main():
             epic_remove(args.issue_keys)
         else:
             epic_parser.print_help()
+    elif args.command == "board":
+        if args.board_action == "list":
+            board_list(args.project, args.type)
+        else:
+            board_parser.print_help()
+    elif args.command == "project":
+        if args.project_action == "list":
+            project_list()
+        else:
+            project_parser.print_help()
+    elif args.command == "release":
+        if args.release_action == "list":
+            release_list(args.project)
+        else:
+            release_parser.print_help()
     elif args.command == "issue":
         if args.issue_action == "create":
             issue_create(
