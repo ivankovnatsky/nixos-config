@@ -28,7 +28,53 @@ def get_confluence_client():
 def convert_markdown_to_html(md_content):
     """Convert markdown to HTML for Confluence storage format"""
     md = markdown.Markdown(extensions=["fenced_code", "tables", "nl2br"])
-    return md.convert(md_content)
+    html = md.convert(md_content)
+
+    # Convert <pre><code class="language-X"> to Confluence code macro
+    def replace_code_block(match):
+        lang = match.group(1) or ""
+        code = match.group(2)
+        # Unescape HTML entities in code
+        code = (
+            code.replace("&lt;", "<")
+            .replace("&gt;", ">")
+            .replace("&amp;", "&")
+            .replace("&quot;", '"')
+        )
+        return f'''<ac:structured-macro ac:name="code" ac:schema-version="1">
+<ac:parameter ac:name="language">{lang}</ac:parameter>
+<ac:plain-text-body><![CDATA[{code}]]></ac:plain-text-body>
+</ac:structured-macro>'''
+
+    # Match <pre><code class="language-X">...</code></pre>
+    html = re.sub(
+        r'<pre><code class="language-(\w+)">(.*?)</code></pre>',
+        replace_code_block,
+        html,
+        flags=re.DOTALL,
+    )
+
+    # Handle <pre><code> without language
+    def replace_code_block_no_lang(match):
+        code = match.group(1)
+        code = (
+            code.replace("&lt;", "<")
+            .replace("&gt;", ">")
+            .replace("&amp;", "&")
+            .replace("&quot;", '"')
+        )
+        return f'''<ac:structured-macro ac:name="code" ac:schema-version="1">
+<ac:plain-text-body><![CDATA[{code}]]></ac:plain-text-body>
+</ac:structured-macro>'''
+
+    html = re.sub(
+        r"<pre><code>(.*?)</code></pre>",
+        replace_code_block_no_lang,
+        html,
+        flags=re.DOTALL,
+    )
+
+    return html
 
 
 def convert_storage_to_markdown(storage_content):
