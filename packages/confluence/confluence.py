@@ -137,9 +137,11 @@ def convert_storage_to_markdown(storage_content, generate_toc=False):
 
         # Generate markdown TOC
         if headings:
+            # Use actual minimum level found for indentation
+            actual_min_level = min(h[1] for h in headings)
             toc_lines = ["## Table of Contents\n"]
             for _, level, text in headings:
-                indent = "  " * (level - min_level)
+                indent = "  " * (level - actual_min_level)
                 slug = generate_slug(text)
                 toc_lines.append(f"{indent}- [{text}](#{slug})")
             toc_md = "\n".join(toc_lines) + "\n"
