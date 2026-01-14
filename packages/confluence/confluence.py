@@ -5,6 +5,8 @@ import sys
 import os
 import argparse
 import markdown
+import re
+from html import unescape
 
 
 def get_confluence_client():
@@ -27,6 +29,120 @@ def convert_markdown_to_html(md_content):
     """Convert markdown to HTML for Confluence storage format"""
     md = markdown.Markdown(extensions=["fenced_code", "tables", "nl2br"])
     return md.convert(md_content)
+
+
+def convert_storage_to_markdown(storage_content):
+    """Convert Confluence storage format to markdown"""
+    content = storage_content
+
+    # Remove TOC macro
+    content = re.sub(
+        r'<ac:structured-macro ac:name="toc"[^>]*>.*?</ac:structured-macro>',
+        "",
+        content,
+        flags=re.DOTALL,
+    )
+
+    # Convert code blocks
+    def replace_code_block(match):
+        full_match = match.group(0)
+        lang_match = re.search(
+            r'<ac:parameter ac:name="language">([^<]+)</ac:parameter>', full_match
+        )
+        lang = lang_match.group(1) if lang_match else ""
+        code_match = re.search(r"<!\[CDATA\[(.*?)\]\]>", full_match, re.DOTALL)
+        code = code_match.group(1) if code_match else ""
+        return f"\n```{lang}\n{code}\n```\n"
+
+    content = re.sub(
+        r'<ac:structured-macro ac:name="code"[^>]*>.*?</ac:structured-macro>',
+        replace_code_block,
+        content,
+        flags=re.DOTALL,
+    )
+
+    # Remove remaining ac:structured-macro elements
+    content = re.sub(
+        r"<ac:structured-macro[^>]*>.*?</ac:structured-macro>",
+        "",
+        content,
+        flags=re.DOTALL,
+    )
+
+    # Convert headings
+    for i in range(6, 0, -1):
+        content = re.sub(
+            rf"<h{i}>(.*?)</h{i}>", r"\n" + "#" * i + r" \1\n", content
+        )
+
+    # Convert bold/strong
+    content = re.sub(r"<strong>(.*?)</strong>", r"**\1**", content)
+    content = re.sub(r"<b>(.*?)</b>", r"**\1**", content)
+
+    # Convert italic/em
+    content = re.sub(r"<em>(.*?)</em>", r"_\1_", content)
+    content = re.sub(r"<i>(.*?)</i>", r"_\1_", content)
+
+    # Convert inline code
+    content = re.sub(r"<code>(.*?)</code>", r"`\1`", content)
+
+    # Convert links
+    content = re.sub(r'<a href="([^"]+)"[^>]*>([^<]+)</a>', r"[\2](\1)", content)
+
+    # Convert tables
+    def convert_table(match):
+        table_html = match.group(0)
+        rows = re.findall(r"<tr>(.*?)</tr>", table_html, re.DOTALL)
+        if not rows:
+            return ""
+
+        md_rows = []
+        for row in rows:
+            headers = re.findall(r"<th[^>]*>(.*?)</th>", row, re.DOTALL)
+            cells = re.findall(r"<td[^>]*>(.*?)</td>", row, re.DOTALL)
+
+            if headers:
+                headers = [re.sub(r"<[^>]+>", "", h).strip() for h in headers]
+                md_rows.append("| " + " | ".join(headers) + " |")
+                md_rows.append("|" + "|".join(["---"] * len(headers)) + "|")
+            elif cells:
+                cells = [re.sub(r"<[^>]+>", "", c).strip() for c in cells]
+                md_rows.append("| " + " | ".join(cells) + " |")
+
+        return "\n" + "\n".join(md_rows) + "\n"
+
+    content = re.sub(r"<table>.*?</table>", convert_table, content, flags=re.DOTALL)
+
+    # Convert unordered lists
+    content = re.sub(
+        r"<ul>(.*?)</ul>",
+        lambda m: "\n"
+        + re.sub(r"<li>(.*?)</li>", r"- \1\n", m.group(1), flags=re.DOTALL),
+        content,
+        flags=re.DOTALL,
+    )
+
+    # Convert ordered lists
+    def convert_ol(match):
+        items = re.findall(r"<li>(.*?)</li>", match.group(1), re.DOTALL)
+        return "\n" + "\n".join(f"{i+1}. {item.strip()}" for i, item in enumerate(items)) + "\n"
+
+    content = re.sub(r"<ol>(.*?)</ol>", convert_ol, content, flags=re.DOTALL)
+
+    # Convert paragraphs
+    content = re.sub(r"<p>(.*?)</p>", r"\1\n", content, flags=re.DOTALL)
+
+    # Clean up remaining HTML tags
+    content = re.sub(r"<[^>]+>", "", content)
+
+    # Unescape HTML entities
+    content = unescape(content)
+
+    # Clean up whitespace
+    content = re.sub(r"\n{3,}", "\n\n", content)
+    content = content.strip()
+
+    return content
 
 
 def page_create(space_key, title, body=None, body_file=None, parent_id=None):
@@ -131,6 +247,8 @@ def page_get(page_id=None, space_key=None, title=None, output_format="storage"):
 
     if output_format == "storage":
         print(page["body"]["storage"]["value"])
+    elif output_format == "markdown":
+        print(convert_storage_to_markdown(page["body"]["storage"]["value"]))
     elif output_format == "info":
         print(f"ID: {page['id']}")
         print(f"Title: {page['title']}")
@@ -219,7 +337,7 @@ def main():
     get_parser.add_argument(
         "--format",
         "-o",
-        choices=["storage", "info"],
+        choices=["storage", "info", "markdown"],
         default="storage",
         help="Output format",
     )
