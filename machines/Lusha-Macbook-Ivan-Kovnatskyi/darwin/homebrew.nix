@@ -40,7 +40,7 @@
         name = "kitty";
         greedy = true;
       }
-      "mos"
+      "linearmouse"
       "stats"
       # Need to keep twingate always latest version, sometimes it fails to
       # connect no matter what.
