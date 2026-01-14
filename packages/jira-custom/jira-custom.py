@@ -22,6 +22,23 @@ def get_jira_client():
     return JIRA(server=server, basic_auth=(email, token))
 
 
+def parse_labels(labels):
+    """Parse label arguments, separating adds from removes"""
+    if not labels:
+        return None, None
+
+    add = []
+    remove = []
+
+    for label in labels:
+        if label.startswith("-"):
+            remove.append(label[1:])
+        else:
+            add.append(label)
+
+    return add or None, remove or None
+
+
 def search_filters(query=None):
     """Search for Jira filters"""
     jira = get_jira_client()
@@ -96,7 +113,13 @@ def comment_delete(issue_key, comment_id):
 
 
 def issue_create(
-    project, summary, issue_type="Task", description=None, parent=None, assignee=None
+    project,
+    summary,
+    issue_type="Task",
+    description=None,
+    parent=None,
+    assignee=None,
+    labels=None,
 ):
     """Create a new issue"""
     jira = get_jira_client()
@@ -111,25 +134,53 @@ def issue_create(
         fields["parent"] = {"key": parent}
     if assignee:
         fields["assignee"] = {"name": assignee}
+    if labels:
+        fields["labels"] = labels
     issue = jira.create_issue(fields=fields)
     print(issue.key)
 
 
-def issue_update(issue_key, summary=None, description=None, assignee=None):
+def issue_update(
+    issue_key,
+    summary=None,
+    description=None,
+    assignee=None,
+    labels_add=None,
+    labels_remove=None,
+):
     """Update an existing issue"""
     jira = get_jira_client()
     issue = jira.issue(issue_key)
+
     fields = {}
+    update = {}
+
     if summary:
         fields["summary"] = summary
     if description:
         fields["description"] = description
     if assignee:
         fields["assignee"] = {"name": assignee}
-    if not fields:
+
+    if labels_add or labels_remove:
+        label_ops = []
+        if labels_add:
+            for label in labels_add:
+                label_ops.append({"add": label})
+        if labels_remove:
+            for label in labels_remove:
+                label_ops.append({"remove": label})
+        update["labels"] = label_ops
+
+    if not fields and not update:
         print("No fields to update", file=sys.stderr)
         sys.exit(1)
-    issue.update(fields=fields)
+
+    if update:
+        issue.update(fields=fields, update=update)
+    else:
+        issue.update(fields=fields)
+
     print(f"Updated {issue_key}", file=sys.stderr)
 
 
@@ -432,6 +483,13 @@ def main():
         "--parent", "-p", help="Parent issue key for sub-tasks (e.g., KEY-12345)"
     )
     create_parser.add_argument("--assignee", "-a", help="Assignee email/name")
+    create_parser.add_argument(
+        "--label",
+        "-l",
+        action="append",
+        dest="labels",
+        help="Add label (can be repeated)",
+    )
 
     # issue update
     update_issue_parser = issue_subparsers.add_parser(
@@ -444,6 +502,13 @@ def main():
     )
     update_issue_parser.add_argument(
         "--assignee", "-a", help="New assignee (email/name)"
+    )
+    update_issue_parser.add_argument(
+        "--label",
+        "-l",
+        action="append",
+        dest="labels",
+        help="Add/remove label (prefix with - to remove, can be repeated)",
     )
 
     # issue view
@@ -581,10 +646,17 @@ def main():
                 args.description,
                 args.parent,
                 args.assignee,
+                args.labels,
             )
         elif args.issue_action == "update":
+            labels_add, labels_remove = parse_labels(args.labels)
             issue_update(
-                args.issue_key, args.summary, args.description, args.assignee
+                args.issue_key,
+                args.summary,
+                args.description,
+                args.assignee,
+                labels_add,
+                labels_remove,
             )
         elif args.issue_action == "assign":
             issue_assign(args.issue_key, args.user)
