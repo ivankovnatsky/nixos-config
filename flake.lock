@@ -1329,7 +1329,7 @@
       },
       "locked": {
         "lastModified": 1767366886,
-        "narHash": "sha256-WVqDJjmc/Bp7YQMFXdN4Zh2rlzJ07YNpIY1k7bl79lg=",
+        "narHash": "sha256-3vRYSB5wc6E1BuI2DewOBrsUZMGy8DwE2BiBxWhVeEY=",
         "owner": "ivankovnatsky",
         "repo": "textcast",
         "rev": "dac22034c8f2d07eca61bd89e914030d76b78b0f",
