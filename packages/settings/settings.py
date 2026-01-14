@@ -8,6 +8,7 @@ Subcommands:
   scrolling   Toggle natural scrolling on/off (macOS only)
   awake       Prevent system from sleeping (macOS + Linux)
   spaces      Add or remove desktop spaces (macOS only)
+  windows     Close/hide app windows (macOS only)
 """
 
 from __future__ import annotations
@@ -793,6 +794,142 @@ def cmd_awake(args: argparse.Namespace) -> int:
         return 1
 
 
+# Windows: Close/hide app windows (macOS only)
+def windows_close(app_name: str) -> bool:
+    """Close all windows of an app using AppleScript.
+
+    Activates the app first to bring windows from other Spaces,
+    then closes all windows by clicking button 1 (close button),
+    and finally hides the app so it doesn't stay in focus.
+    """
+    script = f'''
+tell application "System Events"
+    if exists (process "{app_name}") then
+        -- Activate to bring windows from other Spaces
+        tell application "{app_name}" to activate
+        delay 0.5
+        tell process "{app_name}"
+            set windowCount to count of windows
+            if windowCount > 0 then
+                repeat with w in windows
+                    try
+                        click button 1 of w
+                    end try
+                end repeat
+                -- Hide the app so it doesn't stay in focus
+                delay 0.2
+                set visible to false
+                return "closed"
+            else
+                -- Hide even if no windows (was activated)
+                set visible to false
+                return "no windows"
+            end if
+        end tell
+    else
+        return "not running"
+    end if
+end tell
+'''
+    try:
+        result = subprocess.run(
+            ["osascript", "-e", script],
+            capture_output=True,
+            text=True,
+        )
+        return "closed" in result.stdout
+    except subprocess.CalledProcessError:
+        return False
+
+
+def windows_hide(app_name: str) -> bool:
+    """Hide an app (minimize all windows)."""
+    script = f'''
+tell application "System Events"
+    if exists (process "{app_name}") then
+        set visible of process "{app_name}" to false
+        return "hidden"
+    else
+        return "not running"
+    end if
+end tell
+'''
+    try:
+        result = subprocess.run(
+            ["osascript", "-e", script],
+            capture_output=True,
+            text=True,
+        )
+        return "hidden" in result.stdout
+    except subprocess.CalledProcessError:
+        return False
+
+
+def windows_list() -> list[str]:
+    """List apps with visible windows."""
+    script = '''
+tell application "System Events"
+    set visibleApps to {}
+    repeat with p in (processes whose visible is true)
+        set end of visibleApps to name of p
+    end repeat
+    return visibleApps
+end tell
+'''
+    try:
+        result = subprocess.run(
+            ["osascript", "-e", script],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        apps = result.stdout.strip().split(", ")
+        return [a.strip() for a in apps if a.strip()]
+    except subprocess.CalledProcessError:
+        return []
+
+
+def cmd_windows(args: argparse.Namespace) -> int:
+    if not is_macos():
+        print("Windows management only available on macOS", file=sys.stderr)
+        return 1
+
+    if args.action == "list":
+        apps = windows_list()
+        if apps:
+            print("Apps with visible windows:")
+            for app in apps:
+                print(f"  - {app}")
+        else:
+            print("No apps with visible windows")
+        return 0
+
+    if args.action == "close":
+        if not args.apps:
+            print("Error: app name(s) required for close action", file=sys.stderr)
+            return 1
+        for app in args.apps:
+            if windows_close(app):
+                print(f"Closed windows of {app}")
+            else:
+                print(f"Could not close windows of {app} (not running or no windows)")
+        return 0
+
+    if args.action == "hide":
+        if not args.apps:
+            print("Error: app name(s) required for hide action", file=sys.stderr)
+            return 1
+        for app in args.apps:
+            if windows_hide(app):
+                print(f"Hidden {app}")
+            else:
+                print(f"Could not hide {app} (not running)")
+        return 0
+
+    print("Unknown action", file=sys.stderr)
+    return 1
+
+
 # Spaces: Add/remove desktop spaces (macOS only)
 SPACES_PLIST = Path.home() / "Library/Preferences/com.apple.spaces.plist"
 
@@ -1022,6 +1159,24 @@ def main() -> int:
         help="Action to perform",
     )
     spaces_parser.set_defaults(func=cmd_spaces)
+
+    # Windows subcommand
+    windows_parser = subparsers.add_parser(
+        "windows",
+        aliases=["win"],
+        help="Close/hide app windows (macOS only)",
+    )
+    windows_parser.add_argument(
+        "action",
+        choices=["list", "close", "hide"],
+        help="Action to perform",
+    )
+    windows_parser.add_argument(
+        "apps",
+        nargs="*",
+        help="App name(s) (required for close/hide)",
+    )
+    windows_parser.set_defaults(func=cmd_windows)
 
     # Help subcommand
     subparsers.add_parser(
