@@ -469,6 +469,53 @@ def show_serverinfo():
     print(f"Server Time: {info.get('serverTime', 'N/A')}")
 
 
+def sprint_list(board_id=None, state=None):
+    """List sprints"""
+    jira = get_jira_client()
+
+    if not board_id:
+        board_id = os.getenv("JIRA_BOARD_ID")
+        if not board_id:
+            print("Error: Set JIRA_BOARD_ID or use --board", file=sys.stderr)
+            sys.exit(1)
+
+    sprints = jira.sprints(board_id, state=state)
+
+    if not sprints:
+        print("No sprints found", file=sys.stderr)
+        return
+
+    print(f"{'ID':<10} {'STATE':<10} {'NAME':<40} {'START':<12} {'END':<12}")
+    print("-" * 90)
+
+    for sprint in sprints:
+        sprint_id = sprint.id
+        sprint_state = sprint.state
+        name = sprint.name[:38] + ".." if len(sprint.name) > 40 else sprint.name
+        start = (
+            getattr(sprint, "startDate", "N/A")[:10]
+            if hasattr(sprint, "startDate") and sprint.startDate
+            else "N/A"
+        )
+        end = (
+            getattr(sprint, "endDate", "N/A")[:10]
+            if hasattr(sprint, "endDate") and sprint.endDate
+            else "N/A"
+        )
+        print(f"{sprint_id:<10} {sprint_state:<10} {name:<40} {start:<12} {end:<12}")
+
+
+def sprint_add(sprint_id, issue_keys):
+    """Add issues to a sprint"""
+    jira = get_jira_client()
+
+    jira.add_issues_to_sprint(sprint_id, issue_keys)
+
+    print(f"Added {len(issue_keys)} issue(s) to sprint {sprint_id}", file=sys.stderr)
+    for key in issue_keys:
+        print(f"  {key}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Custom JIRA operations")
     subparsers = parser.add_subparsers(dest="command", help="Command to execute")
@@ -512,6 +559,34 @@ def main():
 
     # serverinfo command
     subparsers.add_parser("serverinfo", help="Show server info")
+
+    # sprint command
+    sprint_parser = subparsers.add_parser("sprint", help="Manage sprints")
+    sprint_subparsers = sprint_parser.add_subparsers(
+        dest="sprint_action", help="Sprint action"
+    )
+
+    # sprint list
+    sprint_list_parser = sprint_subparsers.add_parser("list", help="List sprints")
+    sprint_list_parser.add_argument(
+        "--board", "-b", help="Board ID (or set JIRA_BOARD_ID)"
+    )
+    sprint_list_parser.add_argument(
+        "--state",
+        "-s",
+        choices=["future", "active", "closed"],
+        help="Filter by state",
+    )
+    sprint_list_parser.add_argument(
+        "--current", action="store_true", help="Show only active sprint"
+    )
+
+    # sprint add
+    sprint_add_parser = sprint_subparsers.add_parser(
+        "add", help="Add issues to sprint"
+    )
+    sprint_add_parser.add_argument("sprint_id", help="Sprint ID")
+    sprint_add_parser.add_argument("issue_keys", nargs="+", help="Issue keys to add")
 
     # Issue commands
     issue_parser = subparsers.add_parser("issue", help="Manage issues")
@@ -691,6 +766,14 @@ def main():
         show_me()
     elif args.command == "serverinfo":
         show_serverinfo()
+    elif args.command == "sprint":
+        if args.sprint_action == "list":
+            state = "active" if args.current else args.state
+            sprint_list(args.board, state)
+        elif args.sprint_action == "add":
+            sprint_add(args.sprint_id, args.issue_keys)
+        else:
+            sprint_parser.print_help()
     elif args.command == "issue":
         if args.issue_action == "create":
             issue_create(
