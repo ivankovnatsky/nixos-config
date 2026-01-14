@@ -74,6 +74,14 @@ def convert_markdown_to_html(md_content):
         flags=re.DOTALL,
     )
 
+    # Convert [TOC] placeholder to Confluence TOC macro
+    html = re.sub(
+        r"\[TOC\]",
+        '<ac:structured-macro ac:name="toc" ac:schema-version="1"><ac:parameter ac:name="minLevel">1</ac:parameter><ac:parameter ac:name="maxLevel">4</ac:parameter></ac:structured-macro>',
+        html,
+        flags=re.IGNORECASE,
+    )
+
     return html
 
 
@@ -81,10 +89,10 @@ def convert_storage_to_markdown(storage_content):
     """Convert Confluence storage format to markdown"""
     content = storage_content
 
-    # Remove TOC macro
+    # Convert TOC macro to markdown placeholder
     content = re.sub(
         r'<ac:structured-macro ac:name="toc"[^>]*>.*?</ac:structured-macro>',
-        "",
+        "[TOC]\n",
         content,
         flags=re.DOTALL,
     )
