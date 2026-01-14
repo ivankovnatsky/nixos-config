@@ -288,7 +288,7 @@ def my_issues(
         jql_parts.append(f'project = "{project}"')
 
     if exclude_done:
-        jql_parts.append('status NOT IN ("Done", "Closed", "removed")')
+        jql_parts.append('status NOT IN ("Done", "Closed", "removed", "Not a bug")')
 
     if priority:
         jql_parts.append(f'priority = "{priority}"')
