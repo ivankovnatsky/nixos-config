@@ -6,6 +6,9 @@ import os
 import webbrowser
 import click
 
+# Fix program name in usage output when run via Nix store path
+sys.argv[0] = "jira-custom"
+
 
 def get_jira_client():
     """Get authenticated JIRA client"""
@@ -647,7 +650,7 @@ def release_list_fn(project):
 # =============================================================================
 
 
-@click.group()
+@click.group(context_settings={"help_option_names": ["-h", "--help"]})
 def cli():
     """Custom JIRA operations"""
     pass
