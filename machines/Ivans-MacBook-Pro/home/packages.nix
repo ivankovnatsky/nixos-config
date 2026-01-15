@@ -17,6 +17,7 @@
     homelab
     launchd-mgmt
     gh-notifications
+    nixpkgs-darwin-master-opencode.opencode
     ps-top-nu
     settings
     sops
