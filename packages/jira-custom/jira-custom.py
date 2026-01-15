@@ -3,8 +3,8 @@
 from jira import JIRA
 import sys
 import os
-import argparse
 import webbrowser
+import click
 
 
 def get_jira_client():
@@ -14,11 +14,9 @@ def get_jira_client():
     token = os.getenv("JIRA_API_TOKEN")
 
     if not all([server, email, token]):
-        print(
-            "Error: Set JIRA_SERVER, JIRA_EMAIL, and JIRA_API_TOKEN in environment",
-            file=sys.stderr,
+        raise click.ClickException(
+            "Set JIRA_SERVER, JIRA_EMAIL, and JIRA_API_TOKEN in environment"
         )
-        sys.exit(1)
 
     return JIRA(server=server, basic_auth=(email, token))
 
@@ -40,80 +38,89 @@ def parse_labels(labels):
     return add or None, remove or None
 
 
-def search_filters(query=None):
+def parse_fields(field_args):
+    """Parse field arguments (KEY=VALUE format)"""
+    if not field_args:
+        return None
+
+    fields = {}
+    for f in field_args:
+        if "=" not in f:
+            raise click.ClickException(f"Invalid field format '{f}'. Use KEY=VALUE")
+        key, value = f.split("=", 1)
+        fields[key] = value
+    return fields
+
+
+# =============================================================================
+# Business Logic Functions
+# =============================================================================
+
+
+def search_filters_fn(query=None):
     """Search for Jira filters"""
     jira = get_jira_client()
-
-    # Get all filters accessible to the user
     filters = jira.favourite_filters()
 
     if query:
-        # Filter by query
         filters = [f for f in filters if query.lower() in f.name.lower()]
 
-    # Display filters
     for f in filters:
-        print(f"{f.id}: {f.name}")
-        print(f"  Owner: {f.owner.displayName}")
-        print(f"  JQL: {f.jql}")
-        print()
+        click.echo(f"{f.id}: {f.name}")
+        click.echo(f"  Owner: {f.owner.displayName}")
+        click.echo(f"  JQL: {f.jql}")
+        click.echo()
 
 
-def comment_list(issue_key, last=None, order="desc"):
+def comment_list_fn(issue_key, last=None, order="desc"):
     """List comments on an issue"""
     jira = get_jira_client()
     issue = jira.issue(issue_key)
     comments = jira.comments(issue)
 
     if not comments:
-        print(f"No comments on {issue_key}")
+        click.echo(f"No comments on {issue_key}")
         return
 
-    # Sort by order (desc = newest first, asc = oldest first)
     if order == "desc":
         comments = list(reversed(comments))
 
-    # Show last N comments if specified
     if last is not None:
         comments = comments[:last]
 
     for comment in comments:
-        print(f"ID: {comment.id}")
-        print(f"Author: {comment.author.displayName}")
-        print(f"Created: {comment.created}")
-        print(f"Body:\n{comment.body}")
-        print("-" * 80)
+        click.echo(f"ID: {comment.id}")
+        click.echo(f"Author: {comment.author.displayName}")
+        click.echo(f"Created: {comment.created}")
+        click.echo(f"Body:\n{comment.body}")
+        click.echo("-" * 80)
 
 
-def comment_add(issue_key, body):
+def comment_add_fn(issue_key, body):
     """Add a comment to an issue"""
     jira = get_jira_client()
     comment = jira.add_comment(issue_key, body)
-    print(f"{comment.id}")  # Output only the comment ID for scripting
+    click.echo(f"{comment.id}")
     return comment.id
 
 
-def comment_update(issue_key, comment_id, body):
+def comment_update_fn(issue_key, comment_id, body):
     """Update an existing comment"""
-    try:
-        jira = get_jira_client()
-        comment = jira.comment(issue_key, comment_id)
-        comment.update(body=body)
-        print(f"Comment {comment_id} updated successfully", file=sys.stderr)
-    except Exception as e:
-        print(f"Error updating comment: {e}", file=sys.stderr)
-        sys.exit(1)
+    jira = get_jira_client()
+    comment = jira.comment(issue_key, comment_id)
+    comment.update(body=body)
+    click.echo(f"Comment {comment_id} updated successfully", err=True)
 
 
-def comment_delete(issue_key, comment_id):
+def comment_delete_fn(issue_key, comment_id):
     """Delete a comment"""
     jira = get_jira_client()
     comment = jira.comment(issue_key, comment_id)
     comment.delete()
-    print(f"Comment {comment_id} deleted successfully", file=sys.stderr)
+    click.echo(f"Comment {comment_id} deleted successfully", err=True)
 
 
-def issue_create(
+def issue_create_fn(
     project,
     summary,
     issue_type="Task",
@@ -136,12 +143,12 @@ def issue_create(
     if assignee:
         fields["assignee"] = {"name": assignee}
     if labels:
-        fields["labels"] = labels
+        fields["labels"] = list(labels)
     issue = jira.create_issue(fields=fields)
-    print(issue.key)
+    click.echo(issue.key)
 
 
-def issue_update(
+def issue_update_fn(
     issue_key,
     summary=None,
     description=None,
@@ -174,131 +181,118 @@ def issue_update(
         update["labels"] = label_ops
 
     if not fields and not update:
-        print("No fields to update", file=sys.stderr)
-        sys.exit(1)
+        raise click.ClickException("No fields to update")
 
     if update:
         issue.update(fields=fields, update=update)
     else:
         issue.update(fields=fields)
 
-    print(f"Updated {issue_key}", file=sys.stderr)
+    click.echo(f"Updated {issue_key}", err=True)
 
 
-def status_get(issue_key):
+def status_get_fn(issue_key):
     """Get issue status"""
     jira = get_jira_client()
     issue = jira.issue(issue_key)
-    print(issue.fields.status.name)
+    click.echo(issue.fields.status.name)
 
 
-def issue_assign(issue_key, user):
+def issue_assign_fn(issue_key, user):
     """Assign or unassign an issue"""
     jira = get_jira_client()
     issue = jira.issue(issue_key)
 
     if user.lower() == "x":
-        # Unassign
         issue.update(assignee=None)
-        print(f"Unassigned {issue_key}", file=sys.stderr)
+        click.echo(f"Unassigned {issue_key}", err=True)
     else:
-        # Assign - user can be email or accountId
         issue.update(assignee={"name": user})
-        print(f"Assigned {issue_key} to {user}", file=sys.stderr)
+        click.echo(f"Assigned {issue_key} to {user}", err=True)
 
 
-def issue_view(issue_key):
+def issue_view_fn(issue_key):
     """View issue details"""
     jira = get_jira_client()
     issue = jira.issue(issue_key)
     fields = issue.fields
 
-    # Header
-    print(f"Issue:       {issue.key}")
-    print(f"Summary:     {fields.summary}")
-    print(f"Status:      {fields.status.name}")
-    print(f"Type:        {fields.issuetype.name}")
-    print(f"Priority:    {fields.priority.name if fields.priority else 'None'}")
+    click.echo(f"Issue:       {issue.key}")
+    click.echo(f"Summary:     {fields.summary}")
+    click.echo(f"Status:      {fields.status.name}")
+    click.echo(f"Type:        {fields.issuetype.name}")
+    click.echo(f"Priority:    {fields.priority.name if fields.priority else 'None'}")
 
-    # Assignee and Reporter
     assignee = fields.assignee.displayName if fields.assignee else "Unassigned"
     reporter = fields.reporter.displayName if fields.reporter else "Unknown"
-    print(f"Assignee:    {assignee}")
-    print(f"Reporter:    {reporter}")
+    click.echo(f"Assignee:    {assignee}")
+    click.echo(f"Reporter:    {reporter}")
 
-    # Labels
     if hasattr(fields, "labels") and fields.labels:
-        print(f"Labels:      {', '.join(fields.labels)}")
+        click.echo(f"Labels:      {', '.join(fields.labels)}")
 
-    # Components
     if hasattr(fields, "components") and fields.components:
         components = [c.name for c in fields.components]
-        print(f"Components:  {', '.join(components)}")
+        click.echo(f"Components:  {', '.join(components)}")
 
-    # Dates
-    print(f"Created:     {fields.created}")
-    print(f"Updated:     {fields.updated}")
+    click.echo(f"Created:     {fields.created}")
+    click.echo(f"Updated:     {fields.updated}")
     if fields.resolutiondate:
-        print(f"Resolved:    {fields.resolutiondate}")
+        click.echo(f"Resolved:    {fields.resolutiondate}")
 
-    # Parent (for sub-tasks)
     if hasattr(fields, "parent") and fields.parent:
-        print(f"Parent:      {fields.parent.key}")
+        click.echo(f"Parent:      {fields.parent.key}")
 
-    # Description
-    print()
-    print("-" * 60)
-    print("Description:")
-    print()
+    click.echo()
+    click.echo("-" * 60)
+    click.echo("Description:")
+    click.echo()
     if fields.description:
-        print(fields.description)
+        click.echo(fields.description)
     else:
-        print("  (No description)")
+        click.echo("  (No description)")
 
-    # Linked issues
     if hasattr(fields, "issuelinks") and fields.issuelinks:
-        print()
-        print("-" * 60)
-        print("Linked Issues:")
-        print()
+        click.echo()
+        click.echo("-" * 60)
+        click.echo("Linked Issues:")
+        click.echo()
         for link in fields.issuelinks:
             if hasattr(link, "outwardIssue"):
-                print(
+                click.echo(
                     f"{link.type.outward} {link.outwardIssue.key}: {link.outwardIssue.fields.summary}"
                 )
             if hasattr(link, "inwardIssue"):
-                print(
+                click.echo(
                     f"{link.type.inward} {link.inwardIssue.key}: {link.inwardIssue.fields.summary}"
                 )
 
-    # Top comment
     comments = jira.comments(issue)
     if comments:
-        top_comment = comments[-1]  # Most recent comment
-        print()
-        print("-" * 60)
-        print(f"Latest Comment ({len(comments)} total):")
-        print()
-        print(f"Author:  {top_comment.author.displayName}")
-        print(f"Created: {top_comment.created}")
-        print()
-        print(top_comment.body)
+        top_comment = comments[-1]
+        click.echo()
+        click.echo("-" * 60)
+        click.echo(f"Latest Comment ({len(comments)} total):")
+        click.echo()
+        click.echo(f"Author:  {top_comment.author.displayName}")
+        click.echo(f"Created: {top_comment.created}")
+        click.echo()
+        click.echo(top_comment.body)
 
 
-def transition_list(issue_key):
+def transition_list_fn(issue_key):
     """List available transitions for an issue"""
     jira = get_jira_client()
     transitions = jira.transitions(issue_key)
     for t in transitions:
-        print(f"{t['id']}: {t['name']}")
+        click.echo(f"{t['id']}: {t['name']}")
 
 
-def transition_fields(issue_key, transition_name):
+def transition_fields_fn(issue_key, transition_name):
     """List fields available for a transition"""
     jira = get_jira_client()
     transitions = jira.transitions(issue_key, expand="transitions.fields")
 
-    # Find the matching transition
     target = None
     for t in transitions:
         if t["name"].lower() == transition_name.lower() or t["id"] == transition_name:
@@ -306,46 +300,46 @@ def transition_fields(issue_key, transition_name):
             break
 
     if not target:
-        print(f"Transition '{transition_name}' not found", file=sys.stderr)
-        print("Available transitions:", file=sys.stderr)
+        click.echo(f"Transition '{transition_name}' not found", err=True)
+        click.echo("Available transitions:", err=True)
         for t in transitions:
-            print(f"  {t['id']}: {t['name']}", file=sys.stderr)
+            click.echo(f"  {t['id']}: {t['name']}", err=True)
         sys.exit(1)
 
-    print(f"Transition: {target['name']} (id: {target['id']})")
-    print()
+    click.echo(f"Transition: {target['name']} (id: {target['id']})")
+    click.echo()
 
     fields = target.get("fields", {})
     if not fields:
-        print("No fields available for this transition")
+        click.echo("No fields available for this transition")
         return
 
-    print("Fields:")
+    click.echo("Fields:")
     for field_id, field_info in fields.items():
         required = field_info.get("required", False)
         name = field_info.get("name", field_id)
         field_type = field_info.get("schema", {}).get("type", "unknown")
         req_marker = " (required)" if required else ""
-        print(f"  {field_id}: {name} [{field_type}]{req_marker}")
+        click.echo(f"  {field_id}: {name} [{field_type}]{req_marker}")
 
 
-def transition_issue(issue_key, transition_name, comment=None, fields=None, open_web=False):
+def transition_issue_fn(issue_key, transition_name, comment=None, fields=None, open_web=False):
     """Transition an issue to a new status"""
     jira = get_jira_client()
     jira.transition_issue(issue_key, transition_name, fields=fields)
     issue = jira.issue(issue_key)
-    print(f"Transitioned to: {issue.fields.status.name}", file=sys.stderr)
+    click.echo(f"Transitioned to: {issue.fields.status.name}", err=True)
     if comment:
         jira.add_comment(issue_key, comment)
-        print("Comment added", file=sys.stderr)
+        click.echo("Comment added", err=True)
     if open_web:
         server = os.getenv("JIRA_SERVER")
         url = f"{server}/browse/{issue_key}"
         webbrowser.open(url)
-        print(f"Opened {url}", file=sys.stderr)
+        click.echo(f"Opened {url}", err=True)
 
 
-def my_issues(
+def my_issues_fn(
     scope="sprint",
     project=None,
     exclude_done=True,
@@ -357,7 +351,6 @@ def my_issues(
     jira = get_jira_client()
     email = os.getenv("JIRA_EMAIL")
 
-    # Build JQL query
     jql_parts = [f'assignee = "{email}"']
 
     if scope == "sprint":
@@ -379,34 +372,32 @@ def my_issues(
     issues = jira.search_issues(jql, maxResults=limit)
 
     if not issues:
-        print("No issues found", file=sys.stderr)
+        click.echo("No issues found", err=True)
         return
 
-    # Print header
-    print(f"{'KEY':<15} {'STATUS':<15} {'PRIORITY':<10} {'SUMMARY'}")
-    print("-" * 80)
+    click.echo(f"{'KEY':<15} {'STATUS':<15} {'PRIORITY':<10} {'SUMMARY'}")
+    click.echo("-" * 80)
 
     for issue in issues:
         key = issue.key
         status_name = issue.fields.status.name
         priority_name = issue.fields.priority.name if issue.fields.priority else "None"
         summary = issue.fields.summary
-        # Truncate summary if too long
         if len(summary) > 45:
             summary = summary[:42] + "..."
-        print(f"{key:<15} {status_name:<15} {priority_name:<10} {summary}")
+        click.echo(f"{key:<15} {status_name:<15} {priority_name:<10} {summary}")
 
 
-def issue_link(inward_key, outward_key, link_type):
+def issue_link_fn(inward_key, outward_key, link_type):
     """Link two issues"""
     jira = get_jira_client()
     jira.create_issue_link(
         type=link_type, inwardIssue=inward_key, outwardIssue=outward_key
     )
-    print(f"Linked {inward_key} -> {outward_key} ({link_type})", file=sys.stderr)
+    click.echo(f"Linked {inward_key} -> {outward_key} ({link_type})", err=True)
 
 
-def issue_unlink(key1, key2):
+def issue_unlink_fn(key1, key2):
     """Remove link between two issues"""
     jira = get_jira_client()
     issue = jira.issue(key1)
@@ -420,24 +411,23 @@ def issue_unlink(key1, key2):
 
         if linked_key == key2:
             jira.delete_issue_link(link.id)
-            print(f"Unlinked {key1} <-> {key2}", file=sys.stderr)
+            click.echo(f"Unlinked {key1} <-> {key2}", err=True)
             return
 
-    print(f"No link found between {key1} and {key2}", file=sys.stderr)
-    sys.exit(1)
+    raise click.ClickException(f"No link found between {key1} and {key2}")
 
 
-def link_types_list():
+def link_types_list_fn():
     """List available link types"""
     jira = get_jira_client()
     for lt in jira.issue_link_types():
-        print(f"{lt.name}")
-        print(f"  Inward:  {lt.inward}")
-        print(f"  Outward: {lt.outward}")
-        print()
+        click.echo(f"{lt.name}")
+        click.echo(f"  Inward:  {lt.inward}")
+        click.echo(f"  Outward: {lt.outward}")
+        click.echo()
 
 
-def open_issue(issue_key=None):
+def open_issue_fn(issue_key=None):
     """Open issue or project in browser"""
     server = os.getenv("JIRA_SERVER")
 
@@ -447,51 +437,50 @@ def open_issue(issue_key=None):
         url = server
 
     webbrowser.open(url)
-    print(f"Opened {url}", file=sys.stderr)
+    click.echo(f"Opened {url}", err=True)
 
 
-def show_me():
+def show_me_fn():
     """Show current user info"""
     jira = get_jira_client()
     user = jira.myself()
 
-    print(f"Name:     {user.displayName}")
-    print(f"Email:    {user.emailAddress}")
-    print(f"Account:  {user.accountId if hasattr(user, 'accountId') else user.name}")
-    print(f"Active:   {user.active}")
-    print(f"Timezone: {user.timeZone if hasattr(user, 'timeZone') else 'N/A'}")
+    click.echo(f"Name:     {user.displayName}")
+    click.echo(f"Email:    {user.emailAddress}")
+    click.echo(f"Account:  {user.accountId if hasattr(user, 'accountId') else user.name}")
+    click.echo(f"Active:   {user.active}")
+    click.echo(f"Timezone: {user.timeZone if hasattr(user, 'timeZone') else 'N/A'}")
 
 
-def show_serverinfo():
+def show_serverinfo_fn():
     """Show Jira server information"""
     jira = get_jira_client()
     info = jira.server_info()
 
-    print(f"Server:      {info.get('baseUrl', 'N/A')}")
-    print(f"Version:     {info.get('version', 'N/A')}")
-    print(f"Build:       {info.get('buildNumber', 'N/A')}")
-    print(f"Deployment:  {info.get('deploymentType', 'N/A')}")
-    print(f"Server Time: {info.get('serverTime', 'N/A')}")
+    click.echo(f"Server:      {info.get('baseUrl', 'N/A')}")
+    click.echo(f"Version:     {info.get('version', 'N/A')}")
+    click.echo(f"Build:       {info.get('buildNumber', 'N/A')}")
+    click.echo(f"Deployment:  {info.get('deploymentType', 'N/A')}")
+    click.echo(f"Server Time: {info.get('serverTime', 'N/A')}")
 
 
-def sprint_list(board_id=None, state=None):
+def sprint_list_fn(board_id=None, state=None):
     """List sprints"""
     jira = get_jira_client()
 
     if not board_id:
         board_id = os.getenv("JIRA_BOARD_ID")
         if not board_id:
-            print("Error: Set JIRA_BOARD_ID or use --board", file=sys.stderr)
-            sys.exit(1)
+            raise click.ClickException("Set JIRA_BOARD_ID or use --board")
 
     sprints = jira.sprints(board_id, state=state)
 
     if not sprints:
-        print("No sprints found", file=sys.stderr)
+        click.echo("No sprints found", err=True)
         return
 
-    print(f"{'ID':<10} {'STATE':<10} {'NAME':<40} {'START':<12} {'END':<12}")
-    print("-" * 90)
+    click.echo(f"{'ID':<10} {'STATE':<10} {'NAME':<40} {'START':<12} {'END':<12}")
+    click.echo("-" * 90)
 
     for sprint in sprints:
         sprint_id = sprint.id
@@ -507,21 +496,21 @@ def sprint_list(board_id=None, state=None):
             if hasattr(sprint, "endDate") and sprint.endDate
             else "N/A"
         )
-        print(f"{sprint_id:<10} {sprint_state:<10} {name:<40} {start:<12} {end:<12}")
+        click.echo(f"{sprint_id:<10} {sprint_state:<10} {name:<40} {start:<12} {end:<12}")
 
 
-def sprint_add(sprint_id, issue_keys):
+def sprint_add_fn(sprint_id, issue_keys):
     """Add issues to a sprint"""
     jira = get_jira_client()
 
-    jira.add_issues_to_sprint(sprint_id, issue_keys)
+    jira.add_issues_to_sprint(sprint_id, list(issue_keys))
 
-    print(f"Added {len(issue_keys)} issue(s) to sprint {sprint_id}", file=sys.stderr)
+    click.echo(f"Added {len(issue_keys)} issue(s) to sprint {sprint_id}", err=True)
     for key in issue_keys:
-        print(f"  {key}")
+        click.echo(f"  {key}")
 
 
-def epic_list(project=None, limit=50):
+def epic_list_fn(project=None, limit=50):
     """List epics in a project"""
     jira = get_jira_client()
 
@@ -534,11 +523,11 @@ def epic_list(project=None, limit=50):
     epics = jira.search_issues(jql, maxResults=limit)
 
     if not epics:
-        print("No epics found", file=sys.stderr)
+        click.echo("No epics found", err=True)
         return
 
-    print(f"{'KEY':<15} {'STATUS':<15} {'SUMMARY'}")
-    print("-" * 80)
+    click.echo(f"{'KEY':<15} {'STATUS':<15} {'SUMMARY'}")
+    click.echo("-" * 80)
 
     for epic in epics:
         key = epic.key
@@ -546,10 +535,10 @@ def epic_list(project=None, limit=50):
         summary = epic.fields.summary
         if len(summary) > 45:
             summary = summary[:42] + "..."
-        print(f"{key:<15} {status:<15} {summary}")
+        click.echo(f"{key:<15} {status:<15} {summary}")
 
 
-def epic_create(project, name, summary=None):
+def epic_create_fn(project, name, summary=None):
     """Create an epic"""
     jira = get_jira_client()
 
@@ -559,29 +548,28 @@ def epic_create(project, name, summary=None):
         "issuetype": {"name": "Epic"},
     }
 
-    # Try to set epic name (Cloud Jira customfield_10011)
     try:
         fields["customfield_10011"] = name
     except Exception:
         pass
 
     epic = jira.create_issue(fields=fields)
-    print(epic.key)
+    click.echo(epic.key)
 
 
-def epic_add(epic_key, issue_keys):
+def epic_add_fn(epic_key, issue_keys):
     """Add issues to an epic"""
     jira = get_jira_client()
 
     epic = jira.issue(epic_key)
-    jira.add_issues_to_epic(epic.id, issue_keys)
+    jira.add_issues_to_epic(epic.id, list(issue_keys))
 
-    print(f"Added {len(issue_keys)} issue(s) to epic {epic_key}", file=sys.stderr)
+    click.echo(f"Added {len(issue_keys)} issue(s) to epic {epic_key}", err=True)
     for key in issue_keys:
-        print(f"  {key}")
+        click.echo(f"  {key}")
 
 
-def epic_remove(issue_keys):
+def epic_remove_fn(issue_keys):
     """Remove issues from their epic"""
     jira = get_jira_client()
 
@@ -589,494 +577,415 @@ def epic_remove(issue_keys):
         try:
             issue = jira.issue(key)
             issue.update(fields={"customfield_10014": None})
-            print(f"Removed {key} from epic", file=sys.stderr)
+            click.echo(f"Removed {key} from epic", err=True)
         except Exception as e:
-            print(f"Error removing {key}: {e}", file=sys.stderr)
+            click.echo(f"Error removing {key}: {e}", err=True)
 
 
-def board_list(project=None, board_type=None):
+def board_list_fn(project=None, board_type=None):
     """List boards"""
     jira = get_jira_client()
 
     boards = jira.boards(projectKeyOrID=project, type=board_type)
 
     if not boards:
-        print("No boards found", file=sys.stderr)
+        click.echo("No boards found", err=True)
         return
 
-    print(f"{'ID':<10} {'TYPE':<10} {'NAME'}")
-    print("-" * 60)
+    click.echo(f"{'ID':<10} {'TYPE':<10} {'NAME'}")
+    click.echo("-" * 60)
 
     for board in boards:
         board_id = board.id
         btype = board.type
         name = board.name
-        print(f"{board_id:<10} {btype:<10} {name}")
+        click.echo(f"{board_id:<10} {btype:<10} {name}")
 
 
-def project_list():
+def project_list_fn():
     """List projects"""
     jira = get_jira_client()
 
     projects = jira.projects()
 
     if not projects:
-        print("No projects found", file=sys.stderr)
+        click.echo("No projects found", err=True)
         return
 
-    print(f"{'KEY':<15} {'NAME'}")
-    print("-" * 60)
+    click.echo(f"{'KEY':<15} {'NAME'}")
+    click.echo("-" * 60)
 
     for project in projects:
         key = project.key
         name = project.name
-        print(f"{key:<15} {name}")
+        click.echo(f"{key:<15} {name}")
 
 
-def release_list(project):
+def release_list_fn(project):
     """List releases/versions for a project"""
     jira = get_jira_client()
 
     versions = jira.project_versions(project)
 
     if not versions:
-        print(f"No releases found for {project}", file=sys.stderr)
+        click.echo(f"No releases found for {project}", err=True)
         return
 
-    print(f"{'ID':<10} {'NAME':<30} {'RELEASED':<10} {'RELEASE DATE'}")
-    print("-" * 70)
+    click.echo(f"{'ID':<10} {'NAME':<30} {'RELEASED':<10} {'RELEASE DATE'}")
+    click.echo("-" * 70)
 
     for version in versions:
         vid = version.id
         name = version.name[:28] + ".." if len(version.name) > 30 else version.name
         released = "Yes" if version.released else "No"
         release_date = getattr(version, "releaseDate", "N/A") or "N/A"
-        print(f"{vid:<10} {name:<30} {released:<10} {release_date}")
+        click.echo(f"{vid:<10} {name:<30} {released:<10} {release_date}")
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Custom JIRA operations")
-    subparsers = parser.add_subparsers(dest="command", help="Command to execute")
+# =============================================================================
+# CLI Commands
+# =============================================================================
 
-    # Filter command
-    filter_parser = subparsers.add_parser("filter", help="Search for JIRA filters")
-    filter_parser.add_argument("query", nargs="?", help="Filter name query")
 
-    # My command - list issues assigned to current user
-    my_parser = subparsers.add_parser("my", help="List my issues")
-    my_parser.add_argument(
-        "scope",
-        nargs="?",
-        choices=["sprint", "project", "all"],
-        default="sprint",
-        help="Scope: sprint (current sprint), project, or all (default: sprint)",
-    )
-    my_parser.add_argument(
-        "-p", "--project", help="Project key (required for 'project' scope)"
-    )
-    my_parser.add_argument(
-        "-a",
-        "--all-statuses",
-        action="store_true",
-        help="Include done/closed issues",
-    )
-    my_parser.add_argument(
-        "--priority", help="Filter by priority (e.g., High, Medium)"
-    )
-    my_parser.add_argument("--status", help="Filter by status (e.g., 'In Progress')")
-    my_parser.add_argument(
-        "-l", "--limit", type=int, default=50, help="Max results (default: 50)"
-    )
+@click.group()
+def cli():
+    """Custom JIRA operations"""
+    pass
 
-    # open command
-    open_parser = subparsers.add_parser("open", help="Open issue in browser")
-    open_parser.add_argument("issue_key", nargs="?", help="Issue key (optional)")
 
-    # me command
-    subparsers.add_parser("me", help="Show current user")
+# -----------------------------------------------------------------------------
+# Top-level commands
+# -----------------------------------------------------------------------------
 
-    # serverinfo command
-    subparsers.add_parser("serverinfo", help="Show server info")
 
-    # sprint command
-    sprint_parser = subparsers.add_parser("sprint", help="Manage sprints")
-    sprint_subparsers = sprint_parser.add_subparsers(
-        dest="sprint_action", help="Sprint action"
-    )
+@cli.command("filter")
+@click.argument("query", required=False)
+def filter_cmd(query):
+    """Search for JIRA filters"""
+    search_filters_fn(query)
 
-    # sprint list
-    sprint_list_parser = sprint_subparsers.add_parser("list", help="List sprints")
-    sprint_list_parser.add_argument(
-        "--board", "-b", help="Board ID (or set JIRA_BOARD_ID)"
-    )
-    sprint_list_parser.add_argument(
-        "--state",
-        "-s",
-        choices=["future", "active", "closed"],
-        help="Filter by state",
-    )
-    sprint_list_parser.add_argument(
-        "--current", action="store_true", help="Show only active sprint"
-    )
 
-    # sprint add
-    sprint_add_parser = sprint_subparsers.add_parser(
-        "add", help="Add issues to sprint"
-    )
-    sprint_add_parser.add_argument("sprint_id", help="Sprint ID")
-    sprint_add_parser.add_argument("issue_keys", nargs="+", help="Issue keys to add")
+@cli.command("my")
+@click.argument("scope", type=click.Choice(["sprint", "project", "all"]), default="sprint")
+@click.option("-p", "--project", help="Project key (required for 'project' scope)")
+@click.option("-a", "--all-statuses", is_flag=True, help="Include done/closed issues")
+@click.option("--priority", help="Filter by priority (e.g., High, Medium)")
+@click.option("--status", help="Filter by status (e.g., 'In Progress')")
+@click.option("-l", "--limit", type=int, default=50, help="Max results (default: 50)")
+def my_cmd(scope, project, all_statuses, priority, status, limit):
+    """List my issues"""
+    my_issues_fn(scope, project, not all_statuses, priority, status, limit)
 
-    # epic command
-    epic_parser = subparsers.add_parser("epic", help="Manage epics")
-    epic_subparsers = epic_parser.add_subparsers(dest="epic_action", help="Epic action")
 
-    # epic list
-    epic_list_parser = epic_subparsers.add_parser("list", help="List epics")
-    epic_list_parser.add_argument("-p", "--project", help="Project key")
-    epic_list_parser.add_argument(
-        "-l", "--limit", type=int, default=50, help="Max results"
-    )
+@cli.command("open")
+@click.argument("issue_key", required=False)
+def open_cmd(issue_key):
+    """Open issue in browser"""
+    open_issue_fn(issue_key)
 
-    # epic create
-    epic_create_parser = epic_subparsers.add_parser("create", help="Create an epic")
-    epic_create_parser.add_argument("project", help="Project key")
-    epic_create_parser.add_argument("-n", "--name", required=True, help="Epic name")
-    epic_create_parser.add_argument(
-        "-s", "--summary", help="Epic summary (defaults to name)"
-    )
 
-    # epic add
-    epic_add_parser = epic_subparsers.add_parser("add", help="Add issues to epic")
-    epic_add_parser.add_argument("epic_key", help="Epic key")
-    epic_add_parser.add_argument("issue_keys", nargs="+", help="Issue keys to add")
+@cli.command("me")
+def me_cmd():
+    """Show current user"""
+    show_me_fn()
 
-    # epic remove
-    epic_remove_parser = epic_subparsers.add_parser(
-        "remove", help="Remove issues from epic"
-    )
-    epic_remove_parser.add_argument(
-        "issue_keys", nargs="+", help="Issue keys to remove"
-    )
 
-    # board command
-    board_parser = subparsers.add_parser("board", help="Manage boards")
-    board_subparsers = board_parser.add_subparsers(
-        dest="board_action", help="Board action"
-    )
+@cli.command("serverinfo")
+def serverinfo_cmd():
+    """Show server info"""
+    show_serverinfo_fn()
 
-    board_list_parser = board_subparsers.add_parser("list", help="List boards")
-    board_list_parser.add_argument("-p", "--project", help="Filter by project")
-    board_list_parser.add_argument(
-        "-t", "--type", choices=["scrum", "kanban"], help="Board type"
-    )
 
-    # project command
-    project_parser = subparsers.add_parser("project", help="Manage projects")
-    project_subparsers = project_parser.add_subparsers(
-        dest="project_action", help="Project action"
-    )
+# -----------------------------------------------------------------------------
+# Sprint commands
+# -----------------------------------------------------------------------------
 
-    project_subparsers.add_parser("list", help="List projects")
 
-    # release command
-    release_parser = subparsers.add_parser("release", help="Manage releases")
-    release_subparsers = release_parser.add_subparsers(
-        dest="release_action", help="Release action"
-    )
+@cli.group("sprint")
+def sprint_group():
+    """Manage sprints"""
+    pass
 
-    release_list_parser = release_subparsers.add_parser("list", help="List releases")
-    release_list_parser.add_argument("project", help="Project key")
 
-    # Issue commands
-    issue_parser = subparsers.add_parser("issue", help="Manage issues")
-    issue_subparsers = issue_parser.add_subparsers(
-        dest="issue_action", help="Issue action"
-    )
+@sprint_group.command("list")
+@click.option("-b", "--board", help="Board ID (or set JIRA_BOARD_ID)")
+@click.option("-s", "--state", type=click.Choice(["future", "active", "closed"]), help="Filter by state")
+@click.option("--current", is_flag=True, help="Show only active sprint")
+def sprint_list_cmd(board, state, current):
+    """List sprints"""
+    state = "active" if current else state
+    sprint_list_fn(board, state)
 
-    # issue create
-    create_parser = issue_subparsers.add_parser("create", help="Create a new issue")
-    create_parser.add_argument("project", help="Project key (e.g., PROJ)")
-    create_parser.add_argument("summary", help="Issue summary/title")
-    create_parser.add_argument(
-        "--type", dest="issue_type", default="Task", help="Issue type (default: Task)"
-    )
-    create_parser.add_argument("--description", "-d", help="Issue description")
-    create_parser.add_argument(
-        "--parent", "-p", help="Parent issue key for sub-tasks (e.g., KEY-12345)"
-    )
-    create_parser.add_argument("--assignee", "-a", help="Assignee email/name")
-    create_parser.add_argument(
-        "--label",
-        "-l",
-        action="append",
-        dest="labels",
-        help="Add label (can be repeated)",
-    )
 
-    # issue update
-    update_issue_parser = issue_subparsers.add_parser(
-        "update", help="Update an existing issue"
-    )
-    update_issue_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
-    update_issue_parser.add_argument("--summary", "-s", help="New issue summary/title")
-    update_issue_parser.add_argument(
-        "--description", "-d", help="New issue description"
-    )
-    update_issue_parser.add_argument(
-        "--assignee", "-a", help="New assignee (email/name)"
-    )
-    update_issue_parser.add_argument(
-        "--label",
-        "-l",
-        action="append",
-        dest="labels",
-        help="Add/remove label (prefix with - to remove, can be repeated)",
-    )
+@sprint_group.command("add")
+@click.argument("sprint_id")
+@click.argument("issue_keys", nargs=-1, required=True)
+def sprint_add_cmd(sprint_id, issue_keys):
+    """Add issues to sprint"""
+    sprint_add_fn(sprint_id, issue_keys)
 
-    # issue view
-    view_parser = issue_subparsers.add_parser("view", help="View issue details")
-    view_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
 
-    # issue status
-    status_parser = issue_subparsers.add_parser("status", help="Get issue status")
-    status_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
+# -----------------------------------------------------------------------------
+# Epic commands
+# -----------------------------------------------------------------------------
 
-    # issue assign
-    assign_parser = issue_subparsers.add_parser("assign", help="Assign/unassign issue")
-    assign_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
-    assign_parser.add_argument("user", help="User email/name, or 'x' to unassign")
 
-    # issue transition
-    transition_parser = issue_subparsers.add_parser(
-        "transition", help="Manage issue transitions"
-    )
-    transition_subparsers = transition_parser.add_subparsers(
-        dest="transition_action", help="Transition action"
-    )
+@cli.group("epic")
+def epic_group():
+    """Manage epics"""
+    pass
 
-    # issue transition list
-    transition_list_parser = transition_subparsers.add_parser(
-        "list", help="List available transitions"
-    )
-    transition_list_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
 
-    # issue transition fields
-    transition_fields_parser = transition_subparsers.add_parser(
-        "fields", help="List fields for a transition"
-    )
-    transition_fields_parser.add_argument(
-        "issue_key", help="Issue key (e.g., KEY-12345)"
-    )
-    transition_fields_parser.add_argument(
-        "transition_name", help="Transition name or ID"
-    )
+@epic_group.command("list")
+@click.option("-p", "--project", help="Project key")
+@click.option("-l", "--limit", type=int, default=50, help="Max results")
+def epic_list_cmd(project, limit):
+    """List epics"""
+    epic_list_fn(project, limit)
 
-    # issue transition to
-    transition_to_parser = transition_subparsers.add_parser(
-        "to", help="Transition issue to a new status"
-    )
-    transition_to_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
-    transition_to_parser.add_argument(
-        "transition_name", help="Transition name (e.g., 'In Progress', 'Done')"
-    )
-    transition_to_parser.add_argument(
-        "--comment", "-c", help="Add a comment after transitioning"
-    )
-    transition_to_parser.add_argument(
-        "--field",
-        "-f",
-        action="append",
-        metavar="KEY=VALUE",
-        help="Set field during transition (can be repeated)",
-    )
-    transition_to_parser.add_argument(
-        "--web",
-        "-w",
-        action="store_true",
-        help="Open issue in browser after transition",
-    )
 
-    # issue comment
-    comment_parser = issue_subparsers.add_parser(
-        "comment", help="Manage issue comments"
-    )
-    comment_subparsers = comment_parser.add_subparsers(
-        dest="comment_action", help="Comment action"
-    )
+@epic_group.command("create")
+@click.argument("project")
+@click.option("-n", "--name", required=True, help="Epic name")
+@click.option("-s", "--summary", help="Epic summary (defaults to name)")
+def epic_create_cmd(project, name, summary):
+    """Create an epic"""
+    epic_create_fn(project, name, summary)
 
-    # issue comment list
-    list_parser = comment_subparsers.add_parser(
-        "list", help="List comments on an issue"
-    )
-    list_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
-    list_parser.add_argument("--last", type=int, help="Show only last N comments")
-    list_parser.add_argument(
-        "--order",
-        choices=["asc", "desc"],
-        default="desc",
-        help="Sort order: asc (oldest first) or desc (newest first, default)",
-    )
 
-    # issue comment add
-    add_parser = comment_subparsers.add_parser("add", help="Add a comment to an issue")
-    add_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
-    add_parser.add_argument("body", help="Comment body text")
+@epic_group.command("add")
+@click.argument("epic_key")
+@click.argument("issue_keys", nargs=-1, required=True)
+def epic_add_cmd(epic_key, issue_keys):
+    """Add issues to epic"""
+    epic_add_fn(epic_key, issue_keys)
 
-    # issue comment update
-    update_parser = comment_subparsers.add_parser("update", help="Update a comment")
-    update_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
-    update_parser.add_argument("comment_id", help="Comment ID")
-    update_parser.add_argument("body", help="New comment body text")
 
-    # issue comment delete
-    delete_parser = comment_subparsers.add_parser("delete", help="Delete a comment")
-    delete_parser.add_argument("issue_key", help="Issue key (e.g., KEY-12345)")
-    delete_parser.add_argument("comment_id", help="Comment ID")
+@epic_group.command("remove")
+@click.argument("issue_keys", nargs=-1, required=True)
+def epic_remove_cmd(issue_keys):
+    """Remove issues from epic"""
+    epic_remove_fn(issue_keys)
 
-    # issue link
-    issue_link_parser = issue_subparsers.add_parser("link", help="Link two issues")
-    issue_link_parser.add_argument("inward_key", help="Inward issue key")
-    issue_link_parser.add_argument("outward_key", help="Outward issue key")
-    issue_link_parser.add_argument(
-        "link_type", help="Link type (e.g., 'Blocks', 'Relates')"
-    )
 
-    # issue unlink
-    unlink_parser = issue_subparsers.add_parser(
-        "unlink", help="Remove link between issues"
-    )
-    unlink_parser.add_argument("key1", help="First issue key")
-    unlink_parser.add_argument("key2", help="Second issue key")
+# -----------------------------------------------------------------------------
+# Board commands
+# -----------------------------------------------------------------------------
 
-    # issue link-types
-    issue_subparsers.add_parser("link-types", help="List available link types")
 
-    args = parser.parse_args()
+@cli.group("board")
+def board_group():
+    """Manage boards"""
+    pass
 
-    # Handle commands
-    if args.command == "filter":
-        search_filters(args.query)
-    elif args.command == "my":
-        my_issues(
-            scope=args.scope,
-            project=args.project,
-            exclude_done=not args.all_statuses,
-            priority=args.priority,
-            status=args.status,
-            limit=args.limit,
-        )
-    elif args.command == "open":
-        open_issue(args.issue_key)
-    elif args.command == "me":
-        show_me()
-    elif args.command == "serverinfo":
-        show_serverinfo()
-    elif args.command == "sprint":
-        if args.sprint_action == "list":
-            state = "active" if args.current else args.state
-            sprint_list(args.board, state)
-        elif args.sprint_action == "add":
-            sprint_add(args.sprint_id, args.issue_keys)
-        else:
-            sprint_parser.print_help()
-    elif args.command == "epic":
-        if args.epic_action == "list":
-            epic_list(args.project, args.limit)
-        elif args.epic_action == "create":
-            epic_create(args.project, args.name, args.summary)
-        elif args.epic_action == "add":
-            epic_add(args.epic_key, args.issue_keys)
-        elif args.epic_action == "remove":
-            epic_remove(args.issue_keys)
-        else:
-            epic_parser.print_help()
-    elif args.command == "board":
-        if args.board_action == "list":
-            board_list(args.project, args.type)
-        else:
-            board_parser.print_help()
-    elif args.command == "project":
-        if args.project_action == "list":
-            project_list()
-        else:
-            project_parser.print_help()
-    elif args.command == "release":
-        if args.release_action == "list":
-            release_list(args.project)
-        else:
-            release_parser.print_help()
-    elif args.command == "issue":
-        if args.issue_action == "create":
-            issue_create(
-                args.project,
-                args.summary,
-                args.issue_type,
-                args.description,
-                args.parent,
-                args.assignee,
-                args.labels,
-            )
-        elif args.issue_action == "update":
-            labels_add, labels_remove = parse_labels(args.labels)
-            issue_update(
-                args.issue_key,
-                args.summary,
-                args.description,
-                args.assignee,
-                labels_add,
-                labels_remove,
-            )
-        elif args.issue_action == "assign":
-            issue_assign(args.issue_key, args.user)
-        elif args.issue_action == "view":
-            issue_view(args.issue_key)
-        elif args.issue_action == "status":
-            status_get(args.issue_key)
-        elif args.issue_action == "transition":
-            if args.transition_action == "list":
-                transition_list(args.issue_key)
-            elif args.transition_action == "fields":
-                transition_fields(args.issue_key, args.transition_name)
-            elif args.transition_action == "to":
-                fields = None
-                if args.field:
-                    fields = {}
-                    for f in args.field:
-                        if "=" not in f:
-                            print(
-                                f"Error: Invalid field format '{f}'. Use KEY=VALUE",
-                                file=sys.stderr,
-                            )
-                            sys.exit(1)
-                        key, value = f.split("=", 1)
-                        fields[key] = value
-                transition_issue(
-                    args.issue_key, args.transition_name, args.comment, fields, args.web
-                )
-            else:
-                transition_parser.print_help()
-        elif args.issue_action == "comment":
-            if args.comment_action == "list":
-                comment_list(args.issue_key, args.last, args.order)
-            elif args.comment_action == "add":
-                comment_add(args.issue_key, args.body)
-            elif args.comment_action == "update":
-                comment_update(args.issue_key, args.comment_id, args.body)
-            elif args.comment_action == "delete":
-                comment_delete(args.issue_key, args.comment_id)
-            else:
-                comment_parser.print_help()
-        elif args.issue_action == "link":
-            issue_link(args.inward_key, args.outward_key, args.link_type)
-        elif args.issue_action == "unlink":
-            issue_unlink(args.key1, args.key2)
-        elif args.issue_action == "link-types":
-            link_types_list()
-        else:
-            issue_parser.print_help()
-    else:
-        parser.print_help()
+
+@board_group.command("list")
+@click.option("-p", "--project", help="Filter by project")
+@click.option("-t", "--type", "board_type", type=click.Choice(["scrum", "kanban"]), help="Board type")
+def board_list_cmd(project, board_type):
+    """List boards"""
+    board_list_fn(project, board_type)
+
+
+# -----------------------------------------------------------------------------
+# Project commands
+# -----------------------------------------------------------------------------
+
+
+@cli.group("project")
+def project_group():
+    """Manage projects"""
+    pass
+
+
+@project_group.command("list")
+def project_list_cmd():
+    """List projects"""
+    project_list_fn()
+
+
+# -----------------------------------------------------------------------------
+# Release commands
+# -----------------------------------------------------------------------------
+
+
+@cli.group("release")
+def release_group():
+    """Manage releases"""
+    pass
+
+
+@release_group.command("list")
+@click.argument("project")
+def release_list_cmd(project):
+    """List releases"""
+    release_list_fn(project)
+
+
+# -----------------------------------------------------------------------------
+# Issue commands
+# -----------------------------------------------------------------------------
+
+
+@cli.group("issue")
+def issue_group():
+    """Manage issues"""
+    pass
+
+
+@issue_group.command("create")
+@click.argument("project")
+@click.argument("summary")
+@click.option("--type", "issue_type", default="Task", help="Issue type (default: Task)")
+@click.option("-d", "--description", help="Issue description")
+@click.option("-p", "--parent", help="Parent issue key for sub-tasks")
+@click.option("-a", "--assignee", help="Assignee email/name")
+@click.option("-l", "--label", multiple=True, help="Add label (can be repeated)")
+def issue_create_cmd(project, summary, issue_type, description, parent, assignee, label):
+    """Create a new issue"""
+    labels = list(label) if label else None
+    issue_create_fn(project, summary, issue_type, description, parent, assignee, labels)
+
+
+@issue_group.command("update")
+@click.argument("issue_key")
+@click.option("-s", "--summary", help="New issue summary/title")
+@click.option("-d", "--description", help="New issue description")
+@click.option("-a", "--assignee", help="New assignee (email/name)")
+@click.option("-l", "--label", multiple=True, help="Add/remove label (prefix with - to remove)")
+def issue_update_cmd(issue_key, summary, description, assignee, label):
+    """Update an existing issue"""
+    labels_add, labels_remove = parse_labels(list(label)) if label else (None, None)
+    issue_update_fn(issue_key, summary, description, assignee, labels_add, labels_remove)
+
+
+@issue_group.command("view")
+@click.argument("issue_key")
+def issue_view_cmd(issue_key):
+    """View issue details"""
+    issue_view_fn(issue_key)
+
+
+@issue_group.command("status")
+@click.argument("issue_key")
+def issue_status_cmd(issue_key):
+    """Get issue status"""
+    status_get_fn(issue_key)
+
+
+@issue_group.command("assign")
+@click.argument("issue_key")
+@click.argument("user")
+def issue_assign_cmd(issue_key, user):
+    """Assign/unassign issue (use 'x' to unassign)"""
+    issue_assign_fn(issue_key, user)
+
+
+@issue_group.command("link")
+@click.argument("inward_key")
+@click.argument("outward_key")
+@click.argument("link_type")
+def issue_link_cmd(inward_key, outward_key, link_type):
+    """Link two issues"""
+    issue_link_fn(inward_key, outward_key, link_type)
+
+
+@issue_group.command("unlink")
+@click.argument("key1")
+@click.argument("key2")
+def issue_unlink_cmd(key1, key2):
+    """Remove link between issues"""
+    issue_unlink_fn(key1, key2)
+
+
+@issue_group.command("link-types")
+def issue_link_types_cmd():
+    """List available link types"""
+    link_types_list_fn()
+
+
+# -----------------------------------------------------------------------------
+# Issue transition subgroup
+# -----------------------------------------------------------------------------
+
+
+@issue_group.group("transition")
+def transition_group():
+    """Manage issue transitions"""
+    pass
+
+
+@transition_group.command("list")
+@click.argument("issue_key")
+def transition_list_cmd(issue_key):
+    """List available transitions"""
+    transition_list_fn(issue_key)
+
+
+@transition_group.command("fields")
+@click.argument("issue_key")
+@click.argument("transition_name")
+def transition_fields_cmd(issue_key, transition_name):
+    """List fields for a transition"""
+    transition_fields_fn(issue_key, transition_name)
+
+
+@transition_group.command("to")
+@click.argument("issue_key")
+@click.argument("transition_name")
+@click.option("-c", "--comment", help="Add a comment after transitioning")
+@click.option("-f", "--field", multiple=True, help="Set field during transition (KEY=VALUE)")
+@click.option("-w", "--web", is_flag=True, help="Open issue in browser after transition")
+def transition_to_cmd(issue_key, transition_name, comment, field, web):
+    """Transition issue to a new status"""
+    fields = parse_fields(field)
+    transition_issue_fn(issue_key, transition_name, comment, fields, web)
+
+
+# -----------------------------------------------------------------------------
+# Issue comment subgroup
+# -----------------------------------------------------------------------------
+
+
+@issue_group.group("comment")
+def comment_group():
+    """Manage issue comments"""
+    pass
+
+
+@comment_group.command("list")
+@click.argument("issue_key")
+@click.option("--last", type=int, help="Show only last N comments")
+@click.option("--order", type=click.Choice(["asc", "desc"]), default="desc", help="Sort order")
+def comment_list_cmd(issue_key, last, order):
+    """List comments on an issue"""
+    comment_list_fn(issue_key, last, order)
+
+
+@comment_group.command("add")
+@click.argument("issue_key")
+@click.argument("body")
+def comment_add_cmd(issue_key, body):
+    """Add a comment to an issue"""
+    comment_add_fn(issue_key, body)
+
+
+@comment_group.command("update")
+@click.argument("issue_key")
+@click.argument("comment_id")
+@click.argument("body")
+def comment_update_cmd(issue_key, comment_id, body):
+    """Update a comment"""
+    comment_update_fn(issue_key, comment_id, body)
+
+
+@comment_group.command("delete")
+@click.argument("issue_key")
+@click.argument("comment_id")
+def comment_delete_cmd(issue_key, comment_id):
+    """Delete a comment"""
+    comment_delete_fn(issue_key, comment_id)
 
 
 if __name__ == "__main__":
-    main()
+    cli()
