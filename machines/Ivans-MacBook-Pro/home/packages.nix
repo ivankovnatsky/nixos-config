@@ -12,6 +12,7 @@
     backup-home
     dns
     torrent-dl
+    ffmpeg
     giffer
     git-message
     homelab
