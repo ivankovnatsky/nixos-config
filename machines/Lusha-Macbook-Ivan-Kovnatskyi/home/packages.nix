@@ -86,6 +86,7 @@
     nixpkgs-darwin-master.cursor-cli
     nixpkgs-darwin-master.fluxcd
     nixpkgs-darwin-master.jira-cli-go
+    nixpkgs-darwin-master-opencode.opencode
     nodejs
     nodePackages.aws-cdk
     nodePackages.prettier
