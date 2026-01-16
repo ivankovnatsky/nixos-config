@@ -158,6 +158,7 @@ def issue_update_fn(
     assignee=None,
     labels_add=None,
     labels_remove=None,
+    issue_type=None,
 ):
     """Update an existing issue"""
     jira = get_jira_client()
@@ -172,6 +173,8 @@ def issue_update_fn(
         fields["description"] = description
     if assignee:
         fields["assignee"] = {"name": assignee}
+    if issue_type:
+        fields["issuetype"] = {"name": issue_type}
 
     if labels_add or labels_remove:
         label_ops = []
@@ -428,6 +431,21 @@ def link_types_list_fn():
         click.echo(f"  Inward:  {lt.inward}")
         click.echo(f"  Outward: {lt.outward}")
         click.echo()
+
+
+def issue_types_list_fn(project=None):
+    """List available issue types"""
+    jira = get_jira_client()
+
+    if project:
+        proj = jira.project(project)
+        issue_types = proj.issueTypes
+    else:
+        issue_types = jira.issue_types()
+
+    for it in issue_types:
+        subtask = " (subtask)" if it.subtask else ""
+        click.echo(f"{it.name}{subtask}")
 
 
 def open_issue_fn(issue_key=None):
@@ -856,10 +874,11 @@ def issue_create_cmd(project, summary, issue_type, description, parent, assignee
 @click.option("-d", "--description", help="New issue description")
 @click.option("-a", "--assignee", help="New assignee (email/name)")
 @click.option("-l", "--label", multiple=True, help="Add/remove label (prefix with - to remove)")
-def issue_update_cmd(issue_key, summary, description, assignee, label):
+@click.option("-t", "--type", "issue_type", help="Change issue type (e.g., Task, Story, Bug)")
+def issue_update_cmd(issue_key, summary, description, assignee, label, issue_type):
     """Update an existing issue"""
     labels_add, labels_remove = parse_labels(list(label)) if label else (None, None)
-    issue_update_fn(issue_key, summary, description, assignee, labels_add, labels_remove)
+    issue_update_fn(issue_key, summary, description, assignee, labels_add, labels_remove, issue_type)
 
 
 @issue_group.command("view")
@@ -905,6 +924,13 @@ def issue_unlink_cmd(key1, key2):
 def issue_link_types_cmd():
     """List available link types"""
     link_types_list_fn()
+
+
+@issue_group.command("types")
+@click.option("-p", "--project", help="Show types for specific project")
+def issue_types_cmd(project):
+    """List available issue types"""
+    issue_types_list_fn(project)
 
 
 # -----------------------------------------------------------------------------
