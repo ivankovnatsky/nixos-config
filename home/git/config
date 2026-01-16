@@ -13,6 +13,7 @@
 [core]
 	filemode = true
 	commentChar = ";"
+	quotePath = false
 
 [init]
 	defaultBranch = main
