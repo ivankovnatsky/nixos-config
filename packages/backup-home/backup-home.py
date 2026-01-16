@@ -21,6 +21,8 @@ https://stackoverflow.com/a/984259
 
 2026-01-09: Ported to Python for improved maintainability. Functionality unchanged.
 2026-01-16: Removed scp support, miniserve is now the default upload method.
+2026-01-16: Removed rclone support. Keep backup machine as single source of
+            truth for sync with drive
 """
 
 import argparse
@@ -156,19 +158,6 @@ def create_backup(archive_path: Path, user: str) -> bool:
         return False
 
 
-def upload_rclone(archive_path: Path, remote: str, home_parent_dir: str) -> bool:
-    """Upload backup using rclone."""
-    date_dir = datetime.now().strftime("%Y-%m-%d")
-    remote_path = f"{remote}/{home_parent_dir}/{date_dir}"
-
-    print(f"Uploading to rclone remote: {remote_path}")
-
-    result = subprocess.run(
-        ["rclone", "copy", str(archive_path), remote_path, "--progress"], check=False
-    )
-    return result.returncode == 0
-
-
 def upload_miniserve(
     archive_path: Path,
     url: str,
@@ -237,7 +226,6 @@ Examples:
   backup-home                              # Normal backup and upload via miniserve
   backup-home --skip-upload                # Create backup locally only
   backup-home --miniserve http://host:8080 # Upload via miniserve (custom URL)
-  backup-home --rclone drive:Backup        # Upload to Google Drive
   backup-home --skip-backup --skip-upload  # Use existing backup, no upload
 """,
     )
@@ -261,12 +249,6 @@ Examples:
         "--backup-path",
         type=str,
         help="Custom path for backup archive",
-    )
-    parser.add_argument(
-        "--rclone",
-        type=str,
-        metavar="REMOTE",
-        help="Use rclone remote instead of miniserve (e.g., drive:Backup)",
     )
     parser.add_argument(
         "--miniserve",
@@ -312,29 +294,23 @@ Examples:
         print(f"Skipping upload, backup saved at: {archive_path}")
         sys.exit(0)
 
-    success = False
-
-    if args.rclone:
-        success = upload_rclone(archive_path, args.rclone, home_parent_dir)
-    else:
-        # Default: miniserve
-        miniserve_url = args.miniserve if args.miniserve else DEFAULT_MINISERVE_URL
-        miniserve_user = os.environ.get("MINISERVE_USER")
-        miniserve_pass = os.environ.get("MINISERVE_PASS")
-        if not miniserve_user or not miniserve_pass:
-            print(
-                "Error: MINISERVE_USER and MINISERVE_PASS environment variables required",
-                file=sys.stderr,
-            )
-            sys.exit(1)
-        success = upload_miniserve(
-            archive_path,
-            miniserve_url,
-            hostname,
-            home_parent_dir,
-            miniserve_user,
-            miniserve_pass,
+    miniserve_url = args.miniserve if args.miniserve else DEFAULT_MINISERVE_URL
+    miniserve_user = os.environ.get("MINISERVE_USER")
+    miniserve_pass = os.environ.get("MINISERVE_PASS")
+    if not miniserve_user or not miniserve_pass:
+        print(
+            "Error: MINISERVE_USER and MINISERVE_PASS environment variables required",
+            file=sys.stderr,
         )
+        sys.exit(1)
+    success = upload_miniserve(
+        archive_path,
+        miniserve_url,
+        hostname,
+        home_parent_dir,
+        miniserve_user,
+        miniserve_pass,
+    )
 
     if success:
         print("Upload successful")
