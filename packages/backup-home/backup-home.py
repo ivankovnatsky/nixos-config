@@ -20,12 +20,12 @@ VMs and so.
 https://stackoverflow.com/a/984259
 
 2026-01-09: Ported to Python for improved maintainability. Functionality unchanged.
+2026-01-16: Removed scp support, miniserve is now the default upload method.
 """
 
 import argparse
 import os
 import platform
-import shutil
 import socket
 import subprocess
 import sys
@@ -54,9 +54,8 @@ def check_tar_on_darwin() -> None:
         sys.exit(1)
 
 
-# Default storage path
+# Defaults
 DEFAULT_STORAGE_PATH = "/Volumes/Storage/Data"
-DEFAULT_TARGET_MACHINE = "192.168.50.4"
 DEFAULT_MINISERVE_URL = "http://192.168.50.4:8080"
 
 # Directories to exclude from backup
@@ -115,36 +114,6 @@ EXCLUDE_PATTERNS = [
     "**/OrbStack/**",
     "**/.local/share/Steam/steamapps/**",
 ]
-
-
-def get_local_ips() -> list[str]:
-    """Get list of local IP addresses."""
-    ips = ["127.0.0.1", "::1"]
-    try:
-        result = subprocess.run(
-            ["ifconfig"], capture_output=True, text=True, check=False
-        )
-        for line in result.stdout.split("\n"):
-            if "inet " in line:
-                parts = line.strip().split()
-                if len(parts) >= 2:
-                    ips.append(parts[1])
-    except FileNotFoundError:
-        pass
-    return ips
-
-
-def is_local_target(target: str) -> bool:
-    """Check if target machine is the local machine."""
-    hostname = socket.gethostname().lower()
-
-    # Check hostname matches
-    target_lower = target.lower()
-    if target_lower == hostname or target_lower == f"{hostname}.local":
-        return True
-
-    # Check IP addresses
-    return target in get_local_ips()
 
 
 def create_backup(archive_path: Path, user: str) -> bool:
@@ -252,60 +221,6 @@ def upload_miniserve(
     return result.returncode == 0
 
 
-def upload_scp(
-    archive_path: Path,
-    target: str,
-    hostname: str,
-    home_parent_dir: str,
-    storage_path: str,
-    user: str,
-) -> bool:
-    """Upload backup using scp."""
-    date_dir = datetime.now().strftime("%Y-%m-%d")
-    backup_path = f"{storage_path}/Backup/Machines"
-    remote_dir = f"{backup_path}/{hostname}/{home_parent_dir}/{date_dir}"
-    remote_file = f"{remote_dir}/{user}.tar.gz"
-
-    print(f"Uploading to: {target}:{remote_file}")
-
-    # Create remote directory
-    result = subprocess.run(
-        ["ssh", f"ivan@{target}", f"mkdir -p {remote_dir}"], check=False
-    )
-    if result.returncode != 0:
-        return False
-
-    # Upload file
-    result = subprocess.run(
-        ["scp", str(archive_path), f"ivan@{target}:{remote_file}"], check=False
-    )
-    return result.returncode == 0
-
-
-def move_local(
-    archive_path: Path,
-    hostname: str,
-    home_parent_dir: str,
-    storage_path: str,
-    user: str,
-) -> bool:
-    """Move backup to local storage."""
-    date_dir = datetime.now().strftime("%Y-%m-%d")
-    backup_path = Path(storage_path) / "Backup" / "Machines"
-    target_dir = backup_path / hostname / home_parent_dir / date_dir
-    target_file = target_dir / f"{user}.tar.gz"
-
-    print(f"Moving backup to: {target_file}")
-
-    try:
-        target_dir.mkdir(parents=True, exist_ok=True)
-        shutil.move(str(archive_path), str(target_file))
-        return True
-    except Exception as e:
-        print(f"Error moving backup: {e}", file=sys.stderr)
-        return False
-
-
 def main():
     check_tar_on_darwin()
 
@@ -322,8 +237,6 @@ Examples:
   backup-home                              # Normal backup and upload via miniserve
   backup-home --skip-upload                # Create backup locally only
   backup-home --miniserve http://host:8080 # Upload via miniserve (custom URL)
-  backup-home --scp                        # Upload via scp instead of miniserve
-  backup-home --scp --target-machine 192.168.50.5  # Upload via scp to different machine
   backup-home --rclone drive:Backup        # Upload to Google Drive
   backup-home --skip-backup --skip-upload  # Use existing backup, no upload
 """,
@@ -350,21 +263,10 @@ Examples:
         help="Custom path for backup archive",
     )
     parser.add_argument(
-        "--target-machine",
-        type=str,
-        default=DEFAULT_TARGET_MACHINE,
-        help=f"Target machine for scp upload (default: {DEFAULT_TARGET_MACHINE})",
-    )
-    parser.add_argument(
         "--rclone",
         type=str,
         metavar="REMOTE",
         help="Use rclone remote instead of miniserve (e.g., drive:Backup)",
-    )
-    parser.add_argument(
-        "--scp",
-        action="store_true",
-        help="Use scp instead of miniserve for upload",
     )
     parser.add_argument(
         "--miniserve",
@@ -414,21 +316,6 @@ Examples:
 
     if args.rclone:
         success = upload_rclone(archive_path, args.rclone, home_parent_dir)
-    elif args.scp:
-        if is_local_target(args.target_machine):
-            print("Target is local machine, moving backup locally")
-            success = move_local(
-                archive_path, hostname, home_parent_dir, storage_path, user
-            )
-        else:
-            success = upload_scp(
-                archive_path,
-                args.target_machine,
-                hostname,
-                home_parent_dir,
-                storage_path,
-                user,
-            )
     else:
         # Default: miniserve
         miniserve_url = args.miniserve if args.miniserve else DEFAULT_MINISERVE_URL
