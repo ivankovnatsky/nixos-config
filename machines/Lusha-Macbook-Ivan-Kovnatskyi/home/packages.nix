@@ -45,6 +45,7 @@
     gh-pr
     git-message
     git-pull-all
+    git-worktree-init
     gitleaks
     glow
     go-grip
