@@ -1,11 +1,5 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
-let
-  hostName = config.networking.hostName or "";
-
-  # Disable automatic rearranging of spaces based on most recent use
-  mruSpaces = if hostName == "Lusha-Macbook-Ivan-Kovnatskyi" then false else true;
-in
 {
   system = {
     activationScripts.postActivation.text = ''
@@ -17,8 +11,9 @@ in
         Bluetooth = false;
       };
       dock = {
+        # Disable automatic rearranging of spaces based on most recent use
         # https://github.com/nix-darwin/nix-darwin/blob/6cb36e8327421c61e5a3bbd08ed63491b616364a/modules/system/defaults/dock.nix#L114
-        mru-spaces = mruSpaces;
+        mru-spaces = true;
         tilesize = 64;
         # Auto-hide dock with a huge delay (effectively hidden unless you wait)
         autohide = false;
