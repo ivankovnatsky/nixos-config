@@ -55,6 +55,21 @@ def parse_fields(field_args):
     return fields
 
 
+def resolve_issue_type_id(jira, project_key, type_name):
+    """Resolve issue type name to ID for a given project"""
+    proj = jira.project(project_key)
+
+    for it in proj.issueTypes:
+        if it.name.lower() == type_name.lower():
+            return it.id
+
+    available = [it.name for it in proj.issueTypes]
+    raise click.ClickException(
+        f"Issue type '{type_name}' not found in project {project_key}. "
+        f"Available types: {', '.join(available)}"
+    )
+
+
 # =============================================================================
 # Business Logic Functions
 # =============================================================================
@@ -174,7 +189,9 @@ def issue_update_fn(
     if assignee:
         fields["assignee"] = {"name": assignee}
     if issue_type:
-        fields["issuetype"] = {"name": issue_type}
+        project_key = issue.fields.project.key
+        type_id = resolve_issue_type_id(jira, project_key, issue_type)
+        fields["issuetype"] = {"id": type_id}
 
     if labels_add or labels_remove:
         label_ops = []
@@ -433,7 +450,7 @@ def link_types_list_fn():
         click.echo()
 
 
-def issue_types_list_fn(project=None):
+def issue_types_list_fn(project=None, show_ids=False):
     """List available issue types"""
     jira = get_jira_client()
 
@@ -445,7 +462,10 @@ def issue_types_list_fn(project=None):
 
     for it in issue_types:
         subtask = " (subtask)" if it.subtask else ""
-        click.echo(f"{it.name}{subtask}")
+        if show_ids:
+            click.echo(f"{it.id}\t{it.name}{subtask}")
+        else:
+            click.echo(f"{it.name}{subtask}")
 
 
 def open_issue_fn(issue_key=None):
@@ -928,9 +948,10 @@ def issue_link_types_cmd():
 
 @issue_group.command("types")
 @click.option("-p", "--project", help="Show types for specific project")
-def issue_types_cmd(project):
+@click.option("--ids", is_flag=True, help="Show issue type IDs")
+def issue_types_cmd(project, ids):
     """List available issue types"""
-    issue_types_list_fn(project)
+    issue_types_list_fn(project, ids)
 
 
 # -----------------------------------------------------------------------------
