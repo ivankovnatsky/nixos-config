@@ -55,18 +55,33 @@ def parse_fields(field_args):
     return fields
 
 
-def resolve_issue_type_id(jira, project_key, type_name):
-    """Resolve issue type name to ID for a given project"""
-    proj = jira.project(project_key)
+def resolve_issue_type_id(jira, issue_key, type_name):
+    """Resolve issue type name to ID using editmeta for allowed values"""
+    editmeta = jira.editmeta(issue_key)
+    fields = editmeta.get("fields", {})
 
-    for it in proj.issueTypes:
-        if it.name.lower() == type_name.lower():
-            return it.id
+    issuetype_field = fields.get("issuetype")
+    if not issuetype_field:
+        raise click.ClickException(
+            f"Issue type change is not allowed for {issue_key}. "
+            "The issuetype field is not editable in this project/workflow."
+        )
 
-    available = [it.name for it in proj.issueTypes]
+    allowed_values = issuetype_field.get("allowedValues", [])
+    if not allowed_values:
+        raise click.ClickException(
+            f"No allowed issue types found for {issue_key}. "
+            "Check project permissions or workflow configuration."
+        )
+
+    for it in allowed_values:
+        if it.get("name", "").lower() == type_name.lower():
+            return it.get("id")
+
+    available = [it.get("name") for it in allowed_values]
     raise click.ClickException(
-        f"Issue type '{type_name}' not found in project {project_key}. "
-        f"Available types: {', '.join(available)}"
+        f"Issue type '{type_name}' not allowed for {issue_key}. "
+        f"Allowed types: {', '.join(available)}"
     )
 
 
@@ -189,8 +204,7 @@ def issue_update_fn(
     if assignee:
         fields["assignee"] = {"name": assignee}
     if issue_type:
-        project_key = issue.fields.project.key
-        type_id = resolve_issue_type_id(jira, project_key, issue_type)
+        type_id = resolve_issue_type_id(jira, issue_key, issue_type)
         fields["issuetype"] = {"id": type_id}
 
     if labels_add or labels_remove:
