@@ -319,12 +319,12 @@ Environment variables:
   MINISERVE_PASS    Password for miniserve authentication
 
 Examples:
-  backup-home                              # Normal backup and upload via scp
+  backup-home                              # Normal backup and upload via miniserve
   backup-home --skip-upload                # Create backup locally only
-  backup-home --miniserve                  # Upload via miniserve (default URL)
   backup-home --miniserve http://host:8080 # Upload via miniserve (custom URL)
+  backup-home --scp                        # Upload via scp instead of miniserve
+  backup-home --scp --target-machine 192.168.50.5  # Upload via scp to different machine
   backup-home --rclone drive:Backup        # Upload to Google Drive
-  backup-home --target-machine 192.168.50.5  # Upload via scp to different machine
   backup-home --skip-backup --skip-upload  # Use existing backup, no upload
 """,
     )
@@ -359,14 +359,19 @@ Examples:
         "--rclone",
         type=str,
         metavar="REMOTE",
-        help="Use rclone remote instead of scp (e.g., drive:Backup)",
+        help="Use rclone remote instead of miniserve (e.g., drive:Backup)",
+    )
+    parser.add_argument(
+        "--scp",
+        action="store_true",
+        help="Use scp instead of miniserve for upload",
     )
     parser.add_argument(
         "--miniserve",
         nargs="?",
         const=DEFAULT_MINISERVE_URL,
         metavar="URL",
-        help=f"Upload via curl to miniserve (default: {DEFAULT_MINISERVE_URL})",
+        help=f"Custom miniserve URL (default: {DEFAULT_MINISERVE_URL})",
     )
 
     args = parser.parse_args()
@@ -409,7 +414,24 @@ Examples:
 
     if args.rclone:
         success = upload_rclone(archive_path, args.rclone, home_parent_dir)
-    elif args.miniserve:
+    elif args.scp:
+        if is_local_target(args.target_machine):
+            print("Target is local machine, moving backup locally")
+            success = move_local(
+                archive_path, hostname, home_parent_dir, storage_path, user
+            )
+        else:
+            success = upload_scp(
+                archive_path,
+                args.target_machine,
+                hostname,
+                home_parent_dir,
+                storage_path,
+                user,
+            )
+    else:
+        # Default: miniserve
+        miniserve_url = args.miniserve if args.miniserve else DEFAULT_MINISERVE_URL
         miniserve_user = os.environ.get("MINISERVE_USER")
         miniserve_pass = os.environ.get("MINISERVE_PASS")
         if not miniserve_user or not miniserve_pass:
@@ -420,25 +442,11 @@ Examples:
             sys.exit(1)
         success = upload_miniserve(
             archive_path,
-            args.miniserve,
+            miniserve_url,
             hostname,
             home_parent_dir,
             miniserve_user,
             miniserve_pass,
-        )
-    elif is_local_target(args.target_machine):
-        print("Target is local machine, moving backup locally")
-        success = move_local(
-            archive_path, hostname, home_parent_dir, storage_path, user
-        )
-    else:
-        success = upload_scp(
-            archive_path,
-            args.target_machine,
-            hostname,
-            home_parent_dir,
-            storage_path,
-            user,
         )
 
     if success:
