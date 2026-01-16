@@ -44,6 +44,18 @@ def get_staged_files() -> list[str]:
     return files
 
 
+def get_modified_files() -> list[str]:
+    """Get tracked files that have been modified but not staged."""
+    result = subprocess.run(
+        ["git", "diff", "--name-only"],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    files = [f for f in result.stdout.strip().split("\n") if f]
+    return files
+
+
 def shorten_path(path: str) -> str:
     result = path
 
@@ -78,7 +90,9 @@ def create_commit_message(prefix: str, subject: str) -> str:
     return f"{prefix}: {subject}"
 
 
-def parse_args_flexible(args: list[str], subject_flag: str | None) -> tuple[str | None, str]:
+def parse_args_flexible(
+    args: list[str], subject_flag: str | None
+) -> tuple[str | None, str]:
     """Parse arguments flexibly: file can be before or after subject."""
     if subject_flag:
         # Subject provided via -s flag
@@ -137,7 +151,7 @@ Examples:
 
 Features:
   - Accepts file path in either position (auto-detected by existence)
-  - Without file arg, requires exactly one staged file
+  - Without file arg, uses exactly one staged file, or one modified file if none staged
   - Strips file extensions (e.g., .nix, .py)
   - Shortens machine names (e.g., Ivans-Mac-mini -> mini)
   - Removes duplicate path components (e.g., pkg/foo/foo -> pkg/foo)
@@ -155,7 +169,10 @@ Features:
         "-s", "--subject", help="commit subject (alternative to positional arg)"
     )
     parser.add_argument(
-        "-b", "--body", action="append", help="commit body (can use multiple times, can contain newlines)"
+        "-b",
+        "--body",
+        action="append",
+        help="commit body (can use multiple times, can contain newlines)",
     )
     parsed = parser.parse_args()
 
@@ -167,27 +184,49 @@ Features:
     if file_path:
         # Use provided file path
         target_file = file_path
+        auto_stage = False
     else:
-        # Use staged files (original behavior)
+        # Check staged files first, then modified files
         try:
             staged_files = get_staged_files()
         except subprocess.CalledProcessError as e:
             print(f"Failed to get staged files: {e}", file=sys.stderr)
             return 1
 
-        if not staged_files:
-            print("No staged files", file=sys.stderr)
-            return 1
+        auto_stage = False
+        if staged_files:
+            if len(staged_files) != 1:
+                print(
+                    f"Expected 1 staged file, found {len(staged_files)}:",
+                    file=sys.stderr,
+                )
+                for f in staged_files:
+                    print(f"  {f}", file=sys.stderr)
+                return 1
+            target_file = staged_files[0]
+        else:
+            # No staged files, check for modified (unstaged) files
+            try:
+                modified_files = get_modified_files()
+            except subprocess.CalledProcessError as e:
+                print(f"Failed to get modified files: {e}", file=sys.stderr)
+                return 1
 
-        if len(staged_files) != 1:
-            print(
-                f"Expected 1 staged file, found {len(staged_files)}:", file=sys.stderr
-            )
-            for f in staged_files:
-                print(f"  {f}", file=sys.stderr)
-            return 1
+            if not modified_files:
+                print("No staged or modified files", file=sys.stderr)
+                return 1
 
-        target_file = staged_files[0]
+            if len(modified_files) != 1:
+                print(
+                    f"Expected 1 modified file, found {len(modified_files)}:",
+                    file=sys.stderr,
+                )
+                for f in modified_files:
+                    print(f"  {f}", file=sys.stderr)
+                return 1
+
+            target_file = modified_files[0]
+            auto_stage = True
 
     prefix = shorten_path(target_file)
 
@@ -217,6 +256,9 @@ Features:
         if file_path:
             # Commit specific file (stages and commits in one step)
             cmd = ["git", "commit", file_path, "-m", message]
+        elif auto_stage:
+            # Auto-stage and commit the single modified file
+            cmd = ["git", "commit", target_file, "-m", message]
         else:
             # Commit staged files
             cmd = ["git", "commit", "-m", message]
