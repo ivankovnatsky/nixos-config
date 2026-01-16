@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 
-# TODO: Review https://github.com/Spenhouet/confluence-markdown-exporter
-# A more mature CLI tool for Confluence to Markdown export. Supports hierarchies,
-# attachments, tables, code blocks, tasks, and outputs structured folders with
-# front matter. May replace or supplement this custom implementation.
-
 from atlassian import Confluence
 import sys
 import os
