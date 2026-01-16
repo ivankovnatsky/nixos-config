@@ -55,34 +55,93 @@ def parse_fields(field_args):
     return fields
 
 
-def resolve_issue_type_id(jira, issue_key, type_name):
-    """Resolve issue type name to ID using editmeta for allowed values"""
-    editmeta = jira.editmeta(issue_key)
-    fields = editmeta.get("fields", {})
+def get_issue_type_id_for_project(jira, project_key, type_name):
+    """Get issue type ID by name using createmeta endpoint"""
+    url = f"{jira._options['server']}/rest/api/3/issue/createmeta/{project_key}/issuetypes"
+    response = jira._session.get(url)
 
-    issuetype_field = fields.get("issuetype")
-    if not issuetype_field:
-        raise click.ClickException(
-            f"Issue type change is not allowed for {issue_key}. "
-            "The issuetype field is not editable in this project/workflow."
-        )
+    if response.status_code != 200:
+        raise click.ClickException(f"Failed to get issue types: {response.text}")
 
-    allowed_values = issuetype_field.get("allowedValues", [])
-    if not allowed_values:
-        raise click.ClickException(
-            f"No allowed issue types found for {issue_key}. "
-            "Check project permissions or workflow configuration."
-        )
-
-    for it in allowed_values:
+    data = response.json()
+    for it in data.get("issueTypes", data.get("values", [])):
         if it.get("name", "").lower() == type_name.lower():
             return it.get("id")
 
-    available = [it.get("name") for it in allowed_values]
+    available = [it.get("name") for it in data.get("issueTypes", data.get("values", []))]
     raise click.ClickException(
-        f"Issue type '{type_name}' not allowed for {issue_key}. "
-        f"Allowed types: {', '.join(available)}"
+        f"Issue type '{type_name}' not found in project {project_key}. "
+        f"Available: {', '.join(available)}"
     )
+
+
+def move_issue_type(jira, issue_key, type_name):
+    """Change issue type using Bulk Move API (async operation)"""
+    import time
+
+    issue = jira.issue(issue_key)
+    project_key = issue.fields.project.key
+    type_id = get_issue_type_id_for_project(jira, project_key, type_name)
+
+    # Build composite mapping key: "PROJECT_KEY,ISSUE_TYPE_ID"
+    mapping_key = f"{project_key},{type_id}"
+
+    payload = {
+        "sendBulkNotification": True,  # Must be True to avoid permission error
+        "targetToSourcesMapping": {
+            mapping_key: {
+                "issueIdsOrKeys": [issue_key],
+                "inferClassificationDefaults": True,
+                "inferFieldDefaults": True,
+                "inferStatusDefaults": True,
+                "inferSubtaskTypeDefault": True,
+            }
+        },
+    }
+
+    # Submit bulk move request
+    url = f"{jira._options['server']}/rest/api/3/bulk/issues/move"
+    response = jira._session.post(url, json=payload)
+
+    if response.status_code not in (200, 201, 202):
+        error_msg = response.text
+        try:
+            error_data = response.json()
+            if "errorMessages" in error_data:
+                error_msg = "; ".join(error_data["errorMessages"])
+            elif "errors" in error_data:
+                error_msg = "; ".join(f"{k}: {v}" for k, v in error_data["errors"].items())
+        except Exception:
+            pass
+        raise click.ClickException(f"Move failed ({response.status_code}): {error_msg}")
+
+    result = response.json()
+    task_id = result.get("taskId")
+
+    if not task_id:
+        raise click.ClickException(f"No taskId in response: {result}")
+
+    # Poll for completion
+    queue_url = f"{jira._options['server']}/rest/api/3/bulk/queue/{task_id}"
+    timeout = 120
+    start_time = time.time()
+
+    while time.time() - start_time < timeout:
+        status_response = jira._session.get(queue_url)
+        if status_response.status_code != 200:
+            raise click.ClickException(f"Failed to check task status: {status_response.text}")
+
+        status_data = status_response.json()
+        status = status_data.get("status")
+
+        if status == "COMPLETE":
+            return status_data
+        elif status == "FAILED":
+            raise click.ClickException(f"Move failed: {status_data}")
+
+        time.sleep(2)
+
+    raise click.ClickException(f"Move timed out after {timeout}s (task: {task_id})")
 
 
 # =============================================================================
@@ -192,6 +251,15 @@ def issue_update_fn(
 ):
     """Update an existing issue"""
     jira = get_jira_client()
+
+    # Type changes use Bulk Move API (separate async operation)
+    if issue_type:
+        move_issue_type(jira, issue_key, issue_type)
+        click.echo(f"Changed {issue_key} type to {issue_type}", err=True)
+        # If only type change requested, we're done
+        if not any([summary, description, assignee, labels_add, labels_remove]):
+            return
+
     issue = jira.issue(issue_key)
 
     fields = {}
@@ -203,9 +271,6 @@ def issue_update_fn(
         fields["description"] = description
     if assignee:
         fields["assignee"] = {"name": assignee}
-    if issue_type:
-        type_id = resolve_issue_type_id(jira, issue_key, issue_type)
-        fields["issuetype"] = {"id": type_id}
 
     if labels_add or labels_remove:
         label_ops = []
