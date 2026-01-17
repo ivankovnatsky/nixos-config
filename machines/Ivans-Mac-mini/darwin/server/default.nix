@@ -63,7 +63,6 @@
     ./sharing.nix
     ./stash
     ./stash-media
-    ./sudo.nix
     ./clean-syncthing.nix
     ./syncthing-mgmt.nix
     ./system.nix

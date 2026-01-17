@@ -32,7 +32,6 @@
     ./prevent-sleep.nix
     ./security.nix
     ./shell.nix
-    ./sudo.nix
     ./syncthing-mgmt.nix
     ./users.nix
     ./close-zscaler.nix
