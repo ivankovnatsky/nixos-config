@@ -7,7 +7,7 @@
 
 {
   home.activation.ghAuth = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    if [ ! -f "$HOME/.config/gh/hosts.yml" ] || ! security find-generic-password -s "gh:github.com" -w >/dev/null 2>&1; then
+    if [ ! -f "$HOME/.config/gh/hosts.yml" ] || ! /usr/bin/security find-generic-password -s "gh:github.com" -w >/dev/null; then
       PATH="/usr/bin:$PATH" ${pkgs.gh}/bin/gh auth login --git-protocol https --web
     fi
   '';
