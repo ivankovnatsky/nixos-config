@@ -1,4 +1,6 @@
 {
+  power.sleep.display = 5;
+
   local.services.pmset = {
     enable = true;
 
