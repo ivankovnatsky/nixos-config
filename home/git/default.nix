@@ -6,6 +6,49 @@
 }:
 
 {
+  # TODO: Explore commitizen (Python) for interactive commit messages
+  # Supports --config flag: `cz --config ~/.cz.toml commit`
+  # https://github.com/commitizen-tools/commitizen
+
+  # Global git hooks for commit message validation
+  home.file.".config/git/hooks/commit-msg" = {
+    executable = true;
+    text = ''
+      #!/usr/bin/env bash
+      commit_msg_file="$1"
+      commit_msg=$(cat "$commit_msg_file")
+      title=$(echo "$commit_msg" | head -1)
+
+      # Skip merge commits
+      if echo "$title" | grep -qE '^Merge '; then
+        exit 0
+      fi
+
+      # Check title length (max 72 chars)
+      title_len=''${#title}
+      if [ "$title_len" -gt 72 ]; then
+        echo "ERROR: Commit title must be ≤72 characters (got $title_len)"
+        echo "Title: $title"
+        exit 1
+      fi
+
+      # Check body line length (max 80 chars) if body exists
+      body=$(echo "$commit_msg" | tail -n +3)
+      if [ -n "$body" ]; then
+        line_num=3
+        while IFS= read -r line; do
+          line_len=''${#line}
+          if [ "$line_len" -gt 80 ]; then
+            echo "ERROR: Commit body line $line_num exceeds 80 characters (got $line_len)"
+            echo "Line: $line"
+            exit 1
+          fi
+          ((line_num++))
+        done <<< "$body"
+      fi
+    '';
+  };
+
   home.activation.ghAuth = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     if [ ! -f "$HOME/.config/gh/hosts.yml" ] || ! /usr/bin/security find-generic-password -s "gh:github.com" -w >/dev/null; then
       PATH="/usr/bin:$PATH" ${pkgs.gh}/bin/gh auth login --git-protocol https --web
@@ -99,6 +142,8 @@
       };
       core = {
         editor = "${config.flags.editor}";
+        # Global hooks for commit message validation
+        hooksPath = "${config.home.homeDirectory}/.config/git/hooks";
       };
       safe = {
         directory = "${config.flags.homeWorkPath}/Sources/github.com/ivankovnatsky/nixos-config";
