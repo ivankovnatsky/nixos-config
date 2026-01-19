@@ -440,6 +440,51 @@ def transition_fields_fn(issue_key, transition_name):
         click.echo(f"  {field_id}: {name} [{field_type}]{req_marker}")
 
 
+def issue_fields_fn(filter_pattern=None):
+    """List fields that may be required for transitions"""
+    jira = get_jira_client()
+
+    # Get all field definitions
+    url = f"{jira._options['server']}/rest/api/2/field"
+    response = jira._session.get(url)
+    if response.status_code != 200:
+        raise click.ClickException(f"Failed to get fields: {response.text}")
+
+    all_fields = response.json()
+
+    # Keywords that suggest transition-related fields
+    transition_keywords = [
+        "resolution", "steps", "action", "taken", "done", "closing",
+        "reason", "complete", "finish", "resolve"
+    ]
+
+    if filter_pattern:
+        # User-provided filter
+        keywords = [filter_pattern.lower()]
+    else:
+        keywords = transition_keywords
+
+    # Filter to custom fields matching keywords
+    matching = []
+    for f in all_fields:
+        name = f.get("name", "").lower()
+        if f.get("custom") and any(kw in name for kw in keywords):
+            matching.append(f)
+
+    if not matching:
+        click.echo("No matching fields found")
+        return
+
+    click.echo(f"Fields matching transition-related keywords:")
+    click.echo()
+    for f in sorted(matching, key=lambda x: x.get("name", "")):
+        fid = f.get("id")
+        name = f.get("name")
+        schema = f.get("schema", {})
+        ftype = schema.get("type", "unknown")
+        click.echo(f"  {fid}: {name} [{ftype}]")
+
+
 def transition_issue_fn(issue_key, transition_name, comment=None, fields=None, open_web=False):
     """Transition an issue to a new status"""
     jira = get_jira_client()
@@ -1264,6 +1309,13 @@ def issue_view_cmd(issue_key):
 def issue_status_cmd(issue_key):
     """Get issue status"""
     status_get_fn(issue_key)
+
+
+@issue_group.command("fields")
+@click.option("-f", "--filter", "filter_pattern", help="Filter fields by name pattern")
+def issue_fields_cmd(filter_pattern):
+    """List custom fields that may be required for transitions"""
+    issue_fields_fn(filter_pattern)
 
 
 @issue_group.command("assign")
