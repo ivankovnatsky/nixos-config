@@ -16,6 +16,7 @@
     ../../../darwin/sudo.nix
     ../../../darwin/syncthing.nix
     ../../../darwin/system.nix
+    ../../../darwin/taskwarrior-notify.nix
     ../../../darwin/users.nix
     ../../../modules/darwin/dock
     ../../../modules/darwin/launchd
@@ -24,6 +25,7 @@
     ../../../modules/darwin/rebuild-terminal
     ../../../modules/darwin/sudo
     ../../../modules/darwin/syncthing-mgmt
+    ../../../modules/darwin/taskwarrior-notify
     ../../../modules/flags
     ../../../system/documentation.nix
     ../../../system/nix.nix
