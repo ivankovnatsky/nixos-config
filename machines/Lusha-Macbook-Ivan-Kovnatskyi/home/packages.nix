@@ -27,6 +27,7 @@
     crane
     curlie
     defaultbrowser
+    nixpkgs-darwin-master-databricks.databricks-cli
     delta
     devbox
     devcontainer
