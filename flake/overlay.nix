@@ -48,6 +48,10 @@ let
       inherit system;
       inherit (final) config;
     };
+    nixpkgs-darwin-master-databricks = import inputs.nixpkgs-darwin-master-databricks {
+      inherit system;
+      inherit (final) config;
+    };
     nixpkgs-darwin-old-release = import inputs.nixpkgs-darwin-old-release {
       inherit system;
       inherit (final) config;
