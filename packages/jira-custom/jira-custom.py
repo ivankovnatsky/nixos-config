@@ -5,6 +5,10 @@ import sys
 import os
 import webbrowser
 import click
+from rich.console import Console
+from rich.table import Table
+from rich.markup import escape
+from rich import box
 
 # Fix program name in usage output when run via Nix store path
 sys.argv[0] = "jira-custom"
@@ -722,6 +726,246 @@ def board_list_fn(project=None, board_type=None):
         click.echo(f"{board_id:<10} {btype:<10} {name}")
 
 
+def get_status_style(status_name):
+    """Get rich style for status name.
+
+    Colors chosen for color blindness accessibility:
+    - Avoids red-green distinction (problematic for 8% of males)
+    - Uses brightness/saturation differences alongside hue
+    """
+    status_lower = status_name.lower()
+    if status_lower in ("done", "closed", "resolved", "declined"):
+        return "[dim strike]"  # Dimmed + strikethrough indicates completed
+    elif status_lower in ("in progress", "in review", "review"):
+        return "[bold cyan]"
+    elif status_lower in ("blocked", "impediment"):
+        return "[bold bright_magenta]"  # Magenta instead of red for color blindness
+    elif status_lower in ("to do", "open", "backlog", "unresolved"):
+        return "[yellow]"
+    return "[white]"
+
+
+def get_priority_style(priority_name):
+    """Get rich style for priority.
+
+    Uses style-based distinction (bold, underline, reverse) rather than
+    color-only to be accessible for color blindness.
+    No color repeats with cell attribute values.
+    """
+    if not priority_name:
+        return "[dim]", "None"
+    priority_lower = priority_name.lower()
+    if priority_lower in ("highest", "blocker"):
+        return "[bold reverse]", priority_name  # Inverted - maximum visibility
+    elif priority_lower in ("high", "critical"):
+        return "[bold underline]", priority_name
+    elif priority_lower == "medium":
+        return "[bright_black]", priority_name  # Gray - neutral
+    elif priority_lower in ("low", "lowest", "minor", "trivial"):
+        return "[dim italic]", priority_name
+    return "[white]", priority_name
+
+
+def resolve_board_by_name(jira, board_name):
+    """Resolve board name to board ID"""
+    boards = jira.boards()
+
+    # Check for exact matches first
+    exact_matches = [b for b in boards if b.name.lower() == board_name.lower()]
+    if len(exact_matches) == 1:
+        return str(exact_matches[0].id)
+    elif len(exact_matches) > 1:
+        names = ", ".join(f"{b.id} ({b.type})" for b in exact_matches)
+        raise click.ClickException(
+            f"Multiple boards named '{board_name}': {names}. Use --id instead."
+        )
+
+    # Try partial match
+    matches = [b for b in boards if board_name.lower() in b.name.lower()]
+    if len(matches) == 1:
+        return str(matches[0].id)
+    elif len(matches) > 1:
+        names = ", ".join(f"'{b.name}' ({b.id}, {b.type})" for b in matches[:5])
+        raise click.ClickException(f"Multiple boards match '{board_name}': {names}. Use --id instead.")
+
+    raise click.ClickException(f"Board '{board_name}' not found")
+
+
+def truncate_text(text, max_len):
+    """Truncate text to max_len, adding ellipsis if needed"""
+    if len(text) <= max_len:
+        return text
+    if max_len <= 3:
+        return text[:max_len]
+    return text[:max_len - 3] + "..."
+
+
+def board_view_fn(board_id=None, board_name=None, show_done=False, limit=100):
+    """View issues on a board with rich table formatting"""
+    jira = get_jira_client()
+
+    if board_name:
+        board_id = resolve_board_by_name(jira, board_name)
+    elif not board_id:
+        board_id = os.getenv("JIRA_BOARD_ID")
+        if not board_id:
+            raise click.ClickException("Set JIRA_BOARD_ID or use --id/--name")
+
+    console = Console()
+
+    # Get board info
+    try:
+        board = jira.board(board_id)
+        board_name = board.name
+        board_type = board.type
+    except Exception:
+        board_name = f"Board {board_id}"
+        board_type = "unknown"
+
+    console.print()
+    console.print(f"[bold cyan]{board_name}[/bold cyan]")
+
+    # Get issues from board using agile API
+    try:
+        url = f"{jira._options['server']}/rest/agile/1.0/board/{board_id}/issue"
+        params = {"maxResults": limit}
+        if not show_done:
+            params["jql"] = 'status NOT IN ("Done", "Closed", "Resolved", "Declined", "removed", "Not a bug")'
+        response = jira._session.get(url, params=params)
+        if response.status_code == 200:
+            data = response.json()
+            issue_keys = [i["key"] for i in data.get("issues", [])]
+            if issue_keys:
+                # Fetch full issue objects
+                jql = f"key in ({','.join(issue_keys)}) ORDER BY priority DESC, updated DESC"
+                issues = jira.search_issues(jql, maxResults=limit)
+            else:
+                issues = []
+        else:
+            raise click.ClickException(f"Failed to get board issues: {response.status_code}")
+    except click.ClickException:
+        raise
+    except Exception as e:
+        raise click.ClickException(f"Failed to get board issues: {e}")
+
+    if not issues:
+        console.print("[dim]No issues found[/dim]")
+        return
+
+    # Group issues by status
+    issues_by_status = {}
+    for issue in issues:
+        status = issue.fields.status.name
+        if status not in issues_by_status:
+            issues_by_status[status] = []
+        issues_by_status[status].append(issue)
+
+    # Kanban column order: TO DO -> BLOCKED -> IN PROGRESS
+    # Reopened issues go into To Do column
+    kanban_columns = ["To Do", "Blocked", "In Progress"]
+
+    # Merge Reopened into To Do
+    if "Reopened" in issues_by_status:
+        if "To Do" not in issues_by_status:
+            issues_by_status["To Do"] = []
+        issues_by_status["To Do"].extend(issues_by_status.pop("Reopened"))
+
+    all_columns = kanban_columns + [s for s in issues_by_status.keys() if s not in kanban_columns]
+
+    # Calculate dynamic column width based on terminal size
+    # Use COLUMNS env var if available (works in pipes), otherwise console.width
+    try:
+        terminal_width = int(os.getenv("COLUMNS", 0)) or console.width
+    except ValueError:
+        terminal_width = console.width
+    num_columns = len(all_columns)
+    # Account for borders and padding: 3 chars per column (border + padding)
+    available_width = terminal_width - (num_columns + 1) * 3
+    col_width = max(20, available_width // num_columns)
+
+    # Create a table with kanban columns
+    table = Table(
+        show_header=True,
+        header_style="bold cyan",
+        box=box.ROUNDED,
+        padding=(0, 1),
+        width=terminal_width,
+    )
+
+    # Add columns with counts - use ratio for equal distribution
+    for col_status in all_columns:
+        count = len(issues_by_status.get(col_status, []))
+        style = get_status_style(col_status)
+        table.add_column(f"{style}{col_status}[/] ({count})", ratio=1, no_wrap=True, overflow="ellipsis")
+
+    # Find max issues in any column
+    max_rows = max(len(issues_by_status.get(s, [])) for s in all_columns) if all_columns else 0
+
+    # Add rows - each row has one issue from each column, with separators
+    for row_idx in range(max_rows):
+        row_data = []
+        for col_status in all_columns:
+            col_issues = issues_by_status.get(col_status, [])
+            if row_idx < len(col_issues):
+                issue = col_issues[row_idx]
+                key = escape(issue.key)
+
+                # Title/Summary - truncate to fit column, escape Rich markup
+                summary = escape(truncate_text(issue.fields.summary, col_width - 2))
+
+                # Reporter/Author - truncate to fit, escape Rich markup
+                reporter = issue.fields.reporter.displayName if issue.fields.reporter else "Unknown"
+                reporter = escape(truncate_text(reporter, col_width - 2))
+
+                # Date (updated)
+                updated = issue.fields.updated[:16].replace("T", " ") if issue.fields.updated else ""
+
+                # Resolution state, escape Rich markup
+                resolution = issue.fields.resolution.name if issue.fields.resolution else "Unresolved"
+                resolution = escape(resolution)
+
+                # Priority
+                priority = issue.fields.priority.name if issue.fields.priority else "None"
+                prio_short = escape(priority[:3])  # Med, Hig, Low, etc.
+
+                # Assignee - truncate to fit, escape Rich markup
+                assignee = issue.fields.assignee.displayName if issue.fields.assignee else "Unassigned"
+                assignee = escape(truncate_text(assignee, col_width - 2))
+
+                # Get priority style
+                prio_style, _ = get_priority_style(priority)
+
+                # Format like Jira UI card - each attribute on its own line
+                # Colors chosen for color blindness accessibility (high contrast, distinct hues)
+                cell = (
+                    f"[dim]Summary:   [/] [bold yellow]{summary}[/]\n"
+                    f"[dim]Reporter:  [/] [cyan]{reporter}[/]\n"
+                    f"[dim]Date:      [/] [bright_white]{updated}[/]\n"
+                    f"[dim]Resolution:[/] [magenta]{resolution}[/]\n"
+                    f"[dim]Key:       [/] [bold bright_blue]{key}[/]\n"
+                    f"[dim]Priority:  [/] {prio_style}{prio_short}[/]\n"
+                    f"[dim]Assignee:  [/] [bold bright_green]{assignee}[/]"
+                )
+                row_data.append(cell)
+            else:
+                row_data.append("")
+        table.add_row(*row_data)
+        # Add separator between tickets
+        if row_idx < max_rows - 1:
+            table.add_section()
+
+    console.print(table)
+
+    # Summary stats
+    total = len(issues)
+    by_status = {s: len(issues_by_status[s]) for s in issues_by_status}
+    stats_parts = [f"[bold]{total}[/bold] issues"]
+    for s, count in sorted(by_status.items(), key=lambda x: -x[1]):
+        style = get_status_style(s)
+        stats_parts.append(f"{style}{count} {s}[/]")
+    console.print(" | ".join(stats_parts))
+
+
 def project_list_fn():
     """List projects"""
     jira = get_jira_client()
@@ -905,6 +1149,16 @@ def board_group():
 def board_list_cmd(project, board_type):
     """List boards"""
     board_list_fn(project, board_type)
+
+
+@board_group.command("view")
+@click.option("-b", "--id", "board_id", help="Board ID (or set JIRA_BOARD_ID)")
+@click.option("-n", "--name", "board_name", help="Board name (partial match supported)")
+@click.option("-a", "--all", "show_done", is_flag=True, help="Include Done/Resolved issues")
+@click.option("-l", "--limit", type=int, default=100, help="Max results (default: 100)")
+def board_view_cmd(board_id, board_name, show_done, limit):
+    """View board issues in a table"""
+    board_view_fn(board_id, board_name, show_done, limit)
 
 
 # -----------------------------------------------------------------------------
