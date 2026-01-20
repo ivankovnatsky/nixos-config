@@ -31,6 +31,7 @@
     macmon
     magic-wormhole
     mkpasswd
+    poweroff
     nextdns-mgmt
     nixfmt-rfc-style
     nixpkgs-darwin-master.yt-dlp

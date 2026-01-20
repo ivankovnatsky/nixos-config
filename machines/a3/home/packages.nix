@@ -23,6 +23,7 @@
     lm_sensors # Provides the 'sensors' command for monitoring temperatures
     lsof # List open files
     nixfmt-rfc-style
+    poweroff
     nodejs
     nvtopPackages.nvidia # GPU monitoring (like htop for GPUs)
     gh-notifications

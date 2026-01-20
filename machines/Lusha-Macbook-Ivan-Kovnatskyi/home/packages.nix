@@ -125,6 +125,7 @@
     sshpass
     ssm-session-manager-plugin
     stylua
+    poweroff
     settings
     syncthing-mgmt
     terraformer

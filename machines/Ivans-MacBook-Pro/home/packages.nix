@@ -22,6 +22,7 @@
     ps-top-nu
     settings
     sops
+    poweroff
     ssh-to-age
     swiftformat
     syncthing-mgmt

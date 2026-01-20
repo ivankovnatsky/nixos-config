@@ -19,6 +19,7 @@
     homelab
     hyperfine
     launchd-mgmt
+    poweroff
     ps-top-nu
     settings
     sops
