@@ -27,7 +27,7 @@
       owner = username;
     };
     nextdns-profile-lgphone = {
-      key = "nextDnsProfileLgphone";
+      key = "nextDnsProfileLgPhone";
       owner = username;
     };
   };
