@@ -26,6 +26,10 @@
       key = "nextDnsProfileAsus";
       owner = username;
     };
+    nextdns-profile-lgphone = {
+      key = "nextDnsProfileLgphone";
+      owner = username;
+    };
   };
 
   local.services.nextdns-mgmt.pro = {
@@ -60,6 +64,13 @@
     enable = true;
     apiKeyFile = config.sops.secrets.nextdns-api-key.path;
     profileIdFile = config.sops.secrets.nextdns-profile-asus.path;
+    profileFile = ../configs/nextdns-profile.json;
+  };
+
+  local.services.nextdns-mgmt.lgphone = {
+    enable = true;
+    apiKeyFile = config.sops.secrets.nextdns-api-key.path;
+    profileIdFile = config.sops.secrets.nextdns-profile-lgphone.path;
     profileFile = ../configs/nextdns-profile.json;
   };
 }
