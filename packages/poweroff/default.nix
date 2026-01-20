@@ -3,6 +3,6 @@
 let
   settings = pkgs.callPackage ../settings { };
 in
-pkgs.writeShellScriptBin "volume-poweroff" ''
+pkgs.writeShellScriptBin "poweroff" ''
   exec ${settings}/bin/settings poweroff "$@"
 ''
