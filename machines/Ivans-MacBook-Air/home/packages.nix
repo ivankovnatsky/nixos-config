@@ -14,6 +14,7 @@
     dns
     torrent-dl
     giffer
+    git-dotfiles
     git-message
     homelab
     hyperfine
