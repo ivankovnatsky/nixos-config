@@ -10,6 +10,7 @@ Subcommands:
   spaces      Add or remove desktop spaces (macOS only)
   windows     Close/hide app windows (macOS only)
   volume      Get or set system volume (macOS + Linux)
+  poweroff    Set volume and shutdown system (macOS only)
 """
 
 from __future__ import annotations
@@ -1162,6 +1163,25 @@ def cmd_volume(args: argparse.Namespace) -> int:
         return 1
 
 
+# Poweroff: Set volume and shutdown (macOS only)
+def cmd_poweroff(args: argparse.Namespace) -> int:
+    if not is_macos():
+        print("Poweroff only available on macOS", file=sys.stderr)
+        return 1
+
+    # Set volume to specified level before shutdown
+    volume = args.volume
+    if volume_set(volume):
+        print(f"Volume set to {volume}%")
+    else:
+        print("Warning: Could not set volume", file=sys.stderr)
+
+    # Shutdown the system
+    print("Shutting down...")
+    subprocess.run(["sudo", "shutdown", "-h", "now"], check=True)
+    return 0
+
+
 # Main CLI
 def main() -> int:
     parser = argparse.ArgumentParser(
@@ -1330,6 +1350,21 @@ def main() -> int:
         help="Set volume to this percentage (0-100)",
     )
     volume_parser.set_defaults(func=cmd_volume)
+
+    # Poweroff subcommand
+    poweroff_parser = subparsers.add_parser(
+        "poweroff",
+        aliases=["off"],
+        help="Set volume and shutdown system (macOS only)",
+    )
+    poweroff_parser.add_argument(
+        "-v",
+        "--volume",
+        type=float,
+        default=2.5,
+        help="Volume level before shutdown (default: 2.5%%)",
+    )
+    poweroff_parser.set_defaults(func=cmd_poweroff)
 
     # Help subcommand
     subparsers.add_parser(
