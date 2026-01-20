@@ -1076,9 +1076,14 @@ def render_board_table_fn(console, issues_by_status, all_columns):
     console.print(" | ".join(stats_parts))
 
 
-def board_view_fn(board_id=None, board_name=None, show_done=False, limit=100):
-    """View issues on a board with rich table formatting"""
+def board_view_fn(board_id=None, board_name=None, show_done=False, limit=100, my_in_progress=True):
+    """View issues on a board with rich table formatting
+
+    Args:
+        my_in_progress: If True (default), only show current user's issues in In Progress column
+    """
     jira = get_jira_client()
+    current_user_email = os.getenv("JIRA_EMAIL")
 
     if board_name:
         board_id = resolve_board_by_name(jira, board_name)
@@ -1110,6 +1115,15 @@ def board_view_fn(board_id=None, board_name=None, show_done=False, limit=100):
         return
 
     issues_by_status, all_columns = group_issues_by_status_fn(issues)
+
+    # Filter In Progress to only show current user's issues by default
+    if my_in_progress and current_user_email:
+        for status in list(issues_by_status.keys()):
+            if status.lower() in STATUS_IN_PROGRESS:
+                issues_by_status[status] = [
+                    issue for issue in issues_by_status[status]
+                    if issue.fields.assignee and issue.fields.assignee.emailAddress == current_user_email
+                ]
 
     if not all_columns:
         console.print("[dim]No status columns to display[/dim]")
@@ -1307,10 +1321,11 @@ def board_list_cmd(project, board_type):
 @click.option("-b", "--id", "board_id", help="Board ID (or set JIRA_BOARD_ID)")
 @click.option("-n", "--name", "board_name", help="Board name (partial match supported)")
 @click.option("-a", "--all", "show_done", is_flag=True, help="Include Done/Resolved issues")
+@click.option("--all-in-progress", "all_in_progress", is_flag=True, help="Show all In Progress issues (not just mine)")
 @click.option("-l", "--limit", type=int, default=100, help="Max results (default: 100)")
-def board_view_cmd(board_id, board_name, show_done, limit):
+def board_view_cmd(board_id, board_name, show_done, all_in_progress, limit):
     """View board issues in a table"""
-    board_view_fn(board_id, board_name, show_done, limit)
+    board_view_fn(board_id, board_name, show_done, limit, my_in_progress=not all_in_progress)
 
 
 # -----------------------------------------------------------------------------
