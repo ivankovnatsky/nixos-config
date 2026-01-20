@@ -24,6 +24,10 @@
       "chromium"
       "coconutbattery"
       "cursor"
+      {
+        name = "claude";
+        greedy = true;
+      }
       "firefox"
       # Needed to `brew uninstall --cask ghostty kitty`
       {
