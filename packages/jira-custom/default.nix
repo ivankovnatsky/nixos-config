@@ -4,5 +4,6 @@ let
   python = pkgs.python3.withPackages (ps: [ ps.jira ps.click ps.rich ]);
 in
 pkgs.writeShellScriptBin "jira-custom" ''
-  exec ${python}/bin/python ${./jira-custom.py} "$@"
+  export PYTHONPATH="${./.}:$PYTHONPATH"
+  exec ${python}/bin/python -m jira_custom "$@"
 ''
