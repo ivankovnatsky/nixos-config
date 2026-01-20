@@ -79,6 +79,14 @@ def trim_branch_name(name: str, char_limit: int) -> str:
     return trimmed.rstrip("-_")
 
 
+def strip_remote_prefix(branch: str) -> str:
+    """Strip remote prefix (e.g., origin/, upstream/) from branch name."""
+    match = re.match(r"^(origin|upstream|remote)/(.+)$", branch)
+    if match:
+        return match.group(2)
+    return branch
+
+
 def process_branch_name(
     branch: str,
     char_limit: int,
@@ -87,6 +95,7 @@ def process_branch_name(
     current_sha: str | None,
 ) -> str:
     """Process branch name with optional trimming and SHA suffix."""
+    branch = strip_remote_prefix(branch)
     if no_trim:
         result = branch
     else:
@@ -118,17 +127,23 @@ def branch_exists(branch: str) -> bool:
         return False
 
 
-def create_worktree(worktree_dir: Path, branch: str, base_branch: str | None) -> bool:
+def create_worktree(
+    worktree_dir: Path,
+    branch: str,
+    base_branch: str | None,
+    extra_args: list[str] | None = None,
+) -> bool:
     """Create a git worktree."""
     worktree_dir.parent.mkdir(parents=True, exist_ok=True)
+    extra = extra_args or []
 
     if branch_exists(branch):
-        result = run_git("worktree", "add", str(worktree_dir), branch, check=False)
+        run_git("worktree", "add", *extra, str(worktree_dir), branch, check=False)
     else:
         if base_branch:
-            result = run_git("worktree", "add", "-b", branch, str(worktree_dir), base_branch, check=False)
+            run_git("worktree", "add", *extra, "-b", branch, str(worktree_dir), base_branch, check=False)
         else:
-            result = run_git("worktree", "add", "-b", branch, str(worktree_dir), check=False)
+            run_git("worktree", "add", *extra, "-b", branch, str(worktree_dir), check=False)
 
     return worktree_dir.exists()
 
@@ -142,14 +157,22 @@ If the branch doesn't exist, it will be created.
 
 Example:
   %(prog)s feature/PROJ-12345-some-description
+  %(prog)s feature/CIN-907 origin/feature/CIN-907-initial-setup
   %(prog)s --no-pull feature/quick-fix
   %(prog)s --sha-suffix feature/TICKET-123
+  %(prog)s feature/branch -- --track --force
 """,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         "branch",
-        help="The branch name for the worktree (e.g., feature/TICKET-123)",
+        help="The branch name for the worktree (e.g., feature/TICKET-123). Remote prefixes like origin/ are stripped.",
+    )
+    parser.add_argument(
+        "start_point",
+        nargs="?",
+        default=None,
+        help="Optional start point (e.g., origin/feature/TICKET-123) to base the new branch on.",
     )
     parser.add_argument(
         "--no-trim",
@@ -171,6 +194,11 @@ Example:
         "--no-pull",
         action="store_true",
         help="Skip checkout and pull of default branch (default: pull enabled)",
+    )
+    parser.add_argument(
+        "git_args",
+        nargs="*",
+        help="Additional arguments passed to 'git worktree add' (after --).",
     )
 
     args = parser.parse_args()
@@ -219,7 +247,8 @@ Example:
         print(worktree_dir, end="")
         return 0
 
-    if not create_worktree(worktree_dir, branch_name, default_branch):
+    base_branch = args.start_point if args.start_point else default_branch
+    if not create_worktree(worktree_dir, branch_name, base_branch, args.git_args):
         print(f"Error: Failed to create worktree at {worktree_dir}", file=sys.stderr)
         return 1
 
