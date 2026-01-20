@@ -32,20 +32,6 @@
         exit 1
       fi
 
-      # Check body line length (max 80 chars) if body exists
-      body=$(echo "$commit_msg" | tail -n +3)
-      if [ -n "$body" ]; then
-        line_num=3
-        while IFS= read -r line; do
-          line_len=''${#line}
-          if [ "$line_len" -gt 80 ]; then
-            echo "ERROR: Commit body line $line_num exceeds 80 characters (got $line_len)"
-            echo "Line: $line"
-            exit 1
-          fi
-          ((line_num++))
-        done <<< "$body"
-      fi
     '';
   };
 
