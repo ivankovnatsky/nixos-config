@@ -10,7 +10,7 @@ Subcommands:
   spaces      Add or remove desktop spaces (macOS only)
   windows     Close/hide app windows (macOS only)
   volume      Get or set system volume (macOS + Linux)
-  poweroff    Set volume and shutdown system (macOS only)
+  poweroff    Set volume and shutdown system (macOS + Linux)
 """
 
 from __future__ import annotations
@@ -1163,10 +1163,10 @@ def cmd_volume(args: argparse.Namespace) -> int:
         return 1
 
 
-# Poweroff: Set volume and shutdown (macOS only)
+# Poweroff: Set volume and shutdown (macOS + Linux)
 def cmd_poweroff(args: argparse.Namespace) -> int:
-    if not is_macos():
-        print("Poweroff only available on macOS", file=sys.stderr)
+    if not is_macos() and not is_linux():
+        print("Poweroff only available on macOS and Linux", file=sys.stderr)
         return 1
 
     # Set volume to specified level before shutdown
@@ -1355,7 +1355,7 @@ def main() -> int:
     poweroff_parser = subparsers.add_parser(
         "poweroff",
         aliases=["off"],
-        help="Set volume and shutdown system (macOS only)",
+        help="Set volume and shutdown system (macOS + Linux)",
     )
     poweroff_parser.add_argument(
         "-v",
