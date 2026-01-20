@@ -32,6 +32,7 @@
     magic-wormhole
     mkpasswd
     poweroff
+    git-dotfiles
     nextdns-mgmt
     nixfmt-rfc-style
     nixpkgs-darwin-master.yt-dlp

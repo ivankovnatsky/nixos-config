@@ -23,6 +23,7 @@
     settings
     sops
     poweroff
+    git-dotfiles
     ssh-to-age
     swiftformat
     syncthing-mgmt
