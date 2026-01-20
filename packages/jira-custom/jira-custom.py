@@ -763,6 +763,95 @@ def epic_remove_fn(issue_keys):
             click.echo(f"Error removing {key}: {e}", err=True)
 
 
+def issue_list_fn(
+    project=None,
+    parent=None,
+    issue_type=None,
+    status=None,
+    assignee=None,
+    reporter=None,
+    priority=None,
+    labels=None,
+    jql=None,
+    order_by="created",
+    reverse=False,
+    limit=50,
+):
+    """List issues with flexible JQL-based filtering"""
+    jira = get_jira_client()
+
+    jql_parts = []
+
+    if jql:
+        jql_parts.append(f"({jql})")
+
+    if project:
+        jql_parts.append(f'project = "{project}"')
+
+    if parent:
+        jql_parts.append(f"parent = {parent}")
+
+    if issue_type:
+        jql_parts.append(f'issuetype = "{issue_type}"')
+
+    if status:
+        if status.startswith("~"):
+            jql_parts.append(f'status != "{status[1:]}"')
+        else:
+            jql_parts.append(f'status = "{status}"')
+
+    if assignee:
+        if assignee.lower() == "unassigned":
+            jql_parts.append("assignee IS EMPTY")
+        elif assignee.lower() == "me":
+            email = os.getenv("JIRA_EMAIL")
+            jql_parts.append(f'assignee = "{email}"')
+        else:
+            jql_parts.append(f'assignee = "{assignee}"')
+
+    if reporter:
+        if reporter.lower() == "me":
+            email = os.getenv("JIRA_EMAIL")
+            jql_parts.append(f'reporter = "{email}"')
+        else:
+            jql_parts.append(f'reporter = "{reporter}"')
+
+    if priority:
+        jql_parts.append(f'priority = "{priority}"')
+
+    if labels:
+        for label in labels:
+            if label.startswith("~"):
+                jql_parts.append(f'labels != "{label[1:]}"')
+            else:
+                jql_parts.append(f'labels = "{label}"')
+
+    if not jql_parts:
+        raise click.ClickException("At least one filter is required (--project, --parent, --jql, etc.)")
+
+    order_dir = "ASC" if reverse else "DESC"
+    jql_query = " AND ".join(jql_parts) + f" ORDER BY {order_by} {order_dir}"
+
+    issues = jira.search_issues(jql_query, maxResults=limit)
+
+    if not issues:
+        click.echo("No issues found", err=True)
+        return
+
+    click.echo(f"{'KEY':<15} {'TYPE':<12} {'STATUS':<15} {'ASSIGNEE':<20} {'SUMMARY'}")
+    click.echo("-" * 100)
+
+    for issue in issues:
+        key = issue.key
+        itype = issue.fields.issuetype.name[:10]
+        status_name = issue.fields.status.name[:13]
+        assignee_name = issue.fields.assignee.displayName[:18] if issue.fields.assignee else "Unassigned"
+        summary = issue.fields.summary
+        if len(summary) > 35:
+            summary = summary[:32] + "..."
+        click.echo(f"{key:<15} {itype:<12} {status_name:<15} {assignee_name:<20} {summary}")
+
+
 def board_list_fn(project=None, board_type=None):
     """List boards"""
     jira = get_jira_client()
@@ -1355,6 +1444,40 @@ def issue_link_types_cmd():
 def issue_types_cmd(project, ids):
     """List available issue types"""
     issue_types_list_fn(project, ids)
+
+
+@issue_group.command("list")
+@click.option("-p", "--project", help="Filter by project key")
+@click.option("-P", "--parent", help="Filter by parent issue key (list children)")
+@click.option("-t", "--type", "issue_type", help="Filter by issue type")
+@click.option("-s", "--status", help="Filter by status (prefix ~ to exclude)")
+@click.option("-a", "--assignee", help="Filter by assignee (use 'me' or 'unassigned')")
+@click.option("-r", "--reporter", help="Filter by reporter (use 'me')")
+@click.option("-y", "--priority", help="Filter by priority")
+@click.option("-l", "--label", multiple=True, help="Filter by label (prefix ~ to exclude)")
+@click.option("-q", "--jql", help="Raw JQL query (combined with other filters)")
+@click.option("--order-by", default="created", help="Sort field (default: created)")
+@click.option("--reverse", is_flag=True, help="Reverse sort order (ASC instead of DESC)")
+@click.option("-n", "--limit", type=int, default=50, help="Max results (default: 50)")
+def issue_list_cmd(project, parent, issue_type, status, assignee, reporter, priority, label, jql, order_by, reverse, limit):
+    """List issues with flexible filtering
+
+    Examples:
+
+      # List children of an issue
+      jira-custom issue list -P PROJ-28797
+
+      # List all tasks in a project
+      jira-custom issue list -p PROJ -t Task
+
+      # List my open issues
+      jira-custom issue list -p PROJ -a me -s "~Done"
+
+      # Raw JQL query
+      jira-custom issue list -q "sprint in openSprints()"
+    """
+    labels = list(label) if label else None
+    issue_list_fn(project, parent, issue_type, status, assignee, reporter, priority, labels, jql, order_by, reverse, limit)
 
 
 # -----------------------------------------------------------------------------
