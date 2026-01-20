@@ -31,9 +31,6 @@ DIRECTORY_MAPPINGS = {
 
 MAX_MESSAGE_LENGTH = 72
 MAX_PREFIX_LENGTH = 40
-MAX_BODY_LINE_LENGTH = 80
-
-
 def get_staged_files() -> list[str]:
     result = subprocess.run(
         ["git", "diff", "--staged", "--name-only"],
@@ -89,14 +86,6 @@ def shorten_directories(path: str) -> str:
 
 def create_commit_message(prefix: str, subject: str) -> str:
     return f"{prefix}: {subject}"
-
-
-def validate_body_lines(body: str) -> tuple[bool, str | None]:
-    """Validate that no body line exceeds MAX_BODY_LINE_LENGTH."""
-    for i, line in enumerate(body.split("\n"), start=1):
-        if len(line) > MAX_BODY_LINE_LENGTH:
-            return False, f"Body line {i} exceeds {MAX_BODY_LINE_LENGTH} chars (got {len(line)}): {line}"
-    return True, None
 
 
 def parse_args_flexible(
@@ -168,7 +157,6 @@ Features:
   - Shortens directories if scope > 40 (packages->pkg, modules->mod, etc.)
   - Validates scope length (max 40 chars)
   - Validates subject length (max 72 chars)
-  - Validates body line length (max 80 chars)
 """,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -261,12 +249,6 @@ Features:
         )
         print(f"Subject: {message}", file=sys.stderr)
         return 1
-
-    if body:
-        valid, error = validate_body_lines(body)
-        if not valid:
-            print(f"Error: {error}", file=sys.stderr)
-            return 1
 
     try:
         if file_path:
