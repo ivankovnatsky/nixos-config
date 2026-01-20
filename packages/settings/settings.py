@@ -9,6 +9,7 @@ Subcommands:
   awake       Prevent system from sleeping (macOS + Linux)
   spaces      Add or remove desktop spaces (macOS only)
   windows     Close/hide app windows (macOS only)
+  volume      Get or set system volume (macOS + Linux)
 """
 
 from __future__ import annotations
@@ -1048,6 +1049,119 @@ def cmd_spaces(args: argparse.Namespace) -> int:
         return 1
 
 
+# Volume: Get/set system volume (macOS + Linux)
+def volume_get_macos() -> float | None:
+    """Get current volume percentage on macOS using osascript."""
+    try:
+        result = subprocess.run(
+            ["osascript", "-e", "output volume of (get volume settings)"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        return float(result.stdout.strip())
+    except (subprocess.CalledProcessError, FileNotFoundError, ValueError):
+        return None
+
+
+def volume_set_macos(percent: float) -> bool:
+    """Set volume percentage on macOS using osascript."""
+    try:
+        # macOS volume is 0-100
+        volume = int(round(percent))
+        subprocess.run(
+            ["osascript", "-e", f"set volume output volume {volume}"],
+            check=True,
+        )
+        return True
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+        print(f"Error setting volume: {e}", file=sys.stderr)
+        return False
+
+
+def volume_get_linux() -> float | None:
+    """Get current volume percentage on Linux using pactl."""
+    try:
+        result = subprocess.run(
+            ["pactl", "get-sink-volume", "@DEFAULT_SINK@"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        # Output format: "Volume: front-left: 65536 / 100% / 0.00 dB, ..."
+        match = re.search(r"(\d+)%", result.stdout)
+        if match:
+            return float(match.group(1))
+        return None
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return None
+
+
+def volume_set_linux(percent: float) -> bool:
+    """Set volume percentage on Linux using pactl."""
+    try:
+        subprocess.run(
+            ["pactl", "set-sink-volume", "@DEFAULT_SINK@", f"{percent:.1f}%"],
+            check=True,
+        )
+        return True
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+        print(f"Error setting volume: {e}", file=sys.stderr)
+        return False
+
+
+def volume_get() -> float | None:
+    """Get current volume percentage."""
+    if is_macos():
+        return volume_get_macos()
+    elif is_linux():
+        return volume_get_linux()
+    else:
+        print("Volume control only available on macOS and Linux", file=sys.stderr)
+        return None
+
+
+def volume_set(percent: float) -> bool:
+    """Set volume percentage."""
+    if is_macos():
+        return volume_set_macos(percent)
+    elif is_linux():
+        return volume_set_linux(percent)
+    else:
+        print("Volume control only available on macOS and Linux", file=sys.stderr)
+        return False
+
+
+def cmd_volume(args: argparse.Namespace) -> int:
+    if not is_macos() and not is_linux():
+        print("Volume settings only available on macOS and Linux", file=sys.stderr)
+        return 1
+
+    if args.status:
+        vol = volume_get()
+        if vol is not None:
+            print(f"Volume: {vol:.0f}%")
+            return 0
+        else:
+            print("Could not get volume", file=sys.stderr)
+            return 1
+
+    if args.level is not None:
+        if volume_set(args.level):
+            print(f"Volume: {args.level:.1f}%")
+            return 0
+        return 1
+
+    # Default: show status
+    vol = volume_get()
+    if vol is not None:
+        print(f"Volume: {vol:.0f}%")
+        return 0
+    else:
+        print("Could not get volume", file=sys.stderr)
+        return 1
+
+
 # Main CLI
 def main() -> int:
     parser = argparse.ArgumentParser(
@@ -1197,6 +1311,25 @@ def main() -> int:
         help="App name(s) (required for close/hide)",
     )
     windows_parser.set_defaults(func=cmd_windows)
+
+    # Volume subcommand
+    volume_parser = subparsers.add_parser(
+        "volume",
+        aliases=["vol", "v"],
+        help="Get or set system volume (macOS + Linux)",
+    )
+    volume_parser.add_argument(
+        "--status",
+        action="store_true",
+        help="Show current volume level",
+    )
+    volume_parser.add_argument(
+        "level",
+        nargs="?",
+        type=float,
+        help="Set volume to this percentage (0-100)",
+    )
+    volume_parser.set_defaults(func=cmd_volume)
 
     # Help subcommand
     subparsers.add_parser(
