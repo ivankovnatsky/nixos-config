@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
-# Usage: grep-find <search_term> [file_pattern]
+# Usage: find-grep <search_term> [file_pattern]
 #
 # Examples:
-#   grep-find "kafka:"                    # Search in all files
-#   grep-find "kafka:" "values"           # Search in files containing 'values'
-#   grep-find "kafka:" "values.yaml"      # Search in values.yaml files
-#   grep-find "kafka:" ".yaml"            # Search in all yaml files
-#   grep-find "kafka:" "config/dev/"      # Search in files under config/dev/
-#   grep-find "kafka:" "dir/dir2/file"    # Search in files containing 'file' in dir/dir2/
+#   find-grep "kafka:"                    # Search in all files
+#   find-grep "kafka:" "values"           # Search in files containing 'values'
+#   find-grep "kafka:" "values.yaml"      # Search in values.yaml files
+#   find-grep "kafka:" ".yaml"            # Search in all yaml files
+#   find-grep "kafka:" "config/dev/"      # Search in files under config/dev/
+#   find-grep "kafka:" "dir/dir2/file"    # Search in files containing 'file' in dir/dir2/
 
 search_term="$1"
 file_pattern="${2:-}" # Optional file pattern argument

@@ -41,6 +41,7 @@
     eks-node-viewer
     erdtree
     exiftool
+    find-grep
     genpass
     ggh
     gh-pr
