@@ -5,7 +5,7 @@ import click
 from rich.console import Console
 
 from ..client import get_jira_client
-from ..config import STATUS_DONE_JQL, STATUS_IN_PROGRESS
+from ..config import STATUS_BLOCKED, STATUS_DONE_JQL, STATUS_IN_PROGRESS, STATUS_TODO
 from ..display import render_board_table_fn
 
 
@@ -101,11 +101,13 @@ def board_list_fn(project=None, board_type=None):
         click.echo(f"{board_id:<10} {btype:<10} {name}")
 
 
-def board_view_fn(board_id=None, board_name=None, show_done=False, limit=100, my_in_progress=True):
+def board_view_fn(board_id=None, board_name=None, show_done=False, limit=100, mine_only=True):
     """View issues on a board with rich table formatting
 
     Args:
-        my_in_progress: If True (default), only show current user's issues in In Progress column
+        mine_only: If True (default), filter To Do/Blocked/In Progress columns
+            to show only issues assigned to me OR unassigned.
+            Other columns are not filtered.
     """
     jira = get_jira_client()
     current_user_email = os.getenv("JIRA_EMAIL")
@@ -141,13 +143,16 @@ def board_view_fn(board_id=None, board_name=None, show_done=False, limit=100, my
 
     issues_by_status, all_columns = group_issues_by_status_fn(issues)
 
-    # Filter In Progress to only show current user's issues by default
-    if my_in_progress and current_user_email:
+    # Filter columns based on user assignment
+    if mine_only and current_user_email:
         for status in list(issues_by_status.keys()):
-            if status.lower() in STATUS_IN_PROGRESS:
+            status_lower = status.lower()
+
+            # To Do, Blocked, In Progress: Assigned to me OR Unassigned
+            if status_lower in STATUS_TODO or status_lower in STATUS_BLOCKED or status_lower in STATUS_IN_PROGRESS:
                 issues_by_status[status] = [
                     issue for issue in issues_by_status[status]
-                    if issue.fields.assignee and issue.fields.assignee.emailAddress == current_user_email
+                    if not issue.fields.assignee or issue.fields.assignee.emailAddress == current_user_email
                 ]
 
     if not all_columns:
@@ -175,8 +180,8 @@ def board_list_cmd(project, board_type):
 @click.option("-b", "--id", "board_id", help="Board ID (or set JIRA_BOARD_ID)")
 @click.option("-n", "--name", "board_name", help="Board name (partial match supported)")
 @click.option("-a", "--all", "show_done", is_flag=True, help="Include Done/Resolved issues")
-@click.option("--all-in-progress", "all_in_progress", is_flag=True, help="Show all In Progress issues (not just mine)")
+@click.option("--all-users", "all_users", is_flag=True, help="Show all issues (disable mine-only filtering)")
 @click.option("-l", "--limit", type=int, default=100, help="Max results (default: 100)")
-def board_view_cmd(board_id, board_name, show_done, all_in_progress, limit):
+def board_view_cmd(board_id, board_name, show_done, all_users, limit):
     """View board issues in a table"""
-    board_view_fn(board_id, board_name, show_done, limit, my_in_progress=not all_in_progress)
+    board_view_fn(board_id, board_name, show_done, limit, mine_only=not all_users)
