@@ -3,17 +3,23 @@
   local.tools = {
     enable = true;
 
-    npm.packages = {
+    npm = {
+      configFile = ''
+        prefix=~/.npm
+      '';
+      packages = { };
+    };
+
+    bun.packages = {
       "npm-groovy-lint" = "npm-groovy-lint";
-      "@anthropic-ai/claude-code" = "claude";
       "ccstatusline" = "ccstatusline";
       "@openai/codex" = "codex";
       "@google/gemini-cli" = "gemini";
     };
 
-    npm.configFile = ''
-      prefix=~/.npm
-    '';
+    curlShell = {
+      "https://claude.ai/install.sh" = "bash";
+    };
 
     mcp.servers = {
       github = {
