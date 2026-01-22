@@ -12,7 +12,6 @@
     ../../../home/flags.nix
     ../../../home/gemini.nix
     ../../../home/ghorg.nix
-    ../../../home/ghostty.nix
     ../../../home/giffer.nix
     ../../../home/git
     ../../../home/go.nix
