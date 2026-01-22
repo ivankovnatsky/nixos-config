@@ -59,6 +59,10 @@ let
 
   configJson = pkgs.writeText "activation-config.json" (
     builtins.toJSON {
+      bun = {
+        inherit (cfg.bun) packages configFile;
+      };
+      # Backward compatibility
       npm = {
         inherit (cfg.npm) packages configFile;
       };
@@ -68,11 +72,13 @@ let
       mcp = {
         inherit (cfg.mcp) servers;
       };
+      curlShell = cfg.curlShell;
       inherit (cfg) stateFile;
       paths = {
+        bunBin = "${config.home.homeDirectory}/.bun/bin";
         npmBin = "${config.home.homeDirectory}/.npm/bin";
         uvBin = "${config.home.homeDirectory}/.local/bin";
-        claudeCli = "${config.home.homeDirectory}/.bun/bin/claude";
+        claudeCli = "${config.home.homeDirectory}/.local/bin/claude";
         bun = "${pkgs.bun}/bin";
         uv = "${pkgs.uv}/bin";
         nodejs = "${pkgs.nodejs}/bin";
@@ -80,6 +86,9 @@ let
         tar = "${pkgs.gnutar}/bin";
         gzip = "${pkgs.gzip}/bin";
         curl = "${pkgs.curl}/bin";
+        bash = "${pkgs.bash}/bin";
+        perl = "${pkgs.perl}/bin";
+        coreutils = "${pkgs.coreutils}/bin";
       };
     }
   );
@@ -94,20 +103,33 @@ in
       description = "Path to state file tracking installed components";
     };
 
+    bun.packages = mkOption {
+      type = types.attrsOf types.str;
+      default = { };
+      description = "Packages to install globally via bun (package name -> binary name)";
+      example = {
+        "npm-groovy-lint" = "npm-groovy-lint";
+        "@google/gemini-cli" = "gemini";
+      };
+    };
+
+    bun.configFile = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "Content for .bunfig.toml file (only created if set and file doesn't exist)";
+    };
+
+    # Backward compatibility - deprecated, use bun.packages instead
     npm.packages = mkOption {
       type = types.attrsOf types.str;
       default = { };
-      description = "NPM packages to install globally (package name -> binary name)";
-      example = {
-        "@anthropic-ai/claude-code" = "claude";
-        "npm-groovy-lint" = "npm-groovy-lint";
-      };
+      description = "Deprecated: use bun.packages instead. NPM packages to install globally via bun.";
     };
 
     npm.configFile = mkOption {
       type = types.nullOr types.str;
       default = null;
-      description = "Content for .npmrc file (only created if doesn't exist)";
+      description = "Deprecated: use bun.configFile instead.";
     };
 
     uv.packages = mkOption {
@@ -124,6 +146,16 @@ in
       type = types.attrsOf mcpServerType;
       default = { };
       description = "MCP servers to configure";
+    };
+
+    curlShell = mkOption {
+      type = types.attrsOf types.str;
+      default = { };
+      description = "URLs to install via curl piped to shell (URL -> shell interpreter)";
+      example = {
+        "https://claude.ai/install.sh" = "bash";
+        "https://example.com/setup.sh" = "sh";
+      };
     };
   };
 
