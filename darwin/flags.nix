@@ -5,7 +5,7 @@
     editor = "nvim";
     darkMode = true;
     hotkeys = {
-      terminal = "kitty";
+      terminal = "Terminal";
     };
   };
 }
