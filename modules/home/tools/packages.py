@@ -70,12 +70,10 @@ def run_command(cmd: List[str], env: Dict = None) -> tuple[int, str, str]:
     return result.returncode, result.stdout, result.stderr
 
 
-def get_installed_npm_packages(npm_bin: str, packages: Dict[str, str]) -> Set[str]:
-    bun_bin = Path.home() / ".bun" / "bin"
-
+def get_installed_bun_packages(bun_bin: str, packages: Dict[str, str]) -> Set[str]:
     installed = set()
     for package, binary in packages.items():
-        if (bun_bin / binary).exists() or (Path(npm_bin) / binary).exists():
+        if (Path(bun_bin) / binary).exists():
             installed.add(package)
     return installed
 
@@ -107,81 +105,99 @@ def get_installed_mcp_servers(claude_cli: str, env: Dict = None) -> Set[str]:
     return servers
 
 
-def install_npm_packages(
-    packages: Dict[str, str], paths: Dict, state: Dict, npm_config: Dict
+def install_bun_packages(
+    packages: Dict[str, str], paths: Dict, state: Dict, bun_config: Dict
 ):
-    # Handle .npmrc creation
-    npmrc_path = os.path.expanduser("~/.npmrc")
-    npmrc_content = npm_config.get("configFile")
+    """Fully declarative bun package management.
 
-    if npmrc_content and not state.get("npm", {}).get("npmrc_created"):
-        if not os.path.exists(npmrc_path):
-            log("Creating .npmrc file", Color.GREEN)
-            with open(npmrc_path, "w") as f:
-                f.write(npmrc_content)
-            state.setdefault("npm", {})["npmrc_created"] = True
+    Ensures:
+    - All declared packages exist in ~/.bun/bin
+    - No declared packages exist in ~/.npm/bin (cleanup legacy)
+    - Packages removed from config are removed from both locations
+    """
+    # Migrate state from "npm" to "bun" for backward compatibility
+    if "npm" in state and "bun" not in state:
+        log("Migrating state from npm to bun", Color.YELLOW)
+        state["bun"] = state.pop("npm")
+
+    # Handle .bunfig.toml creation (only if bun.configFile is set)
+    bunfig_content = bun_config.get("configFile")
+    if bunfig_content and not state.get("bun", {}).get("bunfig_created"):
+        bunfig_path = os.path.expanduser("~/.bunfig.toml")
+        if not os.path.exists(bunfig_path):
+            log("Creating .bunfig.toml file", Color.GREEN)
+            with open(bunfig_path, "w") as f:
+                f.write(bunfig_content)
+            state.setdefault("bun", {})["bunfig_created"] = True
         else:
-            log(".npmrc already exists, skipping creation", Color.BLUE)
-            state.setdefault("npm", {})["npmrc_created"] = True
+            log(".bunfig.toml already exists, skipping creation", Color.BLUE)
+            state.setdefault("bun", {})["bunfig_created"] = True
 
+    bun_bin = Path(paths["bunBin"])
+    npm_bin = Path(paths["npmBin"])
     desired = set(packages.keys())
-    state_packages = set(state.get("npm", {}).get("packages", {}).keys())
 
-    # Check what's currently installed from what we're tracking
-    current = get_installed_npm_packages(paths["npmBin"], packages)
+    # Merge state packages from both npm and bun for tracking (backward compat)
+    bun_state_packages = state.get("bun", {}).get("packages", {})
+    npm_state_packages = state.get("npm", {}).get("packages", {})
+    merged_state_packages = {**npm_state_packages, **bun_state_packages}
+    state_packages = set(merged_state_packages.keys())
 
-    # Build a complete mapping of all tracked packages (state + current config)
-    # to their binaries for removal detection
+    # Build binary mapping for all tracked packages
     all_tracked = {}
-    for pkg, pkg_data in state.get("npm", {}).get("packages", {}).items():
+    for pkg, pkg_data in merged_state_packages.items():
         all_tracked[pkg] = pkg_data.get("binary", pkg.split("/")[-1])
     for pkg, binary in packages.items():
-        if pkg not in all_tracked:
-            all_tracked[pkg] = binary
+        all_tracked[pkg] = binary
 
-    # Check if binaries exist for packages that should be removed (not in desired config)
-    to_remove = []
-    for pkg, binary in all_tracked.items():
-        if pkg not in desired and (Path(paths["npmBin"]) / binary).exists():
-            to_remove.append(pkg)
+    env = os.environ.copy()
+    env["PATH"] = f"{paths['bun']}:{paths['nodejs']}:{env.get('PATH', '')}"
 
     state_changed = False
 
+    # 1. CLEANUP: Remove packages no longer in config from both locations
+    to_remove = {pkg: binary for pkg, binary in all_tracked.items()
+                 if pkg not in desired and
+                 ((bun_bin / binary).exists() or (npm_bin / binary).exists())}
+
     if to_remove:
-        log(f"Removing NPM packages: {', '.join(to_remove)}", Color.RED)
-        env = os.environ.copy()
-        env["PATH"] = f"{paths['bun']}:{env.get('PATH', '')}"
-
-        cmd = [f"{paths['bun']}/bun", "remove", "-g"] + list(to_remove)
-        returncode, stdout, stderr = run_command(cmd, env)
-
-        if returncode != 0:
-            log(f"Failed to remove NPM packages: {stderr}", Color.RED)
-        else:
-            log(f"Removed: {', '.join(to_remove)}", Color.GREEN)
-            state_changed = True
-
-    to_install = desired - current
-
-    if to_install:
-        log(f"Installing NPM packages: {', '.join(to_install)}", Color.GREEN)
-        env = os.environ.copy()
-        env["PATH"] = f"{paths['bun']}:{env.get('PATH', '')}"
-
-        cmd = [f"{paths['bun']}/bun", "install", "-g"] + list(to_install)
-        returncode, stdout, stderr = run_command(cmd, env)
-
-        if returncode != 0:
-            log(f"Failed to install NPM packages: {stderr}", Color.RED)
-            return False
-
+        log(f"Removing unmanaged packages: {', '.join(to_remove.keys())}", Color.RED)
+        # Try bun first
+        cmd = [f"{paths['bun']}/bun", "remove", "-g"] + list(to_remove.keys())
+        run_command(cmd, env)
+        # Fallback to npm for any remaining
+        still_present = [pkg for pkg, binary in to_remove.items()
+                        if (bun_bin / binary).exists() or (npm_bin / binary).exists()]
+        if still_present:
+            cmd = [f"{paths['nodejs']}/npm", "uninstall", "-g"] + still_present
+            run_command(cmd, env)
         state_changed = True
-    elif not to_remove:
-        log("All NPM packages already installed", Color.BLUE)
 
-    # Update state with current desired packages (including binary names)
+    # 2. CLEANUP LEGACY: Remove npm versions of declared packages
+    npm_cleanup = [pkg for pkg, binary in packages.items() if (npm_bin / binary).exists()]
+    if npm_cleanup:
+        log(f"Removing legacy npm versions: {', '.join(npm_cleanup)}", Color.YELLOW)
+        cmd = [f"{paths['nodejs']}/npm", "uninstall", "-g"] + npm_cleanup
+        run_command(cmd, env)
+        state_changed = True
+
+    # 3. INSTALL: Ensure all declared packages exist in bun bin
+    to_install = [pkg for pkg, binary in packages.items() if not (bun_bin / binary).exists()]
+    if to_install:
+        log(f"Installing bun packages: {', '.join(to_install)}", Color.GREEN)
+        cmd = [f"{paths['bun']}/bun", "install", "-g"] + to_install
+        returncode, stdout, stderr = run_command(cmd, env)
+        if returncode != 0:
+            log(f"Failed to install bun packages: {stderr}", Color.RED)
+            return False
+        state_changed = True
+
+    if not to_remove and not npm_cleanup and not to_install:
+        log("All bun packages in sync", Color.BLUE)
+
+    # Update state
     if state_changed or state_packages != desired:
-        state.setdefault("npm", {})["packages"] = {
+        state.setdefault("bun", {})["packages"] = {
             pkg: {"installed": True, "binary": binary}
             for pkg, binary in packages.items()
         }
@@ -354,6 +370,63 @@ def install_mcp_servers(servers: Dict, paths: Dict, state: Dict):
     return True
 
 
+def install_curl_shell_scripts(scripts: Dict[str, str], paths: Dict, state: Dict):
+    """Install scripts via curl piped to shell interpreter."""
+    if not scripts:
+        return True
+
+    installed = set(state.get("curlShell", {}).get("installed", []))
+    desired = set(scripts.keys())
+    to_install = desired - installed
+
+    if not to_install:
+        log("All curl shell scripts already installed", Color.BLUE)
+        return True
+
+    env = os.environ.copy()
+    env["PATH"] = (
+        f"{paths.get('bash', '/bin')}:{paths['curl']}:"
+        f"{paths.get('perl', '')}:{paths.get('coreutils', '')}:{env.get('PATH', '')}"
+    )
+
+    state_changed = False
+
+    for url in to_install:
+        shell = scripts[url]
+        log(f"Running: curl -fsSL {url} | {shell}", Color.GREEN)
+
+        shell_path = f"{paths.get('bash', '/bin')}/{shell}" if shell == "bash" else shell
+
+        curl_cmd = [f"{paths['curl']}/curl", "-fsSL", url]
+        curl_proc = subprocess.Popen(
+            curl_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env
+        )
+
+        shell_proc = subprocess.Popen(
+            [shell_path],
+            stdin=curl_proc.stdout,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            env=env,
+        )
+
+        curl_proc.stdout.close()
+        stdout, stderr = shell_proc.communicate()
+
+        if shell_proc.returncode != 0:
+            log(f"Failed to run script from {url}: {stderr.decode()}", Color.RED)
+            continue
+
+        log(f"Successfully installed from {url}", Color.GREEN)
+        installed.add(url)
+        state_changed = True
+
+    if state_changed:
+        state.setdefault("curlShell", {})["installed"] = list(installed)
+
+    return True
+
+
 def main():
     if len(sys.argv) < 3 or sys.argv[1] != "--config":
         log("Usage: packages.py --config <config.json>", Color.RED)
@@ -368,16 +441,26 @@ def main():
 
     success = True
 
-    if config.get("npm", {}).get("packages"):
-        success &= install_npm_packages(
-            config["npm"]["packages"], config["paths"], state, config["npm"]
-        )
+    # Support both bun and npm config keys for backward compatibility
+    bun_config = config.get("bun", {})
+    npm_config = config.get("npm", {})
+    packages = {**npm_config.get("packages", {}), **bun_config.get("packages", {})}
+    # Only use bun.configFile for bunfig.toml (not npm.configFile - different format)
+    bun_only_config = {"configFile": bun_config.get("configFile")}
+
+    if packages:
+        success &= install_bun_packages(packages, config["paths"], state, bun_only_config)
 
     if config.get("uv", {}).get("packages"):
         success &= install_uv_packages(config["uv"]["packages"], config["paths"], state)
 
     if config.get("mcp", {}).get("servers"):
         success &= install_mcp_servers(config["mcp"]["servers"], config["paths"], state)
+
+    if config.get("curlShell"):
+        success &= install_curl_shell_scripts(
+            config["curlShell"], config["paths"], state
+        )
 
     save_json(state_file, state)
 
