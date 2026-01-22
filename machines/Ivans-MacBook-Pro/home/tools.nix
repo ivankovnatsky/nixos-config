@@ -3,9 +3,7 @@
   local.tools = {
     enable = true;
 
-    # Declarative equivalents of the previous imperative installs
-    npm.packages = {
-      "@anthropic-ai/claude-code" = "claude";
+    bun.packages = {
       "ccstatusline" = "ccstatusline";
       "@google/gemini-cli" = "gemini";
       "@openai/codex" = "codex";
