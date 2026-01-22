@@ -85,6 +85,7 @@
         path = "${config.users.users.${username}.home}/.task";
         label = ".task";
         devices = [
+          "a3"
           "Ivans-Mac-mini"
           "Ivans-MacBook-Pro"
           "Ivans-MacBook-Air"
