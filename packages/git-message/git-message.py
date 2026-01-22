@@ -142,9 +142,8 @@ Examples:
   git-message "add feature"                     Commits staged file with "<scope>: add feature"
   git-message file.nix "add feature"            Commits file.nix with "<scope>: add feature"
   git-message "add feature" -b "Body text"      Commits with subject and body
-  git-message "add feature" -b "P1" -b "P2"     Multiple paragraphs (blank line between)
+  git-message "add feature" -b "L1" -b "L2"     Multiple -b joined with newline
   git-message -s "add feature" -b "Line 1
-
   Line 2"                                       Multiline body with newlines
 
 Features:
@@ -170,12 +169,12 @@ Features:
         "-b",
         "--body",
         action="append",
-        help="commit body (can use multiple times, can contain newlines)",
+        help="commit body (can use multiple times, joined with newline)",
     )
     parsed = parser.parse_args()
 
-    # Join multiple -b flags with blank lines
-    body = "\n\n".join(parsed.body) if parsed.body else None
+    # Join multiple -b flags with single newline (no blank lines)
+    body = "\n".join(parsed.body) if parsed.body else None
 
     file_path, subject = parse_args_flexible(parsed.args, parsed.subject)
 
