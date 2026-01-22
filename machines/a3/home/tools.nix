@@ -9,6 +9,10 @@
       "@google/gemini-cli" = "gemini";
     };
 
+    curlShell = {
+      "https://claude.ai/install.sh" = "bash";
+    };
+
     mcp.servers = { };
   };
 }
