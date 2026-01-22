@@ -126,6 +126,16 @@ in
         # https://github.com/anthropics/claude-code/issues/10375
         printf '\e[?1004l'
 
+        # Check gh auth on first interactive shell
+        if [[ ! -f "$HOME/.config/gh/.auth-checked" ]] && command -v gh &>/dev/null; then
+          if ! gh auth status &>/dev/null; then
+            echo "GitHub CLI not authenticated. Running 'gh auth login'..."
+            gh auth login --git-protocol https --web && mkdir -p "$HOME/.config/gh" && touch "$HOME/.config/gh/.auth-checked"
+          else
+            mkdir -p "$HOME/.config/gh" && touch "$HOME/.config/gh/.auth-checked"
+          fi
+        fi
+
         # enable alt+l -- to lowercase
         bindkey '^[l' down-case-word
 
@@ -182,11 +192,16 @@ in
       enable = config.flags.enableFishShell;
       shellInit = ''
         # Add Nix paths early to ensure tools are available before plugins load
+        # Order matters: last prepend ends up first in PATH
         if test -d /etc/profiles/per-user/$USER/bin
             fish_add_path --prepend /etc/profiles/per-user/$USER/bin
         end
         if test -d /run/current-system/sw/bin
             fish_add_path --prepend /run/current-system/sw/bin
+        end
+        # Security wrappers (setuid sudo, etc.) must come first in PATH
+        if test -d /run/wrappers/bin
+            fish_add_path --prepend /run/wrappers/bin
         end
 
         set -U fish_term24bit 1
@@ -198,6 +213,16 @@ in
         # Disable focus reporting mode to prevent [I and [O escape sequences
         # https://github.com/anthropics/claude-code/issues/10375
         printf '\e[?1004l'
+
+        # Check gh auth on first interactive shell
+        if not test -f "$HOME/.config/gh/.auth-checked"; and command -v gh >/dev/null
+          if not gh auth status >/dev/null 2>&1
+            echo "GitHub CLI not authenticated. Running 'gh auth login'..."
+            gh auth login --git-protocol https --web; and mkdir -p "$HOME/.config/gh"; and touch "$HOME/.config/gh/.auth-checked"
+          else
+            mkdir -p "$HOME/.config/gh"; and touch "$HOME/.config/gh/.auth-checked"
+          end
+        end
 
         # https://fishshell.com/docs/current/interactive.html#vi-mode-commands
         fish_vi_key_bindings
