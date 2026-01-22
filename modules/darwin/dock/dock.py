@@ -122,15 +122,18 @@ def rebuild_dock(dockutil_path: str, entries_json: str) -> None:
 def get_current_dock(dockutil_path: str) -> str:
     """Get current dock items using dockutil."""
     result = run_command([dockutil_path, "--list"])
-    # Extract just the paths (second column)
+    # Extract paths (second column) only from persistent sections
+    # Excludes recentApps which are auto-added by macOS
     lines = result.stdout.strip().split("\n")
     paths = []
     for line in lines:
         if not line.strip():
             continue
         parts = line.split("\t")
-        if len(parts) >= 2:
-            paths.append(parts[1])
+        if len(parts) >= 3:
+            section = parts[2]
+            if section in ("persistentApps", "persistentOthers"):
+                paths.append(parts[1])
     return "\n".join(paths)
 
 
