@@ -106,6 +106,7 @@ EXCLUDE_PATTERNS = [
     "**/Library/Containers/com.apple.podcasts/**",
     "**/Library/Containers/com.apple.Safari/**",
     "**/Library/Containers/com.apple.Safari.WebApp/**",
+    "**/Library/Containers/com.apple.Time-Machine-Settings-Intents.extension/**",
     "**/Library/Containers/com.apple.mail.SpotlightIndexExtension/**",
     "**/Library/Containers/com.apple.wallpaper.extension.video/**",
     "**/Library/Containers/com.microsoft.teams2/**",
