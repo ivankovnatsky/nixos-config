@@ -3,6 +3,7 @@
 set -euo pipefail
 
 DELETE=false
+FORCE=false
 MAX_FILES=10
 
 usage() {
@@ -13,6 +14,7 @@ Clean Syncthing conflict and temp files from directories.
 
 Options:
   --delete    Actually delete files (default is dry-run)
+  --force     Bypass MAX_FILES limit (use with caution)
   --help      Show this help message
 
 Arguments:
@@ -30,6 +32,10 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
   --delete)
     DELETE=true
+    shift
+    ;;
+  --force)
+    FORCE=true
     shift
     ;;
   --help | -h) usage ;;
@@ -54,8 +60,8 @@ for dir in "${dirs[@]}"; do
     continue
   fi
 
-  if [ "$count" -gt "$MAX_FILES" ]; then
-    echo "ERROR: Too many files ($count > $MAX_FILES) in $dir. Aborting."
+  if [ "$count" -gt "$MAX_FILES" ] && [ "$FORCE" = false ]; then
+    echo "ERROR: Too many files ($count > $MAX_FILES) in $dir. Use --force to override."
     exit 1
   fi
 
