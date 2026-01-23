@@ -113,6 +113,7 @@ EXCLUDE_PATTERNS = [
     "**/Library/Containers/com.utmapp.UTM/**",
     "**/Library/Group Containers/BJ4HAAB9B3.ZoomClient3rd/**",
     "**/Library/Group Containers/UBF8T346G9.ms/**",
+    "**/Library/Group Containers/group.com.apple.calendar/**",
     "**/Library/Group Containers/group.com.apple.CoreSpeech/**",
     "**/Library/Group Containers/group.com.apple.secure-control-center-preferences/**",
     "**/OrbStack/**",
