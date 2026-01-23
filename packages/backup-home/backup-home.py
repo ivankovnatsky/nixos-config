@@ -103,6 +103,7 @@ EXCLUDE_PATTERNS = [
     "**/Library/Containers/com.apple.AvatarUI.AvatarPickerMemojiPicker/**",
     "**/Library/Containers/com.apple.findmy.FindMyWidgetItems/**",
     "**/Library/Containers/com.apple.photoanalysisd/**",
+    "**/Library/Containers/com.apple.podcasts/**",
     "**/Library/Containers/com.apple.Safari/**",
     "**/Library/Containers/com.apple.Safari.WebApp/**",
     "**/Library/Containers/com.apple.mail.SpotlightIndexExtension/**",
