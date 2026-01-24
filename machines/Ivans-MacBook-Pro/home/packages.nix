@@ -3,6 +3,7 @@
   home.packages = with pkgs; [
     (python313.withPackages (
       ps: with ps; [
+        grip
         markitdown
       ]
     ))
@@ -15,6 +16,7 @@
     ffmpeg
     giffer
     git-message
+    go-grip
     homelab
     launchd-mgmt
     gh-notifications
