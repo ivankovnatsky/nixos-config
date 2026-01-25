@@ -52,7 +52,9 @@ def transition_fields_fn(issue_key, transition_name):
         click.echo(f"  {field_id}: {name} [{field_type}]{req_marker}")
 
 
-def transition_issue_fn(issue_key, transition_name, comment=None, fields=None, open_web=False):
+def transition_issue_fn(
+    issue_key, transition_name, comment=None, fields=None, open_web=False
+):
     """Transition an issue to a new status"""
     jira = get_jira_client()
     jira.transition_issue(issue_key, transition_name, fields=fields)
@@ -93,8 +95,12 @@ def transition_fields_cmd(issue_key, transition_name):
 @click.argument("issue_key")
 @click.argument("transition_name")
 @click.option("-c", "--comment", help="Add a comment after transitioning")
-@click.option("-f", "--field", multiple=True, help="Set field during transition (KEY=VALUE)")
-@click.option("-w", "--web", is_flag=True, help="Open issue in browser after transition")
+@click.option(
+    "-f", "--field", multiple=True, help="Set field during transition (KEY=VALUE)"
+)
+@click.option(
+    "-w", "--web", is_flag=True, help="Open issue in browser after transition"
+)
 def transition_to_cmd(issue_key, transition_name, comment, field, web):
     """Transition issue to a new status"""
     fields = parse_fields(field)

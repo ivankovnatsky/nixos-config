@@ -141,9 +141,20 @@ def create_worktree(
         run_git("worktree", "add", *extra, str(worktree_dir), branch, check=False)
     else:
         if base_branch:
-            run_git("worktree", "add", *extra, "-b", branch, str(worktree_dir), base_branch, check=False)
+            run_git(
+                "worktree",
+                "add",
+                *extra,
+                "-b",
+                branch,
+                str(worktree_dir),
+                base_branch,
+                check=False,
+            )
         else:
-            run_git("worktree", "add", *extra, "-b", branch, str(worktree_dir), check=False)
+            run_git(
+                "worktree", "add", *extra, "-b", branch, str(worktree_dir), check=False
+            )
 
     return worktree_dir.exists()
 

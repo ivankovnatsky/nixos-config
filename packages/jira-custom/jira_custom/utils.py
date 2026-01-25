@@ -48,7 +48,9 @@ def get_issue_type_id_for_project(jira, project_key, type_name):
         if it.get("name", "").lower() == type_name.lower():
             return it.get("id")
 
-    available = [it.get("name") for it in data.get("issueTypes", data.get("values", []))]
+    available = [
+        it.get("name") for it in data.get("issueTypes", data.get("values", []))
+    ]
     raise click.ClickException(
         f"Issue type '{type_name}' not found in project {project_key}. "
         f"Available: {', '.join(available)}"
@@ -88,7 +90,9 @@ def move_issue_type(jira, issue_key, type_name):
             if "errorMessages" in error_data:
                 error_msg = "; ".join(error_data["errorMessages"])
             elif "errors" in error_data:
-                error_msg = "; ".join(f"{k}: {v}" for k, v in error_data["errors"].items())
+                error_msg = "; ".join(
+                    f"{k}: {v}" for k, v in error_data["errors"].items()
+                )
         except Exception:
             pass
         raise click.ClickException(f"Move failed ({response.status_code}): {error_msg}")
@@ -107,7 +111,9 @@ def move_issue_type(jira, issue_key, type_name):
     while time.time() - start_time < timeout:
         status_response = jira._session.get(queue_url)
         if status_response.status_code != 200:
-            raise click.ClickException(f"Failed to check task status: {status_response.text}")
+            raise click.ClickException(
+                f"Failed to check task status: {status_response.text}"
+            )
 
         status_data = status_response.json()
         status = status_data.get("status")
@@ -128,4 +134,4 @@ def truncate_text(text, max_len):
         return text
     if max_len <= 3:
         return text[:max_len]
-    return text[:max_len - 3] + "..."
+    return text[: max_len - 3] + "..."

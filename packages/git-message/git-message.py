@@ -31,6 +31,8 @@ DIRECTORY_MAPPINGS = {
 
 MAX_MESSAGE_LENGTH = 72
 MAX_PREFIX_LENGTH = 40
+
+
 def get_git_root() -> str:
     """Get the root directory of the git repository."""
     result = subprocess.run(
@@ -114,7 +116,7 @@ def parse_args_flexible(
                 print(f"Error: File not found: {args[0]}", file=sys.stderr)
                 sys.exit(1)
         else:
-            print(f"Error: Too many positional args with -s flag", file=sys.stderr)
+            print("Error: Too many positional args with -s flag", file=sys.stderr)
             sys.exit(1)
 
     # Original behavior: subject from positional args

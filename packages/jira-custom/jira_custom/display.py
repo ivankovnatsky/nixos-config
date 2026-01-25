@@ -5,7 +5,13 @@ from rich.table import Table
 from rich.markup import escape
 from rich import box
 
-from .config import STATUS_DONE, STATUS_IN_PROGRESS, STATUS_BLOCKED, STATUS_TODO, DEFAULT_TERMINAL_WIDTH
+from .config import (
+    STATUS_DONE,
+    STATUS_IN_PROGRESS,
+    STATUS_BLOCKED,
+    STATUS_TODO,
+    DEFAULT_TERMINAL_WIDTH,
+)
 from .utils import truncate_text
 
 
@@ -57,16 +63,22 @@ def format_issue_cell_fn(issue, col_width):
     reporter = issue.fields.reporter.displayName if issue.fields.reporter else "Unknown"
     reporter = escape(truncate_text(reporter, col_width - 2))
 
-    updated = issue.fields.updated[:16].replace("T", " ") if issue.fields.updated else ""
+    updated = (
+        issue.fields.updated[:16].replace("T", " ") if issue.fields.updated else ""
+    )
 
-    resolution = issue.fields.resolution.name if issue.fields.resolution else "Unresolved"
+    resolution = (
+        issue.fields.resolution.name if issue.fields.resolution else "Unresolved"
+    )
     resolution = escape(resolution)
 
     priority = issue.fields.priority.name if issue.fields.priority else "None"
     prio_short = escape(priority[:3])
     prio_style, _ = get_priority_style(priority)
 
-    assignee = issue.fields.assignee.displayName if issue.fields.assignee else "Unassigned"
+    assignee = (
+        issue.fields.assignee.displayName if issue.fields.assignee else "Unassigned"
+    )
     assignee = escape(truncate_text(assignee, col_width - 2))
 
     # Colors chosen for color blindness accessibility (high contrast, distinct hues)
@@ -86,7 +98,9 @@ def render_board_table_fn(console, issues_by_status, all_columns):
     """Render issues as a kanban board table"""
     # Calculate dynamic column width based on terminal size
     try:
-        terminal_width = int(os.getenv("COLUMNS", 0)) or console.width or DEFAULT_TERMINAL_WIDTH
+        terminal_width = (
+            int(os.getenv("COLUMNS", 0)) or console.width or DEFAULT_TERMINAL_WIDTH
+        )
     except ValueError:
         terminal_width = console.width or DEFAULT_TERMINAL_WIDTH
 
@@ -105,9 +119,16 @@ def render_board_table_fn(console, issues_by_status, all_columns):
     for col_status in all_columns:
         count = len(issues_by_status.get(col_status, []))
         style = get_status_style(col_status)
-        table.add_column(f"{style}{col_status}[/] ({count})", ratio=1, no_wrap=True, overflow="ellipsis")
+        table.add_column(
+            f"{style}{col_status}[/] ({count})",
+            ratio=1,
+            no_wrap=True,
+            overflow="ellipsis",
+        )
 
-    max_rows = max(len(issues_by_status.get(s, [])) for s in all_columns) if all_columns else 0
+    max_rows = (
+        max(len(issues_by_status.get(s, [])) for s in all_columns) if all_columns else 0
+    )
 
     for row_idx in range(max_rows):
         row_data = []

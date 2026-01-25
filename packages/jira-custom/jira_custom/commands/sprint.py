@@ -38,7 +38,9 @@ def sprint_list_fn(board_id=None, state=None):
             if hasattr(sprint, "endDate") and sprint.endDate
             else "N/A"
         )
-        click.echo(f"{sprint_id:<10} {sprint_state:<10} {name:<40} {start:<12} {end:<12}")
+        click.echo(
+            f"{sprint_id:<10} {sprint_state:<10} {name:<40} {start:<12} {end:<12}"
+        )
 
 
 def sprint_add_fn(sprint_id, issue_keys):
@@ -60,7 +62,12 @@ def sprint_group():
 
 @sprint_group.command("list")
 @click.option("-b", "--board", help="Board ID (or set JIRA_BOARD_ID)")
-@click.option("-s", "--state", type=click.Choice(["future", "active", "closed"]), help="Filter by state")
+@click.option(
+    "-s",
+    "--state",
+    type=click.Choice(["future", "active", "closed"]),
+    help="Filter by state",
+)
 @click.option("--current", is_flag=True, help="Show only active sprint")
 def sprint_list_cmd(board, state, current):
     """List sprints"""

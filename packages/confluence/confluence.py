@@ -41,10 +41,10 @@ def convert_markdown_to_html(md_content):
             .replace("&amp;", "&")
             .replace("&quot;", '"')
         )
-        return f'''<ac:structured-macro ac:name="code" ac:schema-version="1">
+        return f"""<ac:structured-macro ac:name="code" ac:schema-version="1">
 <ac:parameter ac:name="language">{lang}</ac:parameter>
 <ac:plain-text-body><![CDATA[{code}]]></ac:plain-text-body>
-</ac:structured-macro>'''
+</ac:structured-macro>"""
 
     # Match <pre><code class="language-X">...</code></pre>
     html = re.sub(
@@ -63,9 +63,9 @@ def convert_markdown_to_html(md_content):
             .replace("&amp;", "&")
             .replace("&quot;", '"')
         )
-        return f'''<ac:structured-macro ac:name="code" ac:schema-version="1">
+        return f"""<ac:structured-macro ac:name="code" ac:schema-version="1">
 <ac:plain-text-body><![CDATA[{code}]]></ac:plain-text-body>
-</ac:structured-macro>'''
+</ac:structured-macro>"""
 
     html = re.sub(
         r"<pre><code>(.*?)</code></pre>",
@@ -116,8 +116,12 @@ def convert_storage_to_markdown(storage_content, generate_toc=False):
         # Extract TOC parameters (minLevel, maxLevel)
         min_level = 1
         max_level = 4
-        min_match = re.search(r'<ac:parameter ac:name="minLevel">(\d+)</ac:parameter>', has_toc.group(0))
-        max_match = re.search(r'<ac:parameter ac:name="maxLevel">(\d+)</ac:parameter>', has_toc.group(0))
+        min_match = re.search(
+            r'<ac:parameter ac:name="minLevel">(\d+)</ac:parameter>', has_toc.group(0)
+        )
+        max_match = re.search(
+            r'<ac:parameter ac:name="maxLevel">(\d+)</ac:parameter>', has_toc.group(0)
+        )
         if min_match:
             min_level = int(min_match.group(1))
         if max_match:
@@ -126,7 +130,9 @@ def convert_storage_to_markdown(storage_content, generate_toc=False):
         # Extract all headings from content
         headings = []
         for level in range(min_level, max_level + 1):
-            for match in re.finditer(rf"<h{level}[^>]*>(.*?)</h{level}>", content, re.DOTALL):
+            for match in re.finditer(
+                rf"<h{level}[^>]*>(.*?)</h{level}>", content, re.DOTALL
+            ):
                 # Strip HTML tags from heading text
                 heading_text = re.sub(r"<[^>]+>", "", match.group(1)).strip()
                 if heading_text:
@@ -237,7 +243,9 @@ def convert_storage_to_markdown(storage_content, generate_toc=False):
 
         return "\n" + "\n".join(md_rows) + "\n"
 
-    content = re.sub(r"<table[^>]*>.*?</table>", convert_table, content, flags=re.DOTALL)
+    content = re.sub(
+        r"<table[^>]*>.*?</table>", convert_table, content, flags=re.DOTALL
+    )
 
     # Convert unordered lists (with optional attributes)
     # List items may contain <p> tags inside
@@ -261,7 +269,7 @@ def convert_storage_to_markdown(storage_content, generate_toc=False):
             # Strip <p> tags from inside list items
             item = re.sub(r"<p[^>]*>(.*?)</p>", r"\1", item, flags=re.DOTALL)
             item = re.sub(r"<[^>]+>", "", item).strip()
-            result += f"{i+1}. {item}\n"
+            result += f"{i + 1}. {item}\n"
         return result
 
     content = re.sub(r"<ol[^>]*>(.*?)</ol>", convert_ol, content, flags=re.DOTALL)
@@ -361,7 +369,14 @@ def page_update(
     print(f"Updated: {result['id']}", file=sys.stderr)
 
 
-def page_get(page_id=None, space_key=None, title=None, output_format="storage", output_file=None, generate_toc=False):
+def page_get(
+    page_id=None,
+    space_key=None,
+    title=None,
+    output_format="storage",
+    output_file=None,
+    generate_toc=False,
+):
     """Get page content"""
     confluence = get_confluence_client()
 
@@ -386,7 +401,9 @@ def page_get(page_id=None, space_key=None, title=None, output_format="storage", 
     if output_format == "storage":
         content = page["body"]["storage"]["value"]
     elif output_format == "markdown":
-        content = convert_storage_to_markdown(page["body"]["storage"]["value"], generate_toc=generate_toc)
+        content = convert_storage_to_markdown(
+            page["body"]["storage"]["value"], generate_toc=generate_toc
+        )
     elif output_format == "info":
         content = f"ID: {page['id']}\nTitle: {page['title']}\nVersion: {page['version']['number']}\nSpace: {page['space']['key'] if 'space' in page else 'N/A'}"
 
@@ -539,7 +556,9 @@ def main():
                 args.minor,
             )
         elif args.page_action == "get":
-            page_get(args.page_id, args.space, args.title, args.format, args.output, args.toc)
+            page_get(
+                args.page_id, args.space, args.title, args.format, args.output, args.toc
+            )
         elif args.page_action == "list":
             page_list(args.space_key, args.limit)
         else:

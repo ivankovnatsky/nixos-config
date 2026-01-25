@@ -193,8 +193,16 @@ def issue_fields_fn(filter_pattern=None):
 
     # Keywords that suggest transition-related fields
     transition_keywords = [
-        "resolution", "steps", "action", "taken", "done", "closing",
-        "reason", "complete", "finish", "resolve"
+        "resolution",
+        "steps",
+        "action",
+        "taken",
+        "done",
+        "closing",
+        "reason",
+        "complete",
+        "finish",
+        "resolve",
     ]
 
     if filter_pattern:
@@ -214,7 +222,7 @@ def issue_fields_fn(filter_pattern=None):
         click.echo("No matching fields found")
         return
 
-    click.echo(f"Fields matching transition-related keywords:")
+    click.echo("Fields matching transition-related keywords:")
     click.echo()
     for f in sorted(matching, key=lambda x: x.get("name", "")):
         fid = f.get("id")
@@ -345,7 +353,9 @@ def issue_list_fn(
                 jql_parts.append(f'labels = "{label}"')
 
     if not jql_parts:
-        raise click.ClickException("At least one filter is required (--project, --parent, --jql, etc.)")
+        raise click.ClickException(
+            "At least one filter is required (--project, --parent, --jql, etc.)"
+        )
 
     order_dir = "ASC" if reverse else "DESC"
     jql_query = " AND ".join(jql_parts) + f" ORDER BY {order_by} {order_dir}"
@@ -363,11 +373,17 @@ def issue_list_fn(
         key = issue.key
         itype = issue.fields.issuetype.name[:10]
         status_name = issue.fields.status.name[:13]
-        assignee_name = issue.fields.assignee.displayName[:18] if issue.fields.assignee else "Unassigned"
+        assignee_name = (
+            issue.fields.assignee.displayName[:18]
+            if issue.fields.assignee
+            else "Unassigned"
+        )
         summary = issue.fields.summary
         if len(summary) > 35:
             summary = summary[:32] + "..."
-        click.echo(f"{key:<15} {itype:<12} {status_name:<15} {assignee_name:<20} {summary}")
+        click.echo(
+            f"{key:<15} {itype:<12} {status_name:<15} {assignee_name:<20} {summary}"
+        )
 
 
 @click.group("issue")
@@ -389,7 +405,9 @@ issue_group.add_command(transition_group)
 @click.option("-p", "--parent", help="Parent issue key for sub-tasks")
 @click.option("-a", "--assignee", help="Assignee email/name")
 @click.option("-l", "--label", multiple=True, help="Add label (can be repeated)")
-def issue_create_cmd(project, summary, issue_type, description, parent, assignee, label):
+def issue_create_cmd(
+    project, summary, issue_type, description, parent, assignee, label
+):
     """Create a new issue"""
     labels = list(label) if label else None
     issue_create_fn(project, summary, issue_type, description, parent, assignee, labels)
@@ -400,12 +418,18 @@ def issue_create_cmd(project, summary, issue_type, description, parent, assignee
 @click.option("-s", "--summary", help="New issue summary/title")
 @click.option("-d", "--description", help="New issue description")
 @click.option("-a", "--assignee", help="New assignee (email/name)")
-@click.option("-l", "--label", multiple=True, help="Add/remove label (prefix with - to remove)")
-@click.option("-t", "--type", "issue_type", help="Change issue type (e.g., Task, Story, Bug)")
+@click.option(
+    "-l", "--label", multiple=True, help="Add/remove label (prefix with - to remove)"
+)
+@click.option(
+    "-t", "--type", "issue_type", help="Change issue type (e.g., Task, Story, Bug)"
+)
 def issue_update_cmd(issue_key, summary, description, assignee, label, issue_type):
     """Update an existing issue"""
     labels_add, labels_remove = parse_labels(list(label)) if label else (None, None)
-    issue_update_fn(issue_key, summary, description, assignee, labels_add, labels_remove, issue_type)
+    issue_update_fn(
+        issue_key, summary, description, assignee, labels_add, labels_remove, issue_type
+    )
 
 
 @issue_group.command("view")
@@ -476,12 +500,29 @@ def issue_types_cmd(project, ids):
 @click.option("-a", "--assignee", help="Filter by assignee (use 'me' or 'unassigned')")
 @click.option("-r", "--reporter", help="Filter by reporter (use 'me')")
 @click.option("-y", "--priority", help="Filter by priority")
-@click.option("-l", "--label", multiple=True, help="Filter by label (prefix ~ to exclude)")
+@click.option(
+    "-l", "--label", multiple=True, help="Filter by label (prefix ~ to exclude)"
+)
 @click.option("-q", "--jql", help="Raw JQL query (combined with other filters)")
 @click.option("--order-by", default="created", help="Sort field (default: created)")
-@click.option("--reverse", is_flag=True, help="Reverse sort order (ASC instead of DESC)")
+@click.option(
+    "--reverse", is_flag=True, help="Reverse sort order (ASC instead of DESC)"
+)
 @click.option("-n", "--limit", type=int, default=50, help="Max results (default: 50)")
-def issue_list_cmd(project, parent, issue_type, status, assignee, reporter, priority, label, jql, order_by, reverse, limit):
+def issue_list_cmd(
+    project,
+    parent,
+    issue_type,
+    status,
+    assignee,
+    reporter,
+    priority,
+    label,
+    jql,
+    order_by,
+    reverse,
+    limit,
+):
     """List issues with flexible filtering
 
     Examples:
@@ -499,4 +540,17 @@ def issue_list_cmd(project, parent, issue_type, status, assignee, reporter, prio
       jira-custom issue list -q "sprint in openSprints()"
     """
     labels = list(label) if label else None
-    issue_list_fn(project, parent, issue_type, status, assignee, reporter, priority, labels, jql, order_by, reverse, limit)
+    issue_list_fn(
+        project,
+        parent,
+        issue_type,
+        status,
+        assignee,
+        reporter,
+        priority,
+        labels,
+        jql,
+        order_by,
+        reverse,
+        limit,
+    )

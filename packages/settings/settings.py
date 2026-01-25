@@ -799,11 +799,11 @@ def cmd_awake(args: argparse.Namespace) -> int:
 # Windows: Close/hide app windows (macOS only)
 def windows_find_process(app_name: str) -> str | None:
     """Find exact process name matching case-insensitively."""
-    script = '''
+    script = """
 tell application "System Events"
     get name of every process
 end tell
-'''
+"""
     try:
         result = subprocess.run(
             ["osascript", "-e", script],
@@ -889,7 +889,7 @@ end tell
 
 def windows_list() -> list[str]:
     """List apps with visible windows."""
-    script = '''
+    script = """
 tell application "System Events"
     set visibleApps to {}
     repeat with p in (processes whose visible is true)
@@ -897,7 +897,7 @@ tell application "System Events"
     end repeat
     return visibleApps
 end tell
-'''
+"""
     try:
         result = subprocess.run(
             ["osascript", "-e", script],

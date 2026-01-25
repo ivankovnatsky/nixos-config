@@ -27,7 +27,9 @@ def show_me_fn():
 
     click.echo(f"Name:     {user.displayName}")
     click.echo(f"Email:    {user.emailAddress}")
-    click.echo(f"Account:  {user.accountId if hasattr(user, 'accountId') else user.name}")
+    click.echo(
+        f"Account:  {user.accountId if hasattr(user, 'accountId') else user.name}"
+    )
     click.echo(f"Active:   {user.active}")
     click.echo(f"Timezone: {user.timeZone if hasattr(user, 'timeZone') else 'N/A'}")
 

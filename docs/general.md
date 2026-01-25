@@ -11,4 +11,3 @@ After cloning the repository, enable direnv:
 ```console
 direnv allow
 ```
-

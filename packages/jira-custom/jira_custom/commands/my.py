@@ -58,7 +58,9 @@ def my_issues_fn(
 
 
 @click.command("my")
-@click.argument("scope", type=click.Choice(["sprint", "project", "all"]), default="sprint")
+@click.argument(
+    "scope", type=click.Choice(["sprint", "project", "all"]), default="sprint"
+)
 @click.option("-p", "--project", help="Project key (required for 'project' scope)")
 @click.option("-a", "--all-statuses", is_flag=True, help="Include done/closed issues")
 @click.option("--priority", help="Filter by priority (e.g., High, Medium)")
