@@ -31,6 +31,17 @@ DIRECTORY_MAPPINGS = {
 
 MAX_MESSAGE_LENGTH = 72
 MAX_PREFIX_LENGTH = 40
+def get_git_root() -> str:
+    """Get the root directory of the git repository."""
+    result = subprocess.run(
+        ["git", "rev-parse", "--show-toplevel"],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    return result.stdout.strip()
+
+
 def get_staged_files() -> list[str]:
     result = subprocess.run(
         ["git", "diff", "--staged", "--name-only"],
@@ -250,18 +261,28 @@ Features:
         return 1
 
     try:
+        git_root = get_git_root()
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to get git root: {e}", file=sys.stderr)
+        return 1
+
+    try:
         if file_path:
             # Commit specific file (stages and commits in one step)
-            cmd = ["git", "commit", file_path, "-m", message]
+            # Convert to path relative to git root for consistency
+            abs_path = os.path.abspath(file_path)
+            rel_path = os.path.relpath(abs_path, git_root)
+            cmd = ["git", "commit", rel_path, "-m", message]
         elif auto_stage:
             # Auto-stage and commit the single modified file
+            # target_file is already relative to git root from git diff output
             cmd = ["git", "commit", target_file, "-m", message]
         else:
             # Commit staged files
             cmd = ["git", "commit", "-m", message]
         if body:
             cmd.extend(["-m", body])
-        subprocess.run(cmd, check=True)
+        subprocess.run(cmd, check=True, cwd=git_root)
     except subprocess.CalledProcessError as e:
         print(f"Git commit failed: {e}", file=sys.stderr)
         return 1
