@@ -4,6 +4,7 @@
   home.packages = with pkgs; [
     (python313.withPackages (
       ps: with ps; [
+        grip
         markitdown
       ]
     ))
@@ -14,6 +15,7 @@
     dns
     torrent-dl
     giffer
+    go-grip
     git-dotfiles
     git-message
     homelab
