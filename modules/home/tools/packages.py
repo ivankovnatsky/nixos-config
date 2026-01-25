@@ -156,9 +156,12 @@ def install_bun_packages(
     state_changed = False
 
     # 1. CLEANUP: Remove packages no longer in config from both locations
-    to_remove = {pkg: binary for pkg, binary in all_tracked.items()
-                 if pkg not in desired and
-                 ((bun_bin / binary).exists() or (npm_bin / binary).exists())}
+    to_remove = {
+        pkg: binary
+        for pkg, binary in all_tracked.items()
+        if pkg not in desired
+        and ((bun_bin / binary).exists() or (npm_bin / binary).exists())
+    }
 
     if to_remove:
         log(f"Removing unmanaged packages: {', '.join(to_remove.keys())}", Color.RED)
@@ -166,15 +169,20 @@ def install_bun_packages(
         cmd = [f"{paths['bun']}/bun", "remove", "-g"] + list(to_remove.keys())
         run_command(cmd, env)
         # Fallback to npm for any remaining
-        still_present = [pkg for pkg, binary in to_remove.items()
-                        if (bun_bin / binary).exists() or (npm_bin / binary).exists()]
+        still_present = [
+            pkg
+            for pkg, binary in to_remove.items()
+            if (bun_bin / binary).exists() or (npm_bin / binary).exists()
+        ]
         if still_present:
             cmd = [f"{paths['nodejs']}/npm", "uninstall", "-g"] + still_present
             run_command(cmd, env)
         state_changed = True
 
     # 2. CLEANUP LEGACY: Remove npm versions of declared packages
-    npm_cleanup = [pkg for pkg, binary in packages.items() if (npm_bin / binary).exists()]
+    npm_cleanup = [
+        pkg for pkg, binary in packages.items() if (npm_bin / binary).exists()
+    ]
     if npm_cleanup:
         log(f"Removing legacy npm versions: {', '.join(npm_cleanup)}", Color.YELLOW)
         cmd = [f"{paths['nodejs']}/npm", "uninstall", "-g"] + npm_cleanup
@@ -182,7 +190,9 @@ def install_bun_packages(
         state_changed = True
 
     # 3. INSTALL: Ensure all declared packages exist in bun bin
-    to_install = [pkg for pkg, binary in packages.items() if not (bun_bin / binary).exists()]
+    to_install = [
+        pkg for pkg, binary in packages.items() if not (bun_bin / binary).exists()
+    ]
     if to_install:
         log(f"Installing bun packages: {', '.join(to_install)}", Color.GREEN)
         cmd = [f"{paths['bun']}/bun", "install", "-g"] + to_install
@@ -395,7 +405,9 @@ def install_curl_shell_scripts(scripts: Dict[str, str], paths: Dict, state: Dict
         shell = scripts[url]
         log(f"Running: curl -fsSL {url} | {shell}", Color.GREEN)
 
-        shell_path = f"{paths.get('bash', '/bin')}/{shell}" if shell == "bash" else shell
+        shell_path = (
+            f"{paths.get('bash', '/bin')}/{shell}" if shell == "bash" else shell
+        )
 
         curl_cmd = [f"{paths['curl']}/curl", "-fsSL", url]
         curl_proc = subprocess.Popen(
@@ -449,7 +461,9 @@ def main():
     bun_only_config = {"configFile": bun_config.get("configFile")}
 
     if packages:
-        success &= install_bun_packages(packages, config["paths"], state, bun_only_config)
+        success &= install_bun_packages(
+            packages, config["paths"], state, bun_only_config
+        )
 
     if config.get("uv", {}).get("packages"):
         success &= install_uv_packages(config["uv"]["packages"], config["paths"], state)

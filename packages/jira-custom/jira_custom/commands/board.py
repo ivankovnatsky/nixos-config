@@ -29,7 +29,9 @@ def resolve_board_by_name(jira, board_name):
         return str(matches[0].id)
     elif len(matches) > 1:
         names = ", ".join(f"'{b.name}' ({b.id}, {b.type})" for b in matches[:5])
-        raise click.ClickException(f"Multiple boards match '{board_name}': {names}. Use --id instead.")
+        raise click.ClickException(
+            f"Multiple boards match '{board_name}': {names}. Use --id instead."
+        )
 
     raise click.ClickException(f"Board '{board_name}' not found")
 
@@ -44,7 +46,9 @@ def fetch_board_issues_fn(jira, board_id, show_done, limit):
 
     response = jira._session.get(url, params=params)
     if response.status_code != 200:
-        raise click.ClickException(f"Failed to get board issues: {response.status_code}")
+        raise click.ClickException(
+            f"Failed to get board issues: {response.status_code}"
+        )
 
     data = response.json()
     issue_keys = [i["key"] for i in data.get("issues", [])]
@@ -77,7 +81,9 @@ def group_issues_by_status_fn(issues):
             issues_by_status["To Do"] = []
         issues_by_status["To Do"].extend(issues_by_status.pop("Reopened"))
 
-    all_columns = kanban_columns + [s for s in issues_by_status.keys() if s not in kanban_columns]
+    all_columns = kanban_columns + [
+        s for s in issues_by_status.keys() if s not in kanban_columns
+    ]
     return issues_by_status, all_columns
 
 
@@ -101,7 +107,9 @@ def board_list_fn(project=None, board_type=None):
         click.echo(f"{board_id:<10} {btype:<10} {name}")
 
 
-def board_view_fn(board_id=None, board_name=None, show_done=False, limit=100, mine_only=True):
+def board_view_fn(
+    board_id=None, board_name=None, show_done=False, limit=100, mine_only=True
+):
     """View issues on a board with rich table formatting
 
     Args:
@@ -149,10 +157,16 @@ def board_view_fn(board_id=None, board_name=None, show_done=False, limit=100, mi
             status_lower = status.lower()
 
             # To Do, Blocked, In Progress: Assigned to me OR Unassigned
-            if status_lower in STATUS_TODO or status_lower in STATUS_BLOCKED or status_lower in STATUS_IN_PROGRESS:
+            if (
+                status_lower in STATUS_TODO
+                or status_lower in STATUS_BLOCKED
+                or status_lower in STATUS_IN_PROGRESS
+            ):
                 issues_by_status[status] = [
-                    issue for issue in issues_by_status[status]
-                    if not issue.fields.assignee or issue.fields.assignee.emailAddress == current_user_email
+                    issue
+                    for issue in issues_by_status[status]
+                    if not issue.fields.assignee
+                    or issue.fields.assignee.emailAddress == current_user_email
                 ]
 
     if not all_columns:
@@ -170,7 +184,13 @@ def board_group():
 
 @board_group.command("list")
 @click.option("-p", "--project", help="Filter by project")
-@click.option("-t", "--type", "board_type", type=click.Choice(["scrum", "kanban"]), help="Board type")
+@click.option(
+    "-t",
+    "--type",
+    "board_type",
+    type=click.Choice(["scrum", "kanban"]),
+    help="Board type",
+)
 def board_list_cmd(project, board_type):
     """List boards"""
     board_list_fn(project, board_type)
@@ -179,8 +199,15 @@ def board_list_cmd(project, board_type):
 @board_group.command("view")
 @click.option("-b", "--id", "board_id", help="Board ID (or set JIRA_BOARD_ID)")
 @click.option("-n", "--name", "board_name", help="Board name (partial match supported)")
-@click.option("-a", "--all", "show_done", is_flag=True, help="Include Done/Resolved issues")
-@click.option("--all-users", "all_users", is_flag=True, help="Show all issues (disable mine-only filtering)")
+@click.option(
+    "-a", "--all", "show_done", is_flag=True, help="Include Done/Resolved issues"
+)
+@click.option(
+    "--all-users",
+    "all_users",
+    is_flag=True,
+    help="Show all issues (disable mine-only filtering)",
+)
 @click.option("-l", "--limit", type=int, default=100, help="Max results (default: 100)")
 def board_view_cmd(board_id, board_name, show_done, all_users, limit):
     """View board issues in a table"""

@@ -28,7 +28,11 @@ in
       enable = mkEnableOption "automated rebuild via terminal (inherits Full Disk Access)";
 
       terminal = mkOption {
-        type = types.enum [ "Terminal" "kitty" "ghostty" ];
+        type = types.enum [
+          "Terminal"
+          "kitty"
+          "ghostty"
+        ];
         default = "Terminal";
         description = "Terminal emulator to use for rebuild commands";
       };

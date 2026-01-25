@@ -62,7 +62,9 @@ def comment_group():
 @comment_group.command("list")
 @click.argument("issue_key")
 @click.option("--last", type=int, help="Show only last N comments")
-@click.option("--order", type=click.Choice(["asc", "desc"]), default="desc", help="Sort order")
+@click.option(
+    "--order", type=click.Choice(["asc", "desc"]), default="desc", help="Sort order"
+)
 def comment_list_cmd(issue_key, last, order):
     """List comments on an issue"""
     comment_list_fn(issue_key, last, order)

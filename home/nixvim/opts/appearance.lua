@@ -68,27 +68,23 @@ local function get_plasma_appearance(callback)
             end
 
             -- Final fallback: check BackgroundNormal RGB values
-            vim.system(
-              {
-                "sh",
-                "-c",
-                "grep -A 10 '\\[Colors:Window\\]' " .. kdeglobals_file .. " | grep 'BackgroundNormal' 2>/dev/null",
-              },
-              { text = true },
-              function(obj3)
-                if obj3.code == 0 and obj3.stdout then
-                  local r, g, b = obj3.stdout:match("(%d+),(%d+),(%d+)")
-                  if r and g and b then
-                    r, g, b = tonumber(r), tonumber(g), tonumber(b)
-                    if (r + g + b) / 3 < 128 then
-                      callback("dark")
-                      return
-                    end
+            vim.system({
+              "sh",
+              "-c",
+              "grep -A 10 '\\[Colors:Window\\]' " .. kdeglobals_file .. " | grep 'BackgroundNormal' 2>/dev/null",
+            }, { text = true }, function(obj3)
+              if obj3.code == 0 and obj3.stdout then
+                local r, g, b = obj3.stdout:match("(%d+),(%d+),(%d+)")
+                if r and g and b then
+                  r, g, b = tonumber(r), tonumber(g), tonumber(b)
+                  if (r + g + b) / 3 < 128 then
+                    callback("dark")
+                    return
                   end
                 end
-                callback("light")
               end
-            )
+              callback("light")
+            end)
           end
         )
       end
