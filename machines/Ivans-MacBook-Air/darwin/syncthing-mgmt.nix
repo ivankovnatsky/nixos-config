@@ -95,6 +95,16 @@
           "a3"
         ];
       };
+
+      "claude-commands" = {
+        path = "/Users/${username}/.claude/commands";
+        label = ".claude/commands";
+        devices = [
+          "Ivans-Mac-mini"
+          "Ivans-MacBook-Pro"
+          "a3"
+        ];
+      };
     };
 
     restart = false;

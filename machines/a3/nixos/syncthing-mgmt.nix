@@ -91,6 +91,17 @@
           "Ivans-MacBook-Air"
         ];
       };
+
+      "claude-commands" = {
+        path = "${config.users.users.${username}.home}/.claude/commands";
+        label = ".claude/commands";
+        devices = [
+          "a3"
+          "Ivans-Mac-mini"
+          "Ivans-MacBook-Pro"
+          "Ivans-MacBook-Air"
+        ];
+      };
     };
 
     restart = false;
