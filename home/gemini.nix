@@ -14,7 +14,8 @@
               "disableAutoUpdate": false,
               "checkpointing": {
                 "enabled": true
-              }
+              },
+              "previewFeatures": true
             },
             "ui": {
               "hideBanner": false,
