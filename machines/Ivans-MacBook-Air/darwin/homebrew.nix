@@ -23,7 +23,7 @@
       "chromium"
       {
         name = "coconutbattery";
-        greedy = "true";
+        greedy = true;
       }
       "cursor"
       "firefox"
