@@ -16,7 +16,6 @@
     casks = [
       "bitwarden"
       "chromium"
-      "coconutbattery"
       "cursor"
       "firefox"
       "ghostty"
