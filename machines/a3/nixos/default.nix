@@ -19,7 +19,7 @@
     ./default-apps.nix
     ./desktop.nix
     ./fonts.nix
-    ./nix-ld.nix
+    ../../../nixos/nix-ld.nix
     ./networking.nix
     ./nixpkgs.nix
     ./power-management.nix
