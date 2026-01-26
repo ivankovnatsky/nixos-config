@@ -140,6 +140,7 @@
     vault
     vault-auth
     vkv
+    vals
     watchman
     watchman-make
     watchman-rebuild
