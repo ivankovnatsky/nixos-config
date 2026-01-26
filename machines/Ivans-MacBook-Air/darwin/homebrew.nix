@@ -21,7 +21,10 @@
       "amethyst"
       "bitwarden"
       "chromium"
-      "coconutbattery"
+      {
+        name = "coconutbattery";
+        greedy = "true";
+      }
       "cursor"
       "firefox"
       # Needed to `brew uninstall --cask ghostty kitty`
