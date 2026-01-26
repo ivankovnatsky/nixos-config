@@ -22,7 +22,10 @@
       "amethyst"
       "bitwarden"
       "chromium"
-      "coconutbattery"
+      {
+        name = "coconutbattery";
+        greedy = "true";
+      }
       "cursor"
       {
         name = "claude";
