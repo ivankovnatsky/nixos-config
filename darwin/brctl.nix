@@ -2,9 +2,9 @@
   local.launchd.services.brctl-download-notes = {
     enable = true;
     type = "user-agent";
-    runAtLoad = false;
+    runAtLoad = true;
     keepAlive = false;
-    command = "/usr/bin/brctl download ~/Library/Mobile\\ Documents/com~apple~CloudDocs/Data/Notes";
+    command = "/bin/bash -c '/usr/bin/find \"$HOME/Library/Mobile Documents/com~apple~CloudDocs/Data/Notes\" -exec /usr/bin/brctl download {} \\;'";
 
     extraServiceConfig = {
       StartCalendarInterval = {
