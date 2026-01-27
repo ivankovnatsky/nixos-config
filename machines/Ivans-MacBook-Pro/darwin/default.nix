@@ -2,6 +2,7 @@
   imports = [
     ../../../darwin/amethyst.nix
     ../../../darwin/brctl.nix
+    ../../../darwin/xattr.nix
     ../../../darwin/darwin.nix
     ../../../darwin/flags.nix
     ../../../darwin/fonts.nix
