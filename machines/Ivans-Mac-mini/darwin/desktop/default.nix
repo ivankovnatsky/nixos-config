@@ -1,6 +1,7 @@
 {
   imports = [
     ../../../../darwin/darwin.nix
+    ../../../../darwin/brctl.nix
     ../../../../darwin/dock.nix
     ../../../../darwin/flags.nix
     ../../../../darwin/fonts.nix
