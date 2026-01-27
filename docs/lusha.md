@@ -60,6 +60,11 @@ maintenance and troubleshooting.
 
 - Approve local network access
 
+### Slack
+
+- Allow:
+  - Local network
+
 ### LinearMouse
 
 - Accessibility permissions granted
