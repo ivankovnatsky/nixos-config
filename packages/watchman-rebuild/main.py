@@ -168,25 +168,92 @@ def cleanup_instance_file():
 def cleanup_stale_lock():
     """Remove stale lock file from previous run."""
     if LOCK_FILE.exists():
+        try:
+            pid_str = LOCK_FILE.read_text().strip()
+            if pid_str:
+                pid = int(pid_str)
+                try:
+                    os.kill(pid, 0)
+                    # Process still running - don't remove
+                    logging.info(
+                        f"Lock file held by running process (PID {pid}), not removing"
+                    )
+                    return
+                except ProcessLookupError:
+                    pass  # Process dead, will remove below
+                except PermissionError:
+                    # Process running but different user
+                    logging.info(
+                        f"Lock file held by process owned by another user (PID {pid}), not removing"
+                    )
+                    return
+        except (ValueError, FileNotFoundError):
+            pass  # Invalid file, will remove below
+
         logging.info(f"Removing stale lock file from previous run: {LOCK_FILE}")
-        LOCK_FILE.unlink()
+        try:
+            LOCK_FILE.unlink(missing_ok=True)
+        except PermissionError:
+            logging.warning("Cannot remove stale lock file (permission denied)")
 
 
 def acquire_lock():
     """Acquire rebuild lock. Returns True if acquired, False if already locked."""
     if LOCK_FILE.exists():
-        logging.info(f"Lock file exists, rebuild already in progress: {LOCK_FILE}")
-        return False
-    LOCK_FILE.touch()
-    logging.info(f"Acquired rebuild lock: {LOCK_FILE}")
+        # Check if the process holding the lock is still alive
+        try:
+            pid_str = LOCK_FILE.read_text().strip()
+            if not pid_str:
+                # Empty file - treat as stale
+                logging.info(f"Removing stale lock file (empty): {LOCK_FILE}")
+                LOCK_FILE.unlink(missing_ok=True)
+            else:
+                pid = int(pid_str)
+                os.kill(pid, 0)  # Check if process exists
+                logging.info(
+                    f"Lock file exists, rebuild already in progress (PID {pid}): {LOCK_FILE}"
+                )
+                return False
+        except (ValueError, FileNotFoundError):
+            # Invalid or missing PID - treat as stale
+            logging.info(f"Removing stale lock file (invalid PID): {LOCK_FILE}")
+            try:
+                LOCK_FILE.unlink(missing_ok=True)
+            except PermissionError:
+                logging.warning("Cannot remove stale lock file (permission denied)")
+                return False
+        except ProcessLookupError:
+            # Process no longer exists - stale lock
+            logging.info(f"Removing stale lock file (PID {pid} not running): {LOCK_FILE}")
+            try:
+                LOCK_FILE.unlink(missing_ok=True)
+            except PermissionError:
+                logging.warning("Cannot remove stale lock file (permission denied)")
+                return False
+        except PermissionError:
+            # Process exists but owned by another user - still running
+            logging.info(
+                f"Lock file exists, rebuild in progress by another user (PID {pid}): {LOCK_FILE}"
+            )
+            return False
+
+    # Write current PID to lock file
+    LOCK_FILE.write_text(str(os.getpid()))
+    logging.info(f"Acquired rebuild lock (PID {os.getpid()}): {LOCK_FILE}")
     return True
 
 
 def release_lock():
     """Release rebuild lock."""
     if LOCK_FILE.exists():
-        LOCK_FILE.unlink()
-        logging.info(f"Released rebuild lock: {LOCK_FILE}")
+        try:
+            LOCK_FILE.unlink()
+            logging.info(f"Released rebuild lock: {LOCK_FILE}")
+        except FileNotFoundError:
+            # Already removed (race condition with cleanup)
+            logging.info("Lock file already removed")
+        except PermissionError:
+            logging.warning("Cannot release lock file (permission denied)")
 
 
 def run_rebuild(config_path, command):
