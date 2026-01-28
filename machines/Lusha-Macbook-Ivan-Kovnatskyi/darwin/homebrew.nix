@@ -41,6 +41,7 @@
         greedy = true;
       }
       "mos"
+      "orbstack"
       "stats"
       # Need to keep twingate always latest version, sometimes it fails to
       # connect no matter what.
