@@ -9,6 +9,7 @@
     ../../../home/ccstatusline.nix
     ../../../home/claude.nix
     ../../../home/direnv.nix
+    ../../../home/ghostty.nix
     ../../../home/ghorg.nix
     ../../../home/git
     ../../../home/go.nix
