@@ -636,6 +636,20 @@ def cmd_scaling(args: argparse.Namespace) -> int:
         print("Scaling settings only available on macOS", file=sys.stderr)
         return 1
 
+    if args.init:
+        display = scaling_get_builtin_display()
+        if not display:
+            print("Skipping scaling init (no built-in display)")
+            return 0
+        mode_name = scaling_get_current_mode_name(display)
+        if mode_name == "scaled":
+            print("Skipping scaling init (already at scaled)")
+            return 0
+        result = scaling_set_mode("scaled")
+        if result == 0:
+            print("Initialized scaling to larger text")
+        return result
+
     if args.status:
         display = scaling_get_builtin_display()
         if not display:
@@ -1304,6 +1318,11 @@ def main() -> int:
         "--status",
         action="store_true",
         help="Show current scaling mode",
+    )
+    scaling_parser.add_argument(
+        "--init",
+        action="store_true",
+        help="Initialize to scaled mode (idempotent, for activation scripts)",
     )
     scaling_parser.add_argument(
         "--mode",
