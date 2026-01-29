@@ -8,6 +8,9 @@
       global = {
         warn_timeout = "5m";
       };
+      whitelist = {
+        prefix = [ "/Users/Ivan.Kovnatskyi" ];
+      };
     };
   };
 }
