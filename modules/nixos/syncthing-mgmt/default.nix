@@ -9,16 +9,6 @@ with lib;
 
 let
   cfg = config.local.services.syncthing-mgmt;
-
-  configJson = pkgs.writeText "syncthing-config.json" (
-    builtins.toJSON {
-      gui = optionalAttrs (cfg.gui != null) {
-        username = cfg.gui.username;
-        password = cfg.gui.password;
-      };
-      devices = cfg.devices;
-    }
-  );
 in
 {
   options.local.services.syncthing-mgmt = {

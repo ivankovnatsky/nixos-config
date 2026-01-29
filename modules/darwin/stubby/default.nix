@@ -11,7 +11,7 @@ let
   cfg = config.local.services.stubby;
 
   # Override stubby package to remove systemd dependency for Darwin
-  stubbyPackage = pkgs.stubby.overrideAttrs (old: {
+  stubbyPackage = pkgs.stubby.overrideAttrs (_old: {
     buildInputs = with pkgs; [
       getdns
       libyaml

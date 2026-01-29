@@ -1,4 +1,4 @@
-{ pkgs, python3Packages }:
+{ pkgs }:
 
 pkgs.writeShellScriptBin "uptime-kuma-mgmt" ''
   exec ${

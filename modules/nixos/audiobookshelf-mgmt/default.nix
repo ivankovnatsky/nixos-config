@@ -9,23 +9,6 @@ with lib;
 
 let
   cfg = config.local.services.audiobookshelf-mgmt;
-
-  configJson = pkgs.writeText "audiobookshelf-config.json" (
-    builtins.toJSON {
-      libraries = map (lib: {
-        name = lib.name;
-        folders = lib.folders;
-        mediaType = lib.mediaType;
-        provider = lib.provider;
-      }) cfg.libraries;
-      users = map (user: {
-        username = user.username;
-        password = user.password;
-        type = user.type;
-        libraries = user.libraries;
-      }) cfg.users;
-    }
-  );
 in
 {
   options.local.services.audiobookshelf-mgmt = {

@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 
@@ -11,7 +10,7 @@ let
   cfg = config.local.services.macosFileSharing;
 
   shareOpts =
-    { name, config, ... }:
+    { name, ... }:
     {
       options = {
         path = mkOption {
@@ -99,7 +98,7 @@ in
 
       echo "Checking configured share paths..."
       ${concatStringsSep "\n" (
-        mapAttrsToList (name: share: ''
+        mapAttrsToList (_name: share: ''
           # Create a unique tracking file for this share
           SHARE_TRACK_FILE="$TRACKING_DIR/${share.name}.share"
           echo "${share.path}" | sudo tee "$SHARE_TRACK_FILE" > /dev/null
@@ -146,7 +145,7 @@ in
             # Check if this share still exists in our config
             FOUND=0
             ${concatStringsSep "\n" (
-              mapAttrsToList (name: share: ''
+              mapAttrsToList (_name: share: ''
                 if [ "${share.name}" = "$share_name" ] && [ "${share.path}" = "$share_path" ]; then
                   FOUND=1
                 fi

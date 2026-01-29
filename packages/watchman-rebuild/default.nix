@@ -1,5 +1,4 @@
 {
-  lib,
   stdenv,
   makeWrapper,
   python3,

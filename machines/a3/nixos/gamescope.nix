@@ -1,7 +1,7 @@
 # https://wiki.nixos.org/wiki/Steam#Gamescope_Compositor_/_%22Boot_to_Steam_Deck%22
 # Gamescope session for SDDM with Nvidia GPU support
 
-{ pkgs, username, ... }:
+{ ... }:
 {
   # Enable gamescope and the gamescope session
   programs = {

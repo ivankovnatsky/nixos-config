@@ -38,6 +38,7 @@ let
     user_pref("media.videocontrols.picture-in-picture.video-toggle.has-used", false);
   '';
 
+  # deadnix: skip
   defaultLinuxConfig = ''
     ${defaultConfig}
     user_pref("widget.wayland-dmabuf-vaapi.enabled", true);

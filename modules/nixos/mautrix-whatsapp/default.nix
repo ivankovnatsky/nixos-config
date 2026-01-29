@@ -15,7 +15,7 @@ let
 
   # to be used with a list of lib.mkIf values
   optOneOf = lib.lists.findFirst (value: value.condition) (lib.mkIf false null);
-  mkDefaults = lib.mapAttrsRecursive (n: v: lib.mkDefault v);
+  mkDefaults = lib.mapAttrsRecursive (_n: v: lib.mkDefault v);
   defaultConfig = {
     network = {
       displayname_template = "{{or .BusinessName .PushName .Phone}} (WA)";

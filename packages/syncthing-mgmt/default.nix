@@ -1,4 +1,4 @@
-{ pkgs, python3Packages }:
+{ pkgs }:
 
 pkgs.writeShellScriptBin "syncthing-mgmt" ''
   exec ${

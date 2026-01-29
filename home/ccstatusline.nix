@@ -1,4 +1,4 @@
-{ config, ... }:
+{ ... }:
 
 {
   # https://github.com/sirmalloc/ccstatusline
