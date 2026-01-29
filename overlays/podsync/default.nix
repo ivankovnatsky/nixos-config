@@ -2,6 +2,7 @@
   lib,
   buildGo125Module,
   fetchFromGitHub,
+  makeWrapper,
   ffmpeg,
   yt-dlp,
 }:
@@ -28,6 +29,13 @@ buildGo125Module rec {
   ];
 
   tags = [ "netgo" ];
+
+  nativeBuildInputs = [ makeWrapper ];
+
+  postInstall = ''
+    wrapProgram $out/bin/podsync \
+      --prefix PATH : ${lib.makeBinPath [ ffmpeg yt-dlp ]}
+  '';
 
   meta = with lib; {
     description = "Turn YouTube or Vimeo channels into podcast feeds";
