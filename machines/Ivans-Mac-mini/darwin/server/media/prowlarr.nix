@@ -31,7 +31,7 @@ in
   local.launchd.services.prowlarr = {
     enable = true;
     waitForPath = config.flags.miniStoragePath;
-    dataDir = dataDir;
+    inherit dataDir;
     command = "${pkgs.prowlarr}/bin/Prowlarr -nobrowser -data=${dataDir}";
   };
 }

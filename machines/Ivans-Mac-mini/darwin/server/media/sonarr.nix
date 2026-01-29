@@ -43,7 +43,7 @@ in
   local.launchd.services.sonarr = {
     enable = true;
     waitForPath = config.flags.miniStoragePath;
-    dataDir = dataDir;
+    inherit dataDir;
     extraDirs = [
       tvDir
       downloadsDir

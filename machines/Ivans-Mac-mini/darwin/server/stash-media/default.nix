@@ -67,7 +67,7 @@ in
   local.launchd.services.stash-media = {
     enable = true;
     waitForPath = config.flags.miniStoragePath;
-    dataDir = dataDir;
+    inherit dataDir;
     extraDirs = [
       "${dataDir}/logs"
       "${dataDir}/config"

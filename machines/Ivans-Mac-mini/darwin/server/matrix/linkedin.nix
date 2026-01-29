@@ -25,7 +25,7 @@ let
     appservice = {
       address = "http://127.0.0.1:${toString port}";
       hostname = "127.0.0.1";
-      port = port;
+      inherit port;
 
       id = "linkedin";
       bot = {
@@ -70,7 +70,7 @@ in
   local.launchd.services.mautrix-linkedin = {
     enable = true;
     waitForPath = config.flags.miniStoragePath;
-    dataDir = dataDir;
+    inherit dataDir;
 
     environment = {
       HOME = dataDir;

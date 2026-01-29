@@ -12,7 +12,7 @@ in
     enable = true;
     type = "user-agent";
     waitForPath = config.flags.miniStoragePath;
-    dataDir = dataDir;
+    inherit dataDir;
     preStart = ''
       export PATH="${pkgs.nixpkgs-darwin-old-release.tailscale}/bin:${pkgs.coreutils}/bin:$PATH"
     '';

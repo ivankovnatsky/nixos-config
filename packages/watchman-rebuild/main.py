@@ -224,7 +224,9 @@ def acquire_lock():
                 return False
         except ProcessLookupError:
             # Process no longer exists - stale lock
-            logging.info(f"Removing stale lock file (PID {pid} not running): {LOCK_FILE}")
+            logging.info(
+                f"Removing stale lock file (PID {pid} not running): {LOCK_FILE}"
+            )
             try:
                 LOCK_FILE.unlink(missing_ok=True)
             except PermissionError:

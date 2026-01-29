@@ -36,7 +36,7 @@ in
   local.launchd.services.radarr = {
     enable = true;
     waitForPath = config.flags.miniStoragePath;
-    dataDir = dataDir;
+    inherit dataDir;
     extraDirs = [
       moviesDir
       downloadsDir

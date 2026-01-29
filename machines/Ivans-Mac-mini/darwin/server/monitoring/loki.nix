@@ -80,7 +80,7 @@ in
     enable = true;
     type = "user-agent";
     waitForPath = config.flags.miniStoragePath;
-    dataDir = dataDir;
+    inherit dataDir;
     extraDirs = [
       "${dataDir}/chunks"
       "${dataDir}/rules"

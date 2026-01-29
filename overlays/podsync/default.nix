@@ -34,7 +34,12 @@ buildGo125Module rec {
 
   postInstall = ''
     wrapProgram $out/bin/podsync \
-      --prefix PATH : ${lib.makeBinPath [ ffmpeg yt-dlp ]}
+      --prefix PATH : ${
+        lib.makeBinPath [
+          ffmpeg
+          yt-dlp
+        ]
+      }
   '';
 
   meta = with lib; {

@@ -35,7 +35,7 @@ in
     enable = true;
     type = "user-agent";
     waitForPath = config.flags.miniStoragePath;
-    dataDir = dataDir;
+    inherit dataDir;
     command = ''
       ${pkgs.prometheus}/bin/prometheus \
         --config.file=${prometheusConfig} \

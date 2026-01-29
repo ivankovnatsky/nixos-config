@@ -665,7 +665,9 @@ def cmd_scaling(args: argparse.Namespace) -> int:
         else:
             print(f"Scaling: custom ({current})")
             if default_mode and scaled_mode:
-                print(f"  Available: more space ({default_mode['res']}), larger text ({scaled_mode['res']})")
+                print(
+                    f"  Available: more space ({default_mode['res']}), larger text ({scaled_mode['res']})"
+                )
         return 0
 
     if args.mode:

@@ -12,19 +12,19 @@ let
 
   # Base config without secrets (for use with apiKeyFile)
   baseConfig = {
-    baseUrl = cfg.baseUrl;
+    inherit (cfg) baseUrl;
     networkConfig = optionalAttrs (cfg.bindAddress != null) {
       localNetworkAddresses = [ cfg.bindAddress ];
     };
     libraries = map (lib: {
-      name = lib.name;
-      type = lib.type;
-      paths = lib.paths;
+      inherit (lib) name;
+      inherit (lib) type;
+      inherit (lib) paths;
       libraryOptions =
         optionalAttrs (lib.enableRealtimeMonitor != null || lib.automaticRefreshIntervalDays != null)
           {
-            enableRealtimeMonitor = lib.enableRealtimeMonitor;
-            automaticRefreshIntervalDays = lib.automaticRefreshIntervalDays;
+            inherit (lib) enableRealtimeMonitor;
+            inherit (lib) automaticRefreshIntervalDays;
           };
     }) cfg.libraries;
   };
@@ -34,7 +34,7 @@ let
     builtins.toJSON (
       baseConfig
       // {
-        apiKey = cfg.apiKey;
+        inherit (cfg) apiKey;
       }
     )
   );

@@ -12,7 +12,7 @@ let
 
   beszelConfig = pkgs.writeText "beszel-systems.json" (
     builtins.toJSON {
-      systems = cfg.systems;
+      inherit (cfg) systems;
     }
   );
 in

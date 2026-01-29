@@ -102,7 +102,7 @@ in
   local.launchd.services.matrix-synapse = {
     enable = true;
     waitForPath = config.flags.miniStoragePath;
-    dataDir = dataDir;
+    inherit dataDir;
     extraDirs = [ "${dataDir}/media_store" ];
 
     preStart =

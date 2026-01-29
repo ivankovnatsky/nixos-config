@@ -221,5 +221,5 @@
     };
   };
 
-  outputs = { ... }@inputs: import ./flake { inherit inputs; };
+  outputs = inputs: import ./flake { inherit inputs; };
 }

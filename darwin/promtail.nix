@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  hostName = config.networking.hostName;
+  inherit (config.networking) hostName;
   dataDir = "${config.flags.miniStoragePath}/.promtail";
   lokiUrl = "http://${config.flags.miniIp}:3100/loki/api/v1/push";
 
@@ -146,7 +146,7 @@ in
     enable = true;
     type = "user-agent";
     waitForPath = config.flags.miniStoragePath;
-    dataDir = dataDir;
+    inherit dataDir;
     command = ''
       ${pkgs.promtail}/bin/promtail \
         -config.file=${promtailConfig} \

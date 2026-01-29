@@ -21,7 +21,7 @@ in
   local.launchd.services.download-youtube = {
     enable = true;
     waitForPath = config.flags.miniStoragePath;
-    dataDir = dataDir;
+    inherit dataDir;
     command = ''
       ${youtube-daemon}/bin/youtube-daemon \
         --host ${config.flags.miniIp} \

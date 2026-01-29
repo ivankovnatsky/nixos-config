@@ -81,15 +81,15 @@ let
   configJsonTemplate = pkgs.writeText "uptime-kuma-monitors-template.json" (
     builtins.toJSON {
       monitors = map (m: {
-        name = m.name;
-        type = m.type;
-        url = m.url;
-        interval = m.interval;
-        maxretries = m.maxretries;
-        retryInterval = m.retryInterval;
-        timeout = m.timeout;
-        expectedStatus = m.expectedStatus;
-        description = m.description;
+        inherit (m) name;
+        inherit (m) type;
+        inherit (m) url;
+        inherit (m) interval;
+        inherit (m) maxretries;
+        inherit (m) retryInterval;
+        inherit (m) timeout;
+        inherit (m) expectedStatus;
+        inherit (m) description;
       }) cfg.monitors;
     }
   );

@@ -84,7 +84,7 @@ in
   local.launchd.services.transmission = {
     enable = true;
     waitForPath = config.flags.miniStoragePath;
-    dataDir = dataDir;
+    inherit dataDir;
     extraDirs = [
       downloadsDir
       incompleteDir

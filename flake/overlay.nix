@@ -8,7 +8,7 @@ let
   # Special arguments for specific overlays (like nixpkgs all-packages.nix)
   overlayArgs = {
     mangohud = {
-      libXNVCtrl = prev.linuxPackages.nvidia_x11.settings.libXNVCtrl;
+      inherit (prev.linuxPackages.nvidia_x11.settings) libXNVCtrl;
       mangohud32 = prev.pkgsi686Linux.mangohud;
     };
   };
@@ -34,7 +34,7 @@ let
   ) { } (builtins.filter (dir: dir.type == "directory") (builtins.attrValues packageList));
 
   # 3. Nixpkgs-master and unstable packages
-  system = final.stdenv.hostPlatform.system;
+  inherit (final.stdenv.hostPlatform) system;
   masterOverlays = {
     nixpkgs-darwin-master = import inputs.nixpkgs-darwin-master {
       inherit system;

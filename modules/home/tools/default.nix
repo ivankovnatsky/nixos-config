@@ -72,7 +72,7 @@ let
       mcp = {
         inherit (cfg.mcp) servers;
       };
-      curlShell = cfg.curlShell;
+      inherit (cfg) curlShell;
       inherit (cfg) stateFile;
       paths = {
         bunBin = "${config.home.homeDirectory}/.bun/bin";
