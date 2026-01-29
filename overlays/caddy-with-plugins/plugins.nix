@@ -47,7 +47,7 @@ assert assertMsg (
 ) "Plugins must have tags present (e.g. ${elemAt pluginsWithoutVersion 0}@x.y.z)!";
 
 caddy-with-plugins.overrideAttrs (
-  finalAttrs: prevAttrs: {
+  finalAttrs: _prevAttrs: {
     vendorHash = null;
     subPackages = [ "." ];
 

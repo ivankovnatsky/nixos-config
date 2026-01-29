@@ -74,7 +74,7 @@ in
       command =
         let
           # Filter enabled schedules
-          enabledSchedules = filterAttrs (name: schedule: schedule.enable) cfg.schedules;
+          enabledSchedules = filterAttrs (_name: schedule: schedule.enable) cfg.schedules;
 
           # Generate power mode settings
           powerModeSettings = ''
@@ -99,7 +99,7 @@ in
             schedules:
             let
               # Format each schedule as "action days time"
-              formatSchedule = name: schedule: "${schedule.action} ${schedule.days} ${schedule.time}";
+              formatSchedule = _name: schedule: "${schedule.action} ${schedule.days} ${schedule.time}";
 
               # Join all schedule parameters
               scheduleParams = concatStringsSep " " (mapAttrsToList formatSchedule schedules);

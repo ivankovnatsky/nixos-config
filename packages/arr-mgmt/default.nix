@@ -1,4 +1,4 @@
-{ pkgs, python3Packages }:
+{ pkgs }:
 
 pkgs.writeShellScriptBin "arr-mgmt" ''
   exec ${pkgs.python3.withPackages (ps: [ ps.requests ])}/bin/python ${./arr-mgmt.py} "$@"

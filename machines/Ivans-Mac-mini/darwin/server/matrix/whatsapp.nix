@@ -1,7 +1,6 @@
 {
   config,
   pkgs,
-  lib,
   ...
 }:
 
@@ -20,7 +19,7 @@ let
   #   rm /Volumes/Storage/Data/.matrix/bridges/whatsapp/whatsapp-registration.yaml
   # Then restart both the bridge and Synapse services to regenerate with the new port.
 
-  whatsappPackage = pkgs.mautrix-whatsapp.overrideAttrs (old: {
+  whatsappPackage = pkgs.mautrix-whatsapp.overrideAttrs (_old: {
     version = "0.12.5-unstable-2025-10-04";
     src = pkgs.fetchFromGitHub {
       owner = "mautrix";

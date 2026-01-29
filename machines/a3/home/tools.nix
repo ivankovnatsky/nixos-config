@@ -1,4 +1,4 @@
-{ config, ... }:
+{ ... }:
 {
   local.tools = {
     enable = true;

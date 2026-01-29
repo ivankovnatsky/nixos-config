@@ -1,14 +1,9 @@
 {
   config,
-  pkgs,
   username,
   ...
 }:
 
-let
-  homePath = "${config.users.users.${username}.home}";
-
-in
 {
   local = {
     dock = {

@@ -14,7 +14,7 @@ let
   appservicePort = 29321;
 
   optOneOf = lib.lists.findFirst (value: value.condition) (lib.mkIf false null);
-  mkDefaults = lib.mapAttrsRecursive (n: v: lib.mkDefault v);
+  mkDefaults = lib.mapAttrsRecursive (_n: v: lib.mkDefault v);
   defaultConfig = {
     bridge = {
       command_prefix = "!li";
