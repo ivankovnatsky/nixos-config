@@ -8,6 +8,7 @@
     ../../../darwin/sudo.nix
     ../../../darwin/syncthing.nix
     ../../../darwin/system.nix
+    ../../../darwin/init.nix
     ../../../darwin/users.nix
     ../../../modules/darwin/dock
     ../../../modules/darwin/launchd
