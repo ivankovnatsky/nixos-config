@@ -40,6 +40,7 @@ let
       "${n}\n    ${v}\n  endscript\n"
     else if lib.isInt v then
       "${n} ${toString v}\n"
+    # statix: skip - v can be int, bool, or string
     else if v == true then
       "${n}\n"
     else if v == false then
