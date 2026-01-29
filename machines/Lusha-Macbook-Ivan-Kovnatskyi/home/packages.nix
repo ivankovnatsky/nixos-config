@@ -133,6 +133,8 @@
     syncthing-mgmt
     terraformer
     terragrunt-atlantis-config
+    temporal
+    temporal-cli
     tmux-spawn
     tree
     treefmt
