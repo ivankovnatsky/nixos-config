@@ -20,7 +20,6 @@ let
       flatten (
         mapAttrsToList (
           name: value:
-          # statix: skip - value can be bool, list, or string
           if value == true then
             [ name ]
           else if value == false then
@@ -129,7 +128,7 @@ in
       enable = true;
       type = "daemon";
       keepAlive = cfg.alwaysKeepRunning;
-      waitForSecrets = cfg.waitForSecrets;
+      inherit (cfg) waitForSecrets;
 
       command = "${cfg.package}/bin/dnsmasq -k -C ${configFile}";
 
