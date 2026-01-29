@@ -12,6 +12,16 @@ includes = ["*.py"]
 command = "nixfmt"
 includes = ["*.nix"]
 
+[formatter.statix]
+command = "statix"
+options = ["fix"]
+includes = ["*.nix"]
+
+[formatter.deadnix]
+command = "deadnix"
+options = ["--edit"]
+includes = ["*.nix"]
+
 [formatter.prettier]
 command = "prettier"
 options = ["--write", "--prose-wrap", "always"]
