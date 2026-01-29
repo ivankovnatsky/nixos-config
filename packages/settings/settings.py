@@ -552,6 +552,56 @@ def dock_toggle() -> int:
     return 1
 
 
+def scaling_get_current_mode_name(display: dict) -> str | None:
+    """Get the current scaling mode name: 'scaled', 'default', or None."""
+    current = display.get("resolution")
+    if not current:
+        return None
+
+    default_mode, scaled_mode = scaling_get_resolution_pair(display)
+    if not default_mode or not scaled_mode:
+        return None
+
+    if current == scaled_mode["res"]:
+        return "scaled"
+    elif current == default_mode["res"]:
+        return "default"
+    else:
+        return None
+
+
+def scaling_set_mode(mode: str) -> int:
+    """Set display to specific scaling mode ('scaled' or 'default')."""
+    display = scaling_get_builtin_display()
+    if not display:
+        print("Could not find built-in display", file=sys.stderr)
+        return 1
+
+    default_mode, scaled_mode = scaling_get_resolution_pair(display)
+    if not default_mode or not scaled_mode:
+        print("Could not find suitable resolution modes", file=sys.stderr)
+        return 1
+
+    current = display.get("resolution")
+
+    if mode == "scaled":
+        target_mode = scaled_mode
+        label = "larger text"
+    else:
+        target_mode = default_mode
+        label = "more space"
+
+    if current == target_mode["res"]:
+        print(f"Already at {label} ({target_mode['res']})")
+        return 0
+
+    if scaling_set_resolution(display, target_mode):
+        print(f"Switched to {label} ({target_mode['res']})")
+        return 0
+
+    return 1
+
+
 def scaling_toggle() -> int:
     """Toggle display scaling."""
     display = scaling_get_builtin_display()
@@ -586,7 +636,29 @@ def cmd_scaling(args: argparse.Namespace) -> int:
         print("Scaling settings only available on macOS", file=sys.stderr)
         return 1
 
-    result = scaling_toggle()
+    if args.status:
+        display = scaling_get_builtin_display()
+        if not display:
+            print("Could not find built-in display", file=sys.stderr)
+            return 1
+        current = display.get("resolution")
+        mode_name = scaling_get_current_mode_name(display)
+        default_mode, scaled_mode = scaling_get_resolution_pair(display)
+        if mode_name == "scaled":
+            print(f"Scaling: larger text ({current})")
+        elif mode_name == "default":
+            print(f"Scaling: more space ({current})")
+        else:
+            print(f"Scaling: custom ({current})")
+            if default_mode and scaled_mode:
+                print(f"  Available: more space ({default_mode['res']}), larger text ({scaled_mode['res']})")
+        return 0
+
+    if args.mode:
+        result = scaling_set_mode(args.mode)
+    else:
+        result = scaling_toggle()
+
     if result == 0 and args.dock:
         dock_toggle()
     return result
@@ -1227,6 +1299,16 @@ def main() -> int:
         "scaling",
         aliases=["s", "scale"],
         help="Toggle display scaling (macOS only)",
+    )
+    scaling_parser.add_argument(
+        "--status",
+        action="store_true",
+        help="Show current scaling mode",
+    )
+    scaling_parser.add_argument(
+        "--mode",
+        choices=["scaled", "default"],
+        help="Set specific mode: 'scaled' (larger text) or 'default' (more space)",
     )
     scaling_parser.add_argument(
         "--dock",
