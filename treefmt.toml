@@ -13,8 +13,8 @@ command = "nixfmt"
 includes = ["*.nix"]
 
 [formatter.statix]
-command = "statix"
-options = ["fix"]
+command = "bash"
+options = ["system/scripts/statix-wrapper.sh"]
 includes = ["*.nix"]
 
 [formatter.deadnix]
