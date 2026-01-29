@@ -25,7 +25,7 @@ let
     appservice = {
       address = "http://127.0.0.1:${toString port}";
       hostname = "127.0.0.1";
-      port = port;
+      inherit port;
 
       id = "discord";
       bot = {
@@ -67,7 +67,7 @@ in
   local.launchd.services.mautrix-discord = {
     enable = true;
     waitForPath = config.flags.miniStoragePath;
-    dataDir = dataDir;
+    inherit dataDir;
 
     environment = {
       PATH = "${pkgs.nixpkgs-darwin-old-release.lottieconverter}/bin:${pkgs.ffmpeg-headless}/bin";

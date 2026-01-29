@@ -139,8 +139,8 @@ stdenv.mkDerivation (finalAttrs: {
       ];
 
       libdbus = dbus.lib;
-      libGL = libGL;
-      libX11 = libX11;
+      inherit libGL;
+      inherit libX11;
       inherit hwdata;
     })
   ];

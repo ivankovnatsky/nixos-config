@@ -7,7 +7,7 @@
 }:
 
 let
-  hostName = osConfig.networking.hostName;
+  inherit (osConfig.networking) hostName;
   useAbsolutePath = hostName == "Ivans-Mac-mini";
   absoluteGoPath = "${config.flags.miniStoragePath}/go";
   homeGoPath = "${config.home.homeDirectory}/go";

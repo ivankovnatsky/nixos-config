@@ -116,7 +116,7 @@ in
       enable = true;
       type = "daemon";
       keepAlive = cfg.alwaysKeepRunning;
-      waitForSecrets = cfg.waitForSecrets;
+      inherit (cfg) waitForSecrets;
 
       command = "${cfg.package}/bin/stubby -C ${configFile} -l ${cfg.logLevel} -v";
 

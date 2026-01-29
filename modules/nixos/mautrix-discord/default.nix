@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.local.services.mautrix-discord;
-  dataDir = cfg.dataDir;
+  inherit (cfg) dataDir;
   format = pkgs.formats.yaml { };
 
   registrationFile = "${dataDir}/discord-registration.yaml";

@@ -195,20 +195,20 @@ in
           --argjson libraries '${
             builtins.toJSON (
               map (lib: {
-                name = lib.name;
-                folders = lib.folders;
-                mediaType = lib.mediaType;
-                provider = lib.provider;
+                inherit (lib) name;
+                inherit (lib) folders;
+                inherit (lib) mediaType;
+                inherit (lib) provider;
               }) cfg.libraries
             )
           }' \
           --argjson users '${
             builtins.toJSON (
               map (user: {
-                username = user.username;
+                inherit (user) username;
                 password = if user.passwordFile != null then "__PASSWORD_${user.username}__" else user.password;
-                type = user.type;
-                libraries = user.libraries;
+                inherit (user) type;
+                inherit (user) libraries;
               }) cfg.users
             )
           }' \

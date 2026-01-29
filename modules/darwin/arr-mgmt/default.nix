@@ -206,75 +206,75 @@ let
     builtins.toJSON (
       optionalAttrs cfg.radarr.enable {
         radarr = {
-          baseUrl = cfg.radarr.baseUrl;
+          inherit (cfg.radarr) baseUrl;
           apiKey = "@RADARR_API_KEY@";
           hostConfig = {
-            bindAddress = cfg.radarr.bindAddress;
+            inherit (cfg.radarr) bindAddress;
           };
           downloadClients = map (dc: {
-            name = dc.name;
-            host = dc.host;
-            port = dc.port;
-            useSsl = dc.useSsl;
-            urlBase = dc.urlBase;
+            inherit (dc) name;
+            inherit (dc) host;
+            inherit (dc) port;
+            inherit (dc) useSsl;
+            inherit (dc) urlBase;
             username = "@DC_${dc.name}_USERNAME@";
             password = "@DC_${dc.name}_PASSWORD@";
-            category = dc.category;
-            addPaused = dc.addPaused;
-            enable = dc.enable;
-            priority = dc.priority;
-            removeCompletedDownloads = dc.removeCompletedDownloads;
-            removeFailedDownloads = dc.removeFailedDownloads;
+            inherit (dc) category;
+            inherit (dc) addPaused;
+            inherit (dc) enable;
+            inherit (dc) priority;
+            inherit (dc) removeCompletedDownloads;
+            inherit (dc) removeFailedDownloads;
           }) cfg.radarr.downloadClients;
-          rootFolders = cfg.radarr.rootFolders;
+          inherit (cfg.radarr) rootFolders;
         };
       }
       // optionalAttrs cfg.sonarr.enable {
         sonarr = {
-          baseUrl = cfg.sonarr.baseUrl;
+          inherit (cfg.sonarr) baseUrl;
           apiKey = "@SONARR_API_KEY@";
           hostConfig = {
-            bindAddress = cfg.sonarr.bindAddress;
+            inherit (cfg.sonarr) bindAddress;
           };
           downloadClients = map (dc: {
-            name = dc.name;
-            host = dc.host;
-            port = dc.port;
-            useSsl = dc.useSsl;
-            urlBase = dc.urlBase;
+            inherit (dc) name;
+            inherit (dc) host;
+            inherit (dc) port;
+            inherit (dc) useSsl;
+            inherit (dc) urlBase;
             username = "@DC_${dc.name}_USERNAME@";
             password = "@DC_${dc.name}_PASSWORD@";
-            category = dc.category;
-            addPaused = dc.addPaused;
-            enable = dc.enable;
-            priority = dc.priority;
-            removeCompletedDownloads = dc.removeCompletedDownloads;
-            removeFailedDownloads = dc.removeFailedDownloads;
+            inherit (dc) category;
+            inherit (dc) addPaused;
+            inherit (dc) enable;
+            inherit (dc) priority;
+            inherit (dc) removeCompletedDownloads;
+            inherit (dc) removeFailedDownloads;
           }) cfg.sonarr.downloadClients;
-          rootFolders = cfg.sonarr.rootFolders;
+          inherit (cfg.sonarr) rootFolders;
         };
       }
       // optionalAttrs cfg.prowlarr.enable {
         prowlarr = {
-          baseUrl = cfg.prowlarr.baseUrl;
+          inherit (cfg.prowlarr) baseUrl;
           apiKey = "@PROWLARR_API_KEY@";
           hostConfig = {
-            bindAddress = cfg.prowlarr.bindAddress;
+            inherit (cfg.prowlarr) bindAddress;
           };
           indexers = map (idx: {
-            name = idx.name;
-            definitionName = idx.definitionName;
-            enable = idx.enable;
-            priority = idx.priority;
+            inherit (idx) name;
+            inherit (idx) definitionName;
+            inherit (idx) enable;
+            inherit (idx) priority;
           }) cfg.prowlarr.indexers;
           applications = map (app: {
-            name = app.name;
-            baseUrl = app.baseUrl;
+            inherit (app) name;
+            inherit (app) baseUrl;
             apiKey = "@APP_${app.name}_API_KEY@";
-            prowlarrUrl = app.prowlarrUrl;
-            syncLevel = app.syncLevel;
-            syncCategories = app.syncCategories;
-            enable = app.enable;
+            inherit (app) prowlarrUrl;
+            inherit (app) syncLevel;
+            inherit (app) syncCategories;
+            inherit (app) enable;
           }) cfg.prowlarr.applications;
         };
       }

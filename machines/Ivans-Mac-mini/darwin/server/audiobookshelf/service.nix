@@ -13,7 +13,7 @@ in
   local.launchd.services.audiobookshelf = {
     enable = true;
     waitForPath = config.flags.miniStoragePath;
-    dataDir = dataDir;
+    inherit dataDir;
     extraDirs = [
       configDir
       metadataDir

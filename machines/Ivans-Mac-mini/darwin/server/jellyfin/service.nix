@@ -20,7 +20,7 @@ in
   local.launchd.services.jellyfin = {
     enable = true;
     waitForPath = config.flags.miniStoragePath;
-    dataDir = dataDir;
+    inherit dataDir;
     extraDirs = [
       configDir
       cacheDir

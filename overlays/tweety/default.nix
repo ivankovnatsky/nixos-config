@@ -27,8 +27,8 @@ stdenv.mkDerivation rec {
       source = selectSystem sources;
     in
     fetchurl {
-      url = source.url;
-      sha256 = source.sha256;
+      inherit (source) url;
+      inherit (source) sha256;
     };
 
   sourceRoot = ".";

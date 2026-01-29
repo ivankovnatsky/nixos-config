@@ -67,7 +67,7 @@ in
     local.launchd.services.beszel-agent = {
       enable = true;
       type = "daemon";
-      waitForSecrets = cfg.waitForSecrets;
+      inherit (cfg) waitForSecrets;
 
       command = "${cfg.package}/bin/beszel-agent";
 

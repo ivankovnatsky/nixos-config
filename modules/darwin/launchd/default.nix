@@ -213,7 +213,7 @@ let
     mapAttrsToList (
       name: service:
       let
-        label = service.label;
+        inherit (service) label;
         plistPath = "$HOME/Library/LaunchAgents/${label}.plist";
       in
       ''
@@ -234,7 +234,7 @@ let
     mapAttrsToList (
       name: service:
       let
-        label = service.label;
+        inherit (service) label;
         plistPath = "/Library/LaunchDaemons/${label}.plist";
       in
       ''

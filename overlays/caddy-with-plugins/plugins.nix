@@ -53,7 +53,7 @@ caddy-with-plugins.overrideAttrs (
 
     src = stdenv.mkDerivation {
       pname = "caddy-src-with-plugins-${pluginsHash}";
-      version = finalAttrs.version;
+      inherit (finalAttrs) version;
 
       nativeBuildInputs = [
         go

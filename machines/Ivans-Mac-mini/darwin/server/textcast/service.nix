@@ -81,7 +81,7 @@ in
   local.launchd.services.textcast = {
     enable = true;
     waitForPath = config.flags.miniStoragePath;
-    dataDir = dataDir;
+    inherit dataDir;
     extraDirs = [
       audioDir
       textsDir

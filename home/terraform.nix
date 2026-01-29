@@ -13,7 +13,7 @@ let
         rev = "882842d2a908700540d206baa79efb922ac1c33d";
       })
       {
-        system = pkgs.stdenv.hostPlatform.system;
+        inherit (pkgs.stdenv.hostPlatform) system;
         config = {
           allowUnfree = true;
           allowUnfreePredicate = _: true;

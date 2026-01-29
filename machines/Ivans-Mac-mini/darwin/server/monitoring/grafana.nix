@@ -69,7 +69,7 @@ in
     type = "user-agent";
     waitForPath = config.flags.miniStoragePath;
     waitForSecrets = true;
-    dataDir = dataDir;
+    inherit dataDir;
     extraDirs = [
       "${dataDir}/log"
       "${dataDir}/plugins"

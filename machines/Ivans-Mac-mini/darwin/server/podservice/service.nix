@@ -49,7 +49,7 @@ in
   local.launchd.services.podservice = {
     enable = true;
     waitForPath = config.flags.miniStoragePath;
-    dataDir = dataDir;
+    inherit dataDir;
     extraDirs = [
       audioDir
       metadataDir
