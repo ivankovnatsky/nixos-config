@@ -107,6 +107,7 @@ EXCLUDE_PATTERNS = [
     "**/Library/Containers/com.apple.findmy.FindMyWidgetItems/**",
     "**/Library/Containers/com.apple.photoanalysisd/**",
     "**/Library/Containers/com.apple.podcasts/**",
+    "**/Library/Containers/com.apple.quicklook.QuickLookUIService/**",
     "**/Library/Containers/com.apple.Safari/**",
     "**/Library/Containers/com.apple.Safari.WebApp/**",
     "**/Library/Containers/com.apple.Time-Machine-Settings-Intents.extension/**",
