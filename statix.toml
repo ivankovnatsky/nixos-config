@@ -1,0 +1,7 @@
+# Statix configuration
+# https://git.peppe.rs/languages/statix/about/
+
+disabled = [
+  # Keep { ... }: pattern to match nixpkgs convention
+  "empty_pattern",
+]
