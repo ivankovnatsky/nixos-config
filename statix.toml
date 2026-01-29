@@ -4,4 +4,6 @@
 disabled = [
   # Keep { ... }: pattern to match nixpkgs convention
   "empty_pattern",
+  # Preserve == true/false for polymorphic type checks
+  "bool_comparison",
 ]
