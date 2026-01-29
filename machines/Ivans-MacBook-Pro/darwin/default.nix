@@ -17,6 +17,7 @@
     ../../../darwin/sudo.nix
     ../../../darwin/syncthing.nix
     ../../../darwin/system.nix
+    ../../../darwin/init.nix
     ../../../darwin/taskwarrior-notify.nix
     ../../../darwin/users.nix
     ../../../modules/darwin/dock
