@@ -1,4 +1,4 @@
-{ config, ... }:
+{ ... }:
 {
   local.tools = {
     enable = true;
@@ -19,17 +19,6 @@
 
     curlShell = {
       "https://claude.ai/install.sh" = "bash";
-    };
-
-    mcp.servers = {
-      github = {
-        transport = "http";
-        url = "https://api.githubcopilot.com/mcp";
-        headers = [ "Authorization: Bearer @GH_MCP_TOKEN@" ];
-        secretPaths = {
-          GH_MCP_TOKEN = config.sops.secrets.gh-mcp-token.path;
-        };
-      };
     };
   };
 }
