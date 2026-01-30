@@ -23,6 +23,9 @@ import sys
 from datetime import date
 from pathlib import Path
 
+# Full path required because Homebrew PATH isn't available during Nix Darwin activation
+DISPLAYPLACER_PATH = "/opt/homebrew/bin/displayplacer"
+
 
 # Platform Detection
 def is_macos() -> bool:
@@ -379,9 +382,11 @@ def scaling_get_model_identifier() -> str:
 
 def scaling_get_displayplacer_output() -> str:
     """Get raw output from displayplacer list."""
+    if not os.path.exists(DISPLAYPLACER_PATH):
+        return ""
     try:
         result = subprocess.run(
-            ["displayplacer", "list"],
+            [DISPLAYPLACER_PATH, "list"],
             capture_output=True,
             text=True,
             check=True,
@@ -490,20 +495,24 @@ def scaling_get_resolution_pair(display: dict) -> tuple[dict | None, dict | None
 
 def scaling_set_resolution(display: dict, mode: dict) -> bool:
     """Set display resolution using displayplacer."""
+    if not os.path.exists(DISPLAYPLACER_PATH):
+        print("displayplacer not found", file=sys.stderr)
+        return False
+
     screen_id = display.get("id")
     if not screen_id:
         print("Could not determine screen ID", file=sys.stderr)
         return False
 
     cmd = [
-        "displayplacer",
+        DISPLAYPLACER_PATH,
         f"id:{screen_id} res:{mode['res']} hz:{mode['hz']} color_depth:{mode['color_depth']} scaling:on",
     ]
 
     try:
         subprocess.run(cmd, check=True)
         return True
-    except subprocess.CalledProcessError as e:
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
         print(f"Error setting resolution: {e}", file=sys.stderr)
         return False
 
