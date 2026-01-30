@@ -87,6 +87,24 @@ def strip_remote_prefix(branch: str) -> str:
     return branch
 
 
+def extract_remote_name(ref: str) -> str | None:
+    """Extract remote name from a ref like 'origin/branch' or 'upstream/branch'."""
+    match = re.match(r"^([a-zA-Z0-9_-]+)/", ref)
+    if match:
+        remote = match.group(1)
+        remotes = run_git("remote").split("\n")
+        if remote in remotes:
+            return remote
+    return None
+
+
+def fetch_remote(remote: str, ref: str) -> bool:
+    """Fetch a specific ref from a remote."""
+    branch = strip_remote_prefix(ref)
+    result = run_git("fetch", remote, branch, check=False)
+    return result is not None
+
+
 def process_branch_name(
     branch: str,
     char_limit: int,
@@ -244,10 +262,11 @@ Example:
     else:
         current_sha = run_git("rev-parse", "HEAD")
 
+    no_trim = args.no_trim or args.start_point is not None
     branch_name = process_branch_name(
         args.branch,
         args.char_limit,
-        args.no_trim,
+        no_trim,
         args.sha_suffix,
         current_sha,
     )
@@ -259,6 +278,12 @@ Example:
         return 0
 
     base_branch = args.start_point if args.start_point else default_branch
+
+    if args.start_point:
+        remote = extract_remote_name(args.start_point)
+        if remote:
+            fetch_remote(remote, args.start_point)
+
     if not create_worktree(worktree_dir, branch_name, base_branch, args.git_args):
         print(f"Error: Failed to create worktree at {worktree_dir}", file=sys.stderr)
         return 1
