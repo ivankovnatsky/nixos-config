@@ -70,3 +70,9 @@ maintenance and troubleshooting.
 - Accessibility permissions granted
 - Configured reverse scrolling direction (natural scrolling for mouse)
 - No smooth scrolling feature (downgrade from Mos which had this)
+
+### Chromium
+
+- Allow:
+  - Camera
+  - Microphone
