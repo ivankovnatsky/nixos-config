@@ -191,9 +191,17 @@ Features:
 
     file_path, subject = parse_args_flexible(parsed.args, parsed.subject)
 
+    # Get git root early - needed for path normalization
+    try:
+        git_root = get_git_root()
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to get git root: {e}", file=sys.stderr)
+        return 1
+
     if file_path:
-        # Use provided file path
-        target_file = file_path
+        # Use provided file path, convert to relative path from git root
+        abs_path = os.path.abspath(file_path)
+        target_file = os.path.relpath(abs_path, git_root)
         auto_stage = False
     else:
         # Check staged files first, then modified files
@@ -263,18 +271,10 @@ Features:
         return 1
 
     try:
-        git_root = get_git_root()
-    except subprocess.CalledProcessError as e:
-        print(f"Failed to get git root: {e}", file=sys.stderr)
-        return 1
-
-    try:
         if file_path:
             # Commit specific file (stages and commits in one step)
-            # Convert to path relative to git root for consistency
-            abs_path = os.path.abspath(file_path)
-            rel_path = os.path.relpath(abs_path, git_root)
-            cmd = ["git", "commit", rel_path, "-m", message]
+            # target_file is already relative to git root from earlier conversion
+            cmd = ["git", "commit", target_file, "-m", message]
         elif auto_stage:
             # Auto-stage and commit the single modified file
             # target_file is already relative to git root from git diff output
