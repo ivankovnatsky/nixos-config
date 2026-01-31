@@ -24,6 +24,7 @@
     ps-top-nu
     settings
     sops
+    poppler-utils
     poweroff
     git-dotfiles
     ssh-to-age
