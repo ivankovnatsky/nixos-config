@@ -19,6 +19,7 @@
     ./default-apps.nix
     ./desktop.nix
     ./fonts.nix
+    ./fwupd.nix
     ../../../nixos/nix-ld.nix
     ./networking.nix
     ./nixpkgs.nix
