@@ -10,6 +10,7 @@
 	flake-update-main \
 	flake-update-nixvim \
 	flake-update-homebrew \
+	flake-update-nixos-unstable \
 	\
 	rebuild-nixos/generic \
 	rebuild-nixos/impure \
@@ -67,6 +68,12 @@ flake-update-homebrew:
 	inputs="nix-homebrew homebrew-core homebrew-cask homebrew-bundle"; \
 	for input in $$inputs; do \
 		nix flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
+	done
+
+flake-update-nixos-unstable:
+	inputs="nixpkgs-nixos-unstable home-manager-nixos-unstable nixvim-nixos-unstable plasma-manager-nixos-unstable sops-nix-nixos-unstable nur-nixos-unstable"; \
+	for input in $$inputs; do \
+		nix flake update --commit-lock-file $$input; \
 	done
 
 # Function to send notifications with fallbacks
