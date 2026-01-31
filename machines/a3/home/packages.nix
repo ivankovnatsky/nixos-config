@@ -22,7 +22,7 @@
     libnotify # Desktop notifications # Provides notify-send command
     lm_sensors # Provides the 'sensors' command for monitoring temperatures
     lsof # List open files
-    nixfmt-rfc-style
+    nixfmt
     poweroff
     git-dotfiles
     nodejs
