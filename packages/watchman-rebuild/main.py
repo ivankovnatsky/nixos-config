@@ -109,6 +109,30 @@ INSTANCE_RETRY_DELAY = 5  # seconds between retries
 INSTANCE_MAX_RETRIES = 60  # max retries (5 minutes total)
 
 
+def is_watchman_rebuild_process(pid):
+    """Check if a PID is actually a watchman-rebuild process (not a recycled PID)."""
+    system = platform.system()
+    try:
+        if system == "Linux":
+            # Check /proc/{pid}/cmdline on Linux
+            cmdline_path = Path(f"/proc/{pid}/cmdline")
+            if cmdline_path.exists():
+                cmdline = cmdline_path.read_text()
+                return "watchman-rebuild" in cmdline
+        elif system == "Darwin":
+            # Use ps on macOS
+            result = subprocess.run(
+                ["ps", "-p", str(pid), "-o", "command="],
+                capture_output=True,
+                text=True,
+            )
+            if result.returncode == 0:
+                return "watchman-rebuild" in result.stdout
+    except (PermissionError, FileNotFoundError, OSError):
+        pass
+    return False
+
+
 def check_existing_instance():
     """Check if another instance is already running. Retries until it exits or timeout."""
     retries = 0
@@ -117,6 +141,18 @@ def check_existing_instance():
             pid = int(INSTANCE_FILE.read_text().strip())
             # Check if process is still running
             os.kill(pid, 0)
+            # PID exists, but verify it's actually watchman-rebuild (PIDs get recycled)
+            if not is_watchman_rebuild_process(pid):
+                logging.info(
+                    f"PID {pid} exists but is not watchman-rebuild (recycled PID), removing stale instance file"
+                )
+                try:
+                    INSTANCE_FILE.unlink(missing_ok=True)
+                except PermissionError:
+                    logging.warning(
+                        "Cannot remove stale instance file (owned by another user), continuing anyway"
+                    )
+                break
             retries += 1
             if retries >= INSTANCE_MAX_RETRIES:
                 logging.error(
@@ -128,7 +164,18 @@ def check_existing_instance():
             )
             time.sleep(INSTANCE_RETRY_DELAY)
         except PermissionError:
-            # Process exists but owned by another user - still running
+            # Process exists but owned by another user - verify it's watchman-rebuild
+            if not is_watchman_rebuild_process(pid):
+                logging.info(
+                    f"PID {pid} exists (different user) but is not watchman-rebuild, removing stale instance file"
+                )
+                try:
+                    INSTANCE_FILE.unlink(missing_ok=True)
+                except PermissionError:
+                    logging.warning(
+                        "Cannot remove stale instance file (owned by another user), continuing anyway"
+                    )
+                break
             retries += 1
             if retries >= INSTANCE_MAX_RETRIES:
                 logging.error(
@@ -174,19 +221,28 @@ def cleanup_stale_lock():
                 pid = int(pid_str)
                 try:
                     os.kill(pid, 0)
-                    # Process still running - don't remove
+                    # PID exists, but verify it's actually watchman-rebuild
+                    if is_watchman_rebuild_process(pid):
+                        logging.info(
+                            f"Lock file held by running watchman-rebuild (PID {pid}), not removing"
+                        )
+                        return
+                    # PID recycled - not watchman-rebuild, treat as stale
                     logging.info(
-                        f"Lock file held by running process (PID {pid}), not removing"
+                        f"Lock file PID {pid} is not watchman-rebuild (recycled), removing"
                     )
-                    return
                 except ProcessLookupError:
                     pass  # Process dead, will remove below
                 except PermissionError:
-                    # Process running but different user
+                    # Process running but different user - verify it's watchman-rebuild
+                    if is_watchman_rebuild_process(pid):
+                        logging.info(
+                            f"Lock file held by watchman-rebuild owned by another user (PID {pid}), not removing"
+                        )
+                        return
                     logging.info(
-                        f"Lock file held by process owned by another user (PID {pid}), not removing"
+                        f"Lock file PID {pid} (different user) is not watchman-rebuild, removing"
                     )
-                    return
         except (ValueError, FileNotFoundError):
             pass  # Invalid file, will remove below
 
@@ -210,10 +266,21 @@ def acquire_lock():
             else:
                 pid = int(pid_str)
                 os.kill(pid, 0)  # Check if process exists
-                logging.info(
-                    f"Lock file exists, rebuild already in progress (PID {pid}): {LOCK_FILE}"
-                )
-                return False
+                # PID exists, but verify it's actually watchman-rebuild
+                if not is_watchman_rebuild_process(pid):
+                    logging.info(
+                        f"Lock file PID {pid} is not watchman-rebuild (recycled), removing"
+                    )
+                    try:
+                        LOCK_FILE.unlink(missing_ok=True)
+                    except PermissionError:
+                        logging.warning("Cannot remove stale lock file (permission denied)")
+                        return False
+                else:
+                    logging.info(
+                        f"Lock file exists, rebuild already in progress (PID {pid}): {LOCK_FILE}"
+                    )
+                    return False
         except (ValueError, FileNotFoundError):
             # Invalid or missing PID - treat as stale
             logging.info(f"Removing stale lock file (invalid PID): {LOCK_FILE}")
@@ -233,11 +300,21 @@ def acquire_lock():
                 logging.warning("Cannot remove stale lock file (permission denied)")
                 return False
         except PermissionError:
-            # Process exists but owned by another user - still running
-            logging.info(
-                f"Lock file exists, rebuild in progress by another user (PID {pid}): {LOCK_FILE}"
-            )
-            return False
+            # Process exists but owned by another user - verify it's watchman-rebuild
+            if not is_watchman_rebuild_process(pid):
+                logging.info(
+                    f"Lock file PID {pid} (different user) is not watchman-rebuild, removing"
+                )
+                try:
+                    LOCK_FILE.unlink(missing_ok=True)
+                except PermissionError:
+                    logging.warning("Cannot remove stale lock file (permission denied)")
+                    return False
+            else:
+                logging.info(
+                    f"Lock file exists, rebuild in progress by another user (PID {pid}): {LOCK_FILE}"
+                )
+                return False
 
     # Write current PID to lock file
     LOCK_FILE.write_text(str(os.getpid()))
