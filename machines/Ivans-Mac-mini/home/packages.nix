@@ -33,6 +33,7 @@
     mkpasswd
     poweroff
     git-dotfiles
+    poppler-utils
     nextdns-mgmt
     nixfmt-rfc-style
     nixpkgs-darwin-master.yt-dlp
