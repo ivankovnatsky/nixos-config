@@ -42,3 +42,8 @@ This setup includes iOS development support while still saving approximately
 ## Xcode Notifications
 
 Enable notifications when Xcode requests permission during initial launch.
+
+## Visual Studio Code iCloud Drive Access
+
+When VS Code prompts for iCloud Drive access, click **Allow** to enable file
+operations in iCloud-synced directories.
