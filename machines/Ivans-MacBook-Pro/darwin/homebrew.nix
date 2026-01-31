@@ -48,6 +48,7 @@
       "stats"
       "steam"
       "windsurf"
+      "visual-studio-code"
       "mullvad-vpn"
     ];
     masApps = {

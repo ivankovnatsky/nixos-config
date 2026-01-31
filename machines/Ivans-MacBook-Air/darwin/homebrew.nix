@@ -42,6 +42,7 @@
       "silicon-labs-vcp-driver"
       "stats"
       "vlc"
+      "visual-studio-code"
       "windsurf"
     ];
     masApps = {

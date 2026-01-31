@@ -70,6 +70,7 @@ in
       { path = "/Applications/Chromium.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
       { path = "/Applications/Claude.app/"; }
+      { path = "/Applications/Visual Studio Code.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }
       { path = "/Applications/coconutBattery.app/"; }
