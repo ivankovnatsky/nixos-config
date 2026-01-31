@@ -22,11 +22,13 @@
         };
 
         mice = [
+          # Only configure the main Razer Razer Viper entry
           {
-            name = "Glorious Model D";
-            vendorId = "258a";
-            productId = "0033";
+            name = "Razer Razer Viper";
+            vendorId = "1532"; # Razer vendor ID (hex)
+            productId = "0078"; # Razer Viper product ID (hex)
 
+            # Mouse settings
             accelerationProfile = "none";
             acceleration = -0.6;
           }
