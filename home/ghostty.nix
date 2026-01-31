@@ -34,6 +34,7 @@ in
     window-inherit-working-directory = true
 
     # Quake-style quick terminal (F12 to toggle from anywhere)
+    # On KDE Plasma, approve the "Global Shortcuts Requested" dialog on first launch
     keybind = global:f12=toggle_quick_terminal
     quick-terminal-position = top
     quick-terminal-size = 40%
