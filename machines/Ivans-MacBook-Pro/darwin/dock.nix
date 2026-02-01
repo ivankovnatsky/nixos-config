@@ -69,6 +69,7 @@ in
       { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Chromium.app/"; }
       { path = "/Applications/Typora.app/"; }
+      { path = "/Applications/Obsidian.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
       { path = "/Applications/Claude.app/"; }
       { path = "/Applications/Visual Studio Code.app/"; }
