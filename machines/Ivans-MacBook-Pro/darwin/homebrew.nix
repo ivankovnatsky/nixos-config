@@ -48,6 +48,7 @@
       "stats"
       "steam"
       "windsurf"
+      "typora"
       "visual-studio-code"
       "mullvad-vpn"
     ];
