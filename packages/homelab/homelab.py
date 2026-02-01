@@ -192,11 +192,9 @@ def power_off() -> int:
         print("Warning: Failed to clear DNS settings")
 
     print(f"Shutting down Mini at {MINI_IP}...")
-    result = ssh_run("sudo shutdown -h now")
-
-    if result.returncode != 0:
-        print("Failed to shutdown Mini.")
-        return 1
+    # Don't check return code - shutdown closes the connection which causes
+    # SSH to return non-zero (255), but that's expected behavior
+    ssh_run("sudo shutdown -h now")
 
     print("Mini shutdown initiated.")
     return 0
