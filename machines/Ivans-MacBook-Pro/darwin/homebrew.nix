@@ -49,6 +49,7 @@
       "steam"
       "windsurf"
       "typora"
+      "obsidian"
       "visual-studio-code"
       "mullvad-vpn"
     ];
