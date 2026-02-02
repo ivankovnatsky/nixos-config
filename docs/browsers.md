@@ -9,7 +9,7 @@ Pros:
 
 Cons:
 
-- Can feel slow on heavy pages
+- Starting to eat up CPU time big time consuming at least 1 Core for 'Safari Networking'
 
 ## Firefox
 
