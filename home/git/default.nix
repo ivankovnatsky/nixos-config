@@ -1,24 +1,10 @@
 {
   config,
+  lib,
   pkgs,
   ...
 }:
 
-let
-  ghAuthCheckZsh = ''
-    # gh auth check - only if hosts.yml missing
-    if [[ ! -f "$HOME/.config/gh/hosts.yml" ]] && command -v gh &>/dev/null; then
-      gh auth login --git-protocol https --web
-    fi
-  '';
-
-  ghAuthCheckFish = ''
-    # gh auth check - only if hosts.yml missing
-    if not test -f "$HOME/.config/gh/hosts.yml"; and command -v gh >/dev/null
-      gh auth login --git-protocol https --web
-    end
-  '';
-in
 {
   # TODO: Explore commitizen (Python) for interactive commit messages
   # Supports --config flag: `cz --config ~/.cz.toml commit`
@@ -74,13 +60,15 @@ in
     sessionVariables = {
       GIT_CONFIG_NOSYSTEM = "true";
     };
+
+    activation.ghAuth = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      if [ ! -f "$HOME/.config/gh/hosts.yml" ] || ! /usr/bin/security find-generic-password -s "gh:github.com" -w >/dev/null; then
+        PATH="/usr/bin:$PATH" ${pkgs.gh}/bin/gh auth login --git-protocol https --web
+      fi
+    '';
   };
 
-
   programs = {
-    zsh.initContent = ghAuthCheckZsh;
-    fish.interactiveShellInit = ghAuthCheckFish;
-
     gh = {
       enable = true;
       gitCredentialHelper.enable = true;
