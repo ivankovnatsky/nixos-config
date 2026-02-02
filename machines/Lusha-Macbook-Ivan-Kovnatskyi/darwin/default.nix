@@ -17,6 +17,7 @@
     ../../../modules/darwin/prevent-sleep
     ../../../modules/darwin/rebuild-terminal
     ../../../modules/darwin/sudo
+    ../../../modules/darwin/default-browser
     ../../../modules/darwin/syncthing-mgmt
     ../../../modules/flags
     ../../../system/documentation.nix
@@ -36,6 +37,7 @@
     ./syncthing-mgmt.nix
     ./users.nix
     ./close-zscaler.nix
+    ./default-browser.nix
     ./prevent-kandji.nix
 
     ../../../darwin/amethyst.nix
