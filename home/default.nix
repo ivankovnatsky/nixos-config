@@ -3,9 +3,9 @@
 {
   imports = [
     ../modules/flags
-    ./git.nix
+    ./git
     ./k9s.nix
-    ./packages.nix
+    ./packages-darwin.nix
     ./atuin.nix
     ./fish.nix
     ./fzf.nix
