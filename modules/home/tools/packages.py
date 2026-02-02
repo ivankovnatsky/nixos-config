@@ -468,8 +468,11 @@ def main():
     if config.get("uv", {}).get("packages"):
         success &= install_uv_packages(config["uv"]["packages"], config["paths"], state)
 
-    if config.get("mcp", {}).get("servers"):
-        success &= install_mcp_servers(config["mcp"]["servers"], config["paths"], state)
+    # Always call install_mcp_servers to handle both installation and removal
+    # Even if servers is empty, we need to remove any existing servers
+    success &= install_mcp_servers(
+        config.get("mcp", {}).get("servers", {}), config["paths"], state
+    )
 
     if config.get("curlShell"):
         success &= install_curl_shell_scripts(
