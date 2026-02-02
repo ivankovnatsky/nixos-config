@@ -29,7 +29,11 @@
     ../../../home/rebuild-diff.nix
     ../../../home/safari.nix
     ../../../home/scripts.nix
-    ../../../home/shell.nix
+    ../../../home/atuin.nix
+    ../../../home/fish.nix
+    ../../../home/fzf.nix
+    ../../../home/z-lua.nix
+    ../../../home/zsh.nix
     ../../../home/sops.nix
     ../../../home/starship
     ../../../home/syncthing-ignore.nix

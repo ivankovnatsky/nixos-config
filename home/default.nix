@@ -6,7 +6,11 @@
     ./git.nix
     ./k9s.nix
     ./packages.nix
-    ./shell.nix
+    ./atuin.nix
+    ./fish.nix
+    ./fzf.nix
+    ./z-lua.nix
+    ./zsh.nix
     ./ssh.nix
     ./starship
   ];
