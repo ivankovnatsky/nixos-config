@@ -2,7 +2,7 @@
 
 {
   local.launchd.services.prevent-kandji = {
-    enable = true;
+    enable = false;
     type = "daemon";
     command = "${pkgs.pblock}/bin/pblock kandji";
     runAtLoad = true;
