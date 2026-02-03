@@ -73,6 +73,7 @@ let
         inherit (cfg.mcp) servers;
       };
       inherit (cfg) curlShell;
+      inherit (cfg) gitRepos;
       inherit (cfg) stateFile;
       paths = {
         bunBin = "${config.home.homeDirectory}/.bun/bin";
@@ -89,6 +90,7 @@ let
         bash = "${pkgs.bash}/bin";
         perl = "${pkgs.perl}/bin";
         coreutils = "${pkgs.coreutils}/bin";
+        git = "${pkgs.git}/bin";
       };
     }
   );
@@ -155,6 +157,15 @@ in
       example = {
         "https://claude.ai/install.sh" = "bash";
         "https://example.com/setup.sh" = "sh";
+      };
+    };
+
+    gitRepos = mkOption {
+      type = types.attrsOf types.str;
+      default = { };
+      description = "Git repositories to clone (destination path -> repo URL)";
+      example = {
+        "~/.claude/skills/terraform-skill" = "https://github.com/antonbabenko/terraform-skill";
       };
     };
   };
