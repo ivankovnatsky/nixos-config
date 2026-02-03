@@ -20,5 +20,9 @@
     curlShell = {
       "https://claude.ai/install.sh" = "bash";
     };
+
+    gitRepos = {
+      "~/.claude/skills/terraform-skill" = "https://github.com/antonbabenko/terraform-skill";
+    };
   };
 }
