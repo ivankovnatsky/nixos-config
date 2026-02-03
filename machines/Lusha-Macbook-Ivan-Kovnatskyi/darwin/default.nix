@@ -38,7 +38,6 @@
     ./users.nix
     ./close-zscaler.nix
     ./default-browser.nix
-    ./prevent-kandji.nix
 
     ../../../darwin/amethyst.nix
     ../../../darwin/hammerspoon.nix
