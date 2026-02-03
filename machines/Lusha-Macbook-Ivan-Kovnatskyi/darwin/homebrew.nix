@@ -30,6 +30,7 @@
       "cursor"
       "dbeaver-community"
       "firefox@developer-edition"
+      "firefox"
       {
         name = "ghostty@tip";
         greedy = true;
