@@ -88,6 +88,7 @@
                   "applications:org.kde.spectacle.desktop"
                   "applications:org.kde.kinfocenter.desktop"
                   "applications:org.kde.krdc.desktop"
+                  "applications:steam.desktop"
                   "applications:systemsettings.desktop"
                 ];
               };
