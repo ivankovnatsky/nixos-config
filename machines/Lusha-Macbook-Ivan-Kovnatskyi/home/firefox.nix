@@ -1,8 +1,8 @@
 { config, pkgs, ... }:
 
 let
-  firefoxDevProfile = "1pnq61kq.dev-edition-default";
-  firefoxProfile = "kfa2z0ty.default-release";
+  firefoxDevProfile = "rejmmzbw.dev-edition-default";
+  firefoxProfile = "eje9k9co.default-release";
   userJsConfig = ''
     // Disable extension signature requirement for Tweety
     user_pref("xpinstall.signatures.required", false);
