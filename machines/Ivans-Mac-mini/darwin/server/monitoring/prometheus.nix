@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  dataDir = "${config.flags.miniStoragePath}/.prometheus";
+  dataDir = "${config.flags.externalStoragePath}/.prometheus";
 
   prometheusConfig = pkgs.writeText "prometheus.yml" ''
     global:
@@ -34,7 +34,7 @@ in
   local.launchd.services.prometheus = {
     enable = true;
     type = "user-agent";
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
     command = ''
       ${pkgs.prometheus}/bin/prometheus \

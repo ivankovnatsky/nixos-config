@@ -10,7 +10,7 @@
 # Current version: 0.12.5-unstable-2025-10-04
 
 let
-  dataDir = "${config.flags.miniStoragePath}/.matrix/bridges/whatsapp";
+  dataDir = "${config.flags.externalStoragePath}/.matrix/bridges/whatsapp";
   port = 29321;
   registrationFile = "${dataDir}/whatsapp-registration.yaml";
   settingsFormat = pkgs.formats.json { };
@@ -105,7 +105,7 @@ in
 
   local.launchd.services.mautrix-whatsapp = {
     enable = true;
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
 
     environment = {

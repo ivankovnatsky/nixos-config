@@ -138,9 +138,9 @@ with lib;
       default = "~";
     };
 
-    miniStoragePath = mkOption {
+    externalStoragePath = mkOption {
       type = types.str;
-      description = "Mac mini external storage data path";
+      description = "External storage data path";
       default = "/Volumes/Storage/Data";
     };
 

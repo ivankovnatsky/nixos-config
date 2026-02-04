@@ -5,14 +5,14 @@
 }:
 
 let
-  dataDir = "${config.flags.miniStoragePath}/.audiobookshelf";
+  dataDir = "${config.flags.externalStoragePath}/.audiobookshelf";
   configDir = "${dataDir}/config";
   metadataDir = "${dataDir}/metadata";
 in
 {
   local.launchd.services.audiobookshelf = {
     enable = true;
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
     extraDirs = [
       configDir

@@ -14,10 +14,10 @@
 # * idle-seeding-limit-enabled: true (extra measure for cleanup)
 
 let
-  dataDir = "${config.flags.miniStoragePath}/.transmission";
-  downloadsDir = "${config.flags.miniStoragePath}/Media/Downloads";
-  incompleteDir = "${config.flags.miniStoragePath}/Media/Downloads/.incomplete";
-  watchDir = "${config.flags.miniStoragePath}/Media/Downloads/Watchdir";
+  dataDir = "${config.flags.externalStoragePath}/.transmission";
+  downloadsDir = "${config.flags.externalStoragePath}/Media/Downloads";
+  incompleteDir = "${config.flags.externalStoragePath}/Media/Downloads/.incomplete";
+  watchDir = "${config.flags.externalStoragePath}/Media/Downloads/Watchdir";
 
   # Base settings template without secrets
   settingsTemplate = pkgs.writeText "transmission-settings-template.json" (
@@ -83,7 +83,7 @@ in
 
   local.launchd.services.transmission = {
     enable = true;
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
     extraDirs = [
       downloadsDir

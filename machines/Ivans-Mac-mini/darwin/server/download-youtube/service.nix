@@ -5,7 +5,7 @@
 }:
 
 let
-  dataDir = "${config.flags.miniStoragePath}/Media/Youtube";
+  dataDir = "${config.flags.externalStoragePath}/Media/Youtube";
 
   python = pkgs.python3.withPackages (ps: [
     ps.flask
@@ -20,7 +20,7 @@ in
 {
   local.launchd.services.download-youtube = {
     enable = true;
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
     command = ''
       ${youtube-daemon}/bin/youtube-daemon \

@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  dataDir = "${config.flags.miniStoragePath}/.uptime-kuma";
+  dataDir = "${config.flags.externalStoragePath}/.uptime-kuma";
 in
 {
   # Uptime Kuma HTTP synthetic monitoring service
@@ -11,7 +11,7 @@ in
   local.launchd.services.uptime-kuma = {
     enable = true;
     type = "user-agent";
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
     preStart = ''
       export PATH="${pkgs.nixpkgs-darwin-old-release.tailscale}/bin:${pkgs.coreutils}/bin:$PATH"

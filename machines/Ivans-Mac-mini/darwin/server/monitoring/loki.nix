@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  dataDir = "${config.flags.miniStoragePath}/.loki";
+  dataDir = "${config.flags.externalStoragePath}/.loki";
 
   lokiConfig = pkgs.writeText "loki-config.yaml" ''
     auth_enabled: false
@@ -79,7 +79,7 @@ in
   local.launchd.services.loki = {
     enable = true;
     type = "user-agent";
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
     extraDirs = [
       "${dataDir}/chunks"

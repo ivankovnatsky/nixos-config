@@ -66,7 +66,7 @@ in
     enable = true;
     type = "daemon";
     waitForSecrets = true;
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     extraDirs = [
       "/tmp/log/caddy"
       "/tmp/caddy"

@@ -2,7 +2,7 @@
 
 let
   inherit (config.networking) hostName;
-  dataDir = "${config.flags.miniStoragePath}/.promtail";
+  dataDir = "${config.flags.externalStoragePath}/.promtail";
   lokiUrl = "http://${config.flags.miniIp}:3100/loki/api/v1/push";
 
   promtailConfig = pkgs.writeText "promtail-config.yaml" (
@@ -145,7 +145,7 @@ in
   local.launchd.services.promtail = {
     enable = true;
     type = "user-agent";
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
     command = ''
       ${pkgs.promtail}/bin/promtail \

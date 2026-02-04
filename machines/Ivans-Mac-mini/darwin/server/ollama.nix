@@ -11,7 +11,7 @@ let
     "mistral:7b"
   ];
 
-  ollamaModelsPath = "${config.flags.miniStoragePath}/.ollama";
+  ollamaModelsPath = "${config.flags.externalStoragePath}/.ollama";
 in
 {
   # Set system-wide environment variables for ollama commands
@@ -25,7 +25,7 @@ in
   local.launchd.services.ollama = {
     enable = true;
     type = "user-agent";
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     dataDir = ollamaModelsPath;
     environment = {
       HOME = config.users.users.${username}.home;

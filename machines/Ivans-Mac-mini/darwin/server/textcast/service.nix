@@ -6,7 +6,7 @@
 }:
 
 let
-  dataDir = "${config.flags.miniStoragePath}/Media/Textcast";
+  dataDir = "${config.flags.externalStoragePath}/Media/Textcast";
   audioDir = "${dataDir}/Audio";
   textsDir = "${dataDir}/Texts";
   logsDir = "${dataDir}/Logs";
@@ -80,7 +80,7 @@ in
 
   local.launchd.services.textcast = {
     enable = true;
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
     extraDirs = [
       audioDir

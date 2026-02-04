@@ -5,7 +5,7 @@
     purpose = "home";
     editor = "nvim";
     darkMode = true;
-    homeWorkPath = config.flags.miniStoragePath;
+    homeWorkPath = config.flags.externalStoragePath;
     hotkeys = {
       terminal = "Terminal";
       browser = "Safari";

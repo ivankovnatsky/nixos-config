@@ -10,7 +10,7 @@ let
 
   sourcesPath =
     if hostName == "Ivans-Mac-mini" then
-      "${config.flags.miniStoragePath}/Sources"
+      "${config.flags.externalStoragePath}/Sources"
     else
       "${homePath}/Sources";
 

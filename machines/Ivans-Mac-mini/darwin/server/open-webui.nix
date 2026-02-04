@@ -6,13 +6,13 @@
 }:
 
 let
-  openWebuiDataPath = "${config.flags.miniStoragePath}/.open-webui";
+  openWebuiDataPath = "${config.flags.externalStoragePath}/.open-webui";
 in
 {
   # Open WebUI server running as user agent (port 8090 is non-privileged)
   local.launchd.services.open-webui = {
     enable = true;
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     dataDir = openWebuiDataPath;
     environment = {
       HOME = config.users.users.${username}.home;
