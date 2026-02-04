@@ -52,6 +52,7 @@
         { path = "/Applications/Cursor.app/"; }
         { path = "/Applications/Windsurf.app/"; }
         { path = "/Applications/Claude.app/"; }
+        { path = "/Applications/Codex.app/"; }
 
         {
           type = "spacer";
