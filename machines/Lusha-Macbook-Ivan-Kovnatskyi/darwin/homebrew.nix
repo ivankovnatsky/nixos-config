@@ -21,6 +21,7 @@
     # zoom
     casks = [
       "amethyst"
+      "chatgpt"
       "chromium"
       {
         name = "claude";
