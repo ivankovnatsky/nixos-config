@@ -51,9 +51,9 @@
         { path = "/Applications/Visual Studio Code.app/"; }
         { path = "/Applications/Cursor.app/"; }
         { path = "/Applications/Windsurf.app/"; }
+        { path = "/Applications/ChatGPT.app/"; }
         { path = "/Applications/Claude.app/"; }
         { path = "/Applications/Codex.app/"; }
-        { path = "/Applications/ChatGPT.app/"; }
 
         {
           type = "spacer";
