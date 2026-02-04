@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  dataDir = "${config.flags.miniStoragePath}/.grafana";
+  dataDir = "${config.flags.externalStoragePath}/.grafana";
 
   datasourcesConfig = pkgs.writeText "datasources.yaml" ''
     apiVersion: 1
@@ -67,7 +67,7 @@ in
   local.launchd.services.grafana = {
     enable = true;
     type = "user-agent";
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     waitForSecrets = true;
     inherit dataDir;
     extraDirs = [

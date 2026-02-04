@@ -6,7 +6,7 @@
 }:
 
 let
-  podsyncDir = "${config.flags.miniStoragePath}/.podsync";
+  podsyncDir = "${config.flags.externalStoragePath}/.podsync";
   configDir = "${podsyncDir}/config";
   dataDir = "${podsyncDir}/data";
   dbDir = "${podsyncDir}/db";
@@ -47,7 +47,7 @@ in
 
   local.launchd.services.podsync = {
     enable = true;
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     dataDir = podsyncDir;
     extraDirs = [
       configDir

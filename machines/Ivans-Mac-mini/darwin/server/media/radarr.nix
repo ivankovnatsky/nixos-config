@@ -28,14 +28,14 @@
 #   * Movies → Add Root Folder → /Volumes/Storage/Data/Media/Movies
 
 let
-  dataDir = "${config.flags.miniStoragePath}/.radarr";
-  moviesDir = "${config.flags.miniStoragePath}/Media/Movies";
-  downloadsDir = "${config.flags.miniStoragePath}/Media/Downloads/Radarr";
+  dataDir = "${config.flags.externalStoragePath}/.radarr";
+  moviesDir = "${config.flags.externalStoragePath}/Media/Movies";
+  downloadsDir = "${config.flags.externalStoragePath}/Media/Downloads/Radarr";
 in
 {
   local.launchd.services.radarr = {
     enable = true;
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
     extraDirs = [
       moviesDir

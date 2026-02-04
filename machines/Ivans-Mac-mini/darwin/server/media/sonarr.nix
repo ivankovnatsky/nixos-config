@@ -35,14 +35,14 @@
 #   * Series → Add Root Folder → /Volumes/Storage/Data/Media/TV
 
 let
-  dataDir = "${config.flags.miniStoragePath}/.sonarr";
-  tvDir = "${config.flags.miniStoragePath}/Media/TV";
-  downloadsDir = "${config.flags.miniStoragePath}/Media/Downloads/TV-Sonarr";
+  dataDir = "${config.flags.externalStoragePath}/.sonarr";
+  tvDir = "${config.flags.externalStoragePath}/Media/TV";
+  downloadsDir = "${config.flags.externalStoragePath}/Media/Downloads/TV-Sonarr";
 in
 {
   local.launchd.services.sonarr = {
     enable = true;
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
     extraDirs = [
       tvDir

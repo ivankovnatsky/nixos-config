@@ -6,7 +6,7 @@
 }:
 
 let
-  dataDir = "${config.flags.miniStoragePath}/.beszel-hub";
+  dataDir = "${config.flags.externalStoragePath}/.beszel-hub";
 in
 {
   # Beszel Hub service - user-agent to access /Volumes/Storage after login
@@ -16,7 +16,7 @@ in
   local.launchd.services.beszel-hub = {
     enable = true;
     type = "user-agent";
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
     command =
       let

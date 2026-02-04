@@ -8,7 +8,7 @@ let
   settingsFormat = pkgs.formats.json { };
 
   # Messenger configuration
-  messengerDataDir = "${config.flags.miniStoragePath}/.matrix/bridges/messenger";
+  messengerDataDir = "${config.flags.externalStoragePath}/.matrix/bridges/messenger";
   messengerPort = 29324;
   messengerRegistrationFile = "${messengerDataDir}/messenger-registration.yaml";
 
@@ -67,7 +67,7 @@ let
   messengerSettingsFile = "${messengerDataDir}/config.json";
 
   # Instagram configuration
-  instagramDataDir = "${config.flags.miniStoragePath}/.matrix/bridges/instagram";
+  instagramDataDir = "${config.flags.externalStoragePath}/.matrix/bridges/instagram";
   instagramPort = 29325;
   instagramRegistrationFile = "${instagramDataDir}/instagram-registration.yaml";
 
@@ -130,7 +130,7 @@ in
   # Messenger bridge
   local.launchd.services.mautrix-meta-messenger = {
     enable = true;
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     dataDir = messengerDataDir;
 
     environment = {
@@ -185,7 +185,7 @@ in
   # Instagram bridge
   local.launchd.services.mautrix-meta-instagram = {
     enable = true;
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     dataDir = instagramDataDir;
 
     environment = {

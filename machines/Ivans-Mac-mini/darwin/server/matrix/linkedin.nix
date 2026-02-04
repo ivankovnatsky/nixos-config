@@ -5,7 +5,7 @@
 }:
 
 let
-  dataDir = "${config.flags.miniStoragePath}/.matrix/bridges/linkedin";
+  dataDir = "${config.flags.externalStoragePath}/.matrix/bridges/linkedin";
   port = 29326;
   registrationFile = "${dataDir}/linkedin-registration.yaml";
   settingsFormat = pkgs.formats.json { };
@@ -69,7 +69,7 @@ in
 {
   local.launchd.services.mautrix-linkedin = {
     enable = true;
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
 
     environment = {

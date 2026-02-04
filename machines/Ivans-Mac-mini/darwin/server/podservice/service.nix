@@ -5,7 +5,7 @@
 }:
 
 let
-  dataDir = "${config.flags.miniStoragePath}/Media/Podservice";
+  dataDir = "${config.flags.externalStoragePath}/Media/Podservice";
   audioDir = "${dataDir}/Audio";
   metadataDir = "${dataDir}/Metadata";
   thumbnailsDir = "${dataDir}/Thumbnails";
@@ -48,7 +48,7 @@ in
 {
   local.launchd.services.podservice = {
     enable = true;
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
     extraDirs = [
       audioDir

@@ -6,17 +6,17 @@
 }:
 
 let
-  dataDir = "${config.flags.miniStoragePath}/.media";
+  dataDir = "${config.flags.externalStoragePath}/.media";
 
   # Media directories - all subdirectories under Media/ except Stash
-  mediaDir1 = "${config.flags.miniStoragePath}/Media/Audiobookshelf";
-  mediaDir2 = "${config.flags.miniStoragePath}/Media/Downloads";
-  mediaDir3 = "${config.flags.miniStoragePath}/Media/Movies";
-  mediaDir4 = "${config.flags.miniStoragePath}/Media/Podcasts";
-  mediaDir5 = "${config.flags.miniStoragePath}/Media/Podservice";
-  mediaDir6 = "${config.flags.miniStoragePath}/Media/TV";
-  mediaDir7 = "${config.flags.miniStoragePath}/Media/Textcast";
-  mediaDir8 = "${config.flags.miniStoragePath}/Media/Youtube";
+  mediaDir1 = "${config.flags.externalStoragePath}/Media/Audiobookshelf";
+  mediaDir2 = "${config.flags.externalStoragePath}/Media/Downloads";
+  mediaDir3 = "${config.flags.externalStoragePath}/Media/Movies";
+  mediaDir4 = "${config.flags.externalStoragePath}/Media/Podcasts";
+  mediaDir5 = "${config.flags.externalStoragePath}/Media/Podservice";
+  mediaDir6 = "${config.flags.externalStoragePath}/Media/TV";
+  mediaDir7 = "${config.flags.externalStoragePath}/Media/Textcast";
+  mediaDir8 = "${config.flags.externalStoragePath}/Media/Youtube";
 
   # TODO:
   # - Hide sidebar in options permanently
@@ -66,7 +66,7 @@ in
 
   local.launchd.services.stash-media = {
     enable = true;
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
     extraDirs = [
       "${dataDir}/logs"

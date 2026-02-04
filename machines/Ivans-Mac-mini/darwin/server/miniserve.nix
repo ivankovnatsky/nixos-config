@@ -29,7 +29,7 @@
 
   local.launchd.services.miniserve = {
     enable = true;
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     command = ''
       ${pkgs.miniserve}/bin/miniserve \
         --interfaces 127.0.0.1 \
@@ -39,7 +39,7 @@
         --upload-files /Backup/Machines \
         --mkdir \
         --on-duplicate-files rename \
-        ${config.flags.miniStoragePath}
+        ${config.flags.externalStoragePath}
     '';
   };
 }

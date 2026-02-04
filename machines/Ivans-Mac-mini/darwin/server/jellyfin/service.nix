@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  dataDir = "${config.flags.miniStoragePath}/.jellyfin";
+  dataDir = "${config.flags.externalStoragePath}/.jellyfin";
   configDir = "${dataDir}/config";
   cacheDir = "${dataDir}/cache";
   logDir = "${dataDir}/log";
@@ -19,7 +19,7 @@ in
 
   local.launchd.services.jellyfin = {
     enable = true;
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
     extraDirs = [
       configDir

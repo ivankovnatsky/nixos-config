@@ -25,12 +25,12 @@
 # * https://www.reddit.com/r/trackers/comments/1h4l0sa/comment/lzzkwaj/
 
 let
-  dataDir = "${config.flags.miniStoragePath}/.prowlarr";
+  dataDir = "${config.flags.externalStoragePath}/.prowlarr";
 in
 {
   local.launchd.services.prowlarr = {
     enable = true;
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
     command = "${pkgs.prowlarr}/bin/Prowlarr -nobrowser -data=${dataDir}";
   };

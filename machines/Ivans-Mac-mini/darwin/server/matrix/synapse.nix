@@ -6,7 +6,7 @@
 }:
 
 let
-  dataDir = "${config.flags.miniStoragePath}/.matrix/core/synapse";
+  dataDir = "${config.flags.externalStoragePath}/.matrix/core/synapse";
   format = pkgs.formats.yaml { };
 
   # Base config without server_name (will be added at runtime)
@@ -53,11 +53,11 @@ let
     media_store_path = "${dataDir}/media_store";
 
     app_service_config_files = [
-      "${config.flags.miniStoragePath}/.matrix/bridges/whatsapp/whatsapp-registration.yaml"
-      "${config.flags.miniStoragePath}/.matrix/bridges/discord/discord-registration.yaml"
-      "${config.flags.miniStoragePath}/.matrix/bridges/messenger/messenger-registration.yaml"
-      "${config.flags.miniStoragePath}/.matrix/bridges/instagram/instagram-registration.yaml"
-      "${config.flags.miniStoragePath}/.matrix/bridges/linkedin/linkedin-registration.yaml"
+      "${config.flags.externalStoragePath}/.matrix/bridges/whatsapp/whatsapp-registration.yaml"
+      "${config.flags.externalStoragePath}/.matrix/bridges/discord/discord-registration.yaml"
+      "${config.flags.externalStoragePath}/.matrix/bridges/messenger/messenger-registration.yaml"
+      "${config.flags.externalStoragePath}/.matrix/bridges/instagram/instagram-registration.yaml"
+      "${config.flags.externalStoragePath}/.matrix/bridges/linkedin/linkedin-registration.yaml"
     ];
   };
 
@@ -101,7 +101,7 @@ in
 
   local.launchd.services.matrix-synapse = {
     enable = true;
-    waitForPath = config.flags.miniStoragePath;
+    waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
     extraDirs = [ "${dataDir}/media_store" ];
 

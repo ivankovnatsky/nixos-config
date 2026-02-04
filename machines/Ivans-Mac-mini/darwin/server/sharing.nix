@@ -9,7 +9,7 @@
     allowFullDiskAccess = true;
     shares = {
       "Storage" = {
-        path = config.flags.miniStoragePath;
+        path = config.flags.externalStoragePath;
       };
     };
   };

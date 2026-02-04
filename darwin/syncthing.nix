@@ -28,7 +28,7 @@ in
     type = "user-agent";
     keepAlive = true;
     throttleInterval = 10;
-    waitForPath = lib.mkIf isServer config.flags.miniStoragePath;
+    waitForPath = lib.mkIf isServer config.flags.externalStoragePath;
 
     command = ''
       ${pkgs.syncthing}/bin/syncthing serve \

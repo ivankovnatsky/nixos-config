@@ -9,7 +9,7 @@
 let
   inherit (osConfig.networking) hostName;
   useAbsolutePath = hostName == "Ivans-Mac-mini";
-  absoluteGoPath = "${config.flags.miniStoragePath}/go";
+  absoluteGoPath = "${config.flags.externalStoragePath}/go";
   homeGoPath = "${config.home.homeDirectory}/go";
 
   # Machines using home-manager release (25.05) - use old goPath format
