@@ -39,5 +39,6 @@
     # ./rebuild-terminal.nix
     ./syncthing-mgmt.nix
     ./users.nix
+    ./stash
   ];
 }

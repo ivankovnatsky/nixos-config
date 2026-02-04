@@ -114,6 +114,12 @@ with lib;
       };
     };
 
+    proIp = mkOption {
+      type = types.str;
+      description = "Pro IP address";
+      default = "192.168.50.7";
+    };
+
     miniIp = mkOption {
       type = types.str;
       description = "Mac mini IP address";
