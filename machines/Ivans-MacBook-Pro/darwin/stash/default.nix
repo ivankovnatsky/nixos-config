@@ -35,7 +35,7 @@ in
   };
 
   local.launchd.services.stash = {
-    enable = true;
+    enable = false;
     waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
     extraDirs = [
