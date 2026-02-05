@@ -89,6 +89,7 @@
       enableGitIntegration = true;
       options = {
         features = "interactive";
+        line-numbers = true;
       };
     };
 
