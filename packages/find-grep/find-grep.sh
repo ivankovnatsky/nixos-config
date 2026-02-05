@@ -15,14 +15,14 @@ file_pattern="${2:-}" # Optional file pattern argument
 
 # Try ripgrep with fzf preview for content, using file pattern if provided
 if [ -n "$file_pattern" ]; then
-  rg --color=always --line-number "$search_term" -g "**/*${file_pattern}*" |
+  rg --no-ignore --hidden --color=always --line-number "$search_term" -g "**/*${file_pattern}*" |
     fzf --ansi \
       --delimiter : \
       --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' \
       --preview-window '+{2}-/2' \
       --bind 'enter:execute(nvim {1} +{2})'
 else
-  rg --color=always --line-number "$search_term" |
+  rg --no-ignore --hidden --color=always --line-number "$search_term" |
     fzf --ansi \
       --delimiter : \
       --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' \
