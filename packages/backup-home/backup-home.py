@@ -100,6 +100,7 @@ EXCLUDE_PATTERNS = [
     "**/Library/Caches/Comet/**",
     "**/Library/Mobile Documents/**",
     "**/Library/Metadata/**",
+    "**/Library/Biome/**",
     "**/Library/pnpm/**",
     "**/Library/Containers/com.apple.AccessibilitySettingsWidgetExtension/**",
     "**/Library/Containers/com.apple.AppStore/**",
