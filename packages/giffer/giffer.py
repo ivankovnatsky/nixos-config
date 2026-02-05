@@ -628,11 +628,13 @@ def move_or_download_for_page(
     segment_duration=DEFAULT_SEGMENT_DURATION,
     skip_start=0,
     skip_end=0,
+    page_width=1,
 ):
     """Move existing file to correct page dir or download if not found. Returns (url, success)"""
     base_dir = get_output_dir(base_output_dir, create=False)
 
-    page_dir = base_dir / f"page-{page}"
+    page_name = f"page-{page:0{page_width}d}"
+    page_dir = base_dir / page_name
     page_dir.mkdir(parents=True, exist_ok=True)
 
     existing_file = find_existing_file_by_url(url, all_page_dirs + [base_dir])
@@ -645,7 +647,7 @@ def move_or_download_for_page(
         else:
             shutil.move(str(existing_file), str(target_path))
             click.echo(
-                f"[MOVE] {existing_file.parent.name}/{existing_file.name} -> page-{page}/"
+                f"[MOVE] {existing_file.parent.name}/{existing_file.name} -> {page_name}/"
             )
             return (url, True)
 
@@ -747,8 +749,25 @@ def scrape_and_download_impl(
     if end_page is not None and end_page == start_page:
         split_pages = False
 
+    page_width = len(str(end_page)) if end_page else 3
+
     all_page_dirs = []
     if split_pages:
+        # Normalize existing page directories to consistent zero-padding
+        page_dir_re = re.compile(r"^page-(\d+)$")
+        for p in sorted(base_dir.glob("page-*")):
+            if not p.is_dir():
+                continue
+            match = page_dir_re.match(p.name)
+            if not match:
+                continue
+            page_num = int(match.group(1))
+            expected_name = f"page-{page_num:0{page_width}d}"
+            if p.name != expected_name:
+                new_path = p.parent / expected_name
+                p.rename(new_path)
+                click.echo(f"[RENAME] {p.name} -> {expected_name}")
+
         for p in base_dir.glob("page-*"):
             if p.is_dir():
                 all_page_dirs.append(p)
@@ -880,7 +899,7 @@ def scrape_and_download_impl(
             page_failed = []
 
             if split_pages:
-                page_dir = base_dir / f"page-{page}"
+                page_dir = base_dir / f"page-{page:0{page_width}d}"
                 if page_dir not in all_page_dirs:
                     all_page_dirs.append(page_dir)
 
@@ -897,6 +916,7 @@ def scrape_and_download_impl(
                             segment_duration,
                             skip_start,
                             skip_end,
+                            page_width,
                         ): url
                         for url in new_urls
                     }
