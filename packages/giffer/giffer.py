@@ -596,7 +596,7 @@ def build_filename_index(search_dirs):
         if not dir_path.exists():
             continue
         for f in dir_path.rglob("*"):
-            if f.is_file() and f.name not in index:
+            if f.is_file() and f.suffix and f.name not in index:
                 index[f.name] = f
     return index
 
@@ -782,7 +782,7 @@ def scrape_and_download_impl(
             if not dir_path.exists():
                 continue
             for f in dir_path.rglob("*"):
-                if not f.is_file():
+                if not f.is_file() or not f.suffix:
                     continue
                 try:
                     f.resolve().relative_to(out_dir_resolved)
