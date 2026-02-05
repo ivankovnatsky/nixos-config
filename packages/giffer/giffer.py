@@ -588,6 +588,36 @@ def find_existing_file_by_url(url, search_dirs):
     return None
 
 
+def build_filename_index(search_dirs):
+    """Build index of existing filenames from search directories (recursive)."""
+    index = {}
+    for search_dir in search_dirs:
+        dir_path = Path(search_dir)
+        if not dir_path.exists():
+            continue
+        for f in dir_path.rglob("*"):
+            if f.is_file() and f.name not in index:
+                index[f.name] = f
+    return index
+
+
+def get_expected_filename(url):
+    """Get expected filename for a URL without downloading."""
+    cmd = [
+        "yt-dlp",
+        "--print",
+        "filename",
+        "-o",
+        "%(title)s.%(ext)s",
+        "--no-download",
+        url,
+    ]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode == 0 and result.stdout.strip():
+        return result.stdout.strip()
+    return None
+
+
 def move_or_download_for_page(
     url,
     page,
@@ -698,6 +728,7 @@ def scrape_and_download_impl(
     url_filter=None,
     url_exclude=None,
     split_pages=False,
+    search_dirs=None,
 ):
     """Scrape and download page by page"""
     if pattern is None:
@@ -721,6 +752,38 @@ def scrape_and_download_impl(
         for p in base_dir.glob("page-*"):
             if p.is_dir():
                 all_page_dirs.append(p)
+
+    filename_index = None
+    if search_dirs:
+        # Find files that exist outside the output dir
+        out_dir_resolved = base_dir.resolve()
+        external_files = set()
+        for search_dir in search_dirs:
+            dir_path = Path(search_dir)
+            if not dir_path.exists():
+                continue
+            for f in dir_path.rglob("*"):
+                if not f.is_file():
+                    continue
+                try:
+                    f.resolve().relative_to(out_dir_resolved)
+                except ValueError:
+                    external_files.add(f.name)
+
+        # Clean up duplicates already in output dir
+        cleaned = 0
+        for f in base_dir.rglob("*"):
+            if f.is_file() and f.name in external_files:
+                click.echo(f"[CLEANUP] {f.name}")
+                f.unlink()
+                cleaned += 1
+        if cleaned:
+            click.echo(f"Cleaned up {cleaned} duplicate(s)")
+
+        # Build filename index after cleanup
+        click.echo(f"Building filename index from {len(search_dirs)} search dir(s)...")
+        filename_index = build_filename_index(search_dirs)
+        click.echo(f"Indexed {len(filename_index)} existing files")
 
     click.echo(f"Scraping and downloading from {base_url}")
     page_range = f"{start_page}-{end_page}" if end_page else f"{start_page}-∞"
@@ -787,6 +850,30 @@ def scrape_and_download_impl(
                 )
 
         click.echo(f"Processing {len(new_urls)} URLs\n")
+
+        if filename_index and new_urls:
+            urls_to_download = []
+            skipped = 0
+            with ThreadPoolExecutor(max_workers=workers) as executor:
+                futures = {
+                    executor.submit(get_expected_filename, url): url
+                    for url in new_urls
+                }
+                for future in as_completed(futures):
+                    url = futures[future]
+                    expected = future.result()
+                    if expected and expected in filename_index:
+                        click.echo(
+                            f"[SKIP] Already exists: {filename_index[expected]}"
+                        )
+                        skipped += 1
+                    else:
+                        urls_to_download.append(url)
+            if skipped:
+                click.echo(
+                    f"Skipped {skipped} existing, downloading {len(urls_to_download)}\n"
+                )
+            new_urls = urls_to_download
 
         if new_urls:
             page_success = 0
@@ -1201,6 +1288,12 @@ def batch(url_file, output_dir, workers, embed_subs, max_height):
     "--skip-start", type=DURATION, default=0, help="Skip from start (default: 0)"
 )
 @click.option("--skip-end", type=DURATION, default=0, help="Skip from end (default: 0)")
+@click.option(
+    "--search-dir",
+    "search_dirs",
+    multiple=True,
+    help="Search directory for existing files to skip (recursive, repeatable)",
+)
 def scrape(
     url,
     output_dir,
@@ -1217,6 +1310,7 @@ def scrape(
     duration,
     skip_start,
     skip_end,
+    search_dirs,
 ):
     """Scrape paginated pages and download videos.
 
@@ -1225,6 +1319,7 @@ def scrape(
     Use --exclude to skip videos with titles matching a pattern.
     Use --split-pages to organize downloads into page-N directories. Re-running
     with --split-pages will move existing files to their correct page directories.
+    Use --search-dir to skip downloading files that already exist in another directory.
     """
     pagination = None
     if site:
@@ -1248,6 +1343,7 @@ def scrape(
         url_filter=url_filter,
         url_exclude=url_exclude,
         split_pages=split_pages,
+        search_dirs=search_dirs if search_dirs else None,
     )
     sys.exit(0 if success else 1)
 
