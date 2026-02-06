@@ -20,10 +20,11 @@ authentication.
 
 ## Remote Login
 
-Configured SSH remote login for my user account only via System Settings.
+- Configured SSH remote login for my user account only
+  - Allow full disk for remote users
+- Enable Sceen sharing just in case
 
-Allows terminal access for remote administration and troubleshooting from other
-devices on the network or via Tailscale VPN.
+To be able to rescue the system from the local network if needed
 
 ## Screen Sharing
 
