@@ -76,3 +76,9 @@ maintenance and troubleshooting.
 - Allow:
   - Camera
   - Microphone
+
+### Firefox
+
+- Allow:
+  - Camera
+  - Microphone
