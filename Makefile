@@ -7,10 +7,12 @@
 	\
 	trigger-rebuild \
 	\
-	flake-update-main \
+	flake-update-darwin-unstable \
+	flake-update-darwin-release \
+	flake-update-nixos-unstable \
+	flake-update-nixos-release \
 	flake-update-nixvim \
 	flake-update-homebrew \
-	flake-update-nixos-unstable \
 	\
 	rebuild-nixos/generic \
 	rebuild-nixos/impure \
@@ -55,10 +57,28 @@ endif
 trigger-rebuild:
 	while true; do touch .trigger-rebuild && sleep 1; done
 
-flake-update-main:
-	inputs="nixpkgs darwin home-manager"; \
+flake-update-darwin-unstable:
+	inputs="nixpkgs-darwin-unstable nix-darwin-darwin-unstable home-manager-darwin-unstable nixvim-darwin-unstable sops-nix-darwin-unstable"; \
 	for input in $$inputs; do \
 		nix flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
+	done
+
+flake-update-darwin-release:
+	inputs="nixpkgs-darwin-release nix-darwin-darwin-release home-manager-darwin-release nixvim-darwin-release sops-nix-darwin-release"; \
+	for input in $$inputs; do \
+		nix flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
+	done
+
+flake-update-nixos-unstable:
+	inputs="nixpkgs-nixos-unstable home-manager-nixos-unstable nixvim-nixos-unstable plasma-manager-nixos-unstable sops-nix-nixos-unstable nur-nixos-unstable"; \
+	for input in $$inputs; do \
+		nix flake update --commit-lock-file $$input; \
+	done
+
+flake-update-nixos-release:
+	inputs="nixpkgs-nixos-release home-manager-nixos-release nixvim-nixos-release plasma-manager-nixos-release sops-nix-nixos-release"; \
+	for input in $$inputs; do \
+		nix flake update --commit-lock-file $$input; \
 	done
 
 flake-update-nixvim:
@@ -71,12 +91,6 @@ flake-update-homebrew:
 	inputs="nix-homebrew homebrew-core homebrew-cask homebrew-bundle"; \
 	for input in $$inputs; do \
 		nix flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
-	done
-
-flake-update-nixos-unstable:
-	inputs="nixpkgs-nixos-unstable home-manager-nixos-unstable nixvim-nixos-unstable plasma-manager-nixos-unstable sops-nix-nixos-unstable nur-nixos-unstable"; \
-	for input in $$inputs; do \
-		nix flake update --commit-lock-file $$input; \
 	done
 
 # Function to send notifications with fallbacks
