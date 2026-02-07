@@ -1,11 +1,10 @@
 { config, username, ... }:
+
+let homePath = "${config.users.users.${username}.home}";
+in
 {
   # Sops secrets for Syncthing management
   sops.secrets = {
-    syncthing-api-key-pro = {
-      key = "syncthing/apiKeys/IvansMacBookPro";
-      owner = username;
-    };
     syncthing-devices = {
       key = "syncthing/devices";
       owner = username;
@@ -16,10 +15,7 @@
   local.services.syncthing-mgmt = {
     enable = true;
     baseUrl = "http://127.0.0.1:8384";
-    configDir = "/Users/${username}/Library/Application Support/Syncthing";
-
-    # Use API key from secrets
-    apiKeyFile = config.sops.secrets.syncthing-api-key-pro.path;
+    configDir = "${homePath}/Library/Application Support/Syncthing";
 
     # Device registry (all known devices)
     deviceDefinitionsFile = config.sops.secrets.syncthing-devices.path;
@@ -27,6 +23,7 @@
     # Devices this machine connects to (auto-includes devices from folders)
     devices = [
       "Ivans-MacBook-Pro" # This machine (required for local-only folders)
+
       "a3"
       "Ivans-Mac-mini"
       "Ivans-MacBook-Air"
@@ -36,7 +33,7 @@
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
     folders = {
       "mqdq9-kaiuw" = {
-        path = "/Users/${username}/.config/rclone";
+        path = "${homePath}/.config/rclone";
         label = ".config/rclone";
         devices = [
           "Ivans-Mac-mini"
@@ -45,7 +42,7 @@
       };
 
       "qxvnf-blpvx" = {
-        path = "/Users/${username}/.password-store";
+        path = "${homePath}/.password-store";
         label = ".password-store";
         devices = [
           "Ivans-Mac-mini"
@@ -53,27 +50,28 @@
       };
 
       "fpbxa-6zw5z" = {
-        path = "/Users/${username}/Sources";
+        path = "${homePath}/Sources";
         label = "Sources";
         devices = [
-          "a3"
           "Ivans-Mac-mini"
           "Ivans-MacBook-Air"
+          "a3"
         ];
       };
 
       "shtdy-s2c9s" = {
-        path = "/Users/${username}/Sources/github.com/ivankovnatsky/nixos-config";
+        path = "${homePath}/Sources/github.com/ivankovnatsky/nixos-config";
         label = "Sources/github.com/ivankovnatsky/nixos-config";
         devices = [
-          "a3"
           "Ivans-Mac-mini"
+          "Ivans-MacBook-Air"
           "Lusha-Macbook-Ivan-Kovnatskyi"
+          "a3"
         ];
       };
 
       "ryjnn-fdrug" = {
-        path = "/Users/${username}/Sources/github.com/ivankovnatsky/notes";
+        path = "${homePath}/Sources/github.com/ivankovnatsky/notes";
         label = "Sources/github.com/ivankovnatsky/notes";
         devices = [
           "Lusha-Macbook-Ivan-Kovnatskyi"
@@ -81,13 +79,13 @@
       };
 
       "2z4ss-gffpj" = {
-        path = "/Users/${username}/.gnupg";
+        path = "${homePath}/.gnupg";
         label = "~/.gnupg";
         devices = [ "Ivans-MacBook-Pro" ]; # Local only
       };
 
       "kwhyl-jbqmu" = {
-        path = "/Users/${username}/Sources/github.com/NixOS/nixpkgs";
+        path = "${homePath}/Sources/github.com/NixOS/nixpkgs";
         label = "Sources/github.com/NixOS/nixpkgs";
         devices = [
           "Lusha-Macbook-Ivan-Kovnatskyi"
@@ -95,7 +93,7 @@
       };
 
       "taskwarrior" = {
-        path = "/Users/${username}/.task";
+        path = "${homePath}/.task";
         label = ".task";
         devices = [
           "Ivans-Mac-mini"
@@ -105,7 +103,7 @@
       };
 
       "claude-commands" = {
-        path = "/Users/${username}/.claude/commands";
+        path = "${homePath}/.claude/commands";
         label = ".claude/commands";
         devices = [
           "Ivans-Mac-mini"

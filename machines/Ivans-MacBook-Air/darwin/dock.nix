@@ -56,9 +56,6 @@ in
       }
 
       # Installed from App Store
-      { path = "/Applications/Xcode.app/"; }
-      { path = "/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/"; }
-      { path = "/Applications/Xcode.app/Contents/Applications/Icon Composer.app/"; }
       { path = "/Applications/Numbers.app/"; }
 
       {
@@ -73,12 +70,9 @@ in
       { path = "/Applications/Chromium.app/"; }
       { path = "/Applications/Obsidian.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
-      { path = "/Applications/Claude.app/"; }
       { path = "/Applications/Visual Studio Code.app/"; }
       { path = "/Applications/coconutBattery.app/"; }
       { path = "/Applications/KeyCastr.app/"; }
-      { path = "/Applications/Steam.app/"; }
-      { path = "/Applications/velocidrone-launcher.app/"; }
 
       {
         path = "${homePath}/Downloads/";

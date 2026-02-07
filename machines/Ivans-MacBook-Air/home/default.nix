@@ -1,15 +1,16 @@
 {
   imports = [
-    # ../../../home/bash.nix
-    # ../../../home/nixvim/plugins/copilot-lua
     ../../../home/amethyst
+    ../../../home/atuin.nix
     ../../../home/bat.nix
     ../../../home/btop.nix
     ../../../home/carapace.nix
     ../../../home/ccstatusline.nix
     ../../../home/claude.nix
     ../../../home/direnv.nix
+    ../../../home/fish.nix
     ../../../home/flags.nix
+    ../../../home/fzf.nix
     ../../../home/gemini.nix
     ../../../home/ghorg.nix
     ../../../home/ghostty.nix
@@ -26,28 +27,24 @@
     ../../../home/npm.nix
     ../../../home/nushell.nix
     ../../../home/packages-darwin.nix
-    ../../../home/ranger.nix
     ../../../home/pass.nix
+    ../../../home/ranger.nix
     ../../../home/rebuild-diff.nix
     ../../../home/safari.nix
     ../../../home/scripts.nix
-    ../../../home/atuin.nix
-    ../../../home/fish.nix
-    ../../../home/fzf.nix
-    ../../../home/z-lua.nix
-    ../../../home/zsh.nix
     ../../../home/sops.nix
     ../../../home/starship
     ../../../home/syncthing-ignore.nix
     ../../../home/taskwarrior.nix
     ../../../home/tmux.nix
     ../../../home/treefmt.nix
-    ../../../home/vlc
     ../../../home/vscode.nix
     ../../../home/yt-dlp.nix
+    ../../../home/z-lua.nix
+    ../../../home/zsh.nix
     ../../../modules/flags
     ../../../modules/home/tools
-    ./tools.nix
     ./packages.nix
+    ./tools.nix
   ];
 }

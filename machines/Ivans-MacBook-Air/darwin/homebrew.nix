@@ -25,7 +25,6 @@
         name = "coconutbattery";
         greedy = true;
       }
-      "cursor"
       "firefox"
       # Needed to `brew uninstall --cask ghostty kitty`
       {
@@ -41,9 +40,8 @@
       "mos"
       "silicon-labs-vcp-driver"
       "stats"
-      "vlc"
+      "obsidian"
       "visual-studio-code"
-      "windsurf"
     ];
     masApps = {
       "Numbers" = 409203825;

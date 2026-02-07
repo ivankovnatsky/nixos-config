@@ -1,4 +1,3 @@
-{ ... }:
 {
   homebrew = {
     enable = true;
@@ -26,7 +25,6 @@
         name = "coconutbattery";
         greedy = true;
       }
-      "cursor"
       {
         name = "claude";
         greedy = true;
@@ -47,11 +45,8 @@
       "silicon-labs-vcp-driver"
       "stats"
       "steam"
-      "windsurf"
-      "typora"
       "obsidian"
       "visual-studio-code"
-      "mullvad-vpn"
     ];
     masApps = {
       "Xcode" = 497799835;
