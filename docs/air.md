@@ -11,6 +11,10 @@
 - Allow access to control "Terminal"
 - Allow access to files managed by "iCloud Drive"
 
+### Obsidian
+
+- Allow access to files managed by "iCloud Drive"
+
 ## Permissions
 
 - Allow accessory to connect? / Do you want to connect Samsung PSSD T7 to this Mac?
