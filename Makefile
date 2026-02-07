@@ -62,7 +62,10 @@ flake-update-main:
 	done
 
 flake-update-nixvim:
-	nix flake update ${NIX_EXTRA_FLAGS} --commit-lock-file nixvim
+	inputs="nixvim-darwin-unstable nixvim-darwin-release nixvim-nixos-unstable nixvim-nixos-release"; \
+	for input in $$inputs; do \
+		nix flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
+	done
 
 flake-update-homebrew:
 	inputs="nix-homebrew homebrew-core homebrew-cask homebrew-bundle"; \
