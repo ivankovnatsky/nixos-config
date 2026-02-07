@@ -33,11 +33,11 @@ NIX_EXTRA_FLAGS := --extra-experimental-features flakes --extra-experimental-fea
 # Common flags for rebuild commands
 COMMON_REBUILD_FLAGS := -L --flake .
 
-# Default target will run rebuild and start watchman based on platform
+# Default target will run rebuild based on platform
 ifeq (${PLATFORM}, Darwin)
-default: rebuild-darwin rebuild-watchman-darwin
+default: rebuild-darwin
 else
-default: rebuild-nixos/generic rebuild-watchman-nixos
+default: rebuild-nixos/generic
 endif
 
 # FIXME:
