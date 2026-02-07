@@ -1,5 +1,16 @@
 # air
 
+## App macOS settings
+
+### syncthing
+
+- Allow to find devices on local networks
+
+### bash
+
+- Allow access to control "Terminal"
+- Allow access to files managed by "iCloud Drive"
+
 ## Mini
 
 ```console
