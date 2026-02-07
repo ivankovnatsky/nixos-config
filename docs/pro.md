@@ -47,3 +47,18 @@ Enable notifications when Xcode requests permission during initial launch.
 
 When VS Code prompts for iCloud Drive access, click **Allow** to enable file
 operations in iCloud-synced directories.
+
+## App macOS Settings
+
+### syncthing
+
+- Allow to find devices on local networks
+
+### bash
+
+- Allow access to control "Terminal"
+- Allow access to files managed by "iCloud Drive"
+
+### Obsidian
+
+- Allow access to files managed by "iCloud Drive"
