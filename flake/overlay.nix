@@ -35,30 +35,32 @@ let
 
   # 3. Nixpkgs-master and unstable packages
   inherit (final.stdenv.hostPlatform) system;
+  # Filter out null values from config to avoid replaceStdenv = null breaking imports
+  safeConfig = builtins.removeAttrs final.config [ "replaceStdenv" ];
   masterOverlays = {
     nixpkgs-darwin-master = import inputs.nixpkgs-darwin-master {
       inherit system;
-      inherit (final) config;
+      config = safeConfig;
     };
     nixpkgs-darwin-master-beszel = import inputs.nixpkgs-darwin-master-beszel {
       inherit system;
-      inherit (final) config;
+      config = safeConfig;
     };
     nixpkgs-darwin-master-opencode = import inputs.nixpkgs-darwin-master-opencode {
       inherit system;
-      inherit (final) config;
+      config = safeConfig;
     };
     nixpkgs-darwin-old-release = import inputs.nixpkgs-darwin-old-release {
       inherit system;
-      inherit (final) config;
+      config = safeConfig;
     };
     nixpkgs-nixos-master = import inputs.nixpkgs-nixos-master {
       inherit system;
-      inherit (final) config;
+      config = safeConfig;
     };
     nixpkgs-nixos-unstable = import inputs.nixpkgs-nixos-unstable {
       inherit system;
-      inherit (final) config;
+      config = safeConfig;
     };
   };
 
