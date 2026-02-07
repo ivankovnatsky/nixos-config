@@ -123,6 +123,12 @@ in
   # ```console
   # rm ~/Library/Mobile\ Documents/iCloud~com~mav~taskchamp/Documents/taskchamp/*.data
   # ```
+  #
+  # 9. Initialize git in iCloud Documents dir to track unneeded changes:
+  #
+  # ```console
+  # git init ~/Library/Mobile\ Documents/iCloud~com~mav~taskchamp/Documents
+  # ```
   programs.taskwarrior = {
     enable = true;
     package = pkgs.taskwarrior3;
