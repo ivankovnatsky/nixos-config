@@ -114,6 +114,12 @@ with lib;
       };
     };
 
+    airIp = mkOption {
+      type = types.str;
+      description = "Pro IP address";
+      default = "192.168.50.8";
+    };
+
     proIp = mkOption {
       type = types.str;
       description = "Pro IP address";

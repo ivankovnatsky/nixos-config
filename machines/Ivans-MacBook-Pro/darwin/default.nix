@@ -1,11 +1,12 @@
 {
   imports = [
     ../../../darwin/amethyst.nix
-    ../../../darwin/xattr.nix
     ../../../darwin/darwin.nix
+    ../../../darwin/dns-clear.nix
     ../../../darwin/flags.nix
     ../../../darwin/fonts.nix
     ../../../darwin/hammerspoon.nix
+    ../../../darwin/init.nix
     ../../../darwin/mos.nix
     ../../../darwin/nextdns.nix
     ../../../darwin/nix.nix
@@ -17,9 +18,9 @@
     ../../../darwin/sudo.nix
     ../../../darwin/syncthing.nix
     ../../../darwin/system.nix
-    ../../../darwin/init.nix
     ../../../darwin/taskwarrior-notify.nix
     ../../../darwin/users.nix
+    ../../../darwin/xattr.nix
     ../../../modules/darwin/dock
     ../../../modules/darwin/launchd
     ../../../modules/darwin/nextdns-mgmt
@@ -32,13 +33,11 @@
     ../../../system/documentation.nix
     ../../../system/nix.nix
     ../../../system/scripts
-    ../../../darwin/dns-clear.nix
     ./dock.nix
     ./git.nix
     ./homebrew.nix
-    # ./rebuild-terminal.nix
+    ./stash
     ./syncthing-mgmt.nix
     ./users.nix
-    ./stash
   ];
 }

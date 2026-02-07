@@ -1,25 +1,26 @@
 {
   imports = [
     ../../../darwin/amethyst.nix
-    ../../../darwin/xattr.nix
     ../../../darwin/darwin.nix
-    ../../../darwin/dock.nix
+    ../../../darwin/dns-clear.nix
     ../../../darwin/flags.nix
     ../../../darwin/fonts.nix
     ../../../darwin/hammerspoon.nix
+    ../../../darwin/init.nix
     ../../../darwin/mos.nix
     ../../../darwin/nextdns.nix
     ../../../darwin/nix.nix
     ../../../darwin/no-dock-restart.nix
+    ../../../darwin/rebuild-terminal.nix
     ../../../darwin/security.nix
     ../../../darwin/shell.nix
     ../../../darwin/stats.nix
     ../../../darwin/sudo.nix
     ../../../darwin/syncthing.nix
     ../../../darwin/system.nix
-    ../../../darwin/init.nix
     ../../../darwin/taskwarrior-notify.nix
     ../../../darwin/users.nix
+    ../../../darwin/xattr.nix
     ../../../modules/darwin/dock
     ../../../modules/darwin/launchd
     ../../../modules/darwin/nextdns-mgmt
@@ -31,11 +32,11 @@
     ../../../modules/flags
     ../../../system/documentation.nix
     ../../../system/nix.nix
-    ../../../darwin/rebuild-terminal.nix
     ../../../system/scripts
-    ../../../darwin/dns-clear.nix
+    ./dock.nix
     ./git.nix
     ./homebrew.nix
+    ./stash
     ./syncthing-mgmt.nix
     ./users.nix
   ];
