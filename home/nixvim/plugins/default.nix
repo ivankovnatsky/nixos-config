@@ -225,6 +225,10 @@
       };
       web-devicons.enable = true;
     };
+    # TODO: Wait for Neovim 0.12 to enable builtin difftool
+    # extraConfigVim = ''
+    #   packadd nvim.difftool
+    # '';
     extraConfigLua = builtins.readFile ./telescope.lua;
   };
 }
