@@ -6,6 +6,7 @@
       # TODO: Testing out
       # Autoformat tools make things harder apply fmt when it's not needed
       # auto-save.enable = true;
+      codediff.enable = true;
       neo-tree = {
         enable = true;
         settings = {
