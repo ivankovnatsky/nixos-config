@@ -102,15 +102,6 @@
         ];
       };
 
-      "claude-commands" = {
-        path = "${config.users.users.${username}.home}/.claude/commands";
-        label = ".claude/commands";
-        devices = [
-          "Ivans-MacBook-Pro"
-          "Ivans-MacBook-Air"
-          "a3"
-        ];
-      };
     };
 
     restart = false;
