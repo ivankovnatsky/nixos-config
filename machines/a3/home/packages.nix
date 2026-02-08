@@ -24,7 +24,7 @@
     lsof # List open files
     nixfmt
     poweroff
-    git-dotfiles
+    dotfiles
     nodejs
     nvtopPackages.nvidia # GPU monitoring (like htop for GPUs)
     gh-notifications
