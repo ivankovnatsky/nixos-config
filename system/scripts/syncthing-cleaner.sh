@@ -70,7 +70,7 @@ for dir in "${dirs[@]}"; do
 
   if [ "$DELETE" = true ]; then
     echo "Removing..."
-    echo "$files" | xargs rm -v
+    echo "$files" | tr '\n' '\0' | xargs -0 rm -v
   else
     echo "Dry-run mode. Use --delete to remove."
   fi
