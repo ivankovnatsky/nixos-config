@@ -25,6 +25,7 @@ from pathlib import Path
 
 # Full path required because Homebrew PATH isn't available during Nix Darwin activation
 DISPLAYPLACER_PATH = "/opt/homebrew/bin/displayplacer"
+POWEROFF_VOLUME_SET = "1.0"
 
 
 # Platform Detection
@@ -1473,8 +1474,8 @@ def main() -> int:
         "-v",
         "--volume",
         type=float,
-        default=2.5,
-        help="Volume level before shutdown (default: 2.5%%)",
+        default=POWEROFF_VOLUME_SET,
+        help=f"Volume level before shutdown (default: {POWEROFF_VOLUME_SET}%%)",
     )
     poweroff_parser.set_defaults(func=cmd_poweroff)
 
