@@ -123,6 +123,8 @@ def cmd_home_init(args: argparse.Namespace) -> int:
 
     if changed:
         print("Home mode initialized.")
+    else:
+        print("Already initialized.")
     return 0
 
 
@@ -205,6 +207,8 @@ def cmd_work_init(args: argparse.Namespace) -> int:
 
     if changed:
         print("Work mode initialized (local only, no sync).")
+    else:
+        print("Already initialized.")
     return 0
 
 
