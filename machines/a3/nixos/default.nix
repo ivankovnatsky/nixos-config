@@ -15,6 +15,7 @@
     ./bluetooth.nix
     ./boot.nix
     ./configuration.nix
+    ./dotfiles-sync.nix
     ./cryptenroll.nix # TPM2 support for LUKS encryption
     ./default-apps.nix
     ./desktop.nix
