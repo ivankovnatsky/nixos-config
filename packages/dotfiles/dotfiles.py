@@ -74,12 +74,15 @@ def apply_files() -> None:
 
 def cmd_home_init(args: argparse.Namespace) -> int:
     """Initialize home mode with bare repo."""
+    changed = False
+
     # Step 1: Ensure ~/.git exists
     if not GIT_DIR.exists():
         print("Initializing ~/.git...")
         result = run_git("init")
         if result.returncode != 0:
             return 1
+        changed = True
 
     # Step 2: Create bare repo if needed
     if not BARE_REPO.exists():
@@ -89,17 +92,18 @@ def cmd_home_init(args: argparse.Namespace) -> int:
         if result.returncode != 0:
             return 1
         print(f"Created bare repo: {BARE_REPO}")
+        changed = True
 
     # Step 3: Configure remote
     result = run_git("remote", "get-url", "origin", check=False)
     if result.returncode != 0:
-        # No origin, add it
         run_git("remote", "add", "origin", str(BARE_REPO))
         print(f"Added remote origin -> {BARE_REPO}")
+        changed = True
     elif result.stdout.strip() != str(BARE_REPO):
-        # Wrong origin, update it
         run_git("remote", "set-url", "origin", str(BARE_REPO))
         print(f"Updated remote origin -> {BARE_REPO}")
+        changed = True
 
     # Step 4: Fetch and set upstream
     run_git("fetch", "origin", check=False)
@@ -109,14 +113,16 @@ def cmd_home_init(args: argparse.Namespace) -> int:
     if result.returncode == 0:
         run_git("branch", "-u", "origin/main", "main", check=False)
     else:
-        # Check if origin/main exists
         result = run_git("rev-parse", "--verify", "origin/main", check=False)
         if result.returncode == 0:
             run_git("checkout", "-b", "main", "--track", "origin/main", check=False)
             print("Created main branch tracking origin/main")
+            changed = True
 
     apply_files()
-    print("Home mode initialized.")
+
+    if changed:
+        print("Home mode initialized.")
     return 0
 
 
@@ -185,16 +191,20 @@ def cmd_home_status(args: argparse.Namespace) -> int:
 
 def cmd_work_init(args: argparse.Namespace) -> int:
     """Initialize work mode (local only)."""
+    changed = False
     if GIT_DIR.exists():
-        print("~/.git already exists.")
+        pass
     else:
         result = run_git("init")
         if result.returncode != 0:
             return 1
         print(result.stdout.strip())
+        changed = True
 
     apply_files()
-    print("Work mode initialized (local only, no sync).")
+
+    if changed:
+        print("Work mode initialized (local only, no sync).")
     return 0
 
 
