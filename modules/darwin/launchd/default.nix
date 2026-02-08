@@ -140,15 +140,15 @@ let
         /bin/chmod 755 ${cfg.logDir}
 
         ${optionalString cfg.waitForSecrets ''
-          echo "Waiting for sops secrets to be available..."
+          echo "$(date '+%Y-%m-%d %H:%M:%S') - INFO - Waiting for sops secrets to be available..."
           /bin/wait4path /run/secrets/rendered
-          echo "Sops secrets are available!"
+          echo "$(date '+%Y-%m-%d %H:%M:%S') - INFO - Sops secrets are available!"
         ''}
 
         ${optionalString (cfg.waitForPath != null) ''
-          echo "Waiting for ${cfg.waitForPath}..."
+          echo "$(date '+%Y-%m-%d %H:%M:%S') - INFO - Waiting for ${cfg.waitForPath}..."
           /bin/wait4path "${cfg.waitForPath}"
-          echo "${cfg.waitForPath} is available!"
+          echo "$(date '+%Y-%m-%d %H:%M:%S') - INFO - ${cfg.waitForPath} is available!"
         ''}
 
         ${optionalString (cfg.dataDir != null) ''
@@ -161,7 +161,6 @@ let
 
         ${cfg.preStart}
 
-        echo "Starting ${name}..."
         exec ${cfg.command}
       '';
 
