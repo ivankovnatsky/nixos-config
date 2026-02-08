@@ -147,9 +147,10 @@ def cmd_home_push(args: argparse.Namespace) -> int:
 
 
 def cmd_home_pull(args: argparse.Namespace) -> int:
-    """Pull changes from bare repo."""
-    result = run_git("pull")
+    """Pull changes from bare repo. Fast-forward only, aborts if merge needed."""
+    result = run_git("pull", "--ff-only")
     if result.returncode != 0:
+        print("Error: Pull requires merge. Resolve manually.", file=sys.stderr)
         return 1
     print(result.stdout.strip())
     return 0
