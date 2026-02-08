@@ -102,6 +102,17 @@ in
         ];
       };
 
+      "dotfiles" = {
+        path = "${homePath}/Sources/github.com/ivankovnatsky-local/dotfiles";
+        label = "Sources/github.com/ivankovnatsky-local/dotfiles";
+        devices = [
+          "a3"
+          "Ivans-Mac-mini"
+          "Ivans-MacBook-Pro"
+          "Ivans-MacBook-Air"
+        ];
+      };
+
     };
 
     restart = false;
