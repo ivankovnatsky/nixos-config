@@ -50,6 +50,7 @@
           "a3"
           "Ivans-Mac-mini"
           "Ivans-MacBook-Pro"
+          "Ivans-MacBook-Air"
           "Lusha-Macbook-Ivan-Kovnatskyi"
         ];
       };
