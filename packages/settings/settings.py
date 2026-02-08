@@ -1262,10 +1262,46 @@ def cmd_volume(args: argparse.Namespace) -> int:
 
 
 # Poweroff: Set volume and shutdown (macOS + Linux)
+ICLOUD_SYNC_DELAY = 5  # seconds to wait for iCloud sync (file is < 1KB)
+
+
+def poweroff_log_battery() -> None:
+    """Log battery status to iCloud stats directory (macOS only)."""
+    if not is_macos():
+        return
+
+    import socket
+    import time
+
+    try:
+        hostname = socket.gethostname()
+        stats_dir = Path.home() / "Library/Mobile Documents/com~apple~CloudDocs/Data/Stats" / hostname
+        stats_dir.mkdir(parents=True, exist_ok=True)
+
+        result = subprocess.run(
+            ["pmset", "-g", "batt"],
+            capture_output=True,
+            text=True,
+        )
+
+        battery_file = stats_dir / "battery.txt"
+        battery_file.write_text(result.stdout)
+        print(f"Battery status logged to {battery_file}")
+
+        # Wait for iCloud to sync (file is tiny, should be instant)
+        print(f"Waiting {ICLOUD_SYNC_DELAY}s for iCloud sync...")
+        time.sleep(ICLOUD_SYNC_DELAY)
+    except Exception as e:
+        print(f"Warning: Could not log battery status: {e}", file=sys.stderr)
+
+
 def cmd_poweroff(args: argparse.Namespace) -> int:
     if not is_macos() and not is_linux():
         print("Poweroff only available on macOS and Linux", file=sys.stderr)
         return 1
+
+    # Log battery status before shutdown (macOS only)
+    poweroff_log_battery()
 
     # Set volume to specified level before shutdown
     volume = args.volume
