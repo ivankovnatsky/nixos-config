@@ -7,9 +7,9 @@ Modes:
 
 Commands:
   dotfiles home init     Set up bare repo (idempotent)
-  dotfiles home push     Commit and push to bare repo
+  dotfiles home push     Push committed changes to bare repo (no auto-commit)
   dotfiles home pull     Pull from bare repo
-  dotfiles home sync     Init + push + pull (for automation)
+  dotfiles home sync     Init + pull + push (for automation)
   dotfiles home status   Show git status
 
   dotfiles work init     Initialize local ~/.git
@@ -129,32 +129,20 @@ def cmd_home_init(args: argparse.Namespace) -> int:
 
 
 def cmd_home_push(args: argparse.Namespace) -> int:
-    """Commit all changes and push to bare repo."""
-    # Check for changes
-    result = run_git("status", "--porcelain")
-    if not result.stdout.strip():
-        print("Nothing to commit.")
+    """Push already committed changes to bare repo. Does NOT auto-commit."""
+    # Check for unpushed commits
+    result = run_git("rev-list", "--count", "origin/main..HEAD", check=False)
+    unpushed = int(result.stdout.strip()) if result.returncode == 0 and result.stdout.strip() else 0
+
+    if unpushed == 0:
+        print("Nothing to push.")
         return 0
-
-    # Show what will be committed
-    print("Changes to commit:")
-    run_git("status", "--short")
-
-    # Add all tracked files
-    run_git("add", "-u")
-
-    # Commit
-    msg = getattr(args, "message", None) or "Update dotfiles"
-    result = run_git("commit", "-m", msg)
-    if result.returncode != 0:
-        return 1
-    print(result.stdout.strip())
 
     # Push
     result = run_git("push", "-u", "origin", "main")
     if result.returncode != 0:
         return 1
-    print("Pushed to bare repo.")
+    print(f"Pushed {unpushed} commit(s) to bare repo.")
     return 0
 
 
@@ -254,10 +242,7 @@ def main() -> int:
     home_sub = home_parser.add_subparsers(dest="command")
 
     home_sub.add_parser("init", help="Initialize bare repo setup (idempotent)")
-
-    home_push = home_sub.add_parser("push", help="Commit and push to bare repo")
-    home_push.add_argument("-m", "--message", help="Commit message")
-
+    home_sub.add_parser("push", help="Push committed changes to bare repo")
     home_sub.add_parser("pull", help="Pull from bare repo")
     home_sub.add_parser("sync", help="Init + push + pull (for automation)")
     home_sub.add_parser("status", help="Show git status")
