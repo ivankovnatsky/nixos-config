@@ -11,7 +11,7 @@
     ffmpeg
     gh-notifications
     giffer
-    git-dotfiles
+    dotfiles
     git-message
     go-grip
     homelab

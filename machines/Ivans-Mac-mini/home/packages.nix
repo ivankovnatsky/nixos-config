@@ -32,7 +32,7 @@
     magic-wormhole
     mkpasswd
     poweroff
-    git-dotfiles
+    dotfiles
     poppler-utils
     nextdns-mgmt
     nixfmt-rfc-style
