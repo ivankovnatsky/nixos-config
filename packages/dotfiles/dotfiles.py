@@ -144,7 +144,7 @@ def cmd_home_push(args: argparse.Namespace) -> int:
     run_git("add", "-u")
 
     # Commit
-    msg = args.message if args.message else "Update dotfiles"
+    msg = getattr(args, "message", None) or "Update dotfiles"
     result = run_git("commit", "-m", msg)
     if result.returncode != 0:
         return 1
