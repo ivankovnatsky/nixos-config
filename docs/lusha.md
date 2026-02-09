@@ -41,7 +41,8 @@ maintenance and troubleshooting.
 
 ## bash
 
-- Allow “bash” to control “System Events”
+- Allow "bash" to control "System Events"
+- Allow "bash" to control "Terminal"
 
 ### Zoom
 
@@ -60,6 +61,11 @@ maintenance and troubleshooting.
 ### Ghostty
 
 - Approve local network access
+
+### Syncthing
+
+- Allow:
+  - Local network (find devices on local networks)
 
 ### Slack
 
