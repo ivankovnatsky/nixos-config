@@ -102,7 +102,7 @@
     perplexity
     pigz
     pnpm
-    poetry
+    nixpkgs-darwin-master.poetry
     popeye
     postgresql
     pblock
