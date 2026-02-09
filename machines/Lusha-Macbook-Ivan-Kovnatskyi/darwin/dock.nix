@@ -54,6 +54,7 @@
         { path = "/Applications/ChatGPT.app/"; }
         { path = "/Applications/Claude.app/"; }
         { path = "/Applications/Codex.app/"; }
+        { path = "/Applications/Obsidian.app/"; }
 
         {
           type = "spacer";
