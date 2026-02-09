@@ -2,7 +2,12 @@
 
 {
   home.packages = with pkgs; [
-    (python313.withPackages ( ps: with ps; [ grip markitdown ]))
+    (python313.withPackages (
+      ps: with ps; [
+        grip
+        markitdown
+      ]
+    ))
     age
     aria2
     asusrouter-cli

@@ -4,8 +4,8 @@
 
 - Native macOS terminal
 - Excellent session restoration after reboot - Terminal.app preserves all
-  terminal output text from previous sessions after sudden reboots, crashes,
-  or power failures
+  terminal output text from previous sessions after sudden reboots, crashes, or
+  power failures
 
 ## kitty
 

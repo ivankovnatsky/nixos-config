@@ -274,7 +274,9 @@ def acquire_lock():
                     try:
                         LOCK_FILE.unlink(missing_ok=True)
                     except PermissionError:
-                        logging.warning("Cannot remove stale lock file (permission denied)")
+                        logging.warning(
+                            "Cannot remove stale lock file (permission denied)"
+                        )
                         return False
                 else:
                     logging.info(

@@ -875,16 +875,13 @@ def scrape_and_download_impl(
             skipped = 0
             with ThreadPoolExecutor(max_workers=workers) as executor:
                 futures = {
-                    executor.submit(get_expected_filename, url): url
-                    for url in new_urls
+                    executor.submit(get_expected_filename, url): url for url in new_urls
                 }
                 for future in as_completed(futures):
                     url = futures[future]
                     expected = future.result()
                     if expected and expected in filename_index:
-                        click.echo(
-                            f"[SKIP] Already exists: {filename_index[expected]}"
-                        )
+                        click.echo(f"[SKIP] Already exists: {filename_index[expected]}")
                         skipped += 1
                     else:
                         urls_to_download.append(url)
