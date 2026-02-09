@@ -4,6 +4,7 @@
 # Mark targets that don't create files as .PHONY so Make will always run them
 .PHONY: \
 	default \
+	rebuild-once \
 	\
 	trigger-rebuild \
 	\
@@ -40,6 +41,15 @@ ifeq (${PLATFORM}, Darwin)
 default: rebuild-darwin
 else
 default: rebuild-nixos/generic
+endif
+
+# One-time rebuild and exit terminal
+ifeq (${PLATFORM}, Darwin)
+rebuild-once:
+	@$(MAKE) rebuild-darwin && exit
+else
+rebuild-once:
+	@$(MAKE) rebuild-nixos/generic && exit
 endif
 
 # FIXME:
