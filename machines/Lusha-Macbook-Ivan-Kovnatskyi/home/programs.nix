@@ -7,7 +7,6 @@
     # https://github.com/nix-community/home-manager/blob/master/modules/programs/gh.nix#L115
     gh.extensions = with pkgs; [
       gh-token
-      gh-copilot
     ];
   };
 }
