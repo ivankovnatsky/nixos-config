@@ -44,6 +44,7 @@
         greedy = true;
       }
       "mos"
+      "obsidian"
       "orbstack"
       "stats"
       # Need to keep twingate always latest version, sometimes it fails to
