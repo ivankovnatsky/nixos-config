@@ -130,11 +130,6 @@
     #   "queries/nu/injections.scm" = builtins.readFile "${pkgs.tree-sitter-grammars.tree-sitter-nu}/queries/nu/injections.scm";
     # };
     extraConfigLua = ''
-      local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-      parser_config.nu = {
-        filetype = "nu",
-      }
-
       require'nu'.setup{
         use_lsp_features = true, -- requires https://github.com/jose-elias-alvarez/null-ls.nvim
         -- lsp_feature: all_cmd_names is the source for the cmd name completion.
