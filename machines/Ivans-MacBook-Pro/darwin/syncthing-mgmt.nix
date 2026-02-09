@@ -1,6 +1,7 @@
 { config, username, ... }:
 
-let homePath = "${config.users.users.${username}.home}";
+let
+  homePath = "${config.users.users.${username}.home}";
 in
 {
   # Sops secrets for Syncthing management

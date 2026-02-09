@@ -9,7 +9,8 @@ Pros:
 
 Cons:
 
-- Starting to eat up CPU time big time consuming at least 1 Core for 'Safari Networking'
+- Starting to eat up CPU time big time consuming at least 1 Core for 'Safari
+  Networking'
 
 ## Firefox
 
@@ -17,7 +18,8 @@ Pros:
 
 Cons:
 
-- Occasional performance hiccups and hangs on macOS during long sessions, especially under low memory
+- Occasional performance hiccups and hangs on macOS during long sessions,
+  especially under low memory
 
 ## Chrome
 

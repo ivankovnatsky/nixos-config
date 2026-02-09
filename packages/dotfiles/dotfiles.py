@@ -42,7 +42,9 @@ def has_git_lock() -> bool:
     return False
 
 
-def run_git(*args: str, cwd: Path = HOME, check: bool = True, timeout: int = GIT_TIMEOUT) -> subprocess.CompletedProcess:
+def run_git(
+    *args: str, cwd: Path = HOME, check: bool = True, timeout: int = GIT_TIMEOUT
+) -> subprocess.CompletedProcess:
     """Run git command in specified directory."""
     try:
         result = subprocess.run(
@@ -132,7 +134,11 @@ def cmd_home_push(args: argparse.Namespace) -> int:
     """Push already committed changes to bare repo. Does NOT auto-commit."""
     # Check for unpushed commits
     result = run_git("rev-list", "--count", "origin/main..HEAD", check=False)
-    unpushed = int(result.stdout.strip()) if result.returncode == 0 and result.stdout.strip() else 0
+    unpushed = (
+        int(result.stdout.strip())
+        if result.returncode == 0 and result.stdout.strip()
+        else 0
+    )
 
     if unpushed == 0:
         print("Nothing to push.")
@@ -159,7 +165,10 @@ def cmd_home_pull(args: argparse.Namespace) -> int:
 def cmd_home_sync(args: argparse.Namespace) -> int:
     """Sync: init + pull + push."""
     if has_git_lock():
-        print("Error: Git lock file exists, another process may be running.", file=sys.stderr)
+        print(
+            "Error: Git lock file exists, another process may be running.",
+            file=sys.stderr,
+        )
         return 1
     if cmd_home_init(args) != 0:
         return 1

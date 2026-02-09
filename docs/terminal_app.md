@@ -10,8 +10,8 @@
 
 ## Notes
 
-- **Background color**: Avoid setting background color manually
-as it breaks automatic dark/light mode switching.
+- **Background color**: Avoid setting background color manually as it breaks
+  automatic dark/light mode switching.
 
 ## Dark/Light Mode Themes (macOS 26+)
 

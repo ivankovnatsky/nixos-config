@@ -21,7 +21,8 @@
 
 ## Permissions
 
-- Allow accessory to connect? / Do you want to connect Samsung PSSD T7 to this Mac?
+- Allow accessory to connect? / Do you want to connect Samsung PSSD T7 to this
+  Mac?
 
 ## Mini
 
