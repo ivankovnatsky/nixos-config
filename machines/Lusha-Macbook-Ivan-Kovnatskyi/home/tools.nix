@@ -15,6 +15,8 @@
       "ccstatusline" = "ccstatusline";
       "@openai/codex" = "codex";
       "@google/gemini-cli" = "gemini";
+      "mdts" = "mdts";
+      "md-fileserver" = "mdstart";
     };
 
     curlShell = {
