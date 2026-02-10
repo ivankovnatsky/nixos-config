@@ -8,11 +8,11 @@
 with lib;
 
 let
-  cfg = config.local.services.syncthing-clean;
+  cfg = config.local.services.syncthing-cleaner;
   pathArgs = builtins.concatStringsSep " " (map (p: ''"${p}"'') cfg.paths);
 in
 {
-  options.local.services.syncthing-clean = {
+  options.local.services.syncthing-cleaner = {
     enable = mkEnableOption "Syncthing conflict file cleaner";
 
     paths = mkOption {
@@ -44,7 +44,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    systemd.services.syncthing-clean = {
+    systemd.services.syncthing-cleaner = {
       description = "Syncthing conflict file cleaner";
       serviceConfig = {
         Type = "oneshot";
@@ -60,7 +60,7 @@ in
       };
     };
 
-    systemd.timers.syncthing-clean = {
+    systemd.timers.syncthing-cleaner = {
       description = "Timer for syncthing conflict file cleaner";
       wantedBy = [ "timers.target" ];
       timerConfig = {
