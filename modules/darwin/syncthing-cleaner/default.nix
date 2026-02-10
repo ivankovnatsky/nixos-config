@@ -8,11 +8,11 @@
 with lib;
 
 let
-  cfg = config.local.services.syncthing-clean;
+  cfg = config.local.services.syncthing-cleaner;
   pathArgs = builtins.concatStringsSep " " (map (p: ''"${p}"'') cfg.paths);
 in
 {
-  options.local.services.syncthing-clean = {
+  options.local.services.syncthing-cleaner = {
     enable = mkEnableOption "Syncthing conflict file cleaner";
 
     paths = mkOption {
@@ -46,7 +46,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    local.launchd.services.syncthing-clean = {
+    local.launchd.services.syncthing-cleaner = {
       enable = true;
       type = "user-agent";
       command =
