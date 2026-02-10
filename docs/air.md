@@ -15,6 +15,10 @@
 
 - Allow access to files managed by "iCloud Drive"
 
+### Script Editor
+
+- Allow access to files managed by "iCloud Drive"
+
 ### Visual Studio Code
 
 - Allow access to files managed by "iCloud Drive"
