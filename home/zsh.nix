@@ -81,6 +81,7 @@ in
       bindkey '^[[Z' reverse-menu-complete
 
       setopt extendedglob
+      setopt IGNORE_EOF
 
       # Add ai completions
       if (( $+commands[aichat] )); then

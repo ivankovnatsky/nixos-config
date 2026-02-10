@@ -19,6 +19,9 @@
     initExtra = ''
       # Ensure Nix paths are available in SSH sessions (for mosh-server)
       export PATH="/run/current-system/sw/bin:$PATH"
+
+      # Require typing 'exit' to close shell (disable Ctrl+D)
+      set -o ignoreeof
     '';
     profileExtra = ''
       # Ensure Nix paths are available in SSH sessions (for mosh-server)

@@ -47,6 +47,10 @@ in
       # https://fishshell.com/docs/current/interactive.html#vi-mode-commands
       fish_vi_key_bindings
 
+      # Disable Ctrl+D from exiting shell (require typing 'exit')
+      bind --preset -e \cd
+      bind \cd true
+
       # z.lua -- this is needed for words with hyphens to autocomplete
       set -x _ZL_HYPHEN 1
 
