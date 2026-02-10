@@ -14,6 +14,7 @@
     ../../../home/git
     ../../../home/go.nix
     ../../../home/home-session-vars.nix
+    ../../../home/jujutsu.nix
     ../../../home/lsd.nix
     ../../../home/mpv.nix
     ../../../home/nixvim
