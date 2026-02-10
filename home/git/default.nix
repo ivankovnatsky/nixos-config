@@ -90,6 +90,7 @@
       options = {
         features = "interactive";
         line-numbers = true;
+        wrap-max-lines = "unlimited";
       };
     };
 
