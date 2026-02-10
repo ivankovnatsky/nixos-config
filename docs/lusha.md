@@ -1,6 +1,11 @@
 # Lusha work machine
 
-## Google Calendar Sync
+## Calendar
+
+Do not add work calendars to Apple Calendar - Google Calendar sync can be slow to
+update and unreliable for time-sensitive work events.
+
+### Google Calendar Sync
 
 Enabled Google Calendar sync with Apple Calendar app via:
 https://calendar.google.com/calendar/u/0/syncselect
