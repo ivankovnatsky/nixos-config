@@ -18,6 +18,7 @@
     ../../../modules/darwin/rebuild-terminal
     ../../../modules/darwin/sudo
     ../../../modules/darwin/default-browser
+    ../../../modules/darwin/syncthing-cleaner
     ../../../modules/darwin/syncthing-mgmt
     ../../../modules/flags
     ../../../system/documentation.nix
@@ -34,6 +35,7 @@
     ./prevent-sleep.nix
     ./security.nix
     ./shell.nix
+    ./syncthing-cleaner.nix
     ./syncthing-mgmt.nix
     ./users.nix
     ./close-zscaler.nix
