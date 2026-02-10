@@ -28,6 +28,7 @@
     ../../../../modules/darwin/arr-mgmt
     ../../../../modules/darwin/jellyfin-mgmt
     ../../../../modules/darwin/nextdns-mgmt
+    ../../../../modules/darwin/syncthing-cleaner
     ../../../../modules/darwin/syncthing-mgmt
     ../../../../modules/darwin/uptime-kuma-mgmt
     ../../../../system/documentation.nix
@@ -63,7 +64,7 @@
     ./sharing.nix
     ./stash
     ./stash-media
-    ./syncthing-clean.nix
+    ./syncthing-cleaner.nix
     ./syncthing-mgmt.nix
     ./system.nix
     ./tailscale.nix

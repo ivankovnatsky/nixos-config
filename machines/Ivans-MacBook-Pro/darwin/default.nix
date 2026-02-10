@@ -18,6 +18,7 @@
     ../../../darwin/stats.nix
     ../../../darwin/sudo.nix
     ../../../darwin/syncthing.nix
+    ../../../darwin/syncthing-cleaner.nix
     ../../../darwin/system.nix
     ../../../darwin/taskwarrior-notify.nix
     ../../../darwin/users.nix
@@ -28,6 +29,7 @@
     ../../../modules/darwin/pam
     ../../../modules/darwin/rebuild-terminal
     ../../../modules/darwin/sudo
+    ../../../modules/darwin/syncthing-cleaner
     ../../../modules/darwin/syncthing-mgmt
     ../../../modules/darwin/taskwarrior-notify
     ../../../modules/flags
