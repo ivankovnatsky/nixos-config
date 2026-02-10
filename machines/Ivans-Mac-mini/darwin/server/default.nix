@@ -63,7 +63,7 @@
     ./sharing.nix
     ./stash
     ./stash-media
-    ./clean-syncthing.nix
+    ./syncthing-clean.nix
     ./syncthing-mgmt.nix
     ./system.nix
     ./tailscale.nix
