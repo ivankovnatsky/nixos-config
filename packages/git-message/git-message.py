@@ -67,6 +67,17 @@ def get_modified_files() -> list[str]:
     return files
 
 
+def is_untracked(file_path: str, git_root: str) -> bool:
+    """Check if a file is untracked by git."""
+    result = subprocess.run(
+        ["git", "ls-files", "--error-unmatch", file_path],
+        capture_output=True,
+        text=True,
+        cwd=git_root,
+    )
+    return result.returncode != 0
+
+
 def shorten_path(path: str) -> str:
     result = path
 
@@ -161,6 +172,7 @@ Examples:
 
 Features:
   - Accepts file path in either position (auto-detected by existence)
+  - Auto-adds untracked files before committing
   - Without file arg, uses exactly one staged file, or one modified file if none staged
   - Strips file extensions (e.g., .nix, .py)
   - Shortens machine names (e.g., Ivans-Mac-mini -> mini)
@@ -271,6 +283,10 @@ Features:
         return 1
 
     try:
+        # Add untracked files first (git commit <file> only works for tracked files)
+        if file_path and is_untracked(target_file, git_root):
+            subprocess.run(["git", "add", target_file], check=True, cwd=git_root)
+
         if file_path:
             # Commit specific file (stages and commits in one step)
             # target_file is already relative to git root from earlier conversion
