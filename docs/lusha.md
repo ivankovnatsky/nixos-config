@@ -42,6 +42,10 @@ Configured screen sharing via System Settings with the following options:
 Enables remote desktop access via VNC/Apple Remote Desktop for system
 maintenance and troubleshooting.
 
+## Focus
+
+Used Work Focus to filter out Kandji annoying notifications.
+
 ## App macOS settings
 
 ## bash
