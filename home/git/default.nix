@@ -91,6 +91,7 @@
         features = "interactive";
         line-numbers = true;
         wrap-max-lines = "unlimited";
+        max-line-length = 0;
         navigate = true;
       };
     };
