@@ -6,7 +6,6 @@
     ../../../home/gemini.nix
     ../../../home/bat.nix
     ../../../home/btop.nix
-    ../../../home/ccstatusline.nix
     ../../../home/claude.nix
     ../../../home/direnv.nix
     ../../../home/ghostty.nix

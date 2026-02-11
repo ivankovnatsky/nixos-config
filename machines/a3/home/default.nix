@@ -5,7 +5,6 @@
     # ../../../home/bash.nix
     # ../../../home/nixvim/plugins/copilot-lua
     # ./mangohud.nix
-    ../../../home/ccstatusline.nix
     ../../../home/chromium.nix
     ../../../home/claude.nix
     ../../../home/codex.nix

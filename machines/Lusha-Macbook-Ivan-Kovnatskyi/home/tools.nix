@@ -12,7 +12,6 @@
 
     bun.packages = {
       "npm-groovy-lint" = "npm-groovy-lint";
-      "ccstatusline" = "ccstatusline";
       "@openai/codex" = "codex";
       "@google/gemini-cli" = "gemini";
       "mdts" = "mdts";

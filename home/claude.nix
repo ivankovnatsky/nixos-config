@@ -40,11 +40,6 @@ in
                 "Bash(sudo:*)"
               ]
             },
-            "statusLine": {
-              "type": "command",
-              "command": "printf '\\e[?1004l'; npx ccstatusline@latest",
-              "padding": 0
-            },
             "includeCoAuthoredBy": false,
             "env": {
               "CLAUDE_CODE_ENABLE_TELEMETRY": "1"

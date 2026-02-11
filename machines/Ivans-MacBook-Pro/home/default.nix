@@ -5,7 +5,6 @@
     ../../../home/bat.nix
     ../../../home/btop.nix
     ../../../home/carapace.nix
-    ../../../home/ccstatusline.nix
     ../../../home/claude.nix
     ../../../home/direnv.nix
     ../../../home/fish.nix
