@@ -1,22 +1,22 @@
 #!/usr/bin/env bash
 
+# https://code.claude.com/docs/en/statusline
+
 input=$(cat)
 
-MODEL=$(echo "$input" | jq -r '.model.display_name')
-DIR=$(echo "$input" | jq -r '.workspace.current_dir')
-PCT=$(echo "$input" | jq -r '.context_window.used_percentage // 0' | cut -d. -f1)
-DURATION_MS=$(echo "$input" | jq -r '.cost.total_duration_ms // 0')
-INPUT_TOKENS=$(echo "$input" | jq -r '.context_window.total_input_tokens // 0')
-OUTPUT_TOKENS=$(echo "$input" | jq -r '.context_window.total_output_tokens // 0')
-CACHE_READ=$(echo "$input" | jq -r '.context_window.current_usage.cache_read_input_tokens // 0')
+MODEL_ID=$(echo "$input" | jq -r '.model.id')
+CWD=$(echo "$input" | jq -r '.workspace.current_dir')
+PROJECT_DIR=$(echo "$input" | jq -r '.workspace.project_dir')
+REMAINING=$(echo "$input" | jq -r '.context_window.remaining_percentage // 100' | cut -d. -f1)
 CTX_SIZE=$(echo "$input" | jq -r '.context_window.context_window_size // 200000')
+TRANSCRIPT=$(echo "$input" | jq -r '.transcript_path // ""')
 
 CYAN='\033[36m'; GREEN='\033[32m'; YELLOW='\033[33m'; RED='\033[31m'
 MAGENTA='\033[35m'; BLUE='\033[34m'; DIM='\033[90m'; RESET='\033[0m'
 
-# Line 1: model | dir | git
-LINE1="${CYAN}${MODEL}${RESET}"
-LINE1="${LINE1} ${DIM}|${RESET} ${DIR}"
+# Line 1: model | project dir | git
+LINE1="${CYAN}${MODEL_ID}${RESET}"
+LINE1="${LINE1} ${DIM}|${RESET} ${PROJECT_DIR}"
 
 if git rev-parse --git-dir > /dev/null 2>&1; then
     BRANCH=$(git branch --show-current 2>/dev/null)
@@ -30,31 +30,19 @@ fi
 
 printf '%b\n' "$LINE1"
 
-# Line 2: context bar | cost | duration | tokens
-if [ "$PCT" -ge 90 ]; then BAR_COLOR="$RED"
-elif [ "$PCT" -ge 70 ]; then BAR_COLOR="$YELLOW"
-else BAR_COLOR="$GREEN"; fi
+# Line 2: cwd (only if different from project dir)
+if [ "$CWD" != "$PROJECT_DIR" ]; then
+    printf '%b\n' "${DIM}cwd:${RESET} ${CWD}"
+fi
 
-FILLED=$((PCT / 5)); EMPTY=$((20 - FILLED))
-BAR=$(printf "%${FILLED}s" | tr ' ' '▓')$(printf "%${EMPTY}s" | tr ' ' '░')
+# Format context size (e.g., 200000 -> 200k)
+if [ "$CTX_SIZE" -ge 1000000 ]; then
+    CTX_FMT="$(echo "$CTX_SIZE / 1000000" | bc -l | sed 's/\.0*$//')M"
+else
+    CTX_FMT="$((CTX_SIZE / 1000))k"
+fi
 
-MINS=$((DURATION_MS / 60000)); SECS=$(((DURATION_MS % 60000) / 1000))
+printf '%b\n' "${REMAINING}% remaining ${DIM}|${RESET} ${DIM}ctx:${CTX_FMT}${RESET}"
 
-# Format token counts (e.g., 15234 -> 15.2k)
-fmt_tokens() {
-    local n=$1
-    if [ "$n" -ge 1000000 ]; then
-        printf '%.1fM' "$(echo "$n / 1000000" | bc -l)"
-    elif [ "$n" -ge 1000 ]; then
-        printf '%.1fk' "$(echo "$n / 1000" | bc -l)"
-    else
-        printf '%d' "$n"
-    fi
-}
-
-IN_FMT=$(fmt_tokens "$INPUT_TOKENS")
-OUT_FMT=$(fmt_tokens "$OUTPUT_TOKENS")
-CACHE_FMT=$(fmt_tokens "$CACHE_READ")
-CTX_FMT=$(fmt_tokens "$CTX_SIZE")
-
-printf '%b\n' "${BAR_COLOR}${BAR}${RESET} ${PCT}% ${DIM}|${RESET} ${MINS}m${SECS}s ${DIM}|${RESET} ${GREEN}in:${IN_FMT}${RESET} ${YELLOW}out:${OUT_FMT}${RESET} ${BLUE}cache:${CACHE_FMT}${RESET} ${DIM}ctx:${CTX_FMT}${RESET}"
+# Transcript path
+[ -n "$TRANSCRIPT" ] && printf '%b\n' "${DIM}transcript:${RESET} ${TRANSCRIPT}"
