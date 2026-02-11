@@ -57,6 +57,8 @@
     gofumpt
     golangci-lint
     google-cloud-sdk
+    grpcui
+    grpcurl
     gum
     hadolint
     hclfmt
