@@ -92,7 +92,6 @@
         line-numbers = true;
         wrap-max-lines = "unlimited";
         navigate = true;
-        hyperlinks = true;
       };
     };
 
