@@ -83,6 +83,7 @@ Used Work Focus to filter out Kandji annoying notifications.
 - App:
   - Configure Google Calendar plugin
     - Add to starred
+    - Turn off Daily Schedules
 
 ### LinearMouse
 
