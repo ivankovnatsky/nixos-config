@@ -4,7 +4,6 @@
     enable = true;
 
     bun.packages = {
-      "ccstatusline" = "ccstatusline";
       "@google/gemini-cli" = "gemini";
       "@openai/codex" = "codex";
     };

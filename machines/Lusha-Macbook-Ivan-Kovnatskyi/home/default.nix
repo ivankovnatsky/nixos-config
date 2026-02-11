@@ -10,7 +10,6 @@
     ../../../home/bat.nix
     ../../../home/bitwarden.nix
     ../../../home/btop.nix
-    ../../../home/ccstatusline.nix
     ../../../home/claude.nix
     ../../../home/direnv.nix
     ../../../home/gemini.nix
