@@ -40,6 +40,10 @@ in
                 "Bash(sudo:*)"
               ]
             },
+            "statusLine": {
+              "type": "command",
+              "command": "claude-statusline"
+            },
             "includeCoAuthoredBy": false,
             "env": {
               "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
