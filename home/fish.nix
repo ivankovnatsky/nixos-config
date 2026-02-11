@@ -40,10 +40,6 @@ in
     interactiveShellInit = ''
       set fish_greeting # Disable greeting
 
-      # Disable focus reporting mode to prevent [I and [O escape sequences
-      # https://github.com/anthropics/claude-code/issues/10375
-      printf '\e[?1004l'
-
       # https://fishshell.com/docs/current/interactive.html#vi-mode-commands
       fish_vi_key_bindings
 
