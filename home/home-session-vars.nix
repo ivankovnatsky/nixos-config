@@ -15,7 +15,6 @@
   home.sessionVariables = {
     EDITOR = config.flags.editor;
     VISUAL = config.flags.editor;
-    LESS = "-RS --mouse";
   };
 
   home.sessionVariablesExtra = ''
