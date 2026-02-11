@@ -4,10 +4,8 @@ input=$(cat)
 
 MODEL=$(echo "$input" | jq -r '.model.display_name')
 DIR=$(echo "$input" | jq -r '.workspace.current_dir')
-COST=$(echo "$input" | jq -r '.cost.total_cost_usd // 0')
 PCT=$(echo "$input" | jq -r '.context_window.used_percentage // 0' | cut -d. -f1)
 DURATION_MS=$(echo "$input" | jq -r '.cost.total_duration_ms // 0')
-SESSION_ID=$(echo "$input" | jq -r '.session_id // ""')
 INPUT_TOKENS=$(echo "$input" | jq -r '.context_window.total_input_tokens // 0')
 OUTPUT_TOKENS=$(echo "$input" | jq -r '.context_window.total_output_tokens // 0')
 CACHE_READ=$(echo "$input" | jq -r '.context_window.current_usage.cache_read_input_tokens // 0')
@@ -40,7 +38,6 @@ else BAR_COLOR="$GREEN"; fi
 FILLED=$((PCT / 5)); EMPTY=$((20 - FILLED))
 BAR=$(printf "%${FILLED}s" | tr ' ' '▓')$(printf "%${EMPTY}s" | tr ' ' '░')
 
-COST_FMT=$(printf '$%.2f' "$COST")
 MINS=$((DURATION_MS / 60000)); SECS=$(((DURATION_MS % 60000) / 1000))
 
 # Format token counts (e.g., 15234 -> 15.2k)
@@ -60,4 +57,4 @@ OUT_FMT=$(fmt_tokens "$OUTPUT_TOKENS")
 CACHE_FMT=$(fmt_tokens "$CACHE_READ")
 CTX_FMT=$(fmt_tokens "$CTX_SIZE")
 
-printf '%b\n' "${BAR_COLOR}${BAR}${RESET} ${PCT}% ${DIM}|${RESET} ${YELLOW}${COST_FMT}${RESET} ${DIM}|${RESET} ${MINS}m${SECS}s ${DIM}|${RESET} ${GREEN}in:${IN_FMT}${RESET} ${YELLOW}out:${OUT_FMT}${RESET} ${BLUE}cache:${CACHE_FMT}${RESET} ${DIM}ctx:${CTX_FMT}${RESET}"
+printf '%b\n' "${BAR_COLOR}${BAR}${RESET} ${PCT}% ${DIM}|${RESET} ${MINS}m${SECS}s ${DIM}|${RESET} ${GREEN}in:${IN_FMT}${RESET} ${YELLOW}out:${OUT_FMT}${RESET} ${BLUE}cache:${CACHE_FMT}${RESET} ${DIM}ctx:${CTX_FMT}${RESET}"
