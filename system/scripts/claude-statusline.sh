@@ -4,7 +4,6 @@ input=$(cat)
 
 MODEL=$(echo "$input" | jq -r '.model.display_name')
 DIR=$(echo "$input" | jq -r '.workspace.current_dir')
-VERSION=$(echo "$input" | jq -r '.version // ""')
 COST=$(echo "$input" | jq -r '.cost.total_cost_usd // 0')
 PCT=$(echo "$input" | jq -r '.context_window.used_percentage // 0' | cut -d. -f1)
 DURATION_MS=$(echo "$input" | jq -r '.cost.total_duration_ms // 0')
@@ -17,10 +16,9 @@ CTX_SIZE=$(echo "$input" | jq -r '.context_window.context_window_size // 200000'
 CYAN='\033[36m'; GREEN='\033[32m'; YELLOW='\033[33m'; RED='\033[31m'
 MAGENTA='\033[35m'; BLUE='\033[34m'; DIM='\033[90m'; RESET='\033[0m'
 
-# Line 1: model | version | dir | git
+# Line 1: model | dir | git
 LINE1="${CYAN}${MODEL}${RESET}"
-[ -n "$VERSION" ] && LINE1="${LINE1} ${BLUE}v${VERSION}${RESET}"
-LINE1="${LINE1} ${DIM}|${RESET} ${DIR##*/}"
+LINE1="${LINE1} ${DIM}|${RESET} ${DIR}"
 
 if git rev-parse --git-dir > /dev/null 2>&1; then
     BRANCH=$(git branch --show-current 2>/dev/null)
