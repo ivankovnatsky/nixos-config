@@ -57,10 +57,6 @@ in
     };
 
     initContent = ''
-      # Disable focus reporting mode to prevent [I and [O escape sequences
-      # https://github.com/anthropics/claude-code/issues/10375
-      printf '\e[?1004l'
-
       # enable alt+l -- to lowercase
       bindkey '^[l' down-case-word
 
