@@ -66,7 +66,11 @@ def git_info():
 
 
 def main():
-    data = json.load(sys.stdin)
+    raw = sys.stdin.read()
+    try:
+        data = json.loads(raw)
+    except (json.JSONDecodeError, ValueError):
+        data = {}
 
     model_id = data.get("model", {}).get("id", "")
     cwd = data.get("workspace", {}).get("current_dir", "")
