@@ -159,20 +159,10 @@ in
       #!${pkgs.python3}/bin/python3
       import sys
       import subprocess
-      import json
       # Pass through the task JSON unchanged (required for on-add hooks)
       task_json = sys.stdin.read()
       print(task_json, end="")
       subprocess.run(["${pkgs.taskwarrior3}/bin/task", "rc.hooks=off", "rc.verbose=sync", "sync"])
-      ${lib.optionalString isDarwin ''
-        # macOS notification
-        try:
-            task = json.loads(task_json.strip())
-            desc = task.get("description", "New task")
-            subprocess.run(["osascript", "-e", f'display notification "{desc}" with title "Task Added"'])
-        except:
-            pass
-      ''}
     '';
   };
 
@@ -182,29 +172,11 @@ in
       #!${pkgs.python3}/bin/python3
       import sys
       import subprocess
-      import json
       # on-modify receives 2 lines: original + modified, must output 1 line: modified
       original = sys.stdin.readline()
       modified = sys.stdin.readline()
       print(modified, end="")
       subprocess.run(["${pkgs.taskwarrior3}/bin/task", "rc.hooks=off", "rc.verbose=sync", "sync"])
-      ${lib.optionalString isDarwin ''
-        # macOS notification
-        try:
-            orig_task = json.loads(original.strip())
-            mod_task = json.loads(modified.strip())
-            desc = mod_task.get("description", "Task")
-            orig_status = orig_task.get("status", "")
-            mod_status = mod_task.get("status", "")
-            if mod_status == "completed" and orig_status != "completed":
-                subprocess.run(["osascript", "-e", f'display notification "{desc}" with title "Task Completed"'])
-            elif mod_status == "deleted" and orig_status != "deleted":
-                subprocess.run(["osascript", "-e", f'display notification "{desc}" with title "Task Deleted"'])
-            else:
-                subprocess.run(["osascript", "-e", f'display notification "{desc}" with title "Task Modified"'])
-        except:
-            pass
-      ''}
     '';
   };
 }
