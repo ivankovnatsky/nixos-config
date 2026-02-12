@@ -4,6 +4,7 @@
 # Mark targets that don't create files as .PHONY so Make will always run them
 .PHONY: \
 	default \
+	addall \
 	rebuild-once \
 	\
 	trigger-rebuild \
@@ -42,6 +43,9 @@ default: rebuild-darwin
 else
 default: rebuild-nixos/generic
 endif
+
+addall:
+	git add -A
 
 # One-time rebuild and exit terminal
 ifeq (${PLATFORM}, Darwin)
@@ -117,12 +121,12 @@ define notify_linux
 endef
 
 # NixOS rebuild targets
-rebuild-nixos/generic:
+rebuild-nixos/generic: addall
 	sudo -E nixos-rebuild switch $(COMMON_REBUILD_FLAGS) && \
 		$(call notify_linux,🟢 NixOS rebuild successful!) || \
 		$(call notify_linux,🔴 NixOS rebuild failed!)
 
-rebuild-nixos/impure:
+rebuild-nixos/impure: addall
 	sudo -E nixos-rebuild switch --impure $(COMMON_REBUILD_FLAGS) && \
 		$(call notify_linux,🟢 NixOS rebuild successful!) || \
 		$(call notify_linux,🔴 NixOS rebuild failed!)
@@ -133,7 +137,7 @@ rebuild-nixos/a3:
 		$(call notify_linux,🔴 NixOS rebuild failed!)
 
 # Darwin-specific rebuild target
-rebuild-darwin:
+rebuild-darwin: addall
 	# NIXPKGS_ALLOW_UNFREE=1 is needed for unfree packages like codeium when using --impure
 	NIXPKGS_ALLOW_UNFREE=1 sudo -E darwin-rebuild switch --impure $(COMMON_REBUILD_FLAGS) && \
 		osascript -e 'display notification "🟢 Darwin rebuild successful!" with title "Nix configuration"' || \
