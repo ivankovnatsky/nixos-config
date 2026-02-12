@@ -17,6 +17,8 @@
     # Don't enable bash completion by default (causes issues with bash 3.2)
     enableCompletion = false;
     initExtra = ''
+      export GPG_TTY=$(tty)
+
       # Ensure Nix paths are available in SSH sessions (for mosh-server)
       export PATH="/run/current-system/sw/bin:$PATH"
 

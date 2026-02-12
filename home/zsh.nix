@@ -86,6 +86,8 @@ in
     '';
 
     envExtra = ''
+      export GPG_TTY=$(tty)
+
       if [[ -d $HOME/bin ]]; then
         export PATH=$PATH:$HOME/bin
       fi
