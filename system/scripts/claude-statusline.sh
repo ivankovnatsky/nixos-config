@@ -14,10 +14,15 @@ TRANSCRIPT=$(echo "$input" | jq -r '.transcript_path // ""')
 CYAN='\033[36m'; GREEN='\033[32m'; YELLOW='\033[33m'; RED='\033[31m'
 MAGENTA='\033[35m'; BLUE='\033[34m'; DIM='\033[90m'; RESET='\033[0m'
 
-# Line 1: model | project dir | git
-LINE1="${CYAN}${MODEL_ID}${RESET}"
-LINE1="${LINE1} ${DIM}|${RESET} ${PROJECT_DIR}"
+# Format context size (e.g., 200000 -> 200k)
+if [ "$CTX_SIZE" -ge 1000000 ]; then
+    CTX_FMT="$(echo "$CTX_SIZE / 1000000" | bc -l | sed 's/\.0*$//')M"
+else
+    CTX_FMT="$((CTX_SIZE / 1000))k"
+fi
 
+# Line 1: model | context remaining | git branch + status
+LINE1="${CYAN}${MODEL_ID}${RESET} ${DIM}|${RESET} ${REMAINING}% remaining ${DIM}|${RESET} ${DIM}ctx:${CTX_FMT}${RESET}"
 if git rev-parse --git-dir > /dev/null 2>&1; then
     BRANCH=$(git branch --show-current 2>/dev/null)
     STAGED=$(git diff --cached --numstat 2>/dev/null | wc -l | tr -d ' ')
@@ -27,22 +32,13 @@ if git rev-parse --git-dir > /dev/null 2>&1; then
     [ "$MODIFIED" -gt 0 ] && GIT_STATUS="${GIT_STATUS}${YELLOW}~${MODIFIED}${RESET}"
     LINE1="${LINE1} ${DIM}|${RESET} ${MAGENTA}${BRANCH}${RESET} ${GIT_STATUS}"
 fi
-
 printf '%b\n' "$LINE1"
 
-# Line 2: cwd (only if different from project dir)
-if [ "$CWD" != "$PROJECT_DIR" ]; then
-    printf '%b\n' "${DIM}cwd:${RESET} ${CWD}"
-fi
+# Line 2: pwd (project dir)
+printf '%b\n' "${DIM}pwd:${RESET} ${PROJECT_DIR}"
 
-# Format context size (e.g., 200000 -> 200k)
-if [ "$CTX_SIZE" -ge 1000000 ]; then
-    CTX_FMT="$(echo "$CTX_SIZE / 1000000" | bc -l | sed 's/\.0*$//')M"
-else
-    CTX_FMT="$((CTX_SIZE / 1000))k"
-fi
-
-printf '%b\n' "${REMAINING}% remaining ${DIM}|${RESET} ${DIM}ctx:${CTX_FMT}${RESET}"
+# Line 3: cwd (always shown)
+printf '%b\n' "${DIM}cwd:${RESET} ${CWD}"
 
 # Transcript path
 [ -n "$TRANSCRIPT" ] && printf '%b\n' "${DIM}transcript:${RESET} ${TRANSCRIPT}"
