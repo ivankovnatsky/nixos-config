@@ -23,6 +23,7 @@
     ../../../home/lsd.nix
     ../../../home/mpv.nix
     ../../../home/nixvim
+    ../../../home/nixvim/plugins/gpg-nvim
     ../../../home/nixvim.nix
     ../../../home/npm.nix
     ../../../home/nushell.nix

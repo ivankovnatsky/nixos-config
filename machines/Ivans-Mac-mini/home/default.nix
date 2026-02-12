@@ -18,6 +18,7 @@
     ../../../home/mpv.nix
     ../../../home/nixvim
     ../../../home/nixvim/plugins/copilot-lua
+    ../../../home/nixvim/plugins/gpg-nvim
     ../../../home/npm.nix
     ../../../home/kitty
     ../../../home/pass.nix
