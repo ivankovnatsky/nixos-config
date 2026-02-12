@@ -20,7 +20,6 @@
     ../../../darwin/syncthing.nix
     ../../../darwin/syncthing-cleaner.nix
     ../../../darwin/system.nix
-    ../../../darwin/taskwarrior-notify.nix
     ../../../darwin/users.nix
     ../../../darwin/xattr.nix
     ../../../modules/darwin/dock
@@ -31,7 +30,6 @@
     ../../../modules/darwin/sudo
     ../../../modules/darwin/syncthing-cleaner
     ../../../modules/darwin/syncthing-mgmt
-    ../../../modules/darwin/taskwarrior-notify
     ../../../modules/flags
     ../../../system/documentation.nix
     ../../../system/nix.nix
