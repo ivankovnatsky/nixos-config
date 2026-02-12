@@ -6,6 +6,10 @@
 
 - Allow to find devices on local networks
 
+### kitty
+
+- Allow to find devices on local networks
+
 ### bash
 
 - Allow access to control "Terminal"
