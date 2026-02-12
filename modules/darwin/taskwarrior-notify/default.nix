@@ -33,8 +33,8 @@ in
 
     interval = mkOption {
       type = types.int;
-      default = 300;
-      description = "Interval in seconds between checks (default: 5 minutes)";
+      default = 3600;
+      description = "Interval in seconds between checks (default: 1 hour)";
     };
   };
 
