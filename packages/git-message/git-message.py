@@ -78,6 +78,33 @@ def is_untracked(file_path: str, git_root: str) -> bool:
     return result.returncode != 0
 
 
+def is_staged_path(path: str) -> bool:
+    """Check if a path is in the staged files (works for deleted files too)."""
+    try:
+        result = subprocess.run(
+            ["git", "diff", "--staged", "--name-only"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        staged = [f for f in result.stdout.strip().split("\n") if f]
+        # Normalize the input path for comparison
+        abs_path = os.path.abspath(path)
+        try:
+            git_root = subprocess.run(
+                ["git", "rev-parse", "--show-toplevel"],
+                capture_output=True,
+                text=True,
+                check=True,
+            ).stdout.strip()
+            rel_path = os.path.relpath(abs_path, git_root)
+        except subprocess.CalledProcessError:
+            rel_path = path
+        return rel_path in staged or path in staged
+    except subprocess.CalledProcessError:
+        return False
+
+
 def shorten_path(path: str) -> str:
     result = path
 
@@ -112,6 +139,11 @@ def create_commit_message(prefix: str, subject: str) -> str:
     return f"{prefix}: {subject}"
 
 
+def is_file_path(path: str) -> bool:
+    """Check if path is a file (exists on disk or is staged, e.g., deleted files)."""
+    return os.path.exists(path) or is_staged_path(path)
+
+
 def parse_args_flexible(
     args: list[str], subject_flag: str | None
 ) -> tuple[str | None, str]:
@@ -121,7 +153,7 @@ def parse_args_flexible(
         if len(args) == 0:
             return None, subject_flag
         elif len(args) == 1:
-            if os.path.exists(args[0]):
+            if is_file_path(args[0]):
                 return args[0], subject_flag
             else:
                 print(f"Error: File not found: {args[0]}", file=sys.stderr)
@@ -134,19 +166,19 @@ def parse_args_flexible(
     if len(args) == 1:
         return None, args[0]
     elif len(args) == 2:
-        # Check which argument is an existing file
-        first_exists = os.path.exists(args[0])
-        second_exists = os.path.exists(args[1])
+        # Check which argument is a file (exists on disk or staged)
+        first_is_file = is_file_path(args[0])
+        second_is_file = is_file_path(args[1])
 
-        if first_exists and not second_exists:
+        if first_is_file and not second_is_file:
             return args[0], args[1]
-        elif second_exists and not first_exists:
+        elif second_is_file and not first_is_file:
             return args[1], args[0]
-        elif first_exists and second_exists:
-            print("Error: Both arguments are existing files", file=sys.stderr)
+        elif first_is_file and second_is_file:
+            print("Error: Both arguments are file paths", file=sys.stderr)
             sys.exit(1)
         else:
-            print("Error: Neither argument is an existing file", file=sys.stderr)
+            print("Error: Neither argument is a file path", file=sys.stderr)
             print(f"  {args[0]}", file=sys.stderr)
             print(f"  {args[1]}", file=sys.stderr)
             sys.exit(1)
