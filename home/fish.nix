@@ -38,6 +38,8 @@ in
     '';
 
     interactiveShellInit = ''
+      set -gx GPG_TTY (tty)
+
       set fish_greeting # Disable greeting
 
       # https://fishshell.com/docs/current/interactive.html#vi-mode-commands
