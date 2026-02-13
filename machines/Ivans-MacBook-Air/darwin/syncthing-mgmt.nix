@@ -23,10 +23,9 @@ in
 
     # Devices this machine connects to (auto-includes devices from folders)
     devices = [
-      config.networking.hostName # This machine (required for local-only folders)
-
       "a3"
       "Ivans-Mac-mini"
+      "Ivans-MacBook-Air"
       "Ivans-MacBook-Pro"
       "Lusha-Macbook-Ivan-Kovnatskyi"
     ];
@@ -38,6 +37,7 @@ in
         label = ".config/rclone";
         devices = [
           "Ivans-Mac-mini"
+          "Ivans-MacBook-Air"
           "Ivans-MacBook-Pro"
         ];
       };
@@ -56,6 +56,7 @@ in
         devices = [
           "Ivans-Mac-mini"
           "Ivans-MacBook-Pro"
+          "Ivans-MacBook-Air"
           "a3"
         ];
       };
@@ -66,6 +67,7 @@ in
         devices = [
           "Ivans-Mac-mini"
           "Ivans-MacBook-Pro"
+          "Ivans-MacBook-Air"
           "Lusha-Macbook-Ivan-Kovnatskyi"
           "a3"
         ];
@@ -99,6 +101,7 @@ in
         devices = [
           "Ivans-Mac-mini"
           "Ivans-MacBook-Pro"
+          "Ivans-MacBook-Air"
           "a3"
         ];
       };
@@ -110,7 +113,7 @@ in
           "a3"
           "Ivans-Mac-mini"
           "Ivans-MacBook-Pro"
-          config.networking.hostName
+          "Ivans-MacBook-Air"
         ];
       };
 
