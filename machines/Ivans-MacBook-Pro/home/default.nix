@@ -46,7 +46,7 @@
     ../../../home/zsh.nix
     ../../../modules/flags
     ../../../modules/home/tools
-    ../../Ivans-MacBook-Air/home/packages.nix
-    ../../Ivans-MacBook-Air/home/tools.nix
+    ../../../home/packages.nix
+    ../../../home/tools.nix
   ];
 }
