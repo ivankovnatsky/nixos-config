@@ -34,11 +34,11 @@
     ../../../system/documentation.nix
     ../../../system/nix.nix
     ../../../system/scripts
+    ../../../darwin/git.nix
+    ../../../darwin/homebrew.nix
+    ../../../darwin/stash
+    ../../../darwin/syncthing-mgmt.nix
     ./dock.nix
-    ./git.nix
-    ./homebrew.nix
-    ./stash
-    ./syncthing-mgmt.nix
     ./users.nix
   ];
 }

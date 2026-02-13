@@ -46,7 +46,7 @@
     ../../../home/zsh.nix
     ../../../modules/flags
     ../../../modules/home/tools
-    ./packages.nix
-    ./tools.nix
+    ../../../home/packages.nix
+    ../../../home/tools.nix
   ];
 }
