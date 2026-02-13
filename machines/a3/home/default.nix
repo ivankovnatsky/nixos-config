@@ -20,6 +20,7 @@
     ../../../home/lsd.nix
     ../../../home/mpv.nix
     ../../../home/nixvim
+    ../../../home/nixvim/plugins/codediff
     ../../../home/nixvim/plugins/gpg-nvim
     ../../../home/npm.nix
     ../../../home/ranger.nix
