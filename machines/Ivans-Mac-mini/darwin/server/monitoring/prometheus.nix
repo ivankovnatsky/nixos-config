@@ -12,22 +12,22 @@ let
       - job_name: prometheus
         static_configs:
           - targets:
-              - ${config.flags.miniIp}:9090
+              - ${config.flags.machineIp}:9090
 
       - job_name: beszel-hub
         static_configs:
           - targets:
-              - ${config.flags.miniIp}:8091
+              - ${config.flags.machineIp}:8091
 
       - job_name: loki
         static_configs:
           - targets:
-              - ${config.flags.miniIp}:3100
+              - ${config.flags.machineIp}:3100
 
       - job_name: promtail
         static_configs:
           - targets:
-              - ${config.flags.miniIp}:9080
+              - ${config.flags.machineIp}:9080
   '';
 in
 {
@@ -40,7 +40,7 @@ in
       ${pkgs.prometheus}/bin/prometheus \
         --config.file=${prometheusConfig} \
         --storage.tsdb.path=${dataDir} \
-        --web.listen-address=${config.flags.miniIp}:9090 \
+        --web.listen-address=${config.flags.machineIp}:9090 \
         --web.enable-lifecycle
     '';
   };

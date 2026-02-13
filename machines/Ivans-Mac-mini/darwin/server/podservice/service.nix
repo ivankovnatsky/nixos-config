@@ -17,8 +17,8 @@ let
     builtins.toJSON {
       server = {
         port = 8083;
-        host = config.flags.miniIp;
-        base_url = "http://${config.flags.miniIp}:8083";
+        host = config.flags.machineIp;
+        base_url = "http://${config.flags.machineIp}:8083";
       };
       podcast = {
         title = "Mini: My YouTube Podcast";

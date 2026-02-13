@@ -33,8 +33,8 @@
 
   local.services.uptime-kuma-mgmt = {
     enable = true;
-    # Connect to local instance using miniIp (matches service binding)
-    baseUrl = "http://${config.flags.miniIp}:3001";
+    # Connect to local instance using machineIp (matches service binding)
+    baseUrl = "http://${config.flags.machineIp}:3001";
     usernameFile = config.sops.secrets.uptime-kuma-username.path;
     passwordFile = config.sops.secrets.uptime-kuma-password.path;
     discordWebhookFile = config.sops.secrets.discord-webhook.path;
@@ -52,130 +52,130 @@
       # Media Stack - Local HTTP monitoring
       {
         name = "prowlarr";
-        url = "http://${config.flags.miniIp}:9696";
+        url = "http://${config.flags.machineIp}:9696";
         description = "Prowlarr indexer manager";
       }
       {
         name = "radarr";
-        url = "http://${config.flags.miniIp}:7878";
+        url = "http://${config.flags.machineIp}:7878";
         description = "Radarr movie manager";
       }
       {
         name = "sonarr";
-        url = "http://${config.flags.miniIp}:8989";
+        url = "http://${config.flags.machineIp}:8989";
         description = "Sonarr TV manager";
       }
       {
         name = "transmission";
-        url = "http://${config.flags.miniIp}:9091";
+        url = "http://${config.flags.machineIp}:9091";
         expectedStatus = 401;
         description = "Transmission torrent client (RPC auth required)";
       }
       {
         name = "jellyfin";
-        url = "http://${config.flags.miniIp}:8096";
+        url = "http://${config.flags.machineIp}:8096";
         description = "Jellyfin media server";
       }
       {
         name = "stash";
-        url = "http://${config.flags.miniIp}:9999";
+        url = "http://${config.flags.machineIp}:9999";
         description = "Stash media organizer";
       }
       {
         name = "media";
-        url = "http://${config.flags.miniIp}:9998";
+        url = "http://${config.flags.machineIp}:9998";
         description = "Stash media organizer (general)";
       }
       {
         name = "audiobookshelf";
-        url = "http://${config.flags.miniIp}:8000";
+        url = "http://${config.flags.machineIp}:8000";
         description = "Audiobookshelf audiobook/podcast server";
       }
 
       # Infrastructure Services - Local HTTP monitoring
       {
         name = "syncthing";
-        url = "http://${config.flags.miniIp}:8384";
+        url = "http://${config.flags.machineIp}:8384";
         description = "Syncthing file sync";
       }
       {
         name = "beszel";
-        url = "http://${config.flags.miniIp}:8091";
+        url = "http://${config.flags.machineIp}:8091";
         description = "Beszel monitoring hub";
       }
       {
         name = "miniserve";
-        url = "http://${config.flags.miniIp}:8080";
+        url = "http://${config.flags.machineIp}:8080";
         expectedStatus = 401;
         description = "Miniserve file server (auth required)";
       }
       {
         name = "bin";
-        url = "http://${config.flags.miniIp}:8820";
+        url = "http://${config.flags.machineIp}:8820";
         description = "Pastebin service";
       }
       {
         name = "podservice";
-        url = "http://${config.flags.miniIp}:8083";
+        url = "http://${config.flags.machineIp}:8083";
         description = "YouTube to Podcast service";
       }
       {
         name = "textcast";
-        url = "http://${config.flags.miniIp}:8084";
+        url = "http://${config.flags.machineIp}:8084";
         description = "Article to audiobook service";
       }
       {
         name = "youtube";
-        url = "http://${config.flags.miniIp}:8085";
+        url = "http://${config.flags.machineIp}:8085";
         description = "YouTube video downloader";
       }
       {
         name = "matrix";
-        url = "http://${config.flags.miniIp}:8009";
+        url = "http://${config.flags.machineIp}:8009";
         interval = 30;
         description = "Matrix Synapse server (critical)";
       }
       {
         name = "uptime-kuma";
-        url = "http://${config.flags.miniIp}:3001";
+        url = "http://${config.flags.machineIp}:3001";
         description = "Uptime Kuma monitoring";
       }
       {
         name = "doh";
-        url = "http://${config.flags.miniIp}:8053/dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB";
+        url = "http://${config.flags.machineIp}:8053/dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB";
         expectedStatus = 200;
         description = "DNS over HTTPS service";
       }
       {
         name = "ollama";
-        url = "http://${config.flags.miniIp}:11434";
+        url = "http://${config.flags.machineIp}:11434";
         description = "Ollama LLM API";
       }
       {
         name = "openwebui";
-        url = "http://${config.flags.miniIp}:8090";
+        url = "http://${config.flags.machineIp}:8090";
         description = "Open WebUI";
       }
 
       # Logging & Monitoring Stack
       {
         name = "grafana";
-        url = "http://${config.flags.miniIp}:3000";
+        url = "http://${config.flags.machineIp}:3000";
         description = "Grafana dashboard";
       }
       {
         name = "loki";
-        url = "http://${config.flags.miniIp}:3100/ready";
+        url = "http://${config.flags.machineIp}:3100/ready";
         description = "Loki log aggregation";
       }
       {
         name = "prometheus";
-        url = "http://${config.flags.miniIp}:9090";
+        url = "http://${config.flags.machineIp}:9090";
         description = "Prometheus metrics";
       }
       {
         name = "promtail";
-        url = "http://${config.flags.miniIp}:9080/ready";
+        url = "http://${config.flags.machineIp}:9080/ready";
         description = "Promtail log collector";
       }
 
@@ -220,14 +220,14 @@
       {
         name = "dnsmasq";
         type = "dns";
-        url = "example.com@${config.flags.miniIp}";
+        url = "example.com@${config.flags.machineIp}";
         interval = 60;
         description = "dnsmasq DNS resolver";
       }
       {
         name = "stubby";
         type = "tcp";
-        url = "${config.flags.miniIp}:5453";
+        url = "${config.flags.machineIp}:5453";
         interval = 60;
         description = "Stubby DoT resolver (upstream for dnsmasq)";
       }
@@ -236,14 +236,14 @@
       {
         name = "caddy-http";
         type = "tcp";
-        url = "${config.flags.miniIp}:80";
+        url = "${config.flags.machineIp}:80";
         interval = 60;
         description = "Caddy HTTP reverse proxy";
       }
       {
         name = "caddy-https";
         type = "tcp";
-        url = "${config.flags.miniIp}:443";
+        url = "${config.flags.machineIp}:443";
         interval = 60;
         description = "Caddy HTTPS reverse proxy";
       }
@@ -252,14 +252,14 @@
       {
         name = "ssh";
         type = "tcp";
-        url = "${config.flags.miniIp}:22";
+        url = "${config.flags.machineIp}:22";
         interval = 60;
         description = "SSH service";
       }
       {
         name = "smb";
         type = "tcp";
-        url = "${config.flags.miniIp}:445";
+        url = "${config.flags.machineIp}:445";
         interval = 60;
         description = "macOS built-in SMB service";
       }

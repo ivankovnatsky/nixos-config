@@ -9,12 +9,12 @@ let
       - name: Loki
         type: loki
         access: proxy
-        url: http://${config.flags.miniIp}:3100
+        url: http://${config.flags.machineIp}:3100
         isDefault: true
       - name: Prometheus
         type: prometheus
         access: proxy
-        url: http://${config.flags.miniIp}:9090
+        url: http://${config.flags.machineIp}:9090
   '';
 
   dashboardsConfig = pkgs.writeText "dashboards.yaml" ''
@@ -35,7 +35,7 @@ let
     provisioning = ${dataDir}/provisioning
 
     [server]
-    http_addr = ${config.flags.miniIp}
+    http_addr = ${config.flags.machineIp}
     http_port = 3000
     domain = grafana.@externalDomain@
     root_url = https://grafana.@externalDomain@

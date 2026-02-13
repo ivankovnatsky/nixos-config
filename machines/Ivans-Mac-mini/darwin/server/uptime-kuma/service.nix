@@ -18,7 +18,7 @@ in
     '';
     environment = {
       DATA_DIR = dataDir;
-      HOST = config.flags.miniIp;
+      HOST = config.flags.machineIp;
       PORT = "3001";
       NODE_ENV = "production";
     };

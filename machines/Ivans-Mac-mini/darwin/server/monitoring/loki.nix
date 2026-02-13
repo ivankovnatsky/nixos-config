@@ -7,7 +7,7 @@ let
     auth_enabled: false
 
     server:
-      http_listen_address: ${config.flags.miniIp}
+      http_listen_address: ${config.flags.machineIp}
       http_listen_port: 3100
       grpc_listen_port: 9096
       grpc_server_max_concurrent_streams: 1000

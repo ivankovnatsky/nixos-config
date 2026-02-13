@@ -27,7 +27,7 @@
 # * https://mjtsai.com/blog/2024/10/02/local-network-privacy-on-sequoia/
 
 let
-  bindAddress = config.flags.miniIp;
+  bindAddress = config.flags.machineIp;
 
   # Create a Caddy package with the required DNS plugin
   # Use the caddy-with-plugins overlay to get the withPlugins functionality
@@ -88,7 +88,7 @@ in
         -e "s|@externalDomain@|$EXTERNAL_DOMAIN|g" \
         -e "s|@letsEncryptEmail@|$LETS_ENCRYPT_EMAIL|g" \
         -e "s|@cloudflareApiToken@|$CLOUDFLARE_API_TOKEN|g" \
-        -e "s|@miniIp@|${config.flags.miniIp}|g" \
+        -e "s|@machineIp@|${config.flags.machineIp}|g" \
         -e "s|@a3Ip@|${config.flags.a3Ip}|g" \
         -e "s|@logPathPrefix@|/tmp/log|g" \
         -e "s|@elementWebPath@|$ELEMENT_WEB_PATH|g" \

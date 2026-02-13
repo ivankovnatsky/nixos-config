@@ -95,7 +95,7 @@ in
 
       # Substitute all values from template (keeps secrets out of /nix/store)
       sed -e "s|@dataDir@|${dataDir}|g" \
-          -e "s|@host@|${config.flags.miniIp}|g" \
+          -e "s|@host@|${config.flags.machineIp}|g" \
           -e "s|@port@|9998|g" \
           -e "s|@username@|$STASH_USERNAME|g" \
           -e "s|@password@|$STASH_PASSWORD|g" \
