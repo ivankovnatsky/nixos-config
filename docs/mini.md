@@ -9,6 +9,7 @@ Login in apple account
 ### Terminal
 
 - Allow access to control "Podcasts"
+- Allow Accessibility Access (control computer using accessibility features)
 
 ## Manual configuration
 
