@@ -1031,11 +1031,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1770986489,
-        "narHash": "sha256-DolLFrCcr7HBbhia6t6Cr/Xl6LfKrYJylXFSR0yfR20=",
+        "lastModified": 1770987932,
+        "narHash": "sha256-nnHwclBOcdZ9+YxJOtVYp0lTV9u4Cs3vAMdaNDcT0h4=",
         "owner": "ivankovnatsky",
         "repo": "podservice",
-        "rev": "1b9b4fe5828ef6c72d3088b2b58d365aa590260f",
+        "rev": "4ac75ba9680eb5ffdbb77dfcc4a0526d1e2e720a",
         "type": "github"
       },
       "original": {
