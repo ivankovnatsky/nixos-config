@@ -20,5 +20,6 @@
     ../../../../system/nix.nix
     ../../../../system/scripts
     ../../../../darwin/no-dock-restart.nix
+    ../../../../darwin/dotfiles-sync.nix
   ];
 }
