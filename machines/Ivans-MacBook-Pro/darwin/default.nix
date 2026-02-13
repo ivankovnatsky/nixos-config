@@ -34,11 +34,11 @@
     ../../../system/documentation.nix
     ../../../system/nix.nix
     ../../../system/scripts
+    ../../../darwin/git.nix
+    ../../../darwin/homebrew.nix
+    ../../../darwin/stash
+    ../../../darwin/syncthing-mgmt.nix
     ../../Ivans-MacBook-Air/darwin/dock.nix
-    ../../Ivans-MacBook-Air/darwin/git.nix
-    ../../Ivans-MacBook-Air/darwin/homebrew.nix
-    ../../Ivans-MacBook-Air/darwin/stash
-    ../../Ivans-MacBook-Air/darwin/syncthing-mgmt.nix
     ../../Ivans-MacBook-Air/darwin/users.nix
   ];
 }
