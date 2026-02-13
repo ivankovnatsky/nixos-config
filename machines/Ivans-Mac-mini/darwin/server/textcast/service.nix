@@ -93,5 +93,8 @@ in
       ${runtimeConfigFile} > ${configDir}/config.yaml
     '';
     command = "${textcastWrapper}";
+    extraServiceConfig = {
+      ExitTimeOut = 18000; # 5 hours - wait for in-progress TTS processing to finish
+    };
   };
 }
