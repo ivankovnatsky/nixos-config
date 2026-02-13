@@ -89,7 +89,7 @@ in
         -e "s|@letsEncryptEmail@|$LETS_ENCRYPT_EMAIL|g" \
         -e "s|@cloudflareApiToken@|$CLOUDFLARE_API_TOKEN|g" \
         -e "s|@miniIp@|${config.flags.miniIp}|g" \
-        -e "s|@a3wIp@|${config.flags.a3wIp}|g" \
+        -e "s|@a3Ip@|${config.flags.a3Ip}|g" \
         -e "s|@logPathPrefix@|/tmp/log|g" \
         -e "s|@elementWebPath@|$ELEMENT_WEB_PATH|g" \
         -e "s|@podsyncUsername@|$PODSYNC_USERNAME|g" \

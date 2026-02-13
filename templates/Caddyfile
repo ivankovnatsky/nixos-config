@@ -135,7 +135,7 @@
 	@ollama host ollama.@externalDomain@
 	reverse_proxy @ollama {
 		# Primary backend (a3w) listed first, failover to mini
-		to @a3wIp@:11434 @miniIp@:11434
+		to @a3Ip@:11434 @miniIp@:11434
 
 		# Use first available backend (a3w priority)
 		lb_policy first
