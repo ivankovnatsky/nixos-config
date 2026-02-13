@@ -17,11 +17,16 @@ in
     enable = true;
     baseUrl = "http://127.0.0.1:8384";
     configDir = "${homePath}/Library/Application Support/Syncthing";
+    localDeviceName = config.networking.hostName;
 
     # Device registry (all known devices)
     deviceDefinitionsFile = config.sops.secrets.syncthing-devices.path;
 
     # Devices this machine connects to (auto-includes devices from folders)
+    # Folder device lists use hardcoded hostnames (including self) instead of
+    # config.networking.hostName so that machines sharing the same folders can
+    # use identical files. Do not replace with config.networking.hostName
+    # unless we intentionally want per-machine differences.
     devices = [
       "a3"
       "Ivans-Mac-mini"
@@ -46,6 +51,8 @@ in
         path = "${homePath}/.password-store";
         label = ".password-store";
         devices = [
+          "Ivans-MacBook-Pro"
+          "Ivans-MacBook-Air"
           "Ivans-Mac-mini"
         ];
       };
@@ -77,6 +84,8 @@ in
         path = "${homePath}/Sources/github.com/ivankovnatsky/notes";
         label = "Sources/github.com/ivankovnatsky/notes";
         devices = [
+          "Ivans-MacBook-Pro"
+          "Ivans-MacBook-Air"
           "Lusha-Macbook-Ivan-Kovnatskyi"
         ];
       };
@@ -91,6 +100,8 @@ in
         path = "${homePath}/Sources/github.com/NixOS/nixpkgs";
         label = "Sources/github.com/NixOS/nixpkgs";
         devices = [
+          "Ivans-MacBook-Pro"
+          "Ivans-MacBook-Air"
           "Lusha-Macbook-Ivan-Kovnatskyi"
         ];
       };
