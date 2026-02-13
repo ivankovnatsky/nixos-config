@@ -139,9 +139,26 @@ def create_commit_message(prefix: str, subject: str) -> str:
     return f"{prefix}: {subject}"
 
 
+def is_git_tracked(path: str) -> bool:
+    """Check if a path is tracked by git (exists in index, even if deleted from disk)."""
+    try:
+        abs_path = os.path.abspath(path)
+        git_root = get_git_root()
+        rel_path = os.path.relpath(abs_path, git_root)
+        result = subprocess.run(
+            ["git", "ls-files", "--error-unmatch", rel_path],
+            capture_output=True,
+            text=True,
+            cwd=git_root,
+        )
+        return result.returncode == 0
+    except (subprocess.CalledProcessError, Exception):
+        return False
+
+
 def is_file_path(path: str) -> bool:
-    """Check if path is a file (exists on disk or is staged, e.g., deleted files)."""
-    return os.path.exists(path) or is_staged_path(path)
+    """Check if path is a file (exists on disk, is staged, or is tracked by git)."""
+    return os.path.exists(path) or is_staged_path(path) or is_git_tracked(path)
 
 
 def parse_args_flexible(
