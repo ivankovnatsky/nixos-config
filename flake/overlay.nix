@@ -50,6 +50,10 @@ let
       inherit system;
       config = safeConfig;
     };
+    nixpkgs-darwin-master-ytdlp = import inputs.nixpkgs-darwin-master-ytdlp {
+      inherit system;
+      config = safeConfig;
+    };
     nixpkgs-darwin-old-release = import inputs.nixpkgs-darwin-old-release {
       inherit system;
       config = safeConfig;
