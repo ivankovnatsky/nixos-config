@@ -4,7 +4,7 @@
 [server]
 port = 8082
 hostname = "https://podsync.@externalDomain@"
-bind_address = "@miniIp@"
+bind_address = "@machineIp@"
 web_ui = true
 
 [storage]

@@ -37,13 +37,13 @@
 
     radarr = {
       enable = true;
-      baseUrl = "http://${config.flags.miniIp}:7878";
+      baseUrl = "http://${config.flags.machineIp}:7878";
       apiKeyFile = config.sops.secrets.radarr-api-key.path;
-      bindAddress = config.flags.miniIp;
+      bindAddress = config.flags.machineIp;
       downloadClients = [
         {
           name = "Transmission";
-          host = config.flags.miniIp;
+          host = config.flags.machineIp;
           port = 9091;
           useSsl = false;
           urlBase = "/transmission/";
@@ -59,13 +59,13 @@
 
     sonarr = {
       enable = true;
-      baseUrl = "http://${config.flags.miniIp}:8989";
+      baseUrl = "http://${config.flags.machineIp}:8989";
       apiKeyFile = config.sops.secrets.sonarr-api-key.path;
-      bindAddress = config.flags.miniIp;
+      bindAddress = config.flags.machineIp;
       downloadClients = [
         {
           name = "Transmission";
-          host = config.flags.miniIp;
+          host = config.flags.machineIp;
           port = 9091;
           useSsl = false;
           urlBase = "/transmission/";
@@ -81,9 +81,9 @@
 
     prowlarr = {
       enable = true;
-      baseUrl = "http://${config.flags.miniIp}:9696";
+      baseUrl = "http://${config.flags.machineIp}:9696";
       apiKeyFile = config.sops.secrets.prowlarr-api-key.path;
-      bindAddress = config.flags.miniIp;
+      bindAddress = config.flags.machineIp;
       indexers = [
         {
           name = "EZTV";
@@ -107,9 +107,9 @@
       applications = [
         {
           name = "Radarr";
-          baseUrl = "http://${config.flags.miniIp}:7878";
+          baseUrl = "http://${config.flags.machineIp}:7878";
           apiKeyFile = config.sops.secrets.radarr-api-key.path;
-          prowlarrUrl = "http://${config.flags.miniIp}:9696";
+          prowlarrUrl = "http://${config.flags.machineIp}:9696";
           syncLevel = "fullSync";
           syncCategories = [
             2000 # Movies
@@ -127,9 +127,9 @@
         }
         {
           name = "Sonarr";
-          baseUrl = "http://${config.flags.miniIp}:8989";
+          baseUrl = "http://${config.flags.machineIp}:8989";
           apiKeyFile = config.sops.secrets.sonarr-api-key.path;
-          prowlarrUrl = "http://${config.flags.miniIp}:9696";
+          prowlarrUrl = "http://${config.flags.machineIp}:9696";
           syncLevel = "fullSync";
           syncCategories = [
             5000 # TV

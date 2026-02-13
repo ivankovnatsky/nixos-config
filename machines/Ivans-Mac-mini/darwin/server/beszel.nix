@@ -29,7 +29,7 @@ in
           cat > ${dataDir}/config.yml << EOF
           systems:
             - name: ${config.networking.hostName}
-              host: ${config.flags.miniIp}
+              host: ${config.flags.machineIp}
               port: 45876
               token: $BESZEL_TOKEN
               users:
@@ -37,7 +37,7 @@ in
           EOF
 
           exec ${pkgs.nixpkgs-darwin-master-beszel.beszel}/bin/beszel-hub serve \
-            --http ${config.flags.miniIp}:8091 \
+            --http ${config.flags.machineIp}:8091 \
             --dir ${dataDir}
         '';
       in
@@ -53,7 +53,7 @@ in
     enable = true;
     package = pkgs.nixpkgs-darwin-master-beszel.beszel;
     port = 45876;
-    listenAddress = config.flags.miniIp;
+    listenAddress = config.flags.machineIp;
     hubPublicKeyFile = config.sops.secrets.beszel-hub-public-key.path;
     waitForSecrets = true;
   };
@@ -89,7 +89,7 @@ in
     systems = [
       {
         name = config.networking.hostName;
-        host = config.flags.miniIp;
+        host = config.flags.machineIp;
         port = "45876";
       }
     ];

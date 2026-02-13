@@ -15,7 +15,7 @@ let
   # Base messenger config without server_name and permissions (will be added at runtime)
   messengerConfig = {
     homeserver = {
-      address = "http://${config.flags.miniIp}:8009";
+      address = "http://${config.flags.machineIp}:8009";
       # domain will be set at runtime
       software = "standard";
     };
@@ -74,7 +74,7 @@ let
   # Base instagram config without server_name and permissions (will be added at runtime)
   instagramConfig = {
     homeserver = {
-      address = "http://${config.flags.miniIp}:8009";
+      address = "http://${config.flags.machineIp}:8009";
       # domain will be set at runtime
       software = "standard";
     };

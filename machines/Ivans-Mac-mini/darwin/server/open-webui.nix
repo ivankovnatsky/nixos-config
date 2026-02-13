@@ -25,13 +25,13 @@ in
       SENTENCE_TRANSFORMERS_HOME = "${openWebuiDataPath}/transformers_home";
 
       # Open WebUI configuration
-      WEBUI_URL = "http://${config.flags.miniIp}:8090";
+      WEBUI_URL = "http://${config.flags.machineIp}:8090";
 
       # Secret key for session management (generated once)
       WEBUI_SECRET_KEY_FILE = "${openWebuiDataPath}/config/secret_key";
 
       # Ollama integration - use local Ollama instance
-      OLLAMA_API_BASE_URL = "http://${config.flags.miniIp}:11434";
+      OLLAMA_API_BASE_URL = "http://${config.flags.machineIp}:11434";
 
       # Web search settings
       ENABLE_WEB_SEARCH = "true";
@@ -61,7 +61,7 @@ in
 
       # Start Open WebUI
       export WEBUI_SECRET_KEY=$(cat "${openWebuiDataPath}/config/secret_key")
-      ${pkgs.nixpkgs-darwin-master.open-webui}/bin/open-webui serve --host "${config.flags.miniIp}" --port 8090
+      ${pkgs.nixpkgs-darwin-master.open-webui}/bin/open-webui serve --host "${config.flags.machineIp}" --port 8090
     '';
   };
 }

@@ -34,7 +34,7 @@
       ${pkgs.miniserve}/bin/miniserve \
         --interfaces 127.0.0.1 \
         --interfaces ::1 \
-        --interfaces ${config.flags.miniIp} \
+        --interfaces ${config.flags.machineIp} \
         --auth-file ${config.sops.templates."miniserve-auth".path} \
         --upload-files /Backup/Machines \
         --mkdir \

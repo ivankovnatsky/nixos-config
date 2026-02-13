@@ -33,7 +33,7 @@ let
   # Base config without server_name and permissions (will be added at runtime)
   bridgeConfig = {
     homeserver = {
-      address = "http://${config.flags.miniIp}:8009";
+      address = "http://${config.flags.machineIp}:8009";
       # domain will be set at runtime
     };
 

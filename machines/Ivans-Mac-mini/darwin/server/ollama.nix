@@ -17,7 +17,7 @@ in
   # Set system-wide environment variables for ollama commands
   environment.variables = {
     OLLAMA_MODELS = ollamaModelsPath;
-    OLLAMA_HOST = "${config.flags.miniIp}:11434";
+    OLLAMA_HOST = "${config.flags.machineIp}:11434";
     OLLAMA_CONTEXT_LENGTH = "8192";
   };
 
@@ -31,7 +31,7 @@ in
       HOME = config.users.users.${username}.home;
       PATH = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin";
       OLLAMA_MODELS = ollamaModelsPath;
-      OLLAMA_HOST = "${config.flags.miniIp}:11434";
+      OLLAMA_HOST = "${config.flags.machineIp}:11434";
     };
     command = ''
       /opt/homebrew/bin/ollama serve
@@ -42,7 +42,7 @@ in
   system.activationScripts.ollama.text = ''
     # Set environment variables for ollama
     export OLLAMA_MODELS="${ollamaModelsPath}"
-    export OLLAMA_HOST="${config.flags.miniIp}:11434"
+    export OLLAMA_HOST="${config.flags.machineIp}:11434"
 
     # Check if brew ollama service is running and responsive with timeout
     if timeout 5 /opt/homebrew/bin/ollama list &>/dev/null; then
