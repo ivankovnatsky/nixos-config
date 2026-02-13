@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ config, lib, ... }:
 
 with lib;
 {
@@ -114,9 +114,19 @@ with lib;
       };
     };
 
+    machineIp = mkOption {
+      type = types.str;
+      description = "This machine's IP address";
+      default = {
+        "Ivans-MacBook-Air" = config.flags.airIp;
+        "Ivans-MacBook-Pro" = config.flags.proIp;
+        "Ivans-Mac-mini" = config.flags.miniIp;
+      }.${config.networking.hostName} or "";
+    };
+
     airIp = mkOption {
       type = types.str;
-      description = "Pro IP address";
+      description = "Air IP address";
       default = "192.168.50.8";
     };
 
