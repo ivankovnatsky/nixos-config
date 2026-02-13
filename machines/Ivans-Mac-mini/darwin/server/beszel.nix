@@ -28,7 +28,7 @@ in
 
           cat > ${dataDir}/config.yml << EOF
           systems:
-            - name: Ivans-Mac-mini
+            - name: ${config.networking.hostName}
               host: ${config.flags.miniIp}
               port: 45876
               token: $BESZEL_TOKEN
@@ -88,7 +88,7 @@ in
     discordWebhookFile = config.sops.secrets.discord-webhook.path;
     systems = [
       {
-        name = "Ivans-Mac-mini";
+        name = config.networking.hostName;
         host = config.flags.miniIp;
         port = "45876";
       }

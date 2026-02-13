@@ -23,7 +23,7 @@ in
 
     # Devices this machine connects to (auto-includes devices from folders)
     devices = [
-      "Ivans-MacBook-Air" # This machine (required for local-only folders)
+      config.networking.hostName # This machine (required for local-only folders)
 
       "a3"
       "Ivans-Mac-mini"
@@ -82,7 +82,7 @@ in
       "2z4ss-gffpj" = {
         path = "${homePath}/.gnupg";
         label = "~/.gnupg";
-        devices = [ "Ivans-MacBook-Air" ]; # Local only
+        devices = [ config.networking.hostName ]; # Local only
       };
 
       "kwhyl-jbqmu" = {
@@ -110,7 +110,7 @@ in
           "a3"
           "Ivans-Mac-mini"
           "Ivans-MacBook-Pro"
-          "Ivans-MacBook-Air"
+          config.networking.hostName
         ];
       };
 
