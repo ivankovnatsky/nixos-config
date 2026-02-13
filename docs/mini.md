@@ -4,6 +4,12 @@
 
 Login in apple account
 
+## App macOS settings
+
+### Terminal
+
+- Allow access to control "Podcasts"
+
 ## Manual configuration
 
 - Cleaned up GarageBand and other non-used non-default apps
