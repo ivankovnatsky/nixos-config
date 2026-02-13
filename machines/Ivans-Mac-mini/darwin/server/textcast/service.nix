@@ -46,7 +46,7 @@ let
 
     server:
       enabled: true
-      host: ${config.flags.miniIp}
+      host: ${config.flags.machineIp}
       port: 8084
   '';
 

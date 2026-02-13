@@ -8,9 +8,9 @@
 
   local.services.jellyfin-mgmt = {
     enable = true;
-    baseUrl = "http://${config.flags.miniIp}:8096";
+    baseUrl = "http://${config.flags.machineIp}:8096";
     apiKeyFile = config.sops.secrets.jellyfin-api-key.path;
-    bindAddress = config.flags.miniIp;
+    bindAddress = config.flags.machineIp;
 
     libraries = [
       {

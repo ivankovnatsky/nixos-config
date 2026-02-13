@@ -20,14 +20,14 @@ let
     pkgs.runCommand "podsync-config.toml.template"
       {
         ytDlpPath = "${pkgs.nixpkgs-darwin-master.yt-dlp}/bin/yt-dlp";
-        inherit (config.flags) miniIp;
+        inherit (config.flags) machineIp;
         inherit dataDir;
         inherit logDir;
       }
       ''
         ${pkgs.gnused}/bin/sed \
           -e "s|@ytDlpPath@|$ytDlpPath|g" \
-          -e "s|@miniIp@|$miniIp|g" \
+          -e "s|@machineIp@|$machineIp|g" \
           -e "s|@dataDir@|$dataDir|g" \
           -e "s|@logDir@|$logDir|g" \
           ${configTomlPath} > $out

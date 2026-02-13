@@ -20,7 +20,7 @@ in
     ];
     command = ''
       ${pkgs.audiobookshelf}/bin/audiobookshelf \
-        --host ${config.flags.miniIp} \
+        --host ${config.flags.machineIp} \
         --port 8000 \
         --config ${configDir} \
         --metadata ${metadataDir}
