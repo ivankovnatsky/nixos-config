@@ -18,7 +18,7 @@ let
       server = {
         port = 8083;
         host = config.flags.miniIp;
-        base_url = "https://podservice.@EXTERNAL_DOMAIN@";
+        base_url = "http://${config.flags.miniIp}:8083";
       };
       podcast = {
         title = "Mini: My YouTube Podcast";
