@@ -11,16 +11,16 @@
   # Syncthing management service
   local.services.syncthing-mgmt = {
     enable = true;
-    baseUrl = "http://192.168.50.4:8384";
+    baseUrl = "http://${config.flags.machineIp}:8384";
     configDir = "${config.users.users.${username}.home}/Library/Application Support/Syncthing";
-    localDeviceName = "Ivans-Mac-mini";
+    localDeviceName = config.networking.hostName;
 
     # Device registry (all known devices)
     deviceDefinitionsFile = config.sops.secrets.syncthing-devices.path;
 
     # Devices this machine connects to (auto-includes devices from folders)
     devices = [
-      "Ivans-Mac-mini" # This machine
+      config.networking.hostName # This machine
       "a3"
       "Ivans-MacBook-Pro"
       "Ivans-MacBook-Air"
@@ -107,7 +107,7 @@
         label = "Sources/github.com/ivankovnatsky-local/dotfiles";
         devices = [
           "a3"
-          "Ivans-Mac-mini"
+          config.networking.hostName
           "Ivans-MacBook-Pro"
           "Ivans-MacBook-Air"
         ];

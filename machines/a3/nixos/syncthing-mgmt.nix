@@ -23,7 +23,7 @@
     # Devices this machine connects to (auto-includes devices from folders)
     # Only devices referenced in folders will be configured
     devices = [
-      "a3" # This machine
+      config.networking.hostName # This machine
       "Ivans-Mac-mini"
       "Ivans-MacBook-Pro"
       "Ivans-MacBook-Air"
@@ -36,7 +36,7 @@
         path = "${config.users.users.${username}.home}/Sources";
         label = "Sources";
         devices = [
-          "a3"
+          config.networking.hostName
           "Ivans-Mac-mini"
           "Ivans-MacBook-Pro"
           "Ivans-MacBook-Air"
@@ -47,7 +47,7 @@
         path = "${config.users.users.${username}.home}/Sources/github.com/ivankovnatsky/nixos-config";
         label = "Sources/github.com/ivankovnatsky/nixos-config";
         devices = [
-          "a3"
+          config.networking.hostName
           "Ivans-Mac-mini"
           "Ivans-MacBook-Pro"
           "Ivans-MacBook-Air"
@@ -77,7 +77,7 @@
         }/.local/share/Steam/steamapps/compatdata/24780/pfx/drive_c/users/steamuser/Documents/SimCity 4";
         label = ".local/share/Steam/steamapps/compatdata/24780/pfx/drive_c/users/steamuser/Documents/SimCity 4";
         devices = [
-          "a3"
+          config.networking.hostName
           "Ivans-Mac-mini"
         ];
       };
@@ -86,7 +86,7 @@
         path = "${config.users.users.${username}.home}/.task";
         label = ".task";
         devices = [
-          "a3"
+          config.networking.hostName
           "Ivans-Mac-mini"
           "Ivans-MacBook-Pro"
           "Ivans-MacBook-Air"
@@ -97,7 +97,7 @@
         path = "${config.users.users.${username}.home}/Sources/github.com/ivankovnatsky-local/dotfiles";
         label = "Sources/github.com/ivankovnatsky-local/dotfiles";
         devices = [
-          "a3"
+          config.networking.hostName
           "Ivans-Mac-mini"
           "Ivans-MacBook-Pro"
           "Ivans-MacBook-Air"
