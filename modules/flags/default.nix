@@ -121,6 +121,7 @@ with lib;
         "Ivans-MacBook-Air" = config.flags.airIp;
         "Ivans-MacBook-Pro" = config.flags.proIp;
         "Ivans-Mac-mini" = config.flags.miniIp;
+        "a3" = config.flags.a3Ip;
       }.${config.networking.hostName} or "";
     };
 
@@ -142,7 +143,7 @@ with lib;
       default = "192.168.50.4";
     };
 
-    a3wIp = mkOption {
+    a3Ip = mkOption {
       type = types.str;
       description = "a3w IP address";
       default = "192.168.50.6";
