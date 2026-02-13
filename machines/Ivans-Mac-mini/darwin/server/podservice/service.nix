@@ -1,3 +1,5 @@
+# To follow the feed in Apple Podcasts, use the "Podcast Follow" Shortcut.
+# Manual steps are documented in Obsidian: Notes/Settings iphone and mac settings.
 {
   config,
   pkgs,
