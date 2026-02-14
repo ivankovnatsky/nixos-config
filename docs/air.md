@@ -19,6 +19,10 @@
 - Allow access to control "Terminal"
 - Allow access to files managed by "iCloud Drive"
 
+### Terminal
+
+- Allow access to control "Notes"
+
 ### Obsidian
 
 - Allow access to files managed by "iCloud Drive"
