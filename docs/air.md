@@ -10,6 +10,10 @@
 
 - Allow to find devices on local networks
 
+### Chromium
+
+- Allow to find devices on local networks
+
 ### bash
 
 - Allow access to control "Terminal"
