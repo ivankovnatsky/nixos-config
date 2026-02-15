@@ -12,6 +12,35 @@
 
   # Global git hooks for commit message validation
   home = {
+    # Require explicit file/dir paths on every commit. Prevents AI agents
+    # from accidentally committing concurrent work by other agents on the
+    # same repo. Git worktrees solve this in theory, but they use absolute
+    # paths that break cross-platform (Linux/macOS) setups and complicate
+    # Nix rebuilds.
+    file.".config/git/hooks/pre-commit" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+
+        set -euo pipefail
+
+        # Skip password-store repos
+        repo_path=$(git rev-parse --show-toplevel 2>/dev/null)
+        if [[ "$repo_path" == *"/password-store"* ]] || [[ "$repo_path" == *"/.password-store"* ]]; then
+          exit 0
+        fi
+
+        # When git commit <file-or-dir> is used, GIT_INDEX_FILE points to a temp index
+        # When git commit (no file) is used, GIT_INDEX_FILE is empty or .git/index
+        if [[ -z "''${GIT_INDEX_FILE:-}" || "$GIT_INDEX_FILE" == *".git/index" ]]; then
+          echo "ERROR: Must specify file(s) or dir/ to commit" >&2
+          echo "Use: git commit <file> -m \"message\"" >&2
+          echo "  or: git commit <dir/> -m \"message\"" >&2
+          exit 1
+        fi
+      '';
+    };
+
     file.".config/git/hooks/commit-msg" = {
       executable = true;
       text = ''
