@@ -56,6 +56,14 @@ def view_note(args):
     print(output)
 
 
+def next_note(args):
+    """Show the first (most recently modified) note in a folder."""
+    output = run_osascript(f'''set n to item 1 of (every note in folder "{args.folder}")
+    set d to modification date of n
+    return name of n & linefeed & d & linefeed & plaintext of n''')
+    print(output)
+
+
 def move_note(args):
     """Move a note from one folder to another."""
     run_osascript(f'''{find_note(args.source, args.name)}
@@ -77,6 +85,10 @@ def main():
     view_parser.add_argument("folder", help="Folder name")
     view_parser.add_argument("name", help="Note name")
     view_parser.set_defaults(func=view_note)
+
+    next_parser = subparsers.add_parser("next", help="Show first note in a folder")
+    next_parser.add_argument("folder", help="Folder name")
+    next_parser.set_defaults(func=next_note)
 
     move_parser = subparsers.add_parser("move", help="Move a note to another folder")
     move_parser.add_argument("source", help="Source folder name")
