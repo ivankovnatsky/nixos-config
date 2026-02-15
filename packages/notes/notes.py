@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """CLI for Apple Notes via osascript."""
 
-import argparse
 import os
 import subprocess
 import sys
 import tempfile
+
+import click
 
 
 def run_osascript(body):
@@ -17,7 +18,7 @@ def run_osascript(body):
         text=True,
     )
     if result.returncode != 0:
-        print(f"Error: {result.stderr.strip()}", file=sys.stderr)
+        click.echo(f"Error: {result.stderr.strip()}", err=True)
         sys.exit(1)
     return result.stdout.strip()
 
@@ -30,16 +31,31 @@ def find_note(folder, name):
     end if'''
 
 
-def list_folders():
-    """List all folders in Apple Notes."""
+def set_note_body(folder, name, new_text):
+    """Set a note's body from plain text."""
+    html_body = "".join(f"<div>{line or '<br>'}</div>" for line in new_text.splitlines())
+    run_osascript(f'''{find_note(folder, name)}
+    set body of item 1 of matchedNotes to "{html_body.replace('"', '\\"')}"''')
+
+
+@click.group()
+def cli():
+    """Apple Notes CLI."""
+
+
+@cli.command()
+def folders():
+    """List all folders."""
     output = run_osascript("get name of every folder")
     for folder in output.split(", "):
-        print(folder)
+        click.echo(folder)
 
 
-def list_notes(args):
-    """List notes in a folder, sorted by modification date (newest first)."""
-    output = run_osascript(f'''set noteList to every note in folder "{args.folder}"
+@cli.command("list")
+@click.argument("folder")
+def list_notes(folder):
+    """List notes in a folder."""
+    output = run_osascript(f'''set noteList to every note in folder "{folder}"
     set output to ""
     repeat with n in noteList
         set output to output & name of n & linefeed
@@ -48,47 +64,49 @@ def list_notes(args):
     if output:
         for line in output.splitlines():
             if line:
-                print(line)
+                click.echo(line)
 
 
-def view_note(args):
+@cli.command()
+@click.argument("folder")
+@click.argument("name")
+def view(folder, name):
     """View a note's content as plain text."""
-    output = run_osascript(f'''{find_note(args.folder, args.name)}
+    output = run_osascript(f'''{find_note(folder, name)}
     return plaintext of item 1 of matchedNotes''')
-    print(output)
+    click.echo(output)
 
 
-def next_note(args):
+@cli.command("next")
+@click.argument("folder")
+def next_note(folder):
     """Show the first (most recently modified) note in a folder."""
-    output = run_osascript(f'''set n to item 1 of (every note in folder "{args.folder}")
+    output = run_osascript(f'''set n to item 1 of (every note in folder "{folder}")
     set d to modification date of n
     return name of n & linefeed & d & linefeed & plaintext of n''')
-    print(output)
+    click.echo(output)
 
 
-def set_note_body(folder, name, new_text):
-    """Set a note's body from plain text."""
-    html_body = "".join(f"<div>{line or '<br>'}</div>" for line in new_text.splitlines())
-    run_osascript(f'''{find_note(folder, name)}
-    set body of item 1 of matchedNotes to "{html_body.replace('"', '\\"')}"''')
-
-
-def edit_note(args):
+@cli.command()
+@click.argument("folder")
+@click.argument("name")
+@click.option("-f", "--file", "filepath", help="Read content from file instead of $EDITOR.")
+def edit(folder, name, filepath):
     """Edit a note in $EDITOR, from a file, or from stdin."""
-    if args.file:
-        with open(args.file) as f:
+    if filepath:
+        with open(filepath) as f:
             new_text = f.read()
-        set_note_body(args.folder, args.name, new_text)
-        print(f"Updated '{args.name}' from {args.file}")
+        set_note_body(folder, name, new_text)
+        click.echo(f"Updated '{name}' from {filepath}")
         return
 
     if not sys.stdin.isatty():
         new_text = sys.stdin.read()
-        set_note_body(args.folder, args.name, new_text)
-        print(f"Updated '{args.name}'")
+        set_note_body(folder, name, new_text)
+        click.echo(f"Updated '{name}'")
         return
 
-    plaintext = run_osascript(f'''{find_note(args.folder, args.name)}
+    plaintext = run_osascript(f'''{find_note(folder, name)}
     return plaintext of item 1 of matchedNotes''')
 
     editor = os.environ.get("EDITOR", "vi")
@@ -101,59 +119,24 @@ def edit_note(args):
         with open(tmp) as f:
             new_text = f.read()
         if new_text == plaintext:
-            print("No changes.")
+            click.echo("No changes.")
             return
-        set_note_body(args.folder, args.name, new_text)
-        print(f"Updated '{args.name}'")
+        set_note_body(folder, name, new_text)
+        click.echo(f"Updated '{name}'")
     finally:
         os.unlink(tmp)
 
 
-def move_note(args):
-    """Move a note from one folder to another."""
-    run_osascript(f'''{find_note(args.source, args.name)}
-    move item 1 of matchedNotes to folder "{args.dest}"''')
-    print(f"Moved '{args.name}' from '{args.source}' to '{args.dest}'")
-
-
-def main():
-    parser = argparse.ArgumentParser(description="Apple Notes CLI")
-    subparsers = parser.add_subparsers(dest="command", required=True)
-
-    subparsers.add_parser("folders", help="List all folders")
-
-    list_parser = subparsers.add_parser("list", help="List notes in a folder")
-    list_parser.add_argument("folder", help="Folder name")
-    list_parser.set_defaults(func=list_notes)
-
-    view_parser = subparsers.add_parser("view", help="View a note")
-    view_parser.add_argument("folder", help="Folder name")
-    view_parser.add_argument("name", help="Note name")
-    view_parser.set_defaults(func=view_note)
-
-    next_parser = subparsers.add_parser("next", help="Show first note in a folder")
-    next_parser.add_argument("folder", help="Folder name")
-    next_parser.set_defaults(func=next_note)
-
-    edit_parser = subparsers.add_parser("edit", help="Edit a note")
-    edit_parser.add_argument("folder", help="Folder name")
-    edit_parser.add_argument("name", help="Note name")
-    edit_parser.add_argument("-f", "--file", help="Read content from file instead of $EDITOR")
-    edit_parser.set_defaults(func=edit_note)
-
-    move_parser = subparsers.add_parser("move", help="Move a note to another folder")
-    move_parser.add_argument("name", help="Note name")
-    move_parser.add_argument("source", help="Source folder name")
-    move_parser.add_argument("dest", help="Destination folder name")
-    move_parser.set_defaults(func=move_note)
-
-    args = parser.parse_args()
-
-    if args.command == "folders":
-        list_folders()
-    else:
-        args.func(args)
+@cli.command()
+@click.argument("name")
+@click.argument("source")
+@click.argument("dest")
+def move(name, source, dest):
+    """Move a note to another folder."""
+    run_osascript(f'''{find_note(source, name)}
+    move item 1 of matchedNotes to folder "{dest}"''')
+    click.echo(f"Moved '{name}' from '{source}' to '{dest}'")
 
 
 if __name__ == "__main__":
-    main()
+    cli()
