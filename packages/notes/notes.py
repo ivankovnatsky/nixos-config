@@ -66,8 +66,28 @@ def next_note(args):
     print(output)
 
 
+def set_note_body(folder, name, new_text):
+    """Set a note's body from plain text."""
+    html_body = "".join(f"<div>{line or '<br>'}</div>" for line in new_text.splitlines())
+    run_osascript(f'''{find_note(folder, name)}
+    set body of item 1 of matchedNotes to "{html_body.replace('"', '\\"')}"''')
+
+
 def edit_note(args):
-    """Edit a note in $EDITOR."""
+    """Edit a note in $EDITOR, from a file, or from stdin."""
+    if args.file:
+        with open(args.file) as f:
+            new_text = f.read()
+        set_note_body(args.folder, args.name, new_text)
+        print(f"Updated '{args.name}' from {args.file}")
+        return
+
+    if not sys.stdin.isatty():
+        new_text = sys.stdin.read()
+        set_note_body(args.folder, args.name, new_text)
+        print(f"Updated '{args.name}'")
+        return
+
     plaintext = run_osascript(f'''{find_note(args.folder, args.name)}
     return plaintext of item 1 of matchedNotes''')
 
@@ -83,9 +103,7 @@ def edit_note(args):
         if new_text == plaintext:
             print("No changes.")
             return
-        html_body = "".join(f"<div>{line or '<br>'}</div>" for line in new_text.splitlines())
-        run_osascript(f'''{find_note(args.folder, args.name)}
-    set body of item 1 of matchedNotes to "{html_body.replace('"', '\\"')}"''')
+        set_note_body(args.folder, args.name, new_text)
         print(f"Updated '{args.name}'")
     finally:
         os.unlink(tmp)
@@ -117,9 +135,10 @@ def main():
     next_parser.add_argument("folder", help="Folder name")
     next_parser.set_defaults(func=next_note)
 
-    edit_parser = subparsers.add_parser("edit", help="Edit a note in $EDITOR")
+    edit_parser = subparsers.add_parser("edit", help="Edit a note")
     edit_parser.add_argument("folder", help="Folder name")
     edit_parser.add_argument("name", help="Note name")
+    edit_parser.add_argument("-f", "--file", help="Read content from file instead of $EDITOR")
     edit_parser.set_defaults(func=edit_note)
 
     move_parser = subparsers.add_parser("move", help="Move a note to another folder")
