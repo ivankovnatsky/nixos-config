@@ -143,12 +143,11 @@ def find_note(folder, name):
     end if'''
 
 
-def export_markdown(folder, name):
+def export_markdown(folder, name, export_path=None, clean=False):
     """Export a note using Apple Notes native Markdown export."""
-    tmpdir = "/tmp/notes-export"
+    tmpdir = export_path or "/tmp/notes-export"
     os.makedirs(tmpdir, exist_ok=True)
-    try:
-        script = f'''
+    script = f'''
 tell application "Notes"
     {find_note(folder, name)}
     show item 1 of matchedNotes
@@ -169,22 +168,23 @@ tell application "System Events"
     end tell
 end tell
 delay 2'''
-        result = subprocess.run(
-            ["osascript", "-e", script],
-            capture_output=True,
-            text=True,
-        )
-        if result.returncode != 0:
-            click.echo(f"Error: {result.stderr.strip()}", err=True)
-            sys.exit(1)
-        md_files = glob.glob(os.path.join(tmpdir, "**", "*.md"), recursive=True)
-        if not md_files:
-            click.echo("Error: export produced no markdown file", err=True)
-            sys.exit(1)
-        with open(md_files[0]) as f:
-            return f.read()
-    finally:
+    result = subprocess.run(
+        ["osascript", "-e", script],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        click.echo(f"Error: {result.stderr.strip()}", err=True)
+        sys.exit(1)
+    md_files = glob.glob(os.path.join(tmpdir, "**", "*.md"), recursive=True)
+    if not md_files:
+        click.echo("Error: export produced no markdown file", err=True)
+        sys.exit(1)
+    with open(md_files[0]) as f:
+        content = f.read()
+    if clean:
         shutil.rmtree(tmpdir, ignore_errors=True)
+    return content
 
 
 def set_note_body(folder, name, new_text):
@@ -305,9 +305,11 @@ def edit(folder, name, filepath):
 @click.argument("folder")
 @click.argument("name")
 @click.option("-f", "--format", "fmt", type=click.Choice(["markdown"]), default="markdown", help="Export format.")
-def export(folder, name, fmt):
+@click.option("-p", "--path", "export_path", help="Directory to export into.")
+@click.option("--clean", is_flag=True, default=False, help="Remove export directory after reading.")
+def export(folder, name, fmt, export_path, clean):
     """Export a note using Apple Notes native export."""
-    click.echo(export_markdown(folder, name))
+    click.echo(export_markdown(folder, name, export_path=export_path, clean=clean))
 
 
 @cli.command()
