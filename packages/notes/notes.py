@@ -121,11 +121,23 @@ def html_to_text(html_body, fmt="text"):
     return parser.get_text()
 
 
-def run_osascript(body):
-    """Run an AppleScript wrapped in tell application "Notes"."""
-    script = f'tell application "Notes"\n{body}\nend tell'
+def run_osascript(body, args=None):
+    """Run an AppleScript wrapped in tell application "Notes".
+
+    When args are provided, the script is wrapped in ``on run argv`` and
+    user-provided strings are passed as osascript arguments instead of being
+    embedded in AppleScript source.  This avoids escaping issues with Unicode
+    characters that AppleScript treats as special syntax (guillemets, curly
+    quotes, etc.).
+    """
+    if args:
+        script = f'on run argv\ntell application "Notes"\n{body}\nend tell\nend run'
+        cmd = ["osascript", "-e", script] + list(args)
+    else:
+        script = f'tell application "Notes"\n{body}\nend tell'
+        cmd = ["osascript", "-e", script]
     result = subprocess.run(
-        ["osascript", "-e", script],
+        cmd,
         capture_output=True,
         text=True,
     )
@@ -135,11 +147,14 @@ def run_osascript(body):
     return result.stdout.strip()
 
 
-def find_note(folder, name):
-    """AppleScript snippet to find a note by name in a folder."""
-    return f'''set matchedNotes to every note in folder "{folder}" whose name is "{name}"
+def find_note():
+    """AppleScript snippet to find a note by name in a folder.
+
+    Expects folder as item 1 of argv and name as item 2 of argv.
+    """
+    return '''set matchedNotes to every note in folder (item 1 of argv) whose name is (item 2 of argv)
     if (count of matchedNotes) is 0 then
-        error "Note not found: {name}"
+        error "Note not found"
     end if'''
 
 
@@ -147,13 +162,13 @@ def export_markdown(folder, name, export_path=None, clean=False):
     """Export a note using Apple Notes native Markdown export."""
     tmpdir = export_path or "/tmp/notes-export"
     os.makedirs(tmpdir, exist_ok=True)
-    script = f'''
+    script = f'''on run argv
 tell application "Notes"
-    {find_note(folder, name)}
+    {find_note()}
     show item 1 of matchedNotes
 end tell
 delay 2
-set the clipboard to "{tmpdir}"
+set the clipboard to (item 3 of argv)
 tell application "System Events"
     tell process "Notes"
         click menu item "Markdown" of menu 1 of menu item "Export as" of menu 1 of menu bar item "File" of menu bar 1
@@ -167,9 +182,10 @@ tell application "System Events"
         key code 36
     end tell
 end tell
-delay 3'''
+delay 3
+end run'''
     result = subprocess.run(
-        ["osascript", "-e", script],
+        ["osascript", "-e", script, folder, name, tmpdir],
         capture_output=True,
         text=True,
     )
@@ -190,8 +206,8 @@ delay 3'''
 def set_note_body(folder, name, new_text):
     """Set a note's body from plain text."""
     html_body = "".join(f"<div>{line or '<br>'}</div>" for line in new_text.splitlines())
-    run_osascript(f'''{find_note(folder, name)}
-    set body of item 1 of matchedNotes to "{html_body.replace('"', '\\"')}"''')
+    run_osascript(f'''{find_note()}
+    set body of item 1 of matchedNotes to (item 3 of argv)''', args=[folder, name, html_body])
 
 
 @click.group()
@@ -211,12 +227,12 @@ def folders():
 @click.argument("folder")
 def list_notes(folder):
     """List notes in a folder."""
-    output = run_osascript(f'''set noteList to every note in folder "{folder}"
+    output = run_osascript('''set noteList to every note in folder (item 1 of argv)
     set output to ""
     repeat with n in noteList
         set output to output & name of n & linefeed
     end repeat
-    return output''')
+    return output''', args=[folder])
     if output:
         for line in output.splitlines():
             if line:
@@ -230,12 +246,12 @@ def list_notes(folder):
 def view(folder, name, fmt):
     """View a note's content."""
     if fmt == "plain":
-        output = run_osascript(f'''{find_note(folder, name)}
-    return plaintext of item 1 of matchedNotes''')
+        output = run_osascript(f'''{find_note()}
+    return plaintext of item 1 of matchedNotes''', args=[folder, name])
         click.echo(output)
     else:
-        html_body = run_osascript(f'''{find_note(folder, name)}
-    return body of item 1 of matchedNotes''')
+        html_body = run_osascript(f'''{find_note()}
+    return body of item 1 of matchedNotes''', args=[folder, name])
         click.echo(html_to_text(html_body, fmt))
 
 
@@ -244,20 +260,20 @@ def view(folder, name, fmt):
 @click.option("-f", "--format", "fmt", type=click.Choice(["text", "md", "html", "plain"]), default="text", help="Output format.")
 def next_note(folder, fmt):
     """Show the first (most recently modified) note in a folder."""
-    output = run_osascript(f'''set n to item 1 of (every note in folder "{folder}")
-    return name of n & linefeed & modification date of n''')
+    output = run_osascript('''set n to item 1 of (every note in folder (item 1 of argv))
+    return name of n & linefeed & modification date of n''', args=[folder])
     parts = output.split("\n", 1)
     note_name = parts[0]
     click.echo(note_name)
     if len(parts) > 1:
         click.echo(parts[1])
     if fmt == "plain":
-        body = run_osascript(f'''{find_note(folder, note_name)}
-    return plaintext of item 1 of matchedNotes''')
+        body = run_osascript(f'''{find_note()}
+    return plaintext of item 1 of matchedNotes''', args=[folder, note_name])
         click.echo(body)
     else:
-        html_body = run_osascript(f'''{find_note(folder, note_name)}
-    return body of item 1 of matchedNotes''')
+        html_body = run_osascript(f'''{find_note()}
+    return body of item 1 of matchedNotes''', args=[folder, note_name])
         click.echo(html_to_text(html_body, fmt))
 
 
@@ -280,8 +296,8 @@ def edit(folder, name, filepath):
         click.echo(f"Updated '{name}'")
         return
 
-    plaintext = run_osascript(f'''{find_note(folder, name)}
-    return plaintext of item 1 of matchedNotes''')
+    plaintext = run_osascript(f'''{find_note()}
+    return plaintext of item 1 of matchedNotes''', args=[folder, name])
 
     editor = os.environ.get("EDITOR", "vi")
     with tempfile.NamedTemporaryFile(suffix=".txt", mode="w", delete=False) as f:
@@ -318,8 +334,8 @@ def export(folder, name, fmt, export_path, clean):
 @click.argument("dest")
 def move(name, source, dest):
     """Move a note to another folder."""
-    run_osascript(f'''{find_note(source, name)}
-    move item 1 of matchedNotes to folder "{dest}"''')
+    run_osascript(f'''{find_note()}
+    move item 1 of matchedNotes to folder (item 3 of argv)''', args=[source, name, dest])
     click.echo(f"Moved '{name}' from '{source}' to '{dest}'")
 
 
