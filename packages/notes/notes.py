@@ -1,12 +1,123 @@
 #!/usr/bin/env python3
 """CLI for Apple Notes via osascript."""
 
+import html.parser
 import os
+import re
 import subprocess
 import sys
 import tempfile
 
 import click
+
+
+class BaseHTMLParser(html.parser.HTMLParser):
+    """Base parser for Apple Notes HTML body."""
+
+    def __init__(self):
+        super().__init__()
+        self._lines = []
+        self._current = ""
+        self._href = None
+        self._tag_stack = []
+
+    def _heading_level(self, tag):
+        if tag in ("h1", "h2", "h3", "h4", "h5", "h6"):
+            return int(tag[1])
+        return 0
+
+    def handle_starttag(self, tag, attrs):
+        self._tag_stack.append(tag)
+        if tag in ("div", "br", "p") or self._heading_level(tag):
+            if self._current:
+                self._lines.append(self._current)
+                self._current = ""
+        if tag == "a":
+            for k, v in attrs:
+                if k == "href":
+                    self._href = v
+                    self._link_text_start = len(self._current)
+        if tag == "li":
+            if self._current:
+                self._lines.append(self._current)
+                self._current = ""
+
+    def handle_data(self, data):
+        self._current += data
+
+    def get_text(self):
+        if self._current:
+            self._lines.append(self._current)
+        return "\n".join(self._lines)
+
+
+class TextHTMLParser(BaseHTMLParser):
+    """Convert HTML to plain text with links in parentheses."""
+
+    def handle_starttag(self, tag, attrs):
+        super().handle_starttag(tag, attrs)
+        if tag == "li":
+            self._current = "- "
+
+    def handle_endtag(self, tag):
+        if tag == "a" and self._href:
+            if self._href not in self._current:
+                self._current += f" ({self._href})"
+            self._href = None
+        if tag in ("div", "p") or self._heading_level(tag):
+            self._lines.append(self._current)
+            self._current = ""
+        if tag in self._tag_stack:
+            self._tag_stack.remove(tag)
+
+
+class MarkdownHTMLParser(BaseHTMLParser):
+    """Convert HTML to Markdown."""
+
+    def handle_starttag(self, tag, attrs):
+        super().handle_starttag(tag, attrs)
+        level = self._heading_level(tag)
+        if level:
+            self._current = "#" * level + " "
+        if tag == "b" or tag == "strong":
+            self._current += "**"
+        if tag == "i" or tag == "em":
+            self._current += "*"
+        if tag == "li":
+            self._current = "- "
+
+    def handle_endtag(self, tag):
+        if tag == "a" and self._href:
+            link_text = self._current[self._link_text_start:]
+            self._current = self._current[:self._link_text_start]
+            if link_text == self._href:
+                self._current += self._href
+            else:
+                self._current += f"[{link_text}]({self._href})"
+            self._href = None
+        if tag == "b" or tag == "strong":
+            self._current += "**"
+        if tag == "i" or tag == "em":
+            self._current += "*"
+        if tag in ("div", "p") or self._heading_level(tag):
+            self._lines.append(self._current)
+            self._current = ""
+        if tag in self._tag_stack:
+            self._tag_stack.remove(tag)
+
+
+def html_to_text(html_body, fmt="text"):
+    """Convert HTML note body to the specified format."""
+    if fmt == "html":
+        return html_body
+    if fmt == "plain":
+        parser = BaseHTMLParser()
+    elif fmt == "md":
+        parser = MarkdownHTMLParser()
+    else:
+        parser = TextHTMLParser()
+    parser.feed(html_body)
+    return parser.get_text()
 
 
 def run_osascript(body):
@@ -70,21 +181,38 @@ def list_notes(folder):
 @cli.command()
 @click.argument("folder")
 @click.argument("name")
-def view(folder, name):
-    """View a note's content as plain text."""
-    output = run_osascript(f'''{find_note(folder, name)}
+@click.option("-f", "--format", "fmt", type=click.Choice(["text", "md", "html", "plain"]), default="text", help="Output format.")
+def view(folder, name, fmt):
+    """View a note's content."""
+    if fmt == "plain":
+        output = run_osascript(f'''{find_note(folder, name)}
     return plaintext of item 1 of matchedNotes''')
-    click.echo(output)
+        click.echo(output)
+    else:
+        html_body = run_osascript(f'''{find_note(folder, name)}
+    return body of item 1 of matchedNotes''')
+        click.echo(html_to_text(html_body, fmt))
 
 
 @cli.command("next")
 @click.argument("folder")
-def next_note(folder):
+@click.option("-f", "--format", "fmt", type=click.Choice(["text", "md", "html", "plain"]), default="text", help="Output format.")
+def next_note(folder, fmt):
     """Show the first (most recently modified) note in a folder."""
-    output = run_osascript(f'''set n to item 1 of (every note in folder "{folder}")
+    if fmt == "plain":
+        output = run_osascript(f'''set n to item 1 of (every note in folder "{folder}")
     set d to modification date of n
     return name of n & linefeed & d & linefeed & plaintext of n''')
-    click.echo(output)
+        click.echo(output)
+    else:
+        output = run_osascript(f'''set n to item 1 of (every note in folder "{folder}")
+    set d to modification date of n
+    return name of n & linefeed & d & linefeed & body of n''')
+        parts = output.split("\n", 2)
+        click.echo(parts[0])
+        click.echo(parts[1])
+        if len(parts) > 2:
+            click.echo(html_to_text(parts[2], fmt))
 
 
 @cli.command()
