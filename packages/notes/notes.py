@@ -2,8 +2,10 @@
 """CLI for Apple Notes via osascript."""
 
 import argparse
+import os
 import subprocess
 import sys
+import tempfile
 
 
 def run_osascript(body):
@@ -64,6 +66,31 @@ def next_note(args):
     print(output)
 
 
+def edit_note(args):
+    """Edit a note in $EDITOR."""
+    plaintext = run_osascript(f'''{find_note(args.folder, args.name)}
+    return plaintext of item 1 of matchedNotes''')
+
+    editor = os.environ.get("EDITOR", "vi")
+    with tempfile.NamedTemporaryFile(suffix=".txt", mode="w", delete=False) as f:
+        f.write(plaintext)
+        tmp = f.name
+
+    try:
+        subprocess.run([editor, tmp], check=True)
+        with open(tmp) as f:
+            new_text = f.read()
+        if new_text == plaintext:
+            print("No changes.")
+            return
+        html_body = "".join(f"<div>{line or '<br>'}</div>" for line in new_text.splitlines())
+        run_osascript(f'''{find_note(args.folder, args.name)}
+    set body of item 1 of matchedNotes to "{html_body.replace('"', '\\"')}"''')
+        print(f"Updated '{args.name}'")
+    finally:
+        os.unlink(tmp)
+
+
 def move_note(args):
     """Move a note from one folder to another."""
     run_osascript(f'''{find_note(args.source, args.name)}
@@ -89,6 +116,11 @@ def main():
     next_parser = subparsers.add_parser("next", help="Show first note in a folder")
     next_parser.add_argument("folder", help="Folder name")
     next_parser.set_defaults(func=next_note)
+
+    edit_parser = subparsers.add_parser("edit", help="Edit a note in $EDITOR")
+    edit_parser.add_argument("folder", help="Folder name")
+    edit_parser.add_argument("name", help="Note name")
+    edit_parser.set_defaults(func=edit_note)
 
     move_parser = subparsers.add_parser("move", help="Move a note to another folder")
     move_parser.add_argument("name", help="Note name")
