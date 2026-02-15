@@ -22,6 +22,7 @@
     homelab
     hyperfine
     launchd-mgmt
+    notes
     poppler-utils
     poweroff
     ps-top-nu
