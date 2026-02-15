@@ -152,22 +152,22 @@ tell application "Notes"
     {find_note(folder, name)}
     show item 1 of matchedNotes
 end tell
-delay 1
+delay 2
 set the clipboard to "{tmpdir}"
 tell application "System Events"
     tell process "Notes"
         click menu item "Markdown" of menu 1 of menu item "Export as" of menu 1 of menu bar item "File" of menu bar 1
-        delay 1
+        delay 2
         keystroke "g" using {{command down, shift down}}
-        delay 1
+        delay 2
         keystroke "v" using {{command down}}
-        delay 0.5
+        delay 2
         key code 36
-        delay 1
+        delay 2
         key code 36
     end tell
 end tell
-delay 2'''
+delay 3'''
     result = subprocess.run(
         ["osascript", "-e", script],
         capture_output=True,
