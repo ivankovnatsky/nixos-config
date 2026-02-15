@@ -9,6 +9,7 @@
 ### kitty
 
 - Allow to find devices on local networks
+- Allow access to control "Notes"
 
 ### Chromium
 
