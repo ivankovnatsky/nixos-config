@@ -36,6 +36,7 @@
     poppler-utils
     nextdns-mgmt
     nixfmt-rfc-style
+    notes
     nixpkgs-darwin-master.yt-dlp
     nodePackages.prettier
     nodejs
