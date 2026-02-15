@@ -91,8 +91,8 @@ def main():
     next_parser.set_defaults(func=next_note)
 
     move_parser = subparsers.add_parser("move", help="Move a note to another folder")
-    move_parser.add_argument("source", help="Source folder name")
     move_parser.add_argument("name", help="Note name")
+    move_parser.add_argument("source", help="Source folder name")
     move_parser.add_argument("dest", help="Destination folder name")
     move_parser.set_defaults(func=move_note)
 
