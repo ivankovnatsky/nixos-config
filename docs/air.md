@@ -19,6 +19,7 @@
 
 - Allow access to control "Terminal"
 - Allow access to files managed by "iCloud Drive"
+- Allow access to files on a removable volume
 
 ### Terminal
 
