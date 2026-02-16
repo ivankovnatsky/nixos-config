@@ -6,7 +6,7 @@ import webbrowser
 import click
 
 from ..client import get_jira_client
-from ..utils import parse_fields
+from ..utils import ISSUE_KEY, parse_fields
 
 
 def transition_list_fn(issue_key):
@@ -77,14 +77,14 @@ def transition_group():
 
 
 @transition_group.command("list")
-@click.argument("issue_key")
+@click.argument("issue_key", type=ISSUE_KEY)
 def transition_list_cmd(issue_key):
     """List available transitions"""
     transition_list_fn(issue_key)
 
 
 @transition_group.command("fields")
-@click.argument("issue_key")
+@click.argument("issue_key", type=ISSUE_KEY)
 @click.argument("transition_name")
 def transition_fields_cmd(issue_key, transition_name):
     """List fields for a transition"""
@@ -92,7 +92,7 @@ def transition_fields_cmd(issue_key, transition_name):
 
 
 @transition_group.command("to")
-@click.argument("issue_key")
+@click.argument("issue_key", type=ISSUE_KEY)
 @click.argument("transition_name")
 @click.option("-c", "--comment", help="Add a comment after transitioning")
 @click.option(

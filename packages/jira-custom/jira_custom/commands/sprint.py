@@ -4,6 +4,7 @@ import os
 import click
 
 from ..client import get_jira_client
+from ..utils import ISSUE_KEY
 
 
 def sprint_list_fn(board_id=None, state=None):
@@ -77,7 +78,7 @@ def sprint_list_cmd(board, state, current):
 
 @sprint_group.command("add")
 @click.argument("sprint_id")
-@click.argument("issue_keys", nargs=-1, required=True)
+@click.argument("issue_keys", nargs=-1, required=True, type=ISSUE_KEY)
 def sprint_add_cmd(sprint_id, issue_keys):
     """Add issues to sprint"""
     sprint_add_fn(sprint_id, issue_keys)

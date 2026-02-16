@@ -1,7 +1,27 @@
 """Utility functions for jira-custom."""
 
+import re
 import time
 import click
+
+
+class IssueKeyType(click.ParamType):
+    """Click parameter type that accepts an issue key or a Jira browse URL."""
+
+    name = "issue_key"
+
+    _URL_RE = re.compile(r"https?://.+/browse/([A-Z][A-Z0-9]+-\d+)")
+
+    def convert(self, value, param, ctx):
+        if value is None:
+            return value
+        m = self._URL_RE.match(value)
+        if m:
+            return m.group(1)
+        return value
+
+
+ISSUE_KEY = IssueKeyType()
 
 
 def parse_labels(labels):
