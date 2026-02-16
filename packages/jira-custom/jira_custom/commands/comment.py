@@ -3,6 +3,7 @@
 import click
 
 from ..client import get_jira_client
+from ..editor import edit_in_editor
 
 
 def comment_list_fn(issue_key, last=None, order="desc"):
@@ -45,6 +46,22 @@ def comment_update_fn(issue_key, comment_id, body):
     click.echo(f"Comment {comment_id} updated successfully", err=True)
 
 
+def comment_edit_fn(issue_key, comment_id):
+    """Edit a comment in $EDITOR"""
+    jira = get_jira_client()
+    comment = jira.comment(issue_key, comment_id)
+    original = comment.body or ""
+
+    new_text = edit_in_editor(original, suffix=f"-{issue_key}-comment-{comment_id}")
+
+    if new_text == original:
+        click.echo("No changes made", err=True)
+        return
+
+    comment.update(body=new_text)
+    click.echo(f"Comment {comment_id} updated", err=True)
+
+
 def comment_delete_fn(issue_key, comment_id):
     """Delete a comment"""
     jira = get_jira_client()
@@ -72,10 +89,24 @@ def comment_list_cmd(issue_key, last, order):
 
 @comment_group.command("add")
 @click.argument("issue_key")
-@click.argument("body")
-def comment_add_cmd(issue_key, body):
+@click.argument("body", required=False)
+@click.option("-e", "--editor", "use_editor", is_flag=True, help="Compose in $EDITOR")
+def comment_add_cmd(issue_key, body, use_editor):
     """Add a comment to an issue"""
+    if use_editor or body is None:
+        body = edit_in_editor("", suffix=f"-{issue_key}-new-comment")
+        if not body.strip():
+            click.echo("Empty comment, aborting", err=True)
+            return
     comment_add_fn(issue_key, body)
+
+
+@comment_group.command("edit")
+@click.argument("issue_key")
+@click.argument("comment_id")
+def comment_edit_cmd(issue_key, comment_id):
+    """Edit a comment in $EDITOR"""
+    comment_edit_fn(issue_key, comment_id)
 
 
 @comment_group.command("update")

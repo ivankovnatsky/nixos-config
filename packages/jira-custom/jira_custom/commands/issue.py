@@ -4,6 +4,7 @@ import os
 import click
 
 from ..client import get_jira_client
+from ..editor import edit_in_editor
 from ..utils import parse_labels, move_issue_type
 from .comment import comment_group
 from .transition import transition_group
@@ -88,6 +89,28 @@ def issue_update_fn(
         issue.update(fields=fields)
 
     click.echo(f"Updated {issue_key}", err=True)
+
+
+def issue_edit_fn(issue_key, field="description"):
+    """Edit an issue field in $EDITOR"""
+    jira = get_jira_client()
+    issue = jira.issue(issue_key)
+
+    if field == "description":
+        original = issue.fields.description or ""
+    elif field == "summary":
+        original = issue.fields.summary or ""
+    else:
+        raise click.ClickException(f"Unsupported field: {field}")
+
+    new_text = edit_in_editor(original, suffix=f"-{issue_key}-{field}")
+
+    if new_text == original:
+        click.echo("No changes made", err=True)
+        return
+
+    issue.update(fields={field: new_text})
+    click.echo(f"Updated {field} of {issue_key}", err=True)
 
 
 def status_get_fn(issue_key):
@@ -430,6 +453,20 @@ def issue_update_cmd(issue_key, summary, description, assignee, label, issue_typ
     issue_update_fn(
         issue_key, summary, description, assignee, labels_add, labels_remove, issue_type
     )
+
+
+@issue_group.command("edit")
+@click.argument("issue_key")
+@click.option(
+    "-f",
+    "--field",
+    default="description",
+    type=click.Choice(["description", "summary"]),
+    help="Field to edit (default: description)",
+)
+def issue_edit_cmd(issue_key, field):
+    """Edit an issue field in $EDITOR"""
+    issue_edit_fn(issue_key, field)
 
 
 @issue_group.command("view")
