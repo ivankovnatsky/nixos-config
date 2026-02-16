@@ -10,7 +10,7 @@ class IssueKeyType(click.ParamType):
 
     name = "issue_key"
 
-    _URL_RE = re.compile(r"https?://.+/browse/([A-Z][A-Z0-9]+-\d+)")
+    _URL_RE = re.compile(r"(?:https?://)?[^/]+/browse/([A-Z][A-Z0-9]+-\d+)")
 
     def convert(self, value, param, ctx):
         if value is None:
