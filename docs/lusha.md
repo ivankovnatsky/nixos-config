@@ -44,7 +44,14 @@ maintenance and troubleshooting.
 
 ## Focus
 
-Used Work Focus to filter out Kandji annoying notifications.
+Configured Work Focus to filter out Kandji MDM notifications:
+
+1. Open System Settings → Focus
+2. Click **Add Focus...** → select **Work**
+3. Open the new Work Focus and configure:
+   - **Silenced People**: Set to "Silence Some People" mode
+   - **Silenced Apps**: Add "Kandji Menu"
+   - **Schedule**: 00:00 to 00:00, all days (always on)
 
 ## App macOS settings
 
