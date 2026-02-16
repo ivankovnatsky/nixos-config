@@ -14,7 +14,7 @@ let
   #   See: https://github.com/stashapp/stash/issues/2879
 
   # Template path (all substitutions happen at runtime to avoid secrets in /nix/store)
-  stashConfigTemplate = ../../../../templates/stash-config.yml;
+  stashConfigTemplate = ../../templates/stash-config.yml;
 
   # Generate stash paths YAML for single directory
   stashPathsYaml = ''
