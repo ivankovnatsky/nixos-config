@@ -51,8 +51,8 @@ def find_vault_by_path(config: dict, vault_path: Path) -> str | None:
     return None
 
 
-def create_vault(vault_path: Path, name: str | None = None) -> str:
-    """Register a vault with Obsidian. Returns vault name."""
+def create_vault(vault_path: Path, name: str | None = None) -> tuple[str, bool]:
+    """Register a vault with Obsidian. Returns (vault_name, newly_created)."""
     vault_path = vault_path.resolve()
 
     if not vault_path.exists():
@@ -69,7 +69,7 @@ def create_vault(vault_path: Path, name: str | None = None) -> str:
     if existing_id:
         vault_name = name or vault_path.name
         print(f"Vault already registered: {vault_name}")
-        return vault_name
+        return vault_name, False
 
     # Register new vault
     vault_id = generate_vault_id()
@@ -82,7 +82,7 @@ def create_vault(vault_path: Path, name: str | None = None) -> str:
 
     write_obsidian_config(config)
     print(f"Created vault: {vault_name} at {vault_path}")
-    return vault_name
+    return vault_name, True
 
 
 def is_obsidian_running() -> bool:
@@ -104,7 +104,7 @@ def quit_obsidian() -> None:
     time.sleep(1.0)
 
 
-def open_vault(vault_path: Path) -> None:
+def open_vault(vault_path: Path, just_created: bool = False) -> None:
     """Open a vault in Obsidian."""
     vault_path = vault_path.resolve()
 
@@ -118,6 +118,10 @@ def open_vault(vault_path: Path) -> None:
             print("Quitting Obsidian to register new vault...")
             quit_obsidian()
         create_vault(vault_path)
+    elif just_created and is_obsidian_running():
+        # Vault was just registered but Obsidian has stale config
+        print("Restarting Obsidian to pick up new vault...")
+        quit_obsidian()
 
     # Open using vault name (more reliable than path)
     vault_name = vault_path.name
@@ -182,8 +186,8 @@ def main() -> None:
     else:
         # Default: create and open current directory
         vault_path = Path(".")
-        create_vault(vault_path)
-        open_vault(vault_path)
+        _name, newly_created = create_vault(vault_path)
+        open_vault(vault_path, just_created=newly_created)
 
 
 if __name__ == "__main__":
