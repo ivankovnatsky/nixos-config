@@ -5,6 +5,7 @@ import webbrowser
 import click
 
 from ..client import get_jira_client
+from ..utils import ISSUE_KEY
 
 
 def open_issue_fn(issue_key=None):
@@ -47,7 +48,7 @@ def show_serverinfo_fn():
 
 
 @click.command("open")
-@click.argument("issue_key", required=False)
+@click.argument("issue_key", required=False, type=ISSUE_KEY)
 def open_cmd(issue_key):
     """Open issue in browser"""
     open_issue_fn(issue_key)

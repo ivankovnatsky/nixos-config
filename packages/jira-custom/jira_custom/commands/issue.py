@@ -5,7 +5,7 @@ import click
 
 from ..client import get_jira_client
 from ..editor import edit_in_editor
-from ..utils import parse_labels, move_issue_type
+from ..utils import ISSUE_KEY, parse_labels, move_issue_type
 from .comment import comment_group
 from .transition import transition_group
 
@@ -437,7 +437,7 @@ def issue_create_cmd(
 
 
 @issue_group.command("update")
-@click.argument("issue_key")
+@click.argument("issue_key", type=ISSUE_KEY)
 @click.option("-s", "--summary", help="New issue summary/title")
 @click.option("-d", "--description", help="New issue description")
 @click.option("-a", "--assignee", help="New assignee (email/name)")
@@ -456,7 +456,7 @@ def issue_update_cmd(issue_key, summary, description, assignee, label, issue_typ
 
 
 @issue_group.command("edit")
-@click.argument("issue_key")
+@click.argument("issue_key", type=ISSUE_KEY)
 @click.option(
     "-f",
     "--field",
@@ -470,14 +470,14 @@ def issue_edit_cmd(issue_key, field):
 
 
 @issue_group.command("view")
-@click.argument("issue_key")
+@click.argument("issue_key", type=ISSUE_KEY)
 def issue_view_cmd(issue_key):
     """View issue details"""
     issue_view_fn(issue_key)
 
 
 @issue_group.command("status")
-@click.argument("issue_key")
+@click.argument("issue_key", type=ISSUE_KEY)
 def issue_status_cmd(issue_key):
     """Get issue status"""
     status_get_fn(issue_key)
@@ -491,7 +491,7 @@ def issue_fields_cmd(filter_pattern):
 
 
 @issue_group.command("assign")
-@click.argument("issue_key")
+@click.argument("issue_key", type=ISSUE_KEY)
 @click.argument("user")
 def issue_assign_cmd(issue_key, user):
     """Assign/unassign issue (use 'x' to unassign)"""
@@ -499,8 +499,8 @@ def issue_assign_cmd(issue_key, user):
 
 
 @issue_group.command("link")
-@click.argument("inward_key")
-@click.argument("outward_key")
+@click.argument("inward_key", type=ISSUE_KEY)
+@click.argument("outward_key", type=ISSUE_KEY)
 @click.argument("link_type")
 def issue_link_cmd(inward_key, outward_key, link_type):
     """Link two issues"""
@@ -508,8 +508,8 @@ def issue_link_cmd(inward_key, outward_key, link_type):
 
 
 @issue_group.command("unlink")
-@click.argument("key1")
-@click.argument("key2")
+@click.argument("key1", type=ISSUE_KEY)
+@click.argument("key2", type=ISSUE_KEY)
 def issue_unlink_cmd(key1, key2):
     """Remove link between issues"""
     issue_unlink_fn(key1, key2)
