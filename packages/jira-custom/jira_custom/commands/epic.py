@@ -3,6 +3,7 @@
 import click
 
 from ..client import get_jira_client
+from ..utils import ISSUE_KEY
 
 
 def epic_list_fn(project=None, limit=50):
@@ -101,15 +102,15 @@ def epic_create_cmd(project, name, summary):
 
 
 @epic_group.command("add")
-@click.argument("epic_key")
-@click.argument("issue_keys", nargs=-1, required=True)
+@click.argument("epic_key", type=ISSUE_KEY)
+@click.argument("issue_keys", nargs=-1, required=True, type=ISSUE_KEY)
 def epic_add_cmd(epic_key, issue_keys):
     """Add issues to epic"""
     epic_add_fn(epic_key, issue_keys)
 
 
 @epic_group.command("remove")
-@click.argument("issue_keys", nargs=-1, required=True)
+@click.argument("issue_keys", nargs=-1, required=True, type=ISSUE_KEY)
 def epic_remove_cmd(issue_keys):
     """Remove issues from epic"""
     epic_remove_fn(issue_keys)

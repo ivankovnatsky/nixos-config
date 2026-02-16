@@ -4,6 +4,7 @@ import click
 
 from ..client import get_jira_client
 from ..editor import edit_in_editor
+from ..utils import ISSUE_KEY
 
 
 def comment_list_fn(issue_key, last=None, order="desc"):
@@ -77,7 +78,7 @@ def comment_group():
 
 
 @comment_group.command("list")
-@click.argument("issue_key")
+@click.argument("issue_key", type=ISSUE_KEY)
 @click.option("--last", type=int, help="Show only last N comments")
 @click.option(
     "--order", type=click.Choice(["asc", "desc"]), default="desc", help="Sort order"
@@ -88,7 +89,7 @@ def comment_list_cmd(issue_key, last, order):
 
 
 @comment_group.command("add")
-@click.argument("issue_key")
+@click.argument("issue_key", type=ISSUE_KEY)
 @click.argument("body", required=False)
 @click.option("-e", "--editor", "use_editor", is_flag=True, help="Compose in $EDITOR")
 def comment_add_cmd(issue_key, body, use_editor):
@@ -102,7 +103,7 @@ def comment_add_cmd(issue_key, body, use_editor):
 
 
 @comment_group.command("edit")
-@click.argument("issue_key")
+@click.argument("issue_key", type=ISSUE_KEY)
 @click.argument("comment_id")
 def comment_edit_cmd(issue_key, comment_id):
     """Edit a comment in $EDITOR"""
@@ -110,7 +111,7 @@ def comment_edit_cmd(issue_key, comment_id):
 
 
 @comment_group.command("update")
-@click.argument("issue_key")
+@click.argument("issue_key", type=ISSUE_KEY)
 @click.argument("comment_id")
 @click.argument("body")
 def comment_update_cmd(issue_key, comment_id, body):
@@ -119,7 +120,7 @@ def comment_update_cmd(issue_key, comment_id, body):
 
 
 @comment_group.command("delete")
-@click.argument("issue_key")
+@click.argument("issue_key", type=ISSUE_KEY)
 @click.argument("comment_id")
 def comment_delete_cmd(issue_key, comment_id):
     """Delete a comment"""
