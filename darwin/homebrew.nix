@@ -30,6 +30,7 @@
         greedy = true;
       }
       "firefox"
+      "google-chrome"
       # Needed to `brew uninstall --cask ghostty kitty`
       {
         name = "ghostty@tip";
