@@ -122,6 +122,7 @@
         wrap-max-lines = "unlimited";
         max-line-length = 0;
         navigate = true;
+        pager = "less -R";
       };
     };
 
