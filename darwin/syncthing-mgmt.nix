@@ -128,6 +128,16 @@ in
         ];
       };
 
+      "liftoff" = {
+        path = "${homePath}/.config/unity3d/LuGus Studios/Liftoff/RaceTimes";
+        label = ".config/unity3d/LuGus Studios/Liftoff/RaceTimes";
+        devices = [
+          "a3"
+          "Ivans-MacBook-Pro"
+          "Ivans-MacBook-Air"
+        ];
+      };
+
     };
 
     restart = false;
