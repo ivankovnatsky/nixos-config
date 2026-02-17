@@ -89,6 +89,14 @@
         ];
       };
 
+      "liftoff" = {
+        path = "${config.users.users.${username}.home}/.config/unity3d/LuGus Studios/Liftoff/RaceTimes";
+        label = ".config/unity3d/LuGus Studios/Liftoff/RaceTimes";
+        devices = [
+          "a3"
+        ];
+      };
+
       "taskwarrior" = {
         path = "${config.users.users.${username}.home}/.task";
         label = ".task";
