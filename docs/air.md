@@ -11,6 +11,10 @@
 - Allow to find devices on local networks
 - Allow access to control "Notes"
 
+### Steam Helper
+
+- Allow to find devices on local networks
+
 ### Chromium
 
 - Allow to find devices on local networks
