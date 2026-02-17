@@ -94,6 +94,8 @@
         label = ".config/unity3d/LuGus Studios/Liftoff/RaceTimes";
         devices = [
           "a3"
+          "Ivans-MacBook-Pro"
+          "Ivans-MacBook-Air"
         ];
       };
 
