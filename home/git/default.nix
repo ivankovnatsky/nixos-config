@@ -122,7 +122,7 @@
         wrap-max-lines = "unlimited";
         max-line-length = 0;
         navigate = true;
-        paging = "always";
+        pager = "less -R";
       };
     };
 
@@ -151,6 +151,10 @@
       includes = [
         { path = "${./config}"; }
       ];
+
+      # Override git's default LESS=FRX: -F quits on short output, then Ctrl+D
+      # (used to scroll in less) hits the shell and exits the terminal instead
+      iniContent.core.pager = lib.mkForce "LESS=R delta";
 
       settings = {
         mergetool =
