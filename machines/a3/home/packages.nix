@@ -17,6 +17,7 @@
     git-message
     gnumake
     gum
+    jq
     kdePackages.krdc # KDE Remote Desktop Client
     kwalletcli # KDE Wallet integration # Provides pinentry-kwallet for GPG integration
     libnotify # Desktop notifications # Provides notify-send command
