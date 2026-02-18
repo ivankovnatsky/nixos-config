@@ -67,6 +67,29 @@ def get_modified_files() -> list[str]:
     return files
 
 
+def get_untracked_files() -> list[str]:
+    result = subprocess.run(
+        ["git", "ls-files", "--others", "--exclude-standard"],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    files = [f for f in result.stdout.strip().split("\n") if f]
+    return files
+
+
+def get_all_changed_files() -> list[str]:
+    """Get all changed files: staged + modified + untracked, deduplicated."""
+    staged = get_staged_files()
+    modified = get_modified_files()
+    untracked = get_untracked_files()
+    seen = dict()
+    for f in staged + modified + untracked:
+        if f not in seen:
+            seen[f] = True
+    return list(seen.keys())
+
+
 def is_untracked(file_path: str, git_root: str) -> bool:
     """Check if a file is untracked by git."""
     result = subprocess.run(
@@ -209,7 +232,7 @@ def parse_args_flexible(
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Auto-generate git commit subject scope from staged file paths.",
+        description="Auto-generate git commit subject scope from changed file paths.",
         epilog="""
 Examples:
   git-message "add feature"                     Commits staged file with "<scope>: add feature"
@@ -222,7 +245,7 @@ Examples:
 Features:
   - Accepts file path in either position (auto-detected by existence)
   - Auto-adds untracked files before committing
-  - Without file arg, uses exactly one staged file, or one modified file if none staged
+  - Without file arg, detects exactly one changed file (staged, modified, or untracked)
   - Strips file extensions (e.g., .nix, .py)
   - Shortens machine names (e.g., Ivans-Mac-mini -> mini)
   - Removes duplicate path components (e.g., pkg/foo/foo -> pkg/foo)
@@ -260,52 +283,29 @@ Features:
         return 1
 
     if file_path:
-        # Use provided file path, convert to relative path from git root
         abs_path = os.path.abspath(file_path)
         target_file = os.path.relpath(abs_path, git_root)
-        auto_stage = False
     else:
-        # Check staged files first, then modified files
         try:
-            staged_files = get_staged_files()
+            all_files = get_all_changed_files()
         except subprocess.CalledProcessError as e:
-            print(f"Failed to get staged files: {e}", file=sys.stderr)
+            print(f"Failed to get changed files: {e}", file=sys.stderr)
             return 1
 
-        auto_stage = False
-        if staged_files:
-            if len(staged_files) != 1:
-                print(
-                    f"Expected 1 staged file, found {len(staged_files)}:",
-                    file=sys.stderr,
-                )
-                for f in staged_files:
-                    print(f"  {f}", file=sys.stderr)
-                return 1
-            target_file = staged_files[0]
-        else:
-            # No staged files, check for modified (unstaged) files
-            try:
-                modified_files = get_modified_files()
-            except subprocess.CalledProcessError as e:
-                print(f"Failed to get modified files: {e}", file=sys.stderr)
-                return 1
+        if not all_files:
+            print("No changed files", file=sys.stderr)
+            return 1
 
-            if not modified_files:
-                print("No staged or modified files", file=sys.stderr)
-                return 1
+        if len(all_files) != 1:
+            print(
+                f"Expected 1 changed file, found {len(all_files)}:",
+                file=sys.stderr,
+            )
+            for f in all_files:
+                print(f"  {f}", file=sys.stderr)
+            return 1
 
-            if len(modified_files) != 1:
-                print(
-                    f"Expected 1 modified file, found {len(modified_files)}:",
-                    file=sys.stderr,
-                )
-                for f in modified_files:
-                    print(f"  {f}", file=sys.stderr)
-                return 1
-
-            target_file = modified_files[0]
-            auto_stage = True
+        target_file = all_files[0]
 
     prefix = shorten_path(target_file)
 
@@ -333,20 +333,10 @@ Features:
 
     try:
         # Add untracked files first (git commit <file> only works for tracked files)
-        if file_path and is_untracked(target_file, git_root):
+        if is_untracked(target_file, git_root):
             subprocess.run(["git", "add", target_file], check=True, cwd=git_root)
 
-        if file_path:
-            # Commit specific file (stages and commits in one step)
-            # target_file is already relative to git root from earlier conversion
-            cmd = ["git", "commit", target_file, "-m", message]
-        elif auto_stage:
-            # Auto-stage and commit the single modified file
-            # target_file is already relative to git root from git diff output
-            cmd = ["git", "commit", target_file, "-m", message]
-        else:
-            # Commit staged files
-            cmd = ["git", "commit", "-m", message]
+        cmd = ["git", "commit", target_file, "-m", message]
         if body:
             cmd.extend(["-m", body])
         subprocess.run(cmd, check=True, cwd=git_root)
