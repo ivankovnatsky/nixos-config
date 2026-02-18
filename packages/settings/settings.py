@@ -1275,10 +1275,12 @@ def poweroff_log_battery() -> None:
 
     try:
         hostname = socket.gethostname()
+        today = date.today().isoformat()
         stats_dir = (
             Path.home()
             / "Library/Mobile Documents/com~apple~CloudDocs/Data/Stats"
             / hostname
+            / today
         )
         stats_dir.mkdir(parents=True, exist_ok=True)
 
