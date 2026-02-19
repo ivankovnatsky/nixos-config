@@ -37,7 +37,7 @@
     nextdns-mgmt
     nixfmt-rfc-style
     notes
-    nixpkgs-darwin-master.yt-dlp
+    nixpkgs-darwin-master-ytdlp.yt-dlp
     nodePackages.prettier
     nodejs
     gh-notifications

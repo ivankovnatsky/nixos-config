@@ -9,7 +9,7 @@ pkgs.writeShellScriptBin "giffer" ''
       pkgs.curl
       pkgs.ffmpeg
       pkgs.gallery-dl
-      pkgs.nixpkgs-darwin-master.yt-dlp
+      pkgs.nixpkgs-darwin-master-ytdlp.yt-dlp
     ]
   }:$PATH"
   exec ${python}/bin/python ${./giffer.py} "$@"

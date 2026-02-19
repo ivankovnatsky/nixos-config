@@ -19,7 +19,7 @@ let
   configTomlTemplate =
     pkgs.runCommand "podsync-config.toml.template"
       {
-        ytDlpPath = "${pkgs.nixpkgs-darwin-master.yt-dlp}/bin/yt-dlp";
+        ytDlpPath = "${pkgs.nixpkgs-darwin-master-ytdlp.yt-dlp}/bin/yt-dlp";
         inherit (config.flags) machineIp;
         inherit dataDir;
         inherit logDir;

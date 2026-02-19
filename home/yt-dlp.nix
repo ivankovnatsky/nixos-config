@@ -2,7 +2,7 @@
 
 {
   home.packages = with pkgs; [
-    nixpkgs-darwin-master.yt-dlp
+    nixpkgs-darwin-master-ytdlp.yt-dlp
   ];
 
   home.file = {
