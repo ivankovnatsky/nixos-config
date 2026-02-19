@@ -117,12 +117,14 @@ with lib;
     machineIp = mkOption {
       type = types.str;
       description = "This machine's IP address";
-      default = {
-        "Ivans-MacBook-Air" = config.flags.airIp;
-        "Ivans-MacBook-Pro" = config.flags.proIp;
-        "Ivans-Mac-mini" = config.flags.miniIp;
-        "a3" = config.flags.a3Ip;
-      }.${config.networking.hostName} or "";
+      default =
+        {
+          "Ivans-MacBook-Air" = config.flags.airIp;
+          "Ivans-MacBook-Pro" = config.flags.proIp;
+          "Ivans-Mac-mini" = config.flags.miniIp;
+          "a3" = config.flags.a3Ip;
+        }
+        .${config.networking.hostName} or "";
     };
 
     airIp = mkOption {
@@ -153,6 +155,14 @@ with lib;
       type = types.str;
       description = "mini-vm OrbStack VM IP address";
       default = "192.168.138.4";
+    };
+
+    sshKeys = {
+      air = mkOption {
+        type = types.str;
+        description = "MacBook Air SSH public key";
+        default = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILC9hnu0qrOSGfAm8fcjZdNtn0UJlHjfzSJKglz0UDZv ivan@Ivans-MacBook-Air";
+      };
     };
 
     homeWorkPath = mkOption {
