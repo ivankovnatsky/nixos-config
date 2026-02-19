@@ -45,18 +45,6 @@
         ];
       };
 
-      "ryjnn-fdrug" = {
-        path = "${config.users.users.${username}.home}/Sources/github.com/ivankovnatsky/notes";
-        label = "Sources/github.com/ivankovnatsky/notes";
-        devices = [
-          "Lusha-Macbook-Ivan-Kovnatskyi"
-          "a3"
-          "Ivans-MacBook-Pro"
-          "Ivans-MacBook-Air"
-          "Ivans-Mac-mini"
-        ];
-      };
-
       "shtdy-s2c9s" = {
         path = "${config.users.users.${username}.home}/Sources/github.com/ivankovnatsky/nixos-config";
         label = "Sources/github.com/ivankovnatsky/nixos-config";
