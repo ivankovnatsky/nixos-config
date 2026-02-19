@@ -399,8 +399,9 @@ def batch_download_impl(
     embed_subs=True,
     max_height=DEFAULT_MAX_HEIGHT,
     workers=1,
+    clean_list=False,
 ):
-    """Download videos from a list file, removing successfully downloaded URLs"""
+    """Download videos from a list file"""
     if url_file is None:
         url_file = DEFAULT_URL_FILE
 
@@ -439,7 +440,8 @@ def batch_download_impl(
                 url, success = future.result()
                 if success:
                     success_count += 1
-                    remove_url_from_file(url, url_file)
+                    if clean_list:
+                        remove_url_from_file(url, url_file)
                     click.echo(f"[{success_count}/{total_count}] Completed: {url}")
                 else:
                     failed_urls.append(url)
@@ -456,7 +458,8 @@ def batch_download_impl(
             _, success = batch_download_single(url, output_dir, embed_subs, max_height)
             if success:
                 click.echo(f"Successfully downloaded: {url}")
-                remove_url_from_file(url, url_file)
+                if clean_list:
+                    remove_url_from_file(url, url_file)
                 success_count += 1
             else:
                 click.echo(f"Failed to download: {url}")
@@ -1246,9 +1249,16 @@ def process(
     default=DEFAULT_MAX_HEIGHT,
     help=f"Maximum video height (default: {DEFAULT_MAX_HEIGHT})",
 )
-def batch(url_file, output_dir, workers, embed_subs, max_height):
+@click.option(
+    "--clean-list",
+    is_flag=True,
+    help="Remove successfully downloaded URLs from the list file",
+)
+def batch(url_file, output_dir, workers, embed_subs, max_height, clean_list):
     """Download videos from a URL list file."""
-    success = batch_download_impl(url_file, output_dir, embed_subs, max_height, workers)
+    success = batch_download_impl(
+        url_file, output_dir, embed_subs, max_height, workers, clean_list
+    )
     sys.exit(0 if success else 1)
 
 
