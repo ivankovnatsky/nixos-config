@@ -6,6 +6,6 @@
   ];
 
   home.file = {
-    "${config.xdg.configHome}/yt-dlp/config".text = '''';
+    "${config.xdg.configHome}/yt-dlp/config".text = "";
   };
 }

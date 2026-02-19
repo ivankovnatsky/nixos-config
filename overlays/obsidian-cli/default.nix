@@ -36,4 +36,3 @@ buildGoModule rec {
     mainProgram = "obsidian-cli";
   };
 }
-
