@@ -42,6 +42,7 @@
         name = "kitty@nightly";
         greedy = true;
       }
+      "mac-mouse-fix"
       "mos"
       "silicon-labs-vcp-driver"
       "stats"
