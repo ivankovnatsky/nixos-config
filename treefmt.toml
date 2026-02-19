@@ -1,3 +1,6 @@
+[global]
+excludes = ["home/obsidian.nix"]
+
 [formatter.ruff]
 command = "ruff"
 options = ["format"]
@@ -34,6 +37,10 @@ command = "shfmt"
 options = ["-w", "-i", "2"]
 includes = ["*.sh", "*.bash"]
 
+# --format=diff only shows auto-fixable issues; to see all errors run:
+# ```console
+# find . -name '*.sh' -not -path '*/.git/*' -exec shellcheck {} +
+# ```
 [formatter.shellcheck]
 command = "shellcheck"
 options = ["--format=diff"]
