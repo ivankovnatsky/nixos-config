@@ -17,12 +17,21 @@ The purpose of this script is to only exclude directories to which user does
 not have access in macOS and which contain some data that is not needed, like
 VMs and so.
 
+---
+
 https://stackoverflow.com/a/984259
 
 2026-01-09: Ported to Python for improved maintainability. Functionality unchanged.
 2026-01-16: Removed scp support, miniserve is now the default upload method.
 2026-01-16: Removed rclone support. Keep backup machine as single source of
             truth for sync with drive
+
+---
+
+Do not add file logging or redirect stderr. bsdtar on macOS writes both the -v
+file listing and error messages (e.g. "Operation not permitted") to stderr.
+Redirecting it to a log file hides errors from the caller and breaks failure
+detection. Keep stderr going to the terminal for real-time visibility.
 """
 
 import argparse
@@ -102,6 +111,7 @@ EXCLUDE_PATTERNS = [
     "**/Library/Metadata/**",
     "**/Library/Biome/**",
     "**/Library/pnpm/**",
+    "**/Library/DuetExpertCenter/**",
     "**/Library/Containers/com.apple.AccessibilitySettingsWidgetExtension/**",
     "**/Library/Containers/com.apple.AppStore/**",
     "**/Library/Containers/com.apple.AvatarUI.AvatarPickerMemojiPicker/**",
