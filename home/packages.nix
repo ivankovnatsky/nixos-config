@@ -12,6 +12,7 @@
     aria2
     asusrouter-cli
     backup-home
+    cleanup-home
     dns
     ffmpeg
     gh-notifications
