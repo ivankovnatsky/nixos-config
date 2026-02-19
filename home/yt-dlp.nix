@@ -6,8 +6,6 @@
   ];
 
   home.file = {
-    "${config.xdg.configHome}/yt-dlp/config".text = ''
-      -S "res:1080"
-    '';
+    "${config.xdg.configHome}/yt-dlp/config".text = '''';
   };
 }
