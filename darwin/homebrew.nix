@@ -43,7 +43,6 @@
         greedy = true;
       }
       "mac-mouse-fix"
-      "mos"
       "silicon-labs-vcp-driver"
       "stats"
       "steam"
