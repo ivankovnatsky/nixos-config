@@ -17,6 +17,7 @@ from pathlib import Path
 import click
 
 DEFAULT_URL_FILE = ".list.txt"
+DEFAULT_FAILED_FILE = ".list.failed.txt"
 DEFAULT_MAX_HEIGHT = 1080
 DEFAULT_SUB_LANGS = "en"
 DEFAULT_SEGMENT_DURATION = 10
@@ -356,6 +357,15 @@ def download_with_split(
     return success
 
 
+def append_failed_url(url, failed_file=DEFAULT_FAILED_FILE):
+    """Append a failed URL to the failed list file."""
+    try:
+        with open(failed_file, "a") as f:
+            f.write(url + "\n")
+    except Exception as e:
+        click.echo(f"Warning: Could not write to {failed_file}: {e}", err=True)
+
+
 def remove_url_from_file(url_to_remove, url_file):
     """Remove a specific URL from the file immediately"""
     try:
@@ -446,6 +456,7 @@ def batch_download_impl(
                     click.echo(f"[{success_count}/{total_count}] Completed: {url}")
                 else:
                     failed_urls.append(url)
+                    append_failed_url(url)
                     click.echo(f"[FAILED] {url}")
 
         click.echo(
@@ -464,6 +475,7 @@ def batch_download_impl(
                 success_count += 1
             else:
                 click.echo(f"Failed to download: {url}")
+                append_failed_url(url)
 
         if total_count > 0:
             click.echo(
