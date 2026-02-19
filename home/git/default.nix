@@ -30,6 +30,24 @@
           exit 0
         fi
 
+        # Check parent git command for bulk commit patterns
+        parent_cmd=$(ps -ww -o args= -p $PPID 2>/dev/null || true)
+
+        # Block git commit -a/--all (catches -a, -am, -av, etc.)
+        if printf '%s' "$parent_cmd" | grep -qE '\s-[a-zA-Z]*a[a-zA-Z]*(\s|$)' || \
+           printf '%s' "$parent_cmd" | grep -qE '\s--all(\s|$)'; then
+          echo "ERROR: git commit -a/--all is not allowed" >&2
+          echo "Use: git commit <file> -m \"message\"" >&2
+          exit 1
+        fi
+
+        # Block git commit . (current directory = everything)
+        if printf '%s' "$parent_cmd" | grep -qE '\s\.(\s|$)'; then
+          echo "ERROR: git commit . is not allowed" >&2
+          echo "Use: git commit <file> -m \"message\"" >&2
+          exit 1
+        fi
+
         # When git commit <file-or-dir> is used, GIT_INDEX_FILE points to a temp index
         # When git commit (no file) is used, GIT_INDEX_FILE is empty or .git/index
         if [[ -z "''${GIT_INDEX_FILE:-}" || "$GIT_INDEX_FILE" == *".git/index" ]]; then
