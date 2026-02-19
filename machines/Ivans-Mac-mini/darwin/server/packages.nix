@@ -15,7 +15,7 @@
     dust # For disk usage analysis
 
     wget
-    nixpkgs-darwin-master.yt-dlp
+    nixpkgs-darwin-master-ytdlp.yt-dlp
     gallery-dl
 
     # Required for Uptime Kuma tailscale-ping monitors
