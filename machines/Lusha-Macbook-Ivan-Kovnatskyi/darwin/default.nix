@@ -43,7 +43,7 @@
 
     ../../../darwin/amethyst.nix
     ../../../darwin/hammerspoon.nix
-    ../../../darwin/mos.nix
+    ../../../darwin/mac-mouse-fix.nix
     ../../../darwin/stats.nix
     ../../../darwin/twingate.nix
   ];

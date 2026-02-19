@@ -13,7 +13,7 @@
       "xwmx/homebrew-taps/notes-app"
     ];
     casks = [
-      "mos"
+      "mac-mouse-fix"
     ];
     caskArgs = {
       no_quarantine = true;

@@ -43,7 +43,7 @@
         name = "kitty";
         greedy = true;
       }
-      "mos"
+      "mac-mouse-fix"
       "obsidian"
       "stats"
       # Need to keep twingate always latest version, sometimes it fails to
