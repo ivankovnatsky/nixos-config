@@ -98,6 +98,13 @@ Configured Work Focus to filter out Kandji MDM notifications:
 - Configured reverse scrolling direction (natural scrolling for mouse)
 - No smooth scrolling feature (downgrade from Mos which had this)
 
+### Mac Mouse Fix
+
+- Enable Mac Mouse Fix: on
+- Grant Accessibility Access
+- Show in Menu Bar: on
+- Check for Updates: off
+
 ### Chromium
 
 - Allow:
