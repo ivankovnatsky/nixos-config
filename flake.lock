@@ -610,11 +610,11 @@
     },
     "nixpkgs-darwin-master-ytdlp": {
       "locked": {
-        "lastModified": 1770978878,
-        "narHash": "sha256-c3sgK/+YTRulExUJBfpK6AMYRtM8ixLjRVHlEEKrsEA=",
+        "lastModified": 1771506008,
+        "narHash": "sha256-eM+1apqq7nHfInCWqXJi6jtv5OjgCvMbITes/22p1Ek=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "acd046b4c7e8c26428773e569930ff1f9efeaa25",
+        "rev": "54f68e828fee8fbe319fc9dde9044fd29514a641",
         "type": "github"
       },
       "original": {
