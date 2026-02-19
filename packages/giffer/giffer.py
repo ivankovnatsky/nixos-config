@@ -393,7 +393,16 @@ def batch_download_single(
             ["--write-auto-subs", "--embed-subs", "--sub-langs", DEFAULT_SUB_LANGS]
         )
 
-    cmd_args.extend(["--check-formats", "-f", get_format_string(max_height), "-o", output_template, url])
+    cmd_args.extend(
+        [
+            "--check-formats",
+            "-f",
+            get_format_string(max_height),
+            "-o",
+            output_template,
+            url,
+        ]
+    )
 
     result = run_yt_dlp(cmd_args)
     if result.returncode == 0:
