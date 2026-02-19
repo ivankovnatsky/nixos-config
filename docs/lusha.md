@@ -2,8 +2,8 @@
 
 ## Calendar
 
-Do not add work calendars to Apple Calendar - Google Calendar sync can be slow to
-update and unreliable for time-sensitive work events.
+Do not add work calendars to Apple Calendar - Google Calendar sync can be slow
+to update and unreliable for time-sensitive work events.
 
 ### Google Calendar Sync
 
