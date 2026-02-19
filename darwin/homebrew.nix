@@ -50,7 +50,6 @@
       "visual-studio-code"
     ];
     masApps = {
-      "Xcode" = 497799835;
       "Numbers" = 409203825;
       "Pages" = 409201541;
       "Bitwarden" = 1352778147;
