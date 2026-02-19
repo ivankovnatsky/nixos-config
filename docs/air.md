@@ -43,6 +43,7 @@
 
 ### Mac Mouse Fix
 
+- Enable Mac Mouse Fix: on
 - Grant Accessibility Access
 - Show in Menu Bar: on
 - Check for Updates: off
