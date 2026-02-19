@@ -41,6 +41,12 @@
 
 - Allow access to files managed by "iCloud Drive"
 
+### Mac Mouse Fix
+
+- Grant Accessibility Access
+- Show in Menu Bar: on
+- Check for Updates: off
+
 ## Permissions
 
 - Allow accessory to connect? / Do you want to connect Samsung PSSD T7 to this
