@@ -460,7 +460,6 @@ def batch_download_impl(
                 success_count += 1
             else:
                 click.echo(f"Failed to download: {url}")
-                break
 
         if total_count > 0:
             click.echo(
