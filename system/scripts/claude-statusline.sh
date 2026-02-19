@@ -12,11 +12,7 @@ CTX_SIZE=$(echo "$input" | jq -r '.context_window.context_window_size // 200000'
 TRANSCRIPT=$(echo "$input" | jq -r '.transcript_path // ""')
 
 CYAN='\033[36m'
-GREEN='\033[32m'
-YELLOW='\033[33m'
-RED='\033[31m'
 MAGENTA='\033[35m'
-BLUE='\033[34m'
 DIM='\033[90m'
 RESET='\033[0m'
 
