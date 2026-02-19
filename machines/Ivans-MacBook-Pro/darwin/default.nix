@@ -8,7 +8,7 @@
     ../../../darwin/fonts.nix
     ../../../darwin/hammerspoon.nix
     ../../../darwin/init.nix
-    ../../../darwin/mos.nix
+    ../../../darwin/mac-mouse-fix.nix
     ../../../darwin/nextdns.nix
     ../../../darwin/nix.nix
     ../../../darwin/no-dock-restart.nix
