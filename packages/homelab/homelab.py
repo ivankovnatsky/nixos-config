@@ -11,6 +11,7 @@ MINI_USER = "ivan"
 RETRY_INTERVAL = 5  # seconds between retries
 SERVICE_CHECK_TIMEOUT = 60  # max seconds to wait for services
 SSH_TIMEOUT = 10  # seconds for SSH connection timeout
+MAX_UNLOCK_ATTEMPTS = 3  # max FileVault unlock attempts
 
 
 def ssh_run(
@@ -106,17 +107,43 @@ def wait_for_network() -> None:
         attempt += 1
 
 
+def is_filevault_locked() -> bool:
+    """Check if Mini is still in FileVault lock state."""
+    result = ssh_run("echo ok", timeout=5, batch_mode=True, capture_output=True)
+    if result.returncode == 0:
+        return False
+    combined = result.stdout + result.stderr
+    return "locked" in combined.lower()
+
+
 def power_on() -> int:
     """Unlock and connect to Mini."""
     # Wait for network connectivity before attempting SSH
     wait_for_network()
 
-    print(f"Attempting to unlock Mini at {MINI_IP}...")
+    # FileVault unlock with retry on wrong password
+    for attempt in range(1, MAX_UNLOCK_ATTEMPTS + 1):
+        if attempt > 1:
+            print(f"\nRetrying unlock... (attempt {attempt}/{MAX_UNLOCK_ATTEMPTS})")
+        else:
+            print(f"Attempting to unlock Mini at {MINI_IP}...")
 
-    # First attempt - this handles the FileVault unlock prompt
-    # Note: FileVault unlock always closes the connection after success,
-    # so we can't rely on return code here.
-    ssh_run("echo 'Connected'")
+        # Interactive SSH for FileVault unlock prompt
+        # Note: FileVault unlock always closes the connection after success,
+        # so we can't rely on return code here.
+        ssh_run("echo 'Connected'")
+
+        # Brief wait to let the system process the unlock
+        time.sleep(2)
+
+        # Check if system is still in FileVault lock state
+        if not is_filevault_locked():
+            break
+
+        print("Unlock failed (wrong password?).")
+    else:
+        print(f"Failed to unlock after {MAX_UNLOCK_ATTEMPTS} attempts.")
+        return 1
 
     # Wait for system to boot after FileVault unlock
     print("Waiting for Mini to boot...")
