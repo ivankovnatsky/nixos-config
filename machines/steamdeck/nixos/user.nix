@@ -1,7 +1,11 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  username,
+  ...
+}:
 
 {
-  users.users.ivan = {
+  users.users.${username} = {
     shell = pkgs.fish;
     linger = true;
   };
