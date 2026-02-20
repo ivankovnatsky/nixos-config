@@ -89,16 +89,6 @@
         ];
       };
 
-      "liftoff" = {
-        path = "${config.users.users.${username}.home}/.config/unity3d/LuGus Studios/Liftoff/RaceTimes";
-        label = ".config/unity3d/LuGus Studios/Liftoff/RaceTimes";
-        devices = [
-          "a3"
-          "Ivans-MacBook-Pro"
-          "Ivans-MacBook-Air"
-        ];
-      };
-
       "liftoff-game" = {
         path = "${config.users.users.${username}.home}/.local/share/Steam/steamapps/common/Liftoff/Liftoff_Data/RaceTimes";
         label = ".local/share/Steam/steamapps/common/Liftoff/Liftoff_Data/RaceTimes";
