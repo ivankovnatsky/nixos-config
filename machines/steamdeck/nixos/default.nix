@@ -1,6 +1,7 @@
 {
   imports = [
     ../../../modules/flags
+    ../../../modules/nixos/syncthing-cleaner
     ../../../modules/nixos/syncthing-mgmt
     ../../../nixos/chromium.nix
     ../../../nixos/keyboard.nix
@@ -11,6 +12,7 @@
     ./configuration.nix
     ./cryptenroll.nix
     ./default-apps.nix
+    ./dotfiles-sync.nix
     ./desktop.nix
     ./fonts.nix
     ./jovian.nix
@@ -22,6 +24,7 @@
     ./sd-card.nix
     ./security.nix
     ../../../nixos/sudo.nix
+    ./syncthing-cleaner.nix
     ./syncthing-mgmt.nix
     ./tpm2.nix
     ./user.nix
