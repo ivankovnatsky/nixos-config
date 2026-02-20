@@ -1,5 +1,22 @@
 # Steam Deck NixOS Setup
 
+```console
+passwd ivan
+```
+
+Follow [nixos-install-luks.md](nixos-install-luks.md) for disk setup. Used 16GB
+for swap:
+
+```console
+lvcreate -L 16G -n swap vg
+```
+
+WIFI is 192.168.50.10, ethernet is 192.168.50.11.
+
+```console
+ssh-copy-id ivan@192.168.50.103
+```
+
 ## Initial WiFi Connection
 
 Connect via command line:
