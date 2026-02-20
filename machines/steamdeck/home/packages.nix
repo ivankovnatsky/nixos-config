@@ -39,9 +39,14 @@
 
     ghostty
 
+    backup-home
+    dotfiles
+    git-message
+    jq
     nodejs
     gnumake
     delta
+    poweroff
 
     gh-notifications
 
