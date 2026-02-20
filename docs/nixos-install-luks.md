@@ -78,26 +78,12 @@ cloned repo.
 
 ```console
 nixos-generate-config --root /mnt
-
-nix-env -iA nixos.nixUnstable
-nix-env -iA nixos.git
-nix-env -iA nixos.neovim
-nix-env -iA nixos.gnupg
-nix-env -iA nixos.tmux
-nix-env -iA nixos.syncthing
-nix-env -iA nixos.gnumake
-
-git clone https://github.com/ivankovnatsky/nixos-config /mnt/home/ivan/Sources/github.com/ivankovnatsky/nixos-config
-
-cd /mnt/home/ivan/
-
-ssh ivan@IP
-tar cfv gnupg.tar ~/.gnupg
-scp ivan@IP:~/gnupg.tar .
-tar xf gnupg.tar
-
-cd /mnt/home/ivan/Sources/github.com/ivankovnatsky/nixos-config
-nvim .
+cd /mnt/etc/nixos
+vim configuration.nix
+# Edit desired options
+# TODO: Indicate what you needed to enable specifically, every item:
+# - networking.firewall.allowedTCPPorts = [ 22 ];
+# -
 ```
 
 Before running install make sure you added to configuration.nix:
@@ -116,13 +102,8 @@ Before running install make sure you added to configuration.nix:
 ```console
 nixos-install
 
-# or if flake-based:
-
-nixos-install --flake .#desktop
-
-nixos-enter --root /mnt
-
-chown -R ivan:users /mnt/home/ivan
+# Rescue command if needed
+# nixos-enter --root /mnt
 
 reboot
 ```
