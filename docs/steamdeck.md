@@ -119,6 +119,9 @@ This allows steamdeck to use a3 as a remote build host without password prompts.
 
 ## Rebuild
 
+Steam Deck is not fast enough for automatic rebuilds (`rebuild-diff`,
+`rebuild-daemon`). Always rebuild manually:
+
 ```console
 sudo nixos-rebuild switch --flake .#steamdeck
 ```
