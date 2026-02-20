@@ -63,6 +63,14 @@ Then update sops:
 sops secrets/default.yaml
 ```
 
+### Trigger folder scan on air
+
+Useful to force a rescan and push nixos-config to steamdeck:
+
+```console
+syncthing-mgmt cli scan shtdy-s2c9s
+```
+
 ## Copy hardware and base configuration
 
 Copy hardware configuration from live system:
@@ -72,7 +80,10 @@ scp ivan@192.168.50.11:/etc/nixos/hardware-configuration.nix machines/steamdeck/
 scp ivan@192.168.50.11:/etc/nixos/configuration.nix machines/steamdeck/nixos/
 ```
 
-nixos-config is synced via Syncthing from other machines.
+nixos-config is synced via Syncthing from other machines. After `syncthing-mgmt`
+adds the steamdeck device, you still need to manually accept the steamdeck
+device on the Air machine in the Syncthing UI and confirm the nixos-config
+folder share.
 
 Then on steamdeck:
 
