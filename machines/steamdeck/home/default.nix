@@ -1,9 +1,8 @@
-{ pkgs, ... }:
+{ ... }:
 
 {
   imports = [
     ../../../home/chromium.nix
-    ../../../home/ccstatusline.nix
     ../../../home/claude.nix
     ../../../home/codex.nix
     ../../../home/gemini.nix
@@ -19,7 +18,6 @@
     ../../../home/npm.nix
     ../../../home/rebuild-diff.nix
     ../../../home/scripts.nix
-    ../../../home/shell.nix
     ../../../home/sops.nix
     ../../../home/starship
     ../../../home/tmux.nix
