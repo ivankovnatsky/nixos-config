@@ -1,5 +1,11 @@
-{ config, lib, pkgs, ... }:
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
+  # FIXME: why do we use root here?
   # Generate SSH key for root to connect to remote builder
   systemd.services.generate-nixbuilder-ssh-key = {
     description = "Generate SSH key for root remote builds";
