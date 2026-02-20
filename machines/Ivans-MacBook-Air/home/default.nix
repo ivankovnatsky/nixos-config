@@ -26,6 +26,7 @@
     ../../../home/nixvim/plugins/codediff
     ../../../home/nixvim/plugins/gpg-nvim
     ../../../home/nixvim.nix
+    ../../../home/notes.nix
     ../../../home/npm.nix
     ../../../home/nushell.nix
     ../../../home/packages-darwin.nix
