@@ -7,6 +7,7 @@
     ".git",
     ".syncthing.*.tmp",
     ".obsidian",
+    ".ruff_cache",
     ".watchman-cookie-*",
     "Makefile",
     "docs",
