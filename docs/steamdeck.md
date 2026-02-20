@@ -60,7 +60,7 @@ ssh ivan@192.168.50.11 'grep -oP "<apikey>\K[^<]+" ~/.local/state/syncthing/conf
 Then update sops:
 
 ```console
-sops set secrets/default.yaml '["syncthing"]["devices"]["steamdeck"]' '"NEW-DEVICE-ID"'
+sops secrets/default.yaml
 ```
 
 ## Copy hardware and base configuration
