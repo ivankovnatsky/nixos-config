@@ -9,6 +9,8 @@
     createHome = true;
     shell = pkgs.bash;
     openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINduoENZ5s/uUim5k74kdZRDavAcIdtoY/txnn+ueXOQ root@steamdeck"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBAVbd/fRD0/cnBznyI7AtsCXVeM1Mr2hzQXY7nufT4S ivan@steamdeck"
     ];
   };
 
