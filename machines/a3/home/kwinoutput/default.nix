@@ -1,6 +1,4 @@
-{
-  ...
-}:
+{ osConfig, ... }:
 
 {
   # KDE Plasma display configuration with 200% scaling
@@ -24,10 +22,9 @@
           diff -u ${./kwinoutputconfig.json} ~/.config/kwinoutputconfig.json || true
           echo "────────────────────────────────────────────────────────"
           echo "To update the nix config, run:"
-          echo "  cp ~/.config/kwinoutputconfig.json ~/Sources/github.com/ivankovnatsky/nixos-config/machines/a3/home/kwinoutput/kwinoutputconfig.json"
+          echo "  cp ~/.config/kwinoutputconfig.json ~/Sources/github.com/ivankovnatsky/nixos-config/machines/${osConfig.networking.hostName}/home/kwinoutput/kwinoutputconfig.json"
         fi
       fi
     '';
   };
-
 }
