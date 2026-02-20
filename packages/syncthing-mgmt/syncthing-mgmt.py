@@ -173,6 +173,10 @@ class SyncthingClient:
             endpoint += f"&folder={folder_id}"
         return self._api_call("GET", endpoint)
 
+    def scan_folder(self, folder_id: str):
+        """Trigger a rescan for a folder."""
+        return self._api_call("POST", f"/rest/db/scan?folder={folder_id}")
+
     def get_system_status(self):
         """Get system status (includes local device ID)."""
         return self._api_call("GET", "/rest/system/status")
@@ -1134,6 +1138,28 @@ def cmd_status(args):
         sys.exit(1)
 
 
+def cmd_scan(args):
+    """Trigger a rescan for folders."""
+    try:
+        client = get_client(args)
+        folders_to_scan = args.folders
+
+        if not folders_to_scan:
+            folders = client.get_folders()
+            folders_to_scan = [
+                f["id"] for f in folders if f and isinstance(f, dict) and "id" in f
+            ]
+
+        for folder_id in folders_to_scan:
+            logging.info(f"Scanning {folder_id}...")
+            client.scan_folder(folder_id)
+            logging.info("  ✓ Scan triggered")
+
+    except Exception as e:
+        logging.error(f"Error: {e}")
+        sys.exit(1)
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Syncthing configuration management tool",
@@ -1167,6 +1193,15 @@ def main():
         "status", help="Show status of configured devices and folders (default)"
     )
     add_cli_args(status_parser)
+
+    # CLI: scan command
+    scan_parser = cli_subparsers.add_parser(
+        "scan", help="Trigger a rescan for one or more folders"
+    )
+    add_cli_args(scan_parser)
+    scan_parser.add_argument(
+        "folders", nargs="*", help="Folder IDs to scan (default: all folders)"
+    )
 
     # CLI: list command with subcommands
     list_parser = cli_subparsers.add_parser("list", help="List configured resources")
@@ -1258,6 +1293,8 @@ def main():
                 cmd_list_folders(args)
             else:
                 list_parser.print_help()
+        elif args.cli_command == "scan":
+            cmd_scan(args)
         elif args.cli_command == "status":
             cmd_status(args)
 
