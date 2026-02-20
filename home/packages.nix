@@ -8,6 +8,7 @@
         markitdown
       ]
     ))
+    obs
     age
     aria2
     asusrouter-cli
