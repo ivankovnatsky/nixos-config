@@ -43,8 +43,8 @@
     gnumake
     delta
 
-    open-gh-notifications-py
+    gh-notifications
 
-    switch-appearance
+    settings
   ];
 }
