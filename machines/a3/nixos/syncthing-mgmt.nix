@@ -99,6 +99,14 @@
         ];
       };
 
+      "liftoff-game" = {
+        path = "${config.users.users.${username}.home}/.local/share/Steam/steamapps/common/Liftoff/Liftoff_Data/RaceTimes";
+        label = ".local/share/Steam/steamapps/common/Liftoff/Liftoff_Data/RaceTimes";
+        devices = [
+          "a3"
+        ];
+      };
+
       "taskwarrior" = {
         path = "${config.users.users.${username}.home}/.task";
         label = ".task";
