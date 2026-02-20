@@ -68,6 +68,7 @@ Configured Work Focus to filter out Kandji MDM notifications:
 
 - Open app from the internet -- Allow
 - Notifications
+- Local network access
 
 ### Hammerspoon
 
