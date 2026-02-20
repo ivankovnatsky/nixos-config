@@ -81,13 +81,14 @@
       {
         nixpkgs.overlays = [
           # Use self.overlay but exclude mangohud (causes build issues on steamdeck)
-          (final: prev:
+          (
+            final: prev:
             let
               baseOverlay = inputs.self.overlay final prev;
             in
             builtins.removeAttrs baseOverlay [ "mangohud" ]
           )
-          inputs.nur.overlay
+          inputs.nur-nixos-unstable.overlays.default
         ];
         nixpkgs.config.allowUnfree = true;
         nix.nixPath = [
