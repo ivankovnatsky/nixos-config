@@ -468,6 +468,27 @@
         "type": "github"
       }
     },
+    "jovian-nixos-unstable": {
+      "inputs": {
+        "nix-github-actions": "nix-github-actions",
+        "nixpkgs": [
+          "nixpkgs-nixos-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1771587792,
+        "narHash": "sha256-XGFLdlLOez7f0rmjlF+1TLXyBguy8gx2aBHx/Q5JXxs=",
+        "owner": "Jovian-Experiments",
+        "repo": "Jovian-NixOS",
+        "rev": "b49fc54950e251f166a2240799315033ab7a8916",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Jovian-Experiments",
+        "repo": "Jovian-NixOS",
+        "type": "github"
+      }
+    },
     "keith-homebrew-tap": {
       "flake": false,
       "locked": {
@@ -481,27 +502,6 @@
       "original": {
         "owner": "keith",
         "repo": "homebrew-formulae",
-        "type": "github"
-      }
-    },
-    "jovian-nixos-unstable": {
-      "inputs": {
-        "nix-github-actions": "nix-github-actions",
-        "nixpkgs": [
-          "nixpkgs-nixos-unstable"
-        ]
-      },
-      "locked": {
-        "lastModified": 1763714684,
-        "narHash": "sha256-ZNJPAaeSYQTDgvwwE8XHhCz4HiHqYoUyoXdoBE2nxug=",
-        "owner": "Jovian-Experiments",
-        "repo": "Jovian-NixOS",
-        "rev": "6178d787ee61b8586fdb0ccb8644fbfd5317d0f3",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Jovian-Experiments",
-        "repo": "Jovian-NixOS",
         "type": "github"
       }
     },
@@ -1134,8 +1134,8 @@
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
         "ivankovnatsky-homebrew-tap": "ivankovnatsky-homebrew-tap",
-        "keith-homebrew-tap": "keith-homebrew-tap",
         "jovian-nixos-unstable": "jovian-nixos-unstable",
+        "keith-homebrew-tap": "keith-homebrew-tap",
         "nix-darwin-darwin-release": "nix-darwin-darwin-release",
         "nix-darwin-darwin-unstable": "nix-darwin-darwin-unstable",
         "nix-homebrew": "nix-homebrew",
