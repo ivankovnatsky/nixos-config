@@ -1,4 +1,4 @@
-{ config, lib, pkgs, username, ... }:
+{ username, ... }:
 
 {
   jovian = {
@@ -20,7 +20,7 @@
     };
 
     steamos = {
-      useSteamOSConfig = false;
+      useSteamOSConfig = true;
     };
   };
 }
