@@ -7,7 +7,6 @@
         (jira.overridePythonAttrs (old: {
           propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ old.optional-dependencies.cli;
         }))
-        markitdown
       ]
     ))
     (wrapHelm kubernetes-helm { plugins = with pkgs.kubernetes-helmPlugins; [ helm-secrets ]; })
