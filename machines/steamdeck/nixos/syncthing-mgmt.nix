@@ -31,16 +31,16 @@
 
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
     folders = {
-      "fpbxa-6zw5z" = {
-        path = "/home/${username}/Sources";
-        label = "Sources";
-        devices = [
-          "a3"
-          "Ivans-Mac-mini"
-          "Ivans-MacBook-Pro"
-          "steamdeck"
-        ];
-      };
+      # "fpbxa-6zw5z" = {
+      #   path = "/home/${username}/Sources";
+      #   label = "Sources";
+      #   devices = [
+      #     "a3"
+      #     "Ivans-Mac-mini"
+      #     "Ivans-MacBook-Pro"
+      #     "steamdeck"
+      #   ];
+      # };
 
       "shtdy-s2c9s" = {
         path = "/home/${username}/Sources/github.com/ivankovnatsky/nixos-config";
