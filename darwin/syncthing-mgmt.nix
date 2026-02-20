@@ -64,7 +64,7 @@ in
         devices = [
           "Ivans-Mac-mini"
           "Ivans-MacBook-Pro"
-          "steamdeck"
+          # "steamdeck"
           "Ivans-MacBook-Air"
           "a3"
         ];
