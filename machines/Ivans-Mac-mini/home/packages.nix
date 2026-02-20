@@ -1,11 +1,6 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
-    (python313.withPackages (
-      ps: with ps; [
-        markitdown
-      ]
-    ))
     age
     aria2
     backup-home
