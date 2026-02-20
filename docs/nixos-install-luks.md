@@ -80,9 +80,20 @@ cloned repo.
 nixos-generate-config --root /mnt
 cd /mnt/etc/nixos
 vim configuration.nix
-# Edit desired options
-# TODO: Indicate what you needed to enable specifically, every item:
-# - networking.firewall.allowedTCPPorts = [ 22 ];
+# Edit desired options:
+# - boot.kernelPackages = pkgs.linuxPackages_latest;
+# - networking.hostName
+# - networking.networkmanager.enable = true;
+# - time.timeZone = "...";
+# - i18n.defaultLocale = "en_US.UTF-8";
+# - services.xserver.enable (disabled)
+# - services.pipewire (enable, pulse.enable)
+# - services.libinput.enable
+# - users.users.<name> (isNormalUser, extraGroups, packages)
+# - programs.gnupg.agent (enable, enableSSHSupport)
+# - services.openssh.enable = true;
+# - networking.firewall.allowedTCPPorts = [ 22 22000 8384 ];
+# - networking.firewall.allowedUDPPorts = [ 22000 21027 ];
 # -
 ```
 
