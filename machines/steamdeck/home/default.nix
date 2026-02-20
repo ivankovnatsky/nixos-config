@@ -24,13 +24,13 @@
     ../../../home/starship
     ../../../home/tmux.nix
     ../../../modules/flags
-    ../../../modules/home/manual-packages
+    ../../../modules/home/tools
     ./btop.nix
     ./firefox.nix
     ./flags.nix
     ./gpg.nix
     ./kwinoutput
-    ./manual-packages.nix
+    ./tools.nix
     ./packages.nix
     ./plasma.nix
     ./syncthing.nix
