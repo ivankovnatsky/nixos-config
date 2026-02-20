@@ -68,7 +68,17 @@ sops set secrets/default.yaml '["syncthing"]["devices"]["steamdeck"]' '"NEW-DEVI
 Copy hardware configuration from live system:
 
 ```console
-cp /etc/nixos/.* machines/steamdeck/nixos/
+scp ivan@192.168.50.11:/etc/nixos/hardware-configuration.nix machines/steamdeck/nixos/
+scp ivan@192.168.50.11:/etc/nixos/configuration.nix machines/steamdeck/nixos/
+```
+
+nixos-config is synced via Syncthing from other machines.
+
+Then on steamdeck:
+
+```console
+cd ~/Sources/github.com/ivankovnatsky/nixos-config
+sudo nixos-rebuild switch --flake .#steamdeck
 ```
 
 ## TPM2
