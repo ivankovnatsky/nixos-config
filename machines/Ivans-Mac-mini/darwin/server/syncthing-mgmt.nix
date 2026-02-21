@@ -125,6 +125,7 @@
           "a3"
           "Ivans-MacBook-Pro"
           "Ivans-MacBook-Air"
+          "steamdeck"
         ];
       };
 
