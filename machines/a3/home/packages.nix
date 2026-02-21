@@ -5,26 +5,26 @@
     age # Secrets management
     backup-home # Home directory backup tool
     delta
+    dotfiles
     dust # A more intuitive version of du
     fastfetch
     genpass # Password generator
+    gh-notifications
     ghostty
     git-message
     gnumake
     gum
     jq
     kdePackages.krdc # KDE Remote Desktop Client
-    kwalletcli # KDE Wallet integration # Provides pinentry-kwallet for GPG integration
-    libnotify # Desktop notifications # Provides notify-send command
+    kwalletcli # Provides pinentry-kwallet for GPG integration
+    libnotify # Provides notify-send command
     lm_sensors # Provides the 'sensors' command for monitoring temperatures
     lsof # List open files
     nixfmt
-    poweroff
-    dotfiles
     nodejs
     nvtopPackages.nvidia # GPU monitoring (like htop for GPUs)
-    gh-notifications
     pigz # Parallel gzip compression
+    poweroff
     sesh
     settings
     smartmontools # Disk health monitoring (smartctl)
