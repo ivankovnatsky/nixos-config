@@ -55,6 +55,14 @@
         ];
       };
 
+      "liftoff-game" = {
+        path = "/run/media/${username}/56a47c24-d236-4f50-b010-bd31dd058d6d/steamapps/common/Liftoff/Liftoff_Data/RaceTimes";
+        label = "Liftoff/RaceTimes";
+        devices = [
+          "steamdeck"
+        ];
+      };
+
       "dotfiles" = {
         path = "/home/${username}/Sources/github.com/ivankovnatsky-local/dotfiles";
         label = "Sources/github.com/ivankovnatsky-local/dotfiles";
