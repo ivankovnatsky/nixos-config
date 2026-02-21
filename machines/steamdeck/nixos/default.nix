@@ -20,7 +20,7 @@
     ./jovian.nix
     ./networking.nix
     ./nixpkgs.nix
-    # ./remote-build.nix
+    ./remote-build.nix
     ./sd-card.nix
     ./security.nix
     ../../../nixos/sudo.nix
