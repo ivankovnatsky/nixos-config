@@ -115,7 +115,7 @@
     "flake-parts_4": {
       "inputs": {
         "nixpkgs-lib": [
-          "nixvim-nixos-unstable",
+          "nixvim-nixos-steamdeck-unstable",
           "nixpkgs"
         ]
       },
@@ -134,6 +134,48 @@
       }
     },
     "flake-parts_5": {
+      "inputs": {
+        "nixpkgs-lib": [
+          "nixvim-nixos-unstable",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1769996383,
+        "narHash": "sha256-AnYjnFWgS49RlqX7LrC4uA+sCCDBj0Ry/WOJ5XWAsa0=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "57928607ea566b5db3ad13af0e57e921e6b12381",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "type": "github"
+      }
+    },
+    "flake-parts_6": {
+      "inputs": {
+        "nixpkgs-lib": [
+          "nur-nixos-steamdeck-unstable",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1733312601,
+        "narHash": "sha256-4pDvzqnegAfRkPwO3wmwBhVi/Sye1mzps0zHWYnP88c=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "205b12d8b7cd4802fbcb8e8ef6a0f1408781a4f9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "type": "github"
+      }
+    },
+    "flake-parts_7": {
       "inputs": {
         "nixpkgs-lib": [
           "nur-nixos-unstable",
@@ -210,7 +252,7 @@
     },
     "flake-utils_4": {
       "inputs": {
-        "systems": "systems_8"
+        "systems": "systems_9"
       },
       "locked": {
         "lastModified": 1731533236,
@@ -229,7 +271,7 @@
     },
     "flake-utils_5": {
       "inputs": {
-        "systems": "systems_9"
+        "systems": "systems_10"
       },
       "locked": {
         "lastModified": 1726560853,
@@ -247,7 +289,7 @@
     },
     "flake-utils_6": {
       "inputs": {
-        "systems": "systems_10"
+        "systems": "systems_11"
       },
       "locked": {
         "lastModified": 1731533236,
@@ -323,6 +365,27 @@
       "original": {
         "owner": "nix-community",
         "ref": "release-25.11",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "home-manager-nixos-steamdeck-unstable": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-nixos-steamdeck-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1771647911,
+        "narHash": "sha256-18liNHHwOmcaKCpOptE3wLW97fm5v7RTLiZBecX7km0=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "436b27742c996b75e2baf8e835e3b3eae0c9fbd4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "master",
         "repo": "home-manager",
         "type": "github"
       }
@@ -468,11 +531,11 @@
         "type": "github"
       }
     },
-    "jovian-nixos-unstable": {
+    "jovian-nixos-steamdeck-unstable": {
       "inputs": {
         "nix-github-actions": "nix-github-actions",
         "nixpkgs": [
-          "nixpkgs-nixos-unstable"
+          "nixpkgs-nixos-steamdeck-unstable"
         ]
       },
       "locked": {
@@ -550,7 +613,7 @@
     "nix-github-actions": {
       "inputs": {
         "nixpkgs": [
-          "jovian-nixos-unstable",
+          "jovian-nixos-steamdeck-unstable",
           "nixpkgs"
         ]
       },
@@ -763,6 +826,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-nixos-steamdeck-unstable": {
+      "locked": {
+        "lastModified": 1771369470,
+        "narHash": "sha256-0NBlEBKkN3lufyvFegY4TYv5mCNHbi5OmBDrzihbBMQ=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "0182a361324364ae3f436a63005877674cf45efb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-nixos-unstable": {
       "locked": {
         "lastModified": 1769461804,
@@ -800,6 +879,22 @@
     },
     "nixpkgs_2": {
       "locked": {
+        "lastModified": 1771369470,
+        "narHash": "sha256-0NBlEBKkN3lufyvFegY4TYv5mCNHbi5OmBDrzihbBMQ=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "0182a361324364ae3f436a63005877674cf45efb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_3": {
+      "locked": {
         "lastModified": 1769461804,
         "narHash": "sha256-msG8SU5WsBUfVVa/9RPLaymvi5bI8edTavbIq3vRlhI=",
         "owner": "nixos",
@@ -814,7 +909,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_3": {
+    "nixpkgs_4": {
       "locked": {
         "lastModified": 1770978338,
         "narHash": "sha256-A/rQhvz/SvJwAB8m3cvkFNQgAAp8PxV6lTOwC5d4KYw=",
@@ -830,7 +925,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_4": {
+    "nixpkgs_5": {
       "locked": {
         "lastModified": 1730272153,
         "narHash": "sha256-B5WRZYsRlJgwVHIV6DvidFN7VX7Fg9uuwkRW9Ha8z+w=",
@@ -844,7 +939,7 @@
         "type": "indirect"
       }
     },
-    "nixpkgs_5": {
+    "nixpkgs_6": {
       "locked": {
         "lastModified": 1770988382,
         "narHash": "sha256-ArGMP60m7+rFK/t7iBVRZ0wu7ViYdIE1Q0yikkGw9Wk=",
@@ -931,13 +1026,36 @@
         "type": "github"
       }
     },
-    "nixvim-nixos-unstable": {
+    "nixvim-nixos-steamdeck-unstable": {
       "inputs": {
         "flake-parts": "flake-parts_4",
         "nixpkgs": [
-          "nixpkgs-nixos-unstable"
+          "nixpkgs-nixos-steamdeck-unstable"
         ],
         "systems": "systems_7"
+      },
+      "locked": {
+        "lastModified": 1771135771,
+        "narHash": "sha256-wyvBIhDuyCRyjB3yPg77qoyxrlgQtBR1rVW3c9knV3E=",
+        "owner": "nix-community",
+        "repo": "nixvim",
+        "rev": "ed0424f0b08d303a7348f52f7850ad1b2704f9ba",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "main",
+        "repo": "nixvim",
+        "type": "github"
+      }
+    },
+    "nixvim-nixos-unstable": {
+      "inputs": {
+        "flake-parts": "flake-parts_5",
+        "nixpkgs": [
+          "nixpkgs-nixos-unstable"
+        ],
+        "systems": "systems_8"
       },
       "locked": {
         "lastModified": 1770388595,
@@ -954,10 +1072,30 @@
         "type": "github"
       }
     },
+    "nur-nixos-steamdeck-unstable": {
+      "inputs": {
+        "flake-parts": "flake-parts_6",
+        "nixpkgs": "nixpkgs_2"
+      },
+      "locked": {
+        "lastModified": 1771652219,
+        "narHash": "sha256-UhWfNEAWz5LeYcWiCFdGrn1qPOgq/XTUA8q85k2V4HI=",
+        "owner": "nix-community",
+        "repo": "NUR",
+        "rev": "01c0674512d3d602b3dfcf11f21bff47ff26f415",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "main",
+        "repo": "NUR",
+        "type": "github"
+      }
+    },
     "nur-nixos-unstable": {
       "inputs": {
-        "flake-parts": "flake-parts_5",
-        "nixpkgs": "nixpkgs_2"
+        "flake-parts": "flake-parts_7",
+        "nixpkgs": "nixpkgs_3"
       },
       "locked": {
         "lastModified": 1769887888,
@@ -1044,6 +1182,30 @@
         "type": "github"
       }
     },
+    "plasma-manager-nixos-steamdeck-unstable": {
+      "inputs": {
+        "home-manager": [
+          "home-manager-nixos-steamdeck-unstable"
+        ],
+        "nixpkgs": [
+          "nixpkgs-nixos-steamdeck-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1770766818,
+        "narHash": "sha256-12RCFLyAedyMOdenUi7cN3ioJPEGjA/ZG1BLjugfUVs=",
+        "owner": "nix-community",
+        "repo": "plasma-manager",
+        "rev": "44b928068359b7d2310a34de39555c63c93a2c90",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "trunk",
+        "repo": "plasma-manager",
+        "type": "github"
+      }
+    },
     "plasma-manager-nixos-unstable": {
       "inputs": {
         "home-manager": [
@@ -1071,7 +1233,7 @@
     "podservice": {
       "inputs": {
         "flake-utils": "flake-utils_4",
-        "nixpkgs": "nixpkgs_3"
+        "nixpkgs": "nixpkgs_4"
       },
       "locked": {
         "lastModified": 1770987932,
@@ -1106,7 +1268,7 @@
     "pyenv-nix-install": {
       "inputs": {
         "flake-utils": "flake-utils_5",
-        "nixpkgs": "nixpkgs_4"
+        "nixpkgs": "nixpkgs_5"
       },
       "locked": {
         "lastModified": 1731056084,
@@ -1129,12 +1291,13 @@
         "home-manager-darwin-release": "home-manager-darwin-release",
         "home-manager-darwin-unstable": "home-manager-darwin-unstable",
         "home-manager-nixos-release": "home-manager-nixos-release",
+        "home-manager-nixos-steamdeck-unstable": "home-manager-nixos-steamdeck-unstable",
         "home-manager-nixos-unstable": "home-manager-nixos-unstable",
         "homebrew-bundle": "homebrew-bundle",
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
         "ivankovnatsky-homebrew-tap": "ivankovnatsky-homebrew-tap",
-        "jovian-nixos-unstable": "jovian-nixos-unstable",
+        "jovian-nixos-steamdeck-unstable": "jovian-nixos-steamdeck-unstable",
         "keith-homebrew-tap": "keith-homebrew-tap",
         "nix-darwin-darwin-release": "nix-darwin-darwin-release",
         "nix-darwin-darwin-unstable": "nix-darwin-darwin-unstable",
@@ -1149,14 +1312,18 @@
         "nixpkgs-master-pinned": "nixpkgs-master-pinned",
         "nixpkgs-nixos-master": "nixpkgs-nixos-master",
         "nixpkgs-nixos-release": "nixpkgs-nixos-release",
+        "nixpkgs-nixos-steamdeck-unstable": "nixpkgs-nixos-steamdeck-unstable",
         "nixpkgs-nixos-unstable": "nixpkgs-nixos-unstable",
         "nixpkgs-python": "nixpkgs-python",
         "nixvim-darwin-release": "nixvim-darwin-release",
         "nixvim-darwin-unstable": "nixvim-darwin-unstable",
         "nixvim-nixos-release": "nixvim-nixos-release",
+        "nixvim-nixos-steamdeck-unstable": "nixvim-nixos-steamdeck-unstable",
         "nixvim-nixos-unstable": "nixvim-nixos-unstable",
+        "nur-nixos-steamdeck-unstable": "nur-nixos-steamdeck-unstable",
         "nur-nixos-unstable": "nur-nixos-unstable",
         "plasma-manager-nixos-release": "plasma-manager-nixos-release",
+        "plasma-manager-nixos-steamdeck-unstable": "plasma-manager-nixos-steamdeck-unstable",
         "plasma-manager-nixos-unstable": "plasma-manager-nixos-unstable",
         "podservice": "podservice",
         "pomdtr-homebrew-tap": "pomdtr-homebrew-tap",
@@ -1164,6 +1331,7 @@
         "sops-nix-darwin-release": "sops-nix-darwin-release",
         "sops-nix-darwin-unstable": "sops-nix-darwin-unstable",
         "sops-nix-nixos-release": "sops-nix-nixos-release",
+        "sops-nix-nixos-steamdeck-unstable": "sops-nix-nixos-steamdeck-unstable",
         "sops-nix-nixos-unstable": "sops-nix-nixos-unstable",
         "textcast": "textcast",
         "username": "username",
@@ -1230,6 +1398,26 @@
         "type": "github"
       }
     },
+    "sops-nix-nixos-steamdeck-unstable": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-nixos-steamdeck-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1771524872,
+        "narHash": "sha256-eksVUcUsfS9mQx4D9DrYu88u9w70bAf+n6KmTDuIGEE=",
+        "owner": "Mic92",
+        "repo": "sops-nix",
+        "rev": "e85540ffe97322dc1fea14dd11cdc2f59d540ac7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "sops-nix",
+        "type": "github"
+      }
+    },
     "sops-nix-nixos-unstable": {
       "inputs": {
         "nixpkgs": [
@@ -1266,6 +1454,21 @@
       }
     },
     "systems_10": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "systems_11": {
       "locked": {
         "lastModified": 1681028828,
         "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
@@ -1403,7 +1606,7 @@
     "textcast": {
       "inputs": {
         "flake-utils": "flake-utils_6",
-        "nixpkgs": "nixpkgs_5"
+        "nixpkgs": "nixpkgs_6"
       },
       "locked": {
         "lastModified": 1770998813,

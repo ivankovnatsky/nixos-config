@@ -208,10 +208,39 @@
       inputs.nixpkgs.follows = "nixpkgs-nixos-unstable";
     };
 
-    # Jovian-NixOS for Steam Deck
-    jovian-nixos-unstable = {
+    # Steam Deck separate inputs
+    nixpkgs-nixos-steamdeck-unstable = {
+      url = "github:nixos/nixpkgs/nixos-unstable";
+    };
+
+    home-manager-nixos-steamdeck-unstable = {
+      url = "github:nix-community/home-manager/master";
+      inputs.nixpkgs.follows = "nixpkgs-nixos-steamdeck-unstable";
+    };
+
+    nixvim-nixos-steamdeck-unstable = {
+      url = "github:nix-community/nixvim/main";
+      inputs.nixpkgs.follows = "nixpkgs-nixos-steamdeck-unstable";
+    };
+
+    plasma-manager-nixos-steamdeck-unstable = {
+      url = "github:nix-community/plasma-manager/trunk";
+      inputs.nixpkgs.follows = "nixpkgs-nixos-steamdeck-unstable";
+      inputs.home-manager.follows = "home-manager-nixos-steamdeck-unstable";
+    };
+
+    sops-nix-nixos-steamdeck-unstable = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs-nixos-steamdeck-unstable";
+    };
+
+    jovian-nixos-steamdeck-unstable = {
       url = "github:Jovian-Experiments/Jovian-NixOS";
-      inputs.nixpkgs.follows = "nixpkgs-nixos-unstable";
+      inputs.nixpkgs.follows = "nixpkgs-nixos-steamdeck-unstable";
+    };
+
+    nur-nixos-steamdeck-unstable = {
+      url = "github:nix-community/NUR/main";
     };
 
     # Pod Service - YouTube to Podcast Feed Service
