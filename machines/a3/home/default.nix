@@ -33,6 +33,7 @@
     ../../../home/rebuild-diff.nix
     ../../../home/scripts.nix
     ../../../home/sops.nix
+    ../../../home/ssh.nix
     ../../../home/starship
     ../../../home/syncthing-ignore.nix
     ../../../home/taskwarrior.nix
