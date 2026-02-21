@@ -1,13 +1,13 @@
 {
-  # Desktop environment home-manager configuration for a3 machine
+  # Desktop environment home-manager configuration
   # Comment/uncomment the session you want to use
 
   imports = [
     # Desktop environments
-    ./plasma.nix # KDE Plasma config
     ./kwinoutput # KDE window output config
+    ./plasma.nix # KDE Plasma config
 
-    # ./gnome.nix # GNOME config
+    # ../../../home/gnome.nix # GNOME config
 
     # Minimal window managers
     # (dwm typically doesn't need home-manager config)
