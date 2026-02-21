@@ -118,9 +118,33 @@ After enrolling TPM2, enable the `cryptenroll.nix` module in
 `machines/steamdeck/nixos/default.nix` to automatically unlock during boot
 without requiring a passphrase.
 
-## SSH Key Setup
+## SSH and SOPS Key Setup
 
-_TODO: Let's revise this in code better._
+### Get age keys from SSH keys
+
+After install or SSH host key change, update `.sops.yaml` with fresh age keys.
+
+System key (from SSH host key):
+
+```console
+ssh-to-age -i /etc/ssh/ssh_host_ed25519_key.pub
+```
+
+User key is generated idempotently by `home/ssh.nix` on home-manager activation.
+The age public key is printed in the activation logs:
+
+```console
+journalctl -u home-manager-ivan.service | grep "age public key"
+```
+
+Update the `&steamdeck` and `&steamdeck-user` entries in `.sops.yaml`, then
+re-encrypt:
+
+```console
+sops updatekeys secrets/default.yaml
+```
+
+### Remote build SSH access
 
 Set up SSH key access to a3 for remote building:
 
@@ -137,6 +161,12 @@ Steam Deck is not fast enough for automatic rebuilds (`rebuild-diff`,
 
 ```console
 sudo nixos-rebuild switch --flake .#steamdeck
+```
+
+If syncthing fails to start after a rebuild error, start it manually:
+
+```console
+systemctl --user start syncthing.service
 ```
 
 ## Monitor Setup
