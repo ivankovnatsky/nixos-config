@@ -20,6 +20,7 @@
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
+  # Added myself manually to be able to open encrypted disk.
   boot = {
     initrd = {
       luks.devices.crypted = {
@@ -50,7 +51,7 @@
   # };
 
   # Enable the X11 windowing system.
-  services.xserver.enable = true;
+  # services.xserver.enable = true;
 
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
@@ -62,10 +63,10 @@
   # Enable sound.
   # services.pulseaudio.enable = true;
   # OR
-  # services.pipewire = {
-  #   enable = true;
-  #   pulse.enable = true;
-  # };
+  services.pipewire = {
+    enable = true;
+    pulse.enable = true;
+  };
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.libinput.enable = true;
@@ -76,8 +77,6 @@
     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
       tree
-      tmux
-      syncthing
     ];
   };
 
@@ -104,21 +103,16 @@
   services.openssh.enable = true;
 
   # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
+  networking.firewall.allowedTCPPorts = [
+    22000
+    8384
+  ];
+  networking.firewall.allowedUDPPorts = [
+    22000
+    21027
+  ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
-
-  networking.firewall = {
-    allowedTCPPorts = [
-      8384
-      22000
-    ]; # 8384 for Web UI, 22000 for data transfer
-    allowedUDPPorts = [
-      22000
-      21027
-    ]; # 22000 for data transfer, 21027 for discovery
-  };
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
@@ -143,5 +137,4 @@
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
   system.stateVersion = "25.05"; # Did you read the comment?
-
 }
