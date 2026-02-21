@@ -5,10 +5,13 @@
     # ../../../home/bash.nix
     # ../../../home/nixvim/plugins/copilot-lua
     # ./mangohud.nix
+    ../../../home/atuin.nix
     ../../../home/chromium.nix
     ../../../home/claude.nix
     ../../../home/codex.nix
-    ../../../home/gamescope-session.nix
+    ../../../home/fish.nix
+    ../../../home/fzf.nix
+    # ../../../home/gamescope-session.nix
     ../../../home/gemini.nix
     ../../../home/ghorg.nix
     ../../../home/ghostty.nix
@@ -23,15 +26,10 @@
     ../../../home/nixvim/plugins/codediff
     ../../../home/nixvim/plugins/gpg-nvim
     ../../../home/npm.nix
-    ../../../home/ranger.nix
     ../../../home/nushell.nix
+    ../../../home/ranger.nix
     ../../../home/rebuild-diff.nix
     ../../../home/scripts.nix
-    ../../../home/atuin.nix
-    ../../../home/fish.nix
-    ../../../home/fzf.nix
-    ../../../home/z-lua.nix
-    ../../../home/zsh.nix
     ../../../home/sops.nix
     ../../../home/starship
     ../../../home/syncthing-ignore.nix
@@ -39,6 +37,8 @@
     ../../../home/tmux.nix
     ../../../home/treefmt.nix
     ../../../home/tweety.nix
+    ../../../home/z-lua.nix
+    ../../../home/zsh.nix
     ../../../modules/flags
     ../../../modules/home/tools
     ./btop.nix
@@ -47,8 +47,8 @@
     ./flags.nix
     ./games.nix
     ./gpg.nix
-    ./tools.nix
     ./packages.nix
     ./syncthing.nix
+    ./tools.nix
   ];
 }
