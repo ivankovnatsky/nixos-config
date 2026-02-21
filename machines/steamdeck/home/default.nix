@@ -38,12 +38,11 @@
     ../../../modules/flags
     ../../../modules/home/tools
     ./btop.nix
+    ./desktop.nix
     ./firefox.nix
     ./flags.nix
     ./gpg.nix
-    ./kwinoutput
     ./packages.nix
-    ./plasma.nix
     ./syncthing.nix
     ./tools.nix
   ];
