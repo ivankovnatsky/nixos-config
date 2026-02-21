@@ -1,4 +1,4 @@
-{ config, ... }:
+{ ... }:
 {
   flags = {
     enableFishShell = true;
