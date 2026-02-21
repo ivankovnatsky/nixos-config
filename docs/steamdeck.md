@@ -194,6 +194,19 @@ Set `autoStart = false` in `jovian.nix` to disable the jovian greeter. SDDM
 re-enables via `plasma.nix`. Steam must then be launched manually or via a
 desktop session entry.
 
+### Restarting Steam in gamescope
+
+If Steam gets stuck (e.g. on "calculating time remaining..." update screen),
+kill the Steam process — gamescope will respawn it automatically:
+
+```console
+ssh ivan@192.168.50.10 'kill $(pgrep -xf "/home/ivan/.local/share/Steam/ubuntu12_32/steam.*")'
+```
+
+The `gamescope-session` unit refuses manual restart
+(`systemctl --user restart`), so killing the Steam process directly is the way
+to go.
+
 ## Separate Flake Inputs
 
 The Steam Deck uses its own set of flake inputs (`*-nixos-steamdeck-unstable`)
