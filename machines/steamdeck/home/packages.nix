@@ -2,54 +2,36 @@
 
 {
   home.packages = with pkgs; [
-    dust # A more intuitive version of du
-    genpass # Password generator
-    username # Username generator
-    lsof # List open files
-    wl-clipboard # Wayland clipboard utilities
-    pigz # Parallel gzip compression
-
-    # Syncthing management CLI
-    syncthing-mgmt
-
-    # Secrets management
-    sops
-    ssh-to-age
-    age
-
-    # Hardware monitoring tools
-    lm_sensors # Provides the 'sensors' command for monitoring temperatures
-    smartmontools # Disk health monitoring (smartctl)
-
-    # KDE Wallet integration
-    kwalletcli # Provides pinentry-kwallet for GPG integration
-
-    # KDE Remote Desktop Client
-    kdePackages.krdc
-
-    sesh
-    gum
-
-    nixfmt-rfc-style
-
-    fastfetch
-
-    # Desktop notifications
-    libnotify # Provides notify-send command
-
-    ghostty
-
-    backup-home
-    dotfiles
-    git-message
-    jq
-    nodejs
-    gnumake
+    age # Secrets management
+    backup-home # Home directory backup tool
     delta
-    poweroff
-
+    dotfiles
+    dust # A more intuitive version of du
+    fastfetch
+    genpass # Password generator
     gh-notifications
-
+    ghostty
+    git-message
+    gnumake
+    gum
+    jq
+    kdePackages.krdc # KDE Remote Desktop Client
+    kwalletcli # Provides pinentry-kwallet for GPG integration
+    libnotify # Provides notify-send command
+    lm_sensors # Provides the 'sensors' command for monitoring temperatures
+    lsof # List open files
+    nixfmt
+    nodejs
+    pigz # Parallel gzip compression
+    poweroff
+    sesh
     settings
+    smartmontools # Disk health monitoring (smartctl)
+    sops # Secrets management
+    ssh-to-age # Secrets management
+    syncthing-mgmt # Syncthing management CLI
+    uptime-kuma-mgmt
+    username # Username generator
+    wl-clipboard # Wayland clipboard utilities
   ];
 }
