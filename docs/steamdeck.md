@@ -13,6 +13,8 @@ lvcreate -L 16G -n swap vg
 
 WIFI is 192.168.50.10, ethernet is 192.168.50.11.
 
+_When DHCP did not least the IP yet I used:_
+
 ```console
 ssh-copy-id ivan@192.168.50.103
 ```
@@ -22,7 +24,7 @@ ssh-copy-id ivan@192.168.50.103
 Connect via command line:
 
 ```console
-nmcli device wifi connect "SSID" --ask
+sudo nmcli device wifi connect "SSID" --ask
 ```
 
 **Note:** Steam Deck doesn't have working Ethernet, so WiFi is required.
@@ -31,7 +33,14 @@ Ethernet worked via Satechi hub during install.
 Make sure to go over the configuration.nix and enable network manager, user,
 ssh, open ports for syncthing.
 
-(After reboot)
+## Copy hardware and base configuration
+
+Copy hardware configuration from live system:
+
+```console
+scp ivan@192.168.50.11:/etc/nixos/hardware-configuration.nix machines/steamdeck/nixos/
+scp ivan@192.168.50.11:/etc/nixos/configuration.nix machines/steamdeck/nixos/
+```
 
 ## Packages
 
@@ -71,21 +80,12 @@ Useful to force a rescan and push nixos-config to steamdeck:
 syncthing-mgmt cli scan shtdy-s2c9s
 ```
 
-## Copy hardware and base configuration
-
-Copy hardware configuration from live system:
-
-```console
-scp ivan@192.168.50.11:/etc/nixos/hardware-configuration.nix machines/steamdeck/nixos/
-scp ivan@192.168.50.11:/etc/nixos/configuration.nix machines/steamdeck/nixos/
-```
-
 nixos-config is synced via Syncthing from other machines. After `syncthing-mgmt`
 adds the steamdeck device, you still need to manually accept the steamdeck
 device on the Air machine in the Syncthing UI and confirm the nixos-config
 folder share.
 
-Then on steamdeck:
+## First rebuild
 
 ```console
 cd ~/Sources/github.com/ivankovnatsky/nixos-config
@@ -94,7 +94,7 @@ sudo nixos-rebuild switch --flake .#steamdeck
 
 ## TPM2
 
-### Enrolling TPM2 (if available)
+### Enrolling TPM2
 
 The Steam Deck system uses a single LUKS-encrypted partition that contains both
 root and swap. You only need to enroll TPM2 for this single encrypted partition:
