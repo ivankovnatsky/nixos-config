@@ -128,6 +128,7 @@ in
           "Ivans-Mac-mini"
           "Ivans-MacBook-Pro"
           "Ivans-MacBook-Air"
+          "steamdeck"
         ];
       };
 
