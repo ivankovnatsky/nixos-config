@@ -1,5 +1,5 @@
 {
-  # Desktop session management for a3 machine
+  # Desktop session management
   # Comment/uncomment the session you want to use
 
   imports = [
