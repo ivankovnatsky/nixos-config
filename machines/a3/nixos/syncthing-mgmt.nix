@@ -92,18 +92,16 @@
         ];
       };
 
-      # TODO: Before enabling, backup or move aside the existing RaceTimes
-      # directory on a3 to avoid syncthing conflicts with local data.
-      # "liftoff-game" = {
-      #   path = "${
-      #     config.users.users.${username}.home
-      #   }/.local/share/Steam/steamapps/common/Liftoff/Liftoff_Data/RaceTimes";
-      #   label = ".local/share/Steam/steamapps/common/Liftoff/Liftoff_Data/RaceTimes";
-      #   devices = [
-      #     "a3"
-      #     "steamdeck"
-      #   ];
-      # };
+      "liftoff-game" = {
+        path = "${
+          config.users.users.${username}.home
+        }/.local/share/Steam/steamapps/common/Liftoff/Liftoff_Data/RaceTimes";
+        label = ".local/share/Steam/steamapps/common/Liftoff/Liftoff_Data/RaceTimes";
+        devices = [
+          "a3"
+          "steamdeck"
+        ];
+      };
 
       "taskwarrior" = {
         path = "${config.users.users.${username}.home}/.task";
