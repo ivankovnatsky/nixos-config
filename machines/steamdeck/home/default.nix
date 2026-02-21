@@ -18,6 +18,7 @@
     ../../../home/kitty
     ../../../home/lsd.nix
     ../../../home/mpv.nix
+    ../../../home/nixos/packages.nix
     ../../../home/nixvim
     ../../../home/nixvim/plugins/codediff
     ../../../home/nixvim/plugins/gpg-nvim
@@ -42,7 +43,6 @@
     ./firefox.nix
     ./flags.nix
     ./gpg.nix
-    ./packages.nix
     ./syncthing.nix
     ./tools.nix
   ];
