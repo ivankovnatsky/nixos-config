@@ -3,15 +3,16 @@
 {
   imports = [
     # ../../../home/bash.nix
-    # ../../../home/nixvim/plugins/copilot-lua
+    # ../../../home/gamescope-session.nix
     # ../../../home/mangohud.nix
+    # ../../../home/nixvim/plugins/copilot-lua
     ../../../home/atuin.nix
     ../../../home/chromium.nix
     ../../../home/claude.nix
     ../../../home/codex.nix
     ../../../home/fish.nix
     ../../../home/fzf.nix
-    # ../../../home/gamescope-session.nix
+    ../../../home/games.nix
     ../../../home/gemini.nix
     ../../../home/ghorg.nix
     ../../../home/ghostty.nix
@@ -22,6 +23,7 @@
     ../../../home/kitty
     ../../../home/lsd.nix
     ../../../home/mpv.nix
+    ../../../home/nixos/packages.nix
     ../../../home/nixvim
     ../../../home/nixvim/plugins/codediff
     ../../../home/nixvim/plugins/gpg-nvim
@@ -45,7 +47,6 @@
     ./desktop.nix
     ./firefox.nix
     ./flags.nix
-    ../../../home/games.nix
     ./gpg.nix
     ./packages.nix
     ./syncthing.nix
