@@ -91,7 +91,6 @@ vim configuration.nix
 # - services.pipewire (enable, pulse.enable)
 # - services.libinput.enable
 # - users.users.<name> (isNormalUser, extraGroups, packages)
-# - programs.gnupg.agent (enable, enableSSHSupport)
 # - services.openssh.enable = true;
 # - networking.firewall.allowedTCPPorts = [ 22000 8384 ];
 # - networking.firewall.allowedUDPPorts = [ 22000 21027 ];
