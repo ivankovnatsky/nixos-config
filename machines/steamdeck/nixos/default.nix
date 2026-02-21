@@ -18,10 +18,8 @@
     ./desktop.nix
     ./fonts.nix
     ./jovian.nix
-    ./kde.nix
     ./networking.nix
     ./nixpkgs.nix
-    ./plasma.nix
     # ./remote-build.nix
     ./sd-card.nix
     ./security.nix
