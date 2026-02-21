@@ -62,7 +62,7 @@ sudo nix-env -iA \
 ## Syncthing
 
 ```console
-ssh ivan@192.168.50.11 'tmux new -d -s syncthing "syncthing -gui-address=0.0.0.0:8384"'
+ssh ivan@192.168.50.11 'tmux new -d -s syncthing "syncthing --gui-address=0.0.0.0:8384"'
 ```
 
 Device and folder sharing is handled by
