@@ -19,6 +19,7 @@
 	rebuild-nixos/generic \
 	rebuild-nixos/impure \
 	rebuild-nixos/a3 \
+	rebuild-nixos/a3-user \
 	\
 	rebuild-darwin \
 	\
@@ -133,6 +134,11 @@ rebuild-nixos/impure: addall
 
 rebuild-nixos/a3:
 	sudo nixos-rebuild switch $(COMMON_REBUILD_FLAGS) --build-host a3 && \
+		$(call notify_linux,🟢 NixOS rebuild successful (built on a3)!) || \
+		$(call notify_linux,🔴 NixOS rebuild failed!)
+
+rebuild-nixos/a3-user:
+	nixos-rebuild switch $(COMMON_REBUILD_FLAGS) --build-host a3 --sudo && \
 		$(call notify_linux,🟢 NixOS rebuild successful (built on a3)!) || \
 		$(call notify_linux,🔴 NixOS rebuild failed!)
 
