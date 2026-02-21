@@ -27,6 +27,7 @@
       "a3"
       "Ivans-Mac-mini"
       "Ivans-MacBook-Pro"
+      "Ivans-MacBook-Air"
     ];
 
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
@@ -49,6 +50,18 @@
           "a3"
           "Ivans-Mac-mini"
           "Ivans-MacBook-Pro"
+          "steamdeck"
+        ];
+      };
+
+      "dotfiles" = {
+        path = "/home/${username}/Sources/github.com/ivankovnatsky-local/dotfiles";
+        label = "Sources/github.com/ivankovnatsky-local/dotfiles";
+        devices = [
+          "a3"
+          "Ivans-Mac-mini"
+          "Ivans-MacBook-Pro"
+          "Ivans-MacBook-Air"
           "steamdeck"
         ];
       };
