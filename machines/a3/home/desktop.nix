@@ -5,7 +5,7 @@
   imports = [
     # Desktop environments
     ./kwinoutput # KDE window output config
-    ./plasma.nix # KDE Plasma config
+    ../../../home/nixos/plasma.nix # KDE Plasma config
 
     # ../../../home/gnome.nix # GNOME config
 
