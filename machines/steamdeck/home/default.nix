@@ -6,8 +6,10 @@
     ../../../home/chromium.nix
     ../../../home/claude.nix
     ../../../home/codex.nix
+    ../../../home/fish.nix
     ../../../home/fzf.nix
     ../../../home/gemini.nix
+    ../../../home/ghorg.nix
     ../../../home/ghostty.nix
     ../../../home/git
     ../../../home/go.nix
@@ -17,12 +19,22 @@
     ../../../home/lsd.nix
     ../../../home/mpv.nix
     ../../../home/nixvim
+    ../../../home/nixvim/plugins/codediff
+    ../../../home/nixvim/plugins/gpg-nvim
     ../../../home/npm.nix
+    ../../../home/nushell.nix
+    ../../../home/ranger.nix
+    ../../../home/rebuild-diff.nix
     ../../../home/scripts.nix
     ../../../home/sops.nix
-    ../../../home/z-lua.nix
     ../../../home/starship
+    ../../../home/syncthing-ignore.nix
+    ../../../home/taskwarrior.nix
     ../../../home/tmux.nix
+    ../../../home/treefmt.nix
+    ../../../home/tweety.nix
+    ../../../home/z-lua.nix
+    ../../../home/zsh.nix
     ../../../modules/flags
     ../../../modules/home/tools
     ./btop.nix
@@ -30,9 +42,9 @@
     ./flags.nix
     ./gpg.nix
     ./kwinoutput
-    ./tools.nix
     ./packages.nix
     ./plasma.nix
     ./syncthing.nix
+    ./tools.nix
   ];
 }
