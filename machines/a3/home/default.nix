@@ -4,7 +4,7 @@
   imports = [
     # ../../../home/bash.nix
     # ../../../home/nixvim/plugins/copilot-lua
-    # ./mangohud.nix
+    # ../../../home/mangohud.nix
     ../../../home/atuin.nix
     ../../../home/chromium.nix
     ../../../home/claude.nix
@@ -42,10 +42,10 @@
     ../../../modules/flags
     ../../../modules/home/tools
     ./btop.nix
-    ./desktop.nix # Desktop environment home configs
+    ./desktop.nix
     ./firefox.nix
     ./flags.nix
-    ./games.nix
+    ../../../home/games.nix
     ./gpg.nix
     ./packages.nix
     ./syncthing.nix
