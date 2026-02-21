@@ -173,10 +173,26 @@ systemctl --user start syncthing.service
 
 When asked on monitor setup, chosen to disable built-in when plugged-in.
 
-## Switching to Steam Gaming Mode
+## Gamescope Steam Session
 
-Log out, select "SteamOS (gamescope)" at SDDM login screen. Don't run
-`start-gamescope-session` from within KDE.
+Configured in `machines/steamdeck/nixos/jovian.nix` via Jovian-NixOS:
+
+When `autoStart = true`, Jovian replaces display managers with `greetd` +
+`jovian-greeter` that boots directly into gamescope with Steam Deck UI. SDDM is
+also disabled via `plasma.nix` (`sddm.enable = !config.jovian.steam.autoStart`).
+
+### Switching between modes
+
+- **Gaming to Desktop**: select "Switch to Desktop" in Steam — stops gamescope,
+  greeter starts the session from `desktopSession` (plasma)
+- **Desktop to Gaming**: log out from Plasma — greeter defaults back to
+  gamescope
+
+### Disabling autoStart
+
+Set `autoStart = false` in `jovian.nix` to disable the jovian greeter. SDDM
+re-enables via `plasma.nix`. Steam must then be launched manually or via a
+desktop session entry.
 
 ## Separate Flake Inputs
 
