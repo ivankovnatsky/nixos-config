@@ -141,7 +141,9 @@
         max-line-length = 0;
         navigate = true;
         pager = "less -R";
+        file-modified-label = "";
         file-renamed-label = "renamed:";
+        right-arrow = " ";
       };
     };
 
