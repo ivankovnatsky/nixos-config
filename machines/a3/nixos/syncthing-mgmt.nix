@@ -93,7 +93,9 @@
       };
 
       "liftoff-game" = {
-        path = "${config.users.users.${username}.home}/.local/share/Steam/steamapps/common/Liftoff/Liftoff_Data/RaceTimes";
+        path = "${
+          config.users.users.${username}.home
+        }/.local/share/Steam/steamapps/common/Liftoff/Liftoff_Data/RaceTimes";
         label = ".local/share/Steam/steamapps/common/Liftoff/Liftoff_Data/RaceTimes";
         devices = [
           "a3"
@@ -119,6 +121,7 @@
           "Ivans-Mac-mini"
           "Ivans-MacBook-Pro"
           "Ivans-MacBook-Air"
+          "steamdeck"
         ];
       };
 
