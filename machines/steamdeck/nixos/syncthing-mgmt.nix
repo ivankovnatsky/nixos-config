@@ -59,6 +59,7 @@
         path = "/run/media/${username}/56a47c24-d236-4f50-b010-bd31dd058d6d/steamapps/common/Liftoff/Liftoff_Data/RaceTimes";
         label = "Liftoff/RaceTimes";
         devices = [
+          "a3"
           "steamdeck"
         ];
       };
