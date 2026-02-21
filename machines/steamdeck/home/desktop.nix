@@ -5,7 +5,8 @@
   imports = [
     # Desktop environments
     ./kwinoutput # KDE window output config
-    ./plasma.nix # KDE Plasma config
+    ../../../home/nixos/plasma.nix # KDE Plasma config
+    ./plasma.nix # Steamdeck-specific Plasma overrides
 
     # ../../../home/gnome.nix # GNOME config
 
