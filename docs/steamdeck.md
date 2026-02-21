@@ -147,3 +147,15 @@ When asked on monitor setup, chosen to disable built-in when plugged-in.
 
 Log out, select "SteamOS (gamescope)" at SDDM login screen. Don't run
 `start-gamescope-session` from within KDE.
+
+## Separate Flake Inputs
+
+The Steam Deck uses its own set of flake inputs (`*-nixos-steamdeck-unstable`)
+independent from a3's `*-nixos-unstable` inputs. This way updating inputs for a3
+does not trigger a rebuild on the Steam Deck.
+
+To update only Steam Deck inputs:
+
+```console
+nix flake update nixpkgs-nixos-steamdeck-unstable
+```

@@ -64,17 +64,17 @@
     };
   };
 
-  "steamdeck" = inputs.nixpkgs-nixos-unstable.lib.nixosSystem {
+  "steamdeck" = inputs.nixpkgs-nixos-steamdeck-unstable.lib.nixosSystem {
     system = "x86_64-linux";
     modules = [
       # Import machine-specific configuration
       ../../machines/steamdeck
 
       # Jovian-NixOS modules for Steam Deck
-      inputs.jovian-nixos-unstable.nixosModules.default
+      inputs.jovian-nixos-steamdeck-unstable.nixosModules.default
 
       # SOPS secrets management
-      inputs.sops-nix-nixos-unstable.nixosModules.sops
+      inputs.sops-nix-nixos-steamdeck-unstable.nixosModules.sops
       ../../shared/sops-nix.nix
 
       # Basic system configuration
@@ -88,12 +88,12 @@
             in
             builtins.removeAttrs baseOverlay [ "mangohud" ]
           )
-          inputs.nur-nixos-unstable.overlays.default
+          inputs.nur-nixos-steamdeck-unstable.overlays.default
         ];
         nixpkgs.config.allowUnfree = true;
         nix.nixPath = [
-          "nixpkgs=${inputs.nixpkgs-nixos-unstable}"
-          "nixpkgs-nixos-unstable=${inputs.nixpkgs-nixos-unstable}"
+          "nixpkgs=${inputs.nixpkgs-nixos-steamdeck-unstable}"
+          "nixpkgs-nixos-steamdeck-unstable=${inputs.nixpkgs-nixos-steamdeck-unstable}"
         ];
         _module.args = {
           flake-inputs = inputs;
@@ -105,7 +105,7 @@
       }
 
       # Home Manager module
-      inputs.home-manager-nixos-unstable.nixosModules.home-manager
+      inputs.home-manager-nixos-steamdeck-unstable.nixosModules.home-manager
       {
         home-manager = {
           useGlobalPkgs = true;
@@ -114,9 +114,9 @@
           users.ivan = {
             imports = [
               ../../machines/steamdeck/home
-              inputs.nixvim-nixos-unstable.homeModules.nixvim
-              inputs.plasma-manager-nixos-unstable.homeModules.plasma-manager
-              inputs.sops-nix-nixos-unstable.homeManagerModules.sops
+              inputs.nixvim-nixos-steamdeck-unstable.homeModules.nixvim
+              inputs.plasma-manager-nixos-steamdeck-unstable.homeModules.plasma-manager
+              inputs.sops-nix-nixos-steamdeck-unstable.homeManagerModules.sops
             ];
           };
           extraSpecialArgs = {
