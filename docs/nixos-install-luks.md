@@ -81,7 +81,8 @@ nixos-generate-config --root /mnt
 cd /mnt/etc/nixos
 vim configuration.nix
 # Edit desired options:
-# - boot.kernelPackages = pkgs.linuxPackages_latest;
+# - boot.kernelPackages = pkgs.linuxPackages_latest; -- remove for steamdeck
+# - set `luks.devices.crypted`, otherwise won't boot
 # - networking.hostName
 # - networking.networkmanager.enable = true;
 # - time.timeZone = "...";
@@ -92,9 +93,8 @@ vim configuration.nix
 # - users.users.<name> (isNormalUser, extraGroups, packages)
 # - programs.gnupg.agent (enable, enableSSHSupport)
 # - services.openssh.enable = true;
-# - networking.firewall.allowedTCPPorts = [ 22 22000 8384 ];
+# - networking.firewall.allowedTCPPorts = [ 22000 8384 ];
 # - networking.firewall.allowedUDPPorts = [ 22000 21027 ];
-# -
 ```
 
 Before running install make sure you added to configuration.nix:
