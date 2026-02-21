@@ -1,19 +1,5 @@
-{ config, lib, pkgs, ... }:
-
-{
-  fileSystems."/run/media/mmcblk0p1" = {
-    device = "/dev/disk/by-uuid/56a47c24-d236-4f50-b010-bd31dd058d6d";
-    fsType = "ext4";
-    options = [
-      "nofail"
-      "nosuid"
-      "nodev"
-      "relatime"
-      "errors=remount-ro"
-    ];
-  };
-
-  systemd.tmpfiles.rules = [
-    "d /run/media/mmcblk0p1 0755 root root -"
-  ];
-}
+# SD card automounting is handled by Jovian's steamos-automount via udisks2
+# (enabled by jovian.steamos.useSteamOSConfig = true in jovian.nix).
+# Do not add fstab entries — they conflict with the automounter and mount
+# as root, which prevents Steam from detecting the SD card.
+{ }
