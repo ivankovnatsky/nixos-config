@@ -27,6 +27,7 @@
     ../../../home/nixvim/plugins/gpg-nvim
     ../../../home/nixvim.nix
     ../../../home/notes.nix
+    ../../../home/obsidian.nix
     ../../../home/npm.nix
     ../../../home/nushell.nix
     ../../../home/packages-darwin.nix
