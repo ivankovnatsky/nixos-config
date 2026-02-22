@@ -52,6 +52,9 @@ let
 
     # --- Tab/Indent Settings ---
     useTab = false;
+    # Note: tabSize only controls visual tab width, not spaces inserted.
+    # With useTab=false, Obsidian always inserts 4 spaces for list indentation.
+    # https://forum.obsidian.md/t/editor-ignores-tab-size-2-setting-for-nested-lists-always-inserts-4-spaces/111415
     tabSize = 2;
 
     # --- Spellcheck Settings ---
