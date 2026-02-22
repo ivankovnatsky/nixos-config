@@ -19,6 +19,10 @@
 
 - Allow to find devices on local networks
 
+### Ghostty
+
+- Allow access to Reminders
+
 ### bash
 
 - Allow access to control "Terminal"
