@@ -32,6 +32,10 @@
         }
       ];
     };
+    obsidian.vaultPaths = [
+      "Sources/github.com/ivankovnatsky/nixos-config"
+      "Library/Mobile Documents/iCloud~md~obsidian/Documents/Notes"
+    ];
     apps = {
       vscode.enable = false;
     };
