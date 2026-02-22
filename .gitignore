@@ -29,4 +29,5 @@ claude/
 ISSUES.md
 .gemini
 GEMINI.md
-.obsidian/
+.obsidian/*
+!.obsidian/app.json
