@@ -34,7 +34,7 @@ let
   # =============================================================================
   appSettings = {
     # --- Editor Mode ---
-    # vimMode = false;                      # Enable Vim keybindings
+    vimMode = true;
     # livePreview = true;                   # Live preview mode (WYSIWYG-ish editing)
     # defaultViewMode = "source";           # Default view: "source", "preview", or "live"
     # legacyEditor = false;                 # Use legacy CodeMirror 5 editor (deprecated)
@@ -51,8 +51,8 @@ let
     # foldIndent = true;                    # Allow folding indented content
 
     # --- Tab/Indent Settings ---
-    # useTab = true;                        # Use tabs for indentation (false = spaces)
-    # tabSize = 4;                          # Tab width in spaces
+    useTab = false;
+    tabSize = 2;
 
     # --- Spellcheck Settings ---
     # spellcheck = false;                   # Enable spellcheck
@@ -287,43 +287,28 @@ let
   #   "obsidian-style-settings"             # CSS variable customization
   #   "omnisearch"                          # Enhanced search
   # ];
+  vaultPaths = config.flags.obsidian.vaultPaths;
+
+  appJson = builtins.toJSON appSettings;
+
+  mkVaultFiles = vault: {
+    "${vault}/.obsidian/app.json".text = appJson;
+    # "${vault}/.obsidian/appearance.json".text = builtins.toJSON appearanceSettings;
+    # "${vault}/.obsidian/core-plugins.json".text = builtins.toJSON corePlugins;
+    # "${vault}/.obsidian/graph.json".text = builtins.toJSON graphSettings;
+    # "${vault}/.obsidian/daily-notes.json".text = builtins.toJSON dailyNotesSettings;
+    # "${vault}/.obsidian/templates.json".text = builtins.toJSON templatesSettings;
+    # "${vault}/.obsidian/types.json".text = builtins.toJSON typesSettings;
+    # "${vault}/.obsidian/hotkeys.json".text = builtins.toJSON hotkeys;
+    # "${vault}/.obsidian/community-plugins.json".text = builtins.toJSON communityPlugins;
+    # "${vault}/.obsidian/snippets/custom.css".text = ''
+    #   /* Custom CSS */
+    #   .markdown-preview-view {
+    #     font-size: 18px;
+    #   }
+    # '';
+  };
 in
 {
-  # Uncomment and configure to enable
-  # home.file = {
-  #   # App settings
-  #   "${vaultPath}/.obsidian/app.json".text = builtins.toJSON appSettings;
-  #
-  #   # Appearance settings
-  #   "${vaultPath}/.obsidian/appearance.json".text = builtins.toJSON appearanceSettings;
-  #
-  #   # Core plugins
-  #   "${vaultPath}/.obsidian/core-plugins.json".text = builtins.toJSON corePlugins;
-  #
-  #   # Graph settings
-  #   "${vaultPath}/.obsidian/graph.json".text = builtins.toJSON graphSettings;
-  #
-  #   # Daily notes settings
-  #   "${vaultPath}/.obsidian/daily-notes.json".text = builtins.toJSON dailyNotesSettings;
-  #
-  #   # Templates settings
-  #   "${vaultPath}/.obsidian/templates.json".text = builtins.toJSON templatesSettings;
-  #
-  #   # Property types
-  #   "${vaultPath}/.obsidian/types.json".text = builtins.toJSON typesSettings;
-  #
-  #   # Hotkeys
-  #   "${vaultPath}/.obsidian/hotkeys.json".text = builtins.toJSON hotkeys;
-  #
-  #   # Community plugins list
-  #   # "${vaultPath}/.obsidian/community-plugins.json".text = builtins.toJSON communityPlugins;
-  #
-  #   # CSS snippets (example)
-  #   # "${vaultPath}/.obsidian/snippets/custom.css".text = ''
-  #   #   /* Custom CSS */
-  #   #   .markdown-preview-view {
-  #   #     font-size: 18px;
-  #   #   }
-  #   # '';
-  # };
+  home.file = lib.mkMerge (map mkVaultFiles vaultPaths);
 }
