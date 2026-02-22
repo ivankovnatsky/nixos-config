@@ -241,6 +241,14 @@ with lib;
       };
     };
 
+    obsidian = {
+      vaultPaths = mkOption {
+        type = types.listOf types.str;
+        description = "Obsidian vault paths relative to home directory";
+        default = [ ];
+      };
+    };
+
     apps = {
       vscode = {
         enable = mkOption {
