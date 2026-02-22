@@ -20,6 +20,7 @@
     ../../../home/nixvim/plugins/copilot-lua
     ../../../home/nixvim/plugins/gpg-nvim
     ../../../home/notes.nix
+    ../../../home/obsidian.nix
     ../../../home/npm.nix
     ../../../home/kitty
     ../../../home/pass.nix
