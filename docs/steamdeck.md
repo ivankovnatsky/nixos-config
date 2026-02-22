@@ -101,6 +101,28 @@ cd ~/Sources/github.com/ivankovnatsky/nixos-config
 sudo nixos-rebuild switch --flake .#steamdeck
 ```
 
+## Home-Manager Activation
+
+After the first rebuild, check home-manager activation logs for items that need
+manual attention:
+
+```console
+journalctl -u home-manager-ivan.service -n 100 --no-pager
+```
+
+### GitHub CLI authentication
+
+The `ghAuth` activation script runs `gh auth login --git-protocol https --web`
+on first install when `~/.config/gh/hosts.yml` does not exist yet. Complete the
+GitHub OAuth flow in a browser when prompted. Subsequent rebuilds skip this
+step.
+
+### SSH key and age public key
+
+The `generateSshKey` activation script creates `~/.ssh/id_ed25519` if missing
+and prints the corresponding age public key. Copy it for the SOPS key setup
+below.
+
 ## TPM2
 
 ### Enrolling TPM2
