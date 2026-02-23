@@ -72,37 +72,102 @@ def fetch_notifications() -> List[Notification]:
 
 
 def _resolve_check_suite_by_workflow_name(
-    repo_full_name: str, workflow_name: str
+    repo_full_name: str, workflow_name: str, branch: str = ""
 ) -> str:
-    """Find recent workflow run matching the given name.
+    """Find recent workflow run matching the given name and optional branch.
 
     For CheckSuite notifications without a subject.url, query recent workflow runs
     and match by workflow name to get the html_url.
     """
     try:
-        # Extract workflow name from notification title (e.g., "Terragrunt CI - PR | ...")
-        # Query recent workflow runs
-        runs_json = run_gh(
+        # Build query params for more targeted search
+        params = [
+            "api",
+            f"/repos/{repo_full_name}/actions/runs",
+        ]
+        if branch:
+            params.extend(["-f", f"branch={branch}"])
+        params.extend(
             [
-                "api",
-                f"/repos/{repo_full_name}/actions/runs",
                 "--jq",
-                ".workflow_runs[0:10] | .[] | {name: .name, html_url: .html_url}",
+                ".workflow_runs[0:20] | .[] | {name: .name, html_url: .html_url, conclusion: .conclusion}",
             ]
         )
 
-        # Parse JSON lines and find matching workflow
+        runs_json = run_gh(params)
+
+        # Parse JSON lines and find matching workflow (prefer failed runs)
+        matched_url = ""
         for line in runs_json.splitlines():
             if not line.strip():
                 continue
             try:
                 run_data = json.loads(line)
                 if run_data.get("name") == workflow_name:
-                    return run_data.get("html_url", "")
+                    url = run_data.get("html_url", "")
+                    if run_data.get("conclusion") == "failure":
+                        return url
+                    if not matched_url and url:
+                        matched_url = url
             except json.JSONDecodeError:
                 continue
 
+        return matched_url
+    except Exception:
         return ""
+
+
+def _resolve_check_suite_via_check_runs(api: str) -> str:
+    """Resolve a deep link URL from a check-suite API URL by querying its check runs.
+
+    Fetches the check runs for the suite and returns the html_url of the first
+    failed run, or the first run if none failed.
+    """
+    m = re.match(
+        r"https://api\.github\.com/repos/([^/]+)/([^/]+)/check-suites/(\d+)", api
+    )
+    if not m:
+        return ""
+
+    try:
+        runs_json = run_gh(
+            [
+                "api",
+                f"{api}/check-runs",
+                "--jq",
+                ".check_runs[] | {html_url: .html_url, conclusion: .conclusion}",
+            ]
+        )
+
+        first_url = ""
+        for line in runs_json.splitlines():
+            if not line.strip():
+                continue
+            try:
+                run_data = json.loads(line)
+                url = run_data.get("html_url", "")
+                if not url:
+                    continue
+                if run_data.get("conclusion") == "failure":
+                    return url
+                if not first_url:
+                    first_url = url
+            except json.JSONDecodeError:
+                continue
+
+        return first_url
+    except Exception:
+        return ""
+
+
+def _resolve_check_suite_pull_request(api: str) -> str:
+    """Find the associated pull request URL from a check-suite API URL."""
+    try:
+        pr_url = run_gh(["api", api, "--jq", ".pull_requests[0].url // empty"]).strip()
+        if not pr_url:
+            return ""
+        html = run_gh(["api", pr_url, "--jq", ".html_url // empty"]).strip()
+        return html
     except Exception:
         return ""
 
@@ -128,30 +193,50 @@ def resolve_html_url(n: Notification) -> str:
     """Resolve a browser URL for a notification subject.
 
     Tries `gh api <subject.url> --jq .html_url` first (works for PR, Issue,
-    WorkflowRun, etc). Falls back to workflow run matching for CheckSuite
-    notifications, then to simple API->HTML URL conversion.
+    WorkflowRun, etc). Falls back to check-run resolution for CheckSuite
+    notifications, then to workflow run matching, then to simple API->HTML URL
+    conversion.
     """
     api = n.subject_api_url
 
+    # Parse title for CheckSuite: "<workflow_name> workflow run <status> for <branch>"
+    workflow_name = ""
+    branch = ""
+    if n.subject_type == "CheckSuite" and " workflow run" in n.subject_title:
+        workflow_name = n.subject_title.split(" workflow run")[0].strip()
+        # Extract branch from " for <branch>" suffix
+        title_after_run = n.subject_title.split(" workflow run", 1)[1]
+        m = re.search(r" for (.+)$", title_after_run)
+        if m:
+            branch = m.group(1).strip()
+
     # Special case: CheckSuite with null subject.url
     if not api and n.subject_type == "CheckSuite":
-        # Extract workflow name from title
-        # Title format: "<workflow_name> workflow run <status> for <branch>"
-        # Extract everything before " workflow run"
-        workflow_name = n.subject_title
-        if " workflow run" in workflow_name:
-            workflow_name = workflow_name.split(" workflow run")[0].strip()
-
         workflow_url = _resolve_check_suite_by_workflow_name(
-            n.repo_full_name, workflow_name
+            n.repo_full_name, workflow_name, branch
         )
         if workflow_url:
             return workflow_url
-        # Final fallback for CheckSuite: open Actions page
         return f"https://github.com/{n.repo_full_name}/actions"
 
     if not api:
         return ""
+
+    # For check-suites, try to get the specific failed check run deep link
+    if n.subject_type == "CheckSuite" and "/check-suites/" in api:
+        check_run_url = _resolve_check_suite_via_check_runs(api)
+        if check_run_url:
+            return check_run_url
+
+        pr_url = _resolve_check_suite_pull_request(api)
+        if pr_url:
+            return pr_url
+
+        fallback = _resolve_check_suite_url_fallback(api)
+        if fallback:
+            return fallback
+
+        return f"https://github.com/{n.repo_full_name}/actions"
 
     # First try to fetch the object's html_url via gh (most objects provide it)
     try:
@@ -159,7 +244,6 @@ def resolve_html_url(n: Notification) -> str:
         if html:
             return html
     except Exception:
-        # Ignore and fall back
         pass
 
     # Fallback: special-case Check Suite (no html_url in some responses)
@@ -169,7 +253,6 @@ def resolve_html_url(n: Notification) -> str:
 
     # Generic fallback: Convert API URL to web URL
     url = api.replace("api.github.com/repos", "github.com")
-    # Normalize PR path
     url = url.replace("/pulls/", "/pull/")
     return url
 
