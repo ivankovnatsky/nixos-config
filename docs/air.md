@@ -19,6 +19,11 @@
 
 - Allow to find devices on local networks
 
+### Google Chrome
+
+- Allow to use Bluetooth
+- Allow access to saved Passkeys
+
 ### Ghostty
 
 - Allow access to Reminders
