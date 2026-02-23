@@ -32,7 +32,7 @@ def truncate_line(rendered, cols):
     return rendered[:i] + ".."
 
 
-def git_info():
+def git_branch():
     try:
         subprocess.run(
             ["git", "rev-parse", "--git-dir"],
@@ -42,27 +42,11 @@ def git_info():
     except (subprocess.CalledProcessError, FileNotFoundError):
         return None
 
-    branch = subprocess.run(
+    return subprocess.run(
         ["git", "branch", "--show-current"],
         capture_output=True,
         text=True,
     ).stdout.strip()
-
-    staged = subprocess.run(
-        ["git", "diff", "--cached", "--numstat"],
-        capture_output=True,
-        text=True,
-    ).stdout.strip()
-    staged_count = len(staged.splitlines()) if staged else 0
-
-    modified = subprocess.run(
-        ["git", "diff", "--numstat"],
-        capture_output=True,
-        text=True,
-    ).stdout.strip()
-    modified_count = len(modified.splitlines()) if modified else 0
-
-    return branch, staged_count, modified_count
 
 
 def main():
@@ -89,8 +73,6 @@ def main():
 
     # Colors
     CYAN = "\033[36m"
-    GREEN = "\033[32m"
-    YELLOW = "\033[33m"
     MAGENTA = "\033[35m"
     DIM = "\033[90m"
     RESET = "\033[0m"
@@ -108,22 +90,15 @@ def main():
         f"{DIM}|{RESET} {DIM}ctx:{ctx_fmt}{RESET}"
     )
 
-    info = git_info()
-    if info:
-        branch, staged_count, modified_count = info
-        git_status = ""
-        if staged_count > 0:
-            git_status += f"{GREEN}+{staged_count}{RESET}"
-        if modified_count > 0:
-            git_status += f"{YELLOW}~{modified_count}{RESET}"
-        line1 += f" {DIM}|{RESET} {MAGENTA}{branch}{RESET} {git_status}"
+    branch = git_branch()
+    if branch:
+        line1 += f" {DIM}|{RESET} {MAGENTA}{branch}{RESET}"
 
     print(truncate_line(line1, cols))
 
-    # Line 2: pwd (project dir)
-    print(truncate_line(f"{DIM}pwd:{RESET} {project_dir}", cols))
-
-    # Line 3: cwd
+    # Line 2-3: show both pwd and cwd only when different, otherwise just cwd
+    if project_dir != cwd:
+        print(truncate_line(f"{DIM}pwd:{RESET} {project_dir}", cols))
     print(truncate_line(f"{DIM}cwd:{RESET} {cwd}", cols))
 
     # Line 4: transcript
