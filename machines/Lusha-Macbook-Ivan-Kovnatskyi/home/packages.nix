@@ -22,6 +22,7 @@
     backup-home
     bat
     cargo
+    claude-code-logs
     cloudflared
     confluence
     confluent-cli
