@@ -112,6 +112,12 @@ Configured Work Focus to filter out Kandji MDM notifications:
   - Camera
   - Microphone
 
+### Google Chrome
+
+- Plugins:
+  - Dark Reader
+  - Okta Browser Plugin
+
 ### Firefox
 
 - Allow:
