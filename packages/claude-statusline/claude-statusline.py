@@ -49,7 +49,16 @@ def git_branch():
     ).stdout.strip()
 
 
+def output(line, truncate, cols):
+    if truncate:
+        print(truncate_line(line, cols))
+    else:
+        print(line)
+
+
 def main():
+    truncate = "--truncate" in sys.argv
+
     raw = sys.stdin.read()
     try:
         data = json.loads(raw)
@@ -64,12 +73,12 @@ def main():
     ctx_size = data.get("context_window", {}).get("context_window_size", 200000)
     transcript = data.get("transcript_path", "")
 
-    # stdin is a pipe so shutil.get_terminal_size() defaults to 80;
-    # query stderr (still connected to the terminal) instead
-    try:
-        cols = os.get_terminal_size(sys.stderr.fileno()).columns
-    except (OSError, ValueError):
-        cols = shutil.get_terminal_size().columns
+    cols = 0
+    if truncate:
+        try:
+            cols = os.get_terminal_size(sys.stderr.fileno()).columns
+        except (OSError, ValueError):
+            cols = shutil.get_terminal_size().columns
 
     # Colors
     CYAN = "\033[36m"
@@ -94,16 +103,15 @@ def main():
     if branch:
         line1 += f" {DIM}|{RESET} {MAGENTA}{branch}{RESET}"
 
-    print(truncate_line(line1, cols))
+    output(line1, truncate, cols)
 
-    # Line 2-3: show both pwd and cwd only when different, otherwise just cwd
+    # Show both pwd and cwd only when different, otherwise just cwd
     if project_dir != cwd:
-        print(truncate_line(f"{DIM}pwd:{RESET} {project_dir}", cols))
-    print(truncate_line(f"{DIM}cwd:{RESET} {cwd}", cols))
+        output(f"{DIM}pwd:{RESET} {project_dir}", truncate, cols)
+    output(f"{DIM}cwd:{RESET} {cwd}", truncate, cols)
 
-    # Line 4: transcript
     if transcript:
-        print(truncate_line(f"{DIM}transcript:{RESET} {transcript}", cols))
+        output(f"{DIM}transcript:{RESET} {transcript}", truncate, cols)
 
 
 if __name__ == "__main__":
