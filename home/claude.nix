@@ -1,6 +1,7 @@
 {
   config,
   osConfig,
+  pkgs,
   ...
 }:
 
@@ -42,7 +43,7 @@ in
             },
             "statusLine": {
               "type": "command",
-              "command": "claude-statusline"
+              "command": "${pkgs.claude-statusline}/bin/claude-statusline"
             },
             "includeCoAuthoredBy": false,
             "env": {
