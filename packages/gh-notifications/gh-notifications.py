@@ -81,18 +81,15 @@ def _resolve_check_suite_by_workflow_name(
     """
     try:
         # Build query params for more targeted search
+        endpoint = f"/repos/{repo_full_name}/actions/runs"
+        if branch:
+            endpoint += f"?branch={branch}"
         params = [
             "api",
-            f"/repos/{repo_full_name}/actions/runs",
+            endpoint,
+            "--jq",
+            ".workflow_runs[0:20] | .[] | {name: .name, html_url: .html_url, conclusion: .conclusion}",
         ]
-        if branch:
-            params.extend(["-f", f"branch={branch}"])
-        params.extend(
-            [
-                "--jq",
-                ".workflow_runs[0:20] | .[] | {name: .name, html_url: .html_url, conclusion: .conclusion}",
-            ]
-        )
 
         runs_json = run_gh(params)
 
@@ -204,9 +201,9 @@ def resolve_html_url(n: Notification) -> str:
     branch = ""
     if n.subject_type == "CheckSuite" and " workflow run" in n.subject_title:
         workflow_name = n.subject_title.split(" workflow run")[0].strip()
-        # Extract branch from " for <branch>" suffix
+        # Extract branch from " for <branch> branch" suffix
         title_after_run = n.subject_title.split(" workflow run", 1)[1]
-        m = re.search(r" for (.+)$", title_after_run)
+        m = re.search(r" for (.+?)(?:\s+branch)?$", title_after_run)
         if m:
             branch = m.group(1).strip()
 
