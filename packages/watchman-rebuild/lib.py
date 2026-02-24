@@ -17,7 +17,9 @@ def load_watchman_ignores(config_path):
         try:
             with open(custom_config, "r") as f:
                 config = json.load(f)
-                patterns.extend(config.get("ignore_patterns", []))
+                raw_patterns = config.get("ignore_patterns", [])
+                # Strip trailing slashes to ensure consistent matching
+                patterns.extend([p.rstrip("/") for p in raw_patterns])
         except Exception as e:
             logging.warning(f"Failed to parse .watchman-rebuild.json: {e}")
 
@@ -29,11 +31,25 @@ def build_watchman_expression(ignore_patterns):
     expression = ["allof", ["type", "f"]]
 
     for pattern in ignore_patterns:
+        # Match options to ensure we catch hidden files/directories
+        match_opts = {"includedotfiles": True}
+
         if "*" in pattern:
-            # Pattern with wildcard - match against file basename
-            expression.append(["not", ["match", pattern, "basename"]])
+            # Wildcard pattern - match against wholename (recursive)
+            # If it doesn't start with **, try both absolute and relative-to-any-dir
+            expression.append(["not", ["match", pattern, "wholename", match_opts]])
+            if not pattern.startswith("**"):
+                expression.append(["not", ["match", f"**/{pattern}", "wholename", match_opts]])
         else:
-            # Directory name - exclude entire directory
-            expression.append(["not", ["dirname", pattern]])
+            # Simple name - treat as directory (recursive) or exact file match
+            # 1. Match as a directory anywhere in the tree
+            expression.append(["not", ["match", f"**/{pattern}/**", "wholename", match_opts]])
+            # 2. Match as a directory at the root
+            expression.append(["not", ["match", f"{pattern}/**", "wholename", match_opts]])
+            # 3. Match as a filename anywhere in the tree
+            expression.append(["not", ["match", f"**/{pattern}", "wholename", match_opts]])
+            # 4. Match as a filename at the root or exact basename
+            expression.append(["not", ["match", pattern, "wholename", match_opts]])
+            expression.append(["not", ["match", pattern, "basename", match_opts]])
 
     return expression
