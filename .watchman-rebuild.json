@@ -1,14 +1,16 @@
 {
   "ignore_patterns": [
     "*.md",
+    "*.pyc",
     "*.sync-conflict-*",
     "*.tmp.*",
     ".claude",
     ".git",
-    ".syncthing.*.tmp",
     ".obsidian",
     ".ruff_cache",
+    ".syncthing.*.tmp",
     ".watchman-cookie-*",
+    "__pycache__",
     "Makefile",
     "docs",
     "result*"
