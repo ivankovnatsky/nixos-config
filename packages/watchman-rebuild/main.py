@@ -362,7 +362,7 @@ def run_rebuild(config_path, command):
         release_lock()
 
 
-def setup_watchman_subscription(client, config_path, ignore_dirs):
+def setup_watchman_subscription(client, config_path, ignore_patterns):
     """Set up watchman watch and subscription. Returns (root, sub_name) or raises on failure."""
     watch_result = client.query("watch-project", config_path)
     if "warning" in watch_result:
@@ -375,7 +375,7 @@ def setup_watchman_subscription(client, config_path, ignore_dirs):
 
     # Subscribe to file changes
     query = {
-        "expression": build_watchman_expression(ignore_dirs),
+        "expression": build_watchman_expression(ignore_patterns),
         "fields": ["name"],
     }
 
@@ -423,8 +423,8 @@ def watch_and_rebuild(config_path, command=None):
         command = detect_rebuild_command()
         logging.info(f"Auto-detected rebuild command: {command}")
 
-    ignore_dirs = load_watchman_ignores(config_path)
-    logging.info(f"Loaded ignore patterns from .watchman-rebuild.json: {ignore_dirs}")
+    ignore_patterns = load_watchman_ignores(config_path)
+    logging.info(f"Loaded ignore patterns from .watchman-rebuild.json: {ignore_patterns}")
 
     # Reconnection settings
     RECONNECT_DELAY = 5  # seconds to wait before reconnecting
@@ -464,7 +464,7 @@ def watch_and_rebuild(config_path, command=None):
                 try:
                     client = pywatchman.client()
                     root, sub_name = setup_watchman_subscription(
-                        client, config_path, ignore_dirs
+                        client, config_path, ignore_patterns
                     )
                     reconnect_attempts = 0  # Reset on successful connection
                 except (pywatchman.WatchmanError, Exception) as e:
