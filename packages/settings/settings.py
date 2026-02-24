@@ -800,10 +800,34 @@ def cmd_scrolling(args: argparse.Namespace) -> int:
 # Awake: Prevent system from sleeping (macOS + Linux)
 DEFAULT_AWAKE_TIMEOUT = 43200  # 12 hours in seconds
 
+DURATION_SUFFIXES = {"s": 1, "m": 60, "h": 3600, "d": 86400}
+
+
+def parse_duration(value: str) -> int:
+    """Parse duration string like '30m', '2h', '90s', or raw seconds."""
+    value = value.strip()
+    if value and value[-1].lower() in DURATION_SUFFIXES:
+        try:
+            return int(value[:-1]) * DURATION_SUFFIXES[value[-1].lower()]
+        except ValueError:
+            pass
+    return int(value)
+
+
+def format_duration(seconds: int) -> str:
+    """Format seconds into a human-readable duration string."""
+    if seconds >= 86400 and seconds % 86400 == 0:
+        return f"{seconds // 86400}d"
+    if seconds >= 3600 and seconds % 3600 == 0:
+        return f"{seconds // 3600}h"
+    if seconds >= 60 and seconds % 60 == 0:
+        return f"{seconds // 60}m"
+    return f"{seconds}s"
+
 
 def awake_macos(timeout: int) -> int:
     """Prevent sleep on macOS using caffeinate."""
-    print(f"Preventing sleep on macOS for {timeout} seconds...")
+    print(f"Preventing sleep on macOS for {format_duration(timeout)}...")
     print("Press Ctrl+C to stop")
     try:
         subprocess.run(
@@ -821,7 +845,7 @@ def awake_macos(timeout: int) -> int:
 
 def awake_linux_systemd(timeout: int) -> int:
     """Prevent sleep on Linux using systemd-inhibit."""
-    print(f"Preventing sleep on Linux for {timeout} seconds...")
+    print(f"Preventing sleep on Linux for {format_duration(timeout)}...")
     print("Press Ctrl+C to stop")
     try:
         subprocess.run(
@@ -847,7 +871,7 @@ def awake_linux_systemd(timeout: int) -> int:
 
 def awake_linux_xset(timeout: int) -> int:
     """Prevent sleep on Linux using xset (X11)."""
-    print(f"Preventing sleep on Linux using xset for {timeout} seconds...")
+    print(f"Preventing sleep on Linux using xset for {format_duration(timeout)}...")
     print("Press Ctrl+C to stop")
     import time
 
@@ -1450,9 +1474,9 @@ def main() -> int:
     awake_parser.add_argument(
         "-t",
         "--timeout",
-        type=int,
+        type=parse_duration,
         default=DEFAULT_AWAKE_TIMEOUT,
-        help=f"Timeout in seconds (default: {DEFAULT_AWAKE_TIMEOUT} = 12 hours)",
+        help=f"Timeout as duration, e.g. 30m, 2h, 90s (default: {DEFAULT_AWAKE_TIMEOUT} = 12 hours)",
     )
     awake_parser.set_defaults(func=cmd_awake)
 
