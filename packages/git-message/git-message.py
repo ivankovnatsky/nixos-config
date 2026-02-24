@@ -204,6 +204,20 @@ def parse_args_flexible(
 
     # Original behavior: subject from positional args
     if len(args) == 1:
+        if is_file_path(args[0]):
+            print(
+                f"Error: '{args[0]}' looks like a file path, not a subject.",
+                file=sys.stderr,
+            )
+            print(
+                "  Use: git-message <file> -s 'subject'",
+                file=sys.stderr,
+            )
+            print(
+                "  Or:  git-message <file> 'subject'",
+                file=sys.stderr,
+            )
+            sys.exit(1)
         return None, args[0]
     elif len(args) == 2:
         # Check which argument is a file (exists on disk or staged)
