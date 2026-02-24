@@ -31,10 +31,6 @@
         transport = "http";
         url = "https://mcp.context7.com/mcp";
       };
-      vercel = {
-        transport = "http";
-        url = "https://mcp.vercel.com";
-      };
     };
   };
 }
