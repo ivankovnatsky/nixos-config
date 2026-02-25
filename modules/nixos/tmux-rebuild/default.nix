@@ -58,7 +58,6 @@ in
               cd ${cfg.nixosConfigPath}
 
               echo "Starting watchman-based rebuild for NixOS..."
-              echo "Press Ctrl+C to stop watching."
 
               ${pkgs.watchman-rebuild}/bin/watchman-rebuild "${cfg.nixosConfigPath}"
             '';
