@@ -26,46 +26,15 @@ components:
 
 **Platform Support:**
 
-- ✅ macOS 26.0 (Built-in)
-- ✅ iOS 26.0 (10.07 GB)
-- ⬜ watchOS 26.0 (not needed, saves 3.83 GB)
-- ⬜ tvOS 26.0 (not needed, saves 3.62 GB)
-- ⬜ visionOS 26.0 (not needed, saves 6.98 GB)
+- macOS 26.0 (Built-in)
+- iOS 26.0 (10.07 GB)
+- watchOS 26.0 (not needed, saves 3.83 GB)
+- tvOS 26.0 (not needed, saves 3.62 GB)
+- visionOS 26.0 (not needed, saves 6.98 GB)
 
 **Other Components:**
 
-- ✅ Predictive Code Completion Model (2 GB)
+- Predictive Code Completion Model (2 GB)
 
 This setup includes iOS development support while still saving approximately
 14.4 GB by skipping watchOS, tvOS, and visionOS platforms.
-
-## Xcode Notifications
-
-Enable notifications when Xcode requests permission during initial launch.
-
-## Visual Studio Code iCloud Drive Access
-
-When VS Code prompts for iCloud Drive access, click **Allow** to enable file
-operations in iCloud-synced directories.
-
-## App macOS Settings
-
-### syncthing
-
-- Allow to find devices on local networks
-
-### bash
-
-- Allow access to control "Terminal"
-- Allow access to files managed by "iCloud Drive"
-
-### Obsidian
-
-- Allow access to files managed by "iCloud Drive"
-
-### Mac Mouse Fix
-
-- Enable Mac Mouse Fix: on
-- Grant Accessibility Access
-- Show in Menu Bar: on
-- Check for Updates: off
