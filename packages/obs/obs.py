@@ -127,6 +127,39 @@ def open_vault(vault_path: Path, just_created: bool = False) -> None:
     subprocess.run(["open", uri], check=True)
 
 
+def find_vault_by_name(config: dict, name: str) -> tuple[str | None, Path | None]:
+    """Find vault ID and path by name."""
+    for vault_id, vault_info in config.get("vaults", {}).items():
+        path = vault_info.get("path", "")
+        if Path(path).name == name:
+            return vault_id, Path(path)
+    return None, None
+
+
+def delete_vault(vault_path: Path | None, name: str | None = None) -> None:
+    """Unregister a vault from Obsidian's config."""
+    config = read_obsidian_config()
+
+    if vault_path:
+        vault_path = vault_path.resolve()
+        vault_id = find_vault_by_path(config, vault_path)
+        display_name = name or vault_path.name
+    elif name:
+        vault_id, _ = find_vault_by_name(config, name)
+        display_name = name
+    else:
+        print("Error: provide a path or --name")
+        raise SystemExit(1)
+
+    if not vault_id:
+        print(f"Vault not found: {display_name}")
+        raise SystemExit(1)
+
+    del config["vaults"][vault_id]
+    write_obsidian_config(config)
+    print(f"Unregistered vault: {display_name}")
+
+
 def list_vaults() -> None:
     """List all registered vaults."""
     config = read_obsidian_config()
@@ -171,6 +204,15 @@ def main() -> None:
     # list command
     subparsers.add_parser("list", help="List all registered vaults")
 
+    # delete command
+    delete_parser = subparsers.add_parser("delete", help="Unregister a vault")
+    delete_parser.add_argument(
+        "path",
+        nargs="?",
+        default=None,
+        help="Path to vault directory",
+    )
+    delete_parser.add_argument("--name", help="Vault name to delete")
     args = parser.parse_args()
 
     if args.command == "create":
@@ -181,6 +223,9 @@ def main() -> None:
         open_vault(vault_path)
     elif args.command == "list":
         list_vaults()
+    elif args.command == "delete":
+        vault_path = Path(args.path) if args.path else None
+        delete_vault(vault_path, args.name)
     else:
         # Default: create and open current directory
         vault_path = Path(".")
