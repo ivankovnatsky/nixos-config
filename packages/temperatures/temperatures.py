@@ -144,7 +144,6 @@ signal.signal(signal.SIGINT, signal_handler)
 
 # Main monitoring loop
 print("Starting temperature monitoring...")
-print("Press Ctrl+C to stop")
 print(f"Maximum temperatures will be saved to {LOG_FILE}")
 print()
 
