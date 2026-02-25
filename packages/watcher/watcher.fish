@@ -45,7 +45,6 @@ end
 while true
     echo ----------------------------------------
     echo "Every $interval: $command"
-    echo "Press Ctrl+C to exit"
     echo "Last updated: "(date)
     echo ""
 
