@@ -424,7 +424,9 @@ def watch_and_rebuild(config_path, command=None):
         logging.info(f"Auto-detected rebuild command: {command}")
 
     ignore_patterns = load_watchman_ignores(config_path)
-    logging.info(f"Loaded ignore patterns from .watchman-rebuild.json: {ignore_patterns}")
+    logging.info(
+        f"Loaded ignore patterns from .watchman-rebuild.json: {ignore_patterns}"
+    )
 
     # Reconnection settings
     RECONNECT_DELAY = 5  # seconds to wait before reconnecting
