@@ -42,7 +42,6 @@ in
             echo "${cfg.nixosConfigPath} is now available!"
 
             echo "Starting watchman-based rebuild for Darwin..."
-            echo "Press Ctrl+C to stop watching."
 
             ${pkgs.watchman-rebuild}/bin/watchman-rebuild "${cfg.nixosConfigPath}"
           '';
