@@ -20,7 +20,6 @@ shift
 OPTIONS=("$@")
 
 echo "Starting persistent SSH connection to $HOST"
-echo "Press Ctrl+C to exit"
 
 while true; do
   if [ ${#OPTIONS[@]} -eq 0 ]; then
