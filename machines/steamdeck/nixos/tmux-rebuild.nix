@@ -7,7 +7,7 @@ in
     enable = true;
     autoStart = true;
     autoRebuild = false;
-    username = username;
+    inherit username;
     nixosConfigPath = "${homePath}/Sources/github.com/ivankovnatsky/nixos-config";
   };
 }
