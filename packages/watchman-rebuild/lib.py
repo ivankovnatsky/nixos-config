@@ -39,15 +39,23 @@ def build_watchman_expression(ignore_patterns):
             # If it doesn't start with **, try both absolute and relative-to-any-dir
             expression.append(["not", ["match", pattern, "wholename", match_opts]])
             if not pattern.startswith("**"):
-                expression.append(["not", ["match", f"**/{pattern}", "wholename", match_opts]])
+                expression.append(
+                    ["not", ["match", f"**/{pattern}", "wholename", match_opts]]
+                )
         else:
             # Simple name - treat as directory (recursive) or exact file match
             # 1. Match as a directory anywhere in the tree
-            expression.append(["not", ["match", f"**/{pattern}/**", "wholename", match_opts]])
+            expression.append(
+                ["not", ["match", f"**/{pattern}/**", "wholename", match_opts]]
+            )
             # 2. Match as a directory at the root
-            expression.append(["not", ["match", f"{pattern}/**", "wholename", match_opts]])
+            expression.append(
+                ["not", ["match", f"{pattern}/**", "wholename", match_opts]]
+            )
             # 3. Match as a filename anywhere in the tree
-            expression.append(["not", ["match", f"**/{pattern}", "wholename", match_opts]])
+            expression.append(
+                ["not", ["match", f"**/{pattern}", "wholename", match_opts]]
+            )
             # 4. Match as a filename at the root or exact basename
             expression.append(["not", ["match", pattern, "wholename", match_opts]])
             expression.append(["not", ["match", pattern, "basename", match_opts]])

@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ ... }:
 
 {
   # Configure mouse with slow speed using plasma-manager
