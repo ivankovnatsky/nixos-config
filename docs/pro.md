@@ -62,3 +62,10 @@ operations in iCloud-synced directories.
 ### Obsidian
 
 - Allow access to files managed by "iCloud Drive"
+
+### Mac Mouse Fix
+
+- Enable Mac Mouse Fix: on
+- Grant Accessibility Access
+- Show in Menu Bar: on
+- Check for Updates: off
