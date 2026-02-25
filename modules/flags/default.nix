@@ -163,6 +163,11 @@ with lib;
         description = "MacBook Air SSH public key";
         default = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILC9hnu0qrOSGfAm8fcjZdNtn0UJlHjfzSJKglz0UDZv ivan@Ivans-MacBook-Air";
       };
+      pro = mkOption {
+        type = types.str;
+        description = "MacBook Pro SSH public key";
+        default = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOjvopV6VNPr5MbP6Fx98PKhgCYqfSVoRdR5PzV+n871 ivan@Ivans-MacBook-Pro";
+      };
       steamdeck = mkOption {
         type = types.str;
         description = "Steam Deck SSH public key (for remote builds)";
