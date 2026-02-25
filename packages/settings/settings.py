@@ -78,13 +78,13 @@ def appearance_set_dark_mode_macos(dark: bool) -> None:
 
 def appearance_set_wallpaper_macos(color: str) -> None:
     file_path = f"/System/Library/Desktop Pictures/Solid Colors/{color}.png"
-    script = f'''
+    script = f"""
 tell application "System Events"
     tell every desktop
         set picture to "{file_path}"
     end tell
 end tell
-'''
+"""
     subprocess.run(["osascript", "-e", script], check=True)
 
 
@@ -307,7 +307,7 @@ def menubar_set_mode(mode: str) -> None:
         check=True,
     )
 
-    script = f'''
+    script = f"""
 delay 0.8
 tell application "System Events"
     tell process "System Settings"
@@ -319,7 +319,7 @@ tell application "System Events"
 end tell
 delay 0.2
 tell application "System Settings" to quit
-'''
+"""
     subprocess.run(["osascript", "-e", script], check=True)
 
 
@@ -828,7 +828,6 @@ def format_duration(seconds: int) -> str:
 def awake_macos(timeout: int) -> int:
     """Prevent sleep on macOS using caffeinate."""
     print(f"Preventing sleep on macOS for {format_duration(timeout)}...")
-    print("Press Ctrl+C to stop")
     try:
         subprocess.run(
             ["/usr/bin/caffeinate", "-d", "-i", "-m", "-s", "-t", str(timeout)],
@@ -846,7 +845,6 @@ def awake_macos(timeout: int) -> int:
 def awake_linux_systemd(timeout: int) -> int:
     """Prevent sleep on Linux using systemd-inhibit."""
     print(f"Preventing sleep on Linux for {format_duration(timeout)}...")
-    print("Press Ctrl+C to stop")
     try:
         subprocess.run(
             [
@@ -872,7 +870,6 @@ def awake_linux_systemd(timeout: int) -> int:
 def awake_linux_xset(timeout: int) -> int:
     """Prevent sleep on Linux using xset (X11)."""
     print(f"Preventing sleep on Linux using xset for {format_duration(timeout)}...")
-    print("Press Ctrl+C to stop")
     import time
 
     start = time.time()
@@ -953,7 +950,7 @@ def windows_close(app_name: str) -> bool:
     if not exact_name:
         return False
 
-    script = f'''
+    script = f"""
 tell application "System Events"
     tell application "{exact_name}" to activate
     delay 0.5
@@ -974,7 +971,7 @@ tell application "System Events"
         end if
     end tell
 end tell
-'''
+"""
     try:
         result = subprocess.run(
             ["osascript", "-e", script],
@@ -992,12 +989,12 @@ def windows_hide(app_name: str) -> bool:
     if not exact_name:
         return False
 
-    script = f'''
+    script = f"""
 tell application "System Events"
     set visible of process "{exact_name}" to false
     return "hidden"
 end tell
-'''
+"""
     try:
         result = subprocess.run(
             ["osascript", "-e", script],
