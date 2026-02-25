@@ -52,7 +52,6 @@
 
       echo "Starting gamescope session..."
       echo "This will launch a Steam Deck-like experience"
-      echo "Press Ctrl+C to exit"
 
       exec ${pkgs.gamescope}/bin/gamescope "''${gamescopeArgs[@]}" -- ${pkgs.steam}/bin/steam "''${steamArgs[@]}"
     '')
