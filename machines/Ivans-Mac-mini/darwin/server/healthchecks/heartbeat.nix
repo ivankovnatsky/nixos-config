@@ -18,8 +18,7 @@
     keepAlive = false;
     runAtLoad = true;
     command = "${pkgs.writeShellScript "heartbeat-ping" ''
-      TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
-      ${pkgs.curl}/bin/curl -fsS -m 10 --retry 5 "$(cat ${config.sops.secrets.healthchecks-ping-url.path})" > /dev/null && echo "$TIMESTAMP Ping sent" || echo "$TIMESTAMP Ping failed"
+      ${pkgs.curl}/bin/curl -fsS -m 10 --retry 5 "$(cat ${config.sops.secrets.healthchecks-ping-url.path})" > /dev/null && echo "$(date '+%Y-%m-%d %H:%M:%S') - INFO - Ping sent" || echo "$(date '+%Y-%m-%d %H:%M:%S') - ERROR - Ping failed"
     ''}";
     extraServiceConfig = {
       StartInterval = 60;
