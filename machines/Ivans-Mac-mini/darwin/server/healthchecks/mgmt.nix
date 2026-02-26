@@ -20,7 +20,7 @@
         tags = "mini server";
         timeout = 120;
         grace = 60;
-        channels = "*";
+        channels = "a8ad783d-39ff-4516-8604-533b744d5525";
       }
     ];
   };
