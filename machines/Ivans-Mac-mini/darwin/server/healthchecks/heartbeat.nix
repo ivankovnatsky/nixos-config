@@ -18,8 +18,7 @@
     keepAlive = false;
     runAtLoad = true;
     command = "${pkgs.writeShellScript "heartbeat-ping" ''
-      ${pkgs.curl}/bin/curl -fsS -m 10 --retry 5 "$(cat ${config.sops.secrets.healthchecks-ping-url.path})" > /dev/null
-      echo "Ping sent"
+      ${pkgs.curl}/bin/curl -fsS -m 10 --retry 5 "$(cat ${config.sops.secrets.healthchecks-ping-url.path})" > /dev/null && echo "Ping sent" || echo "Ping failed"
     ''}";
     extraServiceConfig = {
       StartInterval = 60;
