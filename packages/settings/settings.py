@@ -494,6 +494,25 @@ def scaling_get_resolution_pair(display: dict) -> tuple[dict | None, dict | None
     return modes[0], modes[1]
 
 
+def scaling_get_current_display_args() -> list[str]:
+    """Build displayplacer args for all displays with their current settings."""
+    output = scaling_get_displayplacer_output()
+    if not output:
+        return []
+
+    match = re.search(r'displayplacer\s+"([^"]+)"', output)
+    if not match:
+        match = re.findall(r'"(id:\S+[^"]*)"', output)
+        if match:
+            return list(match)
+        return []
+
+    args = [match.group(1)]
+    for extra in re.findall(r'"(id:\S+[^"]*)"', output[match.end() :]):
+        args.append(extra)
+    return args
+
+
 def scaling_set_resolution(display: dict, mode: dict) -> bool:
     """Set display resolution using displayplacer."""
     if not os.path.exists(DISPLAYPLACER_PATH):
@@ -505,10 +524,19 @@ def scaling_set_resolution(display: dict, mode: dict) -> bool:
         print("Could not determine screen ID", file=sys.stderr)
         return False
 
-    cmd = [
-        DISPLAYPLACER_PATH,
-        f"id:{screen_id} res:{mode['res']} hz:{mode['hz']} color_depth:{mode['color_depth']} scaling:on",
-    ]
+    target_arg = f"id:{screen_id} res:{mode['res']} hz:{mode['hz']} color_depth:{mode['color_depth']} scaling:on"
+
+    current_args = scaling_get_current_display_args()
+    cmd = [DISPLAYPLACER_PATH]
+    replaced = False
+    for arg in current_args:
+        if f"id:{screen_id}" in arg:
+            cmd.append(target_arg)
+            replaced = True
+        else:
+            cmd.append(arg)
+    if not replaced:
+        cmd.append(target_arg)
 
     try:
         subprocess.run(cmd, check=True)
