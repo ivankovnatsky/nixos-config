@@ -104,8 +104,9 @@ def sync_from_file(client: HealthChecksClient, config_path: str, dry_run: bool):
             if dry_run:
                 print(f"  Would create: {name}")
             else:
-                client.create_check(desired)
-                print(f"  Created: {name}")
+                result = client.create_check(desired)
+                ping_url = result.get("ping_url", "")
+                print(f"  Created: {name} ({ping_url})")
             created += 1
         else:
             changes = _check_needs_update(existing, desired)
@@ -121,6 +122,8 @@ def sync_from_file(client: HealthChecksClient, config_path: str, dry_run: bool):
                         print(f"    {field}: {old} -> {new}")
                 updated += 1
             else:
+                ping_url = existing.get("ping_url", "")
+                print(f"  Unchanged: {name} ({ping_url})")
                 unchanged += 1
 
     for name, existing in existing_by_name.items():
