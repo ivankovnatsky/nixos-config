@@ -1315,7 +1315,7 @@ ICLOUD_SYNC_DELAY = 5  # seconds to wait for iCloud sync (file is < 1KB)
 
 
 def poweroff_log_battery() -> None:
-    """Log battery status to iCloud stats directory (macOS only)."""
+    """Log battery status to iCloud stats directory (macOS laptops only)."""
     if not is_macos():
         return
 
@@ -1323,6 +1323,15 @@ def poweroff_log_battery() -> None:
     import time
 
     try:
+        result = subprocess.run(
+            ["pmset", "-g", "batt"],
+            capture_output=True,
+            text=True,
+        )
+
+        if "InternalBattery" not in result.stdout:
+            return
+
         hostname = socket.gethostname()
         today = date.today().isoformat()
         stats_dir = (
@@ -1332,12 +1341,6 @@ def poweroff_log_battery() -> None:
             / today
         )
         stats_dir.mkdir(parents=True, exist_ok=True)
-
-        result = subprocess.run(
-            ["pmset", "-g", "batt"],
-            capture_output=True,
-            text=True,
-        )
 
         battery_file = stats_dir / "battery.txt"
         battery_file.write_text(result.stdout)
