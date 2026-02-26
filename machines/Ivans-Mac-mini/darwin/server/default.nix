@@ -30,6 +30,7 @@
     ../../../../modules/darwin/nextdns-mgmt
     ../../../../modules/darwin/syncthing-cleaner
     ../../../../modules/darwin/syncthing-mgmt
+    ../../../../modules/darwin/healthchecks-mgmt
     ../../../../modules/darwin/uptime-kuma-mgmt
     ../../../../system/documentation.nix
     ../../../../system/nix.nix
@@ -42,6 +43,7 @@
     ./doh.nix
     ./download-youtube
     ./git.nix
+    ./healthchecks
     ./homebrew.nix
     ./http.nix
     ./jellyfin
