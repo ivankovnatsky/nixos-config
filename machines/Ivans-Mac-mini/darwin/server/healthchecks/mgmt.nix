@@ -15,8 +15,8 @@
     apiKeyFile = config.sops.secrets.healthchecks-api-key.path;
     checks = [
       {
-        name = "mini-heartbeat";
-        slug = "mini-heartbeat";
+        name = "mini";
+        slug = "mini";
         tags = "mini server";
         timeout = 120;
         grace = 60;
