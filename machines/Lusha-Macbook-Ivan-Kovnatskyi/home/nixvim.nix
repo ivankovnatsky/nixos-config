@@ -103,6 +103,8 @@
 
       vimPlugins.nvim-nu
       tree-sitter-grammars.tree-sitter-nu
+
+      vimPlugins.jj-nvim
     ];
     extraConfigVim = ''
       augroup commentary
@@ -139,6 +141,8 @@
         --  * a function, returning a list of strings and the return value is used as the source for completions
         all_cmd_names = [[help commands | get name | str join "\n"]]
       }
+
+      require("jj").setup({})
     '';
   };
 }
