@@ -2,8 +2,9 @@
 """Git dotfiles management tool.
 
 Modes:
-  home    Bare repo + Syncthing sync across machines
-  work    Local-only ~/.git backup (no sync)
+  home      Bare repo + Syncthing sync across machines
+  work      Local-only ~/.git backup (no sync)
+  shared    Symlink-based shared dotfiles across all machines
 
 Commands:
   dotfiles home init     Set up bare repo (idempotent)
@@ -16,15 +17,24 @@ Commands:
   dotfiles work status   Show git status
   dotfiles work add      Add files to staging
   dotfiles work commit   Commit staged changes
+
+  dotfiles shared init          Initialize shared dotfiles repo
+  dotfiles shared deploy        Create symlinks from repo to ~/
+  dotfiles shared status        Show deployed vs missing symlinks
+  dotfiles shared add <file>    Move ~/file into repo and symlink back
 """
 
 import argparse
+import json
+import platform
+import shutil
 import subprocess
 import sys
 from pathlib import Path
 
 HOME = Path.home()
 BARE_REPO = HOME / "Sources/github.com/ivankovnatsky-local/dotfiles"
+SHARED_REPO = HOME / "Sources/github.com/ivankovnatsky-local/dotfiles-shared"
 GIT_DIR = HOME / ".git"
 GIT_TIMEOUT = 60  # seconds
 
@@ -236,6 +246,229 @@ def cmd_work_commit(args: argparse.Namespace) -> int:
     return 0
 
 
+# ============ SHARED MODE (symlink-based cross-machine dotfiles) ============
+
+SHARED_DIRS = ["common", "work", "home"]
+
+DEFAULT_MACHINES_JSON = {
+    "Lusha-Macbook-Ivan-Kovnatskyi": "work",
+    "Ivans-MacBook-Air": "home",
+    "Ivans-MacBook-Pro": "home",
+    "Ivans-Mac-mini": "home",
+    "a3": "home",
+    "steamdeck": "home",
+}
+
+
+def get_hostname() -> str:
+    """Get local hostname (matches Syncthing/Nix hostnames)."""
+    return platform.node()
+
+
+def get_machine_purpose() -> str | None:
+    """Read purpose for this machine from machines.json."""
+    machines_file = SHARED_REPO / "machines.json"
+    if not machines_file.exists():
+        return None
+    try:
+        machines = json.loads(machines_file.read_text())
+    except (json.JSONDecodeError, OSError):
+        return None
+    hostname = get_hostname()
+    return machines.get(hostname)
+
+
+def iter_repo_files(subdir: Path):
+    """Yield (repo_file, home_relative_path) for all files in a subdir."""
+    if not subdir.is_dir():
+        return
+    for path in sorted(subdir.rglob("*")):
+        if path.is_file() and ".git" not in path.parts and path.name != ".gitkeep":
+            rel = path.relative_to(subdir)
+            yield path, rel
+
+
+def deploy_symlink(repo_file: Path, home_rel: Path) -> str | None:
+    """Create symlink from ~/<home_rel> -> repo_file. Returns status message or None."""
+    target = HOME / home_rel
+    if target.is_symlink():
+        if target.resolve() == repo_file.resolve():
+            return None
+        target.unlink()
+        target.symlink_to(repo_file)
+        return f"  updated: {home_rel}"
+    if target.exists():
+        return f"  CONFLICT: {home_rel} (exists, not a symlink)"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.symlink_to(repo_file)
+    return f"  linked: {home_rel}"
+
+
+def cmd_shared_init(args: argparse.Namespace) -> int:
+    """Initialize shared dotfiles repo."""
+    changed = False
+
+    if not SHARED_REPO.exists():
+        SHARED_REPO.mkdir(parents=True)
+        run_git("init", cwd=SHARED_REPO)
+        print(f"Initialized git repo at {SHARED_REPO}")
+        changed = True
+
+    for d in SHARED_DIRS:
+        dirpath = SHARED_REPO / d
+        if not dirpath.exists():
+            dirpath.mkdir()
+            (dirpath / ".gitkeep").touch()
+            changed = True
+
+    machines_file = SHARED_REPO / "machines.json"
+    if not machines_file.exists():
+        machines_file.write_text(json.dumps(DEFAULT_MACHINES_JSON, indent=2) + "\n")
+        print(f"Created {machines_file}")
+        changed = True
+
+    readme = SHARED_REPO / "README.md"
+    if not readme.exists():
+        readme.write_text(
+            "# dotfiles-shared\n\n"
+            "Shared dotfiles synced to all machines via Syncthing.\n\n"
+            "Structure:\n"
+            "- `common/` - deployed to all machines\n"
+            "- `work/` - deployed when machine purpose is work\n"
+            "- `home/` - deployed when machine purpose is home\n\n"
+            "Files mirror `~/` paths. Run `dotfiles shared deploy` to create symlinks.\n"
+        )
+        changed = True
+
+    if changed:
+        print("Shared dotfiles repo initialized.")
+    else:
+        print("Already initialized.")
+    return 0
+
+
+def cmd_shared_deploy(args: argparse.Namespace) -> int:
+    """Deploy symlinks from shared repo to ~/."""
+    if not SHARED_REPO.exists():
+        print(
+            "Error: Shared repo not found. Run 'dotfiles shared init' first.",
+            file=sys.stderr,
+        )
+        return 1
+
+    purpose = get_machine_purpose()
+    hostname = get_hostname()
+    messages = []
+
+    for repo_file, rel in iter_repo_files(SHARED_REPO / "common"):
+        msg = deploy_symlink(repo_file, rel)
+        if msg:
+            messages.append(msg)
+
+    if purpose:
+        purpose_dir = SHARED_REPO / purpose
+        for repo_file, rel in iter_repo_files(purpose_dir):
+            msg = deploy_symlink(repo_file, rel)
+            if msg:
+                messages.append(msg)
+    elif purpose is None:
+        print(
+            f"Warning: hostname '{hostname}' not in machines.json, deploying common/ only",
+            file=sys.stderr,
+        )
+
+    if messages:
+        print("Deploy results:")
+        for msg in messages:
+            print(msg)
+    else:
+        print("All symlinks up to date.")
+    return 0
+
+
+def cmd_shared_status(args: argparse.Namespace) -> int:
+    """Show status of shared dotfiles symlinks."""
+    if not SHARED_REPO.exists():
+        print(
+            "Error: Shared repo not found. Run 'dotfiles shared init' first.",
+            file=sys.stderr,
+        )
+        return 1
+
+    purpose = get_machine_purpose()
+    hostname = get_hostname()
+    ok_count = 0
+    issues = []
+
+    dirs_to_check = [SHARED_REPO / "common"]
+    if purpose:
+        dirs_to_check.append(SHARED_REPO / purpose)
+
+    for check_dir in dirs_to_check:
+        for repo_file, rel in iter_repo_files(check_dir):
+            target = HOME / rel
+            if target.is_symlink():
+                if target.resolve() == repo_file.resolve():
+                    ok_count += 1
+                else:
+                    issues.append(f"  wrong target: {rel} -> {target.readlink()}")
+            elif target.exists():
+                issues.append(f"  CONFLICT: {rel} (exists, not a symlink)")
+            else:
+                issues.append(f"  missing: {rel}")
+
+    label = f"common + {purpose}" if purpose else "common only"
+    if not purpose:
+        print(f"Warning: hostname '{hostname}' not in machines.json", file=sys.stderr)
+
+    if issues:
+        print(f"Status ({label}): {ok_count} ok, {len(issues)} issue(s)")
+        for issue in issues:
+            print(issue)
+        return 1
+    print(f"Status ({label}): {ok_count} symlink(s) ok")
+    return 0
+
+
+def cmd_shared_add(args: argparse.Namespace) -> int:
+    """Move a file from ~/ into the shared repo and symlink back."""
+    if not SHARED_REPO.exists():
+        print(
+            "Error: Shared repo not found. Run 'dotfiles shared init' first.",
+            file=sys.stderr,
+        )
+        return 1
+
+    file_path = Path(args.file).expanduser().resolve()
+    if not file_path.exists():
+        print(f"Error: {args.file} does not exist.", file=sys.stderr)
+        return 1
+    if file_path.is_symlink():
+        print(f"Error: {args.file} is already a symlink.", file=sys.stderr)
+        return 1
+
+    try:
+        rel = file_path.relative_to(HOME)
+    except ValueError:
+        print(f"Error: {args.file} is not under ~/", file=sys.stderr)
+        return 1
+
+    category = (
+        args.category if hasattr(args, "category") and args.category else "common"
+    )
+    if category not in SHARED_DIRS:
+        print(f"Error: category must be one of {SHARED_DIRS}", file=sys.stderr)
+        return 1
+
+    dest = SHARED_REPO / category / rel
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    shutil.move(str(file_path), str(dest))
+    file_path.symlink_to(dest)
+    print(f"Moved {rel} -> {category}/{rel}")
+    print(f"Symlinked ~/{rel} -> {dest}")
+    return 0
+
+
 # ============ MAIN ============
 
 
@@ -270,6 +503,28 @@ def main() -> int:
     work_commit = work_sub.add_parser("commit", help="Commit staged changes")
     work_commit.add_argument("-m", "--message", help="Commit message")
 
+    # Shared mode
+    shared_parser = subparsers.add_parser(
+        "shared", help="Symlink-based shared dotfiles"
+    )
+    shared_sub = shared_parser.add_subparsers(dest="command")
+
+    shared_sub.add_parser("init", help="Initialize shared dotfiles repo")
+    shared_sub.add_parser("deploy", help="Create symlinks from repo to ~/")
+    shared_sub.add_parser("status", help="Show deployed vs missing symlinks")
+
+    shared_add = shared_sub.add_parser(
+        "add", help="Move ~/file into repo and symlink back"
+    )
+    shared_add.add_argument("file", help="File to add (relative to ~ or absolute)")
+    shared_add.add_argument(
+        "-c",
+        "--category",
+        default="common",
+        choices=SHARED_DIRS,
+        help="Target category (default: common)",
+    )
+
     args = parser.parse_args()
 
     if not args.mode:
@@ -298,6 +553,18 @@ def main() -> int:
             "status": cmd_work_status,
             "add": cmd_work_add,
             "commit": cmd_work_commit,
+        }
+        return commands[args.command](args)
+
+    if args.mode == "shared":
+        if not args.command:
+            shared_parser.print_help()
+            return 0
+        commands = {
+            "init": cmd_shared_init,
+            "deploy": cmd_shared_deploy,
+            "status": cmd_shared_status,
+            "add": cmd_shared_add,
         }
         return commands[args.command](args)
 
