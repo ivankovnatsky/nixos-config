@@ -346,7 +346,13 @@ def cmd_shared_init(args: argparse.Namespace) -> int:
     # Create initial commit if repo has no commits yet
     result = run_git("rev-parse", "HEAD", cwd=SHARED_REPO, check=False)
     if result.returncode != 0:
-        init_files = ["README.md", "machines.json", "common/", "work/", "home/"]
+        init_files = [
+            "README.md",
+            "machines.json",
+            "common/.gitkeep",
+            "home/.gitkeep",
+            "work/.gitkeep",
+        ]
         result = run_git("add", *init_files, cwd=SHARED_REPO)
         if result.returncode != 0:
             return 1
