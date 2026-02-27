@@ -1,4 +1,8 @@
-{ config, ... }:
+{
+  config,
+  pkgs,
+  ...
+}:
 
 {
   programs.starship = {
@@ -30,10 +34,12 @@
       add_newline = false;
       aws.format = "on [$symbol$profile]($style) ";
       gcloud.disabled = true;
-      git_status.disabled = false;
-      git_branch = {
-        truncation_length = 30;
-        truncation_symbol = "";
+      git_status.disabled = true;
+      git_branch.disabled = true;
+      custom.jj = {
+        when = "${pkgs.jj-starship}/bin/jj-starship detect";
+        shell = [ "${pkgs.jj-starship}/bin/jj-starship" ];
+        format = "$output ";
       };
       directory = {
         truncation_length = 1;
