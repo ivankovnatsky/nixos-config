@@ -3,6 +3,7 @@
     ../../../darwin/amethyst.nix
     ../../../darwin/darwin.nix
     ../../../darwin/dns-clear.nix
+    ../../../darwin/dotfiles-shared-deploy.nix
     ../../../darwin/dotfiles-sync.nix
     ../../../darwin/flags.nix
     ../../../darwin/fonts.nix
