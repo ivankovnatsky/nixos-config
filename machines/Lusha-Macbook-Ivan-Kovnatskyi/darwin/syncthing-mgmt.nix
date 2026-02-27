@@ -56,6 +56,17 @@
           "Ivans-Mac-mini"
         ];
       };
+
+      "dotfiles-shared" = {
+        path = "${
+          config.users.users.${username}.home
+        }/Sources/github.com/ivankovnatsky-local/dotfiles-shared";
+        label = "Sources/github.com/ivankovnatsky-local/dotfiles-shared";
+        devices = [
+          "Ivans-MacBook-Pro"
+          "Lusha-Macbook-Ivan-Kovnatskyi"
+        ];
+      };
     };
 
     restart = false;
