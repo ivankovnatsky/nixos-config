@@ -1,6 +1,7 @@
 {
   imports = [
     ../../../darwin/aerospace.nix
+    ../../../darwin/dotfiles-shared-deploy.nix
     ../../../darwin/darwin.nix
     ../../../darwin/rebuild-terminal.nix
     ../../../darwin/nix.nix
