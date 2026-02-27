@@ -343,6 +343,14 @@ def cmd_shared_init(args: argparse.Namespace) -> int:
         )
         changed = True
 
+    # Create initial commit if repo has no commits yet
+    result = run_git("rev-parse", "HEAD", cwd=SHARED_REPO, check=False)
+    if result.returncode != 0:
+        run_git("add", ".", cwd=SHARED_REPO)
+        run_git("commit", "-m", "Init", cwd=SHARED_REPO)
+        print("Created initial commit.")
+        changed = True
+
     if changed:
         print("Shared dotfiles repo initialized.")
     else:
