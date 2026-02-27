@@ -348,8 +348,22 @@ Features:
     try:
         # Add untracked files first (git commit <file> only works for tracked files)
         if is_untracked(target_file, git_root):
-            subprocess.run(["git", "add", target_file], check=True, cwd=git_root)
+            result = subprocess.run(
+                ["git", "add", target_file],
+                capture_output=True,
+                text=True,
+                cwd=git_root,
+            )
+            if result.returncode != 0:
+                # Fall back to force-add (needed when .gitignore ignores the file)
+                print(f"  add -f {target_file}")
+                subprocess.run(
+                    ["git", "add", "-f", target_file], check=True, cwd=git_root
+                )
+            else:
+                print(f"  add {target_file}")
 
+        print(f"  commit {target_file}")
         cmd = ["git", "commit", target_file, "-m", message]
         if body:
             cmd.extend(["-m", body])
