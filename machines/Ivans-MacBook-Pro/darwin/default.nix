@@ -38,6 +38,7 @@
     ../../../darwin/homebrew.nix
     ../../../darwin/stash
     ../../../darwin/syncthing-mgmt.nix
+    ./syncthing-mgmt.nix
     ../../Ivans-MacBook-Air/darwin/dock.nix
     ../../Ivans-MacBook-Air/darwin/users.nix
   ];
