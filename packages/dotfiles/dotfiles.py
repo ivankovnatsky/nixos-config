@@ -310,6 +310,9 @@ def cmd_shared_init(args: argparse.Namespace) -> int:
 
     if not SHARED_REPO.exists():
         SHARED_REPO.mkdir(parents=True)
+        changed = True
+
+    if not (SHARED_REPO / ".git").exists():
         run_git("init", cwd=SHARED_REPO)
         print(f"Initialized git repo at {SHARED_REPO}")
         changed = True
