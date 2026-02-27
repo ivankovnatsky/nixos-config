@@ -17,6 +17,8 @@ class Notification:
     subject_api_url: str
     repo_full_name: str
     subject_title: str
+    latest_comment_url: str
+    updated_at: str
 
 
 def run_gh(args: List[str]) -> str:
@@ -36,8 +38,7 @@ def run_gh(args: List[str]) -> str:
 
 def fetch_notifications() -> List[Notification]:
     """Fetch unread notifications via gh api, returning basic fields per thread."""
-    # Using --jq to avoid streaming-JSON parsing; returns TSV: id, type, url, repo, title
-    jq = '.[] | [.id, .subject.type, .subject.url // "", .repository.full_name, .subject.title] | @tsv'
+    jq = '.[] | [.id, .subject.type, .subject.url // "", .repository.full_name, .subject.title, .subject.latest_comment_url // "", .updated_at] | @tsv'
     out = run_gh(
         [
             "api",
@@ -55,10 +56,17 @@ def fetch_notifications() -> List[Notification]:
         if not line.strip():
             continue
         parts = line.split("\t")
-        if len(parts) != 5:
-            # Skip malformed lines rather than crashing
+        if len(parts) != 7:
             continue
-        thread_id, subject_type, subject_api_url, repo_full_name, subject_title = parts
+        (
+            thread_id,
+            subject_type,
+            subject_api_url,
+            repo_full_name,
+            subject_title,
+            latest_comment_url,
+            updated_at,
+        ) = parts
         notifications.append(
             Notification(
                 thread_id=thread_id.strip(),
@@ -66,6 +74,8 @@ def fetch_notifications() -> List[Notification]:
                 subject_api_url=subject_api_url.strip(),
                 repo_full_name=repo_full_name.strip(),
                 subject_title=subject_title.strip(),
+                latest_comment_url=latest_comment_url.strip(),
+                updated_at=updated_at.strip(),
             )
         )
     return notifications
@@ -237,6 +247,66 @@ def _resolve_check_suite_url_fallback(api: str) -> str:
         return ""
 
 
+def _resolve_latest_event_url(n: Notification) -> str:
+    """Query the issue/PR timeline to find the event matching updated_at.
+
+    For merges, closes, review requests, and reviews that don't produce a
+    distinct latest_comment_url, walk the timeline backwards to find the
+    triggering event and return a deep-link URL.
+    """
+    m = re.search(r"/(?:issues|pulls)/(\d+)$", n.subject_api_url)
+    if not m:
+        return ""
+    number = m.group(1)
+
+    try:
+        # Fetch the last page of timeline events (most recent)
+        events_json = run_gh(
+            [
+                "api",
+                f"/repos/{n.repo_full_name}/issues/{number}/timeline",
+                "--paginate",
+                "--jq",
+                '.[] | {event: .event, id: .id, html_url: .html_url, updated_at: (.updated_at // .submitted_at // .created_at // "")}',
+            ]
+        )
+    except Exception:
+        return ""
+
+    # Parse all events and find the last one at or before updated_at
+    events = []
+    for line in events_json.splitlines():
+        if not line.strip():
+            continue
+        try:
+            events.append(json.loads(line))
+        except json.JSONDecodeError:
+            continue
+
+    if not events:
+        return ""
+
+    # Get the base HTML URL for the issue/PR
+    is_pr = "/pulls/" in n.subject_api_url
+    base_html = f"https://github.com/{n.repo_full_name}/{'pull' if is_pr else 'issues'}/{number}"
+
+    # Walk events in reverse to find the most recent relevant one
+    for ev in reversed(events):
+        ev_time = ev.get("updated_at", "")
+        if ev_time and ev_time > n.updated_at:
+            continue
+
+        html_url = ev.get("html_url", "")
+        if html_url:
+            return html_url
+
+        event_id = ev.get("id")
+        if event_id:
+            return f"{base_html}#event-{event_id}"
+
+    return ""
+
+
 def resolve_html_urls(n: Notification) -> List[str]:
     """Resolve browser URLs for a notification subject.
 
@@ -287,7 +357,25 @@ def resolve_html_urls(n: Notification) -> List[str]:
 
         return [f"https://github.com/{n.repo_full_name}/actions"]
 
-    # First try to fetch the object's html_url via gh (most objects provide it)
+    # For Issues and PRs, try to deep-link to the triggering event
+    if n.subject_type in ("Issue", "PullRequest"):
+        # If latest_comment_url points to a specific comment, resolve it
+        if n.latest_comment_url and n.latest_comment_url != api:
+            try:
+                comment_html = run_gh(
+                    ["api", n.latest_comment_url, "--jq", ".html_url // empty"]
+                ).strip()
+                if comment_html:
+                    return [comment_html]
+            except Exception:
+                pass
+
+        # Otherwise, query the timeline for the triggering event
+        event_url = _resolve_latest_event_url(n)
+        if event_url:
+            return [event_url]
+
+    # Fetch the object's html_url via gh (works for PR, Issue, WorkflowRun, etc)
     try:
         html = run_gh(["api", api, "--jq", ".html_url // empty"]).strip()
         if html:
@@ -338,32 +426,19 @@ def mark_thread_read(thread_id: str) -> None:
     )
 
 
-def group_urls(
+def collect_urls(
     ns: Iterable[Notification],
-) -> Tuple[List[Tuple[str, str]], List[Tuple[str, str]], List[Tuple[str, str]]]:
-    """Return (issues, prs, others) each as list of (url, thread_id).
-
-    - PRs will later open with /files
-    - Others include Actions workflow runs and any supported subject with html_url
-    - All URLs include notification context query parameters
-    """
-    issue_urls: List[Tuple[str, str]] = []
-    pr_urls: List[Tuple[str, str]] = []
-    other_urls: List[Tuple[str, str]] = []
-
+) -> List[Tuple[str, str]]:
+    """Return list of (url, thread_id) for all notifications."""
+    result: List[Tuple[str, str]] = []
     for n in ns:
         urls = resolve_html_urls(n)
         if not urls:
             continue
         for url in urls:
             url = add_notification_context(url)
-            if n.subject_type == "PullRequest":
-                pr_urls.append((url, n.thread_id))
-            elif n.subject_type == "Issue":
-                issue_urls.append((url, n.thread_id))
-            else:
-                other_urls.append((url, n.thread_id))
-    return issue_urls, pr_urls, other_urls
+            result.append((url, n.thread_id))
+    return result
 
 
 def main(argv: List[str]) -> int:
@@ -371,7 +446,8 @@ def main(argv: List[str]) -> int:
         prog="open-gh-notifications",
         description=(
             "Open unread GitHub notifications in your browser using gh CLI. "
-            "Pull Requests open on /files. Threads are marked as read after opening."
+            "Deep-links to the triggering event (comment, review, merge, etc). "
+            "Threads are marked as read after opening."
         ),
     )
     parser.add_argument(
@@ -388,45 +464,21 @@ def main(argv: List[str]) -> int:
         print(f"Failed to fetch notifications via gh: {e}", file=sys.stderr)
         return 1
 
-    issues, prs, others = group_urls(notifications)
-    all_urls = [u for u, _ in issues] + [u for u, _ in prs] + [u for u, _ in others]
+    url_pairs = collect_urls(notifications)
 
-    if not all_urls:
+    if not url_pairs:
         print("No notifications found.")
         return 0
 
     print("URLs to open:")
-    for u in all_urls:
-        print(u)
+    for url, _ in url_pairs:
+        print(url)
 
     if args.show:
         print("Would open URLs in a new browser window")
         return 0
 
-    # Open issues first, then PRs on /files, then other types (e.g., Actions runs)
-    for url, thread_id in issues:
-        opened = open_in_browser(url)
-        if opened:
-            try:
-                mark_thread_read(thread_id)
-            except Exception as e:
-                print(
-                    f"Warning: failed to mark thread {thread_id} read: {e}",
-                    file=sys.stderr,
-                )
-
-    for url, thread_id in prs:
-        opened = open_in_browser(f"{url}/files")
-        if opened:
-            try:
-                mark_thread_read(thread_id)
-            except Exception as e:
-                print(
-                    f"Warning: failed to mark thread {thread_id} read: {e}",
-                    file=sys.stderr,
-                )
-
-    for url, thread_id in others:
+    for url, thread_id in url_pairs:
         opened = open_in_browser(url)
         if opened:
             try:
