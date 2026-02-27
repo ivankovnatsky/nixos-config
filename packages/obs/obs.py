@@ -175,6 +175,16 @@ def list_vaults() -> None:
         print(f"{name}: {path}")
 
 
+def find_parent_vault(start: Path) -> Path | None:
+    """Walk up from start looking for a parent directory with .obsidian."""
+    current = start.resolve().parent
+    while current != current.parent:
+        if (current / ".obsidian").is_dir():
+            return current
+        current = current.parent
+    return None
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Simple Obsidian vault manager",
@@ -227,10 +237,15 @@ def main() -> None:
         vault_path = Path(args.path) if args.path else None
         delete_vault(vault_path, args.name)
     else:
-        # Default: create and open current directory
+        # Default: create and open current directory (or parent vault)
         vault_path = Path(".")
-        _name, newly_created = create_vault(vault_path)
-        open_vault(vault_path, just_created=newly_created)
+        parent_vault = find_parent_vault(vault_path.resolve())
+        if parent_vault:
+            print(f"Inside existing vault: {parent_vault.name}")
+            open_vault(parent_vault)
+        else:
+            _name, newly_created = create_vault(vault_path)
+            open_vault(vault_path, just_created=newly_created)
 
 
 if __name__ == "__main__":
