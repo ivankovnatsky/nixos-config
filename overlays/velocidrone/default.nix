@@ -17,6 +17,7 @@
   vulkan-loader,
   systemd,
   dbus,
+  sqlite,
 }:
 
 let
@@ -75,6 +76,7 @@ buildFHSEnv {
     vulkan-loader
     systemd
     dbus
+    sqlite
     stdenv.cc.cc.lib
   ];
 
