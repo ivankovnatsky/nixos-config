@@ -89,6 +89,7 @@
                   "applications:org.kde.kinfocenter.desktop"
                   "applications:org.kde.krdc.desktop"
                   "applications:steam.desktop"
+                  "applications:velocidrone.desktop"
                   "applications:systemsettings.desktop"
                 ];
               };
