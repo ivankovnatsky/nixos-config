@@ -45,7 +45,6 @@
       "mac-mouse-fix"
       "silicon-labs-vcp-driver"
       "stats"
-      "steam"
       "obsidian"
       "visual-studio-code"
     ];
