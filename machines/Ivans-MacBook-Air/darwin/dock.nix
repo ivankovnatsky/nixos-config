@@ -75,7 +75,6 @@ in
       { path = "/Applications/Visual Studio Code.app/"; }
       { path = "/Applications/coconutBattery.app/"; }
       { path = "/Applications/KeyCastr.app/"; }
-      { path = "/Applications/Steam.app/"; }
       { path = "/Applications/velocidrone-launcher.app/"; }
 
       {
