@@ -9,7 +9,9 @@ let
   homePath = config.home.homeDirectory;
   iCloudTaskDir = "${homePath}/Library/Mobile Documents/iCloud~com~mav~taskchamp/Documents/taskchamp";
   isWork = config.flags.purpose == "work";
-  dataLocation = if isDarwin && !isWork then iCloudTaskDir else "${homePath}/.task";
+  # Keep Mac replica local to avoid iCloud corruption — iOS owns the iCloud
+  # taskchampion.sqlite3, Mac syncs through taskchampion-local-sync-server.sqlite3
+  dataLocation = "${homePath}/.task";
 in
 {
   # https://github.com/nix-community/home-manager/blob/master/modules/programs/taskwarrior.nix
@@ -162,7 +164,8 @@ in
       # Pass through the task JSON unchanged (required for on-add hooks)
       task_json = sys.stdin.read()
       print(task_json, end="")
-      subprocess.run(["${pkgs.taskwarrior3}/bin/task", "rc.hooks=off", "rc.verbose=sync", "sync"])
+      # Workaround: TW 3.4.2 bug parses "data" from data.location as a column name during sync
+      subprocess.run(["${pkgs.taskwarrior3}/bin/task", "rc.hooks=off", "rc.verbose=sync", "rc.data.location=", "sync"])
     '';
   };
 
@@ -176,7 +179,8 @@ in
       original = sys.stdin.readline()
       modified = sys.stdin.readline()
       print(modified, end="")
-      subprocess.run(["${pkgs.taskwarrior3}/bin/task", "rc.hooks=off", "rc.verbose=sync", "sync"])
+      # Workaround: TW 3.4.2 bug parses "data" from data.location as a column name during sync
+      subprocess.run(["${pkgs.taskwarrior3}/bin/task", "rc.hooks=off", "rc.verbose=sync", "rc.data.location=", "sync"])
     '';
   };
 }
