@@ -132,7 +132,8 @@ in
     enable = true;
     package = pkgs.taskwarrior3;
     inherit dataLocation;
-    colorTheme = if config.flags.darkMode then "no-color" else "light-256";
+    # https://taskwarrior.org/docs/themes/
+    # colorTheme = if config.flags.darkMode then "dark-256" else "light-256";
     config = {
       "default.due" = "eod";
       # Use home-manager managed hooks directory
