@@ -8,6 +8,12 @@ https://www.reddit.com/r/NixOS/comments/1hudv3c/lix_installer_vs_determinate_sys
 
 Determinate nix is better for now.
 
+## Get nix source hash
+
+```bash
+nix-shell -p nurl --run 'nurl "https://github.com/owner/repo" "<commit>" --fetcher=fetchFromGitHub'
+```
+
 ## References
 
 Interesting links and resources regarding nix/NixOS/nixpkgs.
