@@ -287,6 +287,46 @@ def split_path(
     return success
 
 
+def detect_extension(file_path):
+    """Detect file extension from magic bytes."""
+    try:
+        with open(file_path, "rb") as f:
+            header = f.read(12)
+    except (OSError, IOError):
+        return None
+
+    if len(header) < 4:
+        return None
+
+    if header[:3] == b"\xff\xd8\xff":
+        return ".jpg"
+    if header[:8] == b"\x89PNG\r\n\x1a\n":
+        return ".png"
+    if header[:6] in (b"GIF87a", b"GIF89a"):
+        return ".gif"
+    if header[:4] == b"RIFF" and len(header) >= 12 and header[8:12] == b"WEBP":
+        return ".webp"
+    if len(header) >= 8 and header[4:8] == b"ftyp":
+        return ".mp4"
+    if header[:4] == b"\x1aE\xdf\xa3":
+        return ".mkv"
+
+    return None
+
+
+def fix_unknown_extensions(directory, known_files=None):
+    """Rename files with .unknown_video extension based on detected type."""
+    dir_path = Path(directory)
+    for path in dir_path.glob("*.unknown_video"):
+        if known_files is not None and path in known_files:
+            continue
+        ext = detect_extension(path)
+        if ext:
+            new_path = path.with_suffix(ext)
+            path.rename(new_path)
+            click.echo(f"Renamed: {path.name} -> {new_path.name}")
+
+
 def run_yt_dlp(args, capture_output=False):
     """Run yt-dlp with given arguments"""
     cmd = ["yt-dlp"] + list(args)
@@ -385,6 +425,7 @@ def batch_download_single(
 ):
     """Download a single URL with yt-dlp, falling back to gallery-dl. Returns (url, success)."""
     out_dir = get_output_dir(output_dir)
+    existing_files = set(out_dir.glob("*.unknown_video"))
     output_template = str(out_dir / "%(title)s.%(ext)s")
 
     cmd_args = []
@@ -406,6 +447,7 @@ def batch_download_single(
 
     result = run_yt_dlp(cmd_args)
     if result.returncode == 0:
+        fix_unknown_extensions(out_dir, existing_files)
         return (url, True)
 
     gallery_args = ["-d", str(out_dir), url]
