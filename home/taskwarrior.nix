@@ -151,36 +151,4 @@ in
     );
   };
 
-  # Auto-sync hooks: run after task modifications to sync with local server
-  # https://taskwarrior.org/docs/hooks/
-  # on-add and on-modify only trigger when data changes, unlike on-exit
-  # Using Python to properly handle JSON with escaped newlines (\n)
-  home.file."${config.xdg.configHome}/task/hooks/on-add-sync" = {
-    executable = true;
-    text = ''
-      #!${pkgs.python3}/bin/python3
-      import sys
-      import subprocess
-      # Pass through the task JSON unchanged (required for on-add hooks)
-      task_json = sys.stdin.read()
-      print(task_json, end="")
-      # Workaround: TW 3.4.2 bug parses "data" from data.location as a column name during sync
-      subprocess.run(["${pkgs.taskwarrior3}/bin/task", "rc.hooks=off", "rc.verbose=sync", "rc.data.location=", "sync"])
-    '';
-  };
-
-  home.file."${config.xdg.configHome}/task/hooks/on-modify-sync" = {
-    executable = true;
-    text = ''
-      #!${pkgs.python3}/bin/python3
-      import sys
-      import subprocess
-      # on-modify receives 2 lines: original + modified, must output 1 line: modified
-      original = sys.stdin.readline()
-      modified = sys.stdin.readline()
-      print(modified, end="")
-      # Workaround: TW 3.4.2 bug parses "data" from data.location as a column name during sync
-      subprocess.run(["${pkgs.taskwarrior3}/bin/task", "rc.hooks=off", "rc.verbose=sync", "rc.data.location=", "sync"])
-    '';
-  };
 }
