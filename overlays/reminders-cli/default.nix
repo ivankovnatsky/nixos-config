@@ -16,8 +16,8 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "ivankovnatsky";
     repo = "reminders-cli";
-    rev = "cb17bcbb2fd2200af61fb1803028d415d12a84b1";
-    hash = "sha256-i9OINt1BBj2KkxO+d6Pdp38FqS/Fv9xSWAkrjrtA8tg=";
+    rev = "51547563b8b1aaa9e1e6fe7d8eb41a39d9f50bae";
+    hash = "sha256-Xoya49ojvp0EK4iNCQBvVn9UiglzKKTILXqQnc3smeo=";
   };
 
   nativeBuildInputs = [
