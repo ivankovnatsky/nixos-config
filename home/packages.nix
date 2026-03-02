@@ -8,6 +8,7 @@
         markitdown
       ]
     ))
+    reminders-cli
     obs
     age
     aria2
