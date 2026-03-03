@@ -114,6 +114,8 @@ Configured Work Focus to filter out Kandji MDM notifications:
 
 ### Google Chrome
 
+- Allow:
+  - Local network (find devices on local networks)
 - Plugins:
   - Dark Reader
   - Okta Browser Plugin
