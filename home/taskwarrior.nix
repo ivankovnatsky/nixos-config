@@ -137,7 +137,6 @@ in
     # https://taskwarrior.org/docs/themes/
     # colorTheme = if config.flags.darkMode then "dark-256" else "light-256";
     config = {
-      "default.due" = "eod";
       # Use home-manager managed hooks directory
       "hooks.location" = "${config.xdg.configHome}/task/hooks";
     }
