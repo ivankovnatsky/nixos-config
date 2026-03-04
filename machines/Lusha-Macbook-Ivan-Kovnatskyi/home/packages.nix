@@ -31,6 +31,7 @@
     coreutils
     crane
     curlie
+    cxctl
     defaultbrowser
     databricks-cli
     delta
