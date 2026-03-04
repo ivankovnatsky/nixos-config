@@ -29,8 +29,9 @@ let
         description = "Transport protocol for MCP server";
       };
       url = mkOption {
-        type = types.str;
-        description = "URL for the MCP server";
+        type = types.nullOr types.str;
+        default = null;
+        description = "URL for the MCP server (required for http/sse transport)";
       };
       headers = mkOption {
         type = types.listOf types.str;
@@ -48,6 +49,11 @@ let
           Example: { TOKEN = config.sops.secrets.token.path; }
           Used to replace @TOKEN@ in headers at runtime.
         '';
+      };
+      args = mkOption {
+        type = types.listOf types.str;
+        default = [ ];
+        description = "Arguments for stdio transport (e.g. [\"npx\" \"@playwright/mcp@latest\"])";
       };
       command = mkOption {
         type = types.nullOr types.str;
