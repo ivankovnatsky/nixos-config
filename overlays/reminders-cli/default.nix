@@ -11,13 +11,13 @@ let
 in
 stdenv.mkDerivation rec {
   pname = "reminders-cli";
-  version = "0-unstable-2026-03-02";
+  version = "0-unstable-2026-03-04";
 
   src = fetchFromGitHub {
     owner = "ivankovnatsky";
     repo = "reminders-cli";
-    rev = "d787d01898f7f5d637acbbcb63af70c3ef2bd1be";
-    hash = "sha256-CyN7nXOQNX4o8hAjhkGOZ8znoROuuyh//F2oFqD4sF8=";
+    rev = "f8e638f";
+    hash = "sha256-7+i70qjtysaHZv5Lu4I2F18pbAQ3f8u3qwxs9lZg/8g=";
   };
 
   nativeBuildInputs = [
