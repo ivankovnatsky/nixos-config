@@ -31,6 +31,10 @@
         transport = "http";
         url = "https://mcp.context7.com/mcp";
       };
+      playwright = {
+        transport = "stdio";
+        args = [ "npx" "@playwright/mcp@latest" ];
+      };
     };
   };
 }
