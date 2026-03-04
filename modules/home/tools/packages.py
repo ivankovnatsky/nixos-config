@@ -342,12 +342,17 @@ def install_mcp_servers(servers: Dict, paths: Dict, state: Dict):
                     "--transport",
                     server_config["transport"],
                     server_name,
-                    server_config["url"],
                 ]
                 secret_paths = server_config.get("secretPaths", {})
                 for header in server_config.get("headers", []):
                     processed_header = substitute_secrets(header, secret_paths)
                     cmd.extend(["-H", processed_header])
+                args = server_config.get("args", [])
+                if args:
+                    cmd.append("--")
+                    cmd.extend(args)
+                elif server_config.get("url"):
+                    cmd.append(server_config["url"])
 
             returncode, _, stderr = run_command(cmd, env)
             if returncode != 0:
