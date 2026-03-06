@@ -1,6 +1,14 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
+    (python313.withPackages (
+      ps: with ps; [
+        grip
+        markitdown
+      ]
+    ))
+    reminders-cli
+    obs
     age
     aria2
     backup-home
@@ -27,7 +35,10 @@
     magic-wormhole
     mkpasswd
     poweroff
+    erdtree
+    ffmpeg
     dotfiles
+    go-grip
     poppler-utils
     nextdns-mgmt
     nixfmt-rfc-style
@@ -37,6 +48,7 @@
     nodejs
     gh-notifications
     pandoc
+    ps-top-nu
     parallel
     pigz
     pv
@@ -53,8 +65,12 @@
     sops
     ssh-to-age
     stylua
+    swiftformat
     syncthing
     syncthing-mgmt
+    taskwarrior-web
+    torrent-dl
+    tree
     treefmt
     typst
     typstyle
