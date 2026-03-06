@@ -120,6 +120,11 @@ Configured Work Focus to filter out Kandji MDM notifications:
   - Dark Reader
   - Okta Browser Plugin
 
+### Cloudflare WARP
+
+- Allow:
+  - Notifications
+
 ### Firefox
 
 - Allow:
