@@ -345,6 +345,9 @@ Features:
         print(f"Subject: {message}", file=sys.stderr)
         return 1
 
+    # Set env var so pre-commit hook skips the "use git-message" hint
+    os.environ["GIT_MESSAGE_CLI"] = "1"
+
     try:
         # Add untracked files first (git commit <file> only works for tracked files)
         if is_untracked(target_file, git_root):
