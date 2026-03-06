@@ -39,7 +39,7 @@ let
     '';
     outputHashAlgo = "sha256";
     outputHashMode = "recursive";
-    outputHash = "sha256-OuCWuJEr2s6UHjwcSFFJzExvM6fQq9u0/Lp/jtpvewg=";
+    outputHash = "sha256-i7LvbsJ0N86UHQgo2MtgkCfOYBUIOOK8e0hQxO2qteg=";
     impureEnvVars = lib.fetchers.proxyImpureEnvVars;
   };
 in
