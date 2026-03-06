@@ -180,8 +180,21 @@ def is_git_tracked(path: str) -> bool:
 
 
 def is_file_path(path: str) -> bool:
-    """Check if path is a file (exists on disk, is staged, or is tracked by git)."""
-    return os.path.exists(path) or is_staged_path(path) or is_git_tracked(path)
+    """Check if path is a file (exists on disk, is staged, or is tracked by git).
+
+    Checks both relative to CWD and relative to git root.
+    """
+    if os.path.exists(path) or is_staged_path(path) or is_git_tracked(path):
+        return True
+    # Also check relative to git root (handles paths like "packages/foo/bar.nix")
+    try:
+        git_root = get_git_root()
+        abs_from_root = os.path.join(git_root, path)
+        if os.path.exists(abs_from_root):
+            return True
+    except subprocess.CalledProcessError:
+        pass
+    return False
 
 
 def parse_args_flexible(
