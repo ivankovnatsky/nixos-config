@@ -23,6 +23,7 @@
       "amethyst"
       "chatgpt"
       "chromium"
+      "cloudflare-warp"
       {
         name = "claude";
         greedy = true;
@@ -46,12 +47,6 @@
       "mac-mouse-fix"
       "obsidian"
       "stats"
-      # Need to keep twingate always latest version, sometimes it fails to
-      # connect no matter what.
-      {
-        name = "twingate";
-        greedy = true;
-      }
       "visual-studio-code"
       "vivaldi"
       "windsurf"
