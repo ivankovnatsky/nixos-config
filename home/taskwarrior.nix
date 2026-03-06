@@ -136,6 +136,7 @@ in
     inherit dataLocation;
     # https://taskwarrior.org/docs/themes/
     # colorTheme = if config.flags.darkMode then "dark-256" else "light-256";
+    colorTheme = "no-color";
     config = {
       # Use home-manager managed hooks directory
       "hooks.location" = "${config.xdg.configHome}/task/hooks";
