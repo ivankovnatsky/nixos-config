@@ -1,6 +1,5 @@
 let
   pinnedPaths = [
-    "Library/Mobile Documents/com~apple~CloudDocs/Data/Notes"
     "Library/Mobile Documents/iCloud~com~mav~taskchamp"
     "Library/Mobile Documents/iCloud~md~obsidian"
   ];
