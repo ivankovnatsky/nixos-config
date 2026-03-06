@@ -86,6 +86,7 @@
     kubepug
     kustomize
     launchd-mgmt
+    ldns
     lsd
     magic-wormhole
     mariadb
