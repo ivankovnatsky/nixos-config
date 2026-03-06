@@ -12,6 +12,74 @@ let
   # Keep Mac replica local to avoid iCloud corruption — iOS owns the iCloud
   # taskchampion.sqlite3, Mac syncs through taskchampion-local-sync-server.sqlite3
   dataLocation = "${homePath}/.task";
+
+  # Light-optimized theme (foreground-only, no background colors)
+  # taskColorsLightOptimized = {
+  #   "color.header" = "bold color237";
+  #   "color.id" = "color26";
+  #   "color.active" = "bold color22";
+  #   "color.overdue" = "bold color160";
+  #   "color.due.today" = "bold color202";
+  #   "color.due" = "color33";
+  #   "color.pri.H" = "bold color160";
+  #   "color.pri.M" = "color202";
+  #   "color.pri.L" = "color244";
+  #   "color.completed" = "color241";
+  #   "color.deleted" = "color238";
+  #   "color.tag.next" = "color55";
+  #   "color.tagged" = "color97";
+  #   "color.project.none" = "color244";
+  #   "color.alternate" = "";
+  #   "color.recurring" = "color63";
+  #   "color.blocking" = "bold color130";
+  #   "color.blocked" = "color244";
+  #   "color.undo.before" = "color160";
+  #   "color.undo.after" = "color28";
+  #   "color.calendar.today" = "bold color26";
+  #   "color.calendar.due" = "color160";
+  #   "color.calendar.due.today" = "bold color160";
+  #   "color.calendar.overdue" = "bold color124";
+  #   "color.calendar.weekend" = "color237";
+  #   "color.calendar.holiday" = "bold color100";
+  #   "color.calendar.weeknumber" = "color244";
+  #   "color.sync.added" = "color28";
+  #   "color.sync.changed" = "color202";
+  #   "color.sync.rejected" = "color160";
+  # };
+
+  # Dual-mode theme (foreground-only, ANSI 256 mid-range 60–210)
+  taskColorsDualMode = {
+    "color.header" = "bold color244";
+    "color.id" = "color69";
+    "color.active" = "bold color64";
+    "color.overdue" = "bold color160";
+    "color.due.today" = "bold color160";
+    "color.due" = "color69";
+    "color.pri.H" = "bold color160";
+    "color.pri.M" = "color166";
+    "color.pri.L" = "color244";
+    "color.completed" = "color242";
+    "color.deleted" = "color238";
+    "color.tag.next" = "bold color62";
+    "color.tagged" = "color97";
+    "color.project.none" = "color244";
+    "color.alternate" = "";
+    "color.recurring" = "color30";
+    "color.blocking" = "bold color136";
+    "color.blocked" = "color244";
+    "color.undo.before" = "color160";
+    "color.undo.after" = "color64";
+    "color.calendar.today" = "bold color69";
+    "color.calendar.due" = "color166";
+    "color.calendar.due.today" = "bold color160";
+    "color.calendar.overdue" = "bold color160";
+    "color.calendar.weekend" = "color244";
+    "color.calendar.holiday" = "bold color136";
+    "color.calendar.weeknumber" = "color244";
+    "color.sync.added" = "color64";
+    "color.sync.changed" = "color166";
+    "color.sync.rejected" = "color160";
+  };
 in
 {
   # https://github.com/nix-community/home-manager/blob/master/modules/programs/taskwarrior.nix
@@ -136,11 +204,11 @@ in
     inherit dataLocation;
     # https://taskwarrior.org/docs/themes/
     # colorTheme = if config.flags.darkMode then "dark-256" else "light-256";
-    colorTheme = "no-color";
     config = {
       # Use home-manager managed hooks directory
       "hooks.location" = "${config.xdg.configHome}/task/hooks";
     }
+    // taskColorsDualMode
     // (
       if isDarwin && !isWork then
         {
