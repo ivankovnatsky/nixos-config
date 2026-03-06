@@ -125,14 +125,15 @@
         ];
       };
 
-      # WARNING: Source is iCloud-synced Obsidian vault on Air. Only share
-      # between Air and a3 — do not add pro or mini.
+      # WARNING: Source is iCloud-synced Obsidian vault on Mini. Only share
+      # between Mini and a3 — do not add Pro or Air, they have their own
+      # iCloud sync.
       "notes" = {
         path = "${config.users.users.${username}.home}/Notes";
         label = "Notes";
         devices = [
           "a3"
-          "Ivans-MacBook-Air"
+          "Ivans-Mac-mini"
         ];
       };
 
