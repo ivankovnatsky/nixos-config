@@ -129,6 +129,17 @@
         ];
       };
 
+      # WARNING: This path is iCloud-synced via Obsidian. Only share from
+      # Mini to a3 — do not add pro or Air, they have their own iCloud sync.
+      "notes" = {
+        path = "${config.users.users.${username}.home}/Library/Mobile Documents/iCloud~md~obsidian/Documents/Notes";
+        label = "Library/Mobile Documents/iCloud~md~obsidian/Documents/Notes";
+        devices = [
+          "Ivans-Mac-mini"
+          "a3"
+        ];
+      };
+
     };
 
     restart = false;
