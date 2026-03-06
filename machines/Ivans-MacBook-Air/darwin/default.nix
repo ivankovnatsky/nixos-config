@@ -39,7 +39,6 @@
     ../../../darwin/stash
     ../../../darwin/syncthing-mgmt.nix
     ./dock.nix
-    ./syncthing-mgmt.nix
     ./users.nix
   ];
 }
