@@ -141,8 +141,20 @@ with lib;
 
     miniIp = mkOption {
       type = types.str;
-      description = "Mac mini IP address";
+      description = "Mac mini ethernet IP address";
       default = "192.168.50.4";
+    };
+
+    miniWifiIp = mkOption {
+      type = types.str;
+      description = "Mac mini WiFi IP address";
+      default = "192.168.50.12";
+    };
+
+    machineBindAddress = mkOption {
+      type = types.str;
+      description = "Address for services to bind to (0.0.0.0 for all interfaces)";
+      default = config.flags.machineIp;
     };
 
     a3Ip = mkOption {

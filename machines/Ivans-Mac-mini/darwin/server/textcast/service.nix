@@ -46,7 +46,7 @@ let
 
     server:
       enabled: true
-      host: ${config.flags.machineIp}
+      host: ${config.flags.machineBindAddress}
       port: 8084
   '';
 

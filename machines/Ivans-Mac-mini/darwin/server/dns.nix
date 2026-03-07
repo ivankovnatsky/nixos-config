@@ -32,8 +32,7 @@
       round_robin_upstreams: 1
       idle_timeout: 10000
       listen_addresses:
-        - 127.0.0.1@5453
-        - ${config.flags.machineIp}@5453
+        - ${config.flags.machineBindAddress}@5453
       upstream_recursive_servers:
         - address_data: ${config.sops.placeholder.nextdns-server-mini-1}
           tls_auth_name: ${config.sops.placeholder.nextdns-endpoint-mini}
@@ -47,7 +46,8 @@
       domain=${config.sops.placeholder.external-domain}
       local=/${config.sops.placeholder.external-domain}/
       dhcp-option=option:domain-search,${config.sops.placeholder.external-domain}
-      address=/${config.sops.placeholder.external-domain}/${config.flags.machineIp}
+      address=/${config.sops.placeholder.external-domain}/${config.flags.miniIp}
+      address=/${config.sops.placeholder.external-domain}/${config.flags.miniWifiIp}
     '';
   };
 
@@ -66,14 +66,10 @@
     alwaysKeepRunning = true;
     waitForSecrets = true;
     settings = {
-      # Listen on specific addresses
+      # Listen on all interfaces (supports both ethernet and WiFi)
       "listen-address" = [
-        "127.0.0.1"
-        "${config.flags.machineIp}"
+        config.flags.machineBindAddress
       ];
-
-      # Bind to specific interfaces only (prevents binding to 0.0.0.0)
-      "bind-interfaces" = true;
 
       # Don't use /etc/resolv.conf
       "no-resolv" = true;

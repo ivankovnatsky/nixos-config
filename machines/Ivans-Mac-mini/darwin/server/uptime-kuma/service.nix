@@ -18,7 +18,7 @@ in
     '';
     environment = {
       DATA_DIR = dataDir;
-      HOST = config.flags.machineIp;
+      HOST = config.flags.machineBindAddress;
       PORT = "3001";
       NODE_ENV = "production";
     };
