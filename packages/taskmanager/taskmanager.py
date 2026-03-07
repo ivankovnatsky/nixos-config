@@ -123,14 +123,29 @@ PRIORITY_LABEL = {"H": "high", "M": "medium", "L": "low", "": "none"}
 
 
 def normalize_date(date_str):
-    """Normalize date to YYYY-MM-DD for comparison."""
+    """Normalize date to compact form for comparison (strip punctuation)."""
     if not date_str:
         return ""
-    clean = date_str.replace("-", "").replace(":", "")
+    return date_str.replace("-", "").replace(":", "")
+
+
+def format_date(date_str):
+    """Format date for display as YYYY-MM-DD."""
+    if not date_str:
+        return ""
+    clean = normalize_date(date_str)
     if len(clean) >= 8:
         d = clean[:8]
         return f"{d[:4]}-{d[4:6]}-{d[6:8]}"
     return date_str
+
+
+def tw_date_to_iso(tw_date):
+    """Convert TW compact date (20260319T220000Z) to ISO 8601."""
+    if not tw_date or len(tw_date) < 16:
+        return tw_date
+    return (f"{tw_date[:4]}-{tw_date[4:6]}-{tw_date[6:8]}"
+            f"T{tw_date[9:11]}:{tw_date[11:13]}:{tw_date[13:15]}Z")
 
 
 def compare_metadata(tw, rem):
@@ -141,11 +156,12 @@ def compare_metadata(tw, rem):
     if tw["status"] != rem["status"]:
         diffs.append(("status", rem["status"], tw["status"]))
 
-    # Due date
+    # Due date — compare full timestamps, display as YYYY-MM-DD
     tw_due = normalize_date(tw.get("due", ""))
     rem_due = normalize_date(rem.get("due", ""))
     if tw_due != rem_due:
-        diffs.append(("due", rem_due or "none", tw_due or "none"))
+        diffs.append(("due", format_date(rem.get("due", "")) or "none",
+                       format_date(tw.get("due", "")) or "none"))
 
     # Notes vs annotations
     rem_notes = (rem.get("notes") or "").strip()
@@ -282,7 +298,7 @@ def sync_metadata(metadata_diffs):
         for field, rem_val, tw_val in diffs:
             if field == "due":
                 if rem_val != "none" and tw_val == "none":
-                    tw_updates["due"] = normalize_date(rem.get("due", ""))
+                    tw_updates["due"] = rem.get("due", "")
                 elif tw_val != "none" and rem_val == "none":
                     # reminders edit doesn't support --due-date, skip
                     pass
@@ -402,10 +418,10 @@ def sync(project, approve):
         prefixed = f"{proj}: {item['title']}"
         add_cmd = ["task", "add", prefixed, f"project:{proj}"]
 
-        # Due date
-        due = normalize_date(item.get("due", ""))
-        if due:
-            add_cmd.append(f"due:{due}")
+        # Due date — pass raw ISO date so TW handles timezone correctly
+        raw_due = item.get("due", "")
+        if raw_due:
+            add_cmd.append(f"due:{raw_due}")
 
         # Priority
         tw_prio = REMINDERS_PRIORITY_MAP.get(item.get("priority", 0), "")
@@ -453,10 +469,10 @@ def sync(project, approve):
 
             add_cmd = ["reminders", "add", proj, prefixed]
 
-            # Due date
-            due = normalize_date(item.get("due", ""))
-            if due:
-                add_cmd.extend(["--due-date", due])
+            # Due date — convert TW compact format to ISO for reminders CLI
+            raw_due = item.get("due", "")
+            if raw_due:
+                add_cmd.extend(["--due-date", tw_date_to_iso(raw_due)])
 
             # Priority
             tw_prio = item.get("priority", "")
