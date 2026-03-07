@@ -31,7 +31,7 @@ def get_tw_tasks(project_filter=None):
     """Export tasks from Taskwarrior as a dict keyed by (project, title)."""
     cmd = ["task"]
     if project_filter:
-        cmd.append(f"project:{project_filter}")
+        cmd.append(f"project.is:{project_filter}")
     cmd.append("export")
 
     result = subprocess.run(cmd, capture_output=True, text=True)
@@ -218,7 +218,7 @@ def sync(project):
             click.echo(f"  + TW: {prefixed}")
             if item["status"] == "completed":
                 find = subprocess.run(
-                    ["task", f"project:{proj}", prefixed, "uuids"],
+                    ["task", f"project.is:{proj}", prefixed, "uuids"],
                     capture_output=True, text=True,
                 )
                 uuid = find.stdout.strip()
