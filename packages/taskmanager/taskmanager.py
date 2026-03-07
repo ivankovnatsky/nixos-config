@@ -118,6 +118,7 @@ def get_reminders(project_filter=None, include_completed=True):
 
 
 REMINDERS_PRIORITY_MAP = {0: "", 1: "H", 5: "M", 9: "L"}
+TW_TO_REMINDERS_PRIORITY = {"H": "high", "M": "medium", "L": "low"}
 PRIORITY_LABEL = {"H": "high", "M": "medium", "L": "low", "": "none"}
 
 
@@ -289,9 +290,33 @@ def sync(project, approve):
     for item in rem_only.values():
         proj = item["project"]
         prefixed = f"{proj}: {item['title']}"
-        result = run(["task", "add", prefixed, f"project:{proj}"])
+        add_cmd = ["task", "add", prefixed, f"project:{proj}"]
+
+        # Due date
+        due = normalize_date(item.get("due", ""))
+        if due:
+            add_cmd.append(f"due:{due}")
+
+        # Priority
+        tw_prio = REMINDERS_PRIORITY_MAP.get(item.get("priority", 0), "")
+        if tw_prio:
+            add_cmd.append(f"priority:{tw_prio}")
+
+        result = run(add_cmd)
         if result.returncode == 0:
             click.echo(f"  + TW: {prefixed}")
+
+            # Notes → annotation
+            notes = (item.get("notes") or "").strip()
+            if notes:
+                find = subprocess.run(
+                    ["task", f"project.is:{proj}", prefixed, "uuids"],
+                    capture_output=True, text=True,
+                )
+                uuid = find.stdout.strip()
+                if uuid:
+                    run(["task", uuid, "annotate", notes])
+
             if item["status"] == "completed":
                 find = subprocess.run(
                     ["task", f"project.is:{proj}", prefixed, "uuids"],
@@ -316,7 +341,26 @@ def sync(project, approve):
                 run(["reminders", "new-list", proj])
                 existing_lists.add(proj)
 
-            result = run(["reminders", "add", proj, prefixed])
+            add_cmd = ["reminders", "add", proj, prefixed]
+
+            # Due date
+            due = normalize_date(item.get("due", ""))
+            if due:
+                add_cmd.extend(["--due-date", due])
+
+            # Priority
+            tw_prio = item.get("priority", "")
+            rem_prio_label = TW_TO_REMINDERS_PRIORITY.get(tw_prio)
+            if rem_prio_label:
+                add_cmd.extend(["--priority", rem_prio_label])
+
+            # Notes from annotations
+            annotations = item.get("annotations", [])
+            if annotations:
+                notes_text = "\n".join(a.get("description", "") for a in annotations)
+                add_cmd.extend(["--notes", notes_text])
+
+            result = run(add_cmd)
             if result.returncode == 0:
                 click.echo(f"  + Reminders: {prefixed}")
                 if item["status"] == "completed":
