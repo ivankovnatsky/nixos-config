@@ -29,7 +29,7 @@ in
           cat > ${dataDir}/config.yml << EOF
           systems:
             - name: ${config.networking.hostName}
-              host: ${config.flags.machineBindAddress}
+              host: ${config.flags.machineLocalAddress}
               port: 45876
               token: $BESZEL_TOKEN
               users:
@@ -89,7 +89,7 @@ in
     systems = [
       {
         name = config.networking.hostName;
-        host = config.flags.machineBindAddress;
+        host = config.flags.machineLocalAddress;
         port = "45876";
       }
     ];

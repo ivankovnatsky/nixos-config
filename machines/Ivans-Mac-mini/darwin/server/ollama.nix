@@ -17,7 +17,7 @@ in
   # Set system-wide environment variables for ollama commands
   environment.variables = {
     OLLAMA_MODELS = ollamaModelsPath;
-    OLLAMA_HOST = "${config.flags.machineBindAddress}:11434";
+    OLLAMA_HOST = "${config.flags.machineLocalAddress}:11434";
     OLLAMA_CONTEXT_LENGTH = "8192";
   };
 
@@ -42,7 +42,7 @@ in
   system.activationScripts.ollama.text = ''
     # Set environment variables for ollama
     export OLLAMA_MODELS="${ollamaModelsPath}"
-    export OLLAMA_HOST="${config.flags.machineBindAddress}:11434"
+    export OLLAMA_HOST="${config.flags.machineLocalAddress}:11434"
 
     # Check if brew ollama service is running and responsive with timeout
     if timeout 5 /opt/homebrew/bin/ollama list &>/dev/null; then

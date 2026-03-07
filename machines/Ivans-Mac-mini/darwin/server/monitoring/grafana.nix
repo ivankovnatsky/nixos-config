@@ -9,12 +9,12 @@ let
       - name: Loki
         type: loki
         access: proxy
-        url: http://${config.flags.machineBindAddress}:3100
+        url: http://${config.flags.machineLocalAddress}:3100
         isDefault: true
       - name: Prometheus
         type: prometheus
         access: proxy
-        url: http://${config.flags.machineBindAddress}:9090
+        url: http://${config.flags.machineLocalAddress}:9090
   '';
 
   dashboardsConfig = pkgs.writeText "dashboards.yaml" ''
