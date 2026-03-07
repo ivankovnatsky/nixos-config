@@ -191,7 +191,11 @@ def compute_drift(project_filter=None):
     for key in sorted(matched):
         diffs = compare_metadata(tw_tasks[key], reminder_tasks[key])
         if diffs:
-            metadata_diffs[key] = diffs
+            metadata_diffs[key] = {
+                "diffs": diffs,
+                "tw": tw_tasks[key],
+                "rem": reminder_tasks[key],
+            }
 
     return rem_only, tw_only, matched, metadata_diffs
 
@@ -212,9 +216,9 @@ def print_drift(rem_only, tw_only, matched, metadata_diffs):
 
     if metadata_diffs:
         click.echo(f"\nMetadata drift ({len(metadata_diffs)} items):")
-        for (project, title), diffs in metadata_diffs.items():
+        for (project, title), info in metadata_diffs.items():
             click.echo(f"  {project}: {title}")
-            for field, rem_val, tw_val in diffs:
+            for field, rem_val, tw_val in info["diffs"]:
                 click.echo(f"    {field}: {rem_val} (Reminders) vs {tw_val} (TW)")
 
     if not rem_only and not tw_only and not metadata_diffs:
@@ -227,6 +231,108 @@ def print_drift(rem_only, tw_only, matched, metadata_diffs):
         click.echo(f"Taskwarrior only: {len(tw_only)}")
     if metadata_diffs:
         click.echo(f"Metadata drift: {len(metadata_diffs)}")
+
+
+def find_tw_uuid(project, prefixed_title):
+    """Find TW task UUID by project and prefixed description."""
+    result = subprocess.run(
+        ["task", f"project.is:{project}", "export"],
+        capture_output=True, text=True,
+    )
+    if result.returncode != 0:
+        return None
+    try:
+        for t in json.loads(result.stdout):
+            if t.get("description", "") == prefixed_title:
+                return t["uuid"]
+    except json.JSONDecodeError:
+        pass
+    return None
+
+
+def find_reminder_index(list_name, prefixed_title):
+    """Find reminder index by list and prefixed title."""
+    result = subprocess.run(
+        ["reminders", "show", list_name, "--format", "json", "--include-completed"],
+        capture_output=True, text=True,
+    )
+    if result.returncode != 0:
+        return None
+    try:
+        for i, item in enumerate(json.loads(result.stdout)):
+            if item.get("title", "") == prefixed_title:
+                return i
+    except json.JSONDecodeError:
+        pass
+    return None
+
+
+def sync_metadata(metadata_diffs):
+    """Sync metadata for matched items with drift. Returns count of updated items."""
+    count = 0
+    for (project, title), info in metadata_diffs.items():
+        diffs = info["diffs"]
+        tw = info["tw"]
+        rem = info["rem"]
+        prefixed = f"{project}: {title}"
+
+        tw_updates = {}
+        rem_updates = {}
+
+        for field, rem_val, tw_val in diffs:
+            if field == "due":
+                if rem_val != "none" and tw_val == "none":
+                    tw_updates["due"] = normalize_date(rem.get("due", ""))
+                elif tw_val != "none" and rem_val == "none":
+                    # reminders edit doesn't support --due-date, skip
+                    pass
+            elif field == "notes":
+                if "not in annotations" in str(tw_val):
+                    tw_updates["notes"] = (rem.get("notes") or "").strip()
+                elif rem_val == "none" and tw.get("annotations"):
+                    ann_texts = [a.get("description", "") for a in tw["annotations"]]
+                    rem_updates["notes"] = "\n".join(ann_texts)
+            elif field == "priority":
+                if rem_val != "none" and tw_val == "none":
+                    prio = REMINDERS_PRIORITY_MAP.get(rem.get("priority", 0), "")
+                    if prio:
+                        tw_updates["priority"] = prio
+                # reminders edit doesn't support --priority, skip
+            elif field == "status":
+                if rem_val == "completed" and tw_val == "pending":
+                    tw_updates["status"] = "completed"
+                elif tw_val == "completed" and rem_val == "pending":
+                    rem_updates["status"] = "completed"
+
+        if tw_updates:
+            uuid = find_tw_uuid(project, prefixed)
+            if uuid:
+                modify_args = []
+                if "due" in tw_updates:
+                    modify_args.append(f"due:{tw_updates['due']}")
+                if "priority" in tw_updates:
+                    modify_args.append(f"priority:{tw_updates['priority']}")
+                if modify_args:
+                    run(["task", uuid, "modify"] + modify_args)
+                if "notes" in tw_updates:
+                    run(["task", uuid, "annotate", tw_updates["notes"]])
+                if "status" in tw_updates:
+                    run(["task", uuid, "done"])
+                count += 1
+                click.echo(f"  ~ TW: {prefixed} ({', '.join(tw_updates.keys())})")
+
+        if rem_updates and is_darwin() and has_command("reminders"):
+            idx = find_reminder_index(project, prefixed)
+            if idx is not None:
+                if "notes" in rem_updates:
+                    run(["reminders", "edit", project, str(idx),
+                         "--include-completed", "--notes", rem_updates["notes"]])
+                if "status" in rem_updates:
+                    run(["reminders", "complete", project, str(idx)])
+                count += 1
+                click.echo(f"  ~ Reminders: {prefixed} ({', '.join(rem_updates.keys())})")
+
+    return count
 
 
 @click.group()
@@ -274,14 +380,18 @@ def sync(project, approve):
     rem_only, tw_only, matched, metadata_diffs = compute_drift(project)
     print_drift(rem_only, tw_only, matched, metadata_diffs)
 
-    total = len(rem_only) + len(tw_only)
+    total = len(rem_only) + len(tw_only) + len(metadata_diffs)
     if total == 0:
         return
 
-    click.echo(
-        f"\nWill copy {len(rem_only)} items to Taskwarrior "
-        f"and {len(tw_only)} items to Reminders."
-    )
+    parts = []
+    if rem_only:
+        parts.append(f"{len(rem_only)} items to Taskwarrior")
+    if tw_only:
+        parts.append(f"{len(tw_only)} items to Reminders")
+    if metadata_diffs:
+        parts.append(f"{len(metadata_diffs)} metadata updates")
+    click.echo(f"\nWill sync: {', '.join(parts)}.")
     if not approve and not click.confirm("Proceed?"):
         click.echo("Aborted.")
         return
@@ -377,6 +487,12 @@ def sync(project, approve):
                                     break
                         except json.JSONDecodeError:
                             pass
+
+    # Sync metadata for matched items with drift
+    if metadata_diffs:
+        meta_count = sync_metadata(metadata_diffs)
+        if meta_count:
+            click.echo(f"\nUpdated metadata on {meta_count} items.")
 
     click.echo("\nDone.")
 
