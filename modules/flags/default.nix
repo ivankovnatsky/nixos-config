@@ -157,6 +157,12 @@ with lib;
       default = config.flags.machineIp;
     };
 
+    machineLocalAddress = mkOption {
+      type = types.str;
+      description = "Address for connecting to local services (127.0.0.1 when binding all interfaces)";
+      default = config.flags.machineIp;
+    };
+
     a3Ip = mkOption {
       type = types.str;
       description = "a3w IP address";
