@@ -267,7 +267,8 @@ def drift(project):
 
 @cli.command()
 @click.option("--project", default=None, help="Scope to a specific project/list.")
-def sync(project):
+@click.option("--approve", is_flag=True, default=False, help="Skip confirmation prompt.")
+def sync(project, approve):
     """Sync missing items to both systems."""
     rem_only, tw_only, matched, metadata_diffs = compute_drift(project)
     print_drift(rem_only, tw_only, matched, metadata_diffs)
@@ -280,7 +281,7 @@ def sync(project):
         f"\nWill copy {len(rem_only)} items to Taskwarrior "
         f"and {len(tw_only)} items to Reminders."
     )
-    if not click.confirm("Proceed?"):
+    if not approve and not click.confirm("Proceed?"):
         click.echo("Aborted.")
         return
 
