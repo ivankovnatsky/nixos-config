@@ -34,7 +34,7 @@
     ssh-to-age
     swiftformat
     syncthing-mgmt
-    taskadd
+    taskmanager
     torrent-dl
     tree
     uptime-kuma-mgmt

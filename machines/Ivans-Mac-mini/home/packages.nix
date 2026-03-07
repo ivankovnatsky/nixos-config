@@ -68,7 +68,7 @@
     swiftformat
     syncthing
     syncthing-mgmt
-    taskadd
+    taskmanager
     taskwarrior-web
     torrent-dl
     tree
