@@ -6,7 +6,7 @@
   ...
 }:
 
-pkgs.writeShellScriptBin "taskadd" ''
+pkgs.writeShellScriptBin "taskmanager" ''
   export PATH="${
     lib.makeBinPath (
       [ taskwarrior3 ]
@@ -15,5 +15,7 @@ pkgs.writeShellScriptBin "taskadd" ''
       ]
     )
   }:$PATH"
-  exec ${pkgs.python3}/bin/python ${./taskadd.py} "$@"
+  exec ${
+    pkgs.python3.withPackages (ps: [ ps.click ])
+  }/bin/python ${./taskmanager.py} "$@"
 ''
