@@ -57,6 +57,9 @@ def get_tw_tasks(project_filter=None):
             "title": title,
             "status": status,
             "source": "taskwarrior",
+            "due": task.get("due", ""),
+            "annotations": task.get("annotations", []),
+            "priority": task.get("priority", ""),
         }
     return tasks
 
@@ -107,8 +110,65 @@ def get_reminders(project_filter=None, include_completed=True):
                 "title": title,
                 "status": "completed" if is_completed else "pending",
                 "source": "reminders",
+                "due": item.get("dueDate", ""),
+                "notes": item.get("notes", ""),
+                "priority": item.get("priority", 0),
             }
     return reminders
+
+
+REMINDERS_PRIORITY_MAP = {0: "", 1: "H", 5: "M", 9: "L"}
+PRIORITY_LABEL = {"H": "high", "M": "medium", "L": "low", "": "none"}
+
+
+def normalize_date(date_str):
+    """Normalize date to YYYY-MM-DD for comparison."""
+    if not date_str:
+        return ""
+    clean = date_str.replace("-", "").replace(":", "")
+    if len(clean) >= 8:
+        d = clean[:8]
+        return f"{d[:4]}-{d[4:6]}-{d[6:8]}"
+    return date_str
+
+
+def compare_metadata(tw, rem):
+    """Compare metadata fields between matched TW and Reminders items."""
+    diffs = []
+
+    # Status
+    if tw["status"] != rem["status"]:
+        diffs.append(("status", rem["status"], tw["status"]))
+
+    # Due date
+    tw_due = normalize_date(tw.get("due", ""))
+    rem_due = normalize_date(rem.get("due", ""))
+    if tw_due != rem_due:
+        diffs.append(("due", rem_due or "none", tw_due or "none"))
+
+    # Notes vs annotations
+    rem_notes = (rem.get("notes") or "").strip()
+    tw_annotations = tw.get("annotations", [])
+    tw_ann_texts = [a.get("description", "") for a in tw_annotations]
+    if rem_notes:
+        found = any(rem_notes in text for text in tw_ann_texts)
+        if not found:
+            diffs.append(("notes", repr(rem_notes[:60]), "not in annotations"))
+    elif tw_ann_texts:
+        joined = "; ".join(tw_ann_texts)
+        diffs.append(("notes", "none", f"annotations: {repr(joined[:60])}"))
+
+    # Priority
+    rem_prio = REMINDERS_PRIORITY_MAP.get(rem.get("priority", 0), "")
+    tw_prio = tw.get("priority", "")
+    if rem_prio != tw_prio:
+        diffs.append((
+            "priority",
+            PRIORITY_LABEL.get(rem_prio, rem_prio),
+            PRIORITY_LABEL.get(tw_prio, tw_prio),
+        ))
+
+    return diffs
 
 
 def compute_drift(project_filter=None):
@@ -126,10 +186,16 @@ def compute_drift(project_filter=None):
     tw_only = {k: tw_tasks[k] for k in sorted(tw_keys - rem_keys)}
     rem_only = {k: reminder_tasks[k] for k in sorted(rem_keys - tw_keys)}
 
-    return rem_only, tw_only, matched
+    metadata_diffs = {}
+    for key in sorted(matched):
+        diffs = compare_metadata(tw_tasks[key], reminder_tasks[key])
+        if diffs:
+            metadata_diffs[key] = diffs
+
+    return rem_only, tw_only, matched, metadata_diffs
 
 
-def print_drift(rem_only, tw_only, matched):
+def print_drift(rem_only, tw_only, matched, metadata_diffs):
     """Print the drift report."""
     if rem_only:
         click.echo("\nReminders only:")
@@ -143,7 +209,14 @@ def print_drift(rem_only, tw_only, matched):
             status = " (completed)" if item["status"] == "completed" else ""
             click.echo(f"  {item['project']}: {item['title']}{status}")
 
-    if not rem_only and not tw_only:
+    if metadata_diffs:
+        click.echo(f"\nMetadata drift ({len(metadata_diffs)} items):")
+        for (project, title), diffs in metadata_diffs.items():
+            click.echo(f"  {project}: {title}")
+            for field, rem_val, tw_val in diffs:
+                click.echo(f"    {field}: {rem_val} (Reminders) vs {tw_val} (TW)")
+
+    if not rem_only and not tw_only and not metadata_diffs:
         click.echo("\nNo drift detected.")
 
     click.echo(f"\nMatched: {len(matched)} items (skipped)")
@@ -151,6 +224,8 @@ def print_drift(rem_only, tw_only, matched):
         click.echo(f"Reminders only: {len(rem_only)}")
     if tw_only:
         click.echo(f"Taskwarrior only: {len(tw_only)}")
+    if metadata_diffs:
+        click.echo(f"Metadata drift: {len(metadata_diffs)}")
 
 
 @click.group()
@@ -186,16 +261,16 @@ def add(description, project):
 @click.option("--project", default=None, help="Scope to a specific project/list.")
 def drift(project):
     """Show drift between Reminders and Taskwarrior."""
-    rem_only, tw_only, matched = compute_drift(project)
-    print_drift(rem_only, tw_only, matched)
+    rem_only, tw_only, matched, metadata_diffs = compute_drift(project)
+    print_drift(rem_only, tw_only, matched, metadata_diffs)
 
 
 @cli.command()
 @click.option("--project", default=None, help="Scope to a specific project/list.")
 def sync(project):
     """Sync missing items to both systems."""
-    rem_only, tw_only, matched = compute_drift(project)
-    print_drift(rem_only, tw_only, matched)
+    rem_only, tw_only, matched, metadata_diffs = compute_drift(project)
+    print_drift(rem_only, tw_only, matched, metadata_diffs)
 
     total = len(rem_only) + len(tw_only)
     if total == 0:
