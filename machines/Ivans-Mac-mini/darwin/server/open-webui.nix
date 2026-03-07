@@ -25,13 +25,13 @@ in
       SENTENCE_TRANSFORMERS_HOME = "${openWebuiDataPath}/transformers_home";
 
       # Open WebUI configuration
-      WEBUI_URL = "http://${config.flags.machineBindAddress}:8090";
+      WEBUI_URL = "http://${config.flags.machineLocalAddress}:8090";
 
       # Secret key for session management (generated once)
       WEBUI_SECRET_KEY_FILE = "${openWebuiDataPath}/config/secret_key";
 
       # Ollama integration - use local Ollama instance
-      OLLAMA_API_BASE_URL = "http://${config.flags.machineBindAddress}:11434";
+      OLLAMA_API_BASE_URL = "http://${config.flags.machineLocalAddress}:11434";
 
       # Web search settings
       ENABLE_WEB_SEARCH = "true";

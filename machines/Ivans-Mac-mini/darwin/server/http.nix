@@ -88,7 +88,7 @@ in
         -e "s|@externalDomain@|$EXTERNAL_DOMAIN|g" \
         -e "s|@letsEncryptEmail@|$LETS_ENCRYPT_EMAIL|g" \
         -e "s|@cloudflareApiToken@|$CLOUDFLARE_API_TOKEN|g" \
-        -e "s|@machineIp@|${config.flags.machineBindAddress}|g" \
+        -e "s|@machineIp@|${config.flags.machineLocalAddress}|g" \
         -e "s|@a3Ip@|${config.flags.a3Ip}|g" \
         -e "s|@logPathPrefix@|/tmp/log|g" \
         -e "s|@elementWebPath@|$ELEMENT_WEB_PATH|g" \

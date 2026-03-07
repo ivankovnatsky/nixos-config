@@ -18,7 +18,7 @@ let
       server = {
         port = 8083;
         host = config.flags.machineBindAddress;
-        base_url = "http://${config.flags.machineBindAddress}:8083";
+        base_url = "http://${config.flags.machineLocalAddress}:8083";
       };
       podcast = {
         title = "Mini: My YouTube Podcast";

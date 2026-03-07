@@ -12,22 +12,22 @@ let
       - job_name: prometheus
         static_configs:
           - targets:
-              - ${config.flags.machineBindAddress}:9090
+              - ${config.flags.machineLocalAddress}:9090
 
       - job_name: beszel-hub
         static_configs:
           - targets:
-              - ${config.flags.machineBindAddress}:8091
+              - ${config.flags.machineLocalAddress}:8091
 
       - job_name: loki
         static_configs:
           - targets:
-              - ${config.flags.machineBindAddress}:3100
+              - ${config.flags.machineLocalAddress}:3100
 
       - job_name: promtail
         static_configs:
           - targets:
-              - ${config.flags.machineBindAddress}:9080
+              - ${config.flags.machineLocalAddress}:9080
   '';
 in
 {
