@@ -16,7 +16,7 @@ let
     listeners = [
       {
         port = 8009;
-        bind_addresses = [ config.flags.machineIp ];
+        bind_addresses = [ config.flags.machineBindAddress ];
         type = "http";
         tls = false;
         x_forwarded = true;

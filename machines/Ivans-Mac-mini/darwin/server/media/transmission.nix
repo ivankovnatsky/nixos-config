@@ -23,7 +23,7 @@ let
   settingsTemplate = pkgs.writeText "transmission-settings-template.json" (
     builtins.toJSON {
       rpc-enabled = true;
-      rpc-bind-address = config.flags.machineIp;
+      rpc-bind-address = config.flags.machineBindAddress;
       rpc-port = 9091;
       rpc-host-whitelist-enabled = false;
       rpc-authentication-required = true;
@@ -38,7 +38,7 @@ let
       watch-dir = watchDir;
       watch-dir-enabled = true;
 
-      bind-address-ipv4 = config.flags.machineIp;
+      bind-address-ipv4 = config.flags.machineBindAddress;
       peer-port = 51413;
       peer-port-random-on-start = false;
       port-forwarding-enabled = false;
