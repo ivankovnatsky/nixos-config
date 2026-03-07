@@ -111,7 +111,7 @@ def get_reminders(project_filter=None, include_completed=True):
     return reminders
 
 
-def compute_plan(project_filter=None):
+def compute_drift(project_filter=None):
     """Compute drift between Reminders and Taskwarrior."""
     click.echo("Loading Taskwarrior tasks...", err=True)
     tw_tasks = get_tw_tasks(project_filter)
@@ -129,8 +129,8 @@ def compute_plan(project_filter=None):
     return rem_only, tw_only, matched
 
 
-def print_plan(rem_only, tw_only, matched):
-    """Print the drift plan."""
+def print_drift(rem_only, tw_only, matched):
+    """Print the drift report."""
     if rem_only:
         click.echo("\nReminders only:")
         for item in rem_only.values():
@@ -184,18 +184,18 @@ def add(description, project):
 
 @cli.command()
 @click.option("--project", default=None, help="Scope to a specific project/list.")
-def plan(project):
+def drift(project):
     """Show drift between Reminders and Taskwarrior."""
-    rem_only, tw_only, matched = compute_plan(project)
-    print_plan(rem_only, tw_only, matched)
+    rem_only, tw_only, matched = compute_drift(project)
+    print_drift(rem_only, tw_only, matched)
 
 
 @cli.command()
 @click.option("--project", default=None, help="Scope to a specific project/list.")
-def apply(project):
-    """Apply sync plan — copy missing items to both systems."""
-    rem_only, tw_only, matched = compute_plan(project)
-    print_plan(rem_only, tw_only, matched)
+def sync(project):
+    """Sync missing items to both systems."""
+    rem_only, tw_only, matched = compute_drift(project)
+    print_drift(rem_only, tw_only, matched)
 
     total = len(rem_only) + len(tw_only)
     if total == 0:
