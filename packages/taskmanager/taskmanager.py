@@ -216,6 +216,22 @@ def compute_drift(project_filter=None):
     return rem_only, tw_only, matched, metadata_diffs
 
 
+def filter_metadata_diffs(metadata_diffs, notes_only=False):
+    """Filter metadata diffs to specific fields."""
+    if not notes_only:
+        return metadata_diffs
+    filtered = {}
+    for key, info in metadata_diffs.items():
+        notes_diffs = [d for d in info["diffs"] if d[0] == "notes"]
+        if notes_diffs:
+            filtered[key] = {
+                "diffs": notes_diffs,
+                "tw": info["tw"],
+                "rem": info["rem"],
+            }
+    return filtered
+
+
 def print_drift(rem_only, tw_only, matched, metadata_diffs):
     """Print the drift report."""
     if rem_only:
@@ -382,18 +398,26 @@ def add(description, project):
 
 @cli.command()
 @click.option("--project", default=None, help="Scope to a specific project/list.")
-def drift(project):
+@click.option("--notes", is_flag=True, default=False, help="Show only notes/annotations drift.")
+def drift(project, notes):
     """Show drift between Reminders and Taskwarrior."""
     rem_only, tw_only, matched, metadata_diffs = compute_drift(project)
+    metadata_diffs = filter_metadata_diffs(metadata_diffs, notes_only=notes)
+    if notes:
+        rem_only, tw_only = {}, {}
     print_drift(rem_only, tw_only, matched, metadata_diffs)
 
 
 @cli.command()
 @click.option("--project", default=None, help="Scope to a specific project/list.")
 @click.option("--approve", is_flag=True, default=False, help="Skip confirmation prompt.")
-def sync(project, approve):
+@click.option("--notes", is_flag=True, default=False, help="Sync only notes/annotations.")
+def sync(project, approve, notes):
     """Sync missing items to both systems."""
     rem_only, tw_only, matched, metadata_diffs = compute_drift(project)
+    metadata_diffs = filter_metadata_diffs(metadata_diffs, notes_only=notes)
+    if notes:
+        rem_only, tw_only = {}, {}
     print_drift(rem_only, tw_only, matched, metadata_diffs)
 
     total = len(rem_only) + len(tw_only) + len(metadata_diffs)
