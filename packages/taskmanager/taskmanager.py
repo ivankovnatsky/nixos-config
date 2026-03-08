@@ -245,8 +245,8 @@ def compare_metadata(tw, rem):
     rem_notes = (rem.get("notes") or "").strip()
     tw_annotations = tw.get("annotations", [])
     tw_ann_texts = [a.get("description", "") for a in tw_annotations]
-    tw_notes_display = repr("; ".join(tw_ann_texts)[:60]) if tw_ann_texts else "''"
-    rem_notes_display = repr(rem_notes[:60]) if rem_notes else "''"
+    tw_notes_display = repr("; ".join(tw_ann_texts)) if tw_ann_texts else "''"
+    rem_notes_display = repr(rem_notes) if rem_notes else "''"
     if rem_notes and not any(rem_notes in text for text in tw_ann_texts):
         diffs.append(("notes", rem_notes_display, tw_notes_display))
     elif not rem_notes and tw_ann_texts:
