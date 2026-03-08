@@ -15,6 +15,14 @@
   # - Prowlarr indexers and app connections
   #
   # See machines/bee/media/mgmt.nix for reference
+  #
+  # Bind address: arr services store <BindAddress> in their config.xml.
+  # Must be "*" for all interfaces. If set to a specific IP (e.g. ethernet),
+  # services will fail to start when that interface is unavailable. Fix with:
+  #   sed -i '' 's|<BindAddress>.*</BindAddress>|<BindAddress>*</BindAddress>|' \
+  #     /Volumes/Storage/Data/.radarr/config.xml \
+  #     /Volumes/Storage/Data/.sonarr/config.xml \
+  #     /Volumes/Storage/Data/.prowlarr/config.xml
 
   # Sops secrets for arr services
   sops.secrets.radarr-api-key = {
@@ -39,7 +47,7 @@
       enable = true;
       baseUrl = "http://${config.flags.machineLocalAddress}:7878";
       apiKeyFile = config.sops.secrets.radarr-api-key.path;
-      bindAddress = config.flags.machineBindAddress;
+      bindAddress = "*";
       downloadClients = [
         {
           name = "Transmission";
@@ -61,7 +69,7 @@
       enable = true;
       baseUrl = "http://${config.flags.machineLocalAddress}:8989";
       apiKeyFile = config.sops.secrets.sonarr-api-key.path;
-      bindAddress = config.flags.machineBindAddress;
+      bindAddress = "*";
       downloadClients = [
         {
           name = "Transmission";
@@ -83,7 +91,7 @@
       enable = true;
       baseUrl = "http://${config.flags.machineLocalAddress}:9696";
       apiKeyFile = config.sops.secrets.prowlarr-api-key.path;
-      bindAddress = config.flags.machineBindAddress;
+      bindAddress = "*";
       indexers = [
         {
           name = "EZTV";
