@@ -151,17 +151,10 @@ def tw_date_to_local_iso(tw_date):
     """Convert TW compact UTC date (20260319T220000Z) to local ISO 8601."""
     if not tw_date or len(tw_date) < 16:
         return tw_date
-    utc_dt = datetime(
-        int(tw_date[:4]),
-        int(tw_date[4:6]),
-        int(tw_date[6:8]),
-        int(tw_date[9:11]),
-        int(tw_date[11:13]),
-        int(tw_date[13:15]),
-        tzinfo=timezone.utc,
-    )
-    local_dt = utc_dt.astimezone()
-    return local_dt.strftime("%Y-%m-%dT%H:%M:%S")
+    from datetime import datetime
+
+    utc_dt = datetime.fromisoformat(tw_date_to_iso(tw_date))
+    return utc_dt.astimezone().strftime("%Y-%m-%dT%H:%M:%S")
 
 
 def compare_metadata(tw, rem):
