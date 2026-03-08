@@ -138,13 +138,30 @@ def format_date(date_str):
 
 
 def tw_date_to_iso(tw_date):
-    """Convert TW compact date (20260319T220000Z) to ISO 8601."""
+    """Convert TW compact date (20260319T220000Z) to ISO 8601 UTC."""
     if not tw_date or len(tw_date) < 16:
         return tw_date
     return (
         f"{tw_date[:4]}-{tw_date[4:6]}-{tw_date[6:8]}"
         f"T{tw_date[9:11]}:{tw_date[11:13]}:{tw_date[13:15]}Z"
     )
+
+
+def tw_date_to_local_iso(tw_date):
+    """Convert TW compact UTC date (20260319T220000Z) to local ISO 8601."""
+    if not tw_date or len(tw_date) < 16:
+        return tw_date
+    utc_dt = datetime(
+        int(tw_date[:4]),
+        int(tw_date[4:6]),
+        int(tw_date[6:8]),
+        int(tw_date[9:11]),
+        int(tw_date[11:13]),
+        int(tw_date[13:15]),
+        tzinfo=timezone.utc,
+    )
+    local_dt = utc_dt.astimezone()
+    return local_dt.strftime("%Y-%m-%dT%H:%M:%S")
 
 
 def compare_metadata(tw, rem):
@@ -369,7 +386,9 @@ def sync_metadata(metadata_diffs, direction=None):
                     tw_updates["due"] = rem.get("due", "")
                 elif flow == "tw_to_rem":
                     raw_due = tw.get("due", "")
-                    rem_updates["due"] = tw_date_to_iso(raw_due) if raw_due else ""
+                    rem_updates["due"] = (
+                        tw_date_to_local_iso(raw_due) if raw_due else ""
+                    )
             elif field == "notes":
                 if flow == "rem_to_tw":
                     tw_updates["notes"] = (rem.get("notes") or "").strip()
