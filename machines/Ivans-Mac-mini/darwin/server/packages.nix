@@ -18,6 +18,8 @@
     nixpkgs-darwin-master-ytdlp.yt-dlp
     gallery-dl
 
+    asusrouter-cli
+
     # Required for Uptime Kuma tailscale-ping monitors
     tailscale
   ];
