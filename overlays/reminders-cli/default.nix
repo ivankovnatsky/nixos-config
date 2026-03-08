@@ -11,7 +11,7 @@ let
 in
 stdenv.mkDerivation rec {
   pname = "reminders-cli";
-  version = "0-unstable-2026-03-08";
+  version = "0-unstable";
 
   src = fetchFromGitHub {
     owner = "ivankovnatsky";
