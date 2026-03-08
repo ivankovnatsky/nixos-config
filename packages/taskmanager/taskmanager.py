@@ -59,8 +59,9 @@ def get_tw_tasks(project_filter=None):
                     seen.add(ann.get("description", ""))
             if not existing["due"] and task.get("due", ""):
                 existing["due"] = task["due"]
-            if not existing["priority"] and task.get("priority", ""):
-                existing["priority"] = task["priority"]
+            raw_prio = task.get("priority", "")
+            if not existing["priority"] and raw_prio and raw_prio != "none":
+                existing["priority"] = raw_prio
         else:
             tasks[key] = {
                 "project": project,
@@ -69,7 +70,9 @@ def get_tw_tasks(project_filter=None):
                 "source": "taskwarrior",
                 "due": task.get("due", ""),
                 "annotations": task.get("annotations", []),
-                "priority": task.get("priority", ""),
+                "priority": ""
+                if task.get("priority", "") == "none"
+                else task.get("priority", ""),
             }
     return tasks
 
@@ -621,6 +624,12 @@ def drift(project, notes, source, destination):
 )
 def sync(project, approve, notes, source, destination):
     """Sync missing items to both systems."""
+    click.echo(
+        "Error: sync is disabled until taskmanager is battle-tested. "
+        "Use 'taskmanager drift' to review differences instead.",
+        err=True,
+    )
+    raise SystemExit(1)
     source = normalize_system_name(source) if source else None
     destination = normalize_system_name(destination) if destination else None
 
