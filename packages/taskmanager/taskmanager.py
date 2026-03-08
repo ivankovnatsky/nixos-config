@@ -157,6 +157,19 @@ def tw_date_to_local_iso(tw_date):
     return utc_dt.astimezone().strftime("%Y-%m-%dT%H:%M:%S")
 
 
+def format_date_local(date_str):
+    """Format a date string to local YYYY-MM-DD, converting UTC if needed."""
+    if not date_str:
+        return ""
+    clean = normalize_date(date_str)
+    if len(clean) >= 15 and clean.endswith("Z"):
+        return tw_date_to_local_iso(date_str)[:10]
+    if len(clean) >= 8:
+        d = clean[:8]
+        return f"{d[:4]}-{d[4:6]}-{d[6:8]}"
+    return date_str
+
+
 def compare_metadata(tw, rem):
     """Compare metadata fields between matched TW and Reminders items.
 
@@ -168,15 +181,15 @@ def compare_metadata(tw, rem):
     if tw["status"] != rem["status"]:
         diffs.append(("status", rem["status"], tw["status"]))
 
-    # Due date — compare full timestamps, display as YYYY-MM-DD
-    tw_due = normalize_date(tw.get("due", ""))
-    rem_due = normalize_date(rem.get("due", ""))
-    if tw_due != rem_due:
+    # Due date — compare in local time to avoid UTC midnight shifts
+    tw_due_display = format_date_local(tw.get("due", ""))
+    rem_due_display = format_date_local(rem.get("due", ""))
+    if tw_due_display != rem_due_display:
         diffs.append(
             (
                 "due",
-                format_date(rem.get("due", "")) or "''",
-                format_date(tw.get("due", "")) or "''",
+                rem_due_display or "''",
+                tw_due_display or "''",
             )
         )
 
@@ -402,9 +415,15 @@ def sync_metadata(metadata_diffs, direction=None):
                         rem_updates["priority"] = rem_prio_label
             elif field == "status":
                 if flow == "rem_to_tw":
-                    tw_updates["status"] = "completed"
+                    if rem["status"] == "completed":
+                        tw_updates["status"] = "completed"
+                    else:
+                        tw_updates["status"] = "pending"
                 elif flow == "tw_to_rem":
-                    rem_updates["status"] = "completed"
+                    if tw["status"] == "completed":
+                        rem_updates["status"] = "completed"
+                    else:
+                        rem_updates["status"] = "pending"
 
         if tw_updates:
             uuid = find_tw_uuid(project, prefixed)
@@ -419,7 +438,10 @@ def sync_metadata(metadata_diffs, direction=None):
                 if "notes" in tw_updates:
                     run(["task", uuid, "annotate", tw_updates["notes"]])
                 if "status" in tw_updates:
-                    run(["task", uuid, "done"])
+                    if tw_updates["status"] == "completed":
+                        run(["task", uuid, "done"])
+                    else:
+                        run(["task", uuid, "modify", "status:pending"])
                 count += 1
                 click.echo(
                     f"  ~ Taskwarrior: {prefixed} ({', '.join(tw_updates.keys())})"
@@ -444,7 +466,10 @@ def sync_metadata(metadata_diffs, direction=None):
                 if len(edit_args) > 5:
                     run(edit_args)
                 if "status" in rem_updates:
-                    run(["reminders", "complete", project, str(idx)])
+                    if rem_updates["status"] == "completed":
+                        run(["reminders", "complete", project, str(idx)])
+                    else:
+                        run(["reminders", "uncomplete", project, str(idx)])
                 count += 1
                 click.echo(
                     f"  ~ Reminders: {prefixed} ({', '.join(rem_updates.keys())})"
