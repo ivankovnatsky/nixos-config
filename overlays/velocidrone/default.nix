@@ -4,7 +4,6 @@
   requireFile,
   unzip,
   stdenv,
-  copyDesktopItems,
   makeDesktopItem,
   zlib,
   xorg,
@@ -51,7 +50,10 @@ let
     comment = "FPV drone racing simulator";
     exec = "velocidrone";
     icon = "velocidrone";
-    categories = [ "Game" "Simulation" ];
+    categories = [
+      "Game"
+      "Simulation"
+    ];
   };
 in
 buildFHSEnv {
@@ -80,26 +82,28 @@ buildFHSEnv {
     stdenv.cc.cc.lib
   ];
 
-  runScript = lib.getExe (stdenv.mkDerivation {
-    name = "velocidrone-wrapper";
-    dontUnpack = true;
-    installPhase = ''
-      mkdir -p $out/bin
-      cat > $out/bin/velocidrone-wrapper <<'SCRIPT'
-      #!/bin/sh
-      dir="$HOME/.velocidrone"
-      mkdir -p "$dir"
-      cp "${launcher}/share/velocidrone/Launcher" "$dir/Launcher"
-      cp "${launcher}/share/velocidrone/launcher.dat" "$dir/launcher.dat"
-      chmod u+rwx "$dir/Launcher"
-      chmod u+rw "$dir/launcher.dat"
-      cd "$dir"
-      exec ./Launcher "$@"
-      SCRIPT
-      chmod +x $out/bin/velocidrone-wrapper
-    '';
-    meta.mainProgram = "velocidrone-wrapper";
-  });
+  runScript = lib.getExe (
+    stdenv.mkDerivation {
+      name = "velocidrone-wrapper";
+      dontUnpack = true;
+      installPhase = ''
+        mkdir -p $out/bin
+        cat > $out/bin/velocidrone-wrapper <<'SCRIPT'
+        #!/bin/sh
+        dir="$HOME/.velocidrone"
+        mkdir -p "$dir"
+        cp "${launcher}/share/velocidrone/Launcher" "$dir/Launcher"
+        cp "${launcher}/share/velocidrone/launcher.dat" "$dir/launcher.dat"
+        chmod u+rwx "$dir/Launcher"
+        chmod u+rw "$dir/launcher.dat"
+        cd "$dir"
+        exec ./Launcher "$@"
+        SCRIPT
+        chmod +x $out/bin/velocidrone-wrapper
+      '';
+      meta.mainProgram = "velocidrone-wrapper";
+    }
+  );
 
   extraInstallCommands = ''
     install -Dm444 ${desktopItem}/share/applications/velocidrone.desktop \

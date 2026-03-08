@@ -33,7 +33,10 @@
       };
       playwright = {
         transport = "stdio";
-        args = [ "npx" "@playwright/mcp@latest" ];
+        args = [
+          "npx"
+          "@playwright/mcp@latest"
+        ];
       };
     };
   };

@@ -15,7 +15,5 @@ pkgs.writeShellScriptBin "taskmanager" ''
       ]
     )
   }:$PATH"
-  exec ${
-    pkgs.python3.withPackages (ps: [ ps.click ])
-  }/bin/python ${./taskmanager.py} "$@"
+  exec ${pkgs.python3.withPackages (ps: [ ps.click ])}/bin/python ${./taskmanager.py} "$@"
 ''
