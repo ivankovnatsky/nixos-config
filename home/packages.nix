@@ -34,6 +34,7 @@
     ssh-to-age
     swiftformat
     syncthing-mgmt
+    task-mgmt
     taskmanager
     torrent-dl
     tree
