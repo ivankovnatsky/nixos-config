@@ -49,15 +49,28 @@ def get_tw_tasks(project_filter=None):
             title = desc
 
         key = (project, title)
-        tasks[key] = {
-            "project": project,
-            "title": title,
-            "status": status,
-            "source": "taskwarrior",
-            "due": task.get("due", ""),
-            "annotations": task.get("annotations", []),
-            "priority": task.get("priority", ""),
-        }
+        if key in tasks:
+            # Merge: combine annotations, prefer non-empty due/priority
+            existing = tasks[key]
+            seen = {a.get("description", "") for a in existing["annotations"]}
+            for ann in task.get("annotations", []):
+                if ann.get("description", "") not in seen:
+                    existing["annotations"].append(ann)
+                    seen.add(ann.get("description", ""))
+            if not existing["due"] and task.get("due", ""):
+                existing["due"] = task["due"]
+            if not existing["priority"] and task.get("priority", ""):
+                existing["priority"] = task["priority"]
+        else:
+            tasks[key] = {
+                "project": project,
+                "title": title,
+                "status": status,
+                "source": "taskwarrior",
+                "due": task.get("due", ""),
+                "annotations": task.get("annotations", []),
+                "priority": task.get("priority", ""),
+            }
     return tasks
 
 
@@ -102,15 +115,22 @@ def get_reminders(project_filter=None, include_completed=True):
                 title = title[len(prefix) :]
 
             key = (list_name, title)
-            reminders[key] = {
-                "project": list_name,
-                "title": title,
-                "status": "completed" if is_completed else "pending",
-                "source": "reminders",
-                "due": item.get("dueDate", ""),
-                "notes": item.get("notes", ""),
-                "priority": item.get("priority", 0),
-            }
+            if key not in reminders:
+                reminders[key] = {
+                    "project": list_name,
+                    "title": title,
+                    "status": "completed" if is_completed else "pending",
+                    "source": "reminders",
+                    "due": item.get("dueDate", ""),
+                    "notes": item.get("notes", ""),
+                    "priority": item.get("priority", 0),
+                }
+            else:
+                existing = reminders[key]
+                if not existing["due"] and item.get("dueDate", ""):
+                    existing["due"] = item["dueDate"]
+                if not existing["notes"] and item.get("notes", ""):
+                    existing["notes"] = item["notes"]
     return reminders
 
 
@@ -344,22 +364,23 @@ def print_drift(rem_only, tw_only, matched, metadata_diffs, direction=None):
         click.echo(f"Metadata drift: {len(metadata_diffs)}")
 
 
-def find_tw_uuid(project, prefixed_title):
-    """Find TW task UUID by project and prefixed description."""
+def find_tw_uuids(project, prefixed_title):
+    """Find all TW task UUIDs matching project and prefixed description."""
     result = subprocess.run(
         ["task", f"project.is:{project}", "export"],
         capture_output=True,
         text=True,
     )
     if result.returncode != 0:
-        return None
+        return []
+    uuids = []
     try:
         for t in json.loads(result.stdout):
             if t.get("description", "") == prefixed_title:
-                return t["uuid"]
+                uuids.append(t["uuid"])
     except json.JSONDecodeError:
         pass
-    return None
+    return uuids
 
 
 def find_reminder_index(list_name, prefixed_title, completed_only=False):
@@ -443,8 +464,8 @@ def sync_metadata(metadata_diffs, direction=None):
                         rem_updates["status"] = "pending"
 
         if tw_updates:
-            uuid = find_tw_uuid(project, prefixed)
-            if uuid:
+            uuids = find_tw_uuids(project, prefixed)
+            for uuid in uuids:
                 modify_args = []
                 if "due" in tw_updates:
                     modify_args.append(f"due:{tw_updates['due']}")
@@ -459,6 +480,7 @@ def sync_metadata(metadata_diffs, direction=None):
                         run(["task", uuid, "done"])
                     else:
                         run(["task", uuid, "modify", "status:pending"])
+            if uuids:
                 count += 1
                 click.echo(
                     f"  ~ Taskwarrior: {prefixed} ({', '.join(tw_updates.keys())})"
