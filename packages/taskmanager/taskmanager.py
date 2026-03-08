@@ -633,12 +633,6 @@ def drift(project, notes, source, destination):
 )
 def sync(project, approve, notes, source, destination):
     """Sync missing items to both systems."""
-    click.echo(
-        "Error: sync is disabled until taskmanager is battle-tested. "
-        "Use 'taskmanager drift' to review differences instead.",
-        err=True,
-    )
-    raise SystemExit(1)
     source = normalize_system_name(source) if source else None
     destination = normalize_system_name(destination) if destination else None
 
