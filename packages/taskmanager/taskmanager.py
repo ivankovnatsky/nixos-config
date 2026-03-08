@@ -169,24 +169,20 @@ def is_tw_compact(date_str):
 
 
 def format_date_local(date_str):
-    """Format a date string to local YYYY-MM-DD, converting UTC if needed."""
+    """Format a date string to local YYYY-MM-DDTHH:MM:SS, converting UTC if needed."""
     if not date_str:
         return ""
     from datetime import datetime
 
     if is_tw_compact(date_str):
-        return tw_date_to_local_iso(date_str)[:10]
+        return tw_date_to_local_iso(date_str)
     try:
         dt = datetime.fromisoformat(date_str)
         if dt.tzinfo is not None:
-            return dt.astimezone().strftime("%Y-%m-%d")
-        return dt.strftime("%Y-%m-%d")
+            return dt.astimezone().strftime("%Y-%m-%dT%H:%M:%S")
+        return dt.strftime("%Y-%m-%dT%H:%M:%S")
     except ValueError:
         pass
-    clean = normalize_date(date_str)
-    if len(clean) >= 8:
-        d = clean[:8]
-        return f"{d[:4]}-{d[4:6]}-{d[6:8]}"
     return date_str
 
 
