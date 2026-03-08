@@ -157,13 +157,33 @@ def tw_date_to_local_iso(tw_date):
     return utc_dt.astimezone().strftime("%Y-%m-%dT%H:%M:%S")
 
 
+def is_tw_compact(date_str):
+    """Check if date string is TW compact format (YYYYMMDDTHHMMSSZ)."""
+    return (
+        len(date_str) == 16
+        and date_str[8] == "T"
+        and date_str[15] == "Z"
+        and date_str[:8].isdigit()
+        and date_str[9:15].isdigit()
+    )
+
+
 def format_date_local(date_str):
     """Format a date string to local YYYY-MM-DD, converting UTC if needed."""
     if not date_str:
         return ""
-    clean = normalize_date(date_str)
-    if len(clean) >= 15 and clean.endswith("Z"):
+    from datetime import datetime
+
+    if is_tw_compact(date_str):
         return tw_date_to_local_iso(date_str)[:10]
+    try:
+        dt = datetime.fromisoformat(date_str)
+        if dt.tzinfo is not None:
+            return dt.astimezone().strftime("%Y-%m-%d")
+        return dt.strftime("%Y-%m-%d")
+    except ValueError:
+        pass
+    clean = normalize_date(date_str)
     if len(clean) >= 8:
         d = clean[:8]
         return f"{d[:4]}-{d[4:6]}-{d[6:8]}"
