@@ -282,11 +282,11 @@ def print_drift(rem_only, tw_only, matched, metadata_diffs, direction=None):
                     flow = infer_flow(field, rem_val, tw_val)
                 if flow == "rem_to_tw":
                     groups.setdefault("Reminders \u2192 Taskwarrior:", []).append(
-                        (field, rem_val, tw_val)
+                        (field, tw_val, rem_val)
                     )
                 else:
                     groups.setdefault("Taskwarrior \u2192 Reminders:", []).append(
-                        (field, tw_val, rem_val)
+                        (field, rem_val, tw_val)
                     )
             for header, fields in groups.items():
                 click.echo(f"    {header}")
