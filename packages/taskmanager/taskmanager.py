@@ -633,6 +633,12 @@ def drift(project, notes, source, destination):
 )
 def sync(project, approve, notes, source, destination):
     """Sync missing items to both systems."""
+    if not project:
+        click.echo(
+            "Error: --project is required for sync to avoid accidental bulk changes.",
+            err=True,
+        )
+        raise SystemExit(1)
     source = normalize_system_name(source) if source else None
     destination = normalize_system_name(destination) if destination else None
 
