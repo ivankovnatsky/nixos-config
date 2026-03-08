@@ -238,7 +238,17 @@ def filter_metadata_diffs(metadata_diffs, notes_only=False):
     return filtered
 
 
-def print_drift(rem_only, tw_only, matched, metadata_diffs):
+def format_drift_field(field, rem_val, tw_val, direction=None):
+    """Format a single metadata drift field line with arrow notation."""
+    if direction == "reminders":
+        return f"    {field} (TW): {tw_val} \u2192 {rem_val}"
+    elif direction == "tw":
+        return f"    {field} (Reminders): {rem_val} \u2192 {tw_val}"
+    else:
+        return f"    {field}: {rem_val} (Reminders) \u2192 {tw_val} (TW)"
+
+
+def print_drift(rem_only, tw_only, matched, metadata_diffs, direction=None):
     """Print the drift report."""
     if rem_only:
         click.echo("\nReminders only:")
@@ -257,7 +267,7 @@ def print_drift(rem_only, tw_only, matched, metadata_diffs):
         for (project, title), info in metadata_diffs.items():
             click.echo(f"  {project}: {title}")
             for field, rem_val, tw_val in info["diffs"]:
-                click.echo(f"    {field}: {rem_val} (Reminders) vs {tw_val} (TW)")
+                click.echo(format_drift_field(field, rem_val, tw_val, direction))
 
     if not rem_only and not tw_only and not metadata_diffs:
         click.echo("\nNo drift detected.")
@@ -472,7 +482,7 @@ def drift(project, notes, source, destination):
     elif source == "tw":
         rem_only = {}
 
-    print_drift(rem_only, tw_only, matched, metadata_diffs)
+    print_drift(rem_only, tw_only, matched, metadata_diffs, direction=source)
 
 
 @cli.command()
@@ -518,7 +528,7 @@ def sync(project, approve, notes, source, destination):
     elif source == "tw":
         rem_only = {}
 
-    print_drift(rem_only, tw_only, matched, metadata_diffs)
+    print_drift(rem_only, tw_only, matched, metadata_diffs, direction=source)
 
     total = len(rem_only) + len(tw_only) + len(metadata_diffs)
     if total == 0:
