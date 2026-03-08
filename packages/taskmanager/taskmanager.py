@@ -367,7 +367,9 @@ def sync_metadata(metadata_diffs, direction=None):
             if field == "due":
                 if flow == "rem_to_tw":
                     tw_updates["due"] = rem.get("due", "")
-                # reminders edit doesn't support --due-date, skip tw_to_rem
+                elif flow == "tw_to_rem":
+                    raw_due = tw.get("due", "")
+                    rem_updates["due"] = tw_date_to_iso(raw_due) if raw_due else ""
             elif field == "notes":
                 if flow == "rem_to_tw":
                     tw_updates["notes"] = (rem.get("notes") or "").strip()
@@ -381,7 +383,11 @@ def sync_metadata(metadata_diffs, direction=None):
                     prio = REMINDERS_PRIORITY_MAP.get(rem.get("priority", 0), "")
                     if prio:
                         tw_updates["priority"] = prio
-                # reminders edit doesn't support --priority, skip tw_to_rem
+                elif flow == "tw_to_rem":
+                    tw_prio = tw.get("priority", "")
+                    rem_prio_label = TW_TO_REMINDERS_PRIORITY.get(tw_prio)
+                    if rem_prio_label:
+                        rem_updates["priority"] = rem_prio_label
             elif field == "status":
                 if flow == "rem_to_tw":
                     tw_updates["status"] = "completed"
@@ -410,18 +416,21 @@ def sync_metadata(metadata_diffs, direction=None):
         if rem_updates and is_darwin() and has_command("reminders"):
             idx = find_reminder_index(project, prefixed)
             if idx is not None:
+                edit_args = [
+                    "reminders",
+                    "edit",
+                    project,
+                    str(idx),
+                    "--include-completed",
+                ]
                 if "notes" in rem_updates:
-                    run(
-                        [
-                            "reminders",
-                            "edit",
-                            project,
-                            str(idx),
-                            "--include-completed",
-                            "--notes",
-                            rem_updates["notes"],
-                        ]
-                    )
+                    edit_args.extend(["--notes", rem_updates["notes"]])
+                if "due" in rem_updates:
+                    edit_args.extend(["--due-date", rem_updates["due"]])
+                if "priority" in rem_updates:
+                    edit_args.extend(["--priority", rem_updates["priority"]])
+                if len(edit_args) > 5:
+                    run(edit_args)
                 if "status" in rem_updates:
                     run(["reminders", "complete", project, str(idx)])
                 count += 1
