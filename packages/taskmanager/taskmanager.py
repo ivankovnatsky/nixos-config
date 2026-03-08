@@ -50,14 +50,18 @@ def get_tw_tasks(project_filter=None):
 
         key = (project, title)
         if key in tasks:
-            # Merge: combine annotations, prefer non-empty due/priority
+            # Merge: combine annotations, prefer pending item's metadata
             existing = tasks[key]
             seen = {a.get("description", "") for a in existing["annotations"]}
             for ann in task.get("annotations", []):
                 if ann.get("description", "") not in seen:
                     existing["annotations"].append(ann)
                     seen.add(ann.get("description", ""))
-            if not existing["due"] and task.get("due", ""):
+            # Pending item wins over completed for status/due
+            if status == "pending" and existing["status"] != "pending":
+                existing["status"] = status
+                existing["due"] = task.get("due", "")
+            elif not existing["due"] and task.get("due", ""):
                 existing["due"] = task["due"]
             raw_prio = task.get("priority", "")
             if not existing["priority"] and raw_prio and raw_prio != "none":
@@ -118,11 +122,12 @@ def get_reminders(project_filter=None, include_completed=True):
                 title = title[len(prefix) :]
 
             key = (list_name, title)
+            status = "completed" if is_completed else "pending"
             if key not in reminders:
                 reminders[key] = {
                     "project": list_name,
                     "title": title,
-                    "status": "completed" if is_completed else "pending",
+                    "status": status,
                     "source": "reminders",
                     "due": item.get("dueDate", ""),
                     "notes": item.get("notes", ""),
@@ -130,7 +135,11 @@ def get_reminders(project_filter=None, include_completed=True):
                 }
             else:
                 existing = reminders[key]
-                if not existing["due"] and item.get("dueDate", ""):
+                # Pending item wins over completed for status/due
+                if status == "pending" and existing["status"] != "pending":
+                    existing["status"] = status
+                    existing["due"] = item.get("dueDate", "")
+                elif not existing["due"] and item.get("dueDate", ""):
                     existing["due"] = item["dueDate"]
                 if not existing["notes"] and item.get("notes", ""):
                     existing["notes"] = item["notes"]
