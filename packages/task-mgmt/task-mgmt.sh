@@ -21,7 +21,7 @@ cmd_rg() {
 }
 
 cmd_view() {
-  task export rc.verbose=nothing 2>/dev/null | nu -c '
+  task export rc.verbose=nothing 2>/dev/null | nu --stdin -c '
     $in | from json
     | where status == "pending"
     | select id project? description due? urgency tags?
