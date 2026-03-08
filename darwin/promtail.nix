@@ -3,12 +3,12 @@
 let
   inherit (config.networking) hostName;
   dataDir = "${config.flags.externalStoragePath}/.promtail";
-  lokiUrl = "http://${config.flags.miniIp}:3100/loki/api/v1/push";
+  lokiUrl = "http://${config.flags.machineLocalAddress}:3100/loki/api/v1/push";
 
   promtailConfig = pkgs.writeText "promtail-config.yaml" (
     builtins.toJSON {
       server = {
-        http_listen_address = config.flags.miniIp;
+        http_listen_address = config.flags.machineBindAddress;
         http_listen_port = 9080;
         grpc_listen_port = 9097;
       };

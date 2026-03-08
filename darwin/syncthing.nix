@@ -9,7 +9,7 @@
 #
 # Syncthing configuration for Darwin systems
 #
-# For servers (mini): binds to network IP, waits for external storage
+# For servers (mini): binds to all interfaces, waits for external storage
 # For laptops (air/pro): binds to localhost only
 #
 # Syncthing will be available at the configured address after reboot or running:
@@ -20,7 +20,7 @@
 
 let
   isServer = config.device.type == "server";
-  guiAddress = if isServer then "${config.flags.miniIp}:8384" else "127.0.0.1:8384";
+  guiAddress = if isServer then "${config.flags.machineBindAddress}:8384" else "127.0.0.1:8384";
 in
 {
   local.launchd.services.syncthing = {
