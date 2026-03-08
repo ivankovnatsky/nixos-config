@@ -30,6 +30,7 @@
     sops # Secrets management
     ssh-to-age # Secrets management
     syncthing-mgmt # Syncthing management CLI
+    task-mgmt
     uptime-kuma-mgmt
     username # Username generator
     wl-clipboard # Wayland clipboard utilities
