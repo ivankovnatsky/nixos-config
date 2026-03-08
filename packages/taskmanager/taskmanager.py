@@ -5,7 +5,6 @@ import json
 import platform
 import shutil
 import subprocess
-import sys
 
 import click
 
@@ -21,9 +20,7 @@ def is_darwin():
 def run(cmd):
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
-        click.echo(
-            f"Error running {' '.join(cmd)}: {result.stderr.strip()}", err=True
-        )
+        click.echo(f"Error running {' '.join(cmd)}: {result.stderr.strip()}", err=True)
     return result
 
 
@@ -47,7 +44,7 @@ def get_tw_tasks(project_filter=None):
         # Strip project prefix from description if present
         prefix = f"{project}: "
         if desc.startswith(prefix):
-            title = desc[len(prefix):]
+            title = desc[len(prefix) :]
         else:
             title = desc
 
@@ -102,7 +99,7 @@ def get_reminders(project_filter=None, include_completed=True):
             # Strip list prefix from title if present
             prefix = f"{list_name}: "
             if title.startswith(prefix):
-                title = title[len(prefix):]
+                title = title[len(prefix) :]
 
             key = (list_name, title)
             reminders[key] = {
@@ -144,8 +141,10 @@ def tw_date_to_iso(tw_date):
     """Convert TW compact date (20260319T220000Z) to ISO 8601."""
     if not tw_date or len(tw_date) < 16:
         return tw_date
-    return (f"{tw_date[:4]}-{tw_date[4:6]}-{tw_date[6:8]}"
-            f"T{tw_date[9:11]}:{tw_date[11:13]}:{tw_date[13:15]}Z")
+    return (
+        f"{tw_date[:4]}-{tw_date[4:6]}-{tw_date[6:8]}"
+        f"T{tw_date[9:11]}:{tw_date[11:13]}:{tw_date[13:15]}Z"
+    )
 
 
 def compare_metadata(tw, rem):
@@ -160,8 +159,13 @@ def compare_metadata(tw, rem):
     tw_due = normalize_date(tw.get("due", ""))
     rem_due = normalize_date(rem.get("due", ""))
     if tw_due != rem_due:
-        diffs.append(("due", format_date(rem.get("due", "")) or "none",
-                       format_date(tw.get("due", "")) or "none"))
+        diffs.append(
+            (
+                "due",
+                format_date(rem.get("due", "")) or "none",
+                format_date(tw.get("due", "")) or "none",
+            )
+        )
 
     # Notes vs annotations
     rem_notes = (rem.get("notes") or "").strip()
@@ -179,11 +183,13 @@ def compare_metadata(tw, rem):
     rem_prio = REMINDERS_PRIORITY_MAP.get(rem.get("priority", 0), "")
     tw_prio = tw.get("priority", "")
     if rem_prio != tw_prio:
-        diffs.append((
-            "priority",
-            PRIORITY_LABEL.get(rem_prio, rem_prio),
-            PRIORITY_LABEL.get(tw_prio, tw_prio),
-        ))
+        diffs.append(
+            (
+                "priority",
+                PRIORITY_LABEL.get(rem_prio, rem_prio),
+                PRIORITY_LABEL.get(tw_prio, tw_prio),
+            )
+        )
 
     return diffs
 
@@ -269,7 +275,8 @@ def find_tw_uuid(project, prefixed_title):
     """Find TW task UUID by project and prefixed description."""
     result = subprocess.run(
         ["task", f"project.is:{project}", "export"],
-        capture_output=True, text=True,
+        capture_output=True,
+        text=True,
     )
     if result.returncode != 0:
         return None
@@ -286,7 +293,8 @@ def find_reminder_index(list_name, prefixed_title):
     """Find reminder index by list and prefixed title."""
     result = subprocess.run(
         ["reminders", "show", list_name, "--format", "json", "--include-completed"],
-        capture_output=True, text=True,
+        capture_output=True,
+        text=True,
     )
     if result.returncode != 0:
         return None
@@ -299,8 +307,11 @@ def find_reminder_index(list_name, prefixed_title):
     return None
 
 
-def sync_metadata(metadata_diffs):
-    """Sync metadata for matched items with drift. Returns count of updated items."""
+def sync_metadata(metadata_diffs, direction=None):
+    """Sync metadata for matched items with drift. Returns count of updated items.
+
+    direction: None=both ways, "reminders"=reminders→tw, "tw"=tw→reminders.
+    """
     count = 0
     for (project, title), info in metadata_diffs.items():
         diffs = info["diffs"]
@@ -314,27 +325,35 @@ def sync_metadata(metadata_diffs):
         for field, rem_val, tw_val in diffs:
             if field == "due":
                 if rem_val != "none" and tw_val == "none":
-                    tw_updates["due"] = rem.get("due", "")
+                    if direction in (None, "reminders"):
+                        tw_updates["due"] = rem.get("due", "")
                 elif tw_val != "none" and rem_val == "none":
                     # reminders edit doesn't support --due-date, skip
                     pass
             elif field == "notes":
                 if "not in annotations" in str(tw_val):
-                    tw_updates["notes"] = (rem.get("notes") or "").strip()
+                    if direction in (None, "reminders"):
+                        tw_updates["notes"] = (rem.get("notes") or "").strip()
                 elif rem_val == "none" and tw.get("annotations"):
-                    ann_texts = [a.get("description", "") for a in tw["annotations"]]
-                    rem_updates["notes"] = "\n".join(ann_texts)
+                    if direction in (None, "tw"):
+                        ann_texts = [
+                            a.get("description", "") for a in tw["annotations"]
+                        ]
+                        rem_updates["notes"] = "\n".join(ann_texts)
             elif field == "priority":
                 if rem_val != "none" and tw_val == "none":
-                    prio = REMINDERS_PRIORITY_MAP.get(rem.get("priority", 0), "")
-                    if prio:
-                        tw_updates["priority"] = prio
+                    if direction in (None, "reminders"):
+                        prio = REMINDERS_PRIORITY_MAP.get(rem.get("priority", 0), "")
+                        if prio:
+                            tw_updates["priority"] = prio
                 # reminders edit doesn't support --priority, skip
             elif field == "status":
                 if rem_val == "completed" and tw_val == "pending":
-                    tw_updates["status"] = "completed"
+                    if direction in (None, "reminders"):
+                        tw_updates["status"] = "completed"
                 elif tw_val == "completed" and rem_val == "pending":
-                    rem_updates["status"] = "completed"
+                    if direction in (None, "tw"):
+                        rem_updates["status"] = "completed"
 
         if tw_updates:
             uuid = find_tw_uuid(project, prefixed)
@@ -357,12 +376,23 @@ def sync_metadata(metadata_diffs):
             idx = find_reminder_index(project, prefixed)
             if idx is not None:
                 if "notes" in rem_updates:
-                    run(["reminders", "edit", project, str(idx),
-                         "--include-completed", "--notes", rem_updates["notes"]])
+                    run(
+                        [
+                            "reminders",
+                            "edit",
+                            project,
+                            str(idx),
+                            "--include-completed",
+                            "--notes",
+                            rem_updates["notes"],
+                        ]
+                    )
                 if "status" in rem_updates:
                     run(["reminders", "complete", project, str(idx)])
                 count += 1
-                click.echo(f"  ~ Reminders: {prefixed} ({', '.join(rem_updates.keys())})")
+                click.echo(
+                    f"  ~ Reminders: {prefixed} ({', '.join(rem_updates.keys())})"
+                )
 
     return count
 
@@ -398,7 +428,9 @@ def add(description, project):
 
 @cli.command()
 @click.option("--project", default=None, help="Scope to a specific project/list.")
-@click.option("--notes", is_flag=True, default=False, help="Show only notes/annotations drift.")
+@click.option(
+    "--notes", is_flag=True, default=False, help="Show only notes/annotations drift."
+)
 def drift(project, notes):
     """Show drift between Reminders and Taskwarrior."""
     rem_only, tw_only, matched, metadata_diffs = compute_drift(project)
@@ -408,16 +440,56 @@ def drift(project, notes):
     print_drift(rem_only, tw_only, matched, metadata_diffs)
 
 
+def normalize_system_name(name):
+    """Normalize system name: 'taskwarrior' → 'tw'."""
+    if name == "taskwarrior":
+        return "tw"
+    return name
+
+
 @cli.command()
 @click.option("--project", default=None, help="Scope to a specific project/list.")
-@click.option("--approve", is_flag=True, default=False, help="Skip confirmation prompt.")
-@click.option("--notes", is_flag=True, default=False, help="Sync only notes/annotations.")
-def sync(project, approve, notes):
+@click.option(
+    "--approve", is_flag=True, default=False, help="Skip confirmation prompt."
+)
+@click.option(
+    "--notes", is_flag=True, default=False, help="Sync only notes/annotations."
+)
+@click.option(
+    "--source",
+    type=click.Choice(["tw", "taskwarrior", "reminders"]),
+    default=None,
+    help="Source system to sync from.",
+)
+@click.option(
+    "--destination",
+    type=click.Choice(["tw", "taskwarrior", "reminders"]),
+    default=None,
+    help="Destination system to sync to.",
+)
+def sync(project, approve, notes, source, destination):
     """Sync missing items to both systems."""
+    source = normalize_system_name(source) if source else None
+    destination = normalize_system_name(destination) if destination else None
+
+    if (source is None) != (destination is None):
+        click.echo("Error: --source and --destination must be used together", err=True)
+        raise SystemExit(1)
+    if source and source == destination:
+        click.echo("Error: --source and --destination must be different", err=True)
+        raise SystemExit(1)
+
     rem_only, tw_only, matched, metadata_diffs = compute_drift(project)
     metadata_diffs = filter_metadata_diffs(metadata_diffs, notes_only=notes)
     if notes:
         rem_only, tw_only = {}, {}
+
+    # Filter buckets based on direction
+    if source == "reminders":
+        tw_only = {}
+    elif source == "tw":
+        rem_only = {}
+
     print_drift(rem_only, tw_only, matched, metadata_diffs)
 
     total = len(rem_only) + len(tw_only) + len(metadata_diffs)
@@ -461,7 +533,8 @@ def sync(project, approve, notes):
             if notes:
                 find = subprocess.run(
                     ["task", f"project.is:{proj}", prefixed, "uuids"],
-                    capture_output=True, text=True,
+                    capture_output=True,
+                    text=True,
                 )
                 uuid = find.stdout.strip()
                 if uuid:
@@ -470,7 +543,8 @@ def sync(project, approve, notes):
             if item["status"] == "completed":
                 find = subprocess.run(
                     ["task", f"project.is:{proj}", prefixed, "uuids"],
-                    capture_output=True, text=True,
+                    capture_output=True,
+                    text=True,
                 )
                 uuid = find.stdout.strip()
                 if uuid:
@@ -516,7 +590,8 @@ def sync(project, approve, notes):
                 if item["status"] == "completed":
                     show = subprocess.run(
                         ["reminders", "show", proj, "--format", "json"],
-                        capture_output=True, text=True,
+                        capture_output=True,
+                        text=True,
                     )
                     if show.returncode == 0:
                         try:
@@ -530,7 +605,7 @@ def sync(project, approve, notes):
 
     # Sync metadata for matched items with drift
     if metadata_diffs:
-        meta_count = sync_metadata(metadata_diffs)
+        meta_count = sync_metadata(metadata_diffs, direction=source)
         if meta_count:
             click.echo(f"\nUpdated metadata on {meta_count} items.")
 
