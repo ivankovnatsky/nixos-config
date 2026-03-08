@@ -441,7 +441,7 @@ def drift(project, notes):
 
 
 def normalize_system_name(name):
-    """Normalize system name: 'taskwarrior' → 'tw'."""
+    """Normalize system name to internal form."""
     if name == "taskwarrior":
         return "tw"
     return name
@@ -457,13 +457,13 @@ def normalize_system_name(name):
 )
 @click.option(
     "--source",
-    type=click.Choice(["tw", "taskwarrior", "reminders"]),
+    type=click.Choice(["taskwarrior", "reminders"]),
     default=None,
     help="Source system to sync from.",
 )
 @click.option(
     "--destination",
-    type=click.Choice(["tw", "taskwarrior", "reminders"]),
+    type=click.Choice(["taskwarrior", "reminders"]),
     default=None,
     help="Destination system to sync to.",
 )
