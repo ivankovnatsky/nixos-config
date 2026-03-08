@@ -426,25 +426,53 @@ def add(description, project):
             click.echo(f"Taskwarrior ({project}): added")
 
 
-@cli.command()
-@click.option("--project", default=None, help="Scope to a specific project/list.")
-@click.option(
-    "--notes", is_flag=True, default=False, help="Show only notes/annotations drift."
-)
-def drift(project, notes):
-    """Show drift between Reminders and Taskwarrior."""
-    rem_only, tw_only, matched, metadata_diffs = compute_drift(project)
-    metadata_diffs = filter_metadata_diffs(metadata_diffs, notes_only=notes)
-    if notes:
-        rem_only, tw_only = {}, {}
-    print_drift(rem_only, tw_only, matched, metadata_diffs)
-
-
 def normalize_system_name(name):
     """Normalize system name to internal form."""
     if name == "taskwarrior":
         return "tw"
     return name
+
+
+@cli.command()
+@click.option("--project", default=None, help="Scope to a specific project/list.")
+@click.option(
+    "--notes", is_flag=True, default=False, help="Show only notes/annotations drift."
+)
+@click.option(
+    "--source",
+    type=click.Choice(["taskwarrior", "reminders"]),
+    default=None,
+    help="Source system to sync from.",
+)
+@click.option(
+    "--destination",
+    type=click.Choice(["taskwarrior", "reminders"]),
+    default=None,
+    help="Destination system to sync to.",
+)
+def drift(project, notes, source, destination):
+    """Show drift between Reminders and Taskwarrior."""
+    source = normalize_system_name(source) if source else None
+    destination = normalize_system_name(destination) if destination else None
+
+    if (source is None) != (destination is None):
+        click.echo("Error: --source and --destination must be used together", err=True)
+        raise SystemExit(1)
+    if source and source == destination:
+        click.echo("Error: --source and --destination must be different", err=True)
+        raise SystemExit(1)
+
+    rem_only, tw_only, matched, metadata_diffs = compute_drift(project)
+    metadata_diffs = filter_metadata_diffs(metadata_diffs, notes_only=notes)
+    if notes:
+        rem_only, tw_only = {}, {}
+
+    if source == "reminders":
+        tw_only = {}
+    elif source == "tw":
+        rem_only = {}
+
+    print_drift(rem_only, tw_only, matched, metadata_diffs)
 
 
 @cli.command()
