@@ -26,7 +26,7 @@ cmd_view() {
     | where status == "pending"
     | select id project? description due? urgency tags?
     | sort-by -r urgency
-    | table
+    | table -i false
   '
 }
 
