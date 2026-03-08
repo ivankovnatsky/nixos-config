@@ -148,7 +148,10 @@ def tw_date_to_iso(tw_date):
 
 
 def compare_metadata(tw, rem):
-    """Compare metadata fields between matched TW and Reminders items."""
+    """Compare metadata fields between matched TW and Reminders items.
+
+    Returns list of (field, rem_val, tw_val) tuples with display-ready values.
+    """
     diffs = []
 
     # Status
@@ -162,8 +165,8 @@ def compare_metadata(tw, rem):
         diffs.append(
             (
                 "due",
-                format_date(rem.get("due", "")) or "none",
-                format_date(tw.get("due", "")) or "none",
+                format_date(rem.get("due", "")) or "''",
+                format_date(tw.get("due", "")) or "''",
             )
         )
 
@@ -171,13 +174,12 @@ def compare_metadata(tw, rem):
     rem_notes = (rem.get("notes") or "").strip()
     tw_annotations = tw.get("annotations", [])
     tw_ann_texts = [a.get("description", "") for a in tw_annotations]
-    if rem_notes:
-        found = any(rem_notes in text for text in tw_ann_texts)
-        if not found:
-            diffs.append(("notes", repr(rem_notes[:60]), "not in annotations"))
-    elif tw_ann_texts:
-        joined = "; ".join(tw_ann_texts)
-        diffs.append(("notes", "none", f"annotations: {repr(joined[:60])}"))
+    tw_notes_display = repr("; ".join(tw_ann_texts)[:60]) if tw_ann_texts else "''"
+    rem_notes_display = repr(rem_notes[:60]) if rem_notes else "''"
+    if rem_notes and not any(rem_notes in text for text in tw_ann_texts):
+        diffs.append(("notes", rem_notes_display, tw_notes_display))
+    elif not rem_notes and tw_ann_texts:
+        diffs.append(("notes", rem_notes_display, tw_notes_display))
 
     # Priority
     rem_prio = REMINDERS_PRIORITY_MAP.get(rem.get("priority", 0), "")
@@ -186,8 +188,8 @@ def compare_metadata(tw, rem):
         diffs.append(
             (
                 "priority",
-                PRIORITY_LABEL.get(rem_prio, rem_prio),
-                PRIORITY_LABEL.get(tw_prio, tw_prio),
+                PRIORITY_LABEL.get(rem_prio, rem_prio) or "''",
+                PRIORITY_LABEL.get(tw_prio, tw_prio) or "''",
             )
         )
 
@@ -238,14 +240,18 @@ def filter_metadata_diffs(metadata_diffs, notes_only=False):
     return filtered
 
 
-def format_drift_field(field, rem_val, tw_val, direction=None):
-    """Format a single metadata drift field line with arrow notation."""
-    if direction == "reminders":
-        return f"    {field} (TW): {tw_val} \u2192 {rem_val}"
-    elif direction == "tw":
-        return f"    {field} (Reminders): {rem_val} \u2192 {tw_val}"
-    else:
-        return f"    {field}: {rem_val} (Reminders) \u2192 {tw_val} (TW)"
+def infer_flow(field, rem_val, tw_val):
+    """Infer natural sync direction for a field based on which side has data."""
+    empty = ("''", "none", "pending")
+    if field == "status":
+        if rem_val == "completed":
+            return "rem_to_tw"
+        return "tw_to_rem"
+    rem_empty = rem_val in empty
+    tw_empty = tw_val in empty
+    if rem_empty and not tw_empty:
+        return "tw_to_rem"
+    return "rem_to_tw"
 
 
 def print_drift(rem_only, tw_only, matched, metadata_diffs, direction=None):
@@ -266,8 +272,26 @@ def print_drift(rem_only, tw_only, matched, metadata_diffs, direction=None):
         click.echo(f"\nMetadata drift ({len(metadata_diffs)} items):")
         for (project, title), info in metadata_diffs.items():
             click.echo(f"  {project}: {title}")
+            groups = {}
             for field, rem_val, tw_val in info["diffs"]:
-                click.echo(format_drift_field(field, rem_val, tw_val, direction))
+                if direction == "reminders":
+                    flow = "rem_to_tw"
+                elif direction == "tw":
+                    flow = "tw_to_rem"
+                else:
+                    flow = infer_flow(field, rem_val, tw_val)
+                if flow == "rem_to_tw":
+                    groups.setdefault("Reminders \u2192 Taskwarrior:", []).append(
+                        (field, rem_val, tw_val)
+                    )
+                else:
+                    groups.setdefault("Taskwarrior \u2192 Reminders:", []).append(
+                        (field, tw_val, rem_val)
+                    )
+            for header, fields in groups.items():
+                click.echo(f"    {header}")
+                for field, from_val, to_val in fields:
+                    click.echo(f"      {field}: {from_val} \u2192 {to_val}")
 
     if not rem_only and not tw_only and not metadata_diffs:
         click.echo("\nNo drift detected.")
@@ -333,37 +357,36 @@ def sync_metadata(metadata_diffs, direction=None):
         rem_updates = {}
 
         for field, rem_val, tw_val in diffs:
+            if direction == "reminders":
+                flow = "rem_to_tw"
+            elif direction == "tw":
+                flow = "tw_to_rem"
+            else:
+                flow = infer_flow(field, rem_val, tw_val)
+
             if field == "due":
-                if rem_val != "none" and tw_val == "none":
-                    if direction in (None, "reminders"):
-                        tw_updates["due"] = rem.get("due", "")
-                elif tw_val != "none" and rem_val == "none":
-                    # reminders edit doesn't support --due-date, skip
-                    pass
+                if flow == "rem_to_tw":
+                    tw_updates["due"] = rem.get("due", "")
+                # reminders edit doesn't support --due-date, skip tw_to_rem
             elif field == "notes":
-                if "not in annotations" in str(tw_val):
-                    if direction in (None, "reminders"):
-                        tw_updates["notes"] = (rem.get("notes") or "").strip()
-                elif rem_val == "none" and tw.get("annotations"):
-                    if direction in (None, "tw"):
-                        ann_texts = [
-                            a.get("description", "") for a in tw["annotations"]
-                        ]
-                        rem_updates["notes"] = "\n".join(ann_texts)
+                if flow == "rem_to_tw":
+                    tw_updates["notes"] = (rem.get("notes") or "").strip()
+                elif flow == "tw_to_rem":
+                    ann_texts = [
+                        a.get("description", "") for a in tw.get("annotations", [])
+                    ]
+                    rem_updates["notes"] = "\n".join(ann_texts)
             elif field == "priority":
-                if rem_val != "none" and tw_val == "none":
-                    if direction in (None, "reminders"):
-                        prio = REMINDERS_PRIORITY_MAP.get(rem.get("priority", 0), "")
-                        if prio:
-                            tw_updates["priority"] = prio
-                # reminders edit doesn't support --priority, skip
+                if flow == "rem_to_tw":
+                    prio = REMINDERS_PRIORITY_MAP.get(rem.get("priority", 0), "")
+                    if prio:
+                        tw_updates["priority"] = prio
+                # reminders edit doesn't support --priority, skip tw_to_rem
             elif field == "status":
-                if rem_val == "completed" and tw_val == "pending":
-                    if direction in (None, "reminders"):
-                        tw_updates["status"] = "completed"
-                elif tw_val == "completed" and rem_val == "pending":
-                    if direction in (None, "tw"):
-                        rem_updates["status"] = "completed"
+                if flow == "rem_to_tw":
+                    tw_updates["status"] = "completed"
+                elif flow == "tw_to_rem":
+                    rem_updates["status"] = "completed"
 
         if tw_updates:
             uuid = find_tw_uuid(project, prefixed)
@@ -380,7 +403,9 @@ def sync_metadata(metadata_diffs, direction=None):
                 if "status" in tw_updates:
                     run(["task", uuid, "done"])
                 count += 1
-                click.echo(f"  ~ TW: {prefixed} ({', '.join(tw_updates.keys())})")
+                click.echo(
+                    f"  ~ Taskwarrior: {prefixed} ({', '.join(tw_updates.keys())})"
+                )
 
         if rem_updates and is_darwin() and has_command("reminders"):
             idx = find_reminder_index(project, prefixed)
@@ -564,7 +589,7 @@ def sync(project, approve, notes, source, destination):
 
         result = run(add_cmd)
         if result.returncode == 0:
-            click.echo(f"  + TW: {prefixed}")
+            click.echo(f"  + Taskwarrior: {prefixed}")
 
             # Notes → annotation
             notes = (item.get("notes") or "").strip()
