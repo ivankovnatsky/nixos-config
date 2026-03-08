@@ -362,13 +362,14 @@ def find_tw_uuid(project, prefixed_title):
     return None
 
 
-def find_reminder_index(list_name, prefixed_title):
+def find_reminder_index(list_name, prefixed_title, completed_only=False):
     """Find reminder index by list and prefixed title."""
-    result = subprocess.run(
-        ["reminders", "show", list_name, "--format", "json", "--include-completed"],
-        capture_output=True,
-        text=True,
-    )
+    cmd = ["reminders", "show", list_name, "--format", "json"]
+    if completed_only:
+        cmd.append("--only-completed")
+    else:
+        cmd.append("--include-completed")
+    result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
         return None
     try:
@@ -485,7 +486,11 @@ def sync_metadata(metadata_diffs, direction=None):
                     if rem_updates["status"] == "completed":
                         run(["reminders", "complete", project, str(idx)])
                     else:
-                        run(["reminders", "uncomplete", project, str(idx)])
+                        cidx = find_reminder_index(
+                            project, prefixed, completed_only=True
+                        )
+                        if cidx is not None:
+                            run(["reminders", "uncomplete", project, str(cidx)])
                 count += 1
                 click.echo(
                     f"  ~ Reminders: {prefixed} ({', '.join(rem_updates.keys())})"
