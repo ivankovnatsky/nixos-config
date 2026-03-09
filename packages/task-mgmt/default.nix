@@ -9,8 +9,8 @@ pkgs.writeShellScriptBin "task-mgmt" ''
     pkgs.lib.makeBinPath [
       taskwarrior3
       pkgs.nushell
-      pkgs.ripgrep
+      pkgs.reminders-cli
     ]
   }:$PATH"
-  exec ${pkgs.bash}/bin/bash ${./task-mgmt.sh} "$@"
+  exec ${pkgs.python3}/bin/python3 ${./task-mgmt.py} "$@"
 ''
