@@ -660,7 +660,7 @@ def filter_by_title(rem_only, tw_only, metadata_diffs, title_filter):
 @click.option(
     "--projects", default=None, help="Comma-separated project/list names."
 )
-@click.option("--title", default=None, help="Filter to items matching title substring.")
+@click.option("--filter", default=None, help="Filter to items matching title substring.")
 @click.option(
     "--notes", is_flag=True, default=False, help="Show only notes/annotations drift."
 )
@@ -674,7 +674,7 @@ def filter_by_title(rem_only, tw_only, metadata_diffs, title_filter):
     default=None,
     help="Destination system (t/tw/taskwarrior, r/rem/rems/reminders).",
 )
-def drift(project, projects, title, notes, source, destination):
+def drift(project, projects, filter, notes, source, destination):
     """Show drift between Reminders and Taskwarrior."""
     source = normalize_system_name(source) if source else None
     destination = normalize_system_name(destination) if destination else None
@@ -707,7 +707,7 @@ def drift(project, projects, title, notes, source, destination):
         all_rem_only = {}
 
     all_rem_only, all_tw_only, all_metadata_diffs = filter_by_title(
-        all_rem_only, all_tw_only, all_metadata_diffs, title
+        all_rem_only, all_tw_only, all_metadata_diffs, filter
     )
 
     print_drift(
@@ -720,7 +720,7 @@ def drift(project, projects, title, notes, source, destination):
 @click.option(
     "--projects", default=None, help="Comma-separated project/list names."
 )
-@click.option("--title", default=None, help="Filter to items matching title substring.")
+@click.option("--filter", default=None, help="Filter to items matching title substring.")
 @click.option(
     "--approve", is_flag=True, default=False, help="Skip confirmation prompt."
 )
@@ -737,7 +737,7 @@ def drift(project, projects, title, notes, source, destination):
     default=None,
     help="Destination system (t/tw/taskwarrior, r/rem/rems/reminders).",
 )
-def sync(project, projects, title, approve, notes, source, destination):
+def sync(project, projects, filter, approve, notes, source, destination):
     """Sync missing items to both systems."""
     if not project and not projects:
         click.echo(
@@ -778,7 +778,7 @@ def sync(project, projects, title, approve, notes, source, destination):
         rem_only = {}
 
     rem_only, tw_only, metadata_diffs = filter_by_title(
-        rem_only, tw_only, metadata_diffs, title
+        rem_only, tw_only, metadata_diffs, filter
     )
 
     print_drift(rem_only, tw_only, matched, metadata_diffs, direction=source)
