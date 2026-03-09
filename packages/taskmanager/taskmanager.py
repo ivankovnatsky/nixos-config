@@ -988,7 +988,11 @@ def sync(project, projects, filter, approve, interactive, notes, source, destina
                             items = json.loads(show.stdout)
                             for i, r in enumerate(items):
                                 if r.get("title", "") == prefixed:
-                                    run(["reminders", "complete", proj, str(i)])
+                                    complete_cmd = ["reminders", "complete", proj, str(i)]
+                                    raw_end = item.get("end", "")
+                                    if raw_end:
+                                        complete_cmd.extend(["--completion-date", tw_date_to_iso(raw_end)])
+                                    run(complete_cmd)
                                     break
                         except json.JSONDecodeError:
                             pass
