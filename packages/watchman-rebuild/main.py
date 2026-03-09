@@ -28,6 +28,25 @@ logging.basicConfig(
 )
 
 
+def reset_terminal():
+    """Reset terminal settings to sane defaults.
+
+    Subprocess commands (like darwin-rebuild) can corrupt terminal settings,
+    disabling onlcr (output NL to CR-NL translation). This causes subsequent
+    output lines to shift right instead of starting at column 0.
+    """
+    try:
+        if sys.stdout.isatty():
+            subprocess.run(
+                ["stty", "sane"],
+                stdin=sys.stdout,
+                check=False,
+                capture_output=True,
+            )
+    except Exception:
+        pass
+
+
 def detect_rebuild_command():
     """Detect the appropriate rebuild command based on platform."""
     system = platform.system()
@@ -351,6 +370,7 @@ def run_rebuild(config_path, command):
         result = subprocess.run(
             command, shell=True, cwd=config_path, env=env, stderr=subprocess.STDOUT
         )
+        reset_terminal()
         if result.returncode == 0:
             logging.info("✅ Rebuild successful")
             send_notification(True)
@@ -392,6 +412,9 @@ def setup_watchman_subscription(client, config_path, ignore_patterns):
 def watch_and_rebuild(config_path, command=None):
     """Watch for changes and rebuild."""
     config_path_obj = Path(config_path)
+
+    # Reset terminal in case a previous run left it corrupted
+    reset_terminal()
 
     # Check if another instance is already running
     if check_existing_instance():
