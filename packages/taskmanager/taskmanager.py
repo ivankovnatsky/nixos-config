@@ -629,29 +629,39 @@ def add(description, project):
 
 def normalize_system_name(name):
     """Normalize system name to internal form."""
-    if name == "taskwarrior":
+    if name in ("t", "tw", "taskwarrior"):
         return "tw"
+    if name in ("r", "rem", "rems", "reminders"):
+        return "reminders"
     return name
 
 
+def parse_projects(project_str):
+    """Parse comma-separated project string into list."""
+    if not project_str:
+        return [None]
+    return [p.strip() for p in project_str.split(",") if p.strip()]
+
+
 @cli.command()
-@click.option("--project", default=None, help="Scope to a specific project/list.")
+@click.option("--project", default=None, help="Scope to a single project/list.")
+@click.option(
+    "--projects", default=None, help="Comma-separated project/list names."
+)
 @click.option(
     "--notes", is_flag=True, default=False, help="Show only notes/annotations drift."
 )
 @click.option(
     "--source",
-    type=click.Choice(["taskwarrior", "reminders"]),
     default=None,
-    help="Source system to sync from.",
+    help="Source system (t/tw/taskwarrior, r/rem/rems/reminders).",
 )
 @click.option(
     "--destination",
-    type=click.Choice(["taskwarrior", "reminders"]),
     default=None,
-    help="Destination system to sync to.",
+    help="Destination system (t/tw/taskwarrior, r/rem/rems/reminders).",
 )
-def drift(project, notes, source, destination):
+def drift(project, projects, notes, source, destination):
     """Show drift between Reminders and Taskwarrior."""
     source = normalize_system_name(source) if source else None
     destination = normalize_system_name(destination) if destination else None
@@ -663,23 +673,36 @@ def drift(project, notes, source, destination):
         click.echo("Error: --source and --destination must be different", err=True)
         raise SystemExit(1)
 
-    rem_only, tw_only, matched, metadata_diffs = compute_drift(project)
-    metadata_diffs = filter_metadata_diffs(
-        metadata_diffs, notes_only=notes, direction=source
+    project_list = parse_projects(projects) if projects else [project]
+    all_rem_only, all_tw_only, all_matched, all_metadata_diffs = {}, {}, set(), {}
+    for proj in project_list:
+        rem_only, tw_only, matched, metadata_diffs = compute_drift(proj)
+        all_rem_only.update(rem_only)
+        all_tw_only.update(tw_only)
+        all_matched.update(matched)
+        all_metadata_diffs.update(metadata_diffs)
+
+    all_metadata_diffs = filter_metadata_diffs(
+        all_metadata_diffs, notes_only=notes, direction=source
     )
     if notes:
-        rem_only, tw_only = {}, {}
+        all_rem_only, all_tw_only = {}, {}
 
     if source == "reminders":
-        tw_only = {}
+        all_tw_only = {}
     elif source == "tw":
-        rem_only = {}
+        all_rem_only = {}
 
-    print_drift(rem_only, tw_only, matched, metadata_diffs, direction=source)
+    print_drift(
+        all_rem_only, all_tw_only, all_matched, all_metadata_diffs, direction=source
+    )
 
 
 @cli.command()
-@click.option("--project", default=None, help="Scope to a specific project/list.")
+@click.option("--project", default=None, help="Scope to a single project/list.")
+@click.option(
+    "--projects", default=None, help="Comma-separated project/list names."
+)
 @click.option(
     "--approve", is_flag=True, default=False, help="Skip confirmation prompt."
 )
@@ -688,21 +711,19 @@ def drift(project, notes, source, destination):
 )
 @click.option(
     "--source",
-    type=click.Choice(["taskwarrior", "reminders"]),
     default=None,
-    help="Source system to sync from.",
+    help="Source system (t/tw/taskwarrior, r/rem/rems/reminders).",
 )
 @click.option(
     "--destination",
-    type=click.Choice(["taskwarrior", "reminders"]),
     default=None,
-    help="Destination system to sync to.",
+    help="Destination system (t/tw/taskwarrior, r/rem/rems/reminders).",
 )
-def sync(project, approve, notes, source, destination):
+def sync(project, projects, approve, notes, source, destination):
     """Sync missing items to both systems."""
-    if not project:
+    if not project and not projects:
         click.echo(
-            "Error: --project is required for sync to avoid accidental bulk changes.",
+            "Error: --project or --projects is required to avoid accidental bulk changes.",
             err=True,
         )
         raise SystemExit(1)
@@ -716,9 +737,18 @@ def sync(project, approve, notes, source, destination):
         click.echo("Error: --source and --destination must be different", err=True)
         raise SystemExit(1)
 
-    rem_only, tw_only, matched, metadata_diffs = compute_drift(project)
+    project_list = parse_projects(projects) if projects else [project]
+    all_rem_only, all_tw_only, all_matched, all_metadata_diffs = {}, {}, set(), {}
+    for proj in project_list:
+        rem_only, tw_only, matched, metadata_diffs = compute_drift(proj)
+        all_rem_only.update(rem_only)
+        all_tw_only.update(tw_only)
+        all_matched.update(matched)
+        all_metadata_diffs.update(metadata_diffs)
+
+    rem_only, tw_only, matched = all_rem_only, all_tw_only, all_matched
     metadata_diffs = filter_metadata_diffs(
-        metadata_diffs, notes_only=notes, direction=source
+        all_metadata_diffs, notes_only=notes, direction=source
     )
     if notes:
         rem_only, tw_only = {}, {}
