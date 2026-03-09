@@ -31,22 +31,21 @@ def tw_find(args):
     if result.returncode != 0:
         sys.exit(1)
 
+    uuid_re = re.compile(r"\b([0-9a-f]{8})\b")
     regex = re.compile(pattern, re.IGNORECASE)
-    matches = []
+    uuids = []
     for line in result.stdout.splitlines():
         if regex.search(line):
-            matches.append(line)
-            # Extract UUID (first column, typically 8+ hex chars or short ID)
-            parts = line.split()
-            if parts:
-                matches[-1] = (line, parts[0])
+            m = uuid_re.search(line)
+            if m:
+                uuids.append(m.group(1))
 
-    if not matches:
+    if not uuids:
         print(f"No tasks matching '{pattern}'")
         return
 
-    for _line, task_id in matches:
-        info = run(["task", task_id], suppress_stderr=True)
+    for uuid in uuids:
+        info = run(["task", uuid], suppress_stderr=True)
         if info.returncode == 0:
             print(info.stdout)
 
