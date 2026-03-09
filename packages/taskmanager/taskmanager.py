@@ -271,17 +271,19 @@ def compare_metadata(tw, rem):
                 )
             )
 
-    # Creation date — skip same-day differences
+    # Creation date — skip same-day differences and skip when TW has the older
+    # (original) date since we can only sync Rem→TW and don't want to overwrite
     tw_entry = format_date_local(tw.get("entry", ""))
     rem_creation = format_date_local(rem.get("creationDate", ""))
     if tw_entry != rem_creation and tw_entry[:10] != rem_creation[:10]:
-        diffs.append(
-            (
-                "created",
-                rem_creation or "''",
-                tw_entry or "''",
+        if not tw_entry or not rem_creation or rem_creation <= tw_entry:
+            diffs.append(
+                (
+                    "created",
+                    rem_creation or "''",
+                    tw_entry or "''",
+                )
             )
-        )
 
     # Priority
     rem_prio = REMINDERS_PRIORITY_MAP.get(rem.get("priority", 0), "")
