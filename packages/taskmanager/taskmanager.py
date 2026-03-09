@@ -73,6 +73,8 @@ def get_tw_tasks(project_filter=None):
                 "status": status,
                 "source": "taskwarrior",
                 "due": task.get("due", ""),
+                "end": task.get("end", ""),
+                "entry": task.get("entry", ""),
                 "annotations": task.get("annotations", []),
                 "priority": ""
                 if task.get("priority", "") == "none"
@@ -130,6 +132,8 @@ def get_reminders(project_filter=None, include_completed=True):
                     "status": status,
                     "source": "reminders",
                     "due": item.get("dueDate", ""),
+                    "completionDate": item.get("completionDate", ""),
+                    "creationDate": item.get("creationDate", ""),
                     "notes": item.get("notes", ""),
                     "priority": item.get("priority", 0),
                 }
@@ -252,6 +256,31 @@ def compare_metadata(tw, rem):
     elif not rem_notes and tw_ann_texts:
         diffs.append(("notes", rem_notes_display, tw_notes_display))
 
+    # Completion date — compare only when both are completed
+    if tw["status"] == "completed" and rem["status"] == "completed":
+        tw_end = format_date_local(tw.get("end", ""))
+        rem_completion = format_date_local(rem.get("completionDate", ""))
+        if tw_end != rem_completion:
+            diffs.append(
+                (
+                    "completed",
+                    rem_completion or "''",
+                    tw_end or "''",
+                )
+            )
+
+    # Creation date
+    tw_entry = format_date_local(tw.get("entry", ""))
+    rem_creation = format_date_local(rem.get("creationDate", ""))
+    if tw_entry != rem_creation:
+        diffs.append(
+            (
+                "created",
+                rem_creation or "''",
+                tw_entry or "''",
+            )
+        )
+
     # Priority
     rem_prio = REMINDERS_PRIORITY_MAP.get(rem.get("priority", 0), "")
     tw_prio = tw.get("priority", "")
@@ -318,6 +347,8 @@ def infer_flow(field, rem_val, tw_val):
         if rem_val == "completed":
             return "rem_to_tw"
         return "tw_to_rem"
+    if field in ("completed", "created"):
+        return "rem_to_tw"
     rem_empty = rem_val in empty
     tw_empty = tw_val in empty
     if rem_empty and not tw_empty:
@@ -463,6 +494,20 @@ def sync_metadata(metadata_diffs, direction=None):
                     rem_prio_label = TW_TO_REMINDERS_PRIORITY.get(tw_prio)
                     if rem_prio_label:
                         rem_updates["priority"] = rem_prio_label
+            elif field == "completed":
+                if flow == "rem_to_tw":
+                    raw = rem.get("completionDate", "")
+                    if raw:
+                        tw_updates["end"] = raw
+                elif flow == "tw_to_rem":
+                    pass
+            elif field == "created":
+                if flow == "rem_to_tw":
+                    raw = rem.get("creationDate", "")
+                    if raw:
+                        tw_updates["entry"] = raw
+                elif flow == "tw_to_rem":
+                    pass
             elif field == "status":
                 if flow == "rem_to_tw":
                     if rem["status"] == "completed":
@@ -481,6 +526,10 @@ def sync_metadata(metadata_diffs, direction=None):
                 modify_args = []
                 if "due" in tw_updates:
                     modify_args.append(f"due:{tw_updates['due']}")
+                if "end" in tw_updates:
+                    modify_args.append(f"end:{tw_updates['end']}")
+                if "entry" in tw_updates:
+                    modify_args.append(f"entry:{tw_updates['entry']}")
                 if "priority" in tw_updates:
                     modify_args.append(f"priority:{tw_updates['priority']}")
                 if modify_args:
