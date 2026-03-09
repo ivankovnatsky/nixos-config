@@ -150,6 +150,8 @@ def get_reminders(project_filter=None, include_completed=True):
     return reminders
 
 
+REMINDERS_READ_ONLY_FIELDS = {"completed", "created"}
+
 REMINDERS_PRIORITY_MAP = {0: "", 1: "H", 5: "M", 9: "L"}
 TW_TO_REMINDERS_PRIORITY = {"H": "high", "M": "medium", "L": "low"}
 PRIORITY_LABEL = {"H": "high", "M": "medium", "L": "low", "": "none"}
@@ -324,16 +326,30 @@ def compute_drift(project_filter=None):
     return rem_only, tw_only, matched, metadata_diffs
 
 
-def filter_metadata_diffs(metadata_diffs, notes_only=False):
-    """Filter metadata diffs to specific fields."""
-    if not notes_only:
-        return metadata_diffs
+def filter_metadata_diffs(metadata_diffs, notes_only=False, direction=None):
+    """Filter metadata diffs to specific fields.
+
+    Removes fields that can't be synced to the destination (e.g. completed/created
+    are read-only in Reminders via EventKit API).
+    """
     filtered = {}
     for key, info in metadata_diffs.items():
-        notes_diffs = [d for d in info["diffs"] if d[0] == "notes"]
-        if notes_diffs:
+        diffs = info["diffs"]
+        if notes_only:
+            diffs = [d for d in diffs if d[0] == "notes"]
+        if direction == "tw":
+            diffs = [d for d in diffs if d[0] not in REMINDERS_READ_ONLY_FIELDS]
+        kept = []
+        for d in diffs:
+            field, rem_val, tw_val = d
+            if direction is None and field in REMINDERS_READ_ONLY_FIELDS:
+                flow = infer_flow(field, rem_val, tw_val)
+                if flow == "tw_to_rem":
+                    continue
+            kept.append(d)
+        if kept:
             filtered[key] = {
-                "diffs": notes_diffs,
+                "diffs": kept,
                 "tw": info["tw"],
                 "rem": info["rem"],
             }
@@ -648,7 +664,9 @@ def drift(project, notes, source, destination):
         raise SystemExit(1)
 
     rem_only, tw_only, matched, metadata_diffs = compute_drift(project)
-    metadata_diffs = filter_metadata_diffs(metadata_diffs, notes_only=notes)
+    metadata_diffs = filter_metadata_diffs(
+        metadata_diffs, notes_only=notes, direction=source
+    )
     if notes:
         rem_only, tw_only = {}, {}
 
@@ -699,7 +717,9 @@ def sync(project, approve, notes, source, destination):
         raise SystemExit(1)
 
     rem_only, tw_only, matched, metadata_diffs = compute_drift(project)
-    metadata_diffs = filter_metadata_diffs(metadata_diffs, notes_only=notes)
+    metadata_diffs = filter_metadata_diffs(
+        metadata_diffs, notes_only=notes, direction=source
+    )
     if notes:
         rem_only, tw_only = {}, {}
 
