@@ -404,6 +404,32 @@ def infer_flow(field, rem_val, tw_val):
     return "rem_to_tw"
 
 
+def print_drift_item(key, info, direction=None):
+    """Print drift for a single metadata item."""
+    project, title = key
+    click.echo(f"  {project}: {title}")
+    groups = {}
+    for field, rem_val, tw_val in info["diffs"]:
+        if direction == "reminders":
+            flow = "rem_to_tw"
+        elif direction == "tw":
+            flow = "tw_to_rem"
+        else:
+            flow = infer_flow(field, rem_val, tw_val)
+        if flow == "rem_to_tw":
+            groups.setdefault("Reminders \u2192 Taskwarrior:", []).append(
+                (field, tw_val, rem_val)
+            )
+        else:
+            groups.setdefault("Taskwarrior \u2192 Reminders:", []).append(
+                (field, rem_val, tw_val)
+            )
+    for header, fields in groups.items():
+        click.echo(f"    {header}")
+        for field, from_val, to_val in fields:
+            click.echo(f"      {field}: {from_val} \u2192 {to_val}")
+
+
 def print_drift(rem_only, tw_only, matched, metadata_diffs, direction=None):
     """Print the drift report."""
     if rem_only:
@@ -420,28 +446,8 @@ def print_drift(rem_only, tw_only, matched, metadata_diffs, direction=None):
 
     if metadata_diffs:
         click.echo(f"\nMetadata drift ({len(metadata_diffs)} items):")
-        for (project, title), info in metadata_diffs.items():
-            click.echo(f"  {project}: {title}")
-            groups = {}
-            for field, rem_val, tw_val in info["diffs"]:
-                if direction == "reminders":
-                    flow = "rem_to_tw"
-                elif direction == "tw":
-                    flow = "tw_to_rem"
-                else:
-                    flow = infer_flow(field, rem_val, tw_val)
-                if flow == "rem_to_tw":
-                    groups.setdefault("Reminders \u2192 Taskwarrior:", []).append(
-                        (field, tw_val, rem_val)
-                    )
-                else:
-                    groups.setdefault("Taskwarrior \u2192 Reminders:", []).append(
-                        (field, rem_val, tw_val)
-                    )
-            for header, fields in groups.items():
-                click.echo(f"    {header}")
-                for field, from_val, to_val in fields:
-                    click.echo(f"      {field}: {from_val} \u2192 {to_val}")
+        for key, info in metadata_diffs.items():
+            print_drift_item(key, info, direction=direction)
 
     if not rem_only and not tw_only and not metadata_diffs:
         click.echo("\nNo drift detected.")
@@ -493,7 +499,7 @@ def find_reminder_index(list_name, prefixed_title, completed_only=False):
     return None
 
 
-def sync_metadata(metadata_diffs, direction=None):
+def sync_metadata(metadata_diffs, direction=None, interactive=False):
     """Sync metadata for matched items with drift. Returns count of updated items.
 
     direction: None=both ways, "reminders"=reminders→tw, "tw"=tw→reminders.
@@ -504,6 +510,12 @@ def sync_metadata(metadata_diffs, direction=None):
         tw = info["tw"]
         rem = info["rem"]
         prefixed = f"{project}: {title}"
+
+        if interactive:
+            click.echo("")
+            print_drift_item((project, title), info, direction=direction)
+            if not click.confirm("  Sync?"):
+                continue
 
         tw_updates = {}
         rem_updates = {}
@@ -770,6 +782,9 @@ def drift(project, projects, filter, notes, source, destination):
     "--approve", is_flag=True, default=False, help="Skip confirmation prompt."
 )
 @click.option(
+    "--interactive", is_flag=True, default=False, help="Confirm each item individually."
+)
+@click.option(
     "--notes", is_flag=True, default=False, help="Sync only notes/annotations."
 )
 @click.option(
@@ -782,11 +797,12 @@ def drift(project, projects, filter, notes, source, destination):
     default=None,
     help="Destination system (t/tw/taskwarrior, r/rem/rems/reminders).",
 )
-def sync(project, projects, filter, approve, notes, source, destination):
+def sync(project, projects, filter, approve, interactive, notes, source, destination):
     """Sync missing items to both systems."""
-    if not project and not projects:
+    if not project and not projects and not interactive:
         click.echo(
-            "Error: --project or --projects is required to avoid accidental bulk changes.",
+            "Error: --project, --projects, or --interactive is required"
+            " to avoid accidental bulk changes.",
             err=True,
         )
         raise SystemExit(1)
@@ -826,28 +842,47 @@ def sync(project, projects, filter, approve, notes, source, destination):
         rem_only, tw_only, metadata_diffs, filter
     )
 
-    print_drift(rem_only, tw_only, matched, metadata_diffs, direction=source)
+    if not interactive:
+        print_drift(rem_only, tw_only, matched, metadata_diffs, direction=source)
 
     total = len(rem_only) + len(tw_only) + len(metadata_diffs)
     if total == 0:
+        if interactive:
+            click.echo("\nNo drift detected.")
         return
 
-    parts = []
-    if rem_only:
-        parts.append(f"{len(rem_only)} items to Taskwarrior")
-    if tw_only:
-        parts.append(f"{len(tw_only)} items to Reminders")
-    if metadata_diffs:
-        parts.append(f"{len(metadata_diffs)} metadata updates")
-    click.echo(f"\nWill sync: {', '.join(parts)}.")
-    if not approve and not click.confirm("Proceed?"):
-        click.echo("Aborted.")
-        return
+    if not interactive:
+        parts = []
+        if rem_only:
+            parts.append(f"{len(rem_only)} items to Taskwarrior")
+        if tw_only:
+            parts.append(f"{len(tw_only)} items to Reminders")
+        if metadata_diffs:
+            parts.append(f"{len(metadata_diffs)} metadata updates")
+        click.echo(f"\nWill sync: {', '.join(parts)}.")
+        if not approve and not click.confirm("Proceed?"):
+            click.echo("Aborted.")
+            return
 
     # Reminders-only → add to Taskwarrior
     for item in rem_only.values():
         proj = item["project"]
         prefixed = f"{proj}: {item['title']}"
+        if interactive:
+            click.echo(f"\nReminders only:")
+            click.echo(f"  {proj}: {item['title']}")
+            click.echo(f"    status: {item['status']}")
+            rem_due = format_date_local(item.get("due", ""))
+            if rem_due:
+                click.echo(f"    due: {rem_due}")
+            rem_notes = (item.get("notes") or "").strip()
+            if rem_notes:
+                click.echo(f"    notes: {repr(rem_notes)}")
+            rem_prio = REMINDERS_PRIORITY_MAP.get(item.get("priority", 0), "")
+            if rem_prio:
+                click.echo(f"    priority: {PRIORITY_LABEL.get(rem_prio, rem_prio)}")
+            if not click.confirm("  Copy to Taskwarrior?"):
+                continue
         add_cmd = ["task", "add", prefixed, f"project:{proj}"]
 
         # Due date — pass raw ISO date so TW handles timezone correctly
@@ -897,6 +932,23 @@ def sync(project, projects, filter, approve, notes, source, destination):
             proj = item["project"]
             prefixed = f"{proj}: {item['title']}"
 
+            if interactive:
+                click.echo(f"\nTaskwarrior only:")
+                click.echo(f"  {proj}: {item['title']}")
+                click.echo(f"    status: {item['status']}")
+                tw_due = format_date_local(item.get("due", ""))
+                if tw_due:
+                    click.echo(f"    due: {tw_due}")
+                tw_anns = item.get("annotations", [])
+                if tw_anns:
+                    tw_notes = "; ".join(a.get("description", "") for a in tw_anns)
+                    click.echo(f"    notes: {repr(tw_notes)}")
+                tw_prio = item.get("priority", "")
+                if tw_prio:
+                    click.echo(f"    priority: {PRIORITY_LABEL.get(tw_prio, tw_prio)}")
+                if not click.confirm("  Copy to Reminders?"):
+                    continue
+
             if proj not in existing_lists:
                 run(["reminders", "new-list", proj])
                 existing_lists.add(proj)
@@ -941,7 +993,7 @@ def sync(project, projects, filter, approve, notes, source, destination):
 
     # Sync metadata for matched items with drift
     if metadata_diffs:
-        meta_count = sync_metadata(metadata_diffs, direction=source)
+        meta_count = sync_metadata(metadata_diffs, direction=source, interactive=interactive)
         if meta_count:
             click.echo(f"\nUpdated metadata on {meta_count} items.")
 
