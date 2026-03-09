@@ -33,6 +33,7 @@
     sops
     ssh-to-age
     swiftformat
+    syncthing-cleaner
     syncthing-mgmt
     task-mgmt
     taskmanager

@@ -67,6 +67,7 @@
     stylua
     swiftformat
     syncthing
+    syncthing-cleaner
     syncthing-mgmt
     task-mgmt
     taskmanager
