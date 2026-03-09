@@ -78,7 +78,9 @@ def tw_find(args):
         print(f"No tasks matching '{pattern}'")
         return
 
-    for uuid in uuids:
+    for i, uuid in enumerate(uuids):
+        if i > 0:
+            print("=" * 80)
         info = run(["task", uuid], suppress_stderr=True)
         if info.returncode == 0:
             print(info.stdout)
@@ -221,9 +223,10 @@ def rem_find(args):
         print(f"No reminders matching '{pattern}'")
         return
 
-    for r in matches:
+    for i, r in enumerate(matches):
+        if i > 0:
+            print("=" * 80)
         print(json.dumps(r, indent=2, ensure_ascii=False))
-        print()
 
 
 def rem_view(args):
