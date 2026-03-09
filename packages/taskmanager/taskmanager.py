@@ -258,11 +258,11 @@ def compare_metadata(tw, rem):
     elif not rem_notes and tw_ann_texts:
         diffs.append(("notes", rem_notes_display, tw_notes_display))
 
-    # Completion date — compare only when both are completed
+    # Completion date — compare only when both are completed, skip same-day
     if tw["status"] == "completed" and rem["status"] == "completed":
         tw_end = format_date_local(tw.get("end", ""))
         rem_completion = format_date_local(rem.get("completionDate", ""))
-        if tw_end != rem_completion:
+        if tw_end != rem_completion and tw_end[:10] != rem_completion[:10]:
             diffs.append(
                 (
                     "completed",
@@ -271,10 +271,10 @@ def compare_metadata(tw, rem):
                 )
             )
 
-    # Creation date
+    # Creation date — skip same-day differences
     tw_entry = format_date_local(tw.get("entry", ""))
     rem_creation = format_date_local(rem.get("creationDate", ""))
-    if tw_entry != rem_creation:
+    if tw_entry != rem_creation and tw_entry[:10] != rem_creation[:10]:
         diffs.append(
             (
                 "created",
