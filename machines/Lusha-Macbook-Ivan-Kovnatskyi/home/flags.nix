@@ -31,10 +31,6 @@
           app = "Slack";
         }
         {
-          key = "6";
-          app = "zoom.us";
-        }
-        {
           key = "9";
           app = "System Settings";
         }

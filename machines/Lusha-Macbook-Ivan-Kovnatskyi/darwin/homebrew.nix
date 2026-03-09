@@ -18,7 +18,6 @@
     ];
     # Installed or managed using Kandji
     # google-chrome
-    # zoom
     casks = [
       "amethyst"
       "chatgpt"
