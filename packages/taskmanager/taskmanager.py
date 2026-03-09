@@ -313,14 +313,42 @@ def compute_drift(project_filter=None):
     tw_only = {k: tw_tasks[k] for k in sorted(tw_keys - rem_keys)}
     rem_only = {k: reminder_tasks[k] for k in sorted(rem_keys - tw_keys)}
 
+    # Fuzzy match: if one title is a substring of the other within the same
+    # project, treat as matched with title drift (longer title wins)
+    fuzzy_matched = []
+    used_tw = set()
+    for rk in list(rem_only.keys()):
+        for tk in list(tw_only.keys()):
+            if tk in used_tw or rk[0] != tk[0]:
+                continue
+            r_title, t_title = rk[1], tk[1]
+            if r_title in t_title or t_title in r_title:
+                longer = t_title if len(t_title) >= len(r_title) else r_title
+                key = (rk[0], longer)
+                fuzzy_matched.append((rk, tk, key))
+                used_tw.add(tk)
+                break
+    for rk, tk, key in fuzzy_matched:
+        rem_only.pop(rk, None)
+        tw_only.pop(tk, None)
+        matched.add(key)
+        tw_tasks[key] = tw_tasks.get(tk, tw_tasks.get(key))
+        reminder_tasks[key] = reminder_tasks.get(rk, reminder_tasks.get(key))
+
     metadata_diffs = {}
     for key in sorted(matched):
-        diffs = compare_metadata(tw_tasks[key], reminder_tasks[key])
+        tw = tw_tasks.get(key)
+        rem = reminder_tasks.get(key)
+        if not tw or not rem:
+            continue
+        diffs = compare_metadata(tw, rem)
+        if tw["title"] != rem["title"]:
+            diffs.append(("title", rem["title"], tw["title"]))
         if diffs:
             metadata_diffs[key] = {
                 "diffs": diffs,
-                "tw": tw_tasks[key],
-                "rem": reminder_tasks[key],
+                "tw": tw,
+                "rem": rem,
             }
 
     return rem_only, tw_only, matched, metadata_diffs
@@ -359,6 +387,10 @@ def filter_metadata_diffs(metadata_diffs, notes_only=False, direction=None):
 def infer_flow(field, rem_val, tw_val):
     """Infer natural sync direction for a field based on which side has data."""
     empty = ("''", "none", "pending")
+    if field == "title":
+        if len(tw_val) >= len(rem_val):
+            return "tw_to_rem"
+        return "rem_to_tw"
     if field == "status":
         if rem_val == "completed":
             return "rem_to_tw"
@@ -484,7 +516,14 @@ def sync_metadata(metadata_diffs, direction=None):
             else:
                 flow = infer_flow(field, rem_val, tw_val)
 
-            if field == "due":
+            if field == "title":
+                longer = tw_val if len(tw_val) >= len(rem_val) else rem_val
+                longer_prefixed = f"{project}: {longer}"
+                if flow == "rem_to_tw":
+                    tw_updates["title"] = longer_prefixed
+                elif flow == "tw_to_rem":
+                    rem_updates["title"] = longer_prefixed
+            elif field == "due":
                 if flow == "rem_to_tw":
                     tw_updates["due"] = rem.get("due", "")
                 elif flow == "tw_to_rem":
@@ -537,9 +576,12 @@ def sync_metadata(metadata_diffs, direction=None):
                         rem_updates["status"] = "pending"
 
         if tw_updates:
-            uuids = find_tw_uuids(project, prefixed)
+            tw_prefixed = f"{project}: {tw['title']}"
+            uuids = find_tw_uuids(project, tw_prefixed)
             for uuid in uuids:
                 modify_args = []
+                if "title" in tw_updates:
+                    modify_args.append(f"description:{tw_updates['title']}")
                 if "due" in tw_updates:
                     modify_args.append(f"due:{tw_updates['due']}")
                 if "end" in tw_updates:
@@ -564,7 +606,8 @@ def sync_metadata(metadata_diffs, direction=None):
                 )
 
         if rem_updates and is_darwin() and has_command("reminders"):
-            idx = find_reminder_index(project, prefixed)
+            rem_prefixed = f"{project}: {rem['title']}"
+            idx = find_reminder_index(project, rem_prefixed)
             if idx is not None:
                 edit_args = [
                     "reminders",
@@ -573,6 +616,8 @@ def sync_metadata(metadata_diffs, direction=None):
                     str(idx),
                     "--include-completed",
                 ]
+                if "title" in rem_updates:
+                    edit_args.append(rem_updates["title"])
                 if "notes" in rem_updates:
                     edit_args.extend(["--notes", rem_updates["notes"]])
                 if "due" in rem_updates:
@@ -586,7 +631,7 @@ def sync_metadata(metadata_diffs, direction=None):
                         run(["reminders", "complete", project, str(idx)])
                     else:
                         cidx = find_reminder_index(
-                            project, prefixed, completed_only=True
+                            project, rem_prefixed, completed_only=True
                         )
                         if cidx is not None:
                             run(["reminders", "uncomplete", project, str(cidx)])
