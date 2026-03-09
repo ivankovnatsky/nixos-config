@@ -899,27 +899,29 @@ def sync(project, projects, filter, approve, interactive, notes, source, destina
         if result.returncode == 0:
             click.echo(f"  + Taskwarrior: {prefixed}")
 
-            # Notes → annotation
-            notes = (item.get("notes") or "").strip()
-            if notes:
-                find = subprocess.run(
-                    ["task", f"project.is:{proj}", prefixed, "uuids"],
-                    capture_output=True,
-                    text=True,
-                )
-                uuid = find.stdout.strip()
-                if uuid:
-                    run(["task", uuid, "annotate", notes])
+            find = subprocess.run(
+                ["task", f"project.is:{proj}", prefixed, "uuids"],
+                capture_output=True,
+                text=True,
+            )
+            uuid = find.stdout.strip()
+            if uuid:
+                # Notes → annotation
+                item_notes = (item.get("notes") or "").strip()
+                if item_notes:
+                    run(["task", uuid, "annotate", item_notes])
 
-            if item["status"] == "completed":
-                find = subprocess.run(
-                    ["task", f"project.is:{proj}", prefixed, "uuids"],
-                    capture_output=True,
-                    text=True,
-                )
-                uuid = find.stdout.strip()
-                if uuid:
+                # Creation date
+                raw_created = item.get("creationDate", "")
+                if raw_created:
+                    run(["task", uuid, "modify", f"entry:{raw_created}"])
+
+                # Completion date + status
+                if item["status"] == "completed":
                     run(["task", uuid, "done"])
+                    raw_end = item.get("completionDate", "")
+                    if raw_end:
+                        run(["task", uuid, "modify", f"end:{raw_end}"])
 
     # Taskwarrior-only → add to Reminders
     if is_darwin() and has_command("reminders"):
