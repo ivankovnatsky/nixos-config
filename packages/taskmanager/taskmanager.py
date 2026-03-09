@@ -499,6 +499,27 @@ def find_reminder_index(list_name, prefixed_title, completed_only=False):
     return None
 
 
+FIELD_DISPLAY_NAMES = {
+    "due": "due",
+    "end": "completed",
+    "entry": "created",
+    "notes": "notes",
+    "priority": "priority",
+    "title": "title",
+    "status": "status",
+}
+
+
+def format_update_summary(updates):
+    """Format update keys as readable field names with values."""
+    parts = []
+    for key, val in updates.items():
+        name = FIELD_DISPLAY_NAMES.get(key, key)
+        display_val = format_date_local(val) if key in ("due", "end", "entry") else val
+        parts.append(f"{name}: {display_val}")
+    return ", ".join(parts)
+
+
 def sync_metadata(metadata_diffs, direction=None, interactive=False):
     """Sync metadata for matched items with drift. Returns count of updated items.
 
@@ -614,7 +635,7 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
             if uuids:
                 count += 1
                 click.echo(
-                    f"  ~ Taskwarrior: {prefixed} ({', '.join(tw_updates.keys())})"
+                    f"  ~ Taskwarrior: {prefixed}\n    {format_update_summary(tw_updates)}"
                 )
 
         if rem_updates and is_darwin() and has_command("reminders"):
@@ -653,7 +674,7 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                             run(["reminders", "uncomplete", project, str(cidx)])
                 count += 1
                 click.echo(
-                    f"  ~ Reminders: {prefixed} ({', '.join(rem_updates.keys())})"
+                    f"  ~ Reminders: {prefixed}\n    {format_update_summary(rem_updates)}"
                 )
 
     return count
