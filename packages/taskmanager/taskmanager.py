@@ -640,7 +640,11 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                     run(edit_args)
                 if "status" in rem_updates:
                     if rem_updates["status"] == "completed":
-                        run(["reminders", "complete", project, str(idx)])
+                        complete_cmd = ["reminders", "complete", project, str(idx)]
+                        raw_end = tw.get("end", "")
+                        if raw_end:
+                            complete_cmd.extend(["--completion-date", tw_date_to_iso(raw_end)])
+                        run(complete_cmd)
                     else:
                         cidx = find_reminder_index(
                             project, rem_prefixed, completed_only=True
