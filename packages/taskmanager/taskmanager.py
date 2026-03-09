@@ -33,9 +33,12 @@ def get_tw_tasks(project_filter=None):
 
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
-        return {}
+        return {}, {}
 
     tasks = {}
+    # FIXME: track instance counts to skip duplicate-title drift
+    # See DuplicateInstances.md for proper multi-instance matching
+    instance_counts = {}
     for task in json.loads(result.stdout):
         project = task.get("project", "")
         desc = task.get("description", "")
@@ -49,6 +52,7 @@ def get_tw_tasks(project_filter=None):
             title = desc
 
         key = (project, title)
+        instance_counts[key] = instance_counts.get(key, 0) + 1
         if key in tasks:
             # Merge: combine annotations, prefer pending item's metadata
             existing = tasks[key]
@@ -80,13 +84,13 @@ def get_tw_tasks(project_filter=None):
                 if task.get("priority", "") == "none"
                 else task.get("priority", ""),
             }
-    return tasks
+    return tasks, instance_counts
 
 
 def get_reminders(project_filter=None, include_completed=True):
     """Export reminders as a dict keyed by (list, title)."""
     if not (is_darwin() and has_command("reminders")):
-        return {}
+        return {}, {}
 
     if project_filter:
         lists = [project_filter]
@@ -95,10 +99,13 @@ def get_reminders(project_filter=None, include_completed=True):
             ["reminders", "show-lists"], capture_output=True, text=True
         )
         if result.returncode != 0:
-            return {}
+            return {}, {}
         lists = result.stdout.strip().splitlines()
 
     reminders = {}
+    # FIXME: track instance counts to skip duplicate-title drift
+    # See DuplicateInstances.md for proper multi-instance matching
+    instance_counts = {}
 
     for list_name in lists:
         show_args = ["reminders", "show", list_name, "--format", "json"]
@@ -124,6 +131,7 @@ def get_reminders(project_filter=None, include_completed=True):
                 title = title[len(prefix) :]
 
             key = (list_name, title)
+            instance_counts[key] = instance_counts.get(key, 0) + 1
             status = "completed" if is_completed else "pending"
             if key not in reminders:
                 reminders[key] = {
@@ -147,7 +155,7 @@ def get_reminders(project_filter=None, include_completed=True):
                     existing["due"] = item["dueDate"]
                 if not existing["notes"] and item.get("notes", ""):
                     existing["notes"] = item["notes"]
-    return reminders
+    return reminders, instance_counts
 
 
 REMINDERS_READ_ONLY_FIELDS = {"completed", "created"}
@@ -301,13 +309,33 @@ def compare_metadata(tw, rem):
 def compute_drift(project_filter=None):
     """Compute drift between Reminders and Taskwarrior."""
     click.echo("Loading Taskwarrior tasks...", err=True)
-    tw_tasks = get_tw_tasks(project_filter)
+    tw_tasks, tw_counts = get_tw_tasks(project_filter)
 
     click.echo("Loading Reminders...", err=True)
-    reminder_tasks = get_reminders(project_filter)
+    reminder_tasks, rem_counts = get_reminders(project_filter)
 
-    tw_keys = set(tw_tasks.keys())
-    rem_keys = set(reminder_tasks.keys())
+    # FIXME: skip keys with multiple instances on either side — these are
+    # duplicate-title tasks where merged metadata produces false drift.
+    # See DuplicateInstances.md for proper multi-instance matching.
+    multi_instance = {
+        k for k, c in tw_counts.items() if c > 1
+    } | {k for k, c in rem_counts.items() if c > 1}
+
+    if multi_instance:
+        click.echo(
+            f"\nWarning: skipping {len(multi_instance)} duplicate-title"
+            " item(s) (rename to make unique):",
+            err=True,
+        )
+        for project, title in sorted(multi_instance):
+            tw_n = tw_counts.get((project, title), 0)
+            rem_n = rem_counts.get((project, title), 0)
+            click.echo(
+                f"  {project}: {title} (TW: {tw_n}, Rem: {rem_n})", err=True
+            )
+
+    tw_keys = set(tw_tasks.keys()) - multi_instance
+    rem_keys = set(reminder_tasks.keys()) - multi_instance
 
     matched = tw_keys & rem_keys
     tw_only = {k: tw_tasks[k] for k in sorted(tw_keys - rem_keys)}
