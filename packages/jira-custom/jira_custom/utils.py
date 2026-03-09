@@ -23,6 +23,33 @@ class IssueKeyType(click.ParamType):
 
 ISSUE_KEY = IssueKeyType()
 
+_JIRA_URL_RE = re.compile(
+    r"(?:https?://)?[^/]+/browse/([A-Z][A-Z0-9]+-\d+)(?:\?(.+))?"
+)
+
+
+def parse_jira_url(value):
+    """Parse a Jira URL or issue key, returning (issue_key, comment_id).
+
+    Supports:
+      PROJ-123                -> ("PROJ-123", None)
+      https://.../browse/PROJ-123  -> ("PROJ-123", None)
+      https://.../browse/PROJ-123?focusedCommentId=197541 -> ("PROJ-123", "197541")
+    """
+    from urllib.parse import parse_qs
+
+    m = _JIRA_URL_RE.match(value)
+    if m:
+        issue_key = m.group(1)
+        query_string = m.group(2)
+        comment_id = None
+        if query_string:
+            params = parse_qs(query_string)
+            if "focusedCommentId" in params:
+                comment_id = params["focusedCommentId"][0]
+        return issue_key, comment_id
+    return value, None
+
 
 def parse_labels(labels):
     """Parse label arguments, separating adds from removes"""

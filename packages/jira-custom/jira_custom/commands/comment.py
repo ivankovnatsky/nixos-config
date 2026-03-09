@@ -4,7 +4,7 @@ import click
 
 from ..client import get_jira_client
 from ..editor import edit_in_editor
-from ..utils import ISSUE_KEY
+from ..utils import ISSUE_KEY, parse_jira_url
 
 
 def comment_list_fn(issue_key, last=None, order="desc"):
@@ -103,11 +103,21 @@ def comment_add_cmd(issue_key, body, use_editor):
 
 
 @comment_group.command("edit")
-@click.argument("issue_key", type=ISSUE_KEY)
-@click.argument("comment_id")
-def comment_edit_cmd(issue_key, comment_id):
-    """Edit a comment in $EDITOR"""
-    comment_edit_fn(issue_key, comment_id)
+@click.argument("url_or_key")
+@click.argument("comment_id", required=False)
+def comment_edit_cmd(url_or_key, comment_id):
+    """Edit a comment in $EDITOR.
+
+    Accepts a URL with focusedCommentId or issue key + comment ID:
+
+      jira-custom issue comment edit https://.../browse/PROJ-123?focusedCommentId=197541
+      jira-custom issue comment edit PROJ-123 197541
+    """
+    issue_key, url_comment_id = parse_jira_url(url_or_key)
+    resolved_comment_id = comment_id or url_comment_id
+    if not resolved_comment_id:
+        raise click.ClickException("Comment ID required (pass as argument or use URL with focusedCommentId)")
+    comment_edit_fn(issue_key, resolved_comment_id)
 
 
 @comment_group.command("update")

@@ -5,8 +5,8 @@ import click
 
 from ..client import get_jira_client
 from ..editor import edit_in_editor
-from ..utils import ISSUE_KEY, parse_labels, move_issue_type
-from .comment import comment_group
+from ..utils import ISSUE_KEY, parse_labels, move_issue_type, parse_jira_url
+from .comment import comment_group, comment_edit_fn
 from .transition import transition_group
 
 
@@ -456,7 +456,7 @@ def issue_update_cmd(issue_key, summary, description, assignee, label, issue_typ
 
 
 @issue_group.command("edit")
-@click.argument("issue_key", type=ISSUE_KEY)
+@click.argument("url_or_key")
 @click.option(
     "-f",
     "--field",
@@ -464,9 +464,21 @@ def issue_update_cmd(issue_key, summary, description, assignee, label, issue_typ
     type=click.Choice(["description", "summary"]),
     help="Field to edit (default: description)",
 )
-def issue_edit_cmd(issue_key, field):
-    """Edit an issue field in $EDITOR"""
-    issue_edit_fn(issue_key, field)
+def issue_edit_cmd(url_or_key, field):
+    """Edit an issue field in $EDITOR.
+
+    Accepts a full Jira URL or plain issue key. If the URL contains a
+    focusedCommentId parameter, edits that comment instead.
+
+      jira-custom issue edit PROJ-123
+      jira-custom issue edit https://.../browse/PROJ-123
+      jira-custom issue edit https://.../browse/PROJ-123?focusedCommentId=197541
+    """
+    issue_key, comment_id = parse_jira_url(url_or_key)
+    if comment_id:
+        comment_edit_fn(issue_key, comment_id)
+    else:
+        issue_edit_fn(issue_key, field)
 
 
 @issue_group.command("view")
