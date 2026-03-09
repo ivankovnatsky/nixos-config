@@ -643,11 +643,24 @@ def parse_projects(project_str):
     return [p.strip() for p in project_str.split(",") if p.strip()]
 
 
+def filter_by_title(rem_only, tw_only, metadata_diffs, title_filter):
+    """Filter drift results to items matching title substring."""
+    if not title_filter:
+        return rem_only, tw_only, metadata_diffs
+    rem_only = {k: v for k, v in rem_only.items() if title_filter.lower() in k[1].lower()}
+    tw_only = {k: v for k, v in tw_only.items() if title_filter.lower() in k[1].lower()}
+    metadata_diffs = {
+        k: v for k, v in metadata_diffs.items() if title_filter.lower() in k[1].lower()
+    }
+    return rem_only, tw_only, metadata_diffs
+
+
 @cli.command()
 @click.option("--project", default=None, help="Scope to a single project/list.")
 @click.option(
     "--projects", default=None, help="Comma-separated project/list names."
 )
+@click.option("--title", default=None, help="Filter to items matching title substring.")
 @click.option(
     "--notes", is_flag=True, default=False, help="Show only notes/annotations drift."
 )
@@ -661,7 +674,7 @@ def parse_projects(project_str):
     default=None,
     help="Destination system (t/tw/taskwarrior, r/rem/rems/reminders).",
 )
-def drift(project, projects, notes, source, destination):
+def drift(project, projects, title, notes, source, destination):
     """Show drift between Reminders and Taskwarrior."""
     source = normalize_system_name(source) if source else None
     destination = normalize_system_name(destination) if destination else None
@@ -693,6 +706,10 @@ def drift(project, projects, notes, source, destination):
     elif source == "tw":
         all_rem_only = {}
 
+    all_rem_only, all_tw_only, all_metadata_diffs = filter_by_title(
+        all_rem_only, all_tw_only, all_metadata_diffs, title
+    )
+
     print_drift(
         all_rem_only, all_tw_only, all_matched, all_metadata_diffs, direction=source
     )
@@ -703,6 +720,7 @@ def drift(project, projects, notes, source, destination):
 @click.option(
     "--projects", default=None, help="Comma-separated project/list names."
 )
+@click.option("--title", default=None, help="Filter to items matching title substring.")
 @click.option(
     "--approve", is_flag=True, default=False, help="Skip confirmation prompt."
 )
@@ -719,7 +737,7 @@ def drift(project, projects, notes, source, destination):
     default=None,
     help="Destination system (t/tw/taskwarrior, r/rem/rems/reminders).",
 )
-def sync(project, projects, approve, notes, source, destination):
+def sync(project, projects, title, approve, notes, source, destination):
     """Sync missing items to both systems."""
     if not project and not projects:
         click.echo(
@@ -758,6 +776,10 @@ def sync(project, projects, approve, notes, source, destination):
         tw_only = {}
     elif source == "tw":
         rem_only = {}
+
+    rem_only, tw_only, metadata_diffs = filter_by_title(
+        rem_only, tw_only, metadata_diffs, title
+    )
 
     print_drift(rem_only, tw_only, matched, metadata_diffs, direction=source)
 
