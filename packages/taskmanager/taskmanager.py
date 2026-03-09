@@ -258,11 +258,11 @@ def compare_metadata(tw, rem):
     elif not rem_notes and tw_ann_texts:
         diffs.append(("notes", rem_notes_display, tw_notes_display))
 
-    # Completion date — compare only when both are completed, skip same-day
+    # Completion date — only sync Rem→TW when Rem has strictly older datetime
     if tw["status"] == "completed" and rem["status"] == "completed":
         tw_end = format_date_local(tw.get("end", ""))
         rem_completion = format_date_local(rem.get("completionDate", ""))
-        if tw_end != rem_completion and tw_end[:10] != rem_completion[:10]:
+        if rem_completion and tw_end and rem_completion < tw_end:
             diffs.append(
                 (
                     "completed",
@@ -271,19 +271,17 @@ def compare_metadata(tw, rem):
                 )
             )
 
-    # Creation date — skip same-day differences and skip when TW has the older
-    # (original) date since we can only sync Rem→TW and don't want to overwrite
+    # Creation date — only sync Rem→TW when Rem has strictly older datetime
     tw_entry = format_date_local(tw.get("entry", ""))
     rem_creation = format_date_local(rem.get("creationDate", ""))
-    if tw_entry != rem_creation and tw_entry[:10] != rem_creation[:10]:
-        if not tw_entry or not rem_creation or rem_creation <= tw_entry:
-            diffs.append(
-                (
-                    "created",
-                    rem_creation or "''",
-                    tw_entry or "''",
-                )
+    if rem_creation and tw_entry and rem_creation < tw_entry:
+        diffs.append(
+            (
+                "created",
+                rem_creation or "''",
+                tw_entry or "''",
             )
+        )
 
     # Priority
     rem_prio = REMINDERS_PRIORITY_MAP.get(rem.get("priority", 0), "")
