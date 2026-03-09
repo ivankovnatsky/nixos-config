@@ -32,7 +32,6 @@
         # Installed using Kandji
         { path = "/Applications/Google Chrome.app/"; }
         { path = "/Applications/Slack.app/"; }
-        { path = "/Applications/zoom.us.app/"; }
 
         {
           type = "spacer";
