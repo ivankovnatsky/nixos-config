@@ -374,16 +374,27 @@ def compare_metadata(tw, rem):
     elif not rem_notes and tw_ann_texts:
         diffs.append(("notes", rem_notes_display, tw_notes_display))
 
-    # Completion date — only sync Rem→TW when Rem has strictly older datetime
+    # Completion date
+    tw_end = format_date_local(tw.get("end", ""))
+    rem_completion = format_date_local(rem.get("completionDate", ""))
     if tw["status"] == "completed" and rem["status"] == "completed":
-        tw_end = format_date_local(tw.get("end", ""))
-        rem_completion = format_date_local(rem.get("completionDate", ""))
+        # Both completed — sync when Rem has strictly older datetime
         if rem_completion and tw_end and rem_completion < tw_end:
             diffs.append(
                 (
                     "completed",
                     rem_completion or "''",
                     tw_end or "''",
+                )
+            )
+    elif rem["status"] == "completed" and tw["status"] != "completed":
+        # Rem completed, TW not — show completion date alongside status change
+        if rem_completion:
+            diffs.append(
+                (
+                    "completed",
+                    rem_completion or "''",
+                    "''",
                 )
             )
 
@@ -463,7 +474,10 @@ def compute_drift(project_filter=None):
                 due = date_key(tw_item.get("due", "")) or date_key(
                     rem_item.get("due", "")
                 )
-                instance_key = (key[0], f"{key[1]} [{due}]")
+                due_display = format_date_local(
+                    tw_item.get("due", "") or rem_item.get("due", "")
+                ) or due
+                instance_key = (key[0], f"{key[1]} [{due_display}]")
                 instance_matched.add(instance_key)
 
                 diffs = compare_metadata(tw_item, rem_item)
@@ -476,7 +490,8 @@ def compute_drift(project_filter=None):
 
             for tw_item in tw_unmatched:
                 due = date_key(tw_item.get("due", ""))
-                instance_key = (key[0], f"{key[1]} [{due}]")
+                due_display = format_date_local(tw_item.get("due", "")) or due
+                instance_key = (key[0], f"{key[1]} [{due_display}]")
                 # Disambiguate when multiple unmatched items share the same due
                 while instance_key in instance_tw_only:
                     instance_key = (instance_key[0], instance_key[1] + " #dup")
@@ -484,7 +499,8 @@ def compute_drift(project_filter=None):
 
             for rem_item in rem_unmatched:
                 due = date_key(rem_item.get("due", ""))
-                instance_key = (key[0], f"{key[1]} [{due}]")
+                due_display = format_date_local(rem_item.get("due", "")) or due
+                instance_key = (key[0], f"{key[1]} [{due_display}]")
                 while instance_key in instance_rem_only:
                     instance_key = (instance_key[0], instance_key[1] + " #dup")
                 instance_rem_only[instance_key] = rem_item
@@ -814,6 +830,10 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                 if flow == "rem_to_tw":
                     if rem["status"] == "completed":
                         tw_updates["status"] = "completed"
+                        # Also sync completion date when marking done
+                        raw_end = rem.get("completionDate", "")
+                        if raw_end:
+                            tw_updates["end"] = raw_end
                     else:
                         tw_updates["status"] = "pending"
                 elif flow == "tw_to_rem":
