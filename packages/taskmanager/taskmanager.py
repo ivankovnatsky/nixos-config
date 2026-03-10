@@ -596,6 +596,17 @@ def infer_flow(field, rem_val, tw_val):
         return "tw_to_rem"
     if field in ("completed", "created"):
         return "rem_to_tw"
+    if field == "due":
+        rem_e = rem_val in empty
+        tw_e = tw_val in empty
+        if rem_e and not tw_e:
+            return "tw_to_rem"
+        if tw_e and not rem_e:
+            return "rem_to_tw"
+        # Both have values — prefer older (more original) date
+        if rem_val < tw_val:
+            return "rem_to_tw"
+        return "tw_to_rem"
     rem_empty = rem_val in empty
     tw_empty = tw_val in empty
     if rem_empty and not tw_empty:
