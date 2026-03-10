@@ -364,7 +364,7 @@ def compare_metadata(tw, rem):
     tw_ann_texts = [a.get("description", "") for a in tw_annotations]
     tw_notes_display = repr("; ".join(tw_ann_texts)) if tw_ann_texts else "''"
     rem_notes_display = repr(rem_notes) if rem_notes else "''"
-    if rem_notes and not any(rem_notes in text for text in tw_ann_texts):
+    if rem_notes and rem_notes not in tw_ann_texts:
         diffs.append(("notes", rem_notes_display, tw_notes_display))
     elif not rem_notes and tw_ann_texts:
         diffs.append(("notes", rem_notes_display, tw_notes_display))
@@ -836,7 +836,13 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                 if modify_args:
                     run(["task", uuid, "modify"] + modify_args)
                 if "notes" in tw_updates:
-                    run(["task", uuid, "annotate", tw_updates["notes"]])
+                    # Check if annotation already exists to avoid duplicates
+                    existing_anns = tw.get("annotations", [])
+                    existing_texts = {
+                        a.get("description", "").strip() for a in existing_anns
+                    }
+                    if tw_updates["notes"].strip() not in existing_texts:
+                        run(["task", uuid, "annotate", tw_updates["notes"]])
                 if "status" in tw_updates:
                     if tw_updates["status"] == "completed":
                         run(["task", uuid, "done"])
