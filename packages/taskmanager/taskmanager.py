@@ -374,41 +374,23 @@ def compare_metadata(tw, rem):
     elif not rem_notes and tw_ann_texts:
         diffs.append(("notes", rem_notes_display, tw_notes_display))
 
-    # Completion date
+    # Completion date — only report when Rem has older (more original) date,
+    # or when status is changing to completed (Rem completed, TW not yet)
     tw_end = format_date_local(tw.get("end", ""))
     rem_completion = format_date_local(rem.get("completionDate", ""))
-    if tw["status"] == "completed" and rem["status"] == "completed":
-        # Both completed — sync when Rem has strictly older datetime
-        if rem_completion and tw_end and rem_completion < tw_end:
-            diffs.append(
-                (
-                    "completed",
-                    rem_completion or "''",
-                    tw_end or "''",
-                )
-            )
-    elif rem["status"] == "completed" and tw["status"] != "completed":
-        # Rem completed, TW not — show completion date alongside status change
-        if rem_completion:
-            diffs.append(
-                (
-                    "completed",
-                    rem_completion or "''",
-                    "''",
-                )
-            )
+    if tw_end != rem_completion and (tw_end or rem_completion):
+        if rem["status"] == "completed" and tw["status"] != "completed":
+            # Status changing — always show completion date
+            diffs.append(("completed", rem_completion or "''", tw_end or "''"))
+        elif rem_completion and tw_end and rem_completion < tw_end:
+            # Both completed — only sync when Rem has older date
+            diffs.append(("completed", rem_completion or "''", tw_end or "''"))
 
-    # Creation date — only sync Rem→TW when Rem has strictly older datetime
+    # Creation date — only report when Rem has older (more original) date
     tw_entry = format_date_local(tw.get("entry", ""))
     rem_creation = format_date_local(rem.get("creationDate", ""))
     if rem_creation and tw_entry and rem_creation < tw_entry:
-        diffs.append(
-            (
-                "created",
-                rem_creation or "''",
-                tw_entry or "''",
-            )
-        )
+        diffs.append(("created", rem_creation or "''", tw_entry or "''"))
 
     # Priority
     rem_prio = REMINDERS_PRIORITY_MAP.get(rem.get("priority", 0), "")
