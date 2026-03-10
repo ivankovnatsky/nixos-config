@@ -270,7 +270,9 @@ def main():
     tw_edit_p.add_argument("pattern", nargs="+", help="Search pattern")
     tw_edit_p.set_defaults(func=tw_edit)
 
-    tw_find_p = tw_sub.add_parser("find", help="Search tasks by pattern")
+    tw_find_p = tw_sub.add_parser(
+        "find", aliases=["view"], help="Search tasks by pattern"
+    )
     tw_find_p.add_argument("pattern", nargs="+", help="Search pattern")
     tw_find_p.set_defaults(func=tw_find)
 
@@ -287,7 +289,9 @@ def main():
     rem_edit_p.add_argument("pattern", nargs="+", help="Search pattern")
     rem_edit_p.set_defaults(func=rem_edit)
 
-    rem_find_p = rem_sub.add_parser("find", help="Search reminders by pattern")
+    rem_find_p = rem_sub.add_parser(
+        "find", aliases=["view"], help="Search reminders by pattern"
+    )
     rem_find_p.add_argument("pattern", nargs="+", help="Search pattern")
     rem_find_p.set_defaults(func=rem_find)
 
