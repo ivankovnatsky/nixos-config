@@ -75,6 +75,7 @@ def get_tw_tasks(project_filter=None):
             if task.get("priority", "") == "none"
             else task.get("priority", ""),
             "uuid": task.get("uuid", ""),
+            "recur": task.get("recur", ""),
         }
 
         all_instances.setdefault(key, []).append(dict(item))
@@ -299,6 +300,7 @@ def match_instances(tw_list, rem_list):
             strong = []
             medium = []
             weak = []
+            fallback = []
 
             for i, rem_item in enumerate(rem_available):
                 same = tw_item["status"] == rem_item["status"]
@@ -318,8 +320,11 @@ def match_instances(tw_list, rem_list):
                 elif not tw_due and not rem_due:
                     if tw_end and rem_comp and tw_end == rem_comp:
                         weak.append((i, rem_item))
+                    elif same:
+                        # Both have no due date, same status — match by position
+                        fallback.append((i, rem_item))
 
-            best = (strong or medium or weak or [None])[0]
+            best = (strong or medium or weak or fallback or [None])[0]
             if best:
                 matched.append((tw_item, best[1]))
                 rem_available.pop(best[0])
@@ -417,6 +422,15 @@ def compute_drift(project_filter=None):
     click.echo("Loading Reminders...", err=True)
     reminder_tasks, rem_counts, rem_instances = get_reminders(project_filter)
 
+    # Detect recurrence from Reminders instances
+    recurrence_info = {}
+    for key, instances in rem_instances.items():
+        for inst in instances:
+            rec = inst.get("recurrence", "")
+            if rec:
+                recurrence_info[key] = rec
+                break
+
     multi_instance = {
         k for k, c in tw_counts.items() if c > 1
     } | {k for k, c in rem_counts.items() if c > 1}
@@ -426,15 +440,6 @@ def compute_drift(project_filter=None):
     instance_rem_only = {}
     instance_tw_only = {}
     instance_metadata_diffs = {}
-
-    # Detect recurrence from Reminders instances
-    recurrence_info = {}
-    for key, instances in rem_instances.items():
-        for inst in instances:
-            rec = inst.get("recurrence", "")
-            if rec:
-                recurrence_info[key] = rec
-                break
 
     if multi_instance:
         click.echo(
@@ -472,11 +477,16 @@ def compute_drift(project_filter=None):
             for tw_item in tw_unmatched:
                 due = date_key(tw_item.get("due", ""))
                 instance_key = (key[0], f"{key[1]} [{due}]")
+                # Disambiguate when multiple unmatched items share the same due
+                while instance_key in instance_tw_only:
+                    instance_key = (instance_key[0], instance_key[1] + " #dup")
                 instance_tw_only[instance_key] = tw_item
 
             for rem_item in rem_unmatched:
                 due = date_key(rem_item.get("due", ""))
                 instance_key = (key[0], f"{key[1]} [{due}]")
+                while instance_key in instance_rem_only:
+                    instance_key = (instance_key[0], instance_key[1] + " #dup")
                 instance_rem_only[instance_key] = rem_item
 
     # Single-instance items: existing logic
