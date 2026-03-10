@@ -747,7 +747,7 @@ def format_update_summary(updates):
         name = FIELD_DISPLAY_NAMES.get(key, key)
         display_val = format_date_local(val) if key in ("due", "end", "entry") else val
         parts.append(f"{name}: {display_val}")
-    return ", ".join(parts)
+    return "\n    ".join(parts)
 
 
 def sync_metadata(metadata_diffs, direction=None, interactive=False):
