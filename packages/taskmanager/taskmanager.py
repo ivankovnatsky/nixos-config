@@ -18,7 +18,12 @@ def is_darwin():
     return platform.system() == "Darwin"
 
 
+_verbose = False
+
+
 def run(cmd):
+    if _verbose:
+        click.echo(f"  >> {' '.join(cmd)}", err=True)
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
         click.echo(f"Error running {' '.join(cmd)}: {result.stderr.strip()}", err=True)
@@ -1020,8 +1025,11 @@ def filter_by_recurring(rem_only, tw_only, metadata_diffs, multi_keys, recurring
     default=None,
     help="Destination system (t/tw/taskwarrior, r/rem/rems/reminders).",
 )
-def drift(project, projects, filter, notes, recurring, source, destination):
+@click.option("--verbose", is_flag=True, default=False, help="Show commands being run.")
+def drift(project, projects, filter, notes, recurring, source, destination, verbose):
     """Show drift between Reminders and Taskwarrior."""
+    global _verbose
+    _verbose = verbose
     source = normalize_system_name(source) if source else None
     destination = normalize_system_name(destination) if destination else None
 
@@ -1097,8 +1105,11 @@ def drift(project, projects, filter, notes, recurring, source, destination):
     default=None,
     help="Destination system (t/tw/taskwarrior, r/rem/rems/reminders).",
 )
-def sync(project, projects, filter, approve, interactive, notes, recurring, source, destination):
+@click.option("--verbose", is_flag=True, default=False, help="Show commands being run.")
+def sync(project, projects, filter, approve, interactive, notes, recurring, source, destination, verbose):
     """Sync missing items to both systems."""
+    global _verbose
+    _verbose = verbose
     if not project and not projects and not interactive:
         click.echo(
             "Error: --project, --projects, or --interactive is required"
