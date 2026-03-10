@@ -145,6 +145,12 @@ with lib;
       default = "192.168.50.4";
     };
 
+    miniEn7Ip = mkOption {
+      type = types.str;
+      description = "Mac mini en7 IP address";
+      default = "192.168.50.11";
+    };
+
     miniWifiIp = mkOption {
       type = types.str;
       description = "Mac mini WiFi IP address";
