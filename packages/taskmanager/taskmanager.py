@@ -25,7 +25,11 @@ def run(cmd):
 
 
 def get_tw_tasks(project_filter=None):
-    """Export tasks from Taskwarrior as a dict keyed by (project, title)."""
+    """Export tasks from Taskwarrior as a dict keyed by (project, title).
+
+    Returns (tasks, instance_counts, all_instances) where all_instances is a
+    dict of (project, title) -> [list of item dicts] for multi-instance matching.
+    """
     cmd = ["task"]
     if project_filter:
         cmd.append(f"project.is:{project_filter}")
@@ -33,16 +37,19 @@ def get_tw_tasks(project_filter=None):
 
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
-        return {}, {}
+        return {}, {}, {}
 
     tasks = {}
-    # FIXME: track instance counts to skip duplicate-title drift
-    # See DuplicateInstances.md for proper multi-instance matching
     instance_counts = {}
+    all_instances = {}
     for task in json.loads(result.stdout):
         project = task.get("project", "")
         desc = task.get("description", "")
         status = task.get("status", "pending")
+
+        # Skip recurring parent templates
+        if status == "recurring":
+            continue
 
         # Strip project prefix from description if present
         prefix = f"{project}: "
@@ -53,6 +60,24 @@ def get_tw_tasks(project_filter=None):
 
         key = (project, title)
         instance_counts[key] = instance_counts.get(key, 0) + 1
+
+        item = {
+            "project": project,
+            "title": title,
+            "status": status,
+            "source": "taskwarrior",
+            "due": task.get("due", ""),
+            "end": task.get("end", ""),
+            "entry": task.get("entry", ""),
+            "annotations": task.get("annotations", []),
+            "priority": ""
+            if task.get("priority", "") == "none"
+            else task.get("priority", ""),
+            "uuid": task.get("uuid", ""),
+        }
+
+        all_instances.setdefault(key, []).append(item)
+
         if key in tasks:
             # Merge: combine annotations, prefer pending item's metadata
             existing = tasks[key]
@@ -71,26 +96,18 @@ def get_tw_tasks(project_filter=None):
             if not existing["priority"] and raw_prio and raw_prio != "none":
                 existing["priority"] = raw_prio
         else:
-            tasks[key] = {
-                "project": project,
-                "title": title,
-                "status": status,
-                "source": "taskwarrior",
-                "due": task.get("due", ""),
-                "end": task.get("end", ""),
-                "entry": task.get("entry", ""),
-                "annotations": task.get("annotations", []),
-                "priority": ""
-                if task.get("priority", "") == "none"
-                else task.get("priority", ""),
-            }
-    return tasks, instance_counts
+            tasks[key] = item
+    return tasks, instance_counts, all_instances
 
 
 def get_reminders(project_filter=None, include_completed=True):
-    """Export reminders as a dict keyed by (list, title)."""
+    """Export reminders as a dict keyed by (list, title).
+
+    Returns (reminders, instance_counts, all_instances) where all_instances is a
+    dict of (list, title) -> [list of item dicts] for multi-instance matching.
+    """
     if not (is_darwin() and has_command("reminders")):
-        return {}, {}
+        return {}, {}, {}
 
     if project_filter:
         lists = [project_filter]
@@ -99,13 +116,12 @@ def get_reminders(project_filter=None, include_completed=True):
             ["reminders", "show-lists"], capture_output=True, text=True
         )
         if result.returncode != 0:
-            return {}, {}
+            return {}, {}, {}
         lists = result.stdout.strip().splitlines()
 
     reminders = {}
-    # FIXME: track instance counts to skip duplicate-title drift
-    # See DuplicateInstances.md for proper multi-instance matching
     instance_counts = {}
+    all_instances = {}
 
     for list_name in lists:
         show_args = ["reminders", "show", list_name, "--format", "json"]
@@ -133,18 +149,23 @@ def get_reminders(project_filter=None, include_completed=True):
             key = (list_name, title)
             instance_counts[key] = instance_counts.get(key, 0) + 1
             status = "completed" if is_completed else "pending"
+
+            item_dict = {
+                "project": list_name,
+                "title": title,
+                "status": status,
+                "source": "reminders",
+                "due": item.get("dueDate", ""),
+                "completionDate": item.get("completionDate", ""),
+                "creationDate": item.get("creationDate", ""),
+                "notes": item.get("notes", ""),
+                "priority": item.get("priority", 0),
+            }
+
+            all_instances.setdefault(key, []).append(item_dict)
+
             if key not in reminders:
-                reminders[key] = {
-                    "project": list_name,
-                    "title": title,
-                    "status": status,
-                    "source": "reminders",
-                    "due": item.get("dueDate", ""),
-                    "completionDate": item.get("completionDate", ""),
-                    "creationDate": item.get("creationDate", ""),
-                    "notes": item.get("notes", ""),
-                    "priority": item.get("priority", 0),
-                }
+                reminders[key] = item_dict
             else:
                 existing = reminders[key]
                 # Pending item wins over completed for status/due
@@ -155,7 +176,7 @@ def get_reminders(project_filter=None, include_completed=True):
                     existing["due"] = item["dueDate"]
                 if not existing["notes"] and item.get("notes", ""):
                     existing["notes"] = item["notes"]
-    return reminders, instance_counts
+    return reminders, instance_counts, all_instances
 
 
 REMINDERS_READ_ONLY_FIELDS = {"completed", "created"}
@@ -230,6 +251,82 @@ def format_date_local(date_str):
     except ValueError:
         pass
     return date_str
+
+
+def date_key(date_str):
+    """Normalize date+time for instance matching.
+
+    Strips punctuation to a compact form (YYYYMMDDTHHMMSS) so TW format
+    (20250808T210000Z) and Rem format (2025-08-08T21:00:00) compare equal.
+    """
+    if not date_str:
+        return ""
+    clean = normalize_date(date_str)
+    # Strip trailing Z for comparison (both are UTC)
+    return clean.rstrip("Z")
+
+
+def match_instances(tw_list, rem_list):
+    """Match multi-instance items by due date.
+
+    Two passes: first match same-status items (completed↔completed,
+    pending↔pending), then cross-status. This prevents a pending item
+    from stealing a completed item's date match.
+
+    Returns (matched_pairs, tw_unmatched, rem_unmatched) where:
+    - matched_pairs: list of (tw_item, rem_item) tuples
+    - tw_unmatched: list of tw items with no Reminders match
+    - rem_unmatched: list of rem items with no TW match
+    """
+    matched = []
+    rem_available = list(rem_list)
+
+    def try_match(tw_items, same_status_only):
+        unmatched = []
+        for tw_item in tw_items:
+            tw_due = date_key(tw_item.get("due", ""))
+            tw_end = date_key(tw_item.get("end", ""))
+            found = False
+
+            for i, rem_item in enumerate(rem_available):
+                # Filter by status match preference
+                same = tw_item["status"] == rem_item["status"]
+                if same_status_only and not same:
+                    continue
+                if not same_status_only and same:
+                    continue
+
+                rem_due = date_key(rem_item.get("due", ""))
+                rem_comp = date_key(rem_item.get("completionDate", ""))
+
+                # Match by due date first, then by completion/end date
+                if tw_due and rem_due and tw_due == rem_due:
+                    matched.append((tw_item, rem_item))
+                    rem_available.pop(i)
+                    found = True
+                    break
+                elif (
+                    not tw_due
+                    and not rem_due
+                    and tw_end
+                    and rem_comp
+                    and tw_end == rem_comp
+                ):
+                    matched.append((tw_item, rem_item))
+                    rem_available.pop(i)
+                    found = True
+                    break
+
+            if not found:
+                unmatched.append(tw_item)
+        return unmatched
+
+    # Pass 1: match same-status items by due date
+    tw_remaining = try_match(tw_list, same_status_only=True)
+    # Pass 2: match remaining cross-status items
+    tw_unmatched = try_match(tw_remaining, same_status_only=False)
+
+    return matched, tw_unmatched, rem_available
 
 
 def compare_metadata(tw, rem):
@@ -309,31 +406,61 @@ def compare_metadata(tw, rem):
 def compute_drift(project_filter=None):
     """Compute drift between Reminders and Taskwarrior."""
     click.echo("Loading Taskwarrior tasks...", err=True)
-    tw_tasks, tw_counts = get_tw_tasks(project_filter)
+    tw_tasks, tw_counts, tw_instances = get_tw_tasks(project_filter)
 
     click.echo("Loading Reminders...", err=True)
-    reminder_tasks, rem_counts = get_reminders(project_filter)
+    reminder_tasks, rem_counts, rem_instances = get_reminders(project_filter)
 
-    # FIXME: skip keys with multiple instances on either side — these are
-    # duplicate-title tasks where merged metadata produces false drift.
-    # See DuplicateInstances.md for proper multi-instance matching.
     multi_instance = {
         k for k, c in tw_counts.items() if c > 1
     } | {k for k, c in rem_counts.items() if c > 1}
 
+    # Handle multi-instance items via instance-level matching by due date
+    instance_matched = set()
+    instance_rem_only = {}
+    instance_tw_only = {}
+    instance_metadata_diffs = {}
+
     if multi_instance:
         click.echo(
-            f"\nWarning: skipping {len(multi_instance)} duplicate-title"
-            " item(s) (rename to make unique):",
+            f"\nMatching {len(multi_instance)} recurring/multi-instance"
+            " item(s) by due date...",
             err=True,
         )
-        for project, title in sorted(multi_instance):
-            tw_n = tw_counts.get((project, title), 0)
-            rem_n = rem_counts.get((project, title), 0)
-            click.echo(
-                f"  {project}: {title} (TW: {tw_n}, Rem: {rem_n})", err=True
+        for key in sorted(multi_instance):
+            tw_list = tw_instances.get(key, [])
+            rem_list = rem_instances.get(key, [])
+
+            matched_pairs, tw_unmatched, rem_unmatched = match_instances(
+                tw_list, rem_list
             )
 
+            for tw_item, rem_item in matched_pairs:
+                due = date_key(tw_item.get("due", "")) or date_key(
+                    rem_item.get("due", "")
+                )
+                instance_key = (key[0], f"{key[1]} [{due}]")
+                instance_matched.add(instance_key)
+
+                diffs = compare_metadata(tw_item, rem_item)
+                if diffs:
+                    instance_metadata_diffs[instance_key] = {
+                        "diffs": diffs,
+                        "tw": tw_item,
+                        "rem": rem_item,
+                    }
+
+            for tw_item in tw_unmatched:
+                due = date_key(tw_item.get("due", ""))
+                instance_key = (key[0], f"{key[1]} [{due}]")
+                instance_tw_only[instance_key] = tw_item
+
+            for rem_item in rem_unmatched:
+                due = date_key(rem_item.get("due", ""))
+                instance_key = (key[0], f"{key[1]} [{due}]")
+                instance_rem_only[instance_key] = rem_item
+
+    # Single-instance items: existing logic
     tw_keys = set(tw_tasks.keys()) - multi_instance
     rem_keys = set(reminder_tasks.keys()) - multi_instance
 
@@ -379,7 +506,24 @@ def compute_drift(project_filter=None):
                 "rem": rem,
             }
 
-    return rem_only, tw_only, matched, metadata_diffs
+    # Merge instance-level results into main results
+    matched.update(instance_matched)
+    rem_only.update(instance_rem_only)
+    tw_only.update(instance_tw_only)
+    metadata_diffs.update(instance_metadata_diffs)
+
+    # Track which keys came from multi-instance matching (for --recurring filter)
+    multi_keys = set()
+    for k in instance_matched:
+        multi_keys.add(k)
+    for k in instance_rem_only:
+        multi_keys.add(k)
+    for k in instance_tw_only:
+        multi_keys.add(k)
+    for k in instance_metadata_diffs:
+        multi_keys.add(k)
+
+    return rem_only, tw_only, matched, metadata_diffs, multi_keys
 
 
 def filter_metadata_diffs(metadata_diffs, notes_only=False, direction=None):
@@ -458,19 +602,27 @@ def print_drift_item(key, info, direction=None):
             click.echo(f"      {field}: {from_val} \u2192 {to_val}")
 
 
+def format_item_summary(item):
+    """Format an item for drift display with status and date info."""
+    status = " (completed)" if item["status"] == "completed" else ""
+    due = item.get("due", "")
+    if due:
+        due_display = format_date(due)
+        return f"{item['project']}: {item['title']}{status} [due: {due_display}]"
+    return f"{item['project']}: {item['title']}{status}"
+
+
 def print_drift(rem_only, tw_only, matched, metadata_diffs, direction=None):
     """Print the drift report."""
     if rem_only:
         click.echo("\nReminders only:")
         for item in rem_only.values():
-            status = " (completed)" if item["status"] == "completed" else ""
-            click.echo(f"  {item['project']}: {item['title']}{status}")
+            click.echo(f"  {format_item_summary(item)}")
 
     if tw_only:
         click.echo("\nTaskwarrior only:")
         for item in tw_only.values():
-            status = " (completed)" if item["status"] == "completed" else ""
-            click.echo(f"  {item['project']}: {item['title']}{status}")
+            click.echo(f"  {format_item_summary(item)}")
 
     if metadata_diffs:
         click.echo(f"\nMetadata drift ({len(metadata_diffs)} items):")
@@ -765,6 +917,23 @@ def filter_by_title(rem_only, tw_only, metadata_diffs, title_filter):
     return rem_only, tw_only, metadata_diffs
 
 
+def filter_by_recurring(rem_only, tw_only, metadata_diffs, multi_keys, recurring):
+    """Filter results to only recurring or only non-recurring items."""
+    if recurring is None:
+        return rem_only, tw_only, metadata_diffs
+    if recurring:
+        rem_only = {k: v for k, v in rem_only.items() if k in multi_keys}
+        tw_only = {k: v for k, v in tw_only.items() if k in multi_keys}
+        metadata_diffs = {k: v for k, v in metadata_diffs.items() if k in multi_keys}
+    else:
+        rem_only = {k: v for k, v in rem_only.items() if k not in multi_keys}
+        tw_only = {k: v for k, v in tw_only.items() if k not in multi_keys}
+        metadata_diffs = {
+            k: v for k, v in metadata_diffs.items() if k not in multi_keys
+        }
+    return rem_only, tw_only, metadata_diffs
+
+
 @cli.command()
 @click.option("--project", default=None, help="Scope to a single project/list.")
 @click.option(
@@ -773,6 +942,11 @@ def filter_by_title(rem_only, tw_only, metadata_diffs, title_filter):
 @click.option("--filter", default=None, help="Filter to items matching title substring.")
 @click.option(
     "--notes", is_flag=True, default=False, help="Show only notes/annotations drift."
+)
+@click.option(
+    "--recurring/--no-recurring",
+    default=None,
+    help="Show only recurring (--recurring) or non-recurring (--no-recurring) items.",
 )
 @click.option(
     "--source",
@@ -784,7 +958,7 @@ def filter_by_title(rem_only, tw_only, metadata_diffs, title_filter):
     default=None,
     help="Destination system (t/tw/taskwarrior, r/rem/rems/reminders).",
 )
-def drift(project, projects, filter, notes, source, destination):
+def drift(project, projects, filter, notes, recurring, source, destination):
     """Show drift between Reminders and Taskwarrior."""
     source = normalize_system_name(source) if source else None
     destination = normalize_system_name(destination) if destination else None
@@ -798,12 +972,14 @@ def drift(project, projects, filter, notes, source, destination):
 
     project_list = parse_projects(projects) if projects else [project]
     all_rem_only, all_tw_only, all_matched, all_metadata_diffs = {}, {}, set(), {}
+    all_multi_keys = set()
     for proj in project_list:
-        rem_only, tw_only, matched, metadata_diffs = compute_drift(proj)
+        rem_only, tw_only, matched, metadata_diffs, multi_keys = compute_drift(proj)
         all_rem_only.update(rem_only)
         all_tw_only.update(tw_only)
         all_matched.update(matched)
         all_metadata_diffs.update(metadata_diffs)
+        all_multi_keys.update(multi_keys)
 
     all_metadata_diffs = filter_metadata_diffs(
         all_metadata_diffs, notes_only=notes, direction=source
@@ -818,6 +994,10 @@ def drift(project, projects, filter, notes, source, destination):
 
     all_rem_only, all_tw_only, all_metadata_diffs = filter_by_title(
         all_rem_only, all_tw_only, all_metadata_diffs, filter
+    )
+
+    all_rem_only, all_tw_only, all_metadata_diffs = filter_by_recurring(
+        all_rem_only, all_tw_only, all_metadata_diffs, all_multi_keys, recurring
     )
 
     print_drift(
@@ -841,6 +1021,11 @@ def drift(project, projects, filter, notes, source, destination):
     "--notes", is_flag=True, default=False, help="Sync only notes/annotations."
 )
 @click.option(
+    "--recurring/--no-recurring",
+    default=None,
+    help="Sync only recurring (--recurring) or non-recurring (--no-recurring) items.",
+)
+@click.option(
     "--source",
     default=None,
     help="Source system (t/tw/taskwarrior, r/rem/rems/reminders).",
@@ -850,7 +1035,7 @@ def drift(project, projects, filter, notes, source, destination):
     default=None,
     help="Destination system (t/tw/taskwarrior, r/rem/rems/reminders).",
 )
-def sync(project, projects, filter, approve, interactive, notes, source, destination):
+def sync(project, projects, filter, approve, interactive, notes, recurring, source, destination):
     """Sync missing items to both systems."""
     if not project and not projects and not interactive:
         click.echo(
@@ -871,12 +1056,14 @@ def sync(project, projects, filter, approve, interactive, notes, source, destina
 
     project_list = parse_projects(projects) if projects else [project]
     all_rem_only, all_tw_only, all_matched, all_metadata_diffs = {}, {}, set(), {}
+    all_multi_keys = set()
     for proj in project_list:
-        rem_only, tw_only, matched, metadata_diffs = compute_drift(proj)
+        rem_only, tw_only, matched, metadata_diffs, multi_keys = compute_drift(proj)
         all_rem_only.update(rem_only)
         all_tw_only.update(tw_only)
         all_matched.update(matched)
         all_metadata_diffs.update(metadata_diffs)
+        all_multi_keys.update(multi_keys)
 
     rem_only, tw_only, matched = all_rem_only, all_tw_only, all_matched
     metadata_diffs = filter_metadata_diffs(
@@ -893,6 +1080,10 @@ def sync(project, projects, filter, approve, interactive, notes, source, destina
 
     rem_only, tw_only, metadata_diffs = filter_by_title(
         rem_only, tw_only, metadata_diffs, filter
+    )
+
+    rem_only, tw_only, metadata_diffs = filter_by_recurring(
+        rem_only, tw_only, metadata_diffs, all_multi_keys, recurring
     )
 
     if not interactive:
