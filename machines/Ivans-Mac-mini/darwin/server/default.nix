@@ -50,6 +50,7 @@
     ./logrotate.nix
     ./matrix
     ./media
+    ./music-export.nix
     ./miniserve.nix
     ./mosh.nix
     ./nix.nix
