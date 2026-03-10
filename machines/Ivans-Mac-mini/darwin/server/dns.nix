@@ -47,6 +47,7 @@
       local=/${config.sops.placeholder.external-domain}/
       dhcp-option=option:domain-search,${config.sops.placeholder.external-domain}
       address=/${config.sops.placeholder.external-domain}/${config.flags.miniIp}
+      address=/${config.sops.placeholder.external-domain}/${config.flags.miniEn7Ip}
       address=/${config.sops.placeholder.external-domain}/${config.flags.miniWifiIp}
     '';
   };
