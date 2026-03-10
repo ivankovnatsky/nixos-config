@@ -3,6 +3,7 @@
 
 import json
 import platform
+import re
 import shutil
 import subprocess
 
@@ -76,7 +77,7 @@ def get_tw_tasks(project_filter=None):
             "uuid": task.get("uuid", ""),
         }
 
-        all_instances.setdefault(key, []).append(item)
+        all_instances.setdefault(key, []).append(dict(item))
 
         if key in tasks:
             # Merge: combine annotations, prefer pending item's metadata
@@ -160,9 +161,10 @@ def get_reminders(project_filter=None, include_completed=True):
                 "creationDate": item.get("creationDate", ""),
                 "notes": item.get("notes", ""),
                 "priority": item.get("priority", 0),
+                "recurrence": item.get("recurrence", ""),
             }
 
-            all_instances.setdefault(key, []).append(item_dict)
+            all_instances.setdefault(key, []).append(dict(item_dict))
 
             if key not in reminders:
                 reminders[key] = item_dict
@@ -282,14 +284,23 @@ def match_instances(tw_list, rem_list):
     rem_available = list(rem_list)
 
     def try_match(tw_items, same_status_only):
+        """Match TW items to Rem items by due date + completion date.
+
+        Three-tier matching:
+        1. Strong: due date + completion date both match
+        2. Medium: due date matches (completion differs or missing)
+        3. Weak: both have no due date, completion date matches
+        """
         unmatched = []
         for tw_item in tw_items:
             tw_due = date_key(tw_item.get("due", ""))
             tw_end = date_key(tw_item.get("end", ""))
-            found = False
+
+            strong = []
+            medium = []
+            weak = []
 
             for i, rem_item in enumerate(rem_available):
-                # Filter by status match preference
                 same = tw_item["status"] == rem_item["status"]
                 if same_status_only and not same:
                     continue
@@ -299,25 +310,20 @@ def match_instances(tw_list, rem_list):
                 rem_due = date_key(rem_item.get("due", ""))
                 rem_comp = date_key(rem_item.get("completionDate", ""))
 
-                # Match by due date first, then by completion/end date
                 if tw_due and rem_due and tw_due == rem_due:
-                    matched.append((tw_item, rem_item))
-                    rem_available.pop(i)
-                    found = True
-                    break
-                elif (
-                    not tw_due
-                    and not rem_due
-                    and tw_end
-                    and rem_comp
-                    and tw_end == rem_comp
-                ):
-                    matched.append((tw_item, rem_item))
-                    rem_available.pop(i)
-                    found = True
-                    break
+                    if tw_end and rem_comp and tw_end == rem_comp:
+                        strong.append((i, rem_item))
+                    else:
+                        medium.append((i, rem_item))
+                elif not tw_due and not rem_due:
+                    if tw_end and rem_comp and tw_end == rem_comp:
+                        weak.append((i, rem_item))
 
-            if not found:
+            best = (strong or medium or weak or [None])[0]
+            if best:
+                matched.append((tw_item, best[1]))
+                rem_available.pop(best[0])
+            else:
                 unmatched.append(tw_item)
         return unmatched
 
@@ -421,6 +427,15 @@ def compute_drift(project_filter=None):
     instance_tw_only = {}
     instance_metadata_diffs = {}
 
+    # Detect recurrence from Reminders instances
+    recurrence_info = {}
+    for key, instances in rem_instances.items():
+        for inst in instances:
+            rec = inst.get("recurrence", "")
+            if rec:
+                recurrence_info[key] = rec
+                break
+
     if multi_instance:
         click.echo(
             f"\nMatching {len(multi_instance)} recurring/multi-instance"
@@ -428,6 +443,10 @@ def compute_drift(project_filter=None):
             err=True,
         )
         for key in sorted(multi_instance):
+            rec = recurrence_info.get(key, "")
+            rec_label = f" (recurring: {rec})" if rec else ""
+            click.echo(f"  {key[0]}: {key[1]}{rec_label}", err=True)
+
             tw_list = tw_instances.get(key, [])
             rem_list = rem_instances.get(key, [])
 
@@ -572,6 +591,11 @@ def infer_flow(field, rem_val, tw_val):
     rem_empty = rem_val in empty
     tw_empty = tw_val in empty
     if rem_empty and not tw_empty:
+        return "tw_to_rem"
+    if tw_empty and not rem_empty:
+        return "rem_to_tw"
+    # Both have values — prefer the longer/more complete one
+    if field == "notes" and len(str(tw_val)) > len(str(rem_val)):
         return "tw_to_rem"
     return "rem_to_tw"
 
@@ -789,20 +813,26 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                         rem_updates["status"] = "pending"
 
         if tw_updates:
-            tw_prefixed = f"{project}: {tw['title']}"
-            uuids = find_tw_uuids(project, tw_prefixed)
+            # Use stored UUID for instance-level items, fall back to title search
+            tw_uuid = tw.get("uuid", "")
+            if tw_uuid:
+                uuids = [tw_uuid]
+            else:
+                tw_prefixed = f"{project}: {tw['title']}"
+                uuids = find_tw_uuids(project, tw_prefixed)
             for uuid in uuids:
                 modify_args = []
                 if "title" in tw_updates:
                     modify_args.append(f"description:{tw_updates['title']}")
                 if "due" in tw_updates:
                     modify_args.append(f"due:{tw_updates['due']}")
-                if "end" in tw_updates:
-                    modify_args.append(f"end:{tw_updates['end']}")
                 if "entry" in tw_updates:
                     modify_args.append(f"entry:{tw_updates['entry']}")
                 if "priority" in tw_updates:
                     modify_args.append(f"priority:{tw_updates['priority']}")
+                # Set end before status change only if not completing
+                if "end" in tw_updates and "status" not in tw_updates:
+                    modify_args.append(f"end:{tw_updates['end']}")
                 if modify_args:
                     run(["task", uuid, "modify"] + modify_args)
                 if "notes" in tw_updates:
@@ -810,6 +840,9 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                 if "status" in tw_updates:
                     if tw_updates["status"] == "completed":
                         run(["task", uuid, "done"])
+                        # Set end after done — task done overwrites end with now
+                        if "end" in tw_updates:
+                            run(["task", uuid, "modify", f"end:{tw_updates['end']}"])
                     else:
                         run(["task", uuid, "modify", "status:pending"])
             if uuids:
@@ -1143,12 +1176,23 @@ def sync(project, projects, filter, approve, interactive, notes, recurring, sour
         if result.returncode == 0:
             click.echo(f"  + Taskwarrior: {prefixed}")
 
-            find = subprocess.run(
-                ["task", f"project.is:{proj}", prefixed, "uuids"],
-                capture_output=True,
-                text=True,
-            )
-            uuid = find.stdout.strip()
+            # Find the UUID of the newly created task from task add output
+            task_id_match = re.search(r"Created task (\d+)\.", result.stdout)
+            uuid = ""
+            if task_id_match:
+                tid = task_id_match.group(1)
+                find = subprocess.run(
+                    ["task", tid, "export"],
+                    capture_output=True,
+                    text=True,
+                )
+                if find.returncode == 0:
+                    try:
+                        exported = json.loads(find.stdout)
+                        if exported:
+                            uuid = exported[0].get("uuid", "")
+                    except json.JSONDecodeError:
+                        pass
             if uuid:
                 # Notes → annotation
                 item_notes = (item.get("notes") or "").strip()
@@ -1222,6 +1266,7 @@ def sync(project, projects, filter, approve, interactive, notes, recurring, sour
             if result.returncode == 0:
                 click.echo(f"  + Reminders: {prefixed}")
                 if item["status"] == "completed":
+                    # Search only pending items — the newly added one will be pending
                     show = subprocess.run(
                         ["reminders", "show", proj, "--format", "json"],
                         capture_output=True,
@@ -1229,15 +1274,18 @@ def sync(project, projects, filter, approve, interactive, notes, recurring, sour
                     )
                     if show.returncode == 0:
                         try:
-                            items = json.loads(show.stdout)
-                            for i, r in enumerate(items):
-                                if r.get("title", "") == prefixed:
-                                    complete_cmd = ["reminders", "complete", proj, str(i)]
-                                    raw_end = item.get("end", "")
-                                    if raw_end:
-                                        complete_cmd.extend(["--completion-date", tw_date_to_iso(raw_end)])
-                                    run(complete_cmd)
-                                    break
+                            pending_items = json.loads(show.stdout)
+                            # Find the last matching pending item (most recently added)
+                            match_idx = None
+                            for i, r in enumerate(pending_items):
+                                if r.get("title", "") == prefixed and not r.get("isCompleted", False):
+                                    match_idx = i
+                            if match_idx is not None:
+                                complete_cmd = ["reminders", "complete", proj, str(match_idx)]
+                                raw_end = item.get("end", "")
+                                if raw_end:
+                                    complete_cmd.extend(["--completion-date", tw_date_to_iso(raw_end)])
+                                run(complete_cmd)
                         except json.JSONDecodeError:
                             pass
 
