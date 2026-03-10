@@ -86,7 +86,7 @@ def tw_find(args):
             print(info.stdout)
 
 
-def tw_view(args):
+def tw_list(args):
     result = run(
         ["task", "export", "rc.verbose=nothing"],
     )
@@ -229,7 +229,7 @@ def rem_find(args):
         print(json.dumps(r, indent=2, ensure_ascii=False))
 
 
-def rem_view(args):
+def rem_list(args):
     result = run(
         ["reminders", "show-all", "--format", "json"]
     )
@@ -274,8 +274,8 @@ def main():
     tw_find_p.add_argument("pattern", nargs="+", help="Search pattern")
     tw_find_p.set_defaults(func=tw_find)
 
-    tw_view_p = tw_sub.add_parser("view", help="View pending tasks")
-    tw_view_p.set_defaults(func=tw_view)
+    tw_list_p = tw_sub.add_parser("list", help="List pending tasks")
+    tw_list_p.set_defaults(func=tw_list)
 
     # Reminders
     rem_parser = sub.add_parser(
@@ -291,8 +291,8 @@ def main():
     rem_find_p.add_argument("pattern", nargs="+", help="Search pattern")
     rem_find_p.set_defaults(func=rem_find)
 
-    rem_view_p = rem_sub.add_parser("view", help="View reminders")
-    rem_view_p.set_defaults(func=rem_view)
+    rem_list_p = rem_sub.add_parser("list", help="List reminders")
+    rem_list_p.set_defaults(func=rem_list)
 
     args = parser.parse_args()
 
