@@ -128,7 +128,17 @@ def resolve_open_target(path_str: str) -> tuple[Path, str | None]:
     return target, None
 
 
-@click.group(invoke_without_command=True)
+class ObsGroup(click.Group):
+    """Custom group that falls through to default open behavior for unknown args."""
+
+    def parse_args(self, ctx: click.Context, args: list[str]) -> list[str]:
+        # If first arg looks like a path (not a command or option), prepend "open"
+        if args and args[0] not in self.commands and not args[0].startswith("-"):
+            args = ["open"] + args
+        return super().parse_args(ctx, args)
+
+
+@click.group(cls=ObsGroup, invoke_without_command=True)
 @click.pass_context
 def cli(ctx: click.Context) -> None:
     """Simple Obsidian vault manager."""
