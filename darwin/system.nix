@@ -28,6 +28,8 @@
         # Repeatable space is killing me.
         InitialKeyRepeat = 120;
         KeyRepeat = 120;
+        # Don't switch to a Space with open windows when activating an app
+        AppleSpacesSwitchOnActivate = false;
       };
       # https://github.com/nix-darwin/nix-darwin/blob/master/modules/system/defaults/WindowManager.nix#L6
       WindowManager = {
