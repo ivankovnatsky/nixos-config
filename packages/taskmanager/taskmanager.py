@@ -962,8 +962,9 @@ def cli():
 @cli.command()
 @click.argument("description")
 @click.option("--project", default="Inbox", help="Project/list name.")
-def add(description, project):
-    """Add task to both systems."""
+@click.pass_context
+def add(ctx, description, project):
+    """Add task to Reminders, then sync to Taskwarrior interactively."""
     prefixed = f"{project}: {description}"
 
     if is_darwin() and has_command("reminders"):
@@ -976,11 +977,22 @@ def add(description, project):
         result = run(["reminders", "add", project, prefixed])
         if result.returncode == 0:
             click.echo(f"Reminders ({project}): added")
+        else:
+            return
 
-    if has_command("task"):
-        result = run(["task", "add", prefixed, f"project:{project}"])
-        if result.returncode == 0:
-            click.echo(f"Taskwarrior ({project}): added")
+    ctx.invoke(
+        sync,
+        project=project,
+        projects=None,
+        filter=description,
+        approve=False,
+        interactive=True,
+        notes=False,
+        recurring=None,
+        source=None,
+        destination=None,
+        verbose=False,
+    )
 
 
 def normalize_system_name(name):
