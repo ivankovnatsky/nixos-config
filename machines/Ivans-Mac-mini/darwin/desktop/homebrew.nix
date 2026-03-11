@@ -21,6 +21,7 @@
       "ghostty"
       "keycastr"
       "kitty"
+      "obsidian"
       "silicon-labs-vcp-driver"
       "windsurf"
     ];
