@@ -5,6 +5,7 @@
     file = {
       # https://geminicli.com/docs/get-started/configuration
       # Available settings: https://github.com/google-gemini/gemini-cli/blob/main/docs/get-started/configuration.md
+      # Remove import for now from all machines to avoid CLI autowriting to its own configuration.
       ".gemini/settings.json" = {
         text = ''
           {
