@@ -3,6 +3,8 @@
 pkgs.writeShellScriptBin "diff-good" ''
   EXCLUDES=(
     .terraform
+    "terraform.tfstate*"
+    .terraform.lock.hcl
   )
 
   EXCLUDE_ARGS=""
