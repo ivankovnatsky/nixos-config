@@ -63,6 +63,7 @@ in
       { path = "/Applications/Bitwarden.app/"; }
       { path = "/Applications/Cursor.app/"; }
       { path = "/Applications/Windsurf.app/"; }
+      { path = "/Applications/Obsidian.app/"; }
       { path = "/Applications/KeyCastr.app/"; }
 
       {
