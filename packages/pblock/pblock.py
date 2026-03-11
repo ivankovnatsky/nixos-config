@@ -68,7 +68,8 @@ def main() -> None:
     args = parser.parse_args()
 
     if not is_root():
-        subprocess.run(["sudo", "-v"], check=True)
+        script = os.path.abspath(sys.argv[0])
+        os.execvp("sudo", ["sudo", sys.executable, script] + sys.argv[1:])
 
     if args.background:
         pid = os.fork()
