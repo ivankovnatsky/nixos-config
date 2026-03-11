@@ -13,7 +13,6 @@
     ../../../home/fish.nix
     ../../../home/fzf.nix
     ../../../home/games.nix
-    ../../../home/gemini.nix
     ../../../home/ghorg.nix
     ../../../home/ghostty.nix
     ../../../home/git

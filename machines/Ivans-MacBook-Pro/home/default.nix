@@ -10,7 +10,6 @@
     ../../../home/fish.nix
     ../../../home/flags.nix
     ../../../home/fzf.nix
-    ../../../home/gemini.nix
     ../../../home/ghorg.nix
     ../../../home/ghostty.nix
     ../../../home/giffer.nix
