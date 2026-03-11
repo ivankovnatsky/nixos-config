@@ -4,7 +4,6 @@
     ../../../home/nixvim.nix
     ../../../home/aichat.nix
     ../../../home/bash.nix
-    ../../../home/gemini.nix
     ../../../home/bat.nix
     ../../../home/btop.nix
     ../../../home/claude.nix

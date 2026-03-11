@@ -12,7 +12,6 @@
     ../../../home/btop.nix
     ../../../home/claude.nix
     ../../../home/direnv.nix
-    ../../../home/gemini.nix
     ../../../home/ghorg.nix
     ../../../home/ghostty.nix
     ../../../home/git

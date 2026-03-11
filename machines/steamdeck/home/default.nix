@@ -8,7 +8,6 @@
     ../../../home/codex.nix
     ../../../home/fish.nix
     ../../../home/fzf.nix
-    ../../../home/gemini.nix
     ../../../home/ghorg.nix
     ../../../home/ghostty.nix
     ../../../home/git
