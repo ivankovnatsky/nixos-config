@@ -19,6 +19,7 @@
     obs
     obsidian-cli
     diff-long-lines
+    diff-good
     aws-sso-cli
     aws-sso-creds
     awscli2
