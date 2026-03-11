@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Git commit subject scope helper that auto-generates scope from staged file paths.
+Git commit subject scope helper that auto-generates scope from file or directory paths.
 """
 
 import argparse
@@ -264,15 +264,17 @@ def main() -> int:
 Examples:
   git-message "add feature"                     Commits staged file with "<scope>: add feature"
   git-message file.nix "add feature"            Commits file.nix with "<scope>: add feature"
+  git-message src/dir "add feature"             Commits all changes in src/dir
   git-message "add feature" -b "Body text"      Commits with subject and body
   git-message "add feature" -b "L1" -b "L2"     Multiple -b joined with newline
   git-message -s "add feature" -b "Line 1
   Line 2"                                       Multiline body with newlines
 
 Features:
-  - Accepts file path in either position (auto-detected by existence)
+  - Accepts file or directory path in either position (auto-detected by existence)
+  - Directories commit all changes under that path
   - Auto-adds untracked files before committing
-  - Without file arg, detects exactly one changed file (staged, modified, or untracked)
+  - Without path arg, detects exactly one changed file (staged, modified, or untracked)
   - Strips file extensions (e.g., .nix, .py)
   - Shortens machine names (e.g., Ivans-Mac-mini -> mini)
   - Removes duplicate path components (e.g., pkg/foo/foo -> pkg/foo)
@@ -284,7 +286,7 @@ Features:
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
-        "args", nargs="*", help="subject and optional file path (in any order)"
+        "args", nargs="*", help="subject and optional file/directory path (in any order)"
     )
     parser.add_argument(
         "-s", "--subject", help="commit subject (alternative to positional arg)"
