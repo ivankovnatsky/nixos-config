@@ -2,6 +2,7 @@
 
 import argparse
 import os
+import signal
 import subprocess
 import sys
 import time
@@ -58,7 +59,26 @@ def main() -> None:
         default=5,
         help="Interval between checks in seconds (default: 5)",
     )
+    parser.add_argument(
+        "--background",
+        "-b",
+        action="store_true",
+        help="Run in the background (fork, detach from terminal)",
+    )
     args = parser.parse_args()
+
+    if args.background:
+        pid = os.fork()
+        if pid > 0:
+            print(f"pblock running in background (PID {pid})")
+            sys.exit(0)
+
+        os.setsid()
+        sys.stdin.close()
+        logfile = open(f"/tmp/pblock-{args.process_name.lower()}.log", "a")
+        sys.stdout = logfile
+        sys.stderr = logfile
+        signal.signal(signal.SIGHUP, signal.SIG_IGN)
 
     mode = "root" if is_root() else "user (via sudo)"
     log(
