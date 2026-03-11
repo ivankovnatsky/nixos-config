@@ -342,6 +342,31 @@ def match_instances(tw_list, rem_list):
     # Pass 2: match remaining cross-status items
     tw_unmatched = try_match(tw_remaining, same_status_only=False)
 
+    # Pass 3: recurring completion reconciliation
+    # When a recurring item is completed in Reminders, the completed instance
+    # may lose its due date while TW still has the pending instance with the
+    # original due. Match unmatched TW pending with unmatched Rem completed
+    # (and vice versa) when one side has a due date and the other doesn't.
+    if tw_unmatched and rem_available:
+        tw_still_unmatched = []
+        for tw_item in tw_unmatched:
+            tw_due = date_key(tw_item.get("due", ""))
+            best = None
+            for i, rem_item in enumerate(rem_available):
+                if tw_item["status"] == rem_item["status"]:
+                    continue
+                rem_due = date_key(rem_item.get("due", ""))
+                # One side has due, the other doesn't — recurring completion
+                if (tw_due and not rem_due) or (not tw_due and rem_due):
+                    best = (i, rem_item)
+                    break
+            if best:
+                matched.append((tw_item, best[1]))
+                rem_available.pop(best[0])
+            else:
+                tw_still_unmatched.append(tw_item)
+        tw_unmatched = tw_still_unmatched
+
     return matched, tw_unmatched, rem_available
 
 
