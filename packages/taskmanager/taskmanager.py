@@ -471,7 +471,8 @@ def compute_drift(project_filter=None):
                 " item(s) by due date...",
                 err=True,
             )
-            for key in sorted(multi_instance):
+        for key in sorted(multi_instance):
+            if _verbose:
                 rec = recurrence_info.get(key, "")
                 rec_label = f" (recurring: {rec})" if rec else ""
                 click.echo(f"  {key[0]}: {key[1]}{rec_label}", err=True)
