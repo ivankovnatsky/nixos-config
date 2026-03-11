@@ -67,6 +67,9 @@ def main() -> None:
     )
     args = parser.parse_args()
 
+    if not is_root():
+        subprocess.run(["sudo", "-v"], check=True)
+
     if args.background:
         pid = os.fork()
         if pid > 0:
