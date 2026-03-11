@@ -158,6 +158,17 @@ def shorten_directories(path: str) -> str:
     return "/".join(shortened)
 
 
+def collapse_middle(path: str) -> str:
+    """Collapse middle path segments to * keeping first and last.
+
+    Example: a/b/c/d/e -> a/*/e
+    """
+    parts = path.split("/")
+    if len(parts) <= 2:
+        return path
+    return f"{parts[0]}/*/{parts[-1]}"
+
+
 def create_commit_message(prefix: str, subject: str) -> str:
     return f"{prefix}: {subject}"
 
@@ -280,6 +291,7 @@ Features:
   - Removes duplicate path components (e.g., pkg/foo/foo -> pkg/foo)
   - Strips "default" filename (e.g., mod/foo/default -> mod/foo)
   - Shortens directories if scope > 50 (packages->pkg, modules->mod, etc.)
+  - Collapses middle path segments to * if still too long (a/b/c/d -> a/*/d)
   - Validates scope length (max 50 chars)
   - Validates subject length (max 72 chars)
 """,
@@ -341,6 +353,9 @@ Features:
     # Apply aggressive directory shortening only if scope exceeds limit
     if len(prefix) > MAX_PREFIX_LENGTH:
         prefix = shorten_directories(prefix)
+
+    if len(prefix) > MAX_PREFIX_LENGTH:
+        prefix = collapse_middle(prefix)
 
     if len(prefix) > MAX_PREFIX_LENGTH:
         print(
