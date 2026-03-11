@@ -465,15 +465,16 @@ def compute_drift(project_filter=None):
     instance_metadata_diffs = {}
 
     if multi_instance:
-        click.echo(
-            f"\nMatching {len(multi_instance)} recurring/multi-instance"
-            " item(s) by due date...",
-            err=True,
-        )
-        for key in sorted(multi_instance):
-            rec = recurrence_info.get(key, "")
-            rec_label = f" (recurring: {rec})" if rec else ""
-            click.echo(f"  {key[0]}: {key[1]}{rec_label}", err=True)
+        if _verbose:
+            click.echo(
+                f"\nMatching {len(multi_instance)} recurring/multi-instance"
+                " item(s) by due date...",
+                err=True,
+            )
+            for key in sorted(multi_instance):
+                rec = recurrence_info.get(key, "")
+                rec_label = f" (recurring: {rec})" if rec else ""
+                click.echo(f"  {key[0]}: {key[1]}{rec_label}", err=True)
 
             tw_list = tw_instances.get(key, [])
             rem_list = rem_instances.get(key, [])
