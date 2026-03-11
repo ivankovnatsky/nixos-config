@@ -1365,5 +1365,102 @@ def sync(project, projects, filter, approve, interactive, notes, recurring, sour
     click.echo("\nDone.")
 
 
+@cli.command()
+@click.option("--project", default=None, help="Scope to a single project/list.")
+@click.option(
+    "--projects", default=None, help="Comma-separated project/list names."
+)
+@click.option("--verbose", is_flag=True, default=False, help="Show commands being run.")
+def verify(project, projects, verbose):
+    """Verify item counts and statuses match between Reminders and Taskwarrior."""
+    global _verbose
+    _verbose = verbose
+
+    project_list = parse_projects(projects) if projects else [project]
+    from collections import Counter
+
+    total_tw = 0
+    total_rem = 0
+    total_mismatch = 0
+    status_issues = []
+
+    for proj in project_list:
+        tw_tasks, tw_counts, tw_instances = get_tw_tasks(proj)
+        rem_tasks, rem_counts, rem_instances = get_reminders(proj)
+
+        # Flatten all instances (excluding recurring parents, already filtered)
+        tw_all = []
+        for instances in tw_instances.values():
+            tw_all.extend(instances)
+        rem_all = []
+        for instances in rem_instances.values():
+            rem_all.extend(instances)
+
+        # Count by prefixed title
+        tw_titles = Counter(f"{t['project']}: {t['title']}" for t in tw_all)
+        rem_titles = Counter(f"{r['project']}: {r['title']}" for r in rem_all)
+
+        all_titles = sorted(set(tw_titles.keys()) | set(rem_titles.keys()))
+
+        # Group by title for status check
+        tw_by_title = {}
+        for t in tw_all:
+            key = f"{t['project']}: {t['title']}"
+            tw_by_title.setdefault(key, []).append(t)
+        rem_by_title = {}
+        for r in rem_all:
+            key = f"{r['project']}: {r['title']}"
+            rem_by_title.setdefault(key, []).append(r)
+
+        mismatches = []
+        for title in all_titles:
+            tc = tw_titles.get(title, 0)
+            rc = rem_titles.get(title, 0)
+            if tc != rc:
+                mismatches.append((title, tc, rc))
+
+            # Status breakdown
+            tw_items = tw_by_title.get(title, [])
+            rem_items = rem_by_title.get(title, [])
+            tw_pending = sum(1 for t in tw_items if t["status"] == "pending")
+            tw_completed = sum(1 for t in tw_items if t["status"] == "completed")
+            tw_deleted = sum(1 for t in tw_items if t["status"] == "deleted")
+            rem_pending = sum(1 for r in rem_items if r["status"] == "pending")
+            rem_completed = sum(1 for r in rem_items if r["status"] == "completed")
+
+            if tw_pending != rem_pending or tw_completed != rem_completed or tw_deleted > 0:
+                status_issues.append(
+                    (title, tw_pending, tw_completed, tw_deleted, rem_pending, rem_completed)
+                )
+
+        total_tw += len(tw_all)
+        total_rem += len(rem_all)
+        total_mismatch += len(mismatches)
+
+        scope = f" ({proj})" if proj else ""
+
+        if mismatches:
+            click.echo(f"\nCount mismatches{scope}:")
+            for title, tc, rc in mismatches:
+                click.echo(f"  {title}: TW={tc} Rem={rc}")
+
+    if status_issues:
+        click.echo("\nStatus mismatches:")
+        for title, twp, twc, twd, remp, remc in status_issues:
+            parts = []
+            if twp != remp:
+                parts.append(f"pending TW={twp} Rem={remp}")
+            if twc != remc:
+                parts.append(f"completed TW={twc} Rem={remc}")
+            if twd:
+                parts.append(f"deleted TW={twd}")
+            click.echo(f"  {title}: {', '.join(parts)}")
+
+    if total_mismatch == 0 and not status_issues:
+        click.echo("\nAll counts and statuses match.")
+
+    click.echo(f"\nTotal: TW={total_tw}, Rem={total_rem}, Mismatches={total_mismatch}")
+
+
 if __name__ == "__main__":
     cli(prog_name="taskmanager")
