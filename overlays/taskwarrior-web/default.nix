@@ -10,6 +10,7 @@
   apple-sdk ? null,
   libiconv ? null,
   cacert,
+  npmDepsHash ? "sha256-OuCWuJEr2s6UHjwcSFFJzExvM6fQq9u0/Lp/jtpvewg=",
 }:
 
 let
@@ -39,7 +40,7 @@ let
     '';
     outputHashAlgo = "sha256";
     outputHashMode = "recursive";
-    outputHash = "sha256-OuCWuJEr2s6UHjwcSFFJzExvM6fQq9u0/Lp/jtpvewg=";
+    outputHash = npmDepsHash;
     impureEnvVars = lib.fetchers.proxyImpureEnvVars;
   };
 in
