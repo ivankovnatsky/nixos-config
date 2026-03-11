@@ -102,8 +102,8 @@ def quit_obsidian() -> None:
     time.sleep(1.0)
 
 
-def open_vault(vault_path: Path, just_created: bool = False) -> None:
-    """Open a vault in Obsidian."""
+def open_vault(vault_path: Path, just_created: bool = False, file_path: str | None = None) -> None:
+    """Open a vault (optionally at a specific file) in Obsidian."""
     vault_path = vault_path.resolve()
 
     # Check if vault is already registered
@@ -124,6 +124,9 @@ def open_vault(vault_path: Path, just_created: bool = False) -> None:
     # Open using vault name (more reliable than path)
     vault_name = vault_path.name
     uri = f"obsidian://open?vault={vault_name}"
+    if file_path:
+        from urllib.parse import quote
+        uri += f"&file={quote(file_path)}"
     subprocess.run(["open", uri], check=True)
 
 
@@ -185,6 +188,18 @@ def find_parent_vault(start: Path) -> Path | None:
     return None
 
 
+def resolve_open_target(path_str: str) -> tuple[Path, str | None]:
+    """Resolve an open target into (vault_path, optional_file_path)."""
+    target = Path(path_str).resolve()
+    if target.is_file() and target.suffix == ".md":
+        vault = find_parent_vault(target)
+        if not vault:
+            print(f"Error: no Obsidian vault found for {target}")
+            raise SystemExit(1)
+        return vault, str(target.relative_to(vault))
+    return target, None
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Simple Obsidian vault manager",
@@ -203,12 +218,12 @@ def main() -> None:
     create_parser.add_argument("--name", help="Custom vault name")
 
     # open command
-    open_parser = subparsers.add_parser("open", help="Open a vault in Obsidian")
+    open_parser = subparsers.add_parser("open", help="Open a vault or file in Obsidian")
     open_parser.add_argument(
         "path",
         nargs="?",
         default=".",
-        help="Path to vault directory (default: current directory)",
+        help="Path to vault directory or .md file (default: current directory)",
     )
 
     # list command
@@ -229,8 +244,8 @@ def main() -> None:
         vault_path = Path(args.path)
         create_vault(vault_path, args.name)
     elif args.command == "open":
-        vault_path = Path(args.path)
-        open_vault(vault_path)
+        vault, file_rel = resolve_open_target(args.path)
+        open_vault(vault, file_path=file_rel)
     elif args.command == "list":
         list_vaults()
     elif args.command == "delete":
