@@ -21,10 +21,10 @@ def is_darwin():
 _verbose = False
 
 
-def run(cmd):
+def run(cmd, stdin_text=None):
     if _verbose:
         click.echo(f"  >> {' '.join(cmd)}", err=True)
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    result = subprocess.run(cmd, capture_output=True, text=True, input=stdin_text)
     if result.returncode != 0:
         click.echo(f"Error running {' '.join(cmd)}: {result.stderr.strip()}", err=True)
     return result
@@ -358,6 +358,32 @@ def match_instances(tw_list, rem_list):
                 rem_due = date_key(rem_item.get("due", ""))
                 # One side has due, the other doesn't — recurring completion
                 if (tw_due and not rem_due) or (not tw_due and rem_due):
+                    best = (i, rem_item)
+                    break
+            if best:
+                matched.append((tw_item, best[1]))
+                rem_available.pop(best[0])
+            else:
+                tw_still_unmatched.append(tw_item)
+        tw_unmatched = tw_still_unmatched
+
+    # Pass 4: pair remaining unmatched items from the same recurring group.
+    # Handles: (a) same-status with mismatched due dates (recurring next-instance),
+    # (b) cross-status with no due dates (item completed in one system but not the other).
+    if tw_unmatched and rem_available:
+        tw_still_unmatched = []
+        for tw_item in tw_unmatched:
+            tw_due = date_key(tw_item.get("due", ""))
+            best = None
+            for i, rem_item in enumerate(rem_available):
+                rem_due = date_key(rem_item.get("due", ""))
+                same_status = tw_item["status"] == rem_item["status"]
+                # Same status, one side has due and the other doesn't
+                if same_status and ((tw_due and not rem_due) or (not tw_due and rem_due)):
+                    best = (i, rem_item)
+                    break
+                # Cross-status, both have no due (completed in one system)
+                if not same_status and not tw_due and not rem_due:
                     best = (i, rem_item)
                     break
             if best:
@@ -716,7 +742,7 @@ def print_drift(rem_only, tw_only, matched, metadata_diffs, direction=None):
         click.echo(f"Metadata drift: {len(metadata_diffs)}")
 
 
-def find_tw_uuids(project, prefixed_title):
+def find_tw_uuids(project, prefixed_title, status_filter=None):
     """Find all TW task UUIDs matching project and prefixed description."""
     result = subprocess.run(
         ["task", f"project.is:{project}", "export"],
@@ -729,6 +755,8 @@ def find_tw_uuids(project, prefixed_title):
     try:
         for t in json.loads(result.stdout):
             if t.get("description", "") == prefixed_title:
+                if status_filter and t.get("status", "") != status_filter:
+                    continue
                 uuids.append(t["uuid"])
     except json.JSONDecodeError:
         pass
@@ -889,7 +917,17 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                 if "end" in tw_updates and "status" not in tw_updates:
                     modify_args.append(f"end:{tw_updates['end']}")
                 if modify_args:
-                    run(["task", uuid, "modify"] + modify_args)
+                    result = run(["task", uuid, "modify"] + modify_args)
+                    # If modify fails on a recurring task (e.g. can't remove due),
+                    # delete the recurring parent to stop recurrence, then retry
+                    if result.returncode != 0 and tw.get("recur", ""):
+                        click.echo(f"    Recurring task detected — purging to remove recurrence")
+                        # Delete first if not already deleted, then purge
+                        del_result = run(["task", "rc.confirmation:off", uuid, "delete"])
+                        if del_result.returncode != 0:
+                            # Already deleted — just purge
+                            pass
+                        run(["task", "rc.confirmation:off", uuid, "purge"])
                 if "notes" in tw_updates:
                     # Check if annotation already exists to avoid duplicates
                     existing_anns = tw.get("annotations", [])
@@ -1473,7 +1511,19 @@ def drift(project, projects, filter, notes, recurring, source, destination, verb
     help="Destination system (t/tw/taskwarrior, r/rem/rems/reminders).",
 )
 @click.option("--verbose", is_flag=True, default=False, help="Show commands being run.")
-def sync(project, projects, filter, approve, interactive, notes, recurring, source, destination, verbose):
+@click.option(
+    "--purge-duplicates",
+    is_flag=True,
+    default=False,
+    help="Delete TW-only duplicate tasks that have no Reminders counterpart. Always interactive.",
+)
+@click.option(
+    "--complete-orphans",
+    is_flag=True,
+    default=False,
+    help="Complete TW-only pending tasks whose title has completed history. Always interactive.",
+)
+def sync(project, projects, filter, approve, interactive, notes, recurring, source, destination, verbose, purge_duplicates, complete_orphans):
     """Sync missing items to both systems."""
     global _verbose
     _verbose = verbose
@@ -1530,10 +1580,13 @@ def sync(project, projects, filter, approve, interactive, notes, recurring, sour
         print_drift(rem_only, tw_only, matched, metadata_diffs, direction=source)
 
     total = len(rem_only) + len(tw_only) + len(metadata_diffs)
-    if total == 0:
+    if total == 0 and not purge_duplicates and not complete_orphans:
         if interactive:
             click.echo("\nNo drift detected.")
         return
+    if total == 0:
+        if interactive:
+            click.echo("\nNo drift detected.")
 
     if not interactive:
         parts = []
@@ -1567,53 +1620,80 @@ def sync(project, projects, filter, approve, interactive, notes, recurring, sour
                 click.echo(f"    priority: {PRIORITY_LABEL.get(rem_prio, rem_prio)}")
             if not click.confirm("  Copy to Taskwarrior?"):
                 continue
-        add_cmd = ["task", "add", prefixed, f"project:{proj}"]
+        # Check if a pending TW task with the same title already exists (avoid duplicates)
+        existing_uuids = find_tw_uuids(proj, prefixed, status_filter="pending")
+        if existing_uuids and item["status"] == "completed":
+            # Complete the existing task instead of creating a duplicate
+            uuid = existing_uuids[0]
+            run(["task", uuid, "done"])
+            click.echo(f"  ~ Taskwarrior: {prefixed} (completed existing)")
+            raw_end = item.get("completionDate", "")
+            if raw_end:
+                run(["task", uuid, "modify", f"end:{raw_end}"])
+        elif existing_uuids:
+            # Existing pending task — update metadata instead of creating duplicate
+            uuid = existing_uuids[0]
+            mods = []
+            raw_due = item.get("due", "")
+            if raw_due:
+                mods.append(f"due:{raw_due}")
+            tw_prio = REMINDERS_PRIORITY_MAP.get(item.get("priority", 0), "")
+            if tw_prio:
+                mods.append(f"priority:{tw_prio}")
+            if mods:
+                run(["task", uuid, "modify"] + mods)
+            item_notes = (item.get("notes") or "").strip()
+            if item_notes:
+                run(["task", uuid, "annotate", item_notes])
+            click.echo(f"  ~ Taskwarrior: {prefixed} (updated existing)")
+        else:
+            add_cmd = ["task", "add", prefixed, f"project:{proj}"]
 
-        # Due date — pass raw ISO date so TW handles timezone correctly
-        raw_due = item.get("due", "")
-        if raw_due:
-            add_cmd.append(f"due:{raw_due}")
+            # Due date — pass raw ISO date so TW handles timezone correctly
+            raw_due = item.get("due", "")
+            if raw_due:
+                add_cmd.append(f"due:{raw_due}")
 
-        # Priority
-        tw_prio = REMINDERS_PRIORITY_MAP.get(item.get("priority", 0), "")
-        if tw_prio:
-            add_cmd.append(f"priority:{tw_prio}")
+            # Priority
+            tw_prio = REMINDERS_PRIORITY_MAP.get(item.get("priority", 0), "")
+            if tw_prio:
+                add_cmd.append(f"priority:{tw_prio}")
 
-        result = run(add_cmd)
-        if result.returncode == 0:
-            click.echo(f"  + Taskwarrior: {prefixed}")
+            result = run(add_cmd)
+            if result.returncode == 0:
+                click.echo(f"  + Taskwarrior: {prefixed}")
 
-            # Find the UUID of the newly created task from task add output
-            task_id_match = re.search(r"Created task (\d+)\.", result.stdout)
-            uuid = ""
-            if task_id_match:
-                tid = task_id_match.group(1)
-                find = subprocess.run(
-                    ["task", tid, "export"],
-                    capture_output=True,
-                    text=True,
-                )
-                if find.returncode == 0:
-                    try:
-                        exported = json.loads(find.stdout)
-                        if exported:
-                            uuid = exported[0].get("uuid", "")
-                    except json.JSONDecodeError:
-                        pass
-            if uuid:
-                # Notes → annotation
-                item_notes = (item.get("notes") or "").strip()
-                if item_notes:
-                    run(["task", uuid, "annotate", item_notes])
+                # Find the UUID of the newly created task from task add output
+                task_id_match = re.search(r"Created task (\d+)\.", result.stdout)
+                uuid = ""
+                if task_id_match:
+                    tid = task_id_match.group(1)
+                    find = subprocess.run(
+                        ["task", tid, "export"],
+                        capture_output=True,
+                        text=True,
+                    )
+                    if find.returncode == 0:
+                        try:
+                            exported = json.loads(find.stdout)
+                            if exported:
+                                uuid = exported[0].get("uuid", "")
+                        except json.JSONDecodeError:
+                            pass
+                if uuid:
+                    # Notes → annotation
+                    item_notes = (item.get("notes") or "").strip()
+                    if item_notes:
+                        run(["task", uuid, "annotate", item_notes])
 
-                # Creation date
-                raw_created = item.get("creationDate", "")
-                if raw_created:
-                    run(["task", uuid, "modify", f"entry:{raw_created}"])
+                    # Creation date
+                    raw_created = item.get("creationDate", "")
+                    if raw_created:
+                        run(["task", uuid, "modify", f"entry:{raw_created}"])
 
-                # Completion date + status
-                if item["status"] == "completed":
-                    run(["task", uuid, "done"])
+                    # Completion date + status
+                    if item["status"] == "completed":
+                        run(["task", uuid, "done"])
                     raw_end = item.get("completionDate", "")
                     if raw_end:
                         run(["task", uuid, "modify", f"end:{raw_end}"])
@@ -1628,6 +1708,12 @@ def sync(project, projects, filter, approve, interactive, notes, recurring, sour
         for item in tw_only.values():
             proj = item["project"]
             prefixed = f"{proj}: {item['title']}"
+
+            # Skip TW→Rem copy when --complete-orphans or --purge-duplicates will handle them
+            if complete_orphans and item.get("status") in ("pending", "deleted"):
+                continue
+            if purge_duplicates:
+                continue
 
             if interactive:
                 click.echo(f"\nTaskwarrior only:")
@@ -1701,6 +1787,151 @@ def sync(project, projects, filter, approve, interactive, notes, recurring, sour
         meta_count = sync_metadata(metadata_diffs, direction=source, interactive=interactive)
         if meta_count:
             click.echo(f"\nUpdated metadata on {meta_count} items.")
+
+    # Purge TW duplicates (always interactive, requires explicit confirmation)
+    # Detects both TW-only items and TW-internal duplicates (multiple pending
+    # tasks with the same project+description).
+    if purge_duplicates:
+        purge_count = 0
+
+        # 1. TW-only items with no Reminders counterpart
+        if tw_only:
+            click.echo(f"\n--- TW-only items ({len(tw_only)}) ---")
+            for key, item in tw_only.items():
+                proj = item["project"]
+                prefixed = f"{proj}: {item['title']}"
+                uuid = item.get("uuid", "")
+                due = format_date_local(item.get("due", ""))
+                status = item.get("status", "pending")
+                click.echo(f"\n  TW-only: {prefixed}")
+                click.echo(f"    status: {status}")
+                if due:
+                    click.echo(f"    due: {due}")
+                if uuid:
+                    click.echo(f"    uuid: {uuid[:8]}")
+                if not click.confirm("  DELETE from Taskwarrior?", default=False):
+                    continue
+                if uuid:
+                    if status != "deleted":
+                        result = run(["task", "rc.confirmation:off", uuid, "delete"])
+                        if result.returncode != 0:
+                            click.echo(f"  ! Failed to delete: {prefixed}")
+                            continue
+                    result = run(["task", "rc.confirmation:off", uuid, "purge"])
+                    if result.returncode == 0:
+                        click.echo(f"  - Taskwarrior: {prefixed} (purged)")
+                        purge_count += 1
+                    else:
+                        click.echo(f"  ! Failed to purge: {prefixed}")
+
+        # 2. TW-internal duplicates: multiple pending tasks with same description
+        click.echo("\n--- Scanning for TW-internal duplicates ---")
+        from collections import defaultdict
+        tw_cmd = ["task"]
+        for proj in (parse_projects(projects) if projects else [project] if project else []):
+            if proj:
+                tw_cmd.append(f"project.is:{proj}")
+        tw_cmd.append("export")
+        tw_result = subprocess.run(tw_cmd, capture_output=True, text=True)
+        if tw_result.returncode == 0:
+            try:
+                all_tw = json.loads(tw_result.stdout)
+            except json.JSONDecodeError:
+                all_tw = []
+            pending_by_desc = defaultdict(list)
+            for t in all_tw:
+                if t.get("status") == "pending":
+                    key = (t.get("project", ""), t.get("description", ""))
+                    pending_by_desc[key].append(t)
+
+            def tw_meta_fingerprint(t):
+                """Metadata fingerprint for duplicate detection."""
+                return (
+                    t.get("description", ""),
+                    t.get("project", ""),
+                    date_key(t.get("due", "")),
+                    t.get("priority", ""),
+                    len(t.get("annotations", [])),
+                )
+
+            dup_count = 0
+            for key, tasks_list in sorted(pending_by_desc.items()):
+                if len(tasks_list) <= 1:
+                    continue
+                # Group by metadata fingerprint — only items with identical
+                # metadata are considered duplicates
+                by_fp = defaultdict(list)
+                for t in tasks_list:
+                    by_fp[tw_meta_fingerprint(t)].append(t)
+                for fp, group in by_fp.items():
+                    if len(group) <= 1:
+                        continue
+                    # Keep the oldest (by entry date), offer to delete the rest
+                    group.sort(key=lambda t: t.get("entry", ""))
+                    keep = group[0]
+                    dupes = group[1:]
+                    click.echo(f"\n  {key[1]} ({len(group)} identical pending copies)")
+                    click.echo(f"    keeping: uuid:{keep['uuid'][:8]} entry:{keep.get('entry','')[:10]}")
+                    for d in dupes:
+                        entry = d.get("entry", "")[:10]
+                        click.echo(f"    duplicate: uuid:{d['uuid'][:8]} entry:{entry}")
+                        if not click.confirm("    DELETE this duplicate?", default=False):
+                            continue
+                        result = run(["task", "rc.confirmation:off", d["uuid"], "delete"])
+                        if result.returncode == 0:
+                            click.echo(f"    - Deleted {d['uuid'][:8]}")
+                            purge_count += 1
+                            dup_count += 1
+                        else:
+                            click.echo(f"    ! Failed to delete {d['uuid'][:8]}")
+            if dup_count == 0:
+                click.echo("  No internal duplicates found.")
+
+        if purge_count:
+            click.echo(f"\nDeleted {purge_count} TW duplicate(s).")
+
+    # Complete TW-only pending orphans that have completed history
+    if complete_orphans and tw_only:
+        click.echo(f"\n--- TW-only pending orphans ({len(tw_only)} items) ---")
+        complete_count = 0
+        for key, item in tw_only.items():
+            if item.get("status") != "pending":
+                continue
+            proj = item["project"]
+            prefixed = f"{proj}: {item['title']}"
+            uuid = item.get("uuid", "")
+            if not uuid:
+                continue
+            # Check if this title has completed history in TW
+            all_uuids_result = subprocess.run(
+                ["task", f"project.is:{proj}", "export"],
+                capture_output=True, text=True,
+            )
+            has_completed = False
+            if all_uuids_result.returncode == 0:
+                try:
+                    for t in json.loads(all_uuids_result.stdout):
+                        if (t.get("description", "") == prefixed
+                                and t.get("status") == "completed"):
+                            has_completed = True
+                            break
+                except json.JSONDecodeError:
+                    pass
+            if not has_completed:
+                continue
+            click.echo(f"\n  TW orphan: {prefixed}")
+            click.echo(f"    uuid: {uuid[:8]}")
+            click.echo(f"    has completed history in TW")
+            if not click.confirm("  COMPLETE this task?", default=False):
+                continue
+            result = run(["task", uuid, "done"])
+            if result.returncode == 0:
+                click.echo(f"  ~ Completed: {prefixed}")
+                complete_count += 1
+            else:
+                click.echo(f"  ! Failed to complete: {prefixed}")
+        if complete_count:
+            click.echo(f"\nCompleted {complete_count} orphan(s).")
 
     click.echo("\nDone.")
 
