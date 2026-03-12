@@ -85,7 +85,7 @@ class NextDNSClient:
         data.pop("name", None)
         data.pop("setup", None)
 
-        # Remove read-only rewrites
+        # Remove rewrites (contain server-assigned IDs not suitable for export)
         data.pop("rewrites", None)
 
         # Clean privacy blocklists metadata (keep only id)
@@ -340,6 +340,75 @@ def cmd_update(args, client):
                     print(f"  ✓ Updated allowlist (+{len(to_add)} -{len(to_remove)})")
                 except Exception as e:
                     print(f"  ✗ Failed to update allowlist: {e}", file=sys.stderr)
+
+        # Update rewrites
+        if "rewrites" in profile:
+            desired_rewrites = [
+                {"name": r["name"], "content": r["content"]}
+                for r in profile["rewrites"]
+            ]
+
+            if args.dry_run:
+                print(f"  Would sync rewrites ({len(desired_rewrites)} entries)")
+                for r in desired_rewrites:
+                    print(f"    {r['name']} → {r['content']}")
+            else:
+                try:
+                    current_data = client._api_call(
+                        "GET", f"/profiles/{args.profile_id}/rewrites"
+                    )
+                    current_rewrites = current_data.get("data", [])
+                    current_set = {
+                        (r["name"], r["content"]) for r in current_rewrites
+                    }
+                    desired_set = {
+                        (r["name"], r["content"]) for r in desired_rewrites
+                    }
+
+                    to_add = desired_set - current_set
+                    to_remove = current_set - desired_set
+
+                    # Build id lookup for removals
+                    id_lookup = {
+                        (r["name"], r["content"]): r["id"]
+                        for r in current_rewrites
+                    }
+
+                    if to_add or to_remove:
+                        print("  Rewrite changes:", file=sys.stderr)
+                        if to_add:
+                            print(
+                                f"    Adding: {sorted(to_add)}",
+                                file=sys.stderr,
+                            )
+                        if to_remove:
+                            print(
+                                f"    Removing: {sorted(to_remove)}",
+                                file=sys.stderr,
+                            )
+
+                    for name, content in to_add:
+                        client._api_call(
+                            "POST",
+                            f"/profiles/{args.profile_id}/rewrites",
+                            data={"name": name, "content": content},
+                        )
+
+                    for name, content in to_remove:
+                        rewrite_id = id_lookup.get((name, content))
+                        if rewrite_id:
+                            client._api_call(
+                                "DELETE",
+                                f"/profiles/{args.profile_id}/rewrites/{rewrite_id}",
+                            )
+
+                    print(
+                        f"  ✓ Updated rewrites (+{len(to_add)} -{len(to_remove)})"
+                    )
+                except Exception as e:
+                    print(
+                        f"  ✗ Failed to update rewrites: {e}", file=sys.stderr
+                    )
 
         # Update settings last
         if "settings" in profile:
