@@ -49,25 +49,8 @@
         { path = "/Applications/Visual Studio Code.app/"; }
         { path = "/Applications/Cursor.app/"; }
         { path = "/Applications/Windsurf.app/"; }
-        { path = "/Applications/ChatGPT.app/"; }
         { path = "/Applications/Claude.app/"; }
         { path = "/Applications/Obsidian.app/"; }
-
-        {
-          type = "spacer";
-          section = "apps";
-        }
-
-        # Local taps
-        { path = "/Applications/Comet.app/"; }
-
-        {
-          type = "spacer";
-          section = "apps";
-        }
-
-        # masApps
-        { path = "/Applications/Perplexity.app/"; }
 
         {
           type = "spacer";
