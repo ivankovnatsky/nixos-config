@@ -345,6 +345,11 @@ Features:
 
     if file_path:
         abs_path = os.path.abspath(file_path)
+        # If the absolute path doesn't exist, check if path is relative to git root
+        if not os.path.exists(abs_path):
+            abs_from_root = os.path.join(git_root, file_path)
+            if os.path.exists(abs_from_root):
+                abs_path = os.path.abspath(abs_from_root)
         target_file = os.path.relpath(abs_path, git_root)
     else:
         try:
