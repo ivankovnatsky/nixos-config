@@ -30,7 +30,7 @@ DIRECTORY_MAPPINGS = {
 }
 
 MAX_MESSAGE_LENGTH = 72
-MAX_PREFIX_LENGTH = 50
+MAX_PREFIX_LENGTH = 36
 
 
 def get_git_root() -> str:
@@ -310,9 +310,9 @@ Features:
   - Shortens machine names (e.g., Ivans-Mac-mini -> mini)
   - Removes duplicate path components (e.g., pkg/foo/foo -> pkg/foo)
   - Strips "default" filename (e.g., mod/foo/default -> mod/foo)
-  - Shortens directories if scope > 50 (packages->pkg, modules->mod, etc.)
+  - Shortens directories if scope > 36 (packages->pkg, modules->mod, etc.)
   - Collapses middle path segments to * if still too long (a/b/c/d -> a/*/d)
-  - Validates scope length (max 50 chars)
+  - Validates scope length (max 36 chars)
   - Validates subject length (max 72 chars)
 """,
         formatter_class=argparse.RawDescriptionHelpFormatter,
