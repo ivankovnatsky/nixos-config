@@ -967,7 +967,7 @@ class TreeGroup(click.Group):
         if commands:
             with formatter.section("Commands"):
                 for subname, cmd, help_text in commands:
-                    formatter.write(f"  {subname:<10}{help_text}\n")
+                    formatter.write(f"  {subname:<12}{help_text}\n")
                     if isinstance(cmd, click.Group):
                         sub_ctx = click.Context(cmd, info_name=subname, parent=ctx)
                         for child_name in cmd.list_commands(sub_ctx):
@@ -999,6 +999,18 @@ def reminders_group():
 for _alias in REMINDERS_ALIASES:
     cli.add_command(reminders_group, _alias)
 reminders_group.hidden_aliases = set(REMINDERS_ALIASES)
+
+TW_ALIASES = ("t", "tw")
+
+
+@cli.group(name="taskwarrior")
+def tw_group():
+    """Taskwarrior-only commands."""
+
+
+for _alias in TW_ALIASES:
+    cli.add_command(tw_group, _alias)
+tw_group.hidden_aliases = set(TW_ALIASES)
 
 
 # Patch TreeGroup to skip hidden aliases
@@ -1145,6 +1157,134 @@ def sort_reminders(source, approve, interactive, create, verbose):
         click.echo(f"  Moved: {m['source']}: {m['title']} → {target}")
 
     click.echo(f"\nDone. Moved {moved}/{len(moves)} item(s).")
+
+
+@tw_group.command(name="sort")
+@click.option("--project", default=None, help="Limit to a single project.")
+@click.option("--approve", is_flag=True, default=False, help="Skip all confirmation prompts.")
+@click.option("--interactive", is_flag=True, default=False, help="Confirm each item individually.")
+@click.option("--verbose", is_flag=True, default=False, help="Show commands being run.")
+def sort_tw(project, approve, interactive, verbose):
+    """Sort prefixed TW tasks into their matching projects.
+
+    Scans all tasks (or a single --project) for items whose '<Prefix>: '
+    doesn't match the current project and moves them to the correct one.
+    """
+    global _verbose
+    _verbose = verbose
+
+    if not has_command("task"):
+        click.echo("Error: task (Taskwarrior) CLI not available", err=True)
+        raise SystemExit(1)
+
+    cmd = ["task"]
+    if project:
+        cmd.append(f"project.is:{project}")
+    cmd.extend(["status:pending", "export"])
+
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode != 0:
+        click.echo("Error: could not export Taskwarrior tasks", err=True)
+        raise SystemExit(1)
+
+    try:
+        tasks = json.loads(result.stdout)
+    except json.JSONDecodeError:
+        click.echo("Error: could not parse Taskwarrior export", err=True)
+        raise SystemExit(1)
+
+    moves = []
+    for task in tasks:
+        if task.get("status") == "recurring":
+            continue
+        desc = task.get("description", "")
+        current_project = task.get("project", "")
+        uuid = task.get("uuid", "")
+        if ": " not in desc:
+            continue
+        prefix, rest = desc.split(": ", 1)
+        if not rest.strip():
+            continue
+        target_project = prefix
+        if target_project == current_project:
+            continue
+        moves.append({
+            "uuid": uuid,
+            "description": desc,
+            "current_project": current_project,
+            "target_project": target_project,
+        })
+
+    if not moves:
+        click.echo("Nothing to sort.")
+        return
+
+    click.echo(f"\n{len(moves)} task(s) to move:\n")
+    for m in moves:
+        src = m['current_project'] or '(no project)'
+        click.echo(f"  {src}: {m['description']}")
+        click.echo(f"    → project:{m['target_project']}")
+
+    if not approve:
+        if not click.confirm("\nProceed?"):
+            click.echo("Aborted.")
+            return
+
+    moved = 0
+    for m in moves:
+        if interactive:
+            click.echo(f"\n  {m['description']}")
+            click.echo(f"    → project:{m['target_project']}")
+            if not click.confirm("  Move?"):
+                continue
+
+        res = run(["task", m["uuid"], "modify", f"project:{m['target_project']}"])
+        if res.returncode == 0:
+            moved += 1
+            click.echo(f"  Moved: {m['description']} → project:{m['target_project']}")
+        else:
+            click.echo(f"  ERROR moving: {m['description']}", err=True)
+
+    click.echo(f"\nDone. Moved {moved}/{len(moves)} task(s).")
+
+
+@all_cmds.command(name="sort")
+@click.option("--source", default=None, help="Limit Reminders to a single source list.")
+@click.option("--project", default=None, help="Limit Taskwarrior to a single project.")
+@click.option("--approve", is_flag=True, default=False, help="Skip all confirmation prompts.")
+@click.option("--interactive", is_flag=True, default=False, help="Confirm each item individually.")
+@click.option("--create/--no-create", default=True, help="Auto-create missing Reminders lists (default: enabled).")
+@click.option("--verbose", is_flag=True, default=False, help="Show commands being run.")
+@click.pass_context
+def sort_all(ctx, source, project, approve, interactive, create, verbose):
+    """Sort prefixed items in both Reminders and Taskwarrior."""
+    global _verbose
+    _verbose = verbose
+
+    if is_darwin() and has_command("reminders"):
+        click.echo("=== Reminders ===")
+        ctx.invoke(
+            sort_reminders,
+            source=source,
+            approve=approve,
+            interactive=interactive,
+            create=create,
+            verbose=verbose,
+        )
+    else:
+        click.echo("Reminders: skipped (not available)")
+
+    if has_command("task"):
+        click.echo("\n=== Taskwarrior ===")
+        ctx.invoke(
+            sort_tw,
+            project=project,
+            approve=approve,
+            interactive=interactive,
+            verbose=verbose,
+        )
+    else:
+        click.echo("Taskwarrior: skipped (not available)")
 
 
 @all_cmds.command()
