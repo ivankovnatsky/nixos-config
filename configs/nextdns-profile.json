@@ -188,6 +188,20 @@
         "active": true
       }
     ],
+    "rewrites": [
+      {
+        "name": "@externalDomain@",
+        "content": "@miniIp@"
+      },
+      {
+        "name": "@externalDomain@",
+        "content": "@miniEn7Ip@"
+      },
+      {
+        "name": "@externalDomain@",
+        "content": "@miniWifiIp@"
+      }
+    ],
     "allowlist": [
       {
         "id": "1337x.to",
