@@ -83,7 +83,9 @@ def get_tw_tasks(project_filter=None):
             "recur": task.get("recur", ""),
         }
 
-        all_instances.setdefault(key, []).append(dict(item))
+        instance_copy = dict(item)
+        instance_copy["annotations"] = list(item["annotations"])
+        all_instances.setdefault(key, []).append(instance_copy)
 
         if key in tasks:
             # Merge: combine annotations, prefer pending item's metadata
@@ -289,6 +291,11 @@ def match_instances(tw_list, rem_list):
     matched = []
     rem_available = list(rem_list)
 
+    def local_date(date_str):
+        """Extract local YYYY-MM-DD for date-only comparison."""
+        loc = format_date_local(date_str)
+        return loc[:10] if loc else ""
+
     def try_match(tw_items, same_status_only):
         """Match TW items to Rem items by due date + completion date.
 
@@ -299,8 +306,8 @@ def match_instances(tw_list, rem_list):
         """
         unmatched = []
         for tw_item in tw_items:
-            tw_due = date_key(tw_item.get("due", ""))
-            tw_end = date_key(tw_item.get("end", ""))
+            tw_due = local_date(tw_item.get("due", ""))
+            tw_end = local_date(tw_item.get("end", ""))
 
             strong = []
             medium = []
@@ -314,8 +321,8 @@ def match_instances(tw_list, rem_list):
                 if not same_status_only and same:
                     continue
 
-                rem_due = date_key(rem_item.get("due", ""))
-                rem_comp = date_key(rem_item.get("completionDate", ""))
+                rem_due = local_date(rem_item.get("due", ""))
+                rem_comp = local_date(rem_item.get("completionDate", ""))
 
                 if tw_due and rem_due and tw_due == rem_due:
                     if tw_end and rem_comp and tw_end == rem_comp:
@@ -355,12 +362,12 @@ def match_instances(tw_list, rem_list):
     if tw_unmatched and rem_available:
         tw_still_unmatched = []
         for tw_item in tw_unmatched:
-            tw_due = date_key(tw_item.get("due", ""))
+            tw_due = local_date(tw_item.get("due", ""))
             best = None
             for i, rem_item in enumerate(rem_available):
                 if tw_item["status"] == rem_item["status"]:
                     continue
-                rem_due = date_key(rem_item.get("due", ""))
+                rem_due = local_date(rem_item.get("due", ""))
                 # One side has due, the other doesn't — recurring completion
                 if (tw_due and not rem_due) or (not tw_due and rem_due):
                     best = (i, rem_item)
@@ -378,10 +385,10 @@ def match_instances(tw_list, rem_list):
     if tw_unmatched and rem_available:
         tw_still_unmatched = []
         for tw_item in tw_unmatched:
-            tw_due = date_key(tw_item.get("due", ""))
+            tw_due = local_date(tw_item.get("due", ""))
             best = None
             for i, rem_item in enumerate(rem_available):
-                rem_due = date_key(rem_item.get("due", ""))
+                rem_due = local_date(rem_item.get("due", ""))
                 same_status = tw_item["status"] == rem_item["status"]
                 # Same status, one side has due and the other doesn't
                 if same_status and ((tw_due and not rem_due) or (not tw_due and rem_due)):
