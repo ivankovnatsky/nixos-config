@@ -987,6 +987,166 @@ def all_cmds():
     """Commands that work with both Reminders and Taskwarrior."""
 
 
+REMINDERS_ALIASES = ("r", "rem", "rems")
+
+
+@cli.group(name="reminders")
+def reminders_group():
+    """Reminders-only commands."""
+
+
+# Register aliases — same group object, hidden from help
+for _alias in REMINDERS_ALIASES:
+    cli.add_command(reminders_group, _alias)
+reminders_group.hidden_aliases = set(REMINDERS_ALIASES)
+
+
+# Patch TreeGroup to skip hidden aliases
+_orig_format = TreeGroup.format_commands
+
+
+def _format_no_aliases(self, ctx, formatter):
+    # Temporarily hide alias entries
+    hidden = set()
+    for name, cmd in list(self.commands.items()):
+        if hasattr(cmd, "hidden_aliases") and name in cmd.hidden_aliases:
+            hidden.add(name)
+    orig_list = self.list_commands
+    self.list_commands = lambda ctx: [n for n in orig_list(ctx) if n not in hidden]
+    _orig_format(self, ctx, formatter)
+    self.list_commands = orig_list
+
+
+TreeGroup.format_commands = _format_no_aliases
+
+
+@reminders_group.command(name="sort")
+@click.option("--source", default="Reminders", help="Source list to scan (default: Reminders).")
+@click.option("--approve", is_flag=True, default=False, help="Skip all confirmation prompts.")
+@click.option("--interactive", is_flag=True, default=False, help="Confirm each item individually.")
+@click.option("--create/--no-create", default=True, help="Auto-create missing lists (default: enabled).")
+@click.option("--verbose", is_flag=True, default=False, help="Show commands being run.")
+def sort_reminders(source, approve, interactive, create, verbose):
+    """Sort prefixed reminders into their matching lists.
+
+    Scans a source list for items with '<ListName>: <title>' prefixes and moves
+    them to the matching list, stripping the prefix.
+    """
+    global _verbose
+    _verbose = verbose
+
+    if not (is_darwin() and has_command("reminders")):
+        click.echo("Error: reminders CLI not available", err=True)
+        raise SystemExit(1)
+
+    # Get all existing list names
+    result = subprocess.run(
+        ["reminders", "show-lists"], capture_output=True, text=True
+    )
+    if result.returncode != 0:
+        click.echo("Error: could not fetch reminder lists", err=True)
+        raise SystemExit(1)
+    existing_lists = set(result.stdout.strip().splitlines())
+
+    # Fetch items from source list
+    result = subprocess.run(
+        ["reminders", "show", source, "--format", "json"],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        click.echo(f"Error: could not fetch reminders from '{source}'", err=True)
+        raise SystemExit(1)
+
+    try:
+        items = json.loads(result.stdout)
+    except json.JSONDecodeError:
+        click.echo(f"Error: could not parse reminders from '{source}'", err=True)
+        raise SystemExit(1)
+
+    # Find items with matching prefixes
+    moves = []
+    for i, item in enumerate(items):
+        title = item.get("title", "")
+        if item.get("isCompleted", False):
+            continue
+        if ": " not in title:
+            continue
+        prefix, rest = title.split(": ", 1)
+        if not rest.strip():
+            continue
+        target_list = prefix
+        needs_create = target_list not in existing_lists
+        if needs_create and not create:
+            click.echo(f"  skip (no list): {title}")
+            continue
+        # Don't move to the source list itself
+        if target_list == source:
+            continue
+        moves.append({
+            "index": i,
+            "title": title,
+            "target": target_list,
+            "new_title": f"{target_list}: {rest}",
+            "needs_create": needs_create,
+            "external_id": item.get("externalId", ""),
+        })
+
+    if not moves:
+        click.echo("Nothing to sort.")
+        return
+
+    # Display plan
+    lists_to_create = sorted({m["target"] for m in moves if m["needs_create"]})
+    if lists_to_create:
+        click.echo(f"Lists to create: {', '.join(lists_to_create)}")
+
+    click.echo(f"\n{len(moves)} item(s) to move from {source}:\n")
+    for m in moves:
+        create_tag = " (new list)" if m["needs_create"] else ""
+        click.echo(f"  {source}: {m['title']}")
+        click.echo(f"    → {m['target']}{create_tag}")
+
+    if not approve:
+        if not click.confirm("\nProceed?"):
+            click.echo("Aborted.")
+            return
+
+    # Execute moves in reverse index order to avoid index shifting
+    created_lists = set()
+    moved = 0
+    for m in reversed(moves):
+        target = m["target"]
+        create_tag = " (new list)" if m["needs_create"] and target not in created_lists else ""
+
+        if interactive:
+            click.echo(f"\n  {m['title']}")
+            click.echo(f"    → {target}{create_tag}")
+            if not click.confirm("  Move?"):
+                continue
+
+        # Create list if needed
+        if m["needs_create"] and target not in created_lists:
+            res = run(["reminders", "new-list", target])
+            if res.returncode != 0:
+                click.echo(f"  ERROR creating list '{target}', skipping", err=True)
+                continue
+            created_lists.add(target)
+            click.echo(f"  Created list: {target}")
+
+        # Move the item (use externalId if available, else index)
+        lookup = m["external_id"] if m["external_id"] else str(m["index"])
+        res = run(["reminders", "move", source, lookup, target])
+        if res.returncode != 0:
+            click.echo(f"  ERROR moving: {m['title']}", err=True)
+            continue
+
+        moved += 1
+        click.echo(f"  Moved: {m['title']} → {target}")
+
+    click.echo(f"\nDone. Moved {moved}/{len(moves)} item(s).")
+
+
 @all_cmds.command()
 @click.argument("description")
 @click.option("--project", default="Inbox", help="Project/list name.")
