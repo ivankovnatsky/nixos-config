@@ -46,6 +46,18 @@ let
         example = "/run/secrets/nextdns-api-key";
         description = "Path to file containing NextDNS API key";
       };
+
+      vars = mkOption {
+        type = types.attrsOf types.str;
+        default = { };
+        description = "Variables to substitute in profile JSON (@KEY@ → value)";
+      };
+
+      varsFiles = mkOption {
+        type = types.attrsOf types.path;
+        default = { };
+        description = "Variables to substitute from file contents (@KEY@ → file content)";
+      };
     };
   };
 
@@ -107,10 +119,24 @@ in
                 ''PROFILE_ID="${profile.profileId}"''
             }
 
+            PROFILE_JSON=$(mktemp)
+            trap 'rm -f "$PROFILE_JSON"' EXIT
+            cp "${profile.profileFile}" "$PROFILE_JSON"
+            ${concatStringsSep "\n            " (
+              mapAttrsToList (
+                key: value: ''sed -i "s|@${key}@|${value}|g" "$PROFILE_JSON"''
+              ) profile.vars
+            )}
+            ${concatStringsSep "\n            " (
+              mapAttrsToList (
+                key: path: ''sed -i "s|@${key}@|$(cat ${path})|g" "$PROFILE_JSON"''
+              ) profile.varsFiles
+            )}
+
             ${pkgs.nextdns-mgmt}/bin/nextdns-mgmt update \
               --api-key "$API_KEY" \
               --profile-id "$PROFILE_ID" \
-              --profile-file "${profile.profileFile}" 2>&1 || echo "Warning: NextDNS update for ${name} failed with exit code $?"
+              --profile-file "$PROFILE_JSON" 2>&1 || echo "Warning: NextDNS update for ${name} failed with exit code $?"
 
             echo "NextDNS profile ${name} update completed"
           '';
