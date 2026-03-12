@@ -52,8 +52,24 @@ def git_branch():
 def shorten_path(path):
     home = os.path.expanduser("~")
     if path.startswith(home):
-        return "~" + path[len(home):]
+        path = "~" + path[len(home):]
     return path
+
+
+def shorten_path_to_fit(path, prefix, cols):
+    """Progressively strip leading directories until path fits."""
+    short = shorten_path(path)
+    prefix_len = len(strip_ansi(prefix))
+    if prefix_len + len(short) <= cols:
+        return short
+
+    parts = short.split("/")
+    while len(parts) > 1:
+        parts.pop(0)
+        candidate = "/".join(parts)
+        if prefix_len + len(candidate) <= cols:
+            return candidate
+    return parts[0]
 
 
 def output(line, cols):
@@ -109,12 +125,16 @@ def main():
     output(line1, cols)
 
     # Show both pwd and cwd only when different, otherwise just cwd
+    pwd_prefix = f"{DIM}pwd:{RESET} "
+    cwd_prefix = f"{DIM}cwd:{RESET} "
+    tx_prefix = f"{DIM}transcript:{RESET} "
+
     if project_dir != cwd:
-        output(f"{DIM}pwd:{RESET} {shorten_path(project_dir)}", cols)
-    output(f"{DIM}cwd:{RESET} {shorten_path(cwd)}", cols)
+        output(f"{pwd_prefix}{shorten_path_to_fit(project_dir, pwd_prefix, cols)}", cols)
+    output(f"{cwd_prefix}{shorten_path_to_fit(cwd, cwd_prefix, cols)}", cols)
 
     if transcript:
-        output(f"{DIM}transcript:{RESET} {shorten_path(transcript)}", cols)
+        output(f"{tx_prefix}{shorten_path_to_fit(transcript, tx_prefix, cols)}", cols)
 
 
 if __name__ == "__main__":
