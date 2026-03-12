@@ -169,10 +169,6 @@
 
         "**/__worktrees/"
 
-        "**/CLAUDE.md"
-        "**/CLAUDE.local.md"
-        "**/.claude"
-        "**/claude/"
         "**/.serena"
       ];
       # diff-highlight.enable = true;
