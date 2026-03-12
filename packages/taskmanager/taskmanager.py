@@ -1021,7 +1021,7 @@ TreeGroup.format_commands = _format_no_aliases
 
 
 @reminders_group.command(name="sort")
-@click.option("--source", default="Reminders", help="Source list to scan (default: Reminders).")
+@click.option("--source", default=None, help="Limit to a single source list.")
 @click.option("--approve", is_flag=True, default=False, help="Skip all confirmation prompts.")
 @click.option("--interactive", is_flag=True, default=False, help="Confirm each item individually.")
 @click.option("--create/--no-create", default=True, help="Auto-create missing lists (default: enabled).")
@@ -1029,8 +1029,8 @@ TreeGroup.format_commands = _format_no_aliases
 def sort_reminders(source, approve, interactive, create, verbose):
     """Sort prefixed reminders into their matching lists.
 
-    Scans a source list for items with '<ListName>: <title>' prefixes and moves
-    them to the matching list, stripping the prefix.
+    Scans all lists for items whose '<Prefix>: ' doesn't match the current
+    list and moves them to the correct one. Use --source to limit to one list.
     """
     global _verbose
     _verbose = verbose
@@ -1048,49 +1048,49 @@ def sort_reminders(source, approve, interactive, create, verbose):
         raise SystemExit(1)
     existing_lists = set(result.stdout.strip().splitlines())
 
-    # Fetch items from source list
-    result = subprocess.run(
-        ["reminders", "show", source, "--format", "json"],
-        capture_output=True,
-        text=True,
-    )
-    if result.returncode != 0:
-        click.echo(f"Error: could not fetch reminders from '{source}'", err=True)
-        raise SystemExit(1)
+    lists_to_scan = [source] if source else sorted(existing_lists)
 
-    try:
-        items = json.loads(result.stdout)
-    except json.JSONDecodeError:
-        click.echo(f"Error: could not parse reminders from '{source}'", err=True)
-        raise SystemExit(1)
-
-    # Find items with matching prefixes
+    # Collect moves across all scanned lists
     moves = []
-    for i, item in enumerate(items):
-        title = item.get("title", "")
-        if item.get("isCompleted", False):
+    for list_name in lists_to_scan:
+        result = subprocess.run(
+            ["reminders", "show", list_name, "--format", "json"],
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0:
             continue
-        if ": " not in title:
+
+        try:
+            items = json.loads(result.stdout)
+        except json.JSONDecodeError:
             continue
-        prefix, rest = title.split(": ", 1)
-        if not rest.strip():
-            continue
-        target_list = prefix
-        needs_create = target_list not in existing_lists
-        if needs_create and not create:
-            click.echo(f"  skip (no list): {title}")
-            continue
-        # Don't move to the source list itself
-        if target_list == source:
-            continue
-        moves.append({
-            "index": i,
-            "title": title,
-            "target": target_list,
-            "new_title": f"{target_list}: {rest}",
-            "needs_create": needs_create,
-            "external_id": item.get("externalId", ""),
-        })
+
+        for i, item in enumerate(items):
+            title = item.get("title", "")
+            if item.get("isCompleted", False):
+                continue
+            if ": " not in title:
+                continue
+            prefix, rest = title.split(": ", 1)
+            if not rest.strip():
+                continue
+            target_list = prefix
+            # Skip if already in the correct list
+            if target_list == list_name:
+                continue
+            needs_create = target_list not in existing_lists
+            if needs_create and not create:
+                click.echo(f"  skip (no list): {title}")
+                continue
+            moves.append({
+                "source": list_name,
+                "index": i,
+                "title": title,
+                "target": target_list,
+                "needs_create": needs_create,
+                "external_id": item.get("externalId", ""),
+            })
 
     if not moves:
         click.echo("Nothing to sort.")
@@ -1101,10 +1101,10 @@ def sort_reminders(source, approve, interactive, create, verbose):
     if lists_to_create:
         click.echo(f"Lists to create: {', '.join(lists_to_create)}")
 
-    click.echo(f"\n{len(moves)} item(s) to move from {source}:\n")
+    click.echo(f"\n{len(moves)} item(s) to move:\n")
     for m in moves:
         create_tag = " (new list)" if m["needs_create"] else ""
-        click.echo(f"  {source}: {m['title']}")
+        click.echo(f"  {m['source']}: {m['title']}")
         click.echo(f"    → {m['target']}{create_tag}")
 
     if not approve:
@@ -1136,13 +1136,13 @@ def sort_reminders(source, approve, interactive, create, verbose):
 
         # Move the item (use externalId if available, else index)
         lookup = m["external_id"] if m["external_id"] else str(m["index"])
-        res = run(["reminders", "move", source, lookup, target])
+        res = run(["reminders", "move", m["source"], lookup, target])
         if res.returncode != 0:
             click.echo(f"  ERROR moving: {m['title']}", err=True)
             continue
 
         moved += 1
-        click.echo(f"  Moved: {m['title']} → {target}")
+        click.echo(f"  Moved: {m['source']}: {m['title']} → {target}")
 
     click.echo(f"\nDone. Moved {moved}/{len(moves)} item(s).")
 
