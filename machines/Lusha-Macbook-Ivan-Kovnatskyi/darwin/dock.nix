@@ -32,6 +32,8 @@
         # Installed using Kandji
         { path = "/Applications/Google Chrome.app/"; }
         { path = "/Applications/Slack.app/"; }
+        # Kandji Self Service
+        { path = "/Applications/Kandji Self Service.app/"; }
 
         {
           type = "spacer";
@@ -51,14 +53,6 @@
         { path = "/Applications/Windsurf.app/"; }
         { path = "/Applications/Claude.app/"; }
         { path = "/Applications/Obsidian.app/"; }
-
-        {
-          type = "spacer";
-          section = "apps";
-        }
-
-        # Kandji Self Service
-        { path = "/Applications/Kandji Self Service.app/"; }
 
         {
           path = "${config.users.users.${username}.home}/Downloads/";
