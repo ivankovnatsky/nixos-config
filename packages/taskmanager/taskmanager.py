@@ -763,8 +763,13 @@ def find_tw_uuids(project, prefixed_title, status_filter=None):
     return uuids
 
 
-def find_reminder_index(list_name, prefixed_title, completed_only=False):
-    """Find reminder index by list and prefixed title."""
+def find_reminder_index(list_name, prefixed_title, completed_only=False, due_date=None, notes_empty=None):
+    """Find reminder index by list and prefixed title.
+
+    Optional filters:
+    - due_date: match by due date (date_key comparison)
+    - notes_empty: True=only match items with empty notes, False=only with notes
+    """
     cmd = ["reminders", "show", list_name, "--format", "json"]
     if completed_only:
         cmd.append("--only-completed")
@@ -774,7 +779,26 @@ def find_reminder_index(list_name, prefixed_title, completed_only=False):
     if result.returncode != 0:
         return None
     try:
-        for i, item in enumerate(json.loads(result.stdout)):
+        # First try exact match with all filters
+        items = json.loads(result.stdout)
+        candidates = []
+        for i, item in enumerate(items):
+            if item.get("title", "") != prefixed_title:
+                continue
+            if due_date:
+                item_due = format_date_local(item.get("dueDate", ""))
+                target_due = format_date_local(due_date)
+                if item_due[:10] != target_due[:10]:
+                    continue
+            if notes_empty is True and (item.get("notes") or "").strip():
+                continue
+            if notes_empty is False and not (item.get("notes") or "").strip():
+                continue
+            candidates.append(i)
+        if candidates:
+            return candidates[0]
+        # Fall back to title-only match
+        for i, item in enumerate(items):
             if item.get("title", "") == prefixed_title:
                 return i
     except json.JSONDecodeError:
@@ -952,7 +976,8 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
 
         if rem_updates and is_darwin() and has_command("reminders"):
             rem_prefixed = f"{project}: {rem['title']}"
-            idx = find_reminder_index(project, rem_prefixed)
+            rem_due = rem.get("due", "")
+            idx = find_reminder_index(project, rem_prefixed, due_date=rem_due)
             if idx is not None:
                 edit_args = [
                     "reminders",
