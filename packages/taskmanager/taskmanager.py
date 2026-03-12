@@ -1523,7 +1523,13 @@ def drift(project, projects, filter, notes, recurring, source, destination, verb
     default=False,
     help="Complete TW-only pending tasks whose title has completed history. Always interactive.",
 )
-def sync(project, projects, filter, approve, interactive, notes, recurring, source, destination, verbose, purge_duplicates, complete_orphans):
+@click.option(
+    "--purge-recurring",
+    is_flag=True,
+    default=False,
+    help="Delete and purge TW recurring parent tasks. Always interactive.",
+)
+def sync(project, projects, filter, approve, interactive, notes, recurring, source, destination, verbose, purge_duplicates, complete_orphans, purge_recurring):
     """Sync missing items to both systems."""
     global _verbose
     _verbose = verbose
@@ -1580,7 +1586,7 @@ def sync(project, projects, filter, approve, interactive, notes, recurring, sour
         print_drift(rem_only, tw_only, matched, metadata_diffs, direction=source)
 
     total = len(rem_only) + len(tw_only) + len(metadata_diffs)
-    if total == 0 and not purge_duplicates and not complete_orphans:
+    if total == 0 and not purge_duplicates and not complete_orphans and not purge_recurring:
         if interactive:
             click.echo("\nNo drift detected.")
         return
@@ -1709,10 +1715,15 @@ def sync(project, projects, filter, approve, interactive, notes, recurring, sour
             proj = item["project"]
             prefixed = f"{proj}: {item['title']}"
 
+            # Never copy deleted TW tasks to Reminders
+            if item.get("status") == "deleted":
+                continue
             # Skip TW→Rem copy when --complete-orphans or --purge-duplicates will handle them
-            if complete_orphans and item.get("status") in ("pending", "deleted"):
+            if complete_orphans and item.get("status") == "pending":
                 continue
             if purge_duplicates:
+                continue
+            if purge_recurring:
                 continue
 
             if interactive:
@@ -1932,6 +1943,59 @@ def sync(project, projects, filter, approve, interactive, notes, recurring, sour
                 click.echo(f"  ! Failed to complete: {prefixed}")
         if complete_count:
             click.echo(f"\nCompleted {complete_count} orphan(s).")
+
+    # Purge TW recurring parent tasks
+    if purge_recurring:
+        click.echo("\n--- Scanning for TW recurring parents ---")
+        tw_cmd = ["task", "export"]
+        tw_result = subprocess.run(tw_cmd, capture_output=True, text=True)
+        purge_count = 0
+        if tw_result.returncode == 0:
+            try:
+                all_tw = json.loads(tw_result.stdout)
+            except json.JSONDecodeError:
+                all_tw = []
+            recurring_parents = [t for t in all_tw if t.get("status") == "recurring"]
+            # Filter by project if specified
+            if project or projects:
+                proj_list = parse_projects(projects) if projects else [project]
+                proj_set = {p for p in proj_list if p}
+                if proj_set:
+                    recurring_parents = [t for t in recurring_parents if t.get("project", "") in proj_set]
+            if not recurring_parents:
+                click.echo("  No recurring parents found.")
+            for t in recurring_parents:
+                desc = t.get("description", "")
+                proj = t.get("project", "")
+                recur = t.get("recur", "")
+                uuid = t.get("uuid", "")
+                due = format_date_local(t.get("due", ""))
+                click.echo(f"\n  Recurring parent: {desc}")
+                click.echo(f"    project: {proj}")
+                click.echo(f"    recur: {recur}")
+                if due:
+                    click.echo(f"    due: {due}")
+                click.echo(f"    uuid: {uuid[:8]}")
+                if not click.confirm("  DELETE and PURGE this recurring parent?", default=False):
+                    continue
+                # Find and delete child instances first
+                children = [c for c in all_tw
+                            if c.get("parent") == uuid and c.get("status") != "deleted"]
+                for child in children:
+                    run(["task", "rc.confirmation:off", child["uuid"], "delete"])
+                # Delete the parent
+                run(["task", "rc.confirmation:off", uuid, "delete"])
+                # Purge children first, then parent
+                for child in children:
+                    run(["task", "rc.confirmation:off", child["uuid"], "purge"])
+                result = run(["task", "rc.confirmation:off", uuid, "purge"])
+                if result.returncode == 0:
+                    click.echo(f"  - Purged: {desc} (+ {len(children)} child instance(s))")
+                    purge_count += 1
+                else:
+                    click.echo(f"  ! Failed to purge: {desc}")
+        if purge_count:
+            click.echo(f"\nPurged {purge_count} recurring parent(s).")
 
     click.echo("\nDone.")
 
