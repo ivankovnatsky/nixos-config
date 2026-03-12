@@ -27,7 +27,6 @@
         name = "claude";
         greedy = true;
       }
-      "codex-app"
       "ivankovnatsky/homebrew-tap/comet"
       "cursor"
       "dbeaver-community"
