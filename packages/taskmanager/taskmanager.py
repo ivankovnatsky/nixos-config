@@ -326,8 +326,13 @@ def match_instances(tw_list, rem_list):
                     if tw_end and rem_comp and tw_end == rem_comp:
                         weak.append((i, rem_item))
                     elif same:
-                        # Both have no due date, same status — match by position
-                        fallback.append((i, rem_item))
+                        # Both have no due date, same status — prefer notes match
+                        tw_ann = "; ".join(a.get("description", "") for a in tw_item.get("annotations", []))
+                        rem_notes = (rem_item.get("notes") or "").strip()
+                        if tw_ann and rem_notes and tw_ann == rem_notes:
+                            weak.append((i, rem_item))
+                        else:
+                            fallback.append((i, rem_item))
 
             best = (strong or medium or weak or fallback or [None])[0]
             if best:
