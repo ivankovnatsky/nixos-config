@@ -1,7 +1,13 @@
+{ pkgs, ... }:
+
 {
   time.timeZone = "Europe/Kyiv";
 
   system = {
+    activationScripts.postActivation.text = ''
+      ${pkgs.settings}/bin/settings location --init
+    '';
+
     defaults = {
       CustomUserPreferences = {
         # Disable Apple Intelligence
