@@ -49,16 +49,21 @@ def git_branch():
     ).stdout.strip()
 
 
-def output(line, truncate, cols):
-    if truncate:
+def shorten_path(path):
+    home = os.path.expanduser("~")
+    if path.startswith(home):
+        return "~" + path[len(home):]
+    return path
+
+
+def output(line, cols):
+    if cols > 0:
         print(truncate_line(line, cols))
     else:
         print(line)
 
 
 def main():
-    truncate = "--truncate" in sys.argv
-
     raw = sys.stdin.read()
     try:
         data = json.loads(raw)
@@ -73,12 +78,10 @@ def main():
     ctx_size = data.get("context_window", {}).get("context_window_size", 200000)
     transcript = data.get("transcript_path", "")
 
-    cols = 0
-    if truncate:
-        try:
-            cols = os.get_terminal_size(sys.stderr.fileno()).columns
-        except (OSError, ValueError):
-            cols = shutil.get_terminal_size().columns
+    try:
+        cols = os.get_terminal_size(sys.stderr.fileno()).columns
+    except (OSError, ValueError):
+        cols = shutil.get_terminal_size().columns
 
     # Colors
     CYAN = "\033[36m"
@@ -103,15 +106,15 @@ def main():
     if branch:
         line1 += f" {DIM}|{RESET} {MAGENTA}{branch}{RESET}"
 
-    output(line1, truncate, cols)
+    output(line1, cols)
 
     # Show both pwd and cwd only when different, otherwise just cwd
     if project_dir != cwd:
-        output(f"{DIM}pwd:{RESET} {project_dir}", truncate, cols)
-    output(f"{DIM}cwd:{RESET} {cwd}", truncate, cols)
+        output(f"{DIM}pwd:{RESET} {shorten_path(project_dir)}", cols)
+    output(f"{DIM}cwd:{RESET} {shorten_path(cwd)}", cols)
 
     if transcript:
-        output(f"{DIM}transcript:{RESET} {transcript}", truncate, cols)
+        output(f"{DIM}transcript:{RESET} {shorten_path(transcript)}", cols)
 
 
 if __name__ == "__main__":
