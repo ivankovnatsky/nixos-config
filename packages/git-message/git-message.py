@@ -375,14 +375,17 @@ Features:
 
     prefix = shorten_path(target_file)
 
-    # Apply aggressive directory shortening only if scope exceeds limit
-    if len(prefix) > MAX_PREFIX_LENGTH:
+    def _too_long(p: str) -> bool:
+        return len(p) > MAX_PREFIX_LENGTH or len(create_commit_message(p, subject)) > MAX_MESSAGE_LENGTH
+
+    # Apply aggressive directory shortening if scope or total message exceeds limit
+    if _too_long(prefix):
         prefix = shorten_directories(prefix)
 
-    if len(prefix) > MAX_PREFIX_LENGTH:
+    if _too_long(prefix):
         prefix = collapse_middle(prefix)
 
-    if len(prefix) > MAX_PREFIX_LENGTH:
+    if _too_long(prefix):
         print(
             f"Scope too long: {len(prefix)} chars (max {MAX_PREFIX_LENGTH})",
             file=sys.stderr,
