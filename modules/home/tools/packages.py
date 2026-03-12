@@ -98,9 +98,14 @@ def get_installed_mcp_servers(claude_cli: str, env: Dict = None) -> Set[str]:
     servers = set()
     for line in stdout.split("\n"):
         line = line.strip()
-        if ":" in line and ("(SSE)" in line or "(HTTP)" in line or "(STDIO)" in line):
+        if not line or ":" not in line:
+            continue
+        has_transport = "(SSE)" in line or "(HTTP)" in line or "(STDIO)" in line
+        has_status = "✓" in line or "!" in line or "✗" in line
+        if has_transport or has_status:
             server_name = line.split(":")[0].strip()
-            servers.add(server_name)
+            if not server_name.startswith("claude.ai "):
+                servers.add(server_name)
     log(f"Detected installed MCP servers: {servers}", Color.BLUE)
     return servers
 
