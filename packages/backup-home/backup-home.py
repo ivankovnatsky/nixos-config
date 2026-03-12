@@ -69,73 +69,88 @@ def check_tar_on_darwin() -> None:
 DEFAULT_STORAGE_PATH = "/Volumes/Storage/Data"
 DEFAULT_MINISERVE_URL = "http://192.168.50.4:8080"
 
-# Directories to exclude from backup
-EXCLUDE_PATTERNS = [
-    "**/.cache/huggingface/**",
-    "**/.cache/nix/**",
-    "**/.cache/uv/archive-v0/**",
-    "**/.cargo/registry/**",
-    "**/.codeium/**",
-    "**/.cursor/extensions/**",
-    "**/.gnupg/S.*",
-    "**/.npm/**",
-    "**/.ollama/**",
-    "**/.terraform.d/**",
-    "**/.Trash/**",
-    "**/.vscode/**",
-    "**/.vscode-oss/**",
-    "**/*.sock",
-    "**/*.socket",
-    "**/go/**",
-    "**/Group Containers/HUAQ24HBR6.dev.orbstack/**",
-    "**/Library/Application Support/Firefox/**",
-    "**/Library/Application Support/Chromium/**",
-    "**/Library/Application Support/Google/Chrome/**",
-    "**/Library/Application Support/Vivaldi/**",
-    "**/Library/Application Support/Cursor/**",
-    "**/Library/Application Support/Claude/vm_bundles/**",
-    "**/Library/Application Support/Code/**",
-    "**/Library/Application Support/Windsurf/**",
-    "**/Library/Application Support/virtualenv/**",
-    "**/Library/Application Support/Slack/**",
-    "**/Library/Application Support/rancher-desktop/**",
-    "**/Library/Caches/Google/Chrome/**",
-    "**/Library/Caches/Firefox/Profiles/**",
-    "**/Library/Caches/go-build/**",
-    "**/Library/Caches/pypoetry/**",
-    "**/Library/Caches/typescript/**",
-    "**/Library/Caches/Chromium/**",
-    "**/Library/Caches/Vivaldi/**",
-    "**/Library/Caches/Comet/**",
-    "**/Library/Mobile Documents/**",
-    "**/Library/Metadata/**",
-    "**/Library/Biome/**",
-    "**/Library/pnpm/**",
-    "**/Library/DuetExpertCenter/**",
-    "**/Library/Containers/com.apple.AccessibilitySettingsWidgetExtension/**",
-    "**/Library/Containers/com.apple.AppStore/**",
-    "**/Library/Containers/com.apple.AvatarUI.AvatarPickerMemojiPicker/**",
-    "**/Library/Containers/com.apple.findmy.FindMyWidgetItems/**",
-    "**/Library/Containers/com.apple.mediaanalysisd/**",
-    "**/Library/Containers/com.apple.photoanalysisd/**",
-    "**/Library/Containers/com.apple.podcasts/**",
-    "**/Library/Containers/com.apple.quicklook.QuickLookUIService/**",
-    "**/Library/Containers/com.apple.Safari/**",
-    "**/Library/Containers/com.apple.Safari.WebApp/**",
-    "**/Library/Containers/com.apple.Time-Machine-Settings-Intents.extension/**",
-    "**/Library/Containers/com.apple.CalendarWeatherKitService/**",
-    "**/Library/Containers/com.apple.mail.SpotlightIndexExtension/**",
-    "**/Library/Containers/com.apple.wallpaper.extension.video/**",
-    "**/Library/Containers/com.microsoft.teams2/**",
-    "**/Library/Containers/com.utmapp.UTM/**",
-    "**/Library/Group Containers/BJ4HAAB9B3.ZoomClient3rd/**",
-    "**/Library/Group Containers/UBF8T346G9.ms/**",
-    "**/Library/Group Containers/group.com.apple.calendar/**",
-    "**/Library/Group Containers/group.com.apple.CoreSpeech/**",
-    "**/Library/Group Containers/group.com.apple.secure-control-center-preferences/**",
-    "**/OrbStack/**",
-    "**/.local/share/Steam/steamapps/**",
-]
+EXCLUDE_PATTERNS: dict[str, list[str]] = {
+    "runtime": [
+        "**/.gnupg/S.*",
+        "**/*.sock",
+        "**/*.socket",
+    ],
+    "caches": [
+        "**/.cache/huggingface/**",
+        "**/.cache/nix/**",
+        "**/.cache/uv/archive-v0/**",
+        "**/Library/Caches/Google/Chrome/**",
+        "**/Library/Caches/Firefox/Profiles/**",
+        "**/Library/Caches/go-build/**",
+        "**/Library/Caches/pypoetry/**",
+        "**/Library/Caches/typescript/**",
+        "**/Library/Caches/Chromium/**",
+        "**/Library/Caches/Vivaldi/**",
+        "**/Library/Caches/Comet/**",
+    ],
+    "dev_deps": [
+        "**/.cargo/registry/**",
+        "**/.npm/**",
+        "**/.terraform.d/**",
+        "**/go/**",
+        "**/Library/Application Support/virtualenv/**",
+        "**/Library/Biome/**",
+        "**/Library/pnpm/**",
+        "**/node_modules/**",
+        "**/.terragrunt-cache/**",
+    ],
+    "large_blobs": [
+        "**/.ollama/**",
+        "**/.codeium/**",
+        "**/OrbStack/**",
+        "**/Group Containers/HUAQ24HBR6.dev.orbstack/**",
+        "**/Library/Containers/com.utmapp.UTM/**",
+        "**/.local/share/Steam/steamapps/**",
+        "**/Library/Application Support/Claude/vm_bundles/**",
+        "**/Library/Application Support/rancher-desktop/**",
+    ],
+    "app_data": [
+        "**/Library/Application Support/Firefox/**",
+        "**/Library/Application Support/Chromium/**",
+        "**/Library/Application Support/Google/Chrome/**",
+        "**/Library/Application Support/Vivaldi/**",
+        "**/Library/Application Support/Cursor/**",
+        "**/Library/Application Support/Code/**",
+        "**/Library/Application Support/Windsurf/**",
+        "**/Library/Application Support/Slack/**",
+        "**/.cursor/extensions/**",
+        "**/.vscode/**",
+        "**/.vscode-oss/**",
+    ],
+    "os_system": [
+        "**/.Trash/**",
+        "**/Library/Mobile Documents/**",
+        "**/Library/Metadata/**",
+        "**/Library/DuetExpertCenter/**",
+        "**/Library/Containers/com.apple.AccessibilitySettingsWidgetExtension/**",
+        "**/Library/Containers/com.apple.AppStore/**",
+        "**/Library/Containers/com.apple.AvatarUI.AvatarPickerMemojiPicker/**",
+        "**/Library/Containers/com.apple.findmy.FindMyWidgetItems/**",
+        "**/Library/Containers/com.apple.mediaanalysisd/**",
+        "**/Library/Containers/com.apple.photoanalysisd/**",
+        "**/Library/Containers/com.apple.podcasts/**",
+        "**/Library/Containers/com.apple.quicklook.QuickLookUIService/**",
+        "**/Library/Containers/com.apple.Safari/**",
+        "**/Library/Containers/com.apple.Safari.WebApp/**",
+        "**/Library/Containers/com.apple.Time-Machine-Settings-Intents.extension/**",
+        "**/Library/Containers/com.apple.CalendarWeatherKitService/**",
+        "**/Library/Containers/com.apple.mail.SpotlightIndexExtension/**",
+        "**/Library/Containers/com.apple.wallpaper.extension.video/**",
+        "**/Library/Containers/com.microsoft.teams2/**",
+        "**/Library/Group Containers/BJ4HAAB9B3.ZoomClient3rd/**",
+        "**/Library/Group Containers/UBF8T346G9.ms/**",
+        "**/Library/Group Containers/group.com.apple.calendar/**",
+        "**/Library/Group Containers/group.com.apple.CoreSpeech/**",
+        "**/Library/Group Containers/group.com.apple.secure-control-center-preferences/**",
+    ],
+}
+
+DEFAULT_EXCLUDE_CATEGORIES = ["runtime", "caches", "dev_deps", "large_blobs"]
 
 
 def create_backup(
@@ -143,6 +158,7 @@ def create_backup(
     user: str,
     ignore_tar_warnings: bool = False,
     no_excludes: bool = False,
+    exclude_categories: list[str] | None = None,
 ) -> bool:
     """Create tar.gz backup of home directory."""
     home_parent = Path.home().parent
@@ -150,8 +166,10 @@ def create_backup(
     # Build tar command with exclusions
     cmd = ["tar"]
     if not no_excludes:
-        for pattern in EXCLUDE_PATTERNS:
-            cmd.extend(["--exclude", pattern])
+        categories = exclude_categories if exclude_categories else DEFAULT_EXCLUDE_CATEGORIES
+        for cat in categories:
+            for pattern in EXCLUDE_PATTERNS[cat]:
+                cmd.extend(["--exclude", pattern])
     cmd.extend(["--no-xattrs", "-cv", user])
 
     try:
@@ -280,6 +298,12 @@ Examples:
         action="store_true",
         help="Disable all exclude patterns, backup everything",
     )
+    category_names = ", ".join(EXCLUDE_PATTERNS.keys())
+    parser.add_argument(
+        "--exclude-categories",
+        type=str,
+        help=f"Comma-separated list of exclude categories to apply ({category_names})",
+    )
     parser.add_argument(
         "--skip-backup",
         action="store_true",
@@ -336,7 +360,18 @@ Examples:
             sys.exit(1)
         print(f"Skipping backup creation, using existing file: {archive_path}")
     else:
-        if not create_backup(archive_path, user, args.ignore_tar_warnings, args.no_excludes):
+        exclude_cats = None
+        if args.exclude_categories:
+            exclude_cats = [c.strip() for c in args.exclude_categories.split(",")]
+            invalid = [c for c in exclude_cats if c not in EXCLUDE_PATTERNS]
+            if invalid:
+                print(
+                    f"Error: unknown exclude categories: {', '.join(invalid)}. "
+                    f"Valid: {', '.join(EXCLUDE_PATTERNS.keys())}",
+                    file=sys.stderr,
+                )
+                sys.exit(1)
+        if not create_backup(archive_path, user, args.ignore_tar_warnings, args.no_excludes, exclude_cats):
             sys.exit(1)
 
     # Upload or skip
