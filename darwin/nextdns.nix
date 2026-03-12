@@ -1,5 +1,16 @@
-{ config, username, ... }:
+{ config, lib, username, ... }:
 
+let
+  commonVars = {
+    miniWifiIp = config.flags.miniWifiIp;
+    miniIp = config.flags.miniIp;
+    miniEn7Ip = config.flags.miniEn7Ip;
+  };
+
+  commonVarsFiles = {
+    externalDomain = config.sops.secrets.external-domain.path;
+  };
+in
 {
   sops.secrets = {
     nextdns-api-key = {
@@ -37,6 +48,8 @@
     apiKeyFile = config.sops.secrets.nextdns-api-key.path;
     profileIdFile = config.sops.secrets.nextdns-profile-pro.path;
     profileFile = ../configs/nextdns-profile.json;
+    vars = commonVars;
+    varsFiles = commonVarsFiles;
   };
 
   local.services.nextdns-mgmt.air = {
@@ -44,6 +57,8 @@
     apiKeyFile = config.sops.secrets.nextdns-api-key.path;
     profileIdFile = config.sops.secrets.nextdns-profile-air.path;
     profileFile = ../configs/nextdns-profile.json;
+    vars = commonVars;
+    varsFiles = commonVarsFiles;
   };
 
   local.services.nextdns-mgmt.phone = {
@@ -51,6 +66,8 @@
     apiKeyFile = config.sops.secrets.nextdns-api-key.path;
     profileIdFile = config.sops.secrets.nextdns-profile-phone.path;
     profileFile = ../configs/nextdns-profile.json;
+    vars = commonVars;
+    varsFiles = commonVarsFiles;
   };
 
   local.services.nextdns-mgmt.mini = {
@@ -58,6 +75,8 @@
     apiKeyFile = config.sops.secrets.nextdns-api-key.path;
     profileIdFile = config.sops.secrets.nextdns-profile-mini.path;
     profileFile = ../configs/nextdns-profile.json;
+    vars = commonVars;
+    varsFiles = commonVarsFiles;
   };
 
   local.services.nextdns-mgmt.asus = {
@@ -65,6 +84,8 @@
     apiKeyFile = config.sops.secrets.nextdns-api-key.path;
     profileIdFile = config.sops.secrets.nextdns-profile-asus.path;
     profileFile = ../configs/nextdns-profile.json;
+    vars = commonVars;
+    varsFiles = commonVarsFiles;
   };
 
   local.services.nextdns-mgmt.lgphone = {
@@ -72,5 +93,7 @@
     apiKeyFile = config.sops.secrets.nextdns-api-key.path;
     profileIdFile = config.sops.secrets.nextdns-profile-lgphone.path;
     profileFile = ../configs/nextdns-profile.json;
+    vars = commonVars;
+    varsFiles = commonVarsFiles;
   };
 }
