@@ -1174,13 +1174,21 @@ tell application "System Events"
   end tell
 end tell
 """
-    try:
-        subprocess.run(["osascript", "-e", script], check=True)
-        print(f"Removed desktop space {index}")
-        return 0
-    except subprocess.CalledProcessError as e:
-        print(f"Error removing space: {e}", file=sys.stderr)
-        return 1
+    import time
+
+    for attempt in range(2):
+        try:
+            subprocess.run(["osascript", "-e", script], check=True)
+            print(f"Removed desktop space {index}")
+            return 0
+        except subprocess.CalledProcessError as e:
+            if attempt == 0:
+                print(f"Space removal failed, retrying...", file=sys.stderr)
+                time.sleep(1.0)
+            else:
+                print(f"Error removing space: {e}", file=sys.stderr)
+                return 1
+    return 1
 
 
 def cmd_spaces(args: argparse.Namespace) -> int:
