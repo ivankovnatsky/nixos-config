@@ -138,14 +138,20 @@ EXCLUDE_PATTERNS = [
 ]
 
 
-def create_backup(archive_path: Path, user: str) -> bool:
+def create_backup(
+    archive_path: Path,
+    user: str,
+    ignore_tar_warnings: bool = False,
+    no_excludes: bool = False,
+) -> bool:
     """Create tar.gz backup of home directory."""
     home_parent = Path.home().parent
 
     # Build tar command with exclusions
     cmd = ["tar"]
-    for pattern in EXCLUDE_PATTERNS:
-        cmd.extend(["--exclude", pattern])
+    if not no_excludes:
+        for pattern in EXCLUDE_PATTERNS:
+            cmd.extend(["--exclude", pattern])
     cmd.extend(["--no-xattrs", "-cv", user])
 
     try:
@@ -168,7 +174,21 @@ def create_backup(archive_path: Path, user: str) -> bool:
             pigz_proc.wait()
             tar_proc.wait()
 
-        if tar_proc.returncode != 0 or pigz_proc.returncode != 0:
+        if pigz_proc.returncode != 0:
+            print("Backup compression failed", file=sys.stderr)
+            return False
+
+        # bsdtar exit 1 = non-fatal warnings (permission denied, file changed)
+        if tar_proc.returncode == 1:
+            if ignore_tar_warnings:
+                print(
+                    "Warning: tar completed with non-fatal errors (some files skipped)",
+                    file=sys.stderr,
+                )
+            else:
+                print("Backup creation failed", file=sys.stderr)
+                return False
+        elif tar_proc.returncode > 1:
             print("Backup creation failed", file=sys.stderr)
             return False
 
@@ -251,6 +271,16 @@ Examples:
     )
 
     parser.add_argument(
+        "--ignore-tar-warnings",
+        action="store_true",
+        help="Continue on non-fatal tar errors (e.g. permission denied)",
+    )
+    parser.add_argument(
+        "--no-excludes",
+        action="store_true",
+        help="Disable all exclude patterns, backup everything",
+    )
+    parser.add_argument(
         "--skip-backup",
         action="store_true",
         help="Skip backup creation, use existing archive",
@@ -306,7 +336,7 @@ Examples:
             sys.exit(1)
         print(f"Skipping backup creation, using existing file: {archive_path}")
     else:
-        if not create_backup(archive_path, user):
+        if not create_backup(archive_path, user, args.ignore_tar_warnings, args.no_excludes):
             sys.exit(1)
 
     # Upload or skip
