@@ -6,6 +6,7 @@ Subcommands:
   menubar     Toggle menubar visibility modes (macOS only)
   scaling     Toggle display scaling resolution (macOS only)
   scrolling   Toggle natural scrolling on/off (macOS only)
+  location    Toggle Location Services on/off (macOS only)
   awake       Prevent system from sleeping (macOS + Linux)
   spaces      Add or remove desktop spaces (macOS only)
   windows     Close/hide app windows (macOS only)
@@ -825,6 +826,156 @@ def cmd_scrolling(args: argparse.Namespace) -> int:
     return 0
 
 
+# Location: Toggle Location Services (macOS only)
+LOCATION_SERVICES_URL = "x-apple.systempreferences:com.apple.preference.security?Privacy_LocationServices"
+
+
+def location_check_enabled() -> bool | None:
+    """Check Location Services status via CoreLocation (no UI, no sudo)."""
+    try:
+        result = subprocess.run(
+            ["/usr/bin/swift", "-e", "import CoreLocation; print(CLLocationManager.locationServicesEnabled())"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        if result.returncode == 0:
+            return result.stdout.strip() == "true"
+        return None
+    except (subprocess.TimeoutExpired, FileNotFoundError):
+        return None
+
+
+def location_osascript(action: str) -> tuple[bool, int | None]:
+    """Open Location Services pane and get/toggle the main switch.
+
+    action: "toggle" to flip, "on" to enable, "off" to disable.
+    Returns (success, value) where value is 0/1 or None on failure.
+    """
+    # Build the AppleScript action block
+    if action == "on":
+        action_block = """
+                if value of firstCheckbox is 0 then
+                    click firstCheckbox
+                    delay 2
+                end if
+                return value of firstCheckbox"""
+    elif action == "off":
+        action_block = """
+                if value of firstCheckbox is 1 then
+                    click firstCheckbox
+                    delay 2
+                end if
+                return value of firstCheckbox"""
+    else:
+        action_block = """
+                click firstCheckbox
+                delay 2
+                return value of firstCheckbox"""
+
+    script = f"""
+tell application "System Settings" to quit
+delay 0.5
+do shell script "open '{LOCATION_SERVICES_URL}'"
+delay 2
+tell application "System Events"
+    tell process "System Settings"
+        set frontmost to true
+        set allElements to entire contents of window 1
+        repeat with el in allElements
+            if class of el is checkbox then
+                set firstCheckbox to el
+                {action_block}
+            end if
+        end repeat
+    end tell
+end tell
+"""
+    try:
+        result = subprocess.run(
+            ["osascript", "-e", script],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        # Close System Settings after
+        subprocess.run(
+            ["osascript", "-e", 'tell application "System Settings" to quit'],
+            capture_output=True,
+        )
+        if result.returncode == 0:
+            val = result.stdout.strip()
+            if val in ("0", "1"):
+                return True, int(val)
+        return False, None
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
+        subprocess.run(
+            ["osascript", "-e", 'tell application "System Settings" to quit'],
+            capture_output=True,
+        )
+        print(f"Error: {e}", file=sys.stderr)
+        return False, None
+
+
+def cmd_location(args: argparse.Namespace) -> int:
+    if not is_macos():
+        print("Location Services only available on macOS", file=sys.stderr)
+        return 1
+
+    if args.status:
+        enabled = location_check_enabled()
+        if enabled is not None:
+            status = "enabled" if enabled else "disabled"
+            print(f"Location Services: {status}")
+            return 0
+        print("Could not read Location Services status", file=sys.stderr)
+        return 1
+
+    if args.init:
+        enabled = location_check_enabled()
+        if enabled is True:
+            print("Location Services: already enabled")
+            return 0
+        if enabled is None:
+            print("Could not check Location Services status, skipping", file=sys.stderr)
+            return 0
+        print("Location Services is disabled. Enable manually: settings location on")
+        return 0
+
+    # Always check current state via Swift before touching UI
+    enabled = location_check_enabled()
+    if enabled is None:
+        print("Could not read Location Services status", file=sys.stderr)
+        return 1
+
+    if args.mode == "on" and enabled:
+        print("Location Services: already enabled")
+        return 0
+    if args.mode == "off" and not enabled:
+        print("Location Services: already disabled")
+        return 0
+
+    # Determine action: explicit mode or toggle
+    if args.mode:
+        action = args.mode
+    else:
+        action = "off" if enabled else "on"
+
+    ok, val = location_osascript(action)
+    if ok and val is not None:
+        status = "enabled" if val == 1 else "disabled"
+        print(f"Location Services: {status}")
+
+        if val == 1 and not enabled:
+            print("Opening Weather app to initialize location...")
+            subprocess.run(["open", "-a", "Weather"], check=False)
+
+        return 0
+
+    print("Could not toggle Location Services (authentication may be required)", file=sys.stderr)
+    return 1
+
+
 # Awake: Prevent system from sleeping (macOS + Linux)
 DEFAULT_AWAKE_TIMEOUT = 43200  # 12 hours in seconds
 
@@ -1500,6 +1651,30 @@ def main() -> int:
         help="Set specific mode (default: toggle)",
     )
     scrolling_parser.set_defaults(func=cmd_scrolling)
+
+    # Location subcommand
+    location_parser = subparsers.add_parser(
+        "location",
+        aliases=["loc"],
+        help="Toggle Location Services (macOS only)",
+    )
+    location_parser.add_argument(
+        "--status",
+        action="store_true",
+        help="Show current Location Services status",
+    )
+    location_parser.add_argument(
+        "--init",
+        action="store_true",
+        help="Enable Location Services if not already enabled (idempotent, for activation scripts)",
+    )
+    location_parser.add_argument(
+        "mode",
+        nargs="?",
+        choices=["on", "off"],
+        help="Set specific mode (default: toggle)",
+    )
+    location_parser.set_defaults(func=cmd_location)
 
     # Awake subcommand
     awake_parser = subparsers.add_parser(
