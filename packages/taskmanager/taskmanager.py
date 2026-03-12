@@ -954,12 +954,40 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
     return count
 
 
-@click.group()
+class TreeGroup(click.Group):
+    def format_commands(self, ctx, formatter):
+        commands = []
+        for subname in self.list_commands(ctx):
+            cmd = self.get_command(ctx, subname)
+            if cmd is None or cmd.hidden:
+                continue
+            help_text = cmd.get_short_help_str(limit=formatter.width)
+            commands.append((subname, cmd, help_text))
+
+        if commands:
+            with formatter.section("Commands"):
+                for subname, cmd, help_text in commands:
+                    formatter.write(f"  {subname:<10}{help_text}\n")
+                    if isinstance(cmd, click.Group):
+                        sub_ctx = click.Context(cmd, info_name=subname, parent=ctx)
+                        for child_name in cmd.list_commands(sub_ctx):
+                            child = cmd.get_command(sub_ctx, child_name)
+                            if child and not child.hidden:
+                                child_help = child.get_short_help_str(limit=formatter.width)
+                                formatter.write(f"    {child_name:<8}{child_help}\n")
+
+
+@click.group(cls=TreeGroup)
 def cli():
     """Unified task management across Apple Reminders and Taskwarrior."""
 
 
-@cli.command()
+@cli.group(name="all")
+def all_cmds():
+    """Commands that work with both Reminders and Taskwarrior."""
+
+
+@all_cmds.command()
 @click.argument("description")
 @click.option("--project", default="Inbox", help="Project/list name.")
 @click.pass_context
@@ -1040,7 +1068,7 @@ def filter_by_recurring(rem_only, tw_only, metadata_diffs, multi_keys, recurring
     return rem_only, tw_only, metadata_diffs
 
 
-@cli.command()
+@all_cmds.command()
 @click.option("--project", default=None, help="Scope to a single project/list.")
 @click.option(
     "--projects", default=None, help="Comma-separated project/list names."
@@ -1114,7 +1142,7 @@ def drift(project, projects, filter, notes, recurring, source, destination, verb
     )
 
 
-@cli.command()
+@all_cmds.command()
 @click.option("--project", default=None, help="Scope to a single project/list.")
 @click.option(
     "--projects", default=None, help="Comma-separated project/list names."
@@ -1377,7 +1405,7 @@ def sync(project, projects, filter, approve, interactive, notes, recurring, sour
     click.echo("\nDone.")
 
 
-@cli.command()
+@all_cmds.command()
 @click.option("--project", default=None, help="Scope to a single project/list.")
 @click.option(
     "--projects", default=None, help="Comma-separated project/list names."
