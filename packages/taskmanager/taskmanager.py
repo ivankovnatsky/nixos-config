@@ -1395,6 +1395,7 @@ def add(ctx, description, project):
         source=None,
         destination=None,
         verbose=False,
+        sort_first=False,
     )
 
 
@@ -1468,10 +1469,25 @@ def filter_by_recurring(rem_only, tw_only, metadata_diffs, multi_keys, recurring
     help="Destination system (t/tw/taskwarrior, r/rem/rems/reminders).",
 )
 @click.option("--verbose", is_flag=True, default=False, help="Show commands being run.")
-def drift(project, projects, filter, notes, recurring, source, destination, verbose):
+@click.option("--sort-first/--no-sort-first", default=True, help="Run sort before computing drift (default: enabled).")
+@click.pass_context
+def drift(ctx, project, projects, filter, notes, recurring, source, destination, verbose, sort_first):
     """Show drift between Reminders and Taskwarrior."""
     global _verbose
     _verbose = verbose
+
+    if sort_first:
+        ctx.invoke(
+            sort_all,
+            source=None,
+            project=project,
+            approve=False,
+            interactive=False,
+            create=True,
+            verbose=verbose,
+        )
+        click.echo()
+
     source = normalize_system_name(source) if source else None
     destination = normalize_system_name(destination) if destination else None
 
@@ -1566,17 +1582,27 @@ def drift(project, projects, filter, notes, recurring, source, destination, verb
     default=False,
     help="Delete and purge TW recurring parent tasks. Always interactive.",
 )
-def sync(project, projects, filter, approve, interactive, notes, recurring, source, destination, verbose, purge_duplicates, complete_orphans, purge_recurring):
+@click.option("--sort-first/--no-sort-first", default=True, help="Run sort before syncing (default: enabled).")
+@click.pass_context
+def sync(ctx, project, projects, filter, approve, interactive, notes, recurring, source, destination, verbose, purge_duplicates, complete_orphans, purge_recurring, sort_first):
     """Sync missing items to both systems."""
     global _verbose
     _verbose = verbose
-    if not project and not projects and not interactive:
-        click.echo(
-            "Error: --project, --projects, or --interactive is required"
-            " to avoid accidental bulk changes.",
-            err=True,
+
+    if sort_first:
+        ctx.invoke(
+            sort_all,
+            source=None,
+            project=project,
+            approve=False,
+            interactive=False,
+            create=True,
+            verbose=verbose,
         )
-        raise SystemExit(1)
+        click.echo()
+
+    if not project and not projects and not interactive and not approve:
+        interactive = True
     source = normalize_system_name(source) if source else None
     destination = normalize_system_name(destination) if destination else None
 
