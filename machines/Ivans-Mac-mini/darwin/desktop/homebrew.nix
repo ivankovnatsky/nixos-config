@@ -16,14 +16,12 @@
     casks = [
       "bitwarden"
       "chromium"
-      "cursor"
       "firefox"
       "ghostty"
       "keycastr"
       "kitty"
       "obsidian"
       "silicon-labs-vcp-driver"
-      "windsurf"
     ];
     masApps = {
       "Numbers" = 409203825;
