@@ -7,13 +7,9 @@
     };
     global.brewfile = true;
     brews = [
-      "antoniorodr/homebrew-memo/memo"
       "ollama"
-      "xwmx/homebrew-taps/notes-app"
     ];
-    casks = [
-      "mac-mouse-fix"
-    ];
+    casks = [ ];
     caskArgs = {
       no_quarantine = true;
     };
