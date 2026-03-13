@@ -41,6 +41,11 @@ in
       moviesDir
       downloadsDir
     ];
+    preStart = ''
+      if [ -f "${dataDir}/config.xml" ]; then
+        ${pkgs.gnused}/bin/sed -i 's|<BindAddress>[^<]*</BindAddress>|<BindAddress>*</BindAddress>|' "${dataDir}/config.xml"
+      fi
+    '';
     command = "${pkgs.radarr}/bin/Radarr -nobrowser -data=${dataDir}";
   };
 }

@@ -32,6 +32,11 @@ in
     enable = true;
     waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
+    preStart = ''
+      if [ -f "${dataDir}/config.xml" ]; then
+        ${pkgs.gnused}/bin/sed -i 's|<BindAddress>[^<]*</BindAddress>|<BindAddress>*</BindAddress>|' "${dataDir}/config.xml"
+      fi
+    '';
     command = "${pkgs.prowlarr}/bin/Prowlarr -nobrowser -data=${dataDir}";
   };
 }
