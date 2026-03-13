@@ -49,6 +49,7 @@
       address=/${config.sops.placeholder.external-domain}/${config.flags.miniIp}
       address=/${config.sops.placeholder.external-domain}/${config.flags.miniEn7Ip}
       address=/${config.sops.placeholder.external-domain}/${config.flags.miniWifiIp}
+      mx-host=${config.sops.placeholder.external-domain},${config.sops.placeholder.external-domain},10
     '';
   };
 
