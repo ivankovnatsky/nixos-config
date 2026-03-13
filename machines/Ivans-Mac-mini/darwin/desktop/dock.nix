@@ -58,11 +58,9 @@ in
 
       { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Ghostty.app/"; }
-      { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Chromium.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
       { path = "/Applications/Obsidian.app/"; }
-      { path = "/Applications/KeyCastr.app/"; }
 
       {
         path = "${homePath}/Downloads/";
