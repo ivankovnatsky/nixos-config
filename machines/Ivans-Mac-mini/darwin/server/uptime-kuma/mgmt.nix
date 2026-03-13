@@ -157,6 +157,12 @@
         description = "Open WebUI";
       }
 
+      {
+        name = "mailpit";
+        url = "http://${config.flags.machineLocalAddress}:8025";
+        description = "Mailpit email testing UI";
+      }
+
       # Logging & Monitoring Stack
       {
         name = "grafana";
