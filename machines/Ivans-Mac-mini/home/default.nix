@@ -6,12 +6,14 @@
     ../../../home/bash.nix
     ../../../home/bat.nix
     ../../../home/btop.nix
+    ../../../home/carapace.nix
     ../../../home/claude.nix
     ../../../home/direnv.nix
     ../../../home/ghostty.nix
     ../../../home/ghorg.nix
     ../../../home/git
     ../../../home/go.nix
+    ../../../home/hammerspoon
     ../../../home/home-session-vars.nix
     ../../../home/jujutsu.nix
     ../../../home/lsd.nix
