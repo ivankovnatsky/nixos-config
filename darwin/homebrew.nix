@@ -9,7 +9,6 @@
     brews = [
       "antoniorodr/homebrew-memo/memo"
       "displayplacer"
-      "xwmx/homebrew-taps/notes-app"
       # Since nix places it's new installs under newly generated nix store
       # path, we can't relay on nixpkgs pam-reattach, because after nixpkgs
       # upgrades PAM auth is broken for a common user. To fix it we need to
@@ -22,10 +21,6 @@
       "chromium"
       {
         name = "coconutbattery";
-        greedy = true;
-      }
-      {
-        name = "claude";
         greedy = true;
       }
       "firefox"
@@ -43,7 +38,6 @@
       }
       "mac-mouse-fix"
       "silicon-labs-vcp-driver"
-      "stats"
       "obsidian"
       "visual-studio-code"
     ];
