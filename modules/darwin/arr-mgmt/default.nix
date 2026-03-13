@@ -474,6 +474,7 @@ in
       enable = true;
       keepAlive = false;
       runAtLoad = true;
+      waitForSecrets = true;
 
       command =
         let
@@ -481,6 +482,30 @@ in
             set -e
 
             echo "Syncing *arr configuration..."
+
+            # Wait for services to be reachable
+            wait_for_service() {
+              local url="$1"
+              local name="$2"
+              local max_retries=30
+              local retry=0
+              while [ $retry -lt $max_retries ]; do
+                if ${pkgs.curl}/bin/curl -sf -o /dev/null "$url/ping" 2>/dev/null || \
+                   ${pkgs.curl}/bin/curl -sf -o /dev/null "$url" 2>/dev/null; then
+                  echo "$name is reachable"
+                  return 0
+                fi
+                retry=$((retry + 1))
+                echo "Waiting for $name ($retry/$max_retries)..."
+                sleep 2
+              done
+              echo "ERROR: $name not reachable after $max_retries retries"
+              return 1
+            }
+
+            ${lib.optionalString cfg.radarr.enable ''wait_for_service "${cfg.radarr.baseUrl}" "Radarr" || true''}
+            ${lib.optionalString cfg.sonarr.enable ''wait_for_service "${cfg.sonarr.baseUrl}" "Sonarr" || true''}
+            ${lib.optionalString cfg.prowlarr.enable ''wait_for_service "${cfg.prowlarr.baseUrl}" "Prowlarr" || true''}
 
             # Read secrets from files at runtime
             ${lib.optionalString cfg.radarr.enable (
