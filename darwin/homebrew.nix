@@ -7,7 +7,6 @@
     };
     global.brewfile = true;
     brews = [
-      "antoniorodr/homebrew-memo/memo"
       "displayplacer"
       # Since nix places it's new installs under newly generated nix store
       # path, we can't relay on nixpkgs pam-reattach, because after nixpkgs
@@ -31,7 +30,6 @@
         greedy = true;
       }
       "hammerspoon"
-      "keycastr"
       {
         name = "kitty@nightly";
         greedy = true;
