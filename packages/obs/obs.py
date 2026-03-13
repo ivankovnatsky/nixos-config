@@ -112,9 +112,18 @@ def _open_vault(vault_path: Path, just_created: bool = False, file_path: str | N
         quit_obsidian()
 
     vault_name = vault_path.name
-    uri = f"obsidian://open?vault={vault_name}"
     if file_path:
-        uri += f"&file={quote(file_path)}"
+        if is_obsidian_running():
+            subprocess.run(
+                ["osascript", "-e", 'tell application "Obsidian" to activate',
+                 "-e", "delay 0.3",
+                 "-e", 'tell application "System Events" to keystroke "t" using command down'],
+                check=True,
+            )
+            time.sleep(0.3)
+        uri = f"obsidian://open?vault={quote(vault_name)}&file={quote(file_path)}"
+    else:
+        uri = f"obsidian://open?vault={quote(vault_name)}"
     subprocess.run(["open", uri], check=True)
 
 
