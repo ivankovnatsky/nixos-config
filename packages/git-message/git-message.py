@@ -208,14 +208,17 @@ def is_file_path(path: str) -> bool:
     return False
 
 
-def _is_untracked_file(path: str) -> bool:
-    """Check if a path is an untracked file (for defaulting subject to 'init')."""
+def _is_new_file(path: str) -> bool:
+    """Check if a path is new to the repo (not in HEAD), for defaulting subject to 'init'.
+
+    This covers both untracked files and staged-but-never-committed files.
+    """
     try:
         git_root = get_git_root()
         abs_path = os.path.abspath(path)
         rel_path = os.path.relpath(abs_path, git_root)
         result = subprocess.run(
-            ["git", "ls-files", "--error-unmatch", rel_path],
+            ["git", "cat-file", "-e", f"HEAD:{rel_path}"],
             capture_output=True,
             text=True,
             cwd=git_root,
@@ -247,7 +250,7 @@ def parse_args_flexible(
     if len(args) == 1:
         if is_file_path(args[0]):
             # Default to "init" for untracked files when no subject given
-            if _is_untracked_file(args[0]):
+            if _is_new_file(args[0]):
                 return args[0], "init"
             print(
                 f"Error: '{args[0]}' looks like a file path, not a subject.",
