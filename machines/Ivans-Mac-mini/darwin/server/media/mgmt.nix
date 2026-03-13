@@ -18,11 +18,8 @@
   #
   # Bind address: arr services store <BindAddress> in their config.xml.
   # Must be "*" for all interfaces. If set to a specific IP (e.g. ethernet),
-  # services will fail to start when that interface is unavailable. Fix with:
-  #   sed -i '' 's|<BindAddress>.*</BindAddress>|<BindAddress>*</BindAddress>|' \
-  #     /Volumes/Storage/Data/.radarr/config.xml \
-  #     /Volumes/Storage/Data/.sonarr/config.xml \
-  #     /Volumes/Storage/Data/.prowlarr/config.xml
+  # services will fail to start when that interface is unavailable.
+  # This is now enforced automatically via preStart in each service's launchd config.
 
   # Sops secrets for arr services
   sops.secrets.radarr-api-key = {
