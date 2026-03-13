@@ -16,10 +16,9 @@
     casks = [
       "bitwarden"
       "chromium"
-      "firefox"
       "ghostty"
-      "keycastr"
       "kitty"
+      "mac-mouse-fix"
       "obsidian"
       "silicon-labs-vcp-driver"
     ];
