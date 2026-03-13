@@ -43,8 +43,11 @@ let
 
   # Substitute external domain at runtime
   runtimeConfigFile = pkgs.writeShellScript "podservice-config-gen" ''
+    set -e
     EXTERNAL_DOMAIN=$(cat ${config.sops.secrets.external-domain.path})
-    ${pkgs.gnused}/bin/sed "s/@EXTERNAL_DOMAIN@/$EXTERNAL_DOMAIN/g" ${configFile}
+    ${pkgs.gnused}/bin/sed \
+      -e "s|@EXTERNAL_DOMAIN@|$EXTERNAL_DOMAIN|g" \
+      ${configFile}
   '';
 in
 {
