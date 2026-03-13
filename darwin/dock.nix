@@ -64,7 +64,6 @@ in
       { path = "/Applications/Bitwarden.app/"; }
       { path = "/Applications/Visual Studio Code.app/"; }
       { path = "/Applications/coconutBattery.app/"; }
-      { path = "/Applications/KeyCastr.app/"; }
 
       {
         path = "${homePath}/Downloads/";
