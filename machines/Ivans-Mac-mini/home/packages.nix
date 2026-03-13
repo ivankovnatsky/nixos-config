@@ -10,8 +10,11 @@
     reminders-cli
     obs
     age
+    asusrouter-cli
     aria2
     backup-home
+    btop
+    cleanup-home
     bat
     beszel-mgmt
     cargo
