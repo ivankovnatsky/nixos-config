@@ -2,6 +2,7 @@
 """CLI for Apple Notes via osascript."""
 
 import glob
+import html
 import html.parser
 import os
 import shutil
@@ -20,7 +21,9 @@ class BaseHTMLParser(html.parser.HTMLParser):
         self._lines = []
         self._current = ""
         self._href = None
+        self._link_text_start = 0
         self._tag_stack = []
+        self._ul_depth = 0
 
     def _heading_level(self, tag):
         if tag in ("h1", "h2", "h3", "h4", "h5", "h6"):
@@ -29,6 +32,8 @@ class BaseHTMLParser(html.parser.HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         self._tag_stack.append(tag)
+        if tag == "ul":
+            self._ul_depth += 1
         if tag in ("div", "br", "p") or self._heading_level(tag):
             if self._current:
                 self._lines.append(self._current)
@@ -42,6 +47,8 @@ class BaseHTMLParser(html.parser.HTMLParser):
             if self._current:
                 self._lines.append(self._current)
                 self._current = ""
+        if tag == "img":
+            self._current += "[image]"
 
     def handle_data(self, data):
         if not data.strip():
@@ -62,9 +69,12 @@ class TextHTMLParser(BaseHTMLParser):
     def handle_starttag(self, tag, attrs):
         super().handle_starttag(tag, attrs)
         if tag == "li":
-            self._current = "- "
+            indent = "  " * max(0, self._ul_depth - 1)
+            self._current = f"{indent}- "
 
     def handle_endtag(self, tag):
+        if tag == "ul":
+            self._ul_depth = max(0, self._ul_depth - 1)
         if tag == "a" and self._href:
             if self._href not in self._current:
                 self._current += f" ({self._href})"
@@ -90,9 +100,12 @@ class MarkdownHTMLParser(BaseHTMLParser):
         if tag == "i" or tag == "em":
             self._current += "*"
         if tag == "li":
-            self._current = "- "
+            indent = "  " * max(0, self._ul_depth - 1)
+            self._current = f"{indent}- "
 
     def handle_endtag(self, tag):
+        if tag == "ul":
+            self._ul_depth = max(0, self._ul_depth - 1)
         if tag == "a" and self._href:
             link_text = self._current[self._link_text_start :]
             self._current = self._current[: self._link_text_start]
@@ -212,7 +225,8 @@ end run"""
 def set_note_body(folder, name, new_text):
     """Set a note's body from plain text."""
     html_body = "".join(
-        f"<div>{line or '<br>'}</div>" for line in new_text.splitlines()
+        f"<div>{html.escape(line) if line else '<br>'}</div>"
+        for line in new_text.splitlines()
     )
     run_osascript(
         f"""{find_note()}
@@ -234,23 +248,34 @@ def folders():
         click.echo(folder)
 
 
-@cli.command("list")
-@click.argument("folder")
-def list_notes(folder):
-    """List notes in a folder."""
-    output = run_osascript(
-        """set noteList to every note in folder (item 1 of argv)
+LIST_NOTES_SCRIPT = """set noteList to every note in folder (item 1 of argv)
     set output to ""
     repeat with n in noteList
         set output to output & name of n & linefeed
     end repeat
-    return output""",
-        args=[folder],
-    )
+    return output"""
+
+
+def _print_notes(folder, prefix=""):
+    """List notes in a folder, optionally prefixing each line."""
+    output = run_osascript(LIST_NOTES_SCRIPT, args=[folder])
     if output:
         for line in output.splitlines():
             if line:
-                click.echo(line)
+                click.echo(f"{prefix}{line}" if prefix else line)
+
+
+@cli.command("list")
+@click.argument("folder", default="")
+@click.option("--all", "all_folders", is_flag=True, help="List notes in all folders.")
+def list_notes(folder, all_folders):
+    """List notes in a folder (or all folders with --all)."""
+    if all_folders or not folder:
+        folder_names = run_osascript("get name of every folder").split(", ")
+        for fname in folder_names:
+            _print_notes(fname, prefix=f"{fname}/")
+    else:
+        _print_notes(folder)
 
 
 @cli.command()
@@ -264,7 +289,10 @@ def list_notes(folder):
     default="text",
     help="Output format.",
 )
-def view(folder, name, fmt):
+@click.option(
+    "--no-title", is_flag=True, default=False, help="Skip the first line (note title)."
+)
+def view(folder, name, fmt, no_title):
     """View a note's content."""
     if fmt == "plain":
         output = run_osascript(
@@ -272,6 +300,9 @@ def view(folder, name, fmt):
     return plaintext of item 1 of matchedNotes""",
             args=[folder, name],
         )
+        if no_title:
+            lines = output.split("\n", 1)
+            output = lines[1].lstrip("\n") if len(lines) > 1 else ""
         click.echo(output)
     else:
         html_body = run_osascript(
@@ -279,7 +310,11 @@ def view(folder, name, fmt):
     return body of item 1 of matchedNotes""",
             args=[folder, name],
         )
-        click.echo(html_to_text(html_body, fmt))
+        text = html_to_text(html_body, fmt)
+        if no_title:
+            lines = text.split("\n", 1)
+            text = lines[1].lstrip("\n") if len(lines) > 1 else ""
+        click.echo(text)
 
 
 @cli.command("next")
@@ -400,6 +435,76 @@ def move(name, source, dest):
         args=[source, name, dest],
     )
     click.echo(f"Moved '{name}' from '{source}' to '{dest}'")
+
+
+@cli.command()
+@click.argument("folder")
+@click.argument("body")
+@click.option("-n", "--name", "title", default=None, help="Note title (default: first line of body).")
+def create(folder, body, title):
+    """Create a new note in a folder."""
+    if title:
+        html_body = f"<div><h1>{html.escape(title)}</h1></div>"
+        html_body += "".join(
+            f"<div>{html.escape(line) if line else '<br>'}</div>"
+            for line in body.splitlines()
+        )
+    else:
+        lines = body.splitlines()
+        title = lines[0] if lines else body
+        html_body = "".join(
+            f"<div>{html.escape(line) if line else '<br>'}</div>"
+            for line in lines
+        )
+    run_osascript(
+        """set newNote to make new note at folder (item 1 of argv) with properties {body:(item 2 of argv)}""",
+        args=[folder, html_body],
+    )
+    click.echo(f"Created '{title}' in '{folder}'")
+
+
+@cli.command()
+@click.argument("folder")
+@click.argument("name")
+def delete(folder, name):
+    """Delete a note."""
+    click.confirm(f"Delete '{name}' from '{folder}'?", abort=True)
+    run_osascript(
+        f"""{find_note()}
+    delete item 1 of matchedNotes""",
+        args=[folder, name],
+    )
+    click.echo(f"Deleted '{name}' from '{folder}'")
+
+
+SEARCH_SCRIPT = """set matchedNotes to every note in folder (item 1 of argv) whose plaintext contains (item 2 of argv)
+    set output to ""
+    repeat with n in matchedNotes
+        set output to output & name of n & linefeed
+    end repeat
+    return output"""
+
+
+def _search_folder(fname, query):
+    """Search notes in a folder and print matches."""
+    output = run_osascript(SEARCH_SCRIPT, args=[fname, query])
+    if output:
+        for line in output.splitlines():
+            if line:
+                click.echo(f"{fname}/{line}")
+
+
+@cli.command()
+@click.argument("query")
+@click.option("--folder", default=None, help="Limit search to a specific folder.")
+def search(query, folder):
+    """Search notes by content."""
+    if folder:
+        _search_folder(folder, query)
+    else:
+        folder_names = run_osascript("get name of every folder").split(", ")
+        for fname in folder_names:
+            _search_folder(fname, query)
 
 
 if __name__ == "__main__":
