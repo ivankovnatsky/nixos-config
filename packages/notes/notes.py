@@ -477,6 +477,44 @@ def delete(folder, name):
     click.echo(f"Deleted '{name}' from '{folder}'")
 
 
+@cli.command()
+@click.argument("folder")
+@click.argument("name")
+@click.argument("new_name")
+def rename(folder, name, new_name):
+    """Rename a note by changing its title (first line)."""
+    html_body = run_osascript(
+        f"""{find_note()}
+    return body of item 1 of matchedNotes""",
+        args=[folder, name],
+    )
+    import re
+    # Replace the first heading or div content (the title)
+    def _replace_title(m):
+        replacement = m.group(1) + html.escape(new_name) + m.group(3)
+        # Ensure blank line after title
+        rest = html_body[m.end():]
+        if not rest.lstrip("\n").startswith("<div><br></div>"):
+            replacement += "\n<div><br></div>"
+        return replacement
+
+    renamed = re.sub(
+        r"(<(?:h[1-6]|div)>)(.*?)(</(?:h[1-6]|div)>)",
+        _replace_title,
+        html_body,
+        count=1,
+    )
+    if renamed == html_body:
+        click.echo("Error: could not find title to replace", err=True)
+        sys.exit(1)
+    run_osascript(
+        f"""{find_note()}
+    set body of item 1 of matchedNotes to (item 3 of argv)""",
+        args=[folder, name, renamed],
+    )
+    click.echo(f"Renamed '{name}' -> '{new_name}'")
+
+
 SEARCH_SCRIPT = """set matchedNotes to every note in folder (item 1 of argv) whose plaintext contains (item 2 of argv)
     set output to ""
     repeat with n in matchedNotes
