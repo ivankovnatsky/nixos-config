@@ -9,7 +9,7 @@
       "idnHomographs": true,
       "typosquatting": true,
       "dga": true,
-      "nrd": true,
+      "nrd": false,
       "ddns": true,
       "parking": true,
       "csam": true,
