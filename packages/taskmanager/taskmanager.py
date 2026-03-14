@@ -1375,42 +1375,6 @@ def sort_all(ctx, source, project, approve, interactive, create, verbose):
         click.echo("Taskwarrior: skipped (not available)")
 
 
-@all_cmds.command()
-@click.argument("description")
-@click.option("--project", default="Inbox", help="Project/list name.")
-@click.pass_context
-def add(ctx, description, project):
-    """Add task to Reminders, then sync to Taskwarrior interactively."""
-    prefixed = f"{project}: {description}"
-
-    if is_darwin() and has_command("reminders"):
-        existing = subprocess.run(
-            ["reminders", "show-lists"], capture_output=True, text=True
-        )
-        if project not in existing.stdout.splitlines():
-            run(["reminders", "new-list", project])
-
-        result = run(["reminders", "add", project, prefixed])
-        if result.returncode == 0:
-            click.echo(f"Reminders ({project}): added")
-        else:
-            return
-
-    ctx.invoke(
-        sync,
-        project=project,
-        projects=None,
-        filter=description,
-        approve=False,
-        interactive=True,
-        notes=False,
-        recurring=None,
-        source=None,
-        destination=None,
-        verbose=False,
-        sort_first=False,
-    )
-
 
 def normalize_system_name(name):
     """Normalize system name to internal form."""
