@@ -673,6 +673,19 @@ def infer_flow(field, rem_val, tw_val):
             return "tw_to_rem"
         if tw_e and not rem_e:
             return "rem_to_tw"
+        # Same calendar date but one is midnight (date-only) — sync the
+        # specific time to the midnight side instead of overwriting it.
+        if (
+            len(rem_val) >= 10
+            and len(tw_val) >= 10
+            and rem_val[:10] == tw_val[:10]
+        ):
+            rem_midnight = rem_val.endswith("T00:00:00")
+            tw_midnight = tw_val.endswith("T00:00:00")
+            if rem_midnight and not tw_midnight:
+                return "tw_to_rem"
+            if tw_midnight and not rem_midnight:
+                return "rem_to_tw"
         # Both have values — prefer older (more original) date
         if rem_val < tw_val:
             return "rem_to_tw"
