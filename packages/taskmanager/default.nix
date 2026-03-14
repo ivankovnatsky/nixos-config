@@ -9,7 +9,10 @@
 pkgs.writeShellScriptBin "taskmanager" ''
   export PATH="${
     lib.makeBinPath (
-      [ taskwarrior3 ]
+      [
+        taskwarrior3
+        pkgs.nushell
+      ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
         reminders-cli
       ]

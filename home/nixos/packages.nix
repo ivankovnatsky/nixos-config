@@ -31,7 +31,6 @@
     ssh-to-age # Secrets management
     syncthing-cleaner
     syncthing-mgmt # Syncthing management CLI
-    task-mgmt
     uptime-kuma-mgmt
     username # Username generator
     wl-clipboard # Wayland clipboard utilities

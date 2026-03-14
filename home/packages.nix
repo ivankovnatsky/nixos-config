@@ -35,7 +35,6 @@
     swiftformat
     syncthing-cleaner
     syncthing-mgmt
-    task-mgmt
     taskmanager
     torrent-dl
     tree
