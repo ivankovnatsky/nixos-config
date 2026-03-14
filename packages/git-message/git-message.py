@@ -30,7 +30,6 @@ DIRECTORY_MAPPINGS = {
 }
 
 MAX_MESSAGE_LENGTH = 72
-MAX_PREFIX_LENGTH = 36
 
 
 def get_git_root() -> str:
@@ -156,17 +155,6 @@ def shorten_directories(path: str) -> str:
     parts = path.split("/")
     shortened = [DIRECTORY_MAPPINGS.get(p, p) for p in parts]
     return "/".join(shortened)
-
-
-def collapse_middle(path: str) -> str:
-    """Collapse middle path segments to * keeping first and last.
-
-    Example: a/b/c/d/e -> a/*/e
-    """
-    parts = path.split("/")
-    if len(parts) <= 2:
-        return path
-    return f"{parts[0]}/*/{parts[-1]}"
 
 
 def create_commit_message(prefix: str, subject: str) -> str:
@@ -313,10 +301,8 @@ Features:
   - Shortens machine names (e.g., Ivans-Mac-mini -> mini)
   - Removes duplicate path components (e.g., pkg/foo/foo -> pkg/foo)
   - Strips "default" filename (e.g., mod/foo/default -> mod/foo)
-  - Shortens directories if scope > 36 (packages->pkg, modules->mod, etc.)
-  - Collapses middle path segments to * if still too long (a/b/c/d -> a/*/d)
-  - Validates scope length (max 36 chars)
-  - Validates subject length (max 72 chars)
+  - Shortens directories if message > 72 chars (packages->pkg, modules->mod, etc.)
+  - Validates total message length (max 72 chars)
 """,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -379,32 +365,22 @@ Features:
     prefix = shorten_path(target_file)
 
     def _too_long(p: str) -> bool:
-        return len(p) > MAX_PREFIX_LENGTH or len(create_commit_message(p, subject)) > MAX_MESSAGE_LENGTH
+        return len(create_commit_message(p, subject)) > MAX_MESSAGE_LENGTH
 
-    # Apply aggressive directory shortening if scope or total message exceeds limit
+    # Apply aggressive directory shortening if total message exceeds limit
     if _too_long(prefix):
         prefix = shorten_directories(prefix)
 
     if _too_long(prefix):
-        prefix = collapse_middle(prefix)
-
-    if _too_long(prefix):
+        full_msg = create_commit_message(prefix, subject)
         print(
-            f"Scope too long: {len(prefix)} chars (max {MAX_PREFIX_LENGTH})",
+            f"Message too long: {len(full_msg)} chars (max {MAX_MESSAGE_LENGTH})",
             file=sys.stderr,
         )
         print(f"Scope: {prefix}", file=sys.stderr)
         return 1
 
     message = create_commit_message(prefix, subject)
-
-    if len(message) > MAX_MESSAGE_LENGTH:
-        print(
-            f"Subject too long: {len(message)} chars (max {MAX_MESSAGE_LENGTH})",
-            file=sys.stderr,
-        )
-        print(f"Subject: {message}", file=sys.stderr)
-        return 1
 
     # Set env var so pre-commit hook skips the "use git-message" hint
     os.environ["GIT_MESSAGE_CLI"] = "1"
