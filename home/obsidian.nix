@@ -22,12 +22,7 @@
 # - https://github.com/fengstats/obsidian-config/blob/main/app.json
 # - https://github.com/GrangbelrLurain/.obsidian/blob/master/appearance.json
 # - https://github.com/Gauthier13/obsidian-dotfiles
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 
 let
   # Define your vault path here (relative to home directory)
@@ -39,7 +34,7 @@ let
   # =============================================================================
   appSettings = {
     # --- Editor Mode ---
-    # vimMode = true;
+    vimMode = true;
     # livePreview = true;                   # Live preview mode (WYSIWYG-ish editing)
     # defaultViewMode = "source";           # Default view: "source", "preview", or "live"
     # legacyEditor = false;                 # Use legacy CodeMirror 5 editor (deprecated)
