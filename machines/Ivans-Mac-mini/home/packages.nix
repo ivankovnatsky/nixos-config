@@ -72,7 +72,6 @@
     syncthing
     syncthing-cleaner
     syncthing-mgmt
-    task-mgmt
     taskmanager
     taskwarrior-web
     torrent-dl

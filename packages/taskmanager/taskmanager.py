@@ -2,10 +2,12 @@
 """Taskmanager: unified task management across Apple Reminders and Taskwarrior."""
 
 import json
+import os
 import platform
 import re
 import shutil
 import subprocess
+import tempfile
 
 import click
 
@@ -2135,6 +2137,245 @@ def verify(project, projects, verbose):
         click.echo("\nAll counts and statuses match.")
 
     click.echo(f"\nTotal: TW={total_tw}, Rem={total_rem}, Mismatches={total_mismatch}")
+
+
+@tw_group.command(name="edit")
+@click.argument("pattern", nargs=-1, required=True)
+def tw_edit(pattern):
+    """Edit tasks matching pattern in editor."""
+    pattern_str = " ".join(pattern)
+    result = run(
+        ["task", "rc.verbose=nothing", "rc.detection=off", "rc.defaultwidth=0", "all"]
+    )
+    if result.returncode != 0:
+        raise SystemExit(1)
+
+    uuid_re = re.compile(r"\b([0-9a-f]{8})\b")
+    regex = re.compile(pattern_str, re.IGNORECASE)
+    uuids = []
+    for line in result.stdout.splitlines():
+        if regex.search(line):
+            m = uuid_re.search(line)
+            if m:
+                uuids.append(m.group(1))
+
+    if not uuids:
+        click.echo(f"No tasks matching '{pattern_str}'")
+        return
+
+    click.echo(f"Editing {len(uuids)} task(s)...")
+    for uuid in uuids:
+        subprocess.run(["task", "edit", uuid])
+
+
+@tw_group.command(name="find")
+@click.argument("pattern", nargs=-1, required=True)
+def tw_find(pattern):
+    """Search tasks by pattern and show details."""
+    pattern_str = " ".join(pattern)
+    result = run(
+        ["task", "rc.verbose=nothing", "rc.detection=off", "rc.defaultwidth=0", "all"]
+    )
+    if result.returncode != 0:
+        raise SystemExit(1)
+
+    uuid_re = re.compile(r"\b([0-9a-f]{8})\b")
+    regex = re.compile(pattern_str, re.IGNORECASE)
+    uuids = []
+    for line in result.stdout.splitlines():
+        if regex.search(line):
+            m = uuid_re.search(line)
+            if m:
+                uuids.append(m.group(1))
+
+    if not uuids:
+        click.echo(f"No tasks matching '{pattern_str}'")
+        return
+
+    for i, uuid in enumerate(uuids):
+        if i > 0:
+            click.echo("=" * 80)
+        info = subprocess.run(
+            ["task", uuid], capture_output=True, text=True, stderr=subprocess.DEVNULL
+        )
+        if info.returncode == 0:
+            click.echo(info.stdout, nl=False)
+
+
+@tw_group.command(name="list")
+def tw_list():
+    """List pending tasks."""
+    result = run(["task", "export", "rc.verbose=nothing"])
+    if result.returncode != 0:
+        raise SystemExit(1)
+
+    nu_script = """
+    $in | from json
+    | where status == "pending"
+    | select id project? description due? urgency tags?
+    | sort-by -r urgency
+    | table -i false
+    """
+    nu = subprocess.run(
+        ["nu", "--stdin", "-c", nu_script],
+        input=result.stdout,
+        text=True,
+    )
+    if nu.returncode != 0:
+        try:
+            tasks = json.loads(result.stdout)
+        except json.JSONDecodeError:
+            click.echo("Failed to parse task export", err=True)
+            raise SystemExit(1)
+
+        pending = [t for t in tasks if t.get("status") == "pending"]
+        pending.sort(key=lambda t: t.get("urgency", 0), reverse=True)
+
+        if not pending:
+            click.echo("No pending tasks")
+            return
+
+        fmt = "{:<4} {:<15} {:<50} {:<12} {:<8}"
+        click.echo(fmt.format("ID", "Project", "Description", "Due", "Urgency"))
+        click.echo("-" * 89)
+        for t in pending:
+            click.echo(
+                fmt.format(
+                    t.get("id", ""),
+                    (t.get("project") or "")[:15],
+                    (t.get("description") or "")[:50],
+                    (t.get("due") or "")[:12],
+                    f"{t.get('urgency', 0):.1f}",
+                )
+            )
+
+
+@reminders_group.command(name="edit")
+@click.argument("pattern", nargs=-1, required=True)
+def rem_edit(pattern):
+    """Edit reminders matching pattern in editor."""
+    pattern_str = " ".join(pattern)
+    result = run(
+        ["reminders", "show-all", "--include-completed", "--format", "json"]
+    )
+    if result.returncode != 0:
+        click.echo("Failed to fetch reminders", err=True)
+        raise SystemExit(1)
+
+    try:
+        all_reminders = json.loads(result.stdout)
+    except json.JSONDecodeError:
+        click.echo("Failed to parse reminders JSON", err=True)
+        raise SystemExit(1)
+
+    regex = re.compile(pattern_str, re.IGNORECASE)
+    matches = [r for r in all_reminders if regex.search(r.get("title", ""))]
+
+    if not matches:
+        click.echo(f"No reminders matching '{pattern_str}'")
+        return
+
+    click.echo(f"Editing {len(matches)} reminder(s)...")
+    for reminder in matches:
+        original = json.loads(json.dumps(reminder))
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".json", delete=False
+        ) as f:
+            json.dump(reminder, f, indent=2, ensure_ascii=False)
+            f.write("\n")
+            tmp_path = f.name
+
+        try:
+            editor = os.environ.get("EDITOR", "nvim")
+            subprocess.run([editor, tmp_path])
+
+            with open(tmp_path) as f:
+                edited = json.load(f)
+        except (json.JSONDecodeError, OSError) as e:
+            click.echo(f"Error reading edited file: {e}", err=True)
+            continue
+        finally:
+            os.unlink(tmp_path)
+
+        if edited == original:
+            click.echo(f"  No changes for: {original.get('title', '')}")
+            continue
+
+        list_name = original["list"]
+        ext_id = original["externalId"]
+        cmd = ["reminders", "edit", list_name, ext_id, "--include-completed"]
+
+        if edited.get("title") != original.get("title"):
+            cmd.append(edited["title"])
+        if edited.get("notes") != original.get("notes"):
+            cmd.extend(["--notes", edited.get("notes", "")])
+        if edited.get("dueDate") != original.get("dueDate"):
+            cmd.extend(["--due-date", edited.get("dueDate", "")])
+        if edited.get("priority") != original.get("priority"):
+            cmd.extend(["--priority", str(edited.get("priority", 0))])
+
+        if len(cmd) > 5:
+            subprocess.run(cmd)
+            click.echo(f"  Updated: {edited.get('title', '')}")
+        else:
+            click.echo(f"  No supported field changes for: {original.get('title', '')}")
+
+
+@reminders_group.command(name="find")
+@click.argument("pattern", nargs=-1, required=True)
+def rem_find(pattern):
+    """Search reminders by pattern."""
+    pattern_str = " ".join(pattern)
+    result = run(
+        ["reminders", "show-all", "--include-completed", "--format", "json"]
+    )
+    if result.returncode != 0:
+        click.echo("Failed to fetch reminders", err=True)
+        raise SystemExit(1)
+
+    try:
+        reminders = json.loads(result.stdout)
+    except json.JSONDecodeError:
+        click.echo("Failed to parse reminders JSON", err=True)
+        raise SystemExit(1)
+
+    regex = re.compile(pattern_str, re.IGNORECASE)
+    matches = [r for r in reminders if regex.search(r.get("title", ""))]
+
+    if not matches:
+        click.echo(f"No reminders matching '{pattern_str}'")
+        return
+
+    for i, r in enumerate(matches):
+        if i > 0:
+            click.echo("=" * 80)
+        click.echo(json.dumps(r, indent=2, ensure_ascii=False))
+
+
+@reminders_group.command(name="list")
+def rem_list():
+    """List reminders."""
+    result = run(["reminders", "show-all", "--format", "json"])
+    if result.returncode != 0:
+        click.echo("Failed to fetch reminders", err=True)
+        raise SystemExit(1)
+
+    try:
+        reminders = json.loads(result.stdout)
+    except json.JSONDecodeError:
+        click.echo("Failed to parse reminders JSON", err=True)
+        raise SystemExit(1)
+
+    if not reminders:
+        click.echo("No reminders")
+        return
+
+    for r in reminders:
+        status = "done" if r.get("isCompleted") else "pending"
+        due = r.get("dueDate", "")
+        title = r.get("title", "")
+        list_name = r.get("list", "")
+        click.echo(f"[{status}] [{list_name}] {title}  due: {due}")
 
 
 if __name__ == "__main__":
