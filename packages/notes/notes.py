@@ -248,6 +248,17 @@ def folders():
         click.echo(folder)
 
 
+@cli.command("new-folder")
+@click.argument("name")
+def new_folder(name):
+    """Create a new folder."""
+    run_osascript(
+        "make new folder with properties {name:(item 1 of argv)}",
+        args=[name],
+    )
+    click.echo(f"Created folder '{name}'")
+
+
 LIST_NOTES_SCRIPT = """set noteList to every note in folder (item 1 of argv)
     set output to ""
     repeat with n in noteList
@@ -427,8 +438,16 @@ def export(folder, name, fmt, export_path, clean):
 @click.argument("name")
 @click.argument("source")
 @click.argument("dest")
-def move(name, source, dest):
+@click.option("-c", "--create", "create_folder", is_flag=True, help="Create destination folder if it doesn't exist.")
+def move(name, source, dest, create_folder):
     """Move a note to another folder."""
+    if create_folder:
+        existing = run_osascript("get name of every folder").split(", ")
+        if dest not in existing:
+            run_osascript(
+                "make new folder with properties {name:(item 1 of argv)}",
+                args=[dest],
+            )
     run_osascript(
         f"""{find_note()}
     move item 1 of matchedNotes to folder (item 3 of argv)""",
