@@ -44,6 +44,10 @@ class BaseHTMLParser(html.parser.HTMLParser):
                 self._current = ""
 
     def handle_data(self, data):
+        if not data.strip():
+            if self._current and not self._current.endswith(" "):
+                self._current += " "
+            return
         self._current += data
 
     def get_text(self):
@@ -66,7 +70,8 @@ class TextHTMLParser(BaseHTMLParser):
                 self._current += f" ({self._href})"
             self._href = None
         if tag in ("div", "p") or self._heading_level(tag):
-            self._lines.append(self._current)
+            if self._current or not self._lines or self._lines[-1] != "":
+                self._lines.append(self._current)
             self._current = ""
         if tag in self._tag_stack:
             self._tag_stack.remove(tag)
@@ -101,7 +106,8 @@ class MarkdownHTMLParser(BaseHTMLParser):
         if tag == "i" or tag == "em":
             self._current += "*"
         if tag in ("div", "p") or self._heading_level(tag):
-            self._lines.append(self._current)
+            if self._current or not self._lines or self._lines[-1] != "":
+                self._lines.append(self._current)
             self._current = ""
         if tag in self._tag_stack:
             self._tag_stack.remove(tag)
