@@ -1,7 +1,7 @@
 {
   lib,
   pkgs,
-  reminders-cli,
+  rems,
   taskwarrior3,
   ...
 }:
@@ -14,7 +14,7 @@ pkgs.writeShellScriptBin "taskmanager" ''
         pkgs.nushell
       ]
       ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
-        reminders-cli
+        rems
       ]
     )
   }:$PATH"
