@@ -9,6 +9,7 @@
       ]
     ))
     reminders-cli
+    rems
     obs
     age
     aria2
