@@ -8,7 +8,6 @@
         markitdown
       ]
     ))
-    reminders-cli
     rems
     obs
     age
