@@ -886,11 +886,13 @@ def rename(folder, name, new_name):
 @cli.command()
 @click.argument("folder")
 @click.argument("name")
-def duplicate(folder, name):
+@click.option("-n", "--new-name", default=None, help="Rename the duplicate after creation.")
+def duplicate(folder, name, new_name):
     """Duplicate a note via the Notes.app UI (preserves attachments).
 
     Uses System Events to trigger Cmd+D after selecting the note.
-    Notes.app must be running and accessible.
+    Notes.app must be running and accessible. Use --new-name to
+    rename the duplicate immediately after creation.
     """
     script = f"""on run argv
 tell application "Notes"
@@ -903,7 +905,7 @@ tell application "System Events"
         keystroke "d" using {{command down}}
     end tell
 end tell
-delay 1
+delay 2
 end run"""
     result = subprocess.run(
         ["osascript", "-e", script, folder, name],
@@ -915,6 +917,20 @@ end run"""
         sys.exit(1)
     cache_invalidate()
     click.echo(f"Duplicated '{name}' in '{folder}'")
+
+    if new_name:
+        # After Cmd+D, the duplicate is the most recently modified note
+        # with the same name. Find it and rename.
+        run_osascript(
+            """set matchedNotes to every note in folder (item 1 of argv) whose name is (item 2 of argv)
+    if (count of matchedNotes) is 0 then
+        error "Duplicate not found"
+    end if
+    set name of item 1 of matchedNotes to (item 3 of argv)""",
+            args=[folder, name, new_name],
+        )
+        cache_invalidate()
+        click.echo(f"Renamed duplicate to '{new_name}'")
 
 
 # -- search -----------------------------------------------------------------
