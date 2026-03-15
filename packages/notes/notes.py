@@ -515,39 +515,11 @@ def delete(folder, name):
 @click.argument("name")
 @click.argument("new_name")
 def rename(folder, name, new_name):
-    """Rename a note by changing its title (first line)."""
-    html_body = run_osascript(
-        f"""{find_note()}
-    return body of item 1 of matchedNotes""",
-        args=[folder, name],
-    )
-    import re
-    title_match = re.match(
-        r"(<(?:h[1-6]|div)>)(.*?)(</(?:h[1-6]|div)>)", html_body
-    )
-    if not title_match:
-        click.echo("Error: could not find title to replace", err=True)
-        sys.exit(1)
-
-    old_title_text = title_match.group(2)
-    new_title_el = title_match.group(1) + html.escape(new_name) + title_match.group(3)
-    rest = html_body[title_match.end():]
-
-    # If the note was title-only, preserve the old title text as body
-    has_body = rest.replace("<div><br></div>", "").replace("\n", "").strip()
-    if not has_body and old_title_text.strip():
-        rest = (
-            "\n<div><br></div>\n"
-            f"<div>{old_title_text}</div>"
-        )
-    elif not rest.lstrip("\n").startswith("<div><br></div>"):
-        rest = "\n<div><br></div>" + rest
-
-    renamed = new_title_el + rest
+    """Rename a note by setting its name property directly."""
     run_osascript(
         f"""{find_note()}
-    set body of item 1 of matchedNotes to (item 3 of argv)""",
-        args=[folder, name, renamed],
+    set name of item 1 of matchedNotes to (item 3 of argv)""",
+        args=[folder, name, new_name],
     )
     click.echo(f"Renamed '{name}' -> '{new_name}'")
 
