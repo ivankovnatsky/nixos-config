@@ -228,6 +228,47 @@ def find_note():
     end if"""
 
 
+def _rename_note(folder, old_name, new_name):
+    """Rename a note, updating both name property and body title.
+
+    For notes with attachments, only the name property is updated
+    (body replacement would strip them). Returns True if body title
+    was also updated.
+    """
+    att_count = _get_attachment_count(folder, old_name)
+    run_osascript(
+        f"""{find_note()}
+    set name of item 1 of matchedNotes to (item 3 of argv)""",
+        args=[folder, old_name, new_name],
+    )
+    if att_count == 0:
+        existing_body = run_osascript(
+            f"""{find_note()}
+    return body of item 1 of matchedNotes""",
+            args=[folder, new_name],
+        )
+        title_match = re.match(
+            r"(<(?:h[1-6]|div)>)(.*?)(</(?:h[1-6]|div)>)", existing_body, re.DOTALL
+        )
+        if title_match:
+            renamed_body = (
+                title_match.group(1) + html.escape(new_name) + title_match.group(3)
+                + existing_body[title_match.end():]
+            )
+            run_osascript(
+                f"""{find_note()}
+    set body of item 1 of matchedNotes to (item 3 of argv)""",
+                args=[folder, new_name, renamed_body],
+            )
+        return True
+    click.echo(
+        f"Note has {att_count} attachment(s): "
+        "body title not updated to preserve them.",
+        err=True,
+    )
+    return False
+
+
 def _get_attachment_count(folder, name):
     """Return the number of attachments on a note."""
     output = run_osascript(
@@ -873,12 +914,14 @@ def delete(folder, name, force):
 @click.argument("name")
 @click.argument("new_name")
 def rename(folder, name, new_name):
-    """Rename a note by setting its name property directly."""
-    run_osascript(
-        f"""{find_note()}
-    set name of item 1 of matchedNotes to (item 3 of argv)""",
-        args=[folder, name, new_name],
-    )
+    """Rename a note (name property and body title).
+
+    For notes without attachments, both the name property and the body
+    title (first HTML element) are updated. For notes with attachments,
+    only the name property is changed to avoid stripping attachments
+    via body replacement.
+    """
+    _rename_note(folder, name, new_name)
     cache_invalidate()
     click.echo(f"Renamed '{name}' -> '{new_name}'")
 
@@ -919,16 +962,9 @@ end run"""
     click.echo(f"Duplicated '{name}' in '{folder}'")
 
     if new_name:
-        # After Cmd+D, the duplicate is the most recently modified note
-        # with the same name. Find it and rename.
-        run_osascript(
-            """set matchedNotes to every note in folder (item 1 of argv) whose name is (item 2 of argv)
-    if (count of matchedNotes) is 0 then
-        error "Duplicate not found"
-    end if
-    set name of item 1 of matchedNotes to (item 3 of argv)""",
-            args=[folder, name, new_name],
-        )
+        # After Cmd+D, the duplicate has the same name as the original.
+        # Rename both name property and body title.
+        _rename_note(folder, name, new_name)
         cache_invalidate()
         click.echo(f"Renamed duplicate to '{new_name}'")
 
