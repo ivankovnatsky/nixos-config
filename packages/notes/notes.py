@@ -251,8 +251,9 @@ def _rename_note(folder, old_name, new_name):
             r"(<(?:h[1-6]|div)>)(.*?)(</(?:h[1-6]|div)>)", existing_body, re.DOTALL
         )
         if title_match:
+            # Ensure title uses <h1> (Apple Notes default for new notes)
             renamed_body = (
-                title_match.group(1) + html.escape(new_name) + title_match.group(3)
+                "<div><h1>" + html.escape(new_name) + "</h1></div>"
                 + existing_body[title_match.end():]
             )
             run_osascript(
@@ -879,7 +880,7 @@ def create(folder, body, title, filepath, from_stdin):
         lines = body.splitlines()
         title = lines[0] if lines else body
         body_lines = lines[1:] if len(lines) > 1 else []
-        html_body = f"<div>{html.escape(title)}</div>"
+        html_body = f"<div><h1>{html.escape(title)}</h1></div>"
         if body_lines:
             html_body += "<div><br></div>"
             html_body += _text_to_html_divs("\n".join(body_lines))
