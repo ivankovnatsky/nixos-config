@@ -396,11 +396,18 @@ def folders(as_json):
 @cli.command("new-folder")
 @click.argument("name")
 def new_folder(name):
-    """Create a new folder."""
-    run_osascript(
-        "make new folder with properties {name:(item 1 of argv)}",
-        args=[name],
-    )
+    """Create a new folder (use parent/child for subfolders)."""
+    if "/" in name:
+        parent, child = name.rsplit("/", 1)
+        run_osascript(
+            "make new folder at folder (item 1 of argv) with properties {name:(item 2 of argv)}",
+            args=[parent, child],
+        )
+    else:
+        run_osascript(
+            "make new folder with properties {name:(item 1 of argv)}",
+            args=[name],
+        )
     cache_invalidate()
     click.echo(f"Created folder '{name}'")
 
