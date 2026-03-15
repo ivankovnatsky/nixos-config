@@ -8,6 +8,7 @@
       ]
     ))
     reminders-cli
+    rems
     obs
     age
     asusrouter-cli
