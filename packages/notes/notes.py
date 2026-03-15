@@ -883,6 +883,40 @@ def rename(folder, name, new_name):
     click.echo(f"Renamed '{name}' -> '{new_name}'")
 
 
+@cli.command()
+@click.argument("folder")
+@click.argument("name")
+def duplicate(folder, name):
+    """Duplicate a note via the Notes.app UI (preserves attachments).
+
+    Uses System Events to trigger Cmd+D after selecting the note.
+    Notes.app must be running and accessible.
+    """
+    script = f"""on run argv
+tell application "Notes"
+    {find_note()}
+    show item 1 of matchedNotes
+end tell
+delay 1
+tell application "System Events"
+    tell process "Notes"
+        keystroke "d" using {{command down}}
+    end tell
+end tell
+delay 1
+end run"""
+    result = subprocess.run(
+        ["osascript", "-e", script, folder, name],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        click.echo(f"Error: {result.stderr.strip()}", err=True)
+        sys.exit(1)
+    cache_invalidate()
+    click.echo(f"Duplicated '{name}' in '{folder}'")
+
+
 # -- search -----------------------------------------------------------------
 
 SEARCH_SCRIPT = """set matchedNotes to every note in folder (item 1 of argv) whose plaintext contains (item 2 of argv)
