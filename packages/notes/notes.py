@@ -478,6 +478,7 @@ def create(folder, body, title):
     """Create a new note in a folder."""
     if title:
         html_body = f"<div><h1>{html.escape(title)}</h1></div>"
+        html_body += "<div><br></div>"
         html_body += "".join(
             f"<div>{html.escape(line) if line else '<br>'}</div>"
             for line in body.splitlines()
@@ -485,10 +486,14 @@ def create(folder, body, title):
     else:
         lines = body.splitlines()
         title = lines[0] if lines else body
-        html_body = "".join(
-            f"<div>{html.escape(line) if line else '<br>'}</div>"
-            for line in lines
-        )
+        body_lines = lines[1:] if len(lines) > 1 else []
+        html_body = f"<div>{html.escape(title)}</div>"
+        if body_lines:
+            html_body += "<div><br></div>"
+            html_body += "".join(
+                f"<div>{html.escape(line) if line else '<br>'}</div>"
+                for line in body_lines
+            )
     run_osascript(
         """set newNote to make new note at folder (item 1 of argv) with properties {body:(item 2 of argv)}""",
         args=[folder, html_body],
