@@ -222,16 +222,30 @@ end run"""
     return content
 
 
-def set_note_body(folder, name, new_text):
-    """Set a note's body from plain text."""
-    html_body = "".join(
+def set_note_body(folder, name, new_text, preserve_title=False):
+    """Set a note's body from plain text.
+
+    When preserve_title is True, the existing title (first HTML element) is kept
+    and only the content after it is replaced.
+    """
+    html_content = "".join(
         f"<div>{html.escape(line) if line else '<br>'}</div>"
         for line in new_text.splitlines()
     )
+    if preserve_title:
+        import re
+        existing_body = run_osascript(
+            f"""{find_note()}
+    return body of item 1 of matchedNotes""",
+            args=[folder, name],
+        )
+        title_match = re.match(r"<(?:h[1-6]|div)>.*?</(?:h[1-6]|div)>", existing_body)
+        if title_match:
+            html_content = title_match.group(0) + "\n<div><br></div>\n" + html_content
     run_osascript(
         f"""{find_note()}
     set body of item 1 of matchedNotes to (item 3 of argv)""",
-        args=[folder, name, html_body],
+        args=[folder, name, html_content],
     )
 
 
@@ -377,13 +391,13 @@ def edit(folder, name, filepath):
     if filepath:
         with open(filepath) as f:
             new_text = f.read()
-        set_note_body(folder, name, new_text)
+        set_note_body(folder, name, new_text, preserve_title=True)
         click.echo(f"Updated '{name}' from {filepath}")
         return
 
     if not sys.stdin.isatty():
         new_text = sys.stdin.read()
-        set_note_body(folder, name, new_text)
+        set_note_body(folder, name, new_text, preserve_title=True)
         click.echo(f"Updated '{name}'")
         return
 
@@ -508,24 +522,28 @@ def rename(folder, name, new_name):
         args=[folder, name],
     )
     import re
-    # Replace the first heading or div content (the title)
-    def _replace_title(m):
-        replacement = m.group(1) + html.escape(new_name) + m.group(3)
-        # Ensure blank line after title
-        rest = html_body[m.end():]
-        if not rest.lstrip("\n").startswith("<div><br></div>"):
-            replacement += "\n<div><br></div>"
-        return replacement
-
-    renamed = re.sub(
-        r"(<(?:h[1-6]|div)>)(.*?)(</(?:h[1-6]|div)>)",
-        _replace_title,
-        html_body,
-        count=1,
+    title_match = re.match(
+        r"(<(?:h[1-6]|div)>)(.*?)(</(?:h[1-6]|div)>)", html_body
     )
-    if renamed == html_body:
+    if not title_match:
         click.echo("Error: could not find title to replace", err=True)
         sys.exit(1)
+
+    old_title_text = title_match.group(2)
+    new_title_el = title_match.group(1) + html.escape(new_name) + title_match.group(3)
+    rest = html_body[title_match.end():]
+
+    # If the note was title-only, preserve the old title text as body
+    has_body = rest.replace("<div><br></div>", "").replace("\n", "").strip()
+    if not has_body and old_title_text.strip():
+        rest = (
+            "\n<div><br></div>\n"
+            f"<div>{old_title_text}</div>"
+        )
+    elif not rest.lstrip("\n").startswith("<div><br></div>"):
+        rest = "\n<div><br></div>" + rest
+
+    renamed = new_title_el + rest
     run_osascript(
         f"""{find_note()}
     set body of item 1 of matchedNotes to (item 3 of argv)""",
