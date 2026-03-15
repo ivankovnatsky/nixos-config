@@ -117,14 +117,14 @@ def get_reminders(project_filter=None, include_completed=True):
     Returns (reminders, instance_counts, all_instances) where all_instances is a
     dict of (list, title) -> [list of item dicts] for multi-instance matching.
     """
-    if not (is_darwin() and has_command("reminders")):
+    if not (is_darwin() and has_command("rems")):
         return {}, {}, {}
 
     if project_filter:
         lists = [project_filter]
     else:
         result = subprocess.run(
-            ["reminders", "show-lists"], capture_output=True, text=True
+            ["rems", "show-lists"], capture_output=True, text=True
         )
         if result.returncode != 0:
             return {}, {}, {}
@@ -135,7 +135,7 @@ def get_reminders(project_filter=None, include_completed=True):
     all_instances = {}
 
     for list_name in lists:
-        show_args = ["reminders", "show", list_name, "--format", "json"]
+        show_args = ["rems", "show", list_name, "--format", "json"]
         if include_completed:
             show_args.append("--include-completed")
 
@@ -797,7 +797,7 @@ def find_reminder_index(list_name, prefixed_title, completed_only=False, due_dat
     - due_date: match by due date (date_key comparison)
     - notes_empty: True=only match items with empty notes, False=only with notes
     """
-    cmd = ["reminders", "show", list_name, "--format", "json"]
+    cmd = ["rems", "show", list_name, "--format", "json"]
     if completed_only:
         cmd.append("--only-completed")
     else:
@@ -1001,13 +1001,13 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                     f"  ~ Taskwarrior: {prefixed}\n    {format_update_summary(tw_updates)}"
                 )
 
-        if rem_updates and is_darwin() and has_command("reminders"):
+        if rem_updates and is_darwin() and has_command("rems"):
             rem_prefixed = f"{project}: {rem['title']}"
             rem_due = rem.get("due", "")
             idx = find_reminder_index(project, rem_prefixed, due_date=rem_due)
             if idx is not None:
                 edit_args = [
-                    "reminders",
+                    "rems",
                     "edit",
                     project,
                     str(idx),
@@ -1025,7 +1025,7 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                     run(edit_args)
                 if "status" in rem_updates:
                     if rem_updates["status"] == "completed":
-                        complete_cmd = ["reminders", "complete", project, str(idx)]
+                        complete_cmd = ["rems", "complete", project, str(idx)]
                         raw_end = tw.get("end", "")
                         if raw_end:
                             complete_cmd.extend(["--completion-date", tw_date_to_iso(raw_end)])
@@ -1035,7 +1035,7 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                             project, rem_prefixed, completed_only=True
                         )
                         if cidx is not None:
-                            run(["reminders", "uncomplete", project, str(cidx)])
+                            run(["rems", "uncomplete", project, str(cidx)])
                 count += 1
                 click.echo(
                     f"  ~ Reminders: {prefixed}\n    {format_update_summary(rem_updates)}"
@@ -1137,13 +1137,13 @@ def sort_reminders(source, approve, interactive, create, verbose):
     global _verbose
     _verbose = verbose
 
-    if not (is_darwin() and has_command("reminders")):
+    if not (is_darwin() and has_command("rems")):
         click.echo("Error: reminders CLI not available", err=True)
         raise SystemExit(1)
 
     # Get all existing list names
     result = subprocess.run(
-        ["reminders", "show-lists"], capture_output=True, text=True
+        ["rems", "show-lists"], capture_output=True, text=True
     )
     if result.returncode != 0:
         click.echo("Error: could not fetch reminder lists", err=True)
@@ -1156,7 +1156,7 @@ def sort_reminders(source, approve, interactive, create, verbose):
     moves = []
     for list_name in lists_to_scan:
         result = subprocess.run(
-            ["reminders", "show", list_name, "--format", "json"],
+            ["rems", "show", list_name, "--format", "json"],
             capture_output=True,
             text=True,
         )
@@ -1229,7 +1229,7 @@ def sort_reminders(source, approve, interactive, create, verbose):
 
         # Create list if needed
         if m["needs_create"] and target not in created_lists:
-            res = run(["reminders", "new-list", target])
+            res = run(["rems", "new-list", target])
             if res.returncode != 0:
                 click.echo(f"  ERROR creating list '{target}', skipping", err=True)
                 continue
@@ -1238,7 +1238,7 @@ def sort_reminders(source, approve, interactive, create, verbose):
 
         # Move the item (use externalId if available, else index)
         lookup = m["external_id"] if m["external_id"] else str(m["index"])
-        res = run(["reminders", "move", m["source"], lookup, target])
+        res = run(["rems", "move", m["source"], lookup, target])
         if res.returncode != 0:
             click.echo(f"  ERROR moving: {m['title']}", err=True)
             continue
@@ -1351,7 +1351,7 @@ def sort_all(ctx, source, project, approve, interactive, create, verbose):
     global _verbose
     _verbose = verbose
 
-    if is_darwin() and has_command("reminders"):
+    if is_darwin() and has_command("rems"):
         click.echo("=== Reminders ===")
         ctx.invoke(
             sort_reminders,
@@ -1747,9 +1747,9 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
                         run(["task", uuid, "modify", f"end:{raw_end}"])
 
     # Taskwarrior-only → add to Reminders
-    if is_darwin() and has_command("reminders"):
+    if is_darwin() and has_command("rems"):
         existing = subprocess.run(
-            ["reminders", "show-lists"], capture_output=True, text=True
+            ["rems", "show-lists"], capture_output=True, text=True
         )
         existing_lists = set(existing.stdout.strip().splitlines())
 
@@ -1786,10 +1786,10 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
                     continue
 
             if proj not in existing_lists:
-                run(["reminders", "new-list", proj])
+                run(["rems", "new-list", proj])
                 existing_lists.add(proj)
 
-            add_cmd = ["reminders", "add", proj, prefixed]
+            add_cmd = ["rems", "add", proj, prefixed]
 
             # Due date — convert TW compact format to ISO for reminders CLI
             raw_due = item.get("due", "")
@@ -1814,7 +1814,7 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
                 if item["status"] == "completed":
                     # Search only pending items — the newly added one will be pending
                     show = subprocess.run(
-                        ["reminders", "show", proj, "--format", "json"],
+                        ["rems", "show", proj, "--format", "json"],
                         capture_output=True,
                         text=True,
                     )
@@ -1827,7 +1827,7 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
                                 if r.get("title", "") == prefixed and not r.get("isCompleted", False):
                                     match_idx = i
                             if match_idx is not None:
-                                complete_cmd = ["reminders", "complete", proj, str(match_idx)]
+                                complete_cmd = ["rems", "complete", proj, str(match_idx)]
                                 raw_end = item.get("end", "")
                                 if raw_end:
                                     complete_cmd.extend(["--completion-date", tw_date_to_iso(raw_end)])
@@ -2256,7 +2256,7 @@ def rem_edit(pattern):
     """Edit reminders matching pattern in editor."""
     pattern_str = " ".join(pattern)
     result = run(
-        ["reminders", "show-all", "--include-completed", "--format", "json"]
+        ["rems", "show-all", "--include-completed", "--format", "json"]
     )
     if result.returncode != 0:
         click.echo("Failed to fetch reminders", err=True)
@@ -2303,7 +2303,7 @@ def rem_edit(pattern):
 
         list_name = original["list"]
         ext_id = original["externalId"]
-        cmd = ["reminders", "edit", list_name, ext_id, "--include-completed"]
+        cmd = ["rems", "edit", list_name, ext_id, "--include-completed"]
 
         if edited.get("title") != original.get("title"):
             cmd.append(edited["title"])
@@ -2327,7 +2327,7 @@ def rem_find(pattern):
     """Search reminders by pattern."""
     pattern_str = " ".join(pattern)
     result = run(
-        ["reminders", "show-all", "--include-completed", "--format", "json"]
+        ["rems", "show-all", "--include-completed", "--format", "json"]
     )
     if result.returncode != 0:
         click.echo("Failed to fetch reminders", err=True)
@@ -2355,7 +2355,7 @@ def rem_find(pattern):
 @reminders_group.command(name="list")
 def rem_list():
     """List reminders."""
-    result = run(["reminders", "show-all", "--format", "json"])
+    result = run(["rems", "show-all", "--format", "json"])
     if result.returncode != 0:
         click.echo("Failed to fetch reminders", err=True)
         raise SystemExit(1)
