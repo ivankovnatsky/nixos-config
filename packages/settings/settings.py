@@ -17,7 +17,6 @@ Subcommands:
 
 from __future__ import annotations
 
-import argparse
 import os
 import re
 import subprocess
@@ -25,9 +24,81 @@ import sys
 from datetime import date
 from pathlib import Path
 
+import click
+
 # Full path required because Homebrew PATH isn't available during Nix Darwin activation
 DISPLAYPLACER_PATH = "/opt/homebrew/bin/displayplacer"
 POWEROFF_VOLUME_SET = "1.0"
+
+# Command aliases
+COMMAND_ALIASES = {
+    "a": "appearance",
+    "m": "menubar",
+    "s": "scaling",
+    "scale": "scaling",
+    "d": "dock",
+    "ah": "autohide",
+    "scroll": "scrolling",
+    "loc": "location",
+    "w": "awake",
+    "sp": "spaces",
+    "space": "spaces",
+    "desktop": "spaces",
+    "desktops": "spaces",
+    "win": "windows",
+    "vol": "volume",
+    "v": "volume",
+    "li": "login",
+    "off": "poweroff",
+    "h": "help",
+}
+
+# Build reverse mapping: command -> list of aliases
+REVERSE_ALIASES: dict[str, list[str]] = {}
+for _alias, _target in COMMAND_ALIASES.items():
+    REVERSE_ALIASES.setdefault(_target, []).append(_alias)
+
+
+class AliasedGroup(click.Group):
+    def get_command(self, ctx, cmd_name):
+        rv = click.Group.get_command(self, ctx, cmd_name)
+        if rv is not None:
+            return rv
+        target = COMMAND_ALIASES.get(cmd_name)
+        if target:
+            return click.Group.get_command(self, ctx, target)
+        return None
+
+    def resolve_command(self, ctx, args):
+        cmd_name = args[0] if args else None
+        if cmd_name and cmd_name in COMMAND_ALIASES:
+            args = [COMMAND_ALIASES[cmd_name]] + args[1:]
+        return super().resolve_command(ctx, args)
+
+    def format_commands(self, ctx, formatter):
+        commands = []
+        for subcommand in self.list_commands(ctx):
+            cmd = self.commands.get(subcommand)
+            if cmd is None or cmd.hidden:
+                continue
+            help_text = cmd.get_short_help_str(limit=150)
+            aliases = REVERSE_ALIASES.get(subcommand, [])
+            if aliases:
+                display = f"{subcommand} ({','.join(sorted(aliases))})"
+            else:
+                display = subcommand
+            commands.append((display, help_text))
+        if commands:
+            with formatter.section("Commands"):
+                formatter.write_dl(commands)
+
+
+@click.group(cls=AliasedGroup, invoke_without_command=True)
+@click.pass_context
+def cli(ctx):
+    """Toggle system settings (appearance, menubar, scaling)"""
+    if ctx.invoked_subcommand is None:
+        click.echo(ctx.get_help())
 
 
 # Platform Detection
@@ -228,21 +299,24 @@ def appearance_open_settings() -> None:
         appearance_open_settings_kde()
 
 
-def cmd_appearance(args: argparse.Namespace) -> int:
+@cli.command()
+@click.option("--init", is_flag=True, help="Initialize to dark mode without toggling")
+def appearance(init):
+    """Toggle dark/light mode and wallpaper"""
     if not is_macos() and not is_kde():
         print("Unsupported platform", file=sys.stderr)
-        return 1
+        sys.exit(1)
 
-    if args.init:
+    if init:
         state_file = appearance_get_state_file()
         today = date.today().isoformat()
         if state_file.exists() and state_file.read_text().strip() == today:
             print("Skipping appearance init (manual toggle was run today)")
-            return 0
+            return
         appearance_set_dark_mode(True)
         print("Initialized appearance")
         appearance_remove_state()
-        return 0
+        return
 
     is_dark = appearance_get_current_theme()
     new_dark = not is_dark
@@ -262,8 +336,6 @@ def cmd_appearance(args: argparse.Namespace) -> int:
         appearance_open_settings()
     except Exception as e:
         print(f"Warning: could not open settings: {e}", file=sys.stderr)
-
-    return 0
 
 
 # Menubar: Visibility Modes (macOS only)
@@ -338,27 +410,30 @@ def menubar_cycle_mode() -> None:
     print(f"Menubar: {menubar_get_description(next_mode)}")
 
 
-def cmd_menubar(args: argparse.Namespace) -> int:
+@cli.command()
+@click.option("--status", is_flag=True, help="Show current menubar mode")
+@click.argument("mode", required=False, type=click.Choice(["always", "desktop", "fullscreen", "never"]))
+def menubar(status, mode):
+    """Toggle menubar visibility (macOS only)"""
     if not is_macos():
         print("Menubar settings only available on macOS", file=sys.stderr)
-        return 1
+        sys.exit(1)
 
-    if args.status:
+    if status:
         current = menubar_get_current_mode()
         desc = menubar_get_description(current)
         print(f"Current: {current} ({desc})")
-        return 0
+        return
 
-    if args.mode:
-        if args.mode not in MENUBAR_MODES:
-            print(f"Unknown mode: {args.mode}", file=sys.stderr)
-            return 1
-        menubar_set_mode(args.mode)
-        print(f"Menubar: {menubar_get_description(args.mode)}")
-        return 0
+    if mode:
+        if mode not in MENUBAR_MODES:
+            print(f"Unknown mode: {mode}", file=sys.stderr)
+            sys.exit(1)
+        menubar_set_mode(mode)
+        print(f"Menubar: {menubar_get_description(mode)}")
+        return
 
     menubar_cycle_mode()
-    return 0
 
 
 # Scaling: Display Resolution (macOS only)
@@ -671,30 +746,38 @@ def scaling_toggle() -> int:
     return 1
 
 
-def cmd_scaling(args: argparse.Namespace) -> int:
+@cli.command()
+@click.option("--status", is_flag=True, help="Show current scaling mode")
+@click.option("--init", is_flag=True, help="Initialize to scaled mode (idempotent, for activation scripts)")
+@click.option("--mode", type=click.Choice(["scaled", "default"]), help="Set specific mode: 'scaled' (larger text) or 'default' (more space)")
+@click.option("--dock", "also_dock", is_flag=True, help="Also toggle dock auto-hide")
+def scaling(status, init, mode, also_dock):
+    """Toggle display scaling (macOS only)"""
     if not is_macos():
         print("Scaling settings only available on macOS", file=sys.stderr)
-        return 1
+        sys.exit(1)
 
-    if args.init:
+    if init:
         display = scaling_get_builtin_display()
         if not display:
             print("Skipping scaling init (no built-in display)")
-            return 0
+            return
         mode_name = scaling_get_current_mode_name(display)
         if mode_name == "scaled":
             print("Skipping scaling init (already at scaled)")
-            return 0
+            return
         result = scaling_set_mode("scaled")
         if result == 0:
             print("Initialized scaling to larger text")
-        return result
+        if result != 0:
+            sys.exit(result)
+        return
 
-    if args.status:
+    if status:
         display = scaling_get_builtin_display()
         if not display:
             print("Could not find built-in display", file=sys.stderr)
-            return 1
+            sys.exit(1)
         current = display.get("resolution")
         mode_name = scaling_get_current_mode_name(display)
         default_mode, scaled_mode = scaling_get_resolution_pair(display)
@@ -708,76 +791,82 @@ def cmd_scaling(args: argparse.Namespace) -> int:
                 print(
                     f"  Available: more space ({default_mode['res']}), larger text ({scaled_mode['res']})"
                 )
-        return 0
+        return
 
-    if args.mode:
-        result = scaling_set_mode(args.mode)
+    if mode:
+        result = scaling_set_mode(mode)
     else:
         result = scaling_toggle()
 
-    if result == 0 and args.dock:
+    if result == 0 and also_dock:
         dock_toggle()
-    return result
+    if result != 0:
+        sys.exit(result)
 
 
 # Dock: Toggle dock autohide (macOS only)
-def cmd_dock(args: argparse.Namespace) -> int:
+@cli.command()
+@click.option("--status", is_flag=True, help="Show current dock autohide status")
+def dock(status):
+    """Toggle dock autohide (macOS only)"""
     if not is_macos():
         print("Dock settings only available on macOS", file=sys.stderr)
-        return 1
+        sys.exit(1)
 
-    if args.status:
+    if status:
         hidden = dock_get_autohide()
-        status = "hidden (auto-hide enabled)" if hidden else "visible"
-        print(f"Dock: {status}")
-        return 0
+        status_str = "hidden (auto-hide enabled)" if hidden else "visible"
+        print(f"Dock: {status_str}")
+        return
 
-    return dock_toggle()
+    result = dock_toggle()
+    if result != 0:
+        sys.exit(result)
 
 
 # Autohide: Toggle dock and menubar autohide (macOS only)
-def cmd_autohide(args: argparse.Namespace) -> int:
+@cli.command()
+@click.option("--status", is_flag=True, help="Show current autohide status")
+@click.argument("mode", required=False, type=click.Choice(["always", "desktop", "fullscreen", "never"]))
+def autohide(status, mode):
+    """Toggle dock and menubar autohide (macOS only)"""
     if not is_macos():
         print("Autohide settings only available on macOS", file=sys.stderr)
-        return 1
+        sys.exit(1)
 
-    if args.status:
+    if status:
         dock_hidden = dock_get_autohide()
         menubar_mode = menubar_get_current_mode()
         dock_status = "hidden (auto-hide enabled)" if dock_hidden else "visible"
         menubar_desc = menubar_get_description(menubar_mode)
         print(f"Dock: {dock_status}")
         print(f"Menubar: {menubar_mode} ({menubar_desc})")
-        return 0
+        return
 
-    if args.mode:
-        # Explicit mode specified
-        mode = args.mode
+    if mode:
+        target = mode
     else:
         # Toggle between always and fullscreen
         dock_hidden = dock_get_autohide()
         menubar_mode = menubar_get_current_mode()
 
         if dock_hidden or menubar_mode == "always":
-            mode = "fullscreen"
+            target = "fullscreen"
         elif menubar_mode == "fullscreen":
-            mode = "always"
+            target = "always"
         else:
-            # Default to fullscreen for other modes (desktop, never)
-            mode = "fullscreen"
+            target = "fullscreen"
 
     # Set dock based on mode
-    if mode == "always":
+    if target == "always":
         dock_set_autohide(True)
         print("Dock: hidden")
     else:
         dock_set_autohide(False)
         print("Dock: visible")
 
-    menubar_set_mode(mode)
-    print(f"Menubar: {menubar_get_description(mode)}")
-
-    return 0
+    menubar_set_mode(target)
+    print(f"Menubar: {menubar_get_description(target)}")
 
 
 # Scrolling: Natural scrolling toggle (macOS only)
@@ -801,30 +890,33 @@ def scrolling_set_natural(enabled: bool) -> None:
     lib.setSwipeScrollDirection(1 if enabled else 0)
 
 
-def cmd_scrolling(args: argparse.Namespace) -> int:
+@cli.command()
+@click.option("--status", is_flag=True, help="Show current scrolling mode")
+@click.argument("mode", required=False, type=click.Choice(["natural", "traditional"]))
+def scrolling(status, mode):
+    """Toggle natural scrolling (macOS only)"""
     if not is_macos():
         print("Scrolling settings only available on macOS", file=sys.stderr)
-        return 1
+        sys.exit(1)
 
-    if args.status:
+    if status:
         natural = scrolling_get_natural()
-        status = "natural" if natural else "traditional"
-        print(f"Scrolling: {status}")
-        return 0
+        status_str = "natural" if natural else "traditional"
+        print(f"Scrolling: {status_str}")
+        return
 
-    if args.mode:
-        enabled = args.mode == "natural"
+    if mode:
+        enabled = mode == "natural"
         scrolling_set_natural(enabled)
-        status = "natural" if enabled else "traditional"
-        print(f"Scrolling: {status}")
-        return 0
+        status_str = "natural" if enabled else "traditional"
+        print(f"Scrolling: {status_str}")
+        return
 
     # Toggle
     current = scrolling_get_natural()
     scrolling_set_natural(not current)
-    status = "traditional" if current else "natural"
-    print(f"Scrolling: {status}")
-    return 0
+    status_str = "traditional" if current else "natural"
+    print(f"Scrolling: {status_str}")
 
 
 # Location: Toggle Location Services (macOS only)
@@ -918,63 +1010,68 @@ end tell
         return False, None
 
 
-def cmd_location(args: argparse.Namespace) -> int:
+@cli.command()
+@click.option("--status", is_flag=True, help="Show current Location Services status")
+@click.option("--init", is_flag=True, help="Enable Location Services if not already enabled (idempotent, for activation scripts)")
+@click.argument("mode", required=False, type=click.Choice(["on", "off"]))
+def location(status, init, mode):
+    """Toggle Location Services (macOS only)"""
     if not is_macos():
         print("Location Services only available on macOS", file=sys.stderr)
-        return 1
+        sys.exit(1)
 
-    if args.status:
+    if status:
         enabled = location_check_enabled()
         if enabled is not None:
-            status = "enabled" if enabled else "disabled"
-            print(f"Location Services: {status}")
-            return 0
+            status_str = "enabled" if enabled else "disabled"
+            print(f"Location Services: {status_str}")
+            return
         print("Could not read Location Services status", file=sys.stderr)
-        return 1
+        sys.exit(1)
 
-    if args.init:
+    if init:
         enabled = location_check_enabled()
         if enabled is True:
             print("Location Services: already enabled")
-            return 0
+            return
         if enabled is None:
             print("Could not check Location Services status, skipping", file=sys.stderr)
-            return 0
+            return
         print("Location Services is disabled. Enable manually: settings location on")
-        return 0
+        return
 
     # Always check current state via Swift before touching UI
     enabled = location_check_enabled()
     if enabled is None:
         print("Could not read Location Services status", file=sys.stderr)
-        return 1
+        sys.exit(1)
 
-    if args.mode == "on" and enabled:
+    if mode == "on" and enabled:
         print("Location Services: already enabled")
-        return 0
-    if args.mode == "off" and not enabled:
+        return
+    if mode == "off" and not enabled:
         print("Location Services: already disabled")
-        return 0
+        return
 
     # Determine action: explicit mode or toggle
-    if args.mode:
-        action = args.mode
+    if mode:
+        action = mode
     else:
         action = "off" if enabled else "on"
 
     ok, val = location_osascript(action)
     if ok and val is not None:
-        status = "enabled" if val == 1 else "disabled"
-        print(f"Location Services: {status}")
+        status_str = "enabled" if val == 1 else "disabled"
+        print(f"Location Services: {status_str}")
 
         if val == 1 and not enabled:
             print("Opening Weather app to initialize location...")
             subprocess.run(["open", "-a", "Weather"], check=False)
 
-        return 0
+        return
 
     print("Could not toggle Location Services (authentication may be required)", file=sys.stderr)
-    return 1
+    sys.exit(1)
 
 
 # Awake: Prevent system from sleeping (macOS + Linux)
@@ -992,6 +1089,21 @@ def parse_duration(value: str) -> int:
         except ValueError:
             pass
     return int(value)
+
+
+class DurationType(click.ParamType):
+    name = "duration"
+
+    def convert(self, value, param, ctx):
+        if isinstance(value, int):
+            return value
+        try:
+            return parse_duration(value)
+        except (ValueError, TypeError):
+            self.fail(f"{value!r} is not a valid duration (e.g. 30m, 2h, 90s)", param, ctx)
+
+
+DURATION = DurationType()
 
 
 def format_duration(seconds: int) -> str:
@@ -1068,31 +1180,35 @@ def awake_linux_xset(timeout: int) -> int:
         return 1
 
 
-def cmd_awake(args: argparse.Namespace) -> int:
-    timeout = args.timeout
-
+@cli.command()
+@click.option("-t", "--timeout", type=DURATION, default=DEFAULT_AWAKE_TIMEOUT, help=f"Timeout as duration, e.g. 30m, 2h, 90s (default: {DEFAULT_AWAKE_TIMEOUT} = 12 hours)")
+def awake(timeout):
+    """Prevent system from sleeping (macOS + Linux)"""
     if is_macos():
-        return awake_macos(timeout)
+        result = awake_macos(timeout)
     elif is_linux():
-        result = subprocess.run(
+        r = subprocess.run(
             ["which", "systemd-inhibit"],
             capture_output=True,
         )
-        if result.returncode == 0:
-            return awake_linux_systemd(timeout)
-
-        result = subprocess.run(
-            ["which", "xset"],
-            capture_output=True,
-        )
-        if result.returncode == 0:
-            return awake_linux_xset(timeout)
-
-        print("Error: Could not find systemd-inhibit or xset", file=sys.stderr)
-        return 1
+        if r.returncode == 0:
+            result = awake_linux_systemd(timeout)
+        else:
+            r = subprocess.run(
+                ["which", "xset"],
+                capture_output=True,
+            )
+            if r.returncode == 0:
+                result = awake_linux_xset(timeout)
+            else:
+                print("Error: Could not find systemd-inhibit or xset", file=sys.stderr)
+                sys.exit(1)
     else:
         print("Unsupported platform", file=sys.stderr)
-        return 1
+        sys.exit(1)
+
+    if result != 0:
+        sys.exit(result)
 
 
 # Windows: Close/hide app windows (macOS only)
@@ -1210,45 +1326,49 @@ end tell
         return []
 
 
-def cmd_windows(args: argparse.Namespace) -> int:
+@cli.command()
+@click.argument("action", type=click.Choice(["list", "close", "hide"]))
+@click.argument("apps", nargs=-1)
+def windows(action, apps):
+    """Close/hide app windows (macOS only)"""
     if not is_macos():
         print("Windows management only available on macOS", file=sys.stderr)
-        return 1
+        sys.exit(1)
 
-    if args.action == "list":
-        apps = windows_list()
-        if apps:
+    if action == "list":
+        app_list = windows_list()
+        if app_list:
             print("Apps with visible windows:")
-            for app in apps:
+            for app in app_list:
                 print(f"  - {app}")
         else:
             print("No apps with visible windows")
-        return 0
+        return
 
-    if args.action == "close":
-        if not args.apps:
+    if action == "close":
+        if not apps:
             print("Error: app name(s) required for close action", file=sys.stderr)
-            return 1
-        for app in args.apps:
+            sys.exit(1)
+        for app in apps:
             if windows_close(app):
                 print(f"Closed windows of {app}")
             else:
                 print(f"Could not close windows of {app} (not running or no windows)")
-        return 0
+        return
 
-    if args.action == "hide":
-        if not args.apps:
+    if action == "hide":
+        if not apps:
             print("Error: app name(s) required for hide action", file=sys.stderr)
-            return 1
-        for app in args.apps:
+            sys.exit(1)
+        for app in apps:
             if windows_hide(app):
                 print(f"Hidden {app}")
             else:
                 print(f"Could not hide {app} (not running)")
-        return 0
+        return
 
     print("Unknown action", file=sys.stderr)
-    return 1
+    sys.exit(1)
 
 
 # Spaces: Add/remove desktop spaces (macOS only)
@@ -1343,18 +1463,24 @@ end tell
     return 1
 
 
-def cmd_spaces(args: argparse.Namespace) -> int:
+@cli.command()
+@click.argument("action", type=click.Choice(["add", "remove"]))
+def spaces(action):
+    """Add or remove desktop spaces (macOS only)"""
     if not is_macos():
         print("Spaces settings only available on macOS", file=sys.stderr)
-        return 1
+        sys.exit(1)
 
-    if args.action == "add":
-        return spaces_add()
-    elif args.action == "remove":
-        return spaces_remove()
+    if action == "add":
+        result = spaces_add()
+    elif action == "remove":
+        result = spaces_remove()
     else:
         print("Usage: settings spaces <add|remove>", file=sys.stderr)
-        return 1
+        sys.exit(1)
+
+    if result != 0:
+        sys.exit(result)
 
 
 # Volume: Get/set system volume (macOS + Linux)
@@ -1440,34 +1566,37 @@ def volume_set(percent: float) -> bool:
         return False
 
 
-def cmd_volume(args: argparse.Namespace) -> int:
+@cli.command()
+@click.option("--status", is_flag=True, help="Show current volume level")
+@click.argument("level", required=False, type=float)
+def volume(status, level):
+    """Get or set system volume (macOS + Linux)"""
     if not is_macos() and not is_linux():
         print("Volume settings only available on macOS and Linux", file=sys.stderr)
-        return 1
+        sys.exit(1)
 
-    if args.status:
+    if status:
         vol = volume_get()
         if vol is not None:
             print(f"Volume: {vol:.0f}%")
-            return 0
+            return
         else:
             print("Could not get volume", file=sys.stderr)
-            return 1
+            sys.exit(1)
 
-    if args.level is not None:
-        if volume_set(args.level):
-            print(f"Volume: {args.level:.1f}%")
-            return 0
-        return 1
+    if level is not None:
+        if volume_set(level):
+            print(f"Volume: {level:.1f}%")
+            return
+        sys.exit(1)
 
     # Default: show status
     vol = volume_get()
     if vol is not None:
         print(f"Volume: {vol:.0f}%")
-        return 0
     else:
         print("Could not get volume", file=sys.stderr)
-        return 1
+        sys.exit(1)
 
 
 # Poweroff: Set volume and shutdown (macOS + Linux)
@@ -1555,12 +1684,14 @@ def login_remove(item_name: str) -> bool:
     return True
 
 
-def cmd_login(args: argparse.Namespace) -> int:
+@cli.command()
+@click.argument("action", type=click.Choice(["list", "add", "remove"]))
+@click.argument("apps", nargs=-1)
+def login(action, apps):
+    """List, add, or remove login items (macOS only)"""
     if not is_macos():
         print("Login items are only supported on macOS.", file=sys.stderr)
-        return 1
-
-    action = args.action
+        sys.exit(1)
 
     if action == "list":
         items = login_list()
@@ -1569,14 +1700,14 @@ def cmd_login(args: argparse.Namespace) -> int:
         else:
             for item in items:
                 print(item)
-        return 0
+        return
 
     if action == "add":
-        if not args.apps:
+        if not apps:
             print("Error: specify app name(s) to add", file=sys.stderr)
-            return 1
+            sys.exit(1)
         ok = True
-        for app in args.apps:
+        for app in apps:
             existing = login_list()
             if app in existing:
                 print(f"Already a login item: {app}")
@@ -1585,14 +1716,16 @@ def cmd_login(args: argparse.Namespace) -> int:
                 print(f"Added login item: {app}")
             else:
                 ok = False
-        return 0 if ok else 1
+        if not ok:
+            sys.exit(1)
+        return
 
     if action == "remove":
-        if not args.apps:
+        if not apps:
             print("Error: specify app name(s) to remove", file=sys.stderr)
-            return 1
+            sys.exit(1)
         ok = True
-        for app in args.apps:
+        for app in apps:
             existing = login_list()
             if app not in existing:
                 print(f"Not a login item: {app}")
@@ -1601,287 +1734,44 @@ def cmd_login(args: argparse.Namespace) -> int:
                 print(f"Removed login item: {app}")
             else:
                 ok = False
-        return 0 if ok else 1
+        if not ok:
+            sys.exit(1)
+        return
 
-    return 0
 
-
-def cmd_poweroff(args: argparse.Namespace) -> int:
+@cli.command()
+@click.option("-v", "--volume", "vol", type=float, default=POWEROFF_VOLUME_SET, help=f"Volume level before shutdown (default: {POWEROFF_VOLUME_SET}%)")
+def poweroff(vol):
+    """Set volume and shutdown system (macOS + Linux)"""
     if not is_macos() and not is_linux():
         print("Poweroff only available on macOS and Linux", file=sys.stderr)
-        return 1
+        sys.exit(1)
 
     # Log battery status before shutdown (macOS only)
     poweroff_log_battery()
 
     # Set volume to specified level before shutdown
-    volume = args.volume
-    if volume_set(volume):
-        print(f"Volume set to {volume}%")
+    if volume_set(vol):
+        print(f"Volume set to {vol}%")
     else:
         print("Warning: Could not set volume", file=sys.stderr)
 
     # Shutdown the system
     print("Shutting down...")
     subprocess.run(["sudo", "shutdown", "-h", "now"], check=True)
-    return 0
+
+
+@cli.command("help", hidden=True)
+@click.pass_context
+def help_cmd(ctx):
+    """Show this help message"""
+    click.echo(ctx.parent.get_help())
 
 
 # Main CLI
 def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Toggle system settings (appearance, menubar, scaling)",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-    )
-    subparsers = parser.add_subparsers(dest="command", help="Available commands")
-
-    # Appearance subcommand
-    appearance_parser = subparsers.add_parser(
-        "appearance",
-        aliases=["a"],
-        help="Toggle dark/light mode and wallpaper",
-    )
-    appearance_parser.add_argument(
-        "--init",
-        action="store_true",
-        help="Initialize to dark mode without toggling",
-    )
-    appearance_parser.set_defaults(func=cmd_appearance)
-
-    # Menubar subcommand
-    menubar_parser = subparsers.add_parser(
-        "menubar",
-        aliases=["m"],
-        help="Toggle menubar visibility (macOS only)",
-    )
-    menubar_parser.add_argument(
-        "--status",
-        action="store_true",
-        help="Show current menubar mode",
-    )
-    menubar_parser.add_argument(
-        "mode",
-        nargs="?",
-        choices=["always", "desktop", "fullscreen", "never"],
-        help="Set specific mode (default: toggle fullscreen/desktop)",
-    )
-    menubar_parser.set_defaults(func=cmd_menubar)
-
-    # Scaling subcommand
-    scaling_parser = subparsers.add_parser(
-        "scaling",
-        aliases=["s", "scale"],
-        help="Toggle display scaling (macOS only)",
-    )
-    scaling_parser.add_argument(
-        "--status",
-        action="store_true",
-        help="Show current scaling mode",
-    )
-    scaling_parser.add_argument(
-        "--init",
-        action="store_true",
-        help="Initialize to scaled mode (idempotent, for activation scripts)",
-    )
-    scaling_parser.add_argument(
-        "--mode",
-        choices=["scaled", "default"],
-        help="Set specific mode: 'scaled' (larger text) or 'default' (more space)",
-    )
-    scaling_parser.add_argument(
-        "--dock",
-        action="store_true",
-        help="Also toggle dock auto-hide",
-    )
-    scaling_parser.set_defaults(func=cmd_scaling)
-
-    # Dock subcommand
-    dock_parser = subparsers.add_parser(
-        "dock",
-        aliases=["d"],
-        help="Toggle dock autohide (macOS only)",
-    )
-    dock_parser.add_argument(
-        "--status",
-        action="store_true",
-        help="Show current dock autohide status",
-    )
-    dock_parser.set_defaults(func=cmd_dock)
-
-    # Autohide subcommand
-    autohide_parser = subparsers.add_parser(
-        "autohide",
-        aliases=["ah"],
-        help="Toggle dock and menubar autohide (macOS only)",
-    )
-    autohide_parser.add_argument(
-        "--status",
-        action="store_true",
-        help="Show current autohide status",
-    )
-    autohide_parser.add_argument(
-        "mode",
-        nargs="?",
-        choices=["always", "desktop", "fullscreen", "never"],
-        help="Set specific mode (default: toggle between always/fullscreen)",
-    )
-    autohide_parser.set_defaults(func=cmd_autohide)
-
-    # Scrolling subcommand
-    scrolling_parser = subparsers.add_parser(
-        "scrolling",
-        aliases=["scroll"],
-        help="Toggle natural scrolling (macOS only)",
-    )
-    scrolling_parser.add_argument(
-        "--status",
-        action="store_true",
-        help="Show current scrolling mode",
-    )
-    scrolling_parser.add_argument(
-        "mode",
-        nargs="?",
-        choices=["natural", "traditional"],
-        help="Set specific mode (default: toggle)",
-    )
-    scrolling_parser.set_defaults(func=cmd_scrolling)
-
-    # Location subcommand
-    location_parser = subparsers.add_parser(
-        "location",
-        aliases=["loc"],
-        help="Toggle Location Services (macOS only)",
-    )
-    location_parser.add_argument(
-        "--status",
-        action="store_true",
-        help="Show current Location Services status",
-    )
-    location_parser.add_argument(
-        "--init",
-        action="store_true",
-        help="Enable Location Services if not already enabled (idempotent, for activation scripts)",
-    )
-    location_parser.add_argument(
-        "mode",
-        nargs="?",
-        choices=["on", "off"],
-        help="Set specific mode (default: toggle)",
-    )
-    location_parser.set_defaults(func=cmd_location)
-
-    # Awake subcommand
-    awake_parser = subparsers.add_parser(
-        "awake",
-        aliases=["w"],
-        help="Prevent system from sleeping (macOS + Linux)",
-    )
-    awake_parser.add_argument(
-        "-t",
-        "--timeout",
-        type=parse_duration,
-        default=DEFAULT_AWAKE_TIMEOUT,
-        help=f"Timeout as duration, e.g. 30m, 2h, 90s (default: {DEFAULT_AWAKE_TIMEOUT} = 12 hours)",
-    )
-    awake_parser.set_defaults(func=cmd_awake)
-
-    # Spaces subcommand
-    spaces_parser = subparsers.add_parser(
-        "spaces",
-        aliases=["sp", "space", "desktop", "desktops"],
-        help="Add or remove desktop spaces (macOS only)",
-    )
-    spaces_parser.add_argument(
-        "action",
-        choices=["add", "remove"],
-        help="Action to perform",
-    )
-    spaces_parser.set_defaults(func=cmd_spaces)
-
-    # Windows subcommand
-    windows_parser = subparsers.add_parser(
-        "windows",
-        aliases=["win"],
-        help="Close/hide app windows (macOS only)",
-    )
-    windows_parser.add_argument(
-        "action",
-        choices=["list", "close", "hide"],
-        help="Action to perform",
-    )
-    windows_parser.add_argument(
-        "apps",
-        nargs="*",
-        help="App name(s) (required for close/hide)",
-    )
-    windows_parser.set_defaults(func=cmd_windows)
-
-    # Volume subcommand
-    volume_parser = subparsers.add_parser(
-        "volume",
-        aliases=["vol", "v"],
-        help="Get or set system volume (macOS + Linux)",
-    )
-    volume_parser.add_argument(
-        "--status",
-        action="store_true",
-        help="Show current volume level",
-    )
-    volume_parser.add_argument(
-        "level",
-        nargs="?",
-        type=float,
-        help="Set volume to this percentage (0-100)",
-    )
-    volume_parser.set_defaults(func=cmd_volume)
-
-    # Login items subcommand
-    login_parser = subparsers.add_parser(
-        "login",
-        aliases=["li"],
-        help="List, add, or remove login items (macOS only)",
-    )
-    login_parser.add_argument(
-        "action",
-        choices=["list", "add", "remove"],
-        help="Action to perform",
-    )
-    login_parser.add_argument(
-        "apps",
-        nargs="*",
-        help="App name(s) as they appear in /Applications (without .app)",
-    )
-    login_parser.set_defaults(func=cmd_login)
-
-    # Poweroff subcommand
-    poweroff_parser = subparsers.add_parser(
-        "poweroff",
-        aliases=["off"],
-        help="Set volume and shutdown system (macOS + Linux)",
-    )
-    poweroff_parser.add_argument(
-        "-v",
-        "--volume",
-        type=float,
-        default=POWEROFF_VOLUME_SET,
-        help=f"Volume level before shutdown (default: {POWEROFF_VOLUME_SET}%%)",
-    )
-    poweroff_parser.set_defaults(func=cmd_poweroff)
-
-    # Help subcommand
-    subparsers.add_parser(
-        "help",
-        aliases=["h"],
-        help="Show this help message",
-    )
-
-    args = parser.parse_args()
-
-    if not args.command or args.command in ("help", "h"):
-        parser.print_help()
-        return 0
-
-    return args.func(args)
+    cli(prog_name="settings")
+    return 0
 
 
 if __name__ == "__main__":
