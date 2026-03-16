@@ -46,6 +46,5 @@
     ../../../darwin/hammerspoon.nix
     ../../../darwin/mac-mouse-fix.nix
     ../../../darwin/stats.nix
-    ../../../darwin/twingate.nix
   ];
 }
