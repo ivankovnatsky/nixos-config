@@ -989,7 +989,7 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                         run(["task", uuid, "annotate", tw_updates["notes"]])
                 if "status" in tw_updates:
                     if tw_updates["status"] == "completed":
-                        run(["task", uuid, "done"])
+                        run(["task", "rc.confirmation:off", uuid, "done"])
                         # Set end after done — task done overwrites end with now
                         if "end" in tw_updates:
                             run(["task", uuid, "modify", f"end:{tw_updates['end']}"])
@@ -1673,7 +1673,7 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
         if existing_uuids and item["status"] == "completed":
             # Complete the existing task instead of creating a duplicate
             uuid = existing_uuids[0]
-            run(["task", uuid, "done"])
+            run(["task", "rc.confirmation:off", uuid, "done"])
             click.echo(f"  ~ Taskwarrior: {prefixed} (completed existing)")
             raw_end = item.get("completionDate", "")
             if raw_end:
@@ -1741,7 +1741,7 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
 
                     # Completion date + status
                     if item["status"] == "completed":
-                        run(["task", uuid, "done"])
+                        run(["task", "rc.confirmation:off", uuid, "done"])
                     raw_end = item.get("completionDate", "")
                     if raw_end:
                         run(["task", uuid, "modify", f"end:{raw_end}"])
@@ -1977,7 +1977,7 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
             click.echo(f"    has completed history in TW")
             if not click.confirm("  COMPLETE this task?", default=False):
                 continue
-            result = run(["task", uuid, "done"])
+            result = run(["task", "rc.confirmation:off", uuid, "done"])
             if result.returncode == 0:
                 click.echo(f"  ~ Completed: {prefixed}")
                 complete_count += 1
@@ -2196,7 +2196,7 @@ def tw_find(pattern):
         if i > 0:
             click.echo("=" * 80)
         info = subprocess.run(
-            ["task", uuid], capture_output=True, text=True, stderr=subprocess.DEVNULL
+            ["task", uuid], stdout=subprocess.PIPE, text=True, stderr=subprocess.DEVNULL
         )
         if info.returncode == 0:
             click.echo(info.stdout, nl=False)
