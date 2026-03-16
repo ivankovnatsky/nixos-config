@@ -158,6 +158,11 @@
       }
 
       {
+        name = "perlite";
+        url = "http://${config.flags.machineLocalAddress}:8086";
+        description = "Perlite notes server";
+      }
+      {
         name = "mailpit";
         url = "http://${config.flags.machineLocalAddress}:8025";
         description = "Mailpit email testing UI";
