@@ -16,6 +16,7 @@
     casks = [
       "bitwarden"
       "chromium"
+      "firefox"
       "ghostty"
       "kitty"
       "mac-mouse-fix"
