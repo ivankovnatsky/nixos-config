@@ -34,6 +34,7 @@
     ./openssh.nix
     ./power.nix
     ./prevent-sleep.nix
+    ./raycast.nix
     ./security.nix
     ./shell.nix
     ./syncthing-cleaner.nix
