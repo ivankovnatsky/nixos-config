@@ -52,6 +52,7 @@
         { path = "/Applications/Claude.app/"; }
         { path = "/Applications/Mullvad VPN.app/"; }
         { path = "/Applications/Obsidian.app/"; }
+        { path = "/Applications/Raycast.app/"; }
 
         {
           path = "${config.users.users.${username}.home}/Downloads/";
