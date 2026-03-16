@@ -125,6 +125,10 @@ Configured Work Focus to filter out Kandji MDM notifications:
 - Allow:
   - Notifications
 
+### Raycast
+
+- Allow access to control "System Events"
+
 ### Firefox
 
 - Allow:
