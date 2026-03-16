@@ -42,7 +42,6 @@
       "mac-mouse-fix"
       "mullvad-vpn"
       "obsidian"
-      "raycast"
       "stats"
       "visual-studio-code"
       "vivaldi"
