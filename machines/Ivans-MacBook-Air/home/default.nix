@@ -1,5 +1,6 @@
 {
   imports = [
+    ../../../home/nix-registry.nix
     ../../../home/amethyst
     ../../../home/atuin.nix
     ../../../home/bat.nix
