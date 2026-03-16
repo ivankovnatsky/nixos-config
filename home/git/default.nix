@@ -56,16 +56,6 @@
           echo "  or: git commit <dir/> -m \"message\"" >&2
           exit 1
         fi
-
-        # Suggest git-message for single-file/dir commits
-        if [[ "''${GIT_MESSAGE_CLI:-}" != "1" ]]; then
-          staged_count=$(git diff --cached --name-only | wc -l | tr -d ' ')
-          if [[ "$staged_count" -eq 1 ]]; then
-            file=$(git diff --cached --name-only)
-            echo "HINT: For single-file/dir commits, use git-message instead:" >&2
-            echo "  git-message $file/dir \"message\"" >&2
-          fi
-        fi
       '';
     };
 
