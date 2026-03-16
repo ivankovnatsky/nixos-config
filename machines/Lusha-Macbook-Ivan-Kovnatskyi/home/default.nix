@@ -4,6 +4,7 @@
     # ../../../home/codex.nix
     # ../../../home/nixvim/plugins/copilot-lua
     # ./prevent-sleep.nix
+    ../../../home/nix-registry.nix
     ../../../home/aichat-server.nix
     ../../../home/aichat.nix
     ../../../home/amethyst

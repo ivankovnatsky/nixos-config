@@ -1,5 +1,6 @@
 {
   imports = [
+    ../../../home/nix-registry.nix
     ../../../home/nushell.nix
     ../../../home/nixvim.nix
     ../../../home/aichat.nix

@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ../../../home/nix-registry.nix
     ../../../home/atuin.nix
     ../../../home/chromium.nix
     ../../../home/claude.nix
