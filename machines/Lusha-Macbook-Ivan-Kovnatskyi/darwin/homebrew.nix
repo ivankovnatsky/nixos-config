@@ -26,7 +26,6 @@
         name = "claude";
         greedy = true;
       }
-      "cursor"
       "dbeaver-community"
       "firefox@developer-edition"
       "firefox"
@@ -45,7 +44,6 @@
       "stats"
       "visual-studio-code"
       "vivaldi"
-      "windsurf"
     ];
     masApps = {
       # Installed using Kandji
