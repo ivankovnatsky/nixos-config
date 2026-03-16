@@ -19,6 +19,7 @@
     gallery-dl
 
     asusrouter-cli
+    mas
 
     # Required for Uptime Kuma tailscale-ping monitors
     tailscale
