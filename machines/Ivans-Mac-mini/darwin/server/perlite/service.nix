@@ -8,7 +8,7 @@
 let
   port = "8086";
   dataDir = "${config.flags.externalStoragePath}/.perlite";
-  routerScript = ../../../../templates/perlite-router.php;
+  routerScript = ../../../../../templates/perlite-router.php;
   homeDir = config.users.users.${username}.home;
   vaultPath = "${homeDir}/Library/Mobile Documents/iCloud~md~obsidian/Documents/Notes";
 in
