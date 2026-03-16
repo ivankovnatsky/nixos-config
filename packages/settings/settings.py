@@ -1788,7 +1788,7 @@ def main() -> int:
     # Spaces subcommand
     spaces_parser = subparsers.add_parser(
         "spaces",
-        aliases=["sp"],
+        aliases=["sp", "space", "desktop", "desktops"],
         help="Add or remove desktop spaces (macOS only)",
     )
     spaces_parser.add_argument(
