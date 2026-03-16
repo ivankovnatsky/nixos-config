@@ -25,8 +25,10 @@ in
     preStart = ''
       export PATH="${pkgs.coreutils}/bin:$PATH"
 
+      chmod -R u+w ${dataDir}/app 2>/dev/null || true
       rm -rf ${dataDir}/app
       cp -r ${pkgs.perlite}/share/perlite ${dataDir}/app
+      chmod -R u+w ${dataDir}/app
 
       # Remove default settings.php (use env vars instead)
       rm -f ${dataDir}/app/settings.php
