@@ -50,6 +50,7 @@
         { path = "/Applications/DBeaver.app/"; }
         { path = "/Applications/Visual Studio Code.app/"; }
         { path = "/Applications/Claude.app/"; }
+        { path = "/Applications/Mullvad VPN.app/"; }
         { path = "/Applications/Obsidian.app/"; }
 
         {
