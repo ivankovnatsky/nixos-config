@@ -790,17 +790,19 @@ def find_tw_uuids(project, prefixed_title, status_filter=None):
     return uuids
 
 
-def find_reminder_index(list_name, prefixed_title, completed_only=False, due_date=None, notes_empty=None):
+def find_reminder_index(list_name, prefixed_title, completed_only=False, include_completed=True, due_date=None, notes_empty=None):
     """Find reminder index by list and prefixed title.
 
     Optional filters:
+    - completed_only: only search completed items
+    - include_completed: include completed items in the view (default True)
     - due_date: match by due date (date_key comparison)
     - notes_empty: True=only match items with empty notes, False=only with notes
     """
     cmd = ["rems", "show", list_name, "--format", "json"]
     if completed_only:
         cmd.append("--only-completed")
-    else:
+    elif include_completed:
         cmd.append("--include-completed")
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
@@ -1025,11 +1027,17 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                     run(edit_args)
                 if "status" in rem_updates:
                     if rem_updates["status"] == "completed":
-                        complete_cmd = ["rems", "complete", project, str(idx)]
-                        raw_end = tw.get("end", "")
-                        if raw_end:
-                            complete_cmd.extend(["--completion-date", tw_date_to_iso(raw_end)])
-                        run(complete_cmd)
+                        # Find index in pending-only view since rems complete
+                        # doesn't support --include-completed
+                        pidx = find_reminder_index(
+                            project, rem_prefixed, include_completed=False, due_date=rem_due
+                        )
+                        if pidx is not None:
+                            complete_cmd = ["rems", "complete", project, str(pidx)]
+                            raw_end = tw.get("end", "")
+                            if raw_end:
+                                complete_cmd.extend(["--completion-date", tw_date_to_iso(raw_end)])
+                            run(complete_cmd)
                     else:
                         cidx = find_reminder_index(
                             project, rem_prefixed, completed_only=True
