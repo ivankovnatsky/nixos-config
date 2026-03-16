@@ -52,6 +52,7 @@
     ./matrix
     ./media
     ./music-export.nix
+    ./mas-upgrade.nix
     ./mailpit.nix
     ./miniserve.nix
     ./mosh.nix
