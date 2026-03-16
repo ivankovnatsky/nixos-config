@@ -6,6 +6,7 @@ import click
 from ..client import get_jira_client
 from ..editor import edit_in_editor
 from ..utils import ISSUE_KEY, parse_labels, move_issue_type, parse_jira_url
+from .attachment import attachment_group
 from .comment import comment_group, comment_edit_fn
 from .transition import transition_group
 
@@ -173,6 +174,21 @@ def issue_view_fn(issue_key):
         click.echo(fields.description)
     else:
         click.echo("  (No description)")
+
+    if hasattr(fields, "attachment") and fields.attachment:
+        click.echo()
+        click.echo("-" * 60)
+        click.echo(f"Attachments ({len(fields.attachment)}):")
+        click.echo()
+        for att in fields.attachment:
+            size = int(att.size)
+            if size >= 1024 * 1024:
+                size_str = f"{size / (1024 * 1024):.1f} MB"
+            elif size >= 1024:
+                size_str = f"{size / 1024:.1f} KB"
+            else:
+                size_str = f"{size} B"
+            click.echo(f"  [{att.id}] {att.filename} ({size_str})")
 
     if hasattr(fields, "issuelinks") and fields.issuelinks:
         click.echo()
@@ -416,6 +432,7 @@ def issue_group():
 
 
 # Add subgroups
+issue_group.add_command(attachment_group)
 issue_group.add_command(comment_group)
 issue_group.add_command(transition_group)
 
