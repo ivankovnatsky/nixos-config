@@ -102,6 +102,12 @@
 	@kuma host kuma.@externalDomain@
 	reverse_proxy @kuma @machineIp@:3001
 
+	@perlite host perlite.@externalDomain@
+	reverse_proxy @perlite @machineIp@:8086 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
 	@syncthing host syncthing.@externalDomain@
 	reverse_proxy @syncthing @machineIp@:8384
 

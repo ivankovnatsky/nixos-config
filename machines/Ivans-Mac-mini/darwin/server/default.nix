@@ -37,6 +37,7 @@
     ./beszel.nix
     ./audiobookshelf
     ./bin.nix
+    ./perlite
     ./uptime-kuma
     ./dns.nix
     ./doh.nix
