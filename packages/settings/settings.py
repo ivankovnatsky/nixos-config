@@ -11,6 +11,7 @@ Subcommands:
   spaces      Add or remove desktop spaces (macOS only)
   windows     Close/hide app windows (macOS only)
   volume      Get or set system volume (macOS + Linux)
+  login       List, add, or remove login items (macOS only)
   poweroff    Set volume and shutdown system (macOS + Linux)
 """
 
@@ -1512,6 +1513,99 @@ def poweroff_log_battery() -> None:
         print(f"Warning: Could not log battery status: {e}", file=sys.stderr)
 
 
+def login_list() -> list[str]:
+    script = 'tell application "System Events" to get the name of every login item'
+    result = subprocess.run(
+        ["osascript", "-e", script], capture_output=True, text=True
+    )
+    if result.returncode != 0:
+        return []
+    names = result.stdout.strip()
+    if not names:
+        return []
+    return [n.strip() for n in names.split(",")]
+
+
+def login_add(app_name: str) -> bool:
+    app_path = f"/Applications/{app_name}.app"
+    if not Path(app_path).exists():
+        print(f"Error: {app_path} does not exist", file=sys.stderr)
+        return False
+    script = (
+        f'tell application "System Events" to make login item at end '
+        f'with properties {{path:"{app_path}", hidden:false}}'
+    )
+    result = subprocess.run(
+        ["osascript", "-e", script], capture_output=True, text=True
+    )
+    if result.returncode != 0:
+        print(f"Error adding login item: {result.stderr.strip()}", file=sys.stderr)
+        return False
+    return True
+
+
+def login_remove(item_name: str) -> bool:
+    script = f'tell application "System Events" to delete login item "{item_name}"'
+    result = subprocess.run(
+        ["osascript", "-e", script], capture_output=True, text=True
+    )
+    if result.returncode != 0:
+        print(f"Error removing login item: {result.stderr.strip()}", file=sys.stderr)
+        return False
+    return True
+
+
+def cmd_login(args: argparse.Namespace) -> int:
+    if not is_macos():
+        print("Login items are only supported on macOS.", file=sys.stderr)
+        return 1
+
+    action = args.action
+
+    if action == "list":
+        items = login_list()
+        if not items:
+            print("No login items found.")
+        else:
+            for item in items:
+                print(item)
+        return 0
+
+    if action == "add":
+        if not args.apps:
+            print("Error: specify app name(s) to add", file=sys.stderr)
+            return 1
+        ok = True
+        for app in args.apps:
+            existing = login_list()
+            if app in existing:
+                print(f"Already a login item: {app}")
+                continue
+            if login_add(app):
+                print(f"Added login item: {app}")
+            else:
+                ok = False
+        return 0 if ok else 1
+
+    if action == "remove":
+        if not args.apps:
+            print("Error: specify app name(s) to remove", file=sys.stderr)
+            return 1
+        ok = True
+        for app in args.apps:
+            existing = login_list()
+            if app not in existing:
+                print(f"Not a login item: {app}")
+                continue
+            if login_remove(app):
+                print(f"Removed login item: {app}")
+            else:
+                ok = False
+        return 0 if ok else 1
+
+    return 0
+
+
 def cmd_poweroff(args: argparse.Namespace) -> int:
     if not is_macos() and not is_linux():
         print("Poweroff only available on macOS and Linux", file=sys.stderr)
@@ -1740,6 +1834,24 @@ def main() -> int:
         help="Set volume to this percentage (0-100)",
     )
     volume_parser.set_defaults(func=cmd_volume)
+
+    # Login items subcommand
+    login_parser = subparsers.add_parser(
+        "login",
+        aliases=["li"],
+        help="List, add, or remove login items (macOS only)",
+    )
+    login_parser.add_argument(
+        "action",
+        choices=["list", "add", "remove"],
+        help="Action to perform",
+    )
+    login_parser.add_argument(
+        "apps",
+        nargs="*",
+        help="App name(s) as they appear in /Applications (without .app)",
+    )
+    login_parser.set_defaults(func=cmd_login)
 
     # Poweroff subcommand
     poweroff_parser = subparsers.add_parser(
