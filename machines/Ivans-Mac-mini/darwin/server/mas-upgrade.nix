@@ -1,12 +1,9 @@
 { pkgs, ... }:
 {
-  local.launchd.services.mas-upgrade = {
-    enable = true;
-    command = "${pkgs.mas}/bin/mas upgrade";
-    keepAlive = false;
-    runAtLoad = false;
-    extraServiceConfig = {
-      StartCalendarInterval = [{ Day = 1; Hour = 9; Minute = 0; }];
-    };
-  };
+  system.activationScripts.postActivation.text = ''
+    if [ "$(date +%d)" = "15" ]; then
+      echo "Upgrading App Store apps..."
+      ${pkgs.mas}/bin/mas upgrade || true
+    fi
+  '';
 }
