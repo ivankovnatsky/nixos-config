@@ -50,6 +50,12 @@ in
       command = terminalCommand.${cfg.terminal};
       runAtLoad = true;
       keepAlive = false;
+      preStart = ''
+        # Wait for GUI session to be ready before launching terminal
+        while ! /usr/bin/pgrep -x Dock > /dev/null; do
+          sleep 1
+        done
+      '';
     };
   };
 }
