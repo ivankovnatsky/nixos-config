@@ -1005,49 +1005,36 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
 
         if rem_updates and is_darwin() and has_command("rems"):
             rem_prefixed = f"{project}: {rem['title']}"
-            rem_due = rem.get("due", "")
-            idx = find_reminder_index(project, rem_prefixed, due_date=rem_due)
-            if idx is not None:
-                edit_args = [
-                    "rems",
-                    "edit",
-                    project,
-                    str(idx),
-                    "--include-completed",
-                ]
-                if "title" in rem_updates:
-                    edit_args.append(rem_updates["title"])
-                if "notes" in rem_updates:
-                    edit_args.extend(["--notes", rem_updates["notes"]])
-                if "due" in rem_updates:
-                    edit_args.extend(["--due-date", rem_updates["due"]])
-                if "priority" in rem_updates:
-                    edit_args.extend(["--priority", rem_updates["priority"]])
-                if len(edit_args) > 5:
-                    run(edit_args)
-                if "status" in rem_updates:
-                    if rem_updates["status"] == "completed":
-                        # Find index in pending-only view since rems complete
-                        # doesn't support --include-completed
-                        pidx = find_reminder_index(
-                            project, rem_prefixed, include_completed=False, due_date=rem_due
-                        )
-                        if pidx is not None:
-                            complete_cmd = ["rems", "complete", project, str(pidx)]
-                            raw_end = tw.get("end", "")
-                            if raw_end:
-                                complete_cmd.extend(["--completion-date", tw_date_to_iso(raw_end)])
-                            run(complete_cmd)
-                    else:
-                        cidx = find_reminder_index(
-                            project, rem_prefixed, completed_only=True
-                        )
-                        if cidx is not None:
-                            run(["rems", "uncomplete", project, str(cidx)])
-                count += 1
-                click.echo(
-                    f"  ~ Reminders: {prefixed}\n    {format_update_summary(rem_updates)}"
-                )
+            edit_args = [
+                "rems",
+                "edit",
+                project,
+                rem_prefixed,
+                "--include-completed",
+            ]
+            if "title" in rem_updates:
+                edit_args.append(rem_updates["title"])
+            if "notes" in rem_updates:
+                edit_args.extend(["--notes", rem_updates["notes"]])
+            if "due" in rem_updates:
+                edit_args.extend(["--due-date", rem_updates["due"]])
+            if "priority" in rem_updates:
+                edit_args.extend(["--priority", rem_updates["priority"]])
+            if len(edit_args) > 5:
+                run(edit_args)
+            if "status" in rem_updates:
+                if rem_updates["status"] == "completed":
+                    complete_cmd = ["rems", "complete", project, rem_prefixed]
+                    raw_end = tw.get("end", "")
+                    if raw_end:
+                        complete_cmd.extend(["--completion-date", tw_date_to_iso(raw_end)])
+                    run(complete_cmd)
+                else:
+                    run(["rems", "uncomplete", project, rem_prefixed])
+            count += 1
+            click.echo(
+                f"  ~ Reminders: {prefixed}\n    {format_update_summary(rem_updates)}"
+            )
 
     return count
 
@@ -1820,28 +1807,11 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
             if result.returncode == 0:
                 click.echo(f"  + Reminders: {prefixed}")
                 if item["status"] == "completed":
-                    # Search only pending items — the newly added one will be pending
-                    show = subprocess.run(
-                        ["rems", "show", proj, "--format", "json"],
-                        capture_output=True,
-                        text=True,
-                    )
-                    if show.returncode == 0:
-                        try:
-                            pending_items = json.loads(show.stdout)
-                            # Find the last matching pending item (most recently added)
-                            match_idx = None
-                            for i, r in enumerate(pending_items):
-                                if r.get("title", "") == prefixed and not r.get("isCompleted", False):
-                                    match_idx = i
-                            if match_idx is not None:
-                                complete_cmd = ["rems", "complete", proj, str(match_idx)]
-                                raw_end = item.get("end", "")
-                                if raw_end:
-                                    complete_cmd.extend(["--completion-date", tw_date_to_iso(raw_end)])
-                                run(complete_cmd)
-                        except json.JSONDecodeError:
-                            pass
+                    complete_cmd = ["rems", "complete", proj, prefixed]
+                    raw_end = item.get("end", "")
+                    if raw_end:
+                        complete_cmd.extend(["--completion-date", tw_date_to_iso(raw_end)])
+                    run(complete_cmd)
 
     # Sync metadata for matched items with drift
     if metadata_diffs:
