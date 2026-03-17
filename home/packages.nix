@@ -29,6 +29,7 @@
     poppler-utils
     poweroff
     ps-top-nu
+    find-grep
     rg-all
     settings
     sops
