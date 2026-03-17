@@ -1,5 +1,6 @@
 {
   imports = [
+    ../../../system/sops-secrets.nix
     ../../../darwin/amethyst.nix
     ../../../darwin/darwin.nix
     ../../../darwin/dns-clear.nix
