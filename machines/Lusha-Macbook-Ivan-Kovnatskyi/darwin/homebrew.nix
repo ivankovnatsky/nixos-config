@@ -22,10 +22,7 @@
       "amethyst"
       "chromium"
       "cloudflare-warp"
-      {
-        name = "claude";
-        greedy = true;
-      }
+
       "dbeaver-community"
       "firefox@developer-edition"
       "firefox"
