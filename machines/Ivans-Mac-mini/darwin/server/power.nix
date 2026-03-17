@@ -1,7 +1,4 @@
 {
-  # Boot automatically when AC power is connected
-  system.nvram.variables."AutoBoot" = "%03";
-
   # https://github.com/nix-darwin/nix-darwin/blob/master/modules/power/sleep.nix
   # To prevent sleep, place "never".
   power.sleep = {
