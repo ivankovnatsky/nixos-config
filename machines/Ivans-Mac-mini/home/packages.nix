@@ -56,6 +56,7 @@
     pigz
     pv
     rclone
+    rg-all
     ripgrep
     ruff
     rust-analyzer
