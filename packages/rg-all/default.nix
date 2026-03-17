@@ -1,6 +1,7 @@
 { pkgs }:
 
 pkgs.writeShellScriptBin "rg-all" ''
+  clear
   exec ${pkgs.ripgrep}/bin/rg \
     --no-ignore \
     --no-ignore-dot \
