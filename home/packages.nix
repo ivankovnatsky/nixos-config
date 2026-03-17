@@ -29,6 +29,7 @@
     poppler-utils
     poweroff
     ps-top-nu
+    rg-all
     settings
     sops
     ssh-to-age
