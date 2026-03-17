@@ -56,6 +56,7 @@
     pigz
     pv
     rclone
+    find-grep
     rg-all
     ripgrep
     ruff
