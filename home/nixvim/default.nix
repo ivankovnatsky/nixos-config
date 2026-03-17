@@ -15,6 +15,7 @@ in
     ./opts
     ./plugins
     ./plugins/auto-capitalize
+    ./plugins/image
     ./plugins/lsp
     ./plugins/lspsaga
     ./plugins/none-ls
