@@ -92,6 +92,8 @@ Configured Work Focus to filter out Kandji MDM notifications:
   - Configure Google Calendar plugin
     - Add to starred
     - Turn off Daily Schedules
+  - Configure email forwarding to personal Slack channel to avoid opening
+    gmail.com for emails
 
 ### LinearMouse
 
