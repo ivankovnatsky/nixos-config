@@ -123,6 +123,7 @@
     rabbitmqadmin-ng # Overlay
     rclone
     redis
+    rg-all
     rust-analyzer
     rustc
     sesh
