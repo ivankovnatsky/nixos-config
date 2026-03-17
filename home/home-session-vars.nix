@@ -18,6 +18,8 @@
   };
 
   home.sessionVariablesExtra = ''
-    source ${config.sops.templates."session-secrets.sh".path}
+    if [ -f ${config.sops.templates."session-secrets.sh".path} ]; then
+      source ${config.sops.templates."session-secrets.sh".path}
+    fi
   '';
 }
