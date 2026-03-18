@@ -24,8 +24,35 @@ Examples from coreutils/git:
 
 1. Create directory `package-name/`
 2. Add `default.nix` with package definition
-3. Package auto-discovered via `packages/default.nix`
+3. Package auto-discovered via `flake/overlay.nix`
 4. Available via overlay as `pkgs.package-name`
+
+For simple shell scripts:
+
+```nix
+{ pkgs }:
+
+pkgs.writeShellScriptBin "script-name" (builtins.readFile ./script-name.sh)
+```
+
+## Aliases
+
+To create an alias for an existing package, create a new package that
+references the original source:
+
+```nix
+{ pkgs }:
+
+pkgs.writeShellScriptBin "alias-name" (builtins.readFile ../original/original.sh)
+```
+
+Current aliases:
+
+| Alias       | Original |
+| ----------- | -------- |
+| `yank`      | `eat`    |
+| `create-pr` | `gh-pr`  |
+| `open-pr`   | `gh-pr`  |
 
 ## Distinct names for packages
 
