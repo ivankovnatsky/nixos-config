@@ -18,6 +18,8 @@
     bat
     beszel-mgmt
     cargo
+    container
+    nanoclaw
     delta
     dns
     duf
