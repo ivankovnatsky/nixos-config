@@ -127,6 +127,32 @@ def is_staged_path(path: str) -> bool:
         return False
 
 
+def is_staged_deletion(path: str) -> bool:
+    """Check if a path is staged as a deletion."""
+    try:
+        result = subprocess.run(
+            ["git", "diff", "--staged", "--diff-filter=D", "--name-only"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        deleted = [f for f in result.stdout.strip().split("\n") if f]
+        abs_path = os.path.abspath(path)
+        try:
+            git_root = subprocess.run(
+                ["git", "rev-parse", "--show-toplevel"],
+                capture_output=True,
+                text=True,
+                check=True,
+            ).stdout.strip()
+            rel_path = os.path.relpath(abs_path, git_root)
+        except subprocess.CalledProcessError:
+            rel_path = path
+        return rel_path in deleted or path in deleted
+    except subprocess.CalledProcessError:
+        return False
+
+
 def shorten_path(path: str) -> str:
     result = path
 
@@ -407,7 +433,14 @@ Features:
                 print(f"  add {target_file}")
 
         print(f"  commit {target_file}")
-        cmd = ["git", "commit", target_file, "-m", message]
+
+        # For staged deletions, git commit <file> doesn't work because it reads
+        # from the working tree (where the file no longer exists). Use git commit
+        # without pathspec to commit from the index instead.
+        if is_staged_deletion(target_file):
+            cmd = ["git", "commit", "-m", message]
+        else:
+            cmd = ["git", "commit", target_file, "-m", message]
         if body:
             cmd.extend(["-m", body])
         subprocess.run(cmd, check=True, cwd=git_root)
