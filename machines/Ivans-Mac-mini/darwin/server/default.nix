@@ -49,6 +49,8 @@
     ./http.nix
     ./jellyfin
     ./monitoring
+    ../../../../modules/darwin/linux-builder
+    ./linux-builder.nix
     ./logrotate.nix
     ./matrix
     ./media
