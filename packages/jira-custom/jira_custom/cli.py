@@ -5,7 +5,6 @@ import click
 
 from .commands import (
     filter_cmd,
-    open_cmd,
     me_cmd,
     serverinfo_cmd,
     project_group,
@@ -30,7 +29,6 @@ def cli():
 # Register top-level commands
 cli.add_command(filter_cmd)
 cli.add_command(my_cmd)
-cli.add_command(open_cmd)
 cli.add_command(me_cmd)
 cli.add_command(serverinfo_cmd)
 

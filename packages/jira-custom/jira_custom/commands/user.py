@@ -1,24 +1,8 @@
 """User commands for jira-custom."""
 
-import os
-import webbrowser
 import click
 
 from ..client import get_jira_client
-from ..utils import ISSUE_KEY
-
-
-def open_issue_fn(issue_key=None):
-    """Open issue or project in browser"""
-    server = os.getenv("JIRA_SERVER")
-
-    if issue_key:
-        url = f"{server}/browse/{issue_key}"
-    else:
-        url = server
-
-    webbrowser.open(url)
-    click.echo(f"Opened {url}", err=True)
 
 
 def show_me_fn():
@@ -45,13 +29,6 @@ def show_serverinfo_fn():
     click.echo(f"Build:       {info.get('buildNumber', 'N/A')}")
     click.echo(f"Deployment:  {info.get('deploymentType', 'N/A')}")
     click.echo(f"Server Time: {info.get('serverTime', 'N/A')}")
-
-
-@click.command("open")
-@click.argument("issue_key", required=False, type=ISSUE_KEY)
-def open_cmd(issue_key):
-    """Open issue in browser"""
-    open_issue_fn(issue_key)
 
 
 @click.command("me")
