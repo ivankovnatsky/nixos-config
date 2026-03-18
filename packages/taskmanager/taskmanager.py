@@ -479,10 +479,8 @@ def compare_metadata(tw, rem):
 
 def compute_drift(project_filter=None):
     """Compute drift between Reminders and Taskwarrior."""
-    click.echo("Loading Taskwarrior tasks...", err=True)
     tw_tasks, tw_counts, tw_instances = get_tw_tasks(project_filter)
 
-    click.echo("Loading Reminders...", err=True)
     reminder_tasks, rem_counts, rem_instances = get_reminders(project_filter)
 
     # Detect recurrence from Reminders instances
@@ -757,16 +755,14 @@ def print_drift(rem_only, tw_only, matched, metadata_diffs, direction=None):
         for key, info in metadata_diffs.items():
             print_drift_item(key, info, direction=direction)
 
-    if not rem_only and not tw_only and not metadata_diffs:
-        click.echo("\nNo drift detected.")
-
-    click.echo(f"\nMatched: {len(matched)} items (skipped)")
-    if rem_only:
-        click.echo(f"Reminders only: {len(rem_only)}")
-    if tw_only:
-        click.echo(f"Taskwarrior only: {len(tw_only)}")
-    if metadata_diffs:
-        click.echo(f"Metadata drift: {len(metadata_diffs)}")
+    if rem_only or tw_only or metadata_diffs:
+        click.echo(f"\nMatched: {len(matched)} items (skipped)")
+        if rem_only:
+            click.echo(f"Reminders only: {len(rem_only)}")
+        if tw_only:
+            click.echo(f"Taskwarrior only: {len(tw_only)}")
+        if metadata_diffs:
+            click.echo(f"Metadata drift: {len(metadata_diffs)}")
 
 
 def find_tw_uuids(project, prefixed_title, status_filter=None):
@@ -1190,7 +1186,6 @@ def sort_reminders(source, approve, interactive, create, verbose):
             })
 
     if not moves:
-        click.echo("Nothing to sort.")
         return
 
     # Display plan
@@ -1301,7 +1296,6 @@ def sort_tw(project, approve, interactive, verbose):
         })
 
     if not moves:
-        click.echo("Nothing to sort.")
         return
 
     click.echo(f"\n{len(moves)} task(s) to move:\n")
@@ -1347,7 +1341,6 @@ def sort_all(ctx, source, project, approve, interactive, create, verbose):
     _verbose = verbose
 
     if is_darwin() and has_command("rems"):
-        click.echo("=== Reminders ===")
         ctx.invoke(
             sort_reminders,
             source=source,
@@ -1356,11 +1349,8 @@ def sort_all(ctx, source, project, approve, interactive, create, verbose):
             create=create,
             verbose=verbose,
         )
-    else:
-        click.echo("Reminders: skipped (not available)")
 
     if has_command("task"):
-        click.echo("\n=== Taskwarrior ===")
         ctx.invoke(
             sort_tw,
             project=project,
@@ -1368,8 +1358,6 @@ def sort_all(ctx, source, project, approve, interactive, create, verbose):
             interactive=interactive,
             verbose=verbose,
         )
-    else:
-        click.echo("Taskwarrior: skipped (not available)")
 
 
 
@@ -1460,7 +1448,6 @@ def drift(ctx, project, projects, filter, notes, recurring, source, destination,
             create=True,
             verbose=verbose,
         )
-        click.echo()
 
     source = normalize_system_name(source) if source else None
     destination = normalize_system_name(destination) if destination else None
@@ -1624,12 +1611,7 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
 
     total = len(rem_only) + len(tw_only) + len(metadata_diffs)
     if total == 0 and not purge_duplicates and not complete_orphans and not purge_recurring:
-        if interactive:
-            click.echo("\nNo drift detected.")
         return
-    if total == 0:
-        if interactive:
-            click.echo("\nNo drift detected.")
 
     if not interactive:
         parts = []
