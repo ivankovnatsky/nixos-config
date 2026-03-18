@@ -32,6 +32,7 @@
         AppleSpacesSwitchOnActivate = false;
       };
       # https://github.com/nix-darwin/nix-darwin/blob/master/modules/system/defaults/WindowManager.nix#L6
+      spaces.spans-displays = false;
       WindowManager = {
         EnableTilingByEdgeDrag = true;
         EnableTopTilingByEdgeDrag = true;
