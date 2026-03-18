@@ -740,23 +740,33 @@ def format_item_summary(item):
 
 def print_drift(rem_only, tw_only, matched, metadata_diffs, direction=None):
     """Print the drift report."""
+    printed = False
     if rem_only:
-        click.echo("\nReminders only:")
+        click.echo("Reminders only:")
         for item in rem_only.values():
             click.echo(f"  {format_item_summary(item)}")
+        printed = True
 
     if tw_only:
-        click.echo("\nTaskwarrior only:")
+        if printed:
+            click.echo()
+        click.echo("Taskwarrior only:")
         for item in tw_only.values():
             click.echo(f"  {format_item_summary(item)}")
+        printed = True
 
     if metadata_diffs:
-        click.echo(f"\nMetadata drift ({len(metadata_diffs)} items):")
+        if printed:
+            click.echo()
+        click.echo(f"Metadata drift ({len(metadata_diffs)} items):")
         for key, info in metadata_diffs.items():
             print_drift_item(key, info, direction=direction)
+        printed = True
 
     if rem_only or tw_only or metadata_diffs:
-        click.echo(f"\nMatched: {len(matched)} items (skipped)")
+        if printed:
+            click.echo()
+        click.echo(f"Matched: {len(matched)} items (skipped)")
         if rem_only:
             click.echo(f"Reminders only: {len(rem_only)}")
         if tw_only:
