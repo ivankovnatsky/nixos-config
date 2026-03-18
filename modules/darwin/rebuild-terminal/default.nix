@@ -38,7 +38,7 @@ in
 
       configPath = mkOption {
         type = types.str;
-        description = "Path to the nixos-config repository";
+        description = "Path to the nix-config repository";
       };
     };
   };

@@ -7,6 +7,6 @@ in
   local.services.tmuxRebuild = {
     enable = true;
     inherit username; # Use the username variable from the flake
-    nixosConfigPath = "${homePath}/Sources/github.com/ivankovnatsky/nixos-config"; # Use home path variable
+    nixosConfigPath = "${homePath}/Sources/github.com/ivankovnatsky/nix-config"; # Use home path variable
   };
 }

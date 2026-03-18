@@ -34,14 +34,14 @@ in
 
       nixosConfigPath = mkOption {
         type = types.str;
-        description = "Path to the nixos-config repository";
+        description = "Path to the nix-config repository";
       };
     };
   };
 
   config = mkIf cfg.enable {
     # Create a systemd service that starts a tmux session on boot
-    systemd.services.tmux-nixos-config = {
+    systemd.services.tmux-nix-config = {
       description = "Tmux session for NixOS config rebuilds";
       wantedBy = mkIf cfg.autoStart [ "multi-user.target" ];
       after = [ "network.target" ];
@@ -124,13 +124,13 @@ in
         else
           echo "The $SESSION_NAME tmux session is not running."
           echo "It may have been stopped or failed to start."
-          echo "Check the logs with: journalctl -u tmux-nixos-config"
+          echo "Check the logs with: journalctl -u tmux-nix-config"
           echo ""
           echo "To start it manually, run:"
           echo "cd ${cfg.nixosConfigPath} && ${pkgs.watchman-rebuild}/bin/watchman-rebuild ."
           echo ""
           echo "Or restart the tmux service with:"
-          echo "sudo systemctl restart tmux-nixos-config"
+          echo "sudo systemctl restart tmux-nix-config"
         fi
       '')
     ];

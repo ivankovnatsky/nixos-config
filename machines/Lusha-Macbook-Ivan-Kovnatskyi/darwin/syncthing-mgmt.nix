@@ -46,8 +46,8 @@
       };
 
       "shtdy-s2c9s" = {
-        path = "${config.users.users.${username}.home}/Sources/github.com/ivankovnatsky/nixos-config";
-        label = "Sources/github.com/ivankovnatsky/nixos-config";
+        path = "${config.users.users.${username}.home}/Sources/github.com/ivankovnatsky/nix-config";
+        label = "Sources/github.com/ivankovnatsky/nix-config";
         devices = [
           "Lusha-Macbook-Ivan-Kovnatskyi"
           "a3"

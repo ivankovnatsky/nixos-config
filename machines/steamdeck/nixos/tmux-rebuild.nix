@@ -8,6 +8,6 @@ in
     autoStart = true;
     autoRebuild = false;
     inherit username;
-    nixosConfigPath = "${homePath}/Sources/github.com/ivankovnatsky/nixos-config";
+    nixosConfigPath = "${homePath}/Sources/github.com/ivankovnatsky/nix-config";
   };
 }

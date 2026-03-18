@@ -18,8 +18,8 @@ in
     local.services.tmuxRebuild = {
       nixosConfigPath = mkOption {
         type = types.str;
-        default = "${config.users.users.${username}.home}/Sources/github.com/ivankovnatsky/nixos-config";
-        description = "Path to the nixos-config repository";
+        default = "${config.users.users.${username}.home}/Sources/github.com/ivankovnatsky/nix-config";
+        description = "Path to the nix-config repository";
       };
     };
   };

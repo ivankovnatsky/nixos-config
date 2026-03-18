@@ -22,7 +22,7 @@
           diff -u ${./kwinoutputconfig.json} ~/.config/kwinoutputconfig.json || true
           echo "────────────────────────────────────────────────────────"
           echo "To update the nix config, run:"
-          echo "  cp ~/.config/kwinoutputconfig.json ~/Sources/github.com/ivankovnatsky/nixos-config/machines/${osConfig.networking.hostName}/home/kwinoutput/kwinoutputconfig.json"
+          echo "  cp ~/.config/kwinoutputconfig.json ~/Sources/github.com/ivankovnatsky/nix-config/machines/${osConfig.networking.hostName}/home/kwinoutput/kwinoutputconfig.json"
         fi
       fi
     '';
