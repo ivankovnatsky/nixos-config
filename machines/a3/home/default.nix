@@ -31,7 +31,6 @@
     ../../../home/nushell.nix
     ../../../home/ranger.nix
     ../../../home/rebuild-diff.nix
-    ../../../home/scripts.nix
     ../../../home/sops.nix
     ../../../home/ssh.nix
     ../../../home/starship

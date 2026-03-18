@@ -34,7 +34,6 @@
     ../../../modules/flags
     ../../../system/documentation.nix
     ../../../system/nix.nix
-    ../../../system/scripts
     ../../../darwin/git.nix
     ../../../darwin/homebrew.nix
     ../../../darwin/stash
