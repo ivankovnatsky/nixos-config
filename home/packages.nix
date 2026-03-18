@@ -31,6 +31,7 @@
     ps-top-nu
     find-grep
     rg-all
+    rg-find
     settings
     sops
     ssh-to-age

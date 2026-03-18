@@ -124,6 +124,7 @@
     rclone
     redis
     rg-all
+    rg-find
     rust-analyzer
     rustc
     sesh

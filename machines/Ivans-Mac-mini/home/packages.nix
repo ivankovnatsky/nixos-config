@@ -58,6 +58,7 @@
     rclone
     find-grep
     rg-all
+    rg-find
     ripgrep
     ruff
     rust-analyzer
