@@ -50,7 +50,9 @@
 
         # When git commit <file-or-dir> is used, GIT_INDEX_FILE points to a temp index
         # When git commit (no file) is used, GIT_INDEX_FILE is empty or .git/index
-        if [[ -z "''${GIT_INDEX_FILE:-}" || "$GIT_INDEX_FILE" == *".git/index" ]]; then
+        # Allow git-message CLI to bypass this (e.g., for staged deletions where pathspec doesn't work)
+        if [[ -z "''${GIT_MESSAGE_CLI:-}" ]] && \
+           [[ -z "''${GIT_INDEX_FILE:-}" || "$GIT_INDEX_FILE" == *".git/index" ]]; then
           echo "ERROR: Must specify file(s) or dir/ to commit" >&2
           echo "Use: git commit <file> -m \"message\"" >&2
           echo "  or: git commit <dir/> -m \"message\"" >&2
