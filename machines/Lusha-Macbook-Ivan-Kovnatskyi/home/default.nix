@@ -1,6 +1,5 @@
 {
   imports = [
-    # ../../../home/aider.nix
     # ../../../home/codex.nix
     # ../../../home/nixvim/plugins/copilot-lua
     # ./prevent-sleep.nix
