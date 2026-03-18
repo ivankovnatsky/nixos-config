@@ -33,7 +33,6 @@
       ];
     };
     obsidian.vaultPaths = [
-      "Sources/github.com/ivankovnatsky/nix-config"
       "Library/Mobile Documents/iCloud~md~obsidian/Documents/Notes"
     ];
     apps = {
