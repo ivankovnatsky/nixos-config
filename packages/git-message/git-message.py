@@ -387,7 +387,10 @@ Features:
 
     try:
         # Add untracked files first (git commit <file> only works for tracked files)
-        if is_untracked(target_file, git_root):
+        # Skip if file is already staged (e.g., staged deletion)
+        if is_staged_path(target_file):
+            pass
+        elif is_untracked(target_file, git_root):
             result = subprocess.run(
                 ["git", "add", target_file],
                 capture_output=True,
