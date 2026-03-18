@@ -1203,14 +1203,17 @@ def sort_reminders(source, approve, interactive, create, verbose):
     if lists_to_create:
         click.echo(f"Lists to create: {', '.join(lists_to_create)}")
 
-    click.echo(f"\n{len(moves)} item(s) to move:\n")
+    click.echo()
+    click.echo(f"{len(moves)} item(s) to move:")
+    click.echo()
     for m in moves:
         create_tag = " (new list)" if m["needs_create"] else ""
         click.echo(f"  {m['source']}: {m['title']}")
         click.echo(f"    → {m['target']}{create_tag}")
 
     if not approve:
-        if not click.confirm("\nProceed?"):
+        click.echo()
+        if not click.confirm("Proceed?"):
             click.echo("Aborted.")
             return
 
@@ -1222,7 +1225,8 @@ def sort_reminders(source, approve, interactive, create, verbose):
         create_tag = " (new list)" if m["needs_create"] and target not in created_lists else ""
 
         if interactive:
-            click.echo(f"\n  {m['title']}")
+            click.echo()
+            click.echo(f"  {m['title']}")
             click.echo(f"    → {target}{create_tag}")
             if not click.confirm("  Move?"):
                 continue
@@ -1246,7 +1250,8 @@ def sort_reminders(source, approve, interactive, create, verbose):
         moved += 1
         click.echo(f"  Moved: {m['source']}: {m['title']} → {target}")
 
-    click.echo(f"\nDone. Moved {moved}/{len(moves)} item(s).")
+    click.echo()
+    click.echo(f"Done. Moved {moved}/{len(moves)} item(s).")
 
 
 @tw_group.command(name="sort")
@@ -1308,21 +1313,25 @@ def sort_tw(project, approve, interactive, verbose):
     if not moves:
         return
 
-    click.echo(f"\n{len(moves)} task(s) to move:\n")
+    click.echo()
+    click.echo(f"{len(moves)} task(s) to move:")
+    click.echo()
     for m in moves:
         src = m['current_project'] or '(no project)'
         click.echo(f"  {src}: {m['description']}")
         click.echo(f"    → project:{m['target_project']}")
 
     if not approve:
-        if not click.confirm("\nProceed?"):
+        click.echo()
+        if not click.confirm("Proceed?"):
             click.echo("Aborted.")
             return
 
     moved = 0
     for m in moves:
         if interactive:
-            click.echo(f"\n  {m['description']}")
+            click.echo()
+            click.echo(f"  {m['description']}")
             click.echo(f"    → project:{m['target_project']}")
             if not click.confirm("  Move?"):
                 continue
@@ -1334,7 +1343,8 @@ def sort_tw(project, approve, interactive, verbose):
         else:
             click.echo(f"  ERROR moving: {m['description']}", err=True)
 
-    click.echo(f"\nDone. Moved {moved}/{len(moves)} task(s).")
+    click.echo()
+    click.echo(f"Done. Moved {moved}/{len(moves)} task(s).")
 
 
 @all_cmds.command(name="sort")
@@ -1570,7 +1580,6 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
             create=True,
             verbose=verbose,
         )
-        click.echo()
 
     if not project and not projects and not interactive and not approve:
         interactive = True
@@ -1631,7 +1640,8 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
             parts.append(f"{len(tw_only)} items to Reminders")
         if metadata_diffs:
             parts.append(f"{len(metadata_diffs)} metadata updates")
-        click.echo(f"\nWill sync: {', '.join(parts)}.")
+        click.echo()
+        click.echo(f"Will sync: {', '.join(parts)}.")
         if not approve and not click.confirm("Proceed?"):
             click.echo("Aborted.")
             return
@@ -1641,7 +1651,8 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
         proj = item["project"]
         prefixed = f"{proj}: {item['title']}"
         if interactive:
-            click.echo(f"\nReminders only:")
+            click.echo()
+            click.echo("Reminders only:")
             click.echo(f"  {proj}: {item['title']}")
             click.echo(f"    status: {item['status']}")
             rem_due = format_date_local(item.get("due", ""))
@@ -1756,7 +1767,8 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
                 continue
 
             if interactive:
-                click.echo(f"\nTaskwarrior only:")
+                click.echo()
+                click.echo("Taskwarrior only:")
                 click.echo(f"  {proj}: {item['title']}")
                 click.echo(f"    status: {item['status']}")
                 tw_due = format_date_local(item.get("due", ""))
@@ -1809,7 +1821,8 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
     if metadata_diffs:
         meta_count = sync_metadata(metadata_diffs, direction=source, interactive=interactive)
         if meta_count:
-            click.echo(f"\nUpdated metadata on {meta_count} items.")
+            click.echo()
+            click.echo(f"Updated metadata on {meta_count} items.")
 
     # Purge TW duplicates (always interactive, requires explicit confirmation)
     # Detects both TW-only items and TW-internal duplicates (multiple pending
@@ -1819,14 +1832,16 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
 
         # 1. TW-only items with no Reminders counterpart
         if tw_only:
-            click.echo(f"\n--- TW-only items ({len(tw_only)}) ---")
+            click.echo()
+            click.echo(f"--- TW-only items ({len(tw_only)}) ---")
             for key, item in tw_only.items():
                 proj = item["project"]
                 prefixed = f"{proj}: {item['title']}"
                 uuid = item.get("uuid", "")
                 due = format_date_local(item.get("due", ""))
                 status = item.get("status", "pending")
-                click.echo(f"\n  TW-only: {prefixed}")
+                click.echo()
+                click.echo(f"  TW-only: {prefixed}")
                 click.echo(f"    status: {status}")
                 if due:
                     click.echo(f"    due: {due}")
@@ -1848,7 +1863,8 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
                         click.echo(f"  ! Failed to purge: {prefixed}")
 
         # 2. TW-internal duplicates: multiple pending tasks with same description
-        click.echo("\n--- Scanning for TW-internal duplicates ---")
+        click.echo()
+        click.echo("--- Scanning for TW-internal duplicates ---")
         from collections import defaultdict
         tw_cmd = ["task"]
         for proj in (parse_projects(projects) if projects else [project] if project else []):
@@ -1893,7 +1909,8 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
                     group.sort(key=lambda t: t.get("entry", ""))
                     keep = group[0]
                     dupes = group[1:]
-                    click.echo(f"\n  {key[1]} ({len(group)} identical pending copies)")
+                    click.echo()
+                    click.echo(f"  {key[1]} ({len(group)} identical pending copies)")
                     click.echo(f"    keeping: uuid:{keep['uuid'][:8]} entry:{keep.get('entry','')[:10]}")
                     for d in dupes:
                         entry = d.get("entry", "")[:10]
@@ -1911,11 +1928,13 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
                 click.echo("  No internal duplicates found.")
 
         if purge_count:
-            click.echo(f"\nDeleted {purge_count} TW duplicate(s).")
+            click.echo()
+            click.echo(f"Deleted {purge_count} TW duplicate(s).")
 
     # Complete TW-only pending orphans that have completed history
     if complete_orphans and tw_only:
-        click.echo(f"\n--- TW-only pending orphans ({len(tw_only)} items) ---")
+        click.echo()
+        click.echo(f"--- TW-only pending orphans ({len(tw_only)} items) ---")
         complete_count = 0
         for key, item in tw_only.items():
             if item.get("status") != "pending":
@@ -1942,7 +1961,8 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
                     pass
             if not has_completed:
                 continue
-            click.echo(f"\n  TW orphan: {prefixed}")
+            click.echo()
+            click.echo(f"  TW orphan: {prefixed}")
             click.echo(f"    uuid: {uuid[:8]}")
             click.echo(f"    has completed history in TW")
             if not click.confirm("  COMPLETE this task?", default=False):
@@ -1954,11 +1974,13 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
             else:
                 click.echo(f"  ! Failed to complete: {prefixed}")
         if complete_count:
-            click.echo(f"\nCompleted {complete_count} orphan(s).")
+            click.echo()
+            click.echo(f"Completed {complete_count} orphan(s).")
 
     # Purge TW recurring parent tasks
     if purge_recurring:
-        click.echo("\n--- Scanning for TW recurring parents ---")
+        click.echo()
+        click.echo("--- Scanning for TW recurring parents ---")
         tw_cmd = ["task", "export"]
         tw_result = subprocess.run(tw_cmd, capture_output=True, text=True)
         purge_count = 0
@@ -1982,7 +2004,8 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
                 recur = t.get("recur", "")
                 uuid = t.get("uuid", "")
                 due = format_date_local(t.get("due", ""))
-                click.echo(f"\n  Recurring parent: {desc}")
+                click.echo()
+                click.echo(f"  Recurring parent: {desc}")
                 click.echo(f"    project: {proj}")
                 click.echo(f"    recur: {recur}")
                 if due:
@@ -2007,9 +2030,11 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
                 else:
                     click.echo(f"  ! Failed to purge: {desc}")
         if purge_count:
-            click.echo(f"\nPurged {purge_count} recurring parent(s).")
+            click.echo()
+            click.echo(f"Purged {purge_count} recurring parent(s).")
 
-    click.echo("\nDone.")
+    click.echo()
+    click.echo("Done.")
 
 
 @all_cmds.command()
@@ -2087,12 +2112,14 @@ def verify(project, projects, verbose):
         scope = f" ({proj})" if proj else ""
 
         if mismatches:
-            click.echo(f"\nCount mismatches{scope}:")
+            click.echo()
+            click.echo(f"Count mismatches{scope}:")
             for title, tc, rc in mismatches:
                 click.echo(f"  {title}: TW={tc} Rem={rc}")
 
     if status_issues:
-        click.echo("\nStatus mismatches:")
+        click.echo()
+        click.echo("Status mismatches:")
         for title, twp, twc, twd, remp, remc in status_issues:
             parts = []
             if twp != remp:
@@ -2104,9 +2131,11 @@ def verify(project, projects, verbose):
             click.echo(f"  {title}: {', '.join(parts)}")
 
     if total_mismatch == 0 and not status_issues:
-        click.echo("\nAll counts and statuses match.")
+        click.echo()
+        click.echo("All counts and statuses match.")
 
-    click.echo(f"\nTotal: TW={total_tw}, Rem={total_rem}, Mismatches={total_mismatch}")
+    click.echo()
+    click.echo(f"Total: TW={total_tw}, Rem={total_rem}, Mismatches={total_mismatch}")
 
 
 @tw_group.command(name="edit")
