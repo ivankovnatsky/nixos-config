@@ -1,6 +1,7 @@
 """Issue commands for jira-custom."""
 
 import os
+import webbrowser
 import click
 
 from ..client import get_jira_client
@@ -425,6 +426,19 @@ def issue_list_fn(
         )
 
 
+def open_issue_fn(issue_key=None):
+    """Open issue or project in browser"""
+    server = os.getenv("JIRA_SERVER")
+
+    if issue_key:
+        url = f"{server}/browse/{issue_key}"
+    else:
+        url = server
+
+    webbrowser.open(url)
+    click.echo(f"Opened {url}", err=True)
+
+
 @click.group("issue")
 def issue_group():
     """Manage issues"""
@@ -620,3 +634,11 @@ def issue_list_cmd(
         reverse,
         limit,
     )
+
+
+@issue_group.command("open")
+@click.argument("issue_key", required=False, type=ISSUE_KEY)
+def issue_open_cmd(issue_key):
+    """Open issue in browser"""
+    open_issue_fn(issue_key)
+
