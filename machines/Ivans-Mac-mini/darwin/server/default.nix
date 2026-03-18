@@ -37,6 +37,7 @@
     ./beszel.nix
     ./audiobookshelf
     ./bin.nix
+    ./container.nix
     ./perlite
     ./uptime-kuma
     ./dns.nix
@@ -56,6 +57,7 @@
     ./mailpit.nix
     ./miniserve.nix
     ./mosh.nix
+    ./nanoclaw.nix
     ./nix.nix
     ./ollama.nix
     ./open-webui.nix
