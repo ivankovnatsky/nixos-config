@@ -44,8 +44,8 @@
       # };
 
       "shtdy-s2c9s" = {
-        path = "/home/${username}/Sources/github.com/ivankovnatsky/nixos-config";
-        label = "Sources/github.com/ivankovnatsky/nixos-config";
+        path = "/home/${username}/Sources/github.com/ivankovnatsky/nix-config";
+        label = "Sources/github.com/ivankovnatsky/nix-config";
         devices = [
           "a3"
           "Ivans-Mac-mini"

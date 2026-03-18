@@ -211,7 +211,7 @@
           hooksPath = "${config.home.homeDirectory}/.config/git/hooks";
         };
         safe = {
-          directory = "${config.flags.homeWorkPath}/Sources/github.com/ivankovnatsky/nixos-config";
+          directory = "${config.flags.homeWorkPath}/Sources/github.com/ivankovnatsky/nix-config";
         };
       };
     };

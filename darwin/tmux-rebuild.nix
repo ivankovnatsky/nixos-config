@@ -5,6 +5,6 @@ let
 in
 {
   local.services.tmuxRebuild = {
-    nixosConfigPath = "${homePath}/Sources/github.com/ivankovnatsky/nixos-config";
+    nixosConfigPath = "${homePath}/Sources/github.com/ivankovnatsky/nix-config";
   };
 }

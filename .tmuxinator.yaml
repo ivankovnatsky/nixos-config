@@ -1,4 +1,4 @@
-name: <%= `hostname`.strip %>-nixos-config
+name: <%= `hostname`.strip %>-nix-config
 startup_window: 0
 root: <%= Dir.pwd %>
 
@@ -11,7 +11,7 @@ windows:
       layout: main-vertical
       panes:
         - ls -lah
-  - nixos-config:
+  - nix-config:
       layout: main-vertical
       panes:
         - nvim

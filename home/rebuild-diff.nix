@@ -8,7 +8,7 @@
 # # waiting for changes
 # # Execute: `env NIXPKGS_ALLOW_UNFREE=1 darwin-rebuild switch --impure -L --flake .`
 # building the system configuration...
-# warning: Git tree '/Users/ivan/Sources/github.com/ivankovnatsky/nixos-config' is dirty    waiting for changes
+# warning: Git tree '/Users/ivan/Sources/github.com/ivankovnatsky/nix-config' is dirty    waiting for changes
 
 # Now handles the first-time run case by checking if oldGenPath exists
 {

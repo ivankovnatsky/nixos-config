@@ -19,7 +19,7 @@ in
       type = types.listOf types.str;
       default = [ ];
       example = [
-        "/home/user/Sources/github.com/ivankovnatsky/nixos-config"
+        "/home/user/Sources/github.com/ivankovnatsky/nix-config"
         "/home/user/Sources/github.com/ivankovnatsky/notes"
       ];
       description = "List of git repository paths to clean syncthing conflict files from";
