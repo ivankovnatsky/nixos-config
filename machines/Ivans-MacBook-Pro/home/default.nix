@@ -35,7 +35,6 @@
     ../../../home/ranger.nix
     ../../../home/rebuild-diff.nix
     ../../../home/safari.nix
-    ../../../home/scripts.nix
     ../../../home/sops.nix
     ../../../home/starship
     ../../../home/syncthing-ignore.nix

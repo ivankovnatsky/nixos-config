@@ -24,7 +24,6 @@
     ../../../modules/flags
     ../../../system/documentation.nix
     ../../../system/nix.nix
-    ../../../system/scripts
     ./dns.nix
     ./dock.nix
     ./flags.nix

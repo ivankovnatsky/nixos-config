@@ -30,7 +30,6 @@
     ../../../home/ranger.nix
     ../../../home/rebuild-diff.nix
     ../../../home/safari.nix
-    ../../../home/scripts.nix
     ../../../home/atuin.nix
     ../../../home/fish.nix
     ../../../home/fzf.nix

@@ -17,7 +17,7 @@ includes = ["*.nix"]
 
 [formatter.statix]
 command = "bash"
-options = ["system/scripts/statix-wrapper.sh"]
+options = ["packages/statix-wrapper/statix-wrapper.sh"]
 includes = ["*.nix"]
 
 [formatter.deadnix]
@@ -57,5 +57,5 @@ includes = ["*.go"]
 
 [formatter.golangci-lint]
 command = "bash"
-options = ["system/scripts/go-lint-wrapper.sh"]
+options = ["packages/go-lint-wrapper/go-lint-wrapper.sh"]
 includes = ["*.go"]

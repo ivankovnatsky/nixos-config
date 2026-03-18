@@ -8,7 +8,6 @@
     ../../../nixos/keyboard.nix
     ../../../system/nix.nix
     ../../../system/rebuild-daemon.nix
-    ../../../system/scripts
     ./bluetooth.nix
     ./boot.nix
     ./configuration.nix
