@@ -50,5 +50,6 @@
     ./packages.nix
     ../../../home/sops.nix
     ./tmux.nix
+    ./openclaw.nix
   ];
 }
