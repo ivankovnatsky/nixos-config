@@ -165,6 +165,13 @@
       }
 
       {
+        name = "openclaw-gateway";
+        url = "http://${config.flags.machineLocalAddress}:18789";
+        interval = 60;
+        description = "OpenClaw gateway";
+      }
+
+      {
         name = "perlite";
         url = "http://${config.flags.machineLocalAddress}:8086";
         description = "Perlite notes server";
