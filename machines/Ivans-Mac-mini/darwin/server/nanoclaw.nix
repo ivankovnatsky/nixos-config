@@ -60,7 +60,7 @@ let
         --jid "dc:$DISCORD_CHANNEL_ID" \
         --name "nanoclaw" \
         --folder "discord_main" \
-        --trigger "@Andy" \
+        --trigger "@Tardi" \
         --channel discord \
         --no-trigger-required \
         --is-main
@@ -116,6 +116,7 @@ in
       PATH = "${nodejs}/bin:${pkgs.nixpkgs-darwin-master-container.container}/bin:/usr/local/bin:/usr/bin:/bin";
       NODE_ENV = "production";
       CREDENTIAL_PROXY_PORT = "3002";
+      ASSISTANT_NAME = "Tardi";
       CREDENTIAL_PROXY_HOST = "0.0.0.0";
       IDLE_TIMEOUT = "120000";
       CONTAINER_TIMEOUT = "300000";
