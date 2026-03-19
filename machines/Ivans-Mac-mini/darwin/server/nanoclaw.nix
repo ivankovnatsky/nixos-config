@@ -128,7 +128,7 @@ in
   };
 
   sops.secrets.claude-oauth-token = {
-    key = "anthropic/outhToken";
+    key = "anthropic/oauthToken";
     owner = username;
   };
 }
