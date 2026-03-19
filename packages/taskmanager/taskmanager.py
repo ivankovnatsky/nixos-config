@@ -173,6 +173,7 @@ def get_reminders(project_filter=None, include_completed=True):
                 "notes": item.get("notes", ""),
                 "priority": item.get("priority", 0),
                 "recurrence": item.get("recurrence", ""),
+                "externalId": item.get("externalId", ""),
             }
 
             all_instances.setdefault(key, []).append(dict(item_dict))
@@ -185,6 +186,7 @@ def get_reminders(project_filter=None, include_completed=True):
                 if status == "pending" and existing["status"] != "pending":
                     existing["status"] = status
                     existing["due"] = item.get("dueDate", "")
+                    existing["externalId"] = item.get("externalId", "")
                 elif not existing["due"] and item.get("dueDate", ""):
                     existing["due"] = item["dueDate"]
                 if not existing["notes"] and item.get("notes", ""):
@@ -440,12 +442,15 @@ def compare_metadata(tw, rem):
     tw_ann_texts = [a.get("description", "") for a in tw_annotations]
     tw_notes_display = repr("; ".join(tw_ann_texts)) if tw_ann_texts else "''"
     rem_notes_display = repr(rem_notes) if rem_notes else "''"
-    if rem_notes and rem_notes not in tw_ann_texts:
-        diffs.append(("notes", rem_notes_display, tw_notes_display))
-    elif not rem_notes and tw_ann_texts:
-        diffs.append(("notes", rem_notes_display, tw_notes_display))
-    elif rem_notes and tw_ann_texts and any(a not in rem_notes for a in tw_ann_texts):
-        diffs.append(("notes", rem_notes_display, tw_notes_display))
+    tw_joined = "\n".join(tw_ann_texts)
+    notes_equivalent = rem_notes == tw_joined
+    if not notes_equivalent:
+        if rem_notes and rem_notes not in tw_ann_texts:
+            diffs.append(("notes", rem_notes_display, tw_notes_display))
+        elif not rem_notes and tw_ann_texts:
+            diffs.append(("notes", rem_notes_display, tw_notes_display))
+        elif rem_notes and tw_ann_texts and any(a not in rem_notes for a in tw_ann_texts):
+            diffs.append(("notes", rem_notes_display, tw_notes_display))
 
     # Completion date — only report when Rem has older (more original) date,
     # or when status is changing to completed (Rem completed, TW not yet)
@@ -1049,11 +1054,12 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
 
         if rem_updates and is_darwin() and has_command("rems"):
             rem_prefixed = f"{project}: {rem['title']}"
+            rem_id = rem.get("externalId", "") or rem_prefixed
             edit_args = [
                 "rems",
                 "edit",
                 project,
-                rem_prefixed,
+                rem_id,
                 "--include-completed",
             ]
             if "title" in rem_updates:
@@ -1068,13 +1074,13 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                 run(edit_args)
             if "status" in rem_updates:
                 if rem_updates["status"] == "completed":
-                    complete_cmd = ["rems", "complete", project, rem_prefixed]
+                    complete_cmd = ["rems", "complete", project, rem_id]
                     raw_end = tw.get("end", "")
                     if raw_end:
                         complete_cmd.extend(["--completion-date", tw_date_to_iso(raw_end)])
                     run(complete_cmd)
                 else:
-                    run(["rems", "uncomplete", project, rem_prefixed])
+                    run(["rems", "uncomplete", project, rem_id])
             count += 1
             click.echo(
                 f"  ~ Reminders: {prefixed}\n    {format_update_summary(rem_updates)}"
