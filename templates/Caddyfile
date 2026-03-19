@@ -247,6 +247,12 @@
 		header_up Host {host}
 	}
 
+	@openclaw host openclaw.@externalDomain@
+	reverse_proxy @openclaw @machineIp@:18789 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
 	@grafana host grafana.@externalDomain@
 	reverse_proxy @grafana @machineIp@:3000 {
 		header_up X-Real-IP {remote_host}
