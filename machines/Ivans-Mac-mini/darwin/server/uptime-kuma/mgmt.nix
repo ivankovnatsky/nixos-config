@@ -22,8 +22,8 @@
     key = "uptimeKuma/password";
     owner = username;
   };
-  sops.secrets.discord-webhook = {
-    key = "discordWebHook";
+  sops.secrets.discord-webhook-kuma = {
+    key = "discord/webhookChannelMonitoringKuma";
     owner = username;
   };
   sops.secrets.postgres-monitoring-password = {
@@ -37,7 +37,7 @@
     baseUrl = "http://${config.flags.machineLocalAddress}:3001";
     usernameFile = config.sops.secrets.uptime-kuma-username.path;
     passwordFile = config.sops.secrets.uptime-kuma-password.path;
-    discordWebhookFile = config.sops.secrets.discord-webhook.path;
+    discordWebhookFile = config.sops.secrets.discord-webhook-kuma.path;
 
     monitors = [
       # External Domain Health Check
