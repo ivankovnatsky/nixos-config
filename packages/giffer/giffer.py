@@ -758,8 +758,6 @@ def download_single_video(
         gallery_args = ["-d", str(out_dir), url]
         gallery_result = run_gallery_dl(gallery_args)
         if gallery_result.returncode == 0:
-            # Find the downloaded file by checking what's new in the directory
-            # gallery-dl doesn't have a --print option, so we rely on the download succeeding
             return (url, True)
         return (url, False)
 
@@ -1188,15 +1186,30 @@ def split(url, output_dir, duration, skip_start, skip_end):
     default=DEFAULT_MAX_HEIGHT,
     help=f"Maximum video height (default: {DEFAULT_MAX_HEIGHT})",
 )
+@click.option(
+    "--gallery",
+    is_flag=True,
+    help="Use gallery-dl as primary downloader (fall back to yt-dlp)",
+)
 def download(
-    url, output_dir, workers, do_split, duration, skip_start, skip_end, max_height
+    url, output_dir, workers, do_split, duration, skip_start, skip_end, max_height, gallery
 ):
     """Download video(s) from URL or playlist.
 
     For playlist URLs, use -w/--workers to download videos in parallel.
     Use --split to split videos into segments after download.
+    Use --gallery to prefer gallery-dl over yt-dlp.
     """
     split = do_split
+
+    if gallery:
+        gallery_args = []
+        if output_dir:
+            gallery_args.extend(["-d", output_dir])
+        gallery_args.append(url)
+        click.echo("Downloading with gallery-dl...")
+        result = run_gallery_dl(gallery_args)
+        sys.exit(result.returncode)
 
     if workers > 1:
         click.echo("Extracting video URLs from playlist...")
