@@ -39,6 +39,7 @@
     ./syncthing-mgmt.nix
     ./users.nix
     ./close-zscaler.nix
+    ./container.nix
     ./default-browser.nix
 
     ../../../darwin/amethyst.nix
