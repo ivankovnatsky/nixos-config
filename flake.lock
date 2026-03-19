@@ -697,15 +697,16 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1773851886,
-        "narHash": "sha256-+3ygZuf5K8mtSGMMEZ/h+vxGvXCu1CmiB+531KMagH8=",
-        "owner": "openclaw",
+        "lastModified": 1773789718,
+        "narHash": "sha256-8/hboGMa2UjZ9iTItspCJokptnvzsOCbtqdXPJ6Ue4o=",
+        "owner": "bobberb",
         "repo": "nix-openclaw",
-        "rev": "64d410666821866c565e048a4d07d6cf5d8e494e",
+        "rev": "686ab738902330ba3596333fdf1c37556522b68b",
         "type": "github"
       },
       "original": {
-        "owner": "openclaw",
+        "owner": "bobberb",
+        "ref": "fix/copy-plugin-manifests",
         "repo": "nix-openclaw",
         "type": "github"
       }
