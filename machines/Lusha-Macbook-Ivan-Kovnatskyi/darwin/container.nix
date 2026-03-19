@@ -3,8 +3,7 @@
 let
   bin = "${pkgs.nixpkgs-darwin-master-container.container}/bin/container";
   containerStarter = pkgs.writeShellScript "container-starter" ''
-    ${bin} system kernel set --recommended
-    ${bin} system start
+    ${bin} system start --enable-kernel-install
   '';
 in
 {
