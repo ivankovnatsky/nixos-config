@@ -19,7 +19,6 @@
     beszel-mgmt
     cargo
     nixpkgs-darwin-master-container.container
-    nanoclaw
     delta
     dns
     duf
