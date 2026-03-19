@@ -124,33 +124,16 @@ EXCLUDE_PATTERNS: dict[str, list[str]] = {
     ],
     "os_system": [
         "**/.Trash/**",
-        "**/Library/Mobile Documents/**",
-        "**/Library/Metadata/**",
-        "**/Library/DuetExpertCenter/**",
-        "**/Library/Containers/com.apple.AccessibilitySettingsWidgetExtension/**",
-        "**/Library/Containers/com.apple.AppStore/**",
-        "**/Library/Containers/com.apple.AvatarUI.AvatarPickerMemojiPicker/**",
-        "**/Library/Containers/com.apple.findmy.FindMyWidgetItems/**",
-        "**/Library/Containers/com.apple.mediaanalysisd/**",
-        "**/Library/Containers/com.apple.photoanalysisd/**",
-        "**/Library/Containers/com.apple.podcasts/**",
-        "**/Library/Containers/com.apple.quicklook.QuickLookUIService/**",
-        "**/Library/Containers/com.apple.Safari/**",
-        "**/Library/Containers/com.apple.Safari.WebApp/**",
-        "**/Library/Containers/com.apple.Time-Machine-Settings-Intents.extension/**",
-        "**/Library/Containers/com.apple.CalendarWeatherKitService/**",
-        "**/Library/Containers/com.apple.mail.SpotlightIndexExtension/**",
-        "**/Library/Containers/com.apple.wallpaper.extension.video/**",
-        "**/Library/Containers/com.microsoft.teams2/**",
-        "**/Library/Group Containers/BJ4HAAB9B3.ZoomClient3rd/**",
-        "**/Library/Group Containers/UBF8T346G9.ms/**",
-        "**/Library/Group Containers/group.com.apple.calendar/**",
-        "**/Library/Group Containers/group.com.apple.CoreSpeech/**",
-        "**/Library/Group Containers/group.com.apple.secure-control-center-preferences/**",
     ],
 }
 
-DEFAULT_EXCLUDE_CATEGORIES = ["runtime", "caches", "dev_deps", "large_blobs"]
+DEFAULT_EXCLUDE_CATEGORIES = [
+    "runtime",
+    "caches",
+    "dev_deps",
+    "large_blobs",
+    "os_system",
+]
 
 
 def create_backup(
@@ -166,7 +149,9 @@ def create_backup(
     # Build tar command with exclusions
     cmd = ["tar"]
     if not no_excludes:
-        categories = exclude_categories if exclude_categories else DEFAULT_EXCLUDE_CATEGORIES
+        categories = (
+            exclude_categories if exclude_categories else DEFAULT_EXCLUDE_CATEGORIES
+        )
         for cat in categories:
             for pattern in EXCLUDE_PATTERNS[cat]:
                 cmd.extend(["--exclude", pattern])
@@ -371,7 +356,9 @@ Examples:
                     file=sys.stderr,
                 )
                 sys.exit(1)
-        if not create_backup(archive_path, user, args.ignore_tar_warnings, args.no_excludes, exclude_cats):
+        if not create_backup(
+            archive_path, user, args.ignore_tar_warnings, args.no_excludes, exclude_cats
+        ):
             sys.exit(1)
 
     # Upload or skip
