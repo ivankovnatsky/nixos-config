@@ -200,6 +200,20 @@
       {
         nixpkgs.overlays = [
           inputs.self.overlay
+          (final: prev:
+            let openclawPkgs = inputs.nix-openclaw.packages.${final.system};
+            in {
+              inherit (openclawPkgs)
+                openclaw
+                openclaw-gateway
+                openclaw-tools
+                ;
+              openclawPackages = openclawPkgs // {
+                toolNames = [ ];
+                withTools = _: openclawPkgs;
+              };
+            }
+          )
           (final: prev: {
             taskwarrior-web = prev.callPackage ../../overlays/taskwarrior-web {
               npmDepsHash = "sha256-i7LvbsJ0N86UHQgo2MtgkCfOYBUIOOK8e0hQxO2qteg=";
@@ -260,6 +274,7 @@
               ../../machines/Ivans-Mac-mini/home
               inputs.nixvim-darwin-release.homeModules.nixvim
               inputs.sops-nix-darwin-release.homeManagerModules.sops
+              inputs.nix-openclaw.homeManagerModules.openclaw
               {
                 programs.home-manager.enable = true;
                 home.username = "ivan";

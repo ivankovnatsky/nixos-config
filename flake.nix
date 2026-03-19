@@ -262,6 +262,10 @@
     textcast = {
       url = "github:ivankovnatsky/textcast";
     };
+
+    nix-openclaw = {
+      url = "github:openclaw/nix-openclaw";
+    };
   };
 
   outputs = inputs: import ./flake { inherit inputs; };
