@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Taskmanager: unified task management across Apple Reminders and Taskwarrior."""
 
+import difflib
 import json
 import os
 import platform
@@ -704,6 +705,26 @@ def infer_flow(field, rem_val, tw_val):
     return "rem_to_tw"
 
 
+def format_notes_diff(from_text, to_text, indent="        "):
+    """Render a notes diff with colored lines (red=deletion, green=addition)."""
+    from_lines = from_text.splitlines()
+    to_lines = to_text.splitlines()
+    diff = difflib.unified_diff(from_lines, to_lines, lineterm="")
+    lines = []
+    for line in diff:
+        if line.startswith("---") or line.startswith("+++"):
+            continue
+        if line.startswith("@@"):
+            continue
+        if line.startswith("-"):
+            lines.append(f"{indent}{click.style(line, fg='red')}")
+        elif line.startswith("+"):
+            lines.append(f"{indent}{click.style(line, fg='green')}")
+        else:
+            lines.append(f"{indent}{line}")
+    return "\n".join(lines) if lines else None
+
+
 def print_drift_item(key, info, direction=None):
     """Print drift for a single metadata item."""
     project, title = key
@@ -727,7 +748,22 @@ def print_drift_item(key, info, direction=None):
     for header, fields in groups.items():
         click.echo(f"    {header}")
         for field, from_val, to_val in fields:
-            click.echo(f"      {field}: {from_val} \u2192 {to_val}")
+            if field == "notes":
+                tw_ann = [a.get("description", "") for a in info["tw"].get("annotations", [])]
+                raw_tw = "; ".join(tw_ann) if tw_ann else ""
+                raw_rem = (info["rem"].get("notes") or "").strip()
+                if "Reminders" in header and header.endswith("Taskwarrior:"):
+                    raw_from, raw_to = raw_tw, raw_rem
+                else:
+                    raw_from, raw_to = raw_rem, raw_tw
+                diff_output = format_notes_diff(raw_from, raw_to)
+                if diff_output:
+                    click.echo(f"      {field}:")
+                    click.echo(diff_output)
+                else:
+                    click.echo(f"      {field}: {from_val} \u2192 {to_val}")
+            else:
+                click.echo(f"      {field}: {from_val} \u2192 {to_val}")
 
 
 def format_item_summary(item):
