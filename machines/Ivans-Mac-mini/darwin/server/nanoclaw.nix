@@ -7,7 +7,7 @@
 
 let
   nanoclawDataPath = "${config.flags.externalStoragePath}/.nanoclaw";
-  discordChannelId = "REPLACED_BY_SOPS";
+  discordChannelIdFile = config.sops.secrets.nanoclaw-discord-channel-id.path;
   # Forked to ivankovnatsky/nanoclaw-discord with Apple Container patches.
   # Local clone at .nanoclaw has origin pointing to the fork.
   nanoclawRepo = "https://github.com/qwibitai/nanoclaw-discord.git";
@@ -51,12 +51,13 @@ let
     fi
 
     # Register Discord channel if not already registered
+    DISCORD_CHANNEL_ID=$(cat ${discordChannelIdFile})
     if ! ${pkgs.sqlite}/bin/sqlite3 store/messages.db \
-      "SELECT jid FROM registered_groups WHERE jid = 'dc:${discordChannelId}';" 2>/dev/null | /usr/bin/grep -q .; then
+      "SELECT jid FROM registered_groups WHERE jid = 'dc:$DISCORD_CHANNEL_ID';" 2>/dev/null | /usr/bin/grep -q .; then
       echo "Registering Discord channel..."
       ${nodejs}/bin/npx tsx setup/index.ts --step register \
         -- \
-        --jid "dc:${discordChannelId}" \
+        --jid "dc:$DISCORD_CHANNEL_ID" \
         --name "nanoclaw" \
         --folder "discord_main" \
         --trigger "@Andy" \
@@ -129,6 +130,11 @@ in
 
   sops.secrets.claude-oauth-token = {
     key = "anthropic/oauthToken";
+    owner = username;
+  };
+
+  sops.secrets.nanoclaw-discord-channel-id = {
+    key = "discord/nanoClawChannelId";
     owner = username;
   };
 }
