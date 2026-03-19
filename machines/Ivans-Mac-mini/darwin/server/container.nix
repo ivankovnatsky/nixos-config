@@ -1,5 +1,8 @@
 { pkgs, ... }:
 
+# Cleanup: after migrating from root daemon to user-agent, remove old root state:
+# sudo rm -rf /var/root/Library/Application\ Support/com.apple.container/
+
 let
   containerStarter = pkgs.writeShellScript "container-starter" ''
     ${pkgs.nixpkgs-darwin-master-container.container}/bin/container system start
