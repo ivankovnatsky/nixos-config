@@ -18,7 +18,7 @@
     bat
     beszel-mgmt
     cargo
-    container
+    nixpkgs-darwin-master-container.container
     nanoclaw
     delta
     dns
