@@ -31,7 +31,8 @@ let
       --arg channelId "$CHANNEL_ID" \
       '.gateway.controlUi.allowedOrigins = [$origin, "http://127.0.0.1:18789"]
        | .channels.discord.allowFrom = [$userId]
-       | .channels.discord.guilds[$serverId].channels[$channelId] = {"allow": true, "requireMention": false}' "$SRC" > "${patchedConfig}.tmp"
+       | .channels.discord.guilds[$serverId].requireMention = true
+       | .channels.discord.guilds[$serverId].channels[$channelId].requireMention = false' "$SRC" > "${patchedConfig}.tmp"
     mv "${patchedConfig}.tmp" "${patchedConfig}"
     export OPENCLAW_CONFIG_PATH="${patchedConfig}"
 
