@@ -8,8 +8,9 @@
 let
   nanoclawDataPath = "${config.flags.externalStoragePath}/.nanoclaw";
   discordChannelId = "REPLACED_BY_SOPS";
+  # Forked to ivankovnatsky/nanoclaw-discord with Apple Container patches.
+  # Local clone at .nanoclaw has origin pointing to the fork.
   nanoclawRepo = "https://github.com/qwibitai/nanoclaw-discord.git";
-  nanoclawRev = "ba9353c5ee7deb6011f308f45417f6a38917dd0e";
 
   nodejs = pkgs.nodejs_22;
 
@@ -22,7 +23,7 @@ let
 
   nanoclawSetup = pkgs.writeShellScript "nanoclaw-setup" ''
     set -e
-    export PATH="${nodejs}/bin:${pkgs.git}/bin:${pkgs.python3}/bin:/usr/bin:/bin"
+    export PATH="${nodejs}/bin:${pkgs.git}/bin:/usr/bin:/bin"
     export HOME="${config.users.users.${username}.home}"
 
     # Clone if needed
@@ -32,14 +33,6 @@ let
     fi
 
     cd ${nanoclawDataPath}
-
-    # Update to pinned revision
-    CURRENT_REV=$(${pkgs.git}/bin/git rev-parse HEAD)
-    if [ "$CURRENT_REV" != "${nanoclawRev}" ]; then
-      echo "Updating to ${nanoclawRev}..."
-      ${pkgs.git}/bin/git fetch origin
-      ${pkgs.git}/bin/git checkout ${nanoclawRev}
-    fi
 
     # Bootstrap (follows setup.sh flow)
     # Unset NODE_ENV so npm ci installs devDependencies (typescript, tsx)
@@ -55,19 +48,6 @@ let
     if [ ! -d "dist" ]; then
       echo "Building..."
       ${nodejs}/bin/npm run build
-    fi
-
-    # Apply Apple Container patches to compiled output
-    if /usr/bin/grep -q 'Run: docker info' dist/container-runtime.js 2>/dev/null; then
-      echo "Applying Apple Container patches..."
-      /usr/bin/sed -i "" \
-        -e "s|CONTAINER_RUNTIME_BIN = 'docker'|CONTAINER_RUNTIME_BIN = 'container'|g" \
-        -e "s|CONTAINER_HOST_GATEWAY = 'host.docker.internal'|CONTAINER_HOST_GATEWAY = '192.168.64.1'|g" \
-        -e 's|CONTAINER_RUNTIME_BIN} info|CONTAINER_RUNTIME_BIN} system status|g' \
-        -e "s|ps --filter name=nanoclaw- --format '{{.Names}}'|ls --format json|g" \
-        -e "s|const orphans = output.trim().split('\\\\n').filter(Boolean);|const containers = output.trim() ? JSON.parse(output) : []; const orphans = containers.filter((c) => c.name?.startsWith('nanoclaw-')).map((c) => c.name);|g" \
-        -e 's|Run: docker info|Run: container system status|g' \
-        dist/container-runtime.js
     fi
 
     # Register Discord channel if not already registered
@@ -96,21 +76,23 @@ let
   buildAgentImage = pkgs.writeShellScript "nanoclaw-build-agent-image" ''
     IMAGE="nanoclaw-agent:latest"
     CONTEXT="${nanoclawDataPath}/container"
+    MARKER="${nanoclawDataPath}/.agent-image-hash"
 
     if [ ! -d "$CONTEXT" ]; then
       echo "NanoClaw not set up yet, skipping image build"
       exit 0
     fi
 
-    # Check if image already exists
-    if ${pkgs.nixpkgs-darwin-master-container.container}/bin/container image ls --format json 2>/dev/null | \
-       /usr/bin/grep -q "nanoclaw-agent"; then
-      echo "Image $IMAGE already exists, skipping build"
+    # Rebuild if source changed (hash of agent-runner source)
+    CURRENT_HASH=$(find "$CONTEXT" -type f | sort | xargs cat | /usr/bin/shasum | /usr/bin/cut -d' ' -f1)
+    if [ -f "$MARKER" ] && [ "$(cat "$MARKER")" = "$CURRENT_HASH" ]; then
+      echo "Image $IMAGE is up to date, skipping build"
       exit 0
     fi
 
     echo "Building $IMAGE from $CONTEXT..."
     ${pkgs.nixpkgs-darwin-master-container.container}/bin/container build -t "$IMAGE" "$CONTEXT"
+    echo "$CURRENT_HASH" > "$MARKER"
     echo "Build complete: $IMAGE"
   '';
 in
@@ -134,6 +116,8 @@ in
       NODE_ENV = "production";
       CREDENTIAL_PROXY_PORT = "3002";
       CREDENTIAL_PROXY_HOST = "0.0.0.0";
+      IDLE_TIMEOUT = "120000";
+      CONTAINER_TIMEOUT = "300000";
     };
     command = "${nanoclawWrapper}";
   };
