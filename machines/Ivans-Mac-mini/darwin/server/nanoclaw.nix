@@ -15,7 +15,7 @@ let
 
   nanoclawWrapper = pkgs.writeShellScript "nanoclaw-wrapper" ''
     export DISCORD_BOT_TOKEN=$(cat ${config.sops.secrets.discord-bot-token.path})
-    export ANTHROPIC_API_KEY=$(cat ${config.sops.secrets.anthropic-api-key.path})
+    export CLAUDE_CODE_OAUTH_TOKEN=$(cat ${config.sops.secrets.claude-oauth-token.path})
     cd ${nanoclawDataPath}
     exec ${nodejs}/bin/node dist/index.js
   '';
@@ -85,6 +85,11 @@ let
         --is-main
     fi
 
+    # Write .env for credential proxy (reads from file, not environment)
+    DISCORD_TOKEN=$(cat ${config.sops.secrets.discord-bot-token.path})
+    OAUTH_TOKEN=$(cat ${config.sops.secrets.claude-oauth-token.path})
+    printf "DISCORD_BOT_TOKEN=%s\nCLAUDE_CODE_OAUTH_TOKEN=%s\n" "$DISCORD_TOKEN" "$OAUTH_TOKEN" > .env
+
     echo "Setup complete"
   '';
 
@@ -128,12 +133,18 @@ in
       PATH = "${nodejs}/bin:${pkgs.nixpkgs-darwin-master-container.container}/bin:/usr/local/bin:/usr/bin:/bin";
       NODE_ENV = "production";
       CREDENTIAL_PROXY_PORT = "3002";
+      CREDENTIAL_PROXY_HOST = "0.0.0.0";
     };
     command = "${nanoclawWrapper}";
   };
 
   sops.secrets.discord-bot-token = {
     key = "discord/AndyBotToken";
+    owner = username;
+  };
+
+  sops.secrets.claude-oauth-token = {
+    key = "anthropic/outhToken";
     owner = username;
   };
 }
