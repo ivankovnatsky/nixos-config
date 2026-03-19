@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   stateDir = "/Volumes/Storage/Data/.openclaw";
   patchedConfig = "${stateDir}/openclaw-runtime.json";
@@ -16,8 +21,15 @@ let
     else
       SRC="$OPENCLAW_CONFIG_PATH"
     fi
-    ${pkgs.jq}/bin/jq --arg origin "https://openclaw.$DOMAIN" \
-      '.gateway.controlUi.allowedOrigins = [$origin, "http://127.0.0.1:18789"]' "$SRC" > "${patchedConfig}.tmp"
+    SERVER_ID=$(cat ${config.sops.secrets.openclaw-discord-server-id.path})
+    USER_ID=$(cat ${config.sops.secrets.openclaw-discord-user-id.path})
+    ${pkgs.jq}/bin/jq \
+      --arg origin "https://openclaw.$DOMAIN" \
+      --arg serverId "$SERVER_ID" \
+      --arg userId "$USER_ID" \
+      '.gateway.controlUi.allowedOrigins = [$origin, "http://127.0.0.1:18789"]
+       | .channels.discord.allowFrom = [$userId]
+       | .channels.discord.guilds[$serverId] = {}' "$SRC" > "${patchedConfig}.tmp"
     mv "${patchedConfig}.tmp" "${patchedConfig}"
     export OPENCLAW_CONFIG_PATH="${patchedConfig}"
 
@@ -43,8 +55,15 @@ in
           # FIXME: Reverse proxy pairing workaround. Remove when upstream fixes land.
           # https://github.com/openclaw/openclaw/issues/1679
           # https://github.com/openclaw/openclaw/issues/49293
-          trustedProxies = [ "127.0.0.1" "::1" ];
+          trustedProxies = [
+            "127.0.0.1"
+            "::1"
+          ];
           controlUi.allowInsecureAuth = true;
+        };
+
+        channels.discord = {
+          enabled = true;
         };
       };
     };
@@ -60,8 +79,7 @@ in
   ];
 
   # Symlink CLI config to the runtime config so `openclaw` commands work
-  home.file.".openclaw/openclaw.json".source =
-    config.lib.file.mkOutOfStoreSymlink "${patchedConfig}";
+  home.file.".openclaw/openclaw.json".source = config.lib.file.mkOutOfStoreSymlink "${patchedConfig}";
 
   home.activation.openclawDashboardUrl = lib.hm.dag.entryAfter [ "openclawDirs" ] ''
     MARKER="${stateDir}/.dashboard-url-shown"
@@ -78,14 +96,22 @@ in
   '';
 
   sops.secrets.openclaw-discord-bot-token = {
-    key = "discord/AndyBotToken";
+    key = "discord/LizardBotToken";
   };
 
   sops.secrets.openclaw-claude-oauth-token = {
-    key = "anthropic/oauthToken";
+    key = "anthropic/oauthTokenOpenClaw";
   };
 
   sops.secrets.openclaw-gateway-token = {
     key = "openClaw/gatewayToken";
+  };
+
+  sops.secrets.openclaw-discord-server-id = {
+    key = "discord/serverId";
+  };
+
+  sops.secrets.openclaw-discord-user-id = {
+    key = "discord/userId";
   };
 }
