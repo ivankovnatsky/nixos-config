@@ -54,6 +54,10 @@ let
       inherit system;
       config = safeConfig;
     };
+    nixpkgs-darwin-master-container = import inputs.nixpkgs-darwin-master-container {
+      inherit system;
+      config = safeConfig;
+    };
     nixpkgs-darwin-old-release = import inputs.nixpkgs-darwin-old-release {
       inherit system;
       config = safeConfig;
