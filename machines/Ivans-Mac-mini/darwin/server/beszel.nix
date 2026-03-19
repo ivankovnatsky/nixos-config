@@ -74,8 +74,8 @@ in
     owner = username;
   };
 
-  sops.secrets.discord-webhook = {
-    key = "discordWebHook";
+  sops.secrets.discord-webhook-beszel = {
+    key = "discord/webhookChannelMonitoringBeszel";
     owner = username;
   };
 
@@ -85,7 +85,7 @@ in
     externalDomainFile = config.sops.secrets.external-domain.path;
     emailFile = config.sops.secrets.beszel-email.path;
     passwordFile = config.sops.secrets.beszel-password.path;
-    discordWebhookFile = config.sops.secrets.discord-webhook.path;
+    discordWebhookFile = config.sops.secrets.discord-webhook-beszel.path;
     systems = [
       {
         name = config.networking.hostName;
