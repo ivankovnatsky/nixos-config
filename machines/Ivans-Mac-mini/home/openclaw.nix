@@ -46,6 +46,8 @@ in
     installApp = false;
     toolNames = [ ];
 
+    bundledPlugins.summarize.enable = true;
+
     instances.default = {
       enable = true;
       launchd.enable = true;
