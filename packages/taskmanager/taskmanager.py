@@ -443,6 +443,8 @@ def compare_metadata(tw, rem):
         diffs.append(("notes", rem_notes_display, tw_notes_display))
     elif not rem_notes and tw_ann_texts:
         diffs.append(("notes", rem_notes_display, tw_notes_display))
+    elif rem_notes and tw_ann_texts and any(a not in rem_notes for a in tw_ann_texts):
+        diffs.append(("notes", rem_notes_display, tw_notes_display))
 
     # Completion date — only report when Rem has older (more original) date,
     # or when status is changing to completed (Rem completed, TW not yet)
