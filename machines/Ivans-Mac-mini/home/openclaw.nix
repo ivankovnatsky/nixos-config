@@ -23,13 +23,15 @@ let
     fi
     SERVER_ID=$(cat ${config.sops.secrets.openclaw-discord-server-id.path})
     USER_ID=$(cat ${config.sops.secrets.openclaw-discord-user-id.path})
+    CHANNEL_ID=$(cat ${config.sops.secrets.openclaw-discord-channel-id.path})
     ${pkgs.jq}/bin/jq \
       --arg origin "https://openclaw.$DOMAIN" \
       --arg serverId "$SERVER_ID" \
       --arg userId "$USER_ID" \
+      --arg channelId "$CHANNEL_ID" \
       '.gateway.controlUi.allowedOrigins = [$origin, "http://127.0.0.1:18789"]
        | .channels.discord.allowFrom = [$userId]
-       | .channels.discord.guilds[$serverId] = {}' "$SRC" > "${patchedConfig}.tmp"
+       | .channels.discord.guilds[$serverId].channels[$channelId] = {"allow": true, "requireMention": false}' "$SRC" > "${patchedConfig}.tmp"
     mv "${patchedConfig}.tmp" "${patchedConfig}"
     export OPENCLAW_CONFIG_PATH="${patchedConfig}"
 
@@ -113,5 +115,9 @@ in
 
   sops.secrets.openclaw-discord-user-id = {
     key = "discord/userId";
+  };
+
+  sops.secrets.openclaw-discord-channel-id = {
+    key = "discord/openClawChannelId";
   };
 }
