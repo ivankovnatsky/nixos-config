@@ -3,7 +3,7 @@
   local.tools = {
     enable = true;
 
-    bun.packages = {
+    npm.packages = {
       "@google/gemini-cli" = "gemini";
       "@openai/codex" = "codex";
     };
