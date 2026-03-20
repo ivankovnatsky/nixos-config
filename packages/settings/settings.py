@@ -253,16 +253,35 @@ def appearance_open_settings_kde() -> None:
 
 
 def appearance_get_state_dir() -> Path:
-    return Path.home() / ".local" / "state" / "settings" / "appearance"
+    # Use /tmp so state is accessible by both root (activation scripts) and the
+    # user. Do NOT move to ~/ — activation scripts run as root, so Path.home()
+    # resolves to /var/root/ and the state file becomes invisible to --init.
+    return Path("/tmp") / "state" / "settings" / "appearance"
 
 
 def appearance_get_state_file() -> Path:
     return appearance_get_state_dir() / "last-run"
 
 
+def _ensure_tmp_state_dir(path: Path) -> None:
+    """Create dir under /tmp with world-writable permissions.
+
+    Activation scripts run as root and may create these dirs first,
+    so we chmod to allow the regular user to write state files too.
+    """
+    path.mkdir(parents=True, exist_ok=True)
+    for p in [path, *path.parents]:
+        if p == Path("/tmp") or p == Path("/"):
+            break
+        try:
+            os.chmod(p, 0o1777)
+        except PermissionError:
+            pass
+
+
 def appearance_write_state() -> None:
     state_dir = appearance_get_state_dir()
-    state_dir.mkdir(parents=True, exist_ok=True)
+    _ensure_tmp_state_dir(state_dir)
     appearance_get_state_file().write_text(date.today().isoformat())
 
 
@@ -311,6 +330,7 @@ def appearance(init):
         sys.exit(1)
 
     if init:
+        _ensure_tmp_state_dir(appearance_get_state_dir())
         state_file = appearance_get_state_file()
         today = date.today().isoformat()
         if state_file.exists() and state_file.read_text().strip() == today:
@@ -1994,7 +2014,10 @@ def accessibility_open() -> None:
 
 
 def accessibility_state_file() -> Path:
-    return Path.home() / ".local" / "state" / "settings" / "accessibility-enabled"
+    # Use /tmp so state is accessible by both root (activation scripts) and the
+    # user. Do NOT move to ~/ — activation scripts run as root, so Path.home()
+    # resolves to /var/root/ and the state file becomes invisible to --init.
+    return Path("/tmp") / "state" / "settings" / "accessibility-enabled"
 
 
 def accessibility_state_matches(enable_apps: list[str]) -> bool:
@@ -2007,7 +2030,7 @@ def accessibility_state_matches(enable_apps: list[str]) -> bool:
 
 def accessibility_write_state(enable_apps: list[str]) -> None:
     state = accessibility_state_file()
-    state.parent.mkdir(parents=True, exist_ok=True)
+    _ensure_tmp_state_dir(state.parent)
     state.write_text(",".join(sorted(enable_apps)))
 
 
