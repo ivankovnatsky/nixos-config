@@ -165,6 +165,10 @@ def cmd_restart(args: argparse.Namespace) -> int:
         success = restart_service(args.name, svc_type)
         return 0 if success else 1
 
+    if not args.unhealthy:
+        print("Error: specify --unhealthy to restart all unhealthy services, or -n to restart a specific service", file=sys.stderr)
+        return 1
+
     # Restart unhealthy services
     restart_agents = args.type in ("all", "agents")
     restart_daemons = args.type in ("all", "daemons")
@@ -411,6 +415,12 @@ Environment:
         choices=["all", "agents", "daemons"],
         default="all",
         help="Type of services to restart (when no name specified)",
+    )
+    restart_parser.add_argument(
+        "-u",
+        "--unhealthy",
+        action="store_true",
+        help="Restart all unhealthy services (required when no -n specified)",
     )
     restart_parser.add_argument(
         "-d",
