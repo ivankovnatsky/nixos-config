@@ -1,40 +1,39 @@
 {
   imports = [
-    ../../../home/nix-registry.nix
-    ../../../home/nushell.nix
-    ../../../home/nixvim.nix
     ../../../home/aichat.nix
+    ../../../home/atuin.nix
     ../../../home/bash.nix
     ../../../home/bat.nix
     ../../../home/btop.nix
     ../../../home/carapace.nix
     ../../../home/claude.nix
     ../../../home/direnv.nix
-    ../../../home/ghostty.nix
+    ../../../home/fish.nix
+    ../../../home/fzf.nix
     ../../../home/ghorg.nix
+    ../../../home/ghostty.nix
     ../../../home/git
     ../../../home/go.nix
     ../../../home/hammerspoon
     ../../../home/home-session-vars.nix
     ../../../home/jujutsu.nix
+    ../../../home/kitty
     ../../../home/lsd.nix
     ../../../home/mpv.nix
+    ../../../home/nix-registry.nix
     ../../../home/nixvim
+    ../../../home/nixvim.nix
     ../../../home/nixvim/plugins/copilot-lua
     ../../../home/nixvim/plugins/gpg-nvim
     ../../../home/notes.nix
-    ../../../home/obsidian.nix
     ../../../home/npm.nix
-    ../../../home/kitty
+    ../../../home/nushell.nix
+    ../../../home/obsidian.nix
     ../../../home/pass.nix
     ../../../home/ranger.nix
     ../../../home/rebuild-diff.nix
     ../../../home/safari.nix
-    ../../../home/atuin.nix
-    ../../../home/fish.nix
-    ../../../home/fzf.nix
-    ../../../home/z-lua.nix
-    ../../../home/zsh.nix
+    ../../../home/sops.nix
     ../../../home/ssh.nix
     ../../../home/starship
     ../../../home/syncthing-ignore.nix
@@ -43,13 +42,14 @@
     ../../../home/treefmt.nix
     ../../../home/vscode.nix
     ../../../home/yt-dlp.nix
+    ../../../home/z-lua.nix
+    ../../../home/zsh.nix
     ../../../modules/flags
     ../../../modules/home/tools
-    ./tools.nix
     ./flags.nix
-    ./packages.nix
-    ../../../home/sops.nix
-    ./tmux.nix
     ./openclaw.nix
+    ./packages.nix
+    ./tmux.nix
+    ./tools.nix
   ];
 }
