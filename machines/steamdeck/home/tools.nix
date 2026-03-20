@@ -3,9 +3,9 @@
   local.tools = {
     enable = true;
 
-    bun.packages = {
-      "@openai/codex" = "codex";
+    npm.packages = {
       "@google/gemini-cli" = "gemini";
+      "@openai/codex" = "codex";
     };
 
     curlShell = {

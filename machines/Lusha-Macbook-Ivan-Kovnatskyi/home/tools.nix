@@ -7,13 +7,14 @@
       configFile = ''
         prefix=~/.npm
       '';
-      packages = { };
+      packages = {
+        "@google/gemini-cli" = "gemini";
+        "@openai/codex" = "codex";
+      };
     };
 
     bun.packages = {
       "npm-groovy-lint" = "npm-groovy-lint";
-      "@openai/codex" = "codex";
-      "@google/gemini-cli" = "gemini";
       "mdts" = "mdts";
       "md-fileserver" = "mdstart";
     };

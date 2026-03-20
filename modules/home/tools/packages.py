@@ -115,16 +115,8 @@ def install_bun_packages(
 ):
     """Fully declarative bun package management.
 
-    Ensures:
-    - All declared packages exist in ~/.bun/bin
-    - No declared packages exist in ~/.npm/bin (cleanup legacy)
-    - Packages removed from config are removed from both locations
+    Ensures all declared packages exist in ~/.bun/bin.
     """
-    # Migrate state from "npm" to "bun" for backward compatibility
-    if "npm" in state and "bun" not in state:
-        log("Migrating state from npm to bun", Color.YELLOW)
-        state["bun"] = state.pop("npm")
-
     # Handle .bunfig.toml creation (only if bun.configFile is set)
     bunfig_content = bun_config.get("configFile")
     if bunfig_content and not state.get("bun", {}).get("bunfig_created"):
@@ -139,18 +131,12 @@ def install_bun_packages(
             state.setdefault("bun", {})["bunfig_created"] = True
 
     bun_bin = Path(paths["bunBin"])
-    npm_bin = Path(paths["npmBin"])
     desired = set(packages.keys())
+    state_packages = set(state.get("bun", {}).get("packages", {}).keys())
 
-    # Merge state packages from both npm and bun for tracking (backward compat)
-    bun_state_packages = state.get("bun", {}).get("packages", {})
-    npm_state_packages = state.get("npm", {}).get("packages", {})
-    merged_state_packages = {**npm_state_packages, **bun_state_packages}
-    state_packages = set(merged_state_packages.keys())
-
-    # Build binary mapping for all tracked packages
+    # Build binary mapping for tracked packages
     all_tracked = {}
-    for pkg, pkg_data in merged_state_packages.items():
+    for pkg, pkg_data in state.get("bun", {}).get("packages", {}).items():
         all_tracked[pkg] = pkg_data.get("binary", pkg.split("/")[-1])
     for pkg, binary in packages.items():
         all_tracked[pkg] = binary
@@ -160,41 +146,20 @@ def install_bun_packages(
 
     state_changed = False
 
-    # 1. CLEANUP: Remove packages no longer in config from both locations
+    # 1. CLEANUP: Remove packages no longer in config
     to_remove = {
         pkg: binary
         for pkg, binary in all_tracked.items()
-        if pkg not in desired
-        and ((bun_bin / binary).exists() or (npm_bin / binary).exists())
+        if pkg not in desired and (bun_bin / binary).exists()
     }
 
     if to_remove:
-        log(f"Removing unmanaged packages: {', '.join(to_remove.keys())}", Color.RED)
-        # Try bun first
+        log(f"Removing bun packages: {', '.join(to_remove.keys())}", Color.RED)
         cmd = [f"{paths['bun']}/bun", "remove", "-g"] + list(to_remove.keys())
         run_command(cmd, env)
-        # Fallback to npm for any remaining
-        still_present = [
-            pkg
-            for pkg, binary in to_remove.items()
-            if (bun_bin / binary).exists() or (npm_bin / binary).exists()
-        ]
-        if still_present:
-            cmd = [f"{paths['nodejs']}/npm", "uninstall", "-g"] + still_present
-            run_command(cmd, env)
         state_changed = True
 
-    # 2. CLEANUP LEGACY: Remove npm versions of declared packages
-    npm_cleanup = [
-        pkg for pkg, binary in packages.items() if (npm_bin / binary).exists()
-    ]
-    if npm_cleanup:
-        log(f"Removing legacy npm versions: {', '.join(npm_cleanup)}", Color.YELLOW)
-        cmd = [f"{paths['nodejs']}/npm", "uninstall", "-g"] + npm_cleanup
-        run_command(cmd, env)
-        state_changed = True
-
-    # 3. INSTALL: Ensure all declared packages exist in bun bin
+    # 2. INSTALL: Ensure all declared packages exist in bun bin
     to_install = [
         pkg for pkg, binary in packages.items() if not (bun_bin / binary).exists()
     ]
@@ -207,12 +172,87 @@ def install_bun_packages(
             return False
         state_changed = True
 
-    if not to_remove and not npm_cleanup and not to_install:
+    if not to_remove and not to_install:
         log("All bun packages in sync", Color.BLUE)
 
     # Update state
     if state_changed or state_packages != desired:
         state.setdefault("bun", {})["packages"] = {
+            pkg: {"installed": True, "binary": binary}
+            for pkg, binary in packages.items()
+        }
+
+    return True
+
+
+def install_npm_packages(
+    packages: Dict[str, str], paths: Dict, state: Dict, npm_config: Dict
+):
+    """Declarative npm package management.
+
+    Ensures all declared packages exist in ~/.npm/bin.
+    """
+    # Handle .npmrc creation
+    npmrc_content = npm_config.get("configFile")
+    if npmrc_content and not state.get("npm", {}).get("npmrc_created"):
+        npmrc_path = os.path.expanduser("~/.npmrc")
+        if not os.path.exists(npmrc_path):
+            log("Creating .npmrc file", Color.GREEN)
+            with open(npmrc_path, "w") as f:
+                f.write(npmrc_content)
+            state.setdefault("npm", {})["npmrc_created"] = True
+        else:
+            log(".npmrc already exists, skipping creation", Color.BLUE)
+            state.setdefault("npm", {})["npmrc_created"] = True
+
+    npm_bin = Path(paths["npmBin"])
+    desired = set(packages.keys())
+    state_packages = set(state.get("npm", {}).get("packages", {}).keys())
+
+    env = os.environ.copy()
+    env["PATH"] = f"{paths['nodejs']}:{env.get('PATH', '')}"
+
+    state_changed = False
+
+    # Build binary mapping for tracked packages
+    all_tracked = {}
+    for pkg, pkg_data in state.get("npm", {}).get("packages", {}).items():
+        all_tracked[pkg] = pkg_data.get("binary", pkg.split("/")[-1])
+    for pkg, binary in packages.items():
+        all_tracked[pkg] = binary
+
+    # 1. CLEANUP: Remove packages no longer in config
+    to_remove = {
+        pkg: binary
+        for pkg, binary in all_tracked.items()
+        if pkg not in desired and (npm_bin / binary).exists()
+    }
+
+    if to_remove:
+        log(f"Removing npm packages: {', '.join(to_remove.keys())}", Color.RED)
+        cmd = [f"{paths['nodejs']}/npm", "uninstall", "-g"] + list(to_remove.keys())
+        run_command(cmd, env)
+        state_changed = True
+
+    # 2. INSTALL: Ensure all declared packages exist in npm bin
+    to_install = [
+        pkg for pkg, binary in packages.items() if not (npm_bin / binary).exists()
+    ]
+    if to_install:
+        log(f"Installing npm packages: {', '.join(to_install)}", Color.GREEN)
+        cmd = [f"{paths['nodejs']}/npm", "install", "-g"] + to_install
+        returncode, stdout, stderr = run_command(cmd, env)
+        if returncode != 0:
+            log(f"Failed to install npm packages: {stderr}", Color.RED)
+            return False
+        state_changed = True
+
+    if not to_remove and not to_install:
+        log("All npm packages in sync", Color.BLUE)
+
+    # Update state
+    if state_changed or state_packages != desired:
+        state.setdefault("npm", {})["packages"] = {
             pkg: {"installed": True, "binary": binary}
             for pkg, binary in packages.items()
         }
@@ -518,16 +558,21 @@ def main():
 
     success = True
 
-    # Support both bun and npm config keys for backward compatibility
     bun_config = config.get("bun", {})
     npm_config = config.get("npm", {})
-    packages = {**npm_config.get("packages", {}), **bun_config.get("packages", {})}
-    # Only use bun.configFile for bunfig.toml (not npm.configFile - different format)
-    bun_only_config = {"configFile": bun_config.get("configFile")}
 
-    if packages:
+    bun_packages = bun_config.get("packages", {})
+    if bun_packages:
+        bun_only_config = {"configFile": bun_config.get("configFile")}
         success &= install_bun_packages(
-            packages, config["paths"], state, bun_only_config
+            bun_packages, config["paths"], state, bun_only_config
+        )
+
+    npm_packages = npm_config.get("packages", {})
+    if npm_packages:
+        npm_only_config = {"configFile": npm_config.get("configFile")}
+        success &= install_npm_packages(
+            npm_packages, config["paths"], state, npm_only_config
         )
 
     if config.get("uv", {}).get("packages"):

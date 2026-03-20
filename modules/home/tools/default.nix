@@ -68,7 +68,6 @@ let
       bun = {
         inherit (cfg.bun) packages configFile;
       };
-      # Backward compatibility
       npm = {
         inherit (cfg.npm) packages configFile;
       };
@@ -117,7 +116,7 @@ in
       description = "Packages to install globally via bun (package name -> binary name)";
       example = {
         "npm-groovy-lint" = "npm-groovy-lint";
-        "@google/gemini-cli" = "gemini";
+        "@openai/codex" = "codex";
       };
     };
 
@@ -127,17 +126,19 @@ in
       description = "Content for .bunfig.toml file (only created if set and file doesn't exist)";
     };
 
-    # Backward compatibility - deprecated, use bun.packages instead
     npm.packages = mkOption {
       type = types.attrsOf types.str;
       default = { };
-      description = "Deprecated: use bun.packages instead. NPM packages to install globally via bun.";
+      description = "Packages to install globally via npm (package name -> binary name)";
+      example = {
+        "@google/gemini-cli" = "gemini";
+      };
     };
 
     npm.configFile = mkOption {
       type = types.nullOr types.str;
       default = null;
-      description = "Deprecated: use bun.configFile instead.";
+      description = "Content for .npmrc file (only created if set and file doesn't exist)";
     };
 
     uv.packages = mkOption {
