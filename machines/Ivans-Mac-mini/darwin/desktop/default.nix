@@ -19,6 +19,7 @@
     ../../../../modules/flags
     ../../../../system/documentation.nix
     ../../../../system/nix.nix
+    ./accessibility.nix
     ./dock.nix
     ./homebrew.nix
     ./users.nix
