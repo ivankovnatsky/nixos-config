@@ -8,6 +8,7 @@
   networking.knownNetworkServices = [
     "AX88179A"
     "Ethernet"
+    "Thunderbolt Ethernet Slot 0"
     "Thunderbolt Bridge"
     "Wi-Fi"
   ];
@@ -70,7 +71,10 @@
     settings = {
       # Listen on all interfaces (supports both ethernet and WiFi)
       "listen-address" = [
-        config.flags.machineBindAddress
+        "127.0.0.1"
+        config.flags.miniIp
+        config.flags.miniEn7Ip
+        config.flags.miniWifiIp
       ];
 
       # Don't use /etc/resolv.conf
