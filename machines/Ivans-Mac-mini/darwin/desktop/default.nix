@@ -1,24 +1,24 @@
 {
   imports = [
     ../../../../darwin/darwin.nix
-    ../../../../darwin/xattr.nix
-    ./dock.nix
+    ../../../../darwin/dotfiles-sync.nix
     ../../../../darwin/flags.nix
     ../../../../darwin/fonts.nix
-    ./homebrew.nix
-    ./users.nix
+    ../../../../darwin/no-dock-restart.nix
     ../../../../darwin/security.nix
     ../../../../darwin/shell.nix
     ../../../../darwin/sudo.nix
-    ../../../../darwin/users.nix
     ../../../../darwin/system.nix
+    ../../../../darwin/users.nix
+    ../../../../darwin/xattr.nix
     ../../../../modules/darwin/dock
     ../../../../modules/darwin/pam
     ../../../../modules/darwin/sudo
     ../../../../modules/flags
     ../../../../system/documentation.nix
     ../../../../system/nix.nix
-    ../../../../darwin/no-dock-restart.nix
-    ../../../../darwin/dotfiles-sync.nix
+    ./dock.nix
+    ./homebrew.nix
+    ./users.nix
   ];
 }
