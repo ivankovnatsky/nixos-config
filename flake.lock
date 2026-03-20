@@ -1753,11 +1753,11 @@
         "nixpkgs": "nixpkgs_8"
       },
       "locked": {
-        "lastModified": 1770998813,
-        "narHash": "sha256-aHhtM5QUkSOqaiP3WDFhN+7rjT388vyw91OZxH53c9c=",
+        "lastModified": 1774015943,
+        "narHash": "sha256-ktSWwFGnftxleES7wx6s3arSxDE/KzBFh9n8f4U26II=",
         "owner": "ivankovnatsky",
         "repo": "textcast",
-        "rev": "69e10a52caff28b27113b07500cb1902fa1660df",
+        "rev": "478dea457aae872d9d8e617db5c2e2f487e96bf5",
         "type": "github"
       },
       "original": {
