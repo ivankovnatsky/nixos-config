@@ -9,7 +9,7 @@
 let
   inherit (osConfig.networking) hostName;
   homePath = config.home.homeDirectory;
-  isWork = hostName == "Lusha-Macbook-Ivan-Kovnatskyi";
+  isWork = config.flags.purpose == "work";
 
   sourcesPath =
     if hostName == "Ivans-Mac-mini" then
