@@ -253,7 +253,7 @@ def appearance_open_settings_kde() -> None:
 
 
 def appearance_get_state_dir() -> Path:
-    return Path("/tmp") / "settings" / "appearance"
+    return Path.home() / ".local" / "state" / "settings" / "appearance"
 
 
 def appearance_get_state_file() -> Path:
@@ -1993,8 +1993,30 @@ def accessibility_open() -> None:
     subprocess.run(["open", ACCESSIBILITY_URL], check=True)
 
 
+def accessibility_state_file() -> Path:
+    return Path.home() / ".local" / "state" / "settings" / "accessibility-enabled"
+
+
+def accessibility_state_matches(enable_apps: list[str]) -> bool:
+    """Check if state file matches the requested app list."""
+    state = accessibility_state_file()
+    if not state.exists():
+        return False
+    return state.read_text().strip() == ",".join(sorted(enable_apps))
+
+
+def accessibility_write_state(enable_apps: list[str]) -> None:
+    state = accessibility_state_file()
+    state.parent.mkdir(parents=True, exist_ok=True)
+    state.write_text(",".join(sorted(enable_apps)))
+
+
 def accessibility_enable(enable_apps: list[str]) -> None:
     """Ensure specified apps are enabled in Accessibility in a single UI session."""
+    if accessibility_state_matches(enable_apps):
+        print("Skipping accessibility enable (already configured)")
+        return
+
     enable_checks = " or ".join(
         f'name of el is "{app}"' for app in enable_apps
     )
@@ -2058,8 +2080,13 @@ end tell
         else:
             for app in enable_apps:
                 print(f"  {app}: not found in accessibility list")
+        if result.returncode == 0:
+            try:
+                accessibility_write_state(enable_apps)
+            except Exception as e:
+                print(f"Warning: could not write state: {e}", file=sys.stderr)
     except subprocess.TimeoutExpired:
-        print("Skipping accessibility init (timeout)", file=sys.stderr)
+        print("Skipping accessibility enable (timeout)", file=sys.stderr)
     finally:
         subprocess.run(
             ["osascript", "-e", 'tell application "System Settings" to quit'],
