@@ -6,13 +6,13 @@ Provides unified interface for managing launchd agents (user-level) and
 daemons (system-level) with filtering, health checking, and bulk operations.
 """
 
-import argparse
 import os
 import subprocess
-import sys
 from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
+
+import click
 
 
 class ServiceType(Enum):
@@ -39,7 +39,6 @@ class Service:
 def run_cmd(
     cmd: list[str], capture: bool = True, check: bool = True
 ) -> subprocess.CompletedProcess:
-    """Run a command and return the result."""
     try:
         return subprocess.run(
             cmd,
@@ -49,26 +48,23 @@ def run_cmd(
         )
     except subprocess.CalledProcessError as e:
         if capture:
-            print(f"Error: {e.stderr}", file=sys.stderr)
+            click.echo(f"Error: {e.stderr}", err=True)
         raise
 
 
 def run_sudo_cmd(
     cmd: list[str], capture: bool = True, check: bool = True
 ) -> subprocess.CompletedProcess:
-    """Run a command with sudo."""
     return run_cmd(["sudo"] + cmd, capture=capture, check=check)
 
 
 def get_uid() -> int:
-    """Get current user ID."""
     return os.getuid()
 
 
 def parse_launchctl_list(output: str, service_type: ServiceType) -> list[Service]:
-    """Parse launchctl list output into Service objects."""
     services = []
-    for line in output.strip().split("\n")[1:]:  # Skip header
+    for line in output.strip().split("\n")[1:]:
         parts = line.split("\t")
         if len(parts) >= 3:
             pid_str, exit_code_str, name = parts[0], parts[1], parts[2]
@@ -79,7 +75,6 @@ def parse_launchctl_list(output: str, service_type: ServiceType) -> list[Service
 
 
 def list_agents(pattern: Optional[str] = None) -> list[Service]:
-    """List user agents, optionally filtered by pattern."""
     result = run_cmd(["launchctl", "list"])
     services = parse_launchctl_list(result.stdout, ServiceType.AGENT)
     if pattern:
@@ -88,7 +83,6 @@ def list_agents(pattern: Optional[str] = None) -> list[Service]:
 
 
 def list_daemons(pattern: Optional[str] = None) -> list[Service]:
-    """List system daemons, optionally filtered by pattern."""
     result = run_sudo_cmd(["launchctl", "list"])
     services = parse_launchctl_list(result.stdout, ServiceType.DAEMON)
     if pattern:
@@ -97,7 +91,6 @@ def list_daemons(pattern: Optional[str] = None) -> list[Service]:
 
 
 def format_service(svc: Service, verbose: bool = False) -> str:
-    """Format a service for display."""
     status = "●" if svc.is_running else "○"
     health = "✓" if svc.is_healthy else "✗"
     pid_str = str(svc.pid) if svc.pid else "-"
@@ -108,39 +101,7 @@ def format_service(svc: Service, verbose: bool = False) -> str:
     return f"{status} {health}  {svc.name}"
 
 
-def cmd_list(args: argparse.Namespace) -> int:
-    """List services."""
-    show_agents = args.type in ("all", "agents")
-    show_daemons = args.type in ("all", "daemons")
-
-    if show_agents:
-        print("=== User Agents ===")
-        agents = list_agents(args.filter)
-        if args.unhealthy:
-            agents = [a for a in agents if not a.is_healthy]
-        if agents:
-            for svc in sorted(agents, key=lambda s: s.name):
-                print(format_service(svc, args.verbose))
-        else:
-            print("None found" if not args.unhealthy else "All healthy")
-        print()
-
-    if show_daemons:
-        print("=== System Daemons ===")
-        daemons = list_daemons(args.filter)
-        if args.unhealthy:
-            daemons = [d for d in daemons if not d.is_healthy]
-        if daemons:
-            for svc in sorted(daemons, key=lambda s: s.name):
-                print(format_service(svc, args.verbose))
-        else:
-            print("None found" if not args.unhealthy else "All healthy")
-
-    return 0
-
-
 def restart_service(name: str, service_type: ServiceType) -> bool:
-    """Restart a single service."""
     uid = get_uid()
     if service_type == ServiceType.AGENT:
         target = f"gui/{uid}/{name}"
@@ -153,61 +114,12 @@ def restart_service(name: str, service_type: ServiceType) -> bool:
         subprocess.run(cmd, check=True, capture_output=True, text=True)
         return True
     except subprocess.CalledProcessError as e:
-        print(f"  Failed to restart {name}: {e.stderr}", file=sys.stderr)
+        click.echo(f"  Failed to restart {name}: {e.stderr}", err=True)
         return False
 
 
-def cmd_restart(args: argparse.Namespace) -> int:
-    """Restart services."""
-    if args.name:
-        svc_type = ServiceType.DAEMON if args.daemon else ServiceType.AGENT
-        print(f"Restarting {svc_type.value}: {args.name}")
-        success = restart_service(args.name, svc_type)
-        return 0 if success else 1
-
-    if not args.unhealthy:
-        print("Error: specify --unhealthy to restart all unhealthy services, or -n to restart a specific service", file=sys.stderr)
-        return 1
-
-    # Restart unhealthy services
-    restart_agents = args.type in ("all", "agents")
-    restart_daemons = args.type in ("all", "daemons")
-    failed = 0
-
-    if restart_agents:
-        print("Checking user agents...")
-        agents = list_agents(args.filter)
-        unhealthy = [a for a in agents if not a.is_healthy]
-        if unhealthy:
-            print("Restarting unhealthy agents:")
-            for svc in unhealthy:
-                print(f"  → {svc.name}")
-                if not restart_service(svc.name, ServiceType.AGENT):
-                    failed += 1
-        else:
-            print("All agents are healthy (exit code 0)")
-        print()
-
-    if restart_daemons:
-        print("Checking system daemons (requires sudo)...")
-        daemons = list_daemons(args.filter)
-        unhealthy = [d for d in daemons if not d.is_healthy]
-        if unhealthy:
-            print("Restarting unhealthy daemons:")
-            for svc in unhealthy:
-                print(f"  → {svc.name}")
-                if not restart_service(svc.name, ServiceType.DAEMON):
-                    failed += 1
-        else:
-            print("All daemons are healthy (exit code 0)")
-
-    return 1 if failed > 0 else 0
-
-
 def get_plist_path(name: str, service_type: ServiceType) -> Optional[str]:
-    """Get the plist path for a service."""
     if service_type == ServiceType.AGENT:
-        # Check common agent locations
         paths = [
             os.path.expanduser(f"~/Library/LaunchAgents/{name}.plist"),
             f"/Library/LaunchAgents/{name}.plist",
@@ -224,7 +136,6 @@ def get_plist_path(name: str, service_type: ServiceType) -> Optional[str]:
 
 
 def stop_service(name: str, service_type: ServiceType) -> bool:
-    """Stop a single service using bootout (works with KeepAlive services)."""
     uid = get_uid()
     if service_type == ServiceType.AGENT:
         target = f"gui/{uid}/{name}"
@@ -237,17 +148,16 @@ def stop_service(name: str, service_type: ServiceType) -> bool:
         subprocess.run(cmd, check=True, capture_output=True, text=True)
         return True
     except subprocess.CalledProcessError as e:
-        print(f"  Failed to stop {name}: {e.stderr}", file=sys.stderr)
+        click.echo(f"  Failed to stop {name}: {e.stderr}", err=True)
         return False
 
 
 def start_service(name: str, service_type: ServiceType) -> bool:
-    """Start a single service using bootstrap."""
     uid = get_uid()
     plist_path = get_plist_path(name, service_type)
 
     if not plist_path:
-        print(f"  Could not find plist for {name}", file=sys.stderr)
+        click.echo(f"  Could not find plist for {name}", err=True)
         return False
 
     if service_type == ServiceType.AGENT:
@@ -261,229 +171,205 @@ def start_service(name: str, service_type: ServiceType) -> bool:
         subprocess.run(cmd, check=True, capture_output=True, text=True)
         return True
     except subprocess.CalledProcessError as e:
-        print(f"  Failed to start {name}: {e.stderr}", file=sys.stderr)
+        click.echo(f"  Failed to start {name}: {e.stderr}", err=True)
         return False
 
 
-def cmd_stop(args: argparse.Namespace) -> int:
-    """Stop a service."""
-    svc_type = ServiceType.DAEMON if args.daemon else ServiceType.AGENT
-    print(f"Stopping {svc_type.value}: {args.name}")
-    success = stop_service(args.name, svc_type)
-    return 0 if success else 1
+SERVICE_TYPE = click.Choice(["all", "agents", "daemons"])
+
+ALIASES = {
+    "ls": "list",
+    "st": "status",
+    "rs": "restart",
+}
 
 
-def cmd_start(args: argparse.Namespace) -> int:
-    """Start a service."""
-    svc_type = ServiceType.DAEMON if args.daemon else ServiceType.AGENT
-    print(f"Starting {svc_type.value}: {args.name}")
-    success = start_service(args.name, svc_type)
-    return 0 if success else 1
+class AliasGroup(click.Group):
+    def get_command(self, ctx, cmd_name):
+        cmd_name = ALIASES.get(cmd_name, cmd_name)
+        return super().get_command(ctx, cmd_name)
+
+    def resolve_command(self, ctx, args):
+        if args and args[0] in ALIASES:
+            args[0] = ALIASES[args[0]]
+        return super().resolve_command(ctx, args)
 
 
-def cmd_status(args: argparse.Namespace) -> int:
-    """Show status of unhealthy services."""
-    show_agents = args.type in ("all", "agents")
-    show_daemons = args.type in ("all", "daemons")
+@click.group(cls=AliasGroup)
+@click.option("-f", "--filter", "pattern", default=lambda: os.environ.get("LAUNCHD_FILTER", ""), help="Filter services by pattern")
+@click.pass_context
+def cli(ctx, pattern):
+    """Manage macOS launchd services (agents and daemons)."""
+    ctx.ensure_object(dict)
+    ctx.obj["pattern"] = pattern
 
-    print("=== Unhealthy Services ===\n")
+
+@cli.command("list")
+@click.option("-t", "--type", "svc_type", type=SERVICE_TYPE, default="all", help="Type of services to list")
+@click.option("-u", "--unhealthy", is_flag=True, help="Show only unhealthy services")
+@click.option("-v", "--verbose", is_flag=True, help="Show verbose output with PID and exit codes")
+@click.pass_context
+def cmd_list(ctx, svc_type, unhealthy, verbose):
+    """List services."""
+    pattern = ctx.obj["pattern"]
+    show_agents = svc_type in ("all", "agents")
+    show_daemons = svc_type in ("all", "daemons")
 
     if show_agents:
-        print("User Agents:")
-        agents = list_agents(args.filter)
-        unhealthy = [a for a in agents if not a.is_healthy]
+        click.echo("=== User Agents ===")
+        agents = list_agents(pattern)
         if unhealthy:
-            for svc in sorted(unhealthy, key=lambda s: s.name):
-                print(f"  {format_service(svc, verbose=True)}")
+            agents = [a for a in agents if not a.is_healthy]
+        if agents:
+            for svc in sorted(agents, key=lambda s: s.name):
+                click.echo(format_service(svc, verbose))
         else:
-            print("  All healthy")
-        print()
+            click.echo("None found" if not unhealthy else "All healthy")
+        click.echo()
 
     if show_daemons:
-        print("System Daemons:")
-        daemons = list_daemons(args.filter)
-        unhealthy = [d for d in daemons if not d.is_healthy]
+        click.echo("=== System Daemons ===")
+        daemons = list_daemons(pattern)
         if unhealthy:
-            for svc in sorted(unhealthy, key=lambda s: s.name):
-                print(f"  {format_service(svc, verbose=True)}")
+            daemons = [d for d in daemons if not d.is_healthy]
+        if daemons:
+            for svc in sorted(daemons, key=lambda s: s.name):
+                click.echo(format_service(svc, verbose))
         else:
-            print("  All healthy")
-
-    return 0
+            click.echo("None found" if not unhealthy else "All healthy")
 
 
-def cmd_info(args: argparse.Namespace) -> int:
+@cli.command()
+@click.option("-n", "--name", default=None, help="Specific service name to restart")
+@click.option("-t", "--type", "svc_type", type=SERVICE_TYPE, default="all", help="Type of services to restart")
+@click.option("-u", "--unhealthy", is_flag=True, help="Restart all unhealthy services")
+@click.option("-d", "--daemon", is_flag=True, help="Treat named service as daemon (requires sudo)")
+@click.pass_context
+def restart(ctx, name, svc_type, unhealthy, daemon):
+    """Restart services."""
+    pattern = ctx.obj["pattern"]
+
+    if name:
+        svc_type_enum = ServiceType.DAEMON if daemon else ServiceType.AGENT
+        click.echo(f"Restarting {svc_type_enum.value}: {name}")
+        success = restart_service(name, svc_type_enum)
+        raise SystemExit(0 if success else 1)
+
+    if not unhealthy:
+        click.echo("Error: specify --unhealthy to restart all unhealthy services, or -n to restart a specific service", err=True)
+        raise SystemExit(1)
+
+    restart_agents = svc_type in ("all", "agents")
+    restart_daemons = svc_type in ("all", "daemons")
+    failed = 0
+
+    if restart_agents:
+        click.echo("Checking user agents...")
+        agents = list_agents(pattern)
+        unhealthy_agents = [a for a in agents if not a.is_healthy]
+        if unhealthy_agents:
+            click.echo("Restarting unhealthy agents:")
+            for svc in unhealthy_agents:
+                click.echo(f"  → {svc.name}")
+                if not restart_service(svc.name, ServiceType.AGENT):
+                    failed += 1
+        else:
+            click.echo("All agents are healthy (exit code 0)")
+        click.echo()
+
+    if restart_daemons:
+        click.echo("Checking system daemons (requires sudo)...")
+        daemons = list_daemons(pattern)
+        unhealthy_daemons = [d for d in daemons if not d.is_healthy]
+        if unhealthy_daemons:
+            click.echo("Restarting unhealthy daemons:")
+            for svc in unhealthy_daemons:
+                click.echo(f"  → {svc.name}")
+                if not restart_service(svc.name, ServiceType.DAEMON):
+                    failed += 1
+        else:
+            click.echo("All daemons are healthy (exit code 0)")
+
+    raise SystemExit(1 if failed > 0 else 0)
+
+
+@cli.command()
+@click.option("-n", "--name", required=True, help="Service name to stop")
+@click.option("-d", "--daemon", is_flag=True, help="Treat as daemon (requires sudo)")
+def stop(name, daemon):
+    """Stop a service."""
+    svc_type = ServiceType.DAEMON if daemon else ServiceType.AGENT
+    click.echo(f"Stopping {svc_type.value}: {name}")
+    success = stop_service(name, svc_type)
+    raise SystemExit(0 if success else 1)
+
+
+@cli.command()
+@click.option("-n", "--name", required=True, help="Service name to start")
+@click.option("-d", "--daemon", is_flag=True, help="Treat as daemon (requires sudo)")
+def start(name, daemon):
+    """Start a service."""
+    svc_type = ServiceType.DAEMON if daemon else ServiceType.AGENT
+    click.echo(f"Starting {svc_type.value}: {name}")
+    success = start_service(name, svc_type)
+    raise SystemExit(0 if success else 1)
+
+
+@cli.command()
+@click.option("-t", "--type", "svc_type", type=SERVICE_TYPE, default="all", help="Type of services to check")
+@click.pass_context
+def status(ctx, svc_type):
+    """Show unhealthy services."""
+    pattern = ctx.obj["pattern"]
+    show_agents = svc_type in ("all", "agents")
+    show_daemons = svc_type in ("all", "daemons")
+
+    click.echo("=== Unhealthy Services ===\n")
+
+    if show_agents:
+        click.echo("User Agents:")
+        agents = list_agents(pattern)
+        unhealthy_agents = [a for a in agents if not a.is_healthy]
+        if unhealthy_agents:
+            for svc in sorted(unhealthy_agents, key=lambda s: s.name):
+                click.echo(f"  {format_service(svc, verbose=True)}")
+        else:
+            click.echo("  All healthy")
+        click.echo()
+
+    if show_daemons:
+        click.echo("System Daemons:")
+        daemons = list_daemons(pattern)
+        unhealthy_daemons = [d for d in daemons if not d.is_healthy]
+        if unhealthy_daemons:
+            for svc in sorted(unhealthy_daemons, key=lambda s: s.name):
+                click.echo(f"  {format_service(svc, verbose=True)}")
+        else:
+            click.echo("  All healthy")
+
+
+@cli.command()
+@click.option("-n", "--name", required=True, help="Service name")
+@click.option("-d", "--daemon", is_flag=True, help="Treat as daemon (requires sudo)")
+def info(name, daemon):
     """Show detailed info about a service."""
     uid = get_uid()
-    svc_type = ServiceType.DAEMON if args.daemon else ServiceType.AGENT
+    svc_type = ServiceType.DAEMON if daemon else ServiceType.AGENT
 
     if svc_type == ServiceType.AGENT:
-        target = f"gui/{uid}/{args.name}"
+        target = f"gui/{uid}/{name}"
         cmd = ["launchctl", "print", target]
     else:
-        target = f"system/{args.name}"
+        target = f"system/{name}"
         cmd = ["sudo", "launchctl", "print", target]
 
     try:
         result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        print(result.stdout)
-        return 0
+        click.echo(result.stdout)
     except subprocess.CalledProcessError as e:
-        print(f"Error: {e.stderr}", file=sys.stderr)
-        return 1
-
-
-def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Manage macOS launchd services (agents and daemons)",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  launchd-mgmt list                          # List all services
-  launchd-mgmt list -t agents -f mypattern   # List agents matching pattern
-  launchd-mgmt list --unhealthy              # List only unhealthy services
-  launchd-mgmt status                        # Show unhealthy services
-  launchd-mgmt restart                       # Restart all unhealthy services
-  launchd-mgmt restart -n myservice          # Restart specific agent
-  launchd-mgmt restart -n myservice --daemon # Restart specific daemon
-  launchd-mgmt start -n myservice            # Start a stopped service
-  launchd-mgmt stop -n myservice             # Stop a running service
-  launchd-mgmt info -n myservice             # Show service details
-
-Environment:
-  LAUNCHD_FILTER    Default filter pattern for service names
-""",
-    )
-
-    parser.add_argument(
-        "-f",
-        "--filter",
-        default=os.environ.get("LAUNCHD_FILTER", ""),
-        help="Filter services by pattern (default: $LAUNCHD_FILTER or none)",
-    )
-
-    subparsers = parser.add_subparsers(dest="command")
-
-    # list command
-    list_parser = subparsers.add_parser("list", aliases=["ls"], help="List services")
-    list_parser.add_argument(
-        "-t",
-        "--type",
-        choices=["all", "agents", "daemons"],
-        default="all",
-        help="Type of services to list",
-    )
-    list_parser.add_argument(
-        "-u",
-        "--unhealthy",
-        action="store_true",
-        help="Show only unhealthy services",
-    )
-    list_parser.add_argument(
-        "-v",
-        "--verbose",
-        action="store_true",
-        help="Show verbose output with PID and exit codes",
-    )
-    list_parser.set_defaults(func=cmd_list)
-
-    # status command
-    status_parser = subparsers.add_parser(
-        "status", aliases=["st"], help="Show unhealthy services"
-    )
-    status_parser.add_argument(
-        "-t",
-        "--type",
-        choices=["all", "agents", "daemons"],
-        default="all",
-        help="Type of services to check",
-    )
-    status_parser.set_defaults(func=cmd_status)
-
-    # restart command
-    restart_parser = subparsers.add_parser(
-        "restart", aliases=["rs"], help="Restart services"
-    )
-    restart_parser.add_argument(
-        "-n",
-        "--name",
-        help="Specific service name to restart",
-    )
-    restart_parser.add_argument(
-        "-t",
-        "--type",
-        choices=["all", "agents", "daemons"],
-        default="all",
-        help="Type of services to restart (when no name specified)",
-    )
-    restart_parser.add_argument(
-        "-u",
-        "--unhealthy",
-        action="store_true",
-        help="Restart all unhealthy services (required when no -n specified)",
-    )
-    restart_parser.add_argument(
-        "-d",
-        "--daemon",
-        action="store_true",
-        help="Treat named service as daemon (requires sudo)",
-    )
-    restart_parser.set_defaults(func=cmd_restart)
-
-    # start command
-    start_parser = subparsers.add_parser("start", help="Start a service")
-    start_parser.add_argument(
-        "-n",
-        "--name",
-        required=True,
-        help="Service name to start",
-    )
-    start_parser.add_argument(
-        "-d",
-        "--daemon",
-        action="store_true",
-        help="Treat as daemon (requires sudo)",
-    )
-    start_parser.set_defaults(func=cmd_start)
-
-    # stop command
-    stop_parser = subparsers.add_parser("stop", help="Stop a service")
-    stop_parser.add_argument(
-        "-n",
-        "--name",
-        required=True,
-        help="Service name to stop",
-    )
-    stop_parser.add_argument(
-        "-d",
-        "--daemon",
-        action="store_true",
-        help="Treat as daemon (requires sudo)",
-    )
-    stop_parser.set_defaults(func=cmd_stop)
-
-    # info command
-    info_parser = subparsers.add_parser("info", help="Show service details")
-    info_parser.add_argument(
-        "-n",
-        "--name",
-        required=True,
-        help="Service name",
-    )
-    info_parser.add_argument(
-        "-d",
-        "--daemon",
-        action="store_true",
-        help="Treat as daemon (requires sudo)",
-    )
-    info_parser.set_defaults(func=cmd_info)
-
-    args = parser.parse_args()
-    if args.command is None:
-        parser.print_help()
-        return 0
-    return args.func(args)
+        click.echo(f"Error: {e.stderr}", err=True)
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    cli()
