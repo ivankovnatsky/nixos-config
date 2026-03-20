@@ -11,6 +11,7 @@ Subcommands:
   spaces      Add or remove desktop spaces (macOS only)
   windows     Close/hide app windows (macOS only)
   volume      Get or set system volume (macOS + Linux)
+  accessibility Manage accessibility permissions (macOS only)
   login       List, add, or remove login items (macOS only)
   poweroff    Set volume and shutdown system (macOS + Linux)
 """
@@ -48,6 +49,8 @@ COMMAND_ALIASES = {
     "win": "windows",
     "vol": "volume",
     "v": "volume",
+    "ac": "accessibility",
+    "acc": "accessibility",
     "li": "login",
     "off": "poweroff",
     "h": "help",
@@ -1759,6 +1762,382 @@ def poweroff(vol):
     # Shutdown the system
     print("Shutting down...")
     subprocess.run(["sudo", "shutdown", "-h", "now"], check=True)
+
+
+# Accessibility: Manage accessibility permissions (macOS only)
+ACCESSIBILITY_URL = "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"
+
+
+def accessibility_list() -> list[dict]:
+    """List apps in Accessibility with their enabled status."""
+    script = """
+tell application "System Settings" to quit
+delay 0.5
+do shell script "open '""" + ACCESSIBILITY_URL + """'"
+delay 3
+tell application "System Events"
+    tell process "System Settings"
+        set frontmost to true
+        set output to ""
+        set theOutline to outline 1 of scroll area 1 of group 1 of scroll area 1 of group 1 of group 3 of splitter group 1 of group 1 of window 1
+        set allRows to every row of theOutline
+        repeat with r in allRows
+            set rowElements to entire contents of r
+            repeat with el in rowElements
+                if class of el is checkbox then
+                    set appName to name of el
+                    set appEnabled to value of el
+                    set output to output & appName & ":" & appEnabled & linefeed
+                end if
+            end repeat
+        end repeat
+        return output
+    end tell
+end tell
+"""
+    try:
+        result = subprocess.run(
+            ["osascript", "-e", script],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        subprocess.run(
+            ["osascript", "-e", 'tell application "System Settings" to quit'],
+            capture_output=True,
+        )
+        items = []
+        if result.returncode == 0:
+            for line in result.stdout.strip().splitlines():
+                if ":" in line:
+                    name, val = line.rsplit(":", 1)
+                    items.append({"name": name.strip(), "enabled": val.strip() == "1"})
+        return items
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
+        subprocess.run(
+            ["osascript", "-e", 'tell application "System Settings" to quit'],
+            capture_output=True,
+        )
+        return []
+
+
+def accessibility_add(app_path: str) -> bool:
+    """Add an app to Accessibility via UI automation (click +, select app)."""
+    script = f"""
+tell application "System Settings" to quit
+delay 0.5
+do shell script "open '{ACCESSIBILITY_URL}'"
+delay 3
+tell application "System Events"
+    tell process "System Settings"
+        set frontmost to true
+        set parentGroup to group 1 of scroll area 1 of group 1 of group 3 of splitter group 1 of group 1 of window 1
+        -- Click the first button (+/add)
+        click button 1 of parentGroup
+        -- Wait for password sheet and user to authenticate
+        delay 5
+
+        -- Check if a file open sheet appeared
+        set sheetCount to count of sheets of window 1
+        if sheetCount is 0 then
+            return "no dialog"
+        end if
+
+        -- Use Go to Folder to navigate
+        keystroke "g" using {{command down, shift down}}
+        delay 1
+        keystroke "{app_path}"
+        delay 0.5
+        keystroke return
+        delay 1
+        -- Click Open button
+        click button "Open" of sheet 1 of window 1
+        delay 1
+        return "added"
+    end tell
+end tell
+"""
+    try:
+        result = subprocess.run(
+            ["osascript", "-e", script],
+            capture_output=True,
+            text=True,
+            timeout=60,
+        )
+        subprocess.run(
+            ["osascript", "-e", 'tell application "System Settings" to quit'],
+            capture_output=True,
+        )
+        if result.stderr:
+            print(f"  {result.stderr.strip()}", file=sys.stderr)
+        return "added" in result.stdout
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
+        subprocess.run(
+            ["osascript", "-e", 'tell application "System Settings" to quit'],
+            capture_output=True,
+        )
+        return False
+
+
+def accessibility_remove(app_name: str) -> bool:
+    """Remove an app from Accessibility by selecting it and clicking minus."""
+    script = f"""
+tell application "System Settings" to quit
+delay 0.5
+do shell script "open '{ACCESSIBILITY_URL}'"
+delay 3
+tell application "System Events"
+    tell process "System Settings"
+        set frontmost to true
+        set theOutline to outline 1 of scroll area 1 of group 1 of scroll area 1 of group 1 of group 3 of splitter group 1 of group 1 of window 1
+        set allRows to every row of theOutline
+        repeat with r in allRows
+            set rowElements to entire contents of r
+            repeat with el in rowElements
+                if class of el is checkbox then
+                    if name of el is "{app_name}" then
+                        -- Select the row first
+                        select r
+                        delay 0.3
+                        -- Click the remove (-) button in the parent group
+                        set parentGroup to group 1 of scroll area 1 of group 1 of group 3 of splitter group 1 of group 1 of window 1
+                        set allButtons to every button of parentGroup
+                        repeat with btn in allButtons
+                            try
+                                click btn
+                                delay 0.5
+                                return "removed"
+                            end try
+                        end repeat
+                    end if
+                end if
+            end repeat
+        end repeat
+        return "not found"
+    end tell
+end tell
+"""
+    try:
+        result = subprocess.run(
+            ["osascript", "-e", script],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        subprocess.run(
+            ["osascript", "-e", 'tell application "System Settings" to quit'],
+            capture_output=True,
+        )
+        return "removed" in result.stdout
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
+        subprocess.run(
+            ["osascript", "-e", 'tell application "System Settings" to quit'],
+            capture_output=True,
+        )
+        return False
+
+
+def accessibility_toggle(app_name: str) -> bool | None:
+    """Toggle an app's accessibility permission on/off. Returns new state or None."""
+    script = f"""
+tell application "System Settings" to quit
+delay 0.5
+do shell script "open '{ACCESSIBILITY_URL}'"
+delay 3
+tell application "System Events"
+    tell process "System Settings"
+        set frontmost to true
+        set theOutline to outline 1 of scroll area 1 of group 1 of scroll area 1 of group 1 of group 3 of splitter group 1 of group 1 of window 1
+        set allRows to every row of theOutline
+        repeat with r in allRows
+            set rowElements to entire contents of r
+            repeat with el in rowElements
+                if class of el is checkbox then
+                    if name of el is "{app_name}" then
+                        click el
+                        delay 0.5
+                        return value of el as string
+                    end if
+                end if
+            end repeat
+        end repeat
+        return "not found"
+    end tell
+end tell
+"""
+    try:
+        result = subprocess.run(
+            ["osascript", "-e", script],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        subprocess.run(
+            ["osascript", "-e", 'tell application "System Settings" to quit'],
+            capture_output=True,
+        )
+        val = result.stdout.strip()
+        if val in ("0", "1"):
+            return val == "1"
+        return None
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
+        subprocess.run(
+            ["osascript", "-e", 'tell application "System Settings" to quit'],
+            capture_output=True,
+        )
+        return None
+
+
+def accessibility_open() -> None:
+    """Open the Accessibility pane in System Settings."""
+    subprocess.run(["open", ACCESSIBILITY_URL], check=True)
+
+
+def accessibility_enable(enable_apps: list[str]) -> None:
+    """Ensure specified apps are enabled in Accessibility in a single UI session."""
+    enable_checks = " or ".join(
+        f'name of el is "{app}"' for app in enable_apps
+    )
+    script = f"""
+tell application "System Settings" to quit
+delay 0.5
+do shell script "open '{ACCESSIBILITY_URL}'"
+delay 3
+tell application "System Events"
+    tell process "System Settings"
+        set frontmost to true
+        set output to ""
+        set theOutline to outline 1 of scroll area 1 of group 1 of scroll area 1 of group 1 of group 3 of splitter group 1 of group 1 of window 1
+        set allRows to every row of theOutline
+        repeat with r in allRows
+            set rowElements to entire contents of r
+            repeat with el in rowElements
+                if class of el is checkbox then
+                    if {enable_checks} then
+                        set appName to name of el
+                        set appVal to value of el
+                        if appVal is 0 then
+                            click el
+                            -- Wait for password sheet to appear
+                            delay 2
+                            -- Wait for password sheet to be dismissed (up to 120s)
+                            repeat 120 times
+                                delay 1
+                                set sheetCount to count of sheets of window 1
+                                if sheetCount is 0 then exit repeat
+                            end repeat
+                            delay 0.5
+                            set output to output & appName & ":enabled" & linefeed
+                        else
+                            set output to output & appName & ":already enabled" & linefeed
+                        end if
+                    end if
+                end if
+            end repeat
+        end repeat
+        return output
+    end tell
+end tell
+"""
+    try:
+        result = subprocess.run(
+            ["osascript", "-e", script],
+            capture_output=True,
+            text=True,
+            timeout=300,
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            for line in result.stdout.strip().splitlines():
+                if ":" in line:
+                    name, status = line.rsplit(":", 1)
+                    print(f"  {name.strip()}: {status.strip()}")
+        elif result.returncode != 0:
+            print(f"Skipping accessibility init (could not read UI)", file=sys.stderr)
+            if result.stderr:
+                print(f"  {result.stderr.strip()}", file=sys.stderr)
+        else:
+            for app in enable_apps:
+                print(f"  {app}: not found in accessibility list")
+    except subprocess.TimeoutExpired:
+        print("Skipping accessibility init (timeout)", file=sys.stderr)
+    finally:
+        subprocess.run(
+            ["osascript", "-e", 'tell application "System Settings" to quit'],
+            capture_output=True,
+        )
+
+
+@cli.command()
+@click.option("--enable", "enable_apps", help="Comma-separated list of apps to enable (idempotent)")
+@click.argument("action", required=False, type=click.Choice(["list", "add", "remove", "toggle", "open"]))
+@click.argument("app", required=False)
+def accessibility(enable_apps, action, app):
+    """Manage accessibility permissions (macOS only)"""
+    if not is_macos():
+        print("Accessibility settings only available on macOS", file=sys.stderr)
+        sys.exit(1)
+
+    if enable_apps:
+        apps = [a.strip() for a in enable_apps.split(",")]
+        accessibility_enable(apps)
+        return
+
+    if action == "open":
+        accessibility_open()
+        return
+
+    if action == "list":
+        items = accessibility_list()
+        if not items:
+            print("No accessibility items found (or could not read)")
+        else:
+            for item in items:
+                status = "enabled" if item["enabled"] else "disabled"
+                print(f"  {item['name']}: {status}")
+        return
+
+    if action == "add":
+        if not app:
+            print("Error: specify app path (e.g. /Applications/Amethyst.app)", file=sys.stderr)
+            sys.exit(1)
+        app_path = app
+        if not app_path.startswith("/"):
+            app_path = f"/Applications/{app}.app"
+        if not Path(app_path).exists():
+            print(f"Error: {app_path} does not exist", file=sys.stderr)
+            sys.exit(1)
+        if accessibility_add(app_path):
+            print(f"Added {app_path} to Accessibility")
+        else:
+            print(f"Could not add {app_path} (may need manual approval)", file=sys.stderr)
+            sys.exit(1)
+        return
+
+    if action == "remove":
+        if not app:
+            print("Error: specify app name to remove", file=sys.stderr)
+            sys.exit(1)
+        if accessibility_remove(app):
+            print(f"Removed {app} from Accessibility")
+        else:
+            print(f"Could not remove {app} (not found or failed)", file=sys.stderr)
+            sys.exit(1)
+        return
+
+    if action == "toggle":
+        if not app:
+            print("Error: specify app name to toggle", file=sys.stderr)
+            sys.exit(1)
+        result = accessibility_toggle(app)
+        if result is not None:
+            status = "enabled" if result else "disabled"
+            print(f"{app}: {status}")
+        else:
+            print(f"Could not toggle {app} (not found)", file=sys.stderr)
+            sys.exit(1)
+        return
+
+    click.echo(click.get_current_context().get_help())
 
 
 @cli.command("help", hidden=True)
