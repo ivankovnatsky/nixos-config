@@ -562,18 +562,16 @@ def main():
     npm_config = config.get("npm", {})
 
     bun_packages = bun_config.get("packages", {})
-    if bun_packages:
-        bun_only_config = {"configFile": bun_config.get("configFile")}
-        success &= install_bun_packages(
-            bun_packages, config["paths"], state, bun_only_config
-        )
+    bun_only_config = {"configFile": bun_config.get("configFile")}
+    success &= install_bun_packages(
+        bun_packages, config["paths"], state, bun_only_config
+    )
 
     npm_packages = npm_config.get("packages", {})
-    if npm_packages:
-        npm_only_config = {"configFile": npm_config.get("configFile")}
-        success &= install_npm_packages(
-            npm_packages, config["paths"], state, npm_only_config
-        )
+    npm_only_config = {"configFile": npm_config.get("configFile")}
+    success &= install_npm_packages(
+        npm_packages, config["paths"], state, npm_only_config
+    )
 
     if config.get("uv", {}).get("packages"):
         success &= install_uv_packages(config["uv"]["packages"], config["paths"], state)
