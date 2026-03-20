@@ -14,11 +14,13 @@
       "pam-reattach"
     ];
     casks = [
+      "amethyst"
       "bitwarden"
       "discord"
       "chromium"
       "firefox"
       "ghostty"
+      "hammerspoon"
       "kitty"
       "mac-mouse-fix"
       "obsidian"
