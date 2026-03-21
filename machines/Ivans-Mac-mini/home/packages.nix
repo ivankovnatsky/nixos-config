@@ -20,6 +20,7 @@
     cargo
     nixpkgs-darwin-master-container.container
     delta
+    discordo
     dns
     duf
     dust
