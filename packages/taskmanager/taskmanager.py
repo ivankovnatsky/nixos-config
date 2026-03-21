@@ -1019,7 +1019,7 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                 if "end" in tw_updates and "status" not in tw_updates:
                     modify_args.append(f"end:{tw_updates['end']}")
                 if modify_args:
-                    result = run(["task", uuid, "modify"] + modify_args)
+                    result = run(["task", "rc.confirmation:off", uuid, "modify"] + modify_args)
                     # If modify fails on a recurring task (e.g. can't remove due),
                     # delete the recurring parent to stop recurrence, then retry
                     if result.returncode != 0 and tw.get("recur", ""):
@@ -1043,9 +1043,9 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                         run(["task", "rc.confirmation:off", uuid, "done"])
                         # Set end after done — task done overwrites end with now
                         if "end" in tw_updates:
-                            run(["task", uuid, "modify", f"end:{tw_updates['end']}"])
+                            run(["task", "rc.confirmation:off", uuid, "modify", f"end:{tw_updates['end']}"])
                     else:
-                        run(["task", uuid, "modify", "status:pending"])
+                        run(["task", "rc.confirmation:off", uuid, "modify", "status:pending"])
             if uuids:
                 count += 1
                 click.echo(
@@ -1380,7 +1380,7 @@ def sort_tw(project, approve, interactive, verbose):
             if not click.confirm("  Move?"):
                 continue
 
-        res = run(["task", m["uuid"], "modify", f"project:{m['target_project']}"])
+        res = run(["task", "rc.confirmation:off", m["uuid"], "modify", f"project:{m['target_project']}"])
         if res.returncode == 0:
             moved += 1
             click.echo(f"  Moved: {m['description']} → project:{m['target_project']}")
@@ -1719,7 +1719,7 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
             click.echo(f"  ~ Taskwarrior: {prefixed} (completed existing)")
             raw_end = item.get("completionDate", "")
             if raw_end:
-                run(["task", uuid, "modify", f"end:{raw_end}"])
+                run(["task", "rc.confirmation:off", uuid, "modify", f"end:{raw_end}"])
         elif existing_uuids:
             # Existing pending task — update metadata instead of creating duplicate
             uuid = existing_uuids[0]
@@ -1731,7 +1731,7 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
             if tw_prio:
                 mods.append(f"priority:{tw_prio}")
             if mods:
-                run(["task", uuid, "modify"] + mods)
+                run(["task", "rc.confirmation:off", uuid, "modify"] + mods)
             item_notes = (item.get("notes") or "").strip()
             if item_notes:
                 run(["task", uuid, "annotate", item_notes])
@@ -1779,14 +1779,14 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
                     # Creation date
                     raw_created = item.get("creationDate", "")
                     if raw_created:
-                        run(["task", uuid, "modify", f"entry:{raw_created}"])
+                        run(["task", "rc.confirmation:off", uuid, "modify", f"entry:{raw_created}"])
 
                     # Completion date + status
                     if item["status"] == "completed":
                         run(["task", "rc.confirmation:off", uuid, "done"])
                     raw_end = item.get("completionDate", "")
                     if raw_end:
-                        run(["task", uuid, "modify", f"end:{raw_end}"])
+                        run(["task", "rc.confirmation:off", uuid, "modify", f"end:{raw_end}"])
 
     # Taskwarrior-only → add to Reminders
     if is_darwin() and has_command("rems"):
