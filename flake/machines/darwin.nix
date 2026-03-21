@@ -272,9 +272,9 @@
           users.ivan = {
             imports = [
               ../../machines/Ivans-Mac-mini/home
+              inputs.nix-openclaw.homeManagerModules.openclaw
               inputs.nixvim-darwin-release.homeModules.nixvim
               inputs.sops-nix-darwin-release.homeManagerModules.sops
-              inputs.nix-openclaw.homeManagerModules.openclaw
               {
                 programs.home-manager.enable = true;
                 home.username = "ivan";
