@@ -4,7 +4,6 @@
     ../../../../darwin/fonts.nix
     ../../../../darwin/mac-mouse-fix.nix
     ../../../../darwin/nextdns.nix
-    ../../../../darwin/rebuild-terminal.nix
     ../../../../darwin/shell.nix
     ../../../../darwin/sudo.nix
     ../../../../darwin/syncthing.nix
@@ -24,7 +23,6 @@
     ../../../../modules/darwin/nextdns-mgmt
     ../../../../modules/darwin/pam
     ../../../../modules/darwin/pmset
-    ../../../../modules/darwin/rebuild-terminal
     ../../../../modules/darwin/sharing
     ../../../../modules/darwin/stubby
     ../../../../modules/darwin/sudo

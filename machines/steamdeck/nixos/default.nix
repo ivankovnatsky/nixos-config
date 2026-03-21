@@ -1,14 +1,12 @@
 {
   imports = [
     ../../../modules/flags
-    ../../../modules/nixos/rebuild-daemon
     ../../../modules/nixos/syncthing-cleaner
     ../../../modules/nixos/syncthing-mgmt
     ../../../nixos/chromium.nix
     ../../../nixos/keyboard.nix
     ../../../nixos/sudo.nix
     ../../../system/nix.nix
-    ../../../system/rebuild-daemon.nix
     ./bluetooth.nix
     ./boot.nix
     ./configuration.nix

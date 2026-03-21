@@ -2,7 +2,6 @@
   imports = [
     # ./gamemode.nix
     ../../../modules/flags
-    ../../../modules/nixos/rebuild-daemon
     # ./smb.nix
     ../../../modules/nixos/syncthing-cleaner
     ../../../modules/nixos/syncthing-mgmt
@@ -11,7 +10,6 @@
     ../../../nixos/nix-ld.nix
     ../../../nixos/sudo.nix
     ../../../system/nix.nix
-    ../../../system/rebuild-daemon.nix
     ./bluetooth.nix
     ./boot.nix
     ./configuration.nix
