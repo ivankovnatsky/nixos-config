@@ -105,6 +105,7 @@ in
 
   local.launchd.services.mautrix-whatsapp = {
     enable = true;
+    logTimestamp = false;
     waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
 

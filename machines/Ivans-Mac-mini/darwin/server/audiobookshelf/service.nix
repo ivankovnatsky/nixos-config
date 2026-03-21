@@ -12,6 +12,7 @@ in
 {
   local.launchd.services.audiobookshelf = {
     enable = true;
+    logTimestamp = false;
     waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
     extraDirs = [

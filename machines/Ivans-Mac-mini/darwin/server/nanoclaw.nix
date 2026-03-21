@@ -107,6 +107,7 @@ in
 
   local.launchd.services.nanoclaw = {
     enable = true;
+    logTimestamp = false;
     type = "user-agent";
     waitForPath = config.flags.externalStoragePath;
     dataDir = nanoclawDataPath;

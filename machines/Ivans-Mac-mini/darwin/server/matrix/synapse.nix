@@ -101,6 +101,7 @@ in
 
   local.launchd.services.matrix-synapse = {
     enable = true;
+    logTimestamp = false;
     waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
     extraDirs = [ "${dataDir}/media_store" ];

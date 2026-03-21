@@ -15,6 +15,7 @@ in
   # FIXME: config.yml is declarative - systems not defined will be deleted on restart
   local.launchd.services.beszel-hub = {
     enable = true;
+    logTimestamp = false;
     type = "user-agent";
     waitForPath = config.flags.externalStoragePath;
     inherit dataDir;

@@ -10,6 +10,7 @@ in
   # See: claude/issues/LAUNCHD-BOOT-FAILURE.md
   local.launchd.services.uptime-kuma = {
     enable = true;
+    logTimestamp = false;
     type = "user-agent";
     waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
