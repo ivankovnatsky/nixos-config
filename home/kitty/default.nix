@@ -53,7 +53,10 @@ let
     # Action alias for launching tabs in current directory
     action_alias launch_tab launch --cwd=current --type=tab
 
-    enabled_layouts tall, grid
+    enabled_layouts splits, tall, grid
+
+    map ctrl+shift+- launch --cwd=current --location=hsplit
+    map ctrl+shift+\ launch --cwd=current --location=vsplit
 
     # Open scrollback buffer in neovim via kitty-scrollback.nvim plugin
     action_alias kitty_scrollback_nvim kitten ${pkgs.vimPlugins.kitty-scrollback-nvim}/python/kitty_scrollback_nvim.py
