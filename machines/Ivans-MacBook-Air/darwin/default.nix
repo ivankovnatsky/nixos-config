@@ -20,6 +20,7 @@
     ../../../darwin/sudo.nix
     ../../../darwin/syncthing.nix
     ../../../darwin/syncthing-cleaner.nix
+    ../../../darwin/taskwarrior-sync.nix
     ../../../darwin/system.nix
     ../../../darwin/users.nix
     ../../../darwin/xattr.nix
