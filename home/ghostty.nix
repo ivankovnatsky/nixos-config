@@ -25,6 +25,7 @@ in
     # window-decoration = false
     # macos-titlebar-style = hidden
     copy-on-select = true
+    split-divider-color = #555555
     window-padding-x = 8
     macos-option-as-alt = true
     keybind = cmd+down=jump_to_prompt:1
