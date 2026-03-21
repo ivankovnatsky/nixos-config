@@ -169,13 +169,18 @@ let
 
         ${cfg.preStart}
 
-        ${if cfg.logTimestamp then ''
-        ${cfg.command} \
-          > >(while IFS= read -r line; do printf '%s - INFO - %s\n' "$(ts)" "$line"; done) \
-          2> >(while IFS= read -r line; do printf '%s - ERROR - %s\n' "$(ts)" "$line"; done >&2)
-        '' else ''
-        exec ${cfg.command}
-        ''}
+        ${
+          if cfg.logTimestamp then
+            ''
+              ${cfg.command} \
+                > >(while IFS= read -r line; do printf '%s - INFO - %s\n' "$(ts)" "$line"; done) \
+                2> >(while IFS= read -r line; do printf '%s - ERROR - %s\n' "$(ts)" "$line"; done >&2)
+            ''
+          else
+            ''
+              exec ${cfg.command}
+            ''
+        }
       '';
 
       script = pkgs.writeShellScriptBin "${name}-starter" scriptContent;

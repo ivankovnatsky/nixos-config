@@ -23,9 +23,7 @@ class IssueKeyType(click.ParamType):
 
 ISSUE_KEY = IssueKeyType()
 
-_JIRA_URL_RE = re.compile(
-    r"(?:https?://)?[^/]+/browse/([A-Z][A-Z0-9]+-\d+)(?:\?(.+))?"
-)
+_JIRA_URL_RE = re.compile(r"(?:https?://)?[^/]+/browse/([A-Z][A-Z0-9]+-\d+)(?:\?(.+))?")
 
 
 def parse_jira_url(value):

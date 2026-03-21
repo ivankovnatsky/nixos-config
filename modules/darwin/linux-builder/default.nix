@@ -8,7 +8,12 @@
 # - Removed cleanup-on-disable (rm -rf workingDirectory)
 # - Replaced nix.buildMachines/distributedBuilds/settings with
 #   direct /etc/nix/machines file
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 
@@ -24,11 +29,13 @@ in
       type = types.package;
       default = pkgs.darwin.linux-builder;
       defaultText = "pkgs.darwin.linux-builder";
-      apply = pkg: pkg.override (old: {
-        # the linux-builder package requires `modules` as an argument, so it's
-        # always non-null.
-        modules = old.modules ++ [ cfg.config ];
-      });
+      apply =
+        pkg:
+        pkg.override (old: {
+          # the linux-builder package requires `modules` as an argument, so it's
+          # always non-null.
+          modules = old.modules ++ [ cfg.config ];
+        });
       description = ''
         This option specifies the Linux builder to use.
       '';
@@ -52,7 +59,7 @@ in
 
     mandatoryFeatures = mkOption {
       type = types.listOf types.str;
-      default = [];
+      default = [ ];
       defaultText = literalExpression ''[]'';
       example = literalExpression ''[ "big-parallel" ]'';
       description = ''
@@ -116,7 +123,11 @@ in
 
     supportedFeatures = mkOption {
       type = types.listOf types.str;
-      default = [ "kvm" "benchmark" "big-parallel" ];
+      default = [
+        "kvm"
+        "benchmark"
+        "big-parallel"
+      ];
       defaultText = literalExpression ''[ "kvm" "benchmark" "big-parallel" ]'';
       example = literalExpression ''[ "kvm" "big-parallel" ]'';
       description = ''
@@ -146,7 +157,6 @@ in
         This sets the corresponding `nix.buildMachines.*.systems` option.
       '';
     };
-
 
     workingDirectory = mkOption {
       type = types.str;
@@ -237,12 +247,14 @@ in
 
       # Write /etc/nix/machines directly instead of using
       # nix.distributedBuilds + nix.buildMachines (requires nix.enable)
-      environment.etc."nix/machines".text = let
-        systems = builtins.concatStringsSep "," cfg.systems;
-        features = builtins.concatStringsSep "," cfg.supportedFeatures;
-      in ''
-        ${cfg.protocol}://builder@linux-builder ${systems} /etc/nix/builder_ed25519 ${toString cfg.maxJobs} ${toString cfg.speedFactor} ${features} - c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUpCV2N4Yi9CbGFxdDFhdU90RStGOFFVV3JVb3RpQzVxQkorVXVFV2RWQ2Igcm9vdEBuaXhvcwo=
-      '';
-  })
+      environment.etc."nix/machines".text =
+        let
+          systems = builtins.concatStringsSep "," cfg.systems;
+          features = builtins.concatStringsSep "," cfg.supportedFeatures;
+        in
+        ''
+          ${cfg.protocol}://builder@linux-builder ${systems} /etc/nix/builder_ed25519 ${toString cfg.maxJobs} ${toString cfg.speedFactor} ${features} - c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUpCV2N4Yi9CbGFxdDFhdU90RStGOFFVV3JVb3RpQzVxQkorVXVFV2RWQ2Igcm9vdEBuaXhvcwo=
+        '';
+    })
   ];
 }

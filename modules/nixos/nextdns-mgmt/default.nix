@@ -123,9 +123,7 @@ in
             trap 'rm -f "$PROFILE_JSON"' EXIT
             cp "${profile.profileFile}" "$PROFILE_JSON"
             ${concatStringsSep "\n            " (
-              mapAttrsToList (
-                key: value: ''sed -i "s|@${key}@|${value}|g" "$PROFILE_JSON"''
-              ) profile.vars
+              mapAttrsToList (key: value: ''sed -i "s|@${key}@|${value}|g" "$PROFILE_JSON"'') profile.vars
             )}
             ${concatStringsSep "\n            " (
               mapAttrsToList (

@@ -200,9 +200,12 @@
       {
         nixpkgs.overlays = [
           inputs.self.overlay
-          (final: prev:
-            let openclawPkgs = inputs.nix-openclaw.packages.${final.system};
-            in {
+          (
+            final: _prev:
+            let
+              openclawPkgs = inputs.nix-openclaw.packages.${final.system};
+            in
+            {
               inherit (openclawPkgs)
                 openclaw
                 openclaw-gateway
@@ -214,7 +217,7 @@
               };
             }
           )
-          (final: prev: {
+          (_final: prev: {
             taskwarrior-web = prev.callPackage ../../overlays/taskwarrior-web {
               npmDepsHash = "sha256-i7LvbsJ0N86UHQgo2MtgkCfOYBUIOOK8e0hQxO2qteg=";
             };

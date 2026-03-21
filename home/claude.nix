@@ -70,11 +70,14 @@ in
   };
 
   sops.templates."claude-settings.json" = lib.mkIf isWork {
-    content = builtins.toJSON (workSettings // {
-      env = workSettings.env // {
-        ANTHROPIC_CUSTOM_HEADERS = "x-portkey-api-key: ${config.sops.placeholder.portkey-api-key}\nx-portkey-provider: @anthropic";
-      };
-    });
+    content = builtins.toJSON (
+      workSettings
+      // {
+        env = workSettings.env // {
+          ANTHROPIC_CUSTOM_HEADERS = "x-portkey-api-key: ${config.sops.placeholder.portkey-api-key}\nx-portkey-provider: @anthropic";
+        };
+      }
+    );
   };
 
   sops.templates."anthropic_key.sh" = lib.mkIf isWork {
@@ -89,8 +92,12 @@ in
   home.activation.linkClaudeSettings = lib.mkIf isWork (
     lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       $DRY_RUN_CMD mkdir -p "${homePath}/.claude"
-      $DRY_RUN_CMD ln -sf ${config.sops.templates."claude-settings.json".path} "${homePath}/.claude/settings.json"
-      $DRY_RUN_CMD ln -sf ${config.sops.templates."anthropic_key.sh".path} "${homePath}/.claude/anthropic_key.sh"
+      $DRY_RUN_CMD ln -sf ${
+        config.sops.templates."claude-settings.json".path
+      } "${homePath}/.claude/settings.json"
+      $DRY_RUN_CMD ln -sf ${
+        config.sops.templates."anthropic_key.sh".path
+      } "${homePath}/.claude/anthropic_key.sh"
     ''
   );
 }

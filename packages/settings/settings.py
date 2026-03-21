@@ -438,7 +438,11 @@ def menubar_cycle_mode() -> None:
 
 @cli.command()
 @click.option("--status", is_flag=True, help="Show current menubar mode")
-@click.argument("mode", required=False, type=click.Choice(["always", "desktop", "fullscreen", "never"]))
+@click.argument(
+    "mode",
+    required=False,
+    type=click.Choice(["always", "desktop", "fullscreen", "never"]),
+)
 def menubar(status, mode):
     """Toggle menubar visibility (macOS only)"""
     if not is_macos():
@@ -774,8 +778,16 @@ def scaling_toggle() -> int:
 
 @cli.command()
 @click.option("--status", is_flag=True, help="Show current scaling mode")
-@click.option("--init", is_flag=True, help="Initialize to scaled mode (idempotent, for activation scripts)")
-@click.option("--mode", type=click.Choice(["scaled", "default"]), help="Set specific mode: 'scaled' (larger text) or 'default' (more space)")
+@click.option(
+    "--init",
+    is_flag=True,
+    help="Initialize to scaled mode (idempotent, for activation scripts)",
+)
+@click.option(
+    "--mode",
+    type=click.Choice(["scaled", "default"]),
+    help="Set specific mode: 'scaled' (larger text) or 'default' (more space)",
+)
 @click.option("--dock", "also_dock", is_flag=True, help="Also toggle dock auto-hide")
 def scaling(status, init, mode, also_dock):
     """Toggle display scaling (macOS only)"""
@@ -853,7 +865,11 @@ def dock(status):
 # Autohide: Toggle dock and menubar autohide (macOS only)
 @cli.command()
 @click.option("--status", is_flag=True, help="Show current autohide status")
-@click.argument("mode", required=False, type=click.Choice(["always", "desktop", "fullscreen", "never"]))
+@click.argument(
+    "mode",
+    required=False,
+    type=click.Choice(["always", "desktop", "fullscreen", "never"]),
+)
 def autohide(status, mode):
     """Toggle dock and menubar autohide (macOS only)"""
     if not is_macos():
@@ -946,14 +962,20 @@ def scrolling(status, mode):
 
 
 # Location: Toggle Location Services (macOS only)
-LOCATION_SERVICES_URL = "x-apple.systempreferences:com.apple.preference.security?Privacy_LocationServices"
+LOCATION_SERVICES_URL = (
+    "x-apple.systempreferences:com.apple.preference.security?Privacy_LocationServices"
+)
 
 
 def location_check_enabled() -> bool | None:
     """Check Location Services status via CoreLocation (no UI, no sudo)."""
     try:
         result = subprocess.run(
-            ["/usr/bin/swift", "-e", "import CoreLocation; print(CLLocationManager.locationServicesEnabled())"],
+            [
+                "/usr/bin/swift",
+                "-e",
+                "import CoreLocation; print(CLLocationManager.locationServicesEnabled())",
+            ],
             capture_output=True,
             text=True,
             timeout=10,
@@ -1038,7 +1060,11 @@ end tell
 
 @cli.command()
 @click.option("--status", is_flag=True, help="Show current Location Services status")
-@click.option("--init", is_flag=True, help="Enable Location Services if not already enabled (idempotent, for activation scripts)")
+@click.option(
+    "--init",
+    is_flag=True,
+    help="Enable Location Services if not already enabled (idempotent, for activation scripts)",
+)
 @click.argument("mode", required=False, type=click.Choice(["on", "off"]))
 def location(status, init, mode):
     """Toggle Location Services (macOS only)"""
@@ -1096,7 +1122,10 @@ def location(status, init, mode):
 
         return
 
-    print("Could not toggle Location Services (authentication may be required)", file=sys.stderr)
+    print(
+        "Could not toggle Location Services (authentication may be required)",
+        file=sys.stderr,
+    )
     sys.exit(1)
 
 
@@ -1126,7 +1155,9 @@ class DurationType(click.ParamType):
         try:
             return parse_duration(value)
         except (ValueError, TypeError):
-            self.fail(f"{value!r} is not a valid duration (e.g. 30m, 2h, 90s)", param, ctx)
+            self.fail(
+                f"{value!r} is not a valid duration (e.g. 30m, 2h, 90s)", param, ctx
+            )
 
 
 DURATION = DurationType()
@@ -1207,7 +1238,13 @@ def awake_linux_xset(timeout: int) -> int:
 
 
 @cli.command()
-@click.option("-t", "--timeout", type=DURATION, default=DEFAULT_AWAKE_TIMEOUT, help=f"Timeout as duration, e.g. 30m, 2h, 90s (default: {DEFAULT_AWAKE_TIMEOUT} = 12 hours)")
+@click.option(
+    "-t",
+    "--timeout",
+    type=DURATION,
+    default=DEFAULT_AWAKE_TIMEOUT,
+    help=f"Timeout as duration, e.g. 30m, 2h, 90s (default: {DEFAULT_AWAKE_TIMEOUT} = 12 hours)",
+)
 def awake(timeout):
     """Prevent system from sleeping (macOS + Linux)"""
     if is_macos():
@@ -1481,7 +1518,7 @@ end tell
             return 0
         except subprocess.CalledProcessError as e:
             if attempt == 0:
-                print(f"Space removal failed, retrying...", file=sys.stderr)
+                print("Space removal failed, retrying...", file=sys.stderr)
                 time.sleep(1.0)
             else:
                 print(f"Error removing space: {e}", file=sys.stderr)
@@ -1670,9 +1707,7 @@ def poweroff_log_battery() -> None:
 
 def login_list() -> list[str]:
     script = 'tell application "System Events" to get the name of every login item'
-    result = subprocess.run(
-        ["osascript", "-e", script], capture_output=True, text=True
-    )
+    result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
     if result.returncode != 0:
         return []
     names = result.stdout.strip()
@@ -1690,9 +1725,7 @@ def login_add(app_name: str) -> bool:
         f'tell application "System Events" to make login item at end '
         f'with properties {{path:"{app_path}", hidden:false}}'
     )
-    result = subprocess.run(
-        ["osascript", "-e", script], capture_output=True, text=True
-    )
+    result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
     if result.returncode != 0:
         print(f"Error adding login item: {result.stderr.strip()}", file=sys.stderr)
         return False
@@ -1701,9 +1734,7 @@ def login_add(app_name: str) -> bool:
 
 def login_remove(item_name: str) -> bool:
     script = f'tell application "System Events" to delete login item "{item_name}"'
-    result = subprocess.run(
-        ["osascript", "-e", script], capture_output=True, text=True
-    )
+    result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
     if result.returncode != 0:
         print(f"Error removing login item: {result.stderr.strip()}", file=sys.stderr)
         return False
@@ -1766,7 +1797,14 @@ def login(action, apps):
 
 
 @cli.command()
-@click.option("-v", "--volume", "vol", type=float, default=POWEROFF_VOLUME_SET, help=f"Volume level before shutdown (default: {POWEROFF_VOLUME_SET}%)")
+@click.option(
+    "-v",
+    "--volume",
+    "vol",
+    type=float,
+    default=POWEROFF_VOLUME_SET,
+    help=f"Volume level before shutdown (default: {POWEROFF_VOLUME_SET}%)",
+)
 def poweroff(vol):
     """Set volume and shutdown system (macOS + Linux)"""
     if not is_macos() and not is_linux():
@@ -1788,15 +1826,20 @@ def poweroff(vol):
 
 
 # Accessibility: Manage accessibility permissions (macOS only)
-ACCESSIBILITY_URL = "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"
+ACCESSIBILITY_URL = (
+    "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"
+)
 
 
 def accessibility_list() -> list[dict]:
     """List apps in Accessibility with their enabled status."""
-    script = """
+    script = (
+        """
 tell application "System Settings" to quit
 delay 0.5
-do shell script "open '""" + ACCESSIBILITY_URL + """'"
+do shell script "open '"""
+        + ACCESSIBILITY_URL
+        + """'"
 delay 3
 tell application "System Events"
     tell process "System Settings"
@@ -1818,6 +1861,7 @@ tell application "System Events"
     end tell
 end tell
 """
+    )
     try:
         result = subprocess.run(
             ["osascript", "-e", script],
@@ -2043,9 +2087,7 @@ def accessibility_enable(enable_apps: list[str]) -> None:
         print("Skipping accessibility enable (already configured)")
         return
 
-    enable_checks = " or ".join(
-        f'name of el is "{app}"' for app in enable_apps
-    )
+    enable_checks = " or ".join(f'name of el is "{app}"' for app in enable_apps)
     script = f"""
 tell application "System Settings" to quit
 delay 0.5
@@ -2100,7 +2142,7 @@ end tell
                     name, status = line.rsplit(":", 1)
                     print(f"  {name.strip()}: {status.strip()}")
         elif result.returncode != 0:
-            print(f"Skipping accessibility init (could not read UI)", file=sys.stderr)
+            print("Skipping accessibility init (could not read UI)", file=sys.stderr)
             if result.stderr:
                 print(f"  {result.stderr.strip()}", file=sys.stderr)
         else:
@@ -2121,8 +2163,16 @@ end tell
 
 
 @cli.command()
-@click.option("--enable", "enable_apps", help="Comma-separated list of apps to enable (idempotent)")
-@click.argument("action", required=False, type=click.Choice(["list", "add", "remove", "toggle", "open"]))
+@click.option(
+    "--enable",
+    "enable_apps",
+    help="Comma-separated list of apps to enable (idempotent)",
+)
+@click.argument(
+    "action",
+    required=False,
+    type=click.Choice(["list", "add", "remove", "toggle", "open"]),
+)
 @click.argument("app", required=False)
 def accessibility(enable_apps, action, app):
     """Manage accessibility permissions (macOS only)"""
@@ -2151,7 +2201,10 @@ def accessibility(enable_apps, action, app):
 
     if action == "add":
         if not app:
-            print("Error: specify app path (e.g. /Applications/Amethyst.app)", file=sys.stderr)
+            print(
+                "Error: specify app path (e.g. /Applications/Amethyst.app)",
+                file=sys.stderr,
+            )
             sys.exit(1)
         app_path = app
         if not app_path.startswith("/"):
@@ -2162,7 +2215,9 @@ def accessibility(enable_apps, action, app):
         if accessibility_add(app_path):
             print(f"Added {app_path} to Accessibility")
         else:
-            print(f"Could not add {app_path} (may need manual approval)", file=sys.stderr)
+            print(
+                f"Could not add {app_path} (may need manual approval)", file=sys.stderr
+            )
             sys.exit(1)
         return
 
@@ -2210,7 +2265,9 @@ def fda_list() -> list[dict]:
             "SELECT client, auth_value FROM access WHERE service='kTCCServiceSystemPolicyAllFiles'"
         ).fetchall()
         conn.close()
-        return [{"name": client, "enabled": auth_value == 2} for client, auth_value in rows]
+        return [
+            {"name": client, "enabled": auth_value == 2} for client, auth_value in rows
+        ]
     except sqlite3.Error:
         return []
 
@@ -2294,9 +2351,7 @@ def fda_enable(enable_apps: list[str]) -> None:
         print("Skipping Full Disk Access enable (already configured)")
         return
 
-    enable_checks = " or ".join(
-        f'name of el is "{app}"' for app in enable_apps
-    )
+    enable_checks = " or ".join(f'name of el is "{app}"' for app in enable_apps)
     script = f"""
 tell application "System Settings" to quit
 delay 0.5
@@ -2349,7 +2404,7 @@ end tell
                     name, status = line.rsplit(":", 1)
                     print(f"  {name.strip()}: {status.strip()}")
         elif result.returncode != 0:
-            print(f"Skipping FDA init (could not read UI)", file=sys.stderr)
+            print("Skipping FDA init (could not read UI)", file=sys.stderr)
             if result.stderr:
                 print(f"  {result.stderr.strip()}", file=sys.stderr)
         else:
@@ -2370,7 +2425,11 @@ end tell
 
 
 @cli.command()
-@click.option("--enable", "enable_apps", help="Comma-separated list of apps to enable (idempotent)")
+@click.option(
+    "--enable",
+    "enable_apps",
+    help="Comma-separated list of apps to enable (idempotent)",
+)
 @click.argument("action", required=False, type=click.Choice(["list", "toggle", "open"]))
 @click.argument("app", required=False)
 def fulldiskaccess(enable_apps, action, app):

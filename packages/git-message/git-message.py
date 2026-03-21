@@ -333,7 +333,9 @@ Features:
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
-        "args", nargs="*", help="subject and optional file/directory path (in any order)"
+        "args",
+        nargs="*",
+        help="subject and optional file/directory path (in any order)",
     )
     parser.add_argument(
         "-s", "--subject", help="commit subject (alternative to positional arg)"

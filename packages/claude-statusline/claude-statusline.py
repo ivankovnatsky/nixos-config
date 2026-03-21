@@ -52,7 +52,7 @@ def git_branch():
 def shorten_path(path):
     home = os.path.expanduser("~")
     if path.startswith(home):
-        path = "~" + path[len(home):]
+        path = "~" + path[len(home) :]
     return path
 
 
@@ -130,7 +130,9 @@ def main():
     tx_prefix = f"{DIM}transcript:{RESET} "
 
     if project_dir != cwd:
-        output(f"{pwd_prefix}{shorten_path_to_fit(project_dir, pwd_prefix, cols)}", cols)
+        output(
+            f"{pwd_prefix}{shorten_path_to_fit(project_dir, pwd_prefix, cols)}", cols
+        )
     output(f"{cwd_prefix}{shorten_path_to_fit(cwd, cwd_prefix, cols)}", cols)
 
     if transcript:

@@ -12,7 +12,7 @@ DEFAULT_EXPORT_BASE = os.path.expanduser(
     "~/Library/Mobile Documents/com~apple~CloudDocs/Data/Music"
 )
 
-APPLESCRIPT_TEMPLATE = '''
+APPLESCRIPT_TEMPLATE = """
 on run argv
     set exportDir to item 1 of argv
 
@@ -45,7 +45,7 @@ on run argv
 
     delay 3
 end run
-'''
+"""
 
 
 def run_osascript(export_dir: str) -> int:

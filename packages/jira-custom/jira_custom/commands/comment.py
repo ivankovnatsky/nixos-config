@@ -116,7 +116,9 @@ def comment_edit_cmd(url_or_key, comment_id):
     issue_key, url_comment_id = parse_jira_url(url_or_key)
     resolved_comment_id = comment_id or url_comment_id
     if not resolved_comment_id:
-        raise click.ClickException("Comment ID required (pass as argument or use URL with focusedCommentId)")
+        raise click.ClickException(
+            "Comment ID required (pass as argument or use URL with focusedCommentId)"
+        )
     comment_edit_fn(issue_key, resolved_comment_id)
 
 

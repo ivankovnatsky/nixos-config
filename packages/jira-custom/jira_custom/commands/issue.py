@@ -641,4 +641,3 @@ def issue_list_cmd(
 def issue_open_cmd(issue_key):
     """Open issue in browser"""
     open_issue_fn(issue_key)
-
