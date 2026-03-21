@@ -2,7 +2,6 @@
 
 {
   imports = [
-    ../../../home/nix-registry.nix
     ../../../home/atuin.nix
     ../../../home/chromium.nix
     ../../../home/claude.nix
@@ -18,6 +17,7 @@
     ../../../home/kitty
     ../../../home/lsd.nix
     ../../../home/mpv.nix
+    ../../../home/nix-registry.nix
     ../../../home/nixos/packages.nix
     ../../../home/nixvim
     ../../../home/nixvim/plugins/codediff

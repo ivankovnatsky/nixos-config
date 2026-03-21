@@ -1,6 +1,6 @@
 {
   imports = [
-    ./service.nix
     ./mgmt.nix
+    ./service.nix
   ];
 }

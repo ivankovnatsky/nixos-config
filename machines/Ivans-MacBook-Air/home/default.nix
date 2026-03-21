@@ -1,6 +1,5 @@
 {
   imports = [
-    ../../../home/nix-registry.nix
     ../../../home/amethyst
     ../../../home/atuin.nix
     ../../../home/bat.nix
@@ -22,15 +21,17 @@
     ../../../home/kitty
     ../../../home/lsd.nix
     ../../../home/mpv.nix
+    ../../../home/nix-registry.nix
     ../../../home/nixvim
+    ../../../home/nixvim.nix
     ../../../home/nixvim/plugins/codediff
     ../../../home/nixvim/plugins/gpg-nvim
-    ../../../home/nixvim.nix
     ../../../home/notes.nix
-    ../../../home/obsidian.nix
     ../../../home/npm.nix
     ../../../home/nushell.nix
+    ../../../home/obsidian.nix
     ../../../home/packages-darwin.nix
+    ../../../home/packages.nix
     ../../../home/pass.nix
     ../../../home/ranger.nix
     ../../../home/rebuild-diff.nix
@@ -40,6 +41,7 @@
     ../../../home/syncthing-ignore.nix
     ../../../home/taskwarrior.nix
     ../../../home/tmux.nix
+    ../../../home/tools.nix
     ../../../home/treefmt.nix
     ../../../home/vscode.nix
     ../../../home/yt-dlp.nix
@@ -47,7 +49,5 @@
     ../../../home/zsh.nix
     ../../../modules/flags
     ../../../modules/home/tools
-    ../../../home/packages.nix
-    ../../../home/tools.nix
   ];
 }

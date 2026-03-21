@@ -1,13 +1,14 @@
 {
   imports = [
-    ../../../system/sops-secrets.nix
     ../../../darwin/amethyst.nix
     ../../../darwin/darwin.nix
     ../../../darwin/dns-clear.nix
     ../../../darwin/dotfiles-sync.nix
     ../../../darwin/flags.nix
     ../../../darwin/fonts.nix
+    ../../../darwin/git.nix
     ../../../darwin/hammerspoon.nix
+    ../../../darwin/homebrew.nix
     ../../../darwin/init.nix
     ../../../darwin/mac-mouse-fix.nix
     ../../../darwin/nextdns.nix
@@ -16,12 +17,14 @@
     ../../../darwin/rebuild-terminal.nix
     ../../../darwin/security.nix
     ../../../darwin/shell.nix
+    ../../../darwin/stash
     ../../../darwin/stats.nix
     ../../../darwin/sudo.nix
-    ../../../darwin/syncthing.nix
     ../../../darwin/syncthing-cleaner.nix
-    ../../../darwin/taskwarrior-sync.nix
+    ../../../darwin/syncthing-mgmt.nix
+    ../../../darwin/syncthing.nix
     ../../../darwin/system.nix
+    ../../../darwin/taskwarrior-sync.nix
     ../../../darwin/users.nix
     ../../../darwin/xattr.nix
     ../../../modules/darwin/dock
@@ -35,10 +38,7 @@
     ../../../modules/flags
     ../../../system/documentation.nix
     ../../../system/nix.nix
-    ../../../darwin/git.nix
-    ../../../darwin/homebrew.nix
-    ../../../darwin/stash
-    ../../../darwin/syncthing-mgmt.nix
+    ../../../system/sops-secrets.nix
     ./dock.nix
     ./users.nix
   ];

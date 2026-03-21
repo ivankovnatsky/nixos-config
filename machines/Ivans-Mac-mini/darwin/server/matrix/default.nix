@@ -1,11 +1,11 @@
 {
   imports = [
-    ./postgresql.nix
-    ./synapse.nix
-    ./setup-db.nix
-    ./whatsapp.nix
     ./discord.nix
-    ./meta.nix
     ./linkedin.nix
+    ./meta.nix
+    ./postgresql.nix
+    ./setup-db.nix
+    ./synapse.nix
+    ./whatsapp.nix
   ];
 }
