@@ -53,6 +53,7 @@ in
 {
   local.launchd.services.podservice = {
     enable = true;
+    logTimestamp = false;
     waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
     extraDirs = [

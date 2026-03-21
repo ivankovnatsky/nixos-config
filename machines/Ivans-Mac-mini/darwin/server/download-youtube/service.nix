@@ -20,6 +20,7 @@ in
 {
   local.launchd.services.download-youtube = {
     enable = true;
+    logTimestamp = false;
     waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
     command = ''

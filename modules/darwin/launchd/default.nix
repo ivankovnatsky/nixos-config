@@ -107,6 +107,12 @@ let
           description = "Seconds to wait before restarting after crash";
         };
 
+        logTimestamp = mkOption {
+          type = types.bool;
+          default = true;
+          description = "Prefix command output lines with timestamps and log level";
+        };
+
         logDir = mkOption {
           type = types.str;
           default = if config.type == "daemon" then "/tmp/log/launchd" else "/tmp/agents/log/launchd";
@@ -135,20 +141,22 @@ let
         # Add basic Darwin utilities to PATH for preStart scripts
         export PATH="/bin:/usr/bin:$PATH"
 
+        ts() { date '+%Y-%m-%d %H:%M:%S'; }
+
         # Create log directory with proper permissions
         /bin/mkdir -p ${cfg.logDir}
         /bin/chmod 755 ${cfg.logDir}
 
         ${optionalString cfg.waitForSecrets ''
-          echo "$(date '+%Y-%m-%d %H:%M:%S') - INFO - Waiting for sops secrets to be available..."
+          echo "$(ts) - INFO - Waiting for sops secrets to be available..."
           /bin/wait4path /run/secrets/rendered
-          echo "$(date '+%Y-%m-%d %H:%M:%S') - INFO - Sops secrets are available!"
+          echo "$(ts) - INFO - Sops secrets are available!"
         ''}
 
         ${optionalString (cfg.waitForPath != null) ''
-          echo "$(date '+%Y-%m-%d %H:%M:%S') - INFO - Waiting for ${cfg.waitForPath}..."
+          echo "$(ts) - INFO - Waiting for ${cfg.waitForPath}..."
           /bin/wait4path "${cfg.waitForPath}"
-          echo "$(date '+%Y-%m-%d %H:%M:%S') - INFO - ${cfg.waitForPath} is available!"
+          echo "$(ts) - INFO - ${cfg.waitForPath} is available!"
         ''}
 
         ${optionalString (cfg.dataDir != null) ''
@@ -161,7 +169,13 @@ let
 
         ${cfg.preStart}
 
+        ${if cfg.logTimestamp then ''
+        ${cfg.command} \
+          > >(while IFS= read -r line; do printf '%s - INFO - %s\n' "$(ts)" "$line"; done) \
+          2> >(while IFS= read -r line; do printf '%s - ERROR - %s\n' "$(ts)" "$line"; done >&2)
+        '' else ''
         exec ${cfg.command}
+        ''}
       '';
 
       script = pkgs.writeShellScriptBin "${name}-starter" scriptContent;

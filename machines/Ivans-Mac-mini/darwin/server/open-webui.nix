@@ -12,6 +12,7 @@ in
   # Open WebUI server running as user agent (port 8090 is non-privileged)
   local.launchd.services.open-webui = {
     enable = true;
+    logTimestamp = false;
     waitForPath = config.flags.externalStoragePath;
     dataDir = openWebuiDataPath;
     environment = {
