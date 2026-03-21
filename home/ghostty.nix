@@ -37,7 +37,7 @@ in
     # On KDE Plasma, approve the "Global Shortcuts Requested" dialog on first launch
     keybind = global:f12=toggle_quick_terminal
     quick-terminal-position = top
-    quick-terminal-size = 75%
+    quick-terminal-size = 90%
     quick-terminal-animation-duration = 0.15
   '';
 }
