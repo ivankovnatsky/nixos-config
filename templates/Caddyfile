@@ -277,6 +277,12 @@
 		header_up Host {host}
 	}
 
+	@taskwarrior host taskwarrior.@externalDomain@
+	reverse_proxy @taskwarrior @machineIp@:8087 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
 	# Logging for ACME and DNS services
 	log {
 		output file @logPathPrefix@/caddy/acme-sync.log {
