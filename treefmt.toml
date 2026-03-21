@@ -11,6 +11,11 @@ command = "ruff"
 options = ["check", "--fix"]
 includes = ["*.py"]
 
+[formatter.nix-sort-imports]
+command = "python3"
+options = ["packages/nix-sort-imports/nix-sort-imports.py"]
+includes = ["*.nix"]
+
 [formatter.nix]
 command = "nixfmt"
 includes = ["*.nix"]
