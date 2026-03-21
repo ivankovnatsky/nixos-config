@@ -44,6 +44,24 @@ from datetime import datetime
 from pathlib import Path
 
 
+SOPS_SECRETS = {
+    "MINISERVE_USER": "miniserve-username",
+    "MINISERVE_PASS": "miniserve-password",
+}
+
+
+def _read_secret(name: str) -> str | None:
+    """Read secret from sops-nix file."""
+    sops_name = SOPS_SECRETS.get(name)
+    if sops_name:
+        sops_path = Path.home() / ".config/sops-nix/secrets" / sops_name
+        try:
+            return sops_path.read_text().strip()
+        except OSError:
+            pass
+    return None
+
+
 def check_tar_on_darwin() -> None:
     """On Darwin, verify we're using native bsdtar, not GNU tar."""
     if platform.system() != "Darwin":
@@ -261,9 +279,9 @@ def main():
         description="Backup home directory with automatic exclusions and remote upload.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
-Environment variables:
-  MINISERVE_USER    Username for miniserve authentication
-  MINISERVE_PASS    Password for miniserve authentication
+Secrets (read from ~/.config/sops-nix/secrets/):
+  miniserve-username    Username for miniserve authentication
+  miniserve-password    Password for miniserve authentication
 
 Examples:
   backup-home                              # Normal backup and upload via miniserve
@@ -367,11 +385,11 @@ Examples:
         sys.exit(0)
 
     miniserve_url = args.miniserve if args.miniserve else DEFAULT_MINISERVE_URL
-    miniserve_user = os.environ.get("MINISERVE_USER")
-    miniserve_pass = os.environ.get("MINISERVE_PASS")
+    miniserve_user = _read_secret("MINISERVE_USER")
+    miniserve_pass = _read_secret("MINISERVE_PASS")
     if not miniserve_user or not miniserve_pass:
         print(
-            "Error: MINISERVE_USER and MINISERVE_PASS environment variables required",
+            "Error: miniserve secrets not found in ~/.config/sops-nix/secrets/",
             file=sys.stderr,
         )
         sys.exit(1)

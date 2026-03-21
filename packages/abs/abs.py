@@ -19,6 +19,24 @@ import subprocess
 import glob
 from datetime import datetime
 
+SOPS_SECRETS = {
+    "ABS_API_KEY": "audiobookshelf-api-token",
+    "ABS_URL": "audiobookshelf-url",
+}
+
+
+def _read_secret(name: str) -> str | None:
+    """Read secret from sops-nix file."""
+    sops_name = SOPS_SECRETS.get(name)
+    if sops_name:
+        sops_path = Path.home() / ".config/sops-nix/secrets" / sops_name
+        try:
+            return sops_path.read_text().strip()
+        except OSError:
+            pass
+    return None
+
+
 # Constants for common values
 DEFAULT_ABS_URL = "http://localhost:13378"
 DEFAULT_LIBRARY_NAME = "Podcasts"  # Library name to use by default
@@ -331,10 +349,10 @@ def process_media_url(url, abs_url=None, library_name_or_id=DEFAULT_LIBRARY_NAME
         print(f"Audio extraction completed. File: {mp3_file}")
 
         # Check for API key
-        api_key = os.environ.get("ABS_API_KEY")
+        api_key = _read_secret("ABS_API_KEY")
         if not api_key:
             print("Error: Missing API key")
-            print("Please set the ABS_API_KEY environment variable")
+            print("Please ensure sops-nix secret audiobookshelf-api-token exists")
             return False
 
         # Initialize client
@@ -676,8 +694,8 @@ def main():
     )
     upload_parser.add_argument(
         "--url",
-        default=os.environ.get("ABS_URL", DEFAULT_ABS_URL),
-        help=f"Audiobookshelf URL (default: {DEFAULT_ABS_URL} or ABS_URL env var)",
+        default=_read_secret("ABS_URL") or DEFAULT_ABS_URL,
+        help=f"Audiobookshelf URL (default: sops secret or {DEFAULT_ABS_URL})",
     )
     upload_parser.add_argument("--file", required=True, help="Audio file to upload")
     upload_parser.add_argument(
@@ -695,8 +713,8 @@ def main():
     )
     libraries_parser.add_argument(
         "--url",
-        default=os.environ.get("ABS_URL", DEFAULT_ABS_URL),
-        help=f"Audiobookshelf URL (default: {DEFAULT_ABS_URL} or ABS_URL env var)",
+        default=_read_secret("ABS_URL") or DEFAULT_ABS_URL,
+        help=f"Audiobookshelf URL (default: sops secret or {DEFAULT_ABS_URL})",
     )
 
     # List listened command
@@ -705,8 +723,8 @@ def main():
     )
     list_listened_parser.add_argument(
         "--url",
-        default=os.environ.get("ABS_URL", DEFAULT_ABS_URL),
-        help=f"Audiobookshelf URL (default: {DEFAULT_ABS_URL} or ABS_URL env var)",
+        default=_read_secret("ABS_URL") or DEFAULT_ABS_URL,
+        help=f"Audiobookshelf URL (default: sops secret or {DEFAULT_ABS_URL})",
     )
     list_listened_parser.add_argument(
         "--library",
@@ -720,8 +738,8 @@ def main():
     )
     cleanup_listened_parser.add_argument(
         "--url",
-        default=os.environ.get("ABS_URL", DEFAULT_ABS_URL),
-        help=f"Audiobookshelf URL (default: {DEFAULT_ABS_URL} or ABS_URL env var)",
+        default=_read_secret("ABS_URL") or DEFAULT_ABS_URL,
+        help=f"Audiobookshelf URL (default: sops secret or {DEFAULT_ABS_URL})",
     )
     cleanup_listened_parser.add_argument(
         "--library",
@@ -755,8 +773,8 @@ def main():
     )
     process_parser.add_argument(
         "--abs-url",
-        default=os.environ.get("ABS_URL", DEFAULT_ABS_URL),
-        help=f"Audiobookshelf URL (default: {DEFAULT_ABS_URL} or ABS_URL env var)",
+        default=_read_secret("ABS_URL") or DEFAULT_ABS_URL,
+        help=f"Audiobookshelf URL (default: sops secret or {DEFAULT_ABS_URL})",
     )
     process_parser.add_argument(
         "--library",
