@@ -2,7 +2,7 @@
 {
   environment.systemPackages = with pkgs; [
     gnumake # To avoid installing Developer Tools
-    tmux # Be able to attach to tmux-rebuild session manually
+    tmux
     watchman # Be able to rerun rebuild manually with watching
     watchman-make # Be able to rerun rebuild manually with watching
     watchman-rebuild # Unified watchman rebuild tool
