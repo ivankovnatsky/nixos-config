@@ -9,7 +9,6 @@
     ../../../darwin/mac-mouse-fix.nix
     ../../../darwin/nix.nix
     ../../../darwin/no-dock-restart.nix
-    ../../../darwin/rebuild-terminal.nix
     ../../../darwin/stats.nix
     ../../../darwin/sudo.nix
     ../../../darwin/syncthing.nix
@@ -21,7 +20,6 @@
     ../../../modules/darwin/pam
     ../../../modules/darwin/pmset
     ../../../modules/darwin/prevent-sleep
-    ../../../modules/darwin/rebuild-terminal
     ../../../modules/darwin/sudo
     ../../../modules/darwin/syncthing-cleaner
     ../../../modules/darwin/syncthing-mgmt
