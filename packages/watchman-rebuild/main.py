@@ -459,8 +459,6 @@ def watch_and_rebuild(config_path, command=None):
     pending_files = []
     timer_lock = threading.Lock()
 
-    RETRY_DELAY = 5.0  # seconds to wait before retrying a skipped rebuild
-
     def trigger_rebuild():
         """Called after debounce delay to actually run the rebuild."""
         nonlocal pending_files, debounce_timer
@@ -481,17 +479,28 @@ def watch_and_rebuild(config_path, command=None):
         if files_to_rebuild:
             _, actually_ran = run_rebuild(config_path, command)
             if not actually_ran:
+                # Rebuild was skipped (lock held by another rebuild in progress).
+                # Re-queue files but do NOT start a retry timer. The thread that
+                # holds the lock will check for pending files after it finishes.
                 with timer_lock:
                     for f in files_to_rebuild:
                         if f not in pending_files:
                             pending_files.append(f)
                     logging.info(
-                        f"Re-queued {len(files_to_rebuild)} file(s), retrying in {RETRY_DELAY}s"
+                        f"Re-queued {len(files_to_rebuild)} file(s), will rebuild after current rebuild finishes"
                     )
-                    debounce_timer = threading.Timer(
-                        RETRY_DELAY, trigger_rebuild
-                    )
-                    debounce_timer.start()
+            else:
+                # Rebuild completed. Check if new files accumulated while we
+                # were building and trigger a follow-up rebuild if so.
+                with timer_lock:
+                    if pending_files:
+                        logging.info(
+                            f"{len(pending_files)} file(s) changed during rebuild, scheduling follow-up rebuild in {DEBOUNCE_DELAY}s"
+                        )
+                        debounce_timer = threading.Timer(
+                            DEBOUNCE_DELAY, trigger_rebuild
+                        )
+                        debounce_timer.start()
 
     client = None
     reconnect_attempts = 0
