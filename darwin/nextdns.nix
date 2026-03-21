@@ -1,10 +1,10 @@
-{ config, lib, username, ... }:
+{ config, username, ... }:
 
 let
   commonVars = {
-    miniWifiIp = config.flags.miniWifiIp;
-    miniIp = config.flags.miniIp;
-    miniEn7Ip = config.flags.miniEn7Ip;
+    inherit (config.flags) miniWifiIp;
+    inherit (config.flags) miniIp;
+    inherit (config.flags) miniEn7Ip;
   };
 
   commonVarsFiles = {

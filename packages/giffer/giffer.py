@@ -1192,7 +1192,15 @@ def split(url, output_dir, duration, skip_start, skip_end):
     help="Use gallery-dl as primary downloader (fall back to yt-dlp)",
 )
 def download(
-    url, output_dir, workers, do_split, duration, skip_start, skip_end, max_height, gallery
+    url,
+    output_dir,
+    workers,
+    do_split,
+    duration,
+    skip_start,
+    skip_end,
+    max_height,
+    gallery,
 ):
     """Download video(s) from URL or playlist.
 

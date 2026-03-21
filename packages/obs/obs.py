@@ -97,7 +97,9 @@ def _create_vault(vault_path: Path, name: str | None = None) -> tuple[str, bool]
     return vault_name, True
 
 
-def _open_vault(vault_path: Path, just_created: bool = False, file_path: str | None = None) -> None:
+def _open_vault(
+    vault_path: Path, just_created: bool = False, file_path: str | None = None
+) -> None:
     vault_path = vault_path.resolve()
     config = read_obsidian_config()
     was_registered = find_vault_by_path(config, vault_path) is not None
@@ -115,9 +117,15 @@ def _open_vault(vault_path: Path, just_created: bool = False, file_path: str | N
     if file_path:
         if is_obsidian_running():
             subprocess.run(
-                ["osascript", "-e", 'tell application "Obsidian" to activate',
-                 "-e", "delay 0.3",
-                 "-e", 'tell application "System Events" to keystroke "t" using command down'],
+                [
+                    "osascript",
+                    "-e",
+                    'tell application "Obsidian" to activate',
+                    "-e",
+                    "delay 0.3",
+                    "-e",
+                    'tell application "System Events" to keystroke "t" using command down',
+                ],
                 check=True,
             )
             time.sleep(0.3)

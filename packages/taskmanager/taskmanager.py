@@ -124,9 +124,7 @@ def get_reminders(project_filter=None, include_completed=True):
     if project_filter:
         lists = [project_filter]
     else:
-        result = subprocess.run(
-            ["rems", "show-lists"], capture_output=True, text=True
-        )
+        result = subprocess.run(["rems", "show-lists"], capture_output=True, text=True)
         if result.returncode != 0:
             return {}, {}, {}
         lists = result.stdout.strip().splitlines()
@@ -339,7 +337,10 @@ def match_instances(tw_list, rem_list):
                         weak.append((i, rem_item))
                     elif same:
                         # Both have no due date, same status — prefer notes match
-                        tw_ann = "; ".join(a.get("description", "") for a in tw_item.get("annotations", []))
+                        tw_ann = "; ".join(
+                            a.get("description", "")
+                            for a in tw_item.get("annotations", [])
+                        )
                         rem_notes = (rem_item.get("notes") or "").strip()
                         if tw_ann and rem_notes and tw_ann == rem_notes:
                             weak.append((i, rem_item))
@@ -396,7 +397,9 @@ def match_instances(tw_list, rem_list):
                 rem_due = local_date(rem_item.get("due", ""))
                 same_status = tw_item["status"] == rem_item["status"]
                 # Same status, one side has due and the other doesn't
-                if same_status and ((tw_due and not rem_due) or (not tw_due and rem_due)):
+                if same_status and (
+                    (tw_due and not rem_due) or (not tw_due and rem_due)
+                ):
                     best = (i, rem_item)
                     break
                 # Cross-status, both have no due (completed in one system)
@@ -449,7 +452,9 @@ def compare_metadata(tw, rem):
             diffs.append(("notes", rem_notes_display, tw_notes_display))
         elif not rem_notes and tw_ann_texts:
             diffs.append(("notes", rem_notes_display, tw_notes_display))
-        elif rem_notes and tw_ann_texts and any(a not in rem_notes for a in tw_ann_texts):
+        elif (
+            rem_notes and tw_ann_texts and any(a not in rem_notes for a in tw_ann_texts)
+        ):
             diffs.append(("notes", rem_notes_display, tw_notes_display))
 
     # Completion date — only report when Rem has older (more original) date,
@@ -500,9 +505,9 @@ def compute_drift(project_filter=None):
                 recurrence_info[key] = rec
                 break
 
-    multi_instance = {
-        k for k, c in tw_counts.items() if c > 1
-    } | {k for k, c in rem_counts.items() if c > 1}
+    multi_instance = {k for k, c in tw_counts.items() if c > 1} | {
+        k for k, c in rem_counts.items() if c > 1
+    }
 
     # Handle multi-instance items via instance-level matching by due date
     instance_matched = set()
@@ -534,9 +539,10 @@ def compute_drift(project_filter=None):
                 due = date_key(tw_item.get("due", "")) or date_key(
                     rem_item.get("due", "")
                 )
-                due_display = format_date_local(
-                    tw_item.get("due", "") or rem_item.get("due", "")
-                ) or due
+                due_display = (
+                    format_date_local(tw_item.get("due", "") or rem_item.get("due", ""))
+                    or due
+                )
                 instance_key = (key[0], f"{key[1]} [{due_display}]")
                 instance_matched.add(instance_key)
 
@@ -683,11 +689,7 @@ def infer_flow(field, rem_val, tw_val):
             return "rem_to_tw"
         # Same calendar date but one is midnight (date-only) — sync the
         # specific time to the midnight side instead of overwriting it.
-        if (
-            len(rem_val) >= 10
-            and len(tw_val) >= 10
-            and rem_val[:10] == tw_val[:10]
-        ):
+        if len(rem_val) >= 10 and len(tw_val) >= 10 and rem_val[:10] == tw_val[:10]:
             rem_midnight = rem_val.endswith("T00:00:00")
             tw_midnight = tw_val.endswith("T00:00:00")
             if rem_midnight and not tw_midnight:
@@ -754,7 +756,9 @@ def print_drift_item(key, info, direction=None):
         click.echo(f"    {header}")
         for field, from_val, to_val in fields:
             if field == "notes":
-                tw_ann = [a.get("description", "") for a in info["tw"].get("annotations", [])]
+                tw_ann = [
+                    a.get("description", "") for a in info["tw"].get("annotations", [])
+                ]
                 raw_tw = "; ".join(tw_ann) if tw_ann else ""
                 raw_rem = (info["rem"].get("notes") or "").strip()
                 if "Reminders" in header and header.endswith("Taskwarrior:"):
@@ -839,7 +843,14 @@ def find_tw_uuids(project, prefixed_title, status_filter=None):
     return uuids
 
 
-def find_reminder_index(list_name, prefixed_title, completed_only=False, include_completed=True, due_date=None, notes_empty=None):
+def find_reminder_index(
+    list_name,
+    prefixed_title,
+    completed_only=False,
+    include_completed=True,
+    due_date=None,
+    notes_empty=None,
+):
     """Find reminder index by list and prefixed title.
 
     Optional filters:
@@ -1019,13 +1030,19 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                 if "end" in tw_updates and "status" not in tw_updates:
                     modify_args.append(f"end:{tw_updates['end']}")
                 if modify_args:
-                    result = run(["task", "rc.confirmation:off", uuid, "modify"] + modify_args)
+                    result = run(
+                        ["task", "rc.confirmation:off", uuid, "modify"] + modify_args
+                    )
                     # If modify fails on a recurring task (e.g. can't remove due),
                     # delete the recurring parent to stop recurrence, then retry
                     if result.returncode != 0 and tw.get("recur", ""):
-                        click.echo(f"    Recurring task detected — purging to remove recurrence")
+                        click.echo(
+                            "    Recurring task detected — purging to remove recurrence"
+                        )
                         # Delete first if not already deleted, then purge
-                        del_result = run(["task", "rc.confirmation:off", uuid, "delete"])
+                        del_result = run(
+                            ["task", "rc.confirmation:off", uuid, "delete"]
+                        )
                         if del_result.returncode != 0:
                             # Already deleted — just purge
                             pass
@@ -1043,9 +1060,25 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                         run(["task", "rc.confirmation:off", uuid, "done"])
                         # Set end after done — task done overwrites end with now
                         if "end" in tw_updates:
-                            run(["task", "rc.confirmation:off", uuid, "modify", f"end:{tw_updates['end']}"])
+                            run(
+                                [
+                                    "task",
+                                    "rc.confirmation:off",
+                                    uuid,
+                                    "modify",
+                                    f"end:{tw_updates['end']}",
+                                ]
+                            )
                     else:
-                        run(["task", "rc.confirmation:off", uuid, "modify", "status:pending"])
+                        run(
+                            [
+                                "task",
+                                "rc.confirmation:off",
+                                uuid,
+                                "modify",
+                                "status:pending",
+                            ]
+                        )
             if uuids:
                 count += 1
                 click.echo(
@@ -1077,7 +1110,9 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                     complete_cmd = ["rems", "complete", project, rem_id]
                     raw_end = tw.get("end", "")
                     if raw_end:
-                        complete_cmd.extend(["--completion-date", tw_date_to_iso(raw_end)])
+                        complete_cmd.extend(
+                            ["--completion-date", tw_date_to_iso(raw_end)]
+                        )
                     run(complete_cmd)
                 else:
                     run(["rems", "uncomplete", project, rem_id])
@@ -1108,7 +1143,9 @@ class TreeGroup(click.Group):
                         for child_name in cmd.list_commands(sub_ctx):
                             child = cmd.get_command(sub_ctx, child_name)
                             if child and not child.hidden:
-                                child_help = child.get_short_help_str(limit=formatter.width)
+                                child_help = child.get_short_help_str(
+                                    limit=formatter.width
+                                )
                                 formatter.write(f"    {child_name:<8}{child_help}\n")
 
 
@@ -1169,9 +1206,17 @@ TreeGroup.format_commands = _format_no_aliases
 
 @reminders_group.command(name="sort")
 @click.option("--source", default=None, help="Limit to a single source list.")
-@click.option("--approve", is_flag=True, default=False, help="Skip all confirmation prompts.")
-@click.option("--interactive", is_flag=True, default=False, help="Confirm each item individually.")
-@click.option("--create/--no-create", default=True, help="Auto-create missing lists (default: enabled).")
+@click.option(
+    "--approve", is_flag=True, default=False, help="Skip all confirmation prompts."
+)
+@click.option(
+    "--interactive", is_flag=True, default=False, help="Confirm each item individually."
+)
+@click.option(
+    "--create/--no-create",
+    default=True,
+    help="Auto-create missing lists (default: enabled).",
+)
 @click.option("--verbose", is_flag=True, default=False, help="Show commands being run.")
 def sort_reminders(source, approve, interactive, create, verbose):
     """Sort prefixed reminders into their matching lists.
@@ -1187,9 +1232,7 @@ def sort_reminders(source, approve, interactive, create, verbose):
         raise SystemExit(1)
 
     # Get all existing list names
-    result = subprocess.run(
-        ["rems", "show-lists"], capture_output=True, text=True
-    )
+    result = subprocess.run(["rems", "show-lists"], capture_output=True, text=True)
     if result.returncode != 0:
         click.echo("Error: could not fetch reminder lists", err=True)
         raise SystemExit(1)
@@ -1230,14 +1273,16 @@ def sort_reminders(source, approve, interactive, create, verbose):
             if needs_create and not create:
                 click.echo(f"  skip (no list): {title}")
                 continue
-            moves.append({
-                "source": list_name,
-                "index": i,
-                "title": title,
-                "target": target_list,
-                "needs_create": needs_create,
-                "external_id": item.get("externalId", ""),
-            })
+            moves.append(
+                {
+                    "source": list_name,
+                    "index": i,
+                    "title": title,
+                    "target": target_list,
+                    "needs_create": needs_create,
+                    "external_id": item.get("externalId", ""),
+                }
+            )
 
     if not moves:
         return
@@ -1266,7 +1311,9 @@ def sort_reminders(source, approve, interactive, create, verbose):
     moved = 0
     for m in reversed(moves):
         target = m["target"]
-        create_tag = " (new list)" if m["needs_create"] and target not in created_lists else ""
+        create_tag = (
+            " (new list)" if m["needs_create"] and target not in created_lists else ""
+        )
 
         if interactive:
             click.echo()
@@ -1300,8 +1347,12 @@ def sort_reminders(source, approve, interactive, create, verbose):
 
 @tw_group.command(name="sort")
 @click.option("--project", default=None, help="Limit to a single project.")
-@click.option("--approve", is_flag=True, default=False, help="Skip all confirmation prompts.")
-@click.option("--interactive", is_flag=True, default=False, help="Confirm each item individually.")
+@click.option(
+    "--approve", is_flag=True, default=False, help="Skip all confirmation prompts."
+)
+@click.option(
+    "--interactive", is_flag=True, default=False, help="Confirm each item individually."
+)
 @click.option("--verbose", is_flag=True, default=False, help="Show commands being run.")
 def sort_tw(project, approve, interactive, verbose):
     """Sort prefixed TW tasks into their matching projects.
@@ -1347,12 +1398,14 @@ def sort_tw(project, approve, interactive, verbose):
         target_project = prefix
         if target_project == current_project:
             continue
-        moves.append({
-            "uuid": uuid,
-            "description": desc,
-            "current_project": current_project,
-            "target_project": target_project,
-        })
+        moves.append(
+            {
+                "uuid": uuid,
+                "description": desc,
+                "current_project": current_project,
+                "target_project": target_project,
+            }
+        )
 
     if not moves:
         return
@@ -1361,7 +1414,7 @@ def sort_tw(project, approve, interactive, verbose):
     click.echo(f"{len(moves)} task(s) to move:")
     click.echo()
     for m in moves:
-        src = m['current_project'] or '(no project)'
+        src = m["current_project"] or "(no project)"
         click.echo(f"  {src}: {m['description']}")
         click.echo(f"    → project:{m['target_project']}")
 
@@ -1380,7 +1433,15 @@ def sort_tw(project, approve, interactive, verbose):
             if not click.confirm("  Move?"):
                 continue
 
-        res = run(["task", "rc.confirmation:off", m["uuid"], "modify", f"project:{m['target_project']}"])
+        res = run(
+            [
+                "task",
+                "rc.confirmation:off",
+                m["uuid"],
+                "modify",
+                f"project:{m['target_project']}",
+            ]
+        )
         if res.returncode == 0:
             moved += 1
             click.echo(f"  Moved: {m['description']} → project:{m['target_project']}")
@@ -1394,9 +1455,17 @@ def sort_tw(project, approve, interactive, verbose):
 @all_cmds.command(name="sort")
 @click.option("--source", default=None, help="Limit Reminders to a single source list.")
 @click.option("--project", default=None, help="Limit Taskwarrior to a single project.")
-@click.option("--approve", is_flag=True, default=False, help="Skip all confirmation prompts.")
-@click.option("--interactive", is_flag=True, default=False, help="Confirm each item individually.")
-@click.option("--create/--no-create", default=True, help="Auto-create missing Reminders lists (default: enabled).")
+@click.option(
+    "--approve", is_flag=True, default=False, help="Skip all confirmation prompts."
+)
+@click.option(
+    "--interactive", is_flag=True, default=False, help="Confirm each item individually."
+)
+@click.option(
+    "--create/--no-create",
+    default=True,
+    help="Auto-create missing Reminders lists (default: enabled).",
+)
 @click.option("--verbose", is_flag=True, default=False, help="Show commands being run.")
 @click.pass_context
 def sort_all(ctx, source, project, approve, interactive, create, verbose):
@@ -1424,7 +1493,6 @@ def sort_all(ctx, source, project, approve, interactive, create, verbose):
         )
 
 
-
 def normalize_system_name(name):
     """Normalize system name to internal form."""
     if name in ("t", "tw", "taskwarrior"):
@@ -1445,7 +1513,9 @@ def filter_by_title(rem_only, tw_only, metadata_diffs, title_filter):
     """Filter drift results to items matching title substring."""
     if not title_filter:
         return rem_only, tw_only, metadata_diffs
-    rem_only = {k: v for k, v in rem_only.items() if title_filter.lower() in k[1].lower()}
+    rem_only = {
+        k: v for k, v in rem_only.items() if title_filter.lower() in k[1].lower()
+    }
     tw_only = {k: v for k, v in tw_only.items() if title_filter.lower() in k[1].lower()}
     metadata_diffs = {
         k: v for k, v in metadata_diffs.items() if title_filter.lower() in k[1].lower()
@@ -1472,10 +1542,10 @@ def filter_by_recurring(rem_only, tw_only, metadata_diffs, multi_keys, recurring
 
 @all_cmds.command()
 @click.option("--project", default=None, help="Scope to a single project/list.")
+@click.option("--projects", default=None, help="Comma-separated project/list names.")
 @click.option(
-    "--projects", default=None, help="Comma-separated project/list names."
+    "--filter", default=None, help="Filter to items matching title substring."
 )
-@click.option("--filter", default=None, help="Filter to items matching title substring.")
 @click.option(
     "--notes", is_flag=True, default=False, help="Show only notes/annotations drift."
 )
@@ -1495,9 +1565,24 @@ def filter_by_recurring(rem_only, tw_only, metadata_diffs, multi_keys, recurring
     help="Destination system (t/tw/taskwarrior, r/rem/rems/reminders).",
 )
 @click.option("--verbose", is_flag=True, default=False, help="Show commands being run.")
-@click.option("--sort-first/--no-sort-first", default=True, help="Run sort before computing drift (default: enabled).")
+@click.option(
+    "--sort-first/--no-sort-first",
+    default=True,
+    help="Run sort before computing drift (default: enabled).",
+)
 @click.pass_context
-def drift(ctx, project, projects, filter, notes, recurring, source, destination, verbose, sort_first):
+def drift(
+    ctx,
+    project,
+    projects,
+    filter,
+    notes,
+    recurring,
+    source,
+    destination,
+    verbose,
+    sort_first,
+):
     """Show drift between Reminders and Taskwarrior."""
     global _verbose
     _verbose = verbose
@@ -1560,10 +1645,10 @@ def drift(ctx, project, projects, filter, notes, recurring, source, destination,
 
 @all_cmds.command()
 @click.option("--project", default=None, help="Scope to a single project/list.")
+@click.option("--projects", default=None, help="Comma-separated project/list names.")
 @click.option(
-    "--projects", default=None, help="Comma-separated project/list names."
+    "--filter", default=None, help="Filter to items matching title substring."
 )
-@click.option("--filter", default=None, help="Filter to items matching title substring.")
 @click.option(
     "--approve", is_flag=True, default=False, help="Skip confirmation prompt."
 )
@@ -1607,9 +1692,29 @@ def drift(ctx, project, projects, filter, notes, recurring, source, destination,
     default=False,
     help="Delete and purge TW recurring parent tasks. Always interactive.",
 )
-@click.option("--sort-first/--no-sort-first", default=True, help="Run sort before syncing (default: enabled).")
+@click.option(
+    "--sort-first/--no-sort-first",
+    default=True,
+    help="Run sort before syncing (default: enabled).",
+)
 @click.pass_context
-def sync(ctx, project, projects, filter, approve, interactive, notes, recurring, source, destination, verbose, purge_duplicates, complete_orphans, purge_recurring, sort_first):
+def sync(
+    ctx,
+    project,
+    projects,
+    filter,
+    approve,
+    interactive,
+    notes,
+    recurring,
+    source,
+    destination,
+    verbose,
+    purge_duplicates,
+    complete_orphans,
+    purge_recurring,
+    sort_first,
+):
     """Sync missing items to both systems."""
     global _verbose
     _verbose = verbose
@@ -1673,7 +1778,12 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
         print_drift(rem_only, tw_only, matched, metadata_diffs, direction=source)
 
     total = len(rem_only) + len(tw_only) + len(metadata_diffs)
-    if total == 0 and not purge_duplicates and not complete_orphans and not purge_recurring:
+    if (
+        total == 0
+        and not purge_duplicates
+        and not complete_orphans
+        and not purge_recurring
+    ):
         return
 
     if not interactive:
@@ -1779,14 +1889,30 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
                     # Creation date
                     raw_created = item.get("creationDate", "")
                     if raw_created:
-                        run(["task", "rc.confirmation:off", uuid, "modify", f"entry:{raw_created}"])
+                        run(
+                            [
+                                "task",
+                                "rc.confirmation:off",
+                                uuid,
+                                "modify",
+                                f"entry:{raw_created}",
+                            ]
+                        )
 
                     # Completion date + status
                     if item["status"] == "completed":
                         run(["task", "rc.confirmation:off", uuid, "done"])
                     raw_end = item.get("completionDate", "")
                     if raw_end:
-                        run(["task", "rc.confirmation:off", uuid, "modify", f"end:{raw_end}"])
+                        run(
+                            [
+                                "task",
+                                "rc.confirmation:off",
+                                uuid,
+                                "modify",
+                                f"end:{raw_end}",
+                            ]
+                        )
 
     # Taskwarrior-only → add to Reminders
     if is_darwin() and has_command("rems"):
@@ -1858,12 +1984,16 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
                     complete_cmd = ["rems", "complete", proj, prefixed]
                     raw_end = item.get("end", "")
                     if raw_end:
-                        complete_cmd.extend(["--completion-date", tw_date_to_iso(raw_end)])
+                        complete_cmd.extend(
+                            ["--completion-date", tw_date_to_iso(raw_end)]
+                        )
                     run(complete_cmd)
 
     # Sync metadata for matched items with drift
     if metadata_diffs:
-        meta_count = sync_metadata(metadata_diffs, direction=source, interactive=interactive)
+        meta_count = sync_metadata(
+            metadata_diffs, direction=source, interactive=interactive
+        )
         if meta_count:
             click.echo()
             click.echo(f"Updated metadata on {meta_count} items.")
@@ -1910,8 +2040,11 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
         click.echo()
         click.echo("--- Scanning for TW-internal duplicates ---")
         from collections import defaultdict
+
         tw_cmd = ["task"]
-        for proj in (parse_projects(projects) if projects else [project] if project else []):
+        for proj in (
+            parse_projects(projects) if projects else [project] if project else []
+        ):
             if proj:
                 tw_cmd.append(f"project.is:{proj}")
         tw_cmd.append("export")
@@ -1955,13 +2088,19 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
                     dupes = group[1:]
                     click.echo()
                     click.echo(f"  {key[1]} ({len(group)} identical pending copies)")
-                    click.echo(f"    keeping: uuid:{keep['uuid'][:8]} entry:{keep.get('entry','')[:10]}")
+                    click.echo(
+                        f"    keeping: uuid:{keep['uuid'][:8]} entry:{keep.get('entry', '')[:10]}"
+                    )
                     for d in dupes:
                         entry = d.get("entry", "")[:10]
                         click.echo(f"    duplicate: uuid:{d['uuid'][:8]} entry:{entry}")
-                        if not click.confirm("    DELETE this duplicate?", default=False):
+                        if not click.confirm(
+                            "    DELETE this duplicate?", default=False
+                        ):
                             continue
-                        result = run(["task", "rc.confirmation:off", d["uuid"], "delete"])
+                        result = run(
+                            ["task", "rc.confirmation:off", d["uuid"], "delete"]
+                        )
                         if result.returncode == 0:
                             click.echo(f"    - Deleted {d['uuid'][:8]}")
                             purge_count += 1
@@ -1991,14 +2130,17 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
             # Check if this title has completed history in TW
             all_uuids_result = subprocess.run(
                 ["task", f"project.is:{proj}", "export"],
-                capture_output=True, text=True,
+                capture_output=True,
+                text=True,
             )
             has_completed = False
             if all_uuids_result.returncode == 0:
                 try:
                     for t in json.loads(all_uuids_result.stdout):
-                        if (t.get("description", "") == prefixed
-                                and t.get("status") == "completed"):
+                        if (
+                            t.get("description", "") == prefixed
+                            and t.get("status") == "completed"
+                        ):
                             has_completed = True
                             break
                 except json.JSONDecodeError:
@@ -2008,7 +2150,7 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
             click.echo()
             click.echo(f"  TW orphan: {prefixed}")
             click.echo(f"    uuid: {uuid[:8]}")
-            click.echo(f"    has completed history in TW")
+            click.echo("    has completed history in TW")
             if not click.confirm("  COMPLETE this task?", default=False):
                 continue
             result = run(["task", "rc.confirmation:off", uuid, "done"])
@@ -2039,7 +2181,9 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
                 proj_list = parse_projects(projects) if projects else [project]
                 proj_set = {p for p in proj_list if p}
                 if proj_set:
-                    recurring_parents = [t for t in recurring_parents if t.get("project", "") in proj_set]
+                    recurring_parents = [
+                        t for t in recurring_parents if t.get("project", "") in proj_set
+                    ]
             if not recurring_parents:
                 click.echo("  No recurring parents found.")
             for t in recurring_parents:
@@ -2055,11 +2199,16 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
                 if due:
                     click.echo(f"    due: {due}")
                 click.echo(f"    uuid: {uuid[:8]}")
-                if not click.confirm("  DELETE and PURGE this recurring parent?", default=False):
+                if not click.confirm(
+                    "  DELETE and PURGE this recurring parent?", default=False
+                ):
                     continue
                 # Find and delete child instances first
-                children = [c for c in all_tw
-                            if c.get("parent") == uuid and c.get("status") != "deleted"]
+                children = [
+                    c
+                    for c in all_tw
+                    if c.get("parent") == uuid and c.get("status") != "deleted"
+                ]
                 for child in children:
                     run(["task", "rc.confirmation:off", child["uuid"], "delete"])
                 # Delete the parent
@@ -2069,7 +2218,9 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
                     run(["task", "rc.confirmation:off", child["uuid"], "purge"])
                 result = run(["task", "rc.confirmation:off", uuid, "purge"])
                 if result.returncode == 0:
-                    click.echo(f"  - Purged: {desc} (+ {len(children)} child instance(s))")
+                    click.echo(
+                        f"  - Purged: {desc} (+ {len(children)} child instance(s))"
+                    )
                     purge_count += 1
                 else:
                     click.echo(f"  ! Failed to purge: {desc}")
@@ -2083,9 +2234,7 @@ def sync(ctx, project, projects, filter, approve, interactive, notes, recurring,
 
 @all_cmds.command()
 @click.option("--project", default=None, help="Scope to a single project/list.")
-@click.option(
-    "--projects", default=None, help="Comma-separated project/list names."
-)
+@click.option("--projects", default=None, help="Comma-separated project/list names.")
 @click.option("--verbose", is_flag=True, default=False, help="Show commands being run.")
 def verify(project, projects, verbose):
     """Verify item counts and statuses match between Reminders and Taskwarrior."""
@@ -2144,9 +2293,20 @@ def verify(project, projects, verbose):
             rem_pending = sum(1 for r in rem_items if r["status"] == "pending")
             rem_completed = sum(1 for r in rem_items if r["status"] == "completed")
 
-            if tw_pending != rem_pending or tw_completed != rem_completed or tw_deleted > 0:
+            if (
+                tw_pending != rem_pending
+                or tw_completed != rem_completed
+                or tw_deleted > 0
+            ):
                 status_issues.append(
-                    (title, tw_pending, tw_completed, tw_deleted, rem_pending, rem_completed)
+                    (
+                        title,
+                        tw_pending,
+                        tw_completed,
+                        tw_deleted,
+                        rem_pending,
+                        rem_completed,
+                    )
                 )
 
         total_tw += len(tw_all)
@@ -2298,9 +2458,7 @@ def tw_list():
 def rem_edit(pattern):
     """Edit reminders matching pattern in editor."""
     pattern_str = " ".join(pattern)
-    result = run(
-        ["rems", "show-all", "--include-completed", "--format", "json"]
-    )
+    result = run(["rems", "show-all", "--include-completed", "--format", "json"])
     if result.returncode != 0:
         click.echo("Failed to fetch reminders", err=True)
         raise SystemExit(1)
@@ -2321,9 +2479,7 @@ def rem_edit(pattern):
     click.echo(f"Editing {len(matches)} reminder(s)...")
     for reminder in matches:
         original = json.loads(json.dumps(reminder))
-        with tempfile.NamedTemporaryFile(
-            mode="w", suffix=".json", delete=False
-        ) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump(reminder, f, indent=2, ensure_ascii=False)
             f.write("\n")
             tmp_path = f.name
@@ -2369,9 +2525,7 @@ def rem_edit(pattern):
 def rem_find(pattern):
     """Search reminders by pattern."""
     pattern_str = " ".join(pattern)
-    result = run(
-        ["rems", "show-all", "--include-completed", "--format", "json"]
-    )
+    result = run(["rems", "show-all", "--include-completed", "--format", "json"])
     if result.returncode != 0:
         click.echo("Failed to fetch reminders", err=True)
         raise SystemExit(1)

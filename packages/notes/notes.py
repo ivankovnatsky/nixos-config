@@ -21,6 +21,7 @@ import click
 # HTML parsing
 # ---------------------------------------------------------------------------
 
+
 class BaseHTMLParser(html.parser.HTMLParser):
     """Base parser for Apple Notes HTML body."""
 
@@ -152,7 +153,9 @@ def html_to_text(html_body, fmt="text"):
 # Cache
 # ---------------------------------------------------------------------------
 
-CACHE_DIR = os.path.join(os.environ.get("XDG_CACHE_HOME", os.path.expanduser("~/.cache")), "notes-cli")
+CACHE_DIR = os.path.join(
+    os.environ.get("XDG_CACHE_HOME", os.path.expanduser("~/.cache")), "notes-cli"
+)
 CACHE_TTL = 300  # 5 minutes
 
 
@@ -190,6 +193,7 @@ def cache_invalidate():
 # ---------------------------------------------------------------------------
 # AppleScript helpers
 # ---------------------------------------------------------------------------
+
 
 def run_osascript(body, args=None):
     """Run an AppleScript wrapped in tell application "Notes".
@@ -253,8 +257,10 @@ def _rename_note(folder, old_name, new_name):
         if title_match:
             # Ensure title uses <h1> (Apple Notes default for new notes)
             renamed_body = (
-                "<div><h1>" + html.escape(new_name) + "</h1></div>"
-                + existing_body[title_match.end():]
+                "<div><h1>"
+                + html.escape(new_name)
+                + "</h1></div>"
+                + existing_body[title_match.end() :]
             )
             run_osascript(
                 f"""{find_note()}
@@ -263,8 +269,7 @@ def _rename_note(folder, old_name, new_name):
             )
         return True
     click.echo(
-        f"Note has {att_count} attachment(s): "
-        "body title not updated to preserve them.",
+        f"Note has {att_count} attachment(s): body title not updated to preserve them.",
         err=True,
     )
     return False
@@ -285,6 +290,7 @@ def _get_attachment_count(folder, name):
 # ---------------------------------------------------------------------------
 # Note body helpers
 # ---------------------------------------------------------------------------
+
 
 def export_markdown(folder, name, export_path=None, clean=False):
     """Export a note using Apple Notes native Markdown export."""
@@ -352,7 +358,9 @@ def set_note_body(folder, name, new_text, preserve_title=False):
     return body of item 1 of matchedNotes""",
             args=[folder, name],
         )
-        title_match = re.match(r"<(?:h[1-6]|div)>.*?</(?:h[1-6]|div)>", existing_body, re.DOTALL)
+        title_match = re.match(
+            r"<(?:h[1-6]|div)>.*?</(?:h[1-6]|div)>", existing_body, re.DOTALL
+        )
         if title_match:
             html_content = title_match.group(0) + "\n<div><br></div>\n" + html_content
     run_osascript(
@@ -363,10 +371,10 @@ def set_note_body(folder, name, new_text, preserve_title=False):
     cache_invalidate()
 
 
-
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
+
 
 @click.group()
 def cli():
@@ -374,6 +382,7 @@ def cli():
 
 
 # -- folders ----------------------------------------------------------------
+
 
 @cli.command()
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON.")
@@ -480,7 +489,9 @@ def _print_notes(folder, prefix="", detailed=False):
                 if mod_date:
                     meta.append(mod_date.strip())
                 if int(att_count) > 0:
-                    meta.append(f"{att_count} attachment{'s' if int(att_count) != 1 else ''}")
+                    meta.append(
+                        f"{att_count} attachment{'s' if int(att_count) != 1 else ''}"
+                    )
                 if meta:
                     display += f"  [{', '.join(meta)}]"
                 click.echo(display)
@@ -496,7 +507,13 @@ def _print_notes(folder, prefix="", detailed=False):
 @click.argument("folder", default="")
 @click.option("--all", "all_folders", is_flag=True, help="List notes in all folders.")
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON.")
-@click.option("-l", "--long", "detailed", is_flag=True, help="Show modification date and attachment count.")
+@click.option(
+    "-l",
+    "--long",
+    "detailed",
+    is_flag=True,
+    help="Show modification date and attachment count.",
+)
 @click.option("--no-cache", is_flag=True, help="Bypass cache.")
 def list_notes(folder, all_folders, as_json, detailed, no_cache):
     """List notes in a folder (or all folders with --all)."""
@@ -516,11 +533,13 @@ def list_notes(folder, all_folders, as_json, detailed, no_cache):
                     if not line:
                         continue
                     parts = line.split("<<F>>")
-                    notes.append({
-                        "name": parts[0],
-                        "modified": parts[1].strip() if len(parts) > 1 else "",
-                        "attachments": int(parts[2]) if len(parts) > 2 else 0,
-                    })
+                    notes.append(
+                        {
+                            "name": parts[0],
+                            "modified": parts[1].strip() if len(parts) > 1 else "",
+                            "attachments": int(parts[2]) if len(parts) > 2 else 0,
+                        }
+                    )
             result[fname] = notes
         click.echo(json.dumps(result, indent=2))
         return
@@ -564,16 +583,21 @@ def count(folder, all_folders, as_json):
 
 # -- view / info / next -----------------------------------------------------
 
+
 @cli.command()
 @click.argument("folder")
 @click.argument("name")
 @click.option(
-    "-f", "--format", "fmt",
+    "-f",
+    "--format",
+    "fmt",
     type=click.Choice(["text", "md", "html", "plain"]),
     default="text",
     help="Output format.",
 )
-@click.option("--no-title", is_flag=True, default=False, help="Skip the first line (note title).")
+@click.option(
+    "--no-title", is_flag=True, default=False, help="Skip the first line (note title)."
+)
 def view(folder, name, fmt, no_title):
     """View a note's content."""
     if fmt == "plain":
@@ -635,7 +659,9 @@ def info(folder, name, as_json):
 @cli.command("next")
 @click.argument("folder")
 @click.option(
-    "-f", "--format", "fmt",
+    "-f",
+    "--format",
+    "fmt",
     type=click.Choice(["text", "md", "html", "plain"]),
     default="text",
     help="Output format.",
@@ -670,11 +696,18 @@ def next_note(folder, fmt):
 
 # -- edit -------------------------------------------------------------------
 
+
 @cli.command()
 @click.argument("folder")
 @click.argument("name")
-@click.option("-f", "--file", "filepath", help="Read content from file instead of $EDITOR.")
-@click.option("--force", is_flag=True, help="Allow editing notes with attachments (may lose them).")
+@click.option(
+    "-f", "--file", "filepath", help="Read content from file instead of $EDITOR."
+)
+@click.option(
+    "--force",
+    is_flag=True,
+    help="Allow editing notes with attachments (may lose them).",
+)
 def edit(folder, name, filepath, force):
     """Edit a note in $EDITOR, from a file, or from stdin.
 
@@ -733,6 +766,7 @@ def edit(folder, name, filepath, force):
 
 
 # -- append / prepend -------------------------------------------------------
+
 
 @cli.command()
 @click.argument("folder")
@@ -801,10 +835,18 @@ def prepend(folder, name, text, filepath):
         args=[folder, name],
     )
     # Insert after the title element
-    title_match = re.match(r"<(?:h[1-6]|div)>.*?</(?:h[1-6]|div)>", existing_body, re.DOTALL)
+    title_match = re.match(
+        r"<(?:h[1-6]|div)>.*?</(?:h[1-6]|div)>", existing_body, re.DOTALL
+    )
     if title_match:
-        rest = existing_body[title_match.end():]
-        new_body = title_match.group(0) + "\n<div><br></div>\n" + html_addition + "\n<div><br></div>\n" + rest.lstrip("\n")
+        rest = existing_body[title_match.end() :]
+        new_body = (
+            title_match.group(0)
+            + "\n<div><br></div>\n"
+            + html_addition
+            + "\n<div><br></div>\n"
+            + rest.lstrip("\n")
+        )
     else:
         new_body = html_addition + "\n<div><br></div>\n" + existing_body
 
@@ -819,17 +861,25 @@ def prepend(folder, name, text, filepath):
 
 # -- export -----------------------------------------------------------------
 
+
 @cli.command()
 @click.argument("folder")
 @click.argument("name")
 @click.option(
-    "-f", "--format", "fmt",
+    "-f",
+    "--format",
+    "fmt",
     type=click.Choice(["markdown"]),
     default="markdown",
     help="Export format.",
 )
 @click.option("-p", "--path", "export_path", help="Directory to export into.")
-@click.option("--clean", is_flag=True, default=False, help="Remove export directory after reading.")
+@click.option(
+    "--clean",
+    is_flag=True,
+    default=False,
+    help="Remove export directory after reading.",
+)
 def export(folder, name, fmt, export_path, clean):
     """Export a note using Apple Notes native export."""
     click.echo(export_markdown(folder, name, export_path=export_path, clean=clean))
@@ -837,11 +887,18 @@ def export(folder, name, fmt, export_path, clean):
 
 # -- move / create / delete / rename ----------------------------------------
 
+
 @cli.command()
 @click.argument("name")
 @click.argument("source")
 @click.argument("dest")
-@click.option("-c", "--create", "create_folder", is_flag=True, help="Create destination folder if it doesn't exist.")
+@click.option(
+    "-c",
+    "--create",
+    "create_folder",
+    is_flag=True,
+    help="Create destination folder if it doesn't exist.",
+)
 def move(name, source, dest, create_folder):
     """Move a note to another folder."""
     if create_folder:
@@ -863,7 +920,13 @@ def move(name, source, dest, create_folder):
 @cli.command()
 @click.argument("folder")
 @click.argument("body", default="")
-@click.option("-n", "--name", "title", default=None, help="Note title (default: first line of body).")
+@click.option(
+    "-n",
+    "--name",
+    "title",
+    default=None,
+    help="Note title (default: first line of body).",
+)
 @click.option("-f", "--file", "filepath", help="Read body from file.")
 @click.option("--stdin", "from_stdin", is_flag=True, help="Read body from stdin.")
 def create(folder, body, title, filepath, from_stdin):
@@ -937,7 +1000,9 @@ def rename(folder, name, new_name):
 @cli.command()
 @click.argument("folder")
 @click.argument("name")
-@click.option("-n", "--new-name", default=None, help="Rename the duplicate after creation.")
+@click.option(
+    "-n", "--new-name", default=None, help="Rename the duplicate after creation."
+)
 def duplicate(folder, name, new_name):
     """Duplicate a note via the Notes.app UI (preserves attachments).
 
@@ -1018,6 +1083,7 @@ def search(query, folder, as_json):
 
 # -- accounts ---------------------------------------------------------------
 
+
 @cli.command()
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON.")
 def accounts(as_json):
@@ -1032,6 +1098,7 @@ def accounts(as_json):
 
 
 # -- cache management -------------------------------------------------------
+
 
 @cli.command("clear-cache")
 def clear_cache():

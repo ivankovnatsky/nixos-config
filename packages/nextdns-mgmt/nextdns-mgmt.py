@@ -358,20 +358,15 @@ def cmd_update(args, client):
                         "GET", f"/profiles/{args.profile_id}/rewrites"
                     )
                     current_rewrites = current_data.get("data", [])
-                    current_set = {
-                        (r["name"], r["content"]) for r in current_rewrites
-                    }
-                    desired_set = {
-                        (r["name"], r["content"]) for r in desired_rewrites
-                    }
+                    current_set = {(r["name"], r["content"]) for r in current_rewrites}
+                    desired_set = {(r["name"], r["content"]) for r in desired_rewrites}
 
                     to_add = desired_set - current_set
                     to_remove = current_set - desired_set
 
                     # Build id lookup for removals
                     id_lookup = {
-                        (r["name"], r["content"]): r["id"]
-                        for r in current_rewrites
+                        (r["name"], r["content"]): r["id"] for r in current_rewrites
                     }
 
                     if to_add or to_remove:
@@ -402,13 +397,9 @@ def cmd_update(args, client):
                                 f"/profiles/{args.profile_id}/rewrites/{rewrite_id}",
                             )
 
-                    print(
-                        f"  ✓ Updated rewrites (+{len(to_add)} -{len(to_remove)})"
-                    )
+                    print(f"  ✓ Updated rewrites (+{len(to_add)} -{len(to_remove)})")
                 except Exception as e:
-                    print(
-                        f"  ✗ Failed to update rewrites: {e}", file=sys.stderr
-                    )
+                    print(f"  ✗ Failed to update rewrites: {e}", file=sys.stderr)
 
         # Update settings last
         if "settings" in profile:

@@ -37,8 +37,8 @@ pkgs.writeShellScriptBin "script-name" (builtins.readFile ./script-name.sh)
 
 ## Aliases
 
-To create an alias for an existing package, create a new package that
-references the original source:
+To create an alias for an existing package, create a new package that references
+the original source:
 
 ```nix
 { pkgs }:

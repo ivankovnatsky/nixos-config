@@ -196,7 +196,13 @@ class AliasGroup(click.Group):
 
 
 @click.group(cls=AliasGroup)
-@click.option("-f", "--filter", "pattern", default=lambda: os.environ.get("LAUNCHD_FILTER", ""), help="Filter services by pattern")
+@click.option(
+    "-f",
+    "--filter",
+    "pattern",
+    default=lambda: os.environ.get("LAUNCHD_FILTER", ""),
+    help="Filter services by pattern",
+)
 @click.pass_context
 def cli(ctx, pattern):
     """Manage macOS launchd services (agents and daemons)."""
@@ -205,9 +211,18 @@ def cli(ctx, pattern):
 
 
 @cli.command("list")
-@click.option("-t", "--type", "svc_type", type=SERVICE_TYPE, default="all", help="Type of services to list")
+@click.option(
+    "-t",
+    "--type",
+    "svc_type",
+    type=SERVICE_TYPE,
+    default="all",
+    help="Type of services to list",
+)
 @click.option("-u", "--unhealthy", is_flag=True, help="Show only unhealthy services")
-@click.option("-v", "--verbose", is_flag=True, help="Show verbose output with PID and exit codes")
+@click.option(
+    "-v", "--verbose", is_flag=True, help="Show verbose output with PID and exit codes"
+)
 @click.pass_context
 def cmd_list(ctx, svc_type, unhealthy, verbose):
     """List services."""
@@ -241,9 +256,18 @@ def cmd_list(ctx, svc_type, unhealthy, verbose):
 
 @cli.command()
 @click.option("-n", "--name", default=None, help="Specific service name to restart")
-@click.option("-t", "--type", "svc_type", type=SERVICE_TYPE, default="all", help="Type of services to restart")
+@click.option(
+    "-t",
+    "--type",
+    "svc_type",
+    type=SERVICE_TYPE,
+    default="all",
+    help="Type of services to restart",
+)
 @click.option("-u", "--unhealthy", is_flag=True, help="Restart all unhealthy services")
-@click.option("-d", "--daemon", is_flag=True, help="Treat named service as daemon (requires sudo)")
+@click.option(
+    "-d", "--daemon", is_flag=True, help="Treat named service as daemon (requires sudo)"
+)
 @click.pass_context
 def restart(ctx, name, svc_type, unhealthy, daemon):
     """Restart services."""
@@ -256,7 +280,10 @@ def restart(ctx, name, svc_type, unhealthy, daemon):
         raise SystemExit(0 if success else 1)
 
     if not unhealthy:
-        click.echo("Error: specify --unhealthy to restart all unhealthy services, or -n to restart a specific service", err=True)
+        click.echo(
+            "Error: specify --unhealthy to restart all unhealthy services, or -n to restart a specific service",
+            err=True,
+        )
         raise SystemExit(1)
 
     restart_agents = svc_type in ("all", "agents")
@@ -316,7 +343,14 @@ def start(name, daemon):
 
 
 @cli.command()
-@click.option("-t", "--type", "svc_type", type=SERVICE_TYPE, default="all", help="Type of services to check")
+@click.option(
+    "-t",
+    "--type",
+    "svc_type",
+    type=SERVICE_TYPE,
+    default="all",
+    help="Type of services to check",
+)
 @click.pass_context
 def status(ctx, svc_type):
     """Show unhealthy services."""
