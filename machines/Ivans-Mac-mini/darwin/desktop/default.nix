@@ -20,6 +20,7 @@
     ../../../../system/documentation.nix
     ../../../../system/nix.nix
     ./accessibility.nix
+    ./fulldiskaccess.nix
     ./dock.nix
     ./homebrew.nix
     ./users.nix
