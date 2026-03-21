@@ -8,13 +8,10 @@ let
   stateDir = "/Volumes/Storage/Data/.openclaw";
   patchedConfig = "${stateDir}/openclaw-runtime.json";
 
-  # Wrapper that reads sops secrets, patches config, and execs the gateway
+  # Wrapper that patches config with SecretRefs and dynamic values, then execs the gateway.
+  # Secrets are injected as file-based SecretRefs so they stay out of process.env
+  # and are not visible to agents via `env`.
   gatewayWithSecrets = pkgs.writeShellScript "openclaw-gateway-secrets" ''
-    export DISCORD_BOT_TOKEN=$(cat ${config.sops.secrets.openclaw-discord-bot-token.path})
-    export ANTHROPIC_OAUTH_TOKEN=$(cat ${config.sops.secrets.openclaw-claude-oauth-token.path})
-    export OPENCLAW_GATEWAY_TOKEN=$(cat ${config.sops.secrets.openclaw-gateway-token.path})
-
-    # Copy nix-managed config to a mutable runtime copy and patch with secrets
     DOMAIN=$(cat ${config.sops.secrets.external-domain.path})
     if [ -L "$OPENCLAW_CONFIG_PATH" ]; then
       SRC="$(readlink "$OPENCLAW_CONFIG_PATH")"
@@ -27,7 +24,21 @@ let
       --arg origin "https://openclaw.$DOMAIN" \
       --arg serverId "$SERVER_ID" \
       --arg userId "$USER_ID" \
-      '.gateway.controlUi.allowedOrigins = [$origin, "http://127.0.0.1:18789"]
+      --arg gatewayTokenPath "${config.sops.secrets.openclaw-gateway-token.path}" \
+      --arg discordTokenPath "${config.sops.secrets.openclaw-discord-bot-token.path}" \
+      --arg anthropicTokenPath "${config.sops.secrets.openclaw-claude-oauth-token.path}" \
+      '
+       .secrets.providers["sops-gateway-token"] = { source: "file", path: $gatewayTokenPath, mode: "singleValue" }
+       | .secrets.providers["sops-discord-token"] = { source: "file", path: $discordTokenPath, mode: "singleValue" }
+       | .secrets.providers["sops-anthropic-token"] = { source: "file", path: $anthropicTokenPath, mode: "singleValue" }
+       | .gateway.auth.token = { source: "file", provider: "sops-gateway-token", id: "value" }
+       | .channels.discord.token = { source: "file", provider: "sops-discord-token", id: "value" }
+       | .models.providers.anthropic = {
+           baseUrl: "https://api.anthropic.com",
+           models: [],
+           apiKey: { source: "file", provider: "sops-anthropic-token", id: "value" }
+         }
+       | .gateway.controlUi.allowedOrigins = [$origin, "http://127.0.0.1:18789"]
        | .channels.discord.allowFrom = [$userId]
        | .channels.discord.guilds[$serverId] = {}
        ' "$SRC" > "${patchedConfig}.tmp"
