@@ -1,16 +1,21 @@
 {
   imports = [
     ../../../darwin/aerospace.nix
-    ../../../darwin/dotfiles-shared-deploy.nix
+    ../../../darwin/amethyst.nix
     ../../../darwin/darwin.nix
-    ../../../darwin/rebuild-terminal.nix
+    ../../../darwin/dotfiles-shared-deploy.nix
+    ../../../darwin/hammerspoon.nix
+    ../../../darwin/init.nix
+    ../../../darwin/mac-mouse-fix.nix
     ../../../darwin/nix.nix
     ../../../darwin/no-dock-restart.nix
+    ../../../darwin/rebuild-terminal.nix
+    ../../../darwin/stats.nix
     ../../../darwin/sudo.nix
     ../../../darwin/syncthing.nix
     ../../../darwin/system.nix
-    ../../../darwin/init.nix
     ../../../darwin/users.nix
+    ../../../modules/darwin/default-browser
     ../../../modules/darwin/dock
     ../../../modules/darwin/launchd
     ../../../modules/darwin/pam
@@ -18,12 +23,14 @@
     ../../../modules/darwin/prevent-sleep
     ../../../modules/darwin/rebuild-terminal
     ../../../modules/darwin/sudo
-    ../../../modules/darwin/default-browser
     ../../../modules/darwin/syncthing-cleaner
     ../../../modules/darwin/syncthing-mgmt
     ../../../modules/flags
     ../../../system/documentation.nix
     ../../../system/nix.nix
+    ./close-zscaler.nix
+    ./container.nix
+    ./default-browser.nix
     ./dns.nix
     ./dock.nix
     ./flags.nix
@@ -34,17 +41,10 @@
     ./power.nix
     ./prevent-sleep.nix
     ./security.nix
+
     ./shell.nix
     ./syncthing-cleaner.nix
     ./syncthing-mgmt.nix
     ./users.nix
-    ./close-zscaler.nix
-    ./container.nix
-    ./default-browser.nix
-
-    ../../../darwin/amethyst.nix
-    ../../../darwin/hammerspoon.nix
-    ../../../darwin/mac-mouse-fix.nix
-    ../../../darwin/stats.nix
   ];
 }

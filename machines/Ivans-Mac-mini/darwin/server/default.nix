@@ -1,74 +1,73 @@
 {
   imports = [
-    ../../../../system/sops-secrets.nix
     ../../../../darwin/darwin.nix
     ../../../../darwin/fonts.nix
     ../../../../darwin/mac-mouse-fix.nix
-    ../../../../darwin/shell.nix
     ../../../../darwin/nextdns.nix
+    ../../../../darwin/rebuild-terminal.nix
+    ../../../../darwin/shell.nix
     ../../../../darwin/sudo.nix
     ../../../../darwin/syncthing.nix
     ../../../../darwin/system.nix
+    ../../../../darwin/taskwarrior-sync.nix
+    ../../../../modules/darwin/arr-mgmt
     ../../../../modules/darwin/beszel-agent
     ../../../../modules/darwin/beszel-mgmt
     ../../../../modules/darwin/dnsmasq
     ../../../../modules/darwin/dock
     ../../../../modules/darwin/doh-server
+    ../../../../modules/darwin/healthchecks-mgmt
+    ../../../../modules/darwin/jellyfin-mgmt
     ../../../../modules/darwin/launchd
+    ../../../../modules/darwin/linux-builder
     ../../../../modules/darwin/logrotate
+    ../../../../modules/darwin/nextdns-mgmt
     ../../../../modules/darwin/pam
     ../../../../modules/darwin/pmset
+    ../../../../modules/darwin/rebuild-terminal
     ../../../../modules/darwin/sharing
     ../../../../modules/darwin/stubby
     ../../../../modules/darwin/sudo
-    ../../../../modules/darwin/rebuild-terminal
-    ../../../../modules/flags
-    ./flags.nix
-    ../../../../modules/darwin/arr-mgmt
-    ../../../../modules/darwin/jellyfin-mgmt
-    ../../../../modules/darwin/nextdns-mgmt
     ../../../../modules/darwin/syncthing-cleaner
     ../../../../modules/darwin/syncthing-mgmt
-    ../../../../modules/darwin/healthchecks-mgmt
     ../../../../modules/darwin/uptime-kuma-mgmt
+    ../../../../modules/flags
     ../../../../system/documentation.nix
     ../../../../system/nix.nix
-    ../../../../darwin/rebuild-terminal.nix
-    ./beszel.nix
+    ../../../../system/sops-secrets.nix
     ./audiobookshelf
+    ./beszel.nix
     ./bin.nix
     ./container.nix
-    ./perlite
-    ./uptime-kuma
     ./dns.nix
     ./doh.nix
     ./download-youtube
+    ./flags.nix
     ./git.nix
     ./healthchecks
     ./homebrew.nix
     ./http.nix
     ./jellyfin
-    ./monitoring
-    ../../../../modules/darwin/linux-builder
     ./linux-builder.nix
     ./logrotate.nix
+    ./mailpit.nix
+    ./mas-upgrade.nix
     ./matrix
     ./media
-    ./music-export.nix
-    ./mas-upgrade.nix
-    ./mailpit.nix
     ./miniserve.nix
+    ./monitoring
     ./mosh.nix
+    ./music-export.nix
     ./nanoclaw.nix
     ./nix.nix
     ./ollama.nix
     ./open-webui.nix
     ./openssh.nix
     ./packages.nix
+    ./perlite
     ./podservice
     ./podsync
     ./power.nix
-    ./textcast
     ./sharing.nix
     ./stash
     ./stash-media
@@ -77,6 +76,7 @@
     ./system.nix
     ./tailscale.nix
     ./taskwarrior-web.nix
-    ../../../../darwin/taskwarrior-sync.nix
+    ./textcast
+    ./uptime-kuma
   ];
 }

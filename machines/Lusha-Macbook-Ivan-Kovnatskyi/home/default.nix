@@ -3,15 +3,17 @@
     # ../../../home/codex.nix
     # ../../../home/nixvim/plugins/copilot-lua
     # ./prevent-sleep.nix
-    ../../../home/nix-registry.nix
     ../../../home/aichat-server.nix
     ../../../home/aichat.nix
     ../../../home/amethyst
+    ../../../home/atuin.nix
     ../../../home/bat.nix
     ../../../home/bitwarden.nix
     ../../../home/btop.nix
     ../../../home/claude.nix
     ../../../home/direnv.nix
+    ../../../home/fish.nix
+    ../../../home/fzf.nix
     ../../../home/ghorg.nix
     ../../../home/ghostty.nix
     ../../../home/git
@@ -24,6 +26,7 @@
     ../../../home/kitty
     ../../../home/lsd.nix
     ../../../home/mpv.nix
+    ../../../home/nix-registry.nix
     ../../../home/nixvim
     ../../../home/nixvim/plugins/gen-nvim
     ../../../home/nixvim/plugins/octo-nvim
@@ -36,11 +39,6 @@
     ../../../home/ranger.nix
     ../../../home/rebuild-diff.nix
     ../../../home/safari.nix
-    ../../../home/atuin.nix
-    ../../../home/fish.nix
-    ../../../home/fzf.nix
-    ../../../home/z-lua.nix
-    ../../../home/zsh.nix
     ../../../home/sops.nix
     ../../../home/ssh.nix
     ../../../home/starship
@@ -53,14 +51,16 @@
     ../../../home/vscode.nix
     ../../../home/yamlint.nix
     ../../../home/yt-dlp.nix
+    ../../../home/z-lua.nix
     ../../../home/zellij.nix
+    ../../../home/zsh.nix
     ../../../modules/flags
     ../../../modules/home/tools
     ./firefox.nix
     ./flags.nix
-    ./tools.nix
     ./nixvim.nix
     ./packages.nix
     ./programs.nix
+    ./tools.nix
   ];
 }

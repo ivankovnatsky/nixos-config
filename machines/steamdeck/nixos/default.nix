@@ -6,6 +6,7 @@
     ../../../modules/nixos/syncthing-mgmt
     ../../../nixos/chromium.nix
     ../../../nixos/keyboard.nix
+    ../../../nixos/sudo.nix
     ../../../system/nix.nix
     ../../../system/rebuild-daemon.nix
     ./bluetooth.nix
@@ -13,8 +14,8 @@
     ./configuration.nix
     ./cryptenroll.nix
     ./default-apps.nix
-    ./dotfiles-sync.nix
     ./desktop.nix
+    ./dotfiles-sync.nix
     ./fonts.nix
     ./jovian.nix
     ./networking.nix
@@ -22,7 +23,6 @@
     ./remote-build.nix
     ./sd-card.nix
     ./security.nix
-    ../../../nixos/sudo.nix
     ./syncthing-cleaner.nix
     ./syncthing-mgmt.nix
     ./tpm2.nix
