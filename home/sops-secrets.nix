@@ -15,14 +15,6 @@
     key = "anthropicApiKey";
   };
 
-  sops.secrets.gemini-api-key = {
-    key = "geminiApiKey";
-  };
-
-  sops.secrets.google-cloud-project = {
-    key = "googleCloudProject";
-  };
-
   sops.secrets.github-token = {
     key = "githubToken";
   };
