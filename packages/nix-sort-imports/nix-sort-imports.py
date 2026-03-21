@@ -8,20 +8,20 @@ def sort_imports_block(match):
     imports_text = match.group(2)
     suffix = match.group(3)   # "];"
     
+    # SAFETY: If the block contains nested braces, it's likely a complex attribute set.
+    # We don't want to sort those as individual lines because they span multiple lines.
+    if '{' in imports_text or '}' in imports_text:
+        return match.group(0)
+
     lines = imports_text.split('\n')
     
     import_lines = []
-    others = []
-    
-    # Track original indentation to preserve it
-    # We want to sort by the content of the line, but keep the line intact
     
     for i, line in enumerate(lines):
         stripped = line.strip()
         if not stripped:
             continue
         if stripped.startswith('#') or stripped.startswith('/*'):
-            # For now, let's keep comments in place relative to the list
             continue
         import_lines.append(line)
             
@@ -31,7 +31,7 @@ def sort_imports_block(match):
     # Sort by stripped path, case-insensitive
     import_lines.sort(key=lambda x: x.strip().lower())
     
-    # Reconstruct the block by replacing the import lines in order
+    # Reconstruct the block
     result_lines = []
     import_idx = 0
     for line in lines:
@@ -50,7 +50,6 @@ def sort_file(file_path):
     
     # Regex for imports = [ ... ];
     # Use re.DOTALL to match across multiple lines
-    # This is a basic regex that might need refinement for nested brackets
     pattern = r'(imports\s*=\s*\[)(.*?)(\s*\];)'
     new_content = re.sub(pattern, sort_imports_block, content, flags=re.DOTALL)
     
