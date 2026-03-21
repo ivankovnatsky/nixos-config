@@ -15,6 +15,7 @@
     asusrouter-cli
     backup-home
     cleanup-home
+    discordo
     dns
     ffmpeg
     gh-notifications
