@@ -76,6 +76,7 @@
     ./syncthing-mgmt.nix
     ./system.nix
     ./tailscale.nix
+    ./taskwarrior-web.nix
     ../../../../darwin/taskwarrior-sync.nix
   ];
 }
