@@ -58,55 +58,10 @@ in
         ];
       };
 
-      "fpbxa-6zw5z" = {
-        path = "${homePath}/Sources";
-        label = "Sources";
-        devices = [
-          "Ivans-Mac-mini"
-          "Ivans-MacBook-Pro"
-          # "steamdeck"
-          "Ivans-MacBook-Air"
-          "a3"
-        ];
-      };
-
-      "shtdy-s2c9s" = {
-        path = "${homePath}/Sources/github.com/ivankovnatsky/nix-config";
-        label = "Sources/github.com/ivankovnatsky/nix-config";
-        devices = [
-          "Ivans-Mac-mini"
-          "Ivans-MacBook-Pro"
-          "Ivans-MacBook-Air"
-          "Lusha-Macbook-Ivan-Kovnatskyi"
-          "a3"
-          "steamdeck"
-        ];
-      };
-
-      "ryjnn-fdrug" = {
-        path = "${homePath}/Sources/github.com/ivankovnatsky/notes";
-        label = "Sources/github.com/ivankovnatsky/notes";
-        devices = [
-          "Ivans-MacBook-Pro"
-          "Ivans-MacBook-Air"
-          "Lusha-Macbook-Ivan-Kovnatskyi"
-        ];
-      };
-
       "2z4ss-gffpj" = {
         path = "${homePath}/.gnupg";
         label = "~/.gnupg";
         devices = [ config.networking.hostName ]; # Local only
-      };
-
-      "kwhyl-jbqmu" = {
-        path = "${homePath}/Sources/github.com/NixOS/nixpkgs";
-        label = "Sources/github.com/NixOS/nixpkgs";
-        devices = [
-          "Ivans-MacBook-Pro"
-          "Ivans-MacBook-Air"
-          "Lusha-Macbook-Ivan-Kovnatskyi"
-        ];
       };
 
       "taskwarrior" = {
@@ -117,18 +72,6 @@ in
           "Ivans-MacBook-Pro"
           "Ivans-MacBook-Air"
           "a3"
-        ];
-      };
-
-      "dotfiles" = {
-        path = "${homePath}/Sources/github.com/ivankovnatsky-local/dotfiles";
-        label = "Sources/github.com/ivankovnatsky-local/dotfiles";
-        devices = [
-          "a3"
-          "Ivans-Mac-mini"
-          "Ivans-MacBook-Pro"
-          "Ivans-MacBook-Air"
-          "steamdeck"
         ];
       };
 
