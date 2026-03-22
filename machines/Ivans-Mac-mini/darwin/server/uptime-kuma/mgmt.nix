@@ -187,6 +187,19 @@
         description = "Mailpit email testing UI";
       }
 
+      {
+        name = "forgejo";
+        url = "http://${config.flags.machineLocalAddress}:3300";
+        description = "Forgejo git server";
+      }
+      {
+        name = "forgejo-ssh";
+        type = "tcp";
+        url = "${config.flags.machineLocalAddress}:2222";
+        interval = 60;
+        description = "Forgejo SSH git access";
+      }
+
       # Logging & Monitoring Stack
       {
         name = "grafana";
