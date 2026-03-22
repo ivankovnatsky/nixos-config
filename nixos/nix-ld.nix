@@ -13,5 +13,6 @@
     openssl
     curl
     expat
+    nodejs
   ];
 }
