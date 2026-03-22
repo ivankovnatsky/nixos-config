@@ -32,42 +32,7 @@
     ];
 
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
-    folders = {
-      "kwhyl-jbqmu" = {
-        path = "${config.users.users.${username}.home}/Sources/github.com/NixOS/nixpkgs";
-        label = "Sources/github.com/NixOS/nixpkgs";
-        devices = [
-          "Lusha-Macbook-Ivan-Kovnatskyi"
-          "a3"
-          "Ivans-MacBook-Pro"
-          "Ivans-MacBook-Air"
-          "Ivans-Mac-mini"
-        ];
-      };
-
-      "shtdy-s2c9s" = {
-        path = "${config.users.users.${username}.home}/Sources/github.com/ivankovnatsky/nix-config";
-        label = "Sources/github.com/ivankovnatsky/nix-config";
-        devices = [
-          "Lusha-Macbook-Ivan-Kovnatskyi"
-          "a3"
-          "Ivans-MacBook-Pro"
-          "Ivans-MacBook-Air"
-          "Ivans-Mac-mini"
-        ];
-      };
-
-      "dotfiles-shared" = {
-        path = "${
-          config.users.users.${username}.home
-        }/Sources/github.com/ivankovnatsky-local/dotfiles-shared";
-        label = "Sources/github.com/ivankovnatsky-local/dotfiles-shared";
-        devices = [
-          "Ivans-MacBook-Pro"
-          "Lusha-Macbook-Ivan-Kovnatskyi"
-        ];
-      };
-    };
+    folders = { };
 
     restart = false;
   };
