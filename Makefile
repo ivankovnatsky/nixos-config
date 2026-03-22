@@ -23,6 +23,7 @@
 	\
 	rebuild-darwin \
 	\
+	test-build \
 	rebuild-watchman-nixos \
 	\
 	rebuild-watchman-darwin \
@@ -120,6 +121,16 @@ define notify_linux
 		echo "$(1)"; \
 	fi
 endef
+
+# Test build for current machine (dry-run, no switch)
+HOSTNAME := $(shell hostname)
+ifeq (${PLATFORM}, Darwin)
+test-build:
+	nix build .#darwinConfigurations.${HOSTNAME}.system --dry-run ${NIX_EXTRA_FLAGS}
+else
+test-build:
+	nix build .#nixosConfigurations.${HOSTNAME}.config.system.build.toplevel --dry-run
+endif
 
 # NixOS rebuild targets
 rebuild-nixos/generic: addall
