@@ -22,6 +22,7 @@
     giffer
     dotfiles
     git-message
+    gpg-pass-refresh
     go-grip
     homelab
     hyperfine
