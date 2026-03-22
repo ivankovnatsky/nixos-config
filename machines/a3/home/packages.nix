@@ -7,7 +7,6 @@
     find-grep
     rg-all
     rg-find
-    syncthing-cleaner
     taskmanager
     velocidrone
   ];

@@ -29,7 +29,6 @@
     smartmontools # Disk health monitoring (smartctl)
     sops # Secrets management
     ssh-to-age # Secrets management
-    syncthing-cleaner
     syncthing-mgmt # Syncthing management CLI
     uptime-kuma-mgmt
     username # Username generator

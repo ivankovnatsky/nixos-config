@@ -3,7 +3,6 @@
     # ./gamemode.nix
     ../../../modules/flags
     # ./smb.nix
-    ../../../modules/nixos/syncthing-cleaner
     ../../../modules/nixos/syncthing-mgmt
     ../../../nixos/chromium.nix
     ../../../nixos/keyboard.nix
@@ -28,7 +27,6 @@
     ./remote-build.nix
     ./security.nix
     ./steam.nix
-    ./syncthing-cleaner.nix
     ./syncthing-mgmt.nix
     ./tpm2.nix
     ./user.nix

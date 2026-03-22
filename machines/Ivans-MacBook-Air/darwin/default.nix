@@ -19,7 +19,6 @@
     ../../../darwin/stash
     ../../../darwin/stats.nix
     ../../../darwin/sudo.nix
-    ../../../darwin/syncthing-cleaner.nix
     ../../../darwin/syncthing-mgmt.nix
     ../../../darwin/syncthing.nix
     ../../../darwin/system.nix
@@ -31,7 +30,6 @@
     ../../../modules/darwin/nextdns-mgmt
     ../../../modules/darwin/pam
     ../../../modules/darwin/sudo
-    ../../../modules/darwin/syncthing-cleaner
     ../../../modules/darwin/syncthing-mgmt
     ../../../modules/flags
     ../../../system/documentation.nix

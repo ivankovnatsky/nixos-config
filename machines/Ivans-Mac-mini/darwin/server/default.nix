@@ -26,7 +26,6 @@
     ../../../../modules/darwin/sharing
     ../../../../modules/darwin/stubby
     ../../../../modules/darwin/sudo
-    ../../../../modules/darwin/syncthing-cleaner
     ../../../../modules/darwin/syncthing-mgmt
     ../../../../modules/darwin/uptime-kuma-mgmt
     ../../../../modules/flags
@@ -69,7 +68,6 @@
     ./sharing.nix
     ./stash
     ./stash-media
-    ./syncthing-cleaner.nix
     ./syncthing-mgmt.nix
     ./system.nix
     ./tailscale.nix

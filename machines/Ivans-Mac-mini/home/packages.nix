@@ -75,7 +75,6 @@
     stylua
     swiftformat
     syncthing
-    syncthing-cleaner
     syncthing-mgmt
     taskmanager
     taskwarrior-web
