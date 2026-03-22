@@ -49,17 +49,6 @@
         ];
       };
 
-      "liftoff-game" = {
-        path = "${
-          config.users.users.${username}.home
-        }/.local/share/Steam/steamapps/common/Liftoff/Liftoff_Data/RaceTimes";
-        label = ".local/share/Steam/steamapps/common/Liftoff/Liftoff_Data/RaceTimes";
-        devices = [
-          "a3"
-          "steamdeck"
-        ];
-      };
-
       "taskwarrior" = {
         path = "${config.users.users.${username}.home}/.task";
         label = ".task";
@@ -70,19 +59,6 @@
           "Ivans-MacBook-Air"
         ];
       };
-
-      # WARNING: Source is iCloud-synced Obsidian vault on Mini. Only share
-      # between Mini and a3 — do not add Pro or Air, they have their own
-      # iCloud sync.
-      "notes" = {
-        path = "${config.users.users.${username}.home}/Notes";
-        label = "Notes";
-        devices = [
-          "a3"
-          "Ivans-Mac-mini"
-        ];
-      };
-
     };
 
     restart = false;
