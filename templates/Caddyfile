@@ -283,6 +283,15 @@
 		header_up Host {host}
 	}
 
+	@forgejo host forgejo.@externalDomain@
+	reverse_proxy @forgejo @machineIp@:3300 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		transport http {
+			keepalive 30s
+		}
+	}
+
 	# Logging for ACME and DNS services
 	log {
 		output file @logPathPrefix@/caddy/acme-sync.log {
