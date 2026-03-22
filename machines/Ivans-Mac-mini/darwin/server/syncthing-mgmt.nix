@@ -34,49 +34,6 @@
 
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
     folders = {
-      "fpbxa-6zw5z" = {
-        path = "/Volumes/Storage/Data/Sources";
-        label = "Sources";
-        devices = [
-          "Ivans-Mac-mini"
-          "a3"
-          "Ivans-MacBook-Pro"
-          "steamdeck"
-          "Ivans-MacBook-Air"
-        ];
-      };
-
-      "shtdy-s2c9s" = {
-        path = "${config.users.users.${username}.home}/Sources/github.com/ivankovnatsky/nix-config";
-        label = "Sources/github.com/ivankovnatsky/nix-config";
-        devices = [
-          "Ivans-Mac-mini"
-          "a3"
-          "Ivans-MacBook-Pro"
-          "Lusha-Macbook-Ivan-Kovnatskyi"
-          "steamdeck"
-          "Ivans-MacBook-Air"
-        ];
-      };
-
-      "kwhyl-jbqmu" = {
-        path = "/Volumes/Storage/Data/Sources/github.com/NixOS/nixpkgs";
-        label = "Sources/github.com/NixOS/nixpkgs";
-        devices = [
-          "Ivans-Mac-mini"
-          "Lusha-Macbook-Ivan-Kovnatskyi"
-        ];
-      };
-
-      "ryjnn-fdrug" = {
-        path = "/Volumes/Storage/Data/Sources/github.com/ivankovnatsky/notes";
-        label = "Sources/github.com/ivankovnatsky/notes";
-        devices = [
-          "Ivans-Mac-mini"
-          "Lusha-Macbook-Ivan-Kovnatskyi"
-        ];
-      };
-
       "mqdq9-kaiuw" = {
         path = "${config.users.users.${username}.home}/.config/rclone";
         label = ".config/rclone";
@@ -114,18 +71,6 @@
           "Ivans-MacBook-Pro"
           "Ivans-MacBook-Air"
           "a3"
-        ];
-      };
-
-      "dotfiles" = {
-        path = "${config.users.users.${username}.home}/Sources/github.com/ivankovnatsky-local/dotfiles";
-        label = "Sources/github.com/ivankovnatsky-local/dotfiles";
-        devices = [
-          "Ivans-Mac-mini"
-          "a3"
-          "Ivans-MacBook-Pro"
-          "Ivans-MacBook-Air"
-          "steamdeck"
         ];
       };
 
