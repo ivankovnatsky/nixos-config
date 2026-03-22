@@ -578,11 +578,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1771587792,
-        "narHash": "sha256-XGFLdlLOez7f0rmjlF+1TLXyBguy8gx2aBHx/Q5JXxs=",
+        "lastModified": 1774168156,
+        "narHash": "sha256-+pwZSARdlM2RQQ6V0q76+WMKW9aNIcxkSOIThcz/f0A=",
         "owner": "Jovian-Experiments",
         "repo": "Jovian-NixOS",
-        "rev": "b49fc54950e251f166a2240799315033ab7a8916",
+        "rev": "939caad56508542d0f19cab963e2bc693f5f2831",
         "type": "github"
       },
       "original": {
