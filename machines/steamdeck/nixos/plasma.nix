@@ -8,9 +8,12 @@
   services = {
     desktopManager.plasma6.enable = true;
     displayManager.sddm = {
+      enable = true;
+      wayland.enable = true;
+
       # Disable SDDM when jovian.steam.autoStart is enabled
-      enable = !config.jovian.steam.autoStart;
-      wayland.enable = false;
+      # enable = !config.jovian.steam.autoStart;
+      # wayland.enable = false;
     };
   };
 
