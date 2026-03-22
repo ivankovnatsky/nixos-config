@@ -50,64 +50,18 @@ in
         type = types.lines;
         default = "";
         example = ''
-          Defaults:$USER timestamp_timeout=720
+          Defaults:$USER timestamp_timeout=5
         '';
         description = "Custom sudo configuration content.";
       };
 
-      nopasswd = {
-        enable = mkEnableOption "Enable NOPASSWD for specified commands";
-
-        user = mkOption {
-          type = types.str;
-          default = "$USER";
-          example = "username";
-          description = "User for which NOPASSWD commands should be enabled.";
-        };
-
-        setenv = mkOption {
-          type = types.bool;
-          default = false;
-          example = true;
-          description = "Allow preserving environment variables with sudo -E (adds SETENV tag).";
-        };
-
-        commands = mkOption {
-          type = types.listOf types.str;
-          default = [ ];
-          example = [
-            "/usr/bin/systemctl"
-            "/usr/bin/reboot"
-          ];
-          description = "List of commands that can be executed without password.";
-        };
-      };
     };
   };
 
-  # FIXME: Should also clean NOPASSWD commands when disabled.
   config = {
-    system.activationScripts.extraActivation.text =
-      let
-        finalConfigContent =
-          if (cfg.enable && cfg.nopasswd.enable) then
-            let
-              tags = if cfg.nopasswd.setenv then "NOPASSWD:SETENV:" else "NOPASSWD:";
-              nopasswdRules = map (cmd: "${cfg.nopasswd.user} ALL=(ALL) ${tags} ${cmd}") cfg.nopasswd.commands;
-              nopasswdContent = concatStringsSep "\n" nopasswdRules;
-            in
-            ''
-              ${cfg.configContent}
-
-              # NOPASSWD commands
-              ${nopasswdContent}
-            ''
-          else
-            cfg.configContent;
-      in
-      ''
-        # Custom sudo configuration
-        ${mkSudoCustomConfigScript cfg.enable finalConfigContent}
-      '';
+    system.activationScripts.extraActivation.text = ''
+      # Custom sudo configuration
+      ${mkSudoCustomConfigScript cfg.enable cfg.configContent}
+    '';
   };
 }
