@@ -143,7 +143,6 @@
     poweroff
     dotfiles
     settings
-    syncthing-cleaner
     syncthing-mgmt
     terraformer
     terragrunt-atlantis-config

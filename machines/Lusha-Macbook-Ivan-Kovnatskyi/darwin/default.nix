@@ -21,7 +21,6 @@
     ../../../modules/darwin/pmset
     ../../../modules/darwin/prevent-sleep
     ../../../modules/darwin/sudo
-    ../../../modules/darwin/syncthing-cleaner
     ../../../modules/darwin/syncthing-mgmt
     ../../../modules/flags
     ../../../system/documentation.nix
@@ -41,7 +40,6 @@
     ./security.nix
 
     ./shell.nix
-    ./syncthing-cleaner.nix
     ./syncthing-mgmt.nix
     ./users.nix
   ];
