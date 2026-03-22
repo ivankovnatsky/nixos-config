@@ -38,26 +38,6 @@ in
 
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
     folders = {
-      "mqdq9-kaiuw" = {
-        path = "${homePath}/.config/rclone";
-        label = ".config/rclone";
-        devices = [
-          "Ivans-Mac-mini"
-          "Ivans-MacBook-Air"
-          "Ivans-MacBook-Pro"
-        ];
-      };
-
-      "qxvnf-blpvx" = {
-        path = "${homePath}/.password-store";
-        label = ".password-store";
-        devices = [
-          "Ivans-MacBook-Pro"
-          "Ivans-MacBook-Air"
-          "Ivans-Mac-mini"
-        ];
-      };
-
       "2z4ss-gffpj" = {
         path = "${homePath}/.gnupg";
         label = "~/.gnupg";
@@ -74,9 +54,7 @@ in
           "a3"
         ];
       };
-
     };
-
     restart = false;
   };
 }
