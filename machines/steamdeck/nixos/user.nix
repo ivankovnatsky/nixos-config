@@ -12,6 +12,7 @@
     extraGroups = [ "input" ];
     openssh.authorizedKeys.keys = [
       config.flags.sshKeys.pro
+      config.flags.sshKeys.a3
     ];
   };
   programs.fish.enable = true;
