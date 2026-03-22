@@ -40,6 +40,7 @@
     ./doh.nix
     ./download-youtube
     ./flags.nix
+    ./forgejo
     ./git.nix
     ./healthchecks
     ./homebrew.nix
