@@ -4,6 +4,7 @@
     ../../../modules/nixos/syncthing-mgmt
     ../../../nixos/chromium.nix
     ../../../nixos/keyboard.nix
+    ../../../nixos/nix-ld.nix
     ../../../nixos/sudo.nix
     ../../../system/nix.nix
     ./bluetooth.nix
