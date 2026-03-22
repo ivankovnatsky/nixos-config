@@ -13,6 +13,7 @@
     ghostty
     git-message
     gnumake
+    gpg-pass-refresh
     gum
     jq
     kdePackages.krdc # KDE Remote Desktop Client
