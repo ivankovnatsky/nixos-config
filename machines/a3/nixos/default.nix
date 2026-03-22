@@ -4,9 +4,9 @@
     ../../../modules/flags
     # ./smb.nix
     ../../../modules/nixos/syncthing-mgmt
+    ../../../modules/nixos/tools
     ../../../nixos/chromium.nix
     ../../../nixos/keyboard.nix
-    ../../../nixos/nix-ld.nix
     ../../../nixos/sudo.nix
     ../../../system/nix.nix
     ./bluetooth.nix
