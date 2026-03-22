@@ -32,29 +32,6 @@
 
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
     folders = {
-      # "fpbxa-6zw5z" = {
-      #   path = "/home/${username}/Sources";
-      #   label = "Sources";
-      #   devices = [
-      #     "a3"
-      #     "Ivans-Mac-mini"
-      #     "Ivans-MacBook-Pro"
-      #     "steamdeck"
-      #   ];
-      # };
-
-      "shtdy-s2c9s" = {
-        path = "/home/${username}/Sources/github.com/ivankovnatsky/nix-config";
-        label = "Sources/github.com/ivankovnatsky/nix-config";
-        devices = [
-          "a3"
-          "Ivans-Mac-mini"
-          "Ivans-MacBook-Pro"
-          "Ivans-MacBook-Air"
-          "steamdeck"
-        ];
-      };
-
       "liftoff-game" = {
         path = "/run/media/${username}/56a47c24-d236-4f50-b010-bd31dd058d6d/steamapps/common/Liftoff/Liftoff_Data/RaceTimes";
         label = "Liftoff/RaceTimes";
@@ -64,17 +41,6 @@
         ];
       };
 
-      "dotfiles" = {
-        path = "/home/${username}/Sources/github.com/ivankovnatsky-local/dotfiles";
-        label = "Sources/github.com/ivankovnatsky-local/dotfiles";
-        devices = [
-          "a3"
-          "Ivans-Mac-mini"
-          "Ivans-MacBook-Pro"
-          "Ivans-MacBook-Air"
-          "steamdeck"
-        ];
-      };
     };
 
     restart = false;
