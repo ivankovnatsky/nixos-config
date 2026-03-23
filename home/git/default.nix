@@ -5,6 +5,36 @@
   ...
 }:
 
+let
+  forgejoCredentialHelper = pkgs.writeShellScript "forgejo-credential-helper" ''
+    # Git credential helper for Forgejo
+    # Reads domain from sops and returns credentials if host matches
+    DOMAIN_FILE="${config.sops.secrets.external-domain.path}"
+    TOKEN_FILE="${config.sops.secrets.forgejo-token.path}"
+
+    if [ ! -f "$DOMAIN_FILE" ] || [ ! -f "$TOKEN_FILE" ]; then
+      exit 0
+    fi
+
+    DOMAIN=$(cat "$DOMAIN_FILE")
+    TOKEN=$(cat "$TOKEN_FILE")
+
+    # Parse input from git
+    host=""
+    protocol=""
+    while IFS='=' read -r key value; do
+      case "$key" in
+        host) host="$value" ;;
+        protocol) protocol="$value" ;;
+      esac
+    done
+
+    if [ "$host" = "forgejo.$DOMAIN" ] && [ "$protocol" = "https" ]; then
+      echo "username=swedishunhorned"
+      echo "password=$TOKEN"
+    fi
+  '';
+in
 {
   # TODO: Explore commitizen (Python) for interactive commit messages
   # Supports --config flag: `cz --config ~/.cz.toml commit`
@@ -79,6 +109,30 @@
       GIT_CONFIG_NOSYSTEM = "true";
     };
 
+    activation.forgejoGitConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      DOMAIN_FILE="${config.sops.secrets.external-domain.path}"
+      if [ -f "$DOMAIN_FILE" ]; then
+        DOMAIN=$(cat "$DOMAIN_FILE")
+        mkdir -p "$HOME/.config/git"
+
+        # User config for Forgejo repos
+        cat > "$HOME/.config/git/forgejo.inc" << EOF
+[user]
+	name = swedishunhorned
+	email = swedishunhorned@$DOMAIN
+EOF
+
+        # Resolve ~/Notes to its real path for gitdir matching
+        NOTES_PATH=$(${pkgs.coreutils}/bin/readlink -f "$HOME/Notes" 2>/dev/null || echo "")
+
+        # includeIf rules pointing to forgejo.inc
+        cat > "$HOME/.config/git/forgejo-includes.inc" << EOF
+[includeIf "gitdir:$NOTES_PATH/"]
+	path = ~/.config/git/forgejo.inc
+EOF
+      fi
+    '';
+
     activation.ghAuth = lib.hm.dag.entryAfter [ "writeBoundary" ] (
       if pkgs.stdenv.isDarwin then
         ''
@@ -142,11 +196,14 @@
 
       includes = [
         { path = "${./config}"; }
+        { path = "~/.config/git/forgejo-includes.inc"; }
       ];
 
       # Override git's default LESS=FRX: -F quits on short output, then Ctrl+D
       # (used to scroll in less) hits the shell and exits the terminal instead
       iniContent.core.pager = lib.mkForce "LESS=R delta";
+
+      extraConfig.credential.helper = "${forgejoCredentialHelper}";
 
       settings = {
         mergetool =
