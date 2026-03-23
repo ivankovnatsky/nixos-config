@@ -22,6 +22,7 @@
 	rebuild-nixos/a3-user \
 	\
 	rebuild-darwin \
+	rebuild-loop \
 	\
 	test-build \
 	rebuild-watchman-nixos \
@@ -159,6 +160,14 @@ rebuild-darwin: addall
 	NIXPKGS_ALLOW_UNFREE=1 sudo -E darwin-rebuild switch --impure $(COMMON_REBUILD_FLAGS) && \
 		osascript -e 'display notification "🟢 Darwin rebuild successful!" with title "Nix configuration"' || \
 		osascript -e 'display notification "🔴 Darwin rebuild failed!" with title "Nix configuration"'
+
+# Loop rebuild with sudo refresh to avoid re-prompting for password
+rebuild-loop:
+	@while true; do \
+		sudo -v && \
+		$(MAKE) && \
+		sleep 3m; \
+	done
 
 # NixOS-specific watchman rebuild target
 rebuild-watchman-nixos:
