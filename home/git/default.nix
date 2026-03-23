@@ -12,55 +12,6 @@
 
   # Global git hooks for commit message validation
   home = {
-    # Require explicit file/dir paths on every commit. Prevents AI agents
-    # from accidentally committing concurrent work by other agents on the
-    # same repo. Git worktrees solve this in theory, but they use absolute
-    # paths that break cross-platform (Linux/macOS) setups and complicate
-    # Nix rebuilds.
-    file.".config/git/hooks/pre-commit" = {
-      executable = true;
-      text = ''
-        #!/usr/bin/env bash
-
-        set -euo pipefail
-
-        # Skip password-store repos
-        repo_path=$(git rev-parse --show-toplevel 2>/dev/null)
-        if [[ "$repo_path" == *"/password-store"* ]] || [[ "$repo_path" == *"/.password-store"* ]]; then
-          exit 0
-        fi
-
-        # Check parent git command for bulk commit patterns
-        parent_cmd=$(ps -ww -o args= -p $PPID 2>/dev/null || true)
-
-        # Block git commit -a/--all (catches -a, -am, -av, etc.)
-        if printf '%s' "$parent_cmd" | grep -qE '\s-[a-zA-Z]*a[a-zA-Z]*(\s|$)' || \
-           printf '%s' "$parent_cmd" | grep -qE '\s--all(\s|$)'; then
-          echo "ERROR: git commit -a/--all is not allowed" >&2
-          echo "Use: git commit <file> -m \"message\"" >&2
-          exit 1
-        fi
-
-        # Block git commit . (current directory = everything)
-        if printf '%s' "$parent_cmd" | grep -qE '\s\.(\s|$)'; then
-          echo "ERROR: git commit . is not allowed" >&2
-          echo "Use: git commit <file> -m \"message\"" >&2
-          exit 1
-        fi
-
-        # When git commit <file-or-dir> is used, GIT_INDEX_FILE points to a temp index
-        # When git commit (no file) is used, GIT_INDEX_FILE is empty or .git/index
-        # Allow git-message CLI to bypass this (e.g., for staged deletions where pathspec doesn't work)
-        if [[ -z "''${GIT_MESSAGE_CLI:-}" ]] && \
-           [[ -z "''${GIT_INDEX_FILE:-}" || "$GIT_INDEX_FILE" == *".git/index" ]]; then
-          echo "ERROR: Must specify file(s) or dir/ to commit" >&2
-          echo "Use: git commit <file> -m \"message\"" >&2
-          echo "  or: git commit <dir/> -m \"message\"" >&2
-          exit 1
-        fi
-      '';
-    };
-
     file.".config/git/hooks/commit-msg" = {
       executable = true;
       text = ''
