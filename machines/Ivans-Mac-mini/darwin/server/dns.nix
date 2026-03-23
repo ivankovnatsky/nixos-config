@@ -3,6 +3,9 @@
   ...
 }:
 
+let
+  dnsmasqDomainConfPath = config.sops.templates."dnsmasq-domain.conf".path;
+in
 {
   # Configure system to use local dnsmasq as DNS resolver
   networking.knownNetworkServices = [
@@ -67,7 +70,7 @@
     enable = true;
     resolveLocalQueries = true;
     alwaysKeepRunning = true;
-    waitForSecrets = true;
+    waitForSecrets = false;
     settings = {
       # Listen on all interfaces (supports both ethernet and WiFi)
       "listen-address" = [
@@ -80,8 +83,14 @@
       # Don't use /etc/resolv.conf
       "no-resolv" = true;
 
-      # Use stubby as upstream DNS-over-TLS resolver
-      server = [ "127.0.0.1#5453" ];
+      # Use stubby as primary, with public DNS fallback during boot
+      # (before stubby/sops are ready)
+      server = [
+        "127.0.0.1#5453"
+        "1.1.1.1"
+        "1.0.0.1"
+      ];
+      "strict-order" = true;
 
       # Set default TTL to 60 seconds
       "max-ttl" = 60;
@@ -95,7 +104,7 @@
       "dns-forward-max" = 150;
 
       # Include domain-specific config from sops template
-      "conf-file" = [ "${config.sops.templates."dnsmasq-domain.conf".path}" ];
+      "conf-file" = [ "${dnsmasqDomainConfPath}" ];
 
       # Log queries (useful for debugging)
       "log-queries" = true;
@@ -103,4 +112,20 @@
       "log-dhcp" = true;
     };
   };
+
+  # Ensure dnsmasq can start before sops secrets are available
+  local.launchd.services.dnsmasq.preStart = ''
+    if [ ! -f "${dnsmasqDomainConfPath}" ]; then
+      /bin/mkdir -p "$(/usr/bin/dirname "${dnsmasqDomainConfPath}")"
+      /usr/bin/touch "${dnsmasqDomainConfPath}"
+      echo "$(ts) - INFO - Created empty placeholder for domain config"
+      # Restart dnsmasq once real sops config appears
+      (
+        /bin/wait4path /run/secrets/rendered
+        sleep 2
+        echo "$(ts) - INFO - Sops secrets available, restarting dnsmasq to load domain config"
+        /usr/bin/killall dnsmasq 2>/dev/null || true
+      ) &
+    fi
+  '';
 }
