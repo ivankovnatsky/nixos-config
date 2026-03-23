@@ -1,34 +1,6 @@
 result
-.stfolder
-.stignore
 **/.DS_Store
 .direnv/
 
-# Ghostty local build file
-overlays/ghostty/ghostty-macos-universal.zip
-
 **/*.swp
-**/.syncthing.*.tmp
 **/__pycache__/
-
-.aider*
-
-CLAUDE*
-AGENTS*
-
-# Claude Code commands (for now)
-.claude
-
-# Claude session tracking and project notes
-claude/
-
-# Documentation and notes
-.notes/
-
-# Local issues tracking (for now)
-ISSUES.md
-.gemini
-GEMINI.md
-.obsidian/
-
-TODO.md
