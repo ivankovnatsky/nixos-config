@@ -53,7 +53,6 @@
     genpass
     ggh
     gh-pr
-    git-message
     git-pull-all
     gpg-pass-refresh
     git-worktree-init
