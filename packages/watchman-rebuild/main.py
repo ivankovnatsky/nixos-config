@@ -3,6 +3,7 @@
 Watchman-based rebuild tool that auto-detects platform and watches for changes.
 """
 
+import argparse
 import sys
 import subprocess
 import platform
@@ -15,6 +16,9 @@ from pathlib import Path
 import pywatchman
 
 from lib import load_watchman_ignores, build_watchman_expression
+
+# Default interval for loop mode in seconds
+LOOP_INTERVAL = 180  # 3 minutes
 
 # Debounce delay in seconds - wait this long after last change before rebuilding
 DEBOUNCE_DELAY = 20.0
@@ -588,14 +592,101 @@ def watch_and_rebuild(config_path, command=None):
         cleanup_instance_file()
 
 
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        logging.error(f"Usage: {sys.argv[0]} <config_path> [command]")
-        logging.error("  If command is not provided, it will be auto-detected")
-        logging.error("  (sudo is automatically used when not running as root)")
+def refresh_sudo():
+    """Refresh sudo credentials so rebuilds don't prompt for password."""
+    try:
+        result = subprocess.run(
+            ["sudo", "-v"],
+            check=False,
+            capture_output=True,
+        )
+        if result.returncode != 0:
+            logging.warning("Failed to refresh sudo credentials")
+            return False
+        return True
+    except Exception as e:
+        logging.warning(f"Failed to refresh sudo credentials: {e}")
+        return False
+
+
+def loop_rebuild(config_path, command=None, interval=LOOP_INTERVAL):
+    """Rebuild in a loop with sudo refresh between iterations."""
+    config_path_obj = Path(config_path)
+
+    if not config_path_obj.exists():
+        logging.error(f"Config path does not exist: {config_path}")
         sys.exit(1)
 
-    config_path = sys.argv[1]
-    command = sys.argv[2] if len(sys.argv) > 2 else None
+    # Check if another instance is already running
+    if check_existing_instance():
+        sys.exit(0)
 
-    watch_and_rebuild(config_path, command)
+    write_instance_file()
+    cleanup_stale_lock()
+
+    os.chdir(config_path)
+
+    if command is None:
+        command = detect_rebuild_command()
+        logging.info(f"Auto-detected rebuild command: {command}")
+
+    logging.info(f"Starting loop rebuild (interval: {interval}s)")
+
+    consecutive_failures = 0
+    MAX_CONSECUTIVE_FAILURES = 5
+
+    try:
+        while True:
+            if not refresh_sudo():
+                logging.error("Cannot refresh sudo, stopping loop")
+                sys.exit(1)
+
+            return_code, actually_ran = run_rebuild(config_path, command)
+
+            if actually_ran and return_code != 0:
+                consecutive_failures += 1
+                if consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
+                    logging.error(
+                        f"Stopping after {MAX_CONSECUTIVE_FAILURES} consecutive rebuild failures"
+                    )
+                    sys.exit(1)
+                logging.warning(
+                    f"Rebuild failed ({consecutive_failures}/{MAX_CONSECUTIVE_FAILURES} consecutive failures)"
+                )
+            else:
+                consecutive_failures = 0
+
+            logging.info(f"Sleeping {interval}s before next rebuild...")
+            time.sleep(interval)
+    except KeyboardInterrupt:
+        logging.info("Received interrupt, stopping...")
+    finally:
+        cleanup_instance_file()
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Watchman-based rebuild tool that auto-detects platform and watches for changes."
+    )
+    parser.add_argument("config_path", help="Path to the nix config directory")
+    parser.add_argument("command", nargs="?", default=None, help="Rebuild command (auto-detected if not provided)")
+    parser.add_argument(
+        "--loop",
+        action="store_true",
+        help="Run in loop mode: rebuild periodically instead of watching for changes",
+    )
+    parser.add_argument(
+        "--interval",
+        type=int,
+        default=LOOP_INTERVAL,
+        help=f"Interval in seconds between rebuilds in loop mode (default: {LOOP_INTERVAL})",
+    )
+
+    args = parser.parse_args()
+
+    if args.loop:
+        loop_rebuild(args.config_path, args.command, args.interval)
+    else:
+        if args.interval != LOOP_INTERVAL:
+            parser.error("--interval requires --loop")
+        watch_and_rebuild(args.config_path, args.command)
