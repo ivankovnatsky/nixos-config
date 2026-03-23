@@ -18,6 +18,16 @@ import pywatchman
 
 from lib import load_watchman_ignores, build_watchman_expression, filter_files_for_machine, get_machine_dirs
 
+
+def format_duration(seconds):
+    """Format seconds as a human-readable duration (e.g., 180 -> '3m', 90 -> '1m30s')."""
+    if seconds < 60:
+        return f"{seconds}s"
+    minutes, secs = divmod(int(seconds), 60)
+    if secs == 0:
+        return f"{minutes}m"
+    return f"{minutes}m{secs}s"
+
 # Default interval for loop mode in seconds
 LOOP_INTERVAL = 180  # 3 minutes
 
@@ -184,7 +194,7 @@ def check_existing_instance():
                 )
                 return True
             logging.info(
-                f"Another instance is running (PID {pid}), waiting {INSTANCE_RETRY_DELAY}s (retry {retries}/{INSTANCE_MAX_RETRIES})..."
+                f"Another instance is running (PID {pid}), waiting {format_duration(INSTANCE_RETRY_DELAY)} (retry {retries}/{INSTANCE_MAX_RETRIES})..."
             )
             time.sleep(INSTANCE_RETRY_DELAY)
         except PermissionError:
@@ -207,7 +217,7 @@ def check_existing_instance():
                 )
                 return True
             logging.info(
-                f"Another instance is running (PID {pid}, different user), waiting {INSTANCE_RETRY_DELAY}s (retry {retries}/{INSTANCE_MAX_RETRIES})..."
+                f"Another instance is running (PID {pid}, different user), waiting {format_duration(INSTANCE_RETRY_DELAY)} (retry {retries}/{INSTANCE_MAX_RETRIES})..."
             )
             time.sleep(INSTANCE_RETRY_DELAY)
         except (ValueError, ProcessLookupError):
@@ -518,7 +528,7 @@ def watch_and_rebuild(config_path, command=None):
                 with timer_lock:
                     if pending_files:
                         logging.info(
-                            f"{len(pending_files)} file(s) changed during rebuild, scheduling follow-up rebuild in {DEBOUNCE_DELAY}s"
+                            f"{len(pending_files)} file(s) changed during rebuild, scheduling follow-up rebuild in {format_duration(DEBOUNCE_DELAY)}"
                         )
                         debounce_timer = threading.Timer(
                             DEBOUNCE_DELAY, trigger_rebuild
@@ -547,7 +557,7 @@ def watch_and_rebuild(config_path, command=None):
                         sys.exit(1)
                     logging.error(f"Failed to connect to watchman: {e}")
                     logging.info(
-                        f"Retrying in {RECONNECT_DELAY}s (attempt {reconnect_attempts}/{MAX_RECONNECT_ATTEMPTS})..."
+                        f"Retrying in {format_duration(RECONNECT_DELAY)} (attempt {reconnect_attempts}/{MAX_RECONNECT_ATTEMPTS})..."
                     )
                     time.sleep(RECONNECT_DELAY)
                     continue
@@ -577,7 +587,7 @@ def watch_and_rebuild(config_path, command=None):
                                 debounce_timer.cancel()
 
                             logging.info(
-                                f"Change detected, waiting {DEBOUNCE_DELAY}s for more changes..."
+                                f"Change detected, waiting {format_duration(DEBOUNCE_DELAY)} for more changes..."
                             )
                             debounce_timer = threading.Timer(
                                 DEBOUNCE_DELAY, trigger_rebuild
@@ -588,7 +598,7 @@ def watch_and_rebuild(config_path, command=None):
                 continue
             except pywatchman.WatchmanError as e:
                 logging.warning(f"Watchman error: {e}")
-                logging.info(f"Reconnecting in {RECONNECT_DELAY}s...")
+                logging.info(f"Reconnecting in {format_duration(RECONNECT_DELAY)}...")
                 try:
                     client.close()
                 except Exception:
@@ -649,7 +659,7 @@ def loop_rebuild(config_path, command=None, interval=LOOP_INTERVAL):
         command = detect_rebuild_command()
         logging.info(f"Auto-detected rebuild command: {command}")
 
-    logging.info(f"Starting loop rebuild (interval: {interval}s)")
+    logging.info(f"Starting loop rebuild (interval: {format_duration(interval)})")
 
     try:
         while True:
@@ -661,7 +671,7 @@ def loop_rebuild(config_path, command=None, interval=LOOP_INTERVAL):
             if actually_ran and return_code != 0:
                 logging.warning("Rebuild failed, will retry next iteration")
 
-            logging.info(f"Sleeping {interval}s before next rebuild...")
+            logging.info(f"Sleeping {format_duration(interval)} before next rebuild...")
             time.sleep(interval)
     except KeyboardInterrupt:
         logging.info("Received interrupt, stopping...")
