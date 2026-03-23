@@ -16,17 +16,38 @@ let
     configFile = cfg.configFile;
     workPath = cfg.workPath;
     tokenFile = cfg.tokenFile;
-    adminUser = {
-      inherit (cfg.adminUser) username;
-      inherit (cfg.adminUser) emailFile;
-      inherit (cfg.adminUser) passwordFile;
-    };
+    users = cfg.users;
     repositories = cfg.repositories;
   });
+
+  userSubmodule = types.submodule {
+    options = {
+      username = mkOption {
+        type = types.str;
+        description = "Username";
+      };
+
+      emailFile = mkOption {
+        type = types.str;
+        description = "Path to file containing email address";
+      };
+
+      passwordFile = mkOption {
+        type = types.str;
+        description = "Path to file containing password";
+      };
+
+      admin = mkOption {
+        type = types.bool;
+        default = false;
+        description = "Whether this user is an admin";
+      };
+    };
+  };
 in
 {
   options.local.services.forgejo-mgmt = {
-    enable = mkEnableOption "declarative Forgejo admin user and repository management";
+    enable = mkEnableOption "declarative Forgejo user and repository management";
 
     forgejoPackage = mkPackageOption pkgs "forgejo" { };
 
@@ -46,22 +67,10 @@ in
       description = "Forgejo base URL for API calls";
     };
 
-    adminUser = {
-      username = mkOption {
-        type = types.str;
-        default = "forgejo";
-        description = "Admin username";
-      };
-
-      emailFile = mkOption {
-        type = types.str;
-        description = "Path to file containing admin email address";
-      };
-
-      passwordFile = mkOption {
-        type = types.str;
-        description = "Path to file containing admin password";
-      };
+    users = mkOption {
+      type = types.listOf userSubmodule;
+      default = [ ];
+      description = "Users to create on the Forgejo instance. The first admin user is used for API operations.";
     };
 
     tokenFile = mkOption {
@@ -75,6 +84,11 @@ in
           name = mkOption {
             type = types.str;
             description = "Repository name";
+          };
+
+          owner = mkOption {
+            type = types.str;
+            description = "Username who owns this repository";
           };
 
           description = mkOption {
@@ -102,6 +116,13 @@ in
   };
 
   config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = (builtins.filter (u: u.admin) cfg.users) != [ ];
+        message = "forgejo-mgmt: at least one user must have admin = true";
+      }
+    ];
+
     local.launchd.services.forgejo-mgmt = {
       enable = true;
       keepAlive = false;

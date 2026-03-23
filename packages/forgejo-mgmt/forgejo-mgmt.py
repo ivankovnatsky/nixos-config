@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
 Forgejo management tool.
-Declarative admin user and repository configuration via sync command.
+Declarative user and repository configuration via sync command.
 """
 
+import os
 import sys
 import json
 import subprocess
@@ -48,8 +49,24 @@ class ForgejoClient:
         except requests.exceptions.RequestException as e:
             raise Exception(f"Network error: {e}")
 
-    def get_user(self):
-        return self._api_call("GET", "/user")
+    def user_exists(self, username: str) -> bool:
+        url = f"{self.base_url}/api/v1/users/{username}"
+        try:
+            response = requests.get(
+                url, headers=self.headers, timeout=self.timeout
+            )
+            return response.status_code == 200
+        except requests.exceptions.RequestException:
+            return False
+
+    def create_user(self, username: str, email: str, password: str):
+        return self._api_call("POST", "/admin/users", {
+            "username": username,
+            "email": email,
+            "password": password,
+            "must_change_password": False,
+            "visibility": "private",
+        })
 
     def repo_exists(self, owner: str, name: str) -> bool:
         url = f"{self.base_url}/api/v1/repos/{owner}/{name}"
@@ -61,8 +78,8 @@ class ForgejoClient:
         except requests.exceptions.RequestException:
             return False
 
-    def create_repo(self, name: str, description: str = "", private: bool = True, auto_init: bool = False):
-        return self._api_call("POST", "/user/repos", {
+    def create_repo_for_user(self, owner: str, name: str, description: str = "", private: bool = True, auto_init: bool = False):
+        return self._api_call("POST", f"/admin/users/{owner}/repos", {
             "name": name,
             "description": description,
             "private": private,
@@ -92,6 +109,11 @@ def wait_for_api(base_url: str, max_retries: int = 30, delay: int = 2):
         time.sleep(delay)
 
 
+def read_file(path: str) -> str:
+    with open(path) as f:
+        return f.read().strip()
+
+
 def ensure_admin_user(
     forgejo_bin: str,
     config_file: str,
@@ -100,6 +122,7 @@ def ensure_admin_user(
     email: str,
     password: str,
 ):
+    """Create the first admin user via CLI (works without API auth)."""
     result = subprocess.run(
         [forgejo_bin, "admin", "user", "list",
          "--config", config_file, "--work-path", work_path],
@@ -135,10 +158,8 @@ def ensure_token(
 ) -> str:
     if token_file:
         try:
-            with open(token_file) as f:
-                token = f.read().strip()
+            token = read_file(token_file)
             if token:
-                # Verify token is valid
                 try:
                     response = requests.get(
                         f"{base_url}/api/v1/user",
@@ -173,29 +194,48 @@ def ensure_token(
     if token_file:
         with open(token_file, "w") as f:
             f.write(token)
-        import os
         os.chmod(token_file, 0o600)
 
     print("API token created", file=sys.stderr)
     return token
 
 
-def sync_repos(client: ForgejoClient, repos: list, owner: str):
+def sync_users(client: ForgejoClient, users: list):
+    print("", file=sys.stderr)
+    print("=== User Sync ===", file=sys.stderr)
+    for user in users:
+        username = user["username"]
+        if user.get("admin"):
+            print(f"  OK: {username} (admin, created via CLI)", file=sys.stderr)
+            continue
+        if client.user_exists(username):
+            print(f"  OK: {username} (exists)", file=sys.stderr)
+        else:
+            email = read_file(user["emailFile"])
+            password = read_file(user["passwordFile"])
+            print(f"  CREATE: {username}", file=sys.stderr)
+            client.create_user(username, email, password)
+            print(f"  Created: {username}", file=sys.stderr)
+
+
+def sync_repos(client: ForgejoClient, repos: list):
     print("", file=sys.stderr)
     print("=== Repository Sync ===", file=sys.stderr)
     for repo in repos:
         name = repo["name"]
+        owner = repo["owner"]
         if client.repo_exists(owner, name):
-            print(f"  OK: {name} (exists)", file=sys.stderr)
+            print(f"  OK: {owner}/{name} (exists)", file=sys.stderr)
         else:
-            print(f"  CREATE: {name}", file=sys.stderr)
-            client.create_repo(
+            print(f"  CREATE: {owner}/{name}", file=sys.stderr)
+            client.create_repo_for_user(
+                owner=owner,
                 name=name,
                 description=repo.get("description", ""),
                 private=repo.get("private", True),
                 auto_init=repo.get("autoInit", False),
             )
-            print(f"  Created: {name}", file=sys.stderr)
+            print(f"  Created: {owner}/{name}", file=sys.stderr)
     print("", file=sys.stderr)
     print("Repository sync complete!", file=sys.stderr)
 
@@ -209,23 +249,32 @@ def cmd_sync(args):
     config_path = config["configFile"]
     work_path = config["workPath"]
     token_file = config.get("tokenFile", "")
-    admin = config["adminUser"]
-    username = admin["username"]
+    users = config.get("users", [])
 
-    with open(admin["emailFile"]) as f:
-        email = f.read().strip()
+    # Find the admin user
+    admin = next((u for u in users if u.get("admin")), None)
+    if not admin:
+        print("ERROR: No admin user defined", file=sys.stderr)
+        sys.exit(1)
 
-    with open(admin["passwordFile"]) as f:
-        password = f.read().strip()
+    admin_username = admin["username"]
+    admin_email = read_file(admin["emailFile"])
+    admin_password = read_file(admin["passwordFile"])
 
     wait_for_api(base_url)
-    ensure_admin_user(forgejo_bin, config_path, work_path, username, email, password)
-    token = ensure_token(base_url, username, password, token_file)
+    ensure_admin_user(forgejo_bin, config_path, work_path, admin_username, admin_email, admin_password)
+    token = ensure_token(base_url, admin_username, admin_password, token_file)
 
     client = ForgejoClient(base_url, token)
+
+    # Create non-admin users via API
+    non_admin_users = [u for u in users if not u.get("admin")]
+    if non_admin_users:
+        sync_users(client, non_admin_users)
+
     repos = config.get("repositories", [])
     if repos:
-        sync_repos(client, repos, username)
+        sync_repos(client, repos)
 
     print("Forgejo management completed", file=sys.stderr)
 
@@ -236,8 +285,7 @@ def cmd_list(args):
 
     token_file = config.get("tokenFile", "")
     try:
-        with open(token_file) as f:
-            token = f.read().strip()
+        token = read_file(token_file)
     except FileNotFoundError:
         print("ERROR: No token file found. Run sync first.", file=sys.stderr)
         sys.exit(1)
@@ -257,7 +305,7 @@ def main():
     parser = argparse.ArgumentParser(description="Forgejo management tool")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    sync_parser = subparsers.add_parser("sync", help="Sync admin user and repositories")
+    sync_parser = subparsers.add_parser("sync", help="Sync users and repositories")
     sync_parser.add_argument("--config-file", required=True, help="JSON configuration file")
 
     list_parser = subparsers.add_parser("list", help="List repositories")
