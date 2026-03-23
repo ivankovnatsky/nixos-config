@@ -25,4 +25,8 @@ in
       pinentry-program ${pkgs.pinentry_mac}/bin/pinentry-mac
     '';
   };
+
+  targets.darwin.defaults."org.gpgtools.pinentry-mac" = {
+    UseKeychain = false;
+  };
 }
