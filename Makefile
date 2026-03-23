@@ -163,11 +163,7 @@ rebuild-darwin: addall
 
 # Loop rebuild with sudo refresh to avoid re-prompting for password
 rebuild-loop:
-	@while true; do \
-		sudo -v && \
-		$(MAKE) && \
-		sleep 3m; \
-	done
+	@watchman-rebuild --loop $(CURDIR)
 
 # NixOS-specific watchman rebuild target
 rebuild-watchman-nixos:
