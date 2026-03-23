@@ -16,6 +16,7 @@
     ../../../../modules/darwin/dock
     ../../../../modules/darwin/doh-server
     ../../../../modules/darwin/healthchecks-mgmt
+    ../../../../modules/darwin/forgejo-mgmt
     ../../../../modules/darwin/jellyfin-mgmt
     ../../../../modules/darwin/launchd
     ../../../../modules/darwin/linux-builder
