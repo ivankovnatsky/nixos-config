@@ -200,7 +200,24 @@ def ensure_token(
     return token
 
 
-def sync_users(client: ForgejoClient, users: list):
+def create_user_token(base_url: str, username: str, password: str, token_name: str = "forgejo-mgmt") -> str:
+    """Create an access token for a user using basic auth."""
+    response = requests.post(
+        f"{base_url}/api/v1/users/{username}/tokens",
+        auth=(username, password),
+        json={"name": token_name, "scopes": ["all"]},
+        timeout=10,
+    )
+    if response.status_code == 422:
+        print(f"  Token '{token_name}' already exists for {username}", file=sys.stderr)
+        return ""
+    if response.status_code not in (200, 201):
+        print(f"  WARNING: Failed to create token for {username}: {response.text}", file=sys.stderr)
+        return ""
+    return response.json().get("sha1", "")
+
+
+def sync_users(client: ForgejoClient, users: list, base_url: str):
     print("", file=sys.stderr)
     print("=== User Sync ===", file=sys.stderr)
     for user in users:
@@ -216,6 +233,13 @@ def sync_users(client: ForgejoClient, users: list):
             print(f"  CREATE: {username}", file=sys.stderr)
             client.create_user(username, email, password)
             print(f"  Created: {username}", file=sys.stderr)
+
+        if user.get("createToken"):
+            password = read_file(user["passwordFile"])
+            token = create_user_token(base_url, username, password)
+            if token:
+                print(f"  TOKEN for {username}: {token}", file=sys.stderr)
+                print(f"  Save this token to sops — it will not be shown again", file=sys.stderr)
 
 
 def sync_repos(client: ForgejoClient, repos: list):
@@ -270,7 +294,7 @@ def cmd_sync(args):
     # Create non-admin users via API
     non_admin_users = [u for u in users if not u.get("admin")]
     if non_admin_users:
-        sync_users(client, non_admin_users)
+        sync_users(client, non_admin_users, base_url)
 
     repos = config.get("repositories", [])
     if repos:

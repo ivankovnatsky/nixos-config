@@ -42,6 +42,12 @@ let
         default = false;
         description = "Whether this user is an admin";
       };
+
+      createToken = mkOption {
+        type = types.bool;
+        default = false;
+        description = "Create an access token for this user and print it in logs";
+      };
     };
   };
 in
