@@ -651,29 +651,15 @@ def loop_rebuild(config_path, command=None, interval=LOOP_INTERVAL):
 
     logging.info(f"Starting loop rebuild (interval: {interval}s)")
 
-    consecutive_failures = 0
-    MAX_CONSECUTIVE_FAILURES = 5
-
     try:
         while True:
             if not refresh_sudo():
-                logging.error("Cannot refresh sudo, stopping loop")
-                sys.exit(1)
+                logging.warning("Failed to refresh sudo, will retry next iteration")
 
             return_code, actually_ran = run_rebuild(config_path, command)
 
             if actually_ran and return_code != 0:
-                consecutive_failures += 1
-                if consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
-                    logging.error(
-                        f"Stopping after {MAX_CONSECUTIVE_FAILURES} consecutive rebuild failures"
-                    )
-                    sys.exit(1)
-                logging.warning(
-                    f"Rebuild failed ({consecutive_failures}/{MAX_CONSECUTIVE_FAILURES} consecutive failures)"
-                )
-            else:
-                consecutive_failures = 0
+                logging.warning("Rebuild failed, will retry next iteration")
 
             logging.info(f"Sleeping {interval}s before next rebuild...")
             time.sleep(interval)
