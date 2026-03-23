@@ -54,4 +54,8 @@
   sops.secrets.miniserve-password = {
     key = "miniserve/mini/password";
   };
+
+  sops.secrets.forgejo-token = {
+    key = "forgejo/users/forgejouser/token";
+  };
 }
