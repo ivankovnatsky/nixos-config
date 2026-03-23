@@ -11,11 +11,12 @@ import os
 import logging
 import time
 import threading
+import socket
 from pathlib import Path
 
 import pywatchman
 
-from lib import load_watchman_ignores, build_watchman_expression
+from lib import load_watchman_ignores, build_watchman_expression, filter_files_for_machine, get_machine_dirs
 
 # Default interval for loop mode in seconds
 LOOP_INTERVAL = 180  # 3 minutes
@@ -450,6 +451,17 @@ def watch_and_rebuild(config_path, command=None):
         command = detect_rebuild_command()
         logging.info(f"Auto-detected rebuild command: {command}")
 
+    hostname = socket.gethostname().removesuffix(".local")
+    logging.info(f"Current machine: {hostname} (filtering changes for other machines)")
+
+    machine_dirs = get_machine_dirs(config_path)
+    if machine_dirs and hostname not in machine_dirs:
+        logging.warning(
+            f"Hostname '{hostname}' not found in machines/ directories: {machine_dirs}. "
+            "Machine filtering may not work correctly."
+        )
+    other_machines = machine_dirs - {hostname}
+
     ignore_patterns = load_watchman_ignores(config_path)
     logging.info(
         f"Loaded ignore patterns from .watchman-rebuild.json: {ignore_patterns}"
@@ -479,6 +491,13 @@ def watch_and_rebuild(config_path, command=None):
                 pending_files = []
             else:
                 files_to_rebuild = []
+
+        if files_to_rebuild:
+            files_to_rebuild = filter_files_for_machine(files_to_rebuild, other_machines)
+
+        if not files_to_rebuild:
+            logging.info("All changed files belong to other machines, skipping rebuild")
+            return
 
         if files_to_rebuild:
             _, actually_ran = run_rebuild(config_path, command)
