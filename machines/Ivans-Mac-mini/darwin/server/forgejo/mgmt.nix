@@ -35,6 +35,7 @@
       }
       {
         username = "swedishunhorned";
+        createToken = true;
         emailFile = config.sops.secrets.forgejo-user-email.path;
         passwordFile = config.sops.secrets.forgejo-user-password.path;
       }
@@ -42,13 +43,13 @@
 
     tokenFile = "${config.flags.externalStoragePath}/.forgejo/mgmt-token";
 
-    # repositories = [
-    #   {
-    #     name = "notes";
-    #     owner = "swedishunhorned";
-    #     description = "Personal notes";
-    #     private = true;
-    #   }
-    # ];
+    repositories = [
+      {
+        name = "notes";
+        owner = "swedishunhorned";
+        description = "";
+        private = true;
+      }
+    ];
   };
 }
