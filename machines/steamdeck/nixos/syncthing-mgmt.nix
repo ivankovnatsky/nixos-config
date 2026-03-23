@@ -32,6 +32,18 @@
 
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
     folders = {
+      "nix-config-ignored-files" = {
+        path = "/home/${username}/Sources/github.com/ivankovnatsky/nix-config-ignored-files";
+        label = "nix-config-ignored-files";
+        devices = [
+          "Ivans-Mac-mini"
+          "Ivans-MacBook-Pro"
+          "Ivans-MacBook-Air"
+          "Lusha-Macbook-Ivan-Kovnatskyi"
+          "a3"
+          "steamdeck"
+        ];
+      };
     };
 
     restart = false;
