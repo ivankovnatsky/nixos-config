@@ -113,6 +113,16 @@ in
     };
   };
 
+  # Flush DNS cache after secrets are available (macOS caches stale
+  # NXDOMAIN responses from before dnsmasq has its domain config)
+  local.launchd.services.dns-cache-flush = {
+    enable = true;
+    type = "daemon";
+    command = "/bin/bash -c 'sleep 120 && /usr/bin/dscacheutil -flushcache && /usr/bin/killall -HUP mDNSResponder'";
+    waitForSecrets = false;
+    keepAlive = false;
+  };
+
   # Ensure dnsmasq can start before sops secrets are available
   local.launchd.services.dnsmasq.preStart = ''
     if [ ! -f "${dnsmasqDomainConfPath}" ]; then
