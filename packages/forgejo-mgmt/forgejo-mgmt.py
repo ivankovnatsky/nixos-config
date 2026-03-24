@@ -242,8 +242,6 @@ def upload_gpg_key(base_url: str, username: str, password: str, armored_key: str
         pass
 
     print(f"  Uploading GPG key for {username}...", file=sys.stderr)
-    print(f"  Key starts with: {armored_key[:50]!r}", file=sys.stderr)
-    print(f"  Key length: {len(armored_key)} chars", file=sys.stderr)
     response = requests.post(
         f"{base_url}/api/v1/user/gpg_keys",
         auth=(username, password),
