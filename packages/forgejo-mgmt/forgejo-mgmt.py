@@ -253,7 +253,7 @@ def upload_gpg_key(base_url: str, username: str, password: str, armored_key: str
         key_id = key_data.get("primary_key_id") or key_data.get("key_id", "unknown")
         print(f"  GPG key uploaded for {username} (key ID: {key_id})", file=sys.stderr)
     elif response.status_code == 422:
-        print(f"  GPG key already exists for {username}", file=sys.stderr)
+        print(f"  GPG key rejected (422) for {username}: {response.text}", file=sys.stderr)
     else:
         print(f"  WARNING: Failed to upload GPG key for {username}: {response.text}", file=sys.stderr)
 
