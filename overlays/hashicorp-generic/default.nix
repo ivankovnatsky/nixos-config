@@ -6,7 +6,7 @@
   name,
   version,
   sha256,
-  system ? builtins.currentSystem,
+  system ? stdenv.hostPlatform.system,
   pname ? "${name}-bin",
 
   lib,
