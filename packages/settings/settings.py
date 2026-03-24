@@ -258,9 +258,19 @@ def appearance_open_settings_kde() -> None:
 def _get_state_dir() -> Path:
     """Return persistent state directory (~/.local/state/settings/).
 
-    Runs from user context (make), so Path.home() resolves correctly.
+    When running under sudo (e.g. nix-darwin activation), Path.home()
+    resolves to /var/root/ which is wrong.  Use SUDO_USER to find the
+    real user's home so that state files are shared between interactive
+    and activation contexts.
     """
-    d = Path.home() / ".local" / "state" / "settings"
+    sudo_user = os.environ.get("SUDO_USER")
+    if sudo_user:
+        import pwd
+
+        home = Path(pwd.getpwnam(sudo_user).pw_dir)
+    else:
+        home = Path.home()
+    d = home / ".local" / "state" / "settings"
     d.mkdir(parents=True, exist_ok=True)
     return d
 
