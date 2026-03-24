@@ -118,7 +118,7 @@ in
   local.launchd.services.dns-cache-flush = {
     enable = true;
     type = "daemon";
-    command = "/bin/bash -c 'sleep 120 && /usr/bin/dscacheutil -flushcache && /usr/bin/killall -HUP mDNSResponder'";
+    command = "/bin/bash -c 'sleep 2m && /usr/bin/dscacheutil -flushcache && /usr/bin/killall -HUP mDNSResponder'";
     waitForSecrets = false;
     keepAlive = false;
   };
