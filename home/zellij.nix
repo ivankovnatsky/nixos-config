@@ -17,7 +17,7 @@
       # simplified_ui = true;
 
       # Copy to clipboard configuration
-      copy_command = if pkgs.stdenv.isDarwin then "pbcopy" else "wl-copy";
+      copy_command = if pkgs.stdenv.hostPlatform.isDarwin then "pbcopy" else "wl-copy";
     };
   };
 }
