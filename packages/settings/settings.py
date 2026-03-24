@@ -1743,9 +1743,12 @@ def login_remove(item_name: str) -> bool:
 
 @cli.command()
 @click.argument("action", type=click.Choice(["list", "add", "remove"]))
-@click.argument("apps", nargs=-1)
+@click.argument("apps", required=False)
 def login(action, apps):
-    """List, add, or remove login items (macOS only)"""
+    """List, add, or remove login items (macOS only)
+
+    APPS is a single app name or comma-separated list (e.g. "Amethyst,Hammerspoon,Mac Mouse Fix").
+    """
     if not is_macos():
         print("Login items are only supported on macOS.", file=sys.stderr)
         sys.exit(1)
@@ -1759,12 +1762,14 @@ def login(action, apps):
                 print(item)
         return
 
+    app_list = [a.strip() for a in apps.split(",")] if apps else []
+
     if action == "add":
-        if not apps:
+        if not app_list:
             print("Error: specify app name(s) to add", file=sys.stderr)
             sys.exit(1)
         ok = True
-        for app in apps:
+        for app in app_list:
             existing = login_list()
             if app in existing:
                 print(f"Already a login item: {app}")
@@ -1778,11 +1783,11 @@ def login(action, apps):
         return
 
     if action == "remove":
-        if not apps:
+        if not app_list:
             print("Error: specify app name(s) to remove", file=sys.stderr)
             sys.exit(1)
         ok = True
-        for app in apps:
+        for app in app_list:
             existing = login_list()
             if app not in existing:
                 print(f"Not a login item: {app}")
