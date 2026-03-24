@@ -89,6 +89,14 @@ class ForgejoClient:
     def list_repos(self):
         return self._api_call("GET", "/user/repos")
 
+    def list_gpg_keys(self, username: str):
+        return self._api_call("GET", f"/users/{username}/gpg_keys") or []
+
+    def create_gpg_key(self, armored_key: str):
+        return self._api_call("POST", "/user/gpg_keys", {
+            "armored_public_key": armored_key,
+        })
+
 
 def wait_for_api(base_url: str, max_retries: int = 30, delay: int = 2):
     print(f"Waiting for Forgejo API at {base_url}...", file=sys.stderr)
@@ -217,6 +225,39 @@ def create_user_token(base_url: str, username: str, password: str, token_name: s
     return response.json().get("sha1", "")
 
 
+def upload_gpg_key(base_url: str, username: str, password: str, armored_key: str):
+    """Upload a GPG public key for a user using basic auth."""
+    # Check if user already has GPG keys
+    try:
+        response = requests.get(
+            f"{base_url}/api/v1/users/{username}/gpg_keys",
+            timeout=10,
+        )
+        if response.status_code == 200:
+            existing_keys = response.json()
+            if existing_keys:
+                print(f"  GPG key already exists for {username} ({len(existing_keys)} key(s)), skipping", file=sys.stderr)
+                return
+    except requests.exceptions.RequestException:
+        pass
+
+    print(f"  Uploading GPG key for {username}...", file=sys.stderr)
+    response = requests.post(
+        f"{base_url}/api/v1/user/gpg_keys",
+        auth=(username, password),
+        json={"armored_public_key": armored_key},
+        timeout=10,
+    )
+    if response.status_code in (200, 201):
+        key_data = response.json()
+        key_id = key_data.get("primary_key_id") or key_data.get("key_id", "unknown")
+        print(f"  GPG key uploaded for {username} (key ID: {key_id})", file=sys.stderr)
+    elif response.status_code == 422:
+        print(f"  GPG key already exists for {username}", file=sys.stderr)
+    else:
+        print(f"  WARNING: Failed to upload GPG key for {username}: {response.text}", file=sys.stderr)
+
+
 def sync_users(client: ForgejoClient, users: list, base_url: str):
     print("", file=sys.stderr)
     print("=== User Sync ===", file=sys.stderr)
@@ -240,6 +281,12 @@ def sync_users(client: ForgejoClient, users: list, base_url: str):
             if token:
                 print(f"  TOKEN for {username}: {token}", file=sys.stderr)
                 print(f"  Save this token to sops — it will not be shown again", file=sys.stderr)
+
+        gpg_key_file = user.get("gpgKeyFile")
+        if gpg_key_file:
+            password = read_file(user["passwordFile"])
+            armored_key = read_file(gpg_key_file)
+            upload_gpg_key(base_url, username, password, armored_key)
 
 
 def sync_repos(client: ForgejoClient, repos: list):
