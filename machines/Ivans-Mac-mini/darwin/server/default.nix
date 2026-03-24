@@ -66,6 +66,7 @@
     ./perlite
     ./podservice
     ./podsync
+    ./restart-unhealthy.nix
     ./power.nix
     ./sharing.nix
     ./stash
