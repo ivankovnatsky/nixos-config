@@ -1,13 +1,13 @@
 { pkgs, ... }:
 
 let
-  bin = "${pkgs.nixpkgs-darwin-master-container.container}/bin/container";
+  bin = "${pkgs.container}/bin/container";
   containerStarter = pkgs.writeShellScript "container-starter" ''
     ${bin} system start --enable-kernel-install
   '';
 in
 {
-  environment.systemPackages = [ pkgs.nixpkgs-darwin-master-container.container ];
+  environment.systemPackages = [ pkgs.container ];
 
   local.launchd.services.container = {
     enable = true;

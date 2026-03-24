@@ -18,7 +18,7 @@
     bat
     beszel-mgmt
     cargo
-    nixpkgs-darwin-master-container.container
+    container
     delta
     discordo
     dns
