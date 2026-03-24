@@ -1,15 +1,12 @@
 {
   imports = [
     ../../../darwin/aerospace.nix
-    ../../../darwin/amethyst.nix
     ../../../darwin/darwin.nix
     ../../../darwin/dotfiles-shared-deploy.nix
-    ../../../darwin/hammerspoon.nix
     ../../../darwin/init.nix
-    ../../../darwin/mac-mouse-fix.nix
+    ./login-items.nix
     ../../../darwin/nix.nix
     ../../../darwin/no-dock-restart.nix
-    ../../../darwin/stats.nix
     ../../../darwin/sudo.nix
     ../../../darwin/syncthing.nix
     ../../../darwin/system.nix

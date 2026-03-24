@@ -1,6 +1,5 @@
 {
   imports = [
-    ../../../darwin/amethyst.nix
     ../../../darwin/darwin.nix
     ../../../darwin/dns-clear.nix
     ../../../darwin/dotfiles-shared-deploy.nix
@@ -8,17 +7,15 @@
     ../../../darwin/flags.nix
     ../../../darwin/fonts.nix
     ../../../darwin/git.nix
-    ../../../darwin/hammerspoon.nix
     ../../../darwin/homebrew.nix
     ../../../darwin/init.nix
-    ../../../darwin/mac-mouse-fix.nix
+    ./login-items.nix
     ../../../darwin/nextdns.nix
     ../../../darwin/nix.nix
     ../../../darwin/no-dock-restart.nix
     ../../../darwin/security.nix
     ../../../darwin/shell.nix
     ../../../darwin/stash
-    ../../../darwin/stats.nix
     ../../../darwin/sudo.nix
     ../../../darwin/syncthing-mgmt.nix
     ../../../darwin/syncthing.nix
