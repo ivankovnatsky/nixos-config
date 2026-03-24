@@ -29,6 +29,7 @@
     gallery-dl
     genpass
     giffer
+    git-message
     gofumpt
     gpg-pass-refresh
     golangci-lint

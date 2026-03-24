@@ -11,6 +11,7 @@
     genpass # Password generator
     gh-notifications
     ghostty
+    git-message
     gnumake
     gpg-pass-refresh
     gum
