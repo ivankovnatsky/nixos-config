@@ -255,36 +255,27 @@ def appearance_open_settings_kde() -> None:
     subprocess.Popen(["systemsettings", "appearance"])
 
 
+def _get_state_dir() -> Path:
+    """Return persistent state directory (~/.local/state/settings/).
+
+    Runs from user context (make), so Path.home() resolves correctly.
+    """
+    d = Path.home() / ".local" / "state" / "settings"
+    d.mkdir(parents=True, exist_ok=True)
+    return d
+
+
 def appearance_get_state_dir() -> Path:
-    # Use /tmp so state is accessible by both root (activation scripts) and the
-    # user. Do NOT move to ~/ — activation scripts run as root, so Path.home()
-    # resolves to /var/root/ and the state file becomes invisible to --init.
-    return Path("/tmp") / "state" / "settings" / "appearance"
+    return _get_state_dir() / "appearance"
 
 
 def appearance_get_state_file() -> Path:
     return appearance_get_state_dir() / "last-run"
 
 
-def _ensure_tmp_state_dir(path: Path) -> None:
-    """Create dir under /tmp with world-writable permissions.
-
-    Activation scripts run as root and may create these dirs first,
-    so we chmod to allow the regular user to write state files too.
-    """
-    path.mkdir(parents=True, exist_ok=True)
-    for p in [path, *path.parents]:
-        if p == Path("/tmp") or p == Path("/"):
-            break
-        try:
-            os.chmod(p, 0o1777)
-        except PermissionError:
-            pass
-
-
 def appearance_write_state() -> None:
     state_dir = appearance_get_state_dir()
-    _ensure_tmp_state_dir(state_dir)
+    state_dir.mkdir(parents=True, exist_ok=True)
     appearance_get_state_file().write_text(date.today().isoformat())
 
 
@@ -333,7 +324,7 @@ def appearance(init):
         sys.exit(1)
 
     if init:
-        _ensure_tmp_state_dir(appearance_get_state_dir())
+        appearance_get_state_dir().mkdir(parents=True, exist_ok=True)
         state_file = appearance_get_state_file()
         today = date.today().isoformat()
         if state_file.exists() and state_file.read_text().strip() == today:
@@ -1705,6 +1696,21 @@ def poweroff_log_battery() -> None:
         print(f"Warning: Could not log battery status: {e}", file=sys.stderr)
 
 
+def login_state_file() -> Path:
+    return _get_state_dir() / "login-items"
+
+
+def login_state_matches(app_list: list[str]) -> bool:
+    state = login_state_file()
+    if not state.exists():
+        return False
+    return state.read_text().strip() == ",".join(sorted(app_list))
+
+
+def login_write_state(app_list: list[str]) -> None:
+    login_state_file().write_text(",".join(sorted(app_list)))
+
+
 def login_list() -> list[str]:
     script = 'tell application "System Events" to get the name of every login item'
     result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
@@ -1768,6 +1774,9 @@ def login(action, apps):
         if not app_list:
             print("Error: specify app name(s) to add", file=sys.stderr)
             sys.exit(1)
+        if login_state_matches(app_list):
+            print("Skipping login add (already configured)")
+            return
         ok = True
         for app in app_list:
             existing = login_list()
@@ -1780,6 +1789,10 @@ def login(action, apps):
                 ok = False
         if not ok:
             sys.exit(1)
+        try:
+            login_write_state(app_list)
+        except Exception as e:
+            print(f"Warning: could not write state: {e}", file=sys.stderr)
         return
 
     if action == "remove":
@@ -2066,10 +2079,7 @@ def accessibility_open() -> None:
 
 
 def accessibility_state_file() -> Path:
-    # Use /tmp so state is accessible by both root (activation scripts) and the
-    # user. Do NOT move to ~/ — activation scripts run as root, so Path.home()
-    # resolves to /var/root/ and the state file becomes invisible to --init.
-    return Path("/tmp") / "state" / "settings" / "accessibility-enabled"
+    return _get_state_dir() / "accessibility-enabled"
 
 
 def accessibility_state_matches(enable_apps: list[str]) -> bool:
@@ -2082,7 +2092,6 @@ def accessibility_state_matches(enable_apps: list[str]) -> bool:
 
 def accessibility_write_state(enable_apps: list[str]) -> None:
     state = accessibility_state_file()
-    _ensure_tmp_state_dir(state.parent)
     state.write_text(",".join(sorted(enable_apps)))
 
 
@@ -2334,7 +2343,7 @@ def fda_open() -> None:
 
 
 def fda_state_file() -> Path:
-    return Path("/tmp") / "state" / "settings" / "fda-enabled"
+    return _get_state_dir() / "fda-enabled"
 
 
 def fda_state_matches(enable_apps: list[str]) -> bool:
@@ -2346,7 +2355,6 @@ def fda_state_matches(enable_apps: list[str]) -> bool:
 
 def fda_write_state(enable_apps: list[str]) -> None:
     state = fda_state_file()
-    _ensure_tmp_state_dir(state.parent)
     state.write_text(",".join(sorted(enable_apps)))
 
 
