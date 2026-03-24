@@ -6,6 +6,7 @@
 }:
 
 let
+  containerBin = "/opt/homebrew/bin/container";
   nanoclawDataPath = "${config.flags.externalStoragePath}/.nanoclaw";
   discordChannelIdFile = config.sops.secrets.nanoclaw-discord-channel-id.path;
   # Forked to ivankovnatsky/nanoclaw-discord with Apple Container patches.
@@ -92,7 +93,7 @@ let
     fi
 
     echo "Building $IMAGE from $CONTEXT..."
-    ${pkgs.container}/bin/container build -t "$IMAGE" "$CONTEXT"
+    ${containerBin} build -t "$IMAGE" "$CONTEXT"
     echo "$CURRENT_HASH" > "$MARKER"
     echo "Build complete: $IMAGE"
   '';
@@ -114,7 +115,7 @@ in
     preStart = "${nanoclawSetup}";
     environment = {
       HOME = config.users.users.${username}.home;
-      PATH = "${nodejs}/bin:${pkgs.container}/bin:/usr/local/bin:/usr/bin:/bin";
+      PATH = "${nodejs}/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin";
       NODE_ENV = "production";
       CREDENTIAL_PROXY_PORT = "3002";
       ASSISTANT_NAME = "Beaver";

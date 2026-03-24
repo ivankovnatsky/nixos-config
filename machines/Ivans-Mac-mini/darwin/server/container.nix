@@ -4,8 +4,10 @@
 # sudo rm -rf /var/root/Library/Application\ Support/com.apple.container/
 
 let
+  bin = "/opt/homebrew/bin/container";
+
   containerStarter = pkgs.writeShellScript "container-starter" ''
-    ${pkgs.container}/bin/container system start --enable-kernel-install
+    ${bin} system start --enable-kernel-install
   '';
 
   # TODO: Make IP forwarding and NAT persistent via /etc/sysctl.conf and
@@ -30,8 +32,6 @@ let
   '';
 in
 {
-  environment.systemPackages = [ pkgs.container ];
-
   local.launchd.services.container = {
     enable = true;
     type = "user-agent";
