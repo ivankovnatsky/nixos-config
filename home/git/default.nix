@@ -134,7 +134,7 @@ EOF
     '';
 
     activation.ghAuth = lib.hm.dag.entryAfter [ "writeBoundary" ] (
-      if pkgs.stdenv.isDarwin then
+      if pkgs.stdenv.hostPlatform.isDarwin then
         ''
           if [ ! -f "$HOME/.config/gh/hosts.yml" ] || ! /usr/bin/security find-generic-password -s "gh:github.com" -w >/dev/null 2>&1; then
             PATH="/usr/bin:$PATH" ${pkgs.gh}/bin/gh auth login --git-protocol https --web
@@ -203,7 +203,7 @@ EOF
       # (used to scroll in less) hits the shell and exits the terminal instead
       iniContent.core.pager = lib.mkForce "LESS=R delta";
 
-      extraConfig.credential.helper = "${forgejoCredentialHelper}";
+      settings.credential.helper = "${forgejoCredentialHelper}";
 
       settings = {
         mergetool =
