@@ -22,6 +22,8 @@
 	rebuild-nixos/a3-user \
 	\
 	rebuild-darwin \
+	verbose \
+	debug \
 	rebuild-loop \
 	\
 	test-build \
@@ -37,8 +39,21 @@ PLATFORM := $(shell uname)
 # Remove these flags once we have proper nix configuration
 NIX_EXTRA_FLAGS := --extra-experimental-features flakes --extra-experimental-features nix-command
 
+# Use full nix path so targets work even when nix is not in PATH (e.g. after reboot/migration)
+NIX_BIN := /nix/var/nix/profiles/default/bin/nix
+NIX := $(shell command -v nix 2>/dev/null || echo $(NIX_BIN))
+DARWIN_REBUILD := $(shell command -v darwin-rebuild 2>/dev/null || echo $(NIX_BIN) run $(NIX_EXTRA_FLAGS) nix-darwin --)
+NIXOS_REBUILD := $(shell command -v nixos-rebuild 2>/dev/null || echo $(NIX_BIN) run $(NIX_EXTRA_FLAGS) nixpkgs\#nixos-rebuild --)
+
 # Common flags for rebuild commands
+# VERBOSE=1: --verbose, DEBUG=1: -vvvvv --print-build-logs
 COMMON_REBUILD_FLAGS := -L --flake .
+ifdef VERBOSE
+COMMON_REBUILD_FLAGS += --verbose
+endif
+ifdef DEBUG
+COMMON_REBUILD_FLAGS += -vvvvv --print-build-logs
+endif
 
 # Default target will run rebuild based on platform
 ifeq (${PLATFORM}, Darwin)
@@ -46,6 +61,12 @@ default: rebuild-darwin
 else
 default: rebuild-nixos/generic
 endif
+
+verbose:
+	@$(MAKE) VERBOSE=1
+
+debug:
+	@$(MAKE) DEBUG=1
 
 addall:
 	git add -A
@@ -77,37 +98,37 @@ trigger-rebuild:
 flake-update-darwin-unstable:
 	inputs="nixpkgs-darwin-unstable nix-darwin-darwin-unstable home-manager-darwin-unstable nixvim-darwin-unstable sops-nix-darwin-unstable"; \
 	for input in $$inputs; do \
-		nix flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
+		$(NIX) flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
 	done
 
 flake-update-darwin-release:
 	inputs="nixpkgs-darwin-release nix-darwin-darwin-release home-manager-darwin-release nixvim-darwin-release sops-nix-darwin-release"; \
 	for input in $$inputs; do \
-		nix flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
+		$(NIX) flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
 	done
 
 flake-update-nixos-unstable:
 	inputs="nixpkgs-nixos-unstable home-manager-nixos-unstable nixvim-nixos-unstable plasma-manager-nixos-unstable sops-nix-nixos-unstable nur-nixos-unstable"; \
 	for input in $$inputs; do \
-		nix flake update --commit-lock-file $$input; \
+		$(NIX) flake update --commit-lock-file $$input; \
 	done
 
 flake-update-nixos-release:
 	inputs="nixpkgs-nixos-release home-manager-nixos-release nixvim-nixos-release plasma-manager-nixos-release sops-nix-nixos-release"; \
 	for input in $$inputs; do \
-		nix flake update --commit-lock-file $$input; \
+		$(NIX) flake update --commit-lock-file $$input; \
 	done
 
 flake-update-nixvim:
 	inputs="nixvim-darwin-unstable nixvim-darwin-release nixvim-nixos-unstable nixvim-nixos-release"; \
 	for input in $$inputs; do \
-		nix flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
+		$(NIX) flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
 	done
 
 flake-update-homebrew:
 	inputs="nix-homebrew homebrew-core homebrew-cask homebrew-bundle"; \
 	for input in $$inputs; do \
-		nix flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
+		$(NIX) flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
 	done
 
 # Function to send notifications with fallbacks
@@ -127,37 +148,37 @@ endef
 HOSTNAME := $(shell hostname)
 ifeq (${PLATFORM}, Darwin)
 test-build:
-	nix build .#darwinConfigurations.${HOSTNAME}.system --dry-run ${NIX_EXTRA_FLAGS}
+	$(NIX) build .#darwinConfigurations.${HOSTNAME}.system --dry-run ${NIX_EXTRA_FLAGS}
 else
 test-build:
-	nix build .#nixosConfigurations.${HOSTNAME}.config.system.build.toplevel --dry-run
+	$(NIX) build .#nixosConfigurations.${HOSTNAME}.config.system.build.toplevel --dry-run
 endif
 
 # NixOS rebuild targets
 rebuild-nixos/generic: addall
-	sudo -E nixos-rebuild switch $(COMMON_REBUILD_FLAGS) && \
+	sudo -E $(NIXOS_REBUILD) switch $(COMMON_REBUILD_FLAGS) && \
 		$(call notify_linux,🟢 NixOS rebuild successful!) || \
 		$(call notify_linux,🔴 NixOS rebuild failed!)
 
 rebuild-nixos/impure: addall
-	sudo -E nixos-rebuild switch --impure $(COMMON_REBUILD_FLAGS) && \
+	sudo -E $(NIXOS_REBUILD) switch --impure $(COMMON_REBUILD_FLAGS) && \
 		$(call notify_linux,🟢 NixOS rebuild successful!) || \
 		$(call notify_linux,🔴 NixOS rebuild failed!)
 
 rebuild-nixos/a3:
-	sudo nixos-rebuild switch $(COMMON_REBUILD_FLAGS) --build-host a3 && \
+	sudo $(NIXOS_REBUILD) switch $(COMMON_REBUILD_FLAGS) --build-host a3 && \
 		$(call notify_linux,🟢 NixOS rebuild successful (built on a3)!) || \
 		$(call notify_linux,🔴 NixOS rebuild failed!)
 
 rebuild-nixos/a3-user:
-	nixos-rebuild switch $(COMMON_REBUILD_FLAGS) --build-host a3 --sudo && \
+	$(NIXOS_REBUILD) switch $(COMMON_REBUILD_FLAGS) --build-host a3 --sudo && \
 		$(call notify_linux,🟢 NixOS rebuild successful (built on a3)!) || \
 		$(call notify_linux,🔴 NixOS rebuild failed!)
 
 # Darwin-specific rebuild target
 rebuild-darwin: addall
 	# NIXPKGS_ALLOW_UNFREE=1 is needed for unfree packages like codeium when using --impure
-	NIXPKGS_ALLOW_UNFREE=1 sudo -E darwin-rebuild switch --impure $(COMMON_REBUILD_FLAGS) && \
+	NIXPKGS_ALLOW_UNFREE=1 sudo -E $(DARWIN_REBUILD) switch --impure $(COMMON_REBUILD_FLAGS) && \
 		osascript -e 'display notification "🟢 Darwin rebuild successful!" with title "Nix configuration"' || \
 		osascript -e 'display notification "🔴 Darwin rebuild failed!" with title "Nix configuration"'
 
