@@ -2,7 +2,7 @@
   imports = [
     ../../../../darwin/darwin.nix
     ../../../../darwin/fonts.nix
-    ../../../../darwin/mac-mouse-fix.nix
+    ./login-items.nix
     ../../../../darwin/nextdns.nix
     ../../../../darwin/shell.nix
     ../../../../darwin/sudo.nix
