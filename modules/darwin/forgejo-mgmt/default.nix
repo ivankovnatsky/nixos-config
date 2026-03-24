@@ -48,6 +48,12 @@ let
         default = false;
         description = "Create an access token for this user and print it in logs";
       };
+
+      gpgKeyFile = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = "Path to file containing armored GPG public key to upload to Forgejo";
+      };
     };
   };
 in

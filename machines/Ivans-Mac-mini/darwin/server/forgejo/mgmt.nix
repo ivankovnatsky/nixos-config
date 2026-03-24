@@ -17,6 +17,14 @@
       key = "forgejo/users/swedishunhorned/email";
       owner = username;
     };
+    # Export with: gpg --armor --export <KEY_ID> | pbcopy
+    # Then in sops: forgejo/users/swedishunhorned/gpgPublicKey: |
+    #   -----BEGIN PGP PUBLIC KEY BLOCK-----
+    #   ...
+    forgejo-user-gpg-key = {
+      key = "forgejo/users/swedishunhorned/gpgPublicKey";
+      owner = username;
+    };
   };
 
   local.services.forgejo-mgmt = {
@@ -38,6 +46,7 @@
         createToken = true;
         emailFile = config.sops.secrets.forgejo-user-email.path;
         passwordFile = config.sops.secrets.forgejo-user-password.path;
+        gpgKeyFile = config.sops.secrets.forgejo-user-gpg-key.path;
       }
     ];
 
