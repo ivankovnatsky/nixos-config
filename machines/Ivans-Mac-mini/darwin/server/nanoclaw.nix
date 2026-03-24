@@ -92,7 +92,7 @@ let
     fi
 
     echo "Building $IMAGE from $CONTEXT..."
-    ${pkgs.nixpkgs-darwin-master-container.container}/bin/container build -t "$IMAGE" "$CONTEXT"
+    ${pkgs.container}/bin/container build -t "$IMAGE" "$CONTEXT"
     echo "$CURRENT_HASH" > "$MARKER"
     echo "Build complete: $IMAGE"
   '';
@@ -114,7 +114,7 @@ in
     preStart = "${nanoclawSetup}";
     environment = {
       HOME = config.users.users.${username}.home;
-      PATH = "${nodejs}/bin:${pkgs.nixpkgs-darwin-master-container.container}/bin:/usr/local/bin:/usr/bin:/bin";
+      PATH = "${nodejs}/bin:${pkgs.container}/bin:/usr/local/bin:/usr/bin:/bin";
       NODE_ENV = "production";
       CREDENTIAL_PROXY_PORT = "3002";
       ASSISTANT_NAME = "Beaver";

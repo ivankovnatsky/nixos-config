@@ -5,7 +5,7 @@
 
 let
   containerStarter = pkgs.writeShellScript "container-starter" ''
-    ${pkgs.nixpkgs-darwin-master-container.container}/bin/container system start --enable-kernel-install
+    ${pkgs.container}/bin/container system start --enable-kernel-install
   '';
 
   # TODO: Make IP forwarding and NAT persistent via /etc/sysctl.conf and
@@ -30,7 +30,7 @@ let
   '';
 in
 {
-  environment.systemPackages = [ pkgs.nixpkgs-darwin-master-container.container ];
+  environment.systemPackages = [ pkgs.container ];
 
   local.launchd.services.container = {
     enable = true;
