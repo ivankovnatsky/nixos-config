@@ -7,9 +7,11 @@ daemons (system-level) with filtering, health checking, and bulk operations.
 """
 
 import os
+import plistlib
 import subprocess
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
 from typing import Optional
 
 import click
@@ -403,6 +405,110 @@ def info(name, daemon):
     except subprocess.CalledProcessError as e:
         click.echo(f"Error: {e.stderr}", err=True)
         raise SystemExit(1)
+
+
+def find_orphaned_plists(
+    pattern: Optional[str] = None,
+) -> list[tuple[str, str, ServiceType]]:
+    """Find plist files whose nix store paths no longer exist.
+
+    Returns list of (label, plist_path, service_type) tuples.
+    """
+    orphans = []
+
+    scan_dirs = [
+        (Path.home() / "Library" / "LaunchAgents", ServiceType.AGENT),
+        (Path("/Library/LaunchDaemons"), ServiceType.DAEMON),
+    ]
+
+    for directory, svc_type in scan_dirs:
+        if not directory.exists():
+            continue
+        for plist_file in sorted(directory.glob("com.ivankovnatsky.*.plist")):
+            label = plist_file.stem
+            if pattern and pattern not in label:
+                continue
+            try:
+                with open(plist_file, "rb") as f:
+                    plist = plistlib.load(f)
+            except Exception:
+                continue
+
+            program_args = plist.get("ProgramArguments", [])
+            program = plist.get("Program")
+
+            paths_to_check = []
+            if program:
+                paths_to_check.append(program)
+            for arg in program_args:
+                if "/nix/store/" in arg:
+                    for part in arg.split("&&"):
+                        part = part.strip()
+                        if "/nix/store/" in part:
+                            tokens = part.split()
+                            for token in tokens:
+                                if token.startswith("/nix/store/"):
+                                    paths_to_check.append(token)
+
+            for path in paths_to_check:
+                if path.startswith("/nix/store/") and not os.path.exists(path):
+                    orphans.append((label, str(plist_file), svc_type))
+                    break
+
+    return orphans
+
+
+@cli.command()
+@click.option(
+    "--dry-run", is_flag=True, help="Show orphans without removing them"
+)
+@click.pass_context
+def clean(ctx, dry_run):
+    """Remove orphaned plists with broken nix store paths."""
+    pattern = ctx.obj["pattern"]
+    orphans = find_orphaned_plists(pattern)
+
+    if not orphans:
+        click.echo("No orphaned plists found.")
+        raise SystemExit(0)
+
+    click.echo(f"Found {len(orphans)} orphaned plist(s):\n")
+    for label, plist_path, svc_type in orphans:
+        click.echo(f"  {label}")
+        click.echo(f"    {plist_path}")
+
+    if dry_run:
+        click.echo("\nDry run — no changes made.")
+        raise SystemExit(0)
+
+    click.echo()
+    failed = 0
+    uid = get_uid()
+    for label, plist_path, svc_type in orphans:
+        click.echo(f"Cleaning {label}...")
+
+        # Try to unload/bootout first
+        if svc_type == ServiceType.AGENT:
+            target = f"gui/{uid}/{label}"
+            bootout_cmd = ["launchctl", "bootout", target]
+        else:
+            target = f"system/{label}"
+            bootout_cmd = ["sudo", "launchctl", "bootout", target]
+
+        try:
+            subprocess.run(bootout_cmd, capture_output=True, text=True, check=False)
+        except Exception:
+            pass
+
+        try:
+            os.remove(plist_path)
+            click.echo(f"  Removed {plist_path}")
+        except OSError as e:
+            click.echo(f"  Failed to remove {plist_path}: {e}", err=True)
+            failed += 1
+
+    click.echo(f"\nCleaned {len(orphans) - failed} orphan(s).")
+    raise SystemExit(1 if failed > 0 else 0)
 
 
 if __name__ == "__main__":
