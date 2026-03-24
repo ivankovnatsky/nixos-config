@@ -116,7 +116,7 @@ in
   # Install kitty package on Linux only, use Homebrew on macOS
   home.packages =
     with pkgs;
-    lib.optionals pkgs.stdenv.isLinux [
+    lib.optionals pkgs.stdenv.hostPlatform.isLinux [
       kitty
     ];
 
