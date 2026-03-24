@@ -18,7 +18,6 @@
     bat
     beszel-mgmt
     cargo
-    container
     delta
     discordo
     dns
