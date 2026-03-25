@@ -157,14 +157,6 @@
         description = "Open WebUI";
       }
       {
-        name = "nanoclaw";
-        type = "tcp";
-        url = "${config.flags.machineLocalAddress}:3002";
-        interval = 60;
-        description = "NanoClaw credential proxy";
-      }
-
-      {
         name = "openclaw-gateway";
         url = "http://${config.flags.machineLocalAddress}:18789";
         interval = 60;
