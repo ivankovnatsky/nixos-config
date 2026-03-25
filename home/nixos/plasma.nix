@@ -33,9 +33,17 @@
         ];
       };
 
-      # Configure power management to use power saving mode
+      # Disable sleep/suspend, only blank the screen
       powerdevil = {
-        AC.powerProfile = "balanced";
+        AC = {
+          powerProfile = "balanced";
+          autoSuspend.action = "nothing";
+          turnOffDisplay.idleTimeout = 600; # 10 minutes
+          dimDisplay = {
+            enable = true;
+            idleTimeout = 540; # 9 minutes, dim before 10min turn-off
+          };
+        };
       };
 
       # Configure panels - macOS-like layout
