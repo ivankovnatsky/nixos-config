@@ -25,6 +25,7 @@
 	verbose \
 	debug \
 	rebuild-loop \
+	rebuild-watch-loop \
 	\
 	test-build \
 	rebuild-watchman-nixos \
@@ -182,8 +183,12 @@ rebuild-darwin: addall
 		osascript -e 'display notification "🟢 Darwin rebuild successful!" with title "Nix configuration"' || \
 		osascript -e 'display notification "🔴 Darwin rebuild failed!" with title "Nix configuration"'
 
-# Loop rebuild with sudo refresh to avoid re-prompting for password
+# Loop rebuild with sudo refresh (timer only, no file watching)
 rebuild-loop:
+	@watchman-rebuild --loop --no-watch $(CURDIR)
+
+# Watch for file changes and also rebuild on a timer
+rebuild-watch-loop:
 	@watchman-rebuild --loop $(CURDIR)
 
 # NixOS-specific watchman rebuild target
