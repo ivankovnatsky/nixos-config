@@ -2,7 +2,6 @@
   imports = [
     ../../../darwin/aerospace.nix
     ../../../darwin/darwin.nix
-    ../../../darwin/dotfiles-shared-deploy.nix
     ../../../darwin/init.nix
     ./login-items.nix
     ../../../darwin/nix.nix

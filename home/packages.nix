@@ -20,7 +20,6 @@
     ffmpeg
     gh-notifications
     giffer
-    dotfiles
     git-message
     gpg-pass-refresh
     go-grip

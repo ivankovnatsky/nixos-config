@@ -2,7 +2,6 @@
   imports = [
     ../../../darwin/darwin.nix
     ../../../darwin/dns-clear.nix
-    ../../../darwin/dotfiles-sync.nix
     ../../../darwin/flags.nix
     ../../../darwin/fonts.nix
     ../../../darwin/git.nix

@@ -13,7 +13,6 @@
     ./cryptenroll.nix
     ./default-apps.nix
     ./desktop.nix
-    ./dotfiles-sync.nix
     ./fonts.nix
     ./jovian.nix
     ./networking.nix

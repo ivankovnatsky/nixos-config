@@ -142,7 +142,6 @@
     ssm-session-manager-plugin
     stylua
     poweroff
-    dotfiles
     settings
     syncthing-mgmt
     terraformer
