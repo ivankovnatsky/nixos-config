@@ -424,8 +424,13 @@ def setup_watchman_subscription(client, config_path, ignore_patterns):
     return root, sub_name
 
 
-def watch_and_rebuild(config_path, command=None):
-    """Watch for changes and rebuild."""
+def watch_and_rebuild(config_path, command=None, loop=True, interval=LOOP_INTERVAL, watch=True):
+    """Watch for changes and rebuild.
+
+    When loop=True, also trigger a rebuild every `interval` seconds even if no
+    files changed, with sudo refresh before each timer-triggered rebuild.
+    When watch=False, skip watchman file watching entirely (loop-only mode).
+    """
     config_path_obj = Path(config_path)
 
     # Reset terminal in case a previous run left it corrupted
@@ -484,37 +489,67 @@ def watch_and_rebuild(config_path, command=None):
     debounce_timer = None
     pending_files = []
     timer_lock = threading.Lock()
+    rebuild_lock = threading.Lock()
+    loop_stop_event = threading.Event()
 
-    def trigger_rebuild():
-        """Called after debounce delay to actually run the rebuild."""
+    def loop_timer_thread():
+        """Periodically trigger rebuilds on a fixed interval (loop mode)."""
+        logging.info(f"Loop timer started (interval: {format_duration(interval)})")
+        while not loop_stop_event.wait(interval):
+            logging.info("Loop timer fired, triggering periodic rebuild")
+            if not refresh_sudo():
+                logging.warning("Failed to refresh sudo, attempting rebuild anyway")
+            with timer_lock:
+                # Cancel any pending debounce timer — the loop rebuild supersedes it
+                nonlocal debounce_timer
+                if debounce_timer is not None:
+                    debounce_timer.cancel()
+                    debounce_timer = None
+            trigger_rebuild(loop_triggered=True)
+
+    def trigger_rebuild(loop_triggered=False):
+        """Called after debounce delay or loop timer to actually run the rebuild."""
         nonlocal pending_files, debounce_timer
         with timer_lock:
             if pending_files:
-                logging.info("=" * 60)
-                logging.info(f"Rebuilding after {len(pending_files)} file change(s):")
-                for f in pending_files[:10]:  # Show first 10 files
-                    logging.info(f"  - {f}")
-                if len(pending_files) > 10:
-                    logging.info(f"  ... and {len(pending_files) - 10} more")
-                logging.info("=" * 60)
                 files_to_rebuild = list(pending_files)
+                if loop_triggered and files_to_rebuild:
+                    logging.info("=" * 60)
+                    logging.info(f"Loop timer + {len(files_to_rebuild)} file change(s):")
+                    for f in files_to_rebuild[:10]:
+                        logging.info(f"  - {f}")
+                    if len(files_to_rebuild) > 10:
+                        logging.info(f"  ... and {len(files_to_rebuild) - 10} more")
+                    logging.info("=" * 60)
+                elif not loop_triggered:
+                    logging.info("=" * 60)
+                    logging.info(f"Rebuilding after {len(files_to_rebuild)} file change(s):")
+                    for f in files_to_rebuild[:10]:
+                        logging.info(f"  - {f}")
+                    if len(files_to_rebuild) > 10:
+                        logging.info(f"  ... and {len(files_to_rebuild) - 10} more")
+                    logging.info("=" * 60)
                 pending_files = []
             else:
                 files_to_rebuild = []
 
+            if loop_triggered and not files_to_rebuild:
+                logging.info("=" * 60)
+                logging.info("Periodic loop rebuild (no file changes)")
+                logging.info("=" * 60)
+
+        # For file-change triggered rebuilds, filter out other machines' files
         if files_to_rebuild:
             files_to_rebuild = filter_files_for_machine(files_to_rebuild, other_machines)
 
-        if not files_to_rebuild:
+        if not files_to_rebuild and not loop_triggered:
             logging.info("All changed files belong to other machines, skipping rebuild")
             return
 
-        if files_to_rebuild:
-            _, actually_ran = run_rebuild(config_path, command)
+        if files_to_rebuild or loop_triggered:
+            with rebuild_lock:
+                _, actually_ran = run_rebuild(config_path, command)
             if not actually_ran:
-                # Rebuild was skipped (lock held by another rebuild in progress).
-                # Re-queue files but do NOT start a retry timer. The thread that
-                # holds the lock will check for pending files after it finishes.
                 with timer_lock:
                     for f in files_to_rebuild:
                         if f not in pending_files:
@@ -537,78 +572,94 @@ def watch_and_rebuild(config_path, command=None):
 
     client = None
     reconnect_attempts = 0
+    loop_thread = None
+
+    # Start loop timer thread if --loop is enabled
+    if loop:
+        # Do an initial sudo refresh before the first loop-triggered rebuild
+        if not refresh_sudo():
+            logging.warning("Failed initial sudo refresh")
+        loop_thread = threading.Thread(target=loop_timer_thread, daemon=True)
+        loop_thread.start()
 
     try:
-        while True:
-            # Connect/reconnect to watchman
-            if client is None:
-                try:
-                    client = pywatchman.client()
-                    root, sub_name = setup_watchman_subscription(
-                        client, config_path, ignore_patterns
-                    )
-                    reconnect_attempts = 0  # Reset on successful connection
-                except (pywatchman.WatchmanError, Exception) as e:
-                    reconnect_attempts += 1
-                    if reconnect_attempts >= MAX_RECONNECT_ATTEMPTS:
-                        logging.error(
-                            f"Failed to connect to watchman after {MAX_RECONNECT_ATTEMPTS} attempts, exiting"
+        if watch:
+            while True:
+                # Connect/reconnect to watchman
+                if client is None:
+                    try:
+                        client = pywatchman.client()
+                        root, sub_name = setup_watchman_subscription(
+                            client, config_path, ignore_patterns
                         )
-                        sys.exit(1)
-                    logging.error(f"Failed to connect to watchman: {e}")
-                    logging.info(
-                        f"Retrying in {format_duration(RECONNECT_DELAY)} (attempt {reconnect_attempts}/{MAX_RECONNECT_ATTEMPTS})..."
-                    )
-                    time.sleep(RECONNECT_DELAY)
-                    continue
-
-            # Wait for changes
-            try:
-                result = client.receive()
-
-                if "subscription" in result and result["subscription"] == sub_name:
-                    if result.get("is_fresh_instance"):
-                        logging.info("Fresh watchman instance")
+                        reconnect_attempts = 0  # Reset on successful connection
+                    except (pywatchman.WatchmanError, Exception) as e:
+                        reconnect_attempts += 1
+                        if reconnect_attempts >= MAX_RECONNECT_ATTEMPTS:
+                            logging.error(
+                                f"Failed to connect to watchman after {MAX_RECONNECT_ATTEMPTS} attempts, exiting"
+                            )
+                            sys.exit(1)
+                        logging.error(f"Failed to connect to watchman: {e}")
+                        logging.info(
+                            f"Retrying in {format_duration(RECONNECT_DELAY)} (attempt {reconnect_attempts}/{MAX_RECONNECT_ATTEMPTS})..."
+                        )
+                        time.sleep(RECONNECT_DELAY)
                         continue
 
-                    files = result.get("files", [])
-                    if files:
-                        with timer_lock:
-                            # Add new files to pending list
-                            for f in files:
-                                fname = (
-                                    f if isinstance(f, str) else f.get("name", str(f))
-                                )
-                                if fname not in pending_files:
-                                    pending_files.append(fname)
-
-                            # Cancel existing timer and start a new one
-                            if debounce_timer is not None:
-                                debounce_timer.cancel()
-
-                            logging.info(
-                                f"Change detected, waiting {format_duration(DEBOUNCE_DELAY)} for more changes..."
-                            )
-                            debounce_timer = threading.Timer(
-                                DEBOUNCE_DELAY, trigger_rebuild
-                            )
-                            debounce_timer.start()
-
-            except pywatchman.SocketTimeout:
-                continue
-            except pywatchman.WatchmanError as e:
-                logging.warning(f"Watchman error: {e}")
-                logging.info(f"Reconnecting in {format_duration(RECONNECT_DELAY)}...")
+                # Wait for changes
                 try:
-                    client.close()
-                except Exception:
-                    pass
-                client = None
-                time.sleep(RECONNECT_DELAY)
+                    result = client.receive()
+
+                    if "subscription" in result and result["subscription"] == sub_name:
+                        if result.get("is_fresh_instance"):
+                            logging.info("Fresh watchman instance")
+                            continue
+
+                        files = result.get("files", [])
+                        if files:
+                            with timer_lock:
+                                # Add new files to pending list
+                                for f in files:
+                                    fname = (
+                                        f if isinstance(f, str) else f.get("name", str(f))
+                                    )
+                                    if fname not in pending_files:
+                                        pending_files.append(fname)
+
+                                # Cancel existing timer and start a new one
+                                if debounce_timer is not None:
+                                    debounce_timer.cancel()
+
+                                logging.info(
+                                    f"Change detected, waiting {format_duration(DEBOUNCE_DELAY)} for more changes..."
+                                )
+                                debounce_timer = threading.Timer(
+                                    DEBOUNCE_DELAY, trigger_rebuild
+                                )
+                                debounce_timer.start()
+
+                except pywatchman.SocketTimeout:
+                    continue
+                except pywatchman.WatchmanError as e:
+                    logging.warning(f"Watchman error: {e}")
+                    logging.info(f"Reconnecting in {format_duration(RECONNECT_DELAY)}...")
+                    try:
+                        client.close()
+                    except Exception:
+                        pass
+                    client = None
+                    time.sleep(RECONNECT_DELAY)
+        else:
+            # No file watching — just block until interrupted, loop timer handles rebuilds
+            logging.info("File watching disabled, running in loop-only mode")
+            loop_stop_event.wait()
 
     except KeyboardInterrupt:
         logging.info("Received interrupt, stopping...")
     finally:
+        # Stop loop timer thread
+        loop_stop_event.set()
         # Cancel any pending debounce timer
         if debounce_timer is not None:
             debounce_timer.cancel()
@@ -638,47 +689,6 @@ def refresh_sudo():
         return False
 
 
-def loop_rebuild(config_path, command=None, interval=LOOP_INTERVAL):
-    """Rebuild in a loop with sudo refresh between iterations."""
-    config_path_obj = Path(config_path)
-
-    if not config_path_obj.exists():
-        logging.error(f"Config path does not exist: {config_path}")
-        sys.exit(1)
-
-    # Check if another instance is already running
-    if check_existing_instance():
-        sys.exit(0)
-
-    write_instance_file()
-    cleanup_stale_lock()
-
-    os.chdir(config_path)
-
-    if command is None:
-        command = detect_rebuild_command()
-        logging.info(f"Auto-detected rebuild command: {command}")
-
-    logging.info(f"Starting loop rebuild (interval: {format_duration(interval)})")
-
-    try:
-        while True:
-            if not refresh_sudo():
-                logging.warning("Failed to refresh sudo, will retry next iteration")
-
-            return_code, actually_ran = run_rebuild(config_path, command)
-
-            if actually_ran and return_code != 0:
-                logging.warning("Rebuild failed, will retry next iteration")
-
-            logging.info(f"Sleeping {format_duration(interval)} before next rebuild...")
-            time.sleep(interval)
-    except KeyboardInterrupt:
-        logging.info("Received interrupt, stopping...")
-    finally:
-        cleanup_instance_file()
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Watchman-based rebuild tool that auto-detects platform and watches for changes."
@@ -688,20 +698,25 @@ if __name__ == "__main__":
     parser.add_argument(
         "--loop",
         action="store_true",
-        help="Run in loop mode: rebuild periodically instead of watching for changes",
+        help="Also rebuild periodically every INTERVAL seconds (with sudo refresh)",
+    )
+    parser.add_argument(
+        "--no-watch",
+        action="store_true",
+        help="Disable file watching (use with --loop for timer-only mode)",
     )
     parser.add_argument(
         "--interval",
         type=int,
         default=LOOP_INTERVAL,
-        help=f"Interval in seconds between rebuilds in loop mode (default: {LOOP_INTERVAL})",
+        help=f"Interval in seconds between periodic rebuilds when --loop is used (default: {LOOP_INTERVAL})",
     )
 
     args = parser.parse_args()
 
-    if args.loop:
-        loop_rebuild(args.config_path, args.command, args.interval)
-    else:
-        if args.interval != LOOP_INTERVAL:
-            parser.error("--interval requires --loop")
-        watch_and_rebuild(args.config_path, args.command)
+    if args.interval != LOOP_INTERVAL and not args.loop:
+        parser.error("--interval requires --loop")
+    if args.no_watch and not args.loop:
+        parser.error("--no-watch requires --loop (nothing to do without watching or looping)")
+
+    watch_and_rebuild(args.config_path, args.command, loop=args.loop, interval=args.interval, watch=not args.no_watch)
