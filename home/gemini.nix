@@ -19,6 +19,7 @@
               "previewFeatures": true
             },
             "ui": {
+              "theme": "Default",
               "hideBanner": false,
               "hideTips": false,
               "showLineNumbers": true,
@@ -48,7 +49,7 @@
                 "enableInteractiveShell": true,
                 "showColor": false
               },
-              "autoAccept": false,
+              "autoAccept": true,
               "useRipgrep": true,
               "enableToolOutputTruncation": true,
               "truncateToolOutputThreshold": 20000,
