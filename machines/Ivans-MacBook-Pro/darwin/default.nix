@@ -18,12 +18,14 @@
     ../../../darwin/syncthing-mgmt.nix
     ../../../darwin/syncthing.nix
     ../../../darwin/system.nix
+    ../../../darwin/taskwarrior-notify.nix
     ../../../darwin/taskwarrior-sync.nix
     ../../../darwin/users.nix
     ../../../darwin/xattr.nix
     ../../../modules/darwin/dock
     ../../../modules/darwin/launchd
     ../../../modules/darwin/nextdns-mgmt
+    ../../../modules/darwin/taskwarrior-notify
     ../../../modules/darwin/pam
     ../../../modules/darwin/sudo
     ../../../modules/darwin/syncthing-mgmt
