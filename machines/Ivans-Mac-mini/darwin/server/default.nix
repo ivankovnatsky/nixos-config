@@ -37,7 +37,6 @@
     ./audiobookshelf
     ./beszel.nix
     ./bin.nix
-    ./container.nix
     ./dns.nix
     ./doh.nix
     ./download-youtube
