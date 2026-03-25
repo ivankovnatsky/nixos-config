@@ -11,6 +11,7 @@
     linger = true;
     openssh.authorizedKeys.keys = [
       config.flags.sshKeys.air
+      config.flags.sshKeys.mini
     ];
   };
   programs.fish.enable = true;
