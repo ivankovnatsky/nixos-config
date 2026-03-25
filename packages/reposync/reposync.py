@@ -217,7 +217,7 @@ def sync_repo(repo, webhook_url=None):
 
     if ok:
         summary = ", ".join(actions) if actions else "up to date"
-        print(f"  OK ({summary})", file=sys.stderr)
+        print(f"OK ({summary})", file=sys.stderr)
 
     return ok
 
