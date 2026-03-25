@@ -342,7 +342,7 @@ def appearance(init):
             return
         appearance_set_dark_mode(True)
         print("Initialized appearance")
-        appearance_remove_state()
+        appearance_write_state()
         return
 
     is_dark = appearance_get_current_theme()
