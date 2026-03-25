@@ -8,6 +8,7 @@
     ../../../../darwin/sudo.nix
     ../../../../darwin/syncthing.nix
     ../../../../darwin/system.nix
+    ../../../../darwin/taskwarrior-notify.nix
     ../../../../darwin/taskwarrior-sync.nix
     ../../../../modules/darwin/arr-mgmt
     ../../../../modules/darwin/beszel-agent
@@ -23,6 +24,7 @@
     ../../../../modules/darwin/linux-builder
     ../../../../modules/darwin/logrotate
     ../../../../modules/darwin/nextdns-mgmt
+    ../../../../modules/darwin/taskwarrior-notify
     ../../../../modules/darwin/pam
     ../../../../modules/darwin/pmset
     ../../../../modules/darwin/sharing
