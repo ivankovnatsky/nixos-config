@@ -58,7 +58,6 @@
     ./monitoring
     ./mosh.nix
     ./music-export.nix
-    ./nanoclaw.nix
     ./nix.nix
     ./ollama.nix
     ./open-webui.nix
