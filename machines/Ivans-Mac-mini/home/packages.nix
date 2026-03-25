@@ -42,7 +42,6 @@
     poweroff
     erdtree
     ffmpeg
-    dotfiles
     go-grip
     poppler-utils
     nextdns-mgmt

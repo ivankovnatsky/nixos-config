@@ -15,7 +15,6 @@
     ./cryptenroll.nix # TPM2 support for LUKS encryption
     ./default-apps.nix
     ./desktop.nix
-    ./dotfiles-sync.nix
     ./fonts.nix
     ./fwupd.nix
     ./gamescope.nix

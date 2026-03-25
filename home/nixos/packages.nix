@@ -5,7 +5,6 @@
     age # Secrets management
     backup-home # Home directory backup tool
     delta
-    dotfiles
     dust # A more intuitive version of du
     fastfetch
     genpass # Password generator

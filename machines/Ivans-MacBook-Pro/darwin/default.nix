@@ -2,8 +2,6 @@
   imports = [
     ../../../darwin/darwin.nix
     ../../../darwin/dns-clear.nix
-    ../../../darwin/dotfiles-shared-deploy.nix
-    ../../../darwin/dotfiles-sync.nix
     ../../../darwin/flags.nix
     ../../../darwin/fonts.nix
     ../../../darwin/git.nix
@@ -35,7 +33,6 @@
     ../../../system/sops-secrets.nix
     ../../Ivans-MacBook-Air/darwin/dock.nix
     ../../Ivans-MacBook-Air/darwin/users.nix
-    ./dotfiles-shared-init.nix
     ./syncthing-mgmt.nix
   ];
 }
