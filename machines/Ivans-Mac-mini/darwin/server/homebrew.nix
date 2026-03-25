@@ -7,7 +7,6 @@
     };
     global.brewfile = true;
     brews = [
-      "container"
       "ollama"
     ];
     casks = [ ];
