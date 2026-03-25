@@ -1219,10 +1219,11 @@ TreeGroup.format_commands = _format_no_aliases
 )
 @click.option("--verbose", is_flag=True, default=False, help="Show commands being run.")
 def sort_reminders(source, approve, interactive, create, verbose):
-    """Sort prefixed reminders into their matching lists.
+    """Sort reminders into their matching lists.
 
     Scans all lists for items whose '<Prefix>: ' doesn't match the current
-    list and moves them to the correct one. Use --source to limit to one list.
+    list and moves them to the correct one. Also adds the list prefix to
+    reminders that are missing it entirely. Use --source to limit to one list.
     """
     global _verbose
     _verbose = verbose
@@ -1240,8 +1241,9 @@ def sort_reminders(source, approve, interactive, create, verbose):
 
     lists_to_scan = [source] if source else sorted(existing_lists)
 
-    # Collect moves across all scanned lists
+    # Collect moves and prefix additions across all scanned lists
     moves = []
+    prefix_adds = []
     for list_name in lists_to_scan:
         result = subprocess.run(
             ["rems", "show", list_name, "--format", "json"],
@@ -1261,6 +1263,16 @@ def sort_reminders(source, approve, interactive, create, verbose):
             if item.get("isCompleted", False):
                 continue
             if ": " not in title:
+                # Item has no prefix — add list prefix
+                if title.strip():
+                    prefix_adds.append(
+                        {
+                            "source": list_name,
+                            "index": i,
+                            "title": title,
+                            "external_id": item.get("externalId", ""),
+                        }
+                    )
                 continue
             prefix, rest = title.split(": ", 1)
             if not rest.strip():
@@ -1283,6 +1295,44 @@ def sort_reminders(source, approve, interactive, create, verbose):
                     "external_id": item.get("externalId", ""),
                 }
             )
+
+    if not moves and not prefix_adds:
+        return
+
+    if prefix_adds:
+        click.echo()
+        click.echo(f"{len(prefix_adds)} reminder(s) missing list prefix:")
+        click.echo()
+        for p in prefix_adds:
+            click.echo(f"  {p['title']}")
+            click.echo(f"    → {p['source']}: {p['title']}")
+
+        if not approve:
+            click.echo()
+            if not click.confirm("Add prefixes?"):
+                prefix_adds = []
+
+        prefixed_count = 0
+        for p in prefix_adds:
+            prefixed_title = f"{p['source']}: {p['title']}"
+            if interactive:
+                click.echo()
+                click.echo(f"  {p['title']}")
+                click.echo(f"    → {prefixed_title}")
+                if not click.confirm("  Add prefix?"):
+                    continue
+
+            lookup = p["external_id"] if p["external_id"] else str(p["index"])
+            res = run(["rems", "edit", p["source"], lookup, prefixed_title])
+            if res.returncode == 0:
+                prefixed_count += 1
+                click.echo(f"  Prefixed: {prefixed_title}")
+            else:
+                click.echo(f"  ERROR prefixing: {p['title']}", err=True)
+
+        if prefix_adds:
+            click.echo()
+            click.echo(f"Done. Prefixed {prefixed_count}/{len(prefix_adds)} reminder(s).")
 
     if not moves:
         return
@@ -1355,10 +1405,11 @@ def sort_reminders(source, approve, interactive, create, verbose):
 )
 @click.option("--verbose", is_flag=True, default=False, help="Show commands being run.")
 def sort_tw(project, approve, interactive, verbose):
-    """Sort prefixed TW tasks into their matching projects.
+    """Sort TW tasks into their matching projects.
 
     Scans all tasks (or a single --project) for items whose '<Prefix>: '
     doesn't match the current project and moves them to the correct one.
+    Also adds the project prefix to tasks that are missing it entirely.
     """
     global _verbose
     _verbose = verbose
@@ -1384,6 +1435,7 @@ def sort_tw(project, approve, interactive, verbose):
         raise SystemExit(1)
 
     moves = []
+    prefix_adds = []
     for task in tasks:
         if task.get("status") == "recurring":
             continue
@@ -1391,6 +1443,15 @@ def sort_tw(project, approve, interactive, verbose):
         current_project = task.get("project", "")
         uuid = task.get("uuid", "")
         if ": " not in desc:
+            # Task has no prefix — add project prefix if it has a project
+            if current_project and desc.strip():
+                prefix_adds.append(
+                    {
+                        "uuid": uuid,
+                        "description": desc,
+                        "project": current_project,
+                    }
+                )
             continue
         prefix, rest = desc.split(": ", 1)
         if not rest.strip():
@@ -1407,49 +1468,92 @@ def sort_tw(project, approve, interactive, verbose):
             }
         )
 
-    if not moves:
+    if not moves and not prefix_adds:
         return
 
-    click.echo()
-    click.echo(f"{len(moves)} task(s) to move:")
-    click.echo()
-    for m in moves:
-        src = m["current_project"] or "(no project)"
-        click.echo(f"  {src}: {m['description']}")
-        click.echo(f"    → project:{m['target_project']}")
-
-    if not approve:
+    if prefix_adds:
         click.echo()
-        if not click.confirm("Proceed?"):
-            click.echo("Aborted.")
-            return
+        click.echo(f"{len(prefix_adds)} task(s) missing project prefix:")
+        click.echo()
+        for p in prefix_adds:
+            click.echo(f"  {p['description']}")
+            click.echo(f"    → {p['project']}: {p['description']}")
 
-    moved = 0
-    for m in moves:
-        if interactive:
+        if not approve:
             click.echo()
-            click.echo(f"  {m['description']}")
+            if not click.confirm("Add prefixes?"):
+                prefix_adds = []
+
+        prefixed_count = 0
+        for p in prefix_adds:
+            prefixed_desc = f"{p['project']}: {p['description']}"
+            if interactive:
+                click.echo()
+                click.echo(f"  {p['description']}")
+                click.echo(f"    → {prefixed_desc}")
+                if not click.confirm("  Add prefix?"):
+                    continue
+
+            res = run(
+                [
+                    "task",
+                    "rc.confirmation:off",
+                    p["uuid"],
+                    "modify",
+                    f"description:{prefixed_desc}",
+                ]
+            )
+            if res.returncode == 0:
+                prefixed_count += 1
+                click.echo(f"  Prefixed: {prefixed_desc}")
+            else:
+                click.echo(f"  ERROR prefixing: {p['description']}", err=True)
+
+        if prefix_adds:
+            click.echo()
+            click.echo(f"Done. Prefixed {prefixed_count}/{len(prefix_adds)} task(s).")
+
+    if moves:
+        click.echo()
+        click.echo(f"{len(moves)} task(s) to move:")
+        click.echo()
+        for m in moves:
+            src = m["current_project"] or "(no project)"
+            click.echo(f"  {src}: {m['description']}")
             click.echo(f"    → project:{m['target_project']}")
-            if not click.confirm("  Move?"):
-                continue
 
-        res = run(
-            [
-                "task",
-                "rc.confirmation:off",
-                m["uuid"],
-                "modify",
-                f"project:{m['target_project']}",
-            ]
-        )
-        if res.returncode == 0:
-            moved += 1
-            click.echo(f"  Moved: {m['description']} → project:{m['target_project']}")
-        else:
-            click.echo(f"  ERROR moving: {m['description']}", err=True)
+        if not approve:
+            click.echo()
+            if not click.confirm("Proceed?"):
+                click.echo("Aborted.")
+                return
 
-    click.echo()
-    click.echo(f"Done. Moved {moved}/{len(moves)} task(s).")
+        moved = 0
+        for m in moves:
+            if interactive:
+                click.echo()
+                click.echo(f"  {m['description']}")
+                click.echo(f"    → project:{m['target_project']}")
+                if not click.confirm("  Move?"):
+                    continue
+
+            res = run(
+                [
+                    "task",
+                    "rc.confirmation:off",
+                    m["uuid"],
+                    "modify",
+                    f"project:{m['target_project']}",
+                ]
+            )
+            if res.returncode == 0:
+                moved += 1
+                click.echo(f"  Moved: {m['description']} → project:{m['target_project']}")
+            else:
+                click.echo(f"  ERROR moving: {m['description']}", err=True)
+
+        click.echo()
+        click.echo(f"Done. Moved {moved}/{len(moves)} task(s).")
 
 
 @all_cmds.command(name="sort")
