@@ -11,5 +11,7 @@
     rg-find
     taskmanager
     velocidrone
+    watchman
+    watchman-make
   ];
 }
