@@ -13,6 +13,7 @@
 	flake-update-darwin-release \
 	flake-update-nixos-unstable \
 	flake-update-nixos-release \
+	flake-update-nixos-steamdeck-unstable \
 	flake-update-nixvim \
 	flake-update-homebrew \
 	\
@@ -28,11 +29,12 @@
 	rebuild-watch-loop \
 	\
 	test-build \
+	rebuild-watchman \
 	rebuild-watchman-nixos \
-	\
 	rebuild-watchman-darwin \
 	\
-	devcontainer
+	devcontainer \
+	devcontainer-rebuild
 
 PLATFORM := $(shell uname)
 # TODO: This is temporary until we figure out how to properly configure nix.conf
@@ -111,17 +113,23 @@ flake-update-darwin-release:
 flake-update-nixos-unstable:
 	inputs="nixpkgs-nixos-unstable home-manager-nixos-unstable nixvim-nixos-unstable plasma-manager-nixos-unstable sops-nix-nixos-unstable nur-nixos-unstable"; \
 	for input in $$inputs; do \
-		$(NIX) flake update --commit-lock-file $$input; \
+		$(NIX) flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
 	done
 
 flake-update-nixos-release:
 	inputs="nixpkgs-nixos-release home-manager-nixos-release nixvim-nixos-release plasma-manager-nixos-release sops-nix-nixos-release"; \
 	for input in $$inputs; do \
-		$(NIX) flake update --commit-lock-file $$input; \
+		$(NIX) flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
 	done
 
 flake-update-nixvim:
-	inputs="nixvim-darwin-unstable nixvim-darwin-release nixvim-nixos-unstable nixvim-nixos-release"; \
+	inputs="nixvim-darwin-unstable nixvim-darwin-release nixvim-nixos-unstable nixvim-nixos-release nixvim-nixos-steamdeck-unstable"; \
+	for input in $$inputs; do \
+		$(NIX) flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
+	done
+
+flake-update-nixos-steamdeck-unstable:
+	inputs="nixpkgs-nixos-steamdeck-unstable home-manager-nixos-steamdeck-unstable plasma-manager-nixos-steamdeck-unstable sops-nix-nixos-steamdeck-unstable nur-nixos-steamdeck-unstable jovian-nixos-steamdeck-unstable"; \
 	for input in $$inputs; do \
 		$(NIX) flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
 	done
@@ -191,13 +199,13 @@ rebuild-loop:
 rebuild-watch-loop:
 	@watchman-rebuild --loop $(CURDIR)
 
-# NixOS-specific watchman rebuild target
-rebuild-watchman-nixos:
+# Watchman rebuild (platform-independent, identical behavior)
+rebuild-watchman:
 	@watchman-rebuild $(CURDIR)
 
-# Darwin-specific watchman rebuild target
-rebuild-watchman-darwin:
-	@watchman-rebuild $(CURDIR)
+# Platform-specific aliases (kept for backwards compatibility)
+rebuild-watchman-nixos: rebuild-watchman
+rebuild-watchman-darwin: rebuild-watchman
 
 # Devcontainer: start and exec into container with Claude Code
 devcontainer:
