@@ -22,6 +22,14 @@ def is_darwin():
 
 
 _verbose = False
+_prefix_mode = False
+
+
+def prefixed_title(project, title):
+    """Build a task description, optionally prefixed with 'Project: '."""
+    if _prefix_mode and project:
+        return f"{project}: {title}"
+    return title
 
 
 def run(cmd, stdin_text=None):
@@ -822,8 +830,12 @@ def print_drift(rem_only, tw_only, matched, metadata_diffs, direction=None):
             click.echo(f"Metadata drift: {len(metadata_diffs)}")
 
 
-def find_tw_uuids(project, prefixed_title, status_filter=None):
-    """Find all TW task UUIDs matching project and prefixed description."""
+def find_tw_uuids(project, title, status_filter=None):
+    """Find all TW task UUIDs matching project and description.
+
+    Matches against both prefixed ('Project: title') and unprefixed ('title')
+    descriptions for backward compatibility during migration.
+    """
     result = subprocess.run(
         ["task", f"project.is:{project}", "export"],
         capture_output=True,
@@ -832,9 +844,11 @@ def find_tw_uuids(project, prefixed_title, status_filter=None):
     if result.returncode != 0:
         return []
     uuids = []
+    legacy_prefixed = f"{project}: {title}"
     try:
         for t in json.loads(result.stdout):
-            if t.get("description", "") == prefixed_title:
+            desc = t.get("description", "")
+            if desc == title or desc == legacy_prefixed:
                 if status_filter and t.get("status", "") != status_filter:
                     continue
                 uuids.append(t["uuid"])
@@ -845,13 +859,16 @@ def find_tw_uuids(project, prefixed_title, status_filter=None):
 
 def find_reminder_index(
     list_name,
-    prefixed_title,
+    title,
     completed_only=False,
     include_completed=True,
     due_date=None,
     notes_empty=None,
 ):
-    """Find reminder index by list and prefixed title.
+    """Find reminder index by list and title.
+
+    Matches against both prefixed ('List: title') and unprefixed ('title')
+    for backward compatibility during migration.
 
     Optional filters:
     - completed_only: only search completed items
@@ -867,12 +884,14 @@ def find_reminder_index(
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
         return None
+    legacy_prefixed = f"{list_name}: {title}"
     try:
         # First try exact match with all filters
         items = json.loads(result.stdout)
         candidates = []
         for i, item in enumerate(items):
-            if item.get("title", "") != prefixed_title:
+            item_title = item.get("title", "")
+            if item_title != title and item_title != legacy_prefixed:
                 continue
             if due_date:
                 item_due = format_date_local(item.get("dueDate", ""))
@@ -888,7 +907,8 @@ def find_reminder_index(
             return candidates[0]
         # Fall back to title-only match
         for i, item in enumerate(items):
-            if item.get("title", "") == prefixed_title:
+            item_title = item.get("title", "")
+            if item_title == title or item_title == legacy_prefixed:
                 return i
     except json.JSONDecodeError:
         pass
@@ -926,7 +946,7 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
         diffs = info["diffs"]
         tw = info["tw"]
         rem = info["rem"]
-        prefixed = f"{project}: {title}"
+        desc = prefixed_title(project, title)
 
         if interactive:
             click.echo("")
@@ -947,11 +967,11 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
 
             if field == "title":
                 longer = tw_val if len(tw_val) >= len(rem_val) else rem_val
-                longer_prefixed = f"{project}: {longer}"
+                longer_desc = prefixed_title(project, longer)
                 if flow == "rem_to_tw":
-                    tw_updates["title"] = longer_prefixed
+                    tw_updates["title"] = longer_desc
                 elif flow == "tw_to_rem":
-                    rem_updates["title"] = longer_prefixed
+                    rem_updates["title"] = longer_desc
             elif field == "due":
                 if flow == "rem_to_tw":
                     tw_updates["due"] = rem.get("due", "")
@@ -1014,8 +1034,7 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
             if tw_uuid:
                 uuids = [tw_uuid]
             else:
-                tw_prefixed = f"{project}: {tw['title']}"
-                uuids = find_tw_uuids(project, tw_prefixed)
+                uuids = find_tw_uuids(project, tw['title'])
             for uuid in uuids:
                 modify_args = []
                 if "title" in tw_updates:
@@ -1082,12 +1101,12 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
             if uuids:
                 count += 1
                 click.echo(
-                    f"  ~ Taskwarrior: {prefixed}\n    {format_update_summary(tw_updates)}"
+                    f"  ~ Taskwarrior: {desc}\n    {format_update_summary(tw_updates)}"
                 )
 
         if rem_updates and is_darwin() and has_command("rems"):
-            rem_prefixed = f"{project}: {rem['title']}"
-            rem_id = rem.get("externalId", "") or rem_prefixed
+            rem_desc = prefixed_title(project, rem['title'])
+            rem_id = rem.get("externalId", "") or rem_desc
             edit_args = [
                 "rems",
                 "edit",
@@ -1118,7 +1137,7 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                     run(["rems", "uncomplete", project, rem_id])
             count += 1
             click.echo(
-                f"  ~ Reminders: {prefixed}\n    {format_update_summary(rem_updates)}"
+                f"  ~ Reminders: {desc}\n    {format_update_summary(rem_updates)}"
             )
 
     return count
@@ -1150,8 +1169,15 @@ class TreeGroup(click.Group):
 
 
 @click.group(cls=TreeGroup)
-def cli():
+@click.option(
+    "--prefix/--no-prefix",
+    default=False,
+    help="Prefix descriptions with 'Project: ' (default: no prefix).",
+)
+def cli(prefix):
     """Unified task management across Apple Reminders and Taskwarrior."""
+    global _prefix_mode
+    _prefix_mode = prefix
 
 
 @cli.group(name="all")
@@ -1222,11 +1248,15 @@ def sort_reminders(source, approve, interactive, create, verbose):
     """Sort reminders into their matching lists.
 
     Scans all lists for items whose '<Prefix>: ' doesn't match the current
-    list and moves them to the correct one. Also adds the list prefix to
-    reminders that are missing it entirely. Use --source to limit to one list.
+    list and moves them to the correct one. In --prefix mode, also adds the
+    list prefix to reminders that are missing it. Use --source to limit to
+    one list. In --no-prefix mode (default), sort is a no-op.
     """
     global _verbose
     _verbose = verbose
+
+    if not _prefix_mode:
+        return
 
     if not (is_darwin() and has_command("rems")):
         click.echo("Error: reminders CLI not available", err=True)
@@ -1314,19 +1344,19 @@ def sort_reminders(source, approve, interactive, create, verbose):
 
         prefixed_count = 0
         for p in prefix_adds:
-            prefixed_title = f"{p['source']}: {p['title']}"
+            new_title = f"{p['source']}: {p['title']}"
             if interactive:
                 click.echo()
                 click.echo(f"  {p['title']}")
-                click.echo(f"    → {prefixed_title}")
+                click.echo(f"    → {new_title}")
                 if not click.confirm("  Add prefix?"):
                     continue
 
             lookup = p["external_id"] if p["external_id"] else str(p["index"])
-            res = run(["rems", "edit", p["source"], lookup, prefixed_title])
+            res = run(["rems", "edit", p["source"], lookup, new_title])
             if res.returncode == 0:
                 prefixed_count += 1
-                click.echo(f"  Prefixed: {prefixed_title}")
+                click.echo(f"  Prefixed: {new_title}")
             else:
                 click.echo(f"  ERROR prefixing: {p['title']}", err=True)
 
@@ -1409,10 +1439,14 @@ def sort_tw(project, approve, interactive, verbose):
 
     Scans all tasks (or a single --project) for items whose '<Prefix>: '
     doesn't match the current project and moves them to the correct one.
-    Also adds the project prefix to tasks that are missing it entirely.
+    In --prefix mode, also adds the project prefix to tasks that are missing it.
+    In --no-prefix mode (default), sort is a no-op.
     """
     global _verbose
     _verbose = verbose
+
+    if not _prefix_mode:
+        return
 
     if not has_command("task"):
         click.echo("Error: task (Taskwarrior) CLI not available", err=True)
@@ -1907,7 +1941,7 @@ def sync(
     # Reminders-only → add to Taskwarrior
     for item in rem_only.values():
         proj = item["project"]
-        prefixed = f"{proj}: {item['title']}"
+        desc = prefixed_title(proj, item['title'])
         if interactive:
             click.echo()
             click.echo("Reminders only:")
@@ -1925,12 +1959,12 @@ def sync(
             if not click.confirm("  Copy to Taskwarrior?"):
                 continue
         # Check if a pending TW task with the same title already exists (avoid duplicates)
-        existing_uuids = find_tw_uuids(proj, prefixed, status_filter="pending")
+        existing_uuids = find_tw_uuids(proj, item['title'], status_filter="pending")
         if existing_uuids and item["status"] == "completed":
             # Complete the existing task instead of creating a duplicate
             uuid = existing_uuids[0]
             run(["task", "rc.confirmation:off", uuid, "done"])
-            click.echo(f"  ~ Taskwarrior: {prefixed} (completed existing)")
+            click.echo(f"  ~ Taskwarrior: {desc} (completed existing)")
             raw_end = item.get("completionDate", "")
             if raw_end:
                 run(["task", "rc.confirmation:off", uuid, "modify", f"end:{raw_end}"])
@@ -1949,9 +1983,9 @@ def sync(
             item_notes = (item.get("notes") or "").strip()
             if item_notes:
                 run(["task", uuid, "annotate", item_notes])
-            click.echo(f"  ~ Taskwarrior: {prefixed} (updated existing)")
+            click.echo(f"  ~ Taskwarrior: {desc} (updated existing)")
         else:
-            add_cmd = ["task", "add", prefixed, f"project:{proj}"]
+            add_cmd = ["task", "add", desc, f"project:{proj}"]
 
             # Due date — pass raw ISO date so TW handles timezone correctly
             raw_due = item.get("due", "")
@@ -1965,7 +1999,7 @@ def sync(
 
             result = run(add_cmd)
             if result.returncode == 0:
-                click.echo(f"  + Taskwarrior: {prefixed}")
+                click.echo(f"  + Taskwarrior: {desc}")
 
                 # Find the UUID of the newly created task from task add output
                 task_id_match = re.search(r"Created task (\d+)\.", result.stdout)
@@ -2027,7 +2061,7 @@ def sync(
 
         for item in tw_only.values():
             proj = item["project"]
-            prefixed = f"{proj}: {item['title']}"
+            desc = prefixed_title(proj, item['title'])
 
             # Never copy deleted TW tasks to Reminders
             if item.get("status") == "deleted":
@@ -2062,7 +2096,7 @@ def sync(
                 run(["rems", "new-list", proj])
                 existing_lists.add(proj)
 
-            add_cmd = ["rems", "add", proj, prefixed]
+            add_cmd = ["rems", "add", proj, desc]
 
             # Due date — convert TW compact format to ISO for reminders CLI
             raw_due = item.get("due", "")
@@ -2083,9 +2117,9 @@ def sync(
 
             result = run(add_cmd)
             if result.returncode == 0:
-                click.echo(f"  + Reminders: {prefixed}")
+                click.echo(f"  + Reminders: {desc}")
                 if item["status"] == "completed":
-                    complete_cmd = ["rems", "complete", proj, prefixed]
+                    complete_cmd = ["rems", "complete", proj, desc]
                     raw_end = item.get("end", "")
                     if raw_end:
                         complete_cmd.extend(
@@ -2114,12 +2148,12 @@ def sync(
             click.echo(f"--- TW-only items ({len(tw_only)}) ---")
             for key, item in tw_only.items():
                 proj = item["project"]
-                prefixed = f"{proj}: {item['title']}"
+                desc = prefixed_title(proj, item['title'])
                 uuid = item.get("uuid", "")
                 due = format_date_local(item.get("due", ""))
                 status = item.get("status", "pending")
                 click.echo()
-                click.echo(f"  TW-only: {prefixed}")
+                click.echo(f"  TW-only: {desc}")
                 click.echo(f"    status: {status}")
                 if due:
                     click.echo(f"    due: {due}")
@@ -2131,14 +2165,14 @@ def sync(
                     if status != "deleted":
                         result = run(["task", "rc.confirmation:off", uuid, "delete"])
                         if result.returncode != 0:
-                            click.echo(f"  ! Failed to delete: {prefixed}")
+                            click.echo(f"  ! Failed to delete: {desc}")
                             continue
                     result = run(["task", "rc.confirmation:off", uuid, "purge"])
                     if result.returncode == 0:
-                        click.echo(f"  - Taskwarrior: {prefixed} (purged)")
+                        click.echo(f"  - Taskwarrior: {desc} (purged)")
                         purge_count += 1
                     else:
-                        click.echo(f"  ! Failed to purge: {prefixed}")
+                        click.echo(f"  ! Failed to purge: {desc}")
 
         # 2. TW-internal duplicates: multiple pending tasks with same description
         click.echo()
@@ -2227,7 +2261,8 @@ def sync(
             if item.get("status") != "pending":
                 continue
             proj = item["project"]
-            prefixed = f"{proj}: {item['title']}"
+            desc = prefixed_title(proj, item['title'])
+            title = item['title']
             uuid = item.get("uuid", "")
             if not uuid:
                 continue
@@ -2238,11 +2273,13 @@ def sync(
                 text=True,
             )
             has_completed = False
+            legacy_prefixed = f"{proj}: {title}"
             if all_uuids_result.returncode == 0:
                 try:
                     for t in json.loads(all_uuids_result.stdout):
+                        t_desc = t.get("description", "")
                         if (
-                            t.get("description", "") == prefixed
+                            (t_desc == title or t_desc == legacy_prefixed)
                             and t.get("status") == "completed"
                         ):
                             has_completed = True
@@ -2252,17 +2289,17 @@ def sync(
             if not has_completed:
                 continue
             click.echo()
-            click.echo(f"  TW orphan: {prefixed}")
+            click.echo(f"  TW orphan: {desc}")
             click.echo(f"    uuid: {uuid[:8]}")
             click.echo("    has completed history in TW")
             if not click.confirm("  COMPLETE this task?", default=False):
                 continue
             result = run(["task", "rc.confirmation:off", uuid, "done"])
             if result.returncode == 0:
-                click.echo(f"  ~ Completed: {prefixed}")
+                click.echo(f"  ~ Completed: {desc}")
                 complete_count += 1
             else:
-                click.echo(f"  ! Failed to complete: {prefixed}")
+                click.echo(f"  ! Failed to complete: {desc}")
         if complete_count:
             click.echo()
             click.echo(f"Completed {complete_count} orphan(s).")
