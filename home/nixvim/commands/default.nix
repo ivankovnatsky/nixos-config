@@ -1,8 +1,9 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 let
   copyPathScript = builtins.readFile ./copy-path.vim;
   prScript = builtins.readFile ./pr.vim;
   completionScript = builtins.readFile ./completion.vim;
+  nixConfigPath = "${config.flags.homeWorkPath}/Sources/github.com/ivankovnatsky/nix-config";
 in
 {
   programs.nixvim = {
@@ -15,7 +16,7 @@ in
     userCommands = {
       # TODO: Move all defined commands here in this file
       RebuildWatchman = {
-        command = "botright split | terminal cd ~/Sources/github.com/ivankovnatsky/nix-config && make rebuild-watchman";
+        command = "botright split | terminal cd ${nixConfigPath} && make rebuild-watchman";
         desc = "Open terminal and run watchman rebuild command.";
         bang = true;
         bar = true;
@@ -28,7 +29,7 @@ in
       };
       SpellToggle = {
         command = "if &spell | set nospell | else | set spell | endif";
-        desc = "Toggle mouse.";
+        desc = "Toggle spell check.";
         bang = true;
         bar = true;
       };
