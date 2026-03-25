@@ -160,6 +160,7 @@ def sync_repo(repo, webhook_url=None):
         return True
 
     ok = True
+    actions = []
 
     # Fetch
     result = run_git("fetch", remote, cwd=path, check=False)
@@ -183,13 +184,22 @@ def sync_repo(repo, webhook_url=None):
         if current_branch != branch:
             print(f"  Skip pull: HEAD is on {current_branch!r}, not {branch!r}", file=sys.stderr)
         else:
+            local_before = run_git("rev-parse", branch, cwd=path, check=False).stdout.strip()
             result = run_git("merge", "--ff-only", f"{remote}/{branch}", cwd=path, check=False)
             if result.returncode != 0:
                 alert(webhook_url, f"`{name}`: pull failed (not fast-forward) — resolve manually")
                 ok = False
+            else:
+                local_after = run_git("rev-parse", branch, cwd=path, check=False).stdout.strip()
+                if local_before != local_after:
+                    count = run_git("rev-list", "--count", f"{local_before}..{local_after}", cwd=path, check=False)
+                    n = count.stdout.strip() if count.returncode == 0 else "?"
+                    actions.append(f"pulled {n} commit(s)")
 
     # Push
     if local_exists:
+        local_sha = run_git("rev-parse", branch, cwd=path, check=False).stdout.strip()
+        remote_sha = run_git("rev-parse", f"{remote}/{branch}", cwd=path, check=False).stdout.strip() if remote_exists else None
         result = run_git("push", remote, branch, cwd=path, check=False)
         if result.returncode != 0:
             stderr = result.stderr.strip()
@@ -198,10 +208,16 @@ def sync_repo(repo, webhook_url=None):
             else:
                 alert(webhook_url, f"`{name}`: push failed — {stderr}")
             ok = False
-        else:
-            print(f"  OK", file=sys.stderr)
+        elif remote_sha and local_sha != remote_sha:
+            count = run_git("rev-list", "--count", f"{remote_sha}..{local_sha}", cwd=path, check=False)
+            n = count.stdout.strip() if count.returncode == 0 else "?"
+            actions.append(f"pushed {n} commit(s)")
     elif not remote_exists:
         print(f"  Skip: no local or remote branch yet", file=sys.stderr)
+
+    if ok:
+        summary = ", ".join(actions) if actions else "up to date"
+        print(f"  OK ({summary})", file=sys.stderr)
 
     return ok
 
