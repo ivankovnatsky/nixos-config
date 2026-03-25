@@ -3,8 +3,10 @@
     # ./gamemode.nix
     ../../../modules/flags
     # ./smb.nix
+    ../../../modules/nixos/reposync
     ../../../modules/nixos/syncthing-mgmt
     ../../../modules/nixos/tools
+    ../../../system/sops-secrets.nix
     ../../../nixos/chromium.nix
     ../../../nixos/keyboard.nix
     ../../../nixos/sudo.nix
@@ -26,6 +28,7 @@
     ./remote-build.nix
     ./security.nix
     ./steam.nix
+    ./reposync.nix
     ./syncthing-mgmt.nix
     ./tpm2.nix
     ./user.nix
