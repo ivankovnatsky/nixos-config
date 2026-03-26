@@ -16,7 +16,6 @@
     shell = pkgs.bash;
     openssh.authorizedKeys.keys = lib.filter (k: k != "") [
       config.flags.sshKeys.air
-      config.flags.sshKeys.steamdeck
     ];
   };
 
