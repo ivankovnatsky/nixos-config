@@ -225,21 +225,47 @@ def create_user_token(base_url: str, username: str, password: str, token_name: s
     return response.json().get("sha1", "")
 
 
+def get_key_id_from_armored(armored_key: str) -> str:
+    """Extract the primary key ID from an armored GPG public key using gpg."""
+    try:
+        result = subprocess.run(
+            ["gpg", "--with-colons", "--import-options", "show-only", "--import"],
+            input=armored_key,
+            capture_output=True,
+            text=True,
+        )
+        for line in result.stdout.splitlines():
+            fields = line.split(":")
+            if fields[0] == "pub":
+                return fields[4]  # long key ID
+    except (FileNotFoundError, IndexError):
+        pass
+    return ""
+
+
 def upload_gpg_key(base_url: str, username: str, password: str, armored_key: str):
     """Upload a GPG public key for a user using basic auth."""
-    # Check if user already has GPG keys
+    wanted_key_id = get_key_id_from_armored(armored_key)
+
+    # Check existing GPG keys using authenticated endpoint
     try:
         response = requests.get(
-            f"{base_url}/api/v1/users/{username}/gpg_keys",
+            f"{base_url}/api/v1/user/gpg_keys",
+            auth=(username, password),
             timeout=10,
         )
         if response.status_code == 200:
             existing_keys = response.json()
-            if existing_keys:
+            for key in existing_keys:
+                existing_id = key.get("primary_key_id") or key.get("key_id", "")
+                if wanted_key_id and existing_id and existing_id.endswith(wanted_key_id[-16:]):
+                    print(f"  GPG key already exists for {username} (key ID: {existing_id}), skipping", file=sys.stderr)
+                    return
+            if not wanted_key_id and existing_keys:
                 print(f"  GPG key already exists for {username} ({len(existing_keys)} key(s)), skipping", file=sys.stderr)
                 return
-    except requests.exceptions.RequestException:
-        pass
+    except requests.exceptions.RequestException as e:
+        print(f"  WARNING: Could not check existing GPG keys for {username}: {e}", file=sys.stderr)
 
     print(f"  Uploading GPG key for {username}...", file=sys.stderr)
     response = requests.post(
@@ -253,7 +279,7 @@ def upload_gpg_key(base_url: str, username: str, password: str, armored_key: str
         key_id = key_data.get("primary_key_id") or key_data.get("key_id", "unknown")
         print(f"  GPG key uploaded for {username} (key ID: {key_id})", file=sys.stderr)
     elif response.status_code == 422:
-        print(f"  GPG key rejected (422) for {username}: {response.text}", file=sys.stderr)
+        print(f"  GPG key already exists for {username} (server rejected duplicate)", file=sys.stderr)
     else:
         print(f"  WARNING: Failed to upload GPG key for {username}: {response.text}", file=sys.stderr)
 
