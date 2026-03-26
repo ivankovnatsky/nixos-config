@@ -42,7 +42,7 @@ let
     destinations:
       - type: podservice
         enabled: true
-        url: https://podservice.@EXTERNAL_DOMAIN@
+        url: http://localhost:8083
 
     server:
       enabled: true
@@ -50,12 +50,9 @@ let
       port: 8084
   '';
 
-  # Substitute secrets at runtime
+  # Copy config to runtime location (no secret substitution needed)
   runtimeConfigFile = pkgs.writeShellScript "textcast-config-gen" ''
-    EXTERNAL_DOMAIN=$(cat ${config.sops.secrets.external-domain.path})
-    ${pkgs.gnused}/bin/sed \
-      -e "s|@EXTERNAL_DOMAIN@|$EXTERNAL_DOMAIN|g" \
-      ${configFile}
+    cat ${configFile}
   '';
 
   # Wrapper script to set environment variables from secrets
