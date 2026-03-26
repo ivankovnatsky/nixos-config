@@ -14,6 +14,7 @@
     gnumake
     gpg-pass-refresh
     gum
+    gwq
     jq
     kdePackages.krdc # KDE Remote Desktop Client
     kwalletcli # Provides pinentry-kwallet for GPG integration
