@@ -336,9 +336,8 @@ def appearance(init):
     if init:
         appearance_get_state_dir().mkdir(parents=True, exist_ok=True)
         state_file = appearance_get_state_file()
-        today = date.today().isoformat()
-        if state_file.exists() and state_file.read_text().strip() == today:
-            print("Skipping appearance init (manual toggle was run today)")
+        if state_file.exists():
+            print("Skipping appearance init (already configured)")
             return
         appearance_set_dark_mode(True)
         print("Initialized appearance")
