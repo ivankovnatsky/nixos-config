@@ -1,7 +1,0 @@
-{ ... }:
-
-{
-  programs.btop = {
-    enable = true;
-  };
-}
