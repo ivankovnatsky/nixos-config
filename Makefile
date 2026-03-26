@@ -13,7 +13,6 @@
 	flake-update-darwin-release \
 	flake-update-nixos-unstable \
 	flake-update-nixos-release \
-	flake-update-nixos-steamdeck-unstable \
 	flake-update-nixvim \
 	flake-update-homebrew \
 	\
@@ -123,13 +122,7 @@ flake-update-nixos-release:
 	done
 
 flake-update-nixvim:
-	inputs="nixvim-darwin-unstable nixvim-darwin-release nixvim-nixos-unstable nixvim-nixos-release nixvim-nixos-steamdeck-unstable"; \
-	for input in $$inputs; do \
-		$(NIX) flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
-	done
-
-flake-update-nixos-steamdeck-unstable:
-	inputs="nixpkgs-nixos-steamdeck-unstable home-manager-nixos-steamdeck-unstable plasma-manager-nixos-steamdeck-unstable sops-nix-nixos-steamdeck-unstable nur-nixos-steamdeck-unstable jovian-nixos-steamdeck-unstable"; \
+	inputs="nixvim-darwin-unstable nixvim-darwin-release nixvim-nixos-unstable nixvim-nixos-release"; \
 	for input in $$inputs; do \
 		$(NIX) flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
 	done
