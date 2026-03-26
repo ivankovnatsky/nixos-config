@@ -11,6 +11,7 @@
     ../../../nixos/keyboard.nix
     ../../../nixos/sudo.nix
     ../../../system/nix.nix
+    ../../../system/reposync.nix
     ./bluetooth.nix
     ./boot.nix
     ./configuration.nix
