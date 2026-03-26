@@ -202,11 +202,6 @@ with lib;
         description = "Mac mini SSH public key";
         default = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKQLGp4dAt11hMxOTkKCrPoTnQmXO3MNk9fgveK6NJll ivan@Ivans-Mac-mini";
       };
-      steamdeck = mkOption {
-        type = types.str;
-        description = "Steam Deck SSH public key (for remote builds)";
-        default = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAKmb4zKrwupAKlr7xITlLp6Ut3P1UFl6ea3NHlYFClH ivan@steamdeck";
-      };
     };
 
     homeWorkPath = mkOption {
