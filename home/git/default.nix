@@ -127,6 +127,8 @@ EOF
 
         # includeIf rules pointing to forgejo.inc
         cat > "$HOME/.config/git/forgejo-includes.inc" << EOF
+[includeIf "gitdir:$HOME/.git"]
+	path = ~/.config/git/forgejo.inc
 [includeIf "gitdir:$NOTES_PATH/"]
 	path = ~/.config/git/forgejo.inc
 EOF
