@@ -43,6 +43,7 @@
     erdtree
     ffmpeg
     go-grip
+    gwq
     poppler-utils
     nextdns-mgmt
     nixfmt-rfc-style
