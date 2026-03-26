@@ -12,6 +12,12 @@ let
 
   repoSubmodule = types.submodule {
     options = {
+      name = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = "Display name for logs (defaults to basename of path)";
+      };
+
       path = mkOption {
         type = types.str;
         description = "Absolute path to the local git repository";
