@@ -36,6 +36,7 @@
     ../../../../system/documentation.nix
     ../../../../system/nix.nix
     ../../../../system/sops-secrets.nix
+    ../../../../system/reposync.nix
     ./audiobookshelf
     ./beszel.nix
     ./bin.nix
