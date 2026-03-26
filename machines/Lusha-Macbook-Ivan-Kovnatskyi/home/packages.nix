@@ -61,6 +61,7 @@
     glow
     go-grip
     gofumpt
+    gwq
     golangci-lint
     google-cloud-sdk
     grpcui
