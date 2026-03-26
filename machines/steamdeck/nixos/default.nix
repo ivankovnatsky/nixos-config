@@ -1,12 +1,16 @@
 {
   imports = [
     ../../../modules/flags
+    ../../../modules/nixos/reposync
     ../../../modules/nixos/syncthing-mgmt
     ../../../modules/nixos/tools
     ../../../nixos/chromium.nix
     ../../../nixos/keyboard.nix
     ../../../nixos/sudo.nix
     ../../../system/nix.nix
+    ../../../system/sops-secrets.nix
+    ../../../system/reposync.nix
+    ../../a3/nixos/reposync.nix
     ./bluetooth.nix
     ./boot.nix
     ./configuration.nix
