@@ -30,6 +30,7 @@
     ./security.nix
     ./steam.nix
     ./reposync.nix
+    ./reposync-notes.nix
     ./syncthing-mgmt.nix
     ./tpm2.nix
     ./user.nix
