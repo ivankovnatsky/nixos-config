@@ -27,13 +27,16 @@
     ../../../modules/darwin/nextdns-mgmt
     ../../../modules/darwin/taskwarrior-notify
     ../../../modules/darwin/pam
+    ../../../modules/darwin/reposync
     ../../../modules/darwin/sudo
     ../../../modules/darwin/syncthing-mgmt
     ../../../modules/flags
     ../../../system/documentation.nix
     ../../../system/nix.nix
     ../../../system/sops-secrets.nix
+    ../../../system/reposync.nix
     ./dock.nix
+    ./reposync.nix
     ./users.nix
   ];
 }
