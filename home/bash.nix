@@ -1,6 +1,18 @@
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+
+let
+  shellAliases = import ./aliases.nix { inherit config lib pkgs; };
+
+in
+{
   programs.bash = {
     enable = true;
+    inherit shellAliases;
     historySize = 0;
     historyFile = "/dev/null";
     historyControl = [
