@@ -14,7 +14,6 @@ in
         "Ivans-MacBook-Air"
         "Lusha-Macbook-Ivan-Kovnatskyi"
         "a3"
-        "steamdeck"
       ];
     };
   };
