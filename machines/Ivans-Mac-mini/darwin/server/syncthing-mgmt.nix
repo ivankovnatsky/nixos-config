@@ -29,7 +29,6 @@
       "Ivans-MacBook-Pro"
       "Ivans-MacBook-Air"
       "Lusha-Macbook-Ivan-Kovnatskyi"
-      "steamdeck"
     ];
 
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
@@ -63,7 +62,6 @@
           "Ivans-MacBook-Air"
           "Lusha-Macbook-Ivan-Kovnatskyi"
           "a3"
-          "steamdeck"
         ];
       };
     };
