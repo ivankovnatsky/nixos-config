@@ -85,7 +85,8 @@ def init_repo(repo, webhook_url=None):
     remote = repo["remote"]
     remote_url = repo["remoteUrl"]
     branch = repo["branch"]
-    name = f"{os.path.basename(path)} ({remote}/{branch})"
+    display = repo.get("name") or os.path.basename(path)
+    name = f"{display} ({remote}/{branch})"
 
     print(f"Init: {name}", file=sys.stderr)
 
@@ -143,7 +144,8 @@ def sync_repo(repo, webhook_url=None):
     path = repo["path"]
     remote = repo["remote"]
     branch = repo["branch"]
-    name = f"{os.path.basename(path)} ({remote}/{branch})"
+    display = repo.get("name") or os.path.basename(path)
+    name = f"{display} ({remote}/{branch})"
 
     print(f"Sync: {name}", file=sys.stderr)
 
@@ -226,7 +228,8 @@ def status_repo(repo):
     path = repo["path"]
     remote = repo["remote"]
     branch = repo["branch"]
-    name = f"{os.path.basename(path)} ({remote}/{branch})"
+    display = repo.get("name") or os.path.basename(path)
+    name = f"{display} ({remote}/{branch})"
 
     if not os.path.isdir(path) or not os.path.isdir(os.path.join(path, ".git")):
         print(f"{name}: not a repo")
