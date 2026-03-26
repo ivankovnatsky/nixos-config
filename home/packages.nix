@@ -23,6 +23,7 @@
     git-message
     gpg-pass-refresh
     go-grip
+    gwq
     homelab
     hyperfine
     launchd-mgmt
