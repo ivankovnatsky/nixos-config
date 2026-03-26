@@ -11,6 +11,9 @@ let
       inherit (prev.linuxPackages.nvidia_x11.settings) libXNVCtrl;
       mangohud32 = prev.pkgsi686Linux.mangohud;
     };
+    gwq = {
+      inherit (masterOverlays.nixpkgs-darwin-master-gwq) go_1_26;
+    };
   };
 
   autoOverlays = builtins.foldl' (
@@ -51,6 +54,10 @@ let
       config = safeConfig;
     };
     nixpkgs-darwin-master-ytdlp = import inputs.nixpkgs-darwin-master-ytdlp {
+      inherit system;
+      config = safeConfig;
+    };
+    nixpkgs-darwin-master-gwq = import inputs.nixpkgs-darwin-master-gwq {
       inherit system;
       config = safeConfig;
     };
