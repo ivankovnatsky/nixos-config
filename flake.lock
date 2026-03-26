@@ -777,6 +777,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-darwin-master-gwq": {
+      "locked": {
+        "lastModified": 1774553332,
+        "narHash": "sha256-L/ngUnBCBB5iN3qPZn/10iqSfdCX/P9+9+CkGzvyTEs=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "c54fdaedc1a65f8a053e1c2256ec6460c6e5f535",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "master",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-darwin-master-opencode": {
       "locked": {
         "lastModified": 1768473790,
@@ -1416,6 +1432,7 @@
         "nix-openclaw": "nix-openclaw",
         "nixpkgs-darwin-master": "nixpkgs-darwin-master",
         "nixpkgs-darwin-master-beszel": "nixpkgs-darwin-master-beszel",
+        "nixpkgs-darwin-master-gwq": "nixpkgs-darwin-master-gwq",
         "nixpkgs-darwin-master-opencode": "nixpkgs-darwin-master-opencode",
         "nixpkgs-darwin-master-ytdlp": "nixpkgs-darwin-master-ytdlp",
         "nixpkgs-darwin-old-release": "nixpkgs-darwin-old-release",
