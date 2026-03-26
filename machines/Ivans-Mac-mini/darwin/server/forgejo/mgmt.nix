@@ -54,6 +54,12 @@
 
     repositories = [
       {
+        name = "home";
+        owner = "forgejouser";
+        description = "Home directory";
+        private = true;
+      }
+      {
         name = "notes";
         owner = "forgejouser";
         description = "";
