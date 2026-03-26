@@ -234,12 +234,14 @@ def get_key_id_from_armored(armored_key: str) -> str:
             capture_output=True,
             text=True,
         )
-        for line in result.stdout.splitlines():
-            fields = line.split(":")
-            if fields[0] == "pub":
-                return fields[4]  # long key ID
-    except (FileNotFoundError, IndexError):
-        pass
+    except FileNotFoundError:
+        return ""
+    if result.returncode != 0:
+        return ""
+    for line in result.stdout.splitlines():
+        fields = line.split(":")
+        if fields[0] == "pub" and len(fields) > 4:
+            return fields[4]  # long key ID
     return ""
 
 
@@ -258,7 +260,7 @@ def upload_gpg_key(base_url: str, username: str, password: str, armored_key: str
             existing_keys = response.json()
             for key in existing_keys:
                 existing_id = key.get("primary_key_id") or key.get("key_id", "")
-                if wanted_key_id and existing_id and existing_id.endswith(wanted_key_id[-16:]):
+                if wanted_key_id and len(wanted_key_id) >= 16 and existing_id and existing_id.endswith(wanted_key_id[-16:]):
                     print(f"  GPG key already exists for {username} (key ID: {existing_id}), skipping", file=sys.stderr)
                     return
             if not wanted_key_id and existing_keys:
@@ -279,7 +281,7 @@ def upload_gpg_key(base_url: str, username: str, password: str, armored_key: str
         key_id = key_data.get("primary_key_id") or key_data.get("key_id", "unknown")
         print(f"  GPG key uploaded for {username} (key ID: {key_id})", file=sys.stderr)
     elif response.status_code == 422:
-        print(f"  GPG key already exists for {username} (server rejected duplicate)", file=sys.stderr)
+        print(f"  GPG key already exists for {username} (server rejected duplicate): {response.text}", file=sys.stderr)
     else:
         print(f"  WARNING: Failed to upload GPG key for {username}: {response.text}", file=sys.stderr)
 
