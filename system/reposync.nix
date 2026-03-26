@@ -17,12 +17,6 @@
         remoteUrl = "https://forgejo.@domain@/forgejouser/home.git";
         branch = "main";
       }
-      {
-        path = "${config.users.users.${username}.home}/Notes";
-        remote = "origin";
-        remoteUrl = "https://forgejo.@domain@/forgejouser/notes.git";
-        branch = "main";
-      }
     ];
   };
 }
