@@ -32,7 +32,7 @@ def run_git(*args, cwd=None, check=True, timeout=GIT_TIMEOUT):
     except subprocess.TimeoutExpired:
         return subprocess.CompletedProcess(args, 1, "", f"git {args[0]} timed out after {timeout}s")
     if check and result.returncode != 0:
-        print(f"  Error: {result.stderr.strip()}", file=sys.stderr)
+        print(f"Error: {result.stderr.strip()}", file=sys.stderr)
     return result
 
 
@@ -55,7 +55,7 @@ def send_discord(webhook_url, message):
     try:
         urllib.request.urlopen(req, timeout=10)
     except Exception as e:
-        print(f"  Discord notification failed: {e}", file=sys.stderr)
+        print(f"Discord notification failed: {e}", file=sys.stderr)
 
 
 def load_config(config_file):
@@ -75,7 +75,7 @@ def get_discord_webhook(config):
 
 
 def alert(webhook_url, message):
-    print(f"  ALERT: {message}", file=sys.stderr)
+    print(f"ALERT: {message}", file=sys.stderr)
     if webhook_url:
         send_discord(webhook_url, message)
 
@@ -88,15 +88,13 @@ def init_repo(repo, webhook_url=None):
     display = repo.get("name") or os.path.basename(path)
     name = f"{display} ({remote}/{branch})"
 
-    print(f"Init: {name}", file=sys.stderr)
-
     if not os.path.isdir(path):
-        print(f"  Skip: {path} does not exist", file=sys.stderr)
+        print(f"{name}: skip ({path} does not exist)", file=sys.stderr)
         return True
 
     git_dir = os.path.join(path, ".git")
     if not os.path.isdir(git_dir):
-        print(f"  Initializing git repo at {path}", file=sys.stderr)
+        print(f"{name}: initializing git repo at {path}", file=sys.stderr)
         result = run_git("init", cwd=path)
         if result.returncode != 0:
             alert(webhook_url, f"`{name}`: git init failed")
@@ -105,13 +103,13 @@ def init_repo(repo, webhook_url=None):
     # Ensure remote exists with correct URL
     result = run_git("remote", "get-url", remote, cwd=path, check=False)
     if result.returncode != 0:
-        print(f"  Adding remote {remote} -> {remote_url}", file=sys.stderr)
+        print(f"{name}: adding remote {remote} -> {remote_url}", file=sys.stderr)
         run_git("remote", "add", remote, remote_url, cwd=path)
     elif result.stdout.strip() != remote_url:
-        print(f"  Updating remote {remote} -> {remote_url}", file=sys.stderr)
+        print(f"{name}: updating remote {remote} -> {remote_url}", file=sys.stderr)
         run_git("remote", "set-url", remote, remote_url, cwd=path)
     else:
-        print(f"  Remote {remote} OK", file=sys.stderr)
+        print(f"{name}: remote {remote} OK", file=sys.stderr)
 
     # Fetch from remote
     result = run_git("fetch", remote, cwd=path, check=False)
@@ -125,18 +123,18 @@ def init_repo(repo, webhook_url=None):
         # Local branch doesn't exist — check if remote branch does
         result = run_git("rev-parse", "--verify", f"{remote}/{branch}", cwd=path, check=False)
         if result.returncode == 0:
-            print(f"  Creating branch {branch} tracking {remote}/{branch}", file=sys.stderr)
+            print(f"{name}: creating branch {branch} tracking {remote}/{branch}", file=sys.stderr)
             result = run_git("checkout", "-b", branch, "--track", f"{remote}/{branch}", cwd=path, check=False)
             if result.returncode != 0:
                 alert(webhook_url, f"`{name}`: failed to create branch {branch} — {result.stderr.strip()}")
                 return False
         else:
-            print(f"  Branch {branch} not on remote yet (will be created on first push)", file=sys.stderr)
+            print(f"{name}: branch {branch} not on remote yet (will be created on first push)", file=sys.stderr)
     else:
         # Set upstream tracking
         run_git("branch", "-u", f"{remote}/{branch}", branch, cwd=path, check=False)
 
-    print(f"  Init complete", file=sys.stderr)
+    print(f"{name}: init complete", file=sys.stderr)
     return True
 
 
@@ -147,18 +145,16 @@ def sync_repo(repo, webhook_url=None):
     display = repo.get("name") or os.path.basename(path)
     name = f"{display} ({remote}/{branch})"
 
-    print(f"Sync: {name}", file=sys.stderr)
-
     if not os.path.isdir(path):
-        print(f"  Skip: {path} does not exist", file=sys.stderr)
+        print(f"{name}: skip ({path} does not exist)", file=sys.stderr)
         return True
 
     if not os.path.isdir(os.path.join(path, ".git")):
-        print(f"  Skip: {path} is not a git repo", file=sys.stderr)
+        print(f"{name}: skip (not a git repo)", file=sys.stderr)
         return True
 
     if has_git_lock(path):
-        print(f"  Skip: git lock file exists", file=sys.stderr)
+        print(f"{name}: skip (git lock file exists)", file=sys.stderr)
         return True
 
     ok = True
@@ -184,7 +180,7 @@ def sync_repo(repo, webhook_url=None):
         current_branch = head_ref.stdout.strip() if head_ref.returncode == 0 else None
 
         if current_branch != branch:
-            print(f"  Skip pull: HEAD is on {current_branch!r}, not {branch!r}", file=sys.stderr)
+            print(f"{name}: skip pull (HEAD is on {current_branch!r}, not {branch!r})", file=sys.stderr)
         else:
             local_before = run_git("rev-parse", branch, cwd=path, check=False).stdout.strip()
             result = run_git("merge", "--ff-only", f"{remote}/{branch}", cwd=path, check=False)
@@ -215,11 +211,11 @@ def sync_repo(repo, webhook_url=None):
             n = count.stdout.strip() if count.returncode == 0 else "?"
             actions.append(f"pushed {n} commit(s)")
     elif not remote_exists:
-        print(f"  Skip: no local or remote branch yet", file=sys.stderr)
+        print(f"{name}: skip (no local or remote branch yet)", file=sys.stderr)
 
     if ok:
         summary = ", ".join(actions) if actions else "up to date"
-        print(f"OK ({summary})", file=sys.stderr)
+        print(f"{name}: OK ({summary})", file=sys.stderr)
 
     return ok
 
