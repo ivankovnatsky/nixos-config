@@ -7,6 +7,7 @@
     power-consumption
     find-grep
     gpg-pass-refresh
+    gwq
     rg-all
     rg-find
     taskmanager
