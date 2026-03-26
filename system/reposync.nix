@@ -12,6 +12,7 @@
 
     repositories = [
       {
+        name = "home";
         path = "${config.users.users.${username}.home}";
         remote = "origin";
         remoteUrl = "https://forgejo.@domain@/swedishunhorned/home.git";
