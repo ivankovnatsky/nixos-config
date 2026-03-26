@@ -201,8 +201,9 @@ def create_backup(
             return False
 
         # bsdtar exit 1 = non-fatal warnings (permission denied, file changed)
-        if tar_proc.returncode == 1:
-            if ignore_tar_warnings:
+        # GNU tar exit 2 = permission denied on some files
+        if tar_proc.returncode != 0:
+            if ignore_tar_warnings and tar_proc.returncode in (1, 2):
                 print(
                     "Warning: tar completed with non-fatal errors (some files skipped)",
                     file=sys.stderr,
@@ -210,9 +211,6 @@ def create_backup(
             else:
                 print("Backup creation failed", file=sys.stderr)
                 return False
-        elif tar_proc.returncode > 1:
-            print("Backup creation failed", file=sys.stderr)
-            return False
 
         return True
     except Exception as e:
