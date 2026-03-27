@@ -217,11 +217,6 @@
               };
             }
           )
-          (_final: prev: {
-            taskwarrior-web = prev.callPackage ../../overlays/taskwarrior-web {
-              npmDepsHash = "sha256-i7LvbsJ0N86UHQgo2MtgkCfOYBUIOOK8e0hQxO2qteg=";
-            };
-          })
         ];
         nixpkgs.config.allowUnfree = true;
         nix.nixPath = [
