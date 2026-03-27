@@ -23,6 +23,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 from datetime import date
 from pathlib import Path
 
@@ -1298,11 +1299,10 @@ end tell
 
 
 def windows_close(app_name: str) -> bool:
-    """Close all windows of an app using AppleScript.
+    """Close all windows of an app using Cmd+Option+W keystroke.
 
-    Activates the app first to bring windows from other Spaces,
-    then closes all windows by clicking button 1 (close button),
-    and finally hides the app so it doesn't stay in focus.
+    Works across Spaces and with SwiftUI apps that don't expose
+    standard window elements to the accessibility API.
     App name matching is case-insensitive.
     """
     exact_name = windows_find_process(app_name)
@@ -1311,23 +1311,13 @@ def windows_close(app_name: str) -> bool:
 
     script = f"""
 tell application "System Events"
-    tell application "{exact_name}" to activate
-    delay 0.5
     tell process "{exact_name}"
-        set windowCount to count of windows
-        if windowCount > 0 then
-            repeat with w in windows
-                try
-                    click button 1 of w
-                end try
-            end repeat
-            delay 0.2
-            set visible to false
-            return "closed"
-        else
-            set visible to false
-            return "no windows"
-        end if
+        set frontmost to true
+        delay 0.5
+        keystroke "w" using {{command down, option down}}
+        delay 0.2
+        set visible to false
+        return "closed"
     end tell
 end tell
 """
@@ -1340,6 +1330,42 @@ end tell
         return "closed" in result.stdout
     except subprocess.CalledProcessError:
         return False
+
+
+def windows_quit(app_name: str) -> bool:
+    """Quit an app using Cmd+Q keystroke.
+
+    Sends Cmd+Q then verifies the process has exited.
+    Works across Spaces. App name matching is case-insensitive.
+    """
+    exact_name = windows_find_process(app_name)
+    if not exact_name:
+        return False
+
+    script = f"""
+tell application "System Events"
+    tell process "{exact_name}"
+        set frontmost to true
+        delay 0.5
+        keystroke "q" using command down
+    end tell
+end tell
+"""
+    try:
+        subprocess.run(
+            ["osascript", "-e", script],
+            capture_output=True,
+            text=True,
+        )
+    except subprocess.CalledProcessError:
+        return False
+
+    # Wait up to 5 seconds for the process to actually exit
+    for _ in range(10):
+        time.sleep(0.5)
+        if not windows_find_process(app_name):
+            return True
+    return False
 
 
 def windows_hide(app_name: str) -> bool:
@@ -1390,10 +1416,11 @@ end tell
 
 
 @cli.command()
-@click.argument("action", type=click.Choice(["list", "close", "hide"]))
+@click.argument("action", type=click.Choice(["list", "close", "quit", "hide"]))
 @click.argument("apps", nargs=-1)
-def windows(action, apps):
-    """Close/hide app windows (macOS only)"""
+@click.option("--wait", default=0, type=int, help="Poll interval in seconds; retry until success or timeout (18 attempts)")
+def windows(action, apps, wait):
+    """Close/hide/quit app windows (macOS only)"""
     if not is_macos():
         print("Windows management only available on macOS", file=sys.stderr)
         sys.exit(1)
@@ -1412,12 +1439,45 @@ def windows(action, apps):
         if not apps:
             print("Error: app name(s) required for close action", file=sys.stderr)
             sys.exit(1)
-        for app in apps:
-            if windows_close(app):
-                print(f"Closed windows of {app}")
-            else:
-                print(f"Could not close windows of {app} (not running or no windows)")
-        return
+        remaining = list(apps)
+        max_attempts = 18 if wait > 0 else 1
+        for attempt in range(1, max_attempts + 1):
+            still_remaining = []
+            for app in remaining:
+                if windows_close(app):
+                    print(f"Closed windows of {app}")
+                else:
+                    still_remaining.append(app)
+            remaining = still_remaining
+            if not remaining:
+                return
+            if attempt < max_attempts:
+                time.sleep(wait)
+        for app in remaining:
+            print(f"Could not close windows of {app} (not running or no windows)")
+        sys.exit(1)
+
+    if action == "quit":
+        if not apps:
+            print("Error: app name(s) required for quit action", file=sys.stderr)
+            sys.exit(1)
+        remaining = list(apps)
+        max_attempts = 18 if wait > 0 else 1
+        for attempt in range(1, max_attempts + 1):
+            still_remaining = []
+            for app in remaining:
+                if windows_quit(app):
+                    print(f"Quit {app}")
+                else:
+                    still_remaining.append(app)
+            remaining = still_remaining
+            if not remaining:
+                return
+            if attempt < max_attempts:
+                time.sleep(wait)
+        for app in remaining:
+            print(f"Could not quit {app} (not running)")
+        sys.exit(1)
 
     if action == "hide":
         if not apps:
