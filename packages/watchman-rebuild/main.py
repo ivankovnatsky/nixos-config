@@ -387,10 +387,10 @@ def run_rebuild(config_path, command):
         )
         reset_terminal()
         if result.returncode == 0:
-            logging.info("✅ Rebuild successful")
+            logging.info("Rebuild successful")
             send_notification(True)
         else:
-            logging.error(f"❌ Rebuild failed with exit code {result.returncode}")
+            logging.error(f"Rebuild failed with exit code {result.returncode}")
             send_notification(False)
         return (result.returncode, True)
     finally:
