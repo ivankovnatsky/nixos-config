@@ -169,11 +169,6 @@
         description = "Perlite notes server";
       }
       {
-        name = "taskwarrior-web";
-        url = "http://${config.flags.machineLocalAddress}:8087";
-        description = "Taskwarrior web interface";
-      }
-      {
         name = "mailpit";
         url = "http://${config.flags.machineLocalAddress}:8025";
         description = "Mailpit email testing UI";
