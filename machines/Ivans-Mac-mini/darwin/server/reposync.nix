@@ -12,7 +12,6 @@
       remote = "origin";
       remoteUrl = "https://forgejo.@domain@/swedishunhorned/notes.git";
       branch = "main";
-      syncMode = "push-only";
     }
   ];
 }
