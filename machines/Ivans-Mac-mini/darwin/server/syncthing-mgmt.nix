@@ -33,15 +33,6 @@
 
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
     folders = {
-      "simcity4" = {
-        path = "/Volumes/Storage/Data/Backup/GameSaves/SimCity4";
-        label = "Backup/GameSaves/SimCity4";
-        devices = [
-          "Ivans-Mac-mini"
-          "a3"
-        ];
-      };
-
       "taskwarrior" = {
         path = "${config.users.users.${username}.home}/.task";
         label = ".task";
