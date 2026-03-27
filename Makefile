@@ -24,13 +24,12 @@
 	rebuild-darwin \
 	verbose \
 	debug \
-	rebuild-loop \
+	rebuild \
+	rebuild-watch \
 	rebuild-watch-loop \
+	rebuild-loop \
 	\
 	test-build \
-	rebuild-watchman \
-	rebuild-watchman-nixos \
-	rebuild-watchman-darwin \
 	\
 	devcontainer \
 	devcontainer-rebuild
@@ -133,19 +132,6 @@ flake-update-homebrew:
 		$(NIX) flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
 	done
 
-# Function to send notifications with fallbacks
-define notify_linux
-	if [ -n "$$DISPLAY" ] && command -v notify-send >/dev/null 2>&1; then \
-		notify-send "$(1)" "Nix configuration" 2>/dev/null || echo "$(1)"; \
-	elif [ -n "$$DISPLAY" ] && command -v kdialog >/dev/null 2>&1; then \
-		kdialog --passivepopup "$(1)" 5 2>/dev/null || echo "$(1)"; \
-	elif [ -n "$$DISPLAY" ] && command -v zenity >/dev/null 2>&1; then \
-		zenity --info --text="$(1)" --timeout=5 2>/dev/null || echo "$(1)"; \
-	else \
-		echo "$(1)"; \
-	fi
-endef
-
 # Test build for current machine (dry-run, no switch)
 HOSTNAME := $(shell hostname)
 ifeq (${PLATFORM}, Darwin)
@@ -158,47 +144,37 @@ endif
 
 # NixOS rebuild targets
 rebuild-nixos/generic: addall
-	sudo -H -E $(NIXOS_REBUILD) switch $(COMMON_REBUILD_FLAGS) && \
-		$(call notify_linux,🟢 NixOS rebuild successful!) || \
-		$(call notify_linux,🔴 NixOS rebuild failed!)
+	sudo -H -E $(NIXOS_REBUILD) switch $(COMMON_REBUILD_FLAGS)
 
 rebuild-nixos/impure: addall
-	sudo -H -E $(NIXOS_REBUILD) switch --impure $(COMMON_REBUILD_FLAGS) && \
-		$(call notify_linux,🟢 NixOS rebuild successful!) || \
-		$(call notify_linux,🔴 NixOS rebuild failed!)
+	sudo -H -E $(NIXOS_REBUILD) switch --impure $(COMMON_REBUILD_FLAGS)
 
 rebuild-nixos/a3:
-	sudo $(NIXOS_REBUILD) switch $(COMMON_REBUILD_FLAGS) --build-host a3 && \
-		$(call notify_linux,🟢 NixOS rebuild successful (built on a3)!) || \
-		$(call notify_linux,🔴 NixOS rebuild failed!)
+	sudo $(NIXOS_REBUILD) switch $(COMMON_REBUILD_FLAGS) --build-host a3
 
 rebuild-nixos/a3-user:
-	$(NIXOS_REBUILD) switch $(COMMON_REBUILD_FLAGS) --build-host a3 --sudo && \
-		$(call notify_linux,🟢 NixOS rebuild successful (built on a3)!) || \
-		$(call notify_linux,🔴 NixOS rebuild failed!)
+	$(NIXOS_REBUILD) switch $(COMMON_REBUILD_FLAGS) --build-host a3 --sudo
 
 # Darwin-specific rebuild target
 rebuild-darwin: addall
 	# NIXPKGS_ALLOW_UNFREE=1 is needed for unfree packages like codeium when using --impure
-	NIXPKGS_ALLOW_UNFREE=1 sudo -H -E $(DARWIN_REBUILD) switch --impure $(COMMON_REBUILD_FLAGS) && \
-		osascript -e 'display notification "🟢 Darwin rebuild successful!" with title "Nix configuration"' || \
-		osascript -e 'display notification "🔴 Darwin rebuild failed!" with title "Nix configuration"'
+	NIXPKGS_ALLOW_UNFREE=1 sudo -H -E $(DARWIN_REBUILD) switch --impure $(COMMON_REBUILD_FLAGS)
+
+# Simple rebuild via CLI tool (quiet output, notifications)
+rebuild:
+	@rebuild $(CURDIR)
+
+# Watch for file changes and rebuild automatically
+rebuild-watch:
+	@rebuild watch $(CURDIR)
+
+# Watch + periodic loop rebuild with sudo refresh
+rebuild-watch-loop:
+	@rebuild watch --loop $(CURDIR)
 
 # Loop rebuild with sudo refresh (timer only, no file watching)
 rebuild-loop:
-	@watchman-rebuild --loop --no-watch $(CURDIR)
-
-# Watch for file changes and also rebuild on a timer
-rebuild-watch-loop:
-	@watchman-rebuild --loop $(CURDIR)
-
-# Watchman rebuild (platform-independent, identical behavior)
-rebuild-watchman:
-	@watchman-rebuild $(CURDIR)
-
-# Platform-specific aliases (kept for backwards compatibility)
-rebuild-watchman-nixos: rebuild-watchman
-rebuild-watchman-darwin: rebuild-watchman
+	@rebuild watch --loop --no-watch $(CURDIR)
 
 # Devcontainer: start and exec into container with Claude Code
 devcontainer:
