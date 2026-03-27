@@ -5,6 +5,12 @@
   programs = {
     plasma = {
       enable = true;
+
+      # Set solid dark gray wallpaper
+      workspace = {
+        wallpaperPlainColor = "30,30,30";
+      };
+
       # Configure input devices
       input = {
         keyboard = {
