@@ -77,7 +77,6 @@
     syncthing
     syncthing-mgmt
     taskmanager
-    taskwarrior-web
     torrent-dl
     tree
     treefmt

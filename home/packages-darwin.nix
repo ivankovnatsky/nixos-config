@@ -37,7 +37,6 @@
     swiftformat
     syncthing
     syncthing-mgmt
-    taskwarrior-web # Local overlay
     typst
     typstyle
     username # Installed as flake
