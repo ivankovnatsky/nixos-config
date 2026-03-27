@@ -2,17 +2,63 @@
 
 {
   home.packages = with pkgs; [
+    bat
+    beszel-mgmt
+    cargo
+    claude-code-logs
+    curlie
+    diff-good
+    diff-long-lines
+    doggo
+    duf
+    erdtree
+    exiftool
+    gallery-dl
+    ggh
+    gh-pr
+    git-pull-all
+    git-worktree-init
+    gitleaks
+    glow
+    gofumpt
+    golangci-lint
+    hadolint
+    home-manager
+    imagemagick
+    magic-wormhole
+    mkcd
+    mkpasswd
+    nextdns-mgmt
+    nh
+    nodePackages.prettier
     nvtopPackages.nvidia # GPU monitoring (like htop for GPUs)
-    discordo
+    obsidian-cli
+    pandoc
+    parallel
+    pblock
+    perplexity
     power-consumption
-    find-grep
-    gpg-pass-refresh
-    gwq
-    rg-all
-    rg-find
-    taskmanager
+    pre-commit
+    pv
+    q
+    rclone
+    ripgrep
+    ruff
+    rust-analyzer
+    rustc
+    shellcheck
+    shfmt
+    stylua
+    taskwarrior-web
+    tmux-spawn
+    typst
+    typstyle
+    uv
     velocidrone
-    watchman
-    watchman-make
+    wget
+    yazi
+    yq
+    zoxide
+    zsh-forgit
   ];
 }
