@@ -12,8 +12,8 @@
     gpg-agent = {
       enable = true;
       enableSshSupport = true;
-      defaultCacheTtl = 86400; # 24 hours
-      maxCacheTtl = 86400;
+      defaultCacheTtl = 60 * 60 * 12; # 12 hours
+      maxCacheTtl = 60 * 60 * 12;
       extraConfig = ''
         allow-preset-passphrase
         no-allow-external-cache
