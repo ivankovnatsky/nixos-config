@@ -241,6 +241,17 @@
 		}
 	}
 
+	@navidrome host navidrome.@externalDomain@
+	reverse_proxy @navidrome @machineIp@:4533 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		# Streaming support
+		transport http {
+			keepalive 12h
+			keepalive_idle_conns 100
+		}
+	}
+
 	@mailpit host mailpit.@externalDomain@
 	reverse_proxy @mailpit @machineIp@:8025 {
 		header_up X-Real-IP {remote_host}
