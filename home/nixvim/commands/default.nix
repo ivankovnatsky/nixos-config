@@ -3,7 +3,6 @@ let
   copyPathScript = builtins.readFile ./copy-path.vim;
   prScript = builtins.readFile ./pr.vim;
   completionScript = builtins.readFile ./completion.vim;
-  nixConfigPath = "${config.flags.homeWorkPath}/Sources/github.com/ivankovnatsky/nix-config";
 in
 {
   programs.nixvim = {
@@ -15,12 +14,6 @@ in
 
     userCommands = {
       # TODO: Move all defined commands here in this file
-      RebuildWatchman = {
-        command = "botright split | terminal cd ${nixConfigPath} && make rebuild-watchman";
-        desc = "Open terminal and run watchman rebuild command.";
-        bang = true;
-        bar = true;
-      };
       MouseToggle = {
         command = "if &mouse == 'a' | set mouse= | else | set mouse=a | endif";
         desc = "Toggle mouse.";
