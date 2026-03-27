@@ -158,12 +158,12 @@ endif
 
 # NixOS rebuild targets
 rebuild-nixos/generic: addall
-	sudo -E $(NIXOS_REBUILD) switch $(COMMON_REBUILD_FLAGS) && \
+	sudo $(NIXOS_REBUILD) switch $(COMMON_REBUILD_FLAGS) && \
 		$(call notify_linux,🟢 NixOS rebuild successful!) || \
 		$(call notify_linux,🔴 NixOS rebuild failed!)
 
 rebuild-nixos/impure: addall
-	sudo -E $(NIXOS_REBUILD) switch --impure $(COMMON_REBUILD_FLAGS) && \
+	sudo $(NIXOS_REBUILD) switch --impure $(COMMON_REBUILD_FLAGS) && \
 		$(call notify_linux,🟢 NixOS rebuild successful!) || \
 		$(call notify_linux,🔴 NixOS rebuild failed!)
 
