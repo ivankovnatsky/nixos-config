@@ -20,6 +20,7 @@
     dust
     ffmpeg
     genpass
+    ghq-cd
     gh-notifications
     giffer
     git-message
