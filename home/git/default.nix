@@ -120,18 +120,36 @@ in
 [user]
 	name = swedishunhorned
 	email = swedishunhorned@$DOMAIN
+[commit]
+	gpgSign = false
+[tag]
+	gpgSign = false
 EOF
 
-        # Resolve ~/Notes to its real path for gitdir matching
-        NOTES_PATH=$(${pkgs.coreutils}/bin/readlink -f "$HOME/Notes" 2>/dev/null || echo "")
+        # User config for GitHub repos
+        cat > "$HOME/.config/git/github.inc" << EOF
+[user]
+	name = Ivan Kovnatsky
+	email = 75213+ivankovnatsky@users.noreply.github.com
+	signingKey = 75213+ivankovnatsky@users.noreply.github.com
+[commit]
+	gpgSign = true
+[tag]
+	gpgSign = true
+EOF
 
-        # includeIf rules pointing to forgejo.inc
+        ${if config.flags.purpose == "home" then ''
+        # Home machines: default to Forgejo email, override for github.com repos
         cat > "$HOME/.config/git/forgejo-includes.inc" << EOF
-[includeIf "gitdir:$HOME/.git"]
+[include]
 	path = ~/.config/git/forgejo.inc
-[includeIf "gitdir:$NOTES_PATH/"]
-	path = ~/.config/git/forgejo.inc
+[includeIf "gitdir:**/github.com/"]
+	path = ~/.config/git/github.inc
 EOF
+        '' else ''
+        # Work machines: no conditional includes, use default GitHub identity
+        rm -f "$HOME/.config/git/forgejo-includes.inc"
+        ''}
       fi
     '';
 
