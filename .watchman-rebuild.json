@@ -6,6 +6,7 @@
     "*.tmp.*",
     ".claude",
     ".git",
+    ".worktrees",
     ".obsidian",
     ".ruff_cache",
     ".syncthing.*.tmp",
