@@ -60,6 +60,7 @@
     ./monitoring
     ./mosh.nix
     ./music-export.nix
+    ./navidrome
     ./nix.nix
     ./ollama.nix
     ./open-webui.nix
