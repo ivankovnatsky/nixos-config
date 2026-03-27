@@ -4,6 +4,7 @@
     bat
     battery-toolkit # Local overlay
     btop
+    launchd-mgmt
     cargo
     delta
     dust
@@ -26,12 +27,14 @@
     pigz
     pv
     rclone
+    rems
     ripgrep
     rust-analyzer
     rustc
     dns
     smctemp # Local overlay
     settings
+    swiftformat
     syncthing
     syncthing-mgmt
     taskwarrior-web # Local overlay
