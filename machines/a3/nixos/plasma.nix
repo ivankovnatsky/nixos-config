@@ -11,7 +11,7 @@
   # And overall I see that configuring Qt apps are much more pleasant than GNOME.
 
   # Suppress noisy Qt/QML warnings (qmlRegisterType absolute URLs, portal registration)
-  environment.sessionVariables.QT_LOGGING_RULES = "qt.qml.typeregistration.warning=false;qt.qpa.services.warning=false";
+  environment.sessionVariables.QT_LOGGING_RULES = "default.warning=false;qt.qml.typeregistration.warning=false;qt.qpa.services.warning=false";
 
   services = {
     desktopManager.plasma6.enable = true;
