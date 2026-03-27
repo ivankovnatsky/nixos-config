@@ -38,6 +38,5 @@
     ../../Ivans-MacBook-Air/darwin/dock.nix
     ../../Ivans-MacBook-Air/darwin/reposync.nix
     ../../Ivans-MacBook-Air/darwin/users.nix
-    ./syncthing-mgmt.nix
-  ];
+];
 }
