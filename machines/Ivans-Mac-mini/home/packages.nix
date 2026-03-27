@@ -86,7 +86,7 @@
     username # Installed as flake
     watchman
     watchman-make
-    watchman-rebuild
+    rebuild
     wget
     zsh-forgit
   ];
