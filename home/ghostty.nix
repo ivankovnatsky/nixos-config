@@ -36,6 +36,16 @@ in
 
     # Quake-style quick terminal (F12 to toggle from anywhere)
     # On KDE Plasma, approve the "Global Shortcuts Requested" dialog on first launch
+    keybind = ctrl+one=goto_tab:1
+    keybind = ctrl+two=goto_tab:2
+    keybind = ctrl+three=goto_tab:3
+    keybind = ctrl+four=goto_tab:4
+    keybind = ctrl+five=goto_tab:5
+    keybind = ctrl+six=goto_tab:6
+    keybind = ctrl+seven=goto_tab:7
+    keybind = ctrl+eight=goto_tab:8
+    keybind = ctrl+nine=goto_tab:9
+
     keybind = global:f12=toggle_quick_terminal
     quick-terminal-position = top
     quick-terminal-size = 75%
