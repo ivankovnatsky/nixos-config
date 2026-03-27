@@ -5,7 +5,7 @@ Safe-only operations: ff-only pull, no-force push. Skips and alerts on conflicts
 
 Commands:
   reposync init   --config-file <path>   Idempotent repo/remote setup
-  reposync sync   --config-file <path>   Pull + push all configured repos
+  reposync sync   --config-file <path>   Sync all configured repos
   reposync status --config-file <path>   Show sync state of all repos
 """
 
@@ -142,6 +142,7 @@ def sync_repo(repo, webhook_url=None):
     path = repo["path"]
     remote = repo["remote"]
     branch = repo["branch"]
+    sync_mode = repo.get("syncMode", "pull-push")
     display = repo.get("name") or os.path.basename(path)
     name = f"{display} ({remote}/{branch})"
 
@@ -174,8 +175,10 @@ def sync_repo(repo, webhook_url=None):
     result = run_git("rev-parse", "--verify", branch, cwd=path, check=False)
     local_exists = result.returncode == 0
 
-    # Pull (ff-only) — only if HEAD is on the target branch
-    if remote_exists and local_exists:
+    # Pull (ff-only) — only if HEAD is on the target branch and this repo allows pulls.
+    if sync_mode == "push-only":
+        print(f"{name}: skip pull (push-only mode)", file=sys.stderr)
+    elif remote_exists and local_exists:
         head_ref = run_git("symbolic-ref", "--short", "HEAD", cwd=path, check=False)
         current_branch = head_ref.stdout.strip() if head_ref.returncode == 0 else None
 
@@ -319,7 +322,7 @@ def cmd_status(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Sync local git repos to/from remotes")
+    parser = argparse.ArgumentParser(description="Sync local git repos with remotes")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     for name in ("init", "sync", "status"):
