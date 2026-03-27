@@ -8,7 +8,7 @@
 
       # Set solid dark gray wallpaper
       workspace = {
-        wallpaperPlainColor = "30,30,30";
+        wallpaperPlainColor = "64,64,64";
       };
 
       # Configure input devices
