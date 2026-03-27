@@ -28,6 +28,6 @@ stdenv.mkDerivation {
     # Wrap script with correct Python environment
     wrapProgram $out/bin/watchman-rebuild \
       --prefix PYTHONPATH : "$out/${pythonEnv.sitePackages}:${pythonEnv}/${pythonEnv.sitePackages}" \
-      --prefix PATH : "${watchman}/bin"
+      --prefix PATH : "${pythonEnv}/bin:${watchman}/bin"
   '';
 }
