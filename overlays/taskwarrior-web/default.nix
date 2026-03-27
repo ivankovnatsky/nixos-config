@@ -10,7 +10,7 @@
   apple-sdk ? null,
   libiconv ? null,
   cacert,
-  npmDepsHash ? "sha256-OuCWuJEr2s6UHjwcSFFJzExvM6fQq9u0/Lp/jtpvewg=",
+  npmDepsHash ? "sha256-sPf399pcmWv22GUI3ff9fOkpZqS8u53+4ECvzI+a6Nk=",
 }:
 
 let
