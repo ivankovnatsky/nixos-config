@@ -6,7 +6,13 @@
   stdenv,
   makeDesktopItem,
   zlib,
-  xorg,
+  libxcb,
+  libx11,
+  libxi,
+  libxcursor,
+  libxrandr,
+  libxrender,
+  xkeyboard-config,
   fontconfig,
   freetype,
   glib,
@@ -62,13 +68,13 @@ buildFHSEnv {
 
   targetPkgs = _: [
     zlib
-    xorg.libxcb
-    xorg.libX11
-    xorg.libXi
-    xorg.libXcursor
-    xorg.libXrandr
-    xorg.libXrender
-    xorg.xkeyboardconfig
+    libxcb
+    libx11
+    libxi
+    libxcursor
+    libxrandr
+    libxrender
+    xkeyboard-config
     fontconfig
     freetype
     glib
