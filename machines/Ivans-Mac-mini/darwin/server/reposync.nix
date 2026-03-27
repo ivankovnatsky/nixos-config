@@ -12,7 +12,6 @@
       remote = "origin";
       remoteUrl = "https://forgejo.@domain@/forgejouser/notes.git";
       branch = "main";
-      syncMode = "push-only";
     }
   ];
 }
