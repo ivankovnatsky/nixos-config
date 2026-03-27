@@ -49,7 +49,6 @@
     shellcheck
     shfmt
     stylua
-    taskwarrior-web
     tmux-spawn
     typst
     typstyle
