@@ -37,17 +37,6 @@
 
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
     folders = {
-      "simcity4" = {
-        path = "${
-          config.users.users.${username}.home
-        }/.local/share/Steam/steamapps/compatdata/24780/pfx/drive_c/users/steamuser/Documents/SimCity 4";
-        label = ".local/share/Steam/steamapps/compatdata/24780/pfx/drive_c/users/steamuser/Documents/SimCity 4";
-        devices = [
-          "a3"
-          "Ivans-Mac-mini"
-        ];
-      };
-
       "taskwarrior" = {
         path = "${config.users.users.${username}.home}/.task";
         label = ".task";
