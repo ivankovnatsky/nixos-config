@@ -158,12 +158,12 @@ endif
 
 # NixOS rebuild targets
 rebuild-nixos/generic: addall
-	sudo $(NIXOS_REBUILD) switch $(COMMON_REBUILD_FLAGS) && \
+	sudo -H -E $(NIXOS_REBUILD) switch $(COMMON_REBUILD_FLAGS) && \
 		$(call notify_linux,🟢 NixOS rebuild successful!) || \
 		$(call notify_linux,🔴 NixOS rebuild failed!)
 
 rebuild-nixos/impure: addall
-	sudo $(NIXOS_REBUILD) switch --impure $(COMMON_REBUILD_FLAGS) && \
+	sudo -H -E $(NIXOS_REBUILD) switch --impure $(COMMON_REBUILD_FLAGS) && \
 		$(call notify_linux,🟢 NixOS rebuild successful!) || \
 		$(call notify_linux,🔴 NixOS rebuild failed!)
 
@@ -180,7 +180,7 @@ rebuild-nixos/a3-user:
 # Darwin-specific rebuild target
 rebuild-darwin: addall
 	# NIXPKGS_ALLOW_UNFREE=1 is needed for unfree packages like codeium when using --impure
-	NIXPKGS_ALLOW_UNFREE=1 sudo -E $(DARWIN_REBUILD) switch --impure $(COMMON_REBUILD_FLAGS) && \
+	NIXPKGS_ALLOW_UNFREE=1 sudo -H -E $(DARWIN_REBUILD) switch --impure $(COMMON_REBUILD_FLAGS) && \
 		osascript -e 'display notification "🟢 Darwin rebuild successful!" with title "Nix configuration"' || \
 		osascript -e 'display notification "🔴 Darwin rebuild failed!" with title "Nix configuration"'
 
