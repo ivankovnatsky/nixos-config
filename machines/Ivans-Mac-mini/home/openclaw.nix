@@ -63,6 +63,25 @@ in
       inherit stateDir;
 
       config = {
+        agents.defaults = {
+          model = {
+            primary = "anthropic/claude-opus-4-6";
+            fallbacks = [
+              "openai-codex/gpt-5.4"
+            ];
+          };
+
+          models = {
+            "anthropic/claude-opus-4-6" = {
+              alias = "opus";
+            };
+
+            "openai-codex/gpt-5.4" = {
+              params.transport = "auto";
+            };
+          };
+        };
+
         gateway = {
           mode = "local";
           auth.mode = "token";
