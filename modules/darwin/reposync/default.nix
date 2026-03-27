@@ -65,8 +65,8 @@ in
 
     interval = mkOption {
       type = types.int;
-      default = 15 * 60;
-      description = "Interval in seconds between sync runs (default: 15 minutes)";
+      default = 5 * 60;
+      description = "Interval in seconds between sync runs (default: 5 minutes)";
     };
 
     repositories = mkOption {
