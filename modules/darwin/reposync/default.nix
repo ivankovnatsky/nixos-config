@@ -39,6 +39,18 @@ let
         default = "main";
         description = "Branch to sync";
       };
+
+      syncMode = mkOption {
+        type = types.enum [
+          "pull-push"
+          "push-only"
+        ];
+        default = "pull-push";
+        description = ''
+          Sync mode for this repository. Use "push-only" for iCloud-backed
+          working copies that should publish local commits without pulling.
+        '';
+      };
     };
   };
 
