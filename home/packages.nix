@@ -14,9 +14,12 @@
     asusrouter-cli
     backup-home
     cleanup-home
+    delta
     discordo
     dns
+    dust
     ffmpeg
+    genpass
     gh-notifications
     giffer
     git-message
@@ -25,7 +28,10 @@
     gwq
     homelab
     hyperfine
+    jq
+    nodejs
     notes
+    pigz
     poppler-utils
     poweroff
     ps-top-nu
@@ -39,7 +45,9 @@
     taskmanager
     torrent-dl
     tree
+    username # Installed as flake
     uptime-kuma-mgmt
+    wget
     watchman-rebuild
   ];
 }
