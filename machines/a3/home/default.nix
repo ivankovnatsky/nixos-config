@@ -24,6 +24,7 @@
     ../../../home/mpv.nix
     ../../../home/nix-registry.nix
     ../../../home/nixos/packages.nix
+    ../../../home/packages.nix
     ../../../home/nixvim
     ../../../home/nixvim/plugins/codediff
     ../../../home/nixvim/plugins/gpg-nvim
