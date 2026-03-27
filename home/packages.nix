@@ -8,7 +8,6 @@
         markitdown
       ]
     ))
-    rems
     obs
     age
     aria2
@@ -26,7 +25,6 @@
     gwq
     homelab
     hyperfine
-    launchd-mgmt
     notes
     poppler-utils
     poweroff
@@ -37,7 +35,6 @@
     settings
     sops
     ssh-to-age
-    swiftformat
     syncthing-mgmt
     taskmanager
     torrent-dl
