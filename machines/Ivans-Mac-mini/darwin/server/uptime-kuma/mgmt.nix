@@ -91,6 +91,11 @@
         url = "http://${config.flags.machineLocalAddress}:8000";
         description = "Audiobookshelf audiobook/podcast server";
       }
+      {
+        name = "navidrome";
+        url = "http://${config.flags.machineLocalAddress}:4533";
+        description = "Navidrome music streaming server";
+      }
 
       # Infrastructure Services - Local HTTP monitoring
       {
