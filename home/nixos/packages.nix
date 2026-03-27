@@ -33,6 +33,7 @@
     syncthing-mgmt # Syncthing management CLI
     uptime-kuma-mgmt
     username # Username generator
+    watchman-rebuild
     wl-clipboard # Wayland clipboard utilities
   ];
 }
