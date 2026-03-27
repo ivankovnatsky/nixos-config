@@ -8,7 +8,7 @@
     deadnix
     gofumpt
     golangci-lint
-    nixfmt-rfc-style
+    nixfmt
     statix
     ruff
     shellcheck
