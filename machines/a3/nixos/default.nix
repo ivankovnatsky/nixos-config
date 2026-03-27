@@ -16,6 +16,7 @@
     ./boot.nix
     ./configuration.nix
     ./cryptenroll.nix # TPM2 support for LUKS encryption
+    ./data-disk.nix
     ./default-apps.nix
     ./desktop.nix
     ./fonts.nix
