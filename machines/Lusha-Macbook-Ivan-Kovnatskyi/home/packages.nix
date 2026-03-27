@@ -160,7 +160,7 @@
     vals
     watchman
     watchman-make
-    watchman-rebuild
+    rebuild
     wget
     yq
     zoxide

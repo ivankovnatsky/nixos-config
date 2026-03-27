@@ -49,6 +49,6 @@
     username # Installed as flake
     uptime-kuma-mgmt
     wget
-    watchman-rebuild
+    rebuild
   ];
 }

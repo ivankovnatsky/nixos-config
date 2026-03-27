@@ -5,7 +5,7 @@
     tmux
     watchman # Be able to rerun rebuild manually with watching
     watchman-make # Be able to rerun rebuild manually with watching
-    watchman-rebuild # Unified watchman rebuild tool
+    rebuild # Nix rebuild tool with simple and watch modes
     git
 
     rclone # Sync out stuff
