@@ -18,7 +18,7 @@
     ../../../../system/documentation.nix
     ../../../../system/nix.nix
     ./accessibility.nix
-    ./close-mac-mouse-fix.nix
+    ./quit-mac-mouse-fix.nix
     ./dock.nix
     ./fulldiskaccess.nix
     ./homebrew.nix
