@@ -2,14 +2,10 @@
 { pkgs, ... }:
 
 {
-  local.launchd.services.close-mac-mouse-fix = {
+  local.launchd.services.quit-mac-mouse-fix = {
     enable = true;
     type = "user-agent";
-    command = "${pkgs.settings}/bin/settings windows close 'Mac Mouse Fix'";
-    preStart = ''
-      # Wait for Mac Mouse Fix to fully start and show its window
-      sleep 90
-    '';
+    command = "${pkgs.settings}/bin/settings windows quit --wait 10 'Mac Mouse Fix'";
     runAtLoad = true;
     keepAlive = false;
   };
