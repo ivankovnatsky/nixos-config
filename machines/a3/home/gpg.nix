@@ -16,6 +16,7 @@
       maxCacheTtl = 86400;
       extraConfig = ''
         allow-preset-passphrase
+        no-allow-external-cache
         pinentry-program ${pkgs.kwalletcli}/bin/pinentry-kwallet
       '';
     };
