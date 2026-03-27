@@ -9,6 +9,9 @@ in
     enable = true;
     waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
+    extraDirs = [
+      musicDir
+    ];
     command = ''
       ${pkgs.navidrome}/bin/navidrome \
         --datafolder "${dataDir}" \
