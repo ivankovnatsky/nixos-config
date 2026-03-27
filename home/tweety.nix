@@ -39,7 +39,7 @@
       env = { };
       xterm = {
         fontFamily = config.flags.fontGeneral;
-        fontSize = 13;
+        fontSize = 14;
         cursorBlink = false;
         cursorStyle = "block";
         theme = {

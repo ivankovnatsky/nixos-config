@@ -38,7 +38,7 @@
       # Layout - single horizontal line at top
       horizontal = true;
       position = "top-left";
-      font_size = 24;
+      font_size = 26;
     };
   };
 }
