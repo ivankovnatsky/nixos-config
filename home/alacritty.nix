@@ -3,7 +3,7 @@
 let
   inherit (pkgs.stdenv.targetPlatform) isDarwin;
 
-  fontSizeT = 9.5;
+  fontSizeT = 10.5;
   fontSize = if isDarwin then 13 else fontSizeT;
 
   decorations = if isDarwin then "buttonless" else "none";

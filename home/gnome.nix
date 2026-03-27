@@ -12,7 +12,7 @@
       # GNOME Console settings
       "org/gnome/Console" = {
         "use-system-font" = false;
-        "custom-font" = "${config.flags.fontGeneral} 11";
+        "custom-font" = "${config.flags.fontGeneral} 12";
       };
 
       # Mouse settings - low acceleration
