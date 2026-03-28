@@ -18,6 +18,7 @@
       "amethyst"
       "bitwarden"
       "chromium"
+      "claude"
       {
         name = "coconutbattery";
         greedy = true;

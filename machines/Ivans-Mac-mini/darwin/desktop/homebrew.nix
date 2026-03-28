@@ -17,6 +17,7 @@
       "amethyst"
       "bitwarden"
       "discord"
+      "claude"
       "chromium"
       "firefox"
       "ghostty"
