@@ -231,7 +231,9 @@
     nix-openclaw = {
       # FIXME: using fork with plugin manifest fix until PR #81 is merged
       # https://github.com/openclaw/nix-openclaw/pull/81
-      url = "github:bobberb/nix-openclaw/fix/copy-plugin-manifests";
+      # FIXME: bird tool repo (steipete/bird) deleted; exclude until upstream fixes
+      # https://github.com/openclaw/nix-steipete-tools/issues/6
+      url = "github:ivankovnatsky/nix-openclaw";
     };
   };
 
