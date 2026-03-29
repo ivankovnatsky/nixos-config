@@ -31,11 +31,18 @@ let
   packageDirs = builtins.readDir ../packages;
   packageList = builtins.mapAttrs (name: type: { inherit name type; }) packageDirs;
 
+  # Special arguments for specific packages (to break overlay self-reference cycles)
+  packageArgs = {
+    genpass = {
+      genpass = prev.genpass;
+    };
+  };
+
   autoPackages = builtins.foldl' (
     acc: dir:
     acc
     // {
-      ${dir.name} = prev.callPackage (../packages + "/${dir.name}") { };
+      ${dir.name} = prev.callPackage (../packages + "/${dir.name}") (packageArgs.${dir.name} or { });
     }
   ) { } (builtins.filter (dir: dir.type == "directory") (builtins.attrValues packageList));
 
