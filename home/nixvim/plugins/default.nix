@@ -34,6 +34,9 @@
       lualine = {
         enable = true;
         settings = {
+          sections = {
+            lualine_b = [ "diff" "diagnostics" ];
+          };
           # always_show_tabline = true;
           # # FIXME: Do not override the default tabline view.
           # tabline = {
