@@ -2,22 +2,18 @@
 
 {
   home.packages = with pkgs; [
+    backup-system
     bat
-    beszel-mgmt
     cargo
     claude-code-logs
     curlie
-    diff-good
-    diff-long-lines
     doggo
     duf
     erdtree
     exiftool
     gallery-dl
+    game-mode
     ggh
-    gh-pr
-    git-pull-all
-    git-worktree-init
     gitleaks
     glow
     gofumpt
@@ -26,17 +22,13 @@
     home-manager
     imagemagick
     magic-wormhole
-    mkcd
     mkpasswd
-    nextdns-mgmt
     nh
     nodePackages.prettier
     nvtopPackages.nvidia # GPU monitoring (like htop for GPUs)
     obsidian-cli
     pandoc
     parallel
-    pblock
-    perplexity
     power-consumption
     pre-commit
     pv
@@ -49,7 +41,8 @@
     shellcheck
     shfmt
     stylua
-    tmux-spawn
+    temperatures
+    tmux-temperatures
     typst
     typstyle
     uv
