@@ -37,12 +37,6 @@ in
 
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
     folders = {
-      "2z4ss-gffpj" = {
-        path = "${homePath}/.gnupg";
-        label = "~/.gnupg";
-        devices = [ config.networking.hostName ]; # Local only
-      };
-
       "taskwarrior" = {
         path = "${homePath}/.task";
         label = ".task";
