@@ -7,58 +7,101 @@
         markitdown
       ]
     ))
-    rems
-    obs
+    abs
+    abs-mgmt
     age
-    asusrouter-cli
+    ai
     aria2
+    arr-mgmt
+    asusrouter-cli
+    audio-extract
     backup-home
-    btop
-    cleanup-home
     bat
+    bbw
     beszel-mgmt
+    btop
     cargo
+    claude-statusline
+    cleanup-home
     delta
+    diff-deep
+    diff-good
+    diff-long-lines
     discordo
     dns
     duf
     dust
+    eat
+    erdtree
     exiftool
+    ffmpeg
+    find-grep
+    firefox-selecttab
+    forgejo-mgmt
     fzf
     gallery-dl
     genpass
+    gh-notifications
+    gh-pr
+    gh-stars-migrate
     giffer
+    git-branch
     git-message
+    git-pull-all
+    git-repo-dl
+    git-root-root
+    git-switch
+    go-grip
+    go-lint-wrapper
     gofumpt
-    gpg-pass-refresh
     golangci-lint
+    gpg-edit
+    gpg-pass-refresh
+    gwq
+    healthchecks-mgmt
     home-manager
+    image-meta
     imagemagick
+    jellyfin-mgmt
     jq
+    jpg-converter
     launchd-mgmt
     macmon
     magic-wormhole
+    mkcd
     mkpasswd
-    poweroff
-    erdtree
-    ffmpeg
-    go-grip
-    gwq
-    poppler-utils
+    music-export
     nextdns-mgmt
+    nix-gc
+    nix-generate-sha
+    nix-sort-imports
     nixfmt-rfc-style
-    notes
     nixpkgs-darwin-master-ytdlp.yt-dlp
     nodePackages.prettier
     nodejs
-    gh-notifications
+    notes
+    nvim-edit-staged
+    obs
+    open-pr
     pandoc
-    ps-top-nu
     parallel
+    pass-fzf
+    paste-loop
+    path-copy
+    perlite
+    perplexity
     pigz
+    poppler-utils
+    poweroff
+    ps-top
+    ps-top-nu
     pv
+    rbwget
     rclone
-    find-grep
+    reboot
+    rebuild
+    rems
+    reposync
     rg-all
     rg-find
     ripgrep
@@ -71,23 +114,35 @@
     shfmt
     smctemp # Local overlay
     sops
+    ssh-persistent
     ssh-to-age
+    statix-wrapper
     stylua
     swiftformat
     syncthing
     syncthing-mgmt
+    tac
+    tail-terminal
+    task-new
     taskmanager
+    tmux-attach
+    tmux-spawn
+    top-top
     torrent-dl
+    torrent-watcher
     tree
     treefmt
     typst
     typstyle
     uptime-kuma-mgmt
     username # Installed as flake
+    watcher
     watchman
     watchman-make
-    rebuild
     wget
+    yank
+    yt-dlp-parallel
+    zellij-session
     zsh-forgit
     ghq-cd
   ];
