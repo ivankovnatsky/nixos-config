@@ -1,11 +1,8 @@
-{ pkgs }:
+{ pkgs, genpass }:
 
-let
-  genpass-unwrapped = pkgs.genpass;
-in
 pkgs.writeShellScriptBin "genpass" (
   builtins.replaceStrings
     [ "@genpass@" ]
-    [ "${genpass-unwrapped}/bin/genpass" ]
+    [ "${genpass}/bin/genpass" ]
     (builtins.readFile ./genpass.sh)
 )
