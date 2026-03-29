@@ -89,5 +89,6 @@
     rebuild
     wget
     zsh-forgit
+    ghq-cd
   ];
 }
