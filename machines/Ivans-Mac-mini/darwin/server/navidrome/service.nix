@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, username, ... }:
 
 let
   dataDir = "${config.flags.externalStoragePath}/.navidrome";
@@ -7,10 +7,12 @@ in
 {
   sops.secrets.lastFm-api-key = {
     key = "lastFm/apiKey";
+    owner = username;
   };
 
   sops.secrets.lastFm-secret = {
     key = "lastFm/secret";
+    owner = username;
   };
 
   local.launchd.services.navidrome = {
