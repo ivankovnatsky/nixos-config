@@ -201,9 +201,43 @@
         nixpkgs.overlays = [
           inputs.self.overlay
           (
-            final: _prev:
+            final: prev:
             let
               openclawPkgs = inputs.nix-openclaw.packages.${final.system};
+              # The upstream overlay uses callPackage which needs fetchPnpmDeps
+              # (missing in our nixpkgs), so we consume pre-built flake packages
+              # but re-import the tool definitions to make withTools/excludeTools
+              # actually work. Without this, excludeTools is silently ignored.
+              openclawSrc = inputs.nix-openclaw;
+              toolSets = import "${openclawSrc}/nix/tools/extended.nix" { pkgs = prev; };
+              withTools =
+                {
+                  toolNamesOverride ? null,
+                  excludeToolNames ? [ ],
+                }:
+                let
+                  filteredTools = import "${openclawSrc}/nix/tools/extended.nix" {
+                    pkgs = prev;
+                    inherit toolNamesOverride excludeToolNames;
+                  };
+                in
+                openclawPkgs
+                // {
+                  openclaw = prev.buildEnv {
+                    name = "openclaw-custom-tools";
+                    paths =
+                      [ openclawPkgs.openclaw-gateway ]
+                      ++ filteredTools.tools
+                      ++ prev.lib.optionals prev.stdenv.hostPlatform.isDarwin [
+                        openclawPkgs.openclaw-app
+                      ];
+                    pathsToLink = [
+                      "/bin"
+                      "/Applications"
+                    ];
+                    meta.priority = 10;
+                  };
+                };
             in
             {
               inherit (openclawPkgs)
@@ -212,8 +246,8 @@
                 openclaw-tools
                 ;
               openclawPackages = openclawPkgs // {
-                toolNames = [ ];
-                withTools = _: openclawPkgs;
+                toolNames = toolSets.toolNames;
+                inherit withTools;
               };
             }
           )
