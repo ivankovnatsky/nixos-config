@@ -51,9 +51,7 @@ in
 {
   programs.openclaw = {
     enable = true;
-    package = pkgs.openclaw-gateway;
     installApp = false;
-    toolNames = [ ];
 
     bundledPlugins.summarize.enable = true;
 
