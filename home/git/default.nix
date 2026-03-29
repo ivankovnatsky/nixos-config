@@ -120,10 +120,11 @@ in
 [user]
 	name = forgejouser
 	email = forgejouser@$DOMAIN
+	signingKey = forgejouser@$DOMAIN
 [commit]
-	gpgSign = false
+	gpgSign = true
 [tag]
-	gpgSign = false
+	gpgSign = true
 EOF
 
         # User config for GitHub repos
@@ -139,11 +140,11 @@ EOF
 EOF
 
         ${if config.flags.purpose == "home" then ''
-        # Home machines: default to Forgejo email, override for github.com repos
+        # Home machines: default to Forgejo, override for github.com repos
         cat > "$HOME/.config/git/forgejo-includes.inc" << EOF
 [include]
 	path = ~/.config/git/forgejo.inc
-[includeIf "gitdir:**/github.com/"]
+[includeIf "gitdir:${config.flags.homeWorkPath}/Sources/github.com/"]
 	path = ~/.config/git/github.inc
 EOF
         '' else ''
