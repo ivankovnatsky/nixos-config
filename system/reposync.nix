@@ -8,6 +8,7 @@
   local.services.reposync = {
     enable = true;
     domainFile = config.sops.secrets.external-domain.path;
+    usernameFile = config.sops.secrets.forgejo-user-name.path;
     discordWebhookFile = config.sops.secrets.discord-webhook-reposync.path;
 
     repositories = [
@@ -15,7 +16,7 @@
         name = "home";
         path = "${config.users.users.${username}.home}";
         remote = "origin";
-        remoteUrl = "https://forgejo.@domain@/forgejouser/home.git";
+        remoteUrl = "https://forgejo.@domain@/@username@/home.git";
         branch = "main";
       }
     ];

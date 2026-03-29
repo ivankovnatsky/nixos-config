@@ -55,7 +55,11 @@
     key = "miniserve/mini/password";
   };
 
+  sops.secrets.forgejo-user-name = {
+    key = "forgejo/users/forgejoUser/name";
+  };
+
   sops.secrets.forgejo-token = {
-    key = "forgejo/users/forgejouser/token";
+    key = "forgejo/users/forgejoUser/token";
   };
 }

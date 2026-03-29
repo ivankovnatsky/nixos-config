@@ -31,7 +31,7 @@ let
 
       remoteUrl = mkOption {
         type = types.str;
-        description = "URL template for the git remote (use @domain@ for runtime substitution from domainFile)";
+        description = "URL template for the git remote (use @domain@ and @username@ for runtime substitution)";
       };
 
       branch = mkOption {
@@ -81,6 +81,12 @@ in
       description = "Path to file containing domain for @domain@ substitution in remote URLs";
     };
 
+    usernameFile = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "Path to file containing username for @username@ substitution in remote URLs";
+    };
+
     discordWebhookFile = mkOption {
       type = types.nullOr types.str;
       default = null;
@@ -94,7 +100,7 @@ in
       type = "user-agent";
       keepAlive = false;
       runAtLoad = true;
-      waitForSecrets = cfg.discordWebhookFile != null || cfg.domainFile != null;
+      waitForSecrets = cfg.discordWebhookFile != null || cfg.domainFile != null || cfg.usernameFile != null;
 
       command =
         let
@@ -103,11 +109,18 @@ in
 
             CONFIG="${configJsonTemplate}"
 
-            ${optionalString (cfg.domainFile != null) ''
-              DOMAIN="$(cat ${cfg.domainFile})"
+            ${optionalString (cfg.domainFile != null || cfg.usernameFile != null) ''
               CONFIG_DIR=$(mktemp -d)
               trap 'rm -rf "$CONFIG_DIR"' EXIT
-              ${pkgs.gnused}/bin/sed "s|@domain@|$DOMAIN|g" "$CONFIG" > "$CONFIG_DIR/reposync-config.json"
+              cp "$CONFIG" "$CONFIG_DIR/reposync-config.json"
+              ${optionalString (cfg.domainFile != null) ''
+                DOMAIN="$(cat ${cfg.domainFile})"
+                ${pkgs.gnused}/bin/sed -i "s|@domain@|$DOMAIN|g" "$CONFIG_DIR/reposync-config.json"
+              ''}
+              ${optionalString (cfg.usernameFile != null) ''
+                USERNAME="$(cat ${cfg.usernameFile})"
+                ${pkgs.gnused}/bin/sed -i "s|@username@|$USERNAME|g" "$CONFIG_DIR/reposync-config.json"
+              ''}
               CONFIG="$CONFIG_DIR/reposync-config.json"
             ''}
 

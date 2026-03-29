@@ -8,16 +8,18 @@
 let
   forgejoCredentialHelper = pkgs.writeShellScript "forgejo-credential-helper" ''
     # Git credential helper for Forgejo
-    # Reads domain from sops and returns credentials if host matches
+    # Reads domain and username from sops and returns credentials if host matches
     DOMAIN_FILE="${config.sops.secrets.external-domain.path}"
     TOKEN_FILE="${config.sops.secrets.forgejo-token.path}"
+    USERNAME_FILE="${config.sops.secrets.forgejo-user-name.path}"
 
-    if [ ! -f "$DOMAIN_FILE" ] || [ ! -f "$TOKEN_FILE" ]; then
+    if [ ! -f "$DOMAIN_FILE" ] || [ ! -f "$TOKEN_FILE" ] || [ ! -f "$USERNAME_FILE" ]; then
       exit 0
     fi
 
     DOMAIN=$(cat "$DOMAIN_FILE")
     TOKEN=$(cat "$TOKEN_FILE")
+    USERNAME=$(cat "$USERNAME_FILE")
 
     # Parse input from git
     host=""
@@ -30,7 +32,7 @@ let
     done
 
     if [ "$host" = "forgejo.$DOMAIN" ] && [ "$protocol" = "https" ]; then
-      echo "username=forgejouser"
+      echo "username=$USERNAME"
       echo "password=$TOKEN"
     fi
   '';
@@ -111,16 +113,18 @@ in
 
     activation.forgejoGitConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       DOMAIN_FILE="${config.sops.secrets.external-domain.path}"
-      if [ -f "$DOMAIN_FILE" ]; then
+      USERNAME_FILE="${config.sops.secrets.forgejo-user-name.path}"
+      if [ -f "$DOMAIN_FILE" ] && [ -f "$USERNAME_FILE" ]; then
         DOMAIN=$(cat "$DOMAIN_FILE")
+        FORGEJO_USERNAME=$(cat "$USERNAME_FILE")
         mkdir -p "$HOME/.config/git"
 
         # User config for Forgejo repos
         cat > "$HOME/.config/git/forgejo.inc" << EOF
 [user]
-	name = forgejouser
-	email = forgejouser@$DOMAIN
-	signingKey = forgejouser@$DOMAIN
+	name = $FORGEJO_USERNAME
+	email = $FORGEJO_USERNAME@$DOMAIN
+	signingKey = $FORGEJO_USERNAME@$DOMAIN
 [commit]
 	gpgSign = true
 [tag]

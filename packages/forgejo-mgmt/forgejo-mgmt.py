@@ -122,6 +122,20 @@ def read_file(path: str) -> str:
         return f.read().strip()
 
 
+def resolve_username(user: dict) -> str:
+    """Resolve username from usernameFile or username field."""
+    if user.get("usernameFile"):
+        return read_file(user["usernameFile"])
+    return user["username"]
+
+
+def resolve_owner(repo: dict) -> str:
+    """Resolve owner from ownerFile or owner field."""
+    if repo.get("ownerFile"):
+        return read_file(repo["ownerFile"])
+    return repo["owner"]
+
+
 def ensure_admin_user(
     forgejo_bin: str,
     config_file: str,
@@ -290,7 +304,7 @@ def sync_users(client: ForgejoClient, users: list, base_url: str):
     print("", file=sys.stderr)
     print("=== User Sync ===", file=sys.stderr)
     for user in users:
-        username = user["username"]
+        username = resolve_username(user)
         if user.get("admin"):
             print(f"  OK: {username} (admin, created via CLI)", file=sys.stderr)
             continue
@@ -322,7 +336,7 @@ def sync_repos(client: ForgejoClient, repos: list):
     print("=== Repository Sync ===", file=sys.stderr)
     for repo in repos:
         name = repo["name"]
-        owner = repo["owner"]
+        owner = resolve_owner(repo)
         if client.repo_exists(owner, name):
             print(f"  OK: {owner}/{name} (exists)", file=sys.stderr)
         else:
@@ -356,7 +370,7 @@ def cmd_sync(args):
         print("ERROR: No admin user defined", file=sys.stderr)
         sys.exit(1)
 
-    admin_username = admin["username"]
+    admin_username = resolve_username(admin)
     admin_email = read_file(admin["emailFile"])
     admin_password = read_file(admin["passwordFile"])
 

@@ -23,8 +23,15 @@ let
   userSubmodule = types.submodule {
     options = {
       username = mkOption {
-        type = types.str;
-        description = "Username";
+        type = types.nullOr types.str;
+        default = null;
+        description = "Username (use usernameFile for secret-based usernames)";
+      };
+
+      usernameFile = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = "Path to file containing the username";
       };
 
       emailFile = mkOption {
@@ -99,8 +106,15 @@ in
           };
 
           owner = mkOption {
-            type = types.str;
-            description = "Username who owns this repository";
+            type = types.nullOr types.str;
+            default = null;
+            description = "Username who owns this repository (use ownerFile for secret-based)";
+          };
+
+          ownerFile = mkOption {
+            type = types.nullOr types.str;
+            default = null;
+            description = "Path to file containing the owner username";
           };
 
           description = mkOption {
@@ -133,7 +147,14 @@ in
         assertion = (builtins.filter (u: u.admin) cfg.users) != [ ];
         message = "forgejo-mgmt: at least one user must have admin = true";
       }
-    ];
+    ] ++ (map (u: {
+      assertion = u.username != null || u.usernameFile != null;
+      message = "forgejo-mgmt: each user must set either username or usernameFile";
+    }) cfg.users)
+    ++ (map (r: {
+      assertion = r.owner != null || r.ownerFile != null;
+      message = "forgejo-mgmt: each repository must set either owner or ownerFile";
+    }) cfg.repositories);
 
     local.launchd.services.forgejo-mgmt = {
       enable = true;
