@@ -5,7 +5,7 @@
   ...
 }:
 let
-  stateDir = "/Volumes/Storage/Data/.openclaw";
+  stateDir = "${config.flags.externalStoragePath}/.openclaw";
   patchedConfig = "${stateDir}/openclaw-runtime.json";
 
   # Wrapper that patches config with SecretRefs and dynamic values, then execs the gateway.
