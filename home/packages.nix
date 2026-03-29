@@ -8,47 +8,103 @@
         markitdown
       ]
     ))
-    obs
+    abs
+    abs-mgmt
     age
+    ai
     aria2
+    arr-mgmt
     asusrouter-cli
+    audio-extract
     backup-home
+    bbw
+    beszel-mgmt
+    claude-statusline
     cleanup-home
     delta
+    diff-deep
+    diff-good
+    diff-long-lines
     discordo
     dns
     dust
+    eat
     ffmpeg
+    find-grep
+    firefox-selecttab
+    forgejo-mgmt
     genpass
-    ghq-cd
     gh-notifications
+    gh-pr
+    gh-stars-migrate
+    ghq-cd
     giffer
+    git-branch
     git-message
-    gpg-pass-refresh
+    git-pull-all
+    git-repo-dl
+    git-root-root
+    git-switch
     go-grip
+    go-lint-wrapper
+    gpg-edit
+    gpg-pass-refresh
     gwq
+    healthchecks-mgmt
     homelab
     hyperfine
+    image-meta
+    jellyfin-mgmt
     jq
+    jpg-converter
+    mkcd
+    nextdns-mgmt
+    nix-gc
+    nix-generate-sha
+    nix-sort-imports
     nodejs
     notes
+    nvim-edit-staged
+    obs
+    open-pr
+    pass-fzf
+    paste-loop
+    path-copy
+    perlite
+    perplexity
     pigz
     poppler-utils
     poweroff
+    ps-top
     ps-top-nu
-    find-grep
+    rbwget
+    reboot
+    rebuild
+    reposync
     rg-all
     rg-find
     settings
     sops
+    ssh-persistent
     ssh-to-age
+    statix-wrapper
     syncthing-mgmt
+    tac
+    tail-terminal
+    task-new
     taskmanager
+    tmux-attach
+    tmux-spawn
+    top-top
     torrent-dl
+    torrent-watcher
     tree
-    username # Installed as flake
     uptime-kuma-mgmt
+    username # Installed as flake
+    watcher
     wget
-    rebuild
+    yank
+    yt-dlp-parallel
+    zellij-session
   ];
 }
