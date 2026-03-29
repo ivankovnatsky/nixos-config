@@ -20,7 +20,8 @@ let
     syncthing = "${pkgs.syncthing}/bin/syncthing serve --no-browser";
     stc = "${pkgs.stc-cli}/bin/stc -homedir ${syncthingHomeDir}";
     claude = "claude --allow-dangerously-skip-permissions";
-    gemini = "gemini --yolo";
+    gemini = "gemini --approval-mode auto_edit";
+    codex = "codex --full-auto";
   };
 
 in
