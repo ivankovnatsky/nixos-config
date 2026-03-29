@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """
 Nix rebuild tool with two modes:
-  rebuild [config_path]       - single rebuild with notifications (quiet output)
-  rebuild watch [config_path] - watchman file-watching + optional loop/polling
+  rebuild CONFIG_PATH         - single rebuild with notifications (quiet output)
+  rebuild watch CONFIG_PATH   - watchman file-watching + optional loop/polling
 """
 
-import argparse
 import json
 import sys
 import subprocess
@@ -18,6 +17,7 @@ import threading
 import socket
 from pathlib import Path
 
+import click
 import pywatchman
 
 
@@ -424,9 +424,8 @@ def refresh_sudo():
 # Simple mode: single rebuild with notifications, quiet output
 # ---------------------------------------------------------------------------
 
-def cmd_simple(args):
+def cmd_simple(config_path, command):
     """Run a single rebuild with notifications and suppressed output."""
-    config_path = args.config_path
     config_path_obj = Path(config_path)
 
     reset_terminal()
@@ -446,7 +445,8 @@ def cmd_simple(args):
     # git add -A before rebuild (same as Makefile addall)
     subprocess.run(["git", "add", "-A"], cwd=config_path, check=False)
 
-    command = args.command if args.command else detect_rebuild_command()
+    if not command:
+        command = detect_rebuild_command()
     logging.info(f"Rebuild command: {command}")
 
     # Refresh sudo before quiet mode so the password prompt is visible
@@ -487,13 +487,10 @@ def setup_watchman_subscription(client, config_path, ignore_patterns):
     return root, sub_name
 
 
-def cmd_watch(args):
+def cmd_watch(config_path, command, loop, no_watch, interval):
     """Watch for changes and rebuild."""
-    config_path = args.config_path
     config_path_obj = Path(config_path)
-    loop = args.loop
-    interval = args.interval
-    watch = not args.no_watch
+    watch = not no_watch
 
     reset_terminal()
 
@@ -515,8 +512,7 @@ def cmd_watch(args):
 
     os.chdir(config_path)
 
-    if args.command:
-        command = args.command
+    if command:
         logging.info(f"Rebuild command: {command}")
     else:
         command = detect_rebuild_command()
@@ -714,51 +710,42 @@ def cmd_watch(args):
 # CLI entry point
 # ---------------------------------------------------------------------------
 
+class DefaultToSimple(click.Group):
+    """If the first arg isn't a known subcommand, treat it as 'simple <args>'."""
+
+    def parse_args(self, ctx, args):
+        if args and args[0] not in self.commands and not args[0].startswith("-"):
+            args = ["simple"] + args
+        return super().parse_args(ctx, args)
+
+
+@click.group(cls=DefaultToSimple)
+def cli():
+    """Nix rebuild tool with simple and watch modes."""
+
+
+@cli.command()
+@click.argument("config_path")
+@click.argument("command", required=False, default=None)
+def simple(config_path, command):
+    """Single rebuild with notifications (quiet output)."""
+    cmd_simple(config_path, command)
+
+
+@cli.command()
+@click.argument("config_path")
+@click.argument("command", required=False, default=None)
+@click.option("--loop", is_flag=True, help="Also rebuild periodically every INTERVAL seconds (with sudo refresh)")
+@click.option("--no-watch", is_flag=True, help="Disable file watching (use with --loop for timer-only mode)")
+@click.option("--interval", type=int, default=LOOP_INTERVAL, help=f"Interval in seconds between periodic rebuilds when --loop is used (default: {LOOP_INTERVAL})")
+def watch(config_path, command, loop, no_watch, interval):
+    """Watch for file changes and rebuild automatically."""
+    if interval != LOOP_INTERVAL and not loop:
+        raise click.UsageError("--interval requires --loop")
+    if no_watch and not loop:
+        raise click.UsageError("--no-watch requires --loop (nothing to do without watching or looping)")
+    cmd_watch(config_path, command, loop, no_watch, interval)
+
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Nix rebuild tool with simple and watch modes.",
-    )
-    subparsers = parser.add_subparsers(dest="mode")
-
-    # Simple subcommand (also the default when no subcommand given)
-    simple_parser = subparsers.add_parser("simple", help="Single rebuild with notifications (quiet output)")
-    simple_parser.add_argument("config_path", help="Path to the nix config directory")
-    simple_parser.add_argument("command", nargs="?", default=None, help="Rebuild command (auto-detected if not provided)")
-
-    # Watch subcommand
-    watch_parser = subparsers.add_parser("watch", help="Watch for file changes and rebuild automatically")
-    watch_parser.add_argument("config_path", help="Path to the nix config directory")
-    watch_parser.add_argument("command", nargs="?", default=None, help="Rebuild command (auto-detected if not provided)")
-    watch_parser.add_argument(
-        "--loop",
-        action="store_true",
-        help="Also rebuild periodically every INTERVAL seconds (with sudo refresh)",
-    )
-    watch_parser.add_argument(
-        "--no-watch",
-        action="store_true",
-        help="Disable file watching (use with --loop for timer-only mode)",
-    )
-    watch_parser.add_argument(
-        "--interval",
-        type=int,
-        default=LOOP_INTERVAL,
-        help=f"Interval in seconds between periodic rebuilds when --loop is used (default: {LOOP_INTERVAL})",
-    )
-
-    # If first arg is not a known subcommand, treat as simple mode:
-    # rebuild /path  →  rebuild simple /path
-    known_modes = {"simple", "watch", "-h", "--help"}
-    if len(sys.argv) > 1 and sys.argv[1] not in known_modes:
-        sys.argv.insert(1, "simple")
-
-    args = parser.parse_args()
-
-    if args.mode == "watch":
-        if args.interval != LOOP_INTERVAL and not args.loop:
-            watch_parser.error("--interval requires --loop")
-        if args.no_watch and not args.loop:
-            watch_parser.error("--no-watch requires --loop (nothing to do without watching or looping)")
-        cmd_watch(args)
-    else:
-        cmd_simple(args)
+    cli()
