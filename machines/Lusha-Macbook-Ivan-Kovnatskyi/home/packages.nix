@@ -12,33 +12,36 @@
     (wrapHelm kubernetes-helm { plugins = with pkgs.kubernetes-helmPlugins; [ helm-secrets ]; })
     # jsonnet # ruby3.3-nokogiri build fails: fatal error: 'nokogiri_gumbo.h' file not found
     # kcat # avro-c++ build fails with fmt 11.2.0: error: no matching member function for call to 'format' in fmt::formatter<avro::Type>
-    q
-    yazi
-    flarectl
+    ai
     argocd
-    obs
-    obsidian-cli
-    diff-long-lines
-    diff-good
+    aws-account-open
+    aws-profile
     aws-sso-cli
     aws-sso-creds
     awscli2
     backup-home
     bat
+    bbw
     cargo
     claude-code-logs
+    claude-statusline
     cloudflared
     confluence
     confluent-cli
     coreutils
     crane
+    create-pr
     curlie
     cxctl
-    defaultbrowser
     databricks-cli
+    defaultbrowser
     delta
     devbox
     devcontainer
+    diff-deep
+    diff-good
+    diff-long-lines
+    dns
     docker-client
     docker-compose
     docker-credential-helpers
@@ -46,27 +49,38 @@
     doggo
     duf
     dust
+    eat
     eks-node-viewer
     erdtree
     exiftool
     find-grep
+    flarectl
     genpass
     ggh
+    gh-notifications
     gh-pr
+    gh-prs-merged-today
+    gh-stars-migrate
+    ghorg-sync
+    git-branch
     git-message
     git-pull-all
-    gpg-pass-refresh
+    git-repo-dl
+    git-root-root
+    git-switch
     git-worktree-init
     gitleaks
     glow
     go-grip
+    go-lint-wrapper
     gofumpt
-    gwq
     golangci-lint
     google-cloud-sdk
+    gpg-pass-refresh
     grpcui
     grpcurl
     gum
+    gwq
     hadolint
     hclfmt
     home-manager
@@ -75,10 +89,16 @@
     infra
     infracost
     jcli
+    jira-custom
     jq
+    k-nodes-by-label
+    k-number-of-replicas
+    k8s-context
     k8sgpt
     kail
     kdash
+    kitty-copy
+    kn
     krew
     kubecolor
     kubectl
@@ -98,40 +118,55 @@
     mongosh
     mycli
     nh # https://github.com/nix-community/nh
+    nix-gc
+    nix-generate-sha
+    nix-sort-imports
     nixfmt-rfc-style
     nixpkgs-darwin-master.cursor-cli
     nixpkgs-darwin-master.fluxcd
     nixpkgs-darwin-master.jira-cli-go
     nixpkgs-darwin-master-opencode.opencode
-    nodejs
+    nixpkgs-darwin-master.poetry
     nodePackages.aws-cdk
     nodePackages.prettier
-    gh-notifications
+    nodejs
+    nvim-edit-staged
+    obs
+    obsidian-cli
+    open-pr
     opentofu
     opsy
     oras
+    orphaned-snapshots
     parallel
+    pass-fzf
+    path-copy
+    pblock
     perplexity
     pigz
     pnpm
-    nixpkgs-darwin-master.poetry
     popeye
     postgresql
-    pblock
+    poweroff
     pre-commit
+    ps-top
     pv
     pyenv-nix-install
+    q
     rabbitmq-server # Needed for the CLI
     rabbitmqadmin-ng # Overlay
     rclone
+    reboot
+    rebuild
     redis
+    reposync
     rg-all
     rg-find
     rust-analyzer
     rustc
     sesh
-    dns
-    jira-custom
+    sesh-connect
+    settings
     shellcheck
     shfmt
     skopeo
@@ -140,29 +175,38 @@
     sops
     ssh-to-age
     sshpass
+    ssm-forward
     ssm-session-manager-plugin
+    statix-wrapper
     stylua
-    poweroff
-    settings
     syncthing-mgmt
-    terraformer
-    terragrunt-atlantis-config
+    tac
+    tail-terminal
+    task-new
     temporal
     temporal-cli
+    terraformer
+    terragrunt-atlantis-config
+    tmux-attach
     tmux-spawn
+    top-top
     tree
     treefmt
     username # Installed as flake
     uv
+    vals
     vault
     vault-auth
     vkv
-    vals
+    watcher
     watchman
     watchman-make
-    rebuild
     wget
+    yank
+    yazi
     yq
+    zellij-session
     zoxide
+    zscaler-kill
   ];
 }
