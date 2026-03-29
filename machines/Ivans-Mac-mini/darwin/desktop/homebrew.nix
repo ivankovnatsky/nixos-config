@@ -17,6 +17,10 @@
       "amethyst"
       "bitwarden"
       "discord"
+      # WARNING: `brew uninstall --zap claude` may delete ~/.claude directory
+      # and other config. Before removing, protect it with:
+      #   sudo chown -R root:wheel ~/.claude
+      # or: chmod -R 000 ~/.claude
       "claude"
       "chromium"
       "firefox"
