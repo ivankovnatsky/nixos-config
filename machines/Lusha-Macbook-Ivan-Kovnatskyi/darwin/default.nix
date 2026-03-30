@@ -13,6 +13,7 @@
     ../../../modules/darwin/default-browser
     ../../../modules/darwin/dock
     ../../../modules/darwin/launchd
+    ../../../modules/darwin/reposync
     ../../../modules/darwin/pam
     ../../../modules/darwin/pmset
     ../../../modules/darwin/prevent-sleep
@@ -33,6 +34,7 @@
     ./openssh.nix
     ./power.nix
     ./prevent-sleep.nix
+    ./reposync.nix
     ./security.nix
 
     ./shell.nix
