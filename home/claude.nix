@@ -47,19 +47,11 @@ let
       CLAUDE_CODE_ENABLE_TELEMETRY = "1";
     };
   };
-
-  workSettings = baseSettings // {
-    apiKeyHelper = "~/.claude/anthropic_key.sh";
-    env = baseSettings.env // {
-      ANTHROPIC_BASE_URL = "https://api.portkey.ai";
-      ANTHROPIC_CUSTOM_HEADERS = "x-portkey-api-key: @portkey-api-key@\nx-portkey-provider: @anthropic";
-    };
-  };
 in
 {
   # https://docs.anthropic.com/en/docs/claude-code/settings
   home = {
-    file = lib.mkIf (!isWork) {
+    file = {
       "${claudeConfigPath}" = {
         text = builtins.toJSON baseSettings;
       };
@@ -70,19 +62,16 @@ in
     key = "work/portkey/apiKey";
   };
 
-  sops.templates."claude-settings-home.json" = lib.mkIf isWork {
-    content = builtins.toJSON baseSettings;
-  };
-
-  sops.templates."claude-settings.json" = lib.mkIf isWork {
-    content = builtins.toJSON (
-      workSettings
-      // {
-        env = workSettings.env // {
-          ANTHROPIC_CUSTOM_HEADERS = "x-portkey-api-key: ${config.sops.placeholder.portkey-api-key}\nx-portkey-provider: @anthropic";
-        };
-      }
-    );
+  sops.templates."portkey.sh" = lib.mkIf isWork {
+    content = builtins.concatStringsSep "\n" [
+      "#!/bin/bash"
+      "export ANTHROPIC_BASE_URL='https://api.portkey.ai'"
+      "export ANTHROPIC_API_KEY=\"$(~/.claude/anthropic_key.sh)\""
+      "export ANTHROPIC_CUSTOM_HEADERS=$'x-portkey-api-key: ${config.sops.placeholder.portkey-api-key}\\nx-portkey-provider: @anthropic'"
+      "exec claude --allow-dangerously-skip-permissions \"$@\""
+      ""
+    ];
+    mode = "0755";
   };
 
   sops.templates."anthropic_key.sh" = lib.mkIf isWork {
@@ -98,11 +87,11 @@ in
     lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       $DRY_RUN_CMD mkdir -p "${homePath}/.claude"
       $DRY_RUN_CMD ln -sf ${
-        config.sops.templates."claude-settings.json".path
-      } "${homePath}/.claude/settings.json"
-      $DRY_RUN_CMD ln -sf ${
         config.sops.templates."anthropic_key.sh".path
       } "${homePath}/.claude/anthropic_key.sh"
+      $DRY_RUN_CMD ln -sf ${
+        config.sops.templates."portkey.sh".path
+      } "${homePath}/.claude/portkey.sh"
     ''
   );
 }
