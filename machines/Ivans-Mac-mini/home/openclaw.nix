@@ -12,6 +12,9 @@ let
   # Secrets are injected as file-based SecretRefs so they stay out of process.env
   # and are not visible to agents via `env`.
   gatewayWithSecrets = pkgs.writeShellScript "openclaw-gateway-secrets" ''
+    # Wait for home-manager SOPS secrets to be decrypted before reading them
+    /bin/wait4path ${config.sops.secrets.openclaw-gateway-token.path}
+
     DOMAIN=$(cat ${config.sops.secrets.external-domain.path})
     if [ -L "$OPENCLAW_CONFIG_PATH" ]; then
       SRC="$(readlink "$OPENCLAW_CONFIG_PATH")"
