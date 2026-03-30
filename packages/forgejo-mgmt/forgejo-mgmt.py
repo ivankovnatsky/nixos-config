@@ -230,12 +230,11 @@ def create_user_token(base_url: str, username: str, password: str, token_name: s
         json={"name": token_name, "scopes": ["all"]},
         timeout=10,
     )
-    if response.status_code == 422:
-        print(f"  Token '{token_name}' already exists for {username}", file=sys.stderr)
-        return ""
     if response.status_code not in (200, 201):
-        print(f"  DEBUG: create_user_token HTTP {response.status_code}: {response.text}", file=sys.stderr)
-        print(f"  WARNING: Failed to create token for {username}: {response.text}", file=sys.stderr)
+        if "has been used already" in response.text:
+            print(f"  Token already exists for {username}, skipping", file=sys.stderr)
+        else:
+            print(f"  ERROR: Failed to create token for {username} (HTTP {response.status_code}): {response.text}", file=sys.stderr)
         return ""
     return response.json().get("sha1", "")
 
