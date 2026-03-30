@@ -42,9 +42,10 @@ else
     claude-sub =
       let
         script = pkgs.writeShellScript "claude-sub" ''
-          exec env ANTHROPIC_API_KEY="$(cat "${config.sops.secrets.claude-home-api-key.path}")" \
-               ANTHROPIC_BASE_URL="" \
-               claude --setting-sources "" \
+          TOKEN="$(cat "${config.sops.secrets.claude-home-api-key.path}")"
+          mkdir -p "$HOME/.claude"
+          printf '{"claudeAiOauth":{"accessToken":"%s"}}\n' "$TOKEN" > "$HOME/.claude/.credentials.json"
+          exec claude --setting-sources "" \
                       --settings "${config.sops.templates."claude-settings-home.json".path}" \
                       --allow-dangerously-skip-permissions "$@"
         '';
