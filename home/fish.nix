@@ -45,6 +45,12 @@ in
       # https://fishshell.com/docs/current/interactive.html#vi-mode-commands
       fish_vi_key_bindings
 
+      # Emacs-style Ctrl+A/Ctrl+E for beginning/end of line in vi mode
+      bind -M insert \ca beginning-of-line
+      bind -M insert \ce end-of-line
+      bind \ca beginning-of-line
+      bind \ce end-of-line
+
       # Disable Ctrl+D from exiting shell (require typing 'exit')
       bind --preset -e \cd
       bind \cd true
