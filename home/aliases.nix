@@ -39,10 +39,5 @@ else
     tg = "terragrunt";
     k = "${pkgs.kubectl}/bin/kubectl";
     argocd = "${pkgs.argocd}/bin/argocd --grpc-web";
-    claude-sub =
-      "${pkgs.writeShellScript "claude-sub" ''
-        exec claude --setting-sources "project,local" \
-                    --settings "${config.sops.templates."claude-settings-home.json".path}" \
-                    --allow-dangerously-skip-permissions "$@"
-      ''}";
+    claude-portkey = "~/.claude/portkey.sh";
   }
