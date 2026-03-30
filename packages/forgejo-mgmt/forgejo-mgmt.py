@@ -234,6 +234,7 @@ def create_user_token(base_url: str, username: str, password: str, token_name: s
         print(f"  Token '{token_name}' already exists for {username}", file=sys.stderr)
         return ""
     if response.status_code not in (200, 201):
+        print(f"  DEBUG: create_user_token HTTP {response.status_code}: {response.text}", file=sys.stderr)
         print(f"  WARNING: Failed to create token for {username}: {response.text}", file=sys.stderr)
         return ""
     return response.json().get("sha1", "")
