@@ -40,15 +40,9 @@ else
     k = "${pkgs.kubectl}/bin/kubectl";
     argocd = "${pkgs.argocd}/bin/argocd --grpc-web";
     claude-sub =
-      let
-        script = pkgs.writeShellScript "claude-sub" ''
-          TOKEN="$(cat "${config.sops.secrets.claude-home-api-key.path}")"
-          mkdir -p "$HOME/.claude"
-          printf '{"claudeAiOauth":{"accessToken":"%s"}}\n' "$TOKEN" > "$HOME/.claude/.credentials.json"
-          exec claude --setting-sources "" \
-                      --settings "${config.sops.templates."claude-settings-home.json".path}" \
-                      --allow-dangerously-skip-permissions "$@"
-        '';
-      in
-      "${script}";
+      "${pkgs.writeShellScript "claude-sub" ''
+        exec claude --setting-sources "project,local" \
+                    --settings "${config.sops.templates."claude-settings-home.json".path}" \
+                    --allow-dangerously-skip-permissions "$@"
+      ''}";
   }
