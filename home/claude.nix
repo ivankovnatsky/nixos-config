@@ -20,6 +20,7 @@ let
   claudeConfigPath = ".claude/settings.json";
 
   baseSettings = {
+    model = "claude-opus-4-6[1m]";
     permissions = {
       defaultMode = "acceptEdits";
       autoApproveWebFetch = true;
