@@ -39,4 +39,15 @@ else
     tg = "terragrunt";
     k = "${pkgs.kubectl}/bin/kubectl";
     argocd = "${pkgs.argocd}/bin/argocd --grpc-web";
+    claude-sub =
+      let
+        script = pkgs.writeShellScript "claude-sub" ''
+          exec env ANTHROPIC_API_KEY="$(cat "${config.sops.secrets.claude-home-api-key.path}")" \
+               ANTHROPIC_BASE_URL="" \
+               claude --setting-sources "" \
+                      --settings "${config.sops.templates."claude-settings-home.json".path}" \
+                      --allow-dangerously-skip-permissions "$@"
+        '';
+      in
+      "${script}";
   }

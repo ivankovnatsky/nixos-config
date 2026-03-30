@@ -69,6 +69,14 @@ in
     key = "work/portkey/apiKey";
   };
 
+  sops.secrets.claude-home-api-key = lib.mkIf isWork {
+    key = "anthropic/oauthTokenOpenClaw";
+  };
+
+  sops.templates."claude-settings-home.json" = lib.mkIf isWork {
+    content = builtins.toJSON baseSettings;
+  };
+
   sops.templates."claude-settings.json" = lib.mkIf isWork {
     content = builtins.toJSON (
       workSettings
