@@ -16,7 +16,6 @@
     casks = [
       "amethyst"
       "bitwarden"
-      "discord"
       # WARNING: `brew uninstall --zap claude` may delete ~/.claude directory
       # and other config. Before removing, protect it with:
       #   sudo chown -R root:wheel ~/.claude
