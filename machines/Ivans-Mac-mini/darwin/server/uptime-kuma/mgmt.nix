@@ -179,6 +179,11 @@
         description = "Taskwarrior web interface";
       }
       {
+        name = "taskweb";
+        url = "http://${config.flags.machineLocalAddress}:8088";
+        description = "TaskWeb web interface for Taskwarrior 3";
+      }
+      {
         name = "mailpit";
         url = "http://${config.flags.machineLocalAddress}:8025";
         description = "Mailpit email testing UI";
