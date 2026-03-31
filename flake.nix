@@ -217,6 +217,11 @@
       url = "github:ivankovnatsky/podservice";
     };
 
+    # TaskWeb - Web interface for Taskwarrior 3
+    taskweb = {
+      url = "github:ivankovnatsky/taskweb";
+    };
+
     # Textcast - Text to Audio Service
     # This input may cause NAR hash mismatch errors due to git-crypt configured
     # in .gitattributes, which causes GitHub's tarball generation to be

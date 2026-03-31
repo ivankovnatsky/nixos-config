@@ -91,6 +91,7 @@ let
     inherit (inputs.podservice.packages.${system}) podservice;
     inherit (inputs.textcast.packages.${system}) textcast;
 
+    taskweb = inputs.taskweb.packages.${system}.default;
     pyenv-nix-install = inputs.pyenv-nix-install.packages.${system}.default;
   };
 
