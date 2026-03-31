@@ -125,6 +125,7 @@
     tail-terminal
     task-new
     taskmanager
+    taskwarrior-web
     tmux-attach
     tmux-spawn
     top-top

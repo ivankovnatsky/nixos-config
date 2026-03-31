@@ -41,6 +41,7 @@
     shellcheck
     shfmt
     stylua
+    taskwarrior-web
     temperatures
     tmux-temperatures
     typst

@@ -78,6 +78,7 @@
     ./syncthing-mgmt.nix
     ./system.nix
     ./tailscale.nix
+    ./taskwarrior-web.nix
     ./textcast
     ./uptime-kuma
   ];
