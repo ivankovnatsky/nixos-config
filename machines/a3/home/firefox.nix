@@ -60,10 +60,10 @@ in
       source = "${pkgs.tweety}/share/extensions/firefox.zip";
     };
     ".mozilla/firefox/dev-edition-default/extensions/selecttab@ivankovnatsky.net.xpi" = {
-      source = "${pkgs.firefox-selecttab}/share/extensions/firefox.zip";
+      source = "${pkgs.firefox-selecttab}/share/extensions/firefox-selecttab.zip";
     };
     ".mozilla/firefox/default/extensions/selecttab@ivankovnatsky.net.xpi" = {
-      source = "${pkgs.firefox-selecttab}/share/extensions/firefox.zip";
+      source = "${pkgs.firefox-selecttab}/share/extensions/firefox-selecttab.zip";
     };
   };
 }
