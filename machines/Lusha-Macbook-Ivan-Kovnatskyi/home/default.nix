@@ -19,6 +19,7 @@
     ../../../home/git
     ../../../home/go.nix
     ../../../home/gpg.nix
+    ../../../home/gwq.nix
     ../../../home/hammerspoon
     ../../../home/home-session-vars.nix
     ../../../home/jujutsu.nix

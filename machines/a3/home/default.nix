@@ -17,6 +17,7 @@
     ../../../home/ghostty.nix
     ../../../home/git
     ../../../home/go.nix
+    ../../../home/gwq.nix
     ../../../home/home-session-vars.nix
     ../../../home/jujutsu.nix
     ../../../home/kitty
