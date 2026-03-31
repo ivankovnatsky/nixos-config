@@ -79,6 +79,7 @@
     ./system.nix
     ./tailscale.nix
     ./taskwarrior-web.nix
+    ./taskweb.nix
     ./textcast
     ./uptime-kuma
   ];
