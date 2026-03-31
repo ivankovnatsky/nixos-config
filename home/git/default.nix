@@ -207,7 +207,7 @@ EOF
         "**/.stignore"
         "**/.stfolder"
 
-        "**/__worktrees/"
+        "**/.worktrees/"
 
         "**/CLAUDE.md"
         "**/CLAUDE.local.md"
