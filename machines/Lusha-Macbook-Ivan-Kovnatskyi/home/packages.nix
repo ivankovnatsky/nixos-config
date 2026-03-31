@@ -57,6 +57,7 @@
     flarectl
     genpass
     ggh
+    ghq-cd
     gh-notifications
     gh-pr
     gh-prs-merged-today

@@ -14,6 +14,7 @@
     gallery-dl
     game-mode
     ggh
+    ghq-cd
     gitleaks
     glow
     gofumpt

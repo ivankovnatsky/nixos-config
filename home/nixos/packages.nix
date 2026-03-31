@@ -3,6 +3,7 @@
 {
   home.packages = with pkgs; [
     fastfetch
+    ghq-cd
     ghostty
     gnumake
     gum
