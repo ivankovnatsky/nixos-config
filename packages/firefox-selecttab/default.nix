@@ -31,7 +31,7 @@ stdenv.mkDerivation {
     runHook preInstall
 
     mkdir -p $out/share/extensions
-    cp firefox-selecttab.xpi $out/share/extensions/firefox.zip
+    cp firefox-selecttab.xpi $out/share/extensions/firefox-selecttab.zip
 
     runHook postInstall
   '';
