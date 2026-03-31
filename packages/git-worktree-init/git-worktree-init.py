@@ -3,7 +3,7 @@
 Git worktree initialization tool.
 
 Creates or navigates to a git worktree for the specified branch.
-Worktrees are created at <git-dir>/__worktrees/<branch-name>.
+Worktrees are created at <repo-root>/.worktrees/<branch-name>.
 """
 
 import argparse
@@ -181,7 +181,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(
         description="Create or navigate to a git worktree for the specified branch.",
         epilog="""
-The worktree is created at <git-dir>/__worktrees/<branch-name>.
+The worktree is created at <repo-root>/.worktrees/<branch-name>.
 If the branch doesn't exist, it will be created.
 
 Example:
@@ -271,7 +271,7 @@ Example:
         current_sha,
     )
 
-    worktree_dir = git_dir / "__worktrees" / branch_name
+    worktree_dir = real_git_root / ".worktrees" / branch_name
 
     if worktree_dir.exists():
         print(worktree_dir, end="")
