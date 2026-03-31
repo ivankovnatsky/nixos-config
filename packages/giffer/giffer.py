@@ -421,12 +421,17 @@ def remove_url_from_file(url_to_remove, url_file):
 
 
 def batch_download_single(
-    url, output_dir, embed_subs=True, max_height=DEFAULT_MAX_HEIGHT
+    url, output_dir, embed_subs=True, max_height=DEFAULT_MAX_HEIGHT, force_gallery=False, force_ytdlp=False
 ):
     """Download a single URL with yt-dlp, falling back to gallery-dl. Returns (url, success)."""
     out_dir = get_output_dir(output_dir)
     existing_files = set(out_dir.glob("*.unknown_video"))
     output_template = str(out_dir / "%(title)s.%(ext)s")
+
+    if force_gallery:
+        gallery_args = ["-d", str(out_dir), url]
+        gallery_result = run_gallery_dl(gallery_args)
+        return (url, gallery_result.returncode == 0)
 
     cmd_args = []
     if embed_subs:
@@ -450,6 +455,9 @@ def batch_download_single(
         fix_unknown_extensions(out_dir, existing_files)
         return (url, True)
 
+    if force_ytdlp:
+        return (url, False)
+
     gallery_args = ["-d", str(out_dir), url]
     gallery_result = run_gallery_dl(gallery_args)
     return (url, gallery_result.returncode == 0)
@@ -462,6 +470,8 @@ def batch_download_impl(
     max_height=DEFAULT_MAX_HEIGHT,
     workers=1,
     clean_list=False,
+    force_gallery=False,
+    force_ytdlp=False,
 ):
     """Download videos from a list file"""
     if url_file is None:
@@ -493,7 +503,7 @@ def batch_download_impl(
         with ThreadPoolExecutor(max_workers=workers) as executor:
             futures = {
                 executor.submit(
-                    batch_download_single, url, output_dir, embed_subs, max_height
+                    batch_download_single, url, output_dir, embed_subs, max_height, force_gallery, force_ytdlp
                 ): url
                 for url in urls
             }
@@ -518,7 +528,7 @@ def batch_download_impl(
         success_count = 0
         for url in urls:
             click.echo(f"Downloading: {url}")
-            _, success = batch_download_single(url, output_dir, embed_subs, max_height)
+            _, success = batch_download_single(url, output_dir, embed_subs, max_height, force_gallery, force_ytdlp)
             if success:
                 click.echo(f"Successfully downloaded: {url}")
                 if clean_list:
@@ -1339,10 +1349,22 @@ def process(
     is_flag=True,
     help="Remove successfully downloaded URLs from the list file",
 )
-def batch(url_file, output_dir, workers, embed_subs, max_height, clean_list):
+@click.option(
+    "--gallery",
+    is_flag=True,
+    help="Force gallery-dl for all URLs (skip yt-dlp)",
+)
+@click.option(
+    "--ytdlp",
+    is_flag=True,
+    help="Force yt-dlp for all URLs (skip gallery-dl fallback)",
+)
+def batch(url_file, output_dir, workers, embed_subs, max_height, clean_list, gallery, ytdlp):
     """Download videos from a URL list file."""
+    if gallery and ytdlp:
+        raise click.UsageError("Cannot use both --gallery and --ytdlp")
     success = batch_download_impl(
-        url_file, output_dir, embed_subs, max_height, workers, clean_list
+        url_file, output_dir, embed_subs, max_height, workers, clean_list, gallery, ytdlp
     )
     sys.exit(0 if success else 1)
 
