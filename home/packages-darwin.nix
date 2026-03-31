@@ -27,7 +27,6 @@
     smctemp # Local overlay
     swiftformat
     syncthing
-    taskwarrior-web # Local overlay
     typst
     typstyle
     watchman
