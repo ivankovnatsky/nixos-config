@@ -2,7 +2,7 @@
 
 # ghq-cd - Use fzf to select and cd into a ghq-managed repository
 
-selected_repo="$(ghq list | fzf --prompt='repo> ' --height 50% --layout=reverse --header=' Select a repository')"
+selected_repo="$(ghq list | fzf --prompt='repo> ' --height 50% --layout=reverse --header=' Select a repository' --query="${1:-}")"
 
 if [[ -n "$selected_repo" ]]; then
   repo_path="$(ghq root)/$selected_repo"
