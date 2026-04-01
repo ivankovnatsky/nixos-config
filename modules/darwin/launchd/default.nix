@@ -52,7 +52,7 @@ let
           default = false;
           description = ''
             Wait for sops-nix secrets to be available before starting the service.
-            Uses /bin/wait4path to block until /run/secrets/rendered exists.
+            Uses /bin/wait4path to block until /run/secrets exists.
             Enable this for services that depend on sops secrets or templates.
           '';
         };
@@ -149,7 +149,7 @@ let
 
         ${optionalString cfg.waitForSecrets ''
           echo "$(ts) - INFO - Waiting for sops secrets to be available..."
-          /bin/wait4path /run/secrets/rendered
+          /bin/wait4path /run/secrets
           echo "$(ts) - INFO - Sops secrets are available!"
         ''}
 
