@@ -6,6 +6,14 @@
 }:
 let
   stateDir = "${config.flags.externalStoragePath}/.openclaw";
+  cacheDir = "${config.flags.externalStoragePath}/.cache";
+
+  mlxWhisperWrapper = pkgs.writeShellScript "mlx-whisper-openclaw" ''
+    export HF_HOME="${cacheDir}/huggingface"
+    exec ${pkgs.mlx-whisper}/bin/mlx_whisper \
+      --model mlx-community/whisper-turbo \
+      "$@"
+  '';
   patchedConfig = "${stateDir}/openclaw-runtime.json";
 
   # Wrapper that patches config with SecretRefs and dynamic values, then execs the gateway.
@@ -106,9 +114,9 @@ in
           models = [
             {
               type = "cli";
-              command = "${pkgs.openai-whisper}/bin/whisper";
-              args = [ "--model" "turbo" "--model_dir" "${config.flags.externalStoragePath}/.whisper" "{{MediaPath}}" ];
-              timeoutSeconds = 60;
+              command = "${mlxWhisperWrapper}";
+              args = [ "{{MediaPath}}" ];
+              timeoutSeconds = 300;
             }
           ];
         };
