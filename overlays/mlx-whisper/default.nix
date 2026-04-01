@@ -4,6 +4,10 @@
   fetchFromGitHub,
 }:
 
+# NOTE: Requires nixpkgs MLX >= 0.31 for reliable GPU inference.
+# Current nixpkgs has MLX 0.30.5 which intermittently falls back to
+# CPU and crashes with "AddMM::eval_cpu only supports float32".
+# Tracking: https://github.com/NixOS/nixpkgs/pull/504828
 python3Packages.buildPythonApplication rec {
   pname = "mlx-whisper";
   version = "0.4.3";
