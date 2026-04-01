@@ -99,6 +99,19 @@ in
         channels.discord = {
           enabled = true;
         };
+
+        tools.media.audio = {
+          enabled = true;
+          echoTranscript = true;
+          models = [
+            {
+              type = "cli";
+              command = "${pkgs.openai-whisper}/bin/whisper";
+              args = [ "--model" "turbo" "--model_dir" "${config.flags.externalStoragePath}/.whisper" "{{MediaPath}}" ];
+              timeoutSeconds = 60;
+            }
+          ];
+        };
       };
     };
   };

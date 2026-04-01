@@ -44,6 +44,7 @@
     ../../../home/tmux.nix
     ../../../home/treefmt.nix
     ../../../home/vscode.nix
+    ../../../home/whisper.nix
     ../../../home/yt-dlp.nix
     ../../../home/z-lua.nix
     ../../../home/zsh.nix
