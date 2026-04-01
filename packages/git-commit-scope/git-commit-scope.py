@@ -244,28 +244,38 @@ def _is_new_file(path: str) -> bool:
 
 def parse_args_flexible(
     args: list[str], subject_flag: str | None
-) -> tuple[str | None, str]:
-    """Parse arguments flexibly: file can be before or after subject."""
-    if subject_flag:
-        # Subject provided via -s flag
-        if len(args) == 0:
-            return None, subject_flag
-        elif len(args) == 1:
-            if is_file_path(args[0]):
-                return args[0], subject_flag
-            else:
-                print(f"Error: File not found: {args[0]}", file=sys.stderr)
-                sys.exit(1)
-        else:
-            print("Error: Too many positional args with -s flag", file=sys.stderr)
-            sys.exit(1)
+) -> tuple[list[str], str]:
+    """Parse arguments flexibly: one or more files + subject.
 
-    # Original behavior: subject from positional args
+    Returns (file_paths, subject) where file_paths may be empty (auto-detect).
+    Supports:
+      - git-commit-scope "subject"                  -> ([], subject)
+      - git-commit-scope file "subject"             -> ([file], subject)
+      - git-commit-scope "subject" file             -> ([file], subject)
+      - git-commit-scope file1 file2 "subject"      -> ([file1, file2], subject)
+      - git-commit-scope file1 file2 -s "subject"   -> ([file1, file2], subject)
+      - git-commit-scope file                       -> ([file], "init") if new file
+    """
+    if subject_flag:
+        # Subject provided via -s flag — all positional args must be files
+        files = []
+        for a in args:
+            if is_file_path(a):
+                files.append(a)
+            else:
+                print(f"Error: File not found: {a}", file=sys.stderr)
+                sys.exit(1)
+        return files, subject_flag
+
+    if len(args) == 0:
+        print("Error: Subject required (use -s or positional arg)", file=sys.stderr)
+        sys.exit(1)
+
+    # Original behavior for 1 arg
     if len(args) == 1:
         if is_file_path(args[0]):
-            # Default to "init" for untracked files when no subject given
             if _is_new_file(args[0]):
-                return args[0], "init"
+                return [args[0]], "init"
             print(
                 f"Error: '{args[0]}' looks like a file path, not a subject.",
                 file=sys.stderr,
@@ -279,29 +289,28 @@ def parse_args_flexible(
                 file=sys.stderr,
             )
             sys.exit(1)
-        return None, args[0]
-    elif len(args) == 2:
-        # Check which argument is a file (exists on disk or staged)
-        first_is_file = is_file_path(args[0])
-        second_is_file = is_file_path(args[1])
+        return [], args[0]
 
-        if first_is_file and not second_is_file:
-            return args[0], args[1]
-        elif second_is_file and not first_is_file:
-            return args[1], args[0]
-        elif first_is_file and second_is_file:
-            print("Error: Both arguments are file paths", file=sys.stderr)
-            sys.exit(1)
+    # 2+ args: separate files from subject
+    # Exactly one non-file arg is the subject; rest are files
+    files = []
+    non_files = []
+    for a in args:
+        if is_file_path(a):
+            files.append(a)
         else:
-            print("Error: Neither argument is a file path", file=sys.stderr)
-            print(f"  {args[0]}", file=sys.stderr)
-            print(f"  {args[1]}", file=sys.stderr)
-            sys.exit(1)
-    elif len(args) == 0:
-        print("Error: Subject required (use -s or positional arg)", file=sys.stderr)
+            non_files.append(a)
+
+    if len(non_files) == 1:
+        return files, non_files[0]
+    elif len(non_files) == 0:
+        print("Error: All arguments are file paths, no subject provided", file=sys.stderr)
+        print("  Use: git-commit-scope <file>... -s 'subject'", file=sys.stderr)
         sys.exit(1)
     else:
-        print(f"Error: Expected 1 or 2 arguments, got {len(args)}", file=sys.stderr)
+        print("Error: Multiple non-file arguments (expected exactly one subject):", file=sys.stderr)
+        for nf in non_files:
+            print(f"  {nf}", file=sys.stderr)
         sys.exit(1)
 
 
@@ -313,13 +322,15 @@ Examples:
   git-commit-scope "add feature"                     Commits staged file with "<scope>: add feature"
   git-commit-scope file.nix "add feature"            Commits file.nix with "<scope>: add feature"
   git-commit-scope src/dir "add feature"             Commits all changes in src/dir
+  git-commit-scope f1.nix f2.nix "add feature"      Two separate commits, each with own scope
   git-commit-scope "add feature" -b "Body text"      Commits with subject and body
   git-commit-scope "add feature" -b "L1" -b "L2"     Multiple -b joined with newline
   git-commit-scope -s "add feature" -b "Line 1
   Line 2"                                       Multiline body with newlines
 
 Features:
-  - Accepts file or directory path in either position (auto-detected by existence)
+  - Accepts one or more file/directory paths (auto-detected by existence)
+  - Multiple files create separate commits, each with its own scope prefix
   - Directories commit all changes under that path
   - Auto-adds untracked files before committing
   - Without path arg, detects exactly one changed file (staged, modified, or untracked)
@@ -351,7 +362,7 @@ Features:
     # Join multiple -b flags with single newline (no blank lines)
     body = "\n".join(parsed.body) if parsed.body else None
 
-    file_path, subject = parse_args_flexible(parsed.args, parsed.subject)
+    file_paths, subject = parse_args_flexible(parsed.args, parsed.subject)
 
     # Get git root early - needed for path normalization
     try:
@@ -360,14 +371,15 @@ Features:
         print(f"Failed to get git root: {e}", file=sys.stderr)
         return 1
 
-    if file_path:
-        abs_path = os.path.abspath(file_path)
-        # If the absolute path doesn't exist, check if path is relative to git root
-        if not os.path.exists(abs_path):
-            abs_from_root = os.path.join(git_root, file_path)
-            if os.path.exists(abs_from_root):
-                abs_path = os.path.abspath(abs_from_root)
-        target_file = os.path.relpath(abs_path, git_root)
+    if file_paths:
+        target_files = []
+        for fp in file_paths:
+            abs_path = os.path.abspath(fp)
+            if not os.path.exists(abs_path):
+                abs_from_root = os.path.join(git_root, fp)
+                if os.path.exists(abs_from_root):
+                    abs_path = os.path.abspath(abs_from_root)
+            target_files.append(os.path.relpath(abs_path, git_root))
     else:
         try:
             all_files = get_all_changed_files()
@@ -388,67 +400,67 @@ Features:
                 print(f"  {f}", file=sys.stderr)
             return 1
 
-        target_file = all_files[0]
-
-    prefix = shorten_path(target_file)
-
-    def _too_long(p: str) -> bool:
-        return len(create_commit_message(p, subject)) > MAX_MESSAGE_LENGTH
-
-    # Apply aggressive directory shortening if total message exceeds limit
-    if _too_long(prefix):
-        prefix = shorten_directories(prefix)
-
-    if _too_long(prefix):
-        full_msg = create_commit_message(prefix, subject)
-        print(
-            f"Message too long: {len(full_msg)} chars (max {MAX_MESSAGE_LENGTH})",
-            file=sys.stderr,
-        )
-        print(f"Scope: {prefix}", file=sys.stderr)
-        return 1
-
-    message = create_commit_message(prefix, subject)
+        target_files = [all_files[0]]
 
     # Set env var so pre-commit hook skips the "use git-commit-scope" hint
     os.environ["GIT_COMMIT_SCOPE_CLI"] = "1"
 
-    try:
-        # Add untracked files first (git commit <file> only works for tracked files)
-        # Skip if file is already staged (e.g., staged deletion)
-        if is_staged_path(target_file):
-            pass
-        elif is_untracked(target_file, git_root):
-            result = subprocess.run(
-                ["git", "add", target_file],
-                capture_output=True,
-                text=True,
-                cwd=git_root,
+    def _too_long(p: str) -> bool:
+        return len(create_commit_message(p, subject)) > MAX_MESSAGE_LENGTH
+
+    for target_file in target_files:
+        prefix = shorten_path(target_file)
+
+        if _too_long(prefix):
+            prefix = shorten_directories(prefix)
+
+        if _too_long(prefix):
+            full_msg = create_commit_message(prefix, subject)
+            print(
+                f"Message too long: {len(full_msg)} chars (max {MAX_MESSAGE_LENGTH})",
+                file=sys.stderr,
             )
-            if result.returncode != 0:
-                # Fall back to force-add (needed when .gitignore ignores the file)
-                print(f"  add -f {target_file}")
-                subprocess.run(
-                    ["git", "add", "-f", target_file], check=True, cwd=git_root
+            print(f"Scope: {prefix}", file=sys.stderr)
+            return 1
+
+        message = create_commit_message(prefix, subject)
+
+        try:
+            # Add untracked files first (git commit <file> only works for tracked files)
+            # Skip if file is already staged (e.g., staged deletion)
+            if is_staged_path(target_file):
+                pass
+            elif is_untracked(target_file, git_root):
+                result = subprocess.run(
+                    ["git", "add", target_file],
+                    capture_output=True,
+                    text=True,
+                    cwd=git_root,
                 )
+                if result.returncode != 0:
+                    # Fall back to force-add (needed when .gitignore ignores the file)
+                    print(f"  add -f {target_file}")
+                    subprocess.run(
+                        ["git", "add", "-f", target_file], check=True, cwd=git_root
+                    )
+                else:
+                    print(f"  add {target_file}")
+
+            print(f"  commit {target_file}")
+
+            # For staged deletions, git commit <file> doesn't work because it reads
+            # from the working tree (where the file no longer exists). Use --only
+            # to commit just this path from the index without pulling in other staged changes.
+            if is_staged_deletion(target_file):
+                cmd = ["git", "commit", "--only", target_file, "-m", message]
             else:
-                print(f"  add {target_file}")
-
-        print(f"  commit {target_file}")
-
-        # For staged deletions, git commit <file> doesn't work because it reads
-        # from the working tree (where the file no longer exists). Use git commit
-        # without pathspec to commit from the index instead.
-        if is_staged_deletion(target_file):
-            cmd = ["git", "commit", "-m", message]
-        else:
-            cmd = ["git", "commit", target_file, "-m", message]
-        if body:
-            cmd.extend(["-m", body])
-        subprocess.run(cmd, check=True, cwd=git_root)
-    except subprocess.CalledProcessError as e:
-        print(f"Git commit failed: {e}", file=sys.stderr)
-        return 1
+                cmd = ["git", "commit", target_file, "-m", message]
+            if body:
+                cmd.extend(["-m", body])
+            subprocess.run(cmd, check=True, cwd=git_root)
+        except subprocess.CalledProcessError as e:
+            print(f"Git commit failed: {e}", file=sys.stderr)
+            return 1
 
     return 0
 
