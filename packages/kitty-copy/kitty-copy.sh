@@ -34,6 +34,17 @@ copy_from_id() {
   echo "Copied content from window $id to clipboard."
 }
 
+# Handle --help / -h
+if [[ $# -ge 1 && ( "$1" == "--help" || "$1" == "-h" ) ]]; then
+  echo "Usage: kitty-copy [WINDOW_ID]"
+  echo ""
+  echo "Copy text from a kitty terminal window to the clipboard."
+  echo ""
+  echo "If WINDOW_ID is provided, copies from that window directly."
+  echo "Otherwise, opens an interactive fzf picker to select a window."
+  exit 0
+fi
+
 # If argument provided, use it as ID
 if [[ $# -ge 1 ]]; then
   copy_from_id "$1"
