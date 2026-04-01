@@ -1533,6 +1533,77 @@ def spaces_get_current_index() -> int | None:
         return None
 
 
+def spaces_count() -> int | None:
+    """Get the number of desktop spaces on the primary monitor (excluding fullscreen apps)."""
+    import json
+
+    try:
+        result = subprocess.run(
+            ["plutil", "-convert", "json", "-o", "-", str(SPACES_PLIST)],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        data = json.loads(result.stdout)
+
+        config = data.get("SpacesDisplayConfiguration", {})
+        mgmt_data = config.get("Management Data", {})
+        monitors = mgmt_data.get("Monitors", [])
+
+        # Find the monitor with Current Space (the primary/active one),
+        # consistent with spaces_get_current_index() iteration
+        for monitor in monitors:
+            if "Current Space" in monitor:
+                spaces = [s for s in monitor.get("Spaces", []) if s.get("type") == 0]
+                return len(spaces)
+
+        return None
+    except (subprocess.CalledProcessError, json.JSONDecodeError, KeyError):
+        return None
+
+
+def spaces_ensure(target: int) -> int:
+    """Ensure exactly `target` desktop spaces exist (idempotent)."""
+    current = spaces_count()
+    if current is None:
+        print("Error: Could not determine current space count", file=sys.stderr)
+        return 1
+
+    if current == target:
+        print(f"Already have {target} spaces, nothing to do")
+        return 0
+
+    if current < target:
+        to_add = target - current
+        print(f"Have {current} spaces, adding {to_add} to reach {target}")
+        for i in range(to_add):
+            rc = spaces_add()
+            if rc != 0:
+                return rc
+            time.sleep(0.5)
+    else:
+        print(
+            f"Have {current} spaces, need {target}. "
+            "Removing extra spaces is not supported in ensure mode — remove manually.",
+            file=sys.stderr,
+        )
+        return 1
+
+    time.sleep(1.0)
+    final = spaces_count()
+    if final is None:
+        print("Warning: Could not verify final space count", file=sys.stderr)
+        return 1
+    if final != target:
+        print(
+            f"Error: Expected {target} spaces but have {final}",
+            file=sys.stderr,
+        )
+        return 1
+    print(f"Now have {final} spaces")
+    return 0
+
+
 def spaces_add() -> int:
     """Add a new desktop space."""
     script = """
@@ -1587,9 +1658,10 @@ end tell
 
 
 @cli.command()
-@click.argument("action", type=click.Choice(["add", "remove"]))
-def spaces(action):
-    """Add or remove desktop spaces (macOS only)"""
+@click.argument("action", type=click.Choice(["add", "remove", "ensure", "count"]))
+@click.option("--count", "-n", "target_count", type=int, help="Target number of spaces (for ensure)")
+def spaces(action, target_count):
+    """Add, remove, count, or ensure desktop spaces (macOS only)"""
     if not is_macos():
         print("Spaces settings only available on macOS", file=sys.stderr)
         sys.exit(1)
@@ -1598,8 +1670,20 @@ def spaces(action):
         result = spaces_add()
     elif action == "remove":
         result = spaces_remove()
+    elif action == "count":
+        count = spaces_count()
+        if count is None:
+            print("Error: Could not determine space count", file=sys.stderr)
+            sys.exit(1)
+        print(count)
+        result = 0
+    elif action == "ensure":
+        if target_count is None:
+            print("Usage: settings spaces ensure --count N", file=sys.stderr)
+            sys.exit(1)
+        result = spaces_ensure(target_count)
     else:
-        print("Usage: settings spaces <add|remove>", file=sys.stderr)
+        print("Usage: settings spaces <add|remove|ensure|count>", file=sys.stderr)
         sys.exit(1)
 
     if result != 0:
