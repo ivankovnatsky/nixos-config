@@ -29,6 +29,7 @@
 	rebuild-watch-loop \
 	rebuild-loop \
 	\
+	build \
 	test-build \
 	\
 	devcontainer \
@@ -132,14 +133,20 @@ flake-update-homebrew:
 		$(NIX) flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
 	done
 
-# Test build for current machine (dry-run, no switch)
+# Build and test targets for current machine
 HOSTNAME := $(shell hostname)
 ifeq (${PLATFORM}, Darwin)
+build: addall
+	$(NIX) build .#darwinConfigurations.${HOSTNAME}.system ${NIX_EXTRA_FLAGS}
+
 test-build:
 	$(NIX) build .#darwinConfigurations.${HOSTNAME}.system --dry-run ${NIX_EXTRA_FLAGS}
 else
+build: addall
+	$(NIX) build .#nixosConfigurations.${HOSTNAME}.config.system.build.toplevel ${NIX_EXTRA_FLAGS}
+
 test-build:
-	$(NIX) build .#nixosConfigurations.${HOSTNAME}.config.system.build.toplevel --dry-run
+	$(NIX) build .#nixosConfigurations.${HOSTNAME}.config.system.build.toplevel --dry-run ${NIX_EXTRA_FLAGS}
 endif
 
 # NixOS rebuild targets
