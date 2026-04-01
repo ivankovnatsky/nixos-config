@@ -163,7 +163,7 @@ def shorten_path(path: str) -> str:
     for long_name, short_name in MACHINE_MAPPINGS.items():
         result = result.replace(long_name, short_name)
 
-    # Remove duplicate path component (e.g., packages/git-message/git-message -> packages/git-message)
+    # Remove duplicate path component (e.g., packages/git-commit-scope/git-commit-scope -> packages/git-commit-scope)
     parts = result.split("/")
     if len(parts) >= 2 and parts[-1] == parts[-2]:
         result = "/".join(parts[:-1])
@@ -271,11 +271,11 @@ def parse_args_flexible(
                 file=sys.stderr,
             )
             print(
-                "  Use: git-message <file> -s 'subject'",
+                "  Use: git-commit-scope <file> -s 'subject'",
                 file=sys.stderr,
             )
             print(
-                "  Or:  git-message <file> 'subject'",
+                "  Or:  git-commit-scope <file> 'subject'",
                 file=sys.stderr,
             )
             sys.exit(1)
@@ -310,12 +310,12 @@ def main() -> int:
         description="Auto-generate git commit subject scope from changed file paths.",
         epilog="""
 Examples:
-  git-message "add feature"                     Commits staged file with "<scope>: add feature"
-  git-message file.nix "add feature"            Commits file.nix with "<scope>: add feature"
-  git-message src/dir "add feature"             Commits all changes in src/dir
-  git-message "add feature" -b "Body text"      Commits with subject and body
-  git-message "add feature" -b "L1" -b "L2"     Multiple -b joined with newline
-  git-message -s "add feature" -b "Line 1
+  git-commit-scope "add feature"                     Commits staged file with "<scope>: add feature"
+  git-commit-scope file.nix "add feature"            Commits file.nix with "<scope>: add feature"
+  git-commit-scope src/dir "add feature"             Commits all changes in src/dir
+  git-commit-scope "add feature" -b "Body text"      Commits with subject and body
+  git-commit-scope "add feature" -b "L1" -b "L2"     Multiple -b joined with newline
+  git-commit-scope -s "add feature" -b "Line 1
   Line 2"                                       Multiline body with newlines
 
 Features:
@@ -410,8 +410,8 @@ Features:
 
     message = create_commit_message(prefix, subject)
 
-    # Set env var so pre-commit hook skips the "use git-message" hint
-    os.environ["GIT_MESSAGE_CLI"] = "1"
+    # Set env var so pre-commit hook skips the "use git-commit-scope" hint
+    os.environ["GIT_COMMIT_SCOPE_CLI"] = "1"
 
     try:
         # Add untracked files first (git commit <file> only works for tracked files)
