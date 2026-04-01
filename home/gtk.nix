@@ -6,6 +6,14 @@ let
 
 in
 {
+  home.pointerCursor = {
+    name = cursorThemeName;
+    package = pkgs.capitaine-cursors;
+    size = cursorSize;
+    gtk.enable = true;
+    x11.enable = true;
+  };
+
   home.packages = with pkgs; [
     capitaine-cursors
   ];
