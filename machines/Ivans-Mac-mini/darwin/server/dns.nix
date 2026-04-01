@@ -80,6 +80,10 @@ in
         config.flags.miniWifiIp
       ];
 
+      # Use bind-dynamic so dnsmasq doesn't fail when an interface
+      # IP isn't available yet (e.g. USB-C adapter not connected)
+      "bind-dynamic" = true;
+
       # Don't use /etc/resolv.conf
       "no-resolv" = true;
 
