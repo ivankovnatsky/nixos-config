@@ -162,15 +162,14 @@ def detect_rebuild_command():
         raise RuntimeError(f"Unsupported platform: {system}")
 
 
-def send_notification(success):
-    """Send platform-specific notification."""
+def send_failure_notification():
+    """Send platform-specific failure notification."""
     system = platform.system()
 
     if system == "Darwin":
         try:
-            msg = "🟢 Darwin rebuild successful!" if success else "🔴 Darwin rebuild failed!"
             subprocess.run(
-                ["osascript", "-e", f'display notification "{msg}" with title "Nix configuration"'],
+                ["osascript", "-e", 'display notification "🔴 Darwin rebuild failed!" with title "Nix configuration"'],
                 check=False,
                 capture_output=True,
             )
@@ -179,9 +178,8 @@ def send_notification(success):
     elif system == "Linux":
         try:
             if os.environ.get("DISPLAY"):
-                msg = "🟢 NixOS rebuild successful!" if success else "🔴 NixOS rebuild failed!"
                 subprocess.run(
-                    ["notify-send", msg, "Nix configuration"],
+                    ["notify-send", "🔴 NixOS rebuild failed!", "Nix configuration"],
                     check=False,
                     capture_output=True,
                 )
@@ -371,7 +369,6 @@ def run_rebuild(config_path, command, quiet=False):
                 reset_terminal()
                 if result.returncode == 0:
                     logging.info("Rebuild successful")
-                    send_notification(True)
                 else:
                     logging.error(f"Rebuild failed with exit code {result.returncode}")
                     try:
@@ -382,7 +379,7 @@ def run_rebuild(config_path, command, quiet=False):
                             logging.error(f"  {line}")
                     except Exception:
                         pass
-                    send_notification(False)
+                    send_failure_notification()
             finally:
                 if result is None or result.returncode == 0:
                     log_path.unlink(missing_ok=True)
@@ -393,10 +390,9 @@ def run_rebuild(config_path, command, quiet=False):
             reset_terminal()
             if result.returncode == 0:
                 logging.info("Rebuild successful")
-                send_notification(True)
             else:
                 logging.error(f"Rebuild failed with exit code {result.returncode}")
-                send_notification(False)
+                send_failure_notification()
 
         return (result.returncode, True)
     finally:
