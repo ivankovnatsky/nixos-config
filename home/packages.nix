@@ -40,7 +40,7 @@
     ghq-cd
     giffer
     git-branch
-    git-message
+    git-commit-scope
     git-pull-all
     git-repo-dl
     git-root-root
