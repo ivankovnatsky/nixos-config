@@ -36,6 +36,7 @@
     ./prevent-sleep.nix
     ./reposync.nix
     ./security.nix
+    ./spaces.nix
 
     ./shell.nix
     ./syncthing-mgmt.nix
