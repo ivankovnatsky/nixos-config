@@ -72,17 +72,15 @@ in
     alwaysKeepRunning = true;
     waitForSecrets = false;
     settings = {
-      # Listen on all interfaces (supports both ethernet and WiFi)
-      "listen-address" = [
-        "127.0.0.1"
-        config.flags.miniIp
-        config.flags.miniEn7Ip
-        config.flags.miniWifiIp
+      # Bind to interfaces by name so dnsmasq skips missing ones
+      # (e.g. en9 USB-C adapter not connected) instead of crashing
+      "bind-interfaces" = true;
+      "interface" = [
+        "lo0"
+        "en0"
+        "en9"
+        "en1"
       ];
-
-      # Use bind-dynamic so dnsmasq doesn't fail when an interface
-      # IP isn't available yet (e.g. USB-C adapter not connected)
-      "bind-dynamic" = true;
 
       # Don't use /etc/resolv.conf
       "no-resolv" = true;
