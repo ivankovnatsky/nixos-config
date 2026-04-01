@@ -82,7 +82,6 @@ in
 
     bundledPlugins.summarize.enable = true;
     bundledPlugins.peekaboo.enable = true;
-    bundledPlugins.poltergeist.enable = true;
     bundledPlugins.sag.enable = true;
 
     instances.default = {
