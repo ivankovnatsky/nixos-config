@@ -98,12 +98,6 @@ let
           description = "Seconds to wait before restarting after crash";
         };
 
-        logTimestamp = mkOption {
-          type = types.bool;
-          default = true;
-          description = "Prefix command output lines with timestamps and log level";
-        };
-
         logDir = mkOption {
           type = types.str;
           default = "/tmp/agents/log/launchd";
@@ -132,22 +126,20 @@ let
         # Add basic Darwin utilities to PATH for preStart scripts
         export PATH="/bin:/usr/bin:$PATH"
 
-        ts() { date '+%Y-%m-%d %H:%M:%S'; }
-
         # Create log directory with proper permissions
         /bin/mkdir -p ${svc.logDir}
         /bin/chmod 755 ${svc.logDir}
 
         ${optionalString svc.waitForSecrets ''
-          echo "$(ts) - INFO - Waiting for sops secrets to be available..."
+          echo "Waiting for sops secrets..."
           /bin/wait4path /run/secrets
-          echo "$(ts) - INFO - Sops secrets are available!"
+          echo "Sops secrets available."
         ''}
 
         ${optionalString (svc.waitForPath != null) ''
-          echo "$(ts) - INFO - Waiting for ${svc.waitForPath}..."
+          echo "Waiting for ${svc.waitForPath}..."
           /bin/wait4path "${svc.waitForPath}"
-          echo "$(ts) - INFO - ${svc.waitForPath} is available!"
+          echo "${svc.waitForPath} available."
         ''}
 
         ${optionalString (svc.dataDir != null) ''
@@ -160,18 +152,7 @@ let
 
         ${svc.preStart}
 
-        ${
-          if svc.logTimestamp then
-            ''
-              ${svc.command} \
-                > >(while IFS= read -r line; do printf '%s - INFO - %s\n' "$(ts)" "$line"; done) \
-                2> >(while IFS= read -r line; do printf '%s - ERROR - %s\n' "$(ts)" "$line"; done >&2)
-            ''
-          else
-            ''
-              exec ${svc.command}
-            ''
-        }
+        exec ${svc.command}
       '';
 
       script = pkgs.writeShellScriptBin "${name}-starter" scriptContent;
