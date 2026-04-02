@@ -68,6 +68,7 @@ let
        | .gateway.controlUi.allowedOrigins = [$origin, "http://127.0.0.1:18789"]
        | .channels.discord.allowFrom = [$userId]
        | .channels.discord.guilds[$serverId] = {}
+       | .channels.discord.execApprovals.approvers = [$userId]
        ' "$SRC" > "${patchedConfig}.tmp"
     mv "${patchedConfig}.tmp" "${patchedConfig}"
     export OPENCLAW_CONFIG_PATH="${patchedConfig}"
@@ -124,6 +125,16 @@ in
 
         channels.discord = {
           enabled = true;
+          execApprovals = {
+            enabled = true;
+            target = "channel";
+          };
+        };
+
+        approvals.exec = {
+          enabled = true;
+          mode = "session";
+          sessionFilter = [ "discord" ];
         };
 
         tools.media.audio = {
@@ -172,6 +183,39 @@ in
 
   # Symlink CLI config to the runtime config so `openclaw` commands work
   home.file.".openclaw/openclaw.json".source = config.lib.file.mkOutOfStoreSymlink "${patchedConfig}";
+
+  # Seed exec-approvals.json with allowlist+on-miss defaults so Discord
+  # approval forwarding works instead of silent deny.
+  home.activation.openclawExecApprovals = lib.hm.dag.entryAfter [ "openclawDirs" ] ''
+    EA="${stateDir}/exec-approvals.json"
+    if [ ! -f "$EA" ]; then
+      cat > "$EA" <<'EAJSON'
+{
+  "version": 1,
+  "defaults": {
+    "security": "allowlist",
+    "ask": "on-miss",
+    "askFallback": "deny",
+    "autoAllowSkills": true
+  },
+  "agents": {}
+}
+EAJSON
+      chmod 600 "$EA"
+    else
+      CURRENT_SEC=$(${pkgs.jq}/bin/jq -r '.defaults.security // empty' "$EA" 2>/dev/null || true)
+      if [ -z "$CURRENT_SEC" ]; then
+        ${pkgs.jq}/bin/jq '. * {
+          defaults: {
+            security: "allowlist",
+            ask: "on-miss",
+            askFallback: "deny",
+            autoAllowSkills: true
+          }
+        }' "$EA" > "$EA.tmp" && mv "$EA.tmp" "$EA"
+      fi
+    fi
+  '';
 
   home.activation.openclawDashboardUrl = lib.hm.dag.entryAfter [ "openclawDirs" ] ''
     MARKER="${stateDir}/.dashboard-url-shown"
