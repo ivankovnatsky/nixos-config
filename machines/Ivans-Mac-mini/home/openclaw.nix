@@ -229,7 +229,11 @@ EAJSON
 
     if [ "$CURRENT_HASH" != "$STORED_HASH" ]; then
       echo "$CURRENT_HASH" > "$HASH_FILE"
-      /bin/launchctl kickstart -k "gui/$UID/com.steipete.openclaw.gateway" 2>/dev/null || true
+      # Only restart if hash file already existed (skip on first activation
+      # since the gateway will start fresh via RunAtLoad anyway).
+      if [ -n "$STORED_HASH" ]; then
+        /bin/launchctl kickstart -k "gui/$UID/com.steipete.openclaw.gateway" 2>/dev/null || true
+      fi
     fi
   '';
 
