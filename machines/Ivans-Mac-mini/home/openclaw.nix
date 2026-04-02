@@ -149,6 +149,11 @@ in
           ];
         };
 
+        session.reset = {
+          mode = "daily";
+          atHour = 4;
+        };
+
         tools.web.search = {
           provider = "gemini";
         };
