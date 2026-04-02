@@ -72,15 +72,13 @@ in
     alwaysKeepRunning = true;
     waitForSecrets = false;
     settings = {
-      # Bind to interfaces by name so dnsmasq skips missing ones
-      # (e.g. en9 USB-C adapter not connected) instead of crashing
-      "bind-interfaces" = true;
-      "interface" = [
-        "lo0"
-        "en0"
-        "en9"
-        "en1"
-      ];
+      # Bind to all interfaces — LAN devices reach dnsmasq via
+      # NextDNS rewrites (miniIp, miniEn7Ip, miniWifiIp).
+      # bind-dynamic is Linux-only, bind-interfaces crashes on
+      # missing interfaces, specific IPs fail if not assigned at
+      # boot. 0.0.0.0 avoids all of these; mDNSResponder doesn't
+      # bind port 53 on this machine.
+      "listen-address" = "0.0.0.0";
 
       # Don't use /etc/resolv.conf
       "no-resolv" = true;
