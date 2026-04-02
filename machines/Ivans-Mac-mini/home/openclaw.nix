@@ -84,7 +84,6 @@ in
     bundledPlugins.summarize.enable = true;
     bundledPlugins.peekaboo.enable = true;
     bundledPlugins.sag.enable = true;
-    bundledPlugins.perplexity.enable = true;
 
     instances.default = {
       enable = true;
