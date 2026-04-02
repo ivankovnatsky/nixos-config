@@ -25,7 +25,6 @@ in
 {
   local.launchd.services.syncthing = {
     enable = true;
-    logTimestamp = false;
     type = "user-agent";
     keepAlive = true;
     throttleInterval = 10;

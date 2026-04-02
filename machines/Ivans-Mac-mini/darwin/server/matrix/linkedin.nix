@@ -69,7 +69,6 @@ in
 {
   local.launchd.services.mautrix-linkedin = {
     enable = true;
-    logTimestamp = false;
     waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
 

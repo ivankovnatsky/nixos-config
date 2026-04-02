@@ -66,7 +66,6 @@ in
 
     local.launchd.services.beszel-agent = {
       enable = true;
-      logTimestamp = false;
       type = "daemon";
       inherit (cfg) waitForSecrets;
 

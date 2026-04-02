@@ -66,7 +66,6 @@ in
 {
   local.launchd.services.mautrix-discord = {
     enable = true;
-    logTimestamp = false;
     waitForPath = config.flags.externalStoragePath;
     inherit dataDir;
 

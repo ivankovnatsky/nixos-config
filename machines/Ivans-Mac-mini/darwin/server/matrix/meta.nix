@@ -130,7 +130,6 @@ in
   # Messenger bridge
   local.launchd.services.mautrix-meta-messenger = {
     enable = true;
-    logTimestamp = false;
     waitForPath = config.flags.externalStoragePath;
     dataDir = messengerDataDir;
 
@@ -186,7 +185,6 @@ in
   # Instagram bridge
   local.launchd.services.mautrix-meta-instagram = {
     enable = true;
-    logTimestamp = false;
     waitForPath = config.flags.externalStoragePath;
     dataDir = instagramDataDir;
 
