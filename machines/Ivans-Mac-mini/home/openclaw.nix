@@ -64,6 +64,7 @@ let
            apiKey: { source: "file", provider: "sops-openai-token", id: "value" }
          }
        | .plugins.entries.google.config.webSearch.apiKey = { source: "file", provider: "sops-gemini-api-key", id: "value" }
+       | .plugins.entries.perplexity.enabled = true
        | .plugins.entries.perplexity.config.webSearch.apiKey = { source: "file", provider: "sops-perplexity-api-key", id: "value" }
        | .gateway.controlUi.allowedOrigins = [$origin, "http://127.0.0.1:18789"]
        | .channels.discord.allowFrom = [$userId]
