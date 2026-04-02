@@ -175,6 +175,7 @@ let
               ${cfg.command} \
                 > >(while IFS= read -r line; do printf '%s - INFO - %s\n' "$(ts)" "$line"; done) \
                 2> >(while IFS= read -r line; do printf '%s - ERROR - %s\n' "$(ts)" "$line"; done >&2)
+              wait
             ''
           else
             ''
