@@ -1555,11 +1555,11 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1775137517,
-        "narHash": "sha256-OuRH7vHMBXDp9V1Aijx1GIzqg/BJmXHOa7I2vjWuY0M=",
+        "lastModified": 1775138326,
+        "narHash": "sha256-qNCQ5pAWbX+C7gerRu+u/Kp839twyNqzrZHJvVDytYA=",
         "owner": "ivankovnatsky",
         "repo": "taskweb",
-        "rev": "152fcbbab682adabc91dc2ab03aba16158cf4841",
+        "rev": "dd3c51b7425638cf74f63a358891d3afda4d1187",
         "type": "github"
       },
       "original": {
