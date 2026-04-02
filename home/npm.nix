@@ -1,7 +1,8 @@
+{ config, ... }:
 {
   home.file = {
     ".npmrc".text = ''
-      prefix=~/.npm
+      prefix=${config.local.tools.toolsPrefix}/.npm
     '';
   };
 }

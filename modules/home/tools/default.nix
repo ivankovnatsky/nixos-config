@@ -81,9 +81,11 @@ let
       inherit (cfg) gitRepos;
       inherit (cfg) stateFile;
       paths = {
-        bunBin = "${config.home.homeDirectory}/.bun/bin";
-        npmBin = "${config.home.homeDirectory}/.npm/bin";
-        uvBin = "${config.home.homeDirectory}/.local/bin";
+        bunBin = "${cfg.toolsPrefix}/.bun/bin";
+        npmBin = "${cfg.toolsPrefix}/.npm/bin";
+        uvBin = "${cfg.toolsPrefix}/.local/bin";
+        uvToolDir = "${cfg.toolsPrefix}/.local/share/uv/tools";
+        # Claude CLI always installs to ~/.local/bin (hardcoded in binary, not configurable)
         claudeCli = "${config.home.homeDirectory}/.local/bin/claude";
         bun = "${pkgs.bun}/bin";
         uv = "${pkgs.uv}/bin";
@@ -103,6 +105,12 @@ in
 {
   options.local.tools = {
     enable = mkEnableOption "declarative tools management (npm, uv, mcp)";
+
+    toolsPrefix = mkOption {
+      type = types.str;
+      default = config.home.homeDirectory;
+      description = "Base directory for tool installations (npm, bun, uv). Defaults to home directory.";
+    };
 
     stateFile = mkOption {
       type = types.path;

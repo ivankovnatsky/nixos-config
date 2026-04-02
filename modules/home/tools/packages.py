@@ -280,10 +280,13 @@ def install_uv_packages(packages: Dict[str, str], paths: Dict, state: Dict):
 
     state_changed = False
 
+    env = os.environ.copy()
+    env["PATH"] = f"{paths['uv']}:{env.get('PATH', '')}"
+    env["UV_TOOL_BIN_DIR"] = paths["uvBin"]
+    env["UV_TOOL_DIR"] = paths["uvToolDir"]
+
     if to_remove:
         log(f"Removing UV packages: {', '.join(to_remove)}", Color.RED)
-        env = os.environ.copy()
-        env["PATH"] = f"{paths['uv']}:{env.get('PATH', '')}"
 
         for pkg in to_remove:
             cmd = [f"{paths['uv']}/uv", "tool", "uninstall", pkg]
@@ -299,8 +302,6 @@ def install_uv_packages(packages: Dict[str, str], paths: Dict, state: Dict):
 
     if to_install:
         log(f"Installing UV packages: {', '.join(to_install)}", Color.GREEN)
-        env = os.environ.copy()
-        env["PATH"] = f"{paths['uv']}:{env.get('PATH', '')}"
 
         for pkg in to_install:
             cmd = [f"{paths['uv']}/uv", "tool", "install", pkg]

@@ -66,17 +66,27 @@ in
           set -gx PATH $PATH $GOPATH/bin
       end
 
-      if test -d $HOME/.npm/bin
-          set -gx PATH $PATH $HOME/.npm/bin
+      if test -d ${config.local.tools.toolsPrefix}/.npm/bin
+          set -gx PATH $PATH ${config.local.tools.toolsPrefix}/.npm/bin
       end
 
-      if test -d $HOME/.bun/bin
-          set -gx PATH $PATH $HOME/.bun/bin
+      if test -d ${config.local.tools.toolsPrefix}/.bun/bin
+          set -gx PATH $PATH ${config.local.tools.toolsPrefix}/.bun/bin
       end
 
+      # uv tool install directory
+      set -gx UV_TOOL_BIN_DIR ${config.local.tools.toolsPrefix}/.local/bin
+      set -gx UV_TOOL_DIR ${config.local.tools.toolsPrefix}/.local/share/uv/tools
+
+      if test -d ${config.local.tools.toolsPrefix}/.local/bin
+          set -gx PATH $PATH ${config.local.tools.toolsPrefix}/.local/bin
+      end
+${lib.optionalString (config.local.tools.toolsPrefix != config.home.homeDirectory) ''
+      # Claude CLI lives in ~/.local/bin (hardcoded in binary)
       if test -d $HOME/.local/bin
           set -gx PATH $PATH $HOME/.local/bin
       end
+''}
 
       # Git completions; FIXME: remove this once landed in upstream in
       # fish-shell and later when package updated in nixpkgs.

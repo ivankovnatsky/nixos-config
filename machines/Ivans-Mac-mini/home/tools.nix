@@ -1,7 +1,8 @@
-{ ... }:
+{ config, ... }:
 {
   local.tools = {
     enable = true;
+    toolsPrefix = config.flags.externalStoragePath;
 
     npm.packages = {
       "@google/gemini-cli" = "gemini";
