@@ -217,6 +217,22 @@ EAJSON
     fi
   '';
 
+  # Restart gateway when config content changes (plist stays the same since
+  # ProgramArguments and EnvironmentVariables paths don't change, only the
+  # symlink target in the nix store does).
+  home.activation.openclawGatewayRestart = lib.hm.dag.entryAfter [ "openclawConfigFiles" ] ''
+    CONFIG_PATH="${stateDir}/openclaw.json"
+    HASH_FILE="${stateDir}/.config-hash"
+
+    CURRENT_HASH=$(/usr/bin/shasum -a 256 "$(/usr/bin/readlink "$CONFIG_PATH")" 2>/dev/null | /usr/bin/cut -d' ' -f1 || echo "")
+    STORED_HASH=$(/bin/cat "$HASH_FILE" 2>/dev/null || echo "")
+
+    if [ "$CURRENT_HASH" != "$STORED_HASH" ]; then
+      echo "$CURRENT_HASH" > "$HASH_FILE"
+      /bin/launchctl kickstart -k "gui/$UID/com.steipete.openclaw.gateway" 2>/dev/null || true
+    fi
+  '';
+
   home.activation.openclawDashboardUrl = lib.hm.dag.entryAfter [ "openclawDirs" ] ''
     MARKER="${stateDir}/.dashboard-url-shown"
     if [ ! -f "$MARKER" ]; then
