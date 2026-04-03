@@ -21,6 +21,12 @@ let
         default = "latest";
         description = "Package version to install (e.g. '1.2.3' or 'latest')";
       };
+      postInstall = mkOption {
+        type = types.str;
+        default = "";
+        description = "Shell command to run inside the package directory after install";
+        example = "node scripts/postinstall-bundled-plugins.mjs";
+      };
       subpackages = mkOption {
         type = types.attrsOf (
           types.submodule {

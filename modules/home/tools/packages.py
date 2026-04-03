@@ -119,6 +119,11 @@ def get_pkg_subpackages(pkg_info: Dict) -> Dict:
     return pkg_info.get("subpackages", {})
 
 
+def get_pkg_post_install(pkg_info: Dict) -> str:
+    """Extract postInstall command from package info dict."""
+    return pkg_info.get("postInstall", "")
+
+
 def pkg_install_spec(name: str, version: str) -> str:
     """Build package@version install specifier."""
     if version and version != "latest":
@@ -283,9 +288,34 @@ def install_npm_packages(packages: Dict, paths: Dict, state: Dict, npm_config: D
     if not to_remove and not to_install:
         log("All npm packages in sync", Color.BLUE)
 
-    # 3. SUBPACKAGES: Install additional deps inside package's node_modules
+    # 3. POST-INSTALL: Run postInstall commands for packages that need them
     # npm global prefix layout: <prefix>/lib/node_modules/<pkg>
     npm_lib = Path(paths["npmBin"]).parent / "lib" / "node_modules"
+    for pkg, pkg_info in packages.items():
+        post_install = get_pkg_post_install(pkg_info)
+        if not post_install:
+            continue
+        pkg_dir = npm_lib / pkg
+        if not pkg_dir.exists():
+            continue
+        stored_post_install = (
+            state.get("npm", {}).get("packages", {}).get(pkg, {}).get("postInstall", "")
+        )
+        # Run if: package was just installed, or postInstall command changed,
+        # or never ran before
+        just_installed = pkg_install_spec(pkg, get_pkg_version(pkg_info)) in to_install
+        if just_installed or post_install != stored_post_install:
+            log(f"Running postInstall for {pkg}: {post_install}", Color.GREEN)
+            returncode, stdout, stderr = run_command(
+                ["bash", "-c", post_install], env, cwd=str(pkg_dir)
+            )
+            if returncode != 0:
+                log(f"postInstall failed for {pkg}: {stderr}", Color.RED)
+            else:
+                log(f"postInstall completed for {pkg}", Color.GREEN)
+                state_changed = True
+
+    # 4. SUBPACKAGES: Install additional deps inside package's node_modules
     subpkg_failed = False
     for pkg, pkg_info in packages.items():
         subpkgs = get_pkg_subpackages(pkg_info)
@@ -333,6 +363,7 @@ def install_npm_packages(packages: Dict, paths: Dict, state: Dict, npm_config: D
                 "binary": get_pkg_binary(pkg_info),
                 "version": get_pkg_version(pkg_info),
                 "subpackages": get_pkg_subpackages(pkg_info),
+                "postInstall": get_pkg_post_install(pkg_info),
             }
             for pkg, pkg_info in packages.items()
         }
