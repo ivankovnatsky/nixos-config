@@ -82,6 +82,7 @@
     grpcurl
     gum
     gwq
+    gwq-add
     hadolint
     hclfmt
     home-manager

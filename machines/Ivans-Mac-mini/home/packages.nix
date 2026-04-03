@@ -58,6 +58,7 @@
     gpg-edit
     gpg-pass-refresh
     gwq
+    gwq-add
     healthchecks-mgmt
     home-manager
     image-meta

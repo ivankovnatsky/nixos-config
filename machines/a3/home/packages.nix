@@ -16,6 +16,7 @@
     ggh
     ghq-cd
     gitleaks
+    gwq-add
     glow
     gofumpt
     golangci-lint
