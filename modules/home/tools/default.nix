@@ -10,6 +10,20 @@ with lib;
 let
   cfg = config.local.tools;
 
+  packageType = types.submodule {
+    options = {
+      binary = mkOption {
+        type = types.str;
+        description = "Binary name produced by the package";
+      };
+      version = mkOption {
+        type = types.str;
+        default = "latest";
+        description = "Package version to install (e.g. '1.2.3' or 'latest')";
+      };
+    };
+  };
+
   mcpServerType = types.submodule {
     options = {
       scope = mkOption {
@@ -119,12 +133,17 @@ in
     };
 
     bun.packages = mkOption {
-      type = types.attrsOf types.str;
+      type = types.attrsOf packageType;
       default = { };
-      description = "Packages to install globally via bun (package name -> binary name)";
+      description = "Packages to install globally via bun";
       example = {
-        "npm-groovy-lint" = "npm-groovy-lint";
-        "@openai/codex" = "codex";
+        "npm-groovy-lint" = {
+          binary = "npm-groovy-lint";
+        };
+        "@openai/codex" = {
+          binary = "codex";
+          version = "0.1.0";
+        };
       };
     };
 
@@ -135,11 +154,13 @@ in
     };
 
     npm.packages = mkOption {
-      type = types.attrsOf types.str;
+      type = types.attrsOf packageType;
       default = { };
-      description = "Packages to install globally via npm (package name -> binary name)";
+      description = "Packages to install globally via npm";
       example = {
-        "@google/gemini-cli" = "gemini";
+        "@google/gemini-cli" = {
+          binary = "gemini";
+        };
       };
     };
 
@@ -150,12 +171,17 @@ in
     };
 
     uv.packages = mkOption {
-      type = types.attrsOf types.str;
+      type = types.attrsOf packageType;
       default = { };
-      description = "Python packages to install via uv (package name -> binary name)";
+      description = "Python packages to install via uv";
       example = {
-        "osxphotos" = "osxphotos";
-        "ruff" = "ruff";
+        "osxphotos" = {
+          binary = "osxphotos";
+        };
+        "ruff" = {
+          binary = "ruff";
+          version = "0.4.0";
+        };
       };
     };
 

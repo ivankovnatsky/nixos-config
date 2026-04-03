@@ -70,14 +70,6 @@ def run_command(cmd: List[str], env: Dict = None) -> tuple[int, str, str]:
     return result.returncode, result.stdout, result.stderr
 
 
-def get_installed_bun_packages(bun_bin: str, packages: Dict[str, str]) -> Set[str]:
-    installed = set()
-    for package, binary in packages.items():
-        if (Path(bun_bin) / binary).exists():
-            installed.add(package)
-    return installed
-
-
 def get_installed_uv_packages(uv_bin: str, packages: Dict[str, str]) -> Set[str]:
     installed = set()
     for package, binary in packages.items():
@@ -110,12 +102,36 @@ def get_installed_mcp_servers(claude_cli: str, env: Dict = None) -> Set[str]:
     return servers
 
 
-def install_bun_packages(
-    packages: Dict[str, str], paths: Dict, state: Dict, bun_config: Dict
-):
+def get_pkg_binary(pkg_info: Dict) -> str:
+    """Extract binary name from package info dict."""
+    return pkg_info.get("binary", "")
+
+
+def get_pkg_version(pkg_info: Dict) -> str:
+    """Extract version from package info dict."""
+    return pkg_info.get("version", "latest")
+
+
+def pkg_install_spec(name: str, version: str) -> str:
+    """Build package@version install specifier."""
+    if version and version != "latest":
+        return f"{name}@{version}"
+    return name
+
+
+def version_changed(pkg: str, pkg_info, state: Dict, manager: str) -> bool:
+    """Check if declared version differs from state."""
+    declared = get_pkg_version(pkg_info)
+    stored = (
+        state.get(manager, {}).get("packages", {}).get(pkg, {}).get("version", "latest")
+    )
+    return declared != stored
+
+
+def install_bun_packages(packages: Dict, paths: Dict, state: Dict, bun_config: Dict):
     """Fully declarative bun package management.
 
-    Ensures all declared packages exist in ~/.bun/bin.
+    Ensures all declared packages exist in ~/.bun/bin at the declared version.
     """
     # Handle .bunfig.toml creation (only if bun.configFile is set)
     bunfig_content = bun_config.get("configFile")
@@ -138,8 +154,8 @@ def install_bun_packages(
     all_tracked = {}
     for pkg, pkg_data in state.get("bun", {}).get("packages", {}).items():
         all_tracked[pkg] = pkg_data.get("binary", pkg.split("/")[-1])
-    for pkg, binary in packages.items():
-        all_tracked[pkg] = binary
+    for pkg, pkg_info in packages.items():
+        all_tracked[pkg] = get_pkg_binary(pkg_info)
 
     env = os.environ.copy()
     env["PATH"] = f"{paths['bun']}:{paths['nodejs']}:{env.get('PATH', '')}"
@@ -159,10 +175,14 @@ def install_bun_packages(
         run_command(cmd, env)
         state_changed = True
 
-    # 2. INSTALL: Ensure all declared packages exist in bun bin
-    to_install = [
-        pkg for pkg, binary in packages.items() if not (bun_bin / binary).exists()
-    ]
+    # 2. INSTALL: Ensure all declared packages exist at correct version
+    to_install = []
+    for pkg, pkg_info in packages.items():
+        binary = get_pkg_binary(pkg_info)
+        if not (bun_bin / binary).exists() or version_changed(
+            pkg, pkg_info, state, "bun"
+        ):
+            to_install.append(pkg_install_spec(pkg, get_pkg_version(pkg_info)))
     if to_install:
         log(f"Installing bun packages: {', '.join(to_install)}", Color.GREEN)
         cmd = [f"{paths['bun']}/bun", "install", "-g"] + to_install
@@ -178,19 +198,21 @@ def install_bun_packages(
     # Update state
     if state_changed or state_packages != desired:
         state.setdefault("bun", {})["packages"] = {
-            pkg: {"installed": True, "binary": binary}
-            for pkg, binary in packages.items()
+            pkg: {
+                "installed": True,
+                "binary": get_pkg_binary(pkg_info),
+                "version": get_pkg_version(pkg_info),
+            }
+            for pkg, pkg_info in packages.items()
         }
 
     return True
 
 
-def install_npm_packages(
-    packages: Dict[str, str], paths: Dict, state: Dict, npm_config: Dict
-):
+def install_npm_packages(packages: Dict, paths: Dict, state: Dict, npm_config: Dict):
     """Declarative npm package management.
 
-    Ensures all declared packages exist in ~/.npm/bin.
+    Ensures all declared packages exist in ~/.npm/bin at the declared version.
     """
     # Handle .npmrc creation
     npmrc_content = npm_config.get("configFile")
@@ -218,8 +240,8 @@ def install_npm_packages(
     all_tracked = {}
     for pkg, pkg_data in state.get("npm", {}).get("packages", {}).items():
         all_tracked[pkg] = pkg_data.get("binary", pkg.split("/")[-1])
-    for pkg, binary in packages.items():
-        all_tracked[pkg] = binary
+    for pkg, pkg_info in packages.items():
+        all_tracked[pkg] = get_pkg_binary(pkg_info)
 
     # 1. CLEANUP: Remove packages no longer in config
     to_remove = {
@@ -234,10 +256,14 @@ def install_npm_packages(
         run_command(cmd, env)
         state_changed = True
 
-    # 2. INSTALL: Ensure all declared packages exist in npm bin
-    to_install = [
-        pkg for pkg, binary in packages.items() if not (npm_bin / binary).exists()
-    ]
+    # 2. INSTALL: Ensure all declared packages exist at correct version
+    to_install = []
+    for pkg, pkg_info in packages.items():
+        binary = get_pkg_binary(pkg_info)
+        if not (npm_bin / binary).exists() or version_changed(
+            pkg, pkg_info, state, "npm"
+        ):
+            to_install.append(pkg_install_spec(pkg, get_pkg_version(pkg_info)))
     if to_install:
         log(f"Installing npm packages: {', '.join(to_install)}", Color.GREEN)
         cmd = [f"{paths['nodejs']}/npm", "install", "-g"] + to_install
@@ -253,25 +279,31 @@ def install_npm_packages(
     # Update state
     if state_changed or state_packages != desired:
         state.setdefault("npm", {})["packages"] = {
-            pkg: {"installed": True, "binary": binary}
-            for pkg, binary in packages.items()
+            pkg: {
+                "installed": True,
+                "binary": get_pkg_binary(pkg_info),
+                "version": get_pkg_version(pkg_info),
+            }
+            for pkg, pkg_info in packages.items()
         }
 
     return True
 
 
-def install_uv_packages(packages: Dict[str, str], paths: Dict, state: Dict):
+def install_uv_packages(packages: Dict, paths: Dict, state: Dict):
     desired = set(packages.keys())
     state_packages = set(state.get("uv", {}).get("packages", {}).keys())
 
-    current = get_installed_uv_packages(paths["uvBin"], packages)
+    # Build binary mapping for installed check
+    binary_map = {pkg: get_pkg_binary(info) for pkg, info in packages.items()}
+    current = get_installed_uv_packages(paths["uvBin"], binary_map)
 
     all_tracked = {}
     for pkg, pkg_data in state.get("uv", {}).get("packages", {}).items():
         all_tracked[pkg] = pkg_data.get("binary", pkg)
-    for pkg, binary in packages.items():
+    for pkg, pkg_info in packages.items():
         if pkg not in all_tracked:
-            all_tracked[pkg] = binary
+            all_tracked[pkg] = get_pkg_binary(pkg_info)
 
     to_remove = []
     for pkg, binary in all_tracked.items():
@@ -298,28 +330,41 @@ def install_uv_packages(packages: Dict[str, str], paths: Dict, state: Dict):
                 log(f"Removed: {pkg}", Color.GREEN)
                 state_changed = True
 
-    to_install = desired - current
+    # Install missing packages or reinstall on version change
+    to_install = []
+    for pkg, pkg_info in packages.items():
+        if pkg not in current or version_changed(pkg, pkg_info, state, "uv"):
+            to_install.append(pkg)
 
     if to_install:
         log(f"Installing UV packages: {', '.join(to_install)}", Color.GREEN)
 
         for pkg in to_install:
-            cmd = [f"{paths['uv']}/uv", "tool", "install", pkg]
+            pkg_info = packages[pkg]
+            spec = pkg_install_spec(pkg, get_pkg_version(pkg_info))
+            cmd = [f"{paths['uv']}/uv", "tool", "install", spec]
+            # Force reinstall if already present but version changed
+            if pkg in current:
+                cmd.append("--force")
             returncode, stdout, stderr = run_command(cmd, env)
 
             if returncode != 0:
-                log(f"Failed to install UV package {pkg}: {stderr}", Color.RED)
+                log(f"Failed to install UV package {spec}: {stderr}", Color.RED)
                 return False
             else:
-                log(f"Installed: {pkg}", Color.GREEN)
+                log(f"Installed: {spec}", Color.GREEN)
                 state_changed = True
     elif not to_remove:
         log("All UV packages already installed", Color.BLUE)
 
     if state_changed or state_packages != desired:
         state.setdefault("uv", {})["packages"] = {
-            pkg: {"installed": True, "binary": binary}
-            for pkg, binary in packages.items()
+            pkg: {
+                "installed": True,
+                "binary": get_pkg_binary(pkg_info),
+                "version": get_pkg_version(pkg_info),
+            }
+            for pkg, pkg_info in packages.items()
         }
 
     return True
