@@ -11,6 +11,9 @@
       "@openai/codex" = {
         binary = "codex";
       };
+      "openclaw" = {
+        binary = "openclaw";
+      };
     };
 
     # Python packages via uv tool install
