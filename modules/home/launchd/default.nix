@@ -11,7 +11,7 @@ let
   cfg = config.local.launchd;
 
   serviceType = types.submodule (
-    { name, config, ... }:
+    { name, ... }:
     {
       options = {
         enable = mkEnableOption "this launchd service";
@@ -159,20 +159,19 @@ let
     in
     {
       enable = true;
-      config =
-        {
-          Label = svc.label;
-          ProgramArguments = [
-            "${script}/bin/${name}-starter"
-          ];
-          RunAtLoad = svc.runAtLoad;
-          KeepAlive = svc.keepAlive;
-          ThrottleInterval = svc.throttleInterval;
-          StandardOutPath = logPath;
-          StandardErrorPath = errorLogPath;
-        }
-        // optionalAttrs (svc.environment != { }) { EnvironmentVariables = svc.environment; }
-        // svc.extraServiceConfig;
+      config = {
+        Label = svc.label;
+        ProgramArguments = [
+          "${script}/bin/${name}-starter"
+        ];
+        RunAtLoad = svc.runAtLoad;
+        KeepAlive = svc.keepAlive;
+        ThrottleInterval = svc.throttleInterval;
+        StandardOutPath = logPath;
+        StandardErrorPath = errorLogPath;
+      }
+      // optionalAttrs (svc.environment != { }) { EnvironmentVariables = svc.environment; }
+      // svc.extraServiceConfig;
     };
 
   enabledServices = filterAttrs (_: s: s.enable) cfg.services;
@@ -188,5 +187,23 @@ in
 
   config = mkIf (enabledServices != { }) {
     launchd.agents = mapAttrs mkService enabledServices;
+
+    # Pre-create log files so launchd can open StandardOutPath/StandardErrorPath
+    # before the starter script runs (launchd opens these before exec).
+    home.activation.launchdLogFiles = lib.hm.dag.entryAfter [ "writeBoundary" ] (
+      concatStringsSep "\n" (
+        mapAttrsToList (
+          name: svc:
+          let
+            logPath = "${svc.logDir}/${name}.log";
+            errorLogPath = "${svc.logDir}/${name}.error.log";
+          in
+          ''
+            /bin/mkdir -p "${svc.logDir}"
+            /usr/bin/touch "${logPath}" "${errorLogPath}"
+          ''
+        ) enabledServices
+      )
+    );
   };
 }
