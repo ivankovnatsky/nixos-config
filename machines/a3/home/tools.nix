@@ -4,8 +4,12 @@
     enable = true;
 
     npm.packages = {
-      "@google/gemini-cli" = "gemini";
-      "@openai/codex" = "codex";
+      "@google/gemini-cli" = {
+        binary = "gemini";
+      };
+      "@openai/codex" = {
+        binary = "codex";
+      };
     };
 
     curlShell = {

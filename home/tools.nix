@@ -4,13 +4,19 @@
     enable = true;
 
     npm.packages = {
-      "@google/gemini-cli" = "gemini";
-      "@openai/codex" = "codex";
+      "@google/gemini-cli" = {
+        binary = "gemini";
+      };
+      "@openai/codex" = {
+        binary = "codex";
+      };
     };
 
     # Python packages via uv tool install
     uv.packages = {
-      "osxphotos" = "osxphotos";
+      "osxphotos" = {
+        binary = "osxphotos";
+      };
     };
 
     # .npmrc is already provided via `home/npm.nix` for this machine

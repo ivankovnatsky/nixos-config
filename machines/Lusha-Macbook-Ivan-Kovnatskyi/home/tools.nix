@@ -8,15 +8,25 @@
         prefix=~/.npm
       '';
       packages = {
-        "@google/gemini-cli" = "gemini";
-        "@openai/codex" = "codex";
+        "@google/gemini-cli" = {
+          binary = "gemini";
+        };
+        "@openai/codex" = {
+          binary = "codex";
+        };
       };
     };
 
     bun.packages = {
-      "npm-groovy-lint" = "npm-groovy-lint";
-      "mdts" = "mdts";
-      "md-fileserver" = "mdstart";
+      "npm-groovy-lint" = {
+        binary = "npm-groovy-lint";
+      };
+      "mdts" = {
+        binary = "mdts";
+      };
+      "md-fileserver" = {
+        binary = "mdstart";
+      };
     };
 
     curlShell = {
