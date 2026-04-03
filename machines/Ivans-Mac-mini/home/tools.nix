@@ -13,6 +13,7 @@
       };
       "openclaw" = {
         binary = "openclaw";
+        version = "latest";
       };
     };
 
