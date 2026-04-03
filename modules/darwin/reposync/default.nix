@@ -44,20 +44,24 @@ let
         type = types.enum [
           "pull-push"
           "push-only"
+          "pull-only"
         ];
         default = "pull-push";
         description = ''
           Sync mode for this repository. Use "push-only" for iCloud-backed
           working copies that should publish local commits without pulling.
+          Use "pull-only" for repos that should only fetch upstream changes.
         '';
       };
     };
   };
 
-  configJsonTemplate = pkgs.writeText "reposync-config.json" (builtins.toJSON {
-    repositories = cfg.repositories;
-    discordWebhookFile = cfg.discordWebhookFile;
-  });
+  configJsonTemplate = pkgs.writeText "reposync-config.json" (
+    builtins.toJSON {
+      inherit (cfg) repositories;
+      inherit (cfg) discordWebhookFile;
+    }
+  );
 in
 {
   options.local.services.reposync = {
@@ -100,7 +104,8 @@ in
       type = "user-agent";
       keepAlive = false;
       runAtLoad = true;
-      waitForSecrets = cfg.discordWebhookFile != null || cfg.domainFile != null || cfg.usernameFile != null;
+      waitForSecrets =
+        cfg.discordWebhookFile != null || cfg.domainFile != null || cfg.usernameFile != null;
 
       command =
         let
