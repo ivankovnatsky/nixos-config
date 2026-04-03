@@ -22,13 +22,23 @@ let
         description = "Package version to install (e.g. '1.2.3' or 'latest')";
       };
       subpackages = mkOption {
-        type = types.listOf types.str;
-        default = [ ];
+        type = types.attrsOf (
+          types.submodule {
+            options.version = mkOption {
+              type = types.str;
+              default = "latest";
+              description = "Version to install";
+            };
+          }
+        );
+        default = { };
         description = "Additional npm packages to install inside this package's node_modules (for missing runtime deps)";
-        example = [
-          "@buape/carbon"
-          "grammy"
-        ];
+        example = {
+          "@buape/carbon" = {
+            version = "0.0.0-beta-20260327000044";
+          };
+          "grammy" = { };
+        };
       };
     };
   };

@@ -114,9 +114,9 @@ def get_pkg_version(pkg_info: Dict) -> str:
     return pkg_info.get("version", "latest")
 
 
-def get_pkg_subpackages(pkg_info: Dict) -> List[str]:
-    """Extract subpackages list from package info dict."""
-    return pkg_info.get("subpackages", [])
+def get_pkg_subpackages(pkg_info: Dict) -> Dict:
+    """Extract subpackages dict from package info dict."""
+    return pkg_info.get("subpackages", {})
 
 
 def pkg_install_spec(name: str, version: str) -> str:
@@ -284,7 +284,9 @@ def install_npm_packages(packages: Dict, paths: Dict, state: Dict, npm_config: D
         log("All npm packages in sync", Color.BLUE)
 
     # 3. SUBPACKAGES: Install additional deps inside package's node_modules
+    # npm global prefix layout: <prefix>/lib/node_modules/<pkg>
     npm_lib = Path(paths["npmBin"]).parent / "lib" / "node_modules"
+    subpkg_failed = False
     for pkg, pkg_info in packages.items():
         subpkgs = get_pkg_subpackages(pkg_info)
         if not subpkgs:
@@ -293,10 +295,18 @@ def install_npm_packages(packages: Dict, paths: Dict, state: Dict, npm_config: D
         if not pkg_dir.exists():
             log(f"Skipping subpackages for {pkg}: package dir not found", Color.YELLOW)
             continue
-        # Check which subpackages are missing
-        to_install_sub = [
-            sp for sp in subpkgs if not (pkg_dir / "node_modules" / sp).exists()
-        ]
+        # Compare declared subpackages with state to detect version changes
+        stored_subpkgs = (
+            state.get("npm", {}).get("packages", {}).get(pkg, {}).get("subpackages", {})
+        )
+        to_install_sub = []
+        for sp_name, sp_info in subpkgs.items():
+            sp_version = sp_info.get("version", "latest")
+            stored_version = stored_subpkgs.get(sp_name, {}).get("version")
+            missing = not (pkg_dir / "node_modules" / sp_name).exists()
+            version_diff = sp_version != stored_version
+            if missing or version_diff:
+                to_install_sub.append(pkg_install_spec(sp_name, sp_version))
         if not to_install_sub:
             continue
         log(
@@ -307,11 +317,12 @@ def install_npm_packages(packages: Dict, paths: Dict, state: Dict, npm_config: D
         returncode, stdout, stderr = run_command(cmd, env, cwd=str(pkg_dir))
         if returncode != 0:
             log(f"Failed to install subpackages for {pkg}: {stderr}", Color.RED)
+            subpkg_failed = True
         else:
             log(f"Installed subpackages for {pkg}", Color.GREEN)
             state_changed = True
 
-    # Update state
+    # Update state (always save progress, even on partial failure)
     if state_changed or state_packages != desired:
         state.setdefault("npm", {})["packages"] = {
             pkg: {
@@ -323,7 +334,7 @@ def install_npm_packages(packages: Dict, paths: Dict, state: Dict, npm_config: D
             for pkg, pkg_info in packages.items()
         }
 
-    return True
+    return not subpkg_failed
 
 
 def install_uv_packages(packages: Dict, paths: Dict, state: Dict):
