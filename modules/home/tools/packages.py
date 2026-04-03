@@ -63,9 +63,11 @@ def migrate_state_file(new_state_file: str):
             return
 
 
-def run_command(cmd: List[str], env: Dict = None) -> tuple[int, str, str]:
+def run_command(
+    cmd: List[str], env: Dict = None, cwd: str = None
+) -> tuple[int, str, str]:
     result = subprocess.run(
-        cmd, capture_output=True, text=True, env=env or os.environ.copy()
+        cmd, capture_output=True, text=True, env=env or os.environ.copy(), cwd=cwd
     )
     return result.returncode, result.stdout, result.stderr
 
@@ -110,6 +112,11 @@ def get_pkg_binary(pkg_info: Dict) -> str:
 def get_pkg_version(pkg_info: Dict) -> str:
     """Extract version from package info dict."""
     return pkg_info.get("version", "latest")
+
+
+def get_pkg_subpackages(pkg_info: Dict) -> List[str]:
+    """Extract subpackages list from package info dict."""
+    return pkg_info.get("subpackages", [])
 
 
 def pkg_install_spec(name: str, version: str) -> str:
@@ -276,6 +283,34 @@ def install_npm_packages(packages: Dict, paths: Dict, state: Dict, npm_config: D
     if not to_remove and not to_install:
         log("All npm packages in sync", Color.BLUE)
 
+    # 3. SUBPACKAGES: Install additional deps inside package's node_modules
+    npm_lib = Path(paths["npmBin"]).parent / "lib" / "node_modules"
+    for pkg, pkg_info in packages.items():
+        subpkgs = get_pkg_subpackages(pkg_info)
+        if not subpkgs:
+            continue
+        pkg_dir = npm_lib / pkg
+        if not pkg_dir.exists():
+            log(f"Skipping subpackages for {pkg}: package dir not found", Color.YELLOW)
+            continue
+        # Check which subpackages are missing
+        to_install_sub = [
+            sp for sp in subpkgs if not (pkg_dir / "node_modules" / sp).exists()
+        ]
+        if not to_install_sub:
+            continue
+        log(
+            f"Installing subpackages for {pkg}: {', '.join(to_install_sub)}",
+            Color.GREEN,
+        )
+        cmd = [f"{paths['nodejs']}/npm", "install", "--save=false"] + to_install_sub
+        returncode, stdout, stderr = run_command(cmd, env, cwd=str(pkg_dir))
+        if returncode != 0:
+            log(f"Failed to install subpackages for {pkg}: {stderr}", Color.RED)
+        else:
+            log(f"Installed subpackages for {pkg}", Color.GREEN)
+            state_changed = True
+
     # Update state
     if state_changed or state_packages != desired:
         state.setdefault("npm", {})["packages"] = {
@@ -283,6 +318,7 @@ def install_npm_packages(packages: Dict, paths: Dict, state: Dict, npm_config: D
                 "installed": True,
                 "binary": get_pkg_binary(pkg_info),
                 "version": get_pkg_version(pkg_info),
+                "subpackages": get_pkg_subpackages(pkg_info),
             }
             for pkg, pkg_info in packages.items()
         }

@@ -21,6 +21,15 @@ let
         default = "latest";
         description = "Package version to install (e.g. '1.2.3' or 'latest')";
       };
+      subpackages = mkOption {
+        type = types.listOf types.str;
+        default = [ ];
+        description = "Additional npm packages to install inside this package's node_modules (for missing runtime deps)";
+        example = [
+          "@buape/carbon"
+          "grammy"
+        ];
+      };
     };
   };
 
