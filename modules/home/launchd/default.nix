@@ -162,8 +162,9 @@ let
       config = {
         Label = svc.label;
         ProgramArguments = [
-          "/bin/bash"
-          "${script}/bin/${name}-starter"
+          "/bin/sh"
+          "-c"
+          "/bin/wait4path /nix/store && exec ${script}/bin/${name}-starter"
         ];
         RunAtLoad = svc.runAtLoad;
         KeepAlive = svc.keepAlive;
