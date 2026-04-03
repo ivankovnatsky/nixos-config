@@ -122,6 +122,10 @@ let
         "${config.flags.externalStoragePath}/Sources/github.com/openclaw/openclaw/skills"
       ];
 
+      # Disable slack — we only use discord and the bundled slack extension
+      # is missing @slack/web-api at runtime.
+      plugins.entries.slack.enabled = false;
+
     }
   );
 
@@ -161,6 +165,7 @@ let
            models: [],
            apiKey: { source: "file", provider: "sops-openai-token", id: "value" }
          }
+       | .plugins.entries.google.enabled = true
        | .plugins.entries.google.config.webSearch.apiKey = { source: "file", provider: "sops-gemini-api-key", id: "value" }
        | .plugins.entries.perplexity.enabled = true
        | .plugins.entries.perplexity.config.webSearch.apiKey = { source: "file", provider: "sops-perplexity-api-key", id: "value" }
