@@ -118,6 +118,10 @@ let
         provider = "gemini";
       };
 
+      skills.load.extraDirs = [
+        "${config.flags.externalStoragePath}/Sources/github.com/openclaw/openclaw/skills"
+      ];
+
     }
   );
 
