@@ -9,6 +9,7 @@ let
   cacheDir = "${config.flags.externalStoragePath}/.cache";
   # Installed by local.tools.npm.packages in tools.nix
   openclawBin = "${config.flags.externalStoragePath}/.npm/bin/openclaw";
+  gatewayPort = 18789;
 
   # TODO: mlx-whisper needs MLX >= 0.31 for stable GPU inference.
   # Falls back to OpenAI until nixpkgs bumps MLX.
