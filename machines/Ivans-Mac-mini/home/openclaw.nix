@@ -118,11 +118,6 @@ let
         provider = "gemini";
       };
 
-      plugins.entries = {
-        summarize.enabled = true;
-        peekaboo.enabled = true;
-        sag.enabled = true;
-      };
     }
   );
 
