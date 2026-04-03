@@ -50,6 +50,7 @@ logging.basicConfig(
 # Watchman helpers
 # ---------------------------------------------------------------------------
 
+
 def load_watchman_ignores(config_path):
     """Load ignore patterns from .rebuild.json."""
     patterns = []
@@ -117,9 +118,7 @@ def filter_files_for_machine(files, other_machines):
             relevant.append(f)
 
     if skipped:
-        logging.info(
-            f"Filtered out {len(skipped)} file(s) belonging to other machines"
-        )
+        logging.info(f"Filtered out {len(skipped)} file(s) belonging to other machines")
         for f in skipped[:5]:
             logging.debug(f"  skipped: {f}")
         if len(skipped) > 5:
@@ -131,6 +130,7 @@ def filter_files_for_machine(files, other_machines):
 # ---------------------------------------------------------------------------
 # Shared infrastructure
 # ---------------------------------------------------------------------------
+
 
 def reset_terminal():
     """Reset terminal settings to sane defaults."""
@@ -169,7 +169,11 @@ def send_failure_notification():
     if system == "Darwin":
         try:
             subprocess.run(
-                ["osascript", "-e", 'display notification "🔴 Darwin rebuild failed!" with title "Nix configuration"'],
+                [
+                    "osascript",
+                    "-e",
+                    'display notification "🔴 Darwin rebuild failed!" with title "Nix configuration"',
+                ],
                 check=False,
                 capture_output=True,
             )
@@ -363,8 +367,12 @@ def run_rebuild(config_path, command, quiet=False):
             try:
                 with open(log_path, "w") as log_file:
                     result = subprocess.run(
-                        command, shell=True, cwd=config_path, env=env,
-                        stdout=log_file, stderr=subprocess.STDOUT,
+                        command,
+                        shell=True,
+                        cwd=config_path,
+                        env=env,
+                        stdout=log_file,
+                        stderr=subprocess.STDOUT,
                     )
                 reset_terminal()
                 if result.returncode == 0:
@@ -420,6 +428,7 @@ def refresh_sudo():
 # Simple mode: single rebuild with notifications, quiet output
 # ---------------------------------------------------------------------------
 
+
 def cmd_simple(config_path, command):
     """Run a single rebuild with notifications and suppressed output."""
     config_path_obj = Path(config_path)
@@ -456,6 +465,7 @@ def cmd_simple(config_path, command):
 # ---------------------------------------------------------------------------
 # Watch mode: watchman file-watching + optional loop/polling
 # ---------------------------------------------------------------------------
+
 
 def setup_watchman_subscription(client, config_path, ignore_patterns):
     """Set up watchman watch and subscription."""
@@ -557,7 +567,9 @@ def cmd_watch(config_path, command, loop, no_watch, interval):
                 files_to_rebuild = list(pending_files)
                 if loop_triggered and files_to_rebuild:
                     logging.info("=" * 60)
-                    logging.info(f"Loop timer + {len(files_to_rebuild)} file change(s):")
+                    logging.info(
+                        f"Loop timer + {len(files_to_rebuild)} file change(s):"
+                    )
                     for f in files_to_rebuild[:10]:
                         logging.info(f"  - {f}")
                     if len(files_to_rebuild) > 10:
@@ -565,7 +577,9 @@ def cmd_watch(config_path, command, loop, no_watch, interval):
                     logging.info("=" * 60)
                 elif not loop_triggered:
                     logging.info("=" * 60)
-                    logging.info(f"Rebuilding after {len(files_to_rebuild)} file change(s):")
+                    logging.info(
+                        f"Rebuilding after {len(files_to_rebuild)} file change(s):"
+                    )
                     for f in files_to_rebuild[:10]:
                         logging.info(f"  - {f}")
                     if len(files_to_rebuild) > 10:
@@ -581,7 +595,9 @@ def cmd_watch(config_path, command, loop, no_watch, interval):
                 logging.info("=" * 60)
 
         if files_to_rebuild:
-            files_to_rebuild = filter_files_for_machine(files_to_rebuild, other_machines)
+            files_to_rebuild = filter_files_for_machine(
+                files_to_rebuild, other_machines
+            )
 
         if not files_to_rebuild and not loop_triggered:
             logging.info("All changed files belong to other machines, skipping rebuild")
@@ -613,6 +629,14 @@ def cmd_watch(config_path, command, loop, no_watch, interval):
 
     client = None
     reconnect_attempts = 0
+
+    # Always run an initial rebuild on startup
+    logging.info("Running initial rebuild on startup")
+    subprocess.run(["git", "add", "-A"], cwd=config_path, check=False)
+    if "sudo" in command:
+        refresh_sudo()
+    with rebuild_lock:
+        run_rebuild(config_path, command)
 
     if loop:
         if not refresh_sudo():
@@ -657,7 +681,9 @@ def cmd_watch(config_path, command, loop, no_watch, interval):
                             with timer_lock:
                                 for f in files:
                                     fname = (
-                                        f if isinstance(f, str) else f.get("name", str(f))
+                                        f
+                                        if isinstance(f, str)
+                                        else f.get("name", str(f))
                                     )
                                     if fname not in pending_files:
                                         pending_files.append(fname)
@@ -677,7 +703,9 @@ def cmd_watch(config_path, command, loop, no_watch, interval):
                     continue
                 except pywatchman.WatchmanError as e:
                     logging.warning(f"Watchman error: {e}")
-                    logging.info(f"Reconnecting in {format_duration(RECONNECT_DELAY)}...")
+                    logging.info(
+                        f"Reconnecting in {format_duration(RECONNECT_DELAY)}..."
+                    )
                     try:
                         client.close()
                     except Exception:
@@ -706,6 +734,7 @@ def cmd_watch(config_path, command, loop, no_watch, interval):
 # CLI entry point
 # ---------------------------------------------------------------------------
 
+
 class DefaultToSimple(click.Group):
     """If the first arg isn't a known subcommand, treat it as 'simple <args>'."""
 
@@ -731,15 +760,30 @@ def simple(config_path, command):
 @cli.command()
 @click.argument("config_path")
 @click.argument("command", required=False, default=None)
-@click.option("--loop", is_flag=True, help="Also rebuild periodically every INTERVAL seconds (with sudo refresh)")
-@click.option("--no-watch", is_flag=True, help="Disable file watching (use with --loop for timer-only mode)")
-@click.option("--interval", type=int, default=LOOP_INTERVAL, help=f"Interval in seconds between periodic rebuilds when --loop is used (default: {LOOP_INTERVAL})")
+@click.option(
+    "--loop",
+    is_flag=True,
+    help="Also rebuild periodically every INTERVAL seconds (with sudo refresh)",
+)
+@click.option(
+    "--no-watch",
+    is_flag=True,
+    help="Disable file watching (use with --loop for timer-only mode)",
+)
+@click.option(
+    "--interval",
+    type=int,
+    default=LOOP_INTERVAL,
+    help=f"Interval in seconds between periodic rebuilds when --loop is used (default: {LOOP_INTERVAL})",
+)
 def watch(config_path, command, loop, no_watch, interval):
     """Watch for file changes and rebuild automatically."""
     if interval != LOOP_INTERVAL and not loop:
         raise click.UsageError("--interval requires --loop")
     if no_watch and not loop:
-        raise click.UsageError("--no-watch requires --loop (nothing to do without watching or looping)")
+        raise click.UsageError(
+            "--no-watch requires --loop (nothing to do without watching or looping)"
+        )
     cmd_watch(config_path, command, loop, no_watch, interval)
 
 
