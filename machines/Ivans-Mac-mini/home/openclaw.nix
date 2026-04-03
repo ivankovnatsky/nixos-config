@@ -203,7 +203,6 @@ in
       OPENCLAW_STATE_DIR = stateDir;
       PATH = "${toolsPath}:/usr/bin:/bin";
     };
-    logDir = "${stateDir}/logs";
   };
 
   # Symlink CLI config to the runtime config so `openclaw` commands work
