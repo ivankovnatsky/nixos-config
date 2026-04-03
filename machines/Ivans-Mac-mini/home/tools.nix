@@ -14,10 +14,9 @@
       "openclaw" = {
         binary = "openclaw";
         version = "latest";
-      };
-      # Undeclared runtime dep of openclaw's Discord plugin
-      "@buape/carbon" = {
-        binary = "carbon";
+        # Undeclared runtime dep of openclaw's Discord plugin
+        # https://github.com/openclaw/openclaw/issues/52983
+        subpackages = [ "@buape/carbon" ];
       };
     };
 
