@@ -190,7 +190,6 @@ in
   # Gateway service via home-manager launchd module
   local.launchd.services.openclaw-gateway = {
     enable = true;
-    label = "com.steipete.openclaw.gateway";
     waitForPath = config.flags.externalStoragePath;
     waitForSecrets = true;
     dataDir = stateDir;
