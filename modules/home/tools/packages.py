@@ -299,6 +299,9 @@ def install_npm_packages(packages: Dict, paths: Dict, state: Dict, npm_config: D
         stored_subpkgs = (
             state.get("npm", {}).get("packages", {}).get(pkg, {}).get("subpackages", {})
         )
+        # Migrate from old list format to dict
+        if isinstance(stored_subpkgs, list):
+            stored_subpkgs = {}
         to_install_sub = []
         for sp_name, sp_info in subpkgs.items():
             sp_version = sp_info.get("version", "latest")
