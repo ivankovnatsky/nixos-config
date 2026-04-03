@@ -1,7 +1,9 @@
 {
   config,
+  inputs,
   lib,
   pkgs,
+  system,
   ...
 }:
 let
@@ -174,6 +176,8 @@ let
     exec ${openclawBin} gateway --port ${toString gatewayPort}
   '';
 
+  steipeteTools = inputs.nix-steipete-tools.packages.${system};
+
   toolsPath = lib.makeBinPath [
     pkgs.nodejs_22
     pkgs.git
@@ -184,6 +188,9 @@ let
     pkgs.sox
     pkgs.python3
     pkgs.openai-whisper
+    steipeteTools.summarize
+    steipeteTools.peekaboo
+    steipeteTools.sag
   ];
 in
 {
