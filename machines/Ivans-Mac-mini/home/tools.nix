@@ -15,6 +15,10 @@
         binary = "openclaw";
         version = "latest";
       };
+      # Undeclared runtime dep of openclaw's Discord plugin
+      "@buape/carbon" = {
+        binary = "carbon";
+      };
     };
 
     # Python packages via uv tool install
