@@ -29,6 +29,8 @@ let
   openclawConfig = pkgs.writeText "openclaw.json" (
     builtins.toJSON {
       agents.defaults = {
+        workspace = "${stateDir}/workspace";
+
         model = {
           primary = "anthropic/claude-opus-4-6";
           fallbacks = [
