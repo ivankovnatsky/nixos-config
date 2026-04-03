@@ -211,8 +211,11 @@ in
     };
   };
 
-  # Symlink CLI config to the runtime config so `openclaw` commands work
-  home.file.".openclaw/openclaw.json".source = config.lib.file.mkOutOfStoreSymlink "${patchedConfig}";
+  # Point CLI at the same state/config the gateway uses on external storage
+  home.sessionVariables = {
+    OPENCLAW_STATE_DIR = stateDir;
+    OPENCLAW_CONFIG_PATH = patchedConfig;
+  };
 
   # Seed exec-approvals.json with full-access defaults (YOLO mode).
   # Migrate existing installs from allowlist to full.
