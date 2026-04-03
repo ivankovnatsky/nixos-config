@@ -196,7 +196,6 @@ in
       PATH = "${toolsPath}:/usr/bin:/bin";
     };
     logDir = "${stateDir}/logs";
-    logTimestamp = false;
   };
 
   # Symlink CLI config to the runtime config so `openclaw` commands work
