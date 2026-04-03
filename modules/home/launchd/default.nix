@@ -162,6 +162,7 @@ let
       config = {
         Label = svc.label;
         ProgramArguments = [
+          "/bin/bash"
           "${script}/bin/${name}-starter"
         ];
         RunAtLoad = svc.runAtLoad;
