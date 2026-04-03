@@ -232,6 +232,10 @@
     textcast = {
       url = "github:ivankovnatsky/textcast";
     };
+
+    nix-steipete-tools = {
+      url = "github:openclaw/nix-steipete-tools";
+    };
   };
 
   outputs = inputs: import ./flake { inherit inputs; };
