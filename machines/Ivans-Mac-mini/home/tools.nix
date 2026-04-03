@@ -14,13 +14,9 @@
       "openclaw" = {
         binary = "openclaw";
         version = "latest";
-        # Undeclared runtime dep of openclaw's Discord plugin
-        # https://github.com/openclaw/openclaw/issues/52983
-        subpackages = {
-          "@buape/carbon" = {
-            version = "0.0.0-beta-20260327000044";
-          };
-        };
+        # Upstream postinstall silently fails during npm install -g
+        # https://github.com/openclaw/openclaw/issues/59286
+        postInstall = "node scripts/postinstall-bundled-plugins.mjs";
       };
     };
 
