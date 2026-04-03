@@ -49,6 +49,7 @@
     ../../../home/z-lua.nix
     ../../../home/zsh.nix
     ../../../modules/flags
+    ../../../modules/home/launchd
     ../../../modules/home/tools
     ./flags.nix
     ./openclaw.nix

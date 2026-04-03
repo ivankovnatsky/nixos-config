@@ -200,57 +200,6 @@
       {
         nixpkgs.overlays = [
           inputs.self.overlay
-          (
-            final: prev:
-            let
-              openclawPkgs = inputs.nix-openclaw.packages.${final.system};
-              # The upstream overlay uses callPackage which needs fetchPnpmDeps
-              # (missing in our nixpkgs), so we consume pre-built flake packages
-              # but re-import the tool definitions to make withTools/excludeTools
-              # actually work. Without this, excludeTools is silently ignored.
-              openclawSrc = inputs.nix-openclaw;
-              toolSets = import "${openclawSrc}/nix/tools/extended.nix" { pkgs = prev; };
-              withTools =
-                {
-                  toolNamesOverride ? null,
-                  excludeToolNames ? [ ],
-                }:
-                let
-                  filteredTools = import "${openclawSrc}/nix/tools/extended.nix" {
-                    pkgs = prev;
-                    inherit toolNamesOverride excludeToolNames;
-                  };
-                in
-                openclawPkgs
-                // {
-                  openclaw = prev.buildEnv {
-                    name = "openclaw-custom-tools";
-                    paths =
-                      [ openclawPkgs.openclaw-gateway ]
-                      ++ filteredTools.tools
-                      ++ prev.lib.optionals prev.stdenv.hostPlatform.isDarwin [
-                        openclawPkgs.openclaw-app
-                      ];
-                    pathsToLink = [
-                      "/bin"
-                      "/Applications"
-                    ];
-                    meta.priority = 10;
-                  };
-                };
-            in
-            {
-              inherit (openclawPkgs)
-                openclaw
-                openclaw-gateway
-                openclaw-tools
-                ;
-              openclawPackages = openclawPkgs // {
-                toolNames = toolSets.toolNames;
-                inherit withTools;
-              };
-            }
-          )
           (_final: prev: {
             taskwarrior-web = prev.callPackage ../../overlays/taskwarrior-web {
               npmDepsHash = "sha256-i7LvbsJ0N86UHQgo2MtgkCfOYBUIOOK8e0hQxO2qteg=";
@@ -309,7 +258,6 @@
           users.ivan = {
             imports = [
               ../../machines/Ivans-Mac-mini/home
-              inputs.nix-openclaw.homeManagerModules.openclaw
               inputs.nixvim-darwin-release.homeModules.nixvim
               inputs.sops-nix-darwin-release.homeManagerModules.sops
               {
