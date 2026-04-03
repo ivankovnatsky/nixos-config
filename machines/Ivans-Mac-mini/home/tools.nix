@@ -16,7 +16,11 @@
         version = "latest";
         # Undeclared runtime dep of openclaw's Discord plugin
         # https://github.com/openclaw/openclaw/issues/52983
-        subpackages = [ "@buape/carbon" ];
+        subpackages = {
+          "@buape/carbon" = {
+            version = "0.0.0-beta-20260327000044";
+          };
+        };
       };
     };
 
