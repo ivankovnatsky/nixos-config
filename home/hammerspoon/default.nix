@@ -85,6 +85,5 @@
     --   hs.execute("/opt/homebrew/bin/kitten quick-access-terminal", true)
     -- end)
 
-    hs.alert.show("Config loaded")
   '';
 }
