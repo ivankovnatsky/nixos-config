@@ -329,26 +329,22 @@ let
       '') vaultPaths}
   '';
 in
-lib.mkMerge [
+{
   # Darwin: launchd user agent
-  (lib.optionalAttrs (isDarwin && vaultPaths != [ ]) {
-    local.launchd.services.obsidian-register-vaults = {
-      enable = true;
-      command = "${registerScript}";
-      keepAlive = false;
-      runAtLoad = true;
-    };
-  })
+  local.launchd.services.obsidian-register-vaults = lib.mkIf (isDarwin && vaultPaths != [ ]) {
+    enable = true;
+    command = "${registerScript}";
+    keepAlive = false;
+    runAtLoad = true;
+  };
 
   # NixOS: systemd user oneshot service
-  (lib.optionalAttrs (!isDarwin && vaultPaths != [ ]) {
-    systemd.user.services.obsidian-register-vaults = {
-      Unit.Description = "Register Obsidian vaults and deploy config";
-      Service = {
-        Type = "oneshot";
-        ExecStart = "${registerScript}";
-      };
-      Install.WantedBy = [ "default.target" ];
+  systemd.user.services.obsidian-register-vaults = lib.mkIf (!isDarwin && vaultPaths != [ ]) {
+    Unit.Description = "Register Obsidian vaults and deploy config";
+    Service = {
+      Type = "oneshot";
+      ExecStart = "${registerScript}";
     };
-  })
-]
+    Install.WantedBy = [ "default.target" ];
+  };
+}
