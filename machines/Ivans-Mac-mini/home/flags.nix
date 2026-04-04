@@ -32,7 +32,7 @@
         }
       ];
     };
-    obsidian.vaultPaths = [ ];
+    obsidian.vaultPaths = [ "Notes" ];
     apps = {
       vscode.enable = false;
     };
