@@ -30,6 +30,7 @@
     ../../../home/nixvim/plugins/gpg-nvim
     ../../../home/npm.nix
     ../../../home/nushell.nix
+    ../../../home/obsidian.nix
     ../../../home/packages.nix
     ../../../home/ranger.nix
     ../../../home/rebuild-diff.nix
