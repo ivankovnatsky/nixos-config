@@ -62,7 +62,7 @@ in
           set -gx PATH $PATH $HOME/bin
       end
 
-      if test -d $GOPATH/bin
+      if set -q GOPATH; and test -d $GOPATH/bin
           set -gx PATH $PATH $GOPATH/bin
       end
 
