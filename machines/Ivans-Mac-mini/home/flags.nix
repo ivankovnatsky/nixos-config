@@ -32,9 +32,7 @@
         }
       ];
     };
-    obsidian.vaultPaths = [
-      "Library/Mobile Documents/iCloud~md~obsidian/Documents/Notes"
-    ];
+    obsidian.vaultPaths = [ ];
     apps = {
       vscode.enable = false;
     };
