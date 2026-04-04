@@ -19,6 +19,8 @@ includes = ["*.nix"]
 [formatter.nix]
 command = "nixfmt"
 includes = ["*.nix"]
+# Exclude files where nixfmt re-indentation breaks shell heredocs (<< EOF)
+excludes = ["home/git/default.nix", "home/fish.nix", "home/zsh.nix"]
 
 [formatter.statix]
 command = "bash"
