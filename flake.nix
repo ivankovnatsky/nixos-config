@@ -222,6 +222,11 @@
       url = "github:ivankovnatsky/taskweb";
     };
 
+    # rems - macOS Reminders CLI
+    rems = {
+      url = "github:ivankovnatsky/rems";
+    };
+
     # Textcast - Text to Audio Service
     # This input may cause NAR hash mismatch errors due to git-crypt configured
     # in .gitattributes, which causes GitHub's tarball generation to be
