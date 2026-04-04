@@ -29,7 +29,6 @@ in
   config = mkIf cfg.enable {
     local.launchd.services.scheduled-shutdown = {
       enable = true;
-      type = "daemon";
       runAtLoad = false;
       keepAlive = false;
       command = "/sbin/shutdown -h now";

@@ -1,0 +1,25 @@
+{
+  config,
+  ...
+}:
+
+{
+  sops.secrets.healthchecks-api-key = {
+    key = "healthChecksIo/apiKeyFullAccess";
+  };
+
+  local.services.healthchecks-mgmt = {
+    enable = true;
+    apiKeyFile = config.sops.secrets.healthchecks-api-key.path;
+    checks = [
+      {
+        name = "mini";
+        slug = "mini";
+        tags = "mini server";
+        timeout = 120;
+        grace = 60;
+        channels = "a8ad783d-39ff-4516-8604-533b744d5525";
+      }
+    ];
+  };
+}

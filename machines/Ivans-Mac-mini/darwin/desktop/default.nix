@@ -4,21 +4,17 @@
     ../../../../darwin/flags.nix
     ../../../../darwin/fonts.nix
     ../../../../darwin/no-dock-restart.nix
-    ../../../../darwin/quit-mac-mouse-fix.nix
     ../../../../darwin/security.nix
     ../../../../darwin/shell.nix
     ../../../../darwin/sudo.nix
     ../../../../darwin/system.nix
     ../../../../darwin/users.nix
-    ../../../../darwin/xattr.nix
-    ../../../../modules/darwin/dock
     ../../../../modules/darwin/pam
     ../../../../modules/darwin/sudo
     ../../../../modules/flags
     ../../../../system/documentation.nix
     ../../../../system/nix.nix
     ./accessibility.nix
-    ./dock.nix
     ./fulldiskaccess.nix
     ./homebrew.nix
     ./login-items.nix

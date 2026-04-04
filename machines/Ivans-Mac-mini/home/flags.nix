@@ -1,6 +1,12 @@
 { config, ... }:
 {
+  device = {
+    name = "mac";
+    type = "server";
+  };
   flags = {
+    machineBindAddress = "0.0.0.0";
+    machineLocalAddress = "127.0.0.1";
     enableFishShell = true;
     purpose = "home";
     editor = "nvim";

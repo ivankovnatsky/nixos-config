@@ -11,19 +11,10 @@ let
   cfg = config.local.launchd;
 
   serviceType = types.submodule (
-    { name, config, ... }:
+    { name, ... }:
     {
       options = {
-        enable = mkEnableOption "this launchd service";
-
-        type = mkOption {
-          type = types.enum [
-            "user-agent"
-            "daemon"
-          ];
-          default = "user-agent";
-          description = "Whether to run as user agent or system daemon";
-        };
+        enable = mkEnableOption "this launchd daemon service";
 
         label = mkOption {
           type = types.str;
@@ -109,7 +100,7 @@ let
 
         logDir = mkOption {
           type = types.str;
-          default = if config.type == "daemon" then "/tmp/log/launchd" else "/tmp/agents/log/launchd";
+          default = "/tmp/log/launchd";
           description = "Directory for log files";
         };
 
@@ -122,11 +113,13 @@ let
     }
   );
 
+  enabledDaemons = filterAttrs (_: s: s.enable) cfg.services;
+
   mkService =
-    name: cfg:
+    name: svc:
     let
-      logPath = "${cfg.logDir}/${name}.log";
-      errorLogPath = "${cfg.logDir}/${name}.error.log";
+      logPath = "${svc.logDir}/${name}.log";
+      errorLogPath = "${svc.logDir}/${name}.error.log";
 
       scriptContent = ''
         #!/bin/bash
@@ -136,51 +129,52 @@ let
         export PATH="/bin:/usr/bin:$PATH"
 
         # Create log directory with proper permissions
-        /bin/mkdir -p ${cfg.logDir}
-        /bin/chmod 755 ${cfg.logDir}
+        /bin/mkdir -p ${svc.logDir}
+        /bin/chmod 755 ${svc.logDir}
 
-        ${optionalString cfg.waitForSecrets ''
+        ${optionalString svc.waitForSecrets ''
           echo "Waiting for sops secrets..."
           /bin/wait4path /run/secrets
           echo "Sops secrets available."
         ''}
 
-        ${optionalString (cfg.waitForPath != null) ''
-          echo "Waiting for ${cfg.waitForPath}..."
-          /bin/wait4path "${cfg.waitForPath}"
-          echo "${cfg.waitForPath} available."
+        ${optionalString (svc.waitForPath != null) ''
+          echo "Waiting for ${svc.waitForPath}..."
+          /bin/wait4path "${svc.waitForPath}"
+          echo "${svc.waitForPath} available."
         ''}
 
-        ${optionalString (cfg.dataDir != null) ''
-          /bin/mkdir -p "${cfg.dataDir}"
+        ${optionalString (svc.dataDir != null) ''
+          /bin/mkdir -p "${svc.dataDir}"
         ''}
 
-        ${optionalString (cfg.extraDirs != [ ]) ''
-          ${concatMapStringsSep "\n" (dir: "/bin/mkdir -p \"${dir}\"") cfg.extraDirs}
+        ${optionalString (svc.extraDirs != [ ]) ''
+          ${concatMapStringsSep "\n" (dir: "/bin/mkdir -p \"${dir}\"") svc.extraDirs}
         ''}
 
-        ${cfg.preStart}
+        ${svc.preStart}
 
-        exec ${cfg.command}
+        exec ${svc.command}
       '';
 
       script = pkgs.writeShellScriptBin "${name}-starter" scriptContent;
 
       serviceConfig = {
-        Label = cfg.label;
-        RunAtLoad = cfg.runAtLoad;
-        KeepAlive = cfg.keepAlive;
-        ThrottleInterval = cfg.throttleInterval;
+        Label = svc.label;
+        RunAtLoad = svc.runAtLoad;
+        KeepAlive = svc.keepAlive;
+        ThrottleInterval = svc.throttleInterval;
         StandardOutPath = logPath;
         StandardErrorPath = errorLogPath;
       }
-      // optionalAttrs (cfg.environment != { }) { EnvironmentVariables = cfg.environment; }
-      // cfg.extraServiceConfig;
+      // optionalAttrs (svc.environment != { }) { EnvironmentVariables = svc.environment; }
+      // svc.extraServiceConfig;
     in
     {
       command = "${script}/bin/${name}-starter";
       inherit serviceConfig;
     };
+
   # Generate activation script for log file ownership
   mkLogOwnershipScript =
     let
@@ -204,31 +198,8 @@ let
       ) servicesWithUser
     );
 
-  # Generate activation script to ensure agents are loaded
-  # This fixes the issue where nix-darwin skips loading if file unchanged
-  enabledUserAgents = filterAttrs (_: s: s.enable && s.type == "user-agent") cfg.services;
-
-  mkEnsureAgentsLoadedScript = concatStringsSep "\n" (
-    mapAttrsToList (
-      name: service:
-      let
-        inherit (service) label;
-        plistPath = "$HOME/Library/LaunchAgents/${label}.plist";
-      in
-      ''
-        # Ensure ${name} is loaded
-        if ! /bin/launchctl list "${label}" &>/dev/null; then
-          echo "Loading agent ${label}..."
-          /bin/launchctl load -w "${plistPath}" 2>/dev/null || true
-        fi
-      ''
-    ) enabledUserAgents
-  );
-
   # Generate activation script to ensure daemons are loaded
   # This fixes the issue where nix-darwin skips loading if file unchanged
-  enabledDaemons = filterAttrs (_: s: s.enable && s.type == "daemon") cfg.services;
-
   mkEnsureDaemonsLoadedScript = concatStringsSep "\n" (
     mapAttrsToList (
       name: service:
@@ -251,34 +222,21 @@ in
     services = mkOption {
       type = types.attrsOf serviceType;
       default = { };
-      description = "Declarative launchd service definitions";
+      description = "Declarative launchd daemon service definitions";
     };
   };
 
   config = mkMerge [
-    # Generate user agents
-    (mkIf (any (s: s.enable && s.type == "user-agent") (attrValues cfg.services)) {
-      launchd.user.agents = mapAttrs' (name: service: nameValuePair name (mkService name service)) (
-        filterAttrs (_: s: s.enable && s.type == "user-agent") cfg.services
-      );
-    })
-
     # Generate daemons
-    (mkIf (any (s: s.enable && s.type == "daemon") (attrValues cfg.services)) {
-      launchd.daemons = mapAttrs' (name: service: nameValuePair name (mkService name service)) (
-        filterAttrs (_: s: s.enable && s.type == "daemon") cfg.services
-      );
+    (mkIf (enabledDaemons != { }) {
+      launchd.daemons = mapAttrs' (
+        name: service: nameValuePair name (mkService name service)
+      ) enabledDaemons;
     })
 
     # Activation script to fix log file ownership for services with UserName
     (mkIf (any (s: s.enable && s.extraServiceConfig ? UserName) (attrValues cfg.services)) {
       system.activationScripts.postActivation.text = mkLogOwnershipScript;
-    })
-
-    # Activation script to ensure user agents are loaded
-    # This fixes the issue where nix-darwin skips loading if file unchanged
-    (mkIf (enabledUserAgents != { }) {
-      system.activationScripts.postActivation.text = mkAfter mkEnsureAgentsLoadedScript;
     })
 
     # Activation script to ensure daemons are loaded

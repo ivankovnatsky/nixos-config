@@ -126,7 +126,6 @@ in
 
     local.launchd.services.dnsmasq = {
       enable = true;
-      type = "daemon";
       keepAlive = cfg.alwaysKeepRunning;
       inherit (cfg) waitForSecrets;
 

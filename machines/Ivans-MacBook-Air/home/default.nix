@@ -3,10 +3,12 @@
     ../../../home/amethyst
     ../../../home/atuin.nix
     ../../../home/bat.nix
+    ../../../home/brctl.nix
     ../../../home/btop.nix
     ../../../home/carapace.nix
     ../../../home/claude.nix
     ../../../home/direnv.nix
+    ../../../home/dns-clear.nix
     ../../../home/fish.nix
     ../../../home/flags.nix
     ../../../home/fzf.nix
@@ -23,6 +25,7 @@
     ../../../home/kitty
     ../../../home/lsd.nix
     ../../../home/mpv.nix
+    ../../../home/nextdns.nix
     ../../../home/nix-registry.nix
     ../../../home/nixvim
     ../../../home/nixvim.nix
@@ -34,21 +37,36 @@
     ../../../home/packages-darwin.nix
     ../../../home/packages.nix
     ../../../home/pass.nix
+    ../../../home/quit-mac-mouse-fix.nix
     ../../../home/ranger.nix
     ../../../home/rebuild-diff.nix
     ../../../home/safari.nix
     ../../../home/sops.nix
     ../../../home/starship
+    ../../../home/stash
     ../../../home/syncthing-ignore.nix
+    ../../../home/syncthing-mgmt.nix
+    ../../../home/syncthing.nix
+    ../../../home/taskwarrior-notify.nix
+    ../../../home/taskwarrior-sync.nix
     ../../../home/taskwarrior.nix
     ../../../home/tmux.nix
     ../../../home/tools.nix
     ../../../home/treefmt.nix
     ../../../home/vscode.nix
+    ../../../home/xattr.nix
     ../../../home/yt-dlp.nix
     ../../../home/z-lua.nix
     ../../../home/zsh.nix
     ../../../modules/flags
+    ../../../modules/home/dock
+    ../../../modules/home/launchd
+    ../../../modules/home/nextdns-mgmt
+    ../../../modules/home/reposync
+    ../../../modules/home/syncthing-mgmt
+    ../../../modules/home/taskwarrior-notify
     ../../../modules/home/tools
+    ./dock.nix
+    ./reposync.nix
   ];
 }

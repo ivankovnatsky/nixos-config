@@ -67,7 +67,6 @@ in
   config = mkIf cfg.enable {
     local.launchd.services.pmset-mgmt = {
       enable = true;
-      type = "daemon"; # Requires root for pmset commands
       runAtLoad = true; # Run when daemon is loaded/reloaded on rebuild
       keepAlive = false; # One-shot job - exit after completion
 

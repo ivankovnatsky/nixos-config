@@ -2,85 +2,47 @@
   imports = [
     ../../../../darwin/darwin.nix
     ../../../../darwin/fonts.nix
-    ../../../../darwin/nextdns.nix
     ../../../../darwin/shell.nix
     ../../../../darwin/sudo.nix
-    ../../../../darwin/syncthing.nix
     ../../../../darwin/system.nix
-    ../../../../darwin/taskwarrior-notify.nix
-    ../../../../darwin/taskwarrior-sync.nix
-    ../../../../modules/darwin/arr-mgmt
     ../../../../modules/darwin/beszel-agent
-    ../../../../modules/darwin/beszel-mgmt
     ../../../../modules/darwin/dnsmasq
-    ../../../../modules/darwin/dock
     ../../../../modules/darwin/doh-server
-    ../../../../modules/darwin/forgejo-mgmt
-    ../../../../modules/darwin/healthchecks-mgmt
-    ../../../../modules/darwin/jellyfin-mgmt
     ../../../../modules/darwin/launchd
     ../../../../modules/darwin/linux-builder
     ../../../../modules/darwin/logrotate
-    ../../../../modules/darwin/nextdns-mgmt
     ../../../../modules/darwin/pam
     ../../../../modules/darwin/pmset
-    ../../../../modules/darwin/reposync
     ../../../../modules/darwin/sharing
     ../../../../modules/darwin/stubby
     ../../../../modules/darwin/sudo
-    ../../../../modules/darwin/syncthing-mgmt
-    ../../../../modules/darwin/taskwarrior-notify
-    ../../../../modules/darwin/uptime-kuma-mgmt
     ../../../../modules/flags
     ../../../../system/documentation.nix
     ../../../../system/nix.nix
-    ../../../../system/reposync.nix
     ../../../../system/sops-secrets.nix
-    ./audiobookshelf
     ./beszel.nix
-    ./bin.nix
     ./dns.nix
     ./doh.nix
-    ./download-youtube
     ./flags.nix
-    ./forgejo
     ./git.nix
-    ./healthchecks
     ./homebrew.nix
     ./http.nix
-    ./jellyfin
     ./linux-builder.nix
     ./login-items.nix
     ./logrotate.nix
     ./mailpit.nix
     ./mas-upgrade.nix
     ./matrix
-    ./media
-    ./miniserve.nix
-    ./monitoring
     ./mosh.nix
     ./music-export.nix
-    ./navidrome
     ./nix.nix
     ./ollama.nix
-    ./open-webui.nix
     ./openssh.nix
     ./packages.nix
-    ./perlite
-    ./podservice
-    ./podsync
     ./power.nix
-    ./reposync.nix
     ./restart-unhealthy.nix
     ./sharing.nix
-    ./stash
-    ./stash-media
-    ./syncthing-mgmt.nix
     ./system.nix
     ./tailscale.nix
-    ./taskwarrior-web.nix
-    ./taskweb.nix
-    ./textcast
-    ./uptime-kuma
   ];
 }

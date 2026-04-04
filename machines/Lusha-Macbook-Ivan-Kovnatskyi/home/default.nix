@@ -37,6 +37,7 @@
     ../../../home/pay-respects.nix
     ../../../home/pgcli.nix
     ../../../home/pyenv.nix
+    ../../../home/quit-mac-mouse-fix.nix
     ../../../home/ranger.nix
     ../../../home/rebuild-diff.nix
     ../../../home/safari.nix
@@ -44,6 +45,7 @@
     ../../../home/ssh.nix
     ../../../home/starship
     ../../../home/syncthing-ignore.nix
+    ../../../home/syncthing.nix
     ../../../home/taskwarrior.nix
     ../../../home/terraform.nix
     ../../../home/tmux.nix
@@ -56,12 +58,24 @@
     ../../../home/zellij.nix
     ../../../home/zsh.nix
     ../../../modules/flags
+    ../../../modules/home/dock
+    ../../../modules/home/launchd
+    ../../../modules/home/prevent-sleep
+    ../../../modules/home/reposync
+    ../../../modules/home/syncthing-mgmt
     ../../../modules/home/tools
+    ./close-zscaler.nix
+    ./container.nix
+    ./dock.nix
     ./firefox.nix
     ./flags.nix
     ./nixvim.nix
     ./packages.nix
+    ./prevent-sleep.nix
     ./programs.nix
+    ./reposync.nix
+    ./spaces.nix
+    ./syncthing-mgmt.nix
     ./tools.nix
   ];
 }

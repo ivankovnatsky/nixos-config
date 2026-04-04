@@ -5,6 +5,7 @@
     ../../../home/atuin.nix
     ../../../home/bash.nix
     ../../../home/bat.nix
+    ../../../home/brctl.nix
     ../../../home/btop.nix
     ../../../home/carapace.nix
     ../../../home/claude.nix
@@ -23,6 +24,7 @@
     ../../../home/kitty
     ../../../home/lsd.nix
     ../../../home/mpv.nix
+    ../../../home/nextdns.nix
     ../../../home/nix-registry.nix
     ../../../home/nixvim
     ../../../home/nixvim.nix
@@ -32,6 +34,8 @@
     ../../../home/nushell.nix
     ../../../home/obsidian.nix
     ../../../home/pass.nix
+    ../../../home/promtail.nix
+    ../../../home/quit-mac-mouse-fix.nix
     ../../../home/ranger.nix
     ../../../home/rebuild-diff.nix
     ../../../home/safari.nix
@@ -39,21 +43,38 @@
     ../../../home/ssh.nix
     ../../../home/starship
     ../../../home/syncthing-ignore.nix
+    ../../../home/syncthing.nix
+    ../../../home/taskwarrior-notify.nix
+    ../../../home/taskwarrior-sync.nix
     ../../../home/taskwarrior.nix
     ../../../home/tmux.nix
     ../../../home/treefmt.nix
     ../../../home/vscode.nix
     ../../../home/whisper.nix
+    ../../../home/xattr.nix
     ../../../home/yt-dlp.nix
     ../../../home/z-lua.nix
     ../../../home/zsh.nix
     ../../../modules/flags
+    ../../../modules/home/arr-mgmt
+    ../../../modules/home/beszel-mgmt
+    ../../../modules/home/dock
+    ../../../modules/home/forgejo-mgmt
+    ../../../modules/home/healthchecks-mgmt
+    ../../../modules/home/jellyfin-mgmt
     ../../../modules/home/launchd
+    ../../../modules/home/nextdns-mgmt
+    ../../../modules/home/reposync
+    ../../../modules/home/syncthing-mgmt
+    ../../../modules/home/taskwarrior-notify
     ../../../modules/home/tools
     ../../../modules/home/unison
+    ../../../modules/home/uptime-kuma-mgmt
+    ./dock.nix
     ./flags.nix
     ./openclaw.nix
     ./packages.nix
+    ./server
     ./tmux.nix
     ./tools.nix
     ./unison.nix

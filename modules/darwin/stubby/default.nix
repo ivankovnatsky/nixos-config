@@ -114,7 +114,6 @@ in
 
     local.launchd.services.stubby = {
       enable = true;
-      type = "daemon";
       keepAlive = cfg.alwaysKeepRunning;
       inherit (cfg) waitForSecrets;
 

@@ -54,7 +54,6 @@ in
 
     local.launchd.services.cloudflared = {
       enable = true;
-      type = "daemon";
       keepAlive = cfg.alwaysKeepRunning;
 
       command = ''

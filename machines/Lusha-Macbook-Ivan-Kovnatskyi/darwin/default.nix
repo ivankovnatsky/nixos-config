@@ -5,28 +5,19 @@
     ../../../darwin/init.nix
     ../../../darwin/nix.nix
     ../../../darwin/no-dock-restart.nix
-    ../../../darwin/quit-mac-mouse-fix.nix
     ../../../darwin/sudo.nix
-    ../../../darwin/syncthing.nix
     ../../../darwin/system.nix
     ../../../darwin/users.nix
     ../../../modules/darwin/default-browser
-    ../../../modules/darwin/dock
     ../../../modules/darwin/launchd
     ../../../modules/darwin/pam
     ../../../modules/darwin/pmset
-    ../../../modules/darwin/prevent-sleep
-    ../../../modules/darwin/reposync
     ../../../modules/darwin/sudo
-    ../../../modules/darwin/syncthing-mgmt
     ../../../modules/flags
     ../../../system/documentation.nix
     ../../../system/nix.nix
-    ./close-zscaler.nix
-    ./container.nix
     ./default-browser.nix
     ./dns.nix
-    ./dock.nix
     ./flags.nix
     ./fonts.nix
     ./git.nix
@@ -34,13 +25,8 @@
     ./login-items.nix
     ./openssh.nix
     ./power.nix
-    ./prevent-sleep.nix
-    ./reposync.nix
     ./security.nix
-
     ./shell.nix
-    ./spaces.nix
-    ./syncthing-mgmt.nix
     ./users.nix
   ];
 }

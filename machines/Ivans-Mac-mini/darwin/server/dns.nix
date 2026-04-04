@@ -117,7 +117,6 @@ in
   # NXDOMAIN responses from before dnsmasq has its domain config)
   local.launchd.services.dns-cache-flush = {
     enable = true;
-    type = "daemon";
     command = "/bin/bash -c 'sleep 2m && /usr/bin/dscacheutil -flushcache && /usr/bin/killall -HUP mDNSResponder'";
     waitForSecrets = false;
     keepAlive = false;

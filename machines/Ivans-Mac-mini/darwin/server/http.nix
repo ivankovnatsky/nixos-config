@@ -64,7 +64,6 @@ in
   # Configure launchd service for Caddy web server
   local.launchd.services.caddy = {
     enable = true;
-    type = "daemon";
     waitForSecrets = true;
     waitForPath = config.flags.externalStoragePath;
     extraDirs = [

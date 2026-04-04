@@ -1,0 +1,37 @@
+{ config, ... }:
+
+{
+  sops.secrets.jellyfin-api-key = {
+    key = "jellyfin/apiKey";
+  };
+
+  local.services.jellyfin-mgmt = {
+    enable = true;
+    baseUrl = "http://${config.flags.machineLocalAddress}:8096";
+    apiKeyFile = config.sops.secrets.jellyfin-api-key.path;
+    bindAddress = config.flags.machineBindAddress;
+
+    libraries = [
+      {
+        name = "Movies";
+        type = "movies";
+        # Co-located with Radarr media on mini
+        paths = [ "${config.flags.externalStoragePath}/Media/Movies" ];
+        # Enable real-time file system monitoring
+        enableRealtimeMonitor = true;
+        # Automatic metadata refresh every 7 days
+        automaticRefreshIntervalDays = 7;
+      }
+      {
+        name = "Shows";
+        type = "tvshows";
+        # Co-located with Sonarr media on mini
+        paths = [ "${config.flags.externalStoragePath}/Media/TV" ];
+        # Enable real-time file system monitoring
+        enableRealtimeMonitor = true;
+        # Automatic metadata refresh every 7 days
+        automaticRefreshIntervalDays = 7;
+      }
+    ];
+  };
+}

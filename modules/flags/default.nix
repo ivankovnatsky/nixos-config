@@ -118,13 +118,16 @@ with lib;
       type = types.str;
       description = "This machine's IP address";
       default =
+        let
+          hostName = config.networking.hostName or "";
+        in
         {
           "Ivans-MacBook-Air" = config.flags.airIp;
           "Ivans-MacBook-Pro" = config.flags.proIp;
           "Ivans-Mac-mini" = config.flags.miniIp;
           "a3" = config.flags.a3Ip;
         }
-        .${config.networking.hostName} or "";
+        .${hostName} or "";
     };
 
     airIp = mkOption {

@@ -100,7 +100,6 @@ in
 
     local.launchd.services.doh-server = {
       enable = true;
-      type = "daemon";
       keepAlive = cfg.alwaysKeepRunning;
 
       command =

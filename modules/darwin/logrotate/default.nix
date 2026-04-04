@@ -260,7 +260,6 @@ in
     # Run logrotate via launchd
     local.launchd.services.logrotate = {
       enable = true;
-      type = "daemon";
       runAtLoad = false; # Don't run immediately on system boot
       keepAlive = false; # Only run on schedule
 

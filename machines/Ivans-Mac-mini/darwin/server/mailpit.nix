@@ -10,7 +10,6 @@ in
 {
   local.launchd.services.mailpit = {
     enable = true;
-    type = "daemon";
     waitForSecrets = true;
     preStart = ''
       DOMAIN=$(cat ${config.sops.secrets.external-domain.path})

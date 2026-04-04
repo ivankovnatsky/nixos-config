@@ -1,0 +1,30 @@
+{
+  imports = [
+    ./audiobookshelf
+    ./beszel.nix
+    ./bin.nix
+    ./download-youtube
+    ./forgejo
+    ./healthchecks
+    ./jellyfin
+    ./matrix
+    ./media
+    ./miniserve.nix
+    ./monitoring
+    ./navidrome
+    ./ollama.nix
+    ./open-webui.nix
+    ./perlite
+    ./podservice
+    ./podsync
+    ./reposync.nix
+    ./restart-unhealthy.nix
+    ./stash
+    ./stash-media
+    ./syncthing-mgmt.nix
+    ./taskwarrior-web.nix
+    ./taskweb.nix
+    ./textcast
+    ./uptime-kuma
+  ];
+}
