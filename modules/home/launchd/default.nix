@@ -43,8 +43,8 @@ let
           default = false;
           description = ''
             Wait for sops-nix secrets to be available before starting the service.
-            Uses /bin/wait4path to block until /run/secrets exists.
-            Enable this for services that depend on sops secrets or templates.
+            Uses /bin/wait4path to block until ~/.config/sops-nix/secrets exists.
+            Enable this for services that depend on sops secrets.
           '';
         };
 
@@ -132,7 +132,7 @@ let
 
         ${optionalString svc.waitForSecrets ''
           echo "Waiting for sops secrets..."
-          /bin/wait4path /run/secrets
+          /bin/wait4path ${config.home.homeDirectory}/.config/sops-nix/secrets
           echo "Sops secrets available."
         ''}
 
