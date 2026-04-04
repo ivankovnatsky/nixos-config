@@ -28,7 +28,6 @@
     ../../../home/nixvim.nix
     ../../../home/nixvim/plugins/codediff
     ../../../home/nixvim/plugins/gpg-nvim
-    ../../../home/notes.nix
     ../../../home/npm.nix
     ../../../home/nushell.nix
     ../../../home/obsidian.nix
