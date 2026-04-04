@@ -459,9 +459,7 @@ def find_orphaned_plists(
 
 
 @cli.command()
-@click.option(
-    "--dry-run", is_flag=True, help="Show orphans without removing them"
-)
+@click.option("--dry-run", is_flag=True, help="Show orphans without removing them")
 @click.pass_context
 def clean(ctx, dry_run):
     """Remove orphaned plists with broken nix store paths."""

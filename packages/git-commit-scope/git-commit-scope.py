@@ -304,11 +304,16 @@ def parse_args_flexible(
     if len(non_files) == 1:
         return files, non_files[0]
     elif len(non_files) == 0:
-        print("Error: All arguments are file paths, no subject provided", file=sys.stderr)
+        print(
+            "Error: All arguments are file paths, no subject provided", file=sys.stderr
+        )
         print("  Use: git-commit-scope <file>... -s 'subject'", file=sys.stderr)
         sys.exit(1)
     else:
-        print("Error: Multiple non-file arguments (expected exactly one subject):", file=sys.stderr)
+        print(
+            "Error: Multiple non-file arguments (expected exactly one subject):",
+            file=sys.stderr,
+        )
         for nf in non_files:
             print(f"  {nf}", file=sys.stderr)
         sys.exit(1)

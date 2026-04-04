@@ -1034,7 +1034,7 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
             if tw_uuid:
                 uuids = [tw_uuid]
             else:
-                uuids = find_tw_uuids(project, tw['title'])
+                uuids = find_tw_uuids(project, tw["title"])
             for uuid in uuids:
                 modify_args = []
                 if "title" in tw_updates:
@@ -1105,7 +1105,7 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                 )
 
         if rem_updates and is_darwin() and has_command("rems"):
-            rem_desc = prefixed_title(project, rem['title'])
+            rem_desc = prefixed_title(project, rem["title"])
             rem_id = rem.get("externalId", "") or rem_desc
             edit_args = [
                 "rems",
@@ -1362,7 +1362,9 @@ def sort_reminders(source, approve, interactive, create, verbose):
 
         if prefix_adds:
             click.echo()
-            click.echo(f"Done. Prefixed {prefixed_count}/{len(prefix_adds)} reminder(s).")
+            click.echo(
+                f"Done. Prefixed {prefixed_count}/{len(prefix_adds)} reminder(s)."
+            )
 
     if not moves:
         return
@@ -1582,7 +1584,9 @@ def sort_tw(project, approve, interactive, verbose):
             )
             if res.returncode == 0:
                 moved += 1
-                click.echo(f"  Moved: {m['description']} → project:{m['target_project']}")
+                click.echo(
+                    f"  Moved: {m['description']} → project:{m['target_project']}"
+                )
             else:
                 click.echo(f"  ERROR moving: {m['description']}", err=True)
 
@@ -1941,7 +1945,7 @@ def sync(
     # Reminders-only → add to Taskwarrior
     for item in rem_only.values():
         proj = item["project"]
-        desc = prefixed_title(proj, item['title'])
+        desc = prefixed_title(proj, item["title"])
         if interactive:
             click.echo()
             click.echo("Reminders only:")
@@ -1959,7 +1963,7 @@ def sync(
             if not click.confirm("  Copy to Taskwarrior?"):
                 continue
         # Check if a pending TW task with the same title already exists (avoid duplicates)
-        existing_uuids = find_tw_uuids(proj, item['title'], status_filter="pending")
+        existing_uuids = find_tw_uuids(proj, item["title"], status_filter="pending")
         if existing_uuids and item["status"] == "completed":
             # Complete the existing task instead of creating a duplicate
             uuid = existing_uuids[0]
@@ -2061,7 +2065,7 @@ def sync(
 
         for item in tw_only.values():
             proj = item["project"]
-            desc = prefixed_title(proj, item['title'])
+            desc = prefixed_title(proj, item["title"])
 
             # Never copy deleted TW tasks to Reminders
             if item.get("status") == "deleted":
@@ -2148,7 +2152,7 @@ def sync(
             click.echo(f"--- TW-only items ({len(tw_only)}) ---")
             for key, item in tw_only.items():
                 proj = item["project"]
-                desc = prefixed_title(proj, item['title'])
+                desc = prefixed_title(proj, item["title"])
                 uuid = item.get("uuid", "")
                 due = format_date_local(item.get("due", ""))
                 status = item.get("status", "pending")
@@ -2261,8 +2265,8 @@ def sync(
             if item.get("status") != "pending":
                 continue
             proj = item["project"]
-            desc = prefixed_title(proj, item['title'])
-            title = item['title']
+            desc = prefixed_title(proj, item["title"])
+            title = item["title"]
             uuid = item.get("uuid", "")
             if not uuid:
                 continue
@@ -2278,10 +2282,9 @@ def sync(
                 try:
                     for t in json.loads(all_uuids_result.stdout):
                         t_desc = t.get("description", "")
-                        if (
-                            (t_desc == title or t_desc == legacy_prefixed)
-                            and t.get("status") == "completed"
-                        ):
+                        if (t_desc == title or t_desc == legacy_prefixed) and t.get(
+                            "status"
+                        ) == "completed":
                             has_completed = True
                             break
                 except json.JSONDecodeError:

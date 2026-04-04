@@ -35,7 +35,7 @@ copy_from_id() {
 }
 
 # Handle --help / -h
-if [[ $# -ge 1 && ( "$1" == "--help" || "$1" == "-h" ) ]]; then
+if [[ $# -ge 1 && ("$1" == "--help" || "$1" == "-h") ]]; then
   echo "Usage: kitty-copy [WINDOW_ID]"
   echo ""
   echo "Copy text from a kitty terminal window to the clipboard."

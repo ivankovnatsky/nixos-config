@@ -1418,7 +1418,12 @@ end tell
 @cli.command()
 @click.argument("action", type=click.Choice(["list", "close", "quit", "hide"]))
 @click.argument("apps", nargs=-1)
-@click.option("--wait", default=0, type=int, help="Poll interval in seconds; retry until success or timeout (18 attempts)")
+@click.option(
+    "--wait",
+    default=0,
+    type=int,
+    help="Poll interval in seconds; retry until success or timeout (18 attempts)",
+)
 def windows(action, apps, wait):
     """Close/hide/quit app windows (macOS only)"""
     if not is_macos():
@@ -1659,7 +1664,13 @@ end tell
 
 @cli.command()
 @click.argument("action", type=click.Choice(["add", "remove", "ensure", "count"]))
-@click.option("--count", "-n", "target_count", type=int, help="Target number of spaces (for ensure)")
+@click.option(
+    "--count",
+    "-n",
+    "target_count",
+    type=int,
+    help="Target number of spaces (for ensure)",
+)
 def spaces(action, target_count):
     """Add, remove, count, or ensure desktop spaces (macOS only)"""
     if not is_macos():
