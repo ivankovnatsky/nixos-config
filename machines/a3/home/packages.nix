@@ -18,6 +18,7 @@
     ghq-cd
     gitleaks
     gwq-add
+    gwq-purge
     glow
     gofumpt
     golangci-lint

@@ -68,6 +68,7 @@ in
       gpg-pass-refresh
       gwq
       gwq-add
+      gwq-purge
       healthchecks-mgmt
       home-manager
       image-meta

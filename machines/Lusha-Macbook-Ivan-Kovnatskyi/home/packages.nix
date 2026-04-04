@@ -83,6 +83,7 @@
     gum
     gwq
     gwq-add
+    gwq-purge
     hadolint
     hclfmt
     home-manager

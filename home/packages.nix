@@ -51,6 +51,7 @@
     gpg-pass-refresh
     gwq
     gwq-add
+    gwq-purge
     healthchecks-mgmt
     homelab
     hyperfine
