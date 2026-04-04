@@ -8,6 +8,7 @@
         markitdown
       ]
     ))
+    git-restore
     abs
     abs-mgmt
     age
