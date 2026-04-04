@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 let
   copyPathScript = builtins.readFile ./copy-path.vim;
   prScript = builtins.readFile ./pr.vim;

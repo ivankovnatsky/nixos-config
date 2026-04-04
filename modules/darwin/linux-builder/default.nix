@@ -60,7 +60,7 @@ in
     mandatoryFeatures = mkOption {
       type = types.listOf types.str;
       default = [ ];
-      defaultText = literalExpression ''[]'';
+      defaultText = literalExpression "[]";
       example = literalExpression ''[ "big-parallel" ]'';
       description = ''
         A list of features mandatory for the Linux builder. The builder will
@@ -111,7 +111,7 @@ in
     speedFactor = mkOption {
       type = types.ints.positive;
       default = 1;
-      defaultText = literalExpression ''1'';
+      defaultText = literalExpression "1";
       description = ''
         The relative speed of the Linux builder. This is an arbitrary integer
         that indicates the speed of this builder, relative to other

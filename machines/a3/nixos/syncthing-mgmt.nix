@@ -47,7 +47,7 @@
           "Ivans-MacBook-Air"
         ];
       };
-};
+    };
 
     restart = false;
   };

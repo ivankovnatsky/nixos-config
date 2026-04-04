@@ -47,7 +47,7 @@ in
           "a3"
         ];
       };
-};
+    };
     restart = false;
   };
 }

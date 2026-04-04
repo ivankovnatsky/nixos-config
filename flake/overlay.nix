@@ -15,7 +15,7 @@ let
       inherit (masterOverlays.nixpkgs-darwin-master-gwq) go_1_26;
     };
     navidrome = {
-      navidrome = prev.navidrome;
+      inherit (prev) navidrome;
     };
   };
 
@@ -34,7 +34,7 @@ let
   # Special arguments for specific packages (to break overlay self-reference cycles)
   packageArgs = {
     genpass = {
-      genpass = prev.genpass;
+      inherit (prev) genpass;
     };
   };
 

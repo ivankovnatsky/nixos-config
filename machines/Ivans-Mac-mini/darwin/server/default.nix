@@ -2,7 +2,6 @@
   imports = [
     ../../../../darwin/darwin.nix
     ../../../../darwin/fonts.nix
-    ./login-items.nix
     ../../../../darwin/nextdns.nix
     ../../../../darwin/shell.nix
     ../../../../darwin/sudo.nix
@@ -16,27 +15,27 @@
     ../../../../modules/darwin/dnsmasq
     ../../../../modules/darwin/dock
     ../../../../modules/darwin/doh-server
-    ../../../../modules/darwin/healthchecks-mgmt
     ../../../../modules/darwin/forgejo-mgmt
-    ../../../../modules/darwin/reposync
+    ../../../../modules/darwin/healthchecks-mgmt
     ../../../../modules/darwin/jellyfin-mgmt
     ../../../../modules/darwin/launchd
     ../../../../modules/darwin/linux-builder
     ../../../../modules/darwin/logrotate
     ../../../../modules/darwin/nextdns-mgmt
-    ../../../../modules/darwin/taskwarrior-notify
     ../../../../modules/darwin/pam
     ../../../../modules/darwin/pmset
+    ../../../../modules/darwin/reposync
     ../../../../modules/darwin/sharing
     ../../../../modules/darwin/stubby
     ../../../../modules/darwin/sudo
     ../../../../modules/darwin/syncthing-mgmt
+    ../../../../modules/darwin/taskwarrior-notify
     ../../../../modules/darwin/uptime-kuma-mgmt
     ../../../../modules/flags
     ../../../../system/documentation.nix
     ../../../../system/nix.nix
-    ../../../../system/sops-secrets.nix
     ../../../../system/reposync.nix
+    ../../../../system/sops-secrets.nix
     ./audiobookshelf
     ./beszel.nix
     ./bin.nix
@@ -51,6 +50,7 @@
     ./http.nix
     ./jellyfin
     ./linux-builder.nix
+    ./login-items.nix
     ./logrotate.nix
     ./mailpit.nix
     ./mas-upgrade.nix
@@ -69,9 +69,9 @@
     ./perlite
     ./podservice
     ./podsync
+    ./power.nix
     ./reposync.nix
     ./restart-unhealthy.nix
-    ./power.nix
     ./sharing.nix
     ./stash
     ./stash-media

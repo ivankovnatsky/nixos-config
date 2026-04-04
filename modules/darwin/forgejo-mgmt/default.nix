@@ -10,15 +10,17 @@ with lib;
 let
   cfg = config.local.services.forgejo-mgmt;
 
-  configJson = pkgs.writeText "forgejo-mgmt-config.json" (builtins.toJSON {
-    baseUrl = cfg.baseUrl;
-    forgejoBin = "${cfg.forgejoPackage}/bin/forgejo";
-    configFile = cfg.configFile;
-    workPath = cfg.workPath;
-    tokenFile = cfg.tokenFile;
-    users = cfg.users;
-    repositories = cfg.repositories;
-  });
+  configJson = pkgs.writeText "forgejo-mgmt-config.json" (
+    builtins.toJSON {
+      inherit (cfg) baseUrl;
+      forgejoBin = "${cfg.forgejoPackage}/bin/forgejo";
+      inherit (cfg) configFile;
+      inherit (cfg) workPath;
+      inherit (cfg) tokenFile;
+      inherit (cfg) users;
+      inherit (cfg) repositories;
+    }
+  );
 
   userSubmodule = types.submodule {
     options = {
@@ -98,44 +100,46 @@ in
     };
 
     repositories = mkOption {
-      type = types.listOf (types.submodule {
-        options = {
-          name = mkOption {
-            type = types.str;
-            description = "Repository name";
-          };
+      type = types.listOf (
+        types.submodule {
+          options = {
+            name = mkOption {
+              type = types.str;
+              description = "Repository name";
+            };
 
-          owner = mkOption {
-            type = types.nullOr types.str;
-            default = null;
-            description = "Username who owns this repository (use ownerFile for secret-based)";
-          };
+            owner = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "Username who owns this repository (use ownerFile for secret-based)";
+            };
 
-          ownerFile = mkOption {
-            type = types.nullOr types.str;
-            default = null;
-            description = "Path to file containing the owner username";
-          };
+            ownerFile = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "Path to file containing the owner username";
+            };
 
-          description = mkOption {
-            type = types.str;
-            default = "";
-            description = "Repository description";
-          };
+            description = mkOption {
+              type = types.str;
+              default = "";
+              description = "Repository description";
+            };
 
-          private = mkOption {
-            type = types.bool;
-            default = true;
-            description = "Whether the repository is private";
-          };
+            private = mkOption {
+              type = types.bool;
+              default = true;
+              description = "Whether the repository is private";
+            };
 
-          autoInit = mkOption {
-            type = types.bool;
-            default = false;
-            description = "Initialize repository with a README";
+            autoInit = mkOption {
+              type = types.bool;
+              default = false;
+              description = "Initialize repository with a README";
+            };
           };
-        };
-      });
+        }
+      );
       default = [ ];
       description = "Repositories to create on the Forgejo instance";
     };
@@ -147,7 +151,8 @@ in
         assertion = (builtins.filter (u: u.admin) cfg.users) != [ ];
         message = "forgejo-mgmt: at least one user must have admin = true";
       }
-    ] ++ (map (u: {
+    ]
+    ++ (map (u: {
       assertion = u.username != null || u.usernameFile != null;
       message = "forgejo-mgmt: each user must set either username or usernameFile";
     }) cfg.users)

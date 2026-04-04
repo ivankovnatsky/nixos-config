@@ -89,9 +89,7 @@ in
       $DRY_RUN_CMD ln -sf ${
         config.sops.templates."anthropic_key.sh".path
       } "${homePath}/.claude/anthropic_key.sh"
-      $DRY_RUN_CMD ln -sf ${
-        config.sops.templates."portkey.sh".path
-      } "${homePath}/.claude/portkey.sh"
+      $DRY_RUN_CMD ln -sf ${config.sops.templates."portkey.sh".path} "${homePath}/.claude/portkey.sh"
     ''
   );
 }
