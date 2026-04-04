@@ -278,7 +278,7 @@ with lib;
     obsidian = {
       vaultPaths = mkOption {
         type = types.listOf types.str;
-        description = "Obsidian vault paths relative to home directory";
+        description = "Obsidian vault paths (absolute)";
         default = [ ];
       };
     };
