@@ -20,6 +20,7 @@ let
     export HF_HOME="${cacheDir}/huggingface"
     exec ${pkgs.mlx-whisper}/bin/mlx_whisper \
       --model mlx-community/whisper-turbo \
+      --output_dir ${config.flags.externalStoragePath}/Tmp \
       "$@"
   '';
   patchedConfig = "${stateDir}/openclaw-runtime.json";
@@ -94,6 +95,8 @@ let
               "turbo"
               "--model_dir"
               "${cacheDir}/whisper"
+              "--output_dir"
+              "${config.flags.externalStoragePath}/Tmp"
               "{{MediaPath}}"
             ];
             timeoutSeconds = 300;
