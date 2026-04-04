@@ -32,7 +32,7 @@
         }
       ];
     };
-    obsidian.vaultPaths = [ "Notes" ];
+    obsidian.vaultPaths = [ "${config.flags.externalStoragePath}/Notes" ];
     apps = {
       vscode.enable = false;
     };
