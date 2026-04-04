@@ -25,7 +25,6 @@ def read_file(path):
 
 def get_rapl_power(interval):
     """Measure CPU power via RAPL energy counters over an interval."""
-    rapl_base = "/sys/class/powercap"
     domains = {}
 
     # Find all RAPL domains via the actual device hierarchy (not flat symlinks)
@@ -85,9 +84,16 @@ def get_gpu_power():
     # Check nvidia-smi
     try:
         import subprocess
+
         result = subprocess.run(
-            ["nvidia-smi", "--query-gpu=name,power.draw", "--format=csv,noheader,nounits"],
-            capture_output=True, text=True, timeout=5,
+            [
+                "nvidia-smi",
+                "--query-gpu=name,power.draw",
+                "--format=csv,noheader,nounits",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=5,
         )
         if result.returncode == 0:
             for line in result.stdout.strip().split("\n"):
