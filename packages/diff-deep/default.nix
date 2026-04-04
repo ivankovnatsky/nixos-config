@@ -3,6 +3,7 @@
 pkgs.writeShellScriptBin "diff-deep" ''
   EXCLUDES=(
     .git
+    .obsidian
     .terraform
     "terraform.tfstate*"
     .terraform.lock.hcl
