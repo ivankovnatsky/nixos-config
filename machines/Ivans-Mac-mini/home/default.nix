@@ -50,10 +50,12 @@
     ../../../modules/flags
     ../../../modules/home/launchd
     ../../../modules/home/tools
+    ../../../modules/home/unison
     ./flags.nix
     ./openclaw.nix
     ./packages.nix
     ./tmux.nix
     ./tools.nix
+    ./unison.nix
   ];
 }
