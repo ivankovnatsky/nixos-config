@@ -35,7 +35,6 @@ in
       cleanup-home
       delta
       diff-deep
-      diff-good
       diff-long-lines
       discordo
       dns

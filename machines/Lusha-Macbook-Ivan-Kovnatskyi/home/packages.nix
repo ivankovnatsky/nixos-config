@@ -40,7 +40,6 @@
     devbox
     devcontainer
     diff-deep
-    diff-good
     diff-long-lines
     dns
     docker-client
