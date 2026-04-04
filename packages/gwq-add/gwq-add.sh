@@ -27,5 +27,5 @@ word1=$(get_random_word)
 word2=$(get_random_word)
 branch_name="${word1}-${word2}"
 
-gwq add -b "$branch_name"
+gwq add -b "$branch_name" >&2
 gwq get "$branch_name"
