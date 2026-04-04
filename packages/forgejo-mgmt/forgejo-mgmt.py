@@ -52,39 +52,50 @@ class ForgejoClient:
     def user_exists(self, username: str) -> bool:
         url = f"{self.base_url}/api/v1/users/{username}"
         try:
-            response = requests.get(
-                url, headers=self.headers, timeout=self.timeout
-            )
+            response = requests.get(url, headers=self.headers, timeout=self.timeout)
             return response.status_code == 200
         except requests.exceptions.RequestException:
             return False
 
     def create_user(self, username: str, email: str, password: str):
-        return self._api_call("POST", "/admin/users", {
-            "username": username,
-            "email": email,
-            "password": password,
-            "must_change_password": False,
-            "visibility": "private",
-        })
+        return self._api_call(
+            "POST",
+            "/admin/users",
+            {
+                "username": username,
+                "email": email,
+                "password": password,
+                "must_change_password": False,
+                "visibility": "private",
+            },
+        )
 
     def repo_exists(self, owner: str, name: str) -> bool:
         url = f"{self.base_url}/api/v1/repos/{owner}/{name}"
         try:
-            response = requests.get(
-                url, headers=self.headers, timeout=self.timeout
-            )
+            response = requests.get(url, headers=self.headers, timeout=self.timeout)
             return response.status_code == 200
         except requests.exceptions.RequestException:
             return False
 
-    def create_repo_for_user(self, owner: str, name: str, description: str = "", private: bool = True, auto_init: bool = False):
-        return self._api_call("POST", f"/admin/users/{owner}/repos", {
-            "name": name,
-            "description": description,
-            "private": private,
-            "auto_init": auto_init,
-        })
+    def create_repo_for_user(
+        self,
+        owner: str,
+        name: str,
+        description: str = "",
+        private: bool = True,
+        auto_init: bool = False,
+    ):
+        return self._api_call(
+            "POST",
+            f"/admin/users/{owner}/repos",
+            {
+                "name": name,
+                "description": description,
+                "private": private,
+                "auto_init": auto_init,
+            },
+        )
 
     def list_repos(self):
         return self._api_call("GET", "/user/repos")
@@ -93,25 +104,32 @@ class ForgejoClient:
         return self._api_call("GET", f"/users/{username}/gpg_keys") or []
 
     def create_gpg_key(self, armored_key: str):
-        return self._api_call("POST", "/user/gpg_keys", {
-            "armored_public_key": armored_key,
-        })
+        return self._api_call(
+            "POST",
+            "/user/gpg_keys",
+            {
+                "armored_public_key": armored_key,
+            },
+        )
 
 
 def wait_for_api(base_url: str, max_retries: int = 30, delay: int = 2):
     print(f"Waiting for Forgejo API at {base_url}...", file=sys.stderr)
     for i in range(1, max_retries + 1):
         try:
-            response = requests.get(
-                f"{base_url}/api/v1/settings/api", timeout=5
-            )
+            response = requests.get(f"{base_url}/api/v1/settings/api", timeout=5)
             if response.status_code == 200:
-                print(f"Forgejo API is ready (attempt {i}/{max_retries})", file=sys.stderr)
+                print(
+                    f"Forgejo API is ready (attempt {i}/{max_retries})", file=sys.stderr
+                )
                 return
         except requests.exceptions.RequestException:
             pass
         if i == max_retries:
-            print(f"ERROR: Forgejo API not ready after {max_retries} attempts", file=sys.stderr)
+            print(
+                f"ERROR: Forgejo API not ready after {max_retries} attempts",
+                file=sys.stderr,
+            )
             sys.exit(1)
         print(f"Waiting... (attempt {i}/{max_retries})", file=sys.stderr)
         time.sleep(delay)
@@ -146,25 +164,53 @@ def ensure_admin_user(
 ):
     """Create the first admin user via CLI (works without API auth)."""
     result = subprocess.run(
-        [forgejo_bin, "admin", "user", "list",
-         "--config", config_file, "--work-path", work_path],
-        capture_output=True, text=True,
+        [
+            forgejo_bin,
+            "admin",
+            "user",
+            "list",
+            "--config",
+            config_file,
+            "--work-path",
+            work_path,
+        ],
+        capture_output=True,
+        text=True,
     )
-    lines = [l for l in result.stdout.strip().split("\n") if l and not l.startswith("ID")]
+    lines = [
+        line
+        for line in result.stdout.strip().split("\n")
+        if line and not line.startswith("ID")
+    ]
     if lines:
-        print(f"Users already exist ({len(lines)} found), skipping admin user creation", file=sys.stderr)
+        print(
+            f"Users already exist ({len(lines)} found), skipping admin user creation",
+            file=sys.stderr,
+        )
         return
 
     print(f"Creating admin user: {username}", file=sys.stderr)
     result = subprocess.run(
-        [forgejo_bin, "admin", "user", "create",
-         "--config", config_file, "--work-path", work_path,
-         "--username", username,
-         "--email", email,
-         "--password", password,
-         "--admin",
-         "--must-change-password=false"],
-        capture_output=True, text=True,
+        [
+            forgejo_bin,
+            "admin",
+            "user",
+            "create",
+            "--config",
+            config_file,
+            "--work-path",
+            work_path,
+            "--username",
+            username,
+            "--email",
+            email,
+            "--password",
+            password,
+            "--admin",
+            "--must-change-password=false",
+        ],
+        capture_output=True,
+        text=True,
     )
     if result.returncode != 0:
         print(f"ERROR: Failed to create admin user: {result.stderr}", file=sys.stderr)
@@ -222,7 +268,9 @@ def ensure_token(
     return token
 
 
-def create_user_token(base_url: str, username: str, password: str, token_name: str = "forgejo-mgmt") -> str:
+def create_user_token(
+    base_url: str, username: str, password: str, token_name: str = "forgejo-mgmt"
+) -> str:
     """Create an access token for a user using basic auth."""
     response = requests.post(
         f"{base_url}/api/v1/users/{username}/tokens",
@@ -234,7 +282,10 @@ def create_user_token(base_url: str, username: str, password: str, token_name: s
         if "has been used already" in response.text:
             print(f"  Token already exists for {username}, skipping", file=sys.stderr)
         else:
-            print(f"  ERROR: Failed to create token for {username} (HTTP {response.status_code}): {response.text}", file=sys.stderr)
+            print(
+                f"  ERROR: Failed to create token for {username} (HTTP {response.status_code}): {response.text}",
+                file=sys.stderr,
+            )
         return ""
     return response.json().get("sha1", "")
 
@@ -274,14 +325,28 @@ def upload_gpg_key(base_url: str, username: str, password: str, armored_key: str
             existing_keys = response.json()
             for key in existing_keys:
                 existing_id = key.get("primary_key_id") or key.get("key_id", "")
-                if wanted_key_id and len(wanted_key_id) >= 16 and existing_id and existing_id.endswith(wanted_key_id[-16:]):
-                    print(f"  GPG key already exists for {username} (key ID: {existing_id}), skipping", file=sys.stderr)
+                if (
+                    wanted_key_id
+                    and len(wanted_key_id) >= 16
+                    and existing_id
+                    and existing_id.endswith(wanted_key_id[-16:])
+                ):
+                    print(
+                        f"  GPG key already exists for {username} (key ID: {existing_id}), skipping",
+                        file=sys.stderr,
+                    )
                     return
             if not wanted_key_id and existing_keys:
-                print(f"  GPG key already exists for {username} ({len(existing_keys)} key(s)), skipping", file=sys.stderr)
+                print(
+                    f"  GPG key already exists for {username} ({len(existing_keys)} key(s)), skipping",
+                    file=sys.stderr,
+                )
                 return
     except requests.exceptions.RequestException as e:
-        print(f"  WARNING: Could not check existing GPG keys for {username}: {e}", file=sys.stderr)
+        print(
+            f"  WARNING: Could not check existing GPG keys for {username}: {e}",
+            file=sys.stderr,
+        )
 
     print(f"  Uploading GPG key for {username}...", file=sys.stderr)
     response = requests.post(
@@ -295,9 +360,15 @@ def upload_gpg_key(base_url: str, username: str, password: str, armored_key: str
         key_id = key_data.get("primary_key_id") or key_data.get("key_id", "unknown")
         print(f"  GPG key uploaded for {username} (key ID: {key_id})", file=sys.stderr)
     elif response.status_code == 422:
-        print(f"  GPG key already exists for {username} (server rejected duplicate): {response.text}", file=sys.stderr)
+        print(
+            f"  GPG key already exists for {username} (server rejected duplicate): {response.text}",
+            file=sys.stderr,
+        )
     else:
-        print(f"  WARNING: Failed to upload GPG key for {username}: {response.text}", file=sys.stderr)
+        print(
+            f"  WARNING: Failed to upload GPG key for {username}: {response.text}",
+            file=sys.stderr,
+        )
 
 
 def sync_users(client: ForgejoClient, users: list, base_url: str):
@@ -322,7 +393,10 @@ def sync_users(client: ForgejoClient, users: list, base_url: str):
             token = create_user_token(base_url, username, password)
             if token:
                 print(f"  TOKEN for {username}: {token}", file=sys.stderr)
-                print(f"  Save this token to sops — it will not be shown again", file=sys.stderr)
+                print(
+                    "  Save this token to sops — it will not be shown again",
+                    file=sys.stderr,
+                )
 
         gpg_key_file = user.get("gpgKeyFile")
         if gpg_key_file:
@@ -375,7 +449,9 @@ def cmd_sync(args):
     admin_password = read_file(admin["passwordFile"])
 
     wait_for_api(base_url)
-    ensure_admin_user(forgejo_bin, config_path, work_path, admin_username, admin_email, admin_password)
+    ensure_admin_user(
+        forgejo_bin, config_path, work_path, admin_username, admin_email, admin_password
+    )
     token = ensure_token(base_url, admin_username, admin_password, token_file)
 
     client = ForgejoClient(base_url, token)
@@ -419,11 +495,17 @@ def main():
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     sync_parser = subparsers.add_parser("sync", help="Sync users and repositories")
-    sync_parser.add_argument("--config-file", required=True, help="JSON configuration file")
+    sync_parser.add_argument(
+        "--config-file", required=True, help="JSON configuration file"
+    )
 
     list_parser = subparsers.add_parser("list", help="List repositories")
-    list_parser.add_argument("--config-file", required=True, help="JSON configuration file")
-    list_parser.add_argument("--output-format", choices=["table", "json"], default="table")
+    list_parser.add_argument(
+        "--config-file", required=True, help="JSON configuration file"
+    )
+    list_parser.add_argument(
+        "--output-format", choices=["table", "json"], default="table"
+    )
 
     args = parser.parse_args()
 
