@@ -291,27 +291,64 @@ let
   #   "omnisearch"                          # Enhanced search
   # ];
   vaultPaths = config.flags.obsidian.vaultPaths;
+  inherit (pkgs.stdenv) isDarwin;
 
-  appJson = builtins.toJSON appSettings;
+  appJsonFile = pkgs.writeText "obsidian-app.json" (builtins.toJSON appSettings);
 
-  mkVaultFiles = vault: {
-    "${vault}/.obsidian/app.json".text = appJson;
-    # "${vault}/.obsidian/appearance.json".text = builtins.toJSON appearanceSettings;
-    # "${vault}/.obsidian/core-plugins.json".text = builtins.toJSON corePlugins;
-    # "${vault}/.obsidian/graph.json".text = builtins.toJSON graphSettings;
-    # "${vault}/.obsidian/daily-notes.json".text = builtins.toJSON dailyNotesSettings;
-    # "${vault}/.obsidian/templates.json".text = builtins.toJSON templatesSettings;
-    # "${vault}/.obsidian/types.json".text = builtins.toJSON typesSettings;
-    # "${vault}/.obsidian/hotkeys.json".text = builtins.toJSON hotkeys;
-    # "${vault}/.obsidian/community-plugins.json".text = builtins.toJSON communityPlugins;
-    # "${vault}/.obsidian/snippets/custom.css".text = ''
-    #   /* Custom CSS */
-    #   .markdown-preview-view {
-    #     font-size: 18px;
-    #   }
-    # '';
-  };
+  # Example config for additional vault files — keep for reference.
+  # mkVaultFiles = vault: {
+  #   "${vault}/.obsidian/app.json".text = builtins.toJSON appSettings;
+  #   "${vault}/.obsidian/appearance.json".text = builtins.toJSON appearanceSettings;
+  #   "${vault}/.obsidian/core-plugins.json".text = builtins.toJSON corePlugins;
+  #   "${vault}/.obsidian/graph.json".text = builtins.toJSON graphSettings;
+  #   "${vault}/.obsidian/daily-notes.json".text = builtins.toJSON dailyNotesSettings;
+  #   "${vault}/.obsidian/templates.json".text = builtins.toJSON templatesSettings;
+  #   "${vault}/.obsidian/types.json".text = builtins.toJSON typesSettings;
+  #   "${vault}/.obsidian/hotkeys.json".text = builtins.toJSON hotkeys;
+  #   "${vault}/.obsidian/community-plugins.json".text = builtins.toJSON communityPlugins;
+  #   "${vault}/.obsidian/snippets/custom.css".text = ''
+  #     /* Custom CSS */
+  #     .markdown-preview-view {
+  #       font-size: 18px;
+  #     }
+  #   '';
+  # };
+
+  resolveVault = vault:
+    if lib.hasPrefix "/" vault then vault
+    else "${config.home.homeDirectory}/${vault}";
+
+  registerScript = pkgs.writeShellScript "register-obsidian-vaults" ''
+    ${lib.concatMapStringsSep "\n" (vault:
+      let resolved = resolveVault vault;
+      in ''
+        ${lib.optionalString isDarwin ''/bin/wait4path "${resolved}"''}
+        ${lib.optionalString isDarwin ''${pkgs.obs}/bin/obs create "${resolved}"''}
+        ${pkgs.coreutils}/bin/mkdir -p "${resolved}/.obsidian"
+        ${pkgs.coreutils}/bin/cp "${appJsonFile}" "${resolved}/.obsidian/app.json"
+      '') vaultPaths}
+  '';
 in
-{
-  home.file = lib.mkMerge (map mkVaultFiles vaultPaths);
-}
+lib.mkMerge [
+  # Darwin: launchd user agent
+  (lib.optionalAttrs (isDarwin && vaultPaths != [ ]) {
+    local.launchd.services.obsidian-register-vaults = {
+      enable = true;
+      command = "${registerScript}";
+      keepAlive = false;
+      runAtLoad = true;
+    };
+  })
+
+  # NixOS: systemd user oneshot service
+  (lib.optionalAttrs (!isDarwin && vaultPaths != [ ]) {
+    systemd.user.services.obsidian-register-vaults = {
+      Unit.Description = "Register Obsidian vaults and deploy config";
+      Service = {
+        Type = "oneshot";
+        ExecStart = "${registerScript}";
+      };
+      Install.WantedBy = [ "default.target" ];
+    };
+  })
+]
