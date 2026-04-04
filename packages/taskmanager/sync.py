@@ -100,6 +100,13 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                         a.get("description", "") for a in tw.get("annotations", [])
                     ]
                     rem_updates["notes"] = "\n".join(ann_texts)
+            elif field == "url":
+                if flow == "rem_to_tw":
+                    rem_url = (rem.get("url") or "").strip()
+                    if rem_url:
+                        tw_updates["url"] = rem_url
+                elif flow == "tw_to_rem":
+                    pass  # TW stores URL as annotation; nothing to push back
             elif field == "priority":
                 if flow == "rem_to_tw":
                     prio = REMINDERS_PRIORITY_MAP.get(rem.get("priority", 0), "")
@@ -186,6 +193,15 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                     }
                     if tw_updates["notes"].strip() not in existing_texts:
                         run(["task", uuid, "annotate", tw_updates["notes"]])
+                if "url" in tw_updates:
+                    notes_text = tw_updates.get("notes", "").strip()
+                    if tw_updates["url"] != notes_text:
+                        existing_anns = tw.get("annotations", [])
+                        existing_texts = {
+                            a.get("description", "").strip() for a in existing_anns
+                        }
+                        if tw_updates["url"] not in existing_texts:
+                            run(["task", uuid, "annotate", tw_updates["url"]])
                 if "status" in tw_updates:
                     if tw_updates["status"] == "completed":
                         run(["task", "rc.confirmation:off", uuid, "done"])

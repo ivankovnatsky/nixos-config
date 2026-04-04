@@ -34,7 +34,7 @@ def run(cmd, stdin_text=None):
     return result
 
 
-REMINDERS_READ_ONLY_FIELDS = {"completed", "created"}
+REMINDERS_READ_ONLY_FIELDS = {"completed", "created", "url"}
 
 REMINDERS_PRIORITY_MAP = {0: "", 1: "H", 5: "M", 9: "L"}
 TW_TO_REMINDERS_PRIORITY = {"H": "high", "M": "medium", "L": "low"}
@@ -45,6 +45,7 @@ FIELD_DISPLAY_NAMES = {
     "end": "completed",
     "entry": "created",
     "notes": "notes",
+    "url": "url",
     "priority": "priority",
     "title": "title",
     "status": "status",
@@ -142,7 +143,7 @@ def infer_flow(field, rem_val, tw_val):
         if rem_val == "completed":
             return "rem_to_tw"
         return "tw_to_rem"
-    if field in ("completed", "created"):
+    if field in ("completed", "created", "url"):
         return "rem_to_tw"
     if field == "due":
         rem_e = rem_val in empty

@@ -146,6 +146,7 @@ def get_reminders(project_filter=None, include_completed=True):
                 "completionDate": item.get("completionDate", ""),
                 "creationDate": item.get("creationDate", ""),
                 "notes": item.get("notes", ""),
+                "url": item.get("url", ""),
                 "priority": item.get("priority", 0),
                 "recurrence": item.get("recurrence", ""),
                 "externalId": item.get("externalId", ""),

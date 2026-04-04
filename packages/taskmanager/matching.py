@@ -189,6 +189,15 @@ def compare_metadata(tw, rem):
         ):
             diffs.append(("notes", rem_notes_display, tw_notes_display))
 
+    # URL — check if reminder URL exists as a TW annotation
+    rem_url = (rem.get("url") or "").strip()
+    if rem_url:
+        tw_ann_has_url = any(
+            a.get("description", "").strip() == rem_url for a in tw_annotations
+        )
+        if not tw_ann_has_url:
+            diffs.append(("url", rem_url, "''"))
+
     # Completion date — only report when Rem has older (more original) date,
     # or when status is changing to completed (Rem completed, TW not yet)
     tw_end = format_date_local(tw.get("end", ""))

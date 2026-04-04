@@ -823,6 +823,9 @@ def sync(
             rem_notes = (item.get("notes") or "").strip()
             if rem_notes:
                 click.echo(f"    notes: {repr(rem_notes)}")
+            rem_url = (item.get("url") or "").strip()
+            if rem_url:
+                click.echo(f"    url: {rem_url}")
             rem_prio = REMINDERS_PRIORITY_MAP.get(item.get("priority", 0), "")
             if rem_prio:
                 click.echo(f"    priority: {PRIORITY_LABEL.get(rem_prio, rem_prio)}")
@@ -850,9 +853,27 @@ def sync(
                 mods.append(f"priority:{tw_prio}")
             if mods:
                 run(["task", "rc.confirmation:off", uuid, "modify"] + mods)
+            # Fetch existing annotations to avoid duplicates
+            existing_anns = set()
+            find = subprocess.run(
+                ["task", uuid, "export"], capture_output=True, text=True
+            )
+            if find.returncode == 0:
+                try:
+                    exported = json.loads(find.stdout)
+                    if exported:
+                        existing_anns = {
+                            a.get("description", "").strip()
+                            for a in exported[0].get("annotations", [])
+                        }
+                except json.JSONDecodeError:
+                    pass
             item_notes = (item.get("notes") or "").strip()
-            if item_notes:
+            if item_notes and item_notes not in existing_anns:
                 run(["task", uuid, "annotate", item_notes])
+            item_url = (item.get("url") or "").strip()
+            if item_url and item_url != item_notes and item_url not in existing_anns:
+                run(["task", uuid, "annotate", item_url])
             click.echo(f"  ~ Taskwarrior: {desc} (updated existing)")
         else:
             add_cmd = ["task", "add", desc, f"project:{proj}"]
@@ -893,6 +914,11 @@ def sync(
                     item_notes = (item.get("notes") or "").strip()
                     if item_notes:
                         run(["task", uuid, "annotate", item_notes])
+
+                    # URL -> separate annotation (skip if identical to notes)
+                    item_url = (item.get("url") or "").strip()
+                    if item_url and item_url != item_notes:
+                        run(["task", uuid, "annotate", item_url])
 
                     # Creation date
                     raw_created = item.get("creationDate", "")
@@ -1582,6 +1608,9 @@ def tw_ingest(project, approve, dry_run, verbose):
                         err=True,
                     )
                     continue
+            rem_url = (item.get("url") or "").strip()
+            if rem_url and rem_url != rem_notes:
+                run(["task", uuid, "annotate", rem_url])
             raw_created = item.get("creationDate", "")
             if raw_created:
                 run(
