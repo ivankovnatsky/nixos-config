@@ -92,7 +92,7 @@ in
         export PATH=$PATH:$HOME/bin
       fi
 
-      if [[ -d $GOPATH/bin ]]; then
+      if [[ -n "$GOPATH" && -d "$GOPATH/bin" ]]; then
         export PATH=$PATH:$GOPATH/bin
       fi
 
