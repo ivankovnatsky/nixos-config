@@ -2693,6 +2693,147 @@ def rem_find(pattern):
         click.echo(json.dumps(r, indent=2, ensure_ascii=False))
 
 
+@tw_group.command(name="ingest")
+@click.option(
+    "--project", "-p", default=None, help="Only ingest from this Reminders list."
+)
+@click.option("--approve", "-y", is_flag=True, help="Auto-approve all migrations.")
+@click.option("--dry-run", "-n", is_flag=True, help="Preview without making changes.")
+@click.option("--verbose", "-v", is_flag=True, help="Show commands being run.")
+def tw_ingest(project, approve, dry_run, verbose):
+    """Fetch pending reminders, create TW tasks, then delete the reminders."""
+    global _verbose
+    _verbose = verbose
+
+    if not (is_darwin() and has_command("rems")):
+        click.echo("rems not available (macOS only)", err=True)
+        raise SystemExit(1)
+
+    # Fetch raw items to preserve duplicates with the same title
+    _, _, all_instances = get_reminders(project_filter=project, include_completed=False)
+
+    # Flatten all instances into a single list
+    items = []
+    for instance_list in all_instances.values():
+        items.extend(instance_list)
+
+    if not items:
+        click.echo("No pending reminders to ingest.")
+        return
+
+    click.echo(f"Found {len(items)} pending reminder(s).")
+    migrated = 0
+
+    for item in items:
+        proj = item["project"]
+        title = item["title"]
+        desc = prefixed_title(proj, title)
+
+        click.echo()
+        click.echo(f"  {proj}: {title}")
+        rem_due = format_date_local(item.get("due", ""))
+        if rem_due:
+            click.echo(f"    due: {rem_due}")
+        rem_notes = (item.get("notes") or "").strip()
+        if rem_notes:
+            click.echo(f"    notes: {repr(rem_notes)}")
+        rem_prio = REMINDERS_PRIORITY_MAP.get(item.get("priority", 0), "")
+        if rem_prio:
+            click.echo(f"    priority: {PRIORITY_LABEL.get(rem_prio, rem_prio)}")
+
+        if dry_run:
+            click.echo("  [dry-run] Would create TW task and delete reminder")
+            migrated += 1
+            continue
+
+        if not approve:
+            if not click.confirm("  Migrate to Taskwarrior and delete reminder?"):
+                continue
+
+        # Always create a new TW task (each reminder becomes its own task)
+        add_cmd = [
+            "task",
+            "rc.color:off",
+            "add",
+            desc,
+            f"project:{proj}",
+        ]
+        raw_due = item.get("due", "")
+        if raw_due:
+            add_cmd.append(f"due:{raw_due}")
+        tw_prio = REMINDERS_PRIORITY_MAP.get(item.get("priority", 0), "")
+        if tw_prio:
+            add_cmd.append(f"priority:{tw_prio}")
+
+        result = run(add_cmd)
+        if result.returncode != 0:
+            click.echo(f"  ! Failed to create TW task for: {desc}", err=True)
+            continue
+
+        click.echo(f"  + Taskwarrior: {desc}")
+
+        # Find UUID of newly created task for annotations/metadata
+        # Strip ANSI codes in case rc.color:off is overridden
+        clean_stdout = re.sub(r"\x1b\[[0-9;]*m", "", result.stdout)
+        task_id_match = re.search(r"Created task (\d+)\.", clean_stdout)
+        uuid = ""
+        if task_id_match:
+            tid = task_id_match.group(1)
+            find = subprocess.run(
+                ["task", tid, "export"], capture_output=True, text=True
+            )
+            if find.returncode == 0:
+                try:
+                    exported = json.loads(find.stdout)
+                    if exported:
+                        uuid = exported[0].get("uuid", "")
+                except json.JSONDecodeError:
+                    pass
+
+        if not uuid and (rem_notes or item.get("creationDate", "")):
+            click.echo(
+                f"  ! Could not resolve TW task UUID, skipping metadata/delete: {desc}",
+                err=True,
+            )
+            continue
+
+        if uuid:
+            if rem_notes:
+                res = run(["task", uuid, "annotate", rem_notes])
+                if res.returncode != 0:
+                    click.echo(
+                        f"  ! Failed to annotate TW task, skipping delete: {desc}",
+                        err=True,
+                    )
+                    continue
+            raw_created = item.get("creationDate", "")
+            if raw_created:
+                run(
+                    [
+                        "task",
+                        "rc.confirmation:off",
+                        uuid,
+                        "modify",
+                        f"entry:{raw_created}",
+                    ]
+                )
+
+        # Delete the source reminder by externalId for instance-safe deletion
+        ext_id = item.get("externalId", "")
+        if ext_id:
+            del_result = run(["rems", "delete", proj, ext_id, "--force"])
+            if del_result.returncode == 0:
+                click.echo(f"  - Reminder deleted: {title}")
+                migrated += 1
+            else:
+                click.echo(f"  ! Failed to delete reminder: {title}", err=True)
+        else:
+            click.echo(f"  ! No externalId for reminder: {title}", err=True)
+
+    click.echo()
+    click.echo(f"Ingested {migrated} reminder(s).")
+
+
 @reminders_group.command(name="list")
 def rem_list():
     """List reminders."""
