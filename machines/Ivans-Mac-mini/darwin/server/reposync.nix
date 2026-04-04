@@ -1,4 +1,4 @@
-{ config, username, ... }:
+{ config, ... }:
 {
   local.services.reposync.repositories = [
     {
@@ -15,7 +15,7 @@
       syncMode = "pull-only";
     }
     {
-      path = "${config.users.users.${username}.home}/Notes";
+      path = "${config.flags.externalStoragePath}/Notes";
       remote = "origin";
       remoteUrl = "https://forgejo.@domain@/@username@/notes.git";
       branch = "main";
