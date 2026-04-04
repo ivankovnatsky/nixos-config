@@ -3,8 +3,8 @@
     ../../../../darwin/darwin.nix
     ../../../../darwin/flags.nix
     ../../../../darwin/fonts.nix
-    ./login-items.nix
     ../../../../darwin/no-dock-restart.nix
+    ../../../../darwin/quit-mac-mouse-fix.nix
     ../../../../darwin/security.nix
     ../../../../darwin/shell.nix
     ../../../../darwin/sudo.nix
@@ -18,10 +18,10 @@
     ../../../../system/documentation.nix
     ../../../../system/nix.nix
     ./accessibility.nix
-    ./quit-mac-mouse-fix.nix
     ./dock.nix
     ./fulldiskaccess.nix
     ./homebrew.nix
+    ./login-items.nix
     ./users.nix
   ];
 }

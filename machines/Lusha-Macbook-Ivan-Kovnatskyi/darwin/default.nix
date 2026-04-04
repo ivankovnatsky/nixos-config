@@ -3,9 +3,9 @@
     ../../../darwin/aerospace.nix
     ../../../darwin/darwin.nix
     ../../../darwin/init.nix
-    ./login-items.nix
     ../../../darwin/nix.nix
     ../../../darwin/no-dock-restart.nix
+    ../../../darwin/quit-mac-mouse-fix.nix
     ../../../darwin/sudo.nix
     ../../../darwin/syncthing.nix
     ../../../darwin/system.nix
@@ -13,10 +13,10 @@
     ../../../modules/darwin/default-browser
     ../../../modules/darwin/dock
     ../../../modules/darwin/launchd
-    ../../../modules/darwin/reposync
     ../../../modules/darwin/pam
     ../../../modules/darwin/pmset
     ../../../modules/darwin/prevent-sleep
+    ../../../modules/darwin/reposync
     ../../../modules/darwin/sudo
     ../../../modules/darwin/syncthing-mgmt
     ../../../modules/flags
@@ -31,14 +31,15 @@
     ./fonts.nix
     ./git.nix
     ./homebrew.nix
+    ./login-items.nix
     ./openssh.nix
     ./power.nix
     ./prevent-sleep.nix
     ./reposync.nix
     ./security.nix
-    ./spaces.nix
 
     ./shell.nix
+    ./spaces.nix
     ./syncthing-mgmt.nix
     ./users.nix
   ];

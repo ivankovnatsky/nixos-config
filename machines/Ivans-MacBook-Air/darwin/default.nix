@@ -7,10 +7,10 @@
     ../../../darwin/git.nix
     ../../../darwin/homebrew.nix
     ../../../darwin/init.nix
-    ./login-items.nix
     ../../../darwin/nextdns.nix
     ../../../darwin/nix.nix
     ../../../darwin/no-dock-restart.nix
+    ../../../darwin/quit-mac-mouse-fix.nix
     ../../../darwin/security.nix
     ../../../darwin/shell.nix
     ../../../darwin/stash
@@ -25,17 +25,18 @@
     ../../../modules/darwin/dock
     ../../../modules/darwin/launchd
     ../../../modules/darwin/nextdns-mgmt
-    ../../../modules/darwin/taskwarrior-notify
     ../../../modules/darwin/pam
     ../../../modules/darwin/reposync
     ../../../modules/darwin/sudo
     ../../../modules/darwin/syncthing-mgmt
+    ../../../modules/darwin/taskwarrior-notify
     ../../../modules/flags
     ../../../system/documentation.nix
     ../../../system/nix.nix
-    ../../../system/sops-secrets.nix
     ../../../system/reposync.nix
+    ../../../system/sops-secrets.nix
     ./dock.nix
+    ./login-items.nix
     ./reposync.nix
     ./users.nix
   ];
