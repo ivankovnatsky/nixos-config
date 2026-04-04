@@ -17,7 +17,7 @@ import subprocess
 import sys
 import urllib.request
 
-GIT_TIMEOUT = 60
+GIT_TIMEOUT = 60 * 5
 
 
 def run_git(*args, cwd=None, check=True, timeout=GIT_TIMEOUT):
@@ -91,8 +91,12 @@ def init_repo(repo, webhook_url=None):
     name = f"{display} ({remote}/{branch})"
 
     if not os.path.isdir(path):
-        print(f"{name}: skip ({path} does not exist)", file=sys.stderr)
-        return True
+        print(f"{name}: creating directory {path}", file=sys.stderr)
+        try:
+            os.makedirs(path, exist_ok=True)
+        except OSError as e:
+            alert(webhook_url, f"`{name}`: failed to create directory — {e}")
+            return False
 
     git_dir = os.path.join(path, ".git")
     if not os.path.isdir(git_dir):
@@ -346,7 +350,7 @@ def needs_init(repo):
     remote_url = repo["remoteUrl"]
 
     if not os.path.isdir(path):
-        return False
+        return True
     if not os.path.isdir(os.path.join(path, ".git")):
         return True
 
@@ -364,13 +368,17 @@ def cmd_sync(args):
     webhook_url = get_discord_webhook(config)
 
     # Only init repos that need it
+    failed_paths = set()
     for repo in config.get("repositories", []):
         if needs_init(repo):
-            init_repo(repo, webhook_url)
+            if not init_repo(repo, webhook_url):
+                failed_paths.add(repo["path"])
 
-    # Then sync
-    all_ok = True
+    # Then sync (skip repos whose init failed)
+    all_ok = not failed_paths
     for repo in config.get("repositories", []):
+        if repo["path"] in failed_paths:
+            continue
         if not sync_repo(repo, webhook_url):
             all_ok = False
     return 0 if all_ok else 1
