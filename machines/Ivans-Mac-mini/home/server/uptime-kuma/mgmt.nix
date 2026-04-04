@@ -210,41 +210,42 @@
         url = "http://${config.flags.machineLocalAddress}:9080/ready";
         description = "Promtail log collector";
       }
-      {
-        name = "mautrix-whatsapp";
-        type = "tcp";
-        url = "127.0.0.1:29321";
-        interval = 60;
-        description = "WhatsApp bridge appservice port";
-      }
-      {
-        name = "mautrix-discord";
-        type = "tcp";
-        url = "127.0.0.1:29323";
-        interval = 60;
-        description = "Discord bridge appservice port";
-      }
-      {
-        name = "mautrix-meta-messenger";
-        type = "tcp";
-        url = "127.0.0.1:29324";
-        interval = 60;
-        description = "Messenger bridge appservice port";
-      }
-      {
-        name = "mautrix-meta-instagram";
-        type = "tcp";
-        url = "127.0.0.1:29325";
-        interval = 60;
-        description = "Instagram bridge appservice port";
-      }
-      {
-        name = "mautrix-linkedin";
-        type = "tcp";
-        url = "127.0.0.1:29326";
-        interval = 60;
-        description = "LinkedIn bridge appservice port";
-      }
+      # TODO: re-enable when bridge modules are uncommented (olm insecure with useGlobalPkgs)
+      # {
+      #   name = "mautrix-whatsapp";
+      #   type = "tcp";
+      #   url = "127.0.0.1:29321";
+      #   interval = 60;
+      #   description = "WhatsApp bridge appservice port";
+      # }
+      # {
+      #   name = "mautrix-discord";
+      #   type = "tcp";
+      #   url = "127.0.0.1:29323";
+      #   interval = 60;
+      #   description = "Discord bridge appservice port";
+      # }
+      # {
+      #   name = "mautrix-meta-messenger";
+      #   type = "tcp";
+      #   url = "127.0.0.1:29324";
+      #   interval = 60;
+      #   description = "Messenger bridge appservice port";
+      # }
+      # {
+      #   name = "mautrix-meta-instagram";
+      #   type = "tcp";
+      #   url = "127.0.0.1:29325";
+      #   interval = 60;
+      #   description = "Instagram bridge appservice port";
+      # }
+      # {
+      #   name = "mautrix-linkedin";
+      #   type = "tcp";
+      #   url = "127.0.0.1:29326";
+      #   interval = 60;
+      #   description = "LinkedIn bridge appservice port";
+      # }
       {
         name = "dnsmasq";
         type = "dns";
