@@ -46,6 +46,7 @@ NIX_BIN := /nix/var/nix/profiles/default/bin/nix
 NIX := $(shell command -v nix 2>/dev/null || echo $(NIX_BIN))
 DARWIN_REBUILD := $(shell command -v darwin-rebuild 2>/dev/null || echo $(NIX_BIN) run $(NIX_EXTRA_FLAGS) nix-darwin --)
 NIXOS_REBUILD := $(shell command -v nixos-rebuild 2>/dev/null || echo $(NIX_BIN) run $(NIX_EXTRA_FLAGS) nixpkgs\#nixos-rebuild --)
+REBUILD := $(shell command -v rebuild 2>/dev/null || echo $(NIX_BIN) run $(NIX_EXTRA_FLAGS) .\#rebuild --)
 
 # Common flags for rebuild commands
 # VERBOSE=1: --verbose, DEBUG=1: -vvvvv --print-build-logs
@@ -169,19 +170,19 @@ rebuild-darwin: addall
 
 # Simple rebuild via CLI tool (quiet output, notifications)
 rebuild:
-	@rebuild $(CURDIR)
+	@$(REBUILD) $(CURDIR)
 
 # Watch for file changes and rebuild automatically
 rebuild-watch:
-	@rebuild watch $(CURDIR)
+	@$(REBUILD) watch $(CURDIR)
 
 # Watch + periodic loop rebuild with sudo refresh
 rebuild-watch-loop:
-	@rebuild watch --loop $(CURDIR)
+	@$(REBUILD) watch --loop $(CURDIR)
 
 # Loop rebuild with sudo refresh (timer only, no file watching)
 rebuild-loop:
-	@rebuild watch --loop --no-watch $(CURDIR)
+	@$(REBUILD) watch --loop --no-watch $(CURDIR)
 
 # Devcontainer: start and exec into container with Claude Code
 devcontainer:
