@@ -23,15 +23,9 @@ if [ ! -x "$GITLEAKS" ]; then
   exit 0
 fi
 
-# Create a temp directory with just this file for gitleaks to scan
-TMPDIR=$(mktemp -d)
-cp "$FILE_PATH" "$TMPDIR/"
-BASENAME=$(basename "$FILE_PATH")
-
-RESULT=$("$GITLEAKS" detect --no-git --no-banner -s "$TMPDIR" 2>&1)
+# Scan file contents via stdin subcommand (no temp dir needed)
+RESULT=$(cat "$FILE_PATH" | "$GITLEAKS" stdin --no-banner --no-color --exit-code 1 2>&1)
 EXIT_CODE=$?
-
-rm -rf "$TMPDIR"
 
 if [ $EXIT_CODE -ne 0 ]; then
   echo "BLOCKED: gitleaks detected potential secrets in $FILE_PATH"
