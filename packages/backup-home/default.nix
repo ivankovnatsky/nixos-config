@@ -16,5 +16,5 @@ pkgs.writeShellScriptBin "backup-home" ''
       rclone
     ]
   }:$PATH"
-  exec ${pkgs.python3}/bin/python ${./backup-home.py} "$@"
+  exec ${pkgs.python3.withPackages (ps: [ ps.click ])}/bin/python ${./backup-home.py} "$@"
 ''

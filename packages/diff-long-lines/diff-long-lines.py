@@ -30,7 +30,8 @@ The script will show:
 """
 
 import sys
-import argparse
+
+import click
 
 
 def parse_csp(csp_string):
@@ -63,16 +64,16 @@ def compare_csp(old_csp, new_csp):
         set(old_directives.keys()) | set(new_directives.keys())
     )
 
-    print("CSP Differences:\n")
+    click.echo("CSP Differences:\n")
 
     for directive in all_directive_names:
         if directive not in old_directives:
-            print(f"[+] New directive '{directive}':")
-            print(f"    {' '.join(sorted(new_directives[directive]))}\n")
+            click.echo(f"[+] New directive '{directive}':")
+            click.echo(f"    {' '.join(sorted(new_directives[directive]))}\n")
 
         elif directive not in new_directives:
-            print(f"[-] Removed directive '{directive}':")
-            print(f"    {' '.join(sorted(old_directives[directive]))}\n")
+            click.echo(f"[-] Removed directive '{directive}':")
+            click.echo(f"    {' '.join(sorted(old_directives[directive]))}\n")
 
         else:
             old_values = old_directives[directive]
@@ -82,14 +83,14 @@ def compare_csp(old_csp, new_csp):
                 added = new_values - old_values
                 removed = old_values - new_values
 
-                print(f"[~] Changed directive '{directive}':")
+                click.echo(f"[~] Changed directive '{directive}':")
                 if removed:
-                    print("    Removed values:")
-                    print(f"    - {' '.join(sorted(removed))}")
+                    click.echo("    Removed values:")
+                    click.echo(f"    - {' '.join(sorted(removed))}")
                 if added:
-                    print("    Added values:")
-                    print(f"    + {' '.join(sorted(added))}")
-                print()
+                    click.echo("    Added values:")
+                    click.echo(f"    + {' '.join(sorted(added))}")
+                click.echo("")
 
 
 def parse_terraform_diff(content):
@@ -142,42 +143,37 @@ def parse_terraform_diff(content):
     return None, None
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        prog="diff-long-lines",
-        description="Compare CSP policies from files or Terraform diff output",
-    )
-    parser.add_argument(
-        "input_file", nargs="?", help="File containing CSP data or Terraform diff"
-    )
-    parser.add_argument(
-        "--terraform-diff",
-        "-t",
-        action="store_true",
-        help="Parse input as Terraform diff output",
-    )
-    parser.add_argument(
-        "--old-file",
-        help="Path to file containing old CSP (alternative to single file)",
-    )
-    parser.add_argument(
-        "--new-file",
-        help="Path to file containing new CSP (alternative to single file)",
-    )
-
-    args = parser.parse_args()
-
+@click.command()
+@click.argument("input_file", required=False, type=click.Path(exists=False))
+@click.option(
+    "--terraform-diff",
+    "-t",
+    is_flag=True,
+    help="Parse input as Terraform diff output",
+)
+@click.option(
+    "--old-file",
+    type=click.Path(exists=True),
+    help="Path to file containing old CSP (alternative to single file)",
+)
+@click.option(
+    "--new-file",
+    type=click.Path(exists=True),
+    help="Path to file containing new CSP (alternative to single file)",
+)
+def main(input_file, terraform_diff, old_file, new_file):
+    """Compare CSP policies from files or Terraform diff output."""
     try:
-        if args.old_file and args.new_file:
+        if old_file and new_file:
             # Original two-file mode
-            with open(args.old_file, "r") as f:
+            with open(old_file, "r") as f:
                 old_csp = f.read().strip()
 
-            with open(args.new_file, "r") as f:
+            with open(new_file, "r") as f:
                 new_csp = f.read().strip()
 
-        elif args.input_file:
-            with open(args.input_file, "r") as f:
+        elif input_file:
+            with open(input_file, "r") as f:
                 content = f.read()
 
             # Always try to parse as Terraform diff first
@@ -193,41 +189,39 @@ def main():
                     new_start = content.find("\n==NEW==\n") + len("\n==NEW==\n")
                     old_csp = content[old_start : content.find("\n==NEW==\n")].strip()
                     new_csp = content[new_start:].strip()
-                elif args.terraform_diff:
-                    print(
-                        "Error: Could not parse Terraform diff format", file=sys.stderr
-                    )
-                    print(
+                elif terraform_diff:
+                    click.echo("Error: Could not parse Terraform diff format", err=True)
+                    click.echo(
                         'Expected format: ~ content_security_policy = "old" -> "new"',
-                        file=sys.stderr,
+                        err=True,
                     )
                     sys.exit(1)
                 else:
-                    print(
+                    click.echo(
                         "Error: Could not parse file. Expected Terraform diff or separator '---' or '==OLD==' and '==NEW==' markers",
-                        file=sys.stderr,
+                        err=True,
                     )
-                    print(
+                    click.echo(
                         "Tip: Try adding --terraform-diff flag if this is Terraform output",
-                        file=sys.stderr,
+                        err=True,
                     )
                     sys.exit(1)
         else:
             # Read from stdin if no file specified
-            content = sys.stdin.read()
+            content = click.get_text_stream("stdin").read()
             old_csp, new_csp = parse_terraform_diff(content)
             if not old_csp or not new_csp:
-                print("Error: Could not parse input as Terraform diff", file=sys.stderr)
-                print("Use --help for usage information", file=sys.stderr)
+                click.echo("Error: Could not parse input as Terraform diff", err=True)
+                click.echo("Use --help for usage information", err=True)
                 sys.exit(1)
 
         compare_csp(old_csp, new_csp)
 
     except FileNotFoundError as e:
-        print(f"Error: {e}", file=sys.stderr)
+        click.echo(f"Error: {e}", err=True)
         sys.exit(1)
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        click.echo(f"Error: {e}", err=True)
         sys.exit(1)
 
 

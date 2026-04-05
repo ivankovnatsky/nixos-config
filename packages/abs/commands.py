@@ -3,75 +3,76 @@
 import os
 from datetime import datetime
 
+import click
+
 from download import download_audio
 from process import process_media_url, process_from_file
 
 
-def upload_command(args, client):
+def upload_command(file_path, library, title, client):
     """Handle the upload command."""
-    print(f"Uploading {args.file} to {client.base_url}...")
+    click.echo(f"Uploading {file_path} to {client.base_url}...")
 
     # Extract title from filename if not provided
-    title = args.title
     if not title:
-        title = os.path.splitext(os.path.basename(args.file))[0]
+        title = os.path.splitext(os.path.basename(file_path))[0]
 
-    upload_response = client.upload_file(args.file, args.library, title)
+    upload_response = client.upload_file(file_path, library, title)
 
     if upload_response:
-        print("Upload successful!")
-        print(f"Response: {upload_response}")
+        click.echo("Upload successful!")
+        click.echo(f"Response: {upload_response}")
     else:
-        print("Upload failed. Please check your connection and API key.")
+        click.echo("Upload failed. Please check your connection and API key.")
 
 
 def libraries_command(client):
     """Handle the libraries command."""
-    print(f"Fetching libraries from {client.base_url}...")
+    click.echo(f"Fetching libraries from {client.base_url}...")
 
     libraries = client.get_libraries()
 
     if not libraries or "libraries" not in libraries:
-        print("No libraries found or unable to retrieve libraries.")
+        click.echo("No libraries found or unable to retrieve libraries.")
         return
 
-    print("\nAvailable Libraries:")
-    print("-----------------")
+    click.echo("\nAvailable Libraries:")
+    click.echo("-----------------")
 
     for library in libraries["libraries"]:
-        print(f"ID: {library['id']}")
-        print(f"Name: {library['name']}")
-        print(f"Media Type: {library.get('mediaType', 'Unknown')}")
+        click.echo(f"ID: {library['id']}")
+        click.echo(f"Name: {library['name']}")
+        click.echo(f"Media Type: {library.get('mediaType', 'Unknown')}")
 
         # Display folders if available
         if "folders" in library and library["folders"]:
-            print("Folders:")
+            click.echo("Folders:")
             for folder in library["folders"]:
-                print(f"  - ID: {folder['id']}")
+                click.echo(f"  - ID: {folder['id']}")
                 if "fullPath" in folder:
-                    print(f"    Path: {folder['fullPath']}")
+                    click.echo(f"    Path: {folder['fullPath']}")
 
-        print()
+        click.echo("")
 
 
-def list_listened_command(args, client):
+def list_listened_command(library, client):
     """Handle the list-listened command."""
-    print(f"Fetching listened episodes from {client.base_url}...")
+    click.echo(f"Fetching listened episodes from {client.base_url}...")
 
     # Resolve library name to ID if needed
-    library_id = args.library
+    library_id = library
     if not ("-" in library_id and len(library_id) > 30):
         # It's a library name, resolve it
-        library_id, _ = client.get_library(args.library)
+        library_id, _ = client.get_library(library)
         if not library_id:
-            print(f"Error: Library '{args.library}' not found.")
+            click.echo(f"Error: Library '{library}' not found.")
             return
 
     # Get library items first
     items_response = client.get_library_items(library_id)
 
     if not items_response or "results" not in items_response:
-        print("No items found or unable to retrieve library items.")
+        click.echo("No items found or unable to retrieve library items.")
         return
 
     listened_items = []
@@ -95,47 +96,47 @@ def list_listened_command(args, client):
             )
 
     if not listened_items:
-        print("No listened episodes found.")
+        click.echo("No listened episodes found.")
         return
 
-    print(f"\nFound {len(listened_items)} listened episodes:")
-    print("-" * 50)
+    click.echo(f"\nFound {len(listened_items)} listened episodes:")
+    click.echo("-" * 50)
 
     for item in listened_items:
-        print(f"ID: {item['id']}")
-        print(f"Title: {item['title']}")
-        print(f"Progress: {item['progress']:.1%}")
+        click.echo(f"ID: {item['id']}")
+        click.echo(f"Title: {item['title']}")
+        click.echo(f"Progress: {item['progress']:.1%}")
         if item["finished_at"]:
             # Convert timestamp to readable date
             try:
                 finished_date = datetime.fromtimestamp(item["finished_at"] / 1000)
-                print(f"Finished: {finished_date.strftime('%Y-%m-%d %H:%M')}")
+                click.echo(f"Finished: {finished_date.strftime('%Y-%m-%d %H:%M')}")
             except (ValueError, TypeError):
-                print(f"Finished: {item['finished_at']}")
+                click.echo(f"Finished: {item['finished_at']}")
         if item["duration"]:
             duration_hours = item["duration"] / 3600
-            print(f"Duration: {duration_hours:.1f} hours")
-        print()
+            click.echo(f"Duration: {duration_hours:.1f} hours")
+        click.echo("")
 
 
-def cleanup_listened_command(args, client):
+def cleanup_listened_command(library, force, client):
     """Handle the cleanup-listened command."""
-    print(f"Finding listened episodes to clean up from {client.base_url}...")
+    click.echo(f"Finding listened episodes to clean up from {client.base_url}...")
 
     # Resolve library name to ID if needed
-    library_id = args.library
+    library_id = library
     if not ("-" in library_id and len(library_id) > 30):
         # It's a library name, resolve it
-        library_id, _ = client.get_library(args.library)
+        library_id, _ = client.get_library(library)
         if not library_id:
-            print(f"Error: Library '{args.library}' not found.")
+            click.echo(f"Error: Library '{library}' not found.")
             return
 
     # Get library items
     items_response = client.get_library_items(library_id)
 
     if not items_response or "results" not in items_response:
-        print("No items found or unable to retrieve library items.")
+        click.echo("No items found or unable to retrieve library items.")
         return
 
     listened_items = []
@@ -157,21 +158,22 @@ def cleanup_listened_command(args, client):
             )
 
     if not listened_items:
-        print("No listened episodes found to clean up.")
+        click.echo("No listened episodes found to clean up.")
         return
 
-    print(f"\nFound {len(listened_items)} listened episodes to remove:")
-    print("-" * 50)
+    click.echo(f"\nFound {len(listened_items)} listened episodes to remove:")
+    click.echo("-" * 50)
 
     for item in listened_items:
-        print(f"- {item['title']} (ID: {item['id']})")
+        click.echo(f"- {item['title']} (ID: {item['id']})")
 
-    if not args.force:
-        response = input(
-            f"\nAre you sure you want to remove {len(listened_items)} listened episodes? (y/N): "
+    if not force:
+        response = click.prompt(
+            f"\nAre you sure you want to remove {len(listened_items)} listened episodes? (y/N)",
+            default="N",
         )
         if response.lower() not in ["y", "yes"]:
-            print("Cleanup cancelled.")
+            click.echo("Cleanup cancelled.")
             return
 
     # Remove the items
@@ -179,79 +181,77 @@ def cleanup_listened_command(args, client):
     failed_count = 0
 
     for item in listened_items:
-        print(f"Removing: {item['title']}")
+        click.echo(f"Removing: {item['title']}")
 
         if client.remove_item(item["id"]):
             removed_count += 1
-            print("  Removed successfully")
+            click.echo("  Removed successfully")
         else:
             failed_count += 1
-            print("  Failed to remove")
+            click.echo("  Failed to remove")
 
-    print("\nCleanup complete:")
-    print(f"  Removed: {removed_count}")
-    print(f"  Failed: {failed_count}")
+    click.echo("\nCleanup complete:")
+    click.echo(f"  Removed: {removed_count}")
+    click.echo(f"  Failed: {failed_count}")
 
 
-def download_command(args):
+def download_command(url, file_url_list, output_dir):
     """Handle the download command."""
-    if args.url:
+    if url:
         # Process a single URL
-        if download_audio(args.url, args.output_dir):
-            print("Download completed successfully.")
+        if download_audio(url, output_dir):
+            click.echo("Download completed successfully.")
         else:
-            print("Download failed.")
+            click.echo("Download failed.")
             return 1
-    elif args.file_url_list:
+    elif file_url_list:
         # Process URLs from a file
-        if not os.path.isfile(args.file_url_list):
-            print(f"Error: File not found: {args.file_url_list}")
+        if not os.path.isfile(file_url_list):
+            click.echo(f"Error: File not found: {file_url_list}")
             return 1
 
         success_count = 0
         total_count = 0
 
         # Read URLs from file
-        with open(args.file_url_list, "r") as f:
+        with open(file_url_list, "r") as f:
             urls = f.readlines()
 
         # Process each URL
-        for url in urls:
-            url = url.strip()
+        for u in urls:
+            u = u.strip()
 
             # Skip empty lines and comments
-            if not url or url.startswith("#"):
+            if not u or u.startswith("#"):
                 continue
 
             total_count += 1
-            if download_audio(url, args.output_dir):
+            if download_audio(u, output_dir):
                 success_count += 1
 
-        print(f"Downloaded {success_count} of {total_count} URLs successfully.")
+        click.echo(f"Downloaded {success_count} of {total_count} URLs successfully.")
     else:
-        print("Error: Either --url or --file-url-list must be specified.")
+        click.echo("Error: Either --url or --file-url-list must be specified.")
         return 1
 
     return 0
 
 
-def process_command(args):
+def process_command(url, file_url_list, abs_url, library):
     """Handle the process command."""
-    if args.url:
+    if url:
         # Process a single URL
-        if process_media_url(args.url, args.abs_url, args.library):
-            print("Processing completed successfully.")
+        if process_media_url(url, abs_url, library):
+            click.echo("Processing completed successfully.")
         else:
-            print("Processing failed.")
+            click.echo("Processing failed.")
             return 1
-    elif args.file_url_list:
+    elif file_url_list:
         # Process URLs from a file
-        success_count = process_from_file(
-            args.file_url_list, args.abs_url, args.library
-        )
-        print(f"Processed {success_count} URLs successfully.")
+        success_count = process_from_file(file_url_list, abs_url, library)
+        click.echo(f"Processed {success_count} URLs successfully.")
     else:
-        print("Error: Either --url or --file-url-list must be specified.")
+        click.echo("Error: Either --url or --file-url-list must be specified.")
         return 1
 
     return 0

@@ -12,7 +12,7 @@ Usage:
                       --role "custom_role")
 """
 
-import argparse
+import click
 import os
 import re
 import shutil
@@ -23,7 +23,7 @@ import tempfile
 
 def log(msg: str) -> None:
     """Print message to stderr."""
-    print(msg, file=sys.stderr)
+    click.echo(msg, err=True)
 
 
 def run_cmd(
@@ -186,47 +186,24 @@ def output_exports(vault_addr: str, token: str) -> None:
 
     if fish_version or "fish" in shell:
         # Fish shell syntax
-        print(f'set -gx VAULT_ADDR "{vault_addr}";')
-        print(f'set -gx VAULT_TOKEN "{token}";')
+        click.echo(f'set -gx VAULT_ADDR "{vault_addr}";')
+        click.echo(f'set -gx VAULT_TOKEN "{token}";')
     else:
         # Bash/zsh syntax
-        print(f'export VAULT_ADDR="{vault_addr}"')
-        print(f'export VAULT_TOKEN="{token}"')
+        click.echo(f'export VAULT_ADDR="{vault_addr}"')
+        click.echo(f'export VAULT_TOKEN="{token}"')
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description="Vault OIDC Authentication")
-    parser.add_argument(
-        "--address",
-        "-a",
-        required=True,
-        help="Vault server URL",
-    )
-    parser.add_argument(
-        "--username",
-        "-u",
-        required=True,
-        help="User email for authentication",
-    )
-    parser.add_argument(
-        "--path",
-        "-p",
-        required=True,
-        help="OIDC authentication path",
-    )
-    parser.add_argument(
-        "--role",
-        "-r",
-        required=True,
-        help="Vault role to use",
-    )
-
-    args = parser.parse_args()
-
-    vault_addr = args.address
-    user_email = args.username
-    oidc_path = args.path
-    role = args.role
+@click.command()
+@click.option("--address", "-a", required=True, help="Vault server URL")
+@click.option("--username", "-u", required=True, help="User email for authentication")
+@click.option("--path", "-p", required=True, help="OIDC authentication path")
+@click.option("--role", "-r", required=True, help="Vault role to use")
+def main(address: str, username: str, path: str, role: str) -> None:
+    """Vault OIDC Authentication"""
+    vault_addr = address
+    user_email = username
+    oidc_path = path
 
     # Try to fetch token from pass
     token = fetch_token_from_pass(vault_addr, user_email)
@@ -243,15 +220,14 @@ def main() -> int:
             patch_envrc_secrets(token)
         else:
             log("Failed to fetch token from Vault")
-            return 1
+            sys.exit(1)
     else:
         log("Using existing valid token")
         # Sync envrc/secrets in case it's out of date
         patch_envrc_secrets(token)
 
     output_exports(vault_addr, token)
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

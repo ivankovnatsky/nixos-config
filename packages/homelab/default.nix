@@ -7,6 +7,6 @@ pkgs.writeShellApplication {
     pkgs.uptime-kuma-mgmt
   ];
   text = ''
-    exec ${pkgs.python3}/bin/python3 ${./homelab.py} "$@"
+    exec ${pkgs.python3.withPackages (ps: [ ps.click ])}/bin/python3 ${./homelab.py} "$@"
   '';
 }

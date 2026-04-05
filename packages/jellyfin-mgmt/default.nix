@@ -4,5 +4,10 @@ let
   src = ./.;
 in
 pkgs.writeShellScriptBin "jellyfin-mgmt" ''
-  exec ${pkgs.python3.withPackages (ps: [ ps.requests ])}/bin/python ${src}/jellyfin-mgmt.py "$@"
+  exec ${
+    pkgs.python3.withPackages (ps: [
+      ps.requests
+      ps.click
+    ])
+  }/bin/python ${src}/jellyfin-mgmt.py "$@"
 ''

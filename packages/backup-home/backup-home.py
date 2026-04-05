@@ -34,7 +34,7 @@ Redirecting it to a log file hides errors from the caller and breaks failure
 detection. Keep stderr going to the terminal for real-time visibility.
 """
 
-import argparse
+import click
 import os
 import platform
 import socket
@@ -73,13 +73,13 @@ def check_tar_on_darwin() -> None:
         )
         version_output = result.stdout + result.stderr
         if "GNU" in version_output:
-            print(
+            click.echo(
                 "Error: GNU tar detected on macOS. Please use native bsdtar.",
-                file=sys.stderr,
+                err=True,
             )
             sys.exit(1)
     except FileNotFoundError:
-        print("Error: tar not found", file=sys.stderr)
+        click.echo("Error: tar not found", err=True)
         sys.exit(1)
 
 
@@ -197,24 +197,24 @@ def create_backup(
             tar_proc.wait()
 
         if pigz_proc.returncode != 0:
-            print("Backup compression failed", file=sys.stderr)
+            click.echo("Backup compression failed", err=True)
             return False
 
         # bsdtar exit 1 = non-fatal warnings (permission denied, file changed)
         # GNU tar exit 2 = permission denied on some files
         if tar_proc.returncode != 0:
             if ignore_tar_warnings and tar_proc.returncode in (1, 2):
-                print(
+                click.echo(
                     "Warning: tar completed with non-fatal errors (some files skipped)",
-                    file=sys.stderr,
+                    err=True,
                 )
             else:
-                print("Backup creation failed", file=sys.stderr)
+                click.echo("Backup creation failed", err=True)
                 return False
 
         return True
     except Exception as e:
-        print(f"Error creating backup: {e}", file=sys.stderr)
+        click.echo(f"Error creating backup: {e}", err=True)
         return False
 
 
@@ -230,7 +230,7 @@ def upload_miniserve(
     date_dir = datetime.now().strftime("%Y-%m-%d")
     upload_path = f"/Backup/Machines/{hostname}/{home_parent_dir}/{date_dir}"
 
-    print(f"Creating directory: {upload_path}")
+    click.echo(f"Creating directory: {upload_path}")
 
     # Create directories
     auth = f"{user}:{password}"
@@ -252,7 +252,7 @@ def upload_miniserve(
             check=False,
         )
 
-    print(f"Uploading to miniserve: {url}{upload_path}")
+    click.echo(f"Uploading to miniserve: {url}{upload_path}")
 
     result = subprocess.run(
         [
@@ -270,71 +270,83 @@ def upload_miniserve(
     return result.returncode == 0
 
 
-def main():
+@click.command(
+    name="backup-home",
+    help="Backup home directory with automatic exclusions and remote upload.",
+    epilog=(
+        "Secrets (read from ~/.config/sops-nix/secrets/):\n\n"
+        "  miniserve-username    Username for miniserve authentication\n\n"
+        "  miniserve-password    Password for miniserve authentication\n\n"
+        "Examples:\n\n"
+        "  backup-home                              # Normal backup and upload via miniserve\n\n"
+        "  backup-home --skip-upload                # Create backup locally only\n\n"
+        "  backup-home --miniserve http://host:8080 # Upload via miniserve (custom URL)\n\n"
+        "  backup-home --skip-backup --skip-upload  # Use existing backup, no upload"
+    ),
+)
+@click.option(
+    "--ignore-tar-warnings",
+    is_flag=True,
+    default=False,
+    help="Continue on non-fatal tar errors (e.g. permission denied)",
+)
+@click.option(
+    "--no-excludes",
+    is_flag=True,
+    default=False,
+    help="Disable all exclude patterns, backup everything",
+)
+@click.option(
+    "--exclude-categories",
+    type=str,
+    default=None,
+    help=(
+        "Comma-separated list of exclude categories to apply "
+        f"({', '.join(EXCLUDE_PATTERNS.keys())})"
+    ),
+)
+@click.option(
+    "--skip-backup",
+    is_flag=True,
+    default=False,
+    help="Skip backup creation, use existing archive",
+)
+@click.option(
+    "--skip-upload",
+    is_flag=True,
+    default=False,
+    help="Skip upload to remote machine, keep backup local",
+)
+@click.option(
+    "--delete-backup",
+    is_flag=True,
+    default=False,
+    help="Delete local backup after successful upload",
+)
+@click.option(
+    "--backup-path",
+    type=str,
+    default=None,
+    help="Custom path for backup archive",
+)
+@click.option(
+    "--miniserve",
+    type=str,
+    default=None,
+    metavar="URL",
+    help=f"Custom miniserve URL (default: {DEFAULT_MINISERVE_URL})",
+)
+def main(
+    ignore_tar_warnings,
+    no_excludes,
+    exclude_categories,
+    skip_backup,
+    skip_upload,
+    delete_backup,
+    backup_path,
+    miniserve,
+):
     check_tar_on_darwin()
-
-    parser = argparse.ArgumentParser(
-        prog="backup-home",
-        description="Backup home directory with automatic exclusions and remote upload.",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Secrets (read from ~/.config/sops-nix/secrets/):
-  miniserve-username    Username for miniserve authentication
-  miniserve-password    Password for miniserve authentication
-
-Examples:
-  backup-home                              # Normal backup and upload via miniserve
-  backup-home --skip-upload                # Create backup locally only
-  backup-home --miniserve http://host:8080 # Upload via miniserve (custom URL)
-  backup-home --skip-backup --skip-upload  # Use existing backup, no upload
-""",
-    )
-
-    parser.add_argument(
-        "--ignore-tar-warnings",
-        action="store_true",
-        help="Continue on non-fatal tar errors (e.g. permission denied)",
-    )
-    parser.add_argument(
-        "--no-excludes",
-        action="store_true",
-        help="Disable all exclude patterns, backup everything",
-    )
-    category_names = ", ".join(EXCLUDE_PATTERNS.keys())
-    parser.add_argument(
-        "--exclude-categories",
-        type=str,
-        help=f"Comma-separated list of exclude categories to apply ({category_names})",
-    )
-    parser.add_argument(
-        "--skip-backup",
-        action="store_true",
-        help="Skip backup creation, use existing archive",
-    )
-    parser.add_argument(
-        "--skip-upload",
-        action="store_true",
-        help="Skip upload to remote machine, keep backup local",
-    )
-    parser.add_argument(
-        "--delete-backup",
-        action="store_true",
-        help="Delete local backup after successful upload",
-    )
-    parser.add_argument(
-        "--backup-path",
-        type=str,
-        help="Custom path for backup archive",
-    )
-    parser.add_argument(
-        "--miniserve",
-        nargs="?",
-        const=DEFAULT_MINISERVE_URL,
-        metavar="URL",
-        help=f"Custom miniserve URL (default: {DEFAULT_MINISERVE_URL})",
-    )
-
-    args = parser.parse_args()
 
     # Get environment info
     user = os.environ.get("USER", os.getlogin())
@@ -343,8 +355,8 @@ Examples:
     storage_path = os.environ.get("STORAGE_DATA_PATH", DEFAULT_STORAGE_PATH)
 
     # Determine archive path
-    if args.backup_path:
-        archive_path = Path(args.backup_path)
+    if backup_path:
+        archive_path = Path(backup_path)
     elif Path(storage_path).is_dir() and os.access(storage_path, os.W_OK):
         temp_dir = Path(storage_path) / "Tmp"
         temp_dir.mkdir(parents=True, exist_ok=True)
@@ -353,43 +365,43 @@ Examples:
         archive_path = Path("/tmp") / f"{user}.tar.gz"
 
     # Create or skip backup
-    if args.skip_backup:
+    if skip_backup:
         if not archive_path.exists():
-            print(
+            click.echo(
                 f"Error: --skip-backup specified but no backup file exists at {archive_path}",
-                file=sys.stderr,
+                err=True,
             )
             sys.exit(1)
-        print(f"Skipping backup creation, using existing file: {archive_path}")
+        click.echo(f"Skipping backup creation, using existing file: {archive_path}")
     else:
         exclude_cats = None
-        if args.exclude_categories:
-            exclude_cats = [c.strip() for c in args.exclude_categories.split(",")]
+        if exclude_categories:
+            exclude_cats = [c.strip() for c in exclude_categories.split(",")]
             invalid = [c for c in exclude_cats if c not in EXCLUDE_PATTERNS]
             if invalid:
-                print(
+                click.echo(
                     f"Error: unknown exclude categories: {', '.join(invalid)}. "
                     f"Valid: {', '.join(EXCLUDE_PATTERNS.keys())}",
-                    file=sys.stderr,
+                    err=True,
                 )
                 sys.exit(1)
         if not create_backup(
-            archive_path, user, args.ignore_tar_warnings, args.no_excludes, exclude_cats
+            archive_path, user, ignore_tar_warnings, no_excludes, exclude_cats
         ):
             sys.exit(1)
 
     # Upload or skip
-    if args.skip_upload:
-        print(f"Skipping upload, backup saved at: {archive_path}")
+    if skip_upload:
+        click.echo(f"Skipping upload, backup saved at: {archive_path}")
         sys.exit(0)
 
-    miniserve_url = args.miniserve if args.miniserve else DEFAULT_MINISERVE_URL
+    miniserve_url = miniserve if miniserve else DEFAULT_MINISERVE_URL
     miniserve_user = _read_secret("MINISERVE_USER")
     miniserve_pass = _read_secret("MINISERVE_PASS")
     if not miniserve_user or not miniserve_pass:
-        print(
+        click.echo(
             "Error: miniserve secrets not found in ~/.config/sops-nix/secrets/",
-            file=sys.stderr,
+            err=True,
         )
         sys.exit(1)
     success = upload_miniserve(
@@ -402,16 +414,14 @@ Examples:
     )
 
     if success:
-        print("Upload successful")
-        if args.delete_backup:
+        click.echo("Upload successful")
+        if delete_backup:
             archive_path.unlink()
-            print("Local backup deleted")
+            click.echo("Local backup deleted")
         else:
-            print(f"Backup kept at: {archive_path}")
+            click.echo(f"Backup kept at: {archive_path}")
     else:
-        print(
-            f"Upload failed, keeping local backup at: {archive_path}", file=sys.stderr
-        )
+        click.echo(f"Upload failed, keeping local backup at: {archive_path}", err=True)
         sys.exit(1)
 
 

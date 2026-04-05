@@ -208,22 +208,25 @@ def sync_local_device_name(client, device_name: str, dry_run=False):
         logging.info("      [DRY-RUN] Would update local device name")
 
 
-def cmd_sync(args):
+def cmd_sync(base_url, api_key, config_xml, config_file, dry_run=False, restart=False):
     """Sync GUI credentials and devices from configuration file."""
     try:
         # Load configuration
-        with open(args.config_file, "r") as f:
+        with open(config_file, "r") as f:
             config = json.load(f)
 
-        client = get_client(args)
+        client = get_client(
+            base_url=base_url,
+            api_key=api_key,
+            config_xml=config_xml,
+            mode="declarative",
+        )
 
         logging.info("Syncing Syncthing configuration...")
 
         # Sync local device name if present
         if "localDeviceName" in config and config["localDeviceName"]:
-            sync_local_device_name(
-                client, config["localDeviceName"], dry_run=args.dry_run
-            )
+            sync_local_device_name(client, config["localDeviceName"], dry_run=dry_run)
 
         # Sync GUI credentials if present
         if "gui" in config and config["gui"] is not None:
@@ -245,7 +248,7 @@ def cmd_sync(args):
                         password_hash = hash_password(password)
                         logging.info("    Hashed plain text password with bcrypt")
 
-                if not args.dry_run:
+                if not dry_run:
                     client.update_gui_config(
                         username=username, password_hash=password_hash
                     )
@@ -255,23 +258,21 @@ def cmd_sync(args):
 
         # Sync devices if present (fully declarative - add and remove)
         if "devices" in config:
-            sync_devices(client, config["devices"], dry_run=args.dry_run)
+            sync_devices(client, config["devices"], dry_run=dry_run)
 
         # Sync folders if present (fully declarative - add and remove)
         if "folders" in config:
             devices_config = config.get("devices", {})
-            sync_folders(
-                client, config["folders"], devices_config, dry_run=args.dry_run
-            )
+            sync_folders(client, config["folders"], devices_config, dry_run=dry_run)
 
-        if args.dry_run:
+        if dry_run:
             logging.info("")
             logging.info("Dry-run complete - no changes made")
         else:
             logging.info("")
             logging.info("Sync complete!")
 
-            if args.restart:
+            if restart:
                 logging.info("Restarting Syncthing...")
                 client.restart_syncthing()
                 logging.info("Restart initiated")

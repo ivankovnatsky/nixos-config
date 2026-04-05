@@ -4,10 +4,11 @@ Syncthing configuration management tool.
 Applies GUI credentials and device IDs via Syncthing REST API.
 """
 
-import sys
 import os
-import argparse
+import sys
 import logging
+
+import click
 
 from commands import cmd_list_devices, cmd_list_folders, cmd_status, cmd_scan
 from sync import cmd_sync
@@ -16,145 +17,183 @@ from sync import cmd_sync
 logging.basicConfig(level=logging.INFO, format="%(message)s", stream=sys.stdout)
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        prog="syncthing-mgmt",
-        description="Syncthing configuration management tool",
-        epilog="Default mode: CLI (use 'syncthing-mgmt' or 'syncthing-mgmt cli status')",
-    )
+def _auto_detect_config_xml():
+    """Try to find config.xml in common locations."""
+    possible_configs = [
+        # Linux (user)
+        os.path.expanduser("~/.local/state/syncthing/config.xml"),
+        os.path.expanduser("~/.config/syncthing/config.xml"),
+        # Linux (system)
+        "/var/lib/syncthing/.config/syncthing/config.xml",
+        # Darwin (macOS)
+        os.path.expanduser("~/Library/Application Support/Syncthing/config.xml"),
+    ]
+    for config_path in possible_configs:
+        if os.path.exists(config_path):
+            return config_path
+    return None
 
-    # Main subparsers for declarative vs cli mode
-    mode_subparsers = parser.add_subparsers(dest="mode", help="Operation mode")
 
-    # ===== CLI Mode (interactive, default) =====
-    cli_parser = mode_subparsers.add_parser(
-        "cli", help="CLI mode for interactive use (default)"
-    )
-    cli_subparsers = cli_parser.add_subparsers(
-        dest="cli_command", help="CLI command to execute"
-    )
+# ---------------------------------------------------------------------------
+# Common CLI options shared across cli sub-commands
+# ---------------------------------------------------------------------------
 
-    # Common arguments for CLI commands
-    def add_cli_args(subparser):
-        subparser.add_argument(
-            "--base-url",
-            help="Syncthing URL (default: http://127.0.0.1:8384, with fallback to local IPs)",
+_cli_options = [
+    click.option(
+        "--base-url",
+        default=None,
+        help="Syncthing URL (default: http://127.0.0.1:8384, with fallback to local IPs)",
+    ),
+    click.option("--api-key", default=None, help="Syncthing API key"),
+    click.option(
+        "--config-xml",
+        default=None,
+        help="Path to Syncthing config.xml (to extract API key)",
+    ),
+]
+
+
+def add_cli_options(func):
+    """Decorator that adds the common CLI connection options to a command."""
+    for option in reversed(_cli_options):
+        func = option(func)
+    return func
+
+
+def resolve_cli_args(base_url, api_key, config_xml):
+    """
+    Apply CLI-mode defaults: auto-detect config.xml and default base_url.
+    Returns (base_url, api_key, config_xml).
+    """
+    if not config_xml and not api_key:
+        config_xml = _auto_detect_config_xml()
+    if not base_url:
+        base_url = "http://127.0.0.1:8384"
+    return base_url, api_key, config_xml
+
+
+# ---------------------------------------------------------------------------
+# Top-level group
+# ---------------------------------------------------------------------------
+
+
+@click.group(invoke_without_command=True)
+@click.pass_context
+def cli(ctx):
+    """Syncthing configuration management tool.
+
+    Default mode: CLI (use 'syncthing-mgmt' or 'syncthing-mgmt cli status')
+    """
+    if ctx.invoked_subcommand is None:
+        # Default: cli status
+        base_url, api_key, config_xml = resolve_cli_args(None, None, None)
+        cmd_status(
+            base_url=base_url, api_key=api_key, config_xml=config_xml, mode="cli"
         )
-        subparser.add_argument("--api-key", help="Syncthing API key")
-        subparser.add_argument(
-            "--config-xml", help="Path to Syncthing config.xml (to extract API key)"
+
+
+# ---------------------------------------------------------------------------
+# CLI mode group
+# ---------------------------------------------------------------------------
+
+
+@cli.group("cli", invoke_without_command=True)
+@click.pass_context
+def cli_group(ctx):
+    """CLI mode for interactive use (default)."""
+    if ctx.invoked_subcommand is None:
+        # Default cli sub-command is status
+        base_url, api_key, config_xml = resolve_cli_args(None, None, None)
+        cmd_status(
+            base_url=base_url, api_key=api_key, config_xml=config_xml, mode="cli"
         )
 
-    # CLI: status command
-    status_parser = cli_subparsers.add_parser(
-        "status", help="Show status of configured devices and folders (default)"
-    )
-    add_cli_args(status_parser)
 
-    # CLI: scan command
-    scan_parser = cli_subparsers.add_parser(
-        "scan", help="Trigger a rescan for one or more folders"
-    )
-    add_cli_args(scan_parser)
-    scan_parser.add_argument(
-        "folders", nargs="*", help="Folder IDs to scan (default: all folders)"
-    )
+@cli_group.command("status")
+@add_cli_options
+def cli_status(base_url, api_key, config_xml):
+    """Show status of configured devices and folders (default)."""
+    base_url, api_key, config_xml = resolve_cli_args(base_url, api_key, config_xml)
+    cmd_status(base_url=base_url, api_key=api_key, config_xml=config_xml, mode="cli")
 
-    # CLI: list command with subcommands
-    list_parser = cli_subparsers.add_parser("list", help="List configured resources")
-    list_subparsers = list_parser.add_subparsers(
-        dest="list_command", help="Resource type to list"
-    )
 
-    # CLI: list devices
-    list_devices_parser = list_subparsers.add_parser(
-        "devices", help="List all configured devices"
-    )
-    add_cli_args(list_devices_parser)
-
-    # CLI: list folders
-    list_folders_parser = list_subparsers.add_parser(
-        "folders", help="List all configured folders"
-    )
-    add_cli_args(list_folders_parser)
-
-    # ===== Declarative Mode (for NixOS/Darwin modules) =====
-    declarative_parser = mode_subparsers.add_parser(
-        "declarative", help="Declarative mode for NixOS/Darwin modules"
-    )
-    declarative_parser.add_argument("--base-url", required=True, help="Syncthing URL")
-    declarative_parser.add_argument("--api-key", help="Syncthing API key")
-    declarative_parser.add_argument(
-        "--config-xml", help="Path to Syncthing config.xml (to extract API key)"
-    )
-    declarative_parser.add_argument(
-        "--config-file", required=True, help="JSON configuration file"
-    )
-    declarative_parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Show what would be changed without making changes",
-    )
-    declarative_parser.add_argument(
-        "--restart",
-        action="store_true",
-        help="Restart Syncthing after applying changes",
+@cli_group.command("scan")
+@add_cli_options
+@click.argument("folders", nargs=-1, required=False)
+def cli_scan(base_url, api_key, config_xml, folders):
+    """Trigger a rescan for one or more folders."""
+    base_url, api_key, config_xml = resolve_cli_args(base_url, api_key, config_xml)
+    cmd_scan(
+        base_url=base_url,
+        api_key=api_key,
+        config_xml=config_xml,
+        mode="cli",
+        folders=list(folders),
     )
 
-    args = parser.parse_args()
 
-    # Default to CLI mode with status command if no mode specified
-    if not args.mode:
-        args.mode = "cli"
-        args.cli_command = "status"
-        args.base_url = None
-        args.api_key = None
-        args.config_xml = None
+@cli_group.group("list")
+def cli_list():
+    """List configured resources."""
 
-    # Default to status for CLI mode if no command specified
-    if args.mode == "cli" and not args.cli_command:
-        args.cli_command = "status"
 
-    # Try to auto-detect config.xml for CLI mode
-    if args.mode == "cli":
-        if not args.config_xml and not args.api_key:
-            # Try common config locations (Linux and Darwin)
-            possible_configs = [
-                # Linux (user)
-                os.path.expanduser("~/.local/state/syncthing/config.xml"),
-                os.path.expanduser("~/.config/syncthing/config.xml"),
-                # Linux (system)
-                "/var/lib/syncthing/.config/syncthing/config.xml",
-                # Darwin (macOS)
-                os.path.expanduser(
-                    "~/Library/Application Support/Syncthing/config.xml"
-                ),
-            ]
-            for config_path in possible_configs:
-                if os.path.exists(config_path):
-                    args.config_xml = config_path
-                    break
+@cli_list.command("devices")
+@add_cli_options
+def cli_list_devices(base_url, api_key, config_xml):
+    """List all configured devices."""
+    base_url, api_key, config_xml = resolve_cli_args(base_url, api_key, config_xml)
+    cmd_list_devices(
+        base_url=base_url, api_key=api_key, config_xml=config_xml, mode="cli"
+    )
 
-        # Default base URL to localhost if not provided
-        if not args.base_url:
-            args.base_url = "http://127.0.0.1:8384"
 
-    # Route to appropriate command
-    if args.mode == "declarative":
-        cmd_sync(args)
-    elif args.mode == "cli":
-        if args.cli_command == "list":
-            if hasattr(args, "list_command") and args.list_command == "devices":
-                cmd_list_devices(args)
-            elif hasattr(args, "list_command") and args.list_command == "folders":
-                cmd_list_folders(args)
-            else:
-                list_parser.print_help()
-        elif args.cli_command == "scan":
-            cmd_scan(args)
-        elif args.cli_command == "status":
-            cmd_status(args)
+@cli_list.command("folders")
+@add_cli_options
+def cli_list_folders(base_url, api_key, config_xml):
+    """List all configured folders."""
+    base_url, api_key, config_xml = resolve_cli_args(base_url, api_key, config_xml)
+    cmd_list_folders(
+        base_url=base_url, api_key=api_key, config_xml=config_xml, mode="cli"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Declarative mode command
+# ---------------------------------------------------------------------------
+
+
+@cli.command("declarative")
+@click.option("--base-url", required=True, help="Syncthing URL")
+@click.option("--api-key", default=None, help="Syncthing API key")
+@click.option(
+    "--config-xml",
+    default=None,
+    help="Path to Syncthing config.xml (to extract API key)",
+)
+@click.option("--config-file", required=True, help="JSON configuration file")
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    default=False,
+    help="Show what would be changed without making changes",
+)
+@click.option(
+    "--restart",
+    is_flag=True,
+    default=False,
+    help="Restart Syncthing after applying changes",
+)
+def declarative(base_url, api_key, config_xml, config_file, dry_run, restart):
+    """Declarative mode for NixOS/Darwin modules."""
+    cmd_sync(
+        base_url=base_url,
+        api_key=api_key,
+        config_xml=config_xml,
+        config_file=config_file,
+        dry_run=dry_run,
+        restart=restart,
+    )
 
 
 if __name__ == "__main__":
-    main()
+    cli()

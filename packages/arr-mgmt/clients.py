@@ -1,6 +1,6 @@
 """API clients for *arr services (Radarr, Sonarr, Prowlarr)."""
 
-import sys
+import click
 import requests
 
 USER_AGENT = "arr-mgmt/1.0.0"
@@ -34,7 +34,7 @@ class ArrClient:
             if response.status_code not in (200, 201, 202):
                 try:
                     error_data = response.json()
-                    print(f"DEBUG: Error response: {error_data}", file=sys.stderr)
+                    click.echo(f"DEBUG: Error response: {error_data}", err=True)
                     # Handle both dict and list error responses
                     if isinstance(error_data, list) and len(error_data) > 0:
                         message = error_data[0].get("errorMessage", "Unknown error")
@@ -46,7 +46,7 @@ class ArrClient:
                         f"API error: {message} (Status: {response.status_code})"
                     )
                 except (ValueError, requests.exceptions.JSONDecodeError):
-                    print(f"DEBUG: Response text: {response.text}", file=sys.stderr)
+                    click.echo(f"DEBUG: Response text: {response.text}", err=True)
                     raise Exception(
                         f"API request failed with status {response.status_code}"
                     )
@@ -54,13 +54,9 @@ class ArrClient:
             try:
                 return response.json()
             except (ValueError, requests.exceptions.JSONDecodeError) as e:
-                print(
-                    f"DEBUG: Failed to parse JSON response from {url}", file=sys.stderr
-                )
-                print(
-                    f"DEBUG: Response status: {response.status_code}", file=sys.stderr
-                )
-                print(f"DEBUG: Response text: {response.text[:200]}", file=sys.stderr)
+                click.echo(f"DEBUG: Failed to parse JSON response from {url}", err=True)
+                click.echo(f"DEBUG: Response status: {response.status_code}", err=True)
+                click.echo(f"DEBUG: Response text: {response.text[:200]}", err=True)
                 raise Exception(f"Invalid JSON response: {e}")
         except requests.exceptions.RequestException as e:
             raise Exception(f"Network error: {e}")
@@ -131,7 +127,7 @@ class ProwlarrClient:
             if response.status_code not in (200, 201, 202):
                 try:
                     error_data = response.json()
-                    print(f"DEBUG: Error response: {error_data}", file=sys.stderr)
+                    click.echo(f"DEBUG: Error response: {error_data}", err=True)
                     # Handle both dict and list error responses
                     if isinstance(error_data, list) and len(error_data) > 0:
                         message = error_data[0].get("errorMessage", "Unknown error")
@@ -143,7 +139,7 @@ class ProwlarrClient:
                         f"API error: {message} (Status: {response.status_code})"
                     )
                 except (ValueError, requests.exceptions.JSONDecodeError):
-                    print(f"DEBUG: Response text: {response.text}", file=sys.stderr)
+                    click.echo(f"DEBUG: Response text: {response.text}", err=True)
                     raise Exception(
                         f"API request failed with status {response.status_code}"
                     )
@@ -151,13 +147,9 @@ class ProwlarrClient:
             try:
                 return response.json()
             except (ValueError, requests.exceptions.JSONDecodeError) as e:
-                print(
-                    f"DEBUG: Failed to parse JSON response from {url}", file=sys.stderr
-                )
-                print(
-                    f"DEBUG: Response status: {response.status_code}", file=sys.stderr
-                )
-                print(f"DEBUG: Response text: {response.text[:200]}", file=sys.stderr)
+                click.echo(f"DEBUG: Failed to parse JSON response from {url}", err=True)
+                click.echo(f"DEBUG: Response status: {response.status_code}", err=True)
+                click.echo(f"DEBUG: Response text: {response.text[:200]}", err=True)
                 raise Exception(f"Invalid JSON response: {e}")
         except requests.exceptions.RequestException as e:
             raise Exception(f"Network error: {e}")

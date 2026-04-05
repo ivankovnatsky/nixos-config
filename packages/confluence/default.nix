@@ -26,6 +26,7 @@ let
   python = pkgs.python3.withPackages (ps: [
     ps.atlassian-python-api
     ps.markdown
+    ps.click
   ]);
 in
 pkgs.writeShellScriptBin "confluence" ''

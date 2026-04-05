@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """Recursively pull all git repositories under a directory."""
 
-import argparse
 import os
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
+
+import click
 
 
 @dataclass
@@ -237,51 +238,48 @@ def pull_repo(repo_path: Path, progress_callback=None) -> PullResult:
         )
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Recursively pull all git repositories under a directory"
-    )
-    parser.add_argument(
-        "directory",
-        nargs="?",
-        default=os.path.expanduser("~/Sources"),
-        help="Base directory to search for git repos (default: ~/Sources)",
-    )
-    parser.add_argument(
-        "-j",
-        "--jobs",
-        type=int,
-        default=4,
-        help="Number of parallel jobs (default: 4)",
-    )
-    parser.add_argument(
-        "-v",
-        "--verbose",
-        action="store_true",
-        help="Show all results, not just errors",
-    )
-    args = parser.parse_args()
-
-    base_dir = Path(args.directory).expanduser().resolve()
+@click.command()
+@click.argument(
+    "directory",
+    default=os.path.expanduser("~/Sources"),
+    type=click.Path(),
+)
+@click.option(
+    "-j",
+    "--jobs",
+    type=int,
+    default=4,
+    help="Number of parallel jobs (default: 4)",
+    show_default=True,
+)
+@click.option(
+    "-v",
+    "--verbose",
+    is_flag=True,
+    help="Show all results, not just errors",
+)
+def main(directory: str, jobs: int, verbose: bool) -> None:
+    """Recursively pull all git repositories under a directory."""
+    base_dir = Path(directory).expanduser().resolve()
     if not base_dir.is_dir():
-        print(f"Error: {base_dir} is not a directory", file=sys.stderr)
-        return 1
+        click.echo(f"Error: {base_dir} is not a directory", err=True)
+        sys.exit(1)
 
-    print(f"Searching for git repositories in {base_dir}...")
+    click.echo(f"Searching for git repositories in {base_dir}...")
     repos = find_git_repos(base_dir)
     total = len(repos)
-    print(f"Found {total} repositories")
-    print()
+    click.echo(f"Found {total} repositories")
+    click.echo()
 
     if not repos:
-        return 0
+        return
 
     success_count = 0
     error_count = 0
     skipped_count = 0
     completed = 0
 
-    with ThreadPoolExecutor(max_workers=args.jobs) as executor:
+    with ThreadPoolExecutor(max_workers=jobs) as executor:
         futures = {executor.submit(pull_repo, repo): repo for repo in repos}
 
         for future in as_completed(futures):
@@ -296,25 +294,29 @@ def main() -> int:
 
             if result.skipped:
                 skipped_count += 1
-                print(f"{progress} SKIP    {rel_path}{branch_info} - {result.message}")
+                click.echo(
+                    f"{progress} SKIP    {rel_path}{branch_info} - {result.message}"
+                )
             elif result.success:
                 success_count += 1
-                print(f"{progress} OK      {rel_path}{branch_info}")
+                click.echo(f"{progress} OK      {rel_path}{branch_info}")
             else:
                 error_count += 1
-                print(f"{progress} ERROR   {rel_path}{branch_info} - {result.message}")
+                click.echo(
+                    f"{progress} ERROR   {rel_path}{branch_info} - {result.message}"
+                )
 
-    print()
-    print("=" * 40)
-    print("SUMMARY")
-    print("=" * 40)
-    print(f"Success: {success_count}")
-    print(f"Errors:  {error_count}")
-    print(f"Skipped: {skipped_count}")
-    print("=" * 40)
+    click.echo()
+    click.echo("=" * 40)
+    click.echo("SUMMARY")
+    click.echo("=" * 40)
+    click.echo(f"Success: {success_count}")
+    click.echo(f"Errors:  {error_count}")
+    click.echo(f"Skipped: {skipped_count}")
+    click.echo("=" * 40)
 
-    return 0 if error_count == 0 else 1
+    sys.exit(0 if error_count == 0 else 1)
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

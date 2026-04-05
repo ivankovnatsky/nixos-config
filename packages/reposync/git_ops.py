@@ -2,7 +2,8 @@
 
 import os
 import subprocess
-import sys
+
+import click
 
 GIT_TIMEOUT = 60 * 5
 
@@ -21,7 +22,7 @@ def run_git(*args, cwd=None, check=True, timeout=GIT_TIMEOUT):
             args, 1, "", f"git {args[0]} timed out after {timeout}s"
         )
     if check and result.returncode != 0:
-        print(f"Error: {result.stderr.strip()}", file=sys.stderr)
+        click.echo(f"Error: {result.stderr.strip()}", err=True)
     return result
 
 

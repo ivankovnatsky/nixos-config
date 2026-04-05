@@ -3,72 +3,74 @@
 import sys
 import json
 
+import click
 
-def cmd_list(args, client):
+
+def cmd_list(output_format, client):
     """List all systems."""
     try:
         systems = client.list_systems()
-        if args.output_format == "json":
-            print(json.dumps(systems, indent=2))
+        if output_format == "json":
+            click.echo(json.dumps(systems, indent=2))
         else:
-            print("Systems:")
+            click.echo("Systems:")
             for system in systems:
-                print(
+                click.echo(
                     f"  {system['id']}: {system['name']} ({system['host']}:{system['port']})"
                 )
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        click.echo(f"Error: {e}", err=True)
         sys.exit(1)
 
 
-def cmd_get(args, client):
+def cmd_get(system_id, client):
     """Get system details."""
     try:
-        system = client.get_system(args.system_id)
-        print(json.dumps(system, indent=2))
+        system = client.get_system(system_id)
+        click.echo(json.dumps(system, indent=2))
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        click.echo(f"Error: {e}", err=True)
         sys.exit(1)
 
 
-def cmd_create(args, client):
+def cmd_create(name, host, port, client):
     """Create a new system."""
     try:
-        system = client.create_system(args.name, args.host, args.port)
-        print(f"Created system: {system['id']}")
-        print(json.dumps(system, indent=2))
+        system = client.create_system(name, host, port)
+        click.echo(f"Created system: {system['id']}")
+        click.echo(json.dumps(system, indent=2))
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        click.echo(f"Error: {e}", err=True)
         sys.exit(1)
 
 
-def cmd_update(args, client):
+def cmd_update(system_id, name, host, port, client):
     """Update a system."""
     try:
-        system = client.update_system(args.system_id, args.name, args.host, args.port)
-        print(f"Updated system: {args.system_id}")
-        print(json.dumps(system, indent=2))
+        system = client.update_system(system_id, name, host, port)
+        click.echo(f"Updated system: {system_id}")
+        click.echo(json.dumps(system, indent=2))
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        click.echo(f"Error: {e}", err=True)
         sys.exit(1)
 
 
-def cmd_delete(args, client):
+def cmd_delete(system_id, client):
     """Delete a system."""
     try:
-        client.delete_system(args.system_id)
-        print(f"Deleted system: {args.system_id}")
+        client.delete_system(system_id)
+        click.echo(f"Deleted system: {system_id}")
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        click.echo(f"Error: {e}", err=True)
         sys.exit(1)
 
 
-def cmd_sync(args, client):
+def cmd_sync(config_file, dry_run, discord_webhook, client):
     """Sync systems from configuration file."""
     try:
         client.sync_from_file(
-            args.config_file, dry_run=args.dry_run, discord_webhook=args.discord_webhook
+            config_file, dry_run=dry_run, discord_webhook=discord_webhook
         )
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        click.echo(f"Error: {e}", err=True)
         sys.exit(1)

@@ -6,12 +6,13 @@ Creates or navigates to a git worktree for the specified branch.
 Worktrees are created at <repo-root>/.worktrees/<branch-name>.
 """
 
-import argparse
 import os
 import re
 import subprocess
 import sys
 from pathlib import Path
+
+import click
 
 
 DEFAULT_CHAR_LIMIT = 35
@@ -177,82 +178,86 @@ def create_worktree(
     return worktree_dir.exists()
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Create or navigate to a git worktree for the specified branch.",
-        epilog="""
+@click.command(
+    epilog="""
 The worktree is created at <repo-root>/.worktrees/<branch-name>.
 If the branch doesn't exist, it will be created.
 
+\b
 Example:
-  %(prog)s feature/PROJ-12345-some-description
-  %(prog)s feature/CIN-907 origin/feature/CIN-907-initial-setup
-  %(prog)s --no-pull feature/quick-fix
-  %(prog)s --sha-suffix feature/TICKET-123
-  %(prog)s feature/branch -- --track --force
+  git-worktree-init feature/PROJ-12345-some-description
+  git-worktree-init feature/CIN-907 origin/feature/CIN-907-initial-setup
+  git-worktree-init --no-pull feature/quick-fix
+  git-worktree-init --sha-suffix feature/TICKET-123
+  git-worktree-init feature/branch -- --track --force
 """,
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-    )
-    parser.add_argument(
-        "branch",
-        help="The branch name for the worktree (e.g., feature/TICKET-123). Remote prefixes like origin/ are stripped.",
-    )
-    parser.add_argument(
-        "start_point",
-        nargs="?",
-        default=None,
-        help="Optional start point (e.g., origin/feature/TICKET-123) to base the new branch on.",
-    )
-    parser.add_argument(
-        "--no-trim",
-        action="store_true",
-        help="Disable branch name trimming (default: trim enabled)",
-    )
-    parser.add_argument(
-        "--char-limit",
-        type=int,
-        default=DEFAULT_CHAR_LIMIT,
-        help=f"Character limit for branch name part (default: {DEFAULT_CHAR_LIMIT})",
-    )
-    parser.add_argument(
-        "--sha-suffix",
-        action="store_true",
-        help="Append 7-char SHA to branch name for uniqueness (default: disabled)",
-    )
-    parser.add_argument(
-        "--no-pull",
-        action="store_true",
-        help="Skip checkout and pull of default branch (default: pull enabled)",
-    )
-    parser.add_argument(
-        "git_args",
-        nargs="*",
-        help="Additional arguments passed to 'git worktree add' (after --).",
-    )
+)
+@click.argument("branch")
+@click.argument("start_point", required=False, default=None)
+@click.option(
+    "--no-trim",
+    is_flag=True,
+    default=False,
+    help="Disable branch name trimming (default: trim enabled)",
+)
+@click.option(
+    "--char-limit",
+    type=int,
+    default=DEFAULT_CHAR_LIMIT,
+    show_default=True,
+    help="Character limit for branch name part",
+)
+@click.option(
+    "--sha-suffix",
+    is_flag=True,
+    default=False,
+    help="Append 7-char SHA to branch name for uniqueness (default: disabled)",
+)
+@click.option(
+    "--no-pull",
+    is_flag=True,
+    default=False,
+    help="Skip checkout and pull of default branch (default: pull enabled)",
+)
+@click.argument("git_args", nargs=-1)
+def main(
+    branch: str,
+    start_point: str | None,
+    no_trim: bool,
+    char_limit: int,
+    sha_suffix: bool,
+    no_pull: bool,
+    git_args: tuple[str, ...],
+) -> None:
+    """Create or navigate to a git worktree for the specified branch.
 
-    args = parser.parse_args()
+    BRANCH is the branch name for the worktree (e.g., feature/TICKET-123).
+    Remote prefixes like origin/ are stripped.
 
+    START_POINT is an optional start point (e.g., origin/feature/TICKET-123)
+    to base the new branch on.
+    """
     git_root = get_git_root()
     if not git_root:
-        print("Error: Not in a git repository", file=sys.stderr)
-        return 1
+        click.echo("Error: Not in a git repository", err=True)
+        sys.exit(1)
 
     real_git_root = get_real_git_root()
     if not real_git_root:
-        print("Error: Could not determine git root", file=sys.stderr)
-        return 1
+        click.echo("Error: Could not determine git root", err=True)
+        sys.exit(1)
 
     git_dir = get_git_common_dir()
     if not git_dir:
-        print("Error: Could not determine git directory", file=sys.stderr)
-        return 1
+        click.echo("Error: Could not determine git directory", err=True)
+        sys.exit(1)
 
     os.chdir(real_git_root)
 
     default_branch = get_default_branch()
     current_sha = None
 
-    if not args.no_pull:
+    if not no_pull:
         if default_branch:
             run_git("checkout", default_branch, check=False)
             run_git("pull", "origin", default_branch, check=False)
@@ -262,35 +267,34 @@ Example:
     else:
         current_sha = run_git("rev-parse", "HEAD")
 
-    no_trim = args.no_trim or args.start_point is not None
+    effective_no_trim = no_trim or start_point is not None
     branch_name = process_branch_name(
-        args.branch,
-        args.char_limit,
-        no_trim,
-        args.sha_suffix,
+        branch,
+        char_limit,
+        effective_no_trim,
+        sha_suffix,
         current_sha,
     )
 
     worktree_dir = real_git_root / ".worktrees" / branch_name
 
     if worktree_dir.exists():
-        print(worktree_dir, end="")
-        return 0
+        click.echo(str(worktree_dir), nl=False)
+        return
 
-    base_branch = args.start_point if args.start_point else default_branch
+    base_branch = start_point if start_point else default_branch
 
-    if args.start_point:
-        remote = extract_remote_name(args.start_point)
+    if start_point:
+        remote = extract_remote_name(start_point)
         if remote:
-            fetch_remote(remote, args.start_point)
+            fetch_remote(remote, start_point)
 
-    if not create_worktree(worktree_dir, branch_name, base_branch, args.git_args):
-        print(f"Error: Failed to create worktree at {worktree_dir}", file=sys.stderr)
-        return 1
+    if not create_worktree(worktree_dir, branch_name, base_branch, list(git_args)):
+        click.echo(f"Error: Failed to create worktree at {worktree_dir}", err=True)
+        sys.exit(1)
 
-    print(worktree_dir, end="")
-    return 0
+    click.echo(str(worktree_dir), nl=False)
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

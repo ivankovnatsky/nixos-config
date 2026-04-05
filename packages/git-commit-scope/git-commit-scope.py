@@ -4,11 +4,12 @@
 Git commit subject scope helper that auto-generates scope from file or directory paths.
 """
 
-import argparse
 import os
 import re
 import subprocess
 import sys
+
+import click
 
 MACHINE_MAPPINGS = {
     "Ivans-Mac-mini": "mini",
@@ -263,12 +264,12 @@ def parse_args_flexible(
             if is_file_path(a):
                 files.append(a)
             else:
-                print(f"Error: File not found: {a}", file=sys.stderr)
+                click.echo(f"Error: File not found: {a}", err=True)
                 sys.exit(1)
         return files, subject_flag
 
     if len(args) == 0:
-        print("Error: Subject required (use -s or positional arg)", file=sys.stderr)
+        click.echo("Error: Subject required (use -s or positional arg)", err=True)
         sys.exit(1)
 
     # Original behavior for 1 arg
@@ -276,17 +277,17 @@ def parse_args_flexible(
         if is_file_path(args[0]):
             if _is_new_file(args[0]):
                 return [args[0]], "init"
-            print(
+            click.echo(
                 f"Error: '{args[0]}' looks like a file path, not a subject.",
-                file=sys.stderr,
+                err=True,
             )
-            print(
+            click.echo(
                 "  Use: git-commit-scope <file> -s 'subject'",
-                file=sys.stderr,
+                err=True,
             )
-            print(
+            click.echo(
                 "  Or:  git-commit-scope <file> 'subject'",
-                file=sys.stderr,
+                err=True,
             )
             sys.exit(1)
         return [], args[0]
@@ -304,25 +305,21 @@ def parse_args_flexible(
     if len(non_files) == 1:
         return files, non_files[0]
     elif len(non_files) == 0:
-        print(
-            "Error: All arguments are file paths, no subject provided", file=sys.stderr
-        )
-        print("  Use: git-commit-scope <file>... -s 'subject'", file=sys.stderr)
+        click.echo("Error: All arguments are file paths, no subject provided", err=True)
+        click.echo("  Use: git-commit-scope <file>... -s 'subject'", err=True)
         sys.exit(1)
     else:
-        print(
+        click.echo(
             "Error: Multiple non-file arguments (expected exactly one subject):",
-            file=sys.stderr,
+            err=True,
         )
         for nf in non_files:
-            print(f"  {nf}", file=sys.stderr)
+            click.echo(f"  {nf}", err=True)
         sys.exit(1)
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Auto-generate git commit subject scope from changed file paths.",
-        epilog="""
+@click.command(
+    epilog="""\b
 Examples:
   git-commit-scope "add feature"                     Commits staged file with "<scope>: add feature"
   git-commit-scope file.nix "add feature"            Commits file.nix with "<scope>: add feature"
@@ -346,35 +343,34 @@ Features:
   - Shortens directories if message > 72 chars (packages->pkg, modules->mod, etc.)
   - Validates total message length (max 72 chars)
 """,
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-    )
-    parser.add_argument(
-        "args",
-        nargs="*",
-        help="subject and optional file/directory path (in any order)",
-    )
-    parser.add_argument(
-        "-s", "--subject", help="commit subject (alternative to positional arg)"
-    )
-    parser.add_argument(
-        "-b",
-        "--body",
-        action="append",
-        help="commit body (can use multiple times, joined with newline)",
-    )
-    parsed = parser.parse_args()
-
+    context_settings={"help_option_names": ["-h", "--help"]},
+)
+@click.argument("args", nargs=-1, metavar="[PATH...] [SUBJECT]")
+@click.option(
+    "-s",
+    "--subject",
+    default=None,
+    help="commit subject (alternative to positional arg)",
+)
+@click.option(
+    "-b",
+    "--body",
+    multiple=True,
+    help="commit body (can use multiple times, joined with newline)",
+)
+def main(args, subject, body):
+    """Auto-generate git commit subject scope from changed file paths."""
     # Join multiple -b flags with single newline (no blank lines)
-    body = "\n".join(parsed.body) if parsed.body else None
+    body_str = "\n".join(body) if body else None
 
-    file_paths, subject = parse_args_flexible(parsed.args, parsed.subject)
+    file_paths, commit_subject = parse_args_flexible(list(args), subject)
 
     # Get git root early - needed for path normalization
     try:
         git_root = get_git_root()
     except subprocess.CalledProcessError as e:
-        print(f"Failed to get git root: {e}", file=sys.stderr)
-        return 1
+        click.echo(f"Failed to get git root: {e}", err=True)
+        sys.exit(1)
 
     if file_paths:
         target_files = []
@@ -389,21 +385,21 @@ Features:
         try:
             all_files = get_all_changed_files()
         except subprocess.CalledProcessError as e:
-            print(f"Failed to get changed files: {e}", file=sys.stderr)
-            return 1
+            click.echo(f"Failed to get changed files: {e}", err=True)
+            sys.exit(1)
 
         if not all_files:
-            print("No changed files", file=sys.stderr)
-            return 1
+            click.echo("No changed files", err=True)
+            sys.exit(1)
 
         if len(all_files) != 1:
-            print(
+            click.echo(
                 f"Expected 1 changed file, found {len(all_files)}:",
-                file=sys.stderr,
+                err=True,
             )
             for f in all_files:
-                print(f"  {f}", file=sys.stderr)
-            return 1
+                click.echo(f"  {f}", err=True)
+            sys.exit(1)
 
         target_files = [all_files[0]]
 
@@ -411,7 +407,7 @@ Features:
     os.environ["GIT_COMMIT_SCOPE_CLI"] = "1"
 
     def _too_long(p: str) -> bool:
-        return len(create_commit_message(p, subject)) > MAX_MESSAGE_LENGTH
+        return len(create_commit_message(p, commit_subject)) > MAX_MESSAGE_LENGTH
 
     for target_file in target_files:
         prefix = shorten_path(target_file)
@@ -420,15 +416,15 @@ Features:
             prefix = shorten_directories(prefix)
 
         if _too_long(prefix):
-            full_msg = create_commit_message(prefix, subject)
-            print(
+            full_msg = create_commit_message(prefix, commit_subject)
+            click.echo(
                 f"Message too long: {len(full_msg)} chars (max {MAX_MESSAGE_LENGTH})",
-                file=sys.stderr,
+                err=True,
             )
-            print(f"Scope: {prefix}", file=sys.stderr)
-            return 1
+            click.echo(f"Scope: {prefix}", err=True)
+            sys.exit(1)
 
-        message = create_commit_message(prefix, subject)
+        message = create_commit_message(prefix, commit_subject)
 
         try:
             # Add untracked files first (git commit <file> only works for tracked files)
@@ -444,14 +440,14 @@ Features:
                 )
                 if result.returncode != 0:
                     # Fall back to force-add (needed when .gitignore ignores the file)
-                    print(f"  add -f {target_file}")
+                    click.echo(f"  add -f {target_file}")
                     subprocess.run(
                         ["git", "add", "-f", target_file], check=True, cwd=git_root
                     )
                 else:
-                    print(f"  add {target_file}")
+                    click.echo(f"  add {target_file}")
 
-            print(f"  commit {target_file}")
+            click.echo(f"  commit {target_file}")
 
             # For staged deletions, git commit <file> doesn't work because it reads
             # from the working tree (where the file no longer exists). Use --only
@@ -460,15 +456,13 @@ Features:
                 cmd = ["git", "commit", "--only", target_file, "-m", message]
             else:
                 cmd = ["git", "commit", target_file, "-m", message]
-            if body:
-                cmd.extend(["-m", body])
+            if body_str:
+                cmd.extend(["-m", body_str])
             subprocess.run(cmd, check=True, cwd=git_root)
         except subprocess.CalledProcessError as e:
-            print(f"Git commit failed: {e}", file=sys.stderr)
-            return 1
-
-    return 0
+            click.echo(f"Git commit failed: {e}", err=True)
+            sys.exit(1)
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

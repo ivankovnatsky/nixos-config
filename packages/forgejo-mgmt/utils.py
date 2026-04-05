@@ -3,29 +3,30 @@
 import sys
 import time
 
+import click
 import requests
 
 
 def wait_for_api(base_url: str, max_retries: int = 30, delay: int = 2):
-    print(f"Waiting for Forgejo API at {base_url}...", file=sys.stderr)
+    click.echo(f"Waiting for Forgejo API at {base_url}...", err=True)
     for i in range(1, max_retries + 1):
         try:
             response = requests.get(f"{base_url}/api/v1/settings/api", timeout=5)
             if response.status_code == 200:
-                print(
+                click.echo(
                     f"Forgejo API is ready (attempt {i}/{max_retries})",
-                    file=sys.stderr,
+                    err=True,
                 )
                 return
         except requests.exceptions.RequestException:
             pass
         if i == max_retries:
-            print(
+            click.echo(
                 f"ERROR: Forgejo API not ready after {max_retries} attempts",
-                file=sys.stderr,
+                err=True,
             )
             sys.exit(1)
-        print(f"Waiting... (attempt {i}/{max_retries})", file=sys.stderr)
+        click.echo(f"Waiting... (attempt {i}/{max_retries})", err=True)
         time.sleep(delay)
 
 

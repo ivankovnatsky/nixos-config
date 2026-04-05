@@ -7,7 +7,7 @@ Declarative library configuration via sync command.
 import sys
 import json
 import requests
-import argparse
+import click
 
 USER_AGENT = "abs-mgmt/1.0.0"
 
@@ -38,13 +38,13 @@ class AudiobookshelfClient:
             if response.status_code not in (200, 201):
                 try:
                     error_data = response.json()
-                    print(f"DEBUG: Error response: {error_data}", file=sys.stderr)
+                    click.echo(f"DEBUG: Error response: {error_data}", err=True)
                     message = error_data.get("error", "Unknown error")
                     raise Exception(
                         f"API error: {message} (Status: {response.status_code})"
                     )
                 except ValueError:
-                    print(f"DEBUG: Response text: {response.text}", file=sys.stderr)
+                    click.echo(f"DEBUG: Response text: {response.text}", err=True)
                     raise Exception(
                         f"API request failed with status {response.status_code}"
                     )
@@ -57,9 +57,7 @@ class AudiobookshelfClient:
                 if response.text.strip() in ("OK", "Success"):
                     return {"success": True, "message": response.text.strip()}
                 # For other non-JSON responses, log and return text
-                print(
-                    f"DEBUG: Non-JSON response: {response.text[:200]}", file=sys.stderr
-                )
+                click.echo(f"DEBUG: Non-JSON response: {response.text[:200]}", err=True)
                 return {"success": True, "message": response.text}
         except requests.exceptions.RequestException as e:
             raise Exception(f"Network error: {e}")
@@ -216,15 +214,15 @@ class AudiobookshelfClient:
         desired_libraries = {lib["name"]: lib for lib in libraries_config}
         current_libraries = {lib["name"]: lib for lib in self.list_libraries()}
 
-        print("", file=sys.stderr)
-        print("Sync Plan:", file=sys.stderr)
-        print(f"  Desired libraries: {len(desired_libraries)}", file=sys.stderr)
-        print(f"  Current libraries: {len(current_libraries)}", file=sys.stderr)
+        click.echo("", err=True)
+        click.echo("Sync Plan:", err=True)
+        click.echo(f"  Desired libraries: {len(desired_libraries)}", err=True)
+        click.echo(f"  Current libraries: {len(current_libraries)}", err=True)
 
         if dry_run:
-            print("", file=sys.stderr)
-            print("Dry-run mode - no changes will be made", file=sys.stderr)
-            print("", file=sys.stderr)
+            click.echo("", err=True)
+            click.echo("Dry-run mode - no changes will be made", err=True)
+            click.echo("", err=True)
 
         # Create or update libraries
         for name, desired in desired_libraries.items():
@@ -255,8 +253,8 @@ class AudiobookshelfClient:
                             f"provider: {current_provider} -> {provider}"
                         )
 
-                    print(
-                        f"  UPDATE: {name} ({', '.join(update_parts)})", file=sys.stderr
+                    click.echo(
+                        f"  UPDATE: {name} ({', '.join(update_parts)})", err=True
                     )
                     if not dry_run:
                         self.update_library(
@@ -265,9 +263,9 @@ class AudiobookshelfClient:
                             provider=provider if provider_changed else None,
                         )
                 else:
-                    print(f"  OK: {name} (no changes)", file=sys.stderr)
+                    click.echo(f"  OK: {name} (no changes)", err=True)
             else:
-                print(f"  CREATE: {name}", file=sys.stderr)
+                click.echo(f"  CREATE: {name}", err=True)
                 if not dry_run:
                     self.create_library(
                         name=name,
@@ -277,26 +275,26 @@ class AudiobookshelfClient:
                     )
 
         if dry_run:
-            print("", file=sys.stderr)
-            print("Library sync dry-run complete - no changes made.", file=sys.stderr)
+            click.echo("", err=True)
+            click.echo("Library sync dry-run complete - no changes made.", err=True)
         else:
-            print("", file=sys.stderr)
-            print("Library sync complete!", file=sys.stderr)
+            click.echo("", err=True)
+            click.echo("Library sync complete!", err=True)
 
     def _sync_users(self, users_config: list, dry_run: bool = False):
         """Sync users from configuration."""
         desired_users = {user["username"]: user for user in users_config}
         current_users = {user["username"]: user for user in self.list_users()}
 
-        print("", file=sys.stderr)
-        print("User Sync Plan:", file=sys.stderr)
-        print(f"  Desired users: {len(desired_users)}", file=sys.stderr)
-        print(f"  Current users: {len(current_users)}", file=sys.stderr)
+        click.echo("", err=True)
+        click.echo("User Sync Plan:", err=True)
+        click.echo(f"  Desired users: {len(desired_users)}", err=True)
+        click.echo(f"  Current users: {len(current_users)}", err=True)
 
         if dry_run:
-            print("", file=sys.stderr)
-            print("Dry-run mode - no changes will be made", file=sys.stderr)
-            print("", file=sys.stderr)
+            click.echo("", err=True)
+            click.echo("Dry-run mode - no changes will be made", err=True)
+            click.echo("", err=True)
 
         # Create or update users
         for username, desired in desired_users.items():
@@ -322,9 +320,9 @@ class AudiobookshelfClient:
                     if libraries_changed:
                         update_parts.append("libraries")
 
-                    print(
+                    click.echo(
                         f"  UPDATE: {username} ({', '.join(update_parts)})",
-                        file=sys.stderr,
+                        err=True,
                     )
                     if not dry_run:
                         self.update_user(
@@ -333,16 +331,16 @@ class AudiobookshelfClient:
                             libraries=libraries if libraries_changed else None,
                         )
                 else:
-                    print(f"  OK: {username} (no changes)", file=sys.stderr)
+                    click.echo(f"  OK: {username} (no changes)", err=True)
             else:
                 if not password:
-                    print(
+                    click.echo(
                         f"  SKIP: {username} (no password provided for new user)",
-                        file=sys.stderr,
+                        err=True,
                     )
                     continue
 
-                print(f"  CREATE: {username}", file=sys.stderr)
+                click.echo(f"  CREATE: {username}", err=True)
                 if not dry_run:
                     self.create_user(
                         username=username,
@@ -352,11 +350,11 @@ class AudiobookshelfClient:
                     )
 
         if dry_run:
-            print("", file=sys.stderr)
-            print("User sync dry-run complete - no changes made.", file=sys.stderr)
+            click.echo("", err=True)
+            click.echo("User sync dry-run complete - no changes made.", err=True)
         else:
-            print("", file=sys.stderr)
-            print("User sync complete!", file=sys.stderr)
+            click.echo("", err=True)
+            click.echo("User sync complete!", err=True)
 
     def _sync_opml(
         self,
@@ -368,41 +366,41 @@ class AudiobookshelfClient:
         """Sync podcasts from OPML URL."""
         try:
             # Resolve library name to ID/folder
-            print(f"Resolving library name '{library_name}'...", file=sys.stderr)
+            click.echo(f"Resolving library name '{library_name}'...", err=True)
             library_id, folder_id = self.get_library_by_name(library_name)
             if not library_id:
-                print(f"Error: Library '{library_name}' not found", file=sys.stderr)
+                click.echo(f"Error: Library '{library_name}' not found", err=True)
                 return
             if not folder_id:
-                print(
+                click.echo(
                     f"Error: No folders found in library '{library_name}'",
-                    file=sys.stderr,
+                    err=True,
                 )
                 return
-            print(
+            click.echo(
                 f"Resolved to library ID: {library_id}, folder ID: {folder_id}",
-                file=sys.stderr,
+                err=True,
             )
 
             # Fetch OPML from URL
-            print(f"Fetching OPML from {opml_url}...", file=sys.stderr)
+            click.echo(f"Fetching OPML from {opml_url}...", err=True)
             response = requests.get(opml_url, timeout=30)
             response.raise_for_status()
             opml_text = response.text
 
             # Parse OPML to get feed URLs
-            print("Parsing OPML...", file=sys.stderr)
+            click.echo("Parsing OPML...", err=True)
             parsed = self.parse_opml(opml_text)
             feeds = parsed.get("feeds", [])
 
             if not feeds:
-                print("No feeds found in OPML", file=sys.stderr)
+                click.echo("No feeds found in OPML", err=True)
                 return
 
-            print(f"Found {len(feeds)} feeds in OPML", file=sys.stderr)
+            click.echo(f"Found {len(feeds)} feeds in OPML", err=True)
 
             # Get existing podcasts in library
-            print("Fetching existing podcasts from library...", file=sys.stderr)
+            click.echo("Fetching existing podcasts from library...", err=True)
             existing_podcasts = self.get_library_podcasts(library_id)
             existing_feed_urls = set()
             for podcast in existing_podcasts:
@@ -410,9 +408,9 @@ class AudiobookshelfClient:
                 if feed_url:
                     existing_feed_urls.add(feed_url)
 
-            print(
+            click.echo(
                 f"Found {len(existing_podcasts)} existing podcasts in library",
-                file=sys.stderr,
+                err=True,
             )
 
             # Extract feed URLs from OPML feeds (API returns dict objects with 'feedUrl' key)
@@ -429,35 +427,35 @@ class AudiobookshelfClient:
                 if feed_url not in existing_feed_urls
             ]
 
-            print("", file=sys.stderr)
-            print("OPML Sync summary:", file=sys.stderr)
-            print(f"  Total feeds in OPML: {len(opml_feed_urls)}", file=sys.stderr)
-            print(
+            click.echo("", err=True)
+            click.echo("OPML Sync summary:", err=True)
+            click.echo(f"  Total feeds in OPML: {len(opml_feed_urls)}", err=True)
+            click.echo(
                 f"  Already imported: {len(opml_feed_urls) - len(new_feeds)}",
-                file=sys.stderr,
+                err=True,
             )
-            print(f"  New feeds to import: {len(new_feeds)}", file=sys.stderr)
+            click.echo(f"  New feeds to import: {len(new_feeds)}", err=True)
 
             if new_feeds:
-                print("", file=sys.stderr)
-                print("New feeds to import:", file=sys.stderr)
+                click.echo("", err=True)
+                click.echo("New feeds to import:", err=True)
                 for feed in new_feeds:
-                    print(f"  - {feed}", file=sys.stderr)
+                    click.echo(f"  - {feed}", err=True)
 
             if not new_feeds:
-                print("\nNo new feeds to import - already up to date!", file=sys.stderr)
+                click.echo("\nNo new feeds to import - already up to date!", err=True)
                 return
 
             if dry_run:
-                print("\nDry-run mode - no changes will be made", file=sys.stderr)
+                click.echo("\nDry-run mode - no changes will be made", err=True)
                 return
 
             # Bulk create podcasts from new feeds only
-            print(
+            click.echo(
                 f"\nCreating {len(new_feeds)} new podcasts in library {library_id}, folder {folder_id}...",
-                file=sys.stderr,
+                err=True,
             )
-            print(f"Auto-download episodes: {auto_download}", file=sys.stderr)
+            click.echo(f"Auto-download episodes: {auto_download}", err=True)
 
             self.bulk_create_from_opml_feeds(
                 feeds=new_feeds,
@@ -466,190 +464,175 @@ class AudiobookshelfClient:
                 auto_download=auto_download,
             )
 
-            print("", file=sys.stderr)
-            print("OPML sync request sent successfully!", file=sys.stderr)
-            print(
+            click.echo("", err=True)
+            click.echo("OPML sync request sent successfully!", err=True)
+            click.echo(
                 "Note: Podcast creation happens asynchronously. Check Audiobookshelf logs if podcasts don't appear.",
-                file=sys.stderr,
+                err=True,
             )
 
         except requests.exceptions.RequestException as e:
-            print(f"Error fetching OPML: {e}", file=sys.stderr)
+            click.echo(f"Error fetching OPML: {e}", err=True)
             raise
         except Exception as e:
-            print(f"Error syncing OPML: {e}", file=sys.stderr)
+            click.echo(f"Error syncing OPML: {e}", err=True)
             raise
 
 
-def cmd_list(args, client):
+@click.group()
+def cli():
+    """Audiobookshelf library management tool."""
+
+
+@cli.command("list")
+@click.option("--base-url", required=True, help="Audiobookshelf URL")
+@click.option("--token", required=True, help="API token")
+@click.option(
+    "--output-format",
+    type=click.Choice(["table", "json"]),
+    default="table",
+    help="Output format",
+)
+def cmd_list(base_url, token, output_format):
     """List all libraries."""
+    client = AudiobookshelfClient(base_url, token)
     try:
         libraries = client.list_libraries()
-        if args.output_format == "json":
-            print(json.dumps(libraries, indent=2))
+        if output_format == "json":
+            click.echo(json.dumps(libraries, indent=2))
         else:
-            print("Libraries:")
+            click.echo("Libraries:")
             for library in libraries:
-                print(f"  {library['id']}: {library['name']} ({library['mediaType']})")
+                click.echo(
+                    f"  {library['id']}: {library['name']} ({library['mediaType']})"
+                )
                 if "folders" in library and library["folders"]:
-                    print("  Folders:")
+                    click.echo("  Folders:")
                     for folder in library["folders"]:
-                        print(f"    - {folder['fullPath']}")
+                        click.echo(f"    - {folder['fullPath']}")
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        click.echo(f"Error: {e}", err=True)
         sys.exit(1)
 
 
-def cmd_create(args, client):
+@cli.command("create")
+@click.option("--base-url", required=True, help="Audiobookshelf URL")
+@click.option("--token", required=True, help="API token")
+@click.option("--name", required=True, help="Library name")
+@click.option(
+    "--folders",
+    multiple=True,
+    required=True,
+    help="Folder path(s) for the library (repeat for multiple: --folders /a --folders /b)",
+)
+@click.option(
+    "--media-type",
+    type=click.Choice(["book", "podcast"]),
+    default="podcast",
+    help="Media type (default: podcast)",
+)
+def cmd_create(base_url, token, name, folders, media_type):
     """Create a new library."""
+    client = AudiobookshelfClient(base_url, token)
     try:
-        folders = [{"fullPath": path} for path in args.folders]
-        library = client.create_library(args.name, folders, args.media_type)
-        print(f"Created library: {library['id']}")
-        print(json.dumps(library, indent=2))
+        folder_list = [{"fullPath": path} for path in folders]
+        library = client.create_library(name, folder_list, media_type)
+        click.echo(f"Created library: {library['id']}")
+        click.echo(json.dumps(library, indent=2))
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        click.echo(f"Error: {e}", err=True)
         sys.exit(1)
 
 
-def cmd_sync(args, client):
+@cli.command("sync")
+@click.option("--base-url", required=True, help="Audiobookshelf URL")
+@click.option("--token", required=True, help="API token")
+@click.option("--config-file", required=True, help="JSON configuration file")
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    help="Show what would be changed without making changes",
+)
+def cmd_sync(base_url, token, config_file, dry_run):
     """Sync libraries from configuration file."""
+    client = AudiobookshelfClient(base_url, token)
     try:
-        client.sync_from_file(args.config_file, dry_run=args.dry_run)
+        client.sync_from_file(config_file, dry_run=dry_run)
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        click.echo(f"Error: {e}", err=True)
         sys.exit(1)
 
 
-def cmd_sync_opml(args, client):
+@cli.command("sync-opml")
+@click.option("--base-url", required=True, help="Audiobookshelf URL")
+@click.option("--token", required=True, help="API token")
+@click.option("--opml-url", required=True, help="Podsync OPML URL")
+@click.option(
+    "--library-name",
+    default="Podcasts",
+    help="Target library name (auto-detects ID and folder, default: Podcasts)",
+)
+@click.option(
+    "--library-id",
+    default=None,
+    help="Target library ID (use with --folder-id, deprecated)",
+)
+@click.option(
+    "--folder-id",
+    default=None,
+    help="Target folder ID (use with --library-id, deprecated)",
+)
+@click.option(
+    "--auto-download",
+    is_flag=True,
+    default=True,
+    help="Enable automatic episode downloads (default: true)",
+)
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    help="Show what would be synced without making changes",
+)
+def cmd_sync_opml(
+    base_url,
+    token,
+    opml_url,
+    library_name,
+    library_id,
+    folder_id,
+    auto_download,
+    dry_run,
+):
     """Sync podcasts from Podsync OPML URL."""
+    client = AudiobookshelfClient(base_url, token)
     try:
-        # Get library name (defaults to "Podcasts")
-        library_name = args.library_name
-
         # Warn about deprecated library_id/folder_id
-        if hasattr(args, "library_id") and args.library_id:
-            print(
+        if library_id:
+            click.echo(
                 "Warning: --library-id is deprecated, use --library-name instead",
-                file=sys.stderr,
+                err=True,
             )
-        if hasattr(args, "folder_id") and args.folder_id:
-            print(
+        if folder_id:
+            click.echo(
                 "Warning: --folder-id is deprecated, use --library-name instead",
-                file=sys.stderr,
+                err=True,
             )
 
         # Call shared OPML sync logic
         client._sync_opml(
-            opml_url=args.opml_url,
+            opml_url=opml_url,
             library_name=library_name,
-            auto_download=args.auto_download,
-            dry_run=args.dry_run,
+            auto_download=auto_download,
+            dry_run=dry_run,
         )
 
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        click.echo(f"Error: {e}", err=True)
         sys.exit(1)
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        prog="abs-mgmt",
-        description="Audiobookshelf library management tool",
-    )
-
-    subparsers = parser.add_subparsers(
-        dest="command", required=True, help="Command to execute"
-    )
-
-    # List command
-    list_parser = subparsers.add_parser("list", help="List all libraries")
-    list_parser.add_argument("--base-url", required=True, help="Audiobookshelf URL")
-    list_parser.add_argument("--token", required=True, help="API token")
-    list_parser.add_argument(
-        "--output-format",
-        choices=["table", "json"],
-        default="table",
-        help="Output format",
-    )
-
-    # Create command
-    create_parser = subparsers.add_parser("create", help="Create a new library")
-    create_parser.add_argument("--base-url", required=True, help="Audiobookshelf URL")
-    create_parser.add_argument("--token", required=True, help="API token")
-    create_parser.add_argument("--name", required=True, help="Library name")
-    create_parser.add_argument(
-        "--folders",
-        nargs="+",
-        required=True,
-        help="Folder path(s) for the library",
-    )
-    create_parser.add_argument(
-        "--media-type",
-        choices=["book", "podcast"],
-        default="podcast",
-        help="Media type (default: podcast)",
-    )
-
-    # Sync command (declarative configuration)
-    sync_parser = subparsers.add_parser(
-        "sync", help="Sync libraries from configuration file"
-    )
-    sync_parser.add_argument("--base-url", required=True, help="Audiobookshelf URL")
-    sync_parser.add_argument("--token", required=True, help="API token")
-    sync_parser.add_argument(
-        "--config-file", required=True, help="JSON configuration file"
-    )
-    sync_parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Show what would be changed without making changes",
-    )
-
-    # Sync OPML command (from Podsync)
-    sync_opml_parser = subparsers.add_parser(
-        "sync-opml", help="Sync podcasts from Podsync OPML URL"
-    )
-    sync_opml_parser.add_argument(
-        "--base-url", required=True, help="Audiobookshelf URL"
-    )
-    sync_opml_parser.add_argument("--token", required=True, help="API token")
-    sync_opml_parser.add_argument("--opml-url", required=True, help="Podsync OPML URL")
-    sync_opml_parser.add_argument(
-        "--library-name",
-        default="Podcasts",
-        help="Target library name (auto-detects ID and folder, default: Podcasts)",
-    )
-    sync_opml_parser.add_argument(
-        "--library-id", help="Target library ID (use with --folder-id, deprecated)"
-    )
-    sync_opml_parser.add_argument(
-        "--folder-id", help="Target folder ID (use with --library-id, deprecated)"
-    )
-    sync_opml_parser.add_argument(
-        "--auto-download",
-        action="store_true",
-        default=True,
-        help="Enable automatic episode downloads (default: true)",
-    )
-    sync_opml_parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Show what would be synced without making changes",
-    )
-
-    args = parser.parse_args()
-
-    client = AudiobookshelfClient(args.base_url, args.token)
-
-    if args.command == "list":
-        cmd_list(args, client)
-    elif args.command == "create":
-        cmd_create(args, client)
-    elif args.command == "sync":
-        cmd_sync(args, client)
-    elif args.command == "sync-opml":
-        cmd_sync_opml(args, client)
+    cli()
 
 
 if __name__ == "__main__":

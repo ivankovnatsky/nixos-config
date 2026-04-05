@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
-import argparse
 import os
 import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
+
+import click
 
 
 DEFAULT_EXPORT_BASE = os.path.expanduser(
@@ -55,51 +56,48 @@ def run_osascript(export_dir: str) -> int:
         text=True,
     )
     if result.returncode != 0:
-        print(f"osascript error: {result.stderr.strip()}", file=sys.stderr)
+        click.echo(f"osascript error: {result.stderr.strip()}", err=True)
     return result.returncode
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        prog="music-export", description="Export Apple Music library to XML"
-    )
-    parser.add_argument(
-        "--output-dir",
-        default=os.environ.get("MUSIC_EXPORT_PATH", DEFAULT_EXPORT_BASE),
-        help="Base output directory (default: iCloud/Data/Music)",
-    )
-    parser.add_argument(
-        "--date-dir",
-        default=datetime.now().strftime("%Y-%m"),
-        help="Date subdirectory name (default: current month)",
-    )
-    args = parser.parse_args()
-
-    export_dir = Path(args.output_dir) / args.date_dir
+@click.command()
+@click.option(
+    "--output-dir",
+    default=os.environ.get("MUSIC_EXPORT_PATH", DEFAULT_EXPORT_BASE),
+    help="Base output directory (default: iCloud/Data/Music)",
+)
+@click.option(
+    "--date-dir",
+    default=datetime.now().strftime("%Y-%m"),
+    help="Date subdirectory name (default: current month)",
+)
+def main(output_dir, date_dir):
+    """Export Apple Music library to XML."""
+    export_dir = Path(output_dir) / date_dir
     export_file = export_dir / "Library.xml"
 
     if export_file.exists():
-        print(f"Export already exists: {export_file}")
-        return 0
+        click.echo(f"Export already exists: {export_file}")
+        sys.exit(0)
 
     export_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"Exporting Music library to: {export_file}")
+    click.echo(f"Exporting Music library to: {export_file}")
 
     rc = run_osascript(str(export_dir))
     if rc != 0:
-        return rc
+        sys.exit(rc)
 
     if export_file.exists():
-        print(f"Export successful: {export_file}")
-        return 0
+        click.echo(f"Export successful: {export_file}")
+        sys.exit(0)
 
-    print(
+    click.echo(
         f"Warning: export file not found at {export_file}",
-        file=sys.stderr,
+        err=True,
     )
-    return 1
+    sys.exit(1)
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

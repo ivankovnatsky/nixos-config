@@ -110,25 +110,31 @@ def find_listening_address(port: int = 8384) -> Optional[str]:
     return None
 
 
-def get_client(args, use_fallback: bool = True):
+def get_client(
+    base_url: str,
+    api_key: Optional[str] = None,
+    config_xml: Optional[str] = None,
+    mode: str = "cli",
+    use_fallback: bool = True,
+):
     """
-    Get a configured SyncthingClient from args.
+    Get a configured SyncthingClient from explicit parameters.
 
     If use_fallback is True (default for CLI mode), will try to find a reachable
     Syncthing instance by checking what's listening on port 8384.
     """
     # Get API key
-    if hasattr(args, "api_key") and args.api_key:
-        api_key = args.api_key
-    elif hasattr(args, "config_xml") and args.config_xml:
-        api_key = get_api_key_from_config(args.config_xml)
+    if api_key:
+        resolved_api_key = api_key
+    elif config_xml:
+        resolved_api_key = get_api_key_from_config(config_xml)
     else:
         raise Exception("Either --api-key or --config-xml must be provided")
 
-    base_url = args.base_url
+    resolved_base_url = base_url
 
     # For CLI mode, auto-detect Syncthing address from port listener
-    if use_fallback and hasattr(args, "mode") and args.mode == "cli":
+    if use_fallback and mode == "cli":
         listening_addr = find_listening_address(8384)
 
         if listening_addr:
@@ -138,9 +144,9 @@ def get_client(args, use_fallback: bool = True):
             else:
                 detected_url = f"http://{listening_addr}:8384"
 
-            if detected_url != base_url:
+            if detected_url != resolved_base_url:
                 logging.info(f"Detected Syncthing at {detected_url}")
-            base_url = detected_url
+            resolved_base_url = detected_url
         else:
             error_msg = """
 No process listening on port 8384.
@@ -152,7 +158,7 @@ Please check that:
             logging.error(error_msg)
             raise Exception("Syncthing is not running (nothing listening on port 8384)")
 
-    return SyncthingClient(base_url, api_key)
+    return SyncthingClient(resolved_base_url, resolved_api_key)
 
 
 def fetch_completions_parallel(

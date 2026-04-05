@@ -1,9 +1,10 @@
 """Authentication helpers for forgejo-mgmt."""
 
 import os
-import sys
 import subprocess
+import sys
 
+import click
 import requests
 
 from utils import read_file
@@ -38,13 +39,13 @@ def ensure_admin_user(
         if line and not line.startswith("ID")
     ]
     if lines:
-        print(
+        click.echo(
             f"Users already exist ({len(lines)} found), skipping admin user creation",
-            file=sys.stderr,
+            err=True,
         )
         return
 
-    print(f"Creating admin user: {username}", file=sys.stderr)
+    click.echo(f"Creating admin user: {username}", err=True)
     result = subprocess.run(
         [
             forgejo_bin,
@@ -68,12 +69,12 @@ def ensure_admin_user(
         text=True,
     )
     if result.returncode != 0:
-        print(
+        click.echo(
             f"ERROR: Failed to create admin user: {result.stderr}",
-            file=sys.stderr,
+            err=True,
         )
         sys.exit(1)
-    print("Admin user created", file=sys.stderr)
+    click.echo("Admin user created", err=True)
 
 
 def ensure_token(
@@ -93,18 +94,18 @@ def ensure_token(
                         timeout=10,
                     )
                     if response.status_code == 200:
-                        print("Using existing API token", file=sys.stderr)
+                        click.echo("Using existing API token", err=True)
                         return token
                 except requests.exceptions.RequestException:
                     pass
-                print(
+                click.echo(
                     "Stored token is invalid, regenerating...",
-                    file=sys.stderr,
+                    err=True,
                 )
         except FileNotFoundError:
             pass
 
-    print("Creating API token...", file=sys.stderr)
+    click.echo("Creating API token...", err=True)
     response = requests.post(
         f"{base_url}/api/v1/users/{username}/tokens",
         auth=(username, password),
@@ -112,17 +113,17 @@ def ensure_token(
         timeout=10,
     )
     if response.status_code not in (200, 201):
-        print(
+        click.echo(
             f"ERROR: Failed to create API token: {response.text}",
-            file=sys.stderr,
+            err=True,
         )
         sys.exit(1)
 
     token = response.json().get("sha1")
     if not token:
-        print(
+        click.echo(
             f"ERROR: No token in response: {response.text}",
-            file=sys.stderr,
+            err=True,
         )
         sys.exit(1)
 
@@ -131,7 +132,7 @@ def ensure_token(
             f.write(token)
         os.chmod(token_file, 0o600)
 
-    print("API token created", file=sys.stderr)
+    click.echo("API token created", err=True)
     return token
 
 
@@ -150,15 +151,15 @@ def create_user_token(
     )
     if response.status_code not in (200, 201):
         if "has been used already" in response.text:
-            print(
+            click.echo(
                 f"  Token already exists for {username}, skipping",
-                file=sys.stderr,
+                err=True,
             )
         else:
-            print(
+            click.echo(
                 f"  ERROR: Failed to create token for {username} "
                 f"(HTTP {response.status_code}): {response.text}",
-                file=sys.stderr,
+                err=True,
             )
         return ""
     return response.json().get("sha1", "")

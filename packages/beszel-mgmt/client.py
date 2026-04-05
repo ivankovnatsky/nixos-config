@@ -1,8 +1,9 @@
 """Beszel API client for authentication and system management."""
 
-import sys
 import json
 import re
+
+import click
 import requests
 
 USER_AGENT = "beszel-mgmt/1.0.0"
@@ -49,7 +50,7 @@ class BeszelClient:
                 raise Exception("No user ID received from authentication")
 
             self.headers["Authorization"] = self.token
-            print("Authenticated successfully", file=sys.stderr)
+            click.echo("Authenticated successfully", err=True)
 
         except requests.exceptions.RequestException as e:
             raise Exception(f"Authentication network error: {e}")
@@ -71,13 +72,13 @@ class BeszelClient:
             if response.status_code not in (200, 201):
                 try:
                     error_data = response.json()
-                    print(f"DEBUG: Error response: {error_data}", file=sys.stderr)
+                    click.echo(f"DEBUG: Error response: {error_data}", err=True)
                     message = error_data.get("message", "Unknown error")
                     raise Exception(
                         f"API error: {message} (Status: {response.status_code})"
                     )
                 except ValueError:
-                    print(f"DEBUG: Response text: {response.text}", file=sys.stderr)
+                    click.echo(f"DEBUG: Response text: {response.text}", err=True)
                     raise Exception(
                         f"API request failed with status {response.status_code}"
                     )
@@ -167,12 +168,12 @@ class BeszelClient:
 
                 # Check if webhook already exists
                 if shoutrrr_url in webhooks:
-                    print("Discord webhook already configured", file=sys.stderr)
+                    click.echo("Discord webhook already configured", err=True)
                     return
 
                 # Add Discord webhook
                 webhooks.append(shoutrrr_url)
-                print("Adding Discord webhook to existing settings", file=sys.stderr)
+                click.echo("Adding Discord webhook to existing settings", err=True)
 
                 # Update user settings
                 updated_settings = {"emails": emails, "webhooks": webhooks}
@@ -182,12 +183,10 @@ class BeszelClient:
                     f"/api/collections/user_settings/records/{user_settings['id']}",
                     data={"settings": updated_settings},
                 )
-                print("Discord webhook configured successfully", file=sys.stderr)
+                click.echo("Discord webhook configured successfully", err=True)
             else:
                 # Create new user settings
-                print(
-                    "Creating new user settings with Discord webhook", file=sys.stderr
-                )
+                click.echo("Creating new user settings with Discord webhook", err=True)
                 settings = {"emails": [], "webhooks": [shoutrrr_url]}
 
                 self._api_call(
@@ -195,7 +194,7 @@ class BeszelClient:
                     "/api/collections/user_settings/records",
                     data={"user": self.user_id, "settings": settings},
                 )
-                print("Discord webhook configured successfully", file=sys.stderr)
+                click.echo("Discord webhook configured successfully", err=True)
 
         except Exception as e:
             raise Exception(f"Failed to setup Discord notification: {e}")
@@ -223,12 +222,12 @@ class BeszelClient:
         desired_systems = {s["name"]: s for s in config["systems"]}
         current_systems = {s["name"]: s for s in self.list_systems()}
 
-        print("\nSync Plan:", file=sys.stderr)
-        print(f"  Desired systems: {len(desired_systems)}", file=sys.stderr)
-        print(f"  Current systems: {len(current_systems)}", file=sys.stderr)
+        click.echo("\nSync Plan:", err=True)
+        click.echo(f"  Desired systems: {len(desired_systems)}", err=True)
+        click.echo(f"  Current systems: {len(current_systems)}", err=True)
 
         if dry_run:
-            print("\nDry-run mode - no changes will be made\n", file=sys.stderr)
+            click.echo("\nDry-run mode - no changes will be made\n", err=True)
 
         # Create or update systems
         for name, desired in desired_systems.items():
@@ -239,7 +238,7 @@ class BeszelClient:
                 ) or desired.get("port", "45876") != current.get("port")
 
                 if needs_update:
-                    print(f"  UPDATE: {name}", file=sys.stderr)
+                    click.echo(f"  UPDATE: {name}", err=True)
                     if not dry_run:
                         self.update_system(
                             current["id"],
@@ -247,9 +246,9 @@ class BeszelClient:
                             port=desired.get("port", "45876"),
                         )
                 else:
-                    print(f"  OK: {name} (no changes)", file=sys.stderr)
+                    click.echo(f"  OK: {name} (no changes)", err=True)
             else:
-                print(f"  CREATE: {name}", file=sys.stderr)
+                click.echo(f"  CREATE: {name}", err=True)
                 if not dry_run:
                     self.create_system(
                         name=name,
@@ -262,11 +261,11 @@ class BeszelClient:
         if extra_systems:
             for name in extra_systems:
                 system_id = current_systems[name]["id"]
-                print(f"  DELETE: {name}", file=sys.stderr)
+                click.echo(f"  DELETE: {name}", err=True)
                 if not dry_run:
                     self.delete_system(system_id)
 
         if dry_run:
-            print("\nDry-run complete - no changes made.", file=sys.stderr)
+            click.echo("\nDry-run complete - no changes made.", err=True)
         else:
-            print("\nSync complete!", file=sys.stderr)
+            click.echo("\nSync complete!", err=True)

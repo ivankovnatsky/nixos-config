@@ -14,12 +14,13 @@ Dry-run by default. Use --delete to actually remove files.
 2026-02-19: Initial implementation with .venv and node_modules.
 """
 
-import argparse
 import os
 import shutil
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
+
+import click
 
 TARGET_DIRS = [".venv", "node_modules"]
 
@@ -105,7 +106,7 @@ def print_report(results: list[TargetResult], home: Path) -> int:
             continue
 
         grand_total += result.total_size
-        print(
+        click.echo(
             f"\n{result.name}/ — {format_size(result.total_size)}"
             f"  ({result.total_count} files, {len(result.findings)} dirs)"
         )
@@ -113,12 +114,12 @@ def print_report(results: list[TargetResult], home: Path) -> int:
         top = sorted(result.findings, key=lambda f: f.size, reverse=True)[:5]
         for finding in top:
             rel = finding.path.relative_to(home)
-            print(f"  {rel}  ({format_size(finding.size)})")
+            click.echo(f"  {rel}  ({format_size(finding.size)})")
         if len(result.findings) > 5:
-            print(f"  ... and {len(result.findings) - 5} more")
+            click.echo(f"  ... and {len(result.findings) - 5} more")
 
-    print()
-    print(f"Total reclaimable: {format_size(grand_total)}")
+    click.echo()
+    click.echo(f"Total reclaimable: {format_size(grand_total)}")
 
     return grand_total
 
@@ -132,20 +133,17 @@ def delete_targets(results: list[TargetResult]) -> tuple[int, int]:
             try:
                 shutil.rmtree(finding.path)
                 deleted += finding.size
-                print(f"  Removed: {finding.path}")
+                click.echo(f"  Removed: {finding.path}")
             except (PermissionError, OSError) as e:
                 errors += 1
-                print(f"  Error removing {finding.path}: {e}", file=sys.stderr)
+                click.echo(f"  Error removing {finding.path}: {e}", err=True)
 
     return deleted, errors
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(
-        prog="cleanup-home",
-        description="Clean regenerable build artifacts from home directory.",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
+@click.command(
+    name="cleanup-home",
+    epilog="""\b
 WARNING: This tool is beta and not fully tested. Review dry-run output
 carefully before using --delete.
 
@@ -157,38 +155,37 @@ Examples:
   cleanup-home                 # Scan and show what can be cleaned
   cleanup-home --delete        # Actually delete artifacts
 """,
-    )
-    parser.add_argument(
-        "--delete",
-        action="store_true",
-        help="Actually delete files (default is dry-run)",
-    )
-
-    args = parser.parse_args()
+)
+@click.option(
+    "--delete",
+    is_flag=True,
+    default=False,
+    help="Actually delete files (default is dry-run)",
+)
+def main(delete: bool) -> None:
+    """Clean regenerable build artifacts from home directory."""
     home = Path.home()
 
-    print(f"Scanning {home} ...")
+    click.echo(f"Scanning {home} ...")
     results = scan(home)
 
     grand_total = print_report(results, home)
 
     if grand_total == 0:
-        print("Nothing to clean.")
-        return 0
+        click.echo("Nothing to clean.")
+        sys.exit(0)
 
-    if not args.delete:
-        print("\nDry-run mode. Use --delete to remove.")
-        return 0
+    if not delete:
+        click.echo("\nDry-run mode. Use --delete to remove.")
+        sys.exit(0)
 
-    print("\nDeleting...")
+    click.echo("\nDeleting...")
     deleted, errors = delete_targets(results)
-    print(f"\nDeleted: {format_size(deleted)}")
+    click.echo(f"\nDeleted: {format_size(deleted)}")
     if errors:
-        print(f"Errors: {errors}", file=sys.stderr)
-        return 1
-
-    return 0
+        click.echo(f"Errors: {errors}", err=True)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

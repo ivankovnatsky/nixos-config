@@ -1,88 +1,131 @@
 """CLI argument parsing and main entry point for uptime-kuma-mgmt."""
 
+import os
 import sys
-import argparse
 
+import click
 from uptime_kuma_api import UptimeKumaException
 
-from auth import add_auth_args, validate_auth_args
+from auth import read_secret
 from client import UptimeKumaClient
 from commands import cmd_list, cmd_get, cmd_sync
+from constants import (
+    ENV_BASE_URL,
+    ENV_USERNAME,
+    ENV_PASSWORD,
+    DEFAULT_USERNAME_PATH,
+    DEFAULT_PASSWORD_PATH,
+)
 
 
+def auth_options(f):
+    """Decorator that adds common authentication options to a command."""
+    f = click.option(
+        "--password",
+        default=lambda: read_secret(ENV_PASSWORD, DEFAULT_PASSWORD_PATH),
+        help=f"Password (or set {ENV_PASSWORD}, default: {DEFAULT_PASSWORD_PATH})",
+    )(f)
+    f = click.option(
+        "--username",
+        default=lambda: read_secret(ENV_USERNAME, DEFAULT_USERNAME_PATH),
+        help=f"Username (or set {ENV_USERNAME}, default: {DEFAULT_USERNAME_PATH})",
+    )(f)
+    f = click.option(
+        "--base-url",
+        default=lambda: os.environ.get(ENV_BASE_URL),
+        help=f"Uptime Kuma base URL (or set {ENV_BASE_URL})",
+    )(f)
+    return f
+
+
+def validate_auth(base_url, username, password):
+    """Validate that all required auth arguments are provided."""
+    missing = []
+    if not base_url:
+        missing.append(f"--base-url or {ENV_BASE_URL}")
+    if not username:
+        missing.append(f"--username or {ENV_USERNAME}")
+    if not password:
+        missing.append(f"--password or {ENV_PASSWORD}")
+    if missing:
+        raise click.UsageError(f"Missing required arguments: {', '.join(missing)}")
+
+
+@click.group()
 def main():
-    parser = argparse.ArgumentParser(
-        prog="uptime-kuma-mgmt", description="Uptime Kuma monitor management tool"
-    )
+    """Uptime Kuma monitor management tool."""
 
-    subparsers = parser.add_subparsers(
-        dest="command", required=True, help="Command to execute"
-    )
 
-    # List command
-    list_parser = subparsers.add_parser("list", help="List all monitors")
-    add_auth_args(list_parser)
-    list_parser.add_argument(
-        "--output-format",
-        choices=["table", "json"],
-        default="table",
-        help="Output format",
-    )
-
-    # Get command
-    get_parser = subparsers.add_parser("get", help="Get monitor details")
-    add_auth_args(get_parser)
-    get_parser.add_argument("--monitor-id", required=True, type=int, help="Monitor ID")
-
-    # Sync command (declarative configuration)
-    sync_parser = subparsers.add_parser(
-        "sync", help="Sync monitors from configuration file"
-    )
-    add_auth_args(sync_parser)
-    sync_parser.add_argument(
-        "--config-file", required=True, help="JSON configuration file"
-    )
-    sync_parser.add_argument(
-        "--discord-webhook", help="Discord webhook URL for notifications"
-    )
-    sync_parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Show what would be changed without making changes",
-    )
-
-    args = parser.parse_args()
-    validate_auth_args(args)
-
+@main.command("list")
+@auth_options
+@click.option(
+    "--output-format",
+    type=click.Choice(["table", "json"]),
+    default="table",
+    help="Output format",
+)
+def cmd_list_cli(base_url, username, password, output_format):
+    """List all monitors."""
+    validate_auth(base_url, username, password)
     try:
-        with UptimeKumaClient(args.base_url, args.username, args.password) as client:
-            if args.command == "list":
-                cmd_list(args, client)
-            elif args.command == "get":
-                cmd_get(args, client)
-            elif args.command == "sync":
-                cmd_sync(args, client)
+        with UptimeKumaClient(base_url, username, password) as client:
+            cmd_list(output_format, client)
     except UptimeKumaException:
-        print(
-            f"Error: Failed to connect to Uptime Kuma at {args.base_url}",
-            file=sys.stderr,
-        )
-        print("  Please verify the server is running and accessible.", file=sys.stderr)
+        click.echo(f"Error: Failed to connect to Uptime Kuma at {base_url}", err=True)
+        click.echo("  Please verify the server is running and accessible.", err=True)
         sys.exit(1)
     except Exception as e:
-        error_msg = str(e)
-        if (
-            "Connection refused" in error_msg
-            or "unable to connect" in error_msg.lower()
-        ):
-            print(
-                f"Error: Failed to connect to Uptime Kuma at {args.base_url}",
-                file=sys.stderr,
-            )
-            print(
-                "  Please verify the server is running and accessible.",
-                file=sys.stderr,
-            )
-        else:
-            print(f"Error: {e}", file=sys.stderr)
+        _handle_exception(e, base_url)
+
+
+@main.command("get")
+@auth_options
+@click.option("--monitor-id", required=True, type=int, help="Monitor ID")
+def cmd_get_cli(base_url, username, password, monitor_id):
+    """Get monitor details."""
+    validate_auth(base_url, username, password)
+    try:
+        with UptimeKumaClient(base_url, username, password) as client:
+            cmd_get(monitor_id, client)
+    except UptimeKumaException:
+        click.echo(f"Error: Failed to connect to Uptime Kuma at {base_url}", err=True)
+        click.echo("  Please verify the server is running and accessible.", err=True)
         sys.exit(1)
+    except Exception as e:
+        _handle_exception(e, base_url)
+
+
+@main.command("sync")
+@auth_options
+@click.option("--config-file", required=True, help="JSON configuration file")
+@click.option(
+    "--discord-webhook", default=None, help="Discord webhook URL for notifications"
+)
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    help="Show what would be changed without making changes",
+)
+def cmd_sync_cli(base_url, username, password, config_file, discord_webhook, dry_run):
+    """Sync monitors from configuration file."""
+    validate_auth(base_url, username, password)
+    try:
+        with UptimeKumaClient(base_url, username, password) as client:
+            cmd_sync(config_file, dry_run, discord_webhook, client)
+    except UptimeKumaException:
+        click.echo(f"Error: Failed to connect to Uptime Kuma at {base_url}", err=True)
+        click.echo("  Please verify the server is running and accessible.", err=True)
+        sys.exit(1)
+    except Exception as e:
+        _handle_exception(e, base_url)
+
+
+def _handle_exception(e, base_url):
+    """Handle generic exceptions with connection-aware messaging."""
+    error_msg = str(e)
+    if "Connection refused" in error_msg or "unable to connect" in error_msg.lower():
+        click.echo(f"Error: Failed to connect to Uptime Kuma at {base_url}", err=True)
+        click.echo("  Please verify the server is running and accessible.", err=True)
+    else:
+        click.echo(f"Error: {e}", err=True)
+    sys.exit(1)

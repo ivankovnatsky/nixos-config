@@ -1,28 +1,21 @@
 #!/usr/bin/env python3
 """Unstage and restore file(s) to HEAD in a single command."""
 
-import argparse
 import subprocess
 import sys
 
+import click
 
-def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Unstage and restore file(s) to HEAD (git restore --staged --worktree).",
-    )
-    parser.add_argument(
-        "files",
-        nargs="+",
-        help="File(s) to unstage and restore",
-    )
 
-    args = parser.parse_args()
-
+@click.command()
+@click.argument("files", nargs=-1, required=True)
+def main(files) -> None:
+    """Unstage and restore file(s) to HEAD (git restore --staged --worktree)."""
     result = subprocess.run(
-        ["git", "restore", "--staged", "--worktree", "--", *args.files],
+        ["git", "restore", "--staged", "--worktree", "--", *files],
     )
-    return result.returncode
+    sys.exit(result.returncode)
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

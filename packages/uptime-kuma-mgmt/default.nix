@@ -6,6 +6,7 @@ in
 pkgs.writeShellScriptBin "uptime-kuma-mgmt" ''
   exec ${
     pkgs.python3.withPackages (ps: [
+      ps.click
       ps.uptime-kuma-api
       ps.requests
       ps.websocket-client

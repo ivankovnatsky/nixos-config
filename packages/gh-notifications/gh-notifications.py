@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import argparse
 import json
 import re
 import subprocess
@@ -8,6 +7,8 @@ import sys
 import webbrowser
 from dataclasses import dataclass
 from typing import Iterable, List, Tuple
+
+import click
 
 
 @dataclass
@@ -441,42 +442,41 @@ def collect_urls(
     return result
 
 
-def main(argv: List[str]) -> int:
-    parser = argparse.ArgumentParser(
-        prog="open-gh-notifications",
-        description=(
-            "Open unread GitHub notifications in your browser using gh CLI. "
-            "Deep-links to the triggering event (comment, review, merge, etc). "
-            "Threads are marked as read after opening."
-        ),
-    )
-    parser.add_argument(
-        "-s",
-        "--show",
-        action="store_true",
-        help="Only print the URLs that would be opened (no browser, no marking read)",
-    )
-    args = parser.parse_args(argv)
-
+@click.command(
+    name="open-gh-notifications",
+    help=(
+        "Open unread GitHub notifications in your browser using gh CLI. "
+        "Deep-links to the triggering event (comment, review, merge, etc). "
+        "Threads are marked as read after opening."
+    ),
+)
+@click.option(
+    "-s",
+    "--show",
+    is_flag=True,
+    default=False,
+    help="Only print the URLs that would be opened (no browser, no marking read)",
+)
+def main(show: bool) -> None:
     try:
         notifications = fetch_notifications()
     except Exception as e:
-        print(f"Failed to fetch notifications via gh: {e}", file=sys.stderr)
-        return 1
+        click.echo(f"Failed to fetch notifications via gh: {e}", err=True)
+        sys.exit(1)
 
     url_pairs = collect_urls(notifications)
 
     if not url_pairs:
-        print("No notifications found.")
-        return 0
+        click.echo("No notifications found.")
+        return
 
-    print("URLs to open:")
+    click.echo("URLs to open:")
     for url, _ in url_pairs:
-        print(url)
+        click.echo(url)
 
-    if args.show:
-        print("Would open URLs in a new browser window")
-        return 0
+    if show:
+        click.echo("Would open URLs in a new browser window")
+        return
 
     for url, thread_id in url_pairs:
         opened = open_in_browser(url)
@@ -484,14 +484,13 @@ def main(argv: List[str]) -> int:
             try:
                 mark_thread_read(thread_id)
             except Exception as e:
-                print(
+                click.echo(
                     f"Warning: failed to mark thread {thread_id} read: {e}",
-                    file=sys.stderr,
+                    err=True,
                 )
 
-    print("Opening URLs in a new browser window")
-    return 0
+    click.echo("Opening URLs in a new browser window")
 
 
 if __name__ == "__main__":
-    raise SystemExit(main(sys.argv[1:]))
+    main()

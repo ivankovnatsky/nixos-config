@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Manage homelab machines (power on/off Mini)."""
 
-import argparse
 import subprocess
 import sys
 import time
+
+import click
 
 MINI_IP = "192.168.50.4"
 MINI_USER = "ivan"
@@ -66,7 +67,7 @@ def check_service(name: str, command: str) -> bool:
 
 def wait_for_services() -> bool:
     """Wait for all services to be ready."""
-    print("Waiting for services to come up...")
+    click.echo("Waiting for services to come up...")
     start_time = time.time()
     ready_services: set[str] = set()
 
@@ -76,19 +77,19 @@ def wait_for_services() -> bool:
             if name in ready_services:
                 continue
             if check_service(name, command):
-                print(f"  ✓ {name} is ready")
+                click.echo(f"  ✓ {name} is ready")
                 ready_services.add(name)
             else:
                 pending.append(name)
 
         if not pending:
-            print("All services are ready!")
+            click.echo("All services are ready!")
             return True
 
-        print(f"  Waiting for: {', '.join(pending)}...")
+        click.echo(f"  Waiting for: {', '.join(pending)}...")
         time.sleep(RETRY_INTERVAL)
 
-    print("Timeout waiting for services.")
+    click.echo("Timeout waiting for services.")
     return False
 
 
@@ -102,7 +103,7 @@ def wait_for_network() -> None:
         )
         if result.returncode == 0:
             return
-        print(f"Waiting for network... (attempt {attempt})")
+        click.echo(f"Waiting for network... (attempt {attempt})")
         time.sleep(RETRY_INTERVAL)
         attempt += 1
 
@@ -124,9 +125,11 @@ def power_on() -> int:
     # FileVault unlock with retry on wrong password
     for attempt in range(1, MAX_UNLOCK_ATTEMPTS + 1):
         if attempt > 1:
-            print(f"\nRetrying unlock... (attempt {attempt}/{MAX_UNLOCK_ATTEMPTS})")
+            click.echo(
+                f"\nRetrying unlock... (attempt {attempt}/{MAX_UNLOCK_ATTEMPTS})"
+            )
         else:
-            print(f"Attempting to unlock Mini at {MINI_IP}...")
+            click.echo(f"Attempting to unlock Mini at {MINI_IP}...")
 
         # Interactive SSH for FileVault unlock prompt
         # Note: FileVault unlock always closes the connection after success,
@@ -140,13 +143,13 @@ def power_on() -> int:
         if not is_filevault_locked():
             break
 
-        print("Unlock failed (wrong password?).")
+        click.echo("Unlock failed (wrong password?).")
     else:
-        print(f"Failed to unlock after {MAX_UNLOCK_ATTEMPTS} attempts.")
+        click.echo(f"Failed to unlock after {MAX_UNLOCK_ATTEMPTS} attempts.")
         return 1
 
     # Wait for system to boot after FileVault unlock
-    print("Waiting for Mini to boot...")
+    click.echo("Waiting for Mini to boot...")
     time.sleep(RETRY_INTERVAL)
 
     # Now wait for SSH to be ready with key-based auth
@@ -155,11 +158,11 @@ def power_on() -> int:
         result = ssh_run("echo 'Connected'", batch_mode=True, capture_output=True)
         if result.returncode == 0:
             break
-        print(f"Waiting for SSH... (attempt {attempt})")
+        click.echo(f"Waiting for SSH... (attempt {attempt})")
         time.sleep(RETRY_INTERVAL)
         attempt += 1
 
-    print("Mini is now unlocked and accessible.")
+    click.echo("Mini is now unlocked and accessible.")
 
     response = read_tty("Open Screen Sharing? [Y/n] ")
     if response.lower() not in ("n", "no"):
@@ -187,21 +190,21 @@ def power_on() -> int:
             check=False,
         )
     else:
-        print("Skipping Screen Sharing.")
+        click.echo("Skipping Screen Sharing.")
 
     read_tty("Press Enter after unlocking Mini via Screen Sharing... ")
     subprocess.run(["dns", MINI_IP], check=False)
 
     wait_for_services()
 
-    print("\nMonitor status:")
+    click.echo("\nMonitor status:")
     try:
         subprocess.run(
             ["uptime-kuma-mgmt", "list", "--base-url", f"http://{MINI_IP}:3001"],
             check=False,
         )
     except FileNotFoundError:
-        print("  (uptime-kuma-mgmt not available)")
+        click.echo("  (uptime-kuma-mgmt not available)")
     return 0
 
 
@@ -213,46 +216,46 @@ def is_mini_up() -> bool:
 
 def power_off() -> int:
     """Power off Mini."""
-    print("Clearing local DNS settings before shutting down Mini...")
+    click.echo("Clearing local DNS settings before shutting down Mini...")
     result = subprocess.run(["dns", "clear"], check=False)
     if result.returncode != 0:
-        print("Warning: Failed to clear DNS settings")
+        click.echo("Warning: Failed to clear DNS settings")
 
-    print(f"Shutting down Mini at {MINI_IP}...")
+    click.echo(f"Shutting down Mini at {MINI_IP}...")
     # Don't check return code - shutdown closes the connection which causes
     # SSH to return non-zero (255), but that's expected behavior
     ssh_run("sudo shutdown -h now")
 
-    print("Mini shutdown initiated.")
+    click.echo("Mini shutdown initiated.")
     return 0
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(
-        prog="homelab",
-        description="Manage homelab machines. Run without arguments to toggle Mini on/off.",
-    )
-    subparsers = parser.add_subparsers(dest="command", help="Available commands")
-
-    subparsers.add_parser("on", help="Power on and unlock Mini")
-    subparsers.add_parser("off", help="Power off Mini")
-
-    args = parser.parse_args()
-
-    if args.command == "on":
-        return power_on()
-    elif args.command == "off":
-        return power_off()
-    else:
+@click.group(invoke_without_command=True)
+@click.pass_context
+def main(ctx: click.Context) -> None:
+    """Manage homelab machines. Run without arguments to toggle Mini on/off."""
+    if ctx.invoked_subcommand is None:
         # Toggle: check current state and switch
-        print("Checking Mini status...")
+        click.echo("Checking Mini status...")
         if is_mini_up():
-            print("Mini is up, powering off...")
-            return power_off()
+            click.echo("Mini is up, powering off...")
+            sys.exit(power_off())
         else:
-            print("Mini is down, powering on...")
-            return power_on()
+            click.echo("Mini is down, powering on...")
+            sys.exit(power_on())
+
+
+@main.command()
+def on() -> None:
+    """Power on and unlock Mini."""
+    sys.exit(power_on())
+
+
+@main.command()
+def off() -> None:
+    """Power off Mini."""
+    sys.exit(power_off())
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

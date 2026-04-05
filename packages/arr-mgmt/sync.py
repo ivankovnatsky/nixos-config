@@ -1,6 +1,6 @@
 """Sync logic for *arr services (Radarr, Sonarr, Prowlarr)."""
 
-import sys
+import click
 
 from clients import ArrClient, ProwlarrClient
 
@@ -24,87 +24,87 @@ def sync_radarr(config, dry_run=False):
     """Sync Radarr configuration."""
     client = ArrClient(config["baseUrl"], config["apiKey"])
 
-    print("", file=sys.stderr)
-    print("=== Radarr Sync ===", file=sys.stderr)
+    click.echo("", err=True)
+    click.echo("=== Radarr Sync ===", err=True)
 
     # Sync host configuration (bind address, port, etc.)
     if "hostConfig" in config:
-        print("", file=sys.stderr)
-        print("Syncing host configuration...", file=sys.stderr)
+        click.echo("", err=True)
+        click.echo("Syncing host configuration...", err=True)
         _sync_host_config(client, config["hostConfig"], dry_run)
 
     # Sync download clients
     if "downloadClients" in config:
-        print("", file=sys.stderr)
-        print("Syncing download clients...", file=sys.stderr)
+        click.echo("", err=True)
+        click.echo("Syncing download clients...", err=True)
         _sync_downloadclients(client, config["downloadClients"], "radarr", dry_run)
 
     # Sync root folders
     if "rootFolders" in config:
-        print("", file=sys.stderr)
-        print("Syncing root folders...", file=sys.stderr)
+        click.echo("", err=True)
+        click.echo("Syncing root folders...", err=True)
         _sync_rootfolders(client, config["rootFolders"], dry_run)
 
-    print("", file=sys.stderr)
-    print("Radarr sync complete!", file=sys.stderr)
+    click.echo("", err=True)
+    click.echo("Radarr sync complete!", err=True)
 
 
 def sync_sonarr(config, dry_run=False):
     """Sync Sonarr configuration."""
     client = ArrClient(config["baseUrl"], config["apiKey"])
 
-    print("", file=sys.stderr)
-    print("=== Sonarr Sync ===", file=sys.stderr)
+    click.echo("", err=True)
+    click.echo("=== Sonarr Sync ===", err=True)
 
     # Sync host configuration (bind address, port, etc.)
     if "hostConfig" in config:
-        print("", file=sys.stderr)
-        print("Syncing host configuration...", file=sys.stderr)
+        click.echo("", err=True)
+        click.echo("Syncing host configuration...", err=True)
         _sync_host_config(client, config["hostConfig"], dry_run)
 
     # Sync download clients
     if "downloadClients" in config:
-        print("", file=sys.stderr)
-        print("Syncing download clients...", file=sys.stderr)
+        click.echo("", err=True)
+        click.echo("Syncing download clients...", err=True)
         _sync_downloadclients(client, config["downloadClients"], "sonarr", dry_run)
 
     # Sync root folders
     if "rootFolders" in config:
-        print("", file=sys.stderr)
-        print("Syncing root folders...", file=sys.stderr)
+        click.echo("", err=True)
+        click.echo("Syncing root folders...", err=True)
         _sync_rootfolders(client, config["rootFolders"], dry_run)
 
-    print("", file=sys.stderr)
-    print("Sonarr sync complete!", file=sys.stderr)
+    click.echo("", err=True)
+    click.echo("Sonarr sync complete!", err=True)
 
 
 def sync_prowlarr(config, dry_run=False):
     """Sync Prowlarr configuration."""
     client = ProwlarrClient(config["baseUrl"], config["apiKey"])
 
-    print("", file=sys.stderr)
-    print("=== Prowlarr Sync ===", file=sys.stderr)
+    click.echo("", err=True)
+    click.echo("=== Prowlarr Sync ===", err=True)
 
     # Sync host configuration (bind address, port, etc.)
     if "hostConfig" in config:
-        print("", file=sys.stderr)
-        print("Syncing host configuration...", file=sys.stderr)
+        click.echo("", err=True)
+        click.echo("Syncing host configuration...", err=True)
         _sync_host_config(client, config["hostConfig"], dry_run)
 
     # Sync indexers
     if "indexers" in config:
-        print("", file=sys.stderr)
-        print("Syncing indexers...", file=sys.stderr)
+        click.echo("", err=True)
+        click.echo("Syncing indexers...", err=True)
         _sync_indexers(client, config["indexers"], dry_run)
 
     # Sync applications
     if "applications" in config:
-        print("", file=sys.stderr)
-        print("Syncing applications...", file=sys.stderr)
+        click.echo("", err=True)
+        click.echo("Syncing applications...", err=True)
         _sync_applications(client, config["applications"], dry_run)
 
-    print("", file=sys.stderr)
-    print("Prowlarr sync complete!", file=sys.stderr)
+    click.echo("", err=True)
+    click.echo("Prowlarr sync complete!", err=True)
 
 
 def _sync_host_config(client, desired_config: dict, dry_run: bool):
@@ -124,7 +124,7 @@ def _sync_host_config(client, desired_config: dict, dry_run: bool):
             update_parts.append(f"bindAddress: {current_bind} -> {desired_bind}")
 
     if needs_update:
-        print(f"  UPDATE: host config ({', '.join(update_parts)})", file=sys.stderr)
+        click.echo(f"  UPDATE: host config ({', '.join(update_parts)})", err=True)
         if not dry_run:
             # Update only the fields we want to change, preserve rest
             update_data = current_config.copy()
@@ -132,7 +132,7 @@ def _sync_host_config(client, desired_config: dict, dry_run: bool):
                 update_data["bindAddress"] = desired_config["bindAddress"]
             client.update_host_config(update_data)
     else:
-        print("  OK: host config (no changes)", file=sys.stderr)
+        click.echo("  OK: host config (no changes)", err=True)
 
 
 def _sync_downloadclients(
@@ -169,16 +169,16 @@ def _sync_downloadclients(
                         update_parts.append(field_name)
 
             if needs_update:
-                print(f"  UPDATE: {name} ({', '.join(update_parts)})", file=sys.stderr)
+                click.echo(f"  UPDATE: {name} ({', '.join(update_parts)})", err=True)
                 if not dry_run:
                     # Build full update payload
                     update_data = current.copy()
                     update_data["fields"] = new_fields
                     client.update_downloadclient(current["id"], update_data)
             else:
-                print(f"  OK: {name} (no changes)", file=sys.stderr)
+                click.echo(f"  OK: {name} (no changes)", err=True)
         else:
-            print(f"  CREATE: {name}", file=sys.stderr)
+            click.echo(f"  CREATE: {name}", err=True)
             if not dry_run:
                 # Build create payload
                 create_data = {
@@ -207,16 +207,16 @@ def _sync_rootfolders(client: ArrClient, desired_folders: list, dry_run: bool):
     # Delete root folders not in desired config
     for path, current in current_folders.items():
         if path not in desired_folders_set:
-            print(f"  DELETE: {path} (not in config)", file=sys.stderr)
+            click.echo(f"  DELETE: {path} (not in config)", err=True)
             if not dry_run:
                 client.delete_rootfolder(current["id"])
 
     # Create missing root folders
     for desired_path in desired_folders:
         if desired_path in current_folders:
-            print(f"  OK: {desired_path} (already exists)", file=sys.stderr)
+            click.echo(f"  OK: {desired_path} (already exists)", err=True)
         else:
-            print(f"  CREATE: {desired_path}", file=sys.stderr)
+            click.echo(f"  CREATE: {desired_path}", err=True)
             if not dry_run:
                 client.create_rootfolder(desired_path)
 
@@ -264,16 +264,16 @@ def _sync_applications(client: ProwlarrClient, desired_apps: list, dry_run: bool
                 update_parts.append("syncLevel")
 
             if needs_update:
-                print(f"  UPDATE: {name} ({', '.join(update_parts)})", file=sys.stderr)
+                click.echo(f"  UPDATE: {name} ({', '.join(update_parts)})", err=True)
                 if not dry_run:
                     update_data = current.copy()
                     update_data["syncLevel"] = desired.get("syncLevel", "fullSync")
                     update_data["fields"] = new_fields
                     client.update_application(current["id"], update_data)
             else:
-                print(f"  OK: {name} (no changes)", file=sys.stderr)
+                click.echo(f"  OK: {name} (no changes)", err=True)
         else:
-            print(f"  CREATE: {name}", file=sys.stderr)
+            click.echo(f"  CREATE: {name}", err=True)
             if not dry_run:
                 # Determine implementation based on name
                 implementation = "Radarr" if "radarr" in name.lower() else "Sonarr"
@@ -311,7 +311,7 @@ def _sync_indexers(client: ProwlarrClient, desired_indexers: list, dry_run: bool
     # Delete indexers not in desired config
     for name, current in current_indexers.items():
         if name not in desired_indexers_map:
-            print(f"  DELETE: {name} (not in config)", file=sys.stderr)
+            click.echo(f"  DELETE: {name} (not in config)", err=True)
             if not dry_run:
                 client.delete_indexer(current["id"])
 
@@ -339,26 +339,26 @@ def _sync_indexers(client: ProwlarrClient, desired_indexers: list, dry_run: bool
                 )
 
             if needs_update:
-                print(f"  UPDATE: {name} ({', '.join(update_parts)})", file=sys.stderr)
+                click.echo(f"  UPDATE: {name} ({', '.join(update_parts)})", err=True)
                 if not dry_run:
                     update_data = current.copy()
                     update_data["enable"] = desired.get("enable", True)
                     update_data["priority"] = desired.get("priority", 25)
                     client.update_indexer(current["id"], update_data)
             else:
-                print(f"  OK: {name} (no changes)", file=sys.stderr)
+                click.echo(f"  OK: {name} (no changes)", err=True)
         else:
             # Create new indexer
             if "definitionName" not in desired:
-                print(
+                click.echo(
                     f"  ERROR: {name} (missing definitionName - required for creation)",
-                    file=sys.stderr,
+                    err=True,
                 )
                 continue
 
-            print(
+            click.echo(
                 f"  CREATE: {name} (definitionName: {desired['definitionName']})",
-                file=sys.stderr,
+                err=True,
             )
             if not dry_run:
                 # Build create payload with implementation fields

@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """GitHub PR management tool for creating and merging pull requests."""
 
-import argparse
 import os
 import subprocess
 import sys
 import webbrowser
 from dataclasses import dataclass
+
+import click
 
 
 @dataclass
@@ -87,7 +88,7 @@ def cmd_create(config: Config) -> int:
         result = run_cmd(["git", "pull", "origin", default_branch], capture=False)
 
     if result.returncode != 0:
-        print("Failed to update branch")
+        click.echo("Failed to update branch")
         return 1
 
     # Push changes
@@ -95,7 +96,7 @@ def cmd_create(config: Config) -> int:
         ["git", "push", "--force-with-lease", "origin", head], capture=False
     )
     if result.returncode != 0:
-        print("Failed to push changes")
+        click.echo("Failed to push changes")
         return 1
 
     # Build gh pr create command
@@ -125,12 +126,12 @@ def cmd_create(config: Config) -> int:
 
     result = run_cmd(cmd, capture=False)
     if result.returncode == 0:
-        print("Pull request created successfully!")
+        click.echo("Pull request created successfully!")
         if config.draft:
             open_pr_in_browser()
         return 0
     else:
-        print("Failed to create pull request")
+        click.echo("Failed to create pull request")
         return 1
 
 
@@ -142,114 +143,117 @@ def cmd_merge(config: Config) -> int:
 
     result = run_cmd(cmd, capture=True)
     if result.returncode == 0:
-        print("Pull request merged successfully!")
+        click.echo("Pull request merged successfully!")
         open_pr_in_browser("files")
         return 0
     else:
-        print("Failed to merge pull request:")
-        print(result.stderr or result.stdout)
+        click.echo("Failed to merge pull request:")
+        click.echo(result.stderr or result.stdout)
         return 1
 
 
 def cmd_view() -> int:
     """View pull request files in browser."""
-    print("Opening pull request in browser...")
+    click.echo("Opening pull request in browser...")
     open_pr_in_browser("files")
     return 0
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(
-        prog="gh-pr",
-        description="GitHub PR management tool",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-    )
+@click.group()
+def cli():
+    """GitHub PR management tool."""
 
-    subparsers = parser.add_subparsers(dest="command", help="Commands")
 
-    # Create command
-    create_parser = subparsers.add_parser("create", help="Create a new pull request")
-    create_parser.add_argument(
-        "--assignee",
-        default="@me",
-        help="Specify the assignee for the pull request (default: @me)",
-    )
-    create_parser.add_argument(
-        "--reviewers", help="Specify the reviewers for the pull request"
-    )
-    create_parser.add_argument(
-        "--labels", help="Specify the label for the pull request"
-    )
-    create_parser.add_argument(
-        "--update",
-        choices=["rebase", "merge"],
-        default="rebase",
-        help="Specify the update strategy (default: rebase)",
-    )
-    create_parser.add_argument(
-        "--draft", action="store_true", help="Create a draft pull request"
-    )
-
-    # Merge command
-    merge_parser = subparsers.add_parser("merge", help="Merge an existing pull request")
-    merge_parser.add_argument(
-        "--strategy",
-        choices=["squash", "merge", "rebase"],
-        default="squash",
-        help="Specify the merge strategy (default: squash)",
-    )
-    merge_parser.add_argument(
-        "--admin",
-        "--bypass",
-        action="store_true",
-        help="Use administrator privileges to bypass merge queue requirements",
-    )
-
-    # View command
-    subparsers.add_parser("view", help="View pull request files in browser")
-
-    args = parser.parse_args()
-
-    if not args.command:
-        parser.print_help()
-        return 0
-
-    # Check if we're in a git repository
+@cli.command()
+@click.option(
+    "--assignee",
+    default="@me",
+    show_default=True,
+    help="Specify the assignee for the pull request",
+)
+@click.option(
+    "--reviewers", default="", help="Specify the reviewers for the pull request"
+)
+@click.option("--labels", default="", help="Specify the label for the pull request")
+@click.option(
+    "--update",
+    type=click.Choice(["rebase", "merge"]),
+    default="rebase",
+    show_default=True,
+    help="Specify the update strategy",
+)
+@click.option("--draft", is_flag=True, help="Create a draft pull request")
+def create(assignee, reviewers, labels, update, draft):
+    """Create a new pull request."""
     if not check_git_repo():
-        print("Error: Not in a git repository")
-        return 1
-
-    # Check if we're on main or master branch
+        raise click.ClickException("Not in a git repository")
     current_branch = get_current_branch()
     if current_branch in ("main", "master"):
-        print(
-            f"Error: You are on the {current_branch} branch. "
+        raise click.ClickException(
+            f"You are on the {current_branch} branch. "
             "This script cannot be run on main or master branches."
         )
-        return 1
-
-    # Unset GitHub tokens to use gh CLI authentication
     unset_github_tokens()
 
-    # Build config from args
-    config = Config()
+    config = Config(
+        assignee=assignee,
+        reviewer=reviewers or "",
+        label=labels or "",
+        update=update,
+        draft=draft,
+    )
+    sys.exit(cmd_create(config))
 
-    if args.command == "create":
-        config.assignee = args.assignee
-        config.reviewer = args.reviewers or ""
-        config.label = args.labels or ""
-        config.update = args.update
-        config.draft = args.draft
-        return cmd_create(config)
 
-    elif args.command == "merge":
-        config.strategy = args.strategy
-        config.admin = args.admin
-        return cmd_merge(config)
+@cli.command()
+@click.option(
+    "--strategy",
+    type=click.Choice(["squash", "merge", "rebase"]),
+    default="squash",
+    show_default=True,
+    help="Specify the merge strategy",
+)
+@click.option(
+    "--admin",
+    "--bypass",
+    "admin",
+    is_flag=True,
+    help="Use administrator privileges to bypass merge queue requirements",
+)
+def merge(strategy, admin):
+    """Merge an existing pull request."""
+    if not check_git_repo():
+        raise click.ClickException("Not in a git repository")
+    current_branch = get_current_branch()
+    if current_branch in ("main", "master"):
+        raise click.ClickException(
+            f"You are on the {current_branch} branch. "
+            "This script cannot be run on main or master branches."
+        )
+    unset_github_tokens()
 
-    elif args.command == "view":
-        return cmd_view()
+    config = Config(strategy=strategy, admin=admin)
+    sys.exit(cmd_merge(config))
 
+
+@cli.command()
+def view():
+    """View pull request files in browser."""
+    if not check_git_repo():
+        raise click.ClickException("Not in a git repository")
+    current_branch = get_current_branch()
+    if current_branch in ("main", "master"):
+        raise click.ClickException(
+            f"You are on the {current_branch} branch. "
+            "This script cannot be run on main or master branches."
+        )
+    unset_github_tokens()
+
+    sys.exit(cmd_view())
+
+
+def main() -> int:
+    cli(standalone_mode=False)
     return 0
 
 

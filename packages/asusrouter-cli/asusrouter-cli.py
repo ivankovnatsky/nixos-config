@@ -7,18 +7,19 @@ using the asusrouter library.
 
 import sys
 import json
-import argparse
 import asyncio
 import os
 from typing import Any, Optional
+
+import click
 
 try:
     import aiohttp
     from asusrouter import AsusRouter
     from asusrouter.modules.data import AsusData
 except ImportError as e:
-    print(f"Error: Required module not found: {e}", file=sys.stderr)
-    print("This tool requires the 'asusrouter' package.", file=sys.stderr)
+    click.echo(f"Error: Required module not found: {e}", err=True)
+    click.echo("This tool requires the 'asusrouter' package.", err=True)
     sys.exit(1)
 
 ALL_DATA_TYPES = [member for member in AsusData]
@@ -375,25 +376,25 @@ class AsusRouterClient:
 
         all_data = {}
 
-        print("Exporting AsusData types...", file=sys.stderr)
+        click.echo("Exporting AsusData types...", err=True)
         for data_type in ALL_DATA_TYPES:
             try:
                 data = await self.router.async_get_data(data_type)
                 all_data[data_type.value] = data
-                print(f"  ✓ {data_type.value}", file=sys.stderr)
+                click.echo(f"  ✓ {data_type.value}", err=True)
             except Exception as e:
-                print(f"  ✗ {data_type.value}: {e}", file=sys.stderr)
+                click.echo(f"  ✗ {data_type.value}: {e}", err=True)
                 all_data[data_type.value] = {"error": str(e)}
 
-        print("\nExporting NVRAM groups...", file=sys.stderr)
+        click.echo("\nExporting NVRAM groups...", err=True)
         nvram_data = {}
         for group_name, variables in NVRAM_GROUPS.items():
             try:
                 data = await self.query_nvram(variables)
                 nvram_data[group_name] = data
-                print(f"  ✓ nvram/{group_name}", file=sys.stderr)
+                click.echo(f"  ✓ nvram/{group_name}", err=True)
             except Exception as e:
-                print(f"  ✗ nvram/{group_name}: {e}", file=sys.stderr)
+                click.echo(f"  ✗ nvram/{group_name}: {e}", err=True)
                 nvram_data[group_name] = {"error": str(e)}
         all_data["nvram"] = nvram_data
 
@@ -466,54 +467,73 @@ class AsusRouterClient:
             }
 
 
-def make_client(args) -> AsusRouterClient:
-    return AsusRouterClient(
-        hostname=args.hostname,
-        username=args.username,
-        password=args.password,
-        use_ssl=args.use_ssl,
-        port=args.port,
+def connection_options(f):
+    f = click.option("--hostname", required=True, help="Router hostname or IP address")(
+        f
     )
-
-
-def add_connection_args(parser):
-    parser.add_argument(
-        "--hostname", required=True, help="Router hostname or IP address"
-    )
-    parser.add_argument("--username", required=True, help="Router username")
-    parser.add_argument("--password", required=True, help="Router password")
-    parser.add_argument(
-        "--use-ssl", action="store_true", help="Use HTTPS (default: HTTP)"
-    )
-    parser.add_argument(
+    f = click.option("--username", required=True, help="Router username")(f)
+    f = click.option("--password", required=True, help="Router password")(f)
+    f = click.option("--use-ssl", is_flag=True, help="Use HTTPS (default: HTTP)")(f)
+    f = click.option(
         "--port",
         type=int,
+        default=None,
         help="Router port (optional, default: 80 for HTTP, 443 for HTTPS)",
+    )(f)
+    return f
+
+
+def make_client(hostname, username, password, use_ssl, port) -> AsusRouterClient:
+    return AsusRouterClient(
+        hostname=hostname,
+        username=username,
+        password=password,
+        use_ssl=use_ssl,
+        port=port,
     )
 
 
-def cmd_get(args):
-    """Get a specific data type."""
-    data_type_name = args.data_type.upper()
+@click.group()
+def cli():
+    """ASUS Router management tool."""
+
+
+@cli.command("list-types")
+def cmd_list_types():
+    """List available data types and NVRAM groups."""
+    click.echo("AsusData types:")
+    for d in AsusData:
+        click.echo(f"  {d.value}")
+    click.echo(f"\nNVRAM groups ({len(NVRAM_GROUPS)}):")
+    for group, variables in NVRAM_GROUPS.items():
+        click.echo(f"  {group} ({len(variables)} variables)")
+
+
+@cli.command("get")
+@connection_options
+@click.argument("data_type")
+def cmd_get(hostname, username, password, use_ssl, port, data_type):
+    """Get a specific AsusData type."""
+    data_type_name = data_type.upper()
     try:
-        data_type = AsusData(data_type_name.lower())
+        resolved_type = AsusData(data_type_name.lower())
     except ValueError:
         try:
-            data_type = AsusData[data_type_name]
+            resolved_type = AsusData[data_type_name]
         except KeyError:
-            print(f"Error: Unknown data type '{args.data_type}'", file=sys.stderr)
-            print(f"Available: {', '.join(d.value for d in AsusData)}", file=sys.stderr)
+            click.echo(f"Error: Unknown data type '{data_type}'", err=True)
+            click.echo(f"Available: {', '.join(d.value for d in AsusData)}", err=True)
             sys.exit(1)
 
     async def _get():
-        client = make_client(args)
+        client = make_client(hostname, username, password, use_ssl, port)
         try:
             await client.connect()
-            print("Connected to router successfully", file=sys.stderr)
-            data = await client.get_data(data_type)
-            print(json.dumps(data, indent=2, default=str))
+            click.echo("Connected to router successfully", err=True)
+            data = await client.get_data(resolved_type)
+            click.echo(json.dumps(data, indent=2, default=str))
         except Exception as e:
-            print(f"Error: {e}", file=sys.stderr)
+            click.echo(f"Error: {e}", err=True)
             sys.exit(1)
         finally:
             await client.cleanup()
@@ -521,23 +541,30 @@ def cmd_get(args):
     asyncio.run(_get())
 
 
-def cmd_get_wan(args):
-    """Get WAN configuration command handler."""
+@cli.command("get-wan")
+@connection_options
+@click.option(
+    "--output",
+    default=None,
+    help="Output file for WAN configuration (default: stdout)",
+)
+def cmd_get_wan(hostname, username, password, use_ssl, port, output):
+    """Get current WAN configuration (including DNS)."""
 
     async def _get_wan():
-        client = make_client(args)
+        client = make_client(hostname, username, password, use_ssl, port)
         try:
             await client.connect()
-            print("Connected to router successfully", file=sys.stderr)
+            click.echo("Connected to router successfully", err=True)
             wan_info = await client.get_data(AsusData.WAN)
-            if args.output:
-                with open(args.output, "w") as f:
+            if output:
+                with open(output, "w") as f:
                     json.dump(wan_info, f, indent=2, default=str)
-                print(f"WAN configuration saved to {args.output}")
+                click.echo(f"WAN configuration saved to {output}")
             else:
-                print(json.dumps(wan_info, indent=2, default=str))
+                click.echo(json.dumps(wan_info, indent=2, default=str))
         except Exception as e:
-            print(f"Error: {e}", file=sys.stderr)
+            click.echo(f"Error: {e}", err=True)
             sys.exit(1)
         finally:
             await client.cleanup()
@@ -545,24 +572,44 @@ def cmd_get_wan(args):
     asyncio.run(_get_wan())
 
 
-def cmd_set_dns(args):
-    """Set WAN DNS servers command handler."""
+@cli.command("set-dns")
+@connection_options
+@click.option(
+    "--dns-servers",
+    required=True,
+    help="Comma-separated DNS server IPs (e.g., '1.1.1.1,1.0.0.1')",
+)
+@click.option(
+    "--wan-unit",
+    type=int,
+    default=0,
+    help="WAN unit number (default: 0)",
+)
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    help="Show what would be changed without making changes",
+)
+def cmd_set_dns(
+    hostname, username, password, use_ssl, port, dns_servers, wan_unit, dry_run
+):
+    """Set WAN DNS servers."""
 
     async def _set_dns():
-        client = make_client(args)
+        client = make_client(hostname, username, password, use_ssl, port)
         try:
             await client.connect()
-            print("Connected to router successfully", file=sys.stderr)
-            dns_servers = [dns.strip() for dns in args.dns_servers.split(",")]
-            if args.dry_run:
-                print(
-                    f"Dry-run: Would set DNS servers to: {dns_servers} (WAN unit: {args.wan_unit})"
+            click.echo("Connected to router successfully", err=True)
+            servers = [dns.strip() for dns in dns_servers.split(",")]
+            if dry_run:
+                click.echo(
+                    f"Dry-run: Would set DNS servers to: {servers} (WAN unit: {wan_unit})"
                 )
                 return
-            result = await client.set_wan_dns(dns_servers, wan_unit=args.wan_unit)
-            print(json.dumps(result, indent=2))
+            result = await client.set_wan_dns(servers, wan_unit=wan_unit)
+            click.echo(json.dumps(result, indent=2))
         except Exception as e:
-            print(f"Error: {e}", file=sys.stderr)
+            click.echo(f"Error: {e}", err=True)
             sys.exit(1)
         finally:
             await client.cleanup()
@@ -570,20 +617,26 @@ def cmd_set_dns(args):
     asyncio.run(_set_dns())
 
 
-def cmd_query_nvram(args):
-    """Query specific NVRAM variables."""
+@cli.command("query-nvram")
+@connection_options
+@click.argument("variables")
+def cmd_query_nvram(hostname, username, password, use_ssl, port, variables):
+    """Query specific NVRAM variables.
+
+    VARIABLES is a comma-separated list of NVRAM variable names
+    (e.g., 'dhcp_start,dhcp_end,lan_ipaddr').
+    """
 
     async def _query():
-        client = make_client(args)
+        client = make_client(hostname, username, password, use_ssl, port)
         try:
             await client.connect()
-            print("Connected to router successfully", file=sys.stderr)
-
-            variables = [v.strip() for v in args.variables.split(",")]
-            data = await client.query_nvram(variables)
-            print(json.dumps(data, indent=2, default=str))
+            click.echo("Connected to router successfully", err=True)
+            var_list = [v.strip() for v in variables.split(",")]
+            data = await client.query_nvram(var_list)
+            click.echo(json.dumps(data, indent=2, default=str))
         except Exception as e:
-            print(f"Error: {e}", file=sys.stderr)
+            click.echo(f"Error: {e}", err=True)
             sys.exit(1)
         finally:
             await client.cleanup()
@@ -591,35 +644,44 @@ def cmd_query_nvram(args):
     asyncio.run(_query())
 
 
-def cmd_export_nvram(args):
-    """Export NVRAM groups."""
+@cli.command("export-nvram")
+@connection_options
+@click.option(
+    "--groups",
+    default=None,
+    help=f"Comma-separated group names (default: all). Available: {', '.join(NVRAM_GROUPS.keys())}",
+)
+@click.option(
+    "--output-dir",
+    default=None,
+    help="Output directory (default: stdout)",
+)
+def cmd_export_nvram(hostname, username, password, use_ssl, port, groups, output_dir):
+    """Export NVRAM configuration groups."""
 
     async def _export():
-        client = make_client(args)
+        client = make_client(hostname, username, password, use_ssl, port)
         try:
             await client.connect()
-            print("Connected to router successfully", file=sys.stderr)
+            click.echo("Connected to router successfully", err=True)
 
-            groups = (
-                args.groups.split(",") if args.groups else list(NVRAM_GROUPS.keys())
-            )
+            group_list = groups.split(",") if groups else list(NVRAM_GROUPS.keys())
 
             all_data = {}
-            for group_name in groups:
+            for group_name in group_list:
                 group_name = group_name.strip()
                 if group_name not in NVRAM_GROUPS:
-                    print(f"  ✗ Unknown NVRAM group: {group_name}", file=sys.stderr)
+                    click.echo(f"  ✗ Unknown NVRAM group: {group_name}", err=True)
                     continue
                 try:
                     data = await client.query_nvram(NVRAM_GROUPS[group_name])
                     all_data[group_name] = data
-                    print(f"  ✓ {group_name}", file=sys.stderr)
+                    click.echo(f"  ✓ {group_name}", err=True)
                 except Exception as e:
-                    print(f"  ✗ {group_name}: {e}", file=sys.stderr)
+                    click.echo(f"  ✗ {group_name}: {e}", err=True)
                     all_data[group_name] = {"error": str(e)}
 
-            if args.output_dir:
-                output_dir = args.output_dir
+            if output_dir:
                 if not os.path.exists(output_dir):
                     os.makedirs(output_dir)
 
@@ -632,12 +694,12 @@ def cmd_export_nvram(args):
                 with open(combined, "w") as f:
                     json.dump(all_data, f, indent=2, default=str)
 
-                print(f"\n✓ NVRAM data saved to: {output_dir}", file=sys.stderr)
+                click.echo(f"\n✓ NVRAM data saved to: {output_dir}", err=True)
             else:
-                print(json.dumps(all_data, indent=2, default=str))
+                click.echo(json.dumps(all_data, indent=2, default=str))
 
         except Exception as e:
-            print(f"Error: {e}", file=sys.stderr)
+            click.echo(f"Error: {e}", err=True)
             sys.exit(1)
         finally:
             await client.cleanup()
@@ -645,21 +707,27 @@ def cmd_export_nvram(args):
     asyncio.run(_export())
 
 
-def cmd_export_all(args):
-    """Export all router configuration command handler."""
+@cli.command("export-all")
+@connection_options
+@click.option(
+    "--output-dir",
+    required=True,
+    help="Output directory for configuration backup files",
+)
+def cmd_export_all(hostname, username, password, use_ssl, port, output_dir):
+    """Export all router configuration (AsusData + NVRAM)."""
 
     async def _export_all():
-        client = make_client(args)
+        client = make_client(hostname, username, password, use_ssl, port)
         try:
             await client.connect()
-            print("Connected to router successfully", file=sys.stderr)
+            click.echo("Connected to router successfully", err=True)
 
             all_data = await client.export_all_data()
 
-            output_dir = args.output_dir
             if not os.path.exists(output_dir):
                 os.makedirs(output_dir)
-                print(f"Created directory: {output_dir}", file=sys.stderr)
+                click.echo(f"Created directory: {output_dir}", err=True)
 
             from datetime import datetime
 
@@ -671,7 +739,7 @@ def cmd_export_all(args):
             with open(output_file, "w") as f:
                 json.dump(all_data, f, indent=2, default=str)
 
-            print(f"\n✓ All configuration exported to: {output_file}", file=sys.stderr)
+            click.echo(f"\n✓ All configuration exported to: {output_file}", err=True)
 
             for data_type, data in all_data.items():
                 if data_type == "nvram":
@@ -687,10 +755,10 @@ def cmd_export_all(args):
                     with open(individual_file, "w") as f:
                         json.dump(data, f, indent=2, default=str)
 
-            print(f"✓ Individual data files saved to: {output_dir}", file=sys.stderr)
+            click.echo(f"✓ Individual data files saved to: {output_dir}", err=True)
 
         except Exception as e:
-            print(f"Error: {e}", file=sys.stderr)
+            click.echo(f"Error: {e}", err=True)
             sys.exit(1)
         finally:
             await client.cleanup()
@@ -698,111 +766,8 @@ def cmd_export_all(args):
     asyncio.run(_export_all())
 
 
-def cmd_list_types(args):
-    """List available data types and NVRAM groups."""
-    print("AsusData types:")
-    for d in AsusData:
-        print(f"  {d.value}")
-    print(f"\nNVRAM groups ({len(NVRAM_GROUPS)}):")
-    for group, variables in NVRAM_GROUPS.items():
-        print(f"  {group} ({len(variables)} variables)")
-
-
 def main():
-    parser = argparse.ArgumentParser(
-        prog="asusrouter-cli", description="ASUS Router management tool"
-    )
-
-    subparsers = parser.add_subparsers(
-        dest="command", required=True, help="Command to execute"
-    )
-
-    # List available types
-    subparsers.add_parser(
-        "list-types", help="List available data types and NVRAM groups"
-    )
-
-    # Get specific data type
-    get_parser = subparsers.add_parser("get", help="Get a specific AsusData type")
-    add_connection_args(get_parser)
-    get_parser.add_argument(
-        "data_type", help=f"Data type ({', '.join(d.value for d in AsusData)})"
-    )
-
-    # Get WAN command
-    get_wan_parser = subparsers.add_parser(
-        "get-wan", help="Get current WAN configuration (including DNS)"
-    )
-    add_connection_args(get_wan_parser)
-    get_wan_parser.add_argument(
-        "--output", help="Output file for WAN configuration (default: stdout)"
-    )
-
-    # Set DNS command
-    set_dns_parser = subparsers.add_parser("set-dns", help="Set WAN DNS servers")
-    add_connection_args(set_dns_parser)
-    set_dns_parser.add_argument(
-        "--dns-servers",
-        required=True,
-        help="Comma-separated DNS server IPs (e.g., '1.1.1.1,1.0.0.1')",
-    )
-    set_dns_parser.add_argument(
-        "--wan-unit", type=int, default=0, help="WAN unit number (default: 0)"
-    )
-    set_dns_parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Show what would be changed without making changes",
-    )
-
-    # Query NVRAM command
-    nvram_parser = subparsers.add_parser(
-        "query-nvram", help="Query specific NVRAM variables"
-    )
-    add_connection_args(nvram_parser)
-    nvram_parser.add_argument(
-        "variables",
-        help="Comma-separated NVRAM variable names (e.g., 'dhcp_start,dhcp_end,lan_ipaddr')",
-    )
-
-    # Export NVRAM command
-    export_nvram_parser = subparsers.add_parser(
-        "export-nvram", help="Export NVRAM configuration groups"
-    )
-    add_connection_args(export_nvram_parser)
-    export_nvram_parser.add_argument(
-        "--groups",
-        help=f"Comma-separated group names (default: all). Available: {', '.join(NVRAM_GROUPS.keys())}",
-    )
-    export_nvram_parser.add_argument(
-        "--output-dir",
-        help="Output directory (default: stdout)",
-    )
-
-    # Export all configuration command
-    export_all_parser = subparsers.add_parser(
-        "export-all", help="Export all router configuration (AsusData + NVRAM)"
-    )
-    add_connection_args(export_all_parser)
-    export_all_parser.add_argument(
-        "--output-dir",
-        required=True,
-        help="Output directory for configuration backup files",
-    )
-
-    args = parser.parse_args()
-
-    commands = {
-        "list-types": cmd_list_types,
-        "get": cmd_get,
-        "get-wan": cmd_get_wan,
-        "set-dns": cmd_set_dns,
-        "query-nvram": cmd_query_nvram,
-        "export-nvram": cmd_export_nvram,
-        "export-all": cmd_export_all,
-    }
-
-    commands[args.command](args)
+    cli()
 
 
 if __name__ == "__main__":

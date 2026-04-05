@@ -13,10 +13,11 @@ Usage examples:
     tmux-spawn --folders ./dir1 --command 'npm test' --session my-session
 """
 
-import argparse
 import subprocess
 import sys
 import time
+
+import click
 
 
 def get_folders_from_stdin():
@@ -89,87 +90,82 @@ def attach_session(session_name: str):
     subprocess.run(["tmux", "attach", "-t", session_name])
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        description="Spawn tmux sessions with windows for each folder, running a command.",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  # Pipe folders from fd/find
-  fd . --type directory | rg 'pattern' | tmux-spawn --command 'make build'
-
-  # Explicit folders
-  tmux-spawn --folders ./dir1 ./dir2 --command 'npm test'
-
-  # Custom session name
+@click.command(
+    epilog="""
+Examples:\n
+  # Pipe folders from fd/find\n
+  fd . --type directory | rg 'pattern' | tmux-spawn --command 'make build'\n\n
+  # Explicit folders\n
+  tmux-spawn --folders ./dir1 --folders ./dir2 --command 'npm test'\n\n
+  # Custom session name\n
   tmux-spawn --folders ./dir1 --command 'cargo build' --session my-build
-        """,
-    )
-    parser.add_argument(
-        "--folders",
-        nargs="*",
-        help="List of folders to open in tmux windows. Can also be piped via stdin.",
-    )
-    parser.add_argument(
-        "--command",
-        "-c",
-        required=True,
-        help="Command to run in each tmux window.",
-    )
-    parser.add_argument(
-        "--session",
-        "-s",
-        help="Custom tmux session name. Defaults to 'tmux-spawn-<timestamp>'.",
-    )
-    parser.add_argument(
-        "--no-attach",
-        action="store_true",
-        help="Don't attach to the session after creating it.",
-    )
-
-    args = parser.parse_args()
-
+""",
+)
+@click.option(
+    "--folders",
+    multiple=True,
+    help="List of folders to open in tmux windows. Can also be piped via stdin.",
+)
+@click.option(
+    "--command",
+    "-c",
+    required=True,
+    help="Command to run in each tmux window.",
+)
+@click.option(
+    "--session",
+    "-s",
+    default=None,
+    help="Custom tmux session name. Defaults to 'tmux-spawn-<timestamp>'.",
+)
+@click.option(
+    "--no-attach",
+    is_flag=True,
+    help="Don't attach to the session after creating it.",
+)
+def main(folders, command, session, no_attach):
+    """Spawn tmux sessions with windows for each folder, running a command."""
     # Collect folders from both stdin and --folders argument
-    folders = []
+    all_folders = []
     stdin_folders = get_folders_from_stdin()
     if stdin_folders:
-        folders.extend(stdin_folders)
-    if args.folders:
-        folders.extend(args.folders)
+        all_folders.extend(stdin_folders)
+    if folders:
+        all_folders.extend(folders)
 
-    if not folders:
-        print(
+    if not all_folders:
+        click.echo(
             "Error: No folders provided. Use --folders or pipe folder paths.",
-            file=sys.stderr,
+            err=True,
         )
         sys.exit(1)
 
     # Generate session name
-    session_name = args.session or f"tmux-spawn-{int(time.time())}"
+    session_name = session or f"tmux-spawn-{int(time.time())}"
 
     # Check if session already exists
     if session_exists(session_name):
-        print(f"Error: Session '{session_name}' already exists.", file=sys.stderr)
+        click.echo(f"Error: Session '{session_name}' already exists.", err=True)
         sys.exit(1)
 
     # Create session with first folder
-    print(
-        f"Creating session '{session_name}' with {len(folders)} window(s)...",
-        file=sys.stderr,
+    click.echo(
+        f"Creating session '{session_name}' with {len(all_folders)} window(s)...",
+        err=True,
     )
-    create_session(session_name, folders[0], args.command)
+    create_session(session_name, all_folders[0], command)
 
     # Add remaining folders as windows
-    for folder in folders[1:]:
-        add_window(session_name, folder, args.command)
+    for folder in all_folders[1:]:
+        add_window(session_name, folder, command)
 
-    print(
-        f"Session '{session_name}' created with {len(folders)} window(s).",
-        file=sys.stderr,
+    click.echo(
+        f"Session '{session_name}' created with {len(all_folders)} window(s).",
+        err=True,
     )
 
     # Attach to session
-    if not args.no_attach:
+    if not no_attach:
         attach_session(session_name)
 
 

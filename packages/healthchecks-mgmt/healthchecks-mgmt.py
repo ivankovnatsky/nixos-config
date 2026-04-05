@@ -8,7 +8,7 @@ import os
 import sys
 import json
 import requests
-import argparse
+import click
 
 USER_AGENT = "healthchecks-mgmt/1.0.0"
 
@@ -36,9 +36,9 @@ class HealthChecksClient:
             if response.status_code not in (200, 201):
                 try:
                     error_data = response.json()
-                    print(f"API error: {error_data}", file=sys.stderr)
+                    click.echo(f"API error: {error_data}", err=True)
                 except ValueError:
-                    print(f"API error: {response.text}", file=sys.stderr)
+                    click.echo(f"API error: {response.text}", err=True)
                 raise Exception(
                     f"API request failed with status {response.status_code}"
                 )
@@ -84,7 +84,7 @@ def sync_from_file(client: HealthChecksClient, config_path: str, dry_run: bool):
 
     desired_checks = config.get("checks", [])
     if not desired_checks:
-        print("No checks defined in config file.")
+        click.echo("No checks defined in config file.")
         return
 
     existing_checks = client.list_checks()
@@ -102,52 +102,80 @@ def sync_from_file(client: HealthChecksClient, config_path: str, dry_run: bool):
 
         if existing is None:
             if dry_run:
-                print(f"  Would create: {name}")
+                click.echo(f"  Would create: {name}")
             else:
                 result = client.create_check(desired)
                 ping_url = result.get("ping_url", "")
-                print(f"  Created: {name} ({ping_url})")
+                click.echo(f"  Created: {name} ({ping_url})")
             created += 1
         else:
             changes = _check_needs_update(existing, desired)
             if changes:
                 if dry_run:
-                    print(f"  Would update: {name}")
+                    click.echo(f"  Would update: {name}")
                     for field, old, new in changes:
-                        print(f"    {field}: {old} -> {new}")
+                        click.echo(f"    {field}: {old} -> {new}")
                 else:
                     client.update_check(existing["uuid"], desired)
-                    print(f"  Updated: {name}")
+                    click.echo(f"  Updated: {name}")
                     for field, old, new in changes:
-                        print(f"    {field}: {old} -> {new}")
+                        click.echo(f"    {field}: {old} -> {new}")
                 updated += 1
             else:
                 ping_url = existing.get("ping_url", "")
-                print(f"  Unchanged: {name} ({ping_url})")
+                click.echo(f"  Unchanged: {name} ({ping_url})")
                 unchanged += 1
 
     for name, existing in existing_by_name.items():
         if name not in desired_names:
             uuid = existing["uuid"]
             if dry_run:
-                print(f"  Would delete: {name}")
+                click.echo(f"  Would delete: {name}")
             else:
                 client.delete_check(uuid)
-                print(f"  Deleted: {name}")
+                click.echo(f"  Deleted: {name}")
             deleted += 1
 
     action = "Dry run" if dry_run else "Sync"
-    print(
+    click.echo(
         f"\n{action} complete: "
         f"{created} created, {updated} updated, "
         f"{deleted} deleted, {unchanged} unchanged"
     )
 
 
-def cmd_list(args, client):
+@click.group()
+@click.option(
+    "--api-key",
+    default=lambda: os.environ.get("HEALTHCHECKS_API_KEY"),
+    help="API key (or set HEALTHCHECKS_API_KEY env var)",
+)
+@click.option(
+    "--api-url",
+    default=lambda: os.environ.get("HEALTHCHECKS_API_URL", "https://healthchecks.io"),
+    help="API base URL (default: https://healthchecks.io)",
+)
+@click.pass_context
+def cli(ctx, api_key, api_url):
+    """Declarative healthchecks.io management tool."""
+    if not api_key:
+        click.echo(
+            "Error: --api-key or HEALTHCHECKS_API_KEY env var required",
+            err=True,
+        )
+        sys.exit(1)
+    ctx.ensure_object(dict)
+    ctx.obj["client"] = HealthChecksClient(api_key, api_url)
+
+
+@cli.command("list")
+@click.pass_context
+def cmd_list(ctx):
+    """List all checks."""
+    client = ctx.obj["client"]
     checks = client.list_checks()
     if not checks:
-        print("No checks found.")
+        click.echo("No checks found.")
         return
     for check in checks:
         status = check.get("status", "unknown")
@@ -155,68 +183,34 @@ def cmd_list(args, client):
         timeout = check.get("timeout", "?")
         grace = check.get("grace", "?")
         tags = check.get("tags", "")
-        print(
+        click.echo(
             f"  [{status:>8}] {name} (timeout={timeout}s, grace={grace}s, tags={tags})"
         )
 
 
-def cmd_sync(args, client):
-    config_path = args.config_file
-    if not os.path.exists(config_path):
-        print(f"Config file not found: {config_path}", file=sys.stderr)
+@cli.command("sync")
+@click.option(
+    "--config-file", required=True, help="JSON config file with check definitions"
+)
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    help="Show what would be changed without making changes",
+)
+@click.pass_context
+def cmd_sync(ctx, config_file, dry_run):
+    """Sync checks from config file."""
+    client = ctx.obj["client"]
+    if not os.path.exists(config_file):
+        click.echo(f"Config file not found: {config_file}", err=True)
         sys.exit(1)
 
-    print(f"Syncing checks from {config_path}...")
-    sync_from_file(client, config_path, args.dry_run)
+    click.echo(f"Syncing checks from {config_file}...")
+    sync_from_file(client, config_file, dry_run)
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        prog="healthchecks-mgmt",
-        description="Declarative healthchecks.io management tool",
-    )
-    parser.add_argument(
-        "--api-key",
-        default=os.environ.get("HEALTHCHECKS_API_KEY"),
-        help="API key (or set HEALTHCHECKS_API_KEY env var)",
-    )
-    parser.add_argument(
-        "--api-url",
-        default=os.environ.get("HEALTHCHECKS_API_URL", "https://healthchecks.io"),
-        help="API base URL (default: https://healthchecks.io)",
-    )
-
-    subparsers = parser.add_subparsers(
-        dest="command", required=True, help="Command to execute"
-    )
-
-    subparsers.add_parser("list", help="List all checks")
-
-    sync_parser = subparsers.add_parser("sync", help="Sync checks from config file")
-    sync_parser.add_argument(
-        "--config-file", required=True, help="JSON config file with check definitions"
-    )
-    sync_parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Show what would be changed without making changes",
-    )
-
-    args = parser.parse_args()
-
-    if not args.api_key:
-        print(
-            "Error: --api-key or HEALTHCHECKS_API_KEY env var required",
-            file=sys.stderr,
-        )
-        sys.exit(1)
-
-    client = HealthChecksClient(args.api_key, args.api_url)
-
-    if args.command == "list":
-        cmd_list(args, client)
-    elif args.command == "sync":
-        cmd_sync(args, client)
+    cli()
 
 
 if __name__ == "__main__":

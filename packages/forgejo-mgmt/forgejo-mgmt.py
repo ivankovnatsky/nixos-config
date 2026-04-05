@@ -9,7 +9,8 @@ import sys
 import json
 import subprocess
 import time
-import argparse
+
+import click
 import requests
 
 
@@ -114,24 +115,24 @@ class ForgejoClient:
 
 
 def wait_for_api(base_url: str, max_retries: int = 30, delay: int = 2):
-    print(f"Waiting for Forgejo API at {base_url}...", file=sys.stderr)
+    click.echo(f"Waiting for Forgejo API at {base_url}...", err=True)
     for i in range(1, max_retries + 1):
         try:
             response = requests.get(f"{base_url}/api/v1/settings/api", timeout=5)
             if response.status_code == 200:
-                print(
-                    f"Forgejo API is ready (attempt {i}/{max_retries})", file=sys.stderr
+                click.echo(
+                    f"Forgejo API is ready (attempt {i}/{max_retries})", err=True
                 )
                 return
         except requests.exceptions.RequestException:
             pass
         if i == max_retries:
-            print(
+            click.echo(
                 f"ERROR: Forgejo API not ready after {max_retries} attempts",
-                file=sys.stderr,
+                err=True,
             )
             sys.exit(1)
-        print(f"Waiting... (attempt {i}/{max_retries})", file=sys.stderr)
+        click.echo(f"Waiting... (attempt {i}/{max_retries})", err=True)
         time.sleep(delay)
 
 
@@ -183,13 +184,13 @@ def ensure_admin_user(
         if line and not line.startswith("ID")
     ]
     if lines:
-        print(
+        click.echo(
             f"Users already exist ({len(lines)} found), skipping admin user creation",
-            file=sys.stderr,
+            err=True,
         )
         return
 
-    print(f"Creating admin user: {username}", file=sys.stderr)
+    click.echo(f"Creating admin user: {username}", err=True)
     result = subprocess.run(
         [
             forgejo_bin,
@@ -213,9 +214,9 @@ def ensure_admin_user(
         text=True,
     )
     if result.returncode != 0:
-        print(f"ERROR: Failed to create admin user: {result.stderr}", file=sys.stderr)
+        click.echo(f"ERROR: Failed to create admin user: {result.stderr}", err=True)
         sys.exit(1)
-    print("Admin user created", file=sys.stderr)
+    click.echo("Admin user created", err=True)
 
 
 def ensure_token(
@@ -235,15 +236,15 @@ def ensure_token(
                         timeout=10,
                     )
                     if response.status_code == 200:
-                        print("Using existing API token", file=sys.stderr)
+                        click.echo("Using existing API token", err=True)
                         return token
                 except requests.exceptions.RequestException:
                     pass
-                print("Stored token is invalid, regenerating...", file=sys.stderr)
+                click.echo("Stored token is invalid, regenerating...", err=True)
         except FileNotFoundError:
             pass
 
-    print("Creating API token...", file=sys.stderr)
+    click.echo("Creating API token...", err=True)
     response = requests.post(
         f"{base_url}/api/v1/users/{username}/tokens",
         auth=(username, password),
@@ -251,12 +252,12 @@ def ensure_token(
         timeout=10,
     )
     if response.status_code not in (200, 201):
-        print(f"ERROR: Failed to create API token: {response.text}", file=sys.stderr)
+        click.echo(f"ERROR: Failed to create API token: {response.text}", err=True)
         sys.exit(1)
 
     token = response.json().get("sha1")
     if not token:
-        print(f"ERROR: No token in response: {response.text}", file=sys.stderr)
+        click.echo(f"ERROR: No token in response: {response.text}", err=True)
         sys.exit(1)
 
     if token_file:
@@ -264,7 +265,7 @@ def ensure_token(
             f.write(token)
         os.chmod(token_file, 0o600)
 
-    print("API token created", file=sys.stderr)
+    click.echo("API token created", err=True)
     return token
 
 
@@ -280,11 +281,11 @@ def create_user_token(
     )
     if response.status_code not in (200, 201):
         if "has been used already" in response.text:
-            print(f"  Token already exists for {username}, skipping", file=sys.stderr)
+            click.echo(f"  Token already exists for {username}, skipping", err=True)
         else:
-            print(
+            click.echo(
                 f"  ERROR: Failed to create token for {username} (HTTP {response.status_code}): {response.text}",
-                file=sys.stderr,
+                err=True,
             )
         return ""
     return response.json().get("sha1", "")
@@ -331,24 +332,24 @@ def upload_gpg_key(base_url: str, username: str, password: str, armored_key: str
                     and existing_id
                     and existing_id.endswith(wanted_key_id[-16:])
                 ):
-                    print(
+                    click.echo(
                         f"  GPG key already exists for {username} (key ID: {existing_id}), skipping",
-                        file=sys.stderr,
+                        err=True,
                     )
                     return
             if not wanted_key_id and existing_keys:
-                print(
+                click.echo(
                     f"  GPG key already exists for {username} ({len(existing_keys)} key(s)), skipping",
-                    file=sys.stderr,
+                    err=True,
                 )
                 return
     except requests.exceptions.RequestException as e:
-        print(
+        click.echo(
             f"  WARNING: Could not check existing GPG keys for {username}: {e}",
-            file=sys.stderr,
+            err=True,
         )
 
-    print(f"  Uploading GPG key for {username}...", file=sys.stderr)
+    click.echo(f"  Uploading GPG key for {username}...", err=True)
     response = requests.post(
         f"{base_url}/api/v1/user/gpg_keys",
         auth=(username, password),
@@ -358,44 +359,44 @@ def upload_gpg_key(base_url: str, username: str, password: str, armored_key: str
     if response.status_code in (200, 201):
         key_data = response.json()
         key_id = key_data.get("primary_key_id") or key_data.get("key_id", "unknown")
-        print(f"  GPG key uploaded for {username} (key ID: {key_id})", file=sys.stderr)
+        click.echo(f"  GPG key uploaded for {username} (key ID: {key_id})", err=True)
     elif response.status_code == 422:
-        print(
+        click.echo(
             f"  GPG key already exists for {username} (server rejected duplicate): {response.text}",
-            file=sys.stderr,
+            err=True,
         )
     else:
-        print(
+        click.echo(
             f"  WARNING: Failed to upload GPG key for {username}: {response.text}",
-            file=sys.stderr,
+            err=True,
         )
 
 
 def sync_users(client: ForgejoClient, users: list, base_url: str):
-    print("", file=sys.stderr)
-    print("=== User Sync ===", file=sys.stderr)
+    click.echo("", err=True)
+    click.echo("=== User Sync ===", err=True)
     for user in users:
         username = resolve_username(user)
         if user.get("admin"):
-            print(f"  OK: {username} (admin, created via CLI)", file=sys.stderr)
+            click.echo(f"  OK: {username} (admin, created via CLI)", err=True)
             continue
         if client.user_exists(username):
-            print(f"  OK: {username} (exists)", file=sys.stderr)
+            click.echo(f"  OK: {username} (exists)", err=True)
         else:
             email = read_file(user["emailFile"])
             password = read_file(user["passwordFile"])
-            print(f"  CREATE: {username}", file=sys.stderr)
+            click.echo(f"  CREATE: {username}", err=True)
             client.create_user(username, email, password)
-            print(f"  Created: {username}", file=sys.stderr)
+            click.echo(f"  Created: {username}", err=True)
 
         if user.get("createToken"):
             password = read_file(user["passwordFile"])
             token = create_user_token(base_url, username, password)
             if token:
-                print(f"  TOKEN for {username}: {token}", file=sys.stderr)
-                print(
+                click.echo(f"  TOKEN for {username}: {token}", err=True)
+                click.echo(
                     "  Save this token to sops — it will not be shown again",
-                    file=sys.stderr,
+                    err=True,
                 )
 
         gpg_key_file = user.get("gpgKeyFile")
@@ -406,15 +407,15 @@ def sync_users(client: ForgejoClient, users: list, base_url: str):
 
 
 def sync_repos(client: ForgejoClient, repos: list):
-    print("", file=sys.stderr)
-    print("=== Repository Sync ===", file=sys.stderr)
+    click.echo("", err=True)
+    click.echo("=== Repository Sync ===", err=True)
     for repo in repos:
         name = repo["name"]
         owner = resolve_owner(repo)
         if client.repo_exists(owner, name):
-            print(f"  OK: {owner}/{name} (exists)", file=sys.stderr)
+            click.echo(f"  OK: {owner}/{name} (exists)", err=True)
         else:
-            print(f"  CREATE: {owner}/{name}", file=sys.stderr)
+            click.echo(f"  CREATE: {owner}/{name}", err=True)
             client.create_repo_for_user(
                 owner=owner,
                 name=name,
@@ -422,13 +423,25 @@ def sync_repos(client: ForgejoClient, repos: list):
                 private=repo.get("private", True),
                 auto_init=repo.get("autoInit", False),
             )
-            print(f"  Created: {owner}/{name}", file=sys.stderr)
-    print("", file=sys.stderr)
-    print("Repository sync complete!", file=sys.stderr)
+            click.echo(f"  Created: {owner}/{name}", err=True)
+    click.echo("", err=True)
+    click.echo("Repository sync complete!", err=True)
 
 
-def cmd_sync(args):
-    with open(args.config_file) as f:
+@click.group()
+def cli():
+    """Forgejo management tool."""
+
+
+@cli.command()
+@click.option(
+    "--config-file",
+    required=True,
+    help="JSON configuration file",
+)
+def sync(config_file):
+    """Sync users and repositories."""
+    with open(config_file) as f:
         config = json.load(f)
 
     base_url = config["baseUrl"]
@@ -441,7 +454,7 @@ def cmd_sync(args):
     # Find the admin user
     admin = next((u for u in users if u.get("admin")), None)
     if not admin:
-        print("ERROR: No admin user defined", file=sys.stderr)
+        click.echo("ERROR: No admin user defined", err=True)
         sys.exit(1)
 
     admin_username = resolve_username(admin)
@@ -465,57 +478,42 @@ def cmd_sync(args):
     if repos:
         sync_repos(client, repos)
 
-    print("Forgejo management completed", file=sys.stderr)
+    click.echo("Forgejo management completed", err=True)
 
 
-def cmd_list(args):
-    with open(args.config_file) as f:
+@cli.command("list")
+@click.option(
+    "--config-file",
+    required=True,
+    help="JSON configuration file",
+)
+@click.option(
+    "--output-format",
+    type=click.Choice(["table", "json"]),
+    default="table",
+)
+def list_cmd(config_file, output_format):
+    """List repositories."""
+    with open(config_file) as f:
         config = json.load(f)
 
     token_file = config.get("tokenFile", "")
     try:
         token = read_file(token_file)
     except FileNotFoundError:
-        print("ERROR: No token file found. Run sync first.", file=sys.stderr)
+        click.echo("ERROR: No token file found. Run sync first.", err=True)
         sys.exit(1)
 
     client = ForgejoClient(config["baseUrl"], token)
     repos = client.list_repos()
-    if args.output_format == "json":
-        print(json.dumps(repos, indent=2))
+    if output_format == "json":
+        click.echo(json.dumps(repos, indent=2))
     else:
-        print("Repositories:")
+        click.echo("Repositories:")
         for repo in repos:
             visibility = "private" if repo.get("private") else "public"
-            print(f"  {repo['full_name']} ({visibility})")
-
-
-def main():
-    parser = argparse.ArgumentParser(
-        prog="forgejo-mgmt", description="Forgejo management tool"
-    )
-    subparsers = parser.add_subparsers(dest="command", required=True)
-
-    sync_parser = subparsers.add_parser("sync", help="Sync users and repositories")
-    sync_parser.add_argument(
-        "--config-file", required=True, help="JSON configuration file"
-    )
-
-    list_parser = subparsers.add_parser("list", help="List repositories")
-    list_parser.add_argument(
-        "--config-file", required=True, help="JSON configuration file"
-    )
-    list_parser.add_argument(
-        "--output-format", choices=["table", "json"], default="table"
-    )
-
-    args = parser.parse_args()
-
-    if args.command == "sync":
-        cmd_sync(args)
-    elif args.command == "list":
-        cmd_list(args)
+            click.echo(f"  {repo['full_name']} ({visibility})")
 
 
 if __name__ == "__main__":
-    main()
+    cli()

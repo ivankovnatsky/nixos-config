@@ -4,11 +4,12 @@ Purge git worktrees whose branches are fully merged into their main branch.
 Scans all git repositories under ghq root.
 """
 
-import argparse
 import os
 import subprocess
 import sys
 from pathlib import Path
+
+import click
 
 
 def run(
@@ -31,7 +32,7 @@ def get_ghq_root() -> Path:
     """Get the ghq root directory."""
     root = run_stdout(["ghq", "root"])
     if not root:
-        print("Error: could not determine ghq root", file=sys.stderr)
+        click.echo("Error: could not determine ghq root", err=True)
         sys.exit(1)
     return Path(root)
 
@@ -110,18 +111,15 @@ def parse_worktrees(repo: Path) -> list[dict[str, str]]:
     return worktrees
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Purge git worktrees whose branches are fully merged into main.",
-    )
-    parser.add_argument(
-        "--dry-run",
-        "-n",
-        action="store_true",
-        help="Show what would be removed without removing",
-    )
-    args = parser.parse_args()
-
+@click.command()
+@click.option(
+    "--dry-run",
+    "-n",
+    is_flag=True,
+    help="Show what would be removed without removing",
+)
+def main(dry_run: bool) -> None:
+    """Purge git worktrees whose branches are fully merged into main."""
     current_dir = Path(os.getcwd()).resolve()
     ghq_root = get_ghq_root()
     repos = find_repos(ghq_root)
@@ -141,7 +139,7 @@ def main() -> int:
 
             # Skip detached worktrees
             if wt.get("detached"):
-                print(f"skip (detached): {wt_path}")
+                click.echo(f"skip (detached): {wt_path}")
                 continue
 
             branch = wt.get("branch", "")
@@ -155,36 +153,34 @@ def main() -> int:
             # Skip the worktree we're currently in
             try:
                 if current_dir == wt_path or current_dir.is_relative_to(wt_path):
-                    print(f"skip (current): {branch} ({wt_path})")
+                    click.echo(f"skip (current): {branch} ({wt_path})")
                     continue
             except ValueError:
                 pass
 
             if is_ancestor(repo, branch, main_branch):
-                if args.dry_run:
-                    print(f"would remove: {branch} ({wt_path})")
+                if dry_run:
+                    click.echo(f"would remove: {branch} ({wt_path})")
                 else:
-                    print(f"removing: {branch} ({wt_path})")
+                    click.echo(f"removing: {branch} ({wt_path})")
                     result = run(
                         ["git", "-C", str(repo), "worktree", "remove", str(wt_path)]
                     )
                     if result and result.returncode != 0:
-                        print(
+                        click.echo(
                             f"  error: failed to remove worktree: {result.stderr.strip()}",
-                            file=sys.stderr,
+                            err=True,
                         )
                         continue
                     result = run(["git", "-C", str(repo), "branch", "-d", branch])
                     if result and result.returncode != 0:
-                        print(
+                        click.echo(
                             f"  warning: worktree removed but branch delete failed: {result.stderr.strip()}",
-                            file=sys.stderr,
+                            err=True,
                         )
             else:
-                print(f"skip (not merged): {branch} ({wt_path})")
-
-    return 0
+                click.echo(f"skip (not merged): {branch} ({wt_path})")
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

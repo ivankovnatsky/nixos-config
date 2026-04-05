@@ -8,10 +8,12 @@ from utils import get_client, fetch_completions_parallel, fetch_folder_statuses_
 from display import display_this_device, display_devices, display_folders
 
 
-def cmd_list_devices(args):
+def cmd_list_devices(base_url, api_key, config_xml, mode="cli"):
     """List all configured devices."""
     try:
-        client = get_client(args)
+        client = get_client(
+            base_url=base_url, api_key=api_key, config_xml=config_xml, mode=mode
+        )
 
         # Fetch initial data in parallel
         with ThreadPoolExecutor(max_workers=3) as executor:
@@ -56,10 +58,12 @@ def cmd_list_devices(args):
         sys.exit(1)
 
 
-def cmd_list_folders(args):
+def cmd_list_folders(base_url, api_key, config_xml, mode="cli"):
     """List all configured folders."""
     try:
-        client = get_client(args)
+        client = get_client(
+            base_url=base_url, api_key=api_key, config_xml=config_xml, mode=mode
+        )
 
         # Fetch initial data in parallel
         with ThreadPoolExecutor(max_workers=3) as executor:
@@ -124,10 +128,12 @@ def cmd_list_folders(args):
         sys.exit(1)
 
 
-def cmd_status(args):
+def cmd_status(base_url, api_key, config_xml, mode="cli"):
     """Show status of configured devices and folders."""
     try:
-        client = get_client(args)
+        client = get_client(
+            base_url=base_url, api_key=api_key, config_xml=config_xml, mode=mode
+        )
 
         # Fetch initial data in parallel
         with ThreadPoolExecutor(max_workers=4) as executor:
@@ -232,16 +238,18 @@ def cmd_status(args):
         sys.exit(1)
 
 
-def cmd_scan(args):
+def cmd_scan(base_url, api_key, config_xml, mode="cli", folders=None):
     """Trigger a rescan for folders."""
     try:
-        client = get_client(args)
-        folders_to_scan = args.folders
+        client = get_client(
+            base_url=base_url, api_key=api_key, config_xml=config_xml, mode=mode
+        )
+        folders_to_scan = folders or []
 
         if not folders_to_scan:
-            folders = client.get_folders()
+            all_folders = client.get_folders()
             folders_to_scan = [
-                f["id"] for f in folders if f and isinstance(f, dict) and "id" in f
+                f["id"] for f in all_folders if f and isinstance(f, dict) and "id" in f
             ]
 
         for folder_id in folders_to_scan:

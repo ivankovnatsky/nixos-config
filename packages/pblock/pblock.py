@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import argparse
 import os
 import signal
 import subprocess
@@ -8,9 +7,11 @@ import sys
 import time
 from datetime import datetime
 
+import click
+
 
 def log(msg: str) -> None:
-    print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {msg}", flush=True)
+    click.echo(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {msg}", nl=True)
 
 
 def is_root() -> bool:
@@ -47,53 +48,47 @@ def kill_processes(process_name: str) -> int:
         return 0
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(
-        prog="pblock",
-        description="Continuously prevent a process from running by killing it",
-    )
-    parser.add_argument("process_name", help="Name of the process to kill")
-    parser.add_argument(
-        "--interval",
-        "-i",
-        type=int,
-        default=5,
-        help="Interval between checks in seconds (default: 5)",
-    )
-    parser.add_argument(
-        "--background",
-        "-b",
-        action="store_true",
-        help="Run in the background (fork, detach from terminal)",
-    )
-    args = parser.parse_args()
-
+@click.command()
+@click.argument("process_name")
+@click.option(
+    "--interval",
+    "-i",
+    type=int,
+    default=5,
+    help="Interval between checks in seconds (default: 5)",
+)
+@click.option(
+    "--background",
+    "-b",
+    is_flag=True,
+    help="Run in the background (fork, detach from terminal)",
+)
+def main(process_name, interval, background) -> None:
+    """Continuously prevent a process from running by killing it."""
     if not is_root():
         script = os.path.abspath(sys.argv[0])
         os.execvp("sudo", ["sudo", sys.executable, script] + sys.argv[1:])
 
-    if args.background:
+    if background:
         pid = os.fork()
         if pid > 0:
-            print(f"pblock running in background (PID {pid})")
+            click.echo(f"pblock running in background (PID {pid})")
             sys.exit(0)
 
         os.setsid()
         sys.stdin.close()
-        logfile = open(f"/tmp/pblock-{args.process_name.lower()}.log", "a")
+        logfile = open(f"/tmp/pblock-{process_name.lower()}.log", "a")
         sys.stdout = logfile
         sys.stderr = logfile
         signal.signal(signal.SIGHUP, signal.SIG_IGN)
 
     mode = "root" if is_root() else "user (via sudo)"
-    log(
-        f"started: blocking '{args.process_name}' (mode: {mode}, interval: {args.interval}s)"
-    )
+    log(f"started: blocking '{process_name}' (mode: {mode}, interval: {interval}s)")
 
     try:
         while True:
-            kill_processes(args.process_name)
-            time.sleep(args.interval)
+            kill_processes(process_name)
+            time.sleep(interval)
     except KeyboardInterrupt:
         log("stopped")
         sys.exit(0)

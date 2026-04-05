@@ -1,5 +1,8 @@
 { pkgs }:
 
+let
+  python = pkgs.python3.withPackages (ps: [ ps.click ]);
+in
 pkgs.writeShellScriptBin "git-commit-scope" ''
-  exec ${pkgs.python3}/bin/python ${./git-commit-scope.py} "$@"
+  exec ${python}/bin/python ${./git-commit-scope.py} "$@"
 ''

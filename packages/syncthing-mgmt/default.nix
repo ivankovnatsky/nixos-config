@@ -9,6 +9,7 @@ pkgs.writeShellScriptBin "syncthing-mgmt" ''
       ps.requests
       ps.bcrypt
       ps.rich
+      ps.click
     ])
   }/bin/python ${src}/syncthing-mgmt.py "$@"
 ''

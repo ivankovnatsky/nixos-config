@@ -4,6 +4,8 @@ import glob
 import os
 import subprocess
 
+import click
+
 
 def download_audio(url, output_dir=None):
     """Download audio from a URL using yt-dlp.
@@ -15,7 +17,7 @@ def download_audio(url, output_dir=None):
     Returns:
         Path to the downloaded MP3 file or None if failed
     """
-    print(f"Downloading and extracting audio from {url}...")
+    click.echo(f"Downloading and extracting audio from {url}...")
 
     # Create a temporary directory if none provided
     if not output_dir:
@@ -46,19 +48,19 @@ def download_audio(url, output_dir=None):
         mp3_files = glob.glob(os.path.join(output_dir, "*.mp3"))
 
         if not mp3_files:
-            print("Error: No MP3 file was generated.")
+            click.echo("Error: No MP3 file was generated.")
             return None
 
         # Return the path to the first MP3 file found
         return mp3_files[0]
 
     except subprocess.CalledProcessError as e:
-        print(f"Error running yt-dlp: {e}")
-        print(f"Output: {e.stdout}")
-        print(f"Error: {e.stderr}")
+        click.echo(f"Error running yt-dlp: {e}")
+        click.echo(f"Output: {e.stdout}")
+        click.echo(f"Error: {e.stderr}")
         return None
     except Exception as e:
-        print(f"Error: {str(e)}")
+        click.echo(f"Error: {str(e)}")
         return None
     finally:
         # Change back to the original directory

@@ -3,7 +3,7 @@
 from atlassian import Confluence
 import sys
 import os
-import argparse
+import click
 import markdown
 import re
 from html import unescape
@@ -16,9 +16,9 @@ def get_confluence_client():
     token = os.getenv("CONFLUENCE_API_TOKEN")
 
     if not all([server, email, token]):
-        print(
+        click.echo(
             "Error: Set CONFLUENCE_SERVER, CONFLUENCE_EMAIL, and CONFLUENCE_API_TOKEN in environment",
-            file=sys.stderr,
+            err=True,
         )
         sys.exit(1)
 
@@ -290,7 +290,31 @@ def convert_storage_to_markdown(storage_content, generate_toc=False):
     return content
 
 
-def page_create(space_key, title, body=None, body_file=None, parent_id=None):
+@click.group()
+def cli():
+    """Confluence operations"""
+    pass
+
+
+@cli.group()
+def page():
+    """Manage pages"""
+    pass
+
+
+@cli.group()
+def space():
+    """Manage spaces"""
+    pass
+
+
+@page.command("create")
+@click.argument("space_key")
+@click.argument("title")
+@click.option("--body", "-b", default=None, help="Page body (storage format)")
+@click.option("--body-file", "-f", default=None, help="Read body from file")
+@click.option("--parent-id", "-p", default=None, help="Parent page ID")
+def page_create(space_key, title, body, body_file, parent_id):
     """Create a new page"""
     confluence = get_confluence_client()
 
@@ -311,19 +335,19 @@ def page_create(space_key, title, body=None, body_file=None, parent_id=None):
         parent_id=parent_id,
         representation="storage",
     )
-    print(f"Created: {result['id']}")
-    print(f"URL: {result['_links']['base']}{result['_links']['webui']}")
+    click.echo(f"Created: {result['id']}")
+    click.echo(f"URL: {result['_links']['base']}{result['_links']['webui']}")
 
 
-def page_update(
-    page_id=None,
-    space_key=None,
-    title=None,
-    body=None,
-    body_file=None,
-    minor_edit=False,
-):
-    """Update an existing page"""
+@page.command("update")
+@click.option("--page-id", default=None, help="Page ID")
+@click.option("--space", "-s", default=None, help="Space key")
+@click.option("--title", "-t", default=None, help="Page title")
+@click.option("--body", "-b", default=None, help="Page body (storage format)")
+@click.option("--body-file", "-f", default=None, help="Read body from file")
+@click.option("--minor", is_flag=True, default=False, help="Mark as minor edit")
+def page_update(page_id, space, title, body, body_file, minor):
+    """Update a page"""
     confluence = get_confluence_client()
 
     if body_file:
@@ -334,28 +358,26 @@ def page_update(
             body = convert_markdown_to_html(body)
 
     if not body:
-        print("Error: Either --body or --body-file is required", file=sys.stderr)
+        click.echo("Error: Either --body or --body-file is required", err=True)
         sys.exit(1)
 
     # Get page by ID or by space+title
     if page_id:
         page = confluence.get_page_by_id(page_id)
         if not page:
-            print(f"Error: Page {page_id} not found", file=sys.stderr)
+            click.echo(f"Error: Page {page_id} not found", err=True)
             sys.exit(1)
         title = title or page["title"]
-    elif space_key and title:
-        page = confluence.get_page_by_title(space_key, title)
+    elif space and title:
+        page = confluence.get_page_by_title(space, title)
         if not page:
-            print(
-                f"Error: Page '{title}' not found in space {space_key}", file=sys.stderr
-            )
+            click.echo(f"Error: Page '{title}' not found in space {space}", err=True)
             sys.exit(1)
         page_id = page["id"]
     else:
-        print(
+        click.echo(
             "Error: Either --page-id or both --space and --title are required",
-            file=sys.stderr,
+            err=True,
         )
         sys.exit(1)
 
@@ -364,37 +386,46 @@ def page_update(
         title=title,
         body=body,
         representation="storage",
-        minor_edit=minor_edit,
+        minor_edit=minor,
     )
-    print(f"Updated: {result['id']}", file=sys.stderr)
+    click.echo(f"Updated: {result['id']}", err=True)
 
 
-def page_get(
-    page_id=None,
-    space_key=None,
-    title=None,
-    output_format="storage",
-    output_file=None,
-    generate_toc=False,
-):
+@page.command("get")
+@click.option("--page-id", default=None, help="Page ID")
+@click.option("--space", "-s", default=None, help="Space key")
+@click.option("--title", "-t", default=None, help="Page title")
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["storage", "info", "markdown"]),
+    default="storage",
+    help="Output format",
+)
+@click.option("--output", "-o", default=None, help="Output file path (default: stdout)")
+@click.option(
+    "--toc",
+    is_flag=True,
+    default=False,
+    help="Generate table of contents from headings (markdown format only)",
+)
+def page_get(page_id, space, title, output_format, output, toc):
     """Get page content"""
     confluence = get_confluence_client()
 
     if page_id:
         page = confluence.get_page_by_id(page_id, expand="body.storage,version")
-    elif space_key and title:
-        page = confluence.get_page_by_title(
-            space_key, title, expand="body.storage,version"
-        )
+    elif space and title:
+        page = confluence.get_page_by_title(space, title, expand="body.storage,version")
     else:
-        print(
+        click.echo(
             "Error: Either --page-id or both --space and --title are required",
-            file=sys.stderr,
+            err=True,
         )
         sys.exit(1)
 
     if not page:
-        print("Error: Page not found", file=sys.stderr)
+        click.echo("Error: Page not found", err=True)
         sys.exit(1)
 
     # Prepare output content
@@ -402,180 +433,77 @@ def page_get(
         content = page["body"]["storage"]["value"]
     elif output_format == "markdown":
         content = convert_storage_to_markdown(
-            page["body"]["storage"]["value"], generate_toc=generate_toc
+            page["body"]["storage"]["value"], generate_toc=toc
         )
     elif output_format == "info":
         content = f"ID: {page['id']}\nTitle: {page['title']}\nVersion: {page['version']['number']}\nSpace: {page['space']['key'] if 'space' in page else 'N/A'}"
 
     # Write to file or stdout
-    if output_file:
-        with open(output_file, "w") as f:
+    if output:
+        with open(output, "w") as f:
             f.write(content)
-        print(f"Written to {output_file}", file=sys.stderr)
+        click.echo(f"Written to {output}", err=True)
     else:
-        print(content)
+        click.echo(content)
 
 
-def page_list(space_key, limit=25):
+@page.command("list")
+@click.argument("space_key")
+@click.option("--limit", "-l", type=int, default=25, help="Max results")
+def page_list(space_key, limit):
     """List pages in a space"""
     confluence = get_confluence_client()
     pages = confluence.get_all_pages_from_space(
         space_key, limit=limit, expand="version"
     )
 
-    for page in pages:
-        print(f"{page['id']}: {page['title']} (v{page['version']['number']})")
+    for p in pages:
+        click.echo(f"{p['id']}: {p['title']} (v{p['version']['number']})")
 
 
+@space.command("list")
 def space_list():
     """List all spaces"""
     confluence = get_confluence_client()
     spaces = confluence.get_all_spaces(limit=500)
 
-    for space in spaces:
-        print(f"{space['key']}: {space['name']}")
+    for s in spaces:
+        click.echo(f"{s['key']}: {s['name']}")
 
 
+@space.command("get")
+@click.argument("space_key")
 def space_get(space_key):
     """Get space details"""
     confluence = get_confluence_client()
-    space = confluence.get_space(space_key, expand="description.plain,homepage")
+    s = confluence.get_space(space_key, expand="description.plain,homepage")
 
-    print(f"Key: {space['key']}")
-    print(f"Name: {space['name']}")
-    print(f"Type: {space['type']}")
-    if "description" in space and space["description"].get("plain", {}).get("value"):
-        print(f"Description: {space['description']['plain']['value']}")
-    if "homepage" in space:
-        print(f"Homepage ID: {space['homepage']['id']}")
+    click.echo(f"Key: {s['key']}")
+    click.echo(f"Name: {s['name']}")
+    click.echo(f"Type: {s['type']}")
+    if "description" in s and s["description"].get("plain", {}).get("value"):
+        click.echo(f"Description: {s['description']['plain']['value']}")
+    if "homepage" in s:
+        click.echo(f"Homepage ID: {s['homepage']['id']}")
 
 
-def search(cql, limit=25):
+@cli.command("search")
+@click.argument("cql")
+@click.option("--limit", "-l", type=int, default=25, help="Max results")
+def search(cql, limit):
     """Search using CQL"""
     confluence = get_confluence_client()
     results = confluence.cql(cql, limit=limit)
 
     for result in results.get("results", []):
         content = result.get("content", result)
-        print(
+        click.echo(
             f"{content.get('id', 'N/A')}: {content.get('title', result.get('title', 'N/A'))}"
         )
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        prog="confluence", description="Confluence operations"
-    )
-    subparsers = parser.add_subparsers(dest="command", help="Command to execute")
-
-    # Page commands
-    page_parser = subparsers.add_parser("page", help="Manage pages")
-    page_subparsers = page_parser.add_subparsers(dest="page_action", help="Page action")
-
-    # page create
-    create_parser = page_subparsers.add_parser("create", help="Create a new page")
-    create_parser.add_argument("space_key", help="Space key (e.g., TEAM)")
-    create_parser.add_argument("title", help="Page title")
-    create_parser.add_argument("--body", "-b", help="Page body (storage format)")
-    create_parser.add_argument("--body-file", "-f", help="Read body from file")
-    create_parser.add_argument("--parent-id", "-p", help="Parent page ID")
-
-    # page update
-    update_parser = page_subparsers.add_parser("update", help="Update a page")
-    update_parser.add_argument("--page-id", help="Page ID")
-    update_parser.add_argument("--space", "-s", help="Space key")
-    update_parser.add_argument("--title", "-t", help="Page title")
-    update_parser.add_argument("--body", "-b", help="Page body (storage format)")
-    update_parser.add_argument("--body-file", "-f", help="Read body from file")
-    update_parser.add_argument(
-        "--minor", action="store_true", help="Mark as minor edit"
-    )
-
-    # page get
-    get_parser = page_subparsers.add_parser("get", help="Get page content")
-    get_parser.add_argument("--page-id", help="Page ID")
-    get_parser.add_argument("--space", "-s", help="Space key")
-    get_parser.add_argument("--title", "-t", help="Page title")
-    get_parser.add_argument(
-        "--format",
-        choices=["storage", "info", "markdown"],
-        default="storage",
-        help="Output format",
-    )
-    get_parser.add_argument(
-        "--output",
-        "-o",
-        help="Output file path (default: stdout)",
-    )
-    get_parser.add_argument(
-        "--toc",
-        action="store_true",
-        help="Generate table of contents from headings (markdown format only)",
-    )
-
-    # page list
-    list_parser = page_subparsers.add_parser("list", help="List pages in a space")
-    list_parser.add_argument("space_key", help="Space key")
-    list_parser.add_argument("--limit", "-l", type=int, default=25, help="Max results")
-
-    # Space commands
-    space_parser = subparsers.add_parser("space", help="Manage spaces")
-    space_subparsers = space_parser.add_subparsers(
-        dest="space_action", help="Space action"
-    )
-
-    # space list
-    space_subparsers.add_parser("list", help="List all spaces")
-
-    # space get
-    space_get_parser = space_subparsers.add_parser("get", help="Get space details")
-    space_get_parser.add_argument("space_key", help="Space key")
-
-    # Search command
-    search_parser = subparsers.add_parser("search", help="Search using CQL")
-    search_parser.add_argument(
-        "cql", help="CQL query (e.g., 'type=page and space=TEAM')"
-    )
-    search_parser.add_argument(
-        "--limit", "-l", type=int, default=25, help="Max results"
-    )
-
-    args = parser.parse_args()
-
-    # Handle commands
-    if args.command == "page":
-        if args.page_action == "create":
-            page_create(
-                args.space_key, args.title, args.body, args.body_file, args.parent_id
-            )
-        elif args.page_action == "update":
-            page_update(
-                args.page_id,
-                args.space,
-                args.title,
-                args.body,
-                args.body_file,
-                args.minor,
-            )
-        elif args.page_action == "get":
-            page_get(
-                args.page_id, args.space, args.title, args.format, args.output, args.toc
-            )
-        elif args.page_action == "list":
-            page_list(args.space_key, args.limit)
-        else:
-            page_parser.print_help()
-    elif args.command == "space":
-        if args.space_action == "list":
-            space_list()
-        elif args.space_action == "get":
-            space_get(args.space_key)
-        else:
-            space_parser.print_help()
-    elif args.command == "search":
-        search(args.cql, args.limit)
-    else:
-        parser.print_help()
+    cli()
 
 
 if __name__ == "__main__":

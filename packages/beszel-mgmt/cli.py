@@ -1,99 +1,97 @@
 """Argument parsing and CLI entry point for beszel-mgmt."""
 
-import argparse
+import click
 
 from client import BeszelClient
 from commands import cmd_list, cmd_get, cmd_create, cmd_update, cmd_delete, cmd_sync
 
 
+@click.group()
 def main():
-    parser = argparse.ArgumentParser(
-        prog="beszel-mgmt", description="Beszel systems management tool"
-    )
+    """Beszel systems management tool."""
+    pass
 
-    subparsers = parser.add_subparsers(
-        dest="command", required=True, help="Command to execute"
-    )
 
-    # List command
-    list_parser = subparsers.add_parser("list", help="List all systems")
-    list_parser.add_argument("--base-url", required=True, help="Beszel base URL")
-    list_parser.add_argument("--email", required=True, help="User email")
-    list_parser.add_argument("--password", required=True, help="User password")
-    list_parser.add_argument(
-        "--output-format",
-        choices=["table", "json"],
-        default="table",
-        help="Output format",
-    )
+@main.command("list")
+@click.option("--base-url", required=True, help="Beszel base URL")
+@click.option("--email", required=True, help="User email")
+@click.option("--password", required=True, help="User password")
+@click.option(
+    "--output-format",
+    type=click.Choice(["table", "json"]),
+    default="table",
+    help="Output format",
+)
+def list_cmd(base_url, email, password, output_format):
+    """List all systems."""
+    client = BeszelClient(base_url, email, password)
+    cmd_list(output_format, client)
 
-    # Get command
-    get_parser = subparsers.add_parser("get", help="Get system details")
-    get_parser.add_argument("--base-url", required=True, help="Beszel base URL")
-    get_parser.add_argument("--email", required=True, help="User email")
-    get_parser.add_argument("--password", required=True, help="User password")
-    get_parser.add_argument("--system-id", required=True, help="System ID")
 
-    # Create command
-    create_parser = subparsers.add_parser("create", help="Create a new system")
-    create_parser.add_argument("--base-url", required=True, help="Beszel base URL")
-    create_parser.add_argument("--email", required=True, help="User email")
-    create_parser.add_argument("--password", required=True, help="User password")
-    create_parser.add_argument("--name", required=True, help="System name")
-    create_parser.add_argument("--host", required=True, help="System host/IP")
-    create_parser.add_argument(
-        "--port", default="45876", help="System port (default: 45876)"
-    )
+@main.command("get")
+@click.option("--base-url", required=True, help="Beszel base URL")
+@click.option("--email", required=True, help="User email")
+@click.option("--password", required=True, help="User password")
+@click.option("--system-id", required=True, help="System ID")
+def get_cmd(base_url, email, password, system_id):
+    """Get system details."""
+    client = BeszelClient(base_url, email, password)
+    cmd_get(system_id, client)
 
-    # Update command
-    update_parser = subparsers.add_parser("update", help="Update a system")
-    update_parser.add_argument("--base-url", required=True, help="Beszel base URL")
-    update_parser.add_argument("--email", required=True, help="User email")
-    update_parser.add_argument("--password", required=True, help="User password")
-    update_parser.add_argument("--system-id", required=True, help="System ID")
-    update_parser.add_argument("--name", help="New system name")
-    update_parser.add_argument("--host", help="New system host/IP")
-    update_parser.add_argument("--port", help="New system port")
 
-    # Delete command
-    delete_parser = subparsers.add_parser("delete", help="Delete a system")
-    delete_parser.add_argument("--base-url", required=True, help="Beszel base URL")
-    delete_parser.add_argument("--email", required=True, help="User email")
-    delete_parser.add_argument("--password", required=True, help="User password")
-    delete_parser.add_argument("--system-id", required=True, help="System ID to delete")
+@main.command("create")
+@click.option("--base-url", required=True, help="Beszel base URL")
+@click.option("--email", required=True, help="User email")
+@click.option("--password", required=True, help="User password")
+@click.option("--name", required=True, help="System name")
+@click.option("--host", required=True, help="System host/IP")
+@click.option("--port", default="45876", help="System port (default: 45876)")
+def create_cmd(base_url, email, password, name, host, port):
+    """Create a new system."""
+    client = BeszelClient(base_url, email, password)
+    cmd_create(name, host, port, client)
 
-    # Sync command (declarative configuration)
-    sync_parser = subparsers.add_parser(
-        "sync", help="Sync systems from configuration file"
-    )
-    sync_parser.add_argument("--base-url", required=True, help="Beszel base URL")
-    sync_parser.add_argument("--email", required=True, help="User email")
-    sync_parser.add_argument("--password", required=True, help="User password")
-    sync_parser.add_argument(
-        "--config-file", required=True, help="JSON configuration file"
-    )
-    sync_parser.add_argument(
-        "--discord-webhook", help="Discord webhook URL for notifications"
-    )
-    sync_parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Show what would be changed without making changes",
-    )
 
-    args = parser.parse_args()
+@main.command("update")
+@click.option("--base-url", required=True, help="Beszel base URL")
+@click.option("--email", required=True, help="User email")
+@click.option("--password", required=True, help="User password")
+@click.option("--system-id", required=True, help="System ID")
+@click.option("--name", default=None, help="New system name")
+@click.option("--host", default=None, help="New system host/IP")
+@click.option("--port", default=None, help="New system port")
+def update_cmd(base_url, email, password, system_id, name, host, port):
+    """Update a system."""
+    client = BeszelClient(base_url, email, password)
+    cmd_update(system_id, name, host, port, client)
 
-    client = BeszelClient(args.base_url, args.email, args.password)
 
-    if args.command == "list":
-        cmd_list(args, client)
-    elif args.command == "get":
-        cmd_get(args, client)
-    elif args.command == "create":
-        cmd_create(args, client)
-    elif args.command == "update":
-        cmd_update(args, client)
-    elif args.command == "delete":
-        cmd_delete(args, client)
-    elif args.command == "sync":
-        cmd_sync(args, client)
+@main.command("delete")
+@click.option("--base-url", required=True, help="Beszel base URL")
+@click.option("--email", required=True, help="User email")
+@click.option("--password", required=True, help="User password")
+@click.option("--system-id", required=True, help="System ID to delete")
+def delete_cmd(base_url, email, password, system_id):
+    """Delete a system."""
+    client = BeszelClient(base_url, email, password)
+    cmd_delete(system_id, client)
+
+
+@main.command("sync")
+@click.option("--base-url", required=True, help="Beszel base URL")
+@click.option("--email", required=True, help="User email")
+@click.option("--password", required=True, help="User password")
+@click.option("--config-file", required=True, help="JSON configuration file")
+@click.option(
+    "--discord-webhook", default=None, help="Discord webhook URL for notifications"
+)
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    default=False,
+    help="Show what would be changed without making changes",
+)
+def sync_cmd(base_url, email, password, config_file, discord_webhook, dry_run):
+    """Sync systems from configuration file."""
+    client = BeszelClient(base_url, email, password)
+    cmd_sync(config_file, dry_run, discord_webhook, client)

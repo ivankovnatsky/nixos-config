@@ -2,8 +2,9 @@
 
 import json
 import platform
-import sys
 import urllib.request
+
+import click
 
 
 def send_discord(webhook_url, message):
@@ -17,10 +18,10 @@ def send_discord(webhook_url, message):
     try:
         urllib.request.urlopen(req, timeout=10)
     except Exception as e:
-        print(f"Discord notification failed: {e}", file=sys.stderr)
+        click.echo(f"Discord notification failed: {e}", err=True)
 
 
 def alert(webhook_url, message):
-    print(f"ALERT: {message}", file=sys.stderr)
+    click.echo(f"ALERT: {message}", err=True)
     if webhook_url:
         send_discord(webhook_url, message)

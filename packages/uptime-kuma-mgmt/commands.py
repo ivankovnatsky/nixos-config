@@ -3,21 +3,25 @@
 import sys
 import json
 
+import click
 
-def cmd_list(args, client):
+
+def cmd_list(output_format, client):
     """List all monitors."""
     try:
         monitors = client.list_monitors()
-        if args.output_format == "json":
-            print(json.dumps(monitors, indent=2))
+        if output_format == "json":
+            click.echo(json.dumps(monitors, indent=2))
         else:
-            print("Monitors:")
+            click.echo("Monitors:")
             for monitor in monitors:
                 status = "\u2713" if monitor.get("active") else "\u2717"
                 target = _get_monitor_target(monitor)
-                print(f"  [{status}] {monitor['id']}: {monitor['name']} - {target}")
+                click.echo(
+                    f"  [{status}] {monitor['id']}: {monitor['name']} - {target}"
+                )
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        click.echo(f"Error: {e}", err=True)
         sys.exit(1)
 
 
@@ -76,22 +80,22 @@ def _get_monitor_target(monitor: dict) -> str:
     return "N/A"
 
 
-def cmd_get(args, client):
+def cmd_get(monitor_id, client):
     """Get monitor details."""
     try:
-        monitor = client.get_monitor(args.monitor_id)
-        print(json.dumps(monitor, indent=2))
+        monitor = client.get_monitor(monitor_id)
+        click.echo(json.dumps(monitor, indent=2))
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        click.echo(f"Error: {e}", err=True)
         sys.exit(1)
 
 
-def cmd_sync(args, client):
+def cmd_sync(config_file, dry_run, discord_webhook, client):
     """Sync monitors from configuration file."""
     try:
         client.sync_from_file(
-            args.config_file, dry_run=args.dry_run, discord_webhook=args.discord_webhook
+            config_file, dry_run=dry_run, discord_webhook=discord_webhook
         )
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        click.echo(f"Error: {e}", err=True)
         sys.exit(1)

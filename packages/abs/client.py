@@ -6,6 +6,8 @@ import urllib.request
 import urllib.error
 from pathlib import Path
 
+import click
+
 SOPS_SECRETS = {
     "ABS_API_KEY": "audiobookshelf-api-token",
     "ABS_URL": "audiobookshelf-url",
@@ -113,15 +115,15 @@ class AudiobookshelfClient:
             error_message = e.read().decode("utf-8")
             try:
                 error_data = json.loads(error_message)
-                print(f"Error: {error_data.get('error', error_message)}")
+                click.echo(f"Error: {error_data.get('error', error_message)}")
             except json.JSONDecodeError:
-                print(f"HTTP Error: {e.code} - {error_message}")
+                click.echo(f"HTTP Error: {e.code} - {error_message}")
             return None
         except urllib.error.URLError as e:
-            print(f"URL Error: {e.reason}")
+            click.echo(f"URL Error: {e.reason}")
             return None
         except Exception as e:
-            print(f"Error: {str(e)}")
+            click.echo(f"Error: {str(e)}")
             return None
 
     def get_libraries(self):
@@ -202,7 +204,7 @@ class AudiobookshelfClient:
         """
         file_path = Path(file_path)
         if not file_path.exists():
-            print(f"Error: File '{file_path}' does not exist.")
+            click.echo(f"Error: File '{file_path}' does not exist.")
             return None
 
         title = title or file_path.stem
@@ -213,21 +215,23 @@ class AudiobookshelfClient:
             # Looks like an ID
             library_id = library_name_or_id
             if not folder_id:
-                print("Warning: Library ID provided without folder ID, upload may fail")
-                print(
+                click.echo(
+                    "Warning: Library ID provided without folder ID, upload may fail"
+                )
+                click.echo(
                     "Consider using library name instead for automatic folder detection"
                 )
         else:
             # Assume it's a library name, look it up
             library_id, detected_folder_id = self.get_library(library_name_or_id)
             if not library_id:
-                print(f"Error: Library '{library_name_or_id}' not found.")
+                click.echo(f"Error: Library '{library_name_or_id}' not found.")
                 return None
             if not folder_id:
                 folder_id = detected_folder_id
 
         if not folder_id:
-            print("Error: Could not determine folder ID for upload.")
+            click.echo("Error: Could not determine folder ID for upload.")
             return None
 
         # Use required parameters
@@ -240,10 +244,10 @@ class AudiobookshelfClient:
         # File will be uploaded as "0" parameter
         files = {str(file_path): file_path.name}
 
-        print(f"Uploading to library ID: {library_id}")
-        print(f"Using folder ID: {folder_id}")
-        print(f"File: {file_path}")
-        print(f"Title: {title}")
+        click.echo(f"Uploading to library ID: {library_id}")
+        click.echo(f"Using folder ID: {folder_id}")
+        click.echo(f"File: {file_path}")
+        click.echo(f"Title: {title}")
 
         # Make the API request
         return self.make_request("POST", "/api/upload", data=data, files=files)
