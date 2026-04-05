@@ -1,6 +1,7 @@
 { pkgs }:
 
 let
+  src = ./.;
   python = pkgs.python3.withPackages (ps: [ ps.click ]);
 in
 pkgs.writeShellScriptBin "giffer" ''
@@ -12,5 +13,6 @@ pkgs.writeShellScriptBin "giffer" ''
       pkgs.nixpkgs-darwin-master-ytdlp.yt-dlp
     ]
   }:$PATH"
-  exec ${python}/bin/python ${./giffer.py} "$@"
+  export PYTHONPATH="${src}"
+  exec ${python}/bin/python ${src}/giffer.py "$@"
 ''
