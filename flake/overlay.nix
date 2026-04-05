@@ -79,6 +79,10 @@ let
       inherit system;
       config = safeConfig;
     };
+    nixpkgs-nixos-master-ollama = import inputs.nixpkgs-nixos-master-ollama {
+      inherit system;
+      config = safeConfig;
+    };
     nixpkgs-nixos-unstable = import inputs.nixpkgs-nixos-unstable {
       inherit system;
       config = safeConfig;
