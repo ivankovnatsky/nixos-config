@@ -23,7 +23,8 @@ from commands import (
 def main():
     """Main entry point for the script."""
     parser = argparse.ArgumentParser(
-        description="Interact with Audiobookshelf from the command line."
+        prog="abs",
+        description="Interact with Audiobookshelf from the command line.",
     )
 
     # Explicitly describe the command structure
@@ -154,18 +155,12 @@ def main():
             "\nAvailable commands: upload, libraries, list-listened, cleanup-listened, download, process"
         )
         print("\nUsage examples:")
-        print(
-            "  audiobookshelf upload --url https://example.com --file file.mp3 --library-id ID"
-        )
-        print("  audiobookshelf libraries --url https://example.com")
-        print(
-            "  audiobookshelf list-listened --url https://example.com --library-id ID"
-        )
-        print(
-            "  audiobookshelf cleanup-listened --url https://example.com --library-id ID"
-        )
-        print("  audiobookshelf download --url https://youtube.com/watch?v=example")
-        print("  audiobookshelf process --file-url-list /path/to/urls.txt")
+        print("  abs upload --url https://example.com --file file.mp3 --library-id ID")
+        print("  abs libraries --url https://example.com")
+        print("  abs list-listened --url https://example.com --library-id ID")
+        print("  abs cleanup-listened --url https://example.com --library-id ID")
+        print("  abs download --url https://youtube.com/watch?v=example")
+        print("  abs process --file-url-list /path/to/urls.txt")
         return 1
 
     args = parser.parse_args()

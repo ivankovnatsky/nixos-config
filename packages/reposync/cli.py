@@ -46,7 +46,9 @@ def cmd_status(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Sync local git repos with remotes")
+    parser = argparse.ArgumentParser(
+        prog="reposync", description="Sync local git repos with remotes"
+    )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     for name in ("init", "sync", "status"):

@@ -31,7 +31,7 @@ while [[ $# -gt 0 ]]; do
     ;;
   *)
     echo "Unknown option: $1"
-    echo "Usage: $0 [--skip-backup] [--backup-path <path>]"
+    echo "Usage: backup-system [--skip-backup] [--backup-path <path>]"
     exit 1
     ;;
   esac

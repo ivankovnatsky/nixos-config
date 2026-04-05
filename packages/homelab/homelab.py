@@ -229,7 +229,8 @@ def power_off() -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Manage homelab machines. Run without arguments to toggle Mini on/off."
+        prog="homelab",
+        description="Manage homelab machines. Run without arguments to toggle Mini on/off.",
     )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 

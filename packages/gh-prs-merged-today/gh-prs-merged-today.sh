@@ -10,7 +10,7 @@ ORG="${DEFAULT_ORG}"
 TODAY=$(date +"%Y-%m-%d")
 
 function usage() {
-  echo "Usage: $0 [list|open] [options]"
+  echo "Usage: gh-prs-merged-today [list|open] [options]"
   echo ""
   echo "Commands:"
   echo "  list            List PRs merged today"

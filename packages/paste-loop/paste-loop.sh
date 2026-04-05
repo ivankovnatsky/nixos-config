@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ $# -ne 1 ]; then
-  echo "Usage: $0 <filename>"
+  echo "Usage: paste-loop <filename>"
   exit 1
 fi
 

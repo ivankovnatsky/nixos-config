@@ -172,7 +172,8 @@ def cmd_sync(args, client):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Declarative healthchecks.io management tool"
+        prog="healthchecks-mgmt",
+        description="Declarative healthchecks.io management tool",
     )
     parser.add_argument(
         "--api-key",

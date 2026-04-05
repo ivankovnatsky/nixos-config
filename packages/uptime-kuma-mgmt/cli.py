@@ -11,7 +11,9 @@ from commands import cmd_list, cmd_get, cmd_sync
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Uptime Kuma monitor management tool")
+    parser = argparse.ArgumentParser(
+        prog="uptime-kuma-mgmt", description="Uptime Kuma monitor management tool"
+    )
 
     subparsers = parser.add_subparsers(
         dest="command", required=True, help="Command to execute"

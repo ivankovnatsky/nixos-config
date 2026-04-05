@@ -491,7 +491,9 @@ def cmd_list(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Forgejo management tool")
+    parser = argparse.ArgumentParser(
+        prog="forgejo-mgmt", description="Forgejo management tool"
+    )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     sync_parser = subparsers.add_parser("sync", help="Sync users and repositories")

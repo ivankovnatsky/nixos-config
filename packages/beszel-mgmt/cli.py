@@ -7,7 +7,9 @@ from commands import cmd_list, cmd_get, cmd_create, cmd_update, cmd_delete, cmd_
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Beszel systems management tool")
+    parser = argparse.ArgumentParser(
+        prog="beszel-mgmt", description="Beszel systems management tool"
+    )
 
     subparsers = parser.add_subparsers(
         dest="command", required=True, help="Command to execute"

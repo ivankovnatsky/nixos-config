@@ -160,6 +160,7 @@ def cmd_view() -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
+        prog="gh-pr",
         description="GitHub PR management tool",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )

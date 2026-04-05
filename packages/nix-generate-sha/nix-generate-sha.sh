@@ -2,15 +2,15 @@
 
 # Simple wrapper script to generate SRI format SHA256 hashes
 # Usage:
-#   ./nix-generate-sha URL
-#   Example: ./nix-generate-sha https://github.com/narugit/smctemp/archive/eebe38b4e27ca9a8b2caef0fda09694de5751874.tar.gz
+#   nix-generate-sha URL
+#   Example: nix-generate-sha https://github.com/narugit/smctemp/archive/eebe38b4e27ca9a8b2caef0fda09694de5751874.tar.gz
 
 set -e
 
 if [ "$#" -lt 1 ]; then
-  echo "Usage: $0 URL"
+  echo "Usage: nix-generate-sha URL"
   echo "  URL: URL to fetch and generate SHA256 hash in SRI format"
-  echo "  Example: $0 https://github.com/narugit/smctemp/archive/eebe38b4e27ca9a8b2caef0fda09694de5751874.tar.gz"
+  echo "  Example: nix-generate-sha https://github.com/narugit/smctemp/archive/eebe38b4e27ca9a8b2caef0fda09694de5751874.tar.gz"
   exit 1
 fi
 

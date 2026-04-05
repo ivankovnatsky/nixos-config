@@ -15,7 +15,7 @@ AWS_PROFILE=""
 
 # Help function
 display_help() {
-  echo "Usage: $0 --browser <chrome|firefox> --sso <value> [options]"
+  echo "Usage: aws-account-open --browser <chrome|firefox> --sso <value> [options]"
   echo
   echo "Options:"
   echo "  --browser        Browser to use (chrome or firefox)"
@@ -25,7 +25,7 @@ display_help() {
   echo "  --account-alias  AWS Account Alias (exact match)"
   echo "  --profile        AWS Profile name (exact match)"
   echo
-  echo "Example: $0 --sso Default --role-name AdministratorAccess"
+  echo "Example: aws-account-open --sso Default --role-name AdministratorAccess"
   exit 1
 }
 

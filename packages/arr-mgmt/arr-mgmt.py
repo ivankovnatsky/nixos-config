@@ -44,7 +44,8 @@ def cmd_sync(args):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="*arr stack management tool (Radarr, Sonarr, Prowlarr)"
+        prog="arr-mgmt",
+        description="*arr stack management tool (Radarr, Sonarr, Prowlarr)",
     )
 
     subparsers = parser.add_subparsers(

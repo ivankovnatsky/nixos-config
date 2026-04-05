@@ -52,7 +52,7 @@ done
 # Check if all required arguments are provided
 if [[ -z $ENVIRONMENT || -z $INSTANCE_TAG_SUFFIX || -z $PORT_NUMBER || -z $LOCAL_PORT_NUMBER || -z $AWS_DEFAULT_REGION ]]; then
   echo "Error: Missing required arguments."
-  echo "Usage: $0 --environment <value> --region <value> --aws-profile <value> --instance-tag-suffix <value> --port-number <value> --local-port-number <value>"
+  echo "Usage: ssm-forward --environment <value> --region <value> --aws-profile <value> --instance-tag-suffix <value> --port-number <value> --local-port-number <value>"
   exit 1
 fi
 

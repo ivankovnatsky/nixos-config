@@ -2,7 +2,7 @@
 
 # Show usage/help
 show_help() {
-  echo "Usage: $0 <organization_name>"
+  echo "Usage: ghorg-sync <organization_name>"
   echo
   echo "Syncs all repositories from the specified GitHub organization"
   echo
@@ -10,7 +10,7 @@ show_help() {
   echo "  organization_name    Name of the GitHub organization to sync"
   echo
   echo "Example:"
-  echo "  $0 my-org-name"
+  echo "  ghorg-sync my-org-name"
   exit 1
 }
 

@@ -60,7 +60,9 @@ def run_osascript(export_dir: str) -> int:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Export Apple Music library to XML")
+    parser = argparse.ArgumentParser(
+        prog="music-export", description="Export Apple Music library to XML"
+    )
     parser.add_argument(
         "--output-dir",
         default=os.environ.get("MUSIC_EXPORT_PATH", DEFAULT_EXPORT_BASE),

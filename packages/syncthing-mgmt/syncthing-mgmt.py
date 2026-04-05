@@ -18,6 +18,7 @@ logging.basicConfig(level=logging.INFO, format="%(message)s", stream=sys.stdout)
 
 def main():
     parser = argparse.ArgumentParser(
+        prog="syncthing-mgmt",
         description="Syncthing configuration management tool",
         epilog="Default mode: CLI (use 'syncthing-mgmt' or 'syncthing-mgmt cli status')",
     )

@@ -49,7 +49,8 @@ def kill_processes(process_name: str) -> int:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Continuously prevent a process from running by killing it"
+        prog="pblock",
+        description="Continuously prevent a process from running by killing it",
     )
     parser.add_argument("process_name", help="Name of the process to kill")
     parser.add_argument(

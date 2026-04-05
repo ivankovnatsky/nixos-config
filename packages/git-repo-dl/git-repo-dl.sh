@@ -37,7 +37,7 @@ get_repo_path() {
 
 # Check if URL is provided
 if [ -z "$1" ]; then
-  echo "Usage: $0 <repository-url>"
+  echo "Usage: git-repo-dl <repository-url>"
   exit 1
 fi
 

@@ -144,7 +144,8 @@ def parse_terraform_diff(content):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Compare CSP policies from files or Terraform diff output"
+        prog="diff-long-lines",
+        description="Compare CSP policies from files or Terraform diff output",
     )
     parser.add_argument(
         "input_file", nargs="?", help="File containing CSP data or Terraform diff"

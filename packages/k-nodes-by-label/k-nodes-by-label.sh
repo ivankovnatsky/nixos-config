@@ -6,8 +6,8 @@
 
 if [ $# -eq 0 ]; then
   echo "Error: Label selector is required"
-  echo "Usage: $0 <label-selector>"
-  echo "Example: $0 app.kubernetes.io/instance=lusha-accounts"
+  echo "Usage: k-nodes-by-label <label-selector>"
+  echo "Example: k-nodes-by-label app.kubernetes.io/instance=lusha-accounts"
   exit 1
 fi
 

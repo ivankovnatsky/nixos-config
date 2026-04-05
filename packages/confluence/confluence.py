@@ -463,7 +463,9 @@ def search(cql, limit=25):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Confluence operations")
+    parser = argparse.ArgumentParser(
+        prog="confluence", description="Confluence operations"
+    )
     subparsers = parser.add_subparsers(dest="command", help="Command to execute")
 
     # Page commands

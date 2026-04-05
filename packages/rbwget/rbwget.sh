@@ -7,7 +7,7 @@
 
 # Check if the required number of arguments are provided
 if [ "$#" -ne 2 ]; then
-  echo "Usage: $0 <name> <item>"
+  echo "Usage: rbwget <name> <item>"
   exit 1
 fi
 

@@ -12,7 +12,7 @@ while [[ $# -gt 0 ]]; do
     shift 2
     ;;
   *)
-    echo "Usage: $0 [--get username|password|<field>]"
+    echo "Usage: bbw [--get username|password|<field>]"
     exit 1
     ;;
   esac

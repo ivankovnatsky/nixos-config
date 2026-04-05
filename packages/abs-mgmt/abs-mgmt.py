@@ -554,7 +554,8 @@ def cmd_sync_opml(args, client):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Audiobookshelf library management tool"
+        prog="abs-mgmt",
+        description="Audiobookshelf library management tool",
     )
 
     subparsers = parser.add_subparsers(

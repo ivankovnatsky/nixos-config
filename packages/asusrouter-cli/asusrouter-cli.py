@@ -709,7 +709,9 @@ def cmd_list_types(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="ASUS Router management tool")
+    parser = argparse.ArgumentParser(
+        prog="asusrouter-cli", description="ASUS Router management tool"
+    )
 
     subparsers = parser.add_subparsers(
         dest="command", required=True, help="Command to execute"

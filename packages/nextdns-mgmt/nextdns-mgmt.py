@@ -489,7 +489,9 @@ def cmd_export(args, client):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="NextDNS profile management tool")
+    parser = argparse.ArgumentParser(
+        prog="nextdns-mgmt", description="NextDNS profile management tool"
+    )
 
     subparsers = parser.add_subparsers(
         dest="command", required=True, help="Command to execute"

@@ -2,7 +2,7 @@
 
 # Function to display script usage
 usage() {
-  echo "Usage: $0 [command] [options]"
+  echo "Usage: path-copy [command] [options]"
   echo ""
   echo "Commands:"
   echo "  (none)  Copy absolute path of current directory (default)"
