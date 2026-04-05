@@ -2,12 +2,6 @@
 
 {
   home.packages = with pkgs; [
-    (python313.withPackages (
-      ps: with ps; [
-        grip
-        markitdown
-      ]
-    ))
     git-restore
     abs
     abs-mgmt
@@ -45,6 +39,7 @@
     git-repo-dl
     git-root-root
     git-switch
+    git-worktree-purge
     go-grip
     go-lint-wrapper
     gpg-edit
@@ -77,6 +72,12 @@
     pigz
     poppler-utils
     poweroff
+    (python313.withPackages (
+      ps: with ps; [
+        grip
+        markitdown
+      ]
+    ))
     ps-top
     ps-top-nu
     rbwget
