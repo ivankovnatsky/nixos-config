@@ -150,14 +150,14 @@ let
       --arg anthropicTokenPath "${config.sops.secrets.openclaw-claude-oauth-token.path}" \
       --arg geminiApiKeyPath "${config.sops.secrets.openclaw-gemini-api-key.path}" \
       --arg perplexityApiKeyPath "${config.sops.secrets.openclaw-perplexity-api-key.path}" \
-      --arg openaiTokenPath "${config.sops.secrets.openai-api-key.path}" \
+      \
       '
        .secrets.providers["sops-gateway-token"] = { source: "file", path: $gatewayTokenPath, mode: "singleValue" }
        | .secrets.providers["sops-discord-token"] = { source: "file", path: $discordTokenPath, mode: "singleValue" }
        | .secrets.providers["sops-anthropic-token"] = { source: "file", path: $anthropicTokenPath, mode: "singleValue" }
        | .secrets.providers["sops-gemini-api-key"] = { source: "file", path: $geminiApiKeyPath, mode: "singleValue" }
        | .secrets.providers["sops-perplexity-api-key"] = { source: "file", path: $perplexityApiKeyPath, mode: "singleValue" }
-       | .secrets.providers["sops-openai-token"] = { source: "file", path: $openaiTokenPath, mode: "singleValue" }
+
        | .gateway.auth.token = { source: "file", provider: "sops-gateway-token", id: "value" }
        | .channels.discord.token = { source: "file", provider: "sops-discord-token", id: "value" }
        | .models.providers.anthropic = {
@@ -165,11 +165,7 @@ let
            models: [],
            apiKey: { source: "file", provider: "sops-anthropic-token", id: "value" }
          }
-       | .models.providers.openai = {
-           baseUrl: "https://api.openai.com/v1",
-           models: [],
-           apiKey: { source: "file", provider: "sops-openai-token", id: "value" }
-         }
+
        | .plugins.entries.google.enabled = true
        | .plugins.entries.google.config.webSearch.apiKey = { source: "file", provider: "sops-gemini-api-key", id: "value" }
        | .plugins.entries.perplexity.enabled = true
