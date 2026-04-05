@@ -46,6 +46,7 @@
     gpg-pass-refresh
     gwq
     gwq-add
+    gwq-merge
     gwq-purge
     healthchecks-mgmt
     homelab

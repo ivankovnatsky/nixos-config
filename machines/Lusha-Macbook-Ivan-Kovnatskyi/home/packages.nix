@@ -83,6 +83,7 @@
     gum
     gwq
     gwq-add
+    gwq-merge
     gwq-purge
     hadolint
     hclfmt
