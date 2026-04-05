@@ -11,6 +11,12 @@ if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
   exit 0
 fi
 
+if [[ $# -gt 0 ]]; then
+  echo "Error: gwq-add takes no arguments (branch names are generated randomly)" >&2
+  echo "Usage: gwq-add" >&2
+  exit 1
+fi
+
 WORD_FILE="/usr/share/dict/words"
 
 if [[ ! -f "$WORD_FILE" ]]; then
