@@ -29,14 +29,14 @@ in
       # Secret key for session management (generated once)
       WEBUI_SECRET_KEY_FILE = "${openWebuiDataPath}/config/secret_key";
 
-      # Ollama integration - a3 (CUDA) primary, local mini as fallback
-      OLLAMA_BASE_URLS = "http://${config.flags.a3Ip}:11434;http://${config.flags.machineLocalAddress}:11434";
+      # Ollama integration - local mini primary, a3 (CUDA) secondary
+      OLLAMA_BASE_URLS = "http://${config.flags.machineLocalAddress}:11434;http://${config.flags.a3Ip}:11434";
 
       # Web search settings
       ENABLE_WEB_SEARCH = "true";
 
       # Default models
-      DEFAULT_MODELS = "gemma3:27b";
+      DEFAULT_MODELS = "llama3.1:8b";
 
       # Disable telemetry and version checks
       SCARF_NO_ANALYTICS = "true";
