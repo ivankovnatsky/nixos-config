@@ -22,7 +22,7 @@ let
   baseSettings = {
     model = "claude-opus-4-6[1m]";
     permissions = {
-      defaultMode = "acceptEdits";
+      defaultMode = "bypassPermissions";
       autoApproveWebFetch = true;
       allow = [
         "Read(${sourcesPath}/**)"
