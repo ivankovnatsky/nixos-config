@@ -24,7 +24,6 @@
       "mac-mouse-fix"
       "obsidian"
       "silicon-labs-vcp-driver"
-      "warp"
     ];
     masApps = {
       "Numbers" = 409203825;
