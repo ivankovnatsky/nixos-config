@@ -1,5 +1,8 @@
 { pkgs }:
 
+let
+  src = ./.;
+in
 pkgs.writeShellScriptBin "uptime-kuma-mgmt" ''
   exec ${
     pkgs.python3.withPackages (ps: [
@@ -7,5 +10,5 @@ pkgs.writeShellScriptBin "uptime-kuma-mgmt" ''
       ps.requests
       ps.websocket-client
     ])
-  }/bin/python ${./uptime-kuma-mgmt.py} "$@"
+  }/bin/python ${src}/uptime-kuma-mgmt.py "$@"
 ''

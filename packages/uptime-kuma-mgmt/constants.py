@@ -1,0 +1,11 @@
+"""Constants for uptime-kuma-mgmt."""
+
+USER_AGENT = "uptime-kuma-mgmt/1.0.0"
+
+ENV_BASE_URL = "UPTIME_KUMA_BASE_URL"
+ENV_USERNAME = "UPTIME_KUMA_USERNAME"
+ENV_PASSWORD = "UPTIME_KUMA_PASSWORD"
+
+DEFAULT_SECRETS_PATH = "~/.config/sops-nix/secrets"
+DEFAULT_USERNAME_PATH = f"{DEFAULT_SECRETS_PATH}/uptime-kuma-username"
+DEFAULT_PASSWORD_PATH = f"{DEFAULT_SECRETS_PATH}/uptime-kuma-password"
