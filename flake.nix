@@ -97,7 +97,7 @@
 
     # https://github.com/zhaofengli/nix-homebrew
     nix-homebrew = {
-      url = "github:zhaofengli-wip/nix-homebrew";
+      url = "github:zhaofengli-wip/nix-homebrew/a5409abd0d5013d79775d3419bcac10eacb9d8c5";
     };
 
     homebrew-core = {
