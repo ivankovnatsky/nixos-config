@@ -27,6 +27,7 @@
     imagemagick
     magic-wormhole
     mkpasswd
+    nethogs
     nh
     nodePackages.prettier
     nvtopPackages.nvidia # GPU monitoring (like htop for GPUs)
