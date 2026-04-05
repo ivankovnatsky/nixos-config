@@ -131,6 +131,7 @@ let
   # Secrets are injected as file-based SecretRefs so they stay out of process.env
   # and are not visible to agents via `env`.
   gatewayWithSecrets = pkgs.writeShellScript "openclaw-gateway-secrets" ''
+    umask 077
     DOMAIN=$(cat ${config.sops.secrets.external-domain.path})
     SERVER_ID=$(cat ${config.sops.secrets.openclaw-discord-server-id.path})
     USER_ID=$(cat ${config.sops.secrets.openclaw-discord-user-id.path})
