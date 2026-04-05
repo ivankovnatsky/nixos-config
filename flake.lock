@@ -1533,11 +1533,11 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1775396723,
-        "narHash": "sha256-ewm0tjK0uzuzsJSvA91mrc8uuoXFQAyW7NrYj+1zVCM=",
+        "lastModified": 1775396794,
+        "narHash": "sha256-iaFdVYjdmusGNrBg/gQDMn7plHyVOv/S2fc1zIDwetE=",
         "owner": "ivankovnatsky",
         "repo": "taskweb",
-        "rev": "11d77e4e07eadb126478e7b6ab098725bee500ff",
+        "rev": "ddade982337842080250eebf23934bc8b9b52974",
         "type": "github"
       },
       "original": {
