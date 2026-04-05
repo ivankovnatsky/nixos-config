@@ -53,7 +53,6 @@ in
     inherit shellAliases;
 
     sessionVariables = {
-      _ZL_HYPHEN = 1;
     };
 
     initContent = ''
