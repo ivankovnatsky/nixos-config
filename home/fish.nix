@@ -55,9 +55,6 @@ in
       bind --preset -e \cd
       bind \cd true
 
-      # z.lua -- this is needed for words with hyphens to autocomplete
-      set -x _ZL_HYPHEN 1
-
       if test -d $HOME/bin
           set -gx PATH $PATH $HOME/bin
       end
