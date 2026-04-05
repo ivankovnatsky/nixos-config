@@ -16,10 +16,10 @@
 # layouts - Ordered list of layouts to use by layout key (default tall, wide, fullscreen, and column).
 layouts:
   # - tall
+  - tall-right
   - fullscreen
   # - tall-right
   # - wide
-  - tall-right
   # - middle-wide
   # - 3column-left
   # - middle-wide # The legacy name of "3column-middle"
