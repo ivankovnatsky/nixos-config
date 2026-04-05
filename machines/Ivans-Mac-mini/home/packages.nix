@@ -68,6 +68,7 @@ in
       gpg-edit
       gpg-pass-refresh
       gwq
+      grwt
       gwq-add
       gwq-merge
       gwq-purge
