@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# gwt - Select a ghq repo and create a worktree in it
+# grwt - Select a ghq repo and create a worktree in it
 
 set -euo pipefail
 

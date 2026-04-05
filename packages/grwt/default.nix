@@ -1,12 +1,12 @@
 { pkgs }:
 
 pkgs.writeShellApplication {
-  name = "gwt";
+  name = "grwt";
   runtimeInputs = [
     pkgs.ghq
     pkgs.fzf
     pkgs.gnugrep
     pkgs.gwq-add
   ];
-  text = builtins.readFile ./gwt.sh;
+  text = builtins.readFile ./grwt.sh;
 }
