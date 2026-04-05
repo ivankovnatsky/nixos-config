@@ -33,7 +33,7 @@
     ../../../home/nixvim/plugins/gpg-nvim
     ../../../home/npm.nix
     ../../../home/nushell.nix
-    ../../../home/obsidian.nix
+    ../../../home/obsidian-darwin.nix
     ../../../home/packages-darwin.nix
     ../../../home/packages.nix
     ../../../home/pass.nix

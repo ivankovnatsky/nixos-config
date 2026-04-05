@@ -32,7 +32,7 @@
     ../../../home/nixvim/plugins/gpg-nvim
     ../../../home/npm.nix
     ../../../home/nushell.nix
-    ../../../home/obsidian.nix
+    ../../../home/obsidian-darwin.nix
     ../../../home/pass.nix
     ../../../home/promtail.nix
     ../../../home/quit-mac-mouse-fix.nix
