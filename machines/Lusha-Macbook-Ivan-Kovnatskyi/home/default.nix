@@ -54,7 +54,7 @@
     ../../../home/vscode.nix
     ../../../home/yamlint.nix
     ../../../home/yt-dlp.nix
-    ../../../home/z-lua.nix
+    ../../../home/zoxide.nix
     ../../../home/zellij.nix
     ../../../home/zsh.nix
     ../../../modules/flags

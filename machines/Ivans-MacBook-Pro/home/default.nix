@@ -56,7 +56,7 @@
     ../../../home/vscode.nix
     ../../../home/xattr.nix
     ../../../home/yt-dlp.nix
-    ../../../home/z-lua.nix
+    ../../../home/zoxide.nix
     ../../../home/zsh.nix
     ../../../modules/flags
     ../../../modules/home/dock
