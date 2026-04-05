@@ -9,7 +9,7 @@ Subcommands:
   location    Toggle Location Services on/off (macOS only)
   awake       Prevent system from sleeping (macOS + Linux)
   spaces      Add or remove desktop spaces (macOS only)
-  windows     Close/hide app windows (macOS only)
+  windows     Close/hide/open/restart app windows (macOS only)
   volume      Get or set system volume (macOS + Linux)
   accessibility Manage accessibility permissions (macOS only)
   fulldiskaccess Manage Full Disk Access permissions (macOS only)
@@ -1368,6 +1368,28 @@ end tell
     return False
 
 
+def windows_open(app_name: str) -> bool:
+    """Open/launch an app. Case-insensitive."""
+    try:
+        subprocess.run(
+            ["open", "-a", app_name],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        return True
+    except subprocess.CalledProcessError:
+        return False
+
+
+def windows_restart(app_name: str) -> bool:
+    """Quit an app and relaunch it. Case-insensitive."""
+    if windows_find_process(app_name):
+        if not windows_quit(app_name):
+            return False
+    return windows_open(app_name)
+
+
 def windows_hide(app_name: str) -> bool:
     """Hide an app (minimize all windows). Case-insensitive."""
     exact_name = windows_find_process(app_name)
@@ -1416,7 +1438,9 @@ end tell
 
 
 @cli.command()
-@click.argument("action", type=click.Choice(["list", "close", "quit", "hide"]))
+@click.argument(
+    "action", type=click.Choice(["list", "close", "quit", "hide", "open", "restart"])
+)
 @click.argument("apps", nargs=-1)
 @click.option(
     "--wait",
@@ -1425,7 +1449,7 @@ end tell
     help="Poll interval in seconds; retry until success or timeout (18 attempts)",
 )
 def windows(action, apps, wait):
-    """Close/hide/quit app windows (macOS only)"""
+    """Close/hide/quit/open/restart app windows (macOS only)"""
     if not is_macos():
         print("Windows management only available on macOS", file=sys.stderr)
         sys.exit(1)
@@ -1493,6 +1517,28 @@ def windows(action, apps, wait):
                 print(f"Hidden {app}")
             else:
                 print(f"Could not hide {app} (not running)")
+        return
+
+    if action == "open":
+        if not apps:
+            print("Error: app name(s) required for open action", file=sys.stderr)
+            sys.exit(1)
+        for app in apps:
+            if windows_open(app):
+                print(f"Opened {app}")
+            else:
+                print(f"Could not open {app}")
+        return
+
+    if action == "restart":
+        if not apps:
+            print("Error: app name(s) required for restart action", file=sys.stderr)
+            sys.exit(1)
+        for app in apps:
+            if windows_restart(app):
+                print(f"Restarted {app}")
+            else:
+                print(f"Could not restart {app}")
         return
 
     print("Unknown action", file=sys.stderr)
