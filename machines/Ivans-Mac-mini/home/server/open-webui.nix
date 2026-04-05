@@ -36,13 +36,18 @@ in
       ENABLE_WEB_SEARCH = "true";
 
       # Default models
-      DEFAULT_MODELS = "llama3.1:8b,mistral:7b";
+      DEFAULT_MODELS = "llama3.1:8b";
 
       # Disable telemetry and version checks
       SCARF_NO_ANALYTICS = "true";
       DO_NOT_TRACK = "true";
       ANONYMIZED_TELEMETRY = "false";
       ENABLE_VERSION_UPDATE_CHECK = "false";
+    };
+    extraServiceConfig = {
+      SoftResourceLimits = {
+        NumberOfFiles = 4096;
+      };
     };
     command = ''
       # Create data directories if they don't exist
