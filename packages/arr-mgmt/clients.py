@@ -1,0 +1,203 @@
+"""API clients for *arr services (Radarr, Sonarr, Prowlarr)."""
+
+import sys
+import requests
+
+USER_AGENT = "arr-mgmt/1.0.0"
+
+
+class ArrClient:
+    """Client for Radarr/Sonarr v3 API."""
+
+    def __init__(self, base_url: str, api_key: str, timeout: int = 120):
+        self.base_url = base_url.rstrip("/")
+        self.timeout = timeout
+        self.headers = {
+            "User-Agent": USER_AGENT,
+            "X-Api-Key": api_key,
+        }
+
+    def _api_call(self, method: str, endpoint: str, data=None):
+        """Make API request with error handling."""
+        url = f"{self.base_url}{endpoint}"
+        try:
+            response = requests.request(
+                method, url, json=data, headers=self.headers, timeout=self.timeout
+            )
+
+            if response.status_code == 429:
+                raise Exception("API rate limit exceeded. Please wait before retrying.")
+
+            if response.status_code == 204:
+                return None
+
+            if response.status_code not in (200, 201, 202):
+                try:
+                    error_data = response.json()
+                    print(f"DEBUG: Error response: {error_data}", file=sys.stderr)
+                    # Handle both dict and list error responses
+                    if isinstance(error_data, list) and len(error_data) > 0:
+                        message = error_data[0].get("errorMessage", "Unknown error")
+                    elif isinstance(error_data, dict):
+                        message = error_data.get("error", "Unknown error")
+                    else:
+                        message = "Unknown error"
+                    raise Exception(
+                        f"API error: {message} (Status: {response.status_code})"
+                    )
+                except (ValueError, requests.exceptions.JSONDecodeError):
+                    print(f"DEBUG: Response text: {response.text}", file=sys.stderr)
+                    raise Exception(
+                        f"API request failed with status {response.status_code}"
+                    )
+
+            try:
+                return response.json()
+            except (ValueError, requests.exceptions.JSONDecodeError) as e:
+                print(
+                    f"DEBUG: Failed to parse JSON response from {url}", file=sys.stderr
+                )
+                print(
+                    f"DEBUG: Response status: {response.status_code}", file=sys.stderr
+                )
+                print(f"DEBUG: Response text: {response.text[:200]}", file=sys.stderr)
+                raise Exception(f"Invalid JSON response: {e}")
+        except requests.exceptions.RequestException as e:
+            raise Exception(f"Network error: {e}")
+
+    def list_downloadclients(self):
+        """List all download clients."""
+        return self._api_call("GET", "/api/v3/downloadclient")
+
+    def create_downloadclient(self, data):
+        """Create a new download client."""
+        return self._api_call("POST", "/api/v3/downloadclient", data=data)
+
+    def update_downloadclient(self, client_id: int, data):
+        """Update an existing download client."""
+        return self._api_call("PUT", f"/api/v3/downloadclient/{client_id}", data=data)
+
+    def delete_downloadclient(self, client_id: int):
+        """Delete a download client."""
+        return self._api_call("DELETE", f"/api/v3/downloadclient/{client_id}")
+
+    def list_rootfolders(self):
+        """List all root folders."""
+        return self._api_call("GET", "/api/v3/rootfolder")
+
+    def create_rootfolder(self, path: str):
+        """Create a new root folder."""
+        data = {"path": path}
+        return self._api_call("POST", "/api/v3/rootfolder", data=data)
+
+    def delete_rootfolder(self, folder_id: int):
+        """Delete a root folder."""
+        return self._api_call("DELETE", f"/api/v3/rootfolder/{folder_id}")
+
+    def get_host_config(self):
+        """Get current host configuration."""
+        return self._api_call("GET", "/api/v3/config/host")
+
+    def update_host_config(self, data):
+        """Update host configuration (includes bind address)."""
+        return self._api_call("PUT", "/api/v3/config/host", data=data)
+
+
+class ProwlarrClient:
+    """Client for Prowlarr v1 API."""
+
+    def __init__(self, base_url: str, api_key: str, timeout: int = 120):
+        self.base_url = base_url.rstrip("/")
+        self.timeout = timeout
+        self.headers = {
+            "User-Agent": USER_AGENT,
+            "X-Api-Key": api_key,
+        }
+
+    def _api_call(self, method: str, endpoint: str, data=None):
+        """Make API request with error handling."""
+        url = f"{self.base_url}{endpoint}"
+        try:
+            response = requests.request(
+                method, url, json=data, headers=self.headers, timeout=self.timeout
+            )
+
+            if response.status_code == 429:
+                raise Exception("API rate limit exceeded. Please wait before retrying.")
+
+            if response.status_code == 204:
+                return None
+
+            if response.status_code not in (200, 201, 202):
+                try:
+                    error_data = response.json()
+                    print(f"DEBUG: Error response: {error_data}", file=sys.stderr)
+                    # Handle both dict and list error responses
+                    if isinstance(error_data, list) and len(error_data) > 0:
+                        message = error_data[0].get("errorMessage", "Unknown error")
+                    elif isinstance(error_data, dict):
+                        message = error_data.get("error", "Unknown error")
+                    else:
+                        message = "Unknown error"
+                    raise Exception(
+                        f"API error: {message} (Status: {response.status_code})"
+                    )
+                except (ValueError, requests.exceptions.JSONDecodeError):
+                    print(f"DEBUG: Response text: {response.text}", file=sys.stderr)
+                    raise Exception(
+                        f"API request failed with status {response.status_code}"
+                    )
+
+            try:
+                return response.json()
+            except (ValueError, requests.exceptions.JSONDecodeError) as e:
+                print(
+                    f"DEBUG: Failed to parse JSON response from {url}", file=sys.stderr
+                )
+                print(
+                    f"DEBUG: Response status: {response.status_code}", file=sys.stderr
+                )
+                print(f"DEBUG: Response text: {response.text[:200]}", file=sys.stderr)
+                raise Exception(f"Invalid JSON response: {e}")
+        except requests.exceptions.RequestException as e:
+            raise Exception(f"Network error: {e}")
+
+    def list_applications(self):
+        """List all applications."""
+        return self._api_call("GET", "/api/v1/applications")
+
+    def create_application(self, data):
+        """Create a new application."""
+        return self._api_call("POST", "/api/v1/applications", data=data)
+
+    def update_application(self, app_id: int, data):
+        """Update an existing application."""
+        return self._api_call("PUT", f"/api/v1/applications/{app_id}", data=data)
+
+    def delete_application(self, app_id: int):
+        """Delete an application."""
+        return self._api_call("DELETE", f"/api/v1/applications/{app_id}")
+
+    def list_indexers(self):
+        """List all indexers."""
+        return self._api_call("GET", "/api/v1/indexer")
+
+    def create_indexer(self, data):
+        """Create a new indexer."""
+        return self._api_call("POST", "/api/v1/indexer", data=data)
+
+    def update_indexer(self, indexer_id: int, data):
+        """Update an existing indexer."""
+        return self._api_call("PUT", f"/api/v1/indexer/{indexer_id}", data=data)
+
+    def delete_indexer(self, indexer_id: int):
+        """Delete an indexer."""
+        return self._api_call("DELETE", f"/api/v1/indexer/{indexer_id}")
+
+    def get_host_config(self):
+        """Get current host configuration."""
+        return self._api_call("GET", "/api/v1/config/host")
+
+    def update_host_config(self, data):
+        """Update host configuration (includes bind address)."""
+        return self._api_call("PUT", "/api/v1/config/host", data=data)
