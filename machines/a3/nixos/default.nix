@@ -25,6 +25,7 @@
     ./networking.nix
     ./nixpkgs.nix
     ./nvidia.nix
+    ./ollama.nix
     ./power-management.nix
     ./power-monitoring.nix
     ./remote-build.nix
