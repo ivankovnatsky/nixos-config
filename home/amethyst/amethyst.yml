@@ -19,7 +19,7 @@ layouts:
   - fullscreen
   # - tall-right
   # - wide
-  # - two-pane
+  - two-pane
   # - middle-wide
   # - 3column-left
   # - middle-wide # The legacy name of "3column-middle"
