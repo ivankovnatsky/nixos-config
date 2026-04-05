@@ -33,6 +33,8 @@
     ../../../home/npm.nix
     ../../../home/nushell.nix
     ../../../home/obsidian-darwin.nix
+    ../../../home/packages-darwin.nix
+    ../../../home/packages.nix
     ../../../home/pass.nix
     ../../../home/promtail.nix
     ../../../home/quit-mac-mouse-fix.nix
