@@ -1,5 +1,8 @@
 { pkgs }:
 
+let
+  src = ./.;
+in
 pkgs.writeShellScriptBin "syncthing-mgmt" ''
   exec ${
     pkgs.python3.withPackages (ps: [
@@ -7,5 +10,5 @@ pkgs.writeShellScriptBin "syncthing-mgmt" ''
       ps.bcrypt
       ps.rich
     ])
-  }/bin/python ${./syncthing-mgmt.py} "$@"
+  }/bin/python ${src}/syncthing-mgmt.py "$@"
 ''
