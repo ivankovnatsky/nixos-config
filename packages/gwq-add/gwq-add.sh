@@ -17,7 +17,7 @@ if [[ $# -gt 0 ]]; then
   exit 1
 fi
 
-WORD_FILE="/usr/share/dict/words"
+WORD_FILE="${WORD_FILE:-/usr/share/dict/words}"
 
 if [[ ! -f "$WORD_FILE" ]]; then
   echo "Error: $WORD_FILE not found" >&2

@@ -8,5 +8,7 @@ pkgs.writeShellApplication {
     pkgs.gnugrep
     pkgs.gwq
   ];
-  text = builtins.readFile ./gwq-add.sh;
+  text = ''
+    export WORD_FILE="''${WORD_FILE:-${pkgs.scowl}/share/dict/wamerican.50}"
+  '' + builtins.readFile ./gwq-add.sh;
 }
