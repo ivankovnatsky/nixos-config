@@ -54,6 +54,7 @@ in
       gh-pr
       gh-stars-migrate
       giffer
+      gitleaks
       git-branch
       git-commit-scope
       git-pull-all
