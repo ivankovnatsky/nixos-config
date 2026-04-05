@@ -29,7 +29,8 @@ from pathlib import Path
 
 import click
 
-# Full path required because Homebrew PATH isn't available during Nix Darwin activation
+# Ensure system binaries are available during Nix activation
+os.environ["PATH"] = "/usr/bin:/bin:/usr/sbin:" + os.environ.get("PATH", "")
 DISPLAYPLACER_PATH = "/opt/homebrew/bin/displayplacer"
 POWEROFF_VOLUME_SET = "1.0"
 
