@@ -117,6 +117,7 @@ let
       };
 
       skills.load.extraDirs = [
+        "${config.home.homeDirectory}/.agents/skills"
         "${config.flags.externalStoragePath}/Sources/github.com/openclaw/openclaw/skills"
       ];
 
