@@ -47,6 +47,7 @@
     gwq
     gwq-add
     gwq-merge
+    gwt
     gwq-purge
     healthchecks-mgmt
     homelab
