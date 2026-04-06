@@ -37,7 +37,6 @@
         greedy = true;
       }
       "mac-mouse-fix"
-      "mullvad-vpn"
       "obsidian"
       "stats"
       "visual-studio-code"
