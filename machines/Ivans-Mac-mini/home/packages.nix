@@ -13,6 +13,7 @@ in
       gitleaks
       gofumpt
       golangci-lint
+      grwt
       macmon
       music-export
       nixpkgs-darwin-master-ytdlp.yt-dlp
