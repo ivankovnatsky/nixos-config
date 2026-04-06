@@ -34,7 +34,7 @@
     };
 
     gitRepos = {
-      "~/.claude/skills/terraform-skill" = "https://github.com/antonbabenko/terraform-skill";
+      "~/.agents/skills/terraform-skill" = "https://github.com/antonbabenko/terraform-skill";
     };
 
     mcp.servers = {
