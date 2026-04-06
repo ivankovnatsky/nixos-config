@@ -74,7 +74,6 @@
     ./prevent-sleep.nix
     ./programs.nix
     ./reposync.nix
-    ./spaces.nix
     ./syncthing-mgmt.nix
     ./tools.nix
   ];
