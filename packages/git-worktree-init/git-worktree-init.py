@@ -3,7 +3,7 @@
 Git worktree initialization tool.
 
 Creates or navigates to a git worktree for the specified branch.
-Worktrees are created at <repo-root>/.worktrees/<branch-name>.
+Worktrees are created at ~/Worktrees/<host>/<repo>/<branch-name>.
 """
 
 import os
@@ -16,6 +16,36 @@ import click
 
 
 DEFAULT_CHAR_LIMIT = 35
+DEFAULT_WORKTREE_ROOT = Path.home() / "Worktrees"
+
+
+def get_repo_identifier() -> str:
+    """Derive a repo identifier from the remote URL or local path.
+
+    For remote repos, extracts host/org/repo (e.g., github.com/lusha-com/infra).
+    For local repos, uses the path relative to HOME.
+    """
+    remote_url = run_git("remote", "get-url", "origin", check=False)
+    if remote_url:
+        # Handle SSH: git@github.com:org/repo.git
+        match = re.match(r"git@([^:]+):(.+?)(?:\.git)?$", remote_url)
+        if match:
+            host = match.group(1)
+            path = match.group(2)
+            return f"{host}/{path}"
+        # Handle HTTPS: https://github.com/org/repo.git
+        match = re.match(r"https?://([^/]+)/(.+?)(?:\.git)?$", remote_url)
+        if match:
+            host = match.group(1)
+            path = match.group(2)
+            return f"{host}/{path}"
+
+    # Fallback: use path relative to HOME
+    root = get_real_git_root()
+    if root:
+        rel = str(root).replace(str(Path.home()), "").strip("/")
+        return rel if rel else "local"
+    return "local"
 
 
 def run_git(*args: str, capture: bool = True, check: bool = True) -> str:
@@ -180,7 +210,7 @@ def create_worktree(
 
 @click.command(
     epilog="""
-The worktree is created at <repo-root>/.worktrees/<branch-name>.
+The worktree is created at ~/Worktrees/<host>/<org>/<repo>/<branch-name>.
 If the branch doesn't exist, it will be created.
 
 \b
@@ -236,6 +266,8 @@ def main(
 
     START_POINT is an optional start point (e.g., origin/feature/TICKET-123)
     to base the new branch on.
+
+    Worktrees are placed at ~/Worktrees/<host>/<org>/<repo>/<branch>.
     """
     git_root = get_git_root()
     if not git_root:
@@ -276,7 +308,8 @@ def main(
         current_sha,
     )
 
-    worktree_dir = real_git_root / ".worktrees" / branch_name
+    repo_id = get_repo_identifier()
+    worktree_dir = DEFAULT_WORKTREE_ROOT / repo_id / branch_name
 
     if worktree_dir.exists():
         click.echo(str(worktree_dir), nl=False)
