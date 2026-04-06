@@ -17,6 +17,7 @@
     ggh
     ghq-cd
     gitleaks
+    grwt
     gwq-add
     gwq-purge
     glow
