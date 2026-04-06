@@ -3,7 +3,7 @@
 Git worktree initialization tool.
 
 Creates or navigates to a git worktree for the specified branch.
-Worktrees are created at ~/Worktrees/<host>/<repo>/<branch-name>.
+Worktrees are created at ~/Worktrees/<host>/<repo>/<branch-name> (slashes replaced with dashes).
 """
 
 import os
@@ -163,6 +163,26 @@ def process_branch_name(
     return result
 
 
+def find_worktree_by_branch(branch: str) -> Path | None:
+    """Find an existing worktree path for the given branch using git worktree list."""
+    output = run_git("worktree", "list", "--porcelain", check=False)
+    if not output:
+        return None
+
+    current_path = None
+    for line in output.splitlines():
+        if line.startswith("worktree "):
+            current_path = line[len("worktree "):]
+        elif line.startswith("branch refs/heads/") and current_path:
+            wt_branch = line[len("branch refs/heads/"):]
+            if wt_branch == branch:
+                return Path(current_path)
+        elif line == "":
+            current_path = None
+
+    return None
+
+
 def branch_exists(branch: str) -> bool:
     """Check if a branch exists locally."""
     try:
@@ -210,8 +230,10 @@ def create_worktree(
 
 @click.command(
     epilog="""
-The worktree is created at ~/Worktrees/<host>/<org>/<repo>/<branch-name>.
-If the branch doesn't exist, it will be created.
+The worktree is created at ~/Worktrees/<host>/<org>/<repo>/<branch-name>
+where slashes in the branch name are replaced with dashes (e.g.,
+feature/PROJ-123 -> feature-PROJ-123). If the branch doesn't exist,
+it will be created.
 
 \b
 Example:
@@ -267,7 +289,8 @@ def main(
     START_POINT is an optional start point (e.g., origin/feature/TICKET-123)
     to base the new branch on.
 
-    Worktrees are placed at ~/Worktrees/<host>/<org>/<repo>/<branch>.
+    Worktrees are placed at ~/Worktrees/<host>/<org>/<repo>/<branch>
+    (slashes in branch name replaced with dashes).
     """
     git_root = get_git_root()
     if not git_root:
@@ -308,8 +331,21 @@ def main(
         current_sha,
     )
 
+    # Check if branch already has a worktree (handles old and new path formats)
+    existing = find_worktree_by_branch(branch_name)
+    if existing and existing.exists():
+        click.echo(str(existing), nl=False)
+        return
+
     repo_id = get_repo_identifier()
-    worktree_dir = DEFAULT_WORKTREE_ROOT / repo_id / branch_name
+    dir_name = branch_name.replace("/", "-")
+    worktree_dir = DEFAULT_WORKTREE_ROOT / repo_id / dir_name
+
+    # Fallback: check old slash-separated path for backward compatibility
+    old_worktree_dir = DEFAULT_WORKTREE_ROOT / repo_id / branch_name
+    if old_worktree_dir.exists():
+        click.echo(str(old_worktree_dir), nl=False)
+        return
 
     if worktree_dir.exists():
         click.echo(str(worktree_dir), nl=False)
