@@ -136,21 +136,19 @@ TreeGroup.format_commands = _format_no_aliases
 @click.option(
     "--interactive", is_flag=True, default=False, help="Confirm each item individually."
 )
-@click.option(
-    "--create/--no-create",
-    default=True,
-    help="Auto-create missing lists (default: enabled).",
-)
 @click.option("--verbose", is_flag=True, default=False, help="Show commands being run.")
-def sort_reminders(source, approve, interactive, create, verbose):
-    """Sort reminders into their matching lists.
+def sort_reminders(source, approve, interactive, verbose):
+    """Sort reminders into their matching lists (requires --prefix mode).
 
-    Scans all lists for items whose '<Prefix>: ' doesn't match the current
-    list and moves them to the correct one. In --prefix mode, also adds the
+    In --prefix mode, scans all lists for items whose '<Prefix>: ' doesn't
+    match the current list and moves them to the correct one. Also adds the
     list prefix to reminders that are missing it. Use --source to limit to
     one list.
     """
     utils._verbose = verbose
+
+    if not utils._prefix_mode:
+        return
 
     if not (is_darwin() and has_command("rems")):
         click.echo("Error: reminders CLI not available", err=True)
@@ -187,8 +185,8 @@ def sort_reminders(source, approve, interactive, create, verbose):
             if item.get("isCompleted", False):
                 continue
             if ": " not in title:
-                # Item has no prefix — add list prefix if in prefix mode
-                if utils._prefix_mode and title.strip():
+                # Item has no prefix — add list prefix
+                if title.strip():
                     prefix_adds.append(
                         {
                             "source": list_name,
@@ -205,9 +203,10 @@ def sort_reminders(source, approve, interactive, create, verbose):
             # Skip if already in the correct list
             if target_list == list_name:
                 continue
-            needs_create = target_list not in existing_lists
-            if needs_create and not create:
-                click.echo(f"  skip (no list): {title}")
+            # Only move to existing lists
+            if target_list not in existing_lists:
+                if utils._verbose:
+                    click.echo(f"  skip (no list): {title}", err=True)
                 continue
             moves.append(
                 {
@@ -215,7 +214,6 @@ def sort_reminders(source, approve, interactive, create, verbose):
                     "index": i,
                     "title": title,
                     "target": target_list,
-                    "needs_create": needs_create,
                     "external_id": item.get("externalId", ""),
                 }
             )
@@ -264,17 +262,12 @@ def sort_reminders(source, approve, interactive, create, verbose):
         return
 
     # Display plan
-    lists_to_create = sorted({m["target"] for m in moves if m["needs_create"]})
-    if lists_to_create:
-        click.echo(f"Lists to create: {', '.join(lists_to_create)}")
-
     click.echo()
     click.echo(f"{len(moves)} item(s) to move:")
     click.echo()
     for m in moves:
-        create_tag = " (new list)" if m["needs_create"] else ""
         click.echo(f"  {m['source']}: {m['title']}")
-        click.echo(f"    \u2192 {m['target']}{create_tag}")
+        click.echo(f"    \u2192 {m['target']}")
 
     if not approve:
         click.echo()
@@ -283,29 +276,16 @@ def sort_reminders(source, approve, interactive, create, verbose):
             return
 
     # Execute moves in reverse index order to avoid index shifting
-    created_lists = set()
     moved = 0
     for m in reversed(moves):
         target = m["target"]
-        create_tag = (
-            " (new list)" if m["needs_create"] and target not in created_lists else ""
-        )
 
         if interactive:
             click.echo()
             click.echo(f"  {m['title']}")
-            click.echo(f"    \u2192 {target}{create_tag}")
+            click.echo(f"    \u2192 {target}")
             if not click.confirm("  Move?"):
                 continue
-
-        # Create list if needed
-        if m["needs_create"] and target not in created_lists:
-            res = run(["rems", "new-list", target])
-            if res.returncode != 0:
-                click.echo(f"  ERROR creating list '{target}', skipping", err=True)
-                continue
-            created_lists.add(target)
-            click.echo(f"  Created list: {target}")
 
         # Move the item (use externalId if available, else index)
         lookup = m["external_id"] if m["external_id"] else str(m["index"])
@@ -336,13 +316,16 @@ def sort_reminders(source, approve, interactive, create, verbose):
 )
 @click.option("--verbose", is_flag=True, default=False, help="Show commands being run.")
 def sort_tw(project, approve, interactive, verbose):
-    """Sort TW tasks into their matching projects.
+    """Sort TW tasks into their matching projects (requires --prefix mode).
 
-    Scans all tasks (or a single --project) for items whose '<Prefix>: '
-    doesn't match the current project and moves them to the correct one.
-    In --prefix mode, also adds the project prefix to tasks that are missing it.
+    In --prefix mode, scans all tasks (or a single --project) for items whose
+    '<Prefix>: ' doesn't match the current project and moves them to the
+    correct one. Also adds the project prefix to tasks that are missing it.
     """
     utils._verbose = verbose
+
+    if not utils._prefix_mode:
+        return
 
     if not has_command("task"):
         click.echo("Error: task (Taskwarrior) CLI not available", err=True)
@@ -366,6 +349,7 @@ def sort_tw(project, approve, interactive, verbose):
 
     moves = []
     prefix_adds = []
+
     for task in tasks:
         if task.get("status") == "recurring":
             continue
@@ -373,8 +357,8 @@ def sort_tw(project, approve, interactive, verbose):
         current_project = task.get("project", "")
         uuid = task.get("uuid", "")
         if ": " not in desc:
-            # Task has no prefix — add project prefix if in prefix mode
-            if utils._prefix_mode and current_project and desc.strip():
+            # Task has no prefix — add project prefix
+            if current_project and desc.strip():
                 prefix_adds.append(
                     {
                         "uuid": uuid,
@@ -502,14 +486,9 @@ def sort_tw(project, approve, interactive, verbose):
 @click.option(
     "--interactive", is_flag=True, default=False, help="Confirm each item individually."
 )
-@click.option(
-    "--create/--no-create",
-    default=True,
-    help="Auto-create missing Reminders lists (default: enabled).",
-)
 @click.option("--verbose", is_flag=True, default=False, help="Show commands being run.")
 @click.pass_context
-def sort_all(ctx, source, project, approve, interactive, create, verbose):
+def sort_all(ctx, source, project, approve, interactive, verbose):
     """Sort items in both Reminders and Taskwarrior by list/project."""
     utils._verbose = verbose
 
@@ -519,7 +498,6 @@ def sort_all(ctx, source, project, approve, interactive, create, verbose):
             source=source,
             approve=approve,
             interactive=interactive,
-            create=create,
             verbose=verbose,
         )
 
@@ -591,7 +569,6 @@ def drift(
             project=project,
             approve=False,
             interactive=False,
-            create=True,
             verbose=verbose,
         )
 
@@ -727,7 +704,6 @@ def sync(
             project=project,
             approve=False,
             interactive=False,
-            create=True,
             verbose=verbose,
         )
 
