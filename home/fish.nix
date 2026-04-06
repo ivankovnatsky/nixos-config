@@ -99,6 +99,10 @@ ${lib.optionalString (config.local.tools.toolsPrefix != config.home.homeDirector
           complete -c ai -w aichat
       end
 
+      # forgit preview window on bottom for narrow tiling splits
+      set -gx FORGIT_LOG_FZF_OPTS "--preview-window=bottom:70%"
+      set -gx FORGIT_SHOW_FZF_OPTS "--preview-window=bottom:70%"
+
       # forgit completions - only show subcommands when no subcommand entered yet
       complete -c git-forgit -n "__fish_is_first_arg" -a "add attributes blame branch_delete checkout_branch checkout_commit checkout_file checkout_tag cherry_pick cherry_pick_from_branch clean diff fixup squash reword ignore log reflog rebase reset_head revert_commit show stash_show stash_push"
       complete -c git-forgit -n "__fish_is_first_arg" -f
