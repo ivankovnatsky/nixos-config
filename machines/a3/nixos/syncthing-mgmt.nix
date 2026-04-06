@@ -36,18 +36,7 @@
     ];
 
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
-    folders = {
-      "taskwarrior" = {
-        path = "${config.users.users.${username}.home}/.task";
-        label = ".task";
-        devices = [
-          "a3"
-          "Ivans-Mac-mini"
-          "Ivans-MacBook-Pro"
-          "Ivans-MacBook-Air"
-        ];
-      };
-    };
+    folders = { };
 
     restart = false;
   };
