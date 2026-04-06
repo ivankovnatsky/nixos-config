@@ -40,11 +40,6 @@
         EnableTiledWindowMargins = true;
       };
       CustomUserPreferences = {
-        # Weather menu bar item (not yet in nix-darwin's controlcenter module)
-        # 18 = show, 24 = hide
-        "~/Library/Preferences/ByHost/com.apple.controlcenter" = {
-          Weather = 18;
-        };
         "NSGlobalDomain" = {
           # Auto-switch icon style based on appearance mode
           AppleIconAppearanceTheme = "RegularAutomatic";
