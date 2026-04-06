@@ -77,6 +77,7 @@
     ./openclaw.nix
     ./packages.nix
     ./server
+    ./taskwarrior-sync.nix
     ./tmux.nix
     ./tools.nix
     ./unison.nix
