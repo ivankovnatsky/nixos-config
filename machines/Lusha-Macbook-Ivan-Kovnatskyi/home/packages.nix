@@ -82,6 +82,7 @@
     grpcurl
     gum
     gwq
+    grwt
     gwq-add
     gwq-merge
     gwq-purge
