@@ -99,6 +99,22 @@ ${lib.optionalString (config.local.tools.toolsPrefix != config.home.homeDirector
           complete -c ai -w aichat
       end
 
+      # Zoxide: override default completion to show frecency-based results from database
+      # instead of filesystem directories (like z.lua does)
+      function __zoxide_z_complete
+          set -l tokens (commandline --current-process --tokenize)
+          set -l current (commandline --current-token)
+          if test (count $tokens) -le 1; and test -z "$current"
+              # No arguments yet: show top database entries
+              zoxide query --list --score 2>/dev/null | head -20 | string replace -r '^\s*[0-9.]+ ' ""
+          else
+              # With partial input: filter database by keyword
+              zoxide query --list --score -- $tokens[2..-1] $current 2>/dev/null | head -20 | string replace -r '^\s*[0-9.]+ ' ""
+          end
+      end
+      complete --command z --no-files --arguments '(__zoxide_z_complete)'
+      complete --command __zoxide_z --no-files --arguments '(__zoxide_z_complete)'
+
       # forgit preview window on bottom for narrow tiling splits
       set -gx FORGIT_LOG_FZF_OPTS "--preview-window=bottom:70%"
       set -gx FORGIT_DIFF_FZF_OPTS "--preview-window=bottom:70%"
