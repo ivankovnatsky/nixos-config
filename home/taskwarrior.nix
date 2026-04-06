@@ -1,17 +1,15 @@
 {
   config,
+  lib,
+  osConfig,
   pkgs,
   ...
 }:
 let
-  inherit (pkgs.stdenv.targetPlatform) isDarwin;
-
-  homePath = config.home.homeDirectory;
-  iCloudTaskDir = "${homePath}/Library/Mobile Documents/iCloud~com~mav~taskchamp/Documents/taskchamp";
   isWork = config.flags.purpose == "work";
-  # Keep Mac replica local to avoid iCloud corruption — iOS owns the iCloud
-  # taskchampion.sqlite3, Mac syncs through taskchampion-local-sync-server.sqlite3
-  dataLocation = "${homePath}/.task";
+  hostname = osConfig.networking.hostName;
+  dataLocation = "${config.home.homeDirectory}/.task";
+  secretsFile = "${config.xdg.configHome}/task/taskrc.secrets";
 
   # Light-optimized theme (foreground-only, no background colors)
   # taskColorsLightOptimized = {
@@ -198,25 +196,43 @@ in
   # ```console
   # git init ~/Library/Mobile\ Documents/iCloud~com~mav~taskchamp/Documents
   # ```
+  sops.secrets.taskchampion-encryption-secret = {
+    key = "taskchampion/encryptionSecret";
+  };
+
+  sops.secrets.taskchampion-client-id = {
+    key = "taskchampion/clientId/${hostname}";
+  };
+
+  home.activation.taskwarriorSecrets = lib.hm.dag.entryAfter [ "writeBoundary" "sopsNix" ] ''
+    encryption_secret="$(cat ${config.sops.secrets.taskchampion-encryption-secret.path})"
+    client_id="$(cat ${config.sops.secrets.taskchampion-client-id.path})"
+    (umask 077; cat > ${secretsFile} <<TASKRC
+sync.encryption_secret=$encryption_secret
+sync.server.client_id=$client_id
+TASKRC
+    )
+  '';
+
   programs.taskwarrior = {
     enable = true;
     package = pkgs.taskwarrior3;
     inherit dataLocation;
-    # https://taskwarrior.org/docs/themes/
-    # colorTheme = if config.flags.darkMode then "dark-256" else "light-256";
     config = {
-      # Use home-manager managed hooks directory
       "hooks.location" = "${config.xdg.configHome}/task/hooks";
     }
     // taskColorsDualMode
     // (
-      if isDarwin && !isWork then
+      if !isWork then
         {
-          "sync.local.server_dir" = iCloudTaskDir;
+          "sync.server.url" = "http://${config.flags.miniIp}:10222";
         }
       else
         { }
     );
+    extraConfig = lib.mkIf (!isWork) ''
+      include ${secretsFile}
+    '';
   };
 
 }
