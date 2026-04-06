@@ -1,15 +1,10 @@
 {
   config,
-  lib,
-  osConfig,
   pkgs,
   ...
 }:
 let
-  isWork = config.flags.purpose == "work";
-  hostname = osConfig.networking.hostName;
   dataLocation = "${config.home.homeDirectory}/.task";
-  secretsFile = "${config.xdg.configHome}/task/taskrc.secrets";
 
   # Light-optimized theme (foreground-only, no background colors)
   # taskColorsLightOptimized = {
@@ -196,24 +191,6 @@ in
   # ```console
   # git init ~/Library/Mobile\ Documents/iCloud~com~mav~taskchamp/Documents
   # ```
-  sops.secrets.taskchampion-encryption-secret = {
-    key = "taskchampion/encryptionSecret";
-  };
-
-  sops.secrets.taskchampion-client-id = {
-    key = "taskchampion/clientId/${hostname}";
-  };
-
-  home.activation.taskwarriorSecrets = lib.hm.dag.entryAfter [ "writeBoundary" "sopsNix" ] ''
-    encryption_secret="$(cat ${config.sops.secrets.taskchampion-encryption-secret.path})"
-    client_id="$(cat ${config.sops.secrets.taskchampion-client-id.path})"
-    (umask 077; cat > ${secretsFile} <<TASKRC
-sync.encryption_secret=$encryption_secret
-sync.server.client_id=$client_id
-TASKRC
-    )
-  '';
-
   programs.taskwarrior = {
     enable = true;
     package = pkgs.taskwarrior3;
@@ -221,18 +198,7 @@ TASKRC
     config = {
       "hooks.location" = "${config.xdg.configHome}/task/hooks";
     }
-    // taskColorsDualMode
-    // (
-      if !isWork then
-        {
-          "sync.server.url" = "http://${config.flags.miniIp}:10222";
-        }
-      else
-        { }
-    );
-    extraConfig = lib.mkIf (!isWork) ''
-      include ${secretsFile}
-    '';
+    // taskColorsDualMode;
   };
 
 }
