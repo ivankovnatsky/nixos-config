@@ -101,6 +101,17 @@ def is_untracked(file_path: str, git_root: str) -> bool:
     return result.returncode != 0
 
 
+def is_ignored(file_path: str, git_root: str) -> bool:
+    """Check if a file is ignored by .gitignore."""
+    result = subprocess.run(
+        ["git", "check-ignore", "-q", file_path],
+        capture_output=True,
+        text=True,
+        cwd=git_root,
+    )
+    return result.returncode == 0
+
+
 def is_staged_path(path: str) -> bool:
     """Check if a path is in the staged files (works for deleted files too)."""
     try:
@@ -429,8 +440,10 @@ def main(args, subject, body):
         try:
             # Add untracked files first (git commit <file> only works for tracked files)
             # Skip if file is already staged (e.g., staged deletion)
+            force_added = False
             if is_staged_path(target_file):
-                pass
+                # File already staged — check if it's ignored (e.g., pre-staged with git add -f)
+                force_added = is_ignored(target_file, git_root)
             elif is_untracked(target_file, git_root):
                 result = subprocess.run(
                     ["git", "add", target_file],
@@ -444,6 +457,7 @@ def main(args, subject, body):
                     subprocess.run(
                         ["git", "add", "-f", target_file], check=True, cwd=git_root
                     )
+                    force_added = True
                 else:
                     click.echo(f"  add {target_file}")
 
@@ -454,6 +468,10 @@ def main(args, subject, body):
             # to commit just this path from the index without pulling in other staged changes.
             if is_staged_deletion(target_file):
                 cmd = ["git", "commit", "--only", target_file, "-m", message]
+            elif force_added:
+                # Ignored files can't be used as pathspec (git respects .gitignore
+                # in pathspec matching even after git add -f). Commit from index.
+                cmd = ["git", "commit", "-m", message]
             else:
                 cmd = ["git", "commit", target_file, "-m", message]
             if body_str:
