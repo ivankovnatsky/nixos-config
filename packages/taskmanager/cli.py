@@ -984,7 +984,7 @@ def sync(
             annotations = item.get("annotations", [])
             if annotations:
                 notes_text = "\n".join(a.get("description", "") for a in annotations)
-                add_cmd.extend(["--notes", notes_text])
+                add_cmd.append(f"--notes={notes_text}")
 
             # Keep positional reminder text after all options so titles
             # beginning with "-" are not parsed as flags.
@@ -1676,7 +1676,7 @@ def rem_edit(pattern):
         cmd = ["rems", "edit", list_name, ext_id, "--include-completed"]
         title_changed = edited.get("title") != original.get("title")
         if edited.get("notes") != original.get("notes"):
-            cmd.extend(["--notes", edited.get("notes", "")])
+            cmd.append(f"--notes={edited.get('notes', '')}")
         if edited.get("dueDate") != original.get("dueDate"):
             cmd.extend(["--due-date", edited.get("dueDate", "")])
         if edited.get("priority") != original.get("priority"):

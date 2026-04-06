@@ -243,7 +243,7 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                 "--include-completed",
             ]
             if "notes" in rem_updates:
-                edit_args.extend(["--notes", rem_updates["notes"]])
+                edit_args.append(f"--notes={rem_updates['notes']}")
             if "due" in rem_updates:
                 edit_args.extend(["--due-date", rem_updates["due"]])
             if "priority" in rem_updates:
