@@ -33,5 +33,24 @@ word1=$(get_random_word)
 word2=$(get_random_word)
 branch_name="${word1}-${word2}"
 
-gwq add -b "$branch_name" >&2
+# Try gwq add directly; if it fails (e.g. no remote), fall back to explicit path
+if ! gwq add -b "$branch_name" >&2 2>/dev/null; then
+  repo_root=$(git rev-parse --show-toplevel)
+  basedir=$(gwq config get worktree.basedir)
+
+  # Build relative path from HOME, sanitize special chars using parameter expansion
+  rel_path="${repo_root#"$HOME"}"
+  rel_path="${rel_path#/}"
+  sanitized="${rel_path//[\/.\~:]/-}"
+  # Use "home" when path is empty (repo root is $HOME)
+  sanitized="${sanitized:-home}"
+  # Remove leading/trailing dashes
+  sanitized="${sanitized##-}"
+  sanitized="${sanitized%%-}"
+  sanitized="${sanitized:-home}"
+
+  worktree_path="$basedir/$sanitized/$branch_name"
+  gwq add -b "$branch_name" "$worktree_path" >&2
+fi
+
 gwq get "$branch_name"
