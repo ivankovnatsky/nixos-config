@@ -148,12 +148,9 @@ def sort_reminders(source, approve, interactive, create, verbose):
     Scans all lists for items whose '<Prefix>: ' doesn't match the current
     list and moves them to the correct one. In --prefix mode, also adds the
     list prefix to reminders that are missing it. Use --source to limit to
-    one list. In --no-prefix mode (default), sort is a no-op.
+    one list.
     """
     utils._verbose = verbose
-
-    if not utils._prefix_mode:
-        return
 
     if not (is_darwin() and has_command("rems")):
         click.echo("Error: reminders CLI not available", err=True)
@@ -190,8 +187,8 @@ def sort_reminders(source, approve, interactive, create, verbose):
             if item.get("isCompleted", False):
                 continue
             if ": " not in title:
-                # Item has no prefix — add list prefix
-                if title.strip():
+                # Item has no prefix — add list prefix if in prefix mode
+                if utils._prefix_mode and title.strip():
                     prefix_adds.append(
                         {
                             "source": list_name,
@@ -344,12 +341,8 @@ def sort_tw(project, approve, interactive, verbose):
     Scans all tasks (or a single --project) for items whose '<Prefix>: '
     doesn't match the current project and moves them to the correct one.
     In --prefix mode, also adds the project prefix to tasks that are missing it.
-    In --no-prefix mode (default), sort is a no-op.
     """
     utils._verbose = verbose
-
-    if not utils._prefix_mode:
-        return
 
     if not has_command("task"):
         click.echo("Error: task (Taskwarrior) CLI not available", err=True)
@@ -380,8 +373,8 @@ def sort_tw(project, approve, interactive, verbose):
         current_project = task.get("project", "")
         uuid = task.get("uuid", "")
         if ": " not in desc:
-            # Task has no prefix — add project prefix if it has a project
-            if current_project and desc.strip():
+            # Task has no prefix — add project prefix if in prefix mode
+            if utils._prefix_mode and current_project and desc.strip():
                 prefix_adds.append(
                     {
                         "uuid": uuid,
@@ -517,7 +510,7 @@ def sort_tw(project, approve, interactive, verbose):
 @click.option("--verbose", is_flag=True, default=False, help="Show commands being run.")
 @click.pass_context
 def sort_all(ctx, source, project, approve, interactive, create, verbose):
-    """Sort prefixed items in both Reminders and Taskwarrior."""
+    """Sort items in both Reminders and Taskwarrior by list/project."""
     utils._verbose = verbose
 
     if is_darwin() and has_command("rems"):
@@ -961,6 +954,12 @@ def sync(
 
             # Never copy deleted TW tasks to Reminders
             if item.get("status") == "deleted":
+                continue
+            # Skip tasks with no project — cannot determine target list
+            if not proj:
+                if interactive:
+                    click.echo()
+                    click.echo(f"Skipping (no project): {item['title']}")
                 continue
             # Skip TW->Rem copy when --complete-orphans or --purge-duplicates will handle them
             if complete_orphans and item.get("status") == "pending":
