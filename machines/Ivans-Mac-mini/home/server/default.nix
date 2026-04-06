@@ -22,6 +22,7 @@
     ./stash
     ./stash-media
     ./syncthing-mgmt.nix
+    ./taskchampion-sync-server.nix
     ./taskwarrior-web.nix
     ./taskweb.nix
     ./textcast
