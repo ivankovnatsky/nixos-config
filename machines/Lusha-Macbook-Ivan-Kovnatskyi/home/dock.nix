@@ -48,8 +48,6 @@
         { path = "/Applications/Vivaldi.app/"; }
         { path = "/Applications/DBeaver.app/"; }
         { path = "/Applications/Visual Studio Code.app/"; }
-
-        { path = "/Applications/Mullvad VPN.app/"; }
         { path = "/Applications/Obsidian.app/"; }
 
         {
