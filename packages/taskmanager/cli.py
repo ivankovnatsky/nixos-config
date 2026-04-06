@@ -247,7 +247,7 @@ def sort_reminders(source, approve, interactive, create, verbose):
                     continue
 
             lookup = p["external_id"] if p["external_id"] else str(p["index"])
-            res = run(["rems", "edit", p["source"], lookup, new_title])
+            res = run(["rems", "edit", p["source"], lookup, "--", new_title])
             if res.returncode == 0:
                 prefixed_count += 1
                 click.echo(f"  Prefixed: {new_title}")
@@ -991,7 +991,7 @@ def sync(
                 run(["rems", "new-list", proj])
                 existing_lists.add(proj)
 
-            add_cmd = ["rems", "add", proj, desc]
+            add_cmd = ["rems", "add", proj]
 
             # Due date — convert TW compact format to ISO for reminders CLI
             raw_due = item.get("due", "")
@@ -1010,16 +1010,21 @@ def sync(
                 notes_text = "\n".join(a.get("description", "") for a in annotations)
                 add_cmd.extend(["--notes", notes_text])
 
+            # Keep positional reminder text after all options so titles
+            # beginning with "-" are not parsed as flags.
+            add_cmd.extend(["--", desc])
+
             result = run(add_cmd)
             if result.returncode == 0:
                 click.echo(f"  + Reminders: {desc}")
                 if item["status"] == "completed":
-                    complete_cmd = ["rems", "complete", proj, desc]
+                    complete_cmd = ["rems", "complete", proj]
                     raw_end = item.get("end", "")
                     if raw_end:
                         complete_cmd.extend(
                             ["--completion-date", tw_date_to_iso(raw_end)]
                         )
+                    complete_cmd.extend(["--", desc])
                     run(complete_cmd)
 
     # Sync metadata for matched items with drift
@@ -1625,7 +1630,7 @@ def tw_ingest(project, approve, dry_run, verbose):
         # Delete the source reminder by externalId for instance-safe deletion
         ext_id = item.get("externalId", "")
         if ext_id:
-            del_result = run(["rems", "delete", proj, ext_id, "--force"])
+            del_result = run(["rems", "delete", proj, "--force", "--", ext_id])
             if del_result.returncode == 0:
                 click.echo(f"  - Reminder deleted: {title}")
                 migrated += 1
@@ -1693,15 +1698,15 @@ def rem_edit(pattern):
         list_name = original["list"]
         ext_id = original["externalId"]
         cmd = ["rems", "edit", list_name, ext_id, "--include-completed"]
-
-        if edited.get("title") != original.get("title"):
-            cmd.append(edited["title"])
+        title_changed = edited.get("title") != original.get("title")
         if edited.get("notes") != original.get("notes"):
             cmd.extend(["--notes", edited.get("notes", "")])
         if edited.get("dueDate") != original.get("dueDate"):
             cmd.extend(["--due-date", edited.get("dueDate", "")])
         if edited.get("priority") != original.get("priority"):
             cmd.extend(["--priority", str(edited.get("priority", 0))])
+        if title_changed:
+            cmd.extend(["--", edited["title"]])
 
         if len(cmd) > 5:
             subprocess.run(cmd)

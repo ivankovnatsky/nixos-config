@@ -1,6 +1,7 @@
 """Shared utilities, constants, and date helpers for taskmanager."""
 
 import platform
+import shlex
 import shutil
 import subprocess
 
@@ -27,10 +28,12 @@ def prefixed_title(project, title):
 
 def run(cmd, stdin_text=None):
     if _verbose:
-        click.echo(f"  >> {' '.join(cmd)}", err=True)
+        click.echo(f"  >> {shlex.join(cmd)}", err=True)
     result = subprocess.run(cmd, capture_output=True, text=True, input=stdin_text)
     if result.returncode != 0:
-        click.echo(f"Error running {' '.join(cmd)}: {result.stderr.strip()}", err=True)
+        click.echo(
+            f"Error running {shlex.join(cmd)}: {result.stderr.strip()}", err=True
+        )
     return result
 
 

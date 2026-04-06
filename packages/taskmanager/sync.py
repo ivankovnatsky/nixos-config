@@ -242,27 +242,28 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                 rem_id,
                 "--include-completed",
             ]
-            if "title" in rem_updates:
-                edit_args.append(rem_updates["title"])
             if "notes" in rem_updates:
                 edit_args.extend(["--notes", rem_updates["notes"]])
             if "due" in rem_updates:
                 edit_args.extend(["--due-date", rem_updates["due"]])
             if "priority" in rem_updates:
                 edit_args.extend(["--priority", rem_updates["priority"]])
+            if "title" in rem_updates:
+                edit_args.extend(["--", rem_updates["title"]])
             if len(edit_args) > 5:
                 run(edit_args)
             if "status" in rem_updates:
                 if rem_updates["status"] == "completed":
-                    complete_cmd = ["rems", "complete", project, rem_id]
+                    complete_cmd = ["rems", "complete", project]
                     raw_end = tw.get("end", "")
                     if raw_end:
                         complete_cmd.extend(
                             ["--completion-date", tw_date_to_iso(raw_end)]
                         )
+                    complete_cmd.extend(["--", rem_id])
                     run(complete_cmd)
                 else:
-                    run(["rems", "uncomplete", project, rem_id])
+                    run(["rems", "uncomplete", project, "--", rem_id])
             count += 1
             click.echo(
                 f"  ~ Reminders: {desc}\n    {format_update_summary(rem_updates)}"
