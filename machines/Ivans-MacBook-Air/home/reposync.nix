@@ -13,6 +13,13 @@
 
   local.services.reposync.repositories = [
     {
+      name = "home";
+      path = config.home.homeDirectory;
+      remote = "origin";
+      remoteUrl = "https://forgejo.@domain@/@username@/home.git";
+      branch = "main";
+    }
+    {
       path = "${config.home.homeDirectory}/Sources/github.com/ivankovnatsky/nix-config";
       remote = "origin";
       remoteUrl = "https://github.com/ivankovnatsky/nix-config.git";
