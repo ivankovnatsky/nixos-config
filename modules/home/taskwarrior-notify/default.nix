@@ -14,16 +14,18 @@ let
     # Check for due and overdue tasks and send macOS notifications
     export PATH="${pkgs.taskwarrior3}/bin:$PATH"
 
-    # Get overdue tasks
+    # Get overdue tasks with details
     overdue=$(task rc.verbose=nothing +OVERDUE count 2>/dev/null || echo "0")
     if [ "$overdue" -gt 0 ]; then
-      osascript -e "display notification \"$overdue task(s) overdue\" with title \"Taskwarrior\" sound name \"Basso\""
+      details=$(task rc.verbose=nothing rc.report.next.columns=description.truncated rc.report.next.labels=Task +OVERDUE limit:3 next 2>/dev/null | sed 's/"/\\"/g')
+      osascript -e "display notification \"$details\" with title \"Taskwarrior: $overdue overdue\" sound name \"Basso\""
     fi
 
     # Get tasks due today that aren't overdue yet
     due_today=$(task rc.verbose=nothing +TODAY -OVERDUE count 2>/dev/null || echo "0")
     if [ "$due_today" -gt 0 ]; then
-      osascript -e "display notification \"$due_today task(s) due today\" with title \"Taskwarrior\""
+      details=$(task rc.verbose=nothing rc.report.next.columns=description.truncated rc.report.next.labels=Task +TODAY -OVERDUE limit:3 next 2>/dev/null | sed 's/"/\\"/g')
+      osascript -e "display notification \"$details\" with title \"Taskwarrior: $due_today due today\""
     fi
   '';
 in
