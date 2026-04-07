@@ -549,7 +549,7 @@ def export_raw(api_key, profile_id, output, list_profiles):
 
 
 def main():
-    cli()
+    cli(prog_name="nextdns-mgmt")
 
 
 if __name__ == "__main__":

@@ -170,4 +170,4 @@ def main(folders, command, session, no_attach):
 
 
 if __name__ == "__main__":
-    main()
+    main(prog_name="tmux-spawn")

@@ -319,4 +319,4 @@ def main(directory: str, jobs: int, verbose: bool) -> None:
 
 
 if __name__ == "__main__":
-    main()
+    main(prog_name="git-pull-all")

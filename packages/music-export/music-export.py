@@ -100,4 +100,4 @@ def main(output_dir, date_dir):
 
 
 if __name__ == "__main__":
-    main()
+    main(prog_name="music-export")

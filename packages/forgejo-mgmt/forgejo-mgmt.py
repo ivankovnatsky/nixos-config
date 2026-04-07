@@ -516,4 +516,4 @@ def list_cmd(config_file, output_format):
 
 
 if __name__ == "__main__":
-    cli()
+    cli(prog_name="forgejo-mgmt")

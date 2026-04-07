@@ -196,4 +196,4 @@ def declarative(base_url, api_key, config_xml, config_file, dry_run, restart):
 
 
 if __name__ == "__main__":
-    cli()
+    cli(prog_name="syncthing-mgmt")

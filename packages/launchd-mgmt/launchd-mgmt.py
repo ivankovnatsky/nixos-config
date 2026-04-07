@@ -510,4 +510,4 @@ def clean(ctx, dry_run):
 
 
 if __name__ == "__main__":
-    cli()
+    cli(prog_name="launchd-mgmt")

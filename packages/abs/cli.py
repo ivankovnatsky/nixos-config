@@ -178,4 +178,4 @@ def process(url, file_url_list, abs_url, library):
 
 def main():
     """Main entry point for the script."""
-    cli()
+    cli(prog_name="abs")

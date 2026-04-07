@@ -767,7 +767,7 @@ def cmd_export_all(hostname, username, password, use_ssl, port, output_dir):
 
 
 def main():
-    cli()
+    cli(prog_name="asusrouter-cli")
 
 
 if __name__ == "__main__":

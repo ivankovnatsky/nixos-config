@@ -226,4 +226,4 @@ def main(input_file, terraform_diff, old_file, new_file):
 
 
 if __name__ == "__main__":
-    main()
+    main(prog_name="diff-long-lines")

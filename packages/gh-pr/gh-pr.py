@@ -253,7 +253,7 @@ def view():
 
 
 def main() -> int:
-    cli(standalone_mode=False)
+    cli(standalone_mode=False, prog_name="gh-pr")
     return 0
 
 

@@ -788,4 +788,4 @@ def watch(config_path, command, loop, no_watch, interval):
 
 
 if __name__ == "__main__":
-    cli()
+    cli(prog_name="rebuild")

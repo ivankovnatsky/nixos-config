@@ -210,7 +210,7 @@ def cmd_sync(ctx, config_file, dry_run):
 
 
 def main():
-    cli()
+    cli(prog_name="healthchecks-mgmt")
 
 
 if __name__ == "__main__":

@@ -632,7 +632,7 @@ def cmd_sync_opml(
 
 
 def main():
-    cli()
+    cli(prog_name="abs-mgmt")
 
 
 if __name__ == "__main__":

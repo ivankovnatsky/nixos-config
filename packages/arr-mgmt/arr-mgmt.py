@@ -59,4 +59,4 @@ def sync(config_file, dry_run):
 
 
 if __name__ == "__main__":
-    cli()
+    cli(prog_name="arr-mgmt")
