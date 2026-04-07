@@ -391,12 +391,44 @@ def _sync_indexers(client: ProwlarrClient, desired_indexers: list, dry_run: bool
                     f"priority: {current.get('priority')} -> {desired.get('priority', 25)}"
                 )
 
+            # Check credentials (skip masked values)
+            current_fields = {f["name"]: f for f in current.get("fields", [])}
+            if "username" in desired:
+                current_username = current_fields.get("username", {}).get("value")
+                if current_username != desired["username"]:
+                    needs_update = True
+                    update_parts.append("username")
+            if "password" in desired and desired["password"] != "********":
+                needs_update = True
+                update_parts.append("password")
+
             if needs_update:
                 click.echo(f"  UPDATE: {name} ({', '.join(update_parts)})", err=True)
                 if not dry_run:
                     update_data = current.copy()
                     update_data["enable"] = desired.get("enable", True)
                     update_data["priority"] = desired.get("priority", 25)
+                    # Update credential fields if present
+                    if "username" in desired or "password" in desired:
+                        fields = update_data.get("fields", [])
+                        fields_map = {f["name"]: f for f in fields}
+                        if "username" in desired:
+                            if "username" in fields_map:
+                                fields_map["username"]["value"] = desired["username"]
+                            else:
+                                fields.append(
+                                    {"name": "username", "value": desired["username"]}
+                                )
+                        if "password" in desired:
+                            if "password" in fields_map:
+                                fields_map["password"]["value"] = desired["password"]
+                            else:
+                                fields.append(
+                                    {"name": "password", "value": desired["password"]}
+                                )
+                        update_data["fields"] = (
+                            list(fields_map.values()) if fields_map else fields
+                        )
                     client.update_indexer(current["id"], update_data)
             else:
                 click.echo(f"  OK: {name} (no changes)", err=True)
@@ -416,6 +448,13 @@ def _sync_indexers(client: ProwlarrClient, desired_indexers: list, dry_run: bool
             if not dry_run:
                 # Build create payload with implementation fields
                 # Most public indexers use Cardigann (generic indexer framework)
+                fields = [
+                    {"name": "definitionFile", "value": desired["definitionName"]}
+                ]
+                if "username" in desired:
+                    fields.append({"name": "username", "value": desired["username"]})
+                if "password" in desired:
+                    fields.append({"name": "password", "value": desired["password"]})
                 create_data = {
                     "definitionName": desired["definitionName"],
                     "name": name,
@@ -426,8 +465,6 @@ def _sync_indexers(client: ProwlarrClient, desired_indexers: list, dry_run: bool
                     "implementationName": "Cardigann",
                     "implementation": "Cardigann",
                     "configContract": "CardigannSettings",
-                    "fields": [
-                        {"name": "definitionFile", "value": desired["definitionName"]}
-                    ],
+                    "fields": fields,
                 }
                 client.create_indexer(create_data)
