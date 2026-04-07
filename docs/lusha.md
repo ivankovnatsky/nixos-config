@@ -127,6 +127,12 @@ Configured Work Focus to filter out Kandji MDM notifications:
 - Allow:
   - Notifications
 
+### Weather
+
+- Allow:
+  - Location ("Weather" would like to use your current location)
+- Menu Bar: Show in Menu Bar (enabled)
+
 ### Raycast
 
 - Allow access to control "System Events"
