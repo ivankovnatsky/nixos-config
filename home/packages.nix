@@ -33,6 +33,9 @@
     gh-stars-migrate
     ghq-cd
     giffer
+    gitleaks
+    gofumpt
+    golangci-lint
     git-branch
     git-commit-scope
     git-pull-all
@@ -61,6 +64,7 @@
     nix-gc
     nix-generate-sha
     nix-sort-imports
+    nodePackages.prettier
     nodejs
     notes
     nvim-edit-staged
@@ -86,13 +90,17 @@
     reboot
     rebuild
     reposync
+    ruff
     rg-all
     rg-find
     settings
+    shellcheck
+    shfmt
     sops
     ssh-persistent
     ssh-to-age
     statix-wrapper
+    stylua
     syncthing-mgmt
     tac
     tail-terminal
