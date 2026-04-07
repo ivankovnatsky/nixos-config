@@ -1,4 +1,4 @@
-"""API clients for *arr services (Radarr, Sonarr, Prowlarr)."""
+"""API clients for *arr services (Radarr, Sonarr, Lidarr, Prowlarr)."""
 
 import click
 import requests
@@ -7,10 +7,13 @@ USER_AGENT = "arr-mgmt/1.0.0"
 
 
 class ArrClient:
-    """Client for Radarr/Sonarr v3 API."""
+    """Client for Radarr/Sonarr/Lidarr API."""
 
-    def __init__(self, base_url: str, api_key: str, timeout: int = 120):
+    def __init__(
+        self, base_url: str, api_key: str, timeout: int = 120, api_version: int = 3
+    ):
         self.base_url = base_url.rstrip("/")
+        self.api_version = api_version
         self.timeout = timeout
         self.headers = {
             "User-Agent": USER_AGENT,
@@ -63,40 +66,48 @@ class ArrClient:
 
     def list_downloadclients(self):
         """List all download clients."""
-        return self._api_call("GET", "/api/v3/downloadclient")
+        return self._api_call("GET", f"/api/v{self.api_version}/downloadclient")
 
     def create_downloadclient(self, data):
         """Create a new download client."""
-        return self._api_call("POST", "/api/v3/downloadclient", data=data)
+        return self._api_call(
+            "POST", f"/api/v{self.api_version}/downloadclient", data=data
+        )
 
     def update_downloadclient(self, client_id: int, data):
         """Update an existing download client."""
-        return self._api_call("PUT", f"/api/v3/downloadclient/{client_id}", data=data)
+        return self._api_call(
+            "PUT", f"/api/v{self.api_version}/downloadclient/{client_id}", data=data
+        )
 
     def delete_downloadclient(self, client_id: int):
         """Delete a download client."""
-        return self._api_call("DELETE", f"/api/v3/downloadclient/{client_id}")
+        return self._api_call(
+            "DELETE", f"/api/v{self.api_version}/downloadclient/{client_id}"
+        )
 
     def list_rootfolders(self):
         """List all root folders."""
-        return self._api_call("GET", "/api/v3/rootfolder")
+        return self._api_call("GET", f"/api/v{self.api_version}/rootfolder")
 
     def create_rootfolder(self, path: str):
         """Create a new root folder."""
         data = {"path": path}
-        return self._api_call("POST", "/api/v3/rootfolder", data=data)
+        return self._api_call("POST", f"/api/v{self.api_version}/rootfolder", data=data)
 
     def delete_rootfolder(self, folder_id: int):
         """Delete a root folder."""
-        return self._api_call("DELETE", f"/api/v3/rootfolder/{folder_id}")
+        return self._api_call(
+            "DELETE", f"/api/v{self.api_version}/rootfolder/{folder_id}"
+        )
 
     def get_host_config(self):
         """Get current host configuration."""
-        return self._api_call("GET", "/api/v3/config/host")
+        return self._api_call("GET", f"/api/v{self.api_version}/config/host")
 
     def update_host_config(self, data):
         """Update host configuration (includes bind address)."""
-        return self._api_call("PUT", "/api/v3/config/host", data=data)
+        return self._api_call("PUT", f"/api/v{self.api_version}/config/host", data=data)
 
 
 class ProwlarrClient:

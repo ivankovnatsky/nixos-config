@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-*arr stack management tool (Radarr, Sonarr, Prowlarr).
+*arr stack management tool (Radarr, Sonarr, Lidarr, Prowlarr).
 Declarative configuration via sync command.
 """
 
@@ -9,12 +9,12 @@ import json
 
 import click
 
-from sync import sync_radarr, sync_sonarr, sync_prowlarr
+from sync import sync_lidarr, sync_radarr, sync_sonarr, sync_prowlarr
 
 
 @click.group()
 def cli():
-    """*arr stack management tool (Radarr, Sonarr, Prowlarr)."""
+    """*arr stack management tool (Radarr, Sonarr, Lidarr, Prowlarr)."""
 
 
 @cli.command()
@@ -34,6 +34,9 @@ def sync(config_file, dry_run):
         sys.exit(1)
 
     try:
+        if "lidarr" in config:
+            sync_lidarr(config["lidarr"], dry_run=dry_run)
+
         if "radarr" in config:
             sync_radarr(config["radarr"], dry_run=dry_run)
 

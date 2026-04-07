@@ -1,4 +1,4 @@
-"""Sync logic for *arr services (Radarr, Sonarr, Prowlarr)."""
+"""Sync logic for *arr services (Radarr, Sonarr, Lidarr, Prowlarr)."""
 
 import click
 
@@ -47,6 +47,35 @@ def sync_radarr(config, dry_run=False):
 
     click.echo("", err=True)
     click.echo("Radarr sync complete!", err=True)
+
+
+def sync_lidarr(config, dry_run=False):
+    """Sync Lidarr configuration."""
+    client = ArrClient(config["baseUrl"], config["apiKey"], api_version=1)
+
+    click.echo("", err=True)
+    click.echo("=== Lidarr Sync ===", err=True)
+
+    # Sync host configuration (bind address, port, etc.)
+    if "hostConfig" in config:
+        click.echo("", err=True)
+        click.echo("Syncing host configuration...", err=True)
+        _sync_host_config(client, config["hostConfig"], dry_run)
+
+    # Sync download clients
+    if "downloadClients" in config:
+        click.echo("", err=True)
+        click.echo("Syncing download clients...", err=True)
+        _sync_downloadclients(client, config["downloadClients"], "lidarr", dry_run)
+
+    # Sync root folders
+    if "rootFolders" in config:
+        click.echo("", err=True)
+        click.echo("Syncing root folders...", err=True)
+        _sync_rootfolders(client, config["rootFolders"], dry_run)
+
+    click.echo("", err=True)
+    click.echo("Lidarr sync complete!", err=True)
 
 
 def sync_sonarr(config, dry_run=False):
@@ -142,7 +171,12 @@ def _sync_downloadclients(
     current_clients = {dc["name"]: dc for dc in client.list_downloadclients()}
     desired_clients_map = {dc["name"]: dc for dc in desired_clients}
 
-    category_field = "movieCategory" if service_type == "radarr" else "tvCategory"
+    category_fields = {
+        "radarr": "movieCategory",
+        "sonarr": "tvCategory",
+        "lidarr": "musicCategory",
+    }
+    category_field = category_fields.get(service_type, "movieCategory")
 
     for name, desired in desired_clients_map.items():
         if name in current_clients:
@@ -276,7 +310,13 @@ def _sync_applications(client: ProwlarrClient, desired_apps: list, dry_run: bool
             click.echo(f"  CREATE: {name}", err=True)
             if not dry_run:
                 # Determine implementation based on name
-                implementation = "Radarr" if "radarr" in name.lower() else "Sonarr"
+                name_lower = name.lower()
+                if "radarr" in name_lower:
+                    implementation = "Radarr"
+                elif "lidarr" in name_lower:
+                    implementation = "Lidarr"
+                else:
+                    implementation = "Sonarr"
                 create_data = {
                     "syncLevel": desired.get("syncLevel", "fullSync"),
                     "enable": desired.get("enable", True),
