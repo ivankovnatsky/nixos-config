@@ -1,5 +1,6 @@
 {
   imports = [
+    ./lidarr.nix
     ./mgmt.nix
     ./prowlarr.nix
     ./radarr.nix
