@@ -56,7 +56,7 @@
     wget
     yazi
     yq
-
+    zoxide
     zsh-forgit
   ];
 }
