@@ -13,7 +13,11 @@ def send_discord(webhook_url, message):
     req = urllib.request.Request(
         webhook_url,
         data=payload,
-        headers={"Content-Type": "application/json"},
+        # Cloudflare blocks Python's default urllib User-Agent with HTTP 403
+        headers={
+            "Content-Type": "application/json",
+            "User-Agent": "reposync/1.0",
+        },
     )
     try:
         urllib.request.urlopen(req, timeout=10)
