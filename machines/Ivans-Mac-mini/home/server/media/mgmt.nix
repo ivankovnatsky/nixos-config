@@ -114,12 +114,6 @@
       bindAddress = "*";
       indexers = [
         {
-          name = "1337x";
-          definitionName = "1337x";
-          enable = true;
-          priority = 25;
-        }
-        {
           name = "EZTV";
           definitionName = "eztv";
           enable = true;
