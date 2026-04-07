@@ -44,6 +44,7 @@ let
     paste_actions quote-urls-at-prompt
     draw_minimal_borders yes
     tab_bar_edge top
+    tab_switch_strategy previous
     tab_title_template "{index}: {tab.active_exe}"
     macos_option_as_alt yes
 
