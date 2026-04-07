@@ -208,6 +208,7 @@ in
     environment = {
       OPENCLAW_CONFIG_PATH = patchedConfig;
       OPENCLAW_STATE_DIR = stateDir;
+      OPENCLAW_BUNDLED_SKILLS_DIR = "${config.flags.externalStoragePath}/Sources/github.com/openclaw/openclaw/skills";
       PATH = "${toolsPath}:/usr/bin:/bin";
     };
   };
@@ -216,6 +217,7 @@ in
   home.sessionVariables = {
     OPENCLAW_STATE_DIR = stateDir;
     OPENCLAW_CONFIG_PATH = patchedConfig;
+    OPENCLAW_BUNDLED_SKILLS_DIR = "${config.flags.externalStoragePath}/Sources/github.com/openclaw/openclaw/skills";
   };
 
   # Seed exec-approvals.json with full-access defaults (YOLO mode).
