@@ -261,8 +261,11 @@ def _sync_rootfolders(
         else:
             click.echo(f"  CREATE: {desired_path}", err=True)
             if not dry_run:
-                name = desired_path.rstrip("/").rsplit("/", 1)[-1]
-                client.create_rootfolder(desired_path, name=name, **extra_kwargs)
+                if extra_kwargs:
+                    name = desired_path.rstrip("/").rsplit("/", 1)[-1] or desired_path
+                    client.create_rootfolder(desired_path, name=name, **extra_kwargs)
+                else:
+                    client.create_rootfolder(desired_path)
 
 
 def _sync_applications(client: ProwlarrClient, desired_apps: list, dry_run: bool):
