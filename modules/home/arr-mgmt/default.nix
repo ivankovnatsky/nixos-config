@@ -198,6 +198,30 @@ let
         default = 25;
         description = "Indexer priority";
       };
+
+      username = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = "Indexer username (use usernameFile for sops secrets)";
+      };
+
+      usernameFile = mkOption {
+        type = types.nullOr types.path;
+        default = null;
+        description = "Path to file containing indexer username";
+      };
+
+      password = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = "Indexer password (use passwordFile for sops secrets)";
+      };
+
+      passwordFile = mkOption {
+        type = types.nullOr types.path;
+        default = null;
+        description = "Path to file containing indexer password";
+      };
     };
   };
 
@@ -207,7 +231,7 @@ let
       optionalAttrs cfg.radarr.enable {
         radarr = {
           inherit (cfg.radarr) baseUrl;
-          apiKey = "@RADARR_API_KEY@";
+          apiKey = "$RADARR_API_KEY";
           hostConfig = {
             inherit (cfg.radarr) bindAddress;
           };
@@ -217,8 +241,8 @@ let
             inherit (dc) port;
             inherit (dc) useSsl;
             inherit (dc) urlBase;
-            username = "@DC_${dc.name}_USERNAME@";
-            password = "@DC_${dc.name}_PASSWORD@";
+            username = "$DC_${dc.name}_USERNAME";
+            password = "$DC_${dc.name}_PASSWORD";
             inherit (dc) category;
             inherit (dc) addPaused;
             inherit (dc) enable;
@@ -232,7 +256,7 @@ let
       // optionalAttrs cfg.lidarr.enable {
         lidarr = {
           inherit (cfg.lidarr) baseUrl;
-          apiKey = "@LIDARR_API_KEY@";
+          apiKey = "$LIDARR_API_KEY";
           hostConfig = {
             inherit (cfg.lidarr) bindAddress;
           };
@@ -242,8 +266,8 @@ let
             inherit (dc) port;
             inherit (dc) useSsl;
             inherit (dc) urlBase;
-            username = "@DC_${dc.name}_USERNAME@";
-            password = "@DC_${dc.name}_PASSWORD@";
+            username = "$DC_${dc.name}_USERNAME";
+            password = "$DC_${dc.name}_PASSWORD";
             inherit (dc) category;
             inherit (dc) addPaused;
             inherit (dc) enable;
@@ -257,7 +281,7 @@ let
       // optionalAttrs cfg.sonarr.enable {
         sonarr = {
           inherit (cfg.sonarr) baseUrl;
-          apiKey = "@SONARR_API_KEY@";
+          apiKey = "$SONARR_API_KEY";
           hostConfig = {
             inherit (cfg.sonarr) bindAddress;
           };
@@ -267,8 +291,8 @@ let
             inherit (dc) port;
             inherit (dc) useSsl;
             inherit (dc) urlBase;
-            username = "@DC_${dc.name}_USERNAME@";
-            password = "@DC_${dc.name}_PASSWORD@";
+            username = "$DC_${dc.name}_USERNAME";
+            password = "$DC_${dc.name}_PASSWORD";
             inherit (dc) category;
             inherit (dc) addPaused;
             inherit (dc) enable;
@@ -282,20 +306,27 @@ let
       // optionalAttrs cfg.prowlarr.enable {
         prowlarr = {
           inherit (cfg.prowlarr) baseUrl;
-          apiKey = "@PROWLARR_API_KEY@";
+          apiKey = "$PROWLARR_API_KEY";
           hostConfig = {
             inherit (cfg.prowlarr) bindAddress;
           };
-          indexers = map (idx: {
-            inherit (idx) name;
-            inherit (idx) definitionName;
-            inherit (idx) enable;
-            inherit (idx) priority;
-          }) cfg.prowlarr.indexers;
+          indexers = map (
+            idx:
+            {
+              inherit (idx) name;
+              inherit (idx) definitionName;
+              inherit (idx) enable;
+              inherit (idx) priority;
+            }
+            // optionalAttrs (idx.username != null || idx.usernameFile != null) {
+              username = "$IDX_${idx.name}_USERNAME";
+              password = "$IDX_${idx.name}_PASSWORD";
+            }
+          ) cfg.prowlarr.indexers;
           applications = map (app: {
             inherit (app) name;
             inherit (app) baseUrl;
-            apiKey = "@APP_${app.name}_API_KEY@";
+            apiKey = "$APP_${app.name}_API_KEY";
             inherit (app) prowlarrUrl;
             inherit (app) syncLevel;
             inherit (app) syncCategories;
@@ -549,6 +580,21 @@ in
         assertion = (app.apiKey != null) != (app.apiKeyFile != null);
         message = "Exactly one of 'apiKey' or 'apiKeyFile' must be set for prowlarr application '${app.name}'";
       }) cfg.prowlarr.applications
+    ))
+    ++ (lib.optionals cfg.prowlarr.enable (
+      lib.concatMap (
+        idx:
+        lib.optionals (idx.username != null || idx.usernameFile != null) [
+          {
+            assertion = (idx.username != null) != (idx.usernameFile != null);
+            message = "Exactly one of 'username' or 'usernameFile' must be set for indexer '${idx.name}'";
+          }
+          {
+            assertion = (idx.password != null) != (idx.passwordFile != null);
+            message = "Exactly one of 'password' or 'passwordFile' must be set for indexer '${idx.name}'";
+          }
+        ]
+      ) cfg.prowlarr.indexers
     ));
 
     # Darwin launchd service
@@ -637,30 +683,52 @@ in
               else
                 ''APP_${app.name}_API_KEY="${app.apiKey}"'' + "\n"
             ) cfg.prowlarr.applications}
+            ${lib.concatMapStrings (
+              idx:
+              lib.optionalString (idx.username != null || idx.usernameFile != null) (
+                (
+                  if idx.usernameFile != null then
+                    ''IDX_${idx.name}_USERNAME="$(cat ${idx.usernameFile})"'' + "\n"
+                  else
+                    ''IDX_${idx.name}_USERNAME="${idx.username}"'' + "\n"
+                )
+                + (
+                  if idx.passwordFile != null then
+                    ''IDX_${idx.name}_PASSWORD="$(cat ${idx.passwordFile})"'' + "\n"
+                  else
+                    ''IDX_${idx.name}_PASSWORD="${idx.password}"'' + "\n"
+                )
+              )
+            ) cfg.prowlarr.indexers}
 
             # Substitute secrets into template
-            ${pkgs.gnused}/bin/sed \
-              ${lib.optionalString cfg.lidarr.enable ''-e "s|@LIDARR_API_KEY@|$LIDARR_API_KEY|g"''} \
-              ${lib.optionalString cfg.radarr.enable ''-e "s|@RADARR_API_KEY@|$RADARR_API_KEY|g"''} \
-              ${lib.optionalString cfg.sonarr.enable ''-e "s|@SONARR_API_KEY@|$SONARR_API_KEY|g"''} \
-              ${lib.optionalString cfg.prowlarr.enable ''-e "s|@PROWLARR_API_KEY@|$PROWLARR_API_KEY|g"''} \
-              ${
-                lib.concatMapStringsSep " " (
-                  dc:
-                  ''-e "s|@DC_${dc.name}_USERNAME@|$DC_${dc.name}_USERNAME|g" -e "s|@DC_${dc.name}_PASSWORD@|$DC_${dc.name}_PASSWORD|g"''
-                ) (cfg.lidarr.downloadClients ++ cfg.radarr.downloadClients ++ cfg.sonarr.downloadClients)
-              } \
-              ${
-                lib.concatMapStringsSep " " (
-                  app: ''-e "s|@APP_${app.name}_API_KEY@|$APP_${app.name}_API_KEY|g"''
-                ) cfg.prowlarr.applications
-              } \
-              ${baseConfigTemplate} > /tmp/arr-config.json
+            # Export all secrets for envsubst
+            ${lib.optionalString cfg.lidarr.enable "export LIDARR_API_KEY"}
+            ${lib.optionalString cfg.radarr.enable "export RADARR_API_KEY"}
+            ${lib.optionalString cfg.sonarr.enable "export SONARR_API_KEY"}
+            ${lib.optionalString cfg.prowlarr.enable "export PROWLARR_API_KEY"}
+            ${lib.concatMapStrings (dc: ''
+              export DC_${dc.name}_USERNAME
+              export DC_${dc.name}_PASSWORD
+            '') (cfg.lidarr.downloadClients ++ cfg.radarr.downloadClients ++ cfg.sonarr.downloadClients)}
+            ${lib.concatMapStrings (app: ''
+              export APP_${app.name}_API_KEY
+            '') cfg.prowlarr.applications}
+            ${lib.concatMapStrings (
+              idx:
+              lib.optionalString (idx.username != null || idx.usernameFile != null) ''
+                export IDX_${idx.name}_USERNAME
+                export IDX_${idx.name}_PASSWORD
+              ''
+            ) cfg.prowlarr.indexers}
+
+            # Use envsubst to safely substitute secrets (handles special chars in values)
+            ${pkgs.envsubst}/bin/envsubst < ${baseConfigTemplate} > "$TMPDIR/arr-config.json"
 
             ${pkgs.arr-mgmt}/bin/arr-mgmt sync \
-              --config-file /tmp/arr-config.json 2>&1 || echo "Warning: *arr sync failed with exit code $?"
+              --config-file "$TMPDIR/arr-config.json" 2>&1 || echo "Warning: *arr sync failed with exit code $?"
 
-            rm -f /tmp/arr-config.json
+            rm -f "$TMPDIR/arr-config.json"
 
             echo "*arr configuration sync completed"
           '';
