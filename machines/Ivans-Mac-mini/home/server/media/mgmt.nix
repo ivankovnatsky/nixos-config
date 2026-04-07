@@ -27,11 +27,11 @@
   };
 
   sops.secrets.toloka-username = {
-    key = "indexers/toloka/username";
+    key = "arr/indexers/toloka/username";
   };
 
   sops.secrets.toloka-password = {
-    key = "indexers/toloka/password";
+    key = "arr/indexers/toloka/password";
   };
 
   sops.secrets.radarr-api-key = {
