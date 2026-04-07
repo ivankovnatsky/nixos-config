@@ -454,7 +454,7 @@ def _sync_indexers(client: ProwlarrClient, desired_indexers: list, dry_run: bool
                 # Use schema to get correct implementation for this indexer
                 schema = schema_map.get(desired["definitionName"])
                 if schema:
-                    create_data = schema.copy()
+                    create_data = copy.deepcopy(schema)
                     create_data["name"] = name
                     create_data["enable"] = desired.get("enable", True)
                     create_data["priority"] = desired.get("priority", 25)
