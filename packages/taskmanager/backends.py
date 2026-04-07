@@ -37,6 +37,10 @@ def get_tw_tasks(project_filter=None):
         if status == "recurring":
             continue
 
+        # Normalize "waiting" to "pending" — Reminders has no waiting concept
+        if status == "waiting":
+            status = "pending"
+
         # Strip project prefix from description if present
         prefix = f"{project}: "
         if desc.startswith(prefix):
@@ -189,7 +193,11 @@ def find_tw_uuids(project, title, status_filter=None):
         for t in json.loads(result.stdout):
             desc = t.get("description", "")
             if desc == title or desc == legacy_prefixed:
-                if status_filter and t.get("status", "") != status_filter:
+                task_status = t.get("status", "")
+                # Normalize "waiting" to "pending" for filter comparison
+                if task_status == "waiting":
+                    task_status = "pending"
+                if status_filter and task_status != status_filter:
                     continue
                 uuids.append(t["uuid"])
     except json.JSONDecodeError:
