@@ -33,8 +33,11 @@
       add_newline = false;
       aws.format = "on [$symbol$profile]($style) ";
       gcloud.disabled = true;
-      git_status.disabled = true;
-      git_branch.disabled = true;
+      git_status.disabled = false;
+      git_branch = {
+        truncation_length = 30;
+        truncation_symbol = "";
+      };
       directory = {
         truncation_length = 1;
       };
