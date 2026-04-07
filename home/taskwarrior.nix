@@ -197,6 +197,7 @@ in
     inherit dataLocation;
     config = {
       "hooks.location" = "${config.xdg.configHome}/task/hooks";
+      "default.command" = "next limit:20";
     }
     // taskColorsDualMode;
   };
