@@ -60,10 +60,6 @@ let
   '';
 in
 {
-  sops.secrets.external-domain = {
-    key = "externalDomain";
-  };
-
   local.launchd.services.grafana = {
     enable = true;
     waitForPath = config.flags.externalStoragePath;
