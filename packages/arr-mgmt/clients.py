@@ -189,6 +189,10 @@ class ProwlarrClient:
         """Delete an application."""
         return self._api_call("DELETE", f"/api/v1/applications/{app_id}")
 
+    def list_indexer_schema(self):
+        """List all available indexer definitions (schema)."""
+        return self._api_call("GET", "/api/v1/indexer/schema")
+
     def list_indexers(self):
         """List all indexers."""
         return self._api_call("GET", "/api/v1/indexer")

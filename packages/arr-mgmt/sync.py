@@ -361,6 +361,11 @@ def _sync_indexers(client: ProwlarrClient, desired_indexers: list, dry_run: bool
     current_indexers = {idx["name"]: idx for idx in client.list_indexers()}
     desired_indexers_map = {idx["name"]: idx for idx in desired_indexers}
 
+    # Build schema lookup for creating indexers from local definitions
+    schema_map = {}
+    if any(name not in current_indexers for name in desired_indexers_map):
+        schema_map = {s["definitionName"]: s for s in client.list_indexer_schema()}
+
     # Delete indexers not in desired config
     for name, current in current_indexers.items():
         if name not in desired_indexers_map:
@@ -446,25 +451,44 @@ def _sync_indexers(client: ProwlarrClient, desired_indexers: list, dry_run: bool
                 err=True,
             )
             if not dry_run:
-                # Build create payload with implementation fields
-                # Most public indexers use Cardigann (generic indexer framework)
-                fields = [
-                    {"name": "definitionFile", "value": desired["definitionName"]}
-                ]
-                if "username" in desired:
-                    fields.append({"name": "username", "value": desired["username"]})
-                if "password" in desired:
-                    fields.append({"name": "password", "value": desired["password"]})
-                create_data = {
-                    "definitionName": desired["definitionName"],
-                    "name": name,
-                    "enable": desired.get("enable", True),
-                    "priority": desired.get("priority", 25),
-                    "appProfileId": 1,  # Default app profile
-                    "protocol": "torrent",
-                    "implementationName": "Cardigann",
-                    "implementation": "Cardigann",
-                    "configContract": "CardigannSettings",
-                    "fields": fields,
-                }
+                # Use schema to get correct implementation for this indexer
+                schema = schema_map.get(desired["definitionName"])
+                if schema:
+                    create_data = schema.copy()
+                    create_data["name"] = name
+                    create_data["enable"] = desired.get("enable", True)
+                    create_data["priority"] = desired.get("priority", 25)
+                    create_data["appProfileId"] = 1
+                    # Set credential fields from desired config
+                    fields_map = {f["name"]: f for f in create_data.get("fields", [])}
+                    if "username" in desired and "username" in fields_map:
+                        fields_map["username"]["value"] = desired["username"]
+                    if "password" in desired and "password" in fields_map:
+                        fields_map["password"]["value"] = desired["password"]
+                    create_data["fields"] = list(fields_map.values())
+                else:
+                    # Fallback: Cardigann for public indexers
+                    fields = [
+                        {"name": "definitionFile", "value": desired["definitionName"]}
+                    ]
+                    if "username" in desired:
+                        fields.append(
+                            {"name": "username", "value": desired["username"]}
+                        )
+                    if "password" in desired:
+                        fields.append(
+                            {"name": "password", "value": desired["password"]}
+                        )
+                    create_data = {
+                        "definitionName": desired["definitionName"],
+                        "name": name,
+                        "enable": desired.get("enable", True),
+                        "priority": desired.get("priority", 25),
+                        "appProfileId": 1,
+                        "protocol": "torrent",
+                        "implementationName": "Cardigann",
+                        "implementation": "Cardigann",
+                        "configContract": "CardigannSettings",
+                        "fields": fields,
+                    }
                 client.create_indexer(create_data)
