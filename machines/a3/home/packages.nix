@@ -15,14 +15,7 @@
     gallery-dl
     game-mode
     ggh
-    ghq-cd
-    gitleaks
-    grwt
-    gwq-add
-    gwq-purge
     glow
-    gofumpt
-    golangci-lint
     hadolint
     home-manager
     imagemagick
@@ -30,7 +23,6 @@
     mkpasswd
     nethogs
     nh
-    nodePackages.prettier
     nvtopPackages.nvidia # GPU monitoring (like htop for GPUs)
     obsidian-cli
     pandoc
@@ -41,22 +33,16 @@
     q
     rclone
     ripgrep
-    ruff
     rust-analyzer
     rustc
-    shellcheck
-    shfmt
-    stylua
     temperatures
     tmux-temperatures
     typst
     typstyle
     uv
     velocidrone
-    wget
     yazi
     yq
-    zoxide
     zsh-forgit
   ];
 }
