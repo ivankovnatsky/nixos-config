@@ -47,6 +47,11 @@
         description = "Radarr movie manager";
       }
       {
+        name = "lidarr";
+        url = "http://${config.flags.machineLocalAddress}:8686";
+        description = "Lidarr music manager";
+      }
+      {
         name = "sonarr";
         url = "http://${config.flags.machineLocalAddress}:8989";
         description = "Sonarr TV manager";
