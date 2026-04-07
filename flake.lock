@@ -1593,11 +1593,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1774804398,
-        "narHash": "sha256-sULJnFSKBfE0o+KNcKInC3Hw/poTncHbKd0EkTHasJI=",
+        "lastModified": 1775570913,
+        "narHash": "sha256-/uwZAbDsZjrqYmLgnyHDz7gQjtRRRopbPMBS+t7inK8=",
         "owner": "ivankovnatsky",
         "repo": "username",
-        "rev": "8b585277514e0a9584c902894d422d1f7d248e5a",
+        "rev": "bfec3b55cc52f3a50638b8dfe2b130fba47b8281",
         "type": "github"
       },
       "original": {
