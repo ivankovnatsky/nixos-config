@@ -90,9 +90,9 @@ class ArrClient:
         """List all root folders."""
         return self._api_call("GET", f"/api/v{self.api_version}/rootfolder")
 
-    def create_rootfolder(self, path: str):
+    def create_rootfolder(self, path: str, **kwargs):
         """Create a new root folder."""
-        data = {"path": path}
+        data = {"path": path, **kwargs}
         return self._api_call("POST", f"/api/v{self.api_version}/rootfolder", data=data)
 
     def delete_rootfolder(self, folder_id: int):
@@ -100,6 +100,14 @@ class ArrClient:
         return self._api_call(
             "DELETE", f"/api/v{self.api_version}/rootfolder/{folder_id}"
         )
+
+    def list_qualityprofiles(self):
+        """List all quality profiles."""
+        return self._api_call("GET", f"/api/v{self.api_version}/qualityprofile")
+
+    def list_metadataprofiles(self):
+        """List all metadata profiles (Lidarr only)."""
+        return self._api_call("GET", f"/api/v{self.api_version}/metadataprofile")
 
     def get_host_config(self):
         """Get current host configuration."""

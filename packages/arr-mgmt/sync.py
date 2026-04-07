@@ -68,11 +68,18 @@ def sync_lidarr(config, dry_run=False):
         click.echo("Syncing download clients...", err=True)
         _sync_downloadclients(client, config["downloadClients"], "lidarr", dry_run)
 
-    # Sync root folders
+    # Sync root folders (Lidarr requires name + profile IDs)
     if "rootFolders" in config:
         click.echo("", err=True)
         click.echo("Syncing root folders...", err=True)
-        _sync_rootfolders(client, config["rootFolders"], dry_run)
+        quality_profiles = client.list_qualityprofiles()
+        metadata_profiles = client.list_metadataprofiles()
+        extra_kwargs = {}
+        if quality_profiles:
+            extra_kwargs["defaultQualityProfileId"] = quality_profiles[0]["id"]
+        if metadata_profiles:
+            extra_kwargs["defaultMetadataProfileId"] = metadata_profiles[0]["id"]
+        _sync_rootfolders(client, config["rootFolders"], dry_run, **extra_kwargs)
 
     click.echo("", err=True)
     click.echo("Lidarr sync complete!", err=True)
@@ -233,7 +240,9 @@ def _sync_downloadclients(
                 client.create_downloadclient(create_data)
 
 
-def _sync_rootfolders(client: ArrClient, desired_folders: list, dry_run: bool):
+def _sync_rootfolders(
+    client: ArrClient, desired_folders: list, dry_run: bool, **extra_kwargs
+):
     """Sync root folders (declarative - delete unmanaged, create missing)."""
     current_folders = {rf["path"]: rf for rf in client.list_rootfolders()}
     desired_folders_set = set(desired_folders)
@@ -252,7 +261,8 @@ def _sync_rootfolders(client: ArrClient, desired_folders: list, dry_run: bool):
         else:
             click.echo(f"  CREATE: {desired_path}", err=True)
             if not dry_run:
-                client.create_rootfolder(desired_path)
+                name = desired_path.rstrip("/").rsplit("/", 1)[-1]
+                client.create_rootfolder(desired_path, name=name, **extra_kwargs)
 
 
 def _sync_applications(client: ProwlarrClient, desired_apps: list, dry_run: bool):
