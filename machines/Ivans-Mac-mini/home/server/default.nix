@@ -7,6 +7,7 @@
     ./forgejo
     ./healthchecks
     ./jellyfin
+    ./logscanner.nix
     ./matrix
     ./media
     ./miniserve.nix
