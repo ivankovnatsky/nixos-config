@@ -10,6 +10,23 @@ with lib;
 let
   cfg = config.local.services.arr-mgmt;
 
+  # Sanitize names for use as shell variable identifiers
+  # Replace dots, spaces, hyphens with underscores
+  sanitize =
+    name:
+    builtins.replaceStrings
+      [
+        "."
+        " "
+        "-"
+      ]
+      [
+        "_"
+        "_"
+        "_"
+      ]
+      name;
+
   downloadClientSubmodule = types.submodule {
     options = {
       name = mkOption {
@@ -241,8 +258,8 @@ let
             inherit (dc) port;
             inherit (dc) useSsl;
             inherit (dc) urlBase;
-            username = "$DC_${dc.name}_USERNAME";
-            password = "$DC_${dc.name}_PASSWORD";
+            username = "$DC_${sanitize dc.name}_USERNAME";
+            password = "$DC_${sanitize dc.name}_PASSWORD";
             inherit (dc) category;
             inherit (dc) addPaused;
             inherit (dc) enable;
@@ -266,8 +283,8 @@ let
             inherit (dc) port;
             inherit (dc) useSsl;
             inherit (dc) urlBase;
-            username = "$DC_${dc.name}_USERNAME";
-            password = "$DC_${dc.name}_PASSWORD";
+            username = "$DC_${sanitize dc.name}_USERNAME";
+            password = "$DC_${sanitize dc.name}_PASSWORD";
             inherit (dc) category;
             inherit (dc) addPaused;
             inherit (dc) enable;
@@ -291,8 +308,8 @@ let
             inherit (dc) port;
             inherit (dc) useSsl;
             inherit (dc) urlBase;
-            username = "$DC_${dc.name}_USERNAME";
-            password = "$DC_${dc.name}_PASSWORD";
+            username = "$DC_${sanitize dc.name}_USERNAME";
+            password = "$DC_${sanitize dc.name}_PASSWORD";
             inherit (dc) category;
             inherit (dc) addPaused;
             inherit (dc) enable;
@@ -319,14 +336,14 @@ let
               inherit (idx) priority;
             }
             // optionalAttrs (idx.username != null || idx.usernameFile != null) {
-              username = "$IDX_${idx.name}_USERNAME";
-              password = "$IDX_${idx.name}_PASSWORD";
+              username = "$IDX_${sanitize idx.name}_USERNAME";
+              password = "$IDX_${sanitize idx.name}_PASSWORD";
             }
           ) cfg.prowlarr.indexers;
           applications = map (app: {
             inherit (app) name;
             inherit (app) baseUrl;
-            apiKey = "$APP_${app.name}_API_KEY";
+            apiKey = "$APP_${sanitize app.name}_API_KEY";
             inherit (app) prowlarrUrl;
             inherit (app) syncLevel;
             inherit (app) syncCategories;
@@ -665,38 +682,38 @@ in
               dc:
               (
                 if dc.usernameFile != null then
-                  ''DC_${dc.name}_USERNAME="$(cat ${dc.usernameFile})"'' + "\n"
+                  ''DC_${sanitize dc.name}_USERNAME="$(cat ${dc.usernameFile})"'' + "\n"
                 else
-                  ''DC_${dc.name}_USERNAME="${dc.username}"'' + "\n"
+                  ''DC_${sanitize dc.name}_USERNAME="${dc.username}"'' + "\n"
               )
               + (
                 if dc.passwordFile != null then
-                  ''DC_${dc.name}_PASSWORD="$(cat ${dc.passwordFile})"'' + "\n"
+                  ''DC_${sanitize dc.name}_PASSWORD="$(cat ${dc.passwordFile})"'' + "\n"
                 else
-                  ''DC_${dc.name}_PASSWORD="${dc.password}"'' + "\n"
+                  ''DC_${sanitize dc.name}_PASSWORD="${dc.password}"'' + "\n"
               )
             ) (cfg.lidarr.downloadClients ++ cfg.radarr.downloadClients ++ cfg.sonarr.downloadClients)}
             ${lib.concatMapStrings (
               app:
               if app.apiKeyFile != null then
-                ''APP_${app.name}_API_KEY="$(cat ${app.apiKeyFile})"'' + "\n"
+                ''APP_${sanitize app.name}_API_KEY="$(cat ${app.apiKeyFile})"'' + "\n"
               else
-                ''APP_${app.name}_API_KEY="${app.apiKey}"'' + "\n"
+                ''APP_${sanitize app.name}_API_KEY="${app.apiKey}"'' + "\n"
             ) cfg.prowlarr.applications}
             ${lib.concatMapStrings (
               idx:
               lib.optionalString (idx.username != null || idx.usernameFile != null) (
                 (
                   if idx.usernameFile != null then
-                    ''IDX_${idx.name}_USERNAME="$(cat ${idx.usernameFile})"'' + "\n"
+                    ''IDX_${sanitize idx.name}_USERNAME="$(cat ${idx.usernameFile})"'' + "\n"
                   else
-                    ''IDX_${idx.name}_USERNAME="${idx.username}"'' + "\n"
+                    ''IDX_${sanitize idx.name}_USERNAME="${idx.username}"'' + "\n"
                 )
                 + (
                   if idx.passwordFile != null then
-                    ''IDX_${idx.name}_PASSWORD="$(cat ${idx.passwordFile})"'' + "\n"
+                    ''IDX_${sanitize idx.name}_PASSWORD="$(cat ${idx.passwordFile})"'' + "\n"
                   else
-                    ''IDX_${idx.name}_PASSWORD="${idx.password}"'' + "\n"
+                    ''IDX_${sanitize idx.name}_PASSWORD="${idx.password}"'' + "\n"
                 )
               )
             ) cfg.prowlarr.indexers}
@@ -708,17 +725,17 @@ in
             ${lib.optionalString cfg.sonarr.enable "export SONARR_API_KEY"}
             ${lib.optionalString cfg.prowlarr.enable "export PROWLARR_API_KEY"}
             ${lib.concatMapStrings (dc: ''
-              export DC_${dc.name}_USERNAME
-              export DC_${dc.name}_PASSWORD
+              export DC_${sanitize dc.name}_USERNAME
+              export DC_${sanitize dc.name}_PASSWORD
             '') (cfg.lidarr.downloadClients ++ cfg.radarr.downloadClients ++ cfg.sonarr.downloadClients)}
             ${lib.concatMapStrings (app: ''
-              export APP_${app.name}_API_KEY
+              export APP_${sanitize app.name}_API_KEY
             '') cfg.prowlarr.applications}
             ${lib.concatMapStrings (
               idx:
               lib.optionalString (idx.username != null || idx.usernameFile != null) ''
-                export IDX_${idx.name}_USERNAME
-                export IDX_${idx.name}_PASSWORD
+                export IDX_${sanitize idx.name}_USERNAME
+                export IDX_${sanitize idx.name}_PASSWORD
               ''
             ) cfg.prowlarr.indexers}
 
