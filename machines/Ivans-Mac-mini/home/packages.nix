@@ -10,19 +10,10 @@ in
 {
   home.packages =
     (with pkgs; [
-      gitleaks
-      gofumpt
-      golangci-lint
-      grwt
       macmon
       music-export
       nixpkgs-darwin-master-ytdlp.yt-dlp
-      nodePackages.prettier
-      ruff
       sesh
-      shellcheck
-      shfmt
-      stylua
       treefmt
     ])
     ++ (with steipeteTools; [
