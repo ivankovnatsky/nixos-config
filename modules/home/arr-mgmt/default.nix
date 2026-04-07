@@ -229,6 +229,31 @@ let
           inherit (cfg.radarr) rootFolders;
         };
       }
+      // optionalAttrs cfg.lidarr.enable {
+        lidarr = {
+          inherit (cfg.lidarr) baseUrl;
+          apiKey = "@LIDARR_API_KEY@";
+          hostConfig = {
+            inherit (cfg.lidarr) bindAddress;
+          };
+          downloadClients = map (dc: {
+            inherit (dc) name;
+            inherit (dc) host;
+            inherit (dc) port;
+            inherit (dc) useSsl;
+            inherit (dc) urlBase;
+            username = "@DC_${dc.name}_USERNAME@";
+            password = "@DC_${dc.name}_PASSWORD@";
+            inherit (dc) category;
+            inherit (dc) addPaused;
+            inherit (dc) enable;
+            inherit (dc) priority;
+            inherit (dc) removeCompletedDownloads;
+            inherit (dc) removeFailedDownloads;
+          }) cfg.lidarr.downloadClients;
+          inherit (cfg.lidarr) rootFolders;
+        };
+      }
       // optionalAttrs cfg.sonarr.enable {
         sonarr = {
           inherit (cfg.sonarr) baseUrl;
@@ -323,6 +348,47 @@ in
         default = [ ];
         example = [ "/storage/Data/media/movies" ];
         description = "Root folders for Radarr";
+      };
+    };
+
+    lidarr = {
+      enable = mkEnableOption "Lidarr synchronization";
+
+      baseUrl = mkOption {
+        type = types.str;
+        default = "http://localhost:8686";
+        description = "Lidarr base URL";
+      };
+
+      apiKey = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = "Lidarr API key (use apiKeyFile for sops secrets)";
+      };
+
+      apiKeyFile = mkOption {
+        type = types.nullOr types.path;
+        default = null;
+        description = "Path to file containing Lidarr API key";
+      };
+
+      bindAddress = mkOption {
+        type = types.str;
+        example = "192.168.50.4";
+        description = "Bind address for Lidarr";
+      };
+
+      downloadClients = mkOption {
+        type = types.listOf downloadClientSubmodule;
+        default = [ ];
+        description = "Download clients to configure in Lidarr";
+      };
+
+      rootFolders = mkOption {
+        type = types.listOf types.str;
+        default = [ ];
+        example = [ "/storage/Data/Music" ];
+        description = "Root folders for Lidarr";
       };
     };
 
@@ -429,6 +495,10 @@ in
         message = "Exactly one of 'apiKey' or 'apiKeyFile' must be set for radarr";
       }
       {
+        assertion = !cfg.lidarr.enable || (cfg.lidarr.apiKey != null) != (cfg.lidarr.apiKeyFile != null);
+        message = "Exactly one of 'apiKey' or 'apiKeyFile' must be set for lidarr";
+      }
+      {
         assertion = !cfg.sonarr.enable || (cfg.sonarr.apiKey != null) != (cfg.sonarr.apiKeyFile != null);
         message = "Exactly one of 'apiKey' or 'apiKeyFile' must be set for sonarr";
       }
@@ -449,6 +519,18 @@ in
         assertion = (dc.password != null) != (dc.passwordFile != null);
         message = "Exactly one of 'password' or 'passwordFile' must be set for download client '${dc.name}' in radarr";
       }) cfg.radarr.downloadClients
+    ))
+    ++ (lib.optionals cfg.lidarr.enable (
+      map (dc: {
+        assertion = (dc.username != null) != (dc.usernameFile != null);
+        message = "Exactly one of 'username' or 'usernameFile' must be set for download client '${dc.name}' in lidarr";
+      }) cfg.lidarr.downloadClients
+    ))
+    ++ (lib.optionals cfg.lidarr.enable (
+      map (dc: {
+        assertion = (dc.password != null) != (dc.passwordFile != null);
+        message = "Exactly one of 'password' or 'passwordFile' must be set for download client '${dc.name}' in lidarr";
+      }) cfg.lidarr.downloadClients
     ))
     ++ (lib.optionals cfg.sonarr.enable (
       map (dc: {
@@ -503,11 +585,18 @@ in
               return 1
             }
 
+            ${lib.optionalString cfg.lidarr.enable ''wait_for_service "${cfg.lidarr.baseUrl}" "Lidarr" || true''}
             ${lib.optionalString cfg.radarr.enable ''wait_for_service "${cfg.radarr.baseUrl}" "Radarr" || true''}
             ${lib.optionalString cfg.sonarr.enable ''wait_for_service "${cfg.sonarr.baseUrl}" "Sonarr" || true''}
             ${lib.optionalString cfg.prowlarr.enable ''wait_for_service "${cfg.prowlarr.baseUrl}" "Prowlarr" || true''}
 
             # Read secrets from files at runtime
+            ${lib.optionalString cfg.lidarr.enable (
+              if cfg.lidarr.apiKeyFile != null then
+                ''LIDARR_API_KEY="$(cat ${cfg.lidarr.apiKeyFile})"''
+              else
+                ''LIDARR_API_KEY="${cfg.lidarr.apiKey}"''
+            )}
             ${lib.optionalString cfg.radarr.enable (
               if cfg.radarr.apiKeyFile != null then
                 ''RADARR_API_KEY="$(cat ${cfg.radarr.apiKeyFile})"''
@@ -540,7 +629,7 @@ in
                 else
                   ''DC_${dc.name}_PASSWORD="${dc.password}"'' + "\n"
               )
-            ) (cfg.radarr.downloadClients ++ cfg.sonarr.downloadClients)}
+            ) (cfg.lidarr.downloadClients ++ cfg.radarr.downloadClients ++ cfg.sonarr.downloadClients)}
             ${lib.concatMapStrings (
               app:
               if app.apiKeyFile != null then
@@ -551,6 +640,7 @@ in
 
             # Substitute secrets into template
             ${pkgs.gnused}/bin/sed \
+              ${lib.optionalString cfg.lidarr.enable ''-e "s|@LIDARR_API_KEY@|$LIDARR_API_KEY|g"''} \
               ${lib.optionalString cfg.radarr.enable ''-e "s|@RADARR_API_KEY@|$RADARR_API_KEY|g"''} \
               ${lib.optionalString cfg.sonarr.enable ''-e "s|@SONARR_API_KEY@|$SONARR_API_KEY|g"''} \
               ${lib.optionalString cfg.prowlarr.enable ''-e "s|@PROWLARR_API_KEY@|$PROWLARR_API_KEY|g"''} \
@@ -558,7 +648,7 @@ in
                 lib.concatMapStringsSep " " (
                   dc:
                   ''-e "s|@DC_${dc.name}_USERNAME@|$DC_${dc.name}_USERNAME|g" -e "s|@DC_${dc.name}_PASSWORD@|$DC_${dc.name}_PASSWORD|g"''
-                ) (cfg.radarr.downloadClients ++ cfg.sonarr.downloadClients)
+                ) (cfg.lidarr.downloadClients ++ cfg.radarr.downloadClients ++ cfg.sonarr.downloadClients)
               } \
               ${
                 lib.concatMapStringsSep " " (
