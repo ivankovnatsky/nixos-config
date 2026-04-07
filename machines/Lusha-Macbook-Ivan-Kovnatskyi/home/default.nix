@@ -33,6 +33,8 @@
     ../../../home/nixvim/plugins/octo-nvim
     ../../../home/nixvim/plugins/unified-nvim
     ../../../home/nushell.nix
+    ../../../home/packages-darwin.nix
+    ../../../home/packages.nix
     ../../../home/pass.nix
     ../../../home/pay-respects.nix
     ../../../home/pgcli.nix
