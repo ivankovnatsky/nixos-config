@@ -4,14 +4,17 @@
   ...
 }:
 
+# Initial onboarding:
+#
+# 1. On first launch, Lidarr prompts for authentication setup:
+#    * Authentication Method: Forms (Login Page)
+#    * Authentication Required: Enabled
+#    * Set username and password, then Save
+#
 # Manual configuration:
 #
 # * Get API Key:
 #   * Settings -> General -> Security -> API Key
-# * Changed auth to Forms (Login Page) and change password:
-#   * Settings
-#   * General
-#   * Save Changes
 # * Setup transmission as download client:
 #   * Settings
 #   * Download Clients
