@@ -20,17 +20,16 @@ in
   home.activation.taskwarriorSecrets = lib.hm.dag.entryAfter [ "writeBoundary" "sopsNix" ] ''
     encryption_secret="$(cat ${config.sops.secrets.taskchampion-encryption-secret.path})"
     client_id="$(cat ${config.sops.secrets.taskchampion-client-id.path})"
+    domain="$(cat ${config.sops.secrets.external-domain.path})"
     (umask 077; cat > ${secretsFile} <<TASKRC
 sync.encryption_secret=$encryption_secret
 sync.server.client_id=$client_id
+sync.server.url=https://taskchampion.$domain
 TASKRC
     )
   '';
 
   programs.taskwarrior = {
-    config = {
-      "sync.server.url" = "http://${config.flags.miniIp}:10222";
-    };
     extraConfig = ''
       include ${secretsFile}
     '';
