@@ -1,6 +1,5 @@
 {
   config,
-  pkgs,
   ...
 }:
 
@@ -36,11 +35,6 @@
       gcloud.disabled = true;
       git_status.disabled = true;
       git_branch.disabled = true;
-      custom.jj = {
-        when = "${pkgs.jj-starship}/bin/jj-starship detect";
-        shell = [ "${pkgs.jj-starship}/bin/jj-starship" ];
-        format = "$output ";
-      };
       directory = {
         truncation_length = 1;
       };
