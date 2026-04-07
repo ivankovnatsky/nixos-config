@@ -14,12 +14,7 @@
   # 3. Monitors and Discord notifications will auto-sync on next rebuild
 
   # Sops secrets for Uptime Kuma management
-  sops.secrets.uptime-kuma-username = {
-    key = "uptimeKuma/username";
-  };
-  sops.secrets.uptime-kuma-password = {
-    key = "uptimeKuma/password";
-  };
+  # uptime-kuma-username and uptime-kuma-password are declared in home/sops-secrets.nix
   sops.secrets.discord-webhook-kuma = {
     key = "discord/webhookChannelMonitoringKuma";
   };
