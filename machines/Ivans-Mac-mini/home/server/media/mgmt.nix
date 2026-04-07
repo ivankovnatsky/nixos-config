@@ -122,26 +122,14 @@
       bindAddress = "*";
       indexers = [
         {
-          name = "EZTV";
-          definitionName = "eztv";
-          enable = true;
-          priority = 25;
-        }
-        {
-          name = "LimeTorrents";
-          definitionName = "limetorrents";
-          enable = true;
-          priority = 25;
-        }
-        {
           name = "The Pirate Bay";
           definitionName = "thepiratebay";
           enable = true;
           priority = 25;
         }
         {
-          name = "Toloka";
-          definitionName = "toloka";
+          name = "Toloka.to";
+          definitionName = "Toloka.to";
           enable = true;
           priority = 25;
           usernameFile = config.sops.secrets.toloka-username.path;
