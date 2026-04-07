@@ -38,6 +38,12 @@
 		resolvers 1.1.1.1 8.8.8.8
 	}
 
+	@lidarr host lidarr.@externalDomain@
+	reverse_proxy @lidarr @machineIp@:8686 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
 	@prowlarr host prowlarr.@externalDomain@
 	reverse_proxy @prowlarr @machineIp@:9696 {
 		header_up X-Real-IP {remote_host}
