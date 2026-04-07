@@ -13,7 +13,7 @@
 #
 # Manual configuration:
 #
-# * Get API Key:
+# * Get API Key and save to sops (secrets/default.yaml arr.lidarr.apiKey):
 #   * Settings -> General -> Security -> API Key
 # * Setup transmission as download client:
 #   * Settings
