@@ -26,6 +26,14 @@
     key = "arr/lidarr/apiKey";
   };
 
+  sops.secrets.toloka-username = {
+    key = "indexers/toloka/username";
+  };
+
+  sops.secrets.toloka-password = {
+    key = "indexers/toloka/password";
+  };
+
   sops.secrets.radarr-api-key = {
     key = "arrMini/radarr/apiKey";
   };
@@ -130,6 +138,14 @@
           definitionName = "thepiratebay";
           enable = true;
           priority = 25;
+        }
+        {
+          name = "Toloka";
+          definitionName = "toloka";
+          enable = true;
+          priority = 25;
+          usernameFile = config.sops.secrets.toloka-username.path;
+          passwordFile = config.sops.secrets.toloka-password.path;
         }
       ];
       applications = [
