@@ -11,6 +11,7 @@
     ../../../../modules/darwin/launchd
     ../../../../modules/darwin/linux-builder
     ../../../../modules/darwin/logrotate
+    ../../../../modules/darwin/logscanner
     ../../../../modules/darwin/pam
     ../../../../modules/darwin/pmset
     ../../../../modules/darwin/sharing
@@ -30,6 +31,7 @@
     ./linux-builder.nix
     ./login-items.nix
     ./logrotate.nix
+    ./logscanner.nix
     ./mailpit.nix
     ./mas-upgrade.nix
     ./matrix
