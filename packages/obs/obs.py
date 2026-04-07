@@ -51,7 +51,7 @@ def find_vault_by_name(config: dict, name: str) -> tuple[str | None, Path | None
 
 
 def find_parent_vault(start: Path) -> Path | None:
-    current = start.resolve().parent
+    current = start.resolve()
     while current != current.parent:
         if (current / ".obsidian").is_dir():
             return current
@@ -167,8 +167,9 @@ def cli(ctx: click.Context) -> None:
         click.echo(f"Inside existing vault: {parent_vault.name}")
         _open_vault(parent_vault)
     else:
-        _name, newly_created = _create_vault(vault_path)
-        _open_vault(vault_path, just_created=newly_created)
+        raise click.ClickException(
+            "Not inside an Obsidian vault. Use 'obs create' to create one."
+        )
 
 
 @cli.command()
@@ -202,24 +203,26 @@ def list_cmd() -> None:
 
 
 @cli.command()
-@click.argument("path", required=False, default=None, type=click.Path())
-@click.option("--name", help="Vault name to delete.")
-def delete(path: str | None, name: str | None) -> None:
-    """Unregister a vault."""
+@click.argument("name_or_path", required=False, default=None)
+def delete(name_or_path: str | None) -> None:
+    """Unregister a vault by name or path."""
+    if not name_or_path:
+        raise click.ClickException("Provide a vault name or path")
+
     config = read_obsidian_config()
 
-    if path:
-        vault_path = Path(path).resolve()
-        vault_id = find_vault_by_path(config, vault_path)
-        display_name = name or vault_path.name
-    elif name:
-        vault_id, _ = find_vault_by_name(config, name)
-        display_name = name
-    else:
-        raise click.ClickException("Provide a path or --name")
+    # Try as path first
+    vault_path = Path(name_or_path).resolve()
+    vault_id = find_vault_by_path(config, vault_path)
+    display_name = vault_path.name
+
+    # Fall back to name lookup
+    if not vault_id:
+        vault_id, _ = find_vault_by_name(config, name_or_path)
+        display_name = name_or_path
 
     if not vault_id:
-        raise click.ClickException(f"Vault not found: {display_name}")
+        raise click.ClickException(f"Vault not found: {name_or_path}")
 
     del config["vaults"][vault_id]
     write_obsidian_config(config)
@@ -227,4 +230,4 @@ def delete(path: str | None, name: str | None) -> None:
 
 
 if __name__ == "__main__":
-    cli()
+    cli(prog_name="obs")
