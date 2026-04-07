@@ -42,7 +42,7 @@
     ../../../home/tmux.nix
     ../../../home/treefmt.nix
     ../../../home/tweety.nix
-    ../../../home/zoxide.nix
+    ../../../home/z-lua.nix
     ../../../home/zsh.nix
     ../../../modules/flags
     ../../../modules/home/tools
