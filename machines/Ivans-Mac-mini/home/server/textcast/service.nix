@@ -62,15 +62,6 @@ let
   '';
 in
 {
-  # Declare sops secrets for system-level access
-  sops.secrets.anthropic-api-key = {
-    key = "anthropicApiKey";
-  };
-
-  sops.secrets.openai-api-key = {
-    key = "openaiApiKey";
-  };
-
   local.launchd.services.textcast = {
     enable = true;
     waitForPath = config.flags.externalStoragePath;
