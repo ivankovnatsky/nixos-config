@@ -64,6 +64,7 @@
     ../../../modules/home/healthchecks-mgmt
     ../../../modules/home/jellyfin-mgmt
     ../../../modules/home/launchd
+    ../../../modules/home/logscanner
     ../../../modules/home/nextdns-mgmt
     ../../../modules/home/reposync
     ../../../modules/home/syncthing-mgmt
