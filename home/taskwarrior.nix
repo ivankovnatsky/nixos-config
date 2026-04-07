@@ -198,6 +198,7 @@ in
     config = {
       "hooks.location" = "${config.xdg.configHome}/task/hooks";
       "default.command" = "next limit:20";
+      "report.next.columns" = "id,start.age,entry.age,depends,priority,project,tags,recur,scheduled.countdown,due.relative,until.remaining,description.desc,urgency";
     }
     // taskColorsDualMode;
   };
