@@ -22,6 +22,10 @@
   # This is now enforced automatically via preStart in each service's launchd config.
 
   # Sops secrets for arr services
+  sops.secrets.lidarr-api-key = {
+    key = "arr/lidarr/apiKey";
+  };
+
   sops.secrets.radarr-api-key = {
     key = "arrMini/radarr/apiKey";
   };
@@ -36,6 +40,28 @@
 
   local.services.arr-mgmt = {
     enable = true;
+
+    lidarr = {
+      enable = true;
+      baseUrl = "http://${config.flags.machineLocalAddress}:8686";
+      apiKeyFile = config.sops.secrets.lidarr-api-key.path;
+      bindAddress = "*";
+      downloadClients = [
+        {
+          name = "Transmission";
+          host = config.flags.machineLocalAddress;
+          port = 9091;
+          useSsl = false;
+          urlBase = "/transmission/";
+          usernameFile = config.sops.secrets.transmission-username.path;
+          passwordFile = config.sops.secrets.transmission-password.path;
+          category = "lidarr";
+        }
+      ];
+      rootFolders = [
+        "${config.flags.externalStoragePath}/Music"
+      ];
+    };
 
     radarr = {
       enable = true;
@@ -88,6 +114,12 @@
       bindAddress = "*";
       indexers = [
         {
+          name = "1337x";
+          definitionName = "1337x";
+          enable = true;
+          priority = 25;
+        }
+        {
           name = "EZTV";
           definitionName = "eztv";
           enable = true;
@@ -107,6 +139,20 @@
         }
       ];
       applications = [
+        {
+          name = "Lidarr";
+          baseUrl = "http://${config.flags.machineLocalAddress}:8686";
+          apiKeyFile = config.sops.secrets.lidarr-api-key.path;
+          prowlarrUrl = "http://${config.flags.machineLocalAddress}:9696";
+          syncLevel = "fullSync";
+          syncCategories = [
+            3000 # Audio
+            3010 # Audio/MP3
+            3020 # Audio/Video
+            3030 # Audio/Audiobook
+            3040 # Audio/Lossless
+          ];
+        }
         {
           name = "Radarr";
           baseUrl = "http://${config.flags.machineLocalAddress}:7878";
