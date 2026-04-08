@@ -67,6 +67,7 @@
     ../../../modules/home/taskwarrior-notify
     ../../../modules/home/tools
     ./dock.nix
+    ./packages.nix
     ./reposync.nix
   ];
 }
