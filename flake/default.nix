@@ -30,7 +30,7 @@ in
         vim
 
         # Nix tools
-        nixfmt-rfc-style
+        nixfmt
         nixpkgs-fmt
         nil # Nix LSP
 
