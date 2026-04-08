@@ -17,14 +17,14 @@ let
     # Get overdue tasks with details
     overdue=$(task rc.verbose=nothing +OVERDUE count 2>/dev/null || echo "0")
     if [ "$overdue" -gt 0 ]; then
-      details=$(task rc.verbose=nothing rc.report.next.columns=description.truncated rc.report.next.labels=Task +OVERDUE limit:3 next 2>/dev/null | sed 's/"/\\"/g')
+      details=$(task rc.verbose=nothing +OVERDUE export 2>/dev/null | ${pkgs.jq}/bin/jq -r 'sort_by(-.urgency) | .[0:3] | map(.description) | join(", ")' | sed 's/"/\\"/g')
       osascript -e "display notification \"$details\" with title \"Taskwarrior: $overdue overdue\" sound name \"Basso\""
     fi
 
     # Get tasks due today that aren't overdue yet
     due_today=$(task rc.verbose=nothing +TODAY -OVERDUE count 2>/dev/null || echo "0")
     if [ "$due_today" -gt 0 ]; then
-      details=$(task rc.verbose=nothing rc.report.next.columns=description.truncated rc.report.next.labels=Task +TODAY -OVERDUE limit:3 next 2>/dev/null | sed 's/"/\\"/g')
+      details=$(task rc.verbose=nothing +TODAY -OVERDUE export 2>/dev/null | ${pkgs.jq}/bin/jq -r 'sort_by(-.urgency) | .[0:3] | map(.description) | join(", ")' | sed 's/"/\\"/g')
       osascript -e "display notification \"$details\" with title \"Taskwarrior: $due_today due today\""
     fi
   '';
@@ -35,8 +35,8 @@ in
 
     interval = mkOption {
       type = types.int;
-      default = 3600;
-      description = "Interval in seconds between checks (default: 1 hour)";
+      default = 60 * 60 * 3;
+      description = "Interval in seconds between checks (default: 3 hours)";
     };
   };
 
