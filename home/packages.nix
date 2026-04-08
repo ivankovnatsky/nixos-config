@@ -78,12 +78,6 @@
     pigz
     poppler-utils
     poweroff
-    (python313.withPackages (
-      ps: with ps; [
-        grip
-        markitdown
-      ]
-    ))
     ps-top
     ps-top-nu
     rbwget
