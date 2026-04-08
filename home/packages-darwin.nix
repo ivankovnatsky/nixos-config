@@ -14,7 +14,7 @@
     launchd-mgmt
     magic-wormhole
     mkpasswd
-    nixfmt-rfc-style
+    nixfmt
     pandoc
     parallel
     pv
