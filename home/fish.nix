@@ -36,7 +36,6 @@ in
 
       set -U fish_term24bit 1
     '';
-
     interactiveShellInit = ''
       set -gx GPG_TTY (tty)
 
@@ -100,11 +99,11 @@ ${lib.optionalString (config.local.tools.toolsPrefix != config.home.homeDirector
       end
 
       # forgit preview window on bottom for narrow tiling splits
-      set -gx FORGIT_LOG_FZF_OPTS "--preview-window=bottom:70%"
-      set -gx FORGIT_DIFF_FZF_OPTS "--preview-window=bottom:70%"
-      set -gx FORGIT_SHOW_FZF_OPTS "--preview-window=bottom:70%"
-      set -gx FORGIT_BLAME_FZF_OPTS "--preview-window=bottom:70%"
-      set -gx FORGIT_REFLOG_FZF_OPTS "--preview-window=bottom:70%"
+      set -gx FORGIT_LOG_FZF_OPTS "--preview-window=bottom:80%"
+      set -gx FORGIT_DIFF_FZF_OPTS "--preview-window=bottom:80%"
+      set -gx FORGIT_SHOW_FZF_OPTS "--preview-window=bottom:80%"
+      set -gx FORGIT_BLAME_FZF_OPTS "--preview-window=bottom:80%"
+      set -gx FORGIT_REFLOG_FZF_OPTS "--preview-window=bottom:80%"
 
       # forgit completions - only show subcommands when no subcommand entered yet
       complete -c git-forgit -n "__fish_is_first_arg" -a "add attributes blame branch_delete checkout_branch checkout_commit checkout_file checkout_tag cherry_pick cherry_pick_from_branch clean diff fixup squash reword ignore log reflog rebase reset_head revert_commit show stash_show stash_push"
@@ -114,7 +113,6 @@ ${lib.optionalString (config.local.tools.toolsPrefix != config.home.homeDirector
       # if test -f $HOME/.env.fish
       #     source $HOME/.env.fish
       # end
-
     '';
     plugins =
       with pkgs.fishPlugins;
