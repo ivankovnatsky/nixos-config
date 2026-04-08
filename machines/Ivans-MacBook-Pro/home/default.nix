@@ -67,6 +67,7 @@
     ../../../modules/home/taskwarrior-notify
     ../../../modules/home/tools
     ../../Ivans-MacBook-Air/home/dock.nix
+    ../../Ivans-MacBook-Air/home/packages.nix
     ../../Ivans-MacBook-Air/home/reposync.nix
   ];
 }
