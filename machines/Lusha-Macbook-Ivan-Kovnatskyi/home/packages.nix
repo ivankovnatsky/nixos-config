@@ -4,6 +4,7 @@
     (python313.withPackages (
       ps: with ps; [
         grip
+        markitdown
         (jira.overridePythonAttrs (old: {
           propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ old.optional-dependencies.cli;
         }))
