@@ -2,7 +2,6 @@
 {
   home.packages = with pkgs; [
     bat
-    battery-toolkit # Local overlay
     btop
     cargo
     duf
