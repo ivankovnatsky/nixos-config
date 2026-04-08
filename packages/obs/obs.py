@@ -114,6 +114,19 @@ def _open_vault(
         quit_obsidian()
 
     if file_path:
+        if is_obsidian_running():
+            subprocess.run(
+                [
+                    "osascript",
+                    "-e",
+                    'tell application "Obsidian" to activate',
+                    "-e",
+                    "delay 0.3",
+                    "-e",
+                    'tell application "System Events" to keystroke "t" using command down',
+                ],
+                capture_output=True,
+            )
         abs_path = str(vault_path / file_path)
     else:
         abs_path = str(vault_path)
