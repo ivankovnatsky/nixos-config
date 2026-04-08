@@ -115,6 +115,11 @@ ${lib.optionalString (config.local.tools.toolsPrefix != config.home.homeDirector
       if [[ -d $HOME/.local/bin ]]; then
         export PATH=$PATH:$HOME/.local/bin
       fi
+''}${lib.optionalString pkgs.stdenv.targetPlatform.isDarwin ''
+      # Obsidian CLI
+      if [[ -d /Applications/Obsidian.app/Contents/MacOS ]]; then
+        export PATH=$PATH:/Applications/Obsidian.app/Contents/MacOS
+      fi
 ''}
 
     '';
