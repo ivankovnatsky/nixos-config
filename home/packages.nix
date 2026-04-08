@@ -119,5 +119,6 @@
     yank
     yt-dlp-parallel
     zellij-session
+    zoxide
   ];
 }
