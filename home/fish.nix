@@ -82,6 +82,11 @@ ${lib.optionalString (config.local.tools.toolsPrefix != config.home.homeDirector
       if test -d $HOME/.local/bin
           set -gx PATH $PATH $HOME/.local/bin
       end
+''}${lib.optionalString isDarwin ''
+      # Obsidian CLI
+      if test -d /Applications/Obsidian.app/Contents/MacOS
+          set -gx PATH $PATH /Applications/Obsidian.app/Contents/MacOS
+      end
 ''}
 
       # Git completions; FIXME: remove this once landed in upstream in
