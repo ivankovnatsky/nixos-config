@@ -36,7 +36,10 @@
       }
       "mac-mouse-fix"
       "silicon-labs-vcp-driver"
-      "obsidian"
+      {
+        name = "obsidian";
+        greedy = true;
+      }
       "visual-studio-code"
     ];
     masApps = {
