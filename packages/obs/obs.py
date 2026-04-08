@@ -161,15 +161,7 @@ def cli(ctx: click.Context) -> None:
     """Simple Obsidian vault manager."""
     if ctx.invoked_subcommand is not None:
         return
-    vault_path = Path(".")
-    parent_vault = find_parent_vault(vault_path.resolve())
-    if parent_vault:
-        click.echo(f"Inside existing vault: {parent_vault.name}")
-        _open_vault(parent_vault)
-    else:
-        raise click.ClickException(
-            "Not inside an Obsidian vault. Use 'obs create' to create one."
-        )
+    click.echo(ctx.get_help())
 
 
 @cli.command()
