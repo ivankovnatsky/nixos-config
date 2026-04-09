@@ -1,6 +1,5 @@
 {
   imports = [
-    ../../../home/amethyst
     ../../../home/atuin.nix
     ../../../home/bat.nix
     ../../../home/brctl.nix
