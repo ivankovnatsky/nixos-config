@@ -19,7 +19,6 @@
     # Installed or managed using Kandji
     # google-chrome
     casks = [
-      "amethyst"
       "chromium"
       "cloudflare-warp"
 
