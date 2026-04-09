@@ -14,7 +14,6 @@
       "pam-reattach"
     ];
     casks = [
-      "amethyst"
       "bitwarden"
       "chromium"
       "firefox"
