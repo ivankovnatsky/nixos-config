@@ -1,7 +1,6 @@
 {
   imports = [
     ../../../home/aichat.nix
-    ../../../home/amethyst
     ../../../home/atuin.nix
     ../../../home/bash.nix
     ../../../home/bat.nix
