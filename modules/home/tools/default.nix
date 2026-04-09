@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 
@@ -238,7 +239,7 @@ in
 
   config = mkIf cfg.enable {
     home.activation.manageTools = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      ${pkgs.python3}/bin/python3 ${./packages.py} \
+      ${inputs.tools.packages.${pkgs.system}.default}/bin/tools \
         --config ${configJson}
     '';
   };
