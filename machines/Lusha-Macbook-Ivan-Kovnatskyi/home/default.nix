@@ -5,7 +5,6 @@
     # ./prevent-sleep.nix
     ../../../home/aichat-server.nix
     ../../../home/aichat.nix
-    ../../../home/amethyst
     ../../../home/atuin.nix
     ../../../home/bat.nix
     ../../../home/bitwarden.nix
