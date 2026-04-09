@@ -300,6 +300,24 @@
         "type": "github"
       }
     },
+    "flake-utils_9": {
+      "inputs": {
+        "systems": "systems_13"
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "home-manager-darwin-release": {
       "inputs": {
         "nixpkgs": [
@@ -952,6 +970,22 @@
         "type": "github"
       }
     },
+    "nixpkgs_9": {
+      "locked": {
+        "lastModified": 1775701739,
+        "narHash": "sha256-2FWWY1rr/+pGUJK1npcVcsWNEblzmKs6VxD3VEvwJSs=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "0f7663154ff2fec150f9dbf5f81ec2785dc1e0db",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixvim-darwin-release": {
       "inputs": {
         "flake-parts": "flake-parts",
@@ -1281,6 +1315,7 @@
         "sops-nix-nixos-unstable": "sops-nix-nixos-unstable",
         "taskweb": "taskweb",
         "textcast": "textcast",
+        "tools": "tools",
         "username": "username",
         "xwmx-homebrew-tap": "xwmx-homebrew-tap"
       }
@@ -1411,6 +1446,21 @@
       }
     },
     "systems_12": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "systems_13": {
       "locked": {
         "lastModified": 1681028828,
         "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
@@ -1580,6 +1630,25 @@
       "original": {
         "owner": "ivankovnatsky",
         "repo": "textcast",
+        "type": "github"
+      }
+    },
+    "tools": {
+      "inputs": {
+        "flake-utils": "flake-utils_9",
+        "nixpkgs": "nixpkgs_9"
+      },
+      "locked": {
+        "lastModified": 1775741133,
+        "narHash": "sha256-1LaBy383CP19rr+yHCw65Zk97fnSupLeyKlYThGHZb8=",
+        "owner": "ivankovnatsky",
+        "repo": "tools",
+        "rev": "dcd83feaf1cc1f37dc9e86c1a2703277e21c378e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ivankovnatsky",
+        "repo": "tools",
         "type": "github"
       }
     },
