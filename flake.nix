@@ -245,6 +245,11 @@
     nix-steipete-tools = {
       url = "github:openclaw/nix-steipete-tools";
     };
+
+    # tools - declarative configuration manager
+    tools = {
+      url = "github:ivankovnatsky/tools";
+    };
   };
 
   outputs = inputs: import ./flake { inherit inputs; };
