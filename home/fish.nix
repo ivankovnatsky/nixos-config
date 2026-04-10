@@ -65,27 +65,26 @@ in
           set -gx PATH $PATH $GOPATH/bin
       end
 
-      if test -d ${config.local.tools.toolsPrefix}/.npm/bin
-          set -gx PATH $PATH ${config.local.tools.toolsPrefix}/.npm/bin
+      if test -d ${config.flags.homeWorkPath}/.npm/bin
+          set -gx PATH $PATH ${config.flags.homeWorkPath}/.npm/bin
       end
 
-      if test -d ${config.local.tools.toolsPrefix}/.bun/bin
-          set -gx PATH $PATH ${config.local.tools.toolsPrefix}/.bun/bin
+      if test -d ${config.flags.homeWorkPath}/.bun/bin
+          set -gx PATH $PATH ${config.flags.homeWorkPath}/.bun/bin
       end
 
       # uv tool install directory
-      set -gx UV_TOOL_BIN_DIR ${config.local.tools.toolsPrefix}/.local/bin
-      set -gx UV_TOOL_DIR ${config.local.tools.toolsPrefix}/.local/share/uv/tools
+      set -gx UV_TOOL_BIN_DIR ${config.flags.homeWorkPath}/.local/bin
+      set -gx UV_TOOL_DIR ${config.flags.homeWorkPath}/.local/share/uv/tools
 
-      if test -d ${config.local.tools.toolsPrefix}/.local/bin
-          set -gx PATH $PATH ${config.local.tools.toolsPrefix}/.local/bin
+      if test -d ${config.flags.homeWorkPath}/.local/bin
+          set -gx PATH $PATH ${config.flags.homeWorkPath}/.local/bin
       end
-${lib.optionalString (config.local.tools.toolsPrefix != config.home.homeDirectory) ''
       # Claude CLI lives in ~/.local/bin (hardcoded in binary)
       if test -d $HOME/.local/bin
           set -gx PATH $PATH $HOME/.local/bin
       end
-''}${lib.optionalString isDarwin ''
+${lib.optionalString isDarwin ''
       # Obsidian CLI
       if test -d /Applications/Obsidian.app/Contents/MacOS
           set -gx PATH $PATH /Applications/Obsidian.app/Contents/MacOS
