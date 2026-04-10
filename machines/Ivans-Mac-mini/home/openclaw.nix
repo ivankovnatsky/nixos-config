@@ -9,7 +9,7 @@
 let
   stateDir = "${config.flags.externalStoragePath}/.openclaw";
   cacheDir = "${config.flags.externalStoragePath}/.cache";
-  # Installed by local.tools.npm.packages in tools.nix
+  # Installed by tools-config/machines/Ivans-Mac-mini.yaml
   openclawBin = "${config.flags.externalStoragePath}/.npm/bin/openclaw";
   gatewayPort = 18789;
 

@@ -50,7 +50,6 @@
     ../../../home/taskwarrior-sync.nix
     ../../../home/taskwarrior.nix
     ../../../home/tmux.nix
-    ../../../home/tools.nix
     ../../../home/treefmt.nix
     ../../../home/vscode.nix
     ../../../home/xattr.nix
@@ -64,9 +63,9 @@
     ../../../modules/home/reposync
     ../../../modules/home/syncthing-mgmt
     ../../../modules/home/taskwarrior-notify
-    ../../../modules/home/tools
     ./dock.nix
     ./packages.nix
     ./reposync.nix
   ];
+
 }

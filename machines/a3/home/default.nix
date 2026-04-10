@@ -45,7 +45,6 @@
     ../../../home/z-lua.nix
     ../../../home/zsh.nix
     ../../../modules/flags
-    ../../../modules/home/tools
     ./btop.nix
     ./desktop.nix
     ./firefox.nix
@@ -53,6 +52,6 @@
     ./gpg.nix
     ./packages.nix
     ./syncthing.nix
-    ./tools.nix
   ];
+
 }

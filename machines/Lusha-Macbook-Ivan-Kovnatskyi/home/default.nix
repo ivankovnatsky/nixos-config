@@ -64,7 +64,6 @@
     ../../../modules/home/prevent-sleep
     ../../../modules/home/reposync
     ../../../modules/home/syncthing-mgmt
-    ../../../modules/home/tools
     ./close-zscaler.nix
     ./container.nix
     ./dock.nix
@@ -76,6 +75,6 @@
     ./programs.nix
     ./reposync.nix
     ./syncthing-mgmt.nix
-    ./tools.nix
   ];
+
 }
