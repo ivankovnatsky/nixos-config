@@ -102,7 +102,7 @@ def scan_darwin_log(hours=24, predicate=None):
         )
         lines = result.stdout.strip().splitlines()
         # Skip header lines that log show prints
-        return [l for l in lines if l and not l.startswith("Filtering")]
+        return [line for line in lines if line and not line.startswith("Filtering")]
     except (FileNotFoundError, subprocess.TimeoutExpired):
         return []
 
