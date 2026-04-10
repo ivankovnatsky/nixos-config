@@ -97,9 +97,7 @@ in
       wantedBy = [ "timers.target" ];
 
       timerConfig = {
-        OnCalendar = "*-*-* ${toString cfg.hour}:${
-          if cfg.minute < 10 then "0${toString cfg.minute}" else toString cfg.minute
-        }:00";
+        OnCalendar = "*-*-* ${toString cfg.hour}:${lib.fixedWidthString 2 "0" (toString cfg.minute)}:00";
         Persistent = true;
       };
     };
