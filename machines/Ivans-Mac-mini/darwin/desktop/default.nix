@@ -16,7 +16,6 @@
     ../../../../system/nix.nix
     ./accessibility.nix
     ./fulldiskaccess.nix
-    ./homebrew.nix
     ./login-items.nix
     ./users.nix
   ];
