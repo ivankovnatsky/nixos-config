@@ -26,7 +26,6 @@
     ./doh.nix
     ./flags.nix
     ./git.nix
-    ./homebrew.nix
     ./http.nix
     ./linux-builder.nix
     ./login-items.nix
