@@ -15,7 +15,6 @@
       "pam-reattach"
     ];
     casks = [
-      "bitwarden"
       "chromium"
       {
         name = "coconutbattery";
