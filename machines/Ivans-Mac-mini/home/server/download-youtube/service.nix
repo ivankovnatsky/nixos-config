@@ -8,6 +8,7 @@ let
   dataDir = "${config.flags.externalStoragePath}/Media/Youtube";
 
   python = pkgs.python3.withPackages (ps: [
+    ps.click
     ps.flask
     ps.watchdog
   ]);

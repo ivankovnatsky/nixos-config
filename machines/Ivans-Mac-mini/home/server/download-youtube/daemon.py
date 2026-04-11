@@ -6,7 +6,6 @@ Uses giffer for actual downloads, providing a web interface for adding URLs
 and monitoring download status.
 """
 
-import argparse
 import logging
 import os
 import subprocess
@@ -14,6 +13,8 @@ import threading
 import time
 from datetime import datetime
 from pathlib import Path
+
+import click
 
 downloads = []
 downloads_lock = threading.Lock()
@@ -289,28 +290,26 @@ def start_file_watcher(url_file, output_dir):
     return observer
 
 
-def main():
+@click.command()
+@click.option("--host", default="0.0.0.0", help="Host to bind to.")
+@click.option("--port", type=int, default=8085, help="Port to bind to.")
+@click.option(
+    "--output-dir",
+    default="/Volumes/Storage/Data/Media/Youtube",
+    help="Output directory for downloads.",
+)
+@click.option("--debug", is_flag=True, help="Enable debug mode.")
+def main(host, port, output_dir, debug):
+    """YouTube download daemon - Web UI for queuing video downloads."""
     from flask import Flask, jsonify, render_template_string, request
 
-    parser = argparse.ArgumentParser(description="YouTube Download Daemon")
-    parser.add_argument("--host", default="0.0.0.0", help="Host to bind to")
-    parser.add_argument("--port", type=int, default=8085, help="Port to bind to")
-    parser.add_argument(
-        "--output-dir",
-        default="/Volumes/Storage/Data/Media/Youtube",
-        help="Output directory for downloads",
-    )
-    parser.add_argument("--debug", action="store_true", help="Enable debug mode")
-    args = parser.parse_args()
-
     app = Flask(__name__)
-    output_dir = args.output_dir
     url_file = os.path.join(output_dir, ".urls.txt")
 
     Path(output_dir).mkdir(parents=True, exist_ok=True)
 
     logging.basicConfig(
-        level=logging.DEBUG if args.debug else logging.INFO,
+        level=logging.DEBUG if debug else logging.INFO,
         format="%(asctime)s - %(levelname)s - %(message)s",
     )
 
@@ -362,12 +361,12 @@ def main():
     def health():
         return jsonify({"status": "ok"})
 
-    logging.info(f"Starting YouTube Downloader on {args.host}:{args.port}")
+    logging.info(f"Starting YouTube Downloader on {host}:{port}")
     logging.info(f"Output directory: {output_dir}")
     logging.info(f"URL queue file: {url_file}")
 
     try:
-        app.run(host=args.host, port=args.port, debug=args.debug, threaded=True)
+        app.run(host=host, port=port, debug=debug, threaded=True)
     finally:
         observer.stop()
         observer.join()
