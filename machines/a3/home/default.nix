@@ -52,7 +52,6 @@
     ./flags.nix
     ./gpg.nix
     ./packages.nix
-    ./steam-games.nix
     ./syncthing.nix
   ];
 
