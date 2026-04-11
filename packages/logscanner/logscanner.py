@@ -1,6 +1,5 @@
 """Scan system logs for errors and alert via Discord webhook."""
 
-import argparse
 import glob
 import json
 import os
@@ -10,6 +9,8 @@ import subprocess
 import sys
 import time
 import urllib.request
+
+import click
 
 
 DEFAULT_PATTERNS = [
@@ -226,42 +227,39 @@ def send_discord(webhook_url, message):
         print(f"Discord notification failed: {e}", file=sys.stderr)
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Scan logs and alert via Discord")
-    parser.add_argument("--config", required=True, help="Path to config JSON file")
-    parser.add_argument("--hours", type=int, default=24, help="Hours to look back")
-    parser.add_argument(
-        "--dry-run", action="store_true", help="Print instead of sending"
-    )
-    args = parser.parse_args()
-
-    config = load_config(args.config)
+@click.command()
+@click.option("--config", required=True, help="Path to config JSON file.")
+@click.option("--hours", type=int, default=24, help="Hours to look back.")
+@click.option("--dry-run", is_flag=True, help="Print instead of sending.")
+def main(config, hours, dry_run):
+    """Scan system logs for errors and alert via Discord webhook."""
+    cfg = load_config(config)
     hostname = platform.node()
     system = platform.system()
     results = {}
 
     # Compile patterns
-    pattern_strings = config.get("patterns", DEFAULT_PATTERNS)
+    pattern_strings = cfg.get("patterns", DEFAULT_PATTERNS)
     compiled = [re.compile(p) for p in pattern_strings]
 
     # Scan system logs (only if enabled in config)
-    scan_system = config.get("scanSystemLog", True)
+    scan_system = cfg.get("scanSystemLog", True)
     if scan_system:
         if system == "Darwin":
-            predicate = config.get("darwinPredicate", "messageType == error")
-            lines = scan_darwin_log(hours=args.hours, predicate=predicate)
+            predicate = cfg.get("darwinPredicate", "messageType == error")
+            lines = scan_darwin_log(hours=hours, predicate=predicate)
             if lines:
                 results["macOS unified log"] = lines
         elif system == "Linux":
-            lines = scan_journalctl(hours=args.hours)
+            lines = scan_journalctl(hours=hours)
             if lines:
                 results["systemd journal"] = lines
 
     # Scan file paths
-    file_paths = config.get("logPaths", [])
+    file_paths = cfg.get("logPaths", [])
     if file_paths:
-        state_file = config.get("stateFile", "/tmp/logscanner-daemon-last-run")
-        exclude = config.get("excludeFiles", ["logscanner."])
+        state_file = cfg.get("stateFile", "/tmp/logscanner-daemon-last-run")
+        exclude = cfg.get("excludeFiles", ["logscanner."])
         state = load_state(state_file)
         file_matches = scan_files(file_paths, compiled, state, exclude=exclude)
         if file_matches:
@@ -275,13 +273,13 @@ def main():
         print("No errors found.")
         return
 
-    if args.dry_run:
+    if dry_run:
         for chunk in chunks:
             print(chunk)
             print("---")
         return
 
-    webhook_url = get_webhook_url(config)
+    webhook_url = get_webhook_url(cfg)
     if not webhook_url:
         print("No Discord webhook configured, printing to stdout:")
         for chunk in chunks:
