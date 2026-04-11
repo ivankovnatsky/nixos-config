@@ -223,6 +223,32 @@
         system.primaryUser = "ivan";
       }
 
+      # Homebrew module
+      inputs.nix-homebrew.darwinModules.nix-homebrew
+      (
+        { config, ... }:
+        {
+          homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
+          nix-homebrew = {
+            enable = true;
+            enableRosetta = true;
+            user = "ivan";
+            autoMigrate = true;
+            taps = {
+              "homebrew/homebrew-core" = inputs.homebrew-core;
+              "homebrew/homebrew-cask" = inputs.homebrew-cask;
+              "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
+              "pomdtr/homebrew-tap" = inputs.pomdtr-homebrew-tap;
+              "ivankovnatsky/homebrew-tap" = inputs.ivankovnatsky-homebrew-tap;
+              "keith/homebrew-formulae" = inputs.keith-homebrew-tap;
+              "antoniorodr/homebrew-memo" = inputs.antoniorodr-homebrew-tap;
+              "xwmx/homebrew-taps" = inputs.xwmx-homebrew-tap;
+            };
+            mutableTaps = false;
+          };
+        }
+      )
+
       # Home Manager module
       inputs.home-manager-darwin-release.darwinModules.home-manager
       {
