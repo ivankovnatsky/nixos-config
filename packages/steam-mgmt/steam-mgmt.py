@@ -1,89 +1,145 @@
 #!/usr/bin/env python3
 
-import argparse
+import json
 import os
 import shutil
 import subprocess
 import sys
 
+import click
+
 STEAM_DIR = os.environ.get("STEAM_DIR", os.path.expanduser("~/.local/share/steam-servers"))
 GAMES_DIR = os.path.join(STEAM_DIR, "games")
+STATE_DIR = os.path.expanduser("~/.local/state/steam-mgmt")
+MANIFEST_PATH = os.path.join(STATE_DIR, "games.json")
+SOPS_DIR = os.path.expanduser("~/.config/sops-nix/secrets")
 
 
-def run_steamcmd(*args):
+def read_secret(name):
+    """Read a sops-nix decrypted secret by name."""
+    path = os.path.join(SOPS_DIR, name)
+    try:
+        with open(path) as f:
+            return f.read().strip()
+    except (FileNotFoundError, PermissionError):
+        return None
+
+
+def get_login(user):
+    """Return login arguments and optional stdin password for steamcmd."""
+    if user:
+        return ["+login", user], None
+    username = read_secret("steam-username")
+    if username:
+        password = read_secret("steam-password")
+        if password:
+            return ["+login", username], password
+        return ["+login", username], None
+    return ["+login", "anonymous"], None
+
+
+def run_steamcmd(*args, stdin_password=None):
     """Run steamcmd with the given arguments."""
     cmd = ["steamcmd"] + list(args) + ["+quit"]
     try:
-        subprocess.run(cmd, check=True)
+        subprocess.run(cmd, input=stdin_password, text=True, check=True)
     except FileNotFoundError:
-        print("Error: steamcmd not found in PATH", file=sys.stderr)
+        click.echo("Error: steamcmd not found in PATH", err=True)
         sys.exit(1)
 
 
-def cmd_install(args):
-    install_dir = args.directory or os.path.join(GAMES_DIR, args.app_id)
+@click.group()
+def cli():
+    """Manage Steam games using steamcmd."""
+
+
+@cli.command()
+@click.argument("app_id")
+@click.argument("directory", required=False)
+@click.option("-u", "--user", help="Steam username (default: anonymous)")
+def install(app_id, directory, user):
+    """Install a game/server by App ID."""
+    install_dir = directory or os.path.join(GAMES_DIR, app_id)
     os.makedirs(install_dir, exist_ok=True)
-    print(f"Installing app {args.app_id} to {install_dir}...")
+    login_args, password = get_login(user)
+    click.echo(f"Installing app {app_id} to {install_dir}...")
     run_steamcmd(
         "+force_install_dir", install_dir,
-        "+login", "anonymous",
-        "+app_update", args.app_id, "validate",
+        *login_args,
+        "+app_update", app_id, "validate",
+        stdin_password=password,
     )
-    print(f"Done. Installed to {install_dir}")
+    click.echo(f"Done. Installed to {install_dir}")
 
 
-def cmd_update(args):
-    install_dir = args.directory or os.path.join(GAMES_DIR, args.app_id)
+@cli.command()
+@click.argument("app_id")
+@click.argument("directory", required=False)
+@click.option("-u", "--user", help="Steam username (default: anonymous)")
+def update(app_id, directory, user):
+    """Update an installed game/server."""
+    install_dir = directory or os.path.join(GAMES_DIR, app_id)
     if not os.path.isdir(install_dir):
-        print(f"Error: {install_dir} does not exist. Install first.", file=sys.stderr)
+        click.echo(f"Error: {install_dir} does not exist. Install first.", err=True)
         sys.exit(1)
-    print(f"Updating app {args.app_id} in {install_dir}...")
+    login_args, password = get_login(user)
+    click.echo(f"Updating app {app_id} in {install_dir}...")
     run_steamcmd(
         "+force_install_dir", install_dir,
-        "+login", "anonymous",
-        "+app_update", args.app_id,
+        *login_args,
+        "+app_update", app_id,
+        stdin_password=password,
     )
-    print("Done.")
+    click.echo("Done.")
 
 
-def cmd_validate(args):
-    install_dir = args.directory or os.path.join(GAMES_DIR, args.app_id)
+@cli.command()
+@click.argument("app_id")
+@click.argument("directory", required=False)
+@click.option("-u", "--user", help="Steam username (default: anonymous)")
+def validate(app_id, directory, user):
+    """Validate installed game files."""
+    install_dir = directory or os.path.join(GAMES_DIR, app_id)
     if not os.path.isdir(install_dir):
-        print(f"Error: {install_dir} does not exist. Install first.", file=sys.stderr)
+        click.echo(f"Error: {install_dir} does not exist. Install first.", err=True)
         sys.exit(1)
-    print(f"Validating app {args.app_id} in {install_dir}...")
+    login_args, password = get_login(user)
+    click.echo(f"Validating app {app_id} in {install_dir}...")
     run_steamcmd(
         "+force_install_dir", install_dir,
-        "+login", "anonymous",
-        "+app_update", args.app_id, "validate",
+        *login_args,
+        "+app_update", app_id, "validate",
+        stdin_password=password,
     )
-    print("Done.")
+    click.echo("Done.")
 
 
-def cmd_remove(args):
-    directory = os.path.realpath(args.directory)
+@cli.command()
+@click.argument("directory")
+@click.confirmation_option(prompt="Are you sure you want to remove this?")
+def remove(directory):
+    """Remove an installed game directory."""
+    directory = os.path.realpath(directory)
     games_real = os.path.realpath(GAMES_DIR)
     if not directory.startswith(games_real + os.sep):
-        print(f"Error: refusing to remove {directory} (not under {games_real})", file=sys.stderr)
+        click.echo(f"Error: refusing to remove {directory} (not under {games_real})", err=True)
         sys.exit(1)
     if not os.path.isdir(directory):
-        print(f"Error: {directory} does not exist.", file=sys.stderr)
+        click.echo(f"Error: {directory} does not exist.", err=True)
         sys.exit(1)
-    answer = input(f"Remove {directory}? [y/N] ")
-    if answer.lower() == "y":
-        shutil.rmtree(directory)
-        print(f"Removed {directory}")
-    else:
-        print("Cancelled.")
+    shutil.rmtree(directory)
+    click.echo(f"Removed {directory}")
 
 
-def cmd_list(args):
+@cli.command("list")
+def list_games():
+    """List installed games."""
     os.makedirs(GAMES_DIR, exist_ok=True)
     entries = sorted(os.listdir(GAMES_DIR))
     if not entries:
-        print(f"No games installed in {GAMES_DIR}")
+        click.echo(f"No games installed in {GAMES_DIR}")
         return
-    print(f"Installed games in {GAMES_DIR}:")
+    click.echo(f"Installed games in {GAMES_DIR}:")
     for name in entries:
         path = os.path.join(GAMES_DIR, name)
         if not os.path.isdir(path):
@@ -93,49 +149,101 @@ def cmd_list(args):
             capture_output=True, text=True,
         )
         size = result.stdout.split()[0] if result.stdout else "?"
-        print(f"  {name} ({size})")
+        click.echo(f"  {name} ({size})")
 
 
-def cmd_info(args):
+@cli.command()
+@click.argument("app_id")
+@click.option("-u", "--user", help="Steam username (default: anonymous)")
+def info(app_id, user):
+    """Show app info via steamcmd."""
+    login_args, password = get_login(user)
     run_steamcmd(
-        "+login", "anonymous",
-        "+app_info_print", args.app_id,
+        *login_args,
+        "+app_info_print", app_id,
+        stdin_password=password,
     )
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Manage Steam game servers using steamcmd")
-    subparsers = parser.add_subparsers(dest="command", required=True)
+@cli.command()
+@click.option("--dry-run", is_flag=True, help="Show what would be done without doing it")
+@click.option("-y", "--yes", is_flag=True, help="Skip confirmation prompts")
+@click.option("-u", "--user", help="Steam username (default: anonymous)")
+def sync(dry_run, yes, user):
+    """Sync installed games with declarative manifest."""
+    if not os.path.isfile(MANIFEST_PATH):
+        click.echo(f"Error: manifest not found at {MANIFEST_PATH}", err=True)
+        click.echo("Run `nixos-rebuild` to generate it from steam-games.nix", err=True)
+        sys.exit(1)
 
-    p_install = subparsers.add_parser("install", help="Install a game/server by App ID")
-    p_install.add_argument("app_id", help="Steam App ID")
-    p_install.add_argument("directory", nargs="?", help="Install directory (default: ~/.steam/games/<app_id>)")
-    p_install.set_defaults(func=cmd_install)
+    with open(MANIFEST_PATH) as f:
+        games = json.load(f)
 
-    p_update = subparsers.add_parser("update", help="Update an installed game/server")
-    p_update.add_argument("app_id", help="Steam App ID")
-    p_update.add_argument("directory", nargs="?", help="Install directory")
-    p_update.set_defaults(func=cmd_update)
+    os.makedirs(GAMES_DIR, exist_ok=True)
+    declared = {g["appId"] for g in games}
 
-    p_validate = subparsers.add_parser("validate", help="Validate installed game files")
-    p_validate.add_argument("app_id", help="Steam App ID")
-    p_validate.add_argument("directory", nargs="?", help="Install directory")
-    p_validate.set_defaults(func=cmd_validate)
+    # Only consider directories with actual content as installed
+    installed = set()
+    for name in os.listdir(GAMES_DIR):
+        path = os.path.join(GAMES_DIR, name)
+        if os.path.isdir(path) and os.listdir(path):
+            installed.add(name)
 
-    p_remove = subparsers.add_parser("remove", help="Remove an installed game directory")
-    p_remove.add_argument("directory", help="Directory to remove")
-    p_remove.set_defaults(func=cmd_remove)
+    to_install = [g for g in games if g["appId"] not in installed]
+    to_remove = [a for a in installed if a not in declared]
 
-    p_list = subparsers.add_parser("list", help="List installed games")
-    p_list.set_defaults(func=cmd_list)
+    if not to_install and not to_remove:
+        click.echo("Everything in sync.")
+        return
 
-    p_info = subparsers.add_parser("info", help="Show app info via steamcmd")
-    p_info.add_argument("app_id", help="Steam App ID")
-    p_info.set_defaults(func=cmd_info)
+    if to_install:
+        click.echo("To install:")
+        for g in to_install:
+            login = "anonymous" if g.get("anonymous", False) else "authenticated"
+            click.echo(f"  {g['appId']}  {g['name']}  ({login})")
 
-    args = parser.parse_args()
-    args.func(args)
+    if to_remove:
+        click.echo("To remove:")
+        for app_id in to_remove:
+            click.echo(f"  {app_id}")
+
+    if dry_run:
+        return
+
+    # Batch install: group by login type to minimize steamcmd sessions
+    anon_games = [g for g in to_install if g.get("anonymous", False)]
+    auth_games = [g for g in to_install if not g.get("anonymous", False)]
+
+    if anon_games:
+        batch_args = ["+login", "anonymous"]
+        for game in anon_games:
+            install_dir = os.path.join(GAMES_DIR, game["appId"])
+            batch_args += ["+force_install_dir", install_dir, "+app_update", game["appId"], "validate"]
+        click.echo()
+        click.echo(f"Installing {len(anon_games)} anonymous game(s)...")
+        run_steamcmd(*batch_args)
+
+    if auth_games:
+        login_args, password = get_login(user)
+        batch_args = list(login_args)
+        for game in auth_games:
+            install_dir = os.path.join(GAMES_DIR, game["appId"])
+            batch_args += ["+force_install_dir", install_dir, "+app_update", game["appId"], "validate"]
+        click.echo()
+        click.echo(f"Installing {len(auth_games)} authenticated game(s)...")
+        run_steamcmd(*batch_args, stdin_password=password)
+
+    if to_remove:
+        if not yes:
+            click.confirm(f"Remove {len(to_remove)} undeclared game(s)?", abort=True)
+        for app_id in to_remove:
+            path = os.path.join(GAMES_DIR, app_id)
+            shutil.rmtree(path)
+            click.echo(f"Removed {app_id}")
+
+    click.echo()
+    click.echo("Sync complete.")
 
 
 if __name__ == "__main__":
-    main()
+    cli()
