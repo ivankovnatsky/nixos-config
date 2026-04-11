@@ -159,6 +159,25 @@ in
         bang = true;
         bar = true;
       };
+      # Shift-key typo aliases
+      WA = {
+        command = "wa";
+        desc = "Write all buffers (typo alias for :wa)";
+        bang = true;
+        bar = true;
+      };
+      Xa = {
+        command = "xa";
+        desc = "Save all and quit (typo alias for :xa)";
+        bang = true;
+        bar = true;
+      };
+      XA = {
+        command = "xa";
+        desc = "Save all and quit (typo alias for :xa)";
+        bang = true;
+        bar = true;
+      };
     };
   };
 }
