@@ -43,6 +43,7 @@ let
       command = "${pkgs.claude-statusline}/bin/claude-statusline";
     };
     includeCoAuthoredBy = false;
+    feedbackSurveyRate = 0;
     env = {
       CLAUDE_CODE_ENABLE_TELEMETRY = "1";
     };
