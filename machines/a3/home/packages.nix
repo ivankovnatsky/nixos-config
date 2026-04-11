@@ -41,7 +41,6 @@
     ripgrep
     rust-analyzer
     rustc
-    steam-mgmt
     temperatures
     tmux-temperatures
     typst
