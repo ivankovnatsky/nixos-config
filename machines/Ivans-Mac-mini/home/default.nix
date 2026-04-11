@@ -46,7 +46,7 @@
     ../../../home/syncthing-ignore.nix
     ../../../home/syncthing.nix
     ../../../home/taskwarrior-notify.nix
-    ../../../home/taskwarrior-sync.nix
+    ../../../home/taskchampion-sync.nix
     ../../../home/taskwarrior.nix
     ../../../home/tmux.nix
     ../../../home/treefmt.nix
@@ -77,7 +77,7 @@
     ./openclaw.nix
     ./packages.nix
     ./server
-    ./taskwarrior-sync.nix
+    ./taskchampion-sync.nix
     ./tmux.nix
     ./tools.nix
     ./unison.nix

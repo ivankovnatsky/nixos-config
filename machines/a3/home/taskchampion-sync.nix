@@ -36,7 +36,7 @@ TASKRC
     '';
   };
 
-  systemd.user.services.taskwarrior-sync = {
+  systemd.user.services.taskchampion-sync = {
     Unit = {
       Description = "Taskwarrior sync";
     };
@@ -46,7 +46,7 @@ TASKRC
     };
   };
 
-  systemd.user.timers.taskwarrior-sync = {
+  systemd.user.timers.taskchampion-sync = {
     Unit = {
       Description = "Taskwarrior sync timer";
     };

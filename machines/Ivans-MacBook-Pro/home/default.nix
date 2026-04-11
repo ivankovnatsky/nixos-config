@@ -47,7 +47,7 @@
     ../../../home/syncthing-mgmt.nix
     ../../../home/syncthing.nix
     ../../../home/taskwarrior-notify.nix
-    ../../../home/taskwarrior-sync.nix
+    ../../../home/taskchampion-sync.nix
     ../../../home/taskwarrior.nix
     ../../../home/tmux.nix
     ../../../home/tools.nix

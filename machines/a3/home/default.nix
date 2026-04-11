@@ -39,7 +39,7 @@
     ../../../home/starship
     ../../../home/syncthing-ignore.nix
     ../../../home/taskwarrior.nix
-    ./taskwarrior-sync.nix
+    ./taskchampion-sync.nix
     ../../../home/tmux.nix
     ../../../home/treefmt.nix
     ../../../home/tweety.nix

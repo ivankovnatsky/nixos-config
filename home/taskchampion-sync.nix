@@ -1,6 +1,6 @@
 { pkgs, ... }:
 {
-  local.launchd.services.taskwarrior-sync = {
+  local.launchd.services.taskchampion-sync = {
     enable = true;
     keepAlive = false;
     runAtLoad = false;
