@@ -45,26 +45,27 @@ in
         export PATH=$PATH:$GOPATH/bin
       fi
 
-      if [[ -d ${config.flags.homeWorkPath}/.npm/bin ]]; then
-        export PATH=$PATH:${config.flags.homeWorkPath}/.npm/bin
+      if [[ -d ${config.local.tools.toolsPrefix}/.npm/bin ]]; then
+        export PATH=$PATH:${config.local.tools.toolsPrefix}/.npm/bin
       fi
 
-      if [[ -d ${config.flags.homeWorkPath}/.bun/bin ]]; then
-        export PATH=$PATH:${config.flags.homeWorkPath}/.bun/bin
+      if [[ -d ${config.local.tools.toolsPrefix}/.bun/bin ]]; then
+        export PATH=$PATH:${config.local.tools.toolsPrefix}/.bun/bin
       fi
 
       # uv tool install directory
-      export UV_TOOL_BIN_DIR="${config.flags.homeWorkPath}/.local/bin"
-      export UV_TOOL_DIR="${config.flags.homeWorkPath}/.local/share/uv/tools"
+      export UV_TOOL_BIN_DIR="${config.local.tools.toolsPrefix}/.local/bin"
+      export UV_TOOL_DIR="${config.local.tools.toolsPrefix}/.local/share/uv/tools"
 
-      if [[ -d ${config.flags.homeWorkPath}/.local/bin ]]; then
-        export PATH=$PATH:${config.flags.homeWorkPath}/.local/bin
+      if [[ -d ${config.local.tools.toolsPrefix}/.local/bin ]]; then
+        export PATH=$PATH:${config.local.tools.toolsPrefix}/.local/bin
       fi
+${lib.optionalString (config.local.tools.toolsPrefix != config.home.homeDirectory) ''
       # Claude CLI lives in ~/.local/bin (hardcoded in binary)
       if [[ -d $HOME/.local/bin ]]; then
         export PATH=$PATH:$HOME/.local/bin
       fi
-${lib.optionalString pkgs.stdenv.targetPlatform.isDarwin ''
+''}${lib.optionalString pkgs.stdenv.targetPlatform.isDarwin ''
       # Obsidian CLI
       if [[ -d /Applications/Obsidian.app/Contents/MacOS ]]; then
         export PATH=$PATH:/Applications/Obsidian.app/Contents/MacOS

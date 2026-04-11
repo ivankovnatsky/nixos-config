@@ -2,8 +2,8 @@
 {
   home.file = {
     ".npmrc".text = ''
-      prefix=${config.flags.homeWorkPath}/.npm
-      cache=${config.flags.homeWorkPath}/.npm-cache
+      prefix=${config.local.tools.toolsPrefix}/.npm
+      cache=${config.local.tools.toolsPrefix}/.npm-cache
     '';
   };
 }
