@@ -49,6 +49,7 @@
     gpg-pass-refresh
     gwq
     gwq-add
+    gwq-cd
     gwq-merge
     grwt
     gwq-purge
