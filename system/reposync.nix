@@ -1,7 +1,7 @@
 { config, username, ... }:
 {
   sops.secrets.discord-webhook-reposync = {
-    key = "discord/webhookChannelMonitoringRepoSync";
+    key = "discord/webhooks/monitoringRepoSync";
     owner = username;
   };
 
