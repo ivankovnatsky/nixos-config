@@ -58,7 +58,7 @@ in
   };
 
   sops.secrets.discord-webhook-beszel = {
-    key = "discord/webhookChannelMonitoringBeszel";
+    key = "discord/webhooks/monitoringBeszel";
   };
 
   # Beszel management (declarative system sync)

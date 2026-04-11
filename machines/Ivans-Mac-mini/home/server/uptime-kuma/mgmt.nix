@@ -14,7 +14,7 @@
   # 3. Monitors and Discord notifications will auto-sync on next rebuild
 
   sops.secrets.discord-webhook-kuma = {
-    key = "discord/webhookChannelMonitoringKuma";
+    key = "discord/webhooks/monitoringKuma";
   };
   sops.secrets.postgres-monitoring-password = {
     key = "postgres/monitoring/password";

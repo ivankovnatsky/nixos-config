@@ -1,7 +1,7 @@
 { config, ... }:
 {
   sops.secrets.discord-webhook-reposync = {
-    key = "discord/webhookChannelMonitoringRepoSync";
+    key = "discord/webhooks/monitoringRepoSync";
   };
 
   local.services.reposync = {
