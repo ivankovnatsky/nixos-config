@@ -50,6 +50,7 @@
     ../../../home/taskwarrior-sync.nix
     ../../../home/taskwarrior.nix
     ../../../home/tmux.nix
+    ../../../home/tools.nix
     ../../../home/treefmt.nix
     ../../../home/vscode.nix
     ../../../home/xattr.nix
@@ -63,9 +64,9 @@
     ../../../modules/home/reposync
     ../../../modules/home/syncthing-mgmt
     ../../../modules/home/taskwarrior-notify
+    ../../../modules/home/tools
     ../../Ivans-MacBook-Air/home/dock.nix
     ../../Ivans-MacBook-Air/home/packages.nix
     ../../Ivans-MacBook-Air/home/reposync.nix
   ];
-
 }

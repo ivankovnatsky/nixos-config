@@ -3,9 +3,9 @@
     # ./gamemode.nix
     ../../../modules/flags
     # ./smb.nix
-    ../../../modules/nixos/nix-ld
     ../../../modules/nixos/reposync
     ../../../modules/nixos/syncthing-mgmt
+    ../../../modules/nixos/tools
     ../../../nixos/chromium.nix
     ../../../nixos/keyboard.nix
     ../../../nixos/sudo.nix

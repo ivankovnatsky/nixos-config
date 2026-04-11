@@ -1,4 +1,3 @@
-{ ... }:
 {
   imports = [
     ../../../home/aichat.nix
@@ -70,6 +69,7 @@
     ../../../modules/home/reposync
     ../../../modules/home/syncthing-mgmt
     ../../../modules/home/taskwarrior-notify
+    ../../../modules/home/tools
     ../../../modules/home/unison
     ../../../modules/home/uptime-kuma-mgmt
     ./dock.nix
@@ -79,7 +79,7 @@
     ./server
     ./taskwarrior-sync.nix
     ./tmux.nix
+    ./tools.nix
     ./unison.nix
   ];
-
 }
