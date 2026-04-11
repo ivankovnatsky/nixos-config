@@ -34,6 +34,9 @@ in
     nextdns-profile-lgphone = {
       key = "nextDnsProfileLgPhone";
     };
+    nextdns-profile-a3 = {
+      key = "nextDnsProfileA3";
+    };
   };
 
   local.services.nextdns-mgmt.pro = {
@@ -85,6 +88,15 @@ in
     enable = true;
     apiKeyFile = config.sops.secrets.nextdns-api-key.path;
     profileIdFile = config.sops.secrets.nextdns-profile-lgphone.path;
+    profileFile = ../configs/nextdns-profile.json;
+    vars = commonVars;
+    varsFiles = commonVarsFiles;
+  };
+
+  local.services.nextdns-mgmt.a3 = {
+    enable = true;
+    apiKeyFile = config.sops.secrets.nextdns-api-key.path;
+    profileIdFile = config.sops.secrets.nextdns-profile-a3.path;
     profileFile = ../configs/nextdns-profile.json;
     vars = commonVars;
     varsFiles = commonVarsFiles;
