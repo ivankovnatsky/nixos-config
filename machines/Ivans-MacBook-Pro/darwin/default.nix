@@ -14,6 +14,7 @@
     ../../../darwin/system.nix
     ../../../darwin/users.nix
     ../../../modules/darwin/launchd
+    ../../../modules/darwin/nextdns-dns
     ../../../modules/darwin/pam
     ../../../modules/darwin/sudo
     ../../../modules/flags
@@ -21,6 +22,7 @@
     ../../../system/nix.nix
     ../../../system/sops-secrets.nix
     ../../Ivans-MacBook-Air/darwin/users.nix
+    ./dns.nix
     ./login-items.nix
   ];
 }
