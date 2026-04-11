@@ -27,22 +27,56 @@ def read_secret(name):
         return None
 
 
-def get_login(user):
-    """Return login arguments for steamcmd."""
+def get_login_args(user):
+    """Return login arguments for steamcmd (no password in args)."""
     if user:
         return ["+login", user]
     username = read_secret("steam-username")
     if username:
-        password = read_secret("steam-password")
-        if password:
-            return ["+login", username, password]
         return ["+login", username]
     return ["+login", "anonymous"]
 
 
+def get_password_path():
+    """Return path to sops password file, or None."""
+    path = os.path.join(SOPS_DIR, "steam-password")
+    if os.path.isfile(path):
+        return path
+    return None
+
+
 def run_steamcmd(*args):
-    """Run steamcmd with the given arguments."""
-    cmd = ["steamcmd"] + list(args) + ["+quit"]
+    """Run steamcmd with the given arguments.
+
+    Password is injected via shell using cat on the sops secret file,
+    so it never appears in argv or logs.
+    """
+    # Check if login args need a password injected
+    str_args = list(args)
+    password_path = get_password_path()
+
+    if password_path and "+login" in str_args:
+        login_idx = str_args.index("+login")
+        username_idx = login_idx + 1
+        if username_idx < len(str_args) and str_args[username_idx] != "anonymous":
+            # Build shell command: inject password from file via cat
+            username = str_args[username_idx]
+            before = str_args[:login_idx]
+            after = str_args[username_idx + 1 :]
+            shell_cmd = "steamcmd"
+            for a in before:
+                shell_cmd += f" '{a}'"
+            shell_cmd += f" +login '{username}' \"$(cat '{password_path}')\""
+            for a in after:
+                shell_cmd += f" '{a}'"
+            shell_cmd += " +quit"
+            result = subprocess.run(shell_cmd, shell=True)
+            if result.returncode != 0:
+                click.echo(f"steamcmd exited with code {result.returncode}", err=True)
+                sys.exit(1)
+            return
+
+    cmd = ["steamcmd"] + str_args + ["+quit"]
     try:
         subprocess.run(cmd, check=True)
     except FileNotFoundError:
@@ -63,7 +97,7 @@ def install(app_id, directory, user):
     """Install a game/server by App ID."""
     install_dir = directory or os.path.join(GAMES_DIR, app_id)
     os.makedirs(install_dir, exist_ok=True)
-    login_args = get_login(user)
+    login_args = get_login_args(user)
     click.echo(f"Installing app {app_id} to {install_dir}...")
     run_steamcmd(
         "+force_install_dir",
@@ -86,7 +120,7 @@ def update(app_id, directory, user):
     if not os.path.isdir(install_dir):
         click.echo(f"Error: {install_dir} does not exist. Install first.", err=True)
         sys.exit(1)
-    login_args = get_login(user)
+    login_args = get_login_args(user)
     click.echo(f"Updating app {app_id} in {install_dir}...")
     run_steamcmd(
         "+force_install_dir",
@@ -108,7 +142,7 @@ def validate(app_id, directory, user):
     if not os.path.isdir(install_dir):
         click.echo(f"Error: {install_dir} does not exist. Install first.", err=True)
         sys.exit(1)
-    login_args = get_login(user)
+    login_args = get_login_args(user)
     click.echo(f"Validating app {app_id} in {install_dir}...")
     run_steamcmd(
         "+force_install_dir",
@@ -167,7 +201,7 @@ def list_games():
 @click.option("-u", "--user", help="Steam username (default: anonymous)")
 def info(app_id, user):
     """Show app info via steamcmd."""
-    login_args = get_login(user)
+    login_args = get_login_args(user)
     run_steamcmd(
         *login_args,
         "+app_info_print",
@@ -242,7 +276,7 @@ def sync(dry_run, yes, user):
         run_steamcmd(*batch_args)
 
     if auth_games:
-        login_args = get_login(user)
+        login_args = get_login_args(user)
         batch_args = list(login_args)
         for game in auth_games:
             install_dir = os.path.join(GAMES_DIR, game["appId"])
