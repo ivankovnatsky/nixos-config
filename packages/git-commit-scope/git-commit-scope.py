@@ -238,11 +238,21 @@ def _is_new_file(path: str) -> bool:
     """Check if a path is new to the repo (not in HEAD), for defaulting subject to 'init'.
 
     This covers both untracked files and staged-but-never-committed files.
+    For directories, checks whether HEAD has any files under that path.
     """
     try:
         git_root = get_git_root()
         abs_path = os.path.abspath(path)
         rel_path = os.path.relpath(abs_path, git_root)
+        if os.path.isdir(abs_path):
+            # For directories, check if HEAD has any files under this path
+            result = subprocess.run(
+                ["git", "ls-tree", "-r", "HEAD", "--", rel_path],
+                capture_output=True,
+                text=True,
+                cwd=git_root,
+            )
+            return result.returncode == 0 and not result.stdout.strip()
         result = subprocess.run(
             ["git", "cat-file", "-e", f"HEAD:{rel_path}"],
             capture_output=True,
