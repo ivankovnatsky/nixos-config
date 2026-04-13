@@ -28,11 +28,11 @@
           section = "apps";
         }
 
-        # Installed using Kandji
+        # Installed using Iru
         { path = "/Applications/Google Chrome.app/"; }
         { path = "/Applications/Slack.app/"; }
-        # Kandji Self Service
-        { path = "/Applications/Kandji Self Service.app/"; }
+        # Iru Self Service
+        { path = "/Applications/Iru Self Service.app/"; }
 
         {
           type = "spacer";
