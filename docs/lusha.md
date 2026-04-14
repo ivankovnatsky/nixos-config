@@ -44,14 +44,12 @@ maintenance and troubleshooting.
 
 ## Focus
 
-Configured Work Focus to filter out Kandji MDM notifications:
+Configured Do Not Disturb to filter out Iru MDM notifications:
 
-1. Open System Settings → Focus
-2. Click **Add Focus...** → select **Work**
-3. Open the new Work Focus and configure:
-   - **Silenced People**: Set to "Silence Some People" mode
-   - **Silenced Apps**: Add "Kandji Menu"
-   - **Schedule**: 00:00 to 00:00, all days (always on)
+1. Open System Settings → Focus → **Do Not Disturb**
+2. Configure:
+   - **Silenced Apps**: Add "Iru Menu"
+   - **Schedule**: 00:00, every day (always on)
 
 ## App macOS settings
 
