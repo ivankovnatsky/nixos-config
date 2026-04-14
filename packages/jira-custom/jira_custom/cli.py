@@ -4,6 +4,7 @@ import sys
 import click
 
 from .commands import (
+    dump_cmd,
     filter_cmd,
     me_cmd,
     serverinfo_cmd,
@@ -27,6 +28,7 @@ def cli():
 
 
 # Register top-level commands
+cli.add_command(dump_cmd)
 cli.add_command(filter_cmd)
 cli.add_command(my_cmd)
 cli.add_command(me_cmd)

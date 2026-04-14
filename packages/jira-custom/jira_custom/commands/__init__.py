@@ -1,5 +1,6 @@
 """Command modules for jira-custom."""
 
+from .dump import dump_cmd
 from .filter import filter_cmd
 from .user import me_cmd, serverinfo_cmd
 from .project import project_group
@@ -11,6 +12,7 @@ from .issue import issue_group
 from .my import my_cmd
 
 __all__ = [
+    "dump_cmd",
     "filter_cmd",
     "me_cmd",
     "serverinfo_cmd",
