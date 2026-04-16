@@ -92,7 +92,6 @@ def main():
     remaining = data.get("context_window", {}).get("remaining_percentage", 100)
     remaining = int(remaining)
     ctx_size = data.get("context_window", {}).get("context_window_size", 200000)
-    transcript = data.get("transcript_path", "")
 
     try:
         cols = os.get_terminal_size(sys.stderr.fileno()).columns
@@ -127,16 +126,12 @@ def main():
     # Show both pwd and cwd only when different, otherwise just cwd
     pwd_prefix = f"{DIM}pwd:{RESET} "
     cwd_prefix = f"{DIM}cwd:{RESET} "
-    tx_prefix = f"{DIM}transcript:{RESET} "
 
     if project_dir != cwd:
         output(
             f"{pwd_prefix}{shorten_path_to_fit(project_dir, pwd_prefix, cols)}", cols
         )
     output(f"{cwd_prefix}{shorten_path_to_fit(cwd, cwd_prefix, cols)}", cols)
-
-    if transcript:
-        output(f"{tx_prefix}{shorten_path_to_fit(transcript, tx_prefix, cols)}", cols)
 
 
 if __name__ == "__main__":
