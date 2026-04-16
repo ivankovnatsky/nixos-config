@@ -42,6 +42,7 @@ let
       type = "command";
       command = "${pkgs.claude-statusline}/bin/claude-statusline";
     };
+    effortLevel = "xhigh";
     includeCoAuthoredBy = false;
     feedbackSurveyRate = 0;
     env = {
