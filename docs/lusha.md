@@ -67,6 +67,7 @@ Configured Do Not Disturb to filter out Iru MDM notifications:
 - Open app from the internet -- Allow
 - Notifications
 - Local network access
+- Allow access to control "Google Chrome"
 
 ### Hammerspoon
 
