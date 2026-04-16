@@ -26,12 +26,23 @@ def _pascal_key(issue_key):
 
 
 def _pascal_title(title):
-    """Sanitize + PascalCase, truncate at word boundary."""
+    """Sanitize + PascalCase, truncate at word boundary.
+
+    The first character is guaranteed to be an uppercase letter (or the
+    result is empty). This keeps ``_existing_dumps_for_key`` able to split
+    the key prefix from the title on the regex boundary even for summaries
+    like "2025 Q1 Migration" which would otherwise produce a filename
+    starting with a digit immediately after the key.
+    """
     if not title:
         return ""
     norm = unicodedata.normalize("NFKD", title)
     norm = norm.encode("ascii", "ignore").decode("ascii")
     words = re.findall(r"[A-Za-z0-9]+", norm)
+    # Drop leading words that start with a digit so the PascalCased title
+    # always begins with a letter.
+    while words and not words[0][0].isalpha():
+        words.pop(0)
     if not words:
         return ""
     pascal = "".join(w.capitalize() for w in words)
@@ -78,12 +89,8 @@ def _existing_dumps_for_key(day_dir, issue_key):
     if not day_dir.exists():
         return []
     key_prefix = _pascal_key(issue_key)
-    pattern = re.compile(
-        rf"^{re.escape(key_prefix)}(?:[A-Z][A-Za-z0-9]*)?\.md$"
-    )
-    return sorted(
-        p for p in day_dir.iterdir() if p.is_file() and pattern.match(p.name)
-    )
+    pattern = re.compile(rf"^{re.escape(key_prefix)}(?:[A-Z][A-Za-z0-9]*)?\.md$")
+    return sorted(p for p in day_dir.iterdir() if p.is_file() and pattern.match(p.name))
 
 
 _CREATED_RE = re.compile(r"^(\d{4})-(\d{2})-(\d{2})")
@@ -239,9 +246,7 @@ def _render_issue(issue, server, comments):
             _fmt_field("Affects Versions", ", ".join(v.name for v in f.versions))
         )
     if getattr(f, "parent", None):
-        lines.append(
-            _fmt_field("Parent", f"{f.parent.key}: {f.parent.fields.summary}")
-        )
+        lines.append(_fmt_field("Parent", f"{f.parent.key}: {f.parent.fields.summary}"))
 
     if getattr(f, "issuelinks", None):
         lines.append("")
@@ -311,27 +316,25 @@ def dump_fn(
         if value.lower() != "me":
             return value
         if not email:
-            raise click.ClickException(
-                f"JIRA_EMAIL not set; cannot use {flag_name} me"
-            )
+            raise click.ClickException(f"JIRA_EMAIL not set; cannot use {flag_name} me")
         return email
 
     jql_parts = [f'project = "{_jql_escape(project)}"']
-    people = []
     if me:
         if not email:
             raise click.ClickException("JIRA_EMAIL not set; cannot use --me")
         esc_email = _jql_escape(email)
-        people = [f'assignee = "{esc_email}"', f'reporter = "{esc_email}"']
+        jql_parts.append(f'(assignee = "{esc_email}" OR reporter = "{esc_email}")')
     else:
+        # Explicit --assignee/--reporter combine with AND so that passing both
+        # narrows the search (tickets where X is assignee AND Y is reporter),
+        # matching the semantics of other commands like `issue list`.
         if assignee:
             val = _resolve_me("--assignee", assignee)
-            people.append(f'assignee = "{_jql_escape(val)}"')
+            jql_parts.append(f'assignee = "{_jql_escape(val)}"')
         if reporter:
             val = _resolve_me("--reporter", reporter)
-            people.append(f'reporter = "{_jql_escape(val)}"')
-    if people:
-        jql_parts.append("(" + " OR ".join(people) + ")")
+            jql_parts.append(f'reporter = "{_jql_escape(val)}"')
     if since:
         jql_parts.append(f'created >= "{_jql_escape(since)}"')
     if resolved_only:
@@ -349,17 +352,13 @@ def dump_fn(
     total_seen = 0
     stop = False
 
-    for issues in _search_pages(
-        jira, jql, PAGE_SIZE, fields="*all", expand="comment"
-    ):
+    for issues in _search_pages(jira, jql, PAGE_SIZE, fields="*all", expand="comment"):
         for issue in issues:
             total_seen += 1
             try:
                 y, m, d = _created_bucket(issue.fields.created)
             except Exception:
-                click.echo(
-                    f"  skip {issue.key}: unreadable created field", err=True
-                )
+                click.echo(f"  skip {issue.key}: unreadable created field", err=True)
                 continue
 
             day_dir = out_root / y / m / d
@@ -418,7 +417,7 @@ def dump_fn(
 @click.option("--me", is_flag=True, help="Dump tickets where I am assignee or reporter")
 @click.option("-a", "--assignee", help="Filter by assignee (use 'me' for self)")
 @click.option("-r", "--reporter", help="Filter by reporter (use 'me' for self)")
-@click.option("--since", help='Only issues created on/after this date (YYYY-MM-DD)')
+@click.option("--since", help="Only issues created on/after this date (YYYY-MM-DD)")
 @click.option("--overwrite", is_flag=True, help="Overwrite existing files")
 @click.option(
     "--resolved-only",
@@ -426,7 +425,10 @@ def dump_fn(
     help="Only tickets with a non-empty resolution",
 )
 @click.option(
-    "-n", "--limit", type=int, help="Max issues to write (skipped files do not count)"
+    "-n",
+    "--limit",
+    type=click.IntRange(min=1),
+    help="Max issues to write (skipped files do not count)",
 )
 def dump_cmd(
     project, out_dir, me, assignee, reporter, since, overwrite, resolved_only, limit
