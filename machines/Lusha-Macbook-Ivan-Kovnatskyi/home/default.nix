@@ -49,6 +49,7 @@
     ../../../home/syncthing.nix
     ../../../home/taskwarrior.nix
     ../../../home/terraform.nix
+    ../../../home/terragrunt.nix
     ../../../home/tmux.nix
     ../../../home/treefmt.nix
     ../../../home/tweety.nix
