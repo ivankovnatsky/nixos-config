@@ -34,7 +34,6 @@
         greedy = true;
       }
       "mac-mouse-fix"
-      "obsidian"
       "stats"
       "vivaldi"
     ];
