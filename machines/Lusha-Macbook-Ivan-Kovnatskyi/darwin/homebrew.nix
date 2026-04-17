@@ -36,7 +36,6 @@
       "mac-mouse-fix"
       "obsidian"
       "stats"
-      "visual-studio-code"
       "vivaldi"
     ];
     masApps = {
