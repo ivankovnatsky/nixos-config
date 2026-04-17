@@ -85,7 +85,6 @@
     nixpkgs-darwin-master-opencode.opencode
     nixpkgs-darwin-master.poetry
     nodePackages.aws-cdk
-    obsidian-cli
     opentofu
     opsy
     oras
