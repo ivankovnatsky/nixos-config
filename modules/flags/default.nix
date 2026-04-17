@@ -286,14 +286,5 @@ with lib;
       };
     };
 
-    apps = {
-      vscode = {
-        enable = mkOption {
-          type = types.bool;
-          default = false;
-          description = "Whether to enable VSCode/VSCodium";
-        };
-      };
-    };
   };
 }
