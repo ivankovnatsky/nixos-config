@@ -52,7 +52,6 @@
     ../../../home/tmux.nix
     ../../../home/tools.nix
     ../../../home/treefmt.nix
-    ../../../home/vscode.nix
     ../../../home/xattr.nix
     ../../../home/yt-dlp.nix
     ../../../home/z-lua.nix
