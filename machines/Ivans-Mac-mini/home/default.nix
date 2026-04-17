@@ -50,7 +50,6 @@
     ../../../home/taskwarrior.nix
     ../../../home/tmux.nix
     ../../../home/treefmt.nix
-    ../../../home/vscode.nix
     ../../../home/whisper.nix
     ../../../home/xattr.nix
     ../../../home/yt-dlp.nix
