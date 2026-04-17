@@ -28,8 +28,5 @@
       ];
     };
     obsidian.vaultPaths = [ ];
-    apps = {
-      vscode.enable = true;
-    };
   };
 }
