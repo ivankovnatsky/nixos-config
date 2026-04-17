@@ -38,7 +38,6 @@
         name = "obsidian";
         greedy = true;
       }
-      "visual-studio-code"
     ];
     masApps = {
       "Numbers" = 409203825;
