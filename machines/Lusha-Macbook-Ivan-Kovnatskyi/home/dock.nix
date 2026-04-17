@@ -45,7 +45,6 @@
         { path = "/Applications/Firefox.app/"; }
         { path = "/Applications/Vivaldi.app/"; }
         { path = "/Applications/DBeaver.app/"; }
-        { path = "/Applications/Obsidian.app/"; }
 
         {
           path = "${config.home.homeDirectory}/Downloads/";
