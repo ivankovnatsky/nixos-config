@@ -53,7 +53,6 @@
     ../../../home/tmux.nix
     ../../../home/treefmt.nix
     ../../../home/tweety.nix
-    ../../../home/vscode.nix
     ../../../home/yamlint.nix
     ../../../home/yt-dlp.nix
     ../../../home/z-lua.nix
