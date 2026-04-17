@@ -36,8 +36,5 @@
         }
       ];
     };
-    apps = {
-      vscode.enable = false;
-    };
   };
 }
