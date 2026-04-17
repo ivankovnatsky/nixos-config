@@ -43,7 +43,6 @@
         { path = "/Applications/kitty.app/"; }
         { path = "/Applications/Ghostty.app/"; }
         { path = "/Applications/Firefox.app/"; }
-        { path = "/Applications/Chromium.app/"; }
         { path = "/Applications/Vivaldi.app/"; }
         { path = "/Applications/DBeaver.app/"; }
         { path = "/Applications/Visual Studio Code.app/"; }
