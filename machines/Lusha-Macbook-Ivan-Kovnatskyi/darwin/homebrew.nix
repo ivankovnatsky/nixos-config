@@ -23,7 +23,6 @@
       "cloudflare-warp"
 
       "dbeaver-community"
-      "firefox@developer-edition"
       "firefox"
       {
         name = "ghostty@tip";
