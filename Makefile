@@ -117,7 +117,7 @@ flake-update-nixos-unstable:
 	done
 
 flake-update-nixos-release:
-	inputs="nixpkgs-nixos-release home-manager-nixos-release nixvim-nixos-release plasma-manager-nixos-release sops-nix-nixos-release"; \
+	inputs="nixpkgs-nixos-release home-manager-nixos-release nixvim-nixos-release sops-nix-nixos-release"; \
 	for input in $$inputs; do \
 		$(NIX) flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
 	done
