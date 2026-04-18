@@ -46,6 +46,7 @@ in
         ${pkgs.gnused}/bin/sed -i 's|<BindAddress>[^<]*</BindAddress>|<BindAddress>*</BindAddress>|' "${dataDir}/config.xml"
       fi
     '';
+    environment.DOTNET_SYSTEM_GLOBALIZATION_INVARIANT = "1";
     command = "${pkgs.radarr}/bin/Radarr -nobrowser -data=${dataDir}";
   };
 }

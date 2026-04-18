@@ -53,6 +53,7 @@ in
         ${pkgs.gnused}/bin/sed -i 's|<BindAddress>[^<]*</BindAddress>|<BindAddress>*</BindAddress>|' "${dataDir}/config.xml"
       fi
     '';
+    environment.DOTNET_SYSTEM_GLOBALIZATION_INVARIANT = "1";
     command = "${pkgs.sonarr}/bin/Sonarr -nobrowser -data=${dataDir}";
   };
 }

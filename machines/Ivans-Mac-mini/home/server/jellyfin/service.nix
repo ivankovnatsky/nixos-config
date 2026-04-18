@@ -26,6 +26,7 @@ in
       cacheDir
       logDir
     ];
+    environment.DOTNET_SYSTEM_GLOBALIZATION_INVARIANT = "1";
     command = ''
       ${pkgs.jellyfin}/bin/jellyfin \
         --datadir ${dataDir} \
