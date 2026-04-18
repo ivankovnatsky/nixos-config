@@ -83,20 +83,22 @@ in
       rm -rf "$ELEMENT_WEB_RUNTIME"
       mkdir -p "$ELEMENT_WEB_RUNTIME"
       for f in ${pkgs.element-web}/*; do
+        [ "$(basename "$f")" = "config.json" ] && continue
         ln -sf "$f" "$ELEMENT_WEB_RUNTIME/"
       done
-      cat > "$ELEMENT_WEB_RUNTIME/config.json" <<ELEMEOF
-      {
-        "default_server_config": {
-          "m.homeserver": {
-            "base_url": "https://matrix.$EXTERNAL_DOMAIN",
-            "server_name": "matrix.$EXTERNAL_DOMAIN"
-          }
-        },
-        "default_theme": "dark",
-        "show_labs_settings": true
-      }
-      ELEMEOF
+      cat > "$ELEMENT_WEB_RUNTIME/config.json" <<'ELEMEOF'
+{
+  "default_server_config": {
+    "m.homeserver": {
+      "base_url": "https://matrix.PLACEHOLDER",
+      "server_name": "matrix.PLACEHOLDER"
+    }
+  },
+  "default_theme": "dark",
+  "show_labs_settings": true
+}
+ELEMEOF
+      ${pkgs.gnused}/bin/sed -i "s/PLACEHOLDER/$EXTERNAL_DOMAIN/g" "$ELEMENT_WEB_RUNTIME/config.json"
       ELEMENT_WEB_PATH="$ELEMENT_WEB_RUNTIME"
 
       # Substitute variables in Caddyfile template
