@@ -21,8 +21,8 @@ from utils import (
 def filter_metadata_diffs(metadata_diffs, notes_only=False, direction=None):
     """Filter metadata diffs to specific fields.
 
-    Removes fields that can't be synced to the destination (e.g. completed/created
-    are read-only in Reminders via EventKit API).
+    Removes fields that can't be synced to the destination (e.g. created
+    is read-only in Reminders via EventKit API).
     """
     filtered = {}
     for key, info in metadata_diffs.items():
@@ -121,7 +121,9 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                     if raw:
                         tw_updates["end"] = raw
                 elif flow == "tw_to_rem":
-                    pass
+                    raw = tw.get("end", "")
+                    if raw:
+                        rem_updates["completion_date"] = tw_date_to_iso(raw)
             elif field == "created":
                 if flow == "rem_to_tw":
                     raw = rem.get("creationDate", "")
@@ -247,6 +249,10 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                 edit_args.extend(["--due-date", rem_updates["due"]])
             if "priority" in rem_updates:
                 edit_args.extend(["--priority", rem_updates["priority"]])
+            if "completion_date" in rem_updates:
+                edit_args.extend(
+                    ["--completion-date", rem_updates["completion_date"]]
+                )
             if "title" in rem_updates:
                 edit_args.extend(["--", rem_updates["title"]])
             if len(edit_args) > 5:

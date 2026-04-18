@@ -192,17 +192,11 @@ def compare_metadata(tw, rem):
         if not tw_ann_has_url:
             diffs.append(("url", rem_url, "''"))
 
-    # Completion date — only report when Rem has older (more original) date,
-    # or when status is changing to completed (Rem completed, TW not yet)
+    # Completion date
     tw_end = format_date_local(tw.get("end", ""))
     rem_completion = format_date_local(rem.get("completionDate", ""))
     if tw_end != rem_completion and (tw_end or rem_completion):
-        if rem["status"] == "completed" and tw["status"] != "completed":
-            # Status changing — always show completion date
-            diffs.append(("completed", rem_completion or "''", tw_end or "''"))
-        elif rem_completion and tw_end and rem_completion < tw_end:
-            # Both completed — only sync when Rem has older date
-            diffs.append(("completed", rem_completion or "''", tw_end or "''"))
+        diffs.append(("completed", rem_completion or "''", tw_end or "''"))
 
     # Creation date — only report when Rem has older (more original) date
     tw_entry = format_date_local(tw.get("entry", ""))

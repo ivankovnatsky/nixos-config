@@ -37,7 +37,7 @@ def run(cmd, stdin_text=None):
     return result
 
 
-REMINDERS_READ_ONLY_FIELDS = {"completed", "created", "url"}
+REMINDERS_READ_ONLY_FIELDS = {"created", "url"}
 
 REMINDERS_PRIORITY_MAP = {
     0: "",
@@ -152,7 +152,13 @@ def infer_flow(field, rem_val, tw_val):
         if rem_val == "completed":
             return "rem_to_tw"
         return "tw_to_rem"
-    if field in ("completed", "created", "url"):
+    if field == "completed":
+        if rem_val not in empty and tw_val not in empty:
+            return "rem_to_tw" if rem_val <= tw_val else "tw_to_rem"
+        if tw_val not in empty:
+            return "tw_to_rem"
+        return "rem_to_tw"
+    if field in ("created", "url"):
         return "rem_to_tw"
     if field == "due":
         rem_e = rem_val in empty
