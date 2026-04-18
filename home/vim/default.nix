@@ -4,7 +4,7 @@
   programs.vim = {
     enable = true;
     packageConfigurable = pkgs.vim-darwin;
-    defaultEditor = if config.variables.editor == "vim" then true else false;
+    defaultEditor = if config.flags.editor == "vim" then true else false;
     plugins = with pkgs.vimPlugins; [
       # nerdtree
       # nerdtree-git-plugin
