@@ -21,6 +21,9 @@
 [diff]
 	noprefix = true
 
+[log]
+	decorate = no
+
 [pull]
 	rebase = false
 
