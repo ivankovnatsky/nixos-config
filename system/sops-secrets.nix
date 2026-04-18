@@ -5,11 +5,11 @@
 
   sops.secrets.external-domain = {
     key = "externalDomain";
-    mode = "0440";
+    mode = "0444";
   };
 
   sops.secrets.forgejo-user-name = {
     key = "forgejo/users/forgejoUser/name";
-    mode = "0440";
+    mode = "0444";
   };
 }
