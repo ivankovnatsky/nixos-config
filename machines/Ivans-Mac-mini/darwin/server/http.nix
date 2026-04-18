@@ -78,8 +78,26 @@ in
       PODSYNC_USERNAME=$(cat ${config.sops.secrets.podsync-username.path})
       PODSYNC_PASSWORD=$(cat ${config.sops.secrets.podsync-password.path})
 
-      # Element Web path using external domain from sops
-      ELEMENT_WEB_PATH="${pkgs.mkElementWeb "$EXTERNAL_DOMAIN" "matrix"}"
+      # Create runtime element-web with correct config from sops domain
+      ELEMENT_WEB_RUNTIME="/tmp/element-web"
+      rm -rf "$ELEMENT_WEB_RUNTIME"
+      mkdir -p "$ELEMENT_WEB_RUNTIME"
+      for f in ${pkgs.element-web}/*; do
+        ln -sf "$f" "$ELEMENT_WEB_RUNTIME/"
+      done
+      cat > "$ELEMENT_WEB_RUNTIME/config.json" <<ELEMEOF
+      {
+        "default_server_config": {
+          "m.homeserver": {
+            "base_url": "https://matrix.$EXTERNAL_DOMAIN",
+            "server_name": "matrix.$EXTERNAL_DOMAIN"
+          }
+        },
+        "default_theme": "dark",
+        "show_labs_settings": true
+      }
+      ELEMEOF
+      ELEMENT_WEB_PATH="$ELEMENT_WEB_RUNTIME"
 
       # Substitute variables in Caddyfile template
       ${pkgs.gnused}/bin/sed \
