@@ -110,13 +110,11 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
             elif field == "priority":
                 if flow == "rem_to_tw":
                     prio = REMINDERS_PRIORITY_MAP.get(rem.get("priority", 0), "")
-                    if prio:
-                        tw_updates["priority"] = prio
+                    tw_updates["priority"] = prio
                 elif flow == "tw_to_rem":
                     tw_prio = tw.get("priority", "")
-                    rem_prio_label = TW_TO_REMINDERS_PRIORITY.get(tw_prio)
-                    if rem_prio_label:
-                        rem_updates["priority"] = rem_prio_label
+                    rem_prio_label = TW_TO_REMINDERS_PRIORITY.get(tw_prio, "none")
+                    rem_updates["priority"] = rem_prio_label
             elif field == "completed":
                 if flow == "rem_to_tw":
                     raw = rem.get("completionDate", "")
@@ -170,20 +168,12 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                     result = run(
                         ["task", "rc.confirmation:off", uuid, "modify"] + modify_args
                     )
-                    # If modify fails on a recurring task (e.g. can't remove due),
-                    # delete the recurring parent to stop recurrence, then retry
                     if result.returncode != 0 and tw.get("recur", ""):
                         click.echo(
-                            "    Recurring task detected — purging to remove recurrence"
+                            "    Skipping recurring task — modify failed, "
+                            "use 'taskmanager all sync --purge-recurring' to handle",
+                            err=True,
                         )
-                        # Delete first if not already deleted, then purge
-                        del_result = run(
-                            ["task", "rc.confirmation:off", uuid, "delete"]
-                        )
-                        if del_result.returncode != 0:
-                            # Already deleted — just purge
-                            pass
-                        run(["task", "rc.confirmation:off", uuid, "purge"])
                 if "notes" in tw_updates:
                     existing_anns = tw.get("annotations", [])
                     new_notes = tw_updates["notes"].strip()

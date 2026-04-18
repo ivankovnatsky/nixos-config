@@ -49,7 +49,7 @@ def match_instances(tw_list, rem_list):
             weak = []
             fallback = []
 
-            for i, rem_item in enumerate(rem_available):
+            for rem_item in rem_available:
                 same = tw_item["status"] == rem_item["status"]
                 if same_status_only and not same:
                     continue
@@ -61,28 +61,27 @@ def match_instances(tw_list, rem_list):
 
                 if tw_due and rem_due and tw_due == rem_due:
                     if tw_end and rem_comp and tw_end == rem_comp:
-                        strong.append((i, rem_item))
+                        strong.append(rem_item)
                     else:
-                        medium.append((i, rem_item))
+                        medium.append(rem_item)
                 elif not tw_due and not rem_due:
                     if tw_end and rem_comp and tw_end == rem_comp:
-                        weak.append((i, rem_item))
+                        weak.append(rem_item)
                     elif same:
-                        # Both have no due date, same status — prefer notes match
                         tw_ann = "; ".join(
                             a.get("description", "")
                             for a in tw_item.get("annotations", [])
                         )
                         rem_notes = (rem_item.get("notes") or "").strip()
                         if tw_ann and rem_notes and tw_ann == rem_notes:
-                            weak.append((i, rem_item))
+                            weak.append(rem_item)
                         else:
-                            fallback.append((i, rem_item))
+                            fallback.append(rem_item)
 
             best = (strong or medium or weak or fallback or [None])[0]
             if best:
-                matched.append((tw_item, best[1]))
-                rem_available.pop(best[0])
+                matched.append((tw_item, best))
+                rem_available.remove(best)
             else:
                 unmatched.append(tw_item)
         return unmatched
@@ -102,45 +101,40 @@ def match_instances(tw_list, rem_list):
         for tw_item in tw_unmatched:
             tw_due = local_date(tw_item.get("due", ""))
             best = None
-            for i, rem_item in enumerate(rem_available):
+            for rem_item in rem_available:
                 if tw_item["status"] == rem_item["status"]:
                     continue
                 rem_due = local_date(rem_item.get("due", ""))
-                # One side has due, the other doesn't — recurring completion
                 if (tw_due and not rem_due) or (not tw_due and rem_due):
-                    best = (i, rem_item)
+                    best = rem_item
                     break
             if best:
-                matched.append((tw_item, best[1]))
-                rem_available.pop(best[0])
+                matched.append((tw_item, best))
+                rem_available.remove(best)
             else:
                 tw_still_unmatched.append(tw_item)
         tw_unmatched = tw_still_unmatched
 
     # Pass 4: pair remaining unmatched items from the same recurring group.
-    # Handles: (a) same-status with mismatched due dates (recurring next-instance),
-    # (b) cross-status with no due dates (item completed in one system but not the other).
     if tw_unmatched and rem_available:
         tw_still_unmatched = []
         for tw_item in tw_unmatched:
             tw_due = local_date(tw_item.get("due", ""))
             best = None
-            for i, rem_item in enumerate(rem_available):
+            for rem_item in rem_available:
                 rem_due = local_date(rem_item.get("due", ""))
                 same_status = tw_item["status"] == rem_item["status"]
-                # Same status, one side has due and the other doesn't
                 if same_status and (
                     (tw_due and not rem_due) or (not tw_due and rem_due)
                 ):
-                    best = (i, rem_item)
+                    best = rem_item
                     break
-                # Cross-status, both have no due (completed in one system)
                 if not same_status and not tw_due and not rem_due:
-                    best = (i, rem_item)
+                    best = rem_item
                     break
             if best:
-                matched.append((tw_item, best[1]))
-                rem_available.pop(best[0])
+                matched.append((tw_item, best))
+                rem_available.remove(best)
             else:
                 tw_still_unmatched.append(tw_item)
         tw_unmatched = tw_still_unmatched
@@ -323,7 +317,9 @@ def compute_drift(project_filter=None):
     rem_only = {k: reminder_tasks[k] for k in sorted(rem_keys - tw_keys)}
 
     # Fuzzy match: if one title is a substring of the other within the same
-    # project, treat as matched with title drift (longer title wins)
+    # project, treat as matched with title drift (longer title wins).
+    # Require the shorter title to be >50% of the longer to avoid matching
+    # unrelated short titles (e.g. "Read" vs "Read book").
     fuzzy_matched = []
     used_tw = set()
     for rk in list(rem_only.keys()):
@@ -331,6 +327,12 @@ def compute_drift(project_filter=None):
             if tk in used_tw or rk[0] != tk[0]:
                 continue
             r_title, t_title = rk[1], tk[1]
+            shorter_len = min(len(r_title), len(t_title))
+            longer_len = max(len(r_title), len(t_title))
+            if shorter_len <= 0 or longer_len <= 0:
+                continue
+            if shorter_len / longer_len < 0.5:
+                continue
             if r_title in t_title or t_title in r_title:
                 longer = t_title if len(t_title) >= len(r_title) else r_title
                 key = (rk[0], longer)

@@ -39,7 +39,12 @@ def run(cmd, stdin_text=None):
 
 REMINDERS_READ_ONLY_FIELDS = {"completed", "created", "url"}
 
-REMINDERS_PRIORITY_MAP = {0: "", 1: "H", 5: "M", 9: "L"}
+REMINDERS_PRIORITY_MAP = {
+    0: "",
+    1: "H", 2: "H", 3: "H", 4: "H",
+    5: "M",
+    6: "L", 7: "L", 8: "L", 9: "L",
+}
 TW_TO_REMINDERS_PRIORITY = {"H": "high", "M": "medium", "L": "low"}
 PRIORITY_LABEL = {"H": "high", "M": "medium", "L": "low", "": "none"}
 
@@ -89,7 +94,8 @@ def tw_date_to_local_iso(tw_date):
         return tw_date
     from datetime import datetime
 
-    utc_dt = datetime.fromisoformat(tw_date_to_iso(tw_date))
+    iso = tw_date_to_iso(tw_date).replace("Z", "+00:00")
+    utc_dt = datetime.fromisoformat(iso)
     return utc_dt.astimezone().strftime("%Y-%m-%dT%H:%M:%S")
 
 
@@ -113,7 +119,7 @@ def format_date_local(date_str):
     if is_tw_compact(date_str):
         return tw_date_to_local_iso(date_str)
     try:
-        dt = datetime.fromisoformat(date_str)
+        dt = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
         if dt.tzinfo is not None:
             return dt.astimezone().strftime("%Y-%m-%dT%H:%M:%S")
         return dt.strftime("%Y-%m-%dT%H:%M:%S")

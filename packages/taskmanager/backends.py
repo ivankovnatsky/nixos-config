@@ -28,7 +28,14 @@ def get_tw_tasks(project_filter=None):
     tasks = {}
     instance_counts = {}
     all_instances = {}
-    for task in json.loads(result.stdout):
+    try:
+        tw_data = json.loads(result.stdout)
+    except json.JSONDecodeError:
+        import click
+
+        click.echo("Error: failed to parse Taskwarrior export JSON", err=True)
+        raise SystemExit(1)
+    for task in tw_data:
         project = task.get("project", "")
         desc = task.get("description", "")
         status = task.get("status", "pending")

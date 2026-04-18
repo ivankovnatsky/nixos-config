@@ -3,6 +3,7 @@
 import json
 import os
 import re
+import shlex
 import subprocess
 import tempfile
 from collections import Counter, defaultdict
@@ -1075,12 +1076,15 @@ def sync(
 
             def tw_meta_fingerprint(t):
                 """Metadata fingerprint for duplicate detection."""
+                ann_texts = tuple(
+                    sorted(a.get("description", "") for a in t.get("annotations", []))
+                )
                 return (
                     t.get("description", ""),
                     t.get("project", ""),
                     date_key(t.get("due", "")),
                     t.get("priority", ""),
-                    len(t.get("annotations", [])),
+                    ann_texts,
                 )
 
             dup_count = 0
@@ -1442,12 +1446,15 @@ def tw_list():
     | sort-by -r urgency
     | table -i false
     """
-    nu = subprocess.run(
-        ["nu", "--stdin", "-c", nu_script],
-        input=result.stdout,
-        text=True,
-    )
-    if nu.returncode != 0:
+    try:
+        nu = subprocess.run(
+            ["nu", "--stdin", "-c", nu_script],
+            input=result.stdout,
+            text=True,
+        )
+    except FileNotFoundError:
+        nu = None
+    if nu is None or nu.returncode != 0:
         try:
             tasks = json.loads(result.stdout)
         except json.JSONDecodeError:
@@ -1640,7 +1647,11 @@ def rem_edit(pattern):
         click.echo("Failed to parse reminders JSON", err=True)
         raise SystemExit(1)
 
-    regex = re.compile(pattern_str, re.IGNORECASE)
+    try:
+        regex = re.compile(pattern_str, re.IGNORECASE)
+    except re.error as e:
+        click.echo(f"Invalid regex '{pattern_str}': {e}", err=True)
+        raise SystemExit(1)
     matches = [r for r in all_reminders if regex.search(r.get("title", ""))]
 
     if not matches:
@@ -1657,7 +1668,7 @@ def rem_edit(pattern):
 
         try:
             editor = os.environ.get("EDITOR", "nvim")
-            subprocess.run([editor, tmp_path])
+            subprocess.run(shlex.split(editor) + [tmp_path])
 
             with open(tmp_path) as f:
                 edited = json.load(f)
@@ -1674,19 +1685,30 @@ def rem_edit(pattern):
         list_name = original["list"]
         ext_id = original["externalId"]
         cmd = ["rems", "edit", list_name, ext_id, "--include-completed"]
-        title_changed = edited.get("title") != original.get("title")
+        has_field_change = False
         if edited.get("notes") != original.get("notes"):
             cmd.append(f"--notes={edited.get('notes', '')}")
+            has_field_change = True
         if edited.get("dueDate") != original.get("dueDate"):
             cmd.extend(["--due-date", edited.get("dueDate", "")])
+            has_field_change = True
         if edited.get("priority") != original.get("priority"):
             cmd.extend(["--priority", str(edited.get("priority", 0))])
-        if title_changed:
-            cmd.extend(["--", edited["title"]])
+            has_field_change = True
+        if edited.get("title") != original.get("title"):
+            has_field_change = True
+        cmd.extend(["--", edited.get("title", original.get("title", ""))])
 
-        if len(cmd) > 5:
-            subprocess.run(cmd)
-            click.echo(f"  Updated: {edited.get('title', '')}")
+        if has_field_change:
+            edit_result = subprocess.run(cmd, capture_output=True, text=True)
+            if edit_result.returncode != 0:
+                click.echo(
+                    f"  ERROR editing: {edited.get('title', '')}: "
+                    f"{edit_result.stderr.strip()}",
+                    err=True,
+                )
+            else:
+                click.echo(f"  Updated: {edited.get('title', '')}")
         else:
             click.echo(f"  No supported field changes for: {original.get('title', '')}")
 
@@ -1707,7 +1729,11 @@ def rem_find(pattern):
         click.echo("Failed to parse reminders JSON", err=True)
         raise SystemExit(1)
 
-    regex = re.compile(pattern_str, re.IGNORECASE)
+    try:
+        regex = re.compile(pattern_str, re.IGNORECASE)
+    except re.error as e:
+        click.echo(f"Invalid regex '{pattern_str}': {e}", err=True)
+        raise SystemExit(1)
     matches = [r for r in reminders if regex.search(r.get("title", ""))]
 
     if not matches:
