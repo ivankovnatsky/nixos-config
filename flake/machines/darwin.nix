@@ -255,6 +255,7 @@
         home-manager = {
           useGlobalPkgs = true;
           useUserPackages = true;
+          backupFileExtension = "backup";
           users.ivan = {
             imports = [
               ../../machines/Ivans-Mac-mini/home
