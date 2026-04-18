@@ -5,11 +5,11 @@
 
   sops.secrets.external-domain = {
     key = "externalDomain";
-    mode = "0444"; # Readable by all services
+    mode = "0440";
   };
 
   sops.secrets.forgejo-user-name = {
     key = "forgejo/users/forgejoUser/name";
-    mode = "0444"; # Readable by all services
+    mode = "0440";
   };
 }
