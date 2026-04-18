@@ -186,13 +186,23 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                             pass
                         run(["task", "rc.confirmation:off", uuid, "purge"])
                 if "notes" in tw_updates:
-                    # Check if annotation already exists to avoid duplicates
                     existing_anns = tw.get("annotations", [])
-                    existing_texts = {
+                    new_notes = tw_updates["notes"].strip()
+                    existing_texts = [
                         a.get("description", "").strip() for a in existing_anns
-                    }
-                    if tw_updates["notes"].strip() not in existing_texts:
-                        run(["task", uuid, "annotate", tw_updates["notes"]])
+                    ]
+                    url_ann = tw_updates.get("url", "").strip() or (
+                        rem.get("url") or ""
+                    ).strip()
+                    desired = [new_notes] if new_notes else []
+                    if url_ann:
+                        desired.append(url_ann)
+                    if existing_texts != desired:
+                        for ann_text in existing_texts:
+                            if ann_text and ann_text != url_ann:
+                                run(["task", uuid, "denotate", ann_text])
+                        if new_notes:
+                            run(["task", uuid, "annotate", new_notes])
                 if "url" in tw_updates:
                     notes_text = tw_updates.get("notes", "").strip()
                     if tw_updates["url"] != notes_text:
