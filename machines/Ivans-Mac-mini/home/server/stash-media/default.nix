@@ -100,7 +100,7 @@ in
           -e "/@stashPaths@/d" \
           ${stashConfigTemplate} <<< "$STASH_PATHS" > ${dataDir}/config/config.yml
 
-      chmod 644 ${dataDir}/config/config.yml
+      chmod 600 ${dataDir}/config/config.yml
     '';
     command = ''
       script -q /dev/null ${pkgs.stash}/bin/stash --config ${dataDir}/config/config.yml
