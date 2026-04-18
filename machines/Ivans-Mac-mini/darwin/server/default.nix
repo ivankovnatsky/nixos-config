@@ -28,7 +28,6 @@
     ./git.nix
     ./homebrew.nix
     ./http.nix
-    ./infracheck.nix
     ./linux-builder.nix
     ./login-items.nix
     ./logrotate.nix
