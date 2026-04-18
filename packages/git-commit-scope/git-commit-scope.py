@@ -580,9 +580,8 @@ Features:
     help="commit body (can use multiple times, joined with newline)",
 )
 @click.option(
-    "--ai-shorten",
-    is_flag=True,
-    default=False,
+    "--ai-shorten/--no-ai-shorten",
+    default=True,
     help="use AI to shorten subject if too long (tries claude, codex, gemini)",
 )
 def main(args, subject, body, ai_shorten):
