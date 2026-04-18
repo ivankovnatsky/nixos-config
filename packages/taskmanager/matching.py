@@ -228,14 +228,6 @@ def compare_metadata(tw, rem):
             )
         )
 
-    # Tags
-    rem_tags = sorted(rem.get("tags", []))
-    tw_tags = sorted(tw.get("tags", []))
-    if rem_tags != tw_tags:
-        rem_tags_display = ", ".join(rem_tags) if rem_tags else "''"
-        tw_tags_display = ", ".join(tw_tags) if tw_tags else "''"
-        diffs.append(("tags", rem_tags_display, tw_tags_display))
-
     return diffs
 
 

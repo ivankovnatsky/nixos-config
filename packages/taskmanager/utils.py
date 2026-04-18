@@ -1,7 +1,6 @@
 """Shared utilities, constants, and date helpers for taskmanager."""
 
 import platform
-import re
 import shlex
 import shutil
 import subprocess
@@ -51,28 +50,9 @@ FIELD_DISPLAY_NAMES = {
     "notes": "notes",
     "url": "url",
     "priority": "priority",
-    "tags": "tags",
     "title": "title",
     "status": "status",
 }
-
-_TAG_RE = re.compile(r"(?:^|\s)#(\w[\w-]*)")
-
-
-def parse_tags_from_notes(notes):
-    """Parse #hashtags from notes text, supporting hyphenated tags."""
-    if not notes:
-        return []
-    return _TAG_RE.findall(notes)
-
-
-def strip_tags_from_notes(notes):
-    """Remove #hashtags from notes text and collapse extra whitespace."""
-    if not notes:
-        return ""
-    result = _TAG_RE.sub("", notes)
-    result = re.sub(r" +", " ", result)
-    return result.strip()
 
 
 def normalize_date(date_str):
@@ -168,12 +148,6 @@ def infer_flow(field, rem_val, tw_val):
         return "tw_to_rem"
     if field in ("completed", "created", "url"):
         return "rem_to_tw"
-    if field == "tags":
-        if rem_val == "''" and tw_val != "''":
-            return "tw_to_rem"
-        if tw_val == "''" and rem_val != "''":
-            return "rem_to_tw"
-        return "tw_to_rem"
     if field == "due":
         rem_e = rem_val in empty
         tw_e = tw_val in empty

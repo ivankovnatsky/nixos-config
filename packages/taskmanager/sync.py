@@ -13,7 +13,6 @@ from utils import (
     is_darwin,
     prefixed_title,
     run,
-    strip_tags_from_notes,
     tw_date_to_iso,
     tw_date_to_local_iso,
 )
@@ -132,11 +131,6 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                         tw_updates["entry"] = raw
                 elif flow == "tw_to_rem":
                     pass
-            elif field == "tags":
-                if flow == "rem_to_tw":
-                    tw_updates["tags"] = rem.get("tags", [])
-                elif flow == "tw_to_rem":
-                    rem_updates["tags"] = tw.get("tags", [])
             elif field == "status":
                 if flow == "rem_to_tw":
                     if rem["status"] == "completed":
@@ -217,19 +211,6 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                         }
                         if tw_updates["url"] not in existing_texts:
                             run(["task", uuid, "annotate", tw_updates["url"]])
-                if "tags" in tw_updates:
-                    existing_tags = set(tw.get("tags", []))
-                    new_tags = set(tw_updates["tags"])
-                    tag_args = []
-                    for t in sorted(new_tags - existing_tags):
-                        tag_args.append(f"+{t}")
-                    for t in sorted(existing_tags - new_tags):
-                        tag_args.append(f"-{t}")
-                    if tag_args:
-                        run(
-                            ["task", "rc.confirmation:off", uuid, "modify"]
-                            + tag_args
-                        )
                 if "status" in tw_updates:
                     if tw_updates["status"] == "completed":
                         run(["task", "rc.confirmation:off", uuid, "done"])
@@ -271,23 +252,11 @@ def sync_metadata(metadata_diffs, direction=None, interactive=False):
                 "--include-completed",
             ]
             if "notes" in rem_updates:
-                notes_val = rem_updates["notes"]
-                if "tags" in rem_updates:
-                    notes_val = strip_tags_from_notes(notes_val)
-                edit_args.append(f"--notes={notes_val}")
-            elif "tags" in rem_updates:
-                existing_notes = (rem.get("notes") or "").strip()
-                if existing_notes:
-                    stripped = strip_tags_from_notes(existing_notes)
-                    edit_args.append(f"--notes={stripped}")
+                edit_args.append(f"--notes={rem_updates['notes']}")
             if "due" in rem_updates:
                 edit_args.extend(["--due-date", rem_updates["due"]])
             if "priority" in rem_updates:
                 edit_args.extend(["--priority", rem_updates["priority"]])
-            if "tags" in rem_updates:
-                edit_args.extend(
-                    ["--tags"] + rem_updates["tags"]
-                )
             if "title" in rem_updates:
                 edit_args.extend(["--", rem_updates["title"]])
             if len(edit_args) > 5:
