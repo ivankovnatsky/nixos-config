@@ -127,6 +127,11 @@ def format_update_summary(updates):
     parts = []
     for key, val in updates.items():
         name = FIELD_DISPLAY_NAMES.get(key, key)
-        display_val = format_date_local(val) if key in ("due", "end", "entry") else val
+        if key in ("due", "end", "entry"):
+            display_val = format_date_local(val)
+        elif key == "tags" and isinstance(val, list):
+            display_val = ", ".join(val) if val else "''"
+        else:
+            display_val = val
         parts.append(f"{name}: {display_val}")
     return "\n    ".join(parts)

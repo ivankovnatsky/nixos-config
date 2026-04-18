@@ -7,6 +7,7 @@ import subprocess
 from utils import (
     has_command,
     is_darwin,
+    parse_tags_from_notes,
 )
 
 
@@ -65,10 +66,12 @@ def get_tw_tasks(project_filter=None):
             else task.get("priority", ""),
             "uuid": task.get("uuid", ""),
             "recur": task.get("recur", ""),
+            "tags": sorted(task.get("tags", [])),
         }
 
         instance_copy = dict(item)
         instance_copy["annotations"] = list(item["annotations"])
+        instance_copy["tags"] = list(item["tags"])
         all_instances.setdefault(key, []).append(instance_copy)
 
         if key in tasks:
@@ -88,6 +91,10 @@ def get_tw_tasks(project_filter=None):
             raw_prio = task.get("priority", "")
             if not existing["priority"] and raw_prio and raw_prio != "none":
                 existing["priority"] = raw_prio
+            new_tags = task.get("tags", [])
+            if new_tags:
+                merged = set(existing["tags"]) | set(new_tags)
+                existing["tags"] = sorted(merged)
         else:
             tasks[key] = item
     return tasks, instance_counts, all_instances
@@ -141,6 +148,10 @@ def get_reminders(project_filter=None, include_completed=True):
             instance_counts[key] = instance_counts.get(key, 0) + 1
             status = "completed" if is_completed else "pending"
 
+            raw_tags = item.get("tags", [])
+            if not raw_tags:
+                raw_tags = parse_tags_from_notes(item.get("notes", ""))
+
             item_dict = {
                 "project": list_name,
                 "title": title,
@@ -154,6 +165,7 @@ def get_reminders(project_filter=None, include_completed=True):
                 "priority": item.get("priority", 0),
                 "recurrence": item.get("recurrence", ""),
                 "externalId": item.get("externalId", ""),
+                "tags": sorted(raw_tags),
             }
 
             all_instances.setdefault(key, []).append(dict(item_dict))
@@ -171,6 +183,9 @@ def get_reminders(project_filter=None, include_completed=True):
                     existing["due"] = item["dueDate"]
                 if not existing["notes"] and item.get("notes", ""):
                     existing["notes"] = item["notes"]
+                if raw_tags:
+                    merged = set(existing.get("tags", [])) | set(raw_tags)
+                    existing["tags"] = sorted(merged)
     return reminders, instance_counts, all_instances
 
 
