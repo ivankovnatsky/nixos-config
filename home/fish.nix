@@ -107,7 +107,7 @@ ${lib.optionalString (config.local.tools.toolsPrefix != config.home.homeDirector
       end
 
       # forgit: hide branch/tag decorations from log
-      set -gx FORGIT_LOG_FORMAT "%C(auto)%h %s %C(black)%C(bold)%cr%Creset"
+      set -gx FORGIT_LOG_FORMAT "%C(auto)%h %s %C(brightblack)%cr%Creset"
 
       # forgit preview window on bottom for narrow tiling splits
       set -gx FORGIT_LOG_FZF_OPTS "--preview-window=bottom:90%"
