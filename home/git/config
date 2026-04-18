@@ -49,7 +49,7 @@
 	d = diff --unified=10
 	# Show staged changes (index vs HEAD)
 	staged = diff --staged --unified=10
-	l = log --oneline -n 20
+	l = log --format='%C(auto)%h %s %C(brightblack)%cr%Creset' -n 20
   m = message
 	p = push
 	pp = pull
