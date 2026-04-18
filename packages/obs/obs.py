@@ -97,6 +97,21 @@ def _create_vault(vault_path: Path, name: str | None = None) -> tuple[str, bool]
     return vault_name, True
 
 
+def _register_existing_vault(vault_path: Path) -> bool:
+    vault_path = vault_path.resolve()
+    config = read_obsidian_config()
+    if find_vault_by_path(config, vault_path):
+        return False
+    vault_id = generate_vault_id()
+    config.setdefault("vaults", {})[vault_id] = {
+        "path": str(vault_path),
+        "ts": int(time.time() * 1000),
+    }
+    write_obsidian_config(config)
+    click.echo(f"Registered vault: {vault_path.name} at {vault_path}")
+    return True
+
+
 def _open_vault(
     vault_path: Path, just_created: bool = False, file_path: str | None = None
 ) -> None:
@@ -108,7 +123,7 @@ def _open_vault(
         if is_obsidian_running():
             click.echo("Quitting Obsidian to register new vault...")
             quit_obsidian()
-        _create_vault(vault_path)
+        _register_existing_vault(vault_path)
     elif just_created and is_obsidian_running():
         click.echo("Restarting Obsidian to pick up new vault...")
         quit_obsidian()
@@ -136,12 +151,24 @@ def _open_vault(
 
 def resolve_open_target(path_str: str) -> tuple[Path, str | None]:
     target = Path(path_str).resolve()
+    if not target.exists():
+        raise click.ClickException(f"Path does not exist: {target}")
     if target.is_file() and target.suffix == ".md":
         vault = find_parent_vault(target)
         if not vault:
             raise click.ClickException(f"No Obsidian vault found for {target}")
         return vault, str(target.relative_to(vault))
-    return target, None
+    if target.is_dir():
+        if (target / ".obsidian").is_dir():
+            return target, None
+        vault = find_parent_vault(target)
+        if vault:
+            return vault, None
+        raise click.ClickException(
+            f"Not a vault and not inside a vault: {target}\n"
+            f"Use 'obs create {path_str}' to create a new vault here."
+        )
+    raise click.ClickException(f"Unsupported path type: {target}")
 
 
 class ObsGroup(click.Group):
