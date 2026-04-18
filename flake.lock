@@ -1254,11 +1254,11 @@
         "nixpkgs": "nixpkgs_6"
       },
       "locked": {
-        "lastModified": 1776493291,
-        "narHash": "sha256-RdTJL3T+cLiuIM21BejMmtKkwVODjPEiEQ6AwTgx7Ew=",
+        "lastModified": 1776498092,
+        "narHash": "sha256-yNWXtqLvjOPMsUkL8UgVtzfb7FFmlo4PINB0EYOCM/g=",
         "owner": "ivankovnatsky",
         "repo": "rems",
-        "rev": "e1f9914c1b13b7f39c53421027fc1df816ac7c8a",
+        "rev": "01ffe23bcda6abf148cbe286c7f9becf69c9459f",
         "type": "github"
       },
       "original": {
