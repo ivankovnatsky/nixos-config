@@ -175,20 +175,11 @@
       inputs.flake-utils.follows = "flake-utils";
     };
 
-    nixpkgs-python = {
-      url = "github:cachix/nixpkgs-python";
-    };
     pyenv-nix-install = {
       url = "github:sirno/pyenv-nix-install";
     };
 
     # KDE Plasma configuration manager
-    plasma-manager-nixos-release = {
-      url = "github:nix-community/plasma-manager/trunk";
-      inputs.nixpkgs.follows = "nixpkgs-nixos-release";
-      inputs.home-manager.follows = "home-manager-nixos-release";
-    };
-
     plasma-manager-nixos-unstable = {
       url = "github:nix-community/plasma-manager/trunk";
       inputs.nixpkgs.follows = "nixpkgs-nixos-unstable";
