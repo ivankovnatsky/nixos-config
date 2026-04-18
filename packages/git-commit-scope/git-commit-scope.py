@@ -90,6 +90,28 @@ def get_all_changed_files() -> list[str]:
     return list(seen.keys())
 
 
+def get_staged_renames() -> list[tuple[str, str]]:
+    """Get pure staged renames (R100 only) as (old_path, new_path) pairs.
+
+    Only matches R100 (identical content). Edited renames (R050, R075, etc.)
+    are excluded so the commit message doesn't hide content changes.
+    """
+    result = subprocess.run(
+        ["git", "diff", "--staged", "-M", "--diff-filter=R", "--name-status"],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    renames = []
+    for line in result.stdout.strip().split("\n"):
+        if not line:
+            continue
+        parts = line.split("\t")
+        if len(parts) >= 3 and parts[0] == "R100":
+            renames.append((parts[1], parts[2]))
+    return renames
+
+
 def is_untracked(file_path: str, git_root: str) -> bool:
     """Check if a file is untracked by git."""
     result = subprocess.run(
@@ -197,6 +219,64 @@ def shorten_directories(path: str) -> str:
 
 def create_commit_message(prefix: str, subject: str) -> str:
     return f"{prefix}: {subject}"
+
+
+def create_rename_message(old_path: str, new_path: str) -> str:
+    """Create a commit message for a rename using arrow notation."""
+    old_scope = shorten_path(old_path)
+    new_scope = shorten_path(new_path)
+    msg = f"{old_scope} -> {new_scope}"
+    if len(msg) > MAX_MESSAGE_LENGTH:
+        old_scope = shorten_directories(old_scope)
+        new_scope = shorten_directories(new_scope)
+        msg = f"{old_scope} -> {new_scope}"
+    return msg
+
+
+def _changes_are_only_renames(
+    all_files: list[str], renames: list[tuple[str, str]]
+) -> bool:
+    """Check if all changed files are accounted for by renames."""
+    if not renames:
+        return False
+    rename_paths = set()
+    for old, new in renames:
+        rename_paths.add(old)
+        rename_paths.add(new)
+    return all(f in rename_paths for f in all_files)
+
+
+def _commit_renames(
+    renames: list[tuple[str, str]], body_str: str | None, git_root: str
+):
+    """Commit staged renames with arrow notation messages."""
+    os.environ["GIT_COMMIT_SCOPE_CLI"] = "1"
+    if len(renames) > 1:
+        click.echo("Multiple renames detected:", err=True)
+        for old, new in renames:
+            click.echo(f"  {old} -> {new}", err=True)
+        click.echo(
+            "Commit them individually or use git commit directly", err=True
+        )
+        sys.exit(1)
+    old_path, new_path = renames[0]
+    message = create_rename_message(old_path, new_path)
+    if len(message) > MAX_MESSAGE_LENGTH:
+        click.echo(
+            f"Message too long: {len(message)} chars (max {MAX_MESSAGE_LENGTH})",
+            err=True,
+        )
+        click.echo(f"Message: {message}", err=True)
+        sys.exit(1)
+    click.echo(f"  commit rename {old_path} -> {new_path}")
+    cmd = ["git", "commit", "-m", message]
+    if body_str:
+        cmd.extend(["-m", body_str])
+    try:
+        subprocess.run(cmd, check=True, cwd=git_root)
+    except subprocess.CalledProcessError as e:
+        click.echo(f"Git commit failed: {e}", err=True)
+        sys.exit(1)
 
 
 def is_git_tracked(path: str) -> bool:
@@ -350,6 +430,7 @@ Examples:
   git-commit-scope "add feature" -b "L1" -b "L2"     Multiple -b joined with newline
   git-commit-scope -s "add feature" -b "Line 1
   Line 2"                                       Multiline body with newlines
+  git-commit-scope                                   After git mv: auto-detects rename, commits "old -> new"
 
 Features:
   - Accepts one or more file/directory paths (auto-detected by existence)
@@ -362,6 +443,7 @@ Features:
   - Removes duplicate path components (e.g., pkg/foo/foo -> pkg/foo)
   - Strips "default" filename (e.g., mod/foo/default -> mod/foo)
   - Shortens directories if message > 72 chars (packages->pkg, modules->mod, etc.)
+  - Detects staged renames (git mv) and commits with arrow notation (old -> new)
   - Validates total message length (max 72 chars)
 """,
     context_settings={"help_option_names": ["-h", "--help"]},
@@ -384,14 +466,48 @@ def main(args, subject, body):
     # Join multiple -b flags with single newline (no blank lines)
     body_str = "\n".join(body) if body else None
 
-    file_paths, commit_subject = parse_args_flexible(list(args), subject)
-
-    # Get git root early - needed for path normalization
+    # Get git root early - needed for path normalization and rename detection
     try:
         git_root = get_git_root()
     except subprocess.CalledProcessError as e:
         click.echo(f"Failed to get git root: {e}", err=True)
         sys.exit(1)
+
+    # Handle rename-only mode: no args needed after git mv
+    if not args and not subject:
+        try:
+            renames = get_staged_renames()
+        except subprocess.CalledProcessError:
+            renames = []
+        if renames:
+            try:
+                all_files = get_all_changed_files()
+            except subprocess.CalledProcessError:
+                all_files = []
+            if _changes_are_only_renames(all_files, renames):
+                _commit_renames(renames, body_str, git_root)
+                return
+            else:
+                rename_paths = set()
+                for old, new in renames:
+                    rename_paths.add(old)
+                    rename_paths.add(new)
+                other_files = [f for f in all_files if f not in rename_paths]
+                click.echo(
+                    "Staged renames found but also other changes:", err=True
+                )
+                click.echo("  Renames:", err=True)
+                for old, new in renames:
+                    click.echo(f"    {old} -> {new}", err=True)
+                click.echo("  Other files:", err=True)
+                for f in other_files:
+                    click.echo(f"    {f}", err=True)
+                click.echo(
+                    "Commit the renames separately or specify files", err=True
+                )
+                sys.exit(1)
+
+    file_paths, commit_subject = parse_args_flexible(list(args), subject)
 
     if file_paths:
         target_files = []
@@ -414,6 +530,15 @@ def main(args, subject, body):
             sys.exit(1)
 
         if len(all_files) != 1:
+            # Check if changes are all renames
+            try:
+                renames = get_staged_renames()
+            except subprocess.CalledProcessError:
+                renames = []
+            if _changes_are_only_renames(all_files, renames):
+                _commit_renames(renames, body_str, git_root)
+                return
+
             click.echo(
                 f"Expected 1 changed file, found {len(all_files)}:",
                 err=True,
