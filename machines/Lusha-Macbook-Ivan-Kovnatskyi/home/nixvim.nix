@@ -15,7 +15,6 @@
       };
       # TODO: Enable again after tmux all sessions and tmux itself is restarted.
       # image.enable = true;
-      claude-code.enable = true;
       lint = {
         lintersByFt = {
           terraform = [ "tflint" ];
