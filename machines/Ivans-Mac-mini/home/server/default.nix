@@ -6,6 +6,7 @@
     ./download-youtube
     ./forgejo
     ./healthchecks
+    ./infracheck.nix
     ./jellyfin
     # ./logscanner.nix
     ./matrix
