@@ -438,11 +438,16 @@ def main(args, subject, body):
 
         if _too_long(prefix):
             full_msg = create_commit_message(prefix, commit_subject)
+            max_subject = MAX_MESSAGE_LENGTH - len(prefix) - len(": ")
             click.echo(
                 f"Message too long: {len(full_msg)} chars (max {MAX_MESSAGE_LENGTH})",
                 err=True,
             )
             click.echo(f"Scope: {prefix}", err=True)
+            click.echo(
+                f"Subject must be ≤ {max_subject} chars (currently {len(commit_subject)})",
+                err=True,
+            )
             sys.exit(1)
 
         message = create_commit_message(prefix, commit_subject)
