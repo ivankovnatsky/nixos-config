@@ -3,7 +3,6 @@
 {
   imports = [
     ./chromium.nix
-    ./nextdns.nix
     ./opengl.nix
   ];
 
@@ -66,7 +65,7 @@
       acpi
       brightnessctl
       gimp
-      gnome.adwaita-icon-theme
+      adwaita-icon-theme
       libsecret
       libnotify
       networkmanagerapplet
