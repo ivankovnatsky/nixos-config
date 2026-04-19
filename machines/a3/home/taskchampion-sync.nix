@@ -1,12 +1,10 @@
 {
   config,
   lib,
-  osConfig,
   pkgs,
   ...
 }:
 let
-  hostname = osConfig.networking.hostName;
   secretsFile = "${config.xdg.configHome}/task/taskrc.secrets";
 in
 {
@@ -15,7 +13,7 @@ in
   };
 
   sops.secrets.taskchampion-client-id = {
-    key = "taskchampion/clientId/${hostname}";
+    key = "taskchampion/clientId/general";
   };
 
   home.activation.taskwarriorSecrets = lib.hm.dag.entryAfter [ "writeBoundary" "sopsNix" ] ''
