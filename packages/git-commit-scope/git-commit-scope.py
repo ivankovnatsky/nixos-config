@@ -335,6 +335,42 @@ def shorten_directories(path: str) -> str:
     return "/".join(shortened)
 
 
+MIN_SCOPE_SEGMENTS = 2
+
+
+def compress_path(path: str, subject: str, max_length: int = MAX_MESSAGE_LENGTH) -> str:
+    """Progressively drop rightmost path segments until scope: subject fits.
+
+    Stops at MIN_SCOPE_SEGMENTS to avoid overly vague scopes.
+    """
+    parts = path.split("/")
+    if len(parts) <= MIN_SCOPE_SEGMENTS:
+        return path
+
+    original = path
+    while len(parts) > MIN_SCOPE_SEGMENTS:
+        candidate = "/".join(parts)
+        if len(f"{candidate}: {subject}") <= max_length:
+            if candidate != original:
+                dropped = len(original.split("/")) - len(parts)
+                click.echo(
+                    f"  scope: {original} → {candidate} (dropped {dropped} segments)",
+                    err=True,
+                )
+            return candidate
+        parts = parts[:-1]
+
+    # At minimum depth
+    candidate = "/".join(parts)
+    if candidate != original:
+        dropped = len(original.split("/")) - len(parts)
+        click.echo(
+            f"  scope: {original} → {candidate} (dropped {dropped} segments)",
+            err=True,
+        )
+    return candidate
+
+
 def create_commit_message(prefix: str, subject: str) -> str:
     return f"{prefix}: {subject}"
 
@@ -683,6 +719,9 @@ def main(args, subject, body, ai_shorten):
 
         if _too_long(prefix):
             prefix = shorten_directories(prefix)
+
+        if _too_long(prefix):
+            prefix = compress_path(prefix, commit_subject)
 
         if _too_long(prefix):
             full_msg = create_commit_message(prefix, commit_subject)
