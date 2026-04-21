@@ -73,6 +73,15 @@ in
       description = "Interval in seconds between sync runs (default: 5 minutes)";
     };
 
+    runAtLoad = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Whether to launch reposync immediately when the launchd job is loaded.
+        Disable this to defer the first sync until the first StartInterval tick.
+      '';
+    };
+
     repositories = mkOption {
       type = types.listOf repoSubmodule;
       default = [ ];
@@ -102,7 +111,7 @@ in
     local.launchd.services.reposync = {
       enable = true;
       keepAlive = false;
-      runAtLoad = true;
+      runAtLoad = cfg.runAtLoad;
       waitForSecrets =
         cfg.discordWebhookFile != null || cfg.domainFile != null || cfg.usernameFile != null;
 
