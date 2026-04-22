@@ -2,9 +2,9 @@
 {
   networking.knownNetworkServices = [
     "AX88179A"
-    "Ethernet"
-    "Thunderbolt Ethernet Slot 0"
+    "iPhone USB"
     "Thunderbolt Bridge"
+    "Thunderbolt Ethernet Slot 0"
     "Wi-Fi"
   ];
 
