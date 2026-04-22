@@ -25,11 +25,5 @@
       remoteUrl = "https://github.com/ivankovnatsky/nix-config.git";
       branch = "main";
     }
-    {
-      path = "${config.home.homeDirectory}/Notes";
-      remote = "origin";
-      remoteUrl = "https://forgejo.@domain@/@username@/notes.git";
-      branch = "main";
-    }
   ];
 }
