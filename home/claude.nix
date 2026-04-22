@@ -17,6 +17,35 @@ let
     else
       "${homePath}/Sources";
 
+  hookScript = pkgs.writeShellScript "claude-pretooluse-hook" ''
+    CMD=$(jq -r '.tool_input.command // empty' 2>/dev/null)
+    [ -z "$CMD" ] && exit 0
+
+    # Block raw git commit (allow git-commit-scope)
+    if ! echo "$CMD" | grep -q 'git-commit-scope'; then
+      if echo "$CMD" | grep -qE '(^|[;&|] *)git commit($| )'; then
+        echo "Use git-commit-scope or /commit skill instead of raw git commit" >&2
+        exit 2
+      fi
+    fi
+
+    # Block raw gh pr create (allow gh-pr)
+    if ! echo "$CMD" | grep -q 'gh-pr'; then
+      if echo "$CMD" | grep -qE '(^|[;&|] *)gh pr create($| )'; then
+        echo "Use gh-pr create or /pr skill instead of raw gh pr create" >&2
+        exit 2
+      fi
+    fi
+
+    # Block raw jira CLI
+    if echo "$CMD" | grep -qE '(^|[;&|] *)jira($| )'; then
+      echo "Use /jira skill instead of raw jira CLI" >&2
+      exit 2
+    fi
+
+    exit 0
+  '';
+
   claudeConfigPath = ".claude/settings.json";
 
   baseSettings = {
@@ -47,6 +76,20 @@ let
     feedbackSurveyRate = 0;
     env = {
       CLAUDE_CODE_ENABLE_TELEMETRY = "1";
+    };
+  } // lib.optionalAttrs isWork {
+    hooks = {
+      PreToolUse = [
+        {
+          matcher = "Bash";
+          hooks = [
+            {
+              type = "command";
+              command = "${hookScript}";
+            }
+          ];
+        }
+      ];
     };
   };
 in
