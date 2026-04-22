@@ -22,6 +22,7 @@
     ../../../system/nix.nix
     ../../../system/sops-secrets.nix
     ../../Ivans-MacBook-Air/darwin/users.nix
+    ./accessibility.nix
     ./dns.nix
     ./login-items.nix
   ];
