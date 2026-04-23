@@ -50,7 +50,7 @@ AI_BACKENDS = [
     },
     {
         "name": "codex",
-        "cmd": ["codex", "exec", "{prompt}"],
+        "cmd": ["codex", "exec", "--ephemeral", "--skip-git-repo-check", "{prompt}"],
         "parse": "codex",
     },
     {
@@ -80,7 +80,7 @@ def _try_ai_shorten(subject: str, max_chars: int) -> str | None:
                 cmd,
                 capture_output=True,
                 text=True,
-                timeout=30,
+                timeout=60,
                 stdin=subprocess.DEVNULL,
             )
             if result.returncode != 0:
