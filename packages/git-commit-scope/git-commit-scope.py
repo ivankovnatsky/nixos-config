@@ -44,18 +44,18 @@ Max chars: {max_chars}"""
 AI_BACKENDS = [
     {
         "name": "claude",
-        "cmd": ["claude", "-p", "{prompt}", "--output-format", "json"],
+        "cmd": ["claude", "-p", "{prompt}", "--model", "claude-haiku-4-5-20251001", "--output-format", "json"],
         "parse": "json",
         "json_key": "result",
     },
     {
         "name": "codex",
-        "cmd": ["codex", "exec", "--ephemeral", "--skip-git-repo-check", "{prompt}"],
+        "cmd": ["codex", "exec", "--ephemeral", "--skip-git-repo-check", "-m", "gpt-5.3-codex-spark", "{prompt}"],
         "parse": "codex",
     },
     {
         "name": "gemini",
-        "cmd": ["gemini", "--prompt", "{prompt}", "--output-format", "json"],
+        "cmd": ["gemini", "--prompt", "{prompt}", "-m", "gemini-2.5-flash-lite", "--output-format", "json"],
         "parse": "json",
         "json_key": "response",
     },
