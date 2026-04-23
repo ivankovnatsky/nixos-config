@@ -230,6 +230,35 @@ def get_staged_renames() -> list[tuple[str, str]]:
     return renames
 
 
+def get_rename_sources_for_path(target: str) -> list[str]:
+    """Find source paths of staged renames whose destination is under target.
+
+    When committing a directory, files renamed INTO it have their old (deleted)
+    path outside the directory pathspec. This returns those old paths so they
+    can be included in the commit.
+    """
+    try:
+        result = subprocess.run(
+            ["git", "diff", "--staged", "-M", "--diff-filter=R", "--name-status"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+    except subprocess.CalledProcessError:
+        return []
+    target_normalized = target.rstrip("/")
+    sources = []
+    for line in result.stdout.strip().split("\n"):
+        if not line:
+            continue
+        parts = line.split("\t")
+        if len(parts) >= 3 and parts[0] == "R100":
+            old_path, new_path = parts[1], parts[2]
+            if new_path == target_normalized or new_path.startswith(target_normalized + "/"):
+                sources.append(old_path)
+    return sources
+
+
 def is_untracked(file_path: str, git_root: str) -> bool:
     """Check if a file is untracked by git."""
     result = subprocess.run(
@@ -775,6 +804,10 @@ def main(args, subject, body, ai_shorten):
 
             click.echo(f"  commit {target_file}")
 
+            rename_sources = get_rename_sources_for_path(target_file)
+            for src in rename_sources:
+                click.echo(f"  include rename source {src}")
+
             # For staged deletions, git commit <file> doesn't work because it reads
             # from the working tree (where the file no longer exists). Use --only
             # to commit just this path from the index without pulling in other staged changes.
@@ -785,7 +818,7 @@ def main(args, subject, body, ai_shorten):
                 # in pathspec matching even after git add -f). Commit from index.
                 cmd = ["git", "commit", "-m", message]
             else:
-                cmd = ["git", "commit", target_file, "-m", message]
+                cmd = ["git", "commit", target_file] + rename_sources + ["-m", message]
             if body_str:
                 cmd.extend(["-m", body_str])
             subprocess.run(cmd, check=True, cwd=git_root)
