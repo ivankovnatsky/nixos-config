@@ -9,7 +9,7 @@
 let
   stateDir = "${config.flags.externalStoragePath}/.openclaw";
   cacheDir = "${config.flags.externalStoragePath}/.cache";
-  # Installed by local.tools.npm.packages in tools.nix
+  # Installed by the native tools settings in tools.nix.
   openclawBin = "${config.flags.externalStoragePath}/.npm/bin/openclaw";
   gatewayPort = 18789;
 
