@@ -44,18 +44,42 @@ Max chars: {max_chars}"""
 AI_BACKENDS = [
     {
         "name": "claude",
-        "cmd": ["claude", "-p", "{prompt}", "--model", "claude-haiku-4-5-20251001", "--output-format", "json"],
+        "cmd": [
+            "claude",
+            "-p",
+            "{prompt}",
+            "--model",
+            "claude-haiku-4-5-20251001",
+            "--output-format",
+            "json",
+        ],
         "parse": "json",
         "json_key": "result",
     },
     {
         "name": "codex",
-        "cmd": ["codex", "exec", "--ephemeral", "--skip-git-repo-check", "-m", "gpt-5.3-codex-spark", "{prompt}"],
+        "cmd": [
+            "codex",
+            "exec",
+            "--ephemeral",
+            "--skip-git-repo-check",
+            "-m",
+            "gpt-5.3-codex-spark",
+            "{prompt}",
+        ],
         "parse": "codex",
     },
     {
         "name": "gemini",
-        "cmd": ["gemini", "--prompt", "{prompt}", "-m", "gemini-2.5-flash-lite", "--output-format", "json"],
+        "cmd": [
+            "gemini",
+            "--prompt",
+            "{prompt}",
+            "-m",
+            "gemini-2.5-flash-lite",
+            "--output-format",
+            "json",
+        ],
         "parse": "json",
         "json_key": "response",
     },
@@ -92,9 +116,7 @@ def _try_ai_shorten(subject: str, max_chars: int) -> str | None:
 
             shortened = _parse_ai_output(result.stdout, backend)
             if not shortened:
-                click.echo(
-                    f"  ai: {backend['name']} returned empty output", err=True
-                )
+                click.echo(f"  ai: {backend['name']} returned empty output", err=True)
                 continue
 
             if len(shortened) > max_chars:
@@ -135,7 +157,9 @@ def _parse_ai_output(stdout: str, backend: dict) -> str | None:
         text = ""
         for line in reversed(lines):
             line = line.strip()
-            if line and not line.startswith(("---", "user", "codex", "tokens", "Reading")):
+            if line and not line.startswith(
+                ("---", "user", "codex", "tokens", "Reading")
+            ):
                 text = line
                 break
     else:
@@ -252,9 +276,11 @@ def get_rename_sources_for_path(target: str) -> list[str]:
         if not line:
             continue
         parts = line.split("\t")
-        if len(parts) >= 3 and parts[0] == "R100":
+        if len(parts) >= 3 and parts[0].startswith("R"):
             old_path, new_path = parts[1], parts[2]
-            if new_path == target_normalized or new_path.startswith(target_normalized + "/"):
+            if new_path == target_normalized or new_path.startswith(
+                target_normalized + "/"
+            ):
                 sources.append(old_path)
     return sources
 
@@ -438,9 +464,7 @@ def _commit_renames(
         click.echo("Multiple renames detected:", err=True)
         for old, new in renames:
             click.echo(f"  {old} -> {new}", err=True)
-        click.echo(
-            "Commit them individually or use git commit directly", err=True
-        )
+        click.echo("Commit them individually or use git commit directly", err=True)
         sys.exit(1)
     old_path, new_path = renames[0]
     message = create_rename_message(old_path, new_path)
@@ -681,18 +705,14 @@ def main(args, subject, body, ai_shorten):
                     rename_paths.add(old)
                     rename_paths.add(new)
                 other_files = [f for f in all_files if f not in rename_paths]
-                click.echo(
-                    "Staged renames found but also other changes:", err=True
-                )
+                click.echo("Staged renames found but also other changes:", err=True)
                 click.echo("  Renames:", err=True)
                 for old, new in renames:
                     click.echo(f"    {old} -> {new}", err=True)
                 click.echo("  Other files:", err=True)
                 for f in other_files:
                     click.echo(f"    {f}", err=True)
-                click.echo(
-                    "Commit the renames separately or specify files", err=True
-                )
+                click.echo("Commit the renames separately or specify files", err=True)
                 sys.exit(1)
 
     file_paths, commit_subject = parse_args_flexible(list(args), subject)
