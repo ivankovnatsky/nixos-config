@@ -15,6 +15,13 @@ let
 in
 {
   config = mkIf anyToolsEnabled {
+    environment.systemPackages = with pkgs; [
+      bash
+      curl
+      git
+      perl
+    ];
+
     programs.nix-ld.enable = true;
     programs.nix-ld.libraries = with pkgs; [
       stdenv.cc.cc
@@ -23,9 +30,12 @@ in
       icu
       nss
       openssl
+      bash
       curl
       expat
+      git
       nodejs
+      perl
     ];
   };
 }
