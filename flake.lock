@@ -1179,11 +1179,11 @@
         "nixpkgs": "nixpkgs_5"
       },
       "locked": {
-        "lastModified": 1777027735,
-        "narHash": "sha256-hEx65sSFa2wLbyrmyS98CUe4AUp6ylOYLpBQI59UFB0=",
+        "lastModified": 1777057875,
+        "narHash": "sha256-fPgYm0Vjd854dcXGcjwc8EFY896+eUeySp8eM0bF1v4=",
         "owner": "ivankovnatsky",
         "repo": "rems",
-        "rev": "630b2948a3124675fd70819654b982921e0d3f0e",
+        "rev": "48529548ddaa9c9c0bfff391b5ac824d3a1c11d4",
         "type": "github"
       },
       "original": {
