@@ -29,6 +29,19 @@ let
   configJson = pkgs.writeText "tools-config.json" (
     builtins.toJSON (lib.recursiveUpdate generatedConfig cfg.settings)
   );
+
+  toolsSections = [
+    "bun"
+    "npm"
+    "uv"
+    "mcp"
+    "curlShell"
+    "gitRepos"
+    "configFiles"
+    "brew"
+  ];
+  enabledSections = filter (section: builtins.hasAttr section cfg.settings) toolsSections;
+  scopeFlags = concatMapStringsSep " " (section: "--scope ${escapeShellArg section}") enabledSections;
 in
 {
   options.local.tools = {
@@ -47,11 +60,12 @@ in
     };
   };
 
-  config = mkIf cfg.enable {
+  config = mkIf (cfg.enable && enabledSections != [ ]) {
     home.activation.manageTools = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       ${inputs.tools.packages.${pkgs.system}.default}/bin/tools \
         deploy \
         --approve \
+        ${scopeFlags} \
         --config ${configJson}
     '';
   };
