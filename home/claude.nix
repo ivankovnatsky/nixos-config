@@ -49,7 +49,6 @@ let
   claudeConfigPath = ".claude/settings.json";
 
   baseSettings = {
-    model = "claude-opus-4-6[1m]";
     permissions = {
       defaultMode = "bypassPermissions";
       autoApproveWebFetch = true;
@@ -71,13 +70,13 @@ let
       type = "command";
       command = "${pkgs.claude-statusline}/bin/claude-statusline";
     };
-    effortLevel = "xhigh";
     includeCoAuthoredBy = false;
     feedbackSurveyRate = 0;
     env = {
       CLAUDE_CODE_ENABLE_TELEMETRY = "1";
     };
-  } // lib.optionalAttrs isWork {
+  }
+  // lib.optionalAttrs isWork {
     hooks = {
       PreToolUse = [
         {
