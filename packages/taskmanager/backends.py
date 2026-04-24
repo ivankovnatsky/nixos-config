@@ -112,7 +112,7 @@ def get_reminders(project_filter=None, include_completed=True):
     if project_filter:
         lists = [project_filter]
     else:
-        result = subprocess.run(["rems", "show-lists"], capture_output=True, text=True)
+        result = subprocess.run(["rems", "lists"], capture_output=True, text=True)
         if result.returncode != 0:
             return {}, {}, {}
         lists = result.stdout.strip().splitlines()

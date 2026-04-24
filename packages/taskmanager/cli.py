@@ -156,7 +156,7 @@ def sort_reminders(source, approve, interactive, verbose):
         raise SystemExit(1)
 
     # Get all existing list names
-    result = subprocess.run(["rems", "show-lists"], capture_output=True, text=True)
+    result = subprocess.run(["rems", "lists"], capture_output=True, text=True)
     if result.returncode != 0:
         click.echo("Error: could not fetch reminder lists", err=True)
         raise SystemExit(1)
@@ -921,7 +921,7 @@ def sync(
     # Taskwarrior-only -> add to Reminders
     if is_darwin() and has_command("rems"):
         existing = subprocess.run(
-            ["rems", "show-lists"], capture_output=True, text=True
+            ["rems", "lists"], capture_output=True, text=True
         )
         existing_lists = set(existing.stdout.strip().splitlines())
 
@@ -965,7 +965,7 @@ def sync(
                     continue
 
             if proj not in existing_lists:
-                run(["rems", "new-list", proj])
+                run(["rems", "lists", "new", proj])
                 existing_lists.add(proj)
 
             add_cmd = ["rems", "add", proj]
@@ -1636,7 +1636,7 @@ def tw_ingest(project, approve, dry_run, verbose):
 def rem_edit(pattern):
     """Edit reminders matching pattern in editor."""
     pattern_str = " ".join(pattern)
-    result = run(["rems", "show-all", "--include-completed", "--format", "json"])
+    result = run(["rems", "show", "--include-completed", "--format", "json"])
     if result.returncode != 0:
         click.echo("Failed to fetch reminders", err=True)
         raise SystemExit(1)
@@ -1718,7 +1718,7 @@ def rem_edit(pattern):
 def rem_find(pattern):
     """Search reminders by pattern."""
     pattern_str = " ".join(pattern)
-    result = run(["rems", "show-all", "--include-completed", "--format", "json"])
+    result = run(["rems", "show", "--include-completed", "--format", "json"])
     if result.returncode != 0:
         click.echo("Failed to fetch reminders", err=True)
         raise SystemExit(1)
@@ -1749,7 +1749,7 @@ def rem_find(pattern):
 @reminders_group.command(name="list")
 def rem_list():
     """List reminders."""
-    result = run(["rems", "show-all", "--format", "json"])
+    result = run(["rems", "show", "--format", "json"])
     if result.returncode != 0:
         click.echo("Failed to fetch reminders", err=True)
         raise SystemExit(1)
