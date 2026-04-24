@@ -21,7 +21,7 @@ let
     stc = "${pkgs.stc-cli}/bin/stc -homedir ${syncthingHomeDir}";
     claude = "claude --allow-dangerously-skip-permissions";
     gemini = "gemini --yolo";
-    codex = "codex --full-auto";
+    codex = "codex --sandbox danger-full-access";
     t = "${pkgs.taskwarrior3}/bin/task";
   };
 
