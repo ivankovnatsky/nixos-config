@@ -74,11 +74,18 @@ def list_reminder_lists():
     return deduped
 
 
-def get_tw_tasks(project_filter=None):
+def get_tw_tasks(project_filter=None, include_deleted=False):
     """Export tasks from Taskwarrior as a dict keyed by (project, title).
 
     Returns (tasks, instance_counts, all_instances) where all_instances is a
     dict of (project, title) -> [list of item dicts] for multi-instance matching.
+
+    Recurring parent templates are always skipped. Tasks with
+    ``status:deleted`` are skipped by default — callers that need to surface
+    deleted rows (e.g. verify) must pass ``include_deleted=True``. Drift and
+    sync paths must NOT see deleted rows: --purge-duplicates / --purge-recurring
+    leave rows behind as ``status:deleted``, and surfacing them downstream
+    would re-classify them as 'Taskwarrior only' on the next run.
     """
     cmd = ["task"]
     if project_filter:
@@ -95,8 +102,6 @@ def get_tw_tasks(project_filter=None):
     try:
         tw_data = json.loads(result.stdout)
     except json.JSONDecodeError:
-        import click
-
         click.echo("Error: failed to parse Taskwarrior export JSON", err=True)
         raise SystemExit(1)
     for task in tw_data:
@@ -106,6 +111,9 @@ def get_tw_tasks(project_filter=None):
 
         # Skip recurring parent templates
         if status == "recurring":
+            continue
+
+        if status == "deleted" and not include_deleted:
             continue
 
         # Normalize "waiting" to "pending" — Reminders has no waiting concept

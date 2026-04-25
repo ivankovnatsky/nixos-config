@@ -1290,7 +1290,7 @@ def verify(project, projects, verbose):
     status_issues = []
 
     for proj in project_list:
-        tw_tasks, tw_counts, tw_instances = get_tw_tasks(proj)
+        tw_tasks, tw_counts, tw_instances = get_tw_tasks(proj, include_deleted=True)
         rem_tasks, rem_counts, rem_instances = get_reminders(proj)
 
         # Flatten all instances (excluding recurring parents, already filtered)
