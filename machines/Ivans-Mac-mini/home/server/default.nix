@@ -9,7 +9,6 @@
     ./infracheck.nix
     ./jellyfin
     # ./logscanner.nix
-    ./matrix
     ./media
     ./miniserve.nix
     ./monitoring

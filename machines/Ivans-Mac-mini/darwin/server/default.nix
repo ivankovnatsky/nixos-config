@@ -34,7 +34,6 @@
     # ./logscanner.nix
     ./mailpit.nix
     ./mas-upgrade.nix
-    ./matrix
     ./mosh.nix
     ./music-export.nix
     ./nix.nix

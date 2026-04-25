@@ -100,26 +100,5 @@ let
     pyenv-nix-install = inputs.pyenv-nix-install.packages.${system}.default;
   };
 
-  # 5. Custom functions
-  customFunctions = {
-    # Element Web configured for Matrix homeserver
-    # Args:
-    #   domain: external domain (pass from runtime sops secret or string literal)
-    #   homeserverSubdomain: subdomain for homeserver (e.g., "matrix", "matrix-mini")
-    mkElementWeb =
-      domain: homeserverSubdomain:
-      prev.element-web.override {
-        conf = {
-          default_server_config = {
-            "m.homeserver" = {
-              base_url = "https://${homeserverSubdomain}.${domain}";
-              server_name = "${homeserverSubdomain}.${domain}";
-            };
-          };
-          default_theme = "dark";
-          show_labs_settings = true;
-        };
-      };
-  };
 in
-autoOverlays // autoPackages // masterOverlays // flakeOverlays // customFunctions
+autoOverlays // autoPackages // masterOverlays // flakeOverlays
