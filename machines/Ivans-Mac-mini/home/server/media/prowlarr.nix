@@ -37,7 +37,10 @@ in
         ${pkgs.gnused}/bin/sed -i 's|<BindAddress>[^<]*</BindAddress>|<BindAddress>*</BindAddress>|' "${dataDir}/config.xml"
       fi
     '';
-    environment.DOTNET_SYSTEM_GLOBALIZATION_INVARIANT = "1";
+    environment = {
+      DOTNET_SYSTEM_GLOBALIZATION_INVARIANT = "1";
+      DOTNET_SYSTEM_GLOBALIZATION_PREDEFINED_CULTURES_ONLY = "false";
+    };
     command = "${pkgs.prowlarr}/bin/Prowlarr -nobrowser -data=${dataDir}";
   };
 }
