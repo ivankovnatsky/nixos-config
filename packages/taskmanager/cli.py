@@ -11,7 +11,12 @@ from collections import Counter, defaultdict
 import click
 
 import utils
-from backends import find_tw_uuids, get_reminders, get_tw_tasks
+from backends import (
+    find_tw_uuids,
+    get_reminders,
+    get_tw_tasks,
+    list_reminder_lists,
+)
 from display import (
     print_drift,
 )
@@ -156,11 +161,10 @@ def sort_reminders(source, approve, interactive, verbose):
         raise SystemExit(1)
 
     # Get all existing list names
-    result = subprocess.run(["rems", "lists"], capture_output=True, text=True)
-    if result.returncode != 0:
+    existing_lists = set(list_reminder_lists())
+    if not existing_lists:
         click.echo("Error: could not fetch reminder lists", err=True)
         raise SystemExit(1)
-    existing_lists = set(result.stdout.strip().splitlines())
 
     lists_to_scan = [source] if source else sorted(existing_lists)
 
@@ -920,10 +924,7 @@ def sync(
 
     # Taskwarrior-only -> add to Reminders
     if is_darwin() and has_command("rems"):
-        existing = subprocess.run(
-            ["rems", "lists"], capture_output=True, text=True
-        )
-        existing_lists = set(existing.stdout.strip().splitlines())
+        existing_lists = set(list_reminder_lists())
 
         for item in tw_only.values():
             proj = item["project"]

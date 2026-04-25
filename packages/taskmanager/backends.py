@@ -10,6 +10,66 @@ from utils import (
 )
 
 
+def list_reminder_lists():
+    """Return Reminders list names, deduped, order preserved.
+
+    Wraps `rems lists show --format json`. Using JSON output (a) avoids the
+    help-text-as-data trap if `rems lists` were ever called without a
+    subcommand, and (b) lets us assert the shape is `list[str]`. EventKit
+    can surface the same list name twice when the user has multiple iCloud
+    accounts — dedupe so callers never see duplicates.
+    """
+    if not (is_darwin() and has_command("rems")):
+        return []
+    result = subprocess.run(
+        ["rems", "lists", "show", "--format", "json"],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        import click
+
+        click.echo(
+            f"Warning: 'rems lists show --format json' exited "
+            f"{result.returncode}: {result.stderr.strip()}",
+            err=True,
+        )
+        return []
+    try:
+        data = json.loads(result.stdout)
+    except json.JSONDecodeError as e:
+        import click
+
+        click.echo(
+            f"Warning: could not parse 'rems lists show --format json' "
+            f"output as JSON: {e}",
+            err=True,
+        )
+        return []
+    if not isinstance(data, list) or not all(isinstance(x, str) for x in data):
+        import click
+
+        click.echo(
+            "Warning: 'rems lists show --format json' returned unexpected "
+            "shape (expected list[str])",
+            err=True,
+        )
+        return []
+    deduped = list(dict.fromkeys(data))
+    if len(deduped) < len(data):
+        import click
+        from collections import Counter
+
+        dups = [n for n, c in Counter(data).items() if c > 1]
+        click.echo(
+            f"Warning: rems returned duplicate list name(s) {dups} — "
+            "likely multiple iCloud accounts. Syncing against the first "
+            "occurrence only.",
+            err=True,
+        )
+    return deduped
+
+
 def get_tw_tasks(project_filter=None):
     """Export tasks from Taskwarrior as a dict keyed by (project, title).
 
@@ -112,10 +172,7 @@ def get_reminders(project_filter=None, include_completed=True):
     if project_filter:
         lists = [project_filter]
     else:
-        result = subprocess.run(["rems", "lists"], capture_output=True, text=True)
-        if result.returncode != 0:
-            return {}, {}, {}
-        lists = result.stdout.strip().splitlines()
+        lists = list_reminder_lists()
 
     reminders = {}
     instance_counts = {}
