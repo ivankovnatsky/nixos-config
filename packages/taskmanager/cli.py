@@ -662,7 +662,7 @@ def drift(
     "--purge-duplicates",
     is_flag=True,
     default=False,
-    help="Delete TW-only duplicate tasks that have no Reminders counterpart. Always interactive.",
+    help="Mark TW-only duplicates as deleted (status:deleted, no purge). Always interactive.",
 )
 @click.option(
     "--complete-orphans",
@@ -674,7 +674,7 @@ def drift(
     "--purge-recurring",
     is_flag=True,
     default=False,
-    help="Delete and purge TW recurring parent tasks. Always interactive.",
+    help="Mark TW recurring parents (and child instances) as deleted. Always interactive. Does not call `task purge` to avoid orphan ops in TaskChampion.",
 )
 @click.option(
     "--sort-first/--no-sort-first",
@@ -1018,7 +1018,7 @@ def sync(
     # Detects both TW-only items and TW-internal duplicates (multiple pending
     # tasks with the same project+description).
     if purge_duplicates:
-        purge_count = 0
+        delete_count = 0
 
         # 1. TW-only items with no Reminders counterpart
         if tw_only:
@@ -1040,17 +1040,22 @@ def sync(
                 if not click.confirm("  DELETE from Taskwarrior?", default=False):
                     continue
                 if uuid:
-                    if status != "deleted":
-                        result = run(["task", "rc.confirmation:off", uuid, "delete"])
-                        if result.returncode != 0:
-                            click.echo(f"  ! Failed to delete: {desc}")
-                            continue
-                    result = run(["task", "rc.confirmation:off", uuid, "purge"])
+                    if status == "deleted":
+                        # Already marked deleted — nothing to do. We deliberately
+                        # do not call `task purge` here: TaskChampion writes a
+                        # raw Delete op into the operations table for each purge,
+                        # and any divergence with the tasks table corrupts the
+                        # store (every `task` invocation then hard-crashes with
+                        # "Invalid column type Text at index: 0, name: data").
+                        # Run `task purge` manually if true GC is desired.
+                        click.echo(f"  - Taskwarrior: {desc} (already deleted)")
+                        continue
+                    result = run(["task", "rc.confirmation:off", uuid, "delete"])
                     if result.returncode == 0:
-                        click.echo(f"  - Taskwarrior: {desc} (purged)")
-                        purge_count += 1
+                        click.echo(f"  - Taskwarrior: {desc} (deleted)")
+                        delete_count += 1
                     else:
-                        click.echo(f"  ! Failed to purge: {desc}")
+                        click.echo(f"  ! Failed to delete: {desc}")
 
         # 2. TW-internal duplicates: multiple pending tasks with same description
         click.echo()
@@ -1121,16 +1126,16 @@ def sync(
                         )
                         if result.returncode == 0:
                             click.echo(f"    - Deleted {d['uuid'][:8]}")
-                            purge_count += 1
+                            delete_count += 1
                             dup_count += 1
                         else:
                             click.echo(f"    ! Failed to delete {d['uuid'][:8]}")
             if dup_count == 0:
                 click.echo("  No internal duplicates found.")
 
-        if purge_count:
+        if delete_count:
             click.echo()
-            click.echo(f"Deleted {purge_count} TW duplicate(s).")
+            click.echo(f"Deleted {delete_count} TW duplicate(s).")
 
     # Complete TW-only pending orphans that have completed history
     if complete_orphans and tw_only:
@@ -1189,7 +1194,7 @@ def sync(
         click.echo("--- Scanning for TW recurring parents ---")
         tw_cmd = ["task", "export"]
         tw_result = subprocess.run(tw_cmd, capture_output=True, text=True)
-        purge_count = 0
+        delete_count = 0
         if tw_result.returncode == 0:
             try:
                 all_tw = json.loads(tw_result.stdout)
@@ -1220,7 +1225,7 @@ def sync(
                     click.echo(f"    due: {due}")
                 click.echo(f"    uuid: {uuid[:8]}")
                 if not click.confirm(
-                    "  DELETE and PURGE this recurring parent?", default=False
+                    "  DELETE this recurring parent (and children)?", default=False
                 ):
                     continue
                 # Find and delete child instances first
@@ -1229,24 +1234,36 @@ def sync(
                     for c in all_tw
                     if c.get("parent") == uuid and c.get("status") != "deleted"
                 ]
+                # Mark children + parent deleted, but do NOT call `task purge`.
+                # TaskChampion writes a raw Delete op per purge into the
+                # operations table; any divergence between operations and the
+                # tasks table corrupts the store ("Invalid column type Text at
+                # index: 0, name: data") and bricks every `task` invocation.
+                # Run `task purge` manually later if real GC is desired.
+                child_failed = False
                 for child in children:
-                    run(["task", "rc.confirmation:off", child["uuid"], "delete"])
-                # Delete the parent
-                run(["task", "rc.confirmation:off", uuid, "delete"])
-                # Purge children first, then parent
-                for child in children:
-                    run(["task", "rc.confirmation:off", child["uuid"], "purge"])
-                result = run(["task", "rc.confirmation:off", uuid, "purge"])
+                    cres = run(["task", "rc.confirmation:off", child["uuid"], "delete"])
+                    if cres.returncode != 0:
+                        child_failed = True
+                        click.echo(
+                            f"  ! Failed to delete child {child['uuid'][:8]}; "
+                            f"skipping parent delete to avoid orphaned children",
+                            err=True,
+                        )
+                        break
+                if child_failed:
+                    continue
+                result = run(["task", "rc.confirmation:off", uuid, "delete"])
                 if result.returncode == 0:
                     click.echo(
-                        f"  - Purged: {desc} (+ {len(children)} child instance(s))"
+                        f"  - Deleted: {desc} (+ {len(children)} child instance(s))"
                     )
-                    purge_count += 1
+                    delete_count += 1
                 else:
-                    click.echo(f"  ! Failed to purge: {desc}")
-        if purge_count:
+                    click.echo(f"  ! Failed to delete: {desc}")
+        if delete_count:
             click.echo()
-            click.echo(f"Purged {purge_count} recurring parent(s).")
+            click.echo(f"Deleted {delete_count} recurring parent(s).")
 
     click.echo()
     click.echo("Done.")
