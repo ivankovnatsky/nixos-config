@@ -163,8 +163,8 @@ def sort_reminders(source, approve, interactive, verbose):
     # Get all existing list names
     existing_lists = set(list_reminder_lists())
     if not existing_lists:
-        click.echo("Error: could not fetch reminder lists", err=True)
-        raise SystemExit(1)
+        click.echo("No reminder lists found.", err=True)
+        return
 
     lists_to_scan = [source] if source else sorted(existing_lists)
 

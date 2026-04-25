@@ -2,12 +2,27 @@
 
 import json
 import subprocess
+from collections import Counter
 
+import click
 
 from utils import (
     has_command,
     is_darwin,
 )
+
+
+class ReminderListDiscoveryError(click.ClickException):
+    """Raised when reading from the Reminders backend fails.
+
+    Failure means: rems is on PATH but its output could not be obtained,
+    parsed, or shape-validated. An empty result from a successful call is
+    NOT a failure and does not raise. Subclassing ClickException so the
+    runtime auto-prints "Error: <msg>" and exits non-zero from any CLI
+    command without per-callsite try/except plumbing.
+    """
+
+    pass
 
 
 def list_reminder_lists():
@@ -18,6 +33,11 @@ def list_reminder_lists():
     subcommand, and (b) lets us assert the shape is `list[str]`. EventKit
     can surface the same list name twice when the user has multiple iCloud
     accounts — dedupe so callers never see duplicates.
+
+    Raises ReminderListDiscoveryError on any backend failure (non-zero
+    exit, JSON parse error, unexpected shape). Returns ``[]`` only when
+    rems is unavailable (legitimate no-op fallback) or when rems
+    successfully reports zero lists.
     """
     if not (is_darwin() and has_command("rems")):
         return []
@@ -27,39 +47,23 @@ def list_reminder_lists():
         text=True,
     )
     if result.returncode != 0:
-        import click
-
-        click.echo(
-            f"Warning: 'rems lists show --format json' exited "
-            f"{result.returncode}: {result.stderr.strip()}",
-            err=True,
+        raise ReminderListDiscoveryError(
+            f"'rems lists show --format json' exited "
+            f"{result.returncode}: {result.stderr.strip()}"
         )
-        return []
     try:
         data = json.loads(result.stdout)
     except json.JSONDecodeError as e:
-        import click
-
-        click.echo(
-            f"Warning: could not parse 'rems lists show --format json' "
-            f"output as JSON: {e}",
-            err=True,
-        )
-        return []
+        raise ReminderListDiscoveryError(
+            f"could not parse 'rems lists show --format json' output as JSON: {e}"
+        ) from e
     if not isinstance(data, list) or not all(isinstance(x, str) for x in data):
-        import click
-
-        click.echo(
-            "Warning: 'rems lists show --format json' returned unexpected "
-            "shape (expected list[str])",
-            err=True,
+        raise ReminderListDiscoveryError(
+            "'rems lists show --format json' returned unexpected shape "
+            "(expected list[str])"
         )
-        return []
     deduped = list(dict.fromkeys(data))
     if len(deduped) < len(data):
-        import click
-        from collections import Counter
-
         dups = [n for n, c in Counter(data).items() if c > 1]
         click.echo(
             f"Warning: rems returned duplicate list name(s) {dups} — "
