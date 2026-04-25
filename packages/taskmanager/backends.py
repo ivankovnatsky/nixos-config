@@ -197,12 +197,26 @@ def get_reminders(project_filter=None, include_completed=True):
 
         result = subprocess.run(show_args, capture_output=True, text=True)
         if result.returncode != 0:
-            continue
+            msg = (
+                f"'rems show {list_name} --format json' exited "
+                f"{result.returncode}: {result.stderr.strip()}"
+            )
+            if project_filter:
+                click.echo(f"Warning: {msg}", err=True)
+                continue
+            raise ReminderListDiscoveryError(msg)
 
         try:
             items = json.loads(result.stdout)
-        except json.JSONDecodeError:
-            continue
+        except json.JSONDecodeError as e:
+            msg = (
+                f"could not parse 'rems show {list_name} --format json' "
+                f"output as JSON: {e}"
+            )
+            if project_filter:
+                click.echo(f"Warning: {msg}", err=True)
+                continue
+            raise ReminderListDiscoveryError(msg) from e
 
         for item in items:
             title = item.get("title", "")
