@@ -15,7 +15,6 @@
     ./navidrome
     ./ollama.nix
     ./open-webui.nix
-    ./perlite
     ./podservice
     ./podsync
     ./reposync.nix

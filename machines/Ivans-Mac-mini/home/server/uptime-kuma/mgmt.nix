@@ -151,11 +151,6 @@
         description = "OpenClaw gateway";
       }
       {
-        name = "perlite";
-        url = "http://${config.flags.machineLocalAddress}:8086";
-        description = "Perlite notes server";
-      }
-      {
         name = "taskwarrior-web";
         url = "http://${config.flags.machineLocalAddress}:8087";
         description = "Taskwarrior web interface";

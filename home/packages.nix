@@ -74,7 +74,6 @@
     pass-fzf
     paste-loop
     path-copy
-    perlite
     perplexity
     pigz
     poppler-utils
