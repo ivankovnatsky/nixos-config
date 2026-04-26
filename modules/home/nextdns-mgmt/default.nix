@@ -161,7 +161,12 @@ in
       systemd.user.services = mapAttrs' (
         name: profile:
         nameValuePair "nextdns-mgmt-${name}" {
-          Unit.Description = "Sync NextDNS profile ${name}";
+          Unit = {
+            Description = "Sync NextDNS profile ${name}";
+            # Wait for sops-nix to decrypt secrets before reading them.
+            After = [ "sops-nix.service" ];
+            Wants = [ "sops-nix.service" ];
+          };
           Service = {
             Type = "oneshot";
             ExecStart = "${mkSyncScript name profile}";
