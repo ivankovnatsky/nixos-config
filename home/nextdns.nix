@@ -93,12 +93,13 @@ in
     varsFiles = commonVarsFiles;
   };
 
-  # local.services.nextdns-mgmt.a3 = {
-  #   enable = true;
-  #   apiKeyFile = config.sops.secrets.nextdns-api-key.path;
-  #   profileIdFile = config.sops.secrets.nextdns-profile-a3.path;
-  #   profileFile = ../configs/nextdns-profile.json;
-  #   vars = commonVars;
-  #   varsFiles = commonVarsFiles;
-  # };
+  local.services.nextdns-mgmt.a3 = {
+    enable = true;
+    apiKeyFile = config.sops.secrets.nextdns-api-key.path;
+    # No profileId/profileIdFile — module looks up the profile by name "a3"
+    # via the NextDNS API, creating it on first run if missing.
+    profileFile = ../configs/nextdns-profile.json;
+    vars = commonVars;
+    varsFiles = commonVarsFiles;
+  };
 }
