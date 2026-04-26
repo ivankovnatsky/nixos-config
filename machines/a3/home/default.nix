@@ -38,8 +38,6 @@
     ../../../home/ssh.nix
     ../../../home/starship
     ../../../home/syncthing-ignore.nix
-    ../../../home/taskwarrior.nix
-    ./taskchampion-sync.nix
     ../../../home/tmux.nix
     ../../../home/treefmt.nix
     ../../../home/tweety.nix
