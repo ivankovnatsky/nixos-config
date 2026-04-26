@@ -214,6 +214,8 @@ EOF
         "**/.claude"
         "**/claude/"
         "**/.serena"
+
+        "**/.codex"
       ];
       # diff-highlight.enable = true;
       # difftastic.enable = true;
