@@ -85,8 +85,8 @@ in
           message = "Exactly one of apiKey or apiKeyFile must be set for nextdns-mgmt profile '${name}'";
         }
         {
-          assertion = (profile.profileId != null) != (profile.profileIdFile != null);
-          message = "Exactly one of profileId or profileIdFile must be set for nextdns-mgmt profile '${name}'";
+          assertion = !(profile.profileId != null && profile.profileIdFile != null);
+          message = "At most one of profileId or profileIdFile may be set for nextdns-mgmt profile '${name}' (otherwise the profile is looked up or created by name)";
         }
       ]) enabledProfiles
     );
@@ -105,24 +105,13 @@ in
               syncScript = pkgs.writeShellScript "nextdns-mgmt-${name}-sync" ''
                 set -e
 
-                ${
-                  if profile.profileIdFile != null then
-                    ''echo "Updating NextDNS profile ${name}..."''
-                  else
-                    ''echo "Updating NextDNS profile ${name} (${profile.profileId})..."''
-                }
+                echo "Updating NextDNS profile ${name}..."
 
                 ${
                   if profile.apiKeyFile != null then
                     ''API_KEY="$(cat ${profile.apiKeyFile})"''
                   else
                     ''API_KEY="${profile.apiKey}"''
-                }
-                ${
-                  if profile.profileIdFile != null then
-                    ''PROFILE_ID="$(cat ${profile.profileIdFile})"''
-                  else
-                    ''PROFILE_ID="${profile.profileId}"''
                 }
 
                 PROFILE_JSON=$(mktemp)
@@ -139,7 +128,15 @@ in
 
                 ${pkgs.nextdns-mgmt}/bin/nextdns-mgmt update \
                   --api-key "$API_KEY" \
-                  --profile-id "$PROFILE_ID" \
+                  --name "${name}" \
+                  ${
+                    if profile.profileIdFile != null then
+                      ''--profile-id "$(cat ${profile.profileIdFile})" \''
+                    else if profile.profileId != null then
+                      ''--profile-id "${profile.profileId}" \''
+                    else
+                      ""
+                  }
                   --profile-file "$PROFILE_JSON" 2>&1 || echo "Warning: NextDNS update for ${name} failed with exit code $?"
 
 
