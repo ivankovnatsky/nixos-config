@@ -212,11 +212,6 @@
       url = "github:ivankovnatsky/podservice";
     };
 
-    # TaskWeb - Web interface for Taskwarrior 3
-    taskweb = {
-      url = "github:ivankovnatsky/taskweb";
-    };
-
     # rems - macOS Reminders CLI
     rems = {
       url = "github:ivankovnatsky/rems";
