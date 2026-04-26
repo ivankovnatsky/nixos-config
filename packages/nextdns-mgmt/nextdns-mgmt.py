@@ -576,6 +576,34 @@ def export_raw(api_key, profile_id, output, list_profiles):
         sys.exit(1)
 
 
+@cli.command(name="resolved-config")
+@click.option("--api-key", required=True, help="NextDNS API key")
+@click.option("--name", required=True, help="Profile name to look up")
+def resolved_config(api_key, name):
+    """Print a systemd-resolved drop-in for the named profile."""
+    client = NextDNSClient(api_key)
+    try:
+        profile_id = None
+        for p in client.get_profiles():
+            if p.get("name") == name:
+                profile_id = p["id"]
+                break
+        if not profile_id:
+            raise ValueError(f"No NextDNS profile named '{name}' found")
+        host = f"{profile_id}.dns.nextdns.io"
+        click.echo(
+            "[Resolve]\n"
+            f"DNS=45.90.28.0#{host}\n"
+            f"DNS=2a07:a8c0::#{host}\n"
+            f"DNS=45.90.30.0#{host}\n"
+            f"DNS=2a07:a8c1::#{host}\n"
+            "DNSOverTLS=yes"
+        )
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
+
+
 def main():
     cli(prog_name="nextdns-mgmt")
 
