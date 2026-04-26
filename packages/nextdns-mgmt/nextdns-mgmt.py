@@ -213,6 +213,19 @@ def update(api_key, profile_id, name, profile_file, dry_run):
     """Update profile using nested endpoints (section by section)."""
     client = NextDNSClient(api_key)
     try:
+        # Load and validate profile JSON BEFORE touching the remote API,
+        # so a malformed file can never leak an empty bootstrap profile.
+        with open(profile_file, "r") as f:
+            profile_data = json.load(f)
+
+        # Support both raw API response {"data": {...}} and wrapped {"profile": {"data": {...}}}
+        if "data" in profile_data:
+            profile = profile_data["data"]
+        elif "profile" in profile_data and "data" in profile_data["profile"]:
+            profile = profile_data["profile"]["data"]
+        else:
+            raise ValueError("Invalid profile JSON format")
+
         if not profile_id:
             if not name:
                 raise ValueError("Either --profile-id or --name must be provided")
@@ -222,21 +235,14 @@ def update(api_key, profile_id, name, profile_file, dry_run):
                     click.echo(f"Resolved profile '{name}' → {profile_id}", err=True)
                     break
             if not profile_id:
+                if dry_run:
+                    click.echo(
+                        f"Would create profile '{name}' (skipped due to --dry-run)",
+                        err=True,
+                    )
+                    return
                 profile_id = client.create_profile(name=name)
                 click.echo(f"Created profile '{name}' → {profile_id}", err=True)
-        # Load profile JSON
-        with open(profile_file, "r") as f:
-            profile_data = json.load(f)
-
-        # Support both raw API response {"data": {...}} and wrapped {"profile": {"data": {...}}}
-        if "data" in profile_data:
-            # Raw API response format or filtered export
-            profile = profile_data["data"]
-        elif "profile" in profile_data and "data" in profile_data["profile"]:
-            # Wrapped format (legacy)
-            profile = profile_data["profile"]["data"]
-        else:
-            raise ValueError("Invalid profile JSON format")
 
         click.echo(f"Updating profile {profile_id} using nested endpoints...")
 
