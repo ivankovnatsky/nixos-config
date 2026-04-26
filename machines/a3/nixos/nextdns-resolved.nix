@@ -1,32 +1,68 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
+let
+  resolvedDir = "/run/systemd/resolved.conf.d";
+  resolvedConf = "${resolvedDir}/10-nextdns.conf";
+in
 {
-  # System-level sops secret holding the NextDNS profile ID for "a3".
-  # Add the encrypted value under key `nextDnsProfileA3` in secrets/default.yaml.
-  # Fetch the current ID with:
-  #   nextdns-mgmt update --api-key "$(sops -d --extract '["nextDnsApiKey"]' \
-  #     secrets/default.yaml)" --name a3 --profile-file configs/nextdns-profile.json --dry-run
-  # The "Resolved profile 'a3' → <id>" line on stderr is what to encrypt.
-  sops.secrets.nextdns-profile-a3 = {
-    key = "nextDnsProfileA3";
+  # System-level NextDNS API key. Needed at root because the unit below runs
+  # at boot, before any user session exists.
+  sops.secrets.nextdns-api-key = {
+    key = "nextDnsApiKey";
     mode = "0400";
   };
 
-  # Render a systemd-resolved drop-in with the profile ID interpolated at
-  # activation time. The rendered file lives under /run (tmpfs), so the ID
-  # never lands in the nix store and only root can read it.
-  sops.templates."resolved-nextdns.conf" = {
-    path = "/run/systemd/resolved.conf.d/10-nextdns.conf";
-    mode = "0444";
-    content = ''
-      [Resolve]
-      DNS=45.90.28.0#${config.sops.placeholder.nextdns-profile-a3}.dns.nextdns.io
-      DNS=2a07:a8c0::#${config.sops.placeholder.nextdns-profile-a3}.dns.nextdns.io
-      DNS=45.90.30.0#${config.sops.placeholder.nextdns-profile-a3}.dns.nextdns.io
-      DNS=2a07:a8c1::#${config.sops.placeholder.nextdns-profile-a3}.dns.nextdns.io
-      DNSOverTLS=yes
+  services.resolved.enable = true;
+
+  # Fetch the NextDNS profile id by name at boot, render the resolved drop-in
+  # to /run, and reload systemd-resolved. The profile id never appears in the
+  # nix store, in sops, or in any persistent file outside /run (tmpfs).
+  systemd.services.nextdns-resolved = {
+    description = "Render systemd-resolved drop-in for NextDNS by profile name";
+    wantedBy = [ "multi-user.target" ];
+    before = [ "systemd-resolved.service" ];
+    after = [
+      "network-online.target"
+      "sops-nix.service"
+    ];
+    wants = [
+      "network-online.target"
+      "sops-nix.service"
+    ];
+
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+
+    script = ''
+      set -euo pipefail
+      mkdir -p ${resolvedDir}
+
+      tmp=${resolvedConf}.tmp
+      ${pkgs.nextdns-mgmt}/bin/nextdns-mgmt resolved-config \
+        --api-key "$(cat ${config.sops.secrets.nextdns-api-key.path})" \
+        --name a3 > "$tmp"
+
+      # Sanity-check the rendered drop-in before promoting it. If the API
+      # returned garbage we keep the previous file (or no file at all) so
+      # systemd-resolved doesn't fall back to a broken state.
+      if ! ${pkgs.gnugrep}/bin/grep -q '^\[Resolve\]' "$tmp" \
+        || ! ${pkgs.gnugrep}/bin/grep -q '^DNS=' "$tmp" \
+        || ! ${pkgs.gnugrep}/bin/grep -q '^DNSOverTLS=yes' "$tmp"; then
+        echo "rendered drop-in failed validation, keeping previous" >&2
+        rm -f "$tmp"
+        exit 1
+      fi
+
+      # Back up the previous file with a timestamp before overwriting.
+      if [ -e ${resolvedConf} ]; then
+        ${pkgs.coreutils}/bin/cp -p ${resolvedConf} \
+          ${resolvedConf}.bak."$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+      fi
+
+      mv -f "$tmp" ${resolvedConf}
+      ${pkgs.systemd}/bin/systemctl try-reload-or-restart systemd-resolved.service
     '';
   };
-
-  services.resolved.enable = true;
 }
