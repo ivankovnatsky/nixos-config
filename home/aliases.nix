@@ -22,7 +22,6 @@ let
     claude = "claude --allow-dangerously-skip-permissions";
     gemini = "gemini --yolo";
     codex = "codex --sandbox danger-full-access";
-    t = "${pkgs.taskwarrior3}/bin/task";
   };
 
 in
