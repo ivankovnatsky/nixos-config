@@ -4,3 +4,5 @@ result
 
 **/*.swp
 **/__pycache__/
+
+.codex
