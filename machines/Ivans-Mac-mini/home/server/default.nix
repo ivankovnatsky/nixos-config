@@ -6,7 +6,6 @@
     ./download-youtube
     ./forgejo
     ./healthchecks
-    ./infracheck.nix
     ./jellyfin
     # ./logscanner.nix
     ./media
@@ -22,9 +21,6 @@
     ./stash
     ./stash-media
     ./syncthing-mgmt.nix
-    ./taskchampion-sync-server.nix
-    ./taskwarrior-web.nix
-    ./taskweb.nix
     ./textcast
     ./uptime-kuma
   ];
