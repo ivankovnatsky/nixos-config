@@ -151,23 +151,6 @@
         description = "OpenClaw gateway";
       }
       {
-        name = "taskwarrior-web";
-        url = "http://${config.flags.machineLocalAddress}:8087";
-        description = "Taskwarrior web interface";
-      }
-      {
-        name = "taskweb";
-        url = "http://${config.flags.machineLocalAddress}:8088";
-        description = "TaskWeb web interface for Taskwarrior 3";
-      }
-      {
-        name = "taskchampion-sync-server";
-        type = "tcp";
-        url = "${config.flags.machineLocalAddress}:10222";
-        interval = 60;
-        description = "TaskChampion sync server for Taskwarrior 3";
-      }
-      {
         name = "mailpit";
         url = "http://${config.flags.machineLocalAddress}:8025";
         description = "Mailpit email testing UI";
