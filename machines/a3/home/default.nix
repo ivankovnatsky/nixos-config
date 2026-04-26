@@ -23,6 +23,7 @@
     ../../../home/kitty
     ../../../home/lsd.nix
     ../../../home/mpv.nix
+    ../../../home/nextdns.nix
     ../../../home/nix-registry.nix
     ../../../home/nixos/packages.nix
     ../../../home/nixvim
@@ -44,6 +45,8 @@
     ../../../home/z-lua.nix
     ../../../home/zsh.nix
     ../../../modules/flags
+    ../../../modules/home/launchd
+    ../../../modules/home/nextdns-mgmt
     ../../../modules/home/tools
     ./btop.nix
     ./desktop.nix
