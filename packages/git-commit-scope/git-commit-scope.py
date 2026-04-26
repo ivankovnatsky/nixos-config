@@ -210,14 +210,37 @@ def get_modified_files() -> list[str]:
 
 
 def get_untracked_files() -> list[str]:
+    git_root = get_git_root()
     result = subprocess.run(
-        ["git", "ls-files", "--others", "--exclude-standard"],
+        ["git", "ls-files", "--others", "--exclude-standard", "--full-name"],
+        capture_output=True,
+        text=True,
+        check=True,
+        cwd=git_root,
+    )
+    files = [f for f in result.stdout.strip().split("\n") if f]
+    return files
+
+
+def get_deleted_files() -> list[str]:
+    """Get tracked files deleted from the working tree or staged for deletion."""
+    unstaged = subprocess.run(
+        ["git", "diff", "--diff-filter=D", "--name-only"],
         capture_output=True,
         text=True,
         check=True,
     )
-    files = [f for f in result.stdout.strip().split("\n") if f]
-    return files
+    staged = subprocess.run(
+        ["git", "diff", "--staged", "--diff-filter=D", "--name-only"],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    seen = dict()
+    for f in unstaged.stdout.strip().split("\n") + staged.stdout.strip().split("\n"):
+        if f:
+            seen[f] = True
+    return list(seen.keys())
 
 
 def get_all_changed_files() -> list[str]:
@@ -352,6 +375,21 @@ def is_staged_deletion(path: str) -> bool:
                 text=True,
                 check=True,
             ).stdout.strip()
+            rel_path = os.path.relpath(abs_path, git_root)
+        except subprocess.CalledProcessError:
+            rel_path = path
+        return rel_path in deleted or path in deleted
+    except subprocess.CalledProcessError:
+        return False
+
+
+def is_deleted(path: str) -> bool:
+    """Check if a path is deleted from the working tree or staged for deletion."""
+    try:
+        deleted = get_deleted_files()
+        abs_path = os.path.abspath(path)
+        try:
+            git_root = get_git_root()
             rel_path = os.path.relpath(abs_path, git_root)
         except subprocess.CalledProcessError:
             rel_path = path
@@ -516,6 +554,17 @@ def is_file_path(path: str) -> bool:
         abs_from_root = os.path.join(git_root, path)
         if os.path.exists(abs_from_root):
             return True
+        root_rel_path = os.path.relpath(abs_from_root, git_root)
+        if root_rel_path in get_staged_files() or root_rel_path in get_deleted_files():
+            return True
+        result = subprocess.run(
+            ["git", "ls-files", "--error-unmatch", root_rel_path],
+            capture_output=True,
+            text=True,
+            cwd=git_root,
+        )
+        if result.returncode == 0:
+            return True
     except subprocess.CalledProcessError:
         pass
     return False
@@ -549,6 +598,91 @@ def _is_new_file(path: str) -> bool:
         return result.returncode != 0
     except subprocess.CalledProcessError:
         return False
+
+
+def infer_no_arg_commit() -> tuple[list[str], str]:
+    """Infer a commit target and subject for bare `git-commit-scope`.
+
+    Bare mode is deliberately narrow: it only defaults new untracked files to
+    "init" and deleted files to "remove". Modified files still need an explicit
+    subject so the command does not guess at intent.
+    """
+    try:
+        all_files = get_all_changed_files()
+    except subprocess.CalledProcessError as e:
+        click.echo(f"Failed to get changed files: {e}", err=True)
+        sys.exit(1)
+
+    if not all_files:
+        click.echo("No changed files", err=True)
+        sys.exit(1)
+
+    if len(all_files) != 1:
+        click.echo(
+            f"Expected 1 changed file, found {len(all_files)}:",
+            err=True,
+        )
+        for f in all_files:
+            click.echo(f"  {f}", err=True)
+        sys.exit(1)
+
+    target = all_files[0]
+    untracked = get_untracked_files()
+    deleted = get_deleted_files()
+
+    if target in untracked and target in deleted:
+        click.echo(
+            "Error: Subject required for replaced files in no-argument mode",
+            err=True,
+        )
+        click.echo("  Use: git-commit-scope <file> -s 'subject'", err=True)
+        click.echo("  Or:  git-commit-scope <file> 'subject'", err=True)
+        sys.exit(1)
+
+    if target in deleted:
+        return [target], "remove"
+    if target in untracked:
+        return [target], "init"
+
+    click.echo(
+        "Error: Subject required for modified files in no-argument mode",
+        err=True,
+    )
+    click.echo(
+        "  Bare git-commit-scope only defaults untracked files to 'init'",
+        err=True,
+    )
+    click.echo("  and deleted files to 'remove'.", err=True)
+    click.echo("  Use: git-commit-scope <file> -s 'subject'", err=True)
+    click.echo("  Or:  git-commit-scope 'subject'", err=True)
+    sys.exit(1)
+
+
+def normalize_target_path(path: str, git_root: str) -> str:
+    """Normalize a user or git-reported path to be relative to the repo root."""
+    abs_path = os.path.abspath(path)
+    if os.path.exists(abs_path):
+        return os.path.relpath(abs_path, git_root)
+
+    abs_from_root = os.path.abspath(os.path.join(git_root, path))
+    cwd_rel_path = os.path.relpath(abs_path, git_root)
+    root_rel_path = os.path.relpath(abs_from_root, git_root)
+    staged = get_staged_files()
+    deleted = get_deleted_files()
+
+    if cwd_rel_path in staged or cwd_rel_path in deleted:
+        return cwd_rel_path
+
+    if (
+        os.path.exists(abs_from_root)
+        or root_rel_path in staged
+        or root_rel_path in deleted
+        or path in staged
+        or path in deleted
+    ):
+        return root_rel_path
+
+    return cwd_rel_path
 
 
 def parse_args_flexible(
@@ -637,6 +771,8 @@ Examples:
   git-commit-scope "add feature" -b "L1" -b "L2"     Multiple -b joined with newline
   git-commit-scope -s "add feature" -b "Line 1
   Line 2"                                       Multiline body with newlines
+  git-commit-scope                                   Single untracked file: commits "<scope>: init"
+  git-commit-scope                                   Single deleted file: commits "<scope>: remove"
   git-commit-scope                                   After git mv: auto-detects rename, commits "old -> new"
 
 Features:
@@ -644,7 +780,8 @@ Features:
   - Multiple files create separate commits, each with its own scope prefix
   - Directories commit all changes under that path
   - Auto-adds untracked files before committing
-  - Without path arg, detects exactly one changed file (staged, modified, or untracked)
+  - Without path arg but with subject, detects exactly one changed file
+  - With no args, commits exactly one untracked file as init or deleted file as remove
   - Strips file extensions (e.g., .nix, .py)
   - Shortens machine names (e.g., Ivans-Mac-mini -> mini)
   - Removes duplicate path components (e.g., pkg/foo/foo -> pkg/foo)
@@ -715,47 +852,42 @@ def main(args, subject, body, ai_shorten):
                 click.echo("Commit the renames separately or specify files", err=True)
                 sys.exit(1)
 
-    file_paths, commit_subject = parse_args_flexible(list(args), subject)
-
-    if file_paths:
-        target_files = []
-        for fp in file_paths:
-            abs_path = os.path.abspath(fp)
-            if not os.path.exists(abs_path):
-                abs_from_root = os.path.join(git_root, fp)
-                if os.path.exists(abs_from_root):
-                    abs_path = os.path.abspath(abs_from_root)
-            target_files.append(os.path.relpath(abs_path, git_root))
+    if not args and not subject:
+        target_files, commit_subject = infer_no_arg_commit()
     else:
-        try:
-            all_files = get_all_changed_files()
-        except subprocess.CalledProcessError as e:
-            click.echo(f"Failed to get changed files: {e}", err=True)
-            sys.exit(1)
-
-        if not all_files:
-            click.echo("No changed files", err=True)
-            sys.exit(1)
-
-        if len(all_files) != 1:
-            # Check if changes are all renames
+        file_paths, commit_subject = parse_args_flexible(list(args), subject)
+        if file_paths:
+            target_files = [normalize_target_path(fp, git_root) for fp in file_paths]
+        else:
             try:
-                renames = get_staged_renames()
-            except subprocess.CalledProcessError:
-                renames = []
-            if _changes_are_only_renames(all_files, renames):
-                _commit_renames(renames, body_str, git_root)
-                return
+                all_files = get_all_changed_files()
+            except subprocess.CalledProcessError as e:
+                click.echo(f"Failed to get changed files: {e}", err=True)
+                sys.exit(1)
 
-            click.echo(
-                f"Expected 1 changed file, found {len(all_files)}:",
-                err=True,
-            )
-            for f in all_files:
-                click.echo(f"  {f}", err=True)
-            sys.exit(1)
+            if not all_files:
+                click.echo("No changed files", err=True)
+                sys.exit(1)
 
-        target_files = [all_files[0]]
+            if len(all_files) != 1:
+                # Check if changes are all renames
+                try:
+                    renames = get_staged_renames()
+                except subprocess.CalledProcessError:
+                    renames = []
+                if _changes_are_only_renames(all_files, renames):
+                    _commit_renames(renames, body_str, git_root)
+                    return
+
+                click.echo(
+                    f"Expected 1 changed file, found {len(all_files)}:",
+                    err=True,
+                )
+                for f in all_files:
+                    click.echo(f"  {f}", err=True)
+                sys.exit(1)
+
+            target_files = [all_files[0]]
 
     # Set env var so pre-commit hook skips the "use git-commit-scope" hint
     os.environ["GIT_COMMIT_SCOPE_CLI"] = "1"
@@ -821,6 +953,13 @@ def main(args, subject, body, ai_shorten):
                     force_added = True
                 else:
                     click.echo(f"  add {target_file}")
+            elif is_deleted(target_file):
+                subprocess.run(
+                    ["git", "add", "--", target_file],
+                    check=True,
+                    cwd=git_root,
+                )
+                click.echo(f"  add {target_file}")
 
             click.echo(f"  commit {target_file}")
 
