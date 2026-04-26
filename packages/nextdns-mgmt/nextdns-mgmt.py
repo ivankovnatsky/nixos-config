@@ -61,6 +61,12 @@ class NextDNSClient:
         data = self._api_call("GET", "/profiles")
         return data.get("data", [])
 
+    def create_profile(self, name=None):
+        """Create a new profile. Returns the new profile ID."""
+        body = {"name": name} if name else {}
+        data = self._api_call("POST", "/profiles", data=body)
+        return data["data"]["id"]
+
     def get_profile(self, profile_id: str):
         """Get single profile details."""
         return self._api_call("GET", f"/profiles/{profile_id}")
@@ -190,7 +196,12 @@ def sync(api_key, profile_id, profile_file, dry_run):
 
 @cli.command()
 @click.option("--api-key", required=True, help="NextDNS API key")
-@click.option("--profile-id", required=True, help="Profile ID to update")
+@click.option("--profile-id", default=None, help="Profile ID to update")
+@click.option(
+    "--name",
+    default=None,
+    help="Profile name to look up (or create) when --profile-id is not given",
+)
 @click.option("--profile-file", required=True, help="NextDNS profile JSON file")
 @click.option(
     "--dry-run",
@@ -198,10 +209,21 @@ def sync(api_key, profile_id, profile_file, dry_run):
     default=False,
     help="Show what would be updated without making changes",
 )
-def update(api_key, profile_id, profile_file, dry_run):
+def update(api_key, profile_id, name, profile_file, dry_run):
     """Update profile using nested endpoints (section by section)."""
     client = NextDNSClient(api_key)
     try:
+        if not profile_id:
+            if not name:
+                raise ValueError("Either --profile-id or --name must be provided")
+            for p in client.get_profiles():
+                if p.get("name") == name:
+                    profile_id = p["id"]
+                    click.echo(f"Resolved profile '{name}' → {profile_id}", err=True)
+                    break
+            if not profile_id:
+                profile_id = client.create_profile(name=name)
+                click.echo(f"Created profile '{name}' → {profile_id}", err=True)
         # Load profile JSON
         with open(profile_file, "r") as f:
             profile_data = json.load(f)
