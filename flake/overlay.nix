@@ -96,7 +96,6 @@ let
     inherit (inputs.textcast.packages.${system}) textcast;
 
     rems = inputs.rems.packages.${system}.default;
-    taskweb = inputs.taskweb.packages.${system}.default;
     pyenv-nix-install = inputs.pyenv-nix-install.packages.${system}.default;
   };
 
