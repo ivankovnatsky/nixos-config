@@ -23,6 +23,7 @@
     ./fwupd.nix
     ./gamescope.nix
     ./networking.nix
+    ./nextdns-resolved.nix
     ./nixpkgs.nix
     ./nvidia.nix
     ./ollama.nix
