@@ -45,9 +45,6 @@
     ../../../home/starship
     ../../../home/syncthing-ignore.nix
     ../../../home/syncthing.nix
-    ../../../home/taskwarrior-notify.nix
-    ../../../home/taskchampion-sync.nix
-    ../../../home/taskwarrior.nix
     ../../../home/tmux.nix
     ../../../home/treefmt.nix
     ../../../home/whisper.nix
@@ -67,7 +64,6 @@
     ../../../modules/home/nextdns-mgmt
     ../../../modules/home/reposync
     ../../../modules/home/syncthing-mgmt
-    ../../../modules/home/taskwarrior-notify
     ../../../modules/home/tools
     ../../../modules/home/unison
     ../../../modules/home/uptime-kuma-mgmt
@@ -76,7 +72,6 @@
     ./openclaw.nix
     ./packages.nix
     ./server
-    ./taskchampion-sync.nix
     ./tmux.nix
     ./tools.nix
     ./unison.nix
