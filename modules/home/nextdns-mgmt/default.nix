@@ -126,18 +126,21 @@ in
                   ) profile.varsFiles
                 )}
 
+                PROFILE_ID_ARGS=()
+                ${
+                  if profile.profileIdFile != null then
+                    ''PROFILE_ID_ARGS=(--profile-id "$(cat ${profile.profileIdFile})")''
+                  else if profile.profileId != null then
+                    ''PROFILE_ID_ARGS=(--profile-id "${profile.profileId}")''
+                  else
+                    ""
+                }
+
                 ${pkgs.nextdns-mgmt}/bin/nextdns-mgmt update \
                   --api-key "$API_KEY" \
                   --name "${name}" \
-                  ${
-                    if profile.profileIdFile != null then
-                      ''--profile-id "$(cat ${profile.profileIdFile})" \''
-                    else if profile.profileId != null then
-                      ''--profile-id "${profile.profileId}" \''
-                    else
-                      ""
-                  }
-                  --profile-file "$PROFILE_JSON" 2>&1 || echo "Warning: NextDNS update for ${name} failed with exit code $?"
+                  --profile-file "$PROFILE_JSON" \
+                  "''${PROFILE_ID_ARGS[@]}" 2>&1 || echo "Warning: NextDNS update for ${name} failed with exit code $?"
 
 
                 echo "NextDNS profile ${name} update completed"
