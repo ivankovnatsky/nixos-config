@@ -11,6 +11,7 @@
     git-restore
     backup-system
     bat
+    bubblewrap
     cargo
     claude-code-logs
     curlie
