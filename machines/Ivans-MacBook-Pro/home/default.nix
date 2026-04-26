@@ -46,9 +46,6 @@
     ../../../home/syncthing-ignore.nix
     ../../../home/syncthing-mgmt.nix
     ../../../home/syncthing.nix
-    ../../../home/taskwarrior-notify.nix
-    ../../../home/taskchampion-sync.nix
-    ../../../home/taskwarrior.nix
     ../../../home/tmux.nix
     ../../../home/tools.nix
     ../../../home/treefmt.nix
@@ -62,7 +59,6 @@
     ../../../modules/home/nextdns-mgmt
     ../../../modules/home/reposync
     ../../../modules/home/syncthing-mgmt
-    ../../../modules/home/taskwarrior-notify
     ../../../modules/home/tools
     ../../Ivans-MacBook-Air/home/dock.nix
     ../../Ivans-MacBook-Air/home/packages.nix
