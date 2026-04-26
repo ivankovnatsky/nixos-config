@@ -63,13 +63,11 @@ in
 
       mv -f "$tmp" ${resolvedConf}
 
-      # Only reload systemd-resolved if it is already running. At boot we are
-      # ordered Before=systemd-resolved.service, so resolved will read the
-      # drop-in on its initial start; queuing a start/restart job from here
-      # would deadlock against our own Before= ordering.
-      if ${pkgs.systemd}/bin/systemctl is-active --quiet systemd-resolved.service; then
-        ${pkgs.systemd}/bin/systemctl reload systemd-resolved.service
-      fi
+      # No reload here: Before=systemd-resolved.service guarantees resolved
+      # reads the drop-in on its initial start. Queuing a reload from here
+      # creates an ordering cycle (resolved is ordered after us, the reload
+      # job would be ordered after resolved). For runtime config changes,
+      # run `sudo systemctl reload systemd-resolved` manually.
     '';
   };
 }
