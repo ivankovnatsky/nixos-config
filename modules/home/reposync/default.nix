@@ -40,6 +40,17 @@ let
         description = "Branch to sync";
       };
 
+      prune = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          Pass --prune to git fetch for this repo. Removes stale
+          remote-tracking refs that would otherwise block fetches with
+          "some local refs could not be updated". Useful for one-way
+          mirrors of upstream repos with churning branches.
+        '';
+      };
+
       syncMode = mkOption {
         type = types.enum [
           "pull-push"
