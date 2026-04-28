@@ -10,6 +10,6 @@ in
   home.sessionVariables = {
     EDITOR = config.flags.editor;
     VISUAL = config.flags.editor;
-    MTASKS_ROOT = "${notesPath}/Tasks";
+    MTASKS_ROOT = "${notesPath}/Tasks/Todo";
   };
 }
