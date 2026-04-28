@@ -27,11 +27,14 @@ from rich.table import Table
 TASK_RE = re.compile(r"^- \[( |x)\] (.*)$")
 SUBKV_RE = re.compile(r"^  - ([A-Za-z][A-Za-z0-9_]*): (.*)$")
 
+STATUS_PENDING = "Pending"
+STATUS_DONE = "Done"
+
 
 @dataclass
 class Task:
     project: str = ""
-    status: str = "pending"  # pending | done
+    status: str = STATUS_PENDING
     title: str = ""
     notes: str = ""
     file: str = ""
@@ -61,7 +64,7 @@ def parse_file(path: Path, root: Path) -> list[Task]:
         if not m:
             i += 1
             continue
-        status = "done" if m.group(1) == "x" else "pending"
+        status = STATUS_DONE if m.group(1) == "x" else STATUS_PENDING
         title = m.group(2)
 
         t = Task(
@@ -108,19 +111,19 @@ def gather(root: Path) -> list[Task]:
     out: list[Task] = []
     for f in files:
         out.extend(parse_file(f, root))
-    pending = [t for t in out if t.status == "pending"]
-    done = [t for t in out if t.status == "done"]
+    pending = [t for t in out if t.status == STATUS_PENDING]
+    done = [t for t in out if t.status == STATUS_DONE]
     return pending + done
 
 
 def filter_tasks(tasks: list[Task], args) -> list[Task]:
     out = tasks
     if args.pending:
-        out = [t for t in out if t.status == "pending"]
+        out = [t for t in out if t.status == STATUS_PENDING]
     elif args.completed:
-        out = [t for t in out if t.status == "done"]
+        out = [t for t in out if t.status == STATUS_DONE]
     elif not args.all:
-        out = [t for t in out if t.status == "pending"]
+        out = [t for t in out if t.status == STATUS_PENDING]
     if args.project:
         wanted = {p.lower() for p in args.project.split(",")}
         out = [t for t in out if t.project.lower() in wanted]
@@ -132,7 +135,7 @@ def filter_tasks(tasks: list[Task], args) -> list[Task]:
 def render_table(
     tasks: list[Task], totals: dict | None = None, wrap: bool = False
 ) -> str:
-    show_status = any(t.status == "done" for t in tasks)
+    show_status = any(t.status == STATUS_DONE for t in tasks)
     width = shutil.get_terminal_size((100, 24)).columns
     table = Table(box=box.ROUNDED, expand=True)
     table.add_column(
@@ -147,8 +150,8 @@ def render_table(
     for t in tasks:
         row = [t.project]
         if show_status:
-            row.append(t.status if t.status == "done" else "")
-        table.add_row(*row, t.title, style="dim" if t.status == "done" else None)
+            row.append(t.status if t.status == STATUS_DONE else "")
+        table.add_row(*row, t.title, style="dim" if t.status == STATUS_DONE else None)
 
     output = io.StringIO()
     console = Console(file=output, force_terminal=True, width=width)
@@ -157,7 +160,8 @@ def render_table(
         console.print(
             f"shown: {len(tasks)}  "
             f"total: {totals['total']} "
-            f"(pending: {totals['pending']}, done: {totals['done']})"
+            f"({STATUS_PENDING}: {totals[STATUS_PENDING]}, "
+            f"{STATUS_DONE}: {totals[STATUS_DONE]})"
         )
     else:
         console.print(f"{len(tasks)} tasks")
@@ -167,12 +171,12 @@ def render_table(
 def render_simple_table(
     tasks: list[Task], totals: dict | None = None, wrap: bool = False
 ) -> str:
-    show_status = any(t.status == "done" for t in tasks)
+    show_status = any(t.status == STATUS_DONE for t in tasks)
     cols = [
         ("Project", lambda t: t.project),
     ]
     if show_status:
-        cols.append(("Status", lambda t: t.status if t.status == "done" else ""))
+        cols.append(("Status", lambda t: t.status if t.status == STATUS_DONE else ""))
     cols.append(("Title", lambda t: t.title))
     headers = [h for h, _ in cols]
     rows = [headers]
@@ -211,7 +215,7 @@ def render_simple_table(
     out.append("  ".join("-" * width for width in widths))
     for i, t in enumerate(tasks, 1):
         line = fmt_row(rows[i], row_mode)
-        if t.status == "done":
+        if t.status == STATUS_DONE:
             line = f"\033[2m{line}\033[0m"
         out.append(line)
     out.append("")
@@ -219,7 +223,8 @@ def render_simple_table(
         out.append(
             f"shown: {len(tasks)}  "
             f"total: {totals['total']} "
-            f"(pending: {totals['pending']}, done: {totals['done']})"
+            f"({STATUS_PENDING}: {totals[STATUS_PENDING]}, "
+            f"{STATUS_DONE}: {totals[STATUS_DONE]})"
         )
     else:
         out.append(f"{len(tasks)} tasks")
@@ -250,8 +255,7 @@ def render_simple_table(
     default=None,
     metavar="N",
     help=(
-        "Limit rows. Use 0 for no limit. "
-        "Defaults to no limit with --all, otherwise 20."
+        "Limit rows. Use 0 for no limit. Defaults to no limit with --all, otherwise 20."
     ),
 )
 @click.option(
@@ -295,8 +299,8 @@ def main(
     tasks = filter_tasks(all_tasks, args)
     totals = {
         "total": len(all_tasks),
-        "pending": sum(1 for t in all_tasks if t.status == "pending"),
-        "done": sum(1 for t in all_tasks if t.status == "done"),
+        STATUS_PENDING: sum(1 for t in all_tasks if t.status == STATUS_PENDING),
+        STATUS_DONE: sum(1 for t in all_tasks if t.status == STATUS_DONE),
     }
     if output_format == "table":
         click.echo(render_table(tasks, totals, wrap=wrap))
