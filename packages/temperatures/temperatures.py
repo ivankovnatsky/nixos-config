@@ -18,42 +18,10 @@ import time
 from datetime import datetime
 import signal
 
-# Check if running on Linux
-if platform.system() != "Linux":
-    print("Error: This script only works on Linux systems")
-    sys.exit(1)
-
-# Check if sensors command is available
-try:
-    subprocess.run(
-        ["sensors", "--version"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        check=True,
-    )
-except (subprocess.SubprocessError, FileNotFoundError):
-    print('Error: "sensors" command not found. Please install lm_sensors package.')
-    sys.exit(1)
-
-# Default values
-INTERVAL = 2
-if len(sys.argv) > 1:
-    try:
-        INTERVAL = float(sys.argv[1])
-    except ValueError:
-        print(f'Error: Invalid interval "{sys.argv[1]}". Using default: {INTERVAL}s')
-
-# Set log file location
-LOG_FILE = "/tmp/temperatures-max.json"
-if len(sys.argv) > 2:
-    LOG_FILE = sys.argv[2]
+import click
 
 # Initialize max temperatures dictionary
 max_temps = {}
-# Clean up existing log file on start
-if os.path.exists(LOG_FILE):
-    os.remove(LOG_FILE)
-    print(f"Cleaned up existing log file: {LOG_FILE}")
 
 
 # Function to get current temperatures as JSON
@@ -65,7 +33,7 @@ def get_temperatures():
 
 
 # Function to update max temperatures
-def update_max_temps(current_data):
+def update_max_temps(current_data, logfile):
     updated = False
 
     # Process each chip
@@ -90,7 +58,7 @@ def update_max_temps(current_data):
                             "sensor": sensor_name,
                             "key": key,
                         }
-                        print(f"New sensor: {sensor_id} at {value}°C")
+                        click.echo(f"New sensor: {sensor_id} at {value}°C")
                         updated = True
                     elif value > max_temps[sensor_id]["max_temp"]:
                         old_max = max_temps[sensor_id]["max_temp"]
@@ -98,31 +66,31 @@ def update_max_temps(current_data):
                         max_temps[sensor_id]["timestamp"] = datetime.now().strftime(
                             "%Y-%m-%d %H:%M:%S"
                         )
-                        print(f"New max for {sensor_id}: {value}°C (was {old_max}°C)")
+                        click.echo(f"New max for {sensor_id}: {value}°C (was {old_max}°C)")
                         updated = True
 
     # Save updated max temperatures
     if updated:
-        with open(LOG_FILE, "w") as f:
+        with open(logfile, "w") as f:
             json.dump(max_temps, f, indent=2)
 
     return updated
 
 
 # Function to display current temperatures in a nice format
-def display_temperatures(current_data):
-    os.system("clear")
-    print(f"Every {INTERVAL}s: sensors")
-    print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    print()
+def display_temperatures(current_data, interval):
+    click.clear()
+    click.echo(f"Every {interval}s: sensors")
+    click.echo(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    click.echo()
 
     # Run sensors command for display
     subprocess.run(["sensors"], check=True)
 
-    print("\nMAXIMUM TEMPERATURES:")
-    print("=" * 80)
-    print(f"{'SENSOR':<40} {'MAX TEMP':<10} {'RECORDED AT':<20}")
-    print("-" * 80)
+    click.echo("\nMAXIMUM TEMPERATURES:")
+    click.echo("=" * 80)
+    click.echo(f"{'SENSOR':<40} {'MAX TEMP':<10} {'RECORDED AT':<20}")
+    click.echo("-" * 80)
 
     # Sort by temperature (highest first)
     sorted_temps = sorted(
@@ -130,32 +98,65 @@ def display_temperatures(current_data):
     )
 
     for sensor_id, data in sorted_temps:
-        print(f"{sensor_id:<40} {data['max_temp']:>8.1f}°C {data['timestamp']:>20}")
+        click.echo(f"{sensor_id:<40} {data['max_temp']:>8.1f}°C {data['timestamp']:>20}")
 
 
 # Handle Ctrl+C gracefully
 def signal_handler(sig, frame):
-    print("\nMonitoring stopped.")
-    print(f"Maximum temperatures saved to {LOG_FILE}")
+    click.echo("\nMonitoring stopped.")
     sys.exit(0)
 
 
-signal.signal(signal.SIGINT, signal_handler)
+@click.command()
+@click.argument("interval", default=2.0, type=float)
+@click.argument("logfile", default="/tmp/temperatures-max.json", type=click.Path())
+def main(interval, logfile):
+    """Monitor and record maximum temperatures from sensors."""
+    # Check if running on Linux
+    if platform.system() != "Linux":
+        click.echo("Error: This script only works on Linux systems", err=True)
+        sys.exit(1)
 
-# Main monitoring loop
-print("Starting temperature monitoring...")
-print(f"Maximum temperatures will be saved to {LOG_FILE}")
-print()
+    # Check if sensors command is available
+    try:
+        subprocess.run(
+            ["sensors", "--version"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=True,
+        )
+    except (subprocess.SubprocessError, FileNotFoundError):
+        click.echo(
+            'Error: "sensors" command not found. Please install lm_sensors package.',
+            err=True,
+        )
+        sys.exit(1)
 
-while True:
-    # Get current temperatures
-    current_data = get_temperatures()
+    # Clean up existing log file on start
+    if os.path.exists(logfile):
+        os.remove(logfile)
+        click.echo(f"Cleaned up existing log file: {logfile}")
 
-    # Update max temperatures
-    updated = update_max_temps(current_data)
+    signal.signal(signal.SIGINT, signal_handler)
 
-    # Display current temperatures
-    display_temperatures(current_data)
+    # Main monitoring loop
+    click.echo("Starting temperature monitoring...")
+    click.echo(f"Maximum temperatures will be saved to {logfile}")
+    click.echo()
 
-    # Wait for next check
-    time.sleep(INTERVAL)
+    while True:
+        # Get current temperatures
+        current_data = get_temperatures()
+
+        # Update max temperatures
+        update_max_temps(current_data, logfile)
+
+        # Display current temperatures
+        display_temperatures(current_data, interval)
+
+        # Wait for next check
+        time.sleep(interval)
+
+
+if __name__ == "__main__":
+    main()
