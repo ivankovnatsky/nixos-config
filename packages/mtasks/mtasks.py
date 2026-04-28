@@ -99,16 +99,17 @@ def parse_file(path: Path, root: Path) -> list[Task]:
 
 
 def gather(root: Path) -> list[Task]:
+    files = [
+        f
+        for f in root.rglob("*.md")
+        if not any(part.startswith(".") for part in f.relative_to(root).parts)
+    ]
+    files.sort(key=lambda f: f.stat().st_mtime)
     out: list[Task] = []
-    for f in sorted(root.rglob("*.md")):
-        # Skip hidden directories (e.g., .git, .obsidian)
-        if any(part.startswith(".") for part in f.relative_to(root).parts):
-            continue
+    for f in files:
         out.extend(parse_file(f, root))
     pending = [t for t in out if t.status == "pending"]
     done = [t for t in out if t.status == "done"]
-    pending.sort(key=lambda t: (t.file, t.line))
-    done.sort(key=lambda t: (t.file, t.line))
     return pending + done
 
 
