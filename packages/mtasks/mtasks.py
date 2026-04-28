@@ -5,7 +5,7 @@ Recursively scans `--root` (default: cwd) for `*.md` files and parses
 GitHub-style task lines (`- [ ] ...` / `- [x] ...`).
 
 Usage:
-  mtdo [--all|--pending|--completed] [--project P]
+  mtasks [--all|--pending|--completed] [--project P]
        [--limit N] [--format table|tsv|json] [--root PATH]
 """
 
