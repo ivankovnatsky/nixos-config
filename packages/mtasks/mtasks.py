@@ -14,16 +14,15 @@ Parses two coexisting formats:
                        - createdDate: 2026-04-21 09:45Z
                        - due: 2026-04-21 16:00Z
 """
+
 from __future__ import annotations
 
 import argparse
 import json
 import os
 import re
-import shutil
-import sys
 from dataclasses import dataclass, field, asdict
-from datetime import datetime, date, timedelta, timezone
+from datetime import datetime, date, timedelta
 from pathlib import Path
 
 TASK_RE = re.compile(r"^- \[( |x)\] (.*)$")
@@ -239,7 +238,16 @@ def render_table(tasks: list[Task], totals: dict | None = None) -> str:
 
 
 def render_tsv(tasks: list[Task]) -> str:
-    headers = ["id", "project", "status", "priority", "created", "due", "completed", "title"]
+    headers = [
+        "id",
+        "project",
+        "status",
+        "priority",
+        "created",
+        "due",
+        "completed",
+        "title",
+    ]
     lines = ["\t".join(headers)]
     for t in tasks:
         lines.append(
@@ -266,8 +274,8 @@ def main():
     ap.add_argument(
         "--root",
         type=Path,
-        default=Path(os.environ.get("MDTASK_ROOT", ".")).resolve(),
-        help="root directory to scan recursively (default: cwd or $MDTASK_ROOT)",
+        default=Path(os.environ.get("MTASKS_ROOT", ".")).resolve(),
+        help="root directory to scan recursively (default: cwd or $MTASKS_ROOT)",
     )
     g = ap.add_mutually_exclusive_group()
     g.add_argument("--all", action="store_true", help="show all tasks")
@@ -275,7 +283,9 @@ def main():
     g.add_argument("--completed", action="store_true", help="show completed")
     ap.add_argument("--project", help="filter by project name (comma-separated)")
     ap.add_argument("--overdue", action="store_true", help="only overdue pending")
-    ap.add_argument("--due", choices=["today", "week"], help="due today or within a week")
+    ap.add_argument(
+        "--due", choices=["today", "week"], help="due today or within a week"
+    )
     ap.add_argument("--limit", type=int, help="limit rows")
     ap.add_argument("--format", choices=["table", "tsv", "json"], default="table")
     args = ap.parse_args()
