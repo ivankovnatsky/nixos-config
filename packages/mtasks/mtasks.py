@@ -6,19 +6,23 @@ GitHub-style task lines (`- [ ] ...` / `- [x] ...`).
 
 Usage:
   mtasks [--all|--pending|--completed] [--project P]
-       [--limit N] [--format table|tsv|json] [--root PATH]
+       [--limit N] [--format table|simple|json] [--root PATH]
 """
 
 from __future__ import annotations
 
-import argparse
+import io
 import json
-import os
 import re
 import shutil
 import textwrap
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
+
+import click
+from rich import box
+from rich.console import Console
+from rich.table import Table
 
 TASK_RE = re.compile(r"^- \[( |x)\] (.*)$")
 SUBKV_RE = re.compile(r"^  - ([A-Za-z][A-Za-z0-9_]*): (.*)$")
@@ -33,6 +37,15 @@ class Task:
     file: str = ""
     line: int = 0
     extra: dict = field(default_factory=dict)
+
+
+@dataclass
+class Options:
+    all: bool = False
+    pending: bool = False
+    completed: bool = False
+    project: str | None = None
+    limit: int = 20
 
 
 def parse_file(path: Path, root: Path) -> list[Task]:
@@ -119,6 +132,41 @@ def render_table(
     tasks: list[Task], totals: dict | None = None, wrap: bool = False
 ) -> str:
     show_status = any(t.status == "done" for t in tasks)
+    width = shutil.get_terminal_size((100, 24)).columns
+    table = Table(box=box.SIMPLE, expand=True)
+    table.add_column(
+        "Project", no_wrap=True, overflow="ellipsis", min_width=12, max_width=24
+    )
+    if show_status:
+        table.add_column("Status", no_wrap=True, min_width=6, max_width=6)
+    table.add_column(
+        "Title", overflow="fold" if wrap else "ellipsis", no_wrap=not wrap, ratio=1
+    )
+
+    for t in tasks:
+        row = [t.project]
+        if show_status:
+            row.append(t.status if t.status == "done" else "")
+        table.add_row(*row, t.title, style="dim" if t.status == "done" else None)
+
+    output = io.StringIO()
+    console = Console(file=output, force_terminal=True, width=width)
+    console.print(table)
+    if totals:
+        console.print(
+            f"shown: {len(tasks)}  "
+            f"total: {totals['total']} "
+            f"(pending: {totals['pending']}, done: {totals['done']})"
+        )
+    else:
+        console.print(f"{len(tasks)} tasks")
+    return output.getvalue().rstrip()
+
+
+def render_simple_table(
+    tasks: list[Task], totals: dict | None = None, wrap: bool = False
+) -> str:
+    show_status = any(t.status == "done" for t in tasks)
     cols = [
         ("Project", lambda t: t.project),
     ]
@@ -129,23 +177,20 @@ def render_table(
     rows = [headers]
     for t in tasks:
         rows.append([fn(t) for _, fn in cols])
-    # Compute widths from non-title columns; title is last and not padded.
     widths = [
         max(len(str(r[i])) for r in rows) if i < len(cols) - 1 else len(headers[i])
         for i in range(len(cols))
     ]
 
-    # Title column starts at this column; wraps to (term_width - title_col).
     sep = "  "
     title_col = sum(widths[:-1]) + len(sep) * (len(cols) - 1)
     term_width = shutil.get_terminal_size((100, 24)).columns
     title_width = max(20, term_width - title_col)
 
-    def fmt_row(r, mode: str):
-        """mode: 'header' (no truncate/wrap), 'truncate', or 'wrap'."""
-        prefix_cells = [str(r[i]).ljust(widths[i]) for i in range(len(cols) - 1)]
+    def fmt_row(row, mode: str):
+        prefix_cells = [str(row[i]).ljust(widths[i]) for i in range(len(cols) - 1)]
         prefix = sep.join(prefix_cells) + sep
-        title = str(r[-1])
+        title = str(row[-1])
         if mode == "header":
             return (prefix + title).rstrip()
         if mode == "truncate":
@@ -157,12 +202,12 @@ def render_table(
         ) or [""]
         pad = " " * title_col
         first = (prefix + wrapped[0]).rstrip()
-        rest = [pad + w for w in wrapped[1:]]
+        rest = [pad + line for line in wrapped[1:]]
         return "\n".join([first, *rest])
 
     row_mode = "wrap" if wrap else "truncate"
     out = [fmt_row(rows[0], "header")]
-    out.append("  ".join("-" * w for w in widths))
+    out.append("  ".join("-" * width for width in widths))
     for i, t in enumerate(tasks, 1):
         line = fmt_row(rows[i], row_mode)
         if t.status == "done":
@@ -180,62 +225,79 @@ def render_table(
     return "\n".join(out)
 
 
-def render_tsv(tasks: list[Task]) -> str:
-    headers = ["project", "status", "title"]
-    lines = ["\t".join(headers)]
-    for t in tasks:
-        lines.append(
-            "\t".join(
-                [
-                    t.project,
-                    t.status,
-                    t.title.replace("\t", " "),
-                ]
-            )
-        )
-    return "\n".join(lines)
+@click.command(
+    context_settings={"help_option_names": ["-h", "--help"]},
+    help="Taskwarrior-style listing of markdown task files under a directory.",
+)
+@click.option(
+    "--root",
+    type=click.Path(path_type=Path, file_okay=False, dir_okay=True),
+    envvar="MTASKS_ROOT",
+    default=".",
+    show_default=True,
+    help="Root directory to scan recursively.",
+)
+@click.option("--all", "show_all", is_flag=True, help="Show all tasks.")
+@click.option(
+    "--pending", is_flag=True, help="Show pending tasks. This is the default."
+)
+@click.option("--completed", is_flag=True, help="Show completed tasks.")
+@click.option("--project", help="Filter by project name, comma-separated.")
+@click.option(
+    "--limit",
+    type=int,
+    default=20,
+    show_default=True,
+    help="Limit rows. Use 0 for no limit.",
+)
+@click.option(
+    "--format",
+    "output_format",
+    type=click.Choice(["table", "simple", "json"]),
+    default="table",
+    show_default=True,
+    help="Output format. table is the Rich view.",
+)
+@click.option(
+    "--wrap",
+    is_flag=True,
+    help="Wrap long titles across multiple lines. The default truncates.",
+)
+def main(
+    root: Path,
+    show_all: bool,
+    pending: bool,
+    completed: bool,
+    project: str | None,
+    limit: int,
+    output_format: str,
+    wrap: bool,
+):
+    modes = [show_all, pending, completed]
+    if sum(1 for mode in modes if mode) > 1:
+        raise click.UsageError("Use only one of --all, --pending, or --completed.")
 
-
-def main():
-    ap = argparse.ArgumentParser(
-        description="Taskwarrior-style listing of markdown task files under a directory"
+    args = Options(
+        all=show_all,
+        pending=pending,
+        completed=completed,
+        project=project,
+        limit=limit,
     )
-    ap.add_argument(
-        "--root",
-        type=Path,
-        default=Path(os.environ.get("MTASKS_ROOT", ".")).resolve(),
-        help="root directory to scan recursively (default: cwd or $MTASKS_ROOT)",
-    )
-    g = ap.add_mutually_exclusive_group()
-    g.add_argument("--all", action="store_true", help="show all tasks")
-    g.add_argument("--pending", action="store_true", help="show pending (default)")
-    g.add_argument("--completed", action="store_true", help="show completed")
-    ap.add_argument("--project", help="filter by project name (comma-separated)")
-    ap.add_argument(
-        "--limit", type=int, default=20, help="limit rows (default: 20, 0 = no limit)"
-    )
-    ap.add_argument("--format", choices=["table", "tsv", "json"], default="table")
-    ap.add_argument(
-        "--wrap",
-        action="store_true",
-        help="wrap long titles across multiple lines (default: truncate with …)",
-    )
-    args = ap.parse_args()
-
-    all_tasks = gather(args.root)
+    all_tasks = gather(root.resolve())
     tasks = filter_tasks(all_tasks, args)
     totals = {
         "total": len(all_tasks),
         "pending": sum(1 for t in all_tasks if t.status == "pending"),
         "done": sum(1 for t in all_tasks if t.status == "done"),
     }
-    if args.format == "table":
-        print(render_table(tasks, totals, wrap=args.wrap))
-    elif args.format == "tsv":
-        print(render_tsv(tasks))
+    if output_format == "table":
+        click.echo(render_table(tasks, totals, wrap=wrap))
+    elif output_format == "simple":
+        click.echo(render_simple_table(tasks, totals, wrap=wrap))
     else:
-        print(json.dumps([asdict(t) for t in tasks], indent=2, ensure_ascii=False))
+        click.echo(json.dumps([asdict(t) for t in tasks], indent=2, ensure_ascii=False))
 
 
 if __name__ == "__main__":
-    main()
+    main(prog_name="mtasks")
