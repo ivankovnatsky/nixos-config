@@ -184,7 +184,9 @@ def filter_tasks(tasks: list[Task], args) -> list[Task]:
     return out
 
 
-def render_table(tasks: list[Task], totals: dict | None = None) -> str:
+def render_table(
+    tasks: list[Task], totals: dict | None = None, wrap: bool = False
+) -> str:
     cols = [
         ("ID", lambda t: str(t.id)),
         ("Pr", lambda t: t.priority or ""),
@@ -212,11 +214,16 @@ def render_table(tasks: list[Task], totals: dict | None = None) -> str:
     term_width = shutil.get_terminal_size((100, 24)).columns
     title_width = max(20, term_width - title_col)
 
-    def fmt_row(r, wrap_title: bool):
+    def fmt_row(r, mode: str):
+        """mode: 'header' (no truncate/wrap), 'truncate', or 'wrap'."""
         prefix_cells = [str(r[i]).ljust(widths[i]) for i in range(len(cols) - 1)]
         prefix = sep.join(prefix_cells) + sep
         title = str(r[-1])
-        if not wrap_title:
+        if mode == "header":
+            return (prefix + title).rstrip()
+        if mode == "truncate":
+            if len(title) > title_width:
+                title = title[: max(1, title_width - 1)] + "…"
             return (prefix + title).rstrip()
         wrapped = textwrap.wrap(
             title, width=title_width, break_long_words=False, break_on_hyphens=False
@@ -226,10 +233,11 @@ def render_table(tasks: list[Task], totals: dict | None = None) -> str:
         rest = [pad + w for w in wrapped[1:]]
         return "\n".join([first, *rest])
 
-    out = [fmt_row(rows[0], wrap_title=False)]
+    row_mode = "wrap" if wrap else "truncate"
+    out = [fmt_row(rows[0], "header")]
     out.append("  ".join("-" * w for w in widths))
     for i, t in enumerate(tasks, 1):
-        line = fmt_row(rows[i], wrap_title=True)
+        line = fmt_row(rows[i], row_mode)
         if t.due and t.due < today and t.status == "pending":
             line = f"\033[31m{line}\033[0m"
         elif t.due == today:
@@ -302,6 +310,11 @@ def main():
         "--limit", type=int, default=20, help="limit rows (default: 20, 0 = no limit)"
     )
     ap.add_argument("--format", choices=["table", "tsv", "json"], default="table")
+    ap.add_argument(
+        "--wrap",
+        action="store_true",
+        help="wrap long titles across multiple lines (default: truncate with …)",
+    )
     args = ap.parse_args()
 
     all_tasks = gather(args.root)
@@ -312,7 +325,7 @@ def main():
         "done": sum(1 for t in all_tasks if t.status == "done"),
     }
     if args.format == "table":
-        print(render_table(tasks, totals))
+        print(render_table(tasks, totals, wrap=args.wrap))
     elif args.format == "tsv":
         print(render_tsv(tasks))
     else:
