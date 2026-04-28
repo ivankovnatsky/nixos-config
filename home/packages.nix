@@ -99,7 +99,6 @@
     syncthing-mgmt
     tac
     tail-terminal
-    taskmanager
     tmux-attach
     tmux-spawn
     top-top
