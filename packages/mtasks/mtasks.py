@@ -28,7 +28,7 @@ TASK_RE = re.compile(r"^- \[( |x)\] (.*)$")
 SUBKV_RE = re.compile(r"^  - ([A-Za-z][A-Za-z0-9_]*): (.*)$")
 
 STATUS_PENDING = "Pending"
-STATUS_DONE = "Done"
+STATUS_COMPLETED = "Completed"
 
 
 @dataclass
@@ -64,7 +64,7 @@ def parse_file(path: Path, root: Path) -> list[Task]:
         if not m:
             i += 1
             continue
-        status = STATUS_DONE if m.group(1) == "x" else STATUS_PENDING
+        status = STATUS_COMPLETED if m.group(1) == "x" else STATUS_PENDING
         title = m.group(2)
 
         t = Task(
@@ -112,7 +112,7 @@ def gather(root: Path) -> list[Task]:
     for f in files:
         out.extend(parse_file(f, root))
     pending = [t for t in out if t.status == STATUS_PENDING]
-    done = [t for t in out if t.status == STATUS_DONE]
+    done = [t for t in out if t.status == STATUS_COMPLETED]
     return pending + done
 
 
@@ -121,7 +121,7 @@ def filter_tasks(tasks: list[Task], args) -> list[Task]:
     if args.pending:
         out = [t for t in out if t.status == STATUS_PENDING]
     elif args.completed:
-        out = [t for t in out if t.status == STATUS_DONE]
+        out = [t for t in out if t.status == STATUS_COMPLETED]
     elif not args.all:
         out = [t for t in out if t.status == STATUS_PENDING]
     if args.project:
@@ -135,14 +135,14 @@ def filter_tasks(tasks: list[Task], args) -> list[Task]:
 def render_table(
     tasks: list[Task], totals: dict | None = None, wrap: bool = False
 ) -> str:
-    show_status = any(t.status == STATUS_DONE for t in tasks)
+    show_status = any(t.status == STATUS_COMPLETED for t in tasks)
     width = shutil.get_terminal_size((100, 24)).columns
     table = Table(box=box.ROUNDED, expand=True)
     table.add_column(
         "Project", no_wrap=True, overflow="ellipsis", min_width=12, max_width=24
     )
     if show_status:
-        table.add_column("Status", no_wrap=True, min_width=6, max_width=6)
+        table.add_column("Status", no_wrap=True, min_width=9, max_width=9)
     table.add_column(
         "Title", overflow="fold" if wrap else "ellipsis", no_wrap=not wrap, ratio=1
     )
@@ -150,8 +150,10 @@ def render_table(
     for t in tasks:
         row = [t.project]
         if show_status:
-            row.append(t.status if t.status == STATUS_DONE else "")
-        table.add_row(*row, t.title, style="dim" if t.status == STATUS_DONE else None)
+            row.append(t.status if t.status == STATUS_COMPLETED else "")
+        table.add_row(
+            *row, t.title, style="dim" if t.status == STATUS_COMPLETED else None
+        )
 
     output = io.StringIO()
     console = Console(file=output, force_terminal=True, width=width)
@@ -161,7 +163,7 @@ def render_table(
             f"shown: {len(tasks)}  "
             f"total: {totals['total']} "
             f"({STATUS_PENDING}: {totals[STATUS_PENDING]}, "
-            f"{STATUS_DONE}: {totals[STATUS_DONE]})"
+            f"{STATUS_COMPLETED}: {totals[STATUS_COMPLETED]})"
         )
     else:
         console.print(f"{len(tasks)} tasks")
@@ -171,12 +173,14 @@ def render_table(
 def render_simple_table(
     tasks: list[Task], totals: dict | None = None, wrap: bool = False
 ) -> str:
-    show_status = any(t.status == STATUS_DONE for t in tasks)
+    show_status = any(t.status == STATUS_COMPLETED for t in tasks)
     cols = [
         ("Project", lambda t: t.project),
     ]
     if show_status:
-        cols.append(("Status", lambda t: t.status if t.status == STATUS_DONE else ""))
+        cols.append(
+            ("Status", lambda t: t.status if t.status == STATUS_COMPLETED else "")
+        )
     cols.append(("Title", lambda t: t.title))
     headers = [h for h, _ in cols]
     rows = [headers]
@@ -215,7 +219,7 @@ def render_simple_table(
     out.append("  ".join("-" * width for width in widths))
     for i, t in enumerate(tasks, 1):
         line = fmt_row(rows[i], row_mode)
-        if t.status == STATUS_DONE:
+        if t.status == STATUS_COMPLETED:
             line = f"\033[2m{line}\033[0m"
         out.append(line)
     out.append("")
@@ -224,7 +228,7 @@ def render_simple_table(
             f"shown: {len(tasks)}  "
             f"total: {totals['total']} "
             f"({STATUS_PENDING}: {totals[STATUS_PENDING]}, "
-            f"{STATUS_DONE}: {totals[STATUS_DONE]})"
+            f"{STATUS_COMPLETED}: {totals[STATUS_COMPLETED]})"
         )
     else:
         out.append(f"{len(tasks)} tasks")
@@ -300,7 +304,7 @@ def main(
     totals = {
         "total": len(all_tasks),
         STATUS_PENDING: sum(1 for t in all_tasks if t.status == STATUS_PENDING),
-        STATUS_DONE: sum(1 for t in all_tasks if t.status == STATUS_DONE),
+        STATUS_COMPLETED: sum(1 for t in all_tasks if t.status == STATUS_COMPLETED),
     }
     if output_format == "table":
         click.echo(render_table(tasks, totals, wrap=wrap))
