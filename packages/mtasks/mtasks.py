@@ -133,7 +133,7 @@ def render_table(
 ) -> str:
     show_status = any(t.status == "done" for t in tasks)
     width = shutil.get_terminal_size((100, 24)).columns
-    table = Table(box=box.SIMPLE, expand=True)
+    table = Table(box=box.ROUNDED, expand=True)
     table.add_column(
         "Project", no_wrap=True, overflow="ellipsis", min_width=12, max_width=24
     )
