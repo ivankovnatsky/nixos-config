@@ -118,11 +118,13 @@ def filter_tasks(tasks: list[Task], args) -> list[Task]:
 def render_table(
     tasks: list[Task], totals: dict | None = None, wrap: bool = False
 ) -> str:
+    show_status = any(t.status == "done" for t in tasks)
     cols = [
         ("Project", lambda t: t.project),
-        ("Status", lambda t: t.status if t.status == "done" else ""),
-        ("Title", lambda t: t.title),
     ]
+    if show_status:
+        cols.append(("Status", lambda t: t.status if t.status == "done" else ""))
+    cols.append(("Title", lambda t: t.title))
     headers = [h for h, _ in cols]
     rows = [headers]
     for t in tasks:
