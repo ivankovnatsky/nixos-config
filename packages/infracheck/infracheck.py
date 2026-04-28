@@ -1,9 +1,7 @@
 """Run infrastructure health checks and alert on failures."""
 
 import json
-import os
 import platform
-import sqlite3
 import subprocess
 import sys
 import urllib.error
@@ -41,53 +39,6 @@ def get_webhook_url(config):
         with open(webhook_file) as f:
             return f.read().strip()
     return None
-
-
-def _query_sqlite(db, sql):
-    conn = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
-    try:
-        cursor = conn.execute(sql)
-        return cursor.fetchone()[0]
-    finally:
-        conn.close()
-
-
-def check_taskwarrior_orphans(opts):
-    db = opts.get("database", os.path.expanduser("~/.task/taskchampion.sqlite3"))
-    if not os.path.exists(db):
-        return True, "database not found, skipping"
-
-    sql = (
-        "SELECT COUNT(*) FROM operations o "
-        "WHERE o.synced = 0 AND o.data LIKE '{\"Delete%' "
-        "AND NOT EXISTS ("
-        "SELECT 1 FROM tasks t "
-        "WHERE t.uuid = json_extract(o.data, '$.Delete.uuid')"
-        ")"
-    )
-    try:
-        count = _query_sqlite(db, sql)
-        if count > 0:
-            return False, f"{count} orphaned Delete ops in operations table"
-        return True, "no orphaned Delete ops"
-    except Exception as e:
-        return False, f"failed to query database: {e}"
-
-
-def check_taskwarrior_sync(opts):
-    db = opts.get("database", os.path.expanduser("~/.task/taskchampion.sqlite3"))
-    if not os.path.exists(db):
-        return True, "database not found, skipping"
-
-    threshold = opts.get("threshold", 500)
-    sql = "SELECT COUNT(*) FROM operations WHERE synced = 0"
-    try:
-        count = _query_sqlite(db, sql)
-        if count > threshold:
-            return False, f"{count} unsynced operations (threshold: {threshold})"
-        return True, f"{count} unsynced operations"
-    except Exception as e:
-        return False, f"failed to query database: {e}"
 
 
 def check_command(opts):
@@ -136,8 +87,6 @@ def check_url(opts):
 
 
 CHECKS = {
-    "taskwarrior-orphans": check_taskwarrior_orphans,
-    "taskwarrior-sync": check_taskwarrior_sync,
     "command": check_command,
     "url": check_url,
 }
