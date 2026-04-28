@@ -31,6 +31,7 @@
       remoteUrl = "https://github.com/openclaw/openclaw.git";
       branch = "main";
       syncMode = "pull-only";
+      prune = true;
     }
     {
       path = "${config.flags.externalStoragePath}/Notes";
