@@ -3,6 +3,8 @@
 import subprocess
 import sys
 
+import click
+
 
 def get_network_services():
     """Get list of active network services (excluding disabled ones)."""
@@ -41,41 +43,41 @@ def get_dns_servers(service):
 def show_current_dns():
     """Display current DNS configuration for all network services."""
     services = get_network_services()
-    print("Current DNS configuration:")
+    click.echo("Current DNS configuration:")
     for service in services:
-        print(f"  {service}:")
+        click.echo(f"  {service}:")
         dns_servers = get_dns_servers(service)
         if dns_servers is None:
-            print("    (using DHCP)")
+            click.echo("    (using DHCP)")
         elif dns_servers == "error":
-            print("    (error retrieving DNS settings)")
+            click.echo("    (error retrieving DNS settings)")
         else:
             for server in dns_servers:
-                print(f"    {server}")
+                click.echo(f"    {server}")
 
 
 def set_dns_servers(servers):
     """Set DNS servers for all network services."""
     services = get_network_services()
-    print(f"Setting DNS servers to: {' '.join(servers)}")
+    click.echo(f"Setting DNS servers to: {' '.join(servers)}")
     for service in services:
-        print(f"  - {service}")
+        click.echo(f"  - {service}")
         try:
             subprocess.run(
-                ["networksetup", "-setdnsservers", service] + servers,
+                ["networksetup", "-setdnsservers", service] + list(servers),
                 check=True,
                 capture_output=True,
             )
         except subprocess.CalledProcessError as e:
-            print(f"    Error: {e.stderr.decode().strip()}", file=sys.stderr)
+            click.echo(f"    Error: {e.stderr.decode().strip()}", err=True)
 
 
 def clear_dns_servers():
     """Clear DNS servers for all network services (use DHCP)."""
     services = get_network_services()
-    print("Clearing DNS servers for all network interfaces...")
+    click.echo("Clearing DNS servers for all network interfaces...")
     for service in services:
-        print(f"  - {service}")
+        click.echo(f"  - {service}")
         try:
             subprocess.run(
                 ["networksetup", "-setdnsservers", service, "Empty"],
@@ -83,69 +85,62 @@ def clear_dns_servers():
                 capture_output=True,
             )
         except subprocess.CalledProcessError as e:
-            print(f"    Error: {e.stderr.decode().strip()}", file=sys.stderr)
+            click.echo(f"    Error: {e.stderr.decode().strip()}", err=True)
 
 
-def flush_dns_cache():
+def flush_dns_cache_impl():
     """Flush the DNS cache."""
-    print("Flushing DNS cache...")
+    click.echo("Flushing DNS cache...")
     try:
         subprocess.run(["dscacheutil", "-flushcache"], check=True)
         subprocess.run(["killall", "-HUP", "mDNSResponder"], check=True)
-        print("DNS cache flushed successfully")
+        click.echo("DNS cache flushed successfully")
     except subprocess.CalledProcessError as e:
-        print(f"Error flushing DNS cache: {e}", file=sys.stderr)
+        click.echo(f"Error flushing DNS cache: {e}", err=True)
         sys.exit(1)
 
 
-def show_help():
-    """Display help message."""
-    print("Usage: dns [dns1 dns2 ...] | clear | flush")
-    print()
-    print("Examples:")
-    print("  dns                        # Show current DNS configuration")
-    print("  dns 1.1.1.1 1.0.0.1        # Set DNS for all interfaces")
-    print("  dns 8.8.8.8 8.8.4.4        # Set DNS for all interfaces")
-    print("  dns clear                  # Clear DNS (use DHCP)")
-    print("  dns flush                  # Flush DNS cache")
+@click.group(invoke_without_command=True)
+@click.argument("servers", nargs=-1)
+@click.pass_context
+def main(ctx, servers):
+    """Manage macOS DNS configuration."""
+    if ctx.invoked_subcommand is None:
+        if servers:
+            # If the first argument is "clear" or "flush", manually dispatch
+            # This is a workaround for Click consuming subcommands as arguments
+            if servers[0].lower() == "clear":
+                ctx.invoke(clear)
+            elif servers[0].lower() == "flush":
+                ctx.invoke(flush)
+            else:
+                set_dns_servers(servers)
+                click.echo()
+                show_current_dns()
+        else:
+            show_current_dns()
 
 
-def main():
-    # Show help
-    if len(sys.argv) == 2 and sys.argv[1] == "--help":
-        show_help()
-        return
-
-    # Show current configuration if no arguments
-    if len(sys.argv) == 1:
-        show_current_dns()
-        return
-
-    # Handle clear case
-    if len(sys.argv) == 2 and sys.argv[1].lower() == "clear":
-        clear_dns_servers()
-        print()
-        show_current_dns()
-        return
-
-    # Handle flush case
-    if len(sys.argv) == 2 and sys.argv[1].lower() == "flush":
-        flush_dns_cache()
-        return
-
-    # Set DNS servers
-    dns_servers = sys.argv[1:]
-    set_dns_servers(dns_servers)
-    print()
+@main.command()
+def clear():
+    """Clear DNS servers for all network interfaces (use DHCP)."""
+    clear_dns_servers()
+    click.echo()
     show_current_dns()
+
+
+@main.command()
+def flush():
+    """Flush DNS cache."""
+    flush_dns_cache_impl()
 
 
 if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print("\nInterrupted", file=sys.stderr)
+        click.echo("\nInterrupted", err=True)
         sys.exit(130)
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        click.echo(f"Error: {e}", err=True)
         sys.exit(1)
