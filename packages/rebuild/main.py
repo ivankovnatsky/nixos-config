@@ -15,6 +15,7 @@ import tempfile
 import time
 import threading
 import socket
+import urllib.request
 from pathlib import Path
 
 import click
@@ -162,33 +163,69 @@ def detect_rebuild_command():
         raise RuntimeError(f"Unsupported platform: {system}")
 
 
-def send_failure_notification():
-    """Send platform-specific failure notification."""
-    system = platform.system()
+DEFAULT_DISCORD_WEBHOOK_FILE = (
+    Path.home() / ".config" / "sops-nix" / "secrets" / "discord-webhook-rebuild"
+)
 
-    if system == "Darwin":
-        try:
-            subprocess.run(
-                [
-                    "osascript",
-                    "-e",
-                    'display notification "🔴 Darwin rebuild failed!" with title "Nix configuration"',
-                ],
-                check=False,
-                capture_output=True,
-            )
-        except Exception:
-            pass
-    elif system == "Linux":
-        try:
-            if os.environ.get("DISPLAY"):
-                subprocess.run(
-                    ["notify-send", "🔴 NixOS rebuild failed!", "Nix configuration"],
-                    check=False,
-                    capture_output=True,
-                )
-        except Exception:
-            pass
+
+def send_failure_notification(webhook_file=None, exit_code=None, log_tail=None):
+    """Post a rebuild failure to Discord via webhook.
+
+    Reads the webhook URL from `webhook_file` (defaults to the sops-nix
+    rendered path ~/.config/sops-nix/secrets/discord-webhook-rebuild).
+    Silently skips if the file is missing or unreadable — never fails
+    the rebuild.
+    """
+    path = Path(webhook_file) if webhook_file else DEFAULT_DISCORD_WEBHOOK_FILE
+    if not path.exists():
+        logging.debug(f"Discord webhook file not present at {path}; skipping notification")
+        return
+
+    try:
+        webhook_url = path.read_text().strip()
+    except Exception as e:
+        logging.warning(f"Cannot read Discord webhook file {path}: {e}")
+        return
+
+    if not webhook_url.startswith("https://"):
+        logging.debug(f"Discord webhook URL in {path} is not https; skipping notification")
+        return
+
+    hostname = socket.gethostname().removesuffix(".local")
+    system = platform.system()
+    parts = [f"**[rebuild@{hostname}]** {system} rebuild failed"]
+    if exit_code is not None:
+        parts.append(f"exit code {exit_code}")
+    header = " — ".join(parts)
+
+    body = header
+    if log_tail:
+        # Discord caps content at 2000 chars; reserve room for the header + fences.
+        # Trim whole lines from the front rather than slicing mid-line.
+        budget = 2000 - len(header) - len("\n```\n\n```")
+        lines = list(log_tail)
+        snippet = "\n".join(lines)
+        while len(snippet) > budget and len(lines) > 1:
+            lines.pop(0)
+            snippet = "\n".join(lines)
+        if len(snippet) > budget:
+            snippet = snippet[-budget:]
+        body = f"{header}\n```\n{snippet}\n```"
+
+    payload = json.dumps({"content": body}).encode()
+    req = urllib.request.Request(
+        webhook_url,
+        data=payload,
+        # Cloudflare blocks Python's default urllib User-Agent with HTTP 403.
+        headers={
+            "Content-Type": "application/json",
+            "User-Agent": "rebuild/1.0",
+        },
+    )
+    try:
+        urllib.request.urlopen(req, timeout=10)
+    except Exception as e:
+        logging.warning(f"Discord notification failed: {e}")
 
 
 LOCK_FILE = Path("/tmp/nix-rebuild.lock")
@@ -379,6 +416,7 @@ def run_rebuild(config_path, command, quiet=False):
                     logging.info("Rebuild successful")
                 else:
                     logging.error(f"Rebuild failed with exit code {result.returncode}")
+                    tail = None
                     try:
                         lines = log_path.read_text().rstrip().split("\n")
                         tail = lines[-30:] if len(lines) > 30 else lines
@@ -387,7 +425,9 @@ def run_rebuild(config_path, command, quiet=False):
                             logging.error(f"  {line}")
                     except Exception:
                         pass
-                    send_failure_notification()
+                    send_failure_notification(
+                        exit_code=result.returncode, log_tail=tail
+                    )
             finally:
                 if result is None or result.returncode == 0:
                     log_path.unlink(missing_ok=True)
@@ -400,7 +440,7 @@ def run_rebuild(config_path, command, quiet=False):
                 logging.info("Rebuild successful")
             else:
                 logging.error(f"Rebuild failed with exit code {result.returncode}")
-                send_failure_notification()
+                send_failure_notification(exit_code=result.returncode)
 
         return (result.returncode, True)
     finally:
