@@ -45,7 +45,7 @@ class Options:
     pending: bool = False
     completed: bool = False
     project: str | None = None
-    limit: int = 20
+    limit: int | None = 20
 
 
 def parse_file(path: Path, root: Path) -> list[Task]:
@@ -245,10 +245,13 @@ def render_simple_table(
 @click.option("--project", help="Filter by project name, comma-separated.")
 @click.option(
     "--limit",
-    type=int,
-    default=20,
-    show_default=True,
-    help="Limit rows. Use 0 for no limit.",
+    type=click.IntRange(min=0),
+    default=None,
+    metavar="N",
+    help=(
+        "Limit rows. Use 0 for no limit. "
+        "Defaults to no limit with --all, otherwise 20."
+    ),
 )
 @click.option(
     "--format",
@@ -269,13 +272,16 @@ def main(
     pending: bool,
     completed: bool,
     project: str | None,
-    limit: int,
+    limit: int | None,
     output_format: str,
     wrap: bool,
 ):
     modes = [show_all, pending, completed]
     if sum(1 for mode in modes if mode) > 1:
         raise click.UsageError("Use only one of --all, --pending, or --completed.")
+
+    if limit is None:
+        limit = 0 if show_all else 20
 
     args = Options(
         all=show_all,
