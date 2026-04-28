@@ -7,12 +7,7 @@ import glob
 import signal
 from datetime import datetime
 
-INTERVAL = 2
-if len(sys.argv) > 1:
-    try:
-        INTERVAL = float(sys.argv[1])
-    except ValueError:
-        print(f'Error: Invalid interval "{sys.argv[1]}". Using default: {INTERVAL}s')
+import click
 
 
 def read_file(path):
@@ -109,42 +104,50 @@ def get_gpu_power():
     return results
 
 
-def display(rapl_results, gpu_results):
-    os.system("clear")
-    print(f"Power Consumption Monitor (every {INTERVAL}s)")
-    print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    print()
-    print(f"{'Component':<30} {'Power':>10}")
-    print("-" * 42)
+def display(rapl_results, gpu_results, interval):
+    click.clear()
+    click.echo(f"Power Consumption Monitor (every {interval}s)")
+    click.echo(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    click.echo()
+    click.echo(f"{'Component':<30} {'Power':>10}")
+    click.echo("-" * 42)
 
     total = 0.0
 
     for name, watts in rapl_results:
-        print(f"  CPU {name:<26} {watts:>8.1f} W")
+        click.echo(f"  CPU {name:<26} {watts:>8.1f} W")
         total += watts
 
     for name, watts in gpu_results:
-        print(f"  {name:<28} {watts:>8.1f} W")
+        click.echo(f"  {name:<28} {watts:>8.1f} W")
         total += watts
 
-    print("-" * 42)
-    print(f"  {'Total (measured)':<28} {total:>8.1f} W")
-    print()
-    print("Note: Wall power will be higher (PSU losses, RAM, fans, storage)")
+    click.echo("-" * 42)
+    click.echo(f"  {'Total (measured)':<28} {total:>8.1f} W")
+    click.echo()
+    click.echo("Note: Wall power will be higher (PSU losses, RAM, fans, storage)")
 
 
 def signal_handler(sig, frame):
-    print("\nStopped.")
+    click.echo("\nStopped.")
     sys.exit(0)
 
 
-signal.signal(signal.SIGINT, signal_handler)
+@click.command()
+@click.argument("interval", default=2.0, type=float)
+def main(interval):
+    """Monitor system power consumption."""
+    signal.signal(signal.SIGINT, signal_handler)
 
-# First iteration: measure RAPL inline
-while True:
-    rapl = get_rapl_power(min(INTERVAL, 1))
-    gpu = get_gpu_power()
-    display(rapl, gpu)
-    remaining = INTERVAL - min(INTERVAL, 1)
-    if remaining > 0:
-        time.sleep(remaining)
+    # First iteration: measure RAPL inline
+    while True:
+        rapl = get_rapl_power(min(interval, 1))
+        gpu = get_gpu_power()
+        display(rapl, gpu, interval)
+        remaining = interval - min(interval, 1)
+        if remaining > 0:
+            time.sleep(remaining)
+
+
+if __name__ == "__main__":
+    main()
