@@ -70,4 +70,8 @@
   sops.secrets.steam-password = {
     key = "steam/password";
   };
+
+  sops.secrets.discord-webhook-rebuild = {
+    key = "discord/webhooks/monitoringRebuild";
+  };
 }
