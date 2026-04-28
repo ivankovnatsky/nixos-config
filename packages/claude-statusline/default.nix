@@ -6,5 +6,5 @@
 
 pkgs.writeShellScriptBin "claude-statusline" ''
   export PATH="${lib.makeBinPath [ git ]}:$PATH"
-  exec ${pkgs.python3}/bin/python ${./claude-statusline.py} "$@"
+  exec ${pkgs.python3.withPackages (ps: [ ps.click ])}/bin/python ${./claude-statusline.py} "$@"
 ''

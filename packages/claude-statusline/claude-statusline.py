@@ -9,6 +9,8 @@ import shutil
 import subprocess
 import sys
 
+import click
+
 
 def strip_ansi(s):
     return re.sub(r"\033\[[0-9;]*m", "", s)
@@ -74,13 +76,16 @@ def shorten_path_to_fit(path, prefix, cols):
 
 def output(line, cols):
     if cols > 0:
-        print(truncate_line(line, cols))
+        click.echo(truncate_line(line, cols), color=True)
     else:
-        print(line)
+        click.echo(line, color=True)
 
 
-def main():
-    raw = sys.stdin.read()
+@click.command()
+@click.argument("input_file", type=click.File("r"), default=sys.stdin)
+def main(input_file):
+    """Render a status line for Claude Code."""
+    raw = input_file.read()
     try:
         data = json.loads(raw)
     except (json.JSONDecodeError, ValueError):
