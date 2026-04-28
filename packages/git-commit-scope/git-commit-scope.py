@@ -468,6 +468,28 @@ def create_commit_message(prefix: str, subject: str) -> str:
     return f"{prefix}: {subject}"
 
 
+def validate_title(title: str) -> list[str]:
+    """Collect all hook-equivalent violations for a commit title.
+
+    Mirrors the global commit-msg hook (home/git/default.nix) so failures
+    surface up-front from the CLI instead of one-at-a-time from the hook.
+    """
+    errors = []
+    if len(title) > MAX_MESSAGE_LENGTH:
+        errors.append(
+            f"Commit title must be ≤{MAX_MESSAGE_LENGTH} characters (got {len(title)})"
+        )
+    scope = title.split(": ", 1)[0] if ": " in title else ""
+    if "," in scope:
+        errors.append(
+            "Commas not allowed in commit scope "
+            "(split into separate commits or use a general subject)"
+        )
+    if ";" in title:
+        errors.append("Semicolons not allowed in commit title")
+    return errors
+
+
 def create_rename_message(old_path: str, new_path: str) -> str:
     """Create a commit message for a rename using arrow notation."""
     old_scope = shorten_path(old_path)
@@ -930,6 +952,18 @@ def main(args, subject, body, ai_shorten):
     # Set env var so pre-commit hook skips the "use git-commit-scope" hint
     os.environ["GIT_COMMIT_SCOPE_CLI"] = "1"
 
+    # Up-front validation of subject-only rules (independent of per-file scope).
+    # Catch semicolons here so we fail before any per-target work.
+    subject_errors = []
+    if ";" in commit_subject:
+        subject_errors.append("Semicolons not allowed in commit title")
+    if subject_errors:
+        click.echo("Subject validation failed:", err=True)
+        for e in subject_errors:
+            click.echo(f"  - {e}", err=True)
+        click.echo(f"Subject: {commit_subject}", err=True)
+        sys.exit(1)
+
     def _too_long(p: str) -> bool:
         return len(create_commit_message(p, commit_subject)) > MAX_MESSAGE_LENGTH
 
@@ -942,31 +976,45 @@ def main(args, subject, body, ai_shorten):
         if _too_long(prefix):
             prefix = compress_path(prefix, commit_subject)
 
-        if _too_long(prefix):
-            full_msg = create_commit_message(prefix, commit_subject)
-            max_subject = MAX_MESSAGE_LENGTH - len(prefix) - len(": ")
-            click.echo(
-                f"Message too long: {len(full_msg)} chars (max {MAX_MESSAGE_LENGTH})",
-                err=True,
-            )
-            click.echo(f"Scope: {prefix}", err=True)
-            click.echo(
-                f"Subject must be ≤ {max_subject} chars (currently {len(commit_subject)})",
-                err=True,
-            )
+        message = create_commit_message(prefix, commit_subject)
+        errors = validate_title(message)
 
-            if ai_shorten:
+        if errors:
+            click.echo(
+                f"Title validation failed for {target_file}:", err=True
+            )
+            for e in errors:
+                click.echo(f"  - {e}", err=True)
+            click.echo(f"Title: {message}", err=True)
+
+            length_only = len(errors) == 1 and errors[0].startswith(
+                "Commit title must be"
+            )
+            if length_only and ai_shorten:
+                max_subject = MAX_MESSAGE_LENGTH - len(prefix) - len(": ")
+                click.echo(
+                    f"Subject must be ≤ {max_subject} chars "
+                    f"(currently {len(commit_subject)})",
+                    err=True,
+                )
                 suggested = _try_ai_shorten(commit_subject, max_subject)
                 if suggested:
                     click.echo(f"  ai suggestion: {suggested}", err=True)
                     commit_subject = suggested
+                    message = create_commit_message(prefix, commit_subject)
+                    remaining = validate_title(message)
+                    if remaining:
+                        click.echo(
+                            "AI suggestion still invalid:", err=True
+                        )
+                        for e in remaining:
+                            click.echo(f"  - {e}", err=True)
+                        sys.exit(1)
                 else:
                     click.echo("  ai: all backends failed", err=True)
                     sys.exit(1)
             else:
                 sys.exit(1)
-
-        message = create_commit_message(prefix, commit_subject)
 
         try:
             # Add untracked files first (git commit <file> only works for tracked files)
