@@ -286,5 +286,11 @@ with lib;
       };
     };
 
+    notesPath = mkOption {
+      type = types.str;
+      description = "Absolute path to the Notes directory (Obsidian vault root). Empty means fall back to ~/Notes.";
+      default = "";
+    };
+
   };
 }
