@@ -2,6 +2,7 @@
 import re
 import sys
 import os
+import click
 
 
 def sort_imports_block(match):
@@ -77,7 +78,15 @@ def sort_file(file_path):
     return False
 
 
-if __name__ == "__main__":
-    for arg in sys.argv[1:]:
+@click.command()
+@click.argument("files", nargs=-1, type=click.Path(exists=True))
+def main(files):
+    """Sort imports in Nix files."""
+    for arg in files:
         if os.path.isfile(arg):
-            sort_file(arg)
+            if sort_file(arg):
+                click.echo(f"Sorted imports in {arg}")
+
+
+if __name__ == "__main__":
+    main()

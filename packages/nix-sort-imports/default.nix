@@ -1,5 +1,5 @@
 { pkgs }:
 
 pkgs.writeShellScriptBin "nix-sort-imports" ''
-  exec ${pkgs.python3}/bin/python ${./nix-sort-imports.py} "$@"
+  exec ${pkgs.python3.withPackages (ps: [ ps.click ])}/bin/python ${./nix-sort-imports.py} "$@"
 ''
