@@ -21,6 +21,8 @@ import argparse
 import json
 import os
 import re
+import shutil
+import textwrap
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, date, timedelta
 from pathlib import Path
@@ -204,20 +206,30 @@ def render_table(tasks: list[Task], totals: dict | None = None) -> str:
     ]
     today = date.today().isoformat()
 
-    def fmt_row(r):
-        cells = []
-        for i, val in enumerate(r):
-            val = str(val)
-            if i == len(cols) - 1:  # Title — no padding
-                cells.append(val)
-            else:
-                cells.append(val.ljust(widths[i]))
-        return "  ".join(cells).rstrip()
+    # Title column starts at this column; wraps to (term_width - title_col).
+    sep = "  "
+    title_col = sum(widths[:-1]) + len(sep) * (len(cols) - 1)
+    term_width = shutil.get_terminal_size((100, 24)).columns
+    title_width = max(20, term_width - title_col)
 
-    out = [fmt_row(rows[0])]
+    def fmt_row(r, wrap_title: bool):
+        prefix_cells = [str(r[i]).ljust(widths[i]) for i in range(len(cols) - 1)]
+        prefix = sep.join(prefix_cells) + sep
+        title = str(r[-1])
+        if not wrap_title:
+            return (prefix + title).rstrip()
+        wrapped = textwrap.wrap(
+            title, width=title_width, break_long_words=False, break_on_hyphens=False
+        ) or [""]
+        pad = " " * title_col
+        first = (prefix + wrapped[0]).rstrip()
+        rest = [pad + w for w in wrapped[1:]]
+        return "\n".join([first, *rest])
+
+    out = [fmt_row(rows[0], wrap_title=False)]
     out.append("  ".join("-" * w for w in widths))
     for i, t in enumerate(tasks, 1):
-        line = fmt_row(rows[i])
+        line = fmt_row(rows[i], wrap_title=True)
         if t.due and t.due < today and t.status == "pending":
             line = f"\033[31m{line}\033[0m"
         elif t.due == today:
@@ -286,7 +298,9 @@ def main():
     ap.add_argument(
         "--due", choices=["today", "week"], help="due today or within a week"
     )
-    ap.add_argument("--limit", type=int, help="limit rows")
+    ap.add_argument(
+        "--limit", type=int, default=20, help="limit rows (default: 20, 0 = no limit)"
+    )
     ap.add_argument("--format", choices=["table", "tsv", "json"], default="table")
     args = ap.parse_args()
 
