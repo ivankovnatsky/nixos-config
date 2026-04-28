@@ -40,7 +40,6 @@ class Task:
     created: str = ""
     due: str = ""
     completed: str = ""
-    priority: str = ""
     notes: str = ""
     file: str = ""
     line: int = 0
@@ -132,7 +131,6 @@ def parse_file(path: Path, root: Path) -> list[Task]:
             or ex.get("completedDate")
             or ex.get("completed", "")
         )
-        t.priority = ex.get("priority", "")
         explicit_notes = ex.get("notes", "")
         t.notes = " | ".join(x for x in [explicit_notes, *notes_extra] if x)
 
@@ -184,7 +182,6 @@ def render_table(
     tasks: list[Task], totals: dict | None = None, wrap: bool = False
 ) -> str:
     cols = [
-        ("Pr", lambda t: t.priority or ""),
         ("Project", lambda t: t.project),
         ("S", lambda t: "x" if t.status == "done" else " "),
         ("Created", lambda t: t.created or ""),
@@ -256,7 +253,6 @@ def render_tsv(tasks: list[Task]) -> str:
     headers = [
         "project",
         "status",
-        "priority",
         "created",
         "due",
         "completed",
@@ -269,7 +265,6 @@ def render_tsv(tasks: list[Task]) -> str:
                 [
                     t.project,
                     t.status,
-                    t.priority,
                     t.created,
                     t.due,
                     t.completed,
