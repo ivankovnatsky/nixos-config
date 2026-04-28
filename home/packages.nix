@@ -2,6 +2,7 @@
 
 {
   home.packages = with pkgs; [
+    mtasks
     git-restore
     abs
     abs-mgmt
