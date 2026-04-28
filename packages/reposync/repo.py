@@ -13,6 +13,7 @@ def init_repo(repo, webhook_url=None):
     remote = repo["remote"]
     remote_url = repo["remoteUrl"]
     branch = repo["branch"]
+    prune = repo.get("prune", False)
     display = repo.get("name") or os.path.basename(path)
     name = f"{display} ({remote}/{branch})"
 
@@ -44,7 +45,8 @@ def init_repo(repo, webhook_url=None):
         click.echo(f"{name}: remote {remote} OK", err=True)
 
     # Fetch from remote
-    result = run_git("fetch", remote, cwd=path, check=False)
+    fetch_args = ["fetch"] + (["--prune"] if prune else []) + [remote]
+    result = run_git(*fetch_args, cwd=path, check=False)
     if result.returncode != 0:
         alert(webhook_url, f"`{name}`: fetch failed — {result.stderr.strip()}")
         return False
@@ -114,6 +116,7 @@ def sync_repo(repo, webhook_url=None):
     remote = repo["remote"]
     branch = repo["branch"]
     sync_mode = repo.get("syncMode", "pull-push")
+    prune = repo.get("prune", False)
     display = repo.get("name") or os.path.basename(path)
     name = f"{display} ({remote}/{branch})"
 
@@ -133,7 +136,8 @@ def sync_repo(repo, webhook_url=None):
     actions = []
 
     # Fetch
-    result = run_git("fetch", remote, cwd=path, check=False)
+    fetch_args = ["fetch"] + (["--prune"] if prune else []) + [remote]
+    result = run_git(*fetch_args, cwd=path, check=False)
     if result.returncode != 0:
         alert(webhook_url, f"`{name}`: fetch failed — {result.stderr.strip()}")
         return False
@@ -235,6 +239,7 @@ def status_repo(repo):
     path = repo["path"]
     remote = repo["remote"]
     branch = repo["branch"]
+    prune = repo.get("prune", False)
     display = repo.get("name") or os.path.basename(path)
     name = f"{display} ({remote}/{branch})"
 
@@ -243,7 +248,8 @@ def status_repo(repo):
         return
 
     # Fetch silently
-    run_git("fetch", remote, cwd=path, check=False)
+    fetch_args = ["fetch"] + (["--prune"] if prune else []) + [remote]
+    run_git(*fetch_args, cwd=path, check=False)
 
     local = run_git("rev-parse", branch, cwd=path, check=False)
     remote_ref = run_git("rev-parse", f"{remote}/{branch}", cwd=path, check=False)
