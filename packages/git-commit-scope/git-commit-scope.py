@@ -541,22 +541,53 @@ def is_git_tracked(path: str) -> bool:
         return False
 
 
+def _is_parent_of_changed(rel_path: str, changed: list[str]) -> bool:
+    """Check if rel_path is a directory that contains any changed file."""
+    prefix = rel_path.rstrip("/") + "/"
+    return any(f.startswith(prefix) for f in changed)
+
+
+def is_staged_deletion_dir(path: str) -> bool:
+    """True if path is a directory that no longer exists and contains staged deletions."""
+    try:
+        abs_path = os.path.abspath(path)
+        if os.path.exists(abs_path):
+            return False
+        git_root = get_git_root()
+        rel_path = os.path.relpath(abs_path, git_root)
+        deleted = get_deleted_files()
+        return _is_parent_of_changed(rel_path, deleted) or _is_parent_of_changed(
+            path, deleted
+        )
+    except subprocess.CalledProcessError:
+        return False
+
+
 def is_file_path(path: str) -> bool:
     """Check if path is a file (exists on disk, is staged, or is tracked by git).
 
-    Checks both relative to CWD and relative to git root.
+    Checks both relative to CWD and relative to git root. Also accepts a
+    directory path that contains staged or deleted files but no longer exists
+    on disk (e.g., a directory whose entire contents were deleted).
     """
     if os.path.exists(path) or is_staged_path(path) or is_git_tracked(path):
         return True
-    # Also check relative to git root (handles paths like "packages/foo/bar.nix")
     try:
         git_root = get_git_root()
         abs_from_root = os.path.join(git_root, path)
         if os.path.exists(abs_from_root):
             return True
         root_rel_path = os.path.relpath(abs_from_root, git_root)
-        if root_rel_path in get_staged_files() or root_rel_path in get_deleted_files():
+        cwd_rel_path = os.path.relpath(os.path.abspath(path), git_root)
+        staged = get_staged_files()
+        deleted = get_deleted_files()
+        if root_rel_path in staged or root_rel_path in deleted:
             return True
+        # Directory whose contents are staged/deleted (no longer on disk).
+        changed = staged + deleted
+        for candidate in (root_rel_path, cwd_rel_path, path):
+            if _is_parent_of_changed(candidate, changed):
+                return True
         result = subprocess.run(
             ["git", "ls-files", "--error-unmatch", root_rel_path],
             capture_output=True,
@@ -680,6 +711,13 @@ def normalize_target_path(path: str, git_root: str) -> str:
         or path in staged
         or path in deleted
     ):
+        return root_rel_path
+
+    # Directory whose contents are staged/deleted (no longer on disk).
+    changed = staged + deleted
+    if _is_parent_of_changed(cwd_rel_path, changed):
+        return cwd_rel_path
+    if _is_parent_of_changed(root_rel_path, changed):
         return root_rel_path
 
     return cwd_rel_path
@@ -934,7 +972,11 @@ def main(args, subject, body, ai_shorten):
             # Add untracked files first (git commit <file> only works for tracked files)
             # Skip if file is already staged (e.g., staged deletion)
             force_added = False
-            if is_staged_path(target_file):
+            dir_deletion = is_staged_deletion_dir(target_file)
+            if dir_deletion:
+                # Directory whose contents are all staged for deletion; nothing to add.
+                pass
+            elif is_staged_path(target_file):
                 # File already staged — check if it's ignored (e.g., pre-staged with git add -f)
                 force_added = is_ignored(target_file, git_root)
             elif is_untracked(target_file, git_root):
@@ -970,7 +1012,7 @@ def main(args, subject, body, ai_shorten):
             # For staged deletions, git commit <file> doesn't work because it reads
             # from the working tree (where the file no longer exists). Use --only
             # to commit just this path from the index without pulling in other staged changes.
-            if is_staged_deletion(target_file):
+            if is_staged_deletion(target_file) or dir_deletion:
                 cmd = ["git", "commit", "--only", target_file, "-m", message]
             elif force_added:
                 # Ignored files can't be used as pathspec (git respects .gitignore

@@ -179,5 +179,33 @@ class GitCommitScopeTest(unittest.TestCase):
         self.assertIn("?? tracked.txt", self.status_short())
 
 
+    def test_directory_deletion_from_subdir_resolves_root_path(self):
+        self.write("dir/a.txt", "a\n")
+        self.git("add", "dir/a.txt")
+        self.git("commit", "-m", "add dir")
+        self.git("rm", "dir/a.txt")
+        subdir = self.repo / "subdir"
+        subdir.mkdir()
+
+        result = self.run_scope("dir", "remove", cwd=subdir)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.last_subject(), "dir: remove")
+        self.assertEqual(self.status_short(), "")
+
+    def test_directory_with_all_contents_staged_deleted(self):
+        self.write("dir/a.txt", "a\n")
+        self.write("dir/b.txt", "b\n")
+        self.git("add", "dir/a.txt", "dir/b.txt")
+        self.git("commit", "-m", "add dir")
+        self.git("rm", "dir/a.txt", "dir/b.txt")
+
+        result = self.run_scope("dir", "remove")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.last_subject(), "dir: remove")
+        self.assertEqual(self.status_short(), "")
+
+
 if __name__ == "__main__":
     unittest.main()
