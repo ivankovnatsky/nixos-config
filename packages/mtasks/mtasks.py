@@ -5,14 +5,8 @@ Recursively scans `--root` (default: cwd) for `*.md` files and parses
 GitHub-style task lines (`- [ ] ...` / `- [x] ...`).
 
 Usage:
-  mtdo [--all|--pending|--completed] [--project P] [--overdue]
-       [--due today|week] [--limit N] [--format table|tsv|json] [--root PATH]
-
-Parses two coexisting formats:
-  1. Inline parens:  - [ ] Title (created: 2026-03-20, due: 2026-04-09)
-  2. YAML-ish sub:   - [x] Title
-                       - createdDate: 2026-04-21 09:45Z
-                       - due: 2026-04-21 16:00Z
+  mtdo [--all|--pending|--completed] [--project P]
+       [--limit N] [--format table|tsv|json] [--root PATH]
 """
 
 from __future__ import annotations
@@ -24,12 +18,10 @@ import re
 import shutil
 import textwrap
 from dataclasses import dataclass, field, asdict
-from datetime import datetime, date, timedelta
 from pathlib import Path
 
 TASK_RE = re.compile(r"^- \[( |x)\] (.*)$")
 SUBKV_RE = re.compile(r"^  - ([A-Za-z][A-Za-z0-9_]*): (.*)$")
-INLINE_META_RE = re.compile(r"\(([^()]*?(?:created|due|completed)[^()]*)\)\s*$")
 
 
 @dataclass
@@ -37,44 +29,10 @@ class Task:
     project: str = ""
     status: str = "pending"  # pending | done
     title: str = ""
-    created: str = ""
-    due: str = ""
-    completed: str = ""
     notes: str = ""
     file: str = ""
     line: int = 0
     extra: dict = field(default_factory=dict)
-
-
-def parse_inline_meta(title: str) -> tuple[str, dict]:
-    """Pull `(created: ..., due: ..., completed: ...)` off the end of a title."""
-    m = INLINE_META_RE.search(title)
-    if not m:
-        return title, {}
-    inner = m.group(1)
-    # Only treat as metadata if every comma-segment is `key: value`
-    parts = [p.strip() for p in inner.split(",")]
-    meta = {}
-    for p in parts:
-        if ":" not in p:
-            return title, {}
-        k, v = p.split(":", 1)
-        meta[k.strip()] = v.strip()
-    return title[: m.start()].rstrip(), meta
-
-
-def normalize_date(s: str) -> str:
-    """Return YYYY-MM-DD if parseable, else original string."""
-    if not s:
-        return ""
-    s = s.strip()
-    # `2026-04-21 09:45Z` or `2026-04-21`
-    for fmt in ("%Y-%m-%d %H:%MZ", "%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%d"):
-        try:
-            return datetime.strptime(s, fmt).strftime("%Y-%m-%d")
-        except ValueError:
-            pass
-    return s
 
 
 def parse_file(path: Path, root: Path) -> list[Task]:
@@ -91,8 +49,7 @@ def parse_file(path: Path, root: Path) -> list[Task]:
             i += 1
             continue
         status = "done" if m.group(1) == "x" else "pending"
-        raw_title = m.group(2)
-        title, inline_meta = parse_inline_meta(raw_title)
+        title = m.group(2)
 
         t = Task(
             project=project,
@@ -120,18 +77,7 @@ def parse_file(path: Path, root: Path) -> list[Task]:
                     notes_extra.append(stripped)
             j += 1
 
-        # Map metadata from both formats
-        ex = t.extra
-        t.created = normalize_date(
-            inline_meta.get("created") or ex.get("createdDate") or ex.get("created", "")
-        )
-        t.due = normalize_date(inline_meta.get("due") or ex.get("due", ""))
-        t.completed = normalize_date(
-            inline_meta.get("completed")
-            or ex.get("completedDate")
-            or ex.get("completed", "")
-        )
-        explicit_notes = ex.get("notes", "")
+        explicit_notes = t.extra.get("notes", "")
         t.notes = " | ".join(x for x in [explicit_notes, *notes_extra] if x)
 
         tasks.append(t)
@@ -146,17 +92,14 @@ def gather(root: Path) -> list[Task]:
         if any(part.startswith(".") for part in f.relative_to(root).parts):
             continue
         out.extend(parse_file(f, root))
-    # Pending first (urgency-ish ordering), then done
     pending = [t for t in out if t.status == "pending"]
     done = [t for t in out if t.status == "done"]
-    pending.sort(key=lambda t: (t.due or "9999-99-99", t.file, t.line))
-    done.sort(key=lambda t: t.completed, reverse=True)
+    pending.sort(key=lambda t: (t.file, t.line))
+    done.sort(key=lambda t: (t.file, t.line))
     return pending + done
 
 
 def filter_tasks(tasks: list[Task], args) -> list[Task]:
-    today = date.today().isoformat()
-    week = (date.today() + timedelta(days=7)).isoformat()
     out = tasks
     if args.pending:
         out = [t for t in out if t.status == "pending"]
@@ -167,12 +110,6 @@ def filter_tasks(tasks: list[Task], args) -> list[Task]:
     if args.project:
         wanted = {p.lower() for p in args.project.split(",")}
         out = [t for t in out if t.project.lower() in wanted]
-    if args.overdue:
-        out = [t for t in out if t.due and t.due < today and t.status == "pending"]
-    if args.due == "today":
-        out = [t for t in out if t.due == today]
-    elif args.due == "week":
-        out = [t for t in out if t.due and today <= t.due <= week]
     if args.limit:
         out = out[: args.limit]
     return out
@@ -183,10 +120,7 @@ def render_table(
 ) -> str:
     cols = [
         ("Project", lambda t: t.project),
-        ("S", lambda t: "x" if t.status == "done" else " "),
-        ("Created", lambda t: t.created or ""),
-        ("Due", lambda t: t.due or ""),
-        ("Done", lambda t: t.completed or ""),
+        ("Status", lambda t: t.status if t.status == "done" else ""),
         ("Title", lambda t: t.title),
     ]
     headers = [h for h, _ in cols]
@@ -198,7 +132,6 @@ def render_table(
         max(len(str(r[i])) for r in rows) if i < len(cols) - 1 else len(headers[i])
         for i in range(len(cols))
     ]
-    today = date.today().isoformat()
 
     # Title column starts at this column; wraps to (term_width - title_col).
     sep = "  "
@@ -230,11 +163,7 @@ def render_table(
     out.append("  ".join("-" * w for w in widths))
     for i, t in enumerate(tasks, 1):
         line = fmt_row(rows[i], row_mode)
-        if t.due and t.due < today and t.status == "pending":
-            line = f"\033[31m{line}\033[0m"
-        elif t.due == today:
-            line = f"\033[33m{line}\033[0m"
-        elif t.status == "done":
+        if t.status == "done":
             line = f"\033[2m{line}\033[0m"
         out.append(line)
     out.append("")
@@ -250,14 +179,7 @@ def render_table(
 
 
 def render_tsv(tasks: list[Task]) -> str:
-    headers = [
-        "project",
-        "status",
-        "created",
-        "due",
-        "completed",
-        "title",
-    ]
+    headers = ["project", "status", "title"]
     lines = ["\t".join(headers)]
     for t in tasks:
         lines.append(
@@ -265,9 +187,6 @@ def render_tsv(tasks: list[Task]) -> str:
                 [
                     t.project,
                     t.status,
-                    t.created,
-                    t.due,
-                    t.completed,
                     t.title.replace("\t", " "),
                 ]
             )
@@ -290,10 +209,6 @@ def main():
     g.add_argument("--pending", action="store_true", help="show pending (default)")
     g.add_argument("--completed", action="store_true", help="show completed")
     ap.add_argument("--project", help="filter by project name (comma-separated)")
-    ap.add_argument("--overdue", action="store_true", help="only overdue pending")
-    ap.add_argument(
-        "--due", choices=["today", "week"], help="due today or within a week"
-    )
     ap.add_argument(
         "--limit", type=int, default=20, help="limit rows (default: 20, 0 = no limit)"
     )
