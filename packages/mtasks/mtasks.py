@@ -34,7 +34,6 @@ INLINE_META_RE = re.compile(r"\(([^()]*?(?:created|due|completed)[^()]*)\)\s*$")
 
 @dataclass
 class Task:
-    id: int = 0
     project: str = ""
     status: str = "pending"  # pending | done
     title: str = ""
@@ -149,15 +148,12 @@ def gather(root: Path) -> list[Task]:
         if any(part.startswith(".") for part in f.relative_to(root).parts):
             continue
         out.extend(parse_file(f, root))
-    # Stable IDs: pending first (urgency-ish ordering), then done
+    # Pending first (urgency-ish ordering), then done
     pending = [t for t in out if t.status == "pending"]
     done = [t for t in out if t.status == "done"]
-    pending.sort(key=lambda t: (t.due or "9999-99-99", t.created or "0000-00-00"))
+    pending.sort(key=lambda t: (t.due or "9999-99-99", t.file, t.line))
     done.sort(key=lambda t: t.completed, reverse=True)
-    ordered = pending + done
-    for n, t in enumerate(ordered, 1):
-        t.id = n
-    return ordered
+    return pending + done
 
 
 def filter_tasks(tasks: list[Task], args) -> list[Task]:
@@ -188,7 +184,6 @@ def render_table(
     tasks: list[Task], totals: dict | None = None, wrap: bool = False
 ) -> str:
     cols = [
-        ("ID", lambda t: str(t.id)),
         ("Pr", lambda t: t.priority or ""),
         ("Project", lambda t: t.project),
         ("S", lambda t: "x" if t.status == "done" else " "),
@@ -259,7 +254,6 @@ def render_table(
 
 def render_tsv(tasks: list[Task]) -> str:
     headers = [
-        "id",
         "project",
         "status",
         "priority",
@@ -273,7 +267,6 @@ def render_tsv(tasks: list[Task]) -> str:
         lines.append(
             "\t".join(
                 [
-                    str(t.id),
                     t.project,
                     t.status,
                     t.priority,
