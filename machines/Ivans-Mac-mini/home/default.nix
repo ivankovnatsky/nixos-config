@@ -67,6 +67,7 @@
     ../../../modules/home/tools
     ../../../modules/home/unison
     ../../../modules/home/uptime-kuma-mgmt
+    ./claude-settings.nix
     ./dock.nix
     ./flags.nix
     ./openclaw.nix
