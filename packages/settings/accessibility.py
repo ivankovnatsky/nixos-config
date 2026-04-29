@@ -384,35 +384,45 @@ def accessibility_set(target_apps: list[str]) -> None:
 
 def register(cli):
     @cli.command()
-    @click.option(
-        "--enable",
-        "enable_apps",
-        help="Comma-separated list of apps to enable (idempotent, additive)",
-    )
-    @click.option(
-        "--set",
-        "set_apps",
-        help="Comma-separated list of apps to sync to (declarative; removes previously managed apps not in list)",
-    )
     @click.argument(
         "action",
         required=False,
-        type=click.Choice(["list", "add", "remove", "toggle", "open"]),
+        type=click.Choice(["list", "add", "remove", "toggle", "open", "enable", "set"]),
     )
     @click.argument("app", required=False)
-    def accessibility(enable_apps, set_apps, action, app):
-        """Manage accessibility permissions (macOS only)"""
+    def accessibility(action, app):
+        """Manage accessibility permissions (macOS only)
+
+        Actions:
+          list                    Show all entries and their enabled state
+          add APP                 Add an app entry (UI automation; may prompt)
+          remove APP              Remove an app entry
+          toggle APP              Toggle an app's enabled state
+          enable "APP1,APP2,..."  Enable apps (idempotent, additive)
+          set "APP1,APP2,..."     Declaratively sync to list; removes previously
+                                  managed apps no longer in the list
+          open                    Open the Accessibility pane in System Settings
+        """
         if not is_macos():
             print("Accessibility settings only available on macOS", file=sys.stderr)
             sys.exit(1)
 
-        if set_apps is not None:
-            apps = [a.strip() for a in set_apps.split(",") if a.strip()]
+        if action == "set":
+            if app is None:
+                print(
+                    "Error: specify app list (use empty string for none)",
+                    file=sys.stderr,
+                )
+                sys.exit(1)
+            apps = [a.strip() for a in app.split(",") if a.strip()]
             accessibility_set(apps)
             return
 
-        if enable_apps:
-            apps = [a.strip() for a in enable_apps.split(",")]
+        if action == "enable":
+            if not app:
+                print("Error: specify app list", file=sys.stderr)
+                sys.exit(1)
+            apps = [a.strip() for a in app.split(",") if a.strip()]
             accessibility_enable(apps)
             return
 
