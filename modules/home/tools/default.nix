@@ -37,7 +37,7 @@ let
     "mcp"
     "curlShell"
     "gitRepos"
-    "configFiles"
+    "files"
     "brew"
   ];
   enabledSections = filter (section: builtins.hasAttr section cfg.settings) toolsSections;
