@@ -373,6 +373,8 @@ def accessibility_set(target_apps: list[str]) -> None:
                 continue
             if accessibility_remove(app):
                 print(f"Removed accessibility entry: {app}")
+                if quit_app(app):
+                    print(f"Quit running app: {app}")
             else:
                 print(
                     f"Could not remove accessibility entry: {app}",

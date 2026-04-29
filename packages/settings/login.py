@@ -93,6 +93,8 @@ def login_set(target_apps: list[str]) -> bool:
     for app in sorted(to_remove):
         if login_remove(app):
             print(f"Removed login item: {app}")
+            if quit_app(app):
+                print(f"Quit running app: {app}")
         else:
             ok = False
     for app in sorted(to_add):

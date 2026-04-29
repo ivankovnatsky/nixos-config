@@ -104,6 +104,13 @@ def is_kde() -> bool:
         return False
 
 
+def quit_app(app_name: str) -> bool:
+    """Quit a running macOS app by name. Returns True if quit (or not running)."""
+    script = f'tell application "{app_name}" to quit'
+    result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
+    return result.returncode == 0
+
+
 def _get_state_dir() -> Path:
     """Return persistent state directory (~/.local/state/settings/).
 
