@@ -78,6 +78,10 @@ Configured Do Not Disturb to filter out Iru MDM notifications:
 
 - Approve local network access
 
+### container (Apple container runtime)
+
+- Approve local network access
+
 ### Syncthing
 
 - Allow:
