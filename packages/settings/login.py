@@ -62,14 +62,62 @@ def login_remove(item_name: str) -> bool:
     return True
 
 
+def login_previous_state() -> list[str]:
+    state = login_state_file()
+    if not state.exists():
+        return []
+    raw = state.read_text().strip()
+    if not raw:
+        return []
+    return [a.strip() for a in raw.split(",") if a.strip()]
+
+
+def login_set(target_apps: list[str]) -> bool:
+    """Sync login items to exactly target_apps (declarative).
+
+    Only removes items we previously managed (tracked via state file),
+    so user-added login items are preserved.
+    """
+    if login_state_matches(target_apps):
+        print("Skipping login set (already configured)")
+        return True
+
+    current = set(login_list())
+    target = set(target_apps)
+    previously_managed = set(login_previous_state())
+
+    to_remove = (previously_managed - target) & current
+    to_add = target - current
+
+    ok = True
+    for app in sorted(to_remove):
+        if login_remove(app):
+            print(f"Removed login item: {app}")
+        else:
+            ok = False
+    for app in sorted(to_add):
+        if login_add(app):
+            print(f"Added login item: {app}")
+        else:
+            ok = False
+    try:
+        login_write_state(target_apps)
+    except Exception as e:
+        print(f"Warning: could not write state: {e}", file=sys.stderr)
+    return ok
+
+
 def register(cli):
     @cli.command()
-    @click.argument("action", type=click.Choice(["list", "add", "remove"]))
+    @click.argument("action", type=click.Choice(["list", "add", "remove", "set"]))
     @click.argument("apps", required=False)
     def login(action, apps):
-        """List, add, or remove login items (macOS only)
+        """List, add, remove, or set login items (macOS only)
 
         APPS is a single app name or comma-separated list (e.g. "Amethyst,Hammerspoon,Mac Mouse Fix").
+
+        The "set" action declaratively syncs login items to the provided list:
+        items previously managed by us but no longer in the list are removed.
         """
         if not is_macos():
             print("Login items are only supported on macOS.", file=sys.stderr)
@@ -126,5 +174,16 @@ def register(cli):
                 else:
                     ok = False
             if not ok:
+                sys.exit(1)
+            return
+
+        if action == "set":
+            if apps is None:
+                print(
+                    "Error: specify app list (use empty string for none)",
+                    file=sys.stderr,
+                )
+                sys.exit(1)
+            if not login_set(app_list):
                 sys.exit(1)
             return

@@ -342,12 +342,57 @@ end tell
         )
 
 
+def accessibility_previous_state() -> list[str]:
+    state = accessibility_state_file()
+    if not state.exists():
+        return []
+    raw = state.read_text().strip()
+    if not raw:
+        return []
+    return [a.strip() for a in raw.split(",") if a.strip()]
+
+
+def accessibility_set(target_apps: list[str]) -> None:
+    """Sync accessibility permissions to exactly target_apps (declarative).
+
+    Removes apps previously managed by us (per state file) that are no longer
+    in target_apps, then enables target_apps. User-added entries are preserved.
+    """
+    if accessibility_state_matches(target_apps):
+        print("Skipping accessibility set (already configured)")
+        return
+
+    target = set(target_apps)
+    previously_managed = set(accessibility_previous_state())
+    to_remove = previously_managed - target
+
+    if to_remove:
+        current = {item["name"] for item in accessibility_list()}
+        for app in sorted(to_remove):
+            if app not in current:
+                continue
+            if accessibility_remove(app):
+                print(f"Removed accessibility entry: {app}")
+            else:
+                print(
+                    f"Could not remove accessibility entry: {app}",
+                    file=sys.stderr,
+                )
+
+    accessibility_enable(target_apps)
+
+
 def register(cli):
     @cli.command()
     @click.option(
         "--enable",
         "enable_apps",
-        help="Comma-separated list of apps to enable (idempotent)",
+        help="Comma-separated list of apps to enable (idempotent, additive)",
+    )
+    @click.option(
+        "--set",
+        "set_apps",
+        help="Comma-separated list of apps to sync to (declarative; removes previously managed apps not in list)",
     )
     @click.argument(
         "action",
@@ -355,11 +400,16 @@ def register(cli):
         type=click.Choice(["list", "add", "remove", "toggle", "open"]),
     )
     @click.argument("app", required=False)
-    def accessibility(enable_apps, action, app):
+    def accessibility(enable_apps, set_apps, action, app):
         """Manage accessibility permissions (macOS only)"""
         if not is_macos():
             print("Accessibility settings only available on macOS", file=sys.stderr)
             sys.exit(1)
+
+        if set_apps is not None:
+            apps = [a.strip() for a in set_apps.split(",") if a.strip()]
+            accessibility_set(apps)
+            return
 
         if enable_apps:
             apps = [a.strip() for a in enable_apps.split(",")]
