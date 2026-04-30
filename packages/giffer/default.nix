@@ -9,7 +9,7 @@ pkgs.writeShellScriptBin "giffer" ''
     pkgs.lib.makeBinPath [
       pkgs.curl
       pkgs.ffmpeg
-      pkgs.gallery-dl
+      pkgs.nixpkgs-darwin-master-gallery-dl.gallery-dl
       pkgs.nixpkgs-darwin-master-ytdlp.yt-dlp
     ]
   }:$PATH"
