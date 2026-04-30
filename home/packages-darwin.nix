@@ -8,7 +8,7 @@
     erdtree
     exiftool
     fzf
-    gallery-dl
+    nixpkgs-darwin-master-gallery-dl.gallery-dl
     home-manager
     imagemagick
     launchd-mgmt
