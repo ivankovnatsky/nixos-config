@@ -19,7 +19,7 @@
     duf
     erdtree
     exiftool
-    gallery-dl
+    nixpkgs-darwin-master-gallery-dl.gallery-dl
     game-mode
     ggh
     glow
