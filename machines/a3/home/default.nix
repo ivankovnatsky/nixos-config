@@ -8,6 +8,7 @@
     # ../../../home/nixvim/plugins/copilot-lua
     ../../../home/atuin.nix
     ../../../home/chromium.nix
+    ../../../home/claude-settings.nix
     ../../../home/claude.nix
     ../../../home/codex.nix
     ../../../home/fish.nix

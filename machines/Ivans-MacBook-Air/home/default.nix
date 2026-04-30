@@ -5,6 +5,7 @@
     ../../../home/brctl.nix
     ../../../home/btop.nix
     ../../../home/carapace.nix
+    ../../../home/claude-settings.nix
     ../../../home/claude.nix
     ../../../home/direnv.nix
     ../../../home/dns-clear.nix

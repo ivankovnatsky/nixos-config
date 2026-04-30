@@ -25,7 +25,7 @@ let
       defaultMode = "auto";
       autoApproveWebFetch = true;
       allow = [
-        "Read(${config.flags.externalStoragePath}/Sources/**)"
+        "Read(${config.flags.homeWorkPath}/Sources/**)"
         "Bash(git add:*)"
         "Bash(git log:*)"
         "WebFetch(domain:*)"

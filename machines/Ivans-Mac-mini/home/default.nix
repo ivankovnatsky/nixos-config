@@ -7,6 +7,7 @@
     ../../../home/brctl.nix
     ../../../home/btop.nix
     ../../../home/carapace.nix
+    ../../../home/claude-settings.nix
     ../../../home/claude.nix
     ../../../home/direnv.nix
     ../../../home/fish.nix
@@ -67,7 +68,6 @@
     ../../../modules/home/tools
     ../../../modules/home/unison
     ../../../modules/home/uptime-kuma-mgmt
-    ./claude-settings.nix
     ./dock.nix
     ./flags.nix
     ./openclaw.nix
