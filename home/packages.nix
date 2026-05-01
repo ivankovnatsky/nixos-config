@@ -20,7 +20,6 @@
     delta
     diff-deep
     diff-long-lines
-    discordo
     dns
     dust
     eat
