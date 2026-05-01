@@ -45,14 +45,6 @@ let
 in
 {
   # Sops secrets for Caddy basic auth credentials
-  sops.secrets.podsync-username = {
-    key = "podsync/username";
-  };
-
-  sops.secrets.podsync-password = {
-    key = "podsync/password";
-  };
-
   sops.secrets.cloudflare-api-token = {
     key = "cloudflareApiToken";
   };
@@ -75,8 +67,6 @@ in
       EXTERNAL_DOMAIN=$(cat ${config.sops.secrets.external-domain.path})
       LETS_ENCRYPT_EMAIL=$(cat ${config.sops.secrets.lets-encrypt-email.path})
       CLOUDFLARE_API_TOKEN=$(cat ${config.sops.secrets.cloudflare-api-token.path})
-      PODSYNC_USERNAME=$(cat ${config.sops.secrets.podsync-username.path})
-      PODSYNC_PASSWORD=$(cat ${config.sops.secrets.podsync-password.path})
 
       # Substitute variables in Caddyfile template
       ${pkgs.gnused}/bin/sed \
@@ -87,8 +77,6 @@ in
         -e "s|@machineIp@|${config.flags.machineLocalAddress}|g" \
         -e "s|@a3Ip@|${config.flags.a3Ip}|g" \
         -e "s|@logPathPrefix@|/tmp/log|g" \
-        -e "s|@podsyncUsername@|$PODSYNC_USERNAME|g" \
-        -e "s|@podsyncPassword@|$PODSYNC_PASSWORD|g" \
         ${caddyfilePath} > ${runtimeCaddyfile}
 
       # Set permissions
