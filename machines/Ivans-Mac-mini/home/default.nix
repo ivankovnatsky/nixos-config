@@ -36,7 +36,6 @@
     ../../../home/packages-darwin.nix
     ../../../home/packages.nix
     ../../../home/pass.nix
-    ../../../home/promtail.nix
     ../../../home/quit-mac-mouse-fix.nix
     ../../../home/ranger.nix
     ../../../home/rebuild-diff.nix
