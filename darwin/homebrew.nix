@@ -9,6 +9,7 @@
     brews = [
       "direnv"
       "displayplacer"
+      "mpv"
       "nix-direnv"
       # Since nix places it's new installs under newly generated nix store
       # path, we can't relay on nixpkgs pam-reattach, because after nixpkgs
