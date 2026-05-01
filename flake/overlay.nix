@@ -117,6 +117,15 @@ let
         meta = old.meta // { license = prev.lib.licenses.gpl3Only; };
       });
     };
+
+    # python3Packages.jeepney installCheckPhase calls dbus-run-session which
+    # cannot start on darwin (DBUS_LAUNCHD_SESSION_BUS_SOCKET unset), breaking
+    # pass-import → pass. Tracked upstream: NixOS/nixpkgs#493775.
+    python313 = prev.python313.override {
+      packageOverrides = pyfinal: pyprev: {
+        jeepney = pyprev.jeepney.overrideAttrs (_: { doInstallCheck = false; });
+      };
+    };
   };
 
 in
