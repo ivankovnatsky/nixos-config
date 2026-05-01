@@ -42,6 +42,7 @@
         # Installed using homebrew
         { path = "/Applications/kitty.app/"; }
         { path = "/Applications/Ghostty.app/"; }
+        { path = "/Applications/cmux.app/"; }
         { path = "/Applications/Firefox.app/"; }
         { path = "/Applications/Vivaldi.app/"; }
         { path = "/Applications/DBeaver.app/"; }
