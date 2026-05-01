@@ -29,7 +29,6 @@
     ./homebrew.nix
     ./http.nix
     ./linux-builder.nix
-    ./login-items.nix
     ./logrotate.nix
     # ./logscanner.nix
     ./mailpit.nix
