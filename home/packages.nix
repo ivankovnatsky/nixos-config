@@ -4,8 +4,6 @@
   home.packages = with pkgs; [
     mtasks
     git-restore
-    abs
-    abs-mgmt
     age
     ai
     aria2
