@@ -148,9 +148,7 @@
       };
       trouble.enable = true;
       cmp-emoji.enable = true;
-      # cmp-spell upstream meta.license was flipped to unfree in nixpkgs; the
-      # plugin is GPL-3.0. Re-enable once nixpkgs fixes the metadata.
-      # cmp-spell.enable = true;
+      cmp-spell.enable = true;
       cmp = {
         enable = true;
         settings = {
@@ -174,8 +172,7 @@
           ];
           sources = [
             { name = "emoji"; }
-            # spell source removed: cmp-spell upstream meta.license was flipped
-            # to unfree; reinstate once nixpkgs fixes the metadata.
+            { name = "spell"; }
             { name = "nvim_lsp"; }
             {
               name = "buffer"; # text within current buffer
