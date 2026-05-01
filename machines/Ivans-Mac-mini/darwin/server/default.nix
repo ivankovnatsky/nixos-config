@@ -7,7 +7,6 @@
     ../../../../darwin/system.nix
     ../../../../modules/darwin/beszel-agent
     ../../../../modules/darwin/dnsmasq
-    ../../../../modules/darwin/doh-server
     ../../../../modules/darwin/launchd
     ../../../../modules/darwin/linux-builder
     ../../../../modules/darwin/logrotate
