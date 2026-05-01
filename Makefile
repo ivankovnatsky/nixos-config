@@ -135,19 +135,21 @@ flake-update-homebrew:
 	done
 
 # Build and test targets for current machine
+# Run with --impure + NIXPKGS_ALLOW_UNFREE=1 to match the auto-rebuild loop
+# (packages/rebuild/main.py sets these), so manual builds reproduce loop env.
 HOSTNAME := $(shell hostname)
 ifeq (${PLATFORM}, Darwin)
 build: addall
-	$(NIX) build .#darwinConfigurations.${HOSTNAME}.system ${NIX_EXTRA_FLAGS}
+	NIXPKGS_ALLOW_UNFREE=1 $(NIX) build --impure .#darwinConfigurations.${HOSTNAME}.system ${NIX_EXTRA_FLAGS}
 
 test-build:
-	$(NIX) build .#darwinConfigurations.${HOSTNAME}.system --dry-run ${NIX_EXTRA_FLAGS}
+	NIXPKGS_ALLOW_UNFREE=1 $(NIX) build --impure .#darwinConfigurations.${HOSTNAME}.system --dry-run ${NIX_EXTRA_FLAGS}
 else
 build: addall
-	$(NIX) build .#nixosConfigurations.${HOSTNAME}.config.system.build.toplevel ${NIX_EXTRA_FLAGS}
+	NIXPKGS_ALLOW_UNFREE=1 $(NIX) build --impure .#nixosConfigurations.${HOSTNAME}.config.system.build.toplevel ${NIX_EXTRA_FLAGS}
 
 test-build:
-	$(NIX) build .#nixosConfigurations.${HOSTNAME}.config.system.build.toplevel --dry-run ${NIX_EXTRA_FLAGS}
+	NIXPKGS_ALLOW_UNFREE=1 $(NIX) build --impure .#nixosConfigurations.${HOSTNAME}.config.system.build.toplevel --dry-run ${NIX_EXTRA_FLAGS}
 endif
 
 # NixOS rebuild targets
