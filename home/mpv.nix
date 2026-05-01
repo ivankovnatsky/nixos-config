@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 
 let
   freeze-window-lua = builtins.fetchurl {
@@ -7,9 +7,12 @@ let
   };
 in
 {
-  home.packages = with pkgs; [
-    mpv
-  ];
+  # mpv binary is installed via Homebrew (see darwin/homebrew.nix). The
+  # nixpkgs build was failing versionCheckPhase after the nixpkgs-darwin
+  # bump; brew updates mpv on its own cadence.
+  # home.packages = with pkgs; [
+  #   mpv
+  # ];
 
   # TODO: Check mpv scripts package.
   home.file.".config/mpv/config".text = ''
