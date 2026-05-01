@@ -107,14 +107,22 @@ let
   extraOverrides = {
     # kvazaar tests get killed by the macOS sandbox/OOM during ffmpeg pipe
     # tests on aarch64-darwin, breaking ffmpeg-full → pydub → markitdown.
-    kvazaar = prev.kvazaar.overrideAttrs (_: { doCheck = false; });
+    kvazaar = prev.kvazaar.overrideAttrs (_: {
+      doCheck = false;
+    });
 
-    # python3Packages.jeepney installCheckPhase calls dbus-run-session which
-    # cannot start on darwin (DBUS_LAUNCHD_SESSION_BUS_SOCKET unset), breaking
-    # pass-import → pass. Tracked upstream: NixOS/nixpkgs#493775.
+    # jeepney 0.9 in nixpkgs has two issues breaking pass-import → pass:
+    #   1. installCheckPhase calls dbus-run-session, which cannot start on
+    #      darwin (DBUS_LAUNCHD_SESSION_BUS_SOCKET unset). Tracked upstream:
+    #      NixOS/nixpkgs#493775.
+    #   2. pythonImportsCheck imports jeepney.io.trio, which imports `outcome`
+    #      at module top-level, but `outcome` is not in propagatedBuildInputs.
     python313 = prev.python313.override {
-      packageOverrides = pyfinal: pyprev: {
-        jeepney = pyprev.jeepney.overrideAttrs (_: { doInstallCheck = false; });
+      packageOverrides = _pyfinal: pyprev: {
+        jeepney = pyprev.jeepney.overrideAttrs (old: {
+          doInstallCheck = false;
+          propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ [ pyprev.outcome ];
+        });
       };
     };
   };
