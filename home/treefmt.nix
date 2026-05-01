@@ -3,7 +3,7 @@
 {
   home.packages = with pkgs; [
     treefmt
-    nodePackages.prettier
+    prettier
 
     deadnix
     gofumpt
