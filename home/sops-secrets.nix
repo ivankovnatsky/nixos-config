@@ -23,14 +23,6 @@
     key = "externalDomain";
   };
 
-  sops.secrets.audiobookshelf-api-token = {
-    key = "audiobookshelf/apiToken";
-  };
-
-  sops.secrets.audiobookshelf-url = {
-    key = "audiobookshelf/url";
-  };
-
   sops.secrets.bitwarden-session = {
     key = "bitwardenSession";
   };
