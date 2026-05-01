@@ -174,7 +174,8 @@
           ];
           sources = [
             { name = "emoji"; }
-            { name = "spell"; }
+            # spell source removed: cmp-spell upstream meta.license was flipped
+            # to unfree; reinstate once nixpkgs fixes the metadata.
             { name = "nvim_lsp"; }
             {
               name = "buffer"; # text within current buffer
