@@ -122,7 +122,6 @@ let
       errorLogPath = "${svc.logDir}/${name}.error.log";
 
       scriptContent = ''
-        #!/bin/bash
         set -e
 
         # Add basic Darwin utilities to PATH for preStart scripts
@@ -157,10 +156,17 @@ let
         exec ${svc.command}
       '';
 
-      script = pkgs.writeShellScriptBin "${name}-starter" scriptContent;
-
       serviceConfig = {
         Label = svc.label;
+        # Inline the starter via `bash -c` instead of writing a script file to
+        # /nix/store. launchd-spawned processes on macOS cannot open() script
+        # files on external Nix stores (EPERM), but Mach-O exec of bash itself
+        # works — so we pass the script body via -c to skip the file open.
+        ProgramArguments = [
+          "${pkgs.bash}/bin/bash"
+          "-c"
+          scriptContent
+        ];
         RunAtLoad = svc.runAtLoad;
         KeepAlive = svc.keepAlive;
         ThrottleInterval = svc.throttleInterval;
@@ -171,7 +177,6 @@ let
       // svc.extraServiceConfig;
     in
     {
-      command = "${script}/bin/${name}-starter";
       inherit serviceConfig;
     };
 
