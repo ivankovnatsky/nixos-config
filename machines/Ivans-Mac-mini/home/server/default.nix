@@ -1,6 +1,5 @@
 {
   imports = [
-    ./audiobookshelf
     ./beszel.nix
     ./bin.nix
     ./download-youtube
@@ -15,7 +14,6 @@
     ./ollama.nix
     ./open-webui.nix
     ./podservice
-    ./podsync
     ./reposync.nix
     ./restart-unhealthy.nix
     ./stash
