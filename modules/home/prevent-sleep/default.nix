@@ -16,14 +16,15 @@ let
   preventSleepWrapper = pkgs.writeScriptBin "prevent-sleep-wrapper" ''
     #!${pkgs.bash}/bin/bash
 
-    # Check if caffeinate is already running with our specific flags
+    # Check if our specific caffeinate invocation is already running
     if /usr/bin/pgrep -f "caffeinate.*-d.*-i.*-m.*-s.*-t.*43200" > /dev/null; then
         echo "prevent-sleep is already running, skipping..."
         exit 0
     fi
 
-    # Start prevent-sleep via settings awake
-    exec ${settingsPackage}/bin/settings awake
+    # Start prevent-sleep via settings awake — assert display/idle/disk/system
+    # for 12h to cover the work window
+    exec ${settingsPackage}/bin/settings awake -d -i -m -s -t 43200
   '';
 in
 {
