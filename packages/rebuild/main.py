@@ -6,6 +6,7 @@ Nix rebuild tool with two modes:
 """
 
 import json
+import re
 import sys
 import subprocess
 import platform
@@ -16,6 +17,7 @@ import time
 import threading
 import socket
 import urllib.request
+from collections import deque
 from pathlib import Path
 
 import click
@@ -168,7 +170,7 @@ DEFAULT_DISCORD_WEBHOOK_FILE = (
 )
 
 
-def send_failure_notification(webhook_file=None, exit_code=None, log_tail=None):
+def send_failure_notification(webhook_file=None, exit_code=None, log_excerpt=None):
     """Post a rebuild failure to Discord via webhook.
 
     Reads the webhook URL from `webhook_file` (defaults to the sops-nix
@@ -199,14 +201,29 @@ def send_failure_notification(webhook_file=None, exit_code=None, log_tail=None):
     header = " — ".join(parts)
 
     body = header
-    if log_tail:
+    if log_excerpt:
         # Discord caps content at 2000 chars; reserve room for the header + fences.
-        # Trim whole lines from the front rather than slicing mid-line.
+        # Trim whole lines from whichever end is farther from the `error:` marker
+        # so the root cause survives. (When the last error is a "N dependencies
+        # failed" cascade summary, the actionable builder log sits in the
+        # *before* half — front-only trimming would discard it.)
         budget = 2000 - len(header) - len("\n```\n\n```")
-        lines = list(log_tail)
+        lines = list(log_excerpt)
+        marker_idx = next(
+            (i for i in range(len(lines) - 1, -1, -1) if ERROR_LINE_RE.match(lines[i])),
+            len(lines) - 1,
+        )
         snippet = "\n".join(lines)
         while len(snippet) > budget and len(lines) > 1:
-            lines.pop(0)
+            tail_pad = len(lines) - 1 - marker_idx
+            head_pad = marker_idx
+            if tail_pad >= head_pad and tail_pad > 0:
+                lines.pop()
+            elif head_pad > 0:
+                lines.pop(0)
+                marker_idx -= 1
+            else:
+                break
             snippet = "\n".join(lines)
         if len(snippet) > budget:
             snippet = snippet[-budget:]
@@ -381,11 +398,62 @@ def release_lock():
             logging.warning("Cannot release lock file (permission denied)")
 
 
+# Lines to include before/after the last nix `error:` marker when extracting
+# failure context. Both windows are generous because nix's "builder for X
+# failed; last 25 log lines:" block can sit on either side of the final
+# `error:` line depending on whether the last marker is the original failure
+# or a downstream "N dependencies of derivation failed" cascade summary.
+ERROR_CONTEXT_BEFORE = 30
+ERROR_CONTEXT_AFTER = 30
+
+# Fallback tail size when no error marker is found.
+FALLBACK_TAIL_LINES = 30
+
+# Cap on lines kept in memory while reading the log. Nix builds with `-L` can
+# produce very large logs; this bounds memory while still leaving plenty of
+# room for context extraction.
+MAX_LOG_LINES = 2000
+
+# Match nix's actual error lines (anchored to start, optional whitespace prefix
+# for indented continuation), not stray substrings in test output or paths.
+ERROR_LINE_RE = re.compile(r"^\s*error:")
+
+
+def read_log_tail(log_path, max_lines=MAX_LOG_LINES):
+    """Read up to the last `max_lines` of a log file without slurping it whole.
+
+    Uses `errors="replace"` because nix build logs routinely contain non-UTF-8
+    bytes (terminal escape sequences, locale-mismatched compiler output) and a
+    decode error here would suppress the entire failure context.
+    """
+    with open(log_path, errors="replace") as f:
+        return [line.rstrip("\n") for line in deque(f, maxlen=max_lines)]
+
+
+def extract_error_context(lines, before=ERROR_CONTEXT_BEFORE, after=ERROR_CONTEXT_AFTER):
+    """Return lines around the last nix `error:` marker.
+
+    Scans from the end because nix's actionable root cause is typically the
+    final `error:` line — earlier ones are usually "builder for X failed"
+    cascades or unrelated `error:` substrings from passing test output (`-L`).
+    Falls back to the last `FALLBACK_TAIL_LINES` lines if no marker is found.
+    """
+    error_idx = next(
+        (i for i in range(len(lines) - 1, -1, -1) if ERROR_LINE_RE.match(lines[i])),
+        None,
+    )
+    if error_idx is None:
+        return lines[-FALLBACK_TAIL_LINES:]
+    start = max(0, error_idx - before)
+    end = min(len(lines), error_idx + after + 1)
+    return lines[start:end]
+
+
 def run_rebuild(config_path, command, quiet=False):
     """Run the rebuild command. Returns (return_code, actually_ran).
 
     When quiet=True, stream output to a temp file instead of the terminal.
-    On failure, tail the last 30 lines so the user can debug.
+    On failure, send context around the last error marker so the user can debug.
     """
     if not acquire_lock():
         logging.info("Skipping rebuild - another rebuild is in progress")
@@ -416,17 +484,17 @@ def run_rebuild(config_path, command, quiet=False):
                     logging.info("Rebuild successful")
                 else:
                     logging.error(f"Rebuild failed with exit code {result.returncode}")
-                    tail = None
+                    context = None
                     try:
-                        lines = log_path.read_text().rstrip().split("\n")
-                        tail = lines[-30:] if len(lines) > 30 else lines
-                        logging.error(f"Last output (full log: {log_path}):")
-                        for line in tail:
+                        lines = read_log_tail(log_path)
+                        context = extract_error_context(lines)
+                        logging.error(f"Log excerpt (full log: {log_path}):")
+                        for line in context:
                             logging.error(f"  {line}")
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        logging.warning(f"Failed to extract log context: {e}")
                     send_failure_notification(
-                        exit_code=result.returncode, log_tail=tail
+                        exit_code=result.returncode, log_excerpt=context
                     )
             finally:
                 if result is None or result.returncode == 0:
