@@ -65,7 +65,7 @@
     nix-gc
     nix-generate-sha
     nix-sort-imports
-    nodePackages.prettier
+    prettier
     nodejs
     notes
     nvim-edit-staged
