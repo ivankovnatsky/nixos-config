@@ -23,12 +23,6 @@
                 - |
                   cd ${config.flags.externalStoragePath}/Sources/github.com/ivankovnatsky/textcast
                   make watch-cast
-          - audiobookshelf:
-              root: ${config.flags.externalStoragePath}/AudioBookShelf
-              layout: main-horizontal
-              panes:
-                - nvim List.txt
-                - make watch
           - youtube:
               root: ${config.flags.externalStoragePath}/Youtube
               layout: main-horizontal
