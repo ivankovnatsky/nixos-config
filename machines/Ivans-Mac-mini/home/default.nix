@@ -41,7 +41,6 @@
     ../../../home/ranger.nix
     ../../../home/rebuild-diff.nix
     ../../../home/safari.nix
-    ../../../home/sops.nix
     ../../../home/ssh.nix
     ../../../home/starship
     ../../../home/syncthing-ignore.nix
@@ -73,6 +72,7 @@
     ./openclaw.nix
     ./packages.nix
     ./server
+    ./sops.nix
     ./tmux.nix
     ./tools.nix
     ./unison.nix
