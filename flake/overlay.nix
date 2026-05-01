@@ -108,6 +108,15 @@ let
     # kvazaar tests get killed by the macOS sandbox/OOM during ffmpeg pipe
     # tests on aarch64-darwin, breaking ffmpeg-full → pydub → markitdown.
     kvazaar = prev.kvazaar.overrideAttrs (_: { doCheck = false; });
+
+    # Upstream nixpkgs flipped vimPlugins.cmp-spell to meta.license = unfree.
+    # The plugin is GPL-3.0 in its repo; restore a free license so allowUnfree
+    # is not required to evaluate nixvim with cmp-spell enabled.
+    vimPlugins = prev.vimPlugins // {
+      cmp-spell = prev.vimPlugins.cmp-spell.overrideAttrs (old: {
+        meta = old.meta // { license = prev.lib.licenses.gpl3Only; };
+      });
+    };
   };
 
 in
