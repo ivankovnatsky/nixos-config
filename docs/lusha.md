@@ -145,3 +145,8 @@ Configured Do Not Disturb to filter out Iru MDM notifications:
 - Allow:
   - Camera
   - Microphone
+
+### cmux
+
+- Allow:
+  - Notifications
