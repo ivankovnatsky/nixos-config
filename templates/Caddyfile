@@ -108,20 +108,6 @@
 		}
 	}
 
-	# DNS over HTTPS
-	@doh host doh.@externalDomain@
-	reverse_proxy @doh http://@machineIp@:8053 {
-		# Enable client IP forwarding for EDNS
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-
-	@bin host bin.@externalDomain@
-	reverse_proxy @bin @machineIp@:8820 {
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-
 	@ollama host ollama.@externalDomain@
 	reverse_proxy @ollama {
 		# Primary backend (a3w) listed first, failover to mini
@@ -162,18 +148,6 @@
 			keepalive 12h
 			keepalive_idle_conns 100
 			response_header_timeout 300s
-		}
-	}
-
-	@stash host stash.@externalDomain@
-	reverse_proxy @stash @machineIp@:9999 {
-		# Enable WebSocket support
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-		# Increase timeouts for streaming
-		transport http {
-			keepalive 12h
-			keepalive_idle_conns 100
 		}
 	}
 
@@ -226,30 +200,6 @@
 
 	@openclaw host openclaw.@externalDomain@
 	reverse_proxy @openclaw @machineIp@:18789 {
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-
-	@grafana host grafana.@externalDomain@
-	reverse_proxy @grafana @machineIp@:3000 {
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-
-	@loki host loki.@externalDomain@
-	reverse_proxy @loki @machineIp@:3100 {
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-
-	@prometheus host prometheus.@externalDomain@
-	reverse_proxy @prometheus @machineIp@:9090 {
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-
-	@promtail host promtail.@externalDomain@
-	reverse_proxy @promtail @machineIp@:9080 {
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
 	}
