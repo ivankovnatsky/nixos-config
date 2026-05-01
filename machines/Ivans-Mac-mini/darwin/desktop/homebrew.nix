@@ -29,8 +29,5 @@
       "Pages" = 409201541;
       "Bitwarden" = 1352778147;
     };
-    caskArgs = {
-      no_quarantine = true;
-    };
   };
 }

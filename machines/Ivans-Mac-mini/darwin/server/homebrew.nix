@@ -10,8 +10,5 @@
       "ollama"
     ];
     casks = [ ];
-    caskArgs = {
-      no_quarantine = true;
-    };
   };
 }
