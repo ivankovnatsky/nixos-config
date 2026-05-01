@@ -22,7 +22,6 @@
     ../../../../system/sops-secrets.nix
     ./beszel.nix
     ./dns.nix
-    ./doh.nix
     ./flags.nix
     ./git.nix
     ./homebrew.nix
