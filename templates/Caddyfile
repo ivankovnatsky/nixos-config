@@ -189,12 +189,6 @@
 		}
 	}
 
-	@podsync host podsync.@externalDomain@
-	reverse_proxy @podsync @machineIp@:8082 {
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-
 	@podservice host podservice.@externalDomain@
 	reverse_proxy @podservice @machineIp@:8083 {
 		header_up X-Real-IP {remote_host}
@@ -211,18 +205,6 @@
 	reverse_proxy @youtube @machineIp@:8085 {
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
-	}
-
-	@audiobookshelf host audiobookshelf.@externalDomain@
-	reverse_proxy @audiobookshelf @machineIp@:8000 {
-		# Enable WebSocket support for real-time updates
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-		# Increase timeouts for streaming
-		transport http {
-			keepalive 12h
-			keepalive_idle_conns 100
-		}
 	}
 
 	@navidrome host navidrome.@externalDomain@
