@@ -1509,11 +1509,11 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1777490734,
-        "narHash": "sha256-VnkaqtoQftFaI7XRP1PDCQCoJDU8Nei5d7kqoLcCgzw=",
+        "lastModified": 1777627987,
+        "narHash": "sha256-5kbFY7YKsmDQybbG7HQoxBKRgEMDWhEwR9Hg6foLd4Y=",
         "owner": "ivankovnatsky",
         "repo": "tools",
-        "rev": "180a3338379f414f81c40a9bae9ffdf611ee8fef",
+        "rev": "43152de006c249c493c95a53a05c11ef9088458a",
         "type": "github"
       },
       "original": {
