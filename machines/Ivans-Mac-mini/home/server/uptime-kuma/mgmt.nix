@@ -68,11 +68,6 @@
         description = "Jellyfin media server";
       }
       {
-        name = "stash";
-        url = "http://${config.flags.machineLocalAddress}:9999";
-        description = "Stash media organizer";
-      }
-      {
         name = "media";
         url = "http://${config.flags.machineLocalAddress}:9998";
         description = "Stash media organizer (general)";
@@ -99,11 +94,6 @@
         description = "Miniserve file server (auth required)";
       }
       {
-        name = "bin";
-        url = "http://${config.flags.machineLocalAddress}:8820";
-        description = "Pastebin service";
-      }
-      {
         name = "podservice";
         url = "http://${config.flags.machineLocalAddress}:8083";
         description = "YouTube to Podcast service";
@@ -122,12 +112,6 @@
         name = "uptime-kuma";
         url = "http://${config.flags.machineLocalAddress}:3001";
         description = "Uptime Kuma monitoring";
-      }
-      {
-        name = "doh";
-        url = "http://${config.flags.machineLocalAddress}:8053/dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB";
-        expectedStatus = 200;
-        description = "DNS over HTTPS service";
       }
       {
         name = "ollama";
@@ -161,26 +145,6 @@
         url = "${config.flags.machineLocalAddress}:2222";
         interval = 60;
         description = "Forgejo SSH git access";
-      }
-      {
-        name = "grafana";
-        url = "http://${config.flags.machineLocalAddress}:3000";
-        description = "Grafana dashboard";
-      }
-      {
-        name = "loki";
-        url = "http://${config.flags.machineLocalAddress}:3100/ready";
-        description = "Loki log aggregation";
-      }
-      {
-        name = "prometheus";
-        url = "http://${config.flags.machineLocalAddress}:9090";
-        description = "Prometheus metrics";
-      }
-      {
-        name = "promtail";
-        url = "http://${config.flags.machineLocalAddress}:9080/ready";
-        description = "Promtail log collector";
       }
       {
         name = "dnsmasq";
