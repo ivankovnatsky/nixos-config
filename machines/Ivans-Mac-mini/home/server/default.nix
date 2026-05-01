@@ -1,7 +1,6 @@
 {
   imports = [
     ./beszel.nix
-    ./bin.nix
     ./download-youtube
     ./forgejo
     ./healthchecks
@@ -9,14 +8,12 @@
     # ./logscanner.nix
     ./media
     ./miniserve.nix
-    ./monitoring
     ./navidrome
     ./ollama.nix
     ./open-webui.nix
     ./podservice
     ./reposync.nix
     ./restart-unhealthy.nix
-    ./stash
     ./stash-media
     ./syncthing-mgmt.nix
     ./textcast
