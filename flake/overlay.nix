@@ -103,5 +103,12 @@ let
     pyenv-nix-install = inputs.pyenv-nix-install.packages.${system}.default;
   };
 
+  # 5. In-place overrides of upstream nixpkgs derivations
+  extraOverrides = {
+    # kvazaar tests get killed by the macOS sandbox/OOM during ffmpeg pipe
+    # tests on aarch64-darwin, breaking ffmpeg-full → pydub → markitdown.
+    kvazaar = prev.kvazaar.overrideAttrs (_: { doCheck = false; });
+  };
+
 in
-autoOverlays // autoPackages // masterOverlays // flakeOverlays
+autoOverlays // autoPackages // masterOverlays // flakeOverlays // extraOverrides
