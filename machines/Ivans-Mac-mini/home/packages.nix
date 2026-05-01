@@ -13,7 +13,7 @@ in
       (python313.withPackages (
         ps: with ps; [
           grip
-          markitdown
+          # markitdown
         ]
       ))
       macmon
