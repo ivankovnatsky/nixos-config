@@ -8,6 +8,7 @@
         markitdown
       ]
     ))
+    mpv
     git-restore
     backup-system
     bat
