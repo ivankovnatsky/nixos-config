@@ -12,7 +12,6 @@
 	flake-update-darwin-unstable \
 	flake-update-darwin-release \
 	flake-update-nixos-unstable \
-	flake-update-nixos-release \
 	flake-update-nixvim \
 	flake-update-homebrew \
 	\
@@ -116,14 +115,8 @@ flake-update-nixos-unstable:
 		$(NIX) flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
 	done
 
-flake-update-nixos-release:
-	inputs="nixpkgs-nixos-release home-manager-nixos-release nixvim-nixos-release sops-nix-nixos-release"; \
-	for input in $$inputs; do \
-		$(NIX) flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
-	done
-
 flake-update-nixvim:
-	inputs="nixvim-darwin-unstable nixvim-darwin-release nixvim-nixos-unstable nixvim-nixos-release"; \
+	inputs="nixvim-darwin-unstable nixvim-darwin-release nixvim-nixos-unstable"; \
 	for input in $$inputs; do \
 		$(NIX) flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
 	done

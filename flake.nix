@@ -49,11 +49,6 @@
       url = "github:nixos/nixpkgs/nixos-unstable";
     };
 
-    # Stable NixOS release
-    nixpkgs-nixos-release = {
-      url = "github:nixos/nixpkgs/nixos-25.11";
-    };
-
     # Stable Darwin release
     nixpkgs-darwin-release = {
       url = "github:nixos/nixpkgs/nixpkgs-25.11-darwin";
@@ -87,11 +82,6 @@
     home-manager-darwin-release = {
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs-darwin-release";
-    };
-
-    home-manager-nixos-release = {
-      url = "github:nix-community/home-manager/release-25.11";
-      inputs.nixpkgs.follows = "nixpkgs-nixos-release";
     };
 
     home-manager-nixos-unstable = {
@@ -164,11 +154,6 @@
       inputs.nixpkgs.follows = "nixpkgs-nixos-unstable";
     };
 
-    nixvim-nixos-release = {
-      url = "github:nix-community/nixvim/nixos-25.11";
-      inputs.nixpkgs.follows = "nixpkgs-nixos-release";
-    };
-
     flake-utils = {
       url = "github:numtide/flake-utils";
     };
@@ -199,11 +184,6 @@
     sops-nix-darwin-unstable = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs-darwin-unstable";
-    };
-
-    sops-nix-nixos-release = {
-      url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs-nixos-release";
     };
 
     sops-nix-nixos-unstable = {
