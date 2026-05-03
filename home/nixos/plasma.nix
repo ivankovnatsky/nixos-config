@@ -34,7 +34,7 @@
             productId = "0033";
 
             accelerationProfile = "none";
-            acceleration = -0.8;
+            acceleration = -0.7;
           }
         ];
       };
