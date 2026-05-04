@@ -209,11 +209,7 @@ EOF
 
         "**/.worktrees/"
 
-        "**/CLAUDE.md"
-        "**/CLAUDE.local.md"
         "**/.claude"
-        "**/claude/"
-        "**/.serena"
 
         "**/.codex"
       ];
