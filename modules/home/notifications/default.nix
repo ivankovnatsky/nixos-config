@@ -26,14 +26,44 @@ in
 
       interval = mkOption {
         type = types.int;
-        default = 30 * 60;
-        description = "Interval in seconds between battery notifications (default: 30 minutes).";
+        default = 15 * 60;
+        description = ''
+          Launchd polling interval in seconds. The script itself decides
+          whether to actually send (see dailyAt / belowPercent), so this
+          only bounds how soon a condition is detected.
+        '';
       };
 
       runAtLoad = mkOption {
         type = types.bool;
         default = false;
-        description = "Send a battery notification immediately when the launchd job is loaded.";
+        description = "Run the battery notifier immediately when the launchd job is loaded.";
+      };
+
+      dailyAt = mkOption {
+        type = types.str;
+        default = "";
+        example = "21:00";
+        description = ''
+          Send a daily battery notification at or after this HH:MM (local
+          time), once per day. Empty string disables the daily slot.
+        '';
+      };
+
+      belowPercent = mkOption {
+        type = types.int;
+        default = 0;
+        example = 50;
+        description = ''
+          Send an extra notification when the battery is at or below this
+          percentage and discharging. 0 disables low-battery alerts.
+        '';
+      };
+
+      lowIntervalHours = mkOption {
+        type = types.numbers.positive;
+        default = 3;
+        description = "Minimum hours between repeated low-battery notifications.";
       };
     };
   };
@@ -60,7 +90,10 @@ in
           script = pkgs.writeShellScript "notifications-battery-run" ''
             set -e
             exec ${pkgs.notifications}/bin/notifications battery \
-              --webhook-file "${cfg.discordWebhookFile}"
+              --webhook-file ${escapeShellArg cfg.discordWebhookFile} \
+              --daily-at ${escapeShellArg cfg.battery.dailyAt} \
+              --below-percent ${toString cfg.battery.belowPercent} \
+              --low-interval-hours ${toString cfg.battery.lowIntervalHours}
           '';
         in
         "${script}";
