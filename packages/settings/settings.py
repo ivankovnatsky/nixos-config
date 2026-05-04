@@ -18,7 +18,6 @@ Subcommands:
   battery     Show battery state (macOS + Linux)
 """
 
-import sys
 
 import click
 
@@ -78,4 +77,3 @@ def help_cmd(ctx):
 
 if __name__ == "__main__":
     cli(prog_name="settings")
-    sys.exit(0)
