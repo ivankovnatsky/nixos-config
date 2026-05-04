@@ -19,7 +19,6 @@
     ];
     casks = [
       "chromium"
-      "cmux"
       {
         name = "coconutbattery";
         greedy = true;
