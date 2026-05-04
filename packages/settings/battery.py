@@ -51,11 +51,14 @@ def battery_get_macos() -> dict | None:
     state = "unknown"
     for f in fields:
         f_lc = f.lower()
-        if "charging" in f_lc and "not charging" not in f_lc:
-            state = "charging"
-            break
         if "discharging" in f_lc:
             state = "discharging"
+            break
+        if "not charging" in f_lc:
+            state = "ac"
+            break
+        if "charging" in f_lc:
+            state = "charging"
             break
         if "charged" in f_lc:
             state = "charged"
@@ -108,15 +111,16 @@ def battery_get_linux() -> dict | None:
 
     ac_online = None
     for ac in base.iterdir():
-        if ac.name.startswith(("AC", "ADP", "ACAD")):
-            online = (
-                (ac / "online").read_text().strip()
-                if (ac / "online").is_file()
-                else None
-            )
-            if online == "1":
-                ac_online = True
-                break
+        if not ac.name.startswith(("AC", "ADP", "ACAD")):
+            continue
+        online_path = ac / "online"
+        if not online_path.is_file():
+            continue
+        online = online_path.read_text().strip()
+        if online == "1":
+            ac_online = True
+            break
+        if ac_online is None:
             ac_online = False
 
     source = (
@@ -165,11 +169,12 @@ def register(cli):
             sys.exit(1)
 
         info = battery_get()
+        if as_json:
+            print(json.dumps(info))
+            return
+
         if info is None:
             print("No battery detected", file=sys.stderr)
             sys.exit(1)
 
-        if as_json:
-            print(json.dumps(info))
-        else:
-            print(f"Battery: {format_human(info)}")
+        print(f"Battery: {format_human(info)}")
