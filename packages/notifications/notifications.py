@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Send notifications to external channels.
 
 Subcommands:
@@ -51,7 +50,11 @@ def send_discord(webhook_url: str, message: str, source: str) -> bool:
 
 
 def get_battery_state() -> dict | None:
-    """Read battery state by shelling out to `settings battery --json`."""
+    """Read battery state by shelling out to `settings battery --json`.
+
+    Returns the parsed dict, or None when the platform reports no battery
+    (e.g. desktop Macs). Raises RuntimeError on subprocess or parse failures.
+    """
     try:
         result = subprocess.run(
             ["settings", "battery", "--json"],
@@ -59,19 +62,16 @@ def get_battery_state() -> dict | None:
             text=True,
             check=True,
         )
-    except FileNotFoundError:
-        click.echo("`settings` CLI not found in PATH", err=True)
-        return None
+    except FileNotFoundError as e:
+        raise RuntimeError("`settings` CLI not found in PATH") from e
     except subprocess.CalledProcessError as e:
         msg = (e.stderr or "").strip() or f"exit {e.returncode}"
-        click.echo(f"`settings battery --json` failed: {msg}", err=True)
-        return None
+        raise RuntimeError(f"`settings battery --json` failed: {msg}") from e
 
     try:
         return json.loads(result.stdout)
     except json.JSONDecodeError as e:
-        click.echo(f"Could not parse settings battery output: {e}", err=True)
-        return None
+        raise RuntimeError(f"Could not parse settings battery output: {e}") from e
 
 
 def format_battery(info: dict) -> str:
@@ -114,9 +114,15 @@ def cli(ctx):
 )
 def battery(webhook, webhook_file, dry_run):
     """Send current battery state to a Discord webhook."""
-    info = get_battery_state()
-    if info is None:
+    try:
+        info = get_battery_state()
+    except RuntimeError as e:
+        click.echo(str(e), err=True)
         sys.exit(1)
+
+    if info is None:
+        click.echo("No battery detected; nothing to notify.")
+        return
 
     message = f"Battery: {format_battery(info)}"
 
@@ -140,4 +146,3 @@ def battery(webhook, webhook_file, dry_run):
 
 if __name__ == "__main__":
     cli(prog_name="notifications")
-    sys.exit(0)
