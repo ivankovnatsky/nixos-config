@@ -7,11 +7,14 @@ Subcommands:
 from __future__ import annotations
 
 import json
+import os
 import platform
 import subprocess
 import sys
 import urllib.error
 import urllib.request
+from datetime import datetime, time, timedelta
+from pathlib import Path
 
 import click
 
@@ -74,6 +77,39 @@ def get_battery_state() -> dict | None:
         raise RuntimeError(f"Could not parse settings battery output: {e}") from e
 
 
+def default_state_path() -> Path:
+    base = os.environ.get("XDG_STATE_HOME") or str(Path.home() / ".local" / "state")
+    return Path(base) / "notifications" / "battery.json"
+
+
+def load_state(path: Path) -> dict:
+    try:
+        with path.open() as fh:
+            return json.load(fh)
+    except FileNotFoundError:
+        return {}
+    except (OSError, json.JSONDecodeError) as e:
+        click.echo(f"Warning: ignoring unreadable state file {path}: {e}", err=True)
+        return {}
+
+
+def save_state(path: Path, state: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    with tmp.open("w") as fh:
+        json.dump(state, fh)
+    tmp.replace(path)
+
+
+def parse_hhmm(value: str) -> time:
+    try:
+        return datetime.strptime(value, "%H:%M").time()
+    except ValueError as e:
+        raise click.BadParameter(
+            f"--daily-at must be HH:MM, got {value!r}"
+        ) from e
+
+
 def format_battery(info: dict) -> str:
     parts = []
     if info.get("percent") is not None:
@@ -112,8 +148,47 @@ def cli(ctx):
     is_flag=True,
     help="Print the message instead of sending it.",
 )
-def battery(webhook, webhook_file, dry_run):
-    """Send current battery state to a Discord webhook."""
+@click.option(
+    "--daily-at",
+    default="",
+    metavar="HH:MM",
+    help="Send a daily notification at or after this time (once per day). Empty disables.",
+)
+@click.option(
+    "--below-percent",
+    type=int,
+    default=0,
+    metavar="N",
+    help="Also send when battery <= N percent and discharging. 0 disables.",
+)
+@click.option(
+    "--low-interval-hours",
+    type=float,
+    default=3.0,
+    show_default=True,
+    help="Minimum hours between repeated low-battery notifications.",
+)
+@click.option(
+    "--state-file",
+    type=click.Path(dir_okay=False, writable=True),
+    default=None,
+    help="State file used to dedupe sends (default: $XDG_STATE_HOME/notifications/battery.json).",
+)
+def battery(
+    webhook,
+    webhook_file,
+    dry_run,
+    daily_at,
+    below_percent,
+    low_interval_hours,
+    state_file,
+):
+    """Send current battery state to a Discord webhook.
+
+    Without --daily-at or --below-percent, sends every invocation. With
+    either flag set, the script only sends when its conditions match and
+    tracks dedupe state in --state-file.
+    """
     try:
         info = get_battery_state()
     except RuntimeError as e:
@@ -124,7 +199,49 @@ def battery(webhook, webhook_file, dry_run):
         click.echo("No battery detected; nothing to notify.")
         return
 
-    message = f"Battery: {format_battery(info)}"
+    daily_at_enabled = bool(daily_at)
+    below_percent_enabled = below_percent > 0
+    conditional = daily_at_enabled or below_percent_enabled
+    state_path = Path(state_file) if state_file else default_state_path()
+    state = load_state(state_path) if conditional else {}
+    now = datetime.now()
+    today = now.date()
+
+    reasons: list[str] = []
+
+    if daily_at_enabled:
+        target = parse_hhmm(daily_at)
+        last_daily = state.get("last_daily_date")
+        crossed = now.time() >= target
+        already_sent_today = last_daily == today.isoformat()
+        if crossed and not already_sent_today:
+            reasons.append(f"daily@{daily_at}")
+
+    if below_percent_enabled:
+        percent = info.get("percent")
+        is_discharging = info.get("state") == "discharging"
+        if (
+            isinstance(percent, (int, float))
+            and percent <= below_percent
+            and is_discharging
+        ):
+            last_low = state.get("last_low_ts")
+            try:
+                last_low_dt = datetime.fromisoformat(last_low) if last_low else None
+            except ValueError:
+                last_low_dt = None
+            if (
+                last_low_dt is None
+                or now - last_low_dt >= timedelta(hours=low_interval_hours)
+            ):
+                reasons.append(f"low<={below_percent}%")
+
+    if conditional and not reasons:
+        click.echo("No notification condition met; skipping.")
+        return
+
+    suffix = f" ({', '.join(reasons)})" if reasons else ""
+    message = f"Battery: {format_battery(info)}{suffix}"
 
     if dry_run:
         click.echo(message)
@@ -141,6 +258,17 @@ def battery(webhook, webhook_file, dry_run):
 
     if not send_discord(url, message, source="notifications"):
         sys.exit(1)
+
+    if conditional:
+        if any(r.startswith("daily@") for r in reasons):
+            state["last_daily_date"] = today.isoformat()
+        if any(r.startswith("low<=") for r in reasons):
+            state["last_low_ts"] = now.isoformat(timespec="seconds")
+        try:
+            save_state(state_path, state)
+        except OSError as e:
+            click.echo(f"Warning: could not write state file {state_path}: {e}", err=True)
+
     click.echo(f"Sent: {message}")
 
 
