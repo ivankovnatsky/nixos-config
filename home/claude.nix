@@ -93,15 +93,6 @@ let
   };
 in
 {
-  # https://docs.anthropic.com/en/docs/claude-code/settings
-  # home = {
-  #   file = {
-  #     "${claudeConfigPath}" = {
-  #       text = builtins.toJSON baseSettings;
-  #     };
-  #   };
-  # };
-
   sops.secrets.portkey-api-key = lib.mkIf isWork {
     key = "work/portkey/apiKey";
   };
