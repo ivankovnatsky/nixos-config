@@ -164,3 +164,4 @@ shortcuts work.
 
 - Allow:
   - Notifications
+  - Local network
