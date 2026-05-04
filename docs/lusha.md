@@ -57,11 +57,6 @@ Configured Do Not Disturb to filter out Iru MDM notifications:
 
 #### Mission Control
 
-Enable switch to Desktop 1-16 shortcuts:
-
-1. Open System Settings → Keyboard → Keyboard Shortcuts → Mission Control
-2. Enable "Switch to Desktop 1" through "Switch to Desktop 16"
-
 ## App macOS settings
 
 ## bash
