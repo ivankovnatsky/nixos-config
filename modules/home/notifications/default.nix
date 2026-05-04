@@ -28,7 +28,7 @@ in
       };
 
       discordWebhookFile = mkOption {
-        type = types.str;
+        type = types.path;
         description = "Path to file containing the Discord webhook URL.";
       };
     };
