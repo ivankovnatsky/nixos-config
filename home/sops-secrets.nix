@@ -66,4 +66,8 @@
   sops.secrets.discord-webhook-rebuild = {
     key = "discord/webhooks/monitoringRebuild";
   };
+
+  sops.secrets.discord-webhook-notifications = {
+    key = "discord/webhooks/notifications";
+  };
 }
