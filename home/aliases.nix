@@ -19,7 +19,6 @@ let
     less = "less -RS";
     syncthing = "${pkgs.syncthing}/bin/syncthing serve --no-browser";
     stc = "${pkgs.stc-cli}/bin/stc -homedir ${syncthingHomeDir}";
-    claude = "claude --allow-dangerously-skip-permissions";
     gemini = "gemini --yolo";
     codex = "codex --sandbox danger-full-access";
   };

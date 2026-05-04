@@ -112,7 +112,7 @@ in
       "export ANTHROPIC_BASE_URL='https://api.portkey.ai'"
       "export ANTHROPIC_API_KEY=\"$(~/.claude/anthropic_key.sh)\""
       "export ANTHROPIC_CUSTOM_HEADERS=$'x-portkey-api-key: ${config.sops.placeholder.portkey-api-key}\\nx-portkey-provider: @anthropic'"
-      "exec claude --allow-dangerously-skip-permissions \"$@\""
+      "exec claude \"$@\""
       ""
     ];
     mode = "0755";
