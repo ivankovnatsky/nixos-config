@@ -62,6 +62,9 @@ Enable switch to Desktop 1-16 shortcuts:
 1. Open System Settings → Keyboard → Keyboard Shortcuts → Mission Control
 2. Enable "Switch to Desktop 1" through "Switch to Desktop 16"
 
+Toggle these shortcuts off and back on to make cmux Ctrl+1 focus default
+shortcuts work.
+
 ## App macOS settings
 
 ## bash
