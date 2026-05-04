@@ -13,30 +13,32 @@ let
   # `;` / `&&` / `||` / `|`) followed by optional whitespace. Hyphenated
   # wrappers (`git-commit-scope`, `gh-pr`) are not matched because the
   # regex requires whitespace between tokens — no allowlist needed.
-  hookScript = pkgs.writeShellScript "claude-pretooluse-hook" ''
-    CMD=$(${pkgs.jq}/bin/jq -r '.tool_input.command // empty')
-    [ -z "$CMD" ] && exit 0
+  hookScript = pkgs.writeShellScript "claude-pretooluse-hook" (
+    lib.removeSuffix "\n" ''
+      CMD=$(${pkgs.jq}/bin/jq -r '.tool_input.command // empty')
+      [ -z "$CMD" ] && exit 0
 
-    # Block raw `git commit`
-    if echo "$CMD" | grep -qE '(^|[;&|]+)[[:space:]]*git[[:space:]]+commit([[:space:]]|$)'; then
-      echo "Use git-commit-scope or /commit skill instead of raw git commit" >&2
-      exit 2
-    fi
+      # Block raw `git commit`
+      if echo "$CMD" | grep -qE '(^|[;&|]+)[[:space:]]*git[[:space:]]+commit([[:space:]]|$)'; then
+        echo "Use git-commit-scope or /commit skill instead of raw git commit" >&2
+        exit 2
+      fi
 
-    # Block raw `gh pr create`
-    if echo "$CMD" | grep -qE '(^|[;&|]+)[[:space:]]*gh[[:space:]]+pr[[:space:]]+create([[:space:]]|$)'; then
-      echo "Use gh-pr create or /pr skill instead of raw gh pr create" >&2
-      exit 2
-    fi
+      # Block raw `gh pr create`
+      if echo "$CMD" | grep -qE '(^|[;&|]+)[[:space:]]*gh[[:space:]]+pr[[:space:]]+create([[:space:]]|$)'; then
+        echo "Use gh-pr create or /pr skill instead of raw gh pr create" >&2
+        exit 2
+      fi
 
-    # Block raw jira CLI
-    if echo "$CMD" | grep -qE '(^|[;&|]+)[[:space:]]*jira([[:space:]]|$)'; then
-      echo "Use /jira skill instead of raw jira CLI" >&2
-      exit 2
-    fi
+      # Block raw jira CLI
+      if echo "$CMD" | grep -qE '(^|[;&|]+)[[:space:]]*jira([[:space:]]|$)'; then
+        echo "Use /jira skill instead of raw jira CLI" >&2
+        exit 2
+      fi
 
-    exit 0
-  '';
+      exit 0
+    ''
+  );
 
   # Structured Claude Code settings. The shape mirrors what a future
   # tools-config YAML entry would carry, so this can be lifted out of
