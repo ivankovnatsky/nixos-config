@@ -61,6 +61,7 @@
     ../../../modules/flags
     ../../../modules/home/dock
     ../../../modules/home/launchd
+    ../../../modules/home/notifications
     ../../../modules/home/prevent-sleep
     ../../../modules/home/reposync
     ../../../modules/home/syncthing-mgmt
@@ -71,6 +72,7 @@
     ./firefox.nix
     ./flags.nix
     ./nixvim.nix
+    ./notifications.nix
     ./packages.nix
     ./prevent-sleep.nix
     ./programs.nix
