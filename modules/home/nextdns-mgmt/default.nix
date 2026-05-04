@@ -94,8 +94,7 @@ let
       )}
       ${concatStringsSep "\n      " (
         mapAttrsToList (
-          key: path:
-          ''${pkgs.gnused}/bin/sed -i "s|@${key}@|$(cat ${path})|g" "$PROFILE_JSON"''
+          key: path: ''${pkgs.gnused}/bin/sed -i "s|@${key}@|$(cat ${path})|g" "$PROFILE_JSON"''
         ) profile.varsFiles
       )}
 

@@ -159,7 +159,9 @@ def main(config, dry_run, verbose):
         return
 
     if send_discord(webhook_url, message):
-        print(f"Alert sent to Discord ({len([r for r in results if not r[1]])} failure(s)).")
+        print(
+            f"Alert sent to Discord ({len([r for r in results if not r[1]])} failure(s))."
+        )
     else:
         print(message)
         sys.exit(1)

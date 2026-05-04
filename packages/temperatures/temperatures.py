@@ -66,7 +66,9 @@ def update_max_temps(current_data, logfile):
                         max_temps[sensor_id]["timestamp"] = datetime.now().strftime(
                             "%Y-%m-%d %H:%M:%S"
                         )
-                        click.echo(f"New max for {sensor_id}: {value}°C (was {old_max}°C)")
+                        click.echo(
+                            f"New max for {sensor_id}: {value}°C (was {old_max}°C)"
+                        )
                         updated = True
 
     # Save updated max temperatures
@@ -98,7 +100,9 @@ def display_temperatures(current_data, interval):
     )
 
     for sensor_id, data in sorted_temps:
-        click.echo(f"{sensor_id:<40} {data['max_temp']:>8.1f}°C {data['timestamp']:>20}")
+        click.echo(
+            f"{sensor_id:<40} {data['max_temp']:>8.1f}°C {data['timestamp']:>20}"
+        )
 
 
 # Handle Ctrl+C gracefully

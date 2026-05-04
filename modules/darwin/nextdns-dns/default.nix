@@ -17,7 +17,8 @@ let
     DNS2=$(/bin/cat "${config.sops.secrets."nextdns-dns-2".path}")
 
     ${concatMapStringsSep "\n" (
-      svc: ''/usr/sbin/networksetup -setdnsservers "${svc}" "$DNS1" "$DNS2" ${concatStringsSep " " cfg.fallbackDns}''
+      svc:
+      ''/usr/sbin/networksetup -setdnsservers "${svc}" "$DNS1" "$DNS2" ${concatStringsSep " " cfg.fallbackDns}''
     ) config.networking.knownNetworkServices}
 
     echo "NextDNS DNS configured: $DNS1 $DNS2"

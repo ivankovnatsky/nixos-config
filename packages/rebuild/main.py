@@ -180,7 +180,9 @@ def send_failure_notification(webhook_file=None, exit_code=None, log_excerpt=Non
     """
     path = Path(webhook_file) if webhook_file else DEFAULT_DISCORD_WEBHOOK_FILE
     if not path.exists():
-        logging.debug(f"Discord webhook file not present at {path}; skipping notification")
+        logging.debug(
+            f"Discord webhook file not present at {path}; skipping notification"
+        )
         return
 
     try:
@@ -190,7 +192,9 @@ def send_failure_notification(webhook_file=None, exit_code=None, log_excerpt=Non
         return
 
     if not webhook_url.startswith("https://"):
-        logging.debug(f"Discord webhook URL in {path} is not https; skipping notification")
+        logging.debug(
+            f"Discord webhook URL in {path} is not https; skipping notification"
+        )
         return
 
     hostname = socket.gethostname().removesuffix(".local")
@@ -430,7 +434,9 @@ def read_log_tail(log_path, max_lines=MAX_LOG_LINES):
         return [line.rstrip("\n") for line in deque(f, maxlen=max_lines)]
 
 
-def extract_error_context(lines, before=ERROR_CONTEXT_BEFORE, after=ERROR_CONTEXT_AFTER):
+def extract_error_context(
+    lines, before=ERROR_CONTEXT_BEFORE, after=ERROR_CONTEXT_AFTER
+):
     """Return lines around the last nix `error:` marker.
 
     Scans from the end because nix's actionable root cause is typically the

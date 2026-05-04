@@ -980,9 +980,7 @@ def main(args, subject, body, ai_shorten):
         errors = validate_title(message)
 
         if errors:
-            click.echo(
-                f"Title validation failed for {target_file}:", err=True
-            )
+            click.echo(f"Title validation failed for {target_file}:", err=True)
             for e in errors:
                 click.echo(f"  - {e}", err=True)
             click.echo(f"Title: {message}", err=True)
@@ -1004,9 +1002,7 @@ def main(args, subject, body, ai_shorten):
                     message = create_commit_message(prefix, commit_subject)
                     remaining = validate_title(message)
                     if remaining:
-                        click.echo(
-                            "AI suggestion still invalid:", err=True
-                        )
+                        click.echo("AI suggestion still invalid:", err=True)
                         for e in remaining:
                             click.echo(f"  - {e}", err=True)
                         sys.exit(1)

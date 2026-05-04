@@ -178,7 +178,6 @@ class GitCommitScopeTest(unittest.TestCase):
         self.assertIn("D  tracked.txt", self.status_short())
         self.assertIn("?? tracked.txt", self.status_short())
 
-
     def test_directory_deletion_from_subdir_resolves_root_path(self):
         self.write("dir/a.txt", "a\n")
         self.git("add", "dir/a.txt")

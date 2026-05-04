@@ -10,5 +10,6 @@ pkgs.writeShellApplication {
   ];
   text = ''
     export WORD_FILE="''${WORD_FILE:-${pkgs.scowl}/share/dict/wamerican.50}"
-  '' + builtins.readFile ./gwq-add.sh;
+  ''
+  + builtins.readFile ./gwq-add.sh;
 }

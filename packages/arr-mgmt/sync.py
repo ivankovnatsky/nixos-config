@@ -1,5 +1,7 @@
 """Sync logic for *arr services (Radarr, Sonarr, Lidarr, Prowlarr)."""
 
+import copy
+
 import click
 
 from clients import ArrClient, ProwlarrClient

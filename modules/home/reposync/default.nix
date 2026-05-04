@@ -122,7 +122,7 @@ in
     local.launchd.services.reposync = {
       enable = true;
       keepAlive = false;
-      runAtLoad = cfg.runAtLoad;
+      inherit (cfg) runAtLoad;
       waitForSecrets =
         cfg.discordWebhookFile != null || cfg.domainFile != null || cfg.usernameFile != null;
 

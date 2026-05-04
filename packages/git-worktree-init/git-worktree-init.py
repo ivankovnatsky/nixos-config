@@ -172,9 +172,9 @@ def find_worktree_by_branch(branch: str) -> Path | None:
     current_path = None
     for line in output.splitlines():
         if line.startswith("worktree "):
-            current_path = line[len("worktree "):]
+            current_path = line[len("worktree ") :]
         elif line.startswith("branch refs/heads/") and current_path:
-            wt_branch = line[len("branch refs/heads/"):]
+            wt_branch = line[len("branch refs/heads/") :]
             if wt_branch == branch:
                 return Path(current_path)
         elif line == "":

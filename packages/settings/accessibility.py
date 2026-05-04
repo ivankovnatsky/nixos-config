@@ -8,7 +8,7 @@ from pathlib import Path
 
 import click
 
-from common import _get_state_dir, is_macos
+from common import _get_state_dir, is_macos, quit_app
 
 ACCESSIBILITY_URL = (
     "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"
