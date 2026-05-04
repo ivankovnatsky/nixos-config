@@ -44,9 +44,7 @@ let
     };
   };
 
-  claudeSettingsJson = pkgs.writeText "claude-settings.json" (
-    builtins.toJSON claudeSettings
-  );
+  claudeSettingsJson = pkgs.writeText "claude-settings.json" (builtins.toJSON claudeSettings);
 in
 {
   local.tools.settings.files = [
