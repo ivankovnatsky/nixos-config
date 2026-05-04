@@ -20,7 +20,6 @@
     # google-chrome
     casks = [
       "cloudflare-warp"
-
       "dbeaver-community"
       "firefox"
       {
