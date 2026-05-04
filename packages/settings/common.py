@@ -37,6 +37,8 @@ COMMAND_ALIASES = {
     "fd": "fulldiskaccess",
     "li": "login",
     "off": "poweroff",
+    "b": "battery",
+    "bat": "battery",
     "h": "help",
 }
 

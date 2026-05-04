@@ -15,6 +15,7 @@ Subcommands:
   fulldiskaccess Manage Full Disk Access permissions (macOS only)
   login       List, add, or remove login items (macOS only)
   poweroff    Set volume and shutdown system (macOS + Linux)
+  battery     Show battery state (macOS + Linux)
 """
 
 import sys
@@ -27,6 +28,7 @@ import accessibility
 import appearance
 import autohide
 import awake
+import battery
 import dock
 import fulldiskaccess
 import location
@@ -53,6 +55,7 @@ accessibility.register(cli)
 appearance.register(cli)
 autohide.register(cli)
 awake.register(cli)
+battery.register(cli)
 dock.register(cli)
 fulldiskaccess.register(cli)
 location.register(cli)
