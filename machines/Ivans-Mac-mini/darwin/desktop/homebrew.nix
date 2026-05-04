@@ -20,7 +20,6 @@
     ];
     casks = [
       "chromium"
-      "cmux"
       "firefox"
       "ghostty"
       "hammerspoon"
