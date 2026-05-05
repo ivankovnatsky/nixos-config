@@ -29,6 +29,7 @@
     gh-notifications
     gh-pr
     gh-stars-migrate
+    ggh
     ghq-cd
     giffer
     gitleaks
