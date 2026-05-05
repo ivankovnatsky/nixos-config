@@ -29,10 +29,7 @@
 	rebuild-loop \
 	\
 	build \
-	test-build \
-	\
-	devcontainer \
-	devcontainer-rebuild
+	test-build
 
 PLATFORM := $(shell uname)
 # TODO: This is temporary until we figure out how to properly configure nix.conf
@@ -178,13 +175,3 @@ rebuild-watch-loop:
 # Loop rebuild with sudo refresh (timer only, no file watching)
 rebuild-loop:
 	@$(REBUILD) watch --loop --no-watch $(CURDIR)
-
-# Devcontainer: start and exec into container with Claude Code
-devcontainer:
-	devcontainer up --workspace-folder .
-	devcontainer exec --workspace-folder . npx @anthropic-ai/claude-code --dangerously-skip-permissions
-
-# Devcontainer rebuild: force rebuild container
-devcontainer-rebuild:
-	devcontainer up --workspace-folder . --remove-existing-container --build-no-cache
-
