@@ -8,16 +8,14 @@ from __future__ import annotations
 
 import json
 import os
-import platform
 import sys
-import urllib.error
-import urllib.request
 from datetime import datetime, time, timedelta
 from pathlib import Path
 
 import click
 
 import battery as settings_battery
+from discord import send_discord as _send_discord
 
 
 def read_webhook(webhook: str | None, webhook_file: str | None) -> str | None:
@@ -34,23 +32,9 @@ def read_webhook(webhook: str | None, webhook_file: str | None) -> str | None:
 
 
 def send_discord(webhook_url: str, message: str, source: str) -> bool:
-    """Post a message to a Discord webhook. Returns True on success."""
-    hostname = platform.node()
-    payload = json.dumps({"content": f"**[{source}@{hostname}]** {message}"}).encode()
-    req = urllib.request.Request(
-        webhook_url,
-        data=payload,
-        headers={
-            "Content-Type": "application/json",
-            "User-Agent": "notifications/1.0",
-        },
+    return _send_discord(
+        webhook_url, message, source=source, user_agent="notifications/1.0"
     )
-    try:
-        urllib.request.urlopen(req, timeout=10)
-        return True
-    except (urllib.error.URLError, urllib.error.HTTPError, OSError) as e:
-        click.echo(f"Discord notification failed: {e}", err=True)
-        return False
 
 
 def default_state_path() -> Path:

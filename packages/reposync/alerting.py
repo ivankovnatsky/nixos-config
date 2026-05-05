@@ -1,28 +1,12 @@
 """Alerting via Discord webhooks."""
 
-import json
-import platform
-import urllib.request
-
 import click
+
+from discord import send_discord as _send_discord
 
 
 def send_discord(webhook_url, message):
-    hostname = platform.node()
-    payload = json.dumps({"content": f"**[reposync@{hostname}]** {message}"}).encode()
-    req = urllib.request.Request(
-        webhook_url,
-        data=payload,
-        # Cloudflare blocks Python's default urllib User-Agent with HTTP 403
-        headers={
-            "Content-Type": "application/json",
-            "User-Agent": "reposync/1.0",
-        },
-    )
-    try:
-        urllib.request.urlopen(req, timeout=10)
-    except Exception as e:
-        click.echo(f"Discord notification failed: {e}", err=True)
+    _send_discord(webhook_url, message, source="reposync", user_agent="reposync/1.0")
 
 
 def alert(webhook_url, message):

@@ -8,9 +8,10 @@ import re
 import subprocess
 import sys
 import time
-import urllib.request
 
 import click
+
+from discord import send_discord as _send_discord
 
 
 DEFAULT_PATTERNS = [
@@ -212,19 +213,7 @@ def format_summary(hostname, source_results):
 
 def send_discord(webhook_url, message):
     """Send a message to Discord webhook."""
-    payload = json.dumps({"content": message}).encode()
-    req = urllib.request.Request(
-        webhook_url,
-        data=payload,
-        headers={
-            "Content-Type": "application/json",
-            "User-Agent": "logscanner/1.0",
-        },
-    )
-    try:
-        urllib.request.urlopen(req, timeout=10)
-    except Exception as e:
-        print(f"Discord notification failed: {e}", file=sys.stderr)
+    _send_discord(webhook_url, message, user_agent="logscanner/1.0")
 
 
 @click.command()

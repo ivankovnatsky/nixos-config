@@ -16,12 +16,13 @@ import tempfile
 import time
 import threading
 import socket
-import urllib.request
 from collections import deque
 from pathlib import Path
 
 import click
 import pywatchman
+
+from discord import send_discord as _send_discord
 
 
 def format_duration(seconds):
@@ -233,20 +234,7 @@ def send_failure_notification(webhook_file=None, exit_code=None, log_excerpt=Non
             snippet = snippet[-budget:]
         body = f"{header}\n```\n{snippet}\n```"
 
-    payload = json.dumps({"content": body}).encode()
-    req = urllib.request.Request(
-        webhook_url,
-        data=payload,
-        # Cloudflare blocks Python's default urllib User-Agent with HTTP 403.
-        headers={
-            "Content-Type": "application/json",
-            "User-Agent": "rebuild/1.0",
-        },
-    )
-    try:
-        urllib.request.urlopen(req, timeout=10)
-    except Exception as e:
-        logging.warning(f"Discord notification failed: {e}")
+    _send_discord(webhook_url, body, user_agent="rebuild/1.0")
 
 
 LOCK_FILE = Path("/tmp/nix-rebuild.lock")
