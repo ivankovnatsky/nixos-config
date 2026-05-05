@@ -1,3 +1,11 @@
+# home.stateVersion policy:
+#   Each machine pins its own home.stateVersion to whatever was current when
+#   the user profile was first activated on that host, and is intentionally
+#   never bumped. Drift across hosts (23.11, 22.05, 25.05, 24.05) is expected
+#   — bumping a value here is a manual decision per host, not a copy/paste
+#   side effect. When templating a new machine block from an existing one,
+#   set home.stateVersion to the home-manager release current at host first
+#   activation rather than inheriting the source machine's value.
 { inputs, ... }:
 {
   "Ivans-MacBook-Pro" = inputs.nix-darwin-darwin-unstable.lib.darwinSystem {
