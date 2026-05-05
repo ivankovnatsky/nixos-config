@@ -5,6 +5,7 @@
 }:
 
 let
+  src = (import ../cleanPythonSource.nix { inherit (pkgs) lib; }) ./.;
   discordSrc = (import ../cleanPythonSource.nix { inherit (pkgs) lib; }) ../discord;
 in
 pkgs.writeShellApplication {
@@ -18,6 +19,6 @@ pkgs.writeShellApplication {
         ps.pywatchman
         ps.discord-webhook
       ])
-    }/bin/python ${./main.py} "$@"
+    }/bin/python ${src}/main.py "$@"
   '';
 }
