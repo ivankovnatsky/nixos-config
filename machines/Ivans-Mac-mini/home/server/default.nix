@@ -4,7 +4,6 @@
     ./download-youtube
     ./forgejo
     ./jellyfin
-    # ./logscanner.nix
     ./media
     ./miniserve.nix
     ./navidrome

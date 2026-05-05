@@ -10,7 +10,6 @@
     ../../../../modules/darwin/launchd
     ../../../../modules/darwin/linux-builder
     ../../../../modules/darwin/logrotate
-    # ../../../../modules/darwin/logscanner
     ../../../../modules/darwin/pam
     ../../../../modules/darwin/pmset
     ../../../../modules/darwin/sharing
@@ -28,7 +27,6 @@
     ./http.nix
     ./linux-builder.nix
     ./logrotate.nix
-    # ./logscanner.nix
     ./mailpit.nix
     ./mas-upgrade.nix
     ./mosh.nix
