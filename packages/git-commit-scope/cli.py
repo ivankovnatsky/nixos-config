@@ -206,11 +206,11 @@ Examples:
   git-commit-scope "add feature"                     Commits staged file with "<scope>: add feature"
   git-commit-scope file.nix "add feature"            Commits file.nix with "<scope>: add feature"
   git-commit-scope src/dir "add feature"             Commits all changes in src/dir
-  git-commit-scope f1.nix f2.nix "add feature"      Two separate commits, each with own scope
+  git-commit-scope f1.nix f2.nix "add feature"       Two separate commits, each with own scope
   git-commit-scope "add feature" -b "Body text"      Commits with subject and body
   git-commit-scope "add feature" -b "L1" -b "L2"     Multiple -b joined with newline
   git-commit-scope -s "add feature" -b "Line 1
-  Line 2"                                       Multiline body with newlines
+  Line 2"                                            Multiline body with newlines
   git-commit-scope                                   Single untracked file: commits "<scope>: init"
   git-commit-scope                                   Single deleted file: commits "<scope>: remove"
   git-commit-scope                                   After git mv: auto-detects rename, commits "old -> new"
