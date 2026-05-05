@@ -9,6 +9,7 @@
   programs.atuin = {
     enable = true;
     package = pkgs.atuin;
+    enableBashIntegration = true;
     enableZshIntegration = true;
     enableFishIntegration = config.flags.enableFishShell;
     flags = [ "--disable-up-arrow" ];
