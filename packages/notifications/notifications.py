@@ -9,7 +9,6 @@ from __future__ import annotations
 import json
 import os
 import platform
-import subprocess
 import sys
 import urllib.error
 import urllib.request
@@ -17,6 +16,8 @@ from datetime import datetime, time, timedelta
 from pathlib import Path
 
 import click
+
+import battery as settings_battery
 
 
 def read_webhook(webhook: str | None, webhook_file: str | None) -> str | None:
@@ -52,31 +53,6 @@ def send_discord(webhook_url: str, message: str, source: str) -> bool:
         return False
 
 
-def get_battery_state() -> dict | None:
-    """Read battery state by shelling out to `settings battery --json`.
-
-    Returns the parsed dict, or None when the platform reports no battery
-    (e.g. desktop Macs). Raises RuntimeError on subprocess or parse failures.
-    """
-    try:
-        result = subprocess.run(
-            ["settings", "battery", "--json"],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-    except FileNotFoundError as e:
-        raise RuntimeError("`settings` CLI not found in PATH") from e
-    except subprocess.CalledProcessError as e:
-        msg = (e.stderr or "").strip() or f"exit {e.returncode}"
-        raise RuntimeError(f"`settings battery --json` failed: {msg}") from e
-
-    try:
-        return json.loads(result.stdout)
-    except json.JSONDecodeError as e:
-        raise RuntimeError(f"Could not parse settings battery output: {e}") from e
-
-
 def default_state_path() -> Path:
     base = os.environ.get("XDG_STATE_HOME") or str(Path.home() / ".local" / "state")
     return Path(base) / "notifications" / "battery.json"
@@ -105,23 +81,7 @@ def parse_hhmm(value: str) -> time:
     try:
         return datetime.strptime(value, "%H:%M").time()
     except ValueError as e:
-        raise click.BadParameter(
-            f"--daily-at must be HH:MM, got {value!r}"
-        ) from e
-
-
-def format_battery(info: dict) -> str:
-    parts = []
-    if info.get("percent") is not None:
-        parts.append(f"{info['percent']}%")
-    state = info.get("state")
-    if state and state != "unknown":
-        parts.append(state)
-    if info.get("time_remaining"):
-        parts.append(f"{info['time_remaining']} remaining")
-    if info.get("source"):
-        parts.append(f"on {info['source']}")
-    return ", ".join(parts) if parts else "unknown"
+        raise click.BadParameter(f"--daily-at must be HH:MM, got {value!r}") from e
 
 
 @click.group(invoke_without_command=True)
@@ -189,11 +149,7 @@ def battery(
     either flag set, the script only sends when its conditions match and
     tracks dedupe state in --state-file.
     """
-    try:
-        info = get_battery_state()
-    except RuntimeError as e:
-        click.echo(str(e), err=True)
-        sys.exit(1)
+    info = settings_battery.battery_get()
 
     if info is None:
         click.echo("No battery detected; nothing to notify.")
@@ -230,9 +186,8 @@ def battery(
                 last_low_dt = datetime.fromisoformat(last_low) if last_low else None
             except ValueError:
                 last_low_dt = None
-            if (
-                last_low_dt is None
-                or now - last_low_dt >= timedelta(hours=low_interval_hours)
+            if last_low_dt is None or now - last_low_dt >= timedelta(
+                hours=low_interval_hours
             ):
                 reasons.append(f"low<={below_percent}%")
 
@@ -241,7 +196,7 @@ def battery(
         return
 
     suffix = f" ({', '.join(reasons)})" if reasons else ""
-    message = f"Battery: {format_battery(info)}{suffix}"
+    message = f"Battery: {settings_battery.format_human(info)}{suffix}"
 
     if dry_run:
         click.echo(message)
@@ -267,7 +222,9 @@ def battery(
         try:
             save_state(state_path, state)
         except OSError as e:
-            click.echo(f"Warning: could not write state file {state_path}: {e}", err=True)
+            click.echo(
+                f"Warning: could not write state file {state_path}: {e}", err=True
+            )
 
     click.echo(f"Sent: {message}")
 
