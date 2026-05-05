@@ -14,7 +14,6 @@
     bat
     bubblewrap
     cargo
-    claude-code-logs
     curlie
     doggo
     duf
@@ -22,7 +21,6 @@
     exiftool
     nixpkgs-darwin-master-gallery-dl.gallery-dl
     game-mode
-    ggh
     glow
     hadolint
     home-manager
@@ -32,7 +30,6 @@
     nethogs
     nh
     nvtopPackages.nvidia # GPU monitoring (like htop for GPUs)
-    obsidian-cli
     pandoc
     parallel
     power-consumption

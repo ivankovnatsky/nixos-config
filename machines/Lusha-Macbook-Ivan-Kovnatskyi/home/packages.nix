@@ -23,7 +23,6 @@
     aws-sso-cli
     aws-sso-creds
     awscli2
-    claude-code-logs
     cloudflared
     confluence
     confluent-cli
@@ -32,7 +31,6 @@
     create-pr
     curlie
     cx-cli
-    cxctl
     defaultbrowser
     devbox
     devcontainer
@@ -43,7 +41,6 @@
     doggo
     eks-node-viewer
     flarectl
-    ggh
     gh-prs-merged-today
     ghorg-sync
     git-worktree-init
@@ -55,8 +52,6 @@
     hadolint
     hclfmt
     iam-policy-json-to-terraform
-    infra
-    infracost
     jcli
     jira-custom
     k-nodes-by-label
@@ -70,7 +65,6 @@
     krew
     kubecolor
     kubectl
-    kubectl-ai
     kubectl-images
     kubectl-view-secret
     kubectx
@@ -89,7 +83,6 @@
     nixpkgs-darwin-master.poetry
     aws-cdk-cli
     opentofu
-    opsy
     oras
     orphaned-snapshots
     pblock
@@ -111,13 +104,11 @@
     temporal
     temporal-cli
     terraformer
-    terragrunt-atlantis-config
     treefmt
     uv
     vals
     vault
     vault-auth
-    vkv
     yazi
     yq
     zscaler-kill

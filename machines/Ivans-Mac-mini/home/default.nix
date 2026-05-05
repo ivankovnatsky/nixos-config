@@ -47,7 +47,6 @@
     ../../../home/syncthing.nix
     ../../../home/tmux.nix
     ../../../home/treefmt.nix
-    ../../../home/whisper.nix
     ../../../home/xattr.nix
     ../../../home/yt-dlp.nix
     ../../../home/z-lua.nix

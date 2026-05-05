@@ -57,7 +57,6 @@
     ../../../home/yamlint.nix
     ../../../home/yt-dlp.nix
     ../../../home/z-lua.nix
-    ../../../home/zellij.nix
     ../../../home/zsh.nix
     ../../../modules/flags
     ../../../modules/home/dock
