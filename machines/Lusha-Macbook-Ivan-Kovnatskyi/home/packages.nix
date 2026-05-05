@@ -105,7 +105,6 @@
     sesh
     sesh-connect
     skopeo
-    slack-cli-go
     sshpass
     ssm-forward
     ssm-session-manager-plugin
