@@ -16,6 +16,7 @@ in
           # markitdown
         ]
       ))
+      gh-repos-sync
       macmon
       music-export
       nixpkgs-darwin-master-ytdlp.yt-dlp
