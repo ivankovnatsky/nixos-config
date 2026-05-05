@@ -10,5 +10,6 @@
         # markitdown
       ]
     ))
+    gh-repos-sync
   ];
 }
