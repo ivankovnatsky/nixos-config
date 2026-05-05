@@ -43,7 +43,7 @@ in
     enable = true;
     apiKeyFile = config.sops.secrets.nextdns-api-key.path;
     profileIdFile = config.sops.secrets.nextdns-profile-pro.path;
-    profileFile = ../configs/nextdns-profile.json;
+    profileFile = ../templates/nextdns-profile.json;
     vars = commonVars;
     varsFiles = commonVarsFiles;
   };
@@ -52,7 +52,7 @@ in
     enable = true;
     apiKeyFile = config.sops.secrets.nextdns-api-key.path;
     profileIdFile = config.sops.secrets.nextdns-profile-air.path;
-    profileFile = ../configs/nextdns-profile.json;
+    profileFile = ../templates/nextdns-profile.json;
     vars = commonVars;
     varsFiles = commonVarsFiles;
   };
@@ -61,7 +61,7 @@ in
     enable = true;
     apiKeyFile = config.sops.secrets.nextdns-api-key.path;
     profileIdFile = config.sops.secrets.nextdns-profile-phone.path;
-    profileFile = ../configs/nextdns-profile.json;
+    profileFile = ../templates/nextdns-profile.json;
     vars = commonVars;
     varsFiles = commonVarsFiles;
   };
@@ -70,7 +70,7 @@ in
     enable = true;
     apiKeyFile = config.sops.secrets.nextdns-api-key.path;
     profileIdFile = config.sops.secrets.nextdns-profile-mini.path;
-    profileFile = ../configs/nextdns-profile.json;
+    profileFile = ../templates/nextdns-profile.json;
     vars = commonVars;
     varsFiles = commonVarsFiles;
   };
@@ -79,7 +79,7 @@ in
     enable = true;
     apiKeyFile = config.sops.secrets.nextdns-api-key.path;
     profileIdFile = config.sops.secrets.nextdns-profile-asus.path;
-    profileFile = ../configs/nextdns-profile.json;
+    profileFile = ../templates/nextdns-profile.json;
     vars = commonVars;
     varsFiles = commonVarsFiles;
   };
@@ -88,7 +88,7 @@ in
     enable = true;
     apiKeyFile = config.sops.secrets.nextdns-api-key.path;
     profileIdFile = config.sops.secrets.nextdns-profile-lgphone.path;
-    profileFile = ../configs/nextdns-profile.json;
+    profileFile = ../templates/nextdns-profile.json;
     vars = commonVars;
     varsFiles = commonVarsFiles;
   };
@@ -98,7 +98,7 @@ in
     apiKeyFile = config.sops.secrets.nextdns-api-key.path;
     # No profileId/profileIdFile — module looks up the profile by name "a3"
     # via the NextDNS API, creating it on first run if missing.
-    profileFile = ../configs/nextdns-profile.json;
+    profileFile = ../templates/nextdns-profile.json;
     vars = commonVars;
     varsFiles = commonVarsFiles;
   };
