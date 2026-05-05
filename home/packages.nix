@@ -51,7 +51,6 @@
     gwq-merge
     grwt
     gwq-purge
-    healthchecks-mgmt
     homelab
     hyperfine
     image-meta
