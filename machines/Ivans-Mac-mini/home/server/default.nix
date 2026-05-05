@@ -3,7 +3,6 @@
     ./beszel.nix
     ./download-youtube
     ./forgejo
-    ./healthchecks
     ./jellyfin
     # ./logscanner.nix
     ./media
