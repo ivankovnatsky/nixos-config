@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import shutil
 import subprocess
 import sys
 import time
@@ -200,19 +201,16 @@ def register(cli):
                     "Warning: caffeinate options are ignored on Linux; running indefinitely",
                     file=sys.stderr,
                 )
-            r = subprocess.run(["which", "systemd-inhibit"], capture_output=True)
-            if r.returncode == 0:
+            if shutil.which("systemd-inhibit"):
                 result = awake_linux_systemd()
+            elif shutil.which("xset"):
+                result = awake_linux_xset()
             else:
-                r = subprocess.run(["which", "xset"], capture_output=True)
-                if r.returncode == 0:
-                    result = awake_linux_xset()
-                else:
-                    print(
-                        "Error: Could not find systemd-inhibit or xset",
-                        file=sys.stderr,
-                    )
-                    sys.exit(1)
+                print(
+                    "Error: Could not find systemd-inhibit or xset",
+                    file=sys.stderr,
+                )
+                sys.exit(1)
         else:
             print("Unsupported platform", file=sys.stderr)
             sys.exit(1)
