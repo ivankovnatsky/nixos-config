@@ -57,7 +57,6 @@ def poweroff_log_battery() -> None:
 def register(cli):
     @cli.command()
     @click.option(
-        "-v",
         "--volume",
         "vol",
         type=float,
