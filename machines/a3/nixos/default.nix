@@ -8,6 +8,7 @@
     ../../../modules/nixos/tools
     ../../../nixos/chromium.nix
     ../../../nixos/keyboard.nix
+    ../../../nixos/rebuild-diff.nix
     ../../../nixos/sudo.nix
     ../../../system/nix.nix
     ../../../system/reposync.nix
