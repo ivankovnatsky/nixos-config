@@ -56,7 +56,6 @@
     ../../../modules/home/beszel-mgmt
     ../../../modules/home/dock
     ../../../modules/home/forgejo-mgmt
-    ../../../modules/home/healthchecks-mgmt
     ../../../modules/home/jellyfin-mgmt
     ../../../modules/home/launchd
     ../../../modules/home/logscanner
