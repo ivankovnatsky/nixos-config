@@ -22,7 +22,7 @@ in
       "exec claude \"$@\""
       ""
     ];
-    mode = "0755";
+    mode = "0500";
   };
 
   sops.templates."anthropic_key.sh" = lib.mkIf isWork {
@@ -31,7 +31,7 @@ in
       "echo \"${config.sops.placeholder.anthropic-api-key}\""
       ""
     ];
-    mode = "0755";
+    mode = "0500";
   };
 
   home.activation.linkClaudeSettings = lib.mkIf isWork (
