@@ -1,7 +1,7 @@
 { config, ... }:
 {
   imports = [
-    ../shared/sops-nix.nix
+    ../secrets/sops-nix.nix
     ./sops-secrets.nix
   ];
 

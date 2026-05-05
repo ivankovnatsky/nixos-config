@@ -8,7 +8,7 @@
 
       # SOPS secrets management
       inputs.sops-nix-nixos-unstable.nixosModules.sops
-      ../../shared/sops-nix.nix
+      ../../secrets/sops-nix.nix
 
       # Basic system configuration
       {

@@ -16,7 +16,7 @@
 
       # SOPS secrets management
       inputs.sops-nix-darwin-unstable.darwinModules.sops
-      ../../shared/sops-nix.nix
+      ../../secrets/sops-nix.nix
 
       # Basic system configuration
       {
@@ -109,7 +109,7 @@
 
       # SOPS secrets management
       inputs.sops-nix-darwin-unstable.darwinModules.sops
-      ../../shared/sops-nix.nix
+      ../../secrets/sops-nix.nix
 
       # Basic system configuration
       {
@@ -202,7 +202,7 @@
 
       # SOPS secrets management
       inputs.sops-nix-darwin-release.darwinModules.sops
-      ../../shared/sops-nix.nix
+      ../../secrets/sops-nix.nix
 
       # Basic system configuration
       {
@@ -297,7 +297,7 @@
 
       # SOPS secrets management
       inputs.sops-nix-darwin-unstable.darwinModules.sops
-      ../../shared/sops-nix.nix
+      ../../secrets/sops-nix.nix
 
       # Basic system configuration
       {

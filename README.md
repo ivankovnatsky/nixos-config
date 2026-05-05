@@ -1,7 +1,7 @@
 # nix-config
 
-Nix flake driving four macOS machines (nix-darwin + home-manager) and one
-NixOS machine. ~100 in-tree packages, a handful of overlays, sops-nix-encrypted
+Nix flake driving four macOS machines (nix-darwin + home-manager) and one NixOS
+machine. ~100 in-tree packages, a handful of overlays, sops-nix-encrypted
 secrets, and a custom flake-machine layer that keeps per-machine config terse.
 
 ## Rebuild
@@ -21,9 +21,10 @@ secrets, and a custom flake-machine layer that keeps per-machine config terse.
 | `make flake-update-nixos-unstable`                   | same for NixOS unstable                                              |
 | `make flake-update-nixvim` / `flake-update-homebrew` | scoped lockfile updates                                              |
 
-`make`'s default target picks `rebuild-darwin` on macOS and `rebuild-nixos/generic`
-on Linux from `uname`. The default rebuild auto-runs `git add -A` first (the
-`addall` target) so untracked files reach the flake evaluator.
+`make`'s default target picks `rebuild-darwin` on macOS and
+`rebuild-nixos/generic` on Linux from `uname`. The default rebuild auto-runs
+`git add -A` first (the `addall` target) so untracked files reach the flake
+evaluator.
 
 ## Layout
 
@@ -35,8 +36,7 @@ modules/               Reusable nix-darwin / NixOS option modules (modules/darwi
 home/                  Home-manager profiles (one .nix per program, plus subdirs for larger configs)
 packages/              In-tree derivations (writeShellScriptBin / writeShellApplication / python wrappers)
 overlays/              Custom package overlays applied to nixpkgs
-shared/                Cross-machine config shared via imports
-secrets/               sops-nix-encrypted YAML (default.yaml is the main store)
+secrets/               sops-nix-encrypted YAML (default.yaml) and shared sops-nix import
 .sops.yaml             sops creation rules and recipient keys
 ```
 
@@ -53,16 +53,17 @@ secrets/               sops-nix-encrypted YAML (default.yaml is the main store)
 ## Adding a machine
 
 1. Create `machines/<hostname>/` with `default.nix` and a `home/` subdir.
-2. Register the machine in `flake/machines/darwin.nix` (or `nixos.nix`) using the
-   existing `mkDarwin` / `mkNixos` blocks as a template.
+2. Register the machine in `flake/machines/darwin.nix` (or `nixos.nix`) using
+   the existing `mkDarwin` / `mkNixos` blocks as a template.
 3. For sops:
    - generate a per-machine age key (`nix-shell -p ssh-to-age` or `age-keygen`)
-   - add it to `.sops.yaml` (both the alias under `keys:` and the `creation_rules:`)
+   - add it to `.sops.yaml` (both the alias under `keys:` and the
+     `creation_rules:`)
    - re-encrypt: `sops updatekeys secrets/default.yaml`
 4. `make build` to verify, `make` to switch.
 
-Deeper customization happens in the machine's `home/` profile (program selection,
-launchd services, machine-specific options).
+Deeper customization happens in the machine's `home/` profile (program
+selection, launchd services, machine-specific options).
 
 ## Secrets
 
