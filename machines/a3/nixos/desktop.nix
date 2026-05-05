@@ -8,9 +8,5 @@
     ./plasma.nix # KDE Plasma 6 (currently active)
 
     # ./gnome.nix      # GNOME (available but commented)
-
-    # Minimal window managers (for virtual console startup)
-    # ../../nixos/dwm        # Sophisticated dwm with patches
-    # ../../nixos/dwm-vanilla  # Vanilla dwm for testing
   ];
 }
