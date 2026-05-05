@@ -220,6 +220,11 @@
     tools = {
       url = "github:ivankovnatsky/tools";
     };
+
+    # cx - Coralogix CLI
+    cx-cli = {
+      url = "github:coralogix/cx-cli";
+    };
   };
 
   outputs = inputs: import ./flake { inherit inputs; };
