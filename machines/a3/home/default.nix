@@ -14,6 +14,7 @@
     ../../../home/fish.nix
     ../../../home/fzf.nix
     ../../../home/games.nix
+    ../../../home/gemini-settings.nix
     ../../../home/ghorg.nix
     ../../../home/ghostty.nix
     ../../../home/git
