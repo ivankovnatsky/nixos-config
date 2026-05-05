@@ -44,7 +44,13 @@ let
     // {
       ${dir.name} = prev.callPackage (../packages + "/${dir.name}") (packageArgs.${dir.name} or { });
     }
-  ) { } (builtins.filter (dir: dir.type == "directory") (builtins.attrValues packageList));
+  ) { } (
+    builtins.filter (
+      dir:
+      dir.type == "directory"
+      && builtins.pathExists (../packages + "/${dir.name}/default.nix")
+    ) (builtins.attrValues packageList)
+  );
 
   # 3. Nixpkgs-master and unstable packages
   inherit (final.stdenv.hostPlatform) system;
