@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-  src = ./.;
+  src = (import ../cleanPythonSource.nix { inherit (pkgs) lib; }) ./.;
   python = pkgs.python3.withPackages (ps: [ ps.click ]);
 in
 pkgs.writeShellScriptBin "settings" ''

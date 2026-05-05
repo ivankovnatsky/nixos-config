@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-  src = ./.;
+  src = (import ../cleanPythonSource.nix { inherit (pkgs) lib; }) ./.;
   settingsSrc = ../settings;
   python = pkgs.python3.withPackages (ps: [ ps.click ]);
 in

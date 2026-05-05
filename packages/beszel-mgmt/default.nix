@@ -1,7 +1,7 @@
 { pkgs }:
 
 let
-  src = ./.;
+  src = (import ../cleanPythonSource.nix { inherit (pkgs) lib; }) ./.;
 in
 pkgs.writeShellScriptBin "beszel-mgmt" ''
   exec ${

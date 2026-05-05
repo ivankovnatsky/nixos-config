@@ -1,7 +1,7 @@
 { pkgs }:
 
 let
-  src = ./.;
+  src = (import ../cleanPythonSource.nix { inherit (pkgs) lib; }) ./.;
 in
 pkgs.writeShellScriptBin "reposync" ''
   export PATH="${pkgs.git}/bin:$PATH"
