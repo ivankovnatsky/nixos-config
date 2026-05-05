@@ -24,7 +24,7 @@ let
 
     # Start prevent-sleep via settings awake — assert display/idle/disk/system
     # for 12h to cover the work window
-    exec ${settingsPackage}/bin/settings awake -d -i -m -s -t 43200
+    exec ${settingsPackage}/bin/settings awake --display --idle --disk --system --timeout 43200
   '';
 in
 {
