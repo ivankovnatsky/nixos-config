@@ -65,7 +65,6 @@
     nix-sort-imports
     prettier
     nodejs
-    notes
     nvim-edit-staged
     obs
     open-pr
