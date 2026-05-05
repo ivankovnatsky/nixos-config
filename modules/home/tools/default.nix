@@ -40,7 +40,12 @@ let
     "files"
     "brew"
   ];
-  enabledSections = filter (section: builtins.hasAttr section cfg.settings) toolsSections;
+  enabledSections = filter (
+    section:
+    builtins.hasAttr section cfg.settings
+    && cfg.settings.${section} != [ ]
+    && cfg.settings.${section} != { }
+  ) toolsSections;
   scopeFlags = concatMapStringsSep " " (section: "--scope ${escapeShellArg section}") enabledSections;
 in
 {
@@ -54,7 +59,14 @@ in
     };
 
     settings = mkOption {
-      type = types.attrsOf types.anything;
+      type = types.submodule {
+        freeformType = types.attrsOf types.anything;
+        options.files = mkOption {
+          type = types.listOf (types.attrsOf types.anything);
+          default = [ ];
+          description = "Files to deploy via the tools binary. Concatenated across modules.";
+        };
+      };
       default = { };
       description = "Native tools CLI configuration, serialized as JSON for activation.";
     };
