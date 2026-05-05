@@ -2,7 +2,6 @@
 
 {
   imports = [
-    ./alacritty.nix
     ./firefox-config.nix
     ./firefox.nix
     ./gtk.nix
@@ -45,7 +44,6 @@
     smartmontools
     haskellPackages.dhall-yaml
     wl-clipboard
-    alacritty
     bemenu
   ];
 

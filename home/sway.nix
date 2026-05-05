@@ -33,6 +33,8 @@ let
 
   isLaptop = config.device.type == "laptop";
 
+  terminalCmd = "${pkgs.foot}/bin/foot";
+
   extraConfigSway = ''
     titlebar_border_thickness 0
     titlebar_padding 0
@@ -44,7 +46,7 @@ let
   autostart-script = pkgs.writeScriptBin "autostart" ''
     #!${pkgs.bash}/bin/bash
 
-    ${pkgs.alacritty}/bin/alacritty &!
+    ${terminalCmd} &!
     ${pkgs.firefox}/bin/firefox &!
   '';
 
@@ -110,7 +112,7 @@ in
         size = 0.0;
       };
 
-      terminal = "${pkgs.alacritty}/bin/alacritty";
+      terminal = terminalCmd;
       menu = ''${pkgs.bemenu}/bin/bemenu-run --list 3 -n -f --ifne -p "" --hb "${whiteColorHTML}" --hf "${blackColorHTML}"'';
 
       input = {
@@ -211,10 +213,7 @@ in
       };
 
       assigns = {
-        "1" = [
-          { app_id = "Alacritty"; }
-          { app_id = "foot"; }
-        ];
+        "1" = [ { app_id = "foot"; } ];
         "2" = [ { app_id = "firefox"; } ];
         "3" = [ { app_id = "chromium-browser"; } ];
         "4" = [ { app_id = "google-chrome"; } ];
