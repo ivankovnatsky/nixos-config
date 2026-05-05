@@ -11,7 +11,7 @@
         Bluetooth = false;
       };
       dock = {
-        # Disable automatic rearranging of spaces based on most recent use
+        # Automatically rearrange spaces based on most recent use
         # https://github.com/nix-darwin/nix-darwin/blob/6cb36e8327421c61e5a3bbd08ed63491b616364a/modules/system/defaults/dock.nix#L114
         mru-spaces = true;
         tilesize = 64;
