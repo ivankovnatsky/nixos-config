@@ -31,6 +31,7 @@
     crane
     create-pr
     curlie
+    cx-cli
     cxctl
     defaultbrowser
     devbox
