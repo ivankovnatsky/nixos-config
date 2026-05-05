@@ -1,5 +1,5 @@
 # This file contains systemd-cryptenroll configuration for the a3 machine
-# See docs/a3.md for detailed instructions on how to use this file.
+# See Notes/Configs/NixConfig/RepoDocs/A3.md for detailed instructions.
 
 {
   # TPM2 support for LUKS using systemd-cryptenroll
