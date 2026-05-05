@@ -14,8 +14,18 @@ in
   let
     # Use pinned master commit for development shell
     pkgs = import inputs.nixpkgs-master-pinned { inherit system; };
+    # Built against vanilla pkgs (no inputs.self.overlay) — fine while
+    # rebuild only depends on upstream watchman/python3. If it ever pulls
+    # an overlay-overridden package, switch to overlaid pkgs here.
+    rebuildPkg = pkgs.callPackage ../packages/rebuild { };
   in
   {
+    packages.rebuild = rebuildPkg;
+    apps.rebuild = {
+      type = "app";
+      program = "${rebuildPkg}/bin/rebuild";
+    };
+
     devShells.default = pkgs.mkShell {
       buildInputs = with pkgs; [
         # Version control
@@ -31,7 +41,6 @@ in
 
         # Nix tools
         nixfmt
-        nixpkgs-fmt
         nil # Nix LSP
 
         # Shell tools
