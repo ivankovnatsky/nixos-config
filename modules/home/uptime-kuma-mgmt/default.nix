@@ -211,6 +211,7 @@ in
         let
           syncScript = pkgs.writeShellScript "uptime-kuma-mgmt-sync" ''
             set -e
+            umask 077
 
             echo "Syncing Uptime Kuma monitors..."
 
@@ -257,7 +258,8 @@ in
             }
 
             # Create runtime config with substituted placeholders
-            RUNTIME_CONFIG="/tmp/uptime-kuma-monitors-$$.json"
+            RUNTIME_CONFIG=$(mktemp -t uptime-kuma-monitors.XXXXXX)
+            trap 'rm -f "$RUNTIME_CONFIG"' EXIT
             sed "s|@EXTERNAL_DOMAIN@|$EXTERNAL_DOMAIN|g" "${configJsonTemplate}" | \
               sed "s|@POSTGRES_PASSWORD@|$POSTGRES_PASSWORD|g" > "$RUNTIME_CONFIG"
 
@@ -291,9 +293,6 @@ in
                     --config-file "$RUNTIME_CONFIG" 2>&1 || echo "Warning: Uptime Kuma sync failed with exit code $?"
                 ''
             }
-
-            # Cleanup runtime config
-            rm -f "$RUNTIME_CONFIG"
 
             echo "Uptime Kuma sync completed"
           '';
