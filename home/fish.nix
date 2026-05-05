@@ -109,6 +109,10 @@ ${lib.optionalString (config.local.tools.toolsPrefix != config.home.homeDirector
       # forgit: hide branch/tag decorations from log
       set -gx FORGIT_LOG_FORMAT "%C(auto)%h %s %C(brightblack)%cr%Creset"
 
+      # forgit hardcodes --height=80%, which leaves 20% blank below the preview;
+      # override to fill the full terminal height
+      set -gx FORGIT_FZF_DEFAULT_OPTS "--height=100%"
+
       # forgit preview window on bottom for narrow tiling splits
       set -gx FORGIT_LOG_FZF_OPTS "--preview-window=bottom:90%"
       set -gx FORGIT_DIFF_FZF_OPTS "--preview-window=bottom:90%"
