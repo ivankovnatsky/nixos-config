@@ -20,11 +20,17 @@ let
           ''
             # Enable custom sudo configuration
             echo >&2 "Configuring custom sudo settings..."
-            sudo tee ${file} > /dev/null << EOF
+            TMP_SUDOERS=$(mktemp)
+            trap 'rm -f "$TMP_SUDOERS"' EXIT
+            cat > "$TMP_SUDOERS" <<'EOF'
             # nix-darwin: ${option}
             ${configToUse}
             EOF
-            sudo chmod 440 ${file}
+            if ! sudo /usr/sbin/visudo -cf "$TMP_SUDOERS" >/dev/null; then
+              echo >&2 "ERROR: sudoers content failed visudo validation; leaving ${file} unchanged"
+              exit 1
+            fi
+            sudo install -m 0440 -o root -g wheel "$TMP_SUDOERS" ${file}
           ''
         else
           ''
