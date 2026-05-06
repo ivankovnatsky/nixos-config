@@ -8,6 +8,7 @@
     global.brewfile = true;
     brews = [
       "ollama"
+      "ffmpeg"
     ];
     casks = [ ];
   };
