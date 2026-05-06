@@ -12,6 +12,7 @@
     ./podservice
     ./reposync.nix
     ./restart-unhealthy.nix
+    ./stash
     ./stash-media
     ./syncthing-mgmt.nix
     ./textcast
