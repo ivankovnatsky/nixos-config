@@ -3,11 +3,12 @@
 import logging
 import platform
 import re
-import socket
 from collections import deque
 from pathlib import Path
 
 from discord import send_discord as _send_discord
+
+from machines import current_hostname
 
 
 DEFAULT_DISCORD_WEBHOOK_FILE = (
@@ -94,7 +95,7 @@ def send_failure_notification(webhook_file=None, exit_code=None, log_excerpt=Non
         )
         return
 
-    hostname = socket.gethostname().removesuffix(".local")
+    hostname = current_hostname()
     system = platform.system()
     parts = [f"**[rebuild@{hostname}]** {system} rebuild failed"]
     if exit_code is not None:

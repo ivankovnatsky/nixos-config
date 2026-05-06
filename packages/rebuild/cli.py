@@ -3,7 +3,6 @@
 import logging
 import os
 import platform
-import socket
 import subprocess
 import sys
 import threading
@@ -19,6 +18,7 @@ from lock import (
     cleanup_stale_lock,
     write_instance_file,
 )
+from machines import current_hostname, resolve_config_path
 from runner import (
     detect_rebuild_command,
     refresh_sudo,
@@ -98,7 +98,7 @@ def cmd_watch(config_path, command, loop, no_watch, interval):
         command = detect_rebuild_command()
         logging.info(f"Auto-detected rebuild command: {command}")
 
-    hostname = socket.gethostname().removesuffix(".local")
+    hostname = current_hostname()
     logging.info(f"Current machine: {hostname} (filtering changes for other machines)")
 
     machine_dirs = get_machine_dirs(config_path)
@@ -305,10 +305,14 @@ def cmd_watch(config_path, command, loop, no_watch, interval):
 
 
 class DefaultToSimple(click.Group):
-    """If the first arg isn't a known subcommand, treat it as 'simple <args>'."""
+    """If the first arg isn't a known subcommand, treat it as 'simple <args>'.
+
+    Also inject 'simple' when invoked with no args at all, so `rebuild`
+    bare runs a single rebuild against the auto-detected config path.
+    """
 
     def parse_args(self, ctx, args):
-        if args and args[0] not in self.commands and not args[0].startswith("-"):
+        if not args or (args[0] not in self.commands and not args[0].startswith("-")):
             args = ["simple"] + args
         return super().parse_args(ctx, args)
 
@@ -319,15 +323,15 @@ def cli():
 
 
 @cli.command()
-@click.argument("config_path")
+@click.argument("config_path", required=False)
 @click.argument("command", required=False, default=None)
 def simple(config_path, command):
     """Single rebuild with notifications (quiet output)."""
-    cmd_simple(config_path, command)
+    cmd_simple(config_path or resolve_config_path(), command)
 
 
 @cli.command()
-@click.argument("config_path")
+@click.argument("config_path", required=False)
 @click.argument("command", required=False, default=None)
 @click.option(
     "--loop",
@@ -353,4 +357,4 @@ def watch(config_path, command, loop, no_watch, interval):
         raise click.UsageError(
             "--no-watch requires --loop (nothing to do without watching or looping)"
         )
-    cmd_watch(config_path, command, loop, no_watch, interval)
+    cmd_watch(config_path or resolve_config_path(), command, loop, no_watch, interval)
