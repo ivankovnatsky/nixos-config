@@ -68,6 +68,11 @@
         description = "Jellyfin media server";
       }
       {
+        name = "stash";
+        url = "http://${config.flags.machineLocalAddress}:9999";
+        description = "Stash media organizer";
+      }
+      {
         name = "media";
         url = "http://${config.flags.machineLocalAddress}:9998";
         description = "Stash media organizer (general)";
