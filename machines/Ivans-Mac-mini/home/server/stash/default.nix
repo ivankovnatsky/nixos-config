@@ -72,6 +72,10 @@ in
 
       chmod 600 ${dataDir}/config/config.yml
     '';
+    # Wrap stash in script(1) so its stdio attaches to a pty. Stash detects
+    # this and suppresses the macOS menubar (systray) icon it would otherwise
+    # add when stdio points at regular files (the launchd log paths). Stash
+    # exposes no config flag for this, so the pty wrapper is the only switch.
     command = ''
       script -q /dev/null ${pkgs.stash}/bin/stash --config ${dataDir}/config/config.yml
     '';
