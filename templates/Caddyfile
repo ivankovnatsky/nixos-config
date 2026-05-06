@@ -151,6 +151,18 @@
 		}
 	}
 
+	@stash host stash.@externalDomain@
+	reverse_proxy @stash @machineIp@:9999 {
+		# Enable WebSocket support
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		# Increase timeouts for streaming
+		transport http {
+			keepalive 12h
+			keepalive_idle_conns 100
+		}
+	}
+
 	@media host media.@externalDomain@
 	reverse_proxy @media @machineIp@:9998 {
 		# Enable WebSocket support
