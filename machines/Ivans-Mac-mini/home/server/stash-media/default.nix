@@ -74,7 +74,7 @@ in
       "${dataDir}/metadata"
     ];
     preStart = ''
-      export PATH="${pkgs.ffmpeg}/bin:$PATH"
+      export PATH="/opt/homebrew/bin:$PATH"
 
       if [ -f "${dataDir}/config/config.yml" ]; then
         cp "${dataDir}/config/config.yml" "${dataDir}/config/config.yml.backup.$(date +%Y%m%d-%H%M%S)"
