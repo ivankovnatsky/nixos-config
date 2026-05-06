@@ -304,20 +304,23 @@ def cmd_watch(config_path, command, loop, no_watch, interval):
         cleanup_instance_file()
 
 
-class DefaultToSimple(click.Group):
-    """If the first arg isn't a known subcommand, treat it as 'simple <args>'.
+class DefaultDispatch(click.Group):
+    """Dispatch when no subcommand is given:
 
-    Also inject 'simple' when invoked with no args at all, so `rebuild`
-    bare runs a single rebuild against the auto-detected config path.
+    - `rebuild`          -> `rebuild watch --loop`   (auto-detect path)
+    - `rebuild <path>`   -> `rebuild simple <path>`  (one-shot)
+    - `rebuild --<flag>` -> handled by Click as usual (e.g. --help)
     """
 
     def parse_args(self, ctx, args):
-        if not args or (args[0] not in self.commands and not args[0].startswith("-")):
+        if not args:
+            args = ["watch", "--loop"]
+        elif args[0] not in self.commands and not args[0].startswith("-"):
             args = ["simple"] + args
         return super().parse_args(ctx, args)
 
 
-@click.group(cls=DefaultToSimple)
+@click.group(cls=DefaultDispatch)
 def cli():
     """Nix rebuild tool with simple and watch modes."""
 
