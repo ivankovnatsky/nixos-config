@@ -5,8 +5,9 @@
 }:
 
 let
-  dataDir = "${config.flags.externalStoragePath}/.stash";
-  stashDir = "${config.flags.externalStoragePath}/Media/Stash";
+  stashStoragePath = "/Volumes/Stash/Data";
+  dataDir = "${stashStoragePath}/.stash";
+  stashDir = "${stashStoragePath}/Media/Stash";
 
   # TODO:
   # - Hide sidebar in options permanently
@@ -33,7 +34,7 @@ in
 
   local.launchd.services.stash = {
     enable = true;
-    waitForPath = config.flags.externalStoragePath;
+    waitForPath = stashStoragePath;
     inherit dataDir;
     extraDirs = [
       "${dataDir}/logs"
