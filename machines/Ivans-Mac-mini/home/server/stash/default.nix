@@ -5,7 +5,10 @@
 }:
 
 let
-  stashStoragePath = "/Volumes/Stash/Data";
+  # Stash lives on its own external volume separate from
+  # config.flags.externalStoragePath; do not "consolidate" it.
+  stashVolume = "/Volumes/Stash";
+  stashStoragePath = "${stashVolume}/Data";
   dataDir = "${stashStoragePath}/.stash";
   stashDir = "${stashStoragePath}/Media/Stash";
 
@@ -34,7 +37,7 @@ in
 
   local.launchd.services.stash = {
     enable = true;
-    waitForPath = stashStoragePath;
+    waitForPath = stashVolume;
     inherit dataDir;
     extraDirs = [
       "${dataDir}/logs"
