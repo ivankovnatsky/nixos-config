@@ -73,7 +73,7 @@ in
       chmod 600 ${dataDir}/config/config.yml
     '';
     command = ''
-      ${pkgs.stash}/bin/stash --config ${dataDir}/config/config.yml
+      script -q /dev/null ${pkgs.stash}/bin/stash --config ${dataDir}/config/config.yml
     '';
   };
 }
