@@ -34,6 +34,7 @@ in
   local.launchd.services.stash = {
     enable = true;
     waitForPath = config.flags.externalStoragePath;
+    environment.PATH = "${pkgs.ffmpeg}/bin:/usr/bin:/bin";
     inherit dataDir;
     extraDirs = [
       "${dataDir}/logs"
