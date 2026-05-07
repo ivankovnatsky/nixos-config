@@ -6,7 +6,14 @@ import sys
 import click
 
 
-def get_network_services():
+def _is_darwin():
+    return sys.platform == "darwin"
+
+
+# ---------- macOS (networksetup) ----------
+
+
+def _get_network_services_darwin():
     """Get list of active network services (excluding disabled ones)."""
     result = subprocess.run(
         ["networksetup", "-listallnetworkservices"],
@@ -14,16 +21,14 @@ def get_network_services():
         text=True,
         check=True,
     )
-    # Skip first line (header) and filter out disabled services (starting with *)
-    services = [
+    return [
         line.strip()
         for line in result.stdout.splitlines()[1:]
         if line.strip() and not line.startswith("*")
     ]
-    return services
 
 
-def get_dns_servers(service):
+def _get_dns_servers_darwin(service):
     """Get DNS servers for a specific network service."""
     try:
         result = subprocess.run(
@@ -40,13 +45,12 @@ def get_dns_servers(service):
         return "error"
 
 
-def show_current_dns():
-    """Display current DNS configuration for all network services."""
-    services = get_network_services()
+def _show_current_dns_darwin():
+    services = _get_network_services_darwin()
     click.echo("Current DNS configuration:")
     for service in services:
         click.echo(f"  {service}:")
-        dns_servers = get_dns_servers(service)
+        dns_servers = _get_dns_servers_darwin(service)
         if dns_servers is None:
             click.echo("    (using DHCP)")
         elif dns_servers == "error":
@@ -56,9 +60,8 @@ def show_current_dns():
                 click.echo(f"    {server}")
 
 
-def set_dns_servers(servers):
-    """Set DNS servers for all network services."""
-    services = get_network_services()
+def _set_dns_servers_darwin(servers):
+    services = _get_network_services_darwin()
     click.echo(f"Setting DNS servers to: {' '.join(servers)}")
     for service in services:
         click.echo(f"  - {service}")
@@ -72,9 +75,8 @@ def set_dns_servers(servers):
             click.echo(f"    Error: {e.stderr.decode().strip()}", err=True)
 
 
-def clear_dns_servers():
-    """Clear DNS servers for all network services (use DHCP)."""
-    services = get_network_services()
+def _clear_dns_servers_darwin():
+    services = _get_network_services_darwin()
     click.echo("Clearing DNS servers for all network interfaces...")
     for service in services:
         click.echo(f"  - {service}")
@@ -88,8 +90,7 @@ def clear_dns_servers():
             click.echo(f"    Error: {e.stderr.decode().strip()}", err=True)
 
 
-def flush_dns_cache_impl():
-    """Flush the DNS cache."""
+def _flush_dns_cache_darwin():
     click.echo("Flushing DNS cache...")
     try:
         subprocess.run(["dscacheutil", "-flushcache"], check=True)
@@ -100,15 +101,121 @@ def flush_dns_cache_impl():
         sys.exit(1)
 
 
+# ---------- Linux (systemd-resolved) ----------
+
+
+def _resolvectl_dns_linux():
+    """Parse `resolvectl dns` into [(scope, [servers])].
+
+    Output (with possible continuation lines prefixed by whitespace):
+        Global: 1.1.1.1 1.0.0.1 45.90.28.0#nextdns
+                2a07:a8c0::#nextdns
+        Link 2 (eno1): 192.168.50.1
+        Link 3 (wlp9s0):
+    """
+    result = subprocess.run(
+        ["resolvectl", "dns"],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    scopes = []
+    current = None
+    for line in result.stdout.splitlines():
+        if not line.strip():
+            continue
+        if line[0].isspace():
+            # Continuation of previous scope's server list.
+            if current is not None:
+                current[1].extend(line.split())
+            continue
+        if ":" not in line:
+            continue
+        label, _, rest = line.partition(":")
+        # Collapse "Link N (iface)" → "iface" for darwin-like display.
+        if label.startswith("Link "):
+            paren = label.find("(")
+            if paren != -1 and label.endswith(")"):
+                label = label[paren + 1 : -1]
+        current = (label, rest.split())
+        scopes.append(current)
+    return scopes
+
+
+def _show_current_dns_linux():
+    try:
+        scopes = _resolvectl_dns_linux()
+    except FileNotFoundError:
+        click.echo("resolvectl not found; is systemd-resolved installed?", err=True)
+        sys.exit(1)
+    click.echo("Current DNS configuration:")
+    for scope, servers in scopes:
+        click.echo(f"  {scope}:")
+        if not servers:
+            click.echo("    (none)")
+        else:
+            for server in servers:
+                click.echo(f"    {server}")
+
+
+def _flush_dns_cache_linux():
+    click.echo("Flushing DNS cache...")
+    try:
+        subprocess.run(["resolvectl", "flush-caches"], check=True)
+        click.echo("DNS cache flushed successfully")
+    except subprocess.CalledProcessError as e:
+        click.echo(f"Error flushing DNS cache: {e}", err=True)
+        sys.exit(1)
+
+
+# ---------- Dispatch ----------
+
+
+def show_current_dns():
+    if _is_darwin():
+        _show_current_dns_darwin()
+    else:
+        _show_current_dns_linux()
+
+
+def set_dns_servers(servers):
+    if _is_darwin():
+        _set_dns_servers_darwin(servers)
+    else:
+        click.echo(
+            "Setting DNS is not supported on Linux from this tool — "
+            "configure via NixOS (networking.nameservers / services.resolved).",
+            err=True,
+        )
+        sys.exit(2)
+
+
+def clear_dns_servers():
+    if _is_darwin():
+        _clear_dns_servers_darwin()
+    else:
+        click.echo(
+            "Clearing DNS is not supported on Linux from this tool — "
+            "configure via NixOS (networking.nameservers / services.resolved).",
+            err=True,
+        )
+        sys.exit(2)
+
+
+def flush_dns_cache_impl():
+    if _is_darwin():
+        _flush_dns_cache_darwin()
+    else:
+        _flush_dns_cache_linux()
+
+
 @click.group(invoke_without_command=True)
 @click.argument("servers", nargs=-1)
 @click.pass_context
 def main(ctx, servers):
-    """Manage macOS DNS configuration."""
+    """Manage DNS configuration (macOS + Linux)."""
     if ctx.invoked_subcommand is None:
         if servers:
-            # If the first argument is "clear" or "flush", manually dispatch
-            # This is a workaround for Click consuming subcommands as arguments
             if servers[0].lower() == "clear":
                 ctx.invoke(clear)
             elif servers[0].lower() == "flush":
