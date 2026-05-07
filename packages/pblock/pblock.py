@@ -95,4 +95,4 @@ def main(process_name, interval, background) -> None:
 
 
 if __name__ == "__main__":
-    main()
+    main(prog_name="pblock")

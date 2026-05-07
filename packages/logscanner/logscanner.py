@@ -6,7 +6,6 @@ import os
 import platform
 import re
 import subprocess
-import sys
 import time
 
 import click
@@ -283,4 +282,4 @@ def main(config, hours, dry_run):
 
 
 if __name__ == "__main__":
-    main()
+    main(prog_name="logscanner")

@@ -230,4 +230,4 @@ def main(address: str, username: str, path: str, role: str) -> None:
 
 
 if __name__ == "__main__":
-    main()
+    main(prog_name="vault-auth")

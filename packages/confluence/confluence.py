@@ -503,7 +503,7 @@ def search(cql, limit):
 
 
 def main():
-    cli()
+    cli(prog_name="confluence")
 
 
 if __name__ == "__main__":

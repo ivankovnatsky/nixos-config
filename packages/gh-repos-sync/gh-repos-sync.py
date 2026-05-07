@@ -45,13 +45,20 @@ REPO_LIMIT = 10000
 
 def remote_repos(user: str) -> list[str]:
     try:
-        res = run([
-            "gh", "repo", "list", user,
-            "--limit", str(REPO_LIMIT),
-            "--source",
-            "--no-archived",
-            "--json", "name,isFork",
-        ])
+        res = run(
+            [
+                "gh",
+                "repo",
+                "list",
+                user,
+                "--limit",
+                str(REPO_LIMIT),
+                "--source",
+                "--no-archived",
+                "--json",
+                "name,isFork",
+            ]
+        )
     except subprocess.CalledProcessError as exc:
         die(f"gh repo list failed: {exc.stderr.strip() or exc}")
     try:
@@ -91,8 +98,12 @@ def origin_of(repo_dir: Path) -> str | None:
     try:
         res = subprocess.run(
             [
-                "git", "-C", str(repo_dir),
-                "config", "--get", "remote.origin.url",
+                "git",
+                "-C",
+                str(repo_dir),
+                "config",
+                "--get",
+                "remote.origin.url",
             ],
             capture_output=True,
             text=True,
@@ -122,13 +133,17 @@ def section(title: str, items: list[str]) -> None:
 )
 @click.argument("user")
 @click.option(
-    "-p", "--path", "path_",
+    "-p",
+    "--path",
+    "path_",
     default=None,
     type=click.Path(file_okay=False, dir_okay=True, resolve_path=True),
     help="Directory containing local clones (default: current dir).",
 )
 @click.option(
-    "-n", "--dry-run", is_flag=True,
+    "-n",
+    "--dry-run",
+    is_flag=True,
     help="List only; do not clone.",
 )
 @click.option(
@@ -139,7 +154,10 @@ def section(title: str, items: list[str]) -> None:
     help="Clone URL scheme.",
 )
 def main(
-    user: str, path_: str | None, dry_run: bool, protocol: str,
+    user: str,
+    path_: str | None,
+    dry_run: bool,
+    protocol: str,
 ) -> None:
     base = Path(path_ or os.getcwd()).resolve()
     if not base.is_dir():
@@ -165,9 +183,7 @@ def main(
             collision.append(f"{repo} (origin: {origin or '<none>'})")
 
     local_dirs = sorted(
-        p.name
-        for p in base.iterdir()
-        if p.is_dir() and not p.name.startswith(".")
+        p.name for p in base.iterdir() if p.is_dir() and not p.name.startswith(".")
     )
     orphan = [d for d in local_dirs if d not in remote_set]
 
@@ -222,4 +238,4 @@ def main(
 
 
 if __name__ == "__main__":
-    main()
+    main(prog_name="gh-repos-sync")

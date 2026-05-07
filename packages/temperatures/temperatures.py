@@ -163,4 +163,4 @@ def main(interval, logfile):
 
 
 if __name__ == "__main__":
-    main()
+    main(prog_name="temperatures")
