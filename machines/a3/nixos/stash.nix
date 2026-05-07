@@ -31,7 +31,6 @@ in
   #   - ${dataDir}/keys: written to by stash-keys.service running as user stash
   #   - ${dataDir}/config: parent of the sqlite path declared in settings.database
   systemd.tmpfiles.rules = [
-    "d ${storageRoot}    0755 root  root  -"
     "d ${stashDir}       0755 stash stash -"
     "d ${dataDir}/config 0755 stash stash -"
     "d ${dataDir}/keys   0700 stash stash -"
