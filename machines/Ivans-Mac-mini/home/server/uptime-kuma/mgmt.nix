@@ -70,7 +70,8 @@
       {
         name = "stash";
         url = "http://${config.flags.a3Ip}:9999";
-        description = "Stash media organizer";
+        expectedStatus = 302;
+        description = "Stash media organizer (redirects to /login)";
       }
       {
         name = "media";
