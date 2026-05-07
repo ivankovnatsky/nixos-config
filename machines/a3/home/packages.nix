@@ -19,7 +19,6 @@
     duf
     erdtree
     exiftool
-    nixpkgs-darwin-master-gallery-dl.gallery-dl
     game-mode
     gh-repos-sync
     glow
