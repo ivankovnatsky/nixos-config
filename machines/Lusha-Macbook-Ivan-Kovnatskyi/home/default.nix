@@ -55,7 +55,6 @@
     ../../../home/treefmt.nix
     ../../../home/tweety.nix
     ../../../home/yamlint.nix
-    ../../../home/yt-dlp.nix
     ../../../home/z-lua.nix
     ../../../home/zsh.nix
     ../../../modules/flags
