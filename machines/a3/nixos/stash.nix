@@ -30,7 +30,13 @@ in
   #   - ${stashDir}: required by the module's BindReadOnlyPaths bind-mount
   #   - ${dataDir}/keys: written to by stash-keys.service running as user stash
   #   - ${dataDir}/config: parent of the sqlite path declared in settings.database
+  # ${dataDir} is also declared by upstream's services.stash module via
+  # tmpfiles.settings, but that file (10-stash-datadir.conf) is processed
+  # AFTER our 00-nixos.conf. Re-declare the parent here so children below
+  # (config/, keys/) have their parent in place when systemd-tmpfiles processes
+  # this file; otherwise `d` silently skips on missing parent.
   systemd.tmpfiles.rules = [
+    "d ${dataDir}        0755 stash stash -"
     "d ${stashDir}       0755 stash stash -"
     "d ${dataDir}/config 0755 stash stash -"
     "d ${dataDir}/keys   0700 stash stash -"
@@ -259,11 +265,19 @@ in
   # After the upstream module rewrites config.yml from settings (every restart
   # with mutableSettings=false), patch the placeholder username with the real
   # one from sops so it never lands in /nix/store via the rendered settingsFile.
+  #
+  # NB: avoid `yq -i` here. Upstream's SystemCallFilter excludes @privileged,
+  # which blocks fchownat — and yq -i's in-place write path calls fchownat to
+  # preserve ownership on the temp file. The result is SIGSYS ("Bad system
+  # call", exit 159). Read+write via shell redirection over a sibling tempfile
+  # avoids fchownat entirely; mv within the same directory uses renameat2.
   systemd.services.stash.serviceConfig.ExecStartPre = lib.mkAfter [
     (pkgs.writers.writeBash "stash-username-from-sops" ''
       set -euo pipefail
       env USERNAME=$(< ${config.sops.secrets.stash-username.path}) \
-        ${lib.getExe pkgs.yq-go} -i '.username = strenv(USERNAME)' ${dataDir}/config.yml
+        ${lib.getExe pkgs.yq-go} '.username = strenv(USERNAME)' \
+        ${dataDir}/config.yml > ${dataDir}/config.yml.tmp
+      mv ${dataDir}/config.yml.tmp ${dataDir}/config.yml
     '')
   ];
 }
