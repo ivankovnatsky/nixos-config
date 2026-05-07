@@ -13,6 +13,15 @@
         };
       };
 
+      uv.packages = {
+        "gallery-dl" = {
+          binary = "gallery-dl";
+        };
+        "yt-dlp" = {
+          binary = "yt-dlp";
+        };
+      };
+
       curlShell = {
         "https://claude.ai/install.sh" = "bash";
       };
