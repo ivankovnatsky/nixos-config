@@ -69,7 +69,7 @@
       }
       {
         name = "stash";
-        url = "http://${config.flags.machineLocalAddress}:9999";
+        url = "http://${config.flags.a3Ip}:9999";
         description = "Stash media organizer";
       }
       {
