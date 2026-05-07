@@ -152,7 +152,7 @@
 	}
 
 	@stash host stash.@externalDomain@
-	reverse_proxy @stash @machineIp@:9999 {
+	reverse_proxy @stash @a3Ip@:9999 {
 		# Enable WebSocket support
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
