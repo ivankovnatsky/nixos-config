@@ -17,7 +17,6 @@
     ./boot.nix
     ./configuration.nix
     ./cryptenroll.nix # TPM2 support for LUKS encryption
-    ./data-disk.nix
     ./default-apps.nix
     ./desktop.nix
     ./fonts.nix
@@ -35,6 +34,7 @@
     ./reposync.nix
     ./security.nix
     ./steam.nix
+    ./storage-disk.nix
     ./syncthing-mgmt.nix
     ./tpm2.nix
     ./user.nix

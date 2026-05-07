@@ -4,7 +4,7 @@
     crypttabExtraOpts = [ "tpm2-device=auto" ];
   };
 
-  fileSystems."/data" = {
+  fileSystems."/storage" = {
     device = "/dev/mapper/crypted-data";
     fsType = "ext4";
   };
