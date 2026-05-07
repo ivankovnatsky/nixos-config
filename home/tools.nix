@@ -18,6 +18,12 @@
         "osxphotos" = {
           binary = "osxphotos";
         };
+        "gallery-dl" = {
+          binary = "gallery-dl";
+        };
+        "yt-dlp" = {
+          binary = "yt-dlp";
+        };
       };
 
       # .npmrc is already provided via `home/npm.nix` for this machine
