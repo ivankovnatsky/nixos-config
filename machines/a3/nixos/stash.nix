@@ -37,7 +37,10 @@ in
   # this file; otherwise `d` silently skips on missing parent.
   systemd.tmpfiles.rules = [
     "d ${dataDir}        0755 stash stash -"
-    "d ${stashDir}       0755 stash stash -"
+    # ${stashDir} is the media library; ivan (in `users`) needs to drop files
+    # in here from the host. setgid (2) so new files inherit `users` group;
+    # 775 so both stash (owner) and ivan (group) can write.
+    "d ${stashDir}       2775 stash users -"
     "d ${dataDir}/config 0755 stash stash -"
     "d ${dataDir}/keys   0700 stash stash -"
     # Recursively chown the entire ${dataDir} subtree to stash:stash. The mini
@@ -46,6 +49,10 @@ in
     # ownership of the path and all descendants; mode `-` leaves modes alone
     # so existing files keep their original permissions.
     "Z ${dataDir}        -    stash stash -"
+    # Recursively reconcile ${stashDir} on existing deployments — `d` above
+    # is a no-op when the directory already exists, so without this `Z` the
+    # pre-existing tree keeps its old stash:stash 0755 perms.
+    "Z ${stashDir}       2775 stash users -"
   ];
 
   systemd.services.stash-keys = {
