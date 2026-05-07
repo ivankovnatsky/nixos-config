@@ -155,7 +155,7 @@ in
       no_proxy = "localhost,127.0.0.1,192.168.0.0/16,10.0.0.0/8,172.16.0.0/12";
       nobrowser = true;
       notifications_enabled = true;
-      parallel_tasks = 4;
+      parallel_tasks = 8;
       preview_audio = true;
       preview_exclude_end = 0;
       preview_exclude_start = 0;
