@@ -33,6 +33,7 @@
     ./reposync-notes.nix
     ./reposync.nix
     ./security.nix
+    ./stash.nix
     ./steam.nix
     ./storage-disk.nix
     ./syncthing-mgmt.nix
