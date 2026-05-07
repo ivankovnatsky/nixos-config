@@ -69,6 +69,14 @@ in
     # upstream ever changes that idiom, re-verify this still triggers a rewrite.
     mutableSettings = false;
 
+    # mutablePlugins/mutableScrapers must be true here because we override
+    # plugins_path / scrapers_path in settings to point at /storage/data/.stash/
+    # config/{plugins,scrapers} (matching the mini layout). With them at the
+    # default false, upstream sets the same options to a Nix-store derivation
+    # path and eval fails on conflicting definitions.
+    mutablePlugins = true;
+    mutableScrapers = true;
+
     # Real username is loaded from sops in the ExecStartPre append below; the
     # placeholder only satisfies the module's "both username and password set"
     # assertion. With mutableSettings=false the patch runs every restart.
@@ -235,6 +243,13 @@ in
   };
 
   systemd.services.stash.unitConfig.RequiresMountsFor = [ "/storage" ];
+
+  # Upstream binds settings.stash[*].path read-only into the unit's namespace.
+  # The mini's launchd job had read-write access to its media volume, and we
+  # set defaults.delete_file = true plus expect "Move to library" to work, so
+  # drop the RO bind and add a RW BindPaths for the same path instead.
+  systemd.services.stash.serviceConfig.BindReadOnlyPaths = lib.mkForce [ ];
+  systemd.services.stash.serviceConfig.BindPaths = [ stashDir ];
 
   # Mini did `chmod 600 ${dataDir}/config/config.yml` after rendering. The
   # upstream module just `>` -redirects yq output with no chmod, so a default
