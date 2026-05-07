@@ -52,7 +52,6 @@
     ../../../home/tools.nix
     ../../../home/treefmt.nix
     ../../../home/xattr.nix
-    ../../../home/yt-dlp.nix
     ../../../home/z-lua.nix
     ../../../home/zsh.nix
     ../../../modules/flags
