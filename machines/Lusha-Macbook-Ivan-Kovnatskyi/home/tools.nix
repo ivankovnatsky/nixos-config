@@ -18,6 +18,15 @@
         };
       };
 
+      uv.packages = {
+        "gallery-dl" = {
+          binary = "gallery-dl";
+        };
+        "yt-dlp" = {
+          binary = "yt-dlp";
+        };
+      };
+
       bun.packages = {
         "npm-groovy-lint" = {
           binary = "npm-groovy-lint";
