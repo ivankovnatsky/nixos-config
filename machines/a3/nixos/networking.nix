@@ -2,18 +2,8 @@
   # Networking configuration for a3 machine
   # Includes mDNS/Avahi setup for .local hostname resolution
 
-  # Static DNS via Cloudflare. NextDNS module (./nextdns-resolved.nix) is
-  # commented out in default.nix; flip back if NextDNS profile resolution
-  # is needed again.
-  networking.nameservers = [
-    "1.1.1.1"
-    "1.0.0.1"
-  ];
-
   # Enable services for network discovery and hostname resolution
   services = {
-    resolved.enable = true;
-
     # Enable Avahi for .local hostname resolution (mDNS/Bonjour)
     avahi = {
       enable = true;
