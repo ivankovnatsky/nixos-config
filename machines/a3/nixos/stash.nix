@@ -8,7 +8,7 @@
 let
   storageRoot = "/storage/data";
   dataDir = "${storageRoot}/.stash";
-  stashDir = "${storageRoot}/Stash";
+  stashDir = "${storageRoot}/stash";
 in
 {
   sops.secrets = {
@@ -40,6 +40,12 @@ in
     "d ${stashDir}       0755 stash stash -"
     "d ${dataDir}/config 0755 stash stash -"
     "d ${dataDir}/keys   0700 stash stash -"
+    # Recursively chown the entire ${dataDir} subtree to stash:stash. The mini
+    # snapshot (rsync) landed as ivan:users, so stash cannot write into
+    # blobs/, cache/, generated/, plugins/, scrapers/ etc. `Z` adjusts
+    # ownership of the path and all descendants; mode `-` leaves modes alone
+    # so existing files keep their original permissions.
+    "Z ${dataDir}        -    stash stash -"
   ];
 
   systemd.services.stash-keys = {
