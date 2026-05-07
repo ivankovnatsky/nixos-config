@@ -8,4 +8,8 @@
     device = "/dev/mapper/crypted-data";
     fsType = "ext4";
   };
+
+  systemd.tmpfiles.rules = [
+    "d /storage/data 0755 ivan users -"
+  ];
 }
