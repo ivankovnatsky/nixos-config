@@ -163,6 +163,9 @@ def _flush_dns_cache_linux():
     try:
         subprocess.run(["resolvectl", "flush-caches"], check=True)
         click.echo("DNS cache flushed successfully")
+    except FileNotFoundError:
+        click.echo("resolvectl not found; is systemd-resolved installed?", err=True)
+        sys.exit(1)
     except subprocess.CalledProcessError as e:
         click.echo(f"Error flushing DNS cache: {e}", err=True)
         sys.exit(1)
@@ -216,6 +219,9 @@ def main(ctx, servers):
     """Manage DNS configuration (macOS + Linux)."""
     if ctx.invoked_subcommand is None:
         if servers:
+            # If the first argument is "clear" or "flush", manually dispatch.
+            # This is a workaround for Click consuming subcommands as positional
+            # arguments when invoke_without_command + nargs=-1 are combined.
             if servers[0].lower() == "clear":
                 ctx.invoke(clear)
             elif servers[0].lower() == "flush":
@@ -244,7 +250,7 @@ def flush():
 
 if __name__ == "__main__":
     try:
-        main()
+        main(prog_name="dns")
     except KeyboardInterrupt:
         click.echo("\nInterrupted", err=True)
         sys.exit(130)
