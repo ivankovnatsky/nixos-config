@@ -440,6 +440,10 @@ class UptimeKumaClient:
             "interval": monitor.get("interval", 60),
             "maxretries": monitor.get("maxretries", 3),
             "retryInterval": monitor.get("retryInterval", 60),
+            # Newer Kuma requires monitor.conditions NOT NULL; uptime-kuma-api
+            # doesn't set it, so add_monitor/edit_monitor would insert NULL
+            # and trip the SQLITE_CONSTRAINT. Pass an empty list explicitly.
+            "conditions": [],
         }
 
         if monitor.get("type", "http") in ["http", "https"]:
