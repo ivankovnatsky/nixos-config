@@ -1,0 +1,5 @@
+{
+  imports = [
+    ./uptime-kuma.nix
+  ];
+}
