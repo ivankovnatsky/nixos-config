@@ -107,6 +107,105 @@ let
       }) cfg.monitors;
     }
   );
+
+  syncScript = pkgs.writeShellScript "uptime-kuma-mgmt-sync" ''
+    set -e
+    umask 077
+
+    echo "Syncing Uptime Kuma monitors..."
+
+    # Read additional secrets for placeholder substitution
+    ${optionalString (
+      cfg.externalDomainFile != null
+    ) ''EXTERNAL_DOMAIN=$(cat "${cfg.externalDomainFile}")''}
+    ${optionalString (
+      cfg.postgresPasswordFile != null
+    ) ''POSTGRES_PASSWORD=$(cat "${cfg.postgresPasswordFile}")''}
+    EXTERNAL_DOMAIN=''${EXTERNAL_DOMAIN:-}
+    POSTGRES_PASSWORD=''${POSTGRES_PASSWORD:-}
+
+    # Read secrets from files or use direct values (with runtime substitution)
+    ${
+      if cfg.baseUrlFile != null then
+        ''
+          BASE_URL=$(cat "${cfg.baseUrlFile}")
+        ''
+      else
+        ''
+          BASE_URL=$(echo "${cfg.baseUrl}" | sed "s|@EXTERNAL_DOMAIN@|$EXTERNAL_DOMAIN|g")
+        ''
+    }
+    ${
+      if cfg.usernameFile != null then
+        ''
+          USERNAME=$(cat "${cfg.usernameFile}")
+        ''
+      else
+        ''
+          USERNAME="${cfg.username}"
+        ''
+    }
+    ${
+      if cfg.passwordFile != null then
+        ''
+          PASSWORD=$(cat "${cfg.passwordFile}")
+        ''
+      else
+        ''
+          PASSWORD="${cfg.password}"
+        ''
+    }
+
+    # Create runtime config with substituted placeholders
+    RUNTIME_CONFIG=$(mktemp -t uptime-kuma-monitors.XXXXXX)
+    trap 'rm -f "$RUNTIME_CONFIG"' EXIT
+    sed "s|@EXTERNAL_DOMAIN@|$EXTERNAL_DOMAIN|g" "${configJsonTemplate}" | \
+      sed "s|@POSTGRES_PASSWORD@|$POSTGRES_PASSWORD|g" > "$RUNTIME_CONFIG"
+
+    # Build command based on notifications.enable and webhook config.
+    # When notifications are disabled, sync with --no-notifications so
+    # the existing Discord notification is removed.
+    ${
+      if !cfg.notifications.enable then
+        ''
+          ${pkgs.uptime-kuma-mgmt}/bin/uptime-kuma-mgmt sync \
+            --base-url "$BASE_URL" \
+            --username "$USERNAME" \
+            --password "$PASSWORD" \
+            --config-file "$RUNTIME_CONFIG" \
+            --no-notifications 2>&1 || echo "Warning: Uptime Kuma sync failed with exit code $?"
+        ''
+      else if cfg.discordWebhook != null || cfg.discordWebhookFile != null then
+        ''
+          ${
+            if cfg.discordWebhookFile != null then
+              ''
+                DISCORD_WEBHOOK=$(cat "${cfg.discordWebhookFile}")
+              ''
+            else
+              ''
+                DISCORD_WEBHOOK="${cfg.discordWebhook}"
+              ''
+          }
+          ${pkgs.uptime-kuma-mgmt}/bin/uptime-kuma-mgmt sync \
+            --base-url "$BASE_URL" \
+            --username "$USERNAME" \
+            --password "$PASSWORD" \
+            --config-file "$RUNTIME_CONFIG" \
+            --discord-webhook "$DISCORD_WEBHOOK" 2>&1 || echo "Warning: Uptime Kuma sync failed with exit code $?"
+        ''
+      else
+        ''
+          ${pkgs.uptime-kuma-mgmt}/bin/uptime-kuma-mgmt sync \
+            --base-url "$BASE_URL" \
+            --username "$USERNAME" \
+            --password "$PASSWORD" \
+            --config-file "$RUNTIME_CONFIG" 2>&1 || echo "Warning: Uptime Kuma sync failed with exit code $?"
+        ''
+    }
+
+    echo "Uptime Kuma sync completed"
+  '';
 in
 {
   options.local.services.uptime-kuma-mgmt = {
@@ -225,114 +324,30 @@ in
       }
     ];
 
-    # Darwin launchd service
-    local.launchd.services.uptime-kuma-mgmt = {
+    local.launchd.services.uptime-kuma-mgmt = mkIf pkgs.stdenv.isDarwin {
       enable = true;
       keepAlive = false;
       runAtLoad = true;
+      command = "${syncScript}";
+    };
 
-      command =
-        let
-          syncScript = pkgs.writeShellScript "uptime-kuma-mgmt-sync" ''
-            set -e
-            umask 077
-
-            echo "Syncing Uptime Kuma monitors..."
-
-            # Read additional secrets for placeholder substitution
-            ${optionalString (
-              cfg.externalDomainFile != null
-            ) ''EXTERNAL_DOMAIN=$(cat "${cfg.externalDomainFile}")''}
-            ${optionalString (
-              cfg.postgresPasswordFile != null
-            ) ''POSTGRES_PASSWORD=$(cat "${cfg.postgresPasswordFile}")''}
-            EXTERNAL_DOMAIN=''${EXTERNAL_DOMAIN:-}
-            POSTGRES_PASSWORD=''${POSTGRES_PASSWORD:-}
-
-            # Read secrets from files or use direct values (with runtime substitution)
-            ${
-              if cfg.baseUrlFile != null then
-                ''
-                  BASE_URL=$(cat "${cfg.baseUrlFile}")
-                ''
-              else
-                ''
-                  BASE_URL=$(echo "${cfg.baseUrl}" | sed "s|@EXTERNAL_DOMAIN@|$EXTERNAL_DOMAIN|g")
-                ''
-            }
-            ${
-              if cfg.usernameFile != null then
-                ''
-                  USERNAME=$(cat "${cfg.usernameFile}")
-                ''
-              else
-                ''
-                  USERNAME="${cfg.username}"
-                ''
-            }
-            ${
-              if cfg.passwordFile != null then
-                ''
-                  PASSWORD=$(cat "${cfg.passwordFile}")
-                ''
-              else
-                ''
-                  PASSWORD="${cfg.password}"
-                ''
-            }
-
-            # Create runtime config with substituted placeholders
-            RUNTIME_CONFIG=$(mktemp -t uptime-kuma-monitors.XXXXXX)
-            trap 'rm -f "$RUNTIME_CONFIG"' EXIT
-            sed "s|@EXTERNAL_DOMAIN@|$EXTERNAL_DOMAIN|g" "${configJsonTemplate}" | \
-              sed "s|@POSTGRES_PASSWORD@|$POSTGRES_PASSWORD|g" > "$RUNTIME_CONFIG"
-
-            # Build command based on notifications.enable and webhook config.
-            # When notifications are disabled, sync with --no-notifications so
-            # the existing Discord notification is removed.
-            ${
-              if !cfg.notifications.enable then
-                ''
-                  ${pkgs.uptime-kuma-mgmt}/bin/uptime-kuma-mgmt sync \
-                    --base-url "$BASE_URL" \
-                    --username "$USERNAME" \
-                    --password "$PASSWORD" \
-                    --config-file "$RUNTIME_CONFIG" \
-                    --no-notifications 2>&1 || echo "Warning: Uptime Kuma sync failed with exit code $?"
-                ''
-              else if cfg.discordWebhook != null || cfg.discordWebhookFile != null then
-                ''
-                  ${
-                    if cfg.discordWebhookFile != null then
-                      ''
-                        DISCORD_WEBHOOK=$(cat "${cfg.discordWebhookFile}")
-                      ''
-                    else
-                      ''
-                        DISCORD_WEBHOOK="${cfg.discordWebhook}"
-                      ''
-                  }
-                  ${pkgs.uptime-kuma-mgmt}/bin/uptime-kuma-mgmt sync \
-                    --base-url "$BASE_URL" \
-                    --username "$USERNAME" \
-                    --password "$PASSWORD" \
-                    --config-file "$RUNTIME_CONFIG" \
-                    --discord-webhook "$DISCORD_WEBHOOK" 2>&1 || echo "Warning: Uptime Kuma sync failed with exit code $?"
-                ''
-              else
-                ''
-                  ${pkgs.uptime-kuma-mgmt}/bin/uptime-kuma-mgmt sync \
-                    --base-url "$BASE_URL" \
-                    --username "$USERNAME" \
-                    --password "$PASSWORD" \
-                    --config-file "$RUNTIME_CONFIG" 2>&1 || echo "Warning: Uptime Kuma sync failed with exit code $?"
-                ''
-            }
-
-            echo "Uptime Kuma sync completed"
-          '';
-        in
-        "${syncScript}";
+    systemd.user.services.uptime-kuma-mgmt = mkIf pkgs.stdenv.isLinux {
+      Unit = {
+        Description = "Uptime Kuma declarative monitor sync";
+        After = [
+          "network-online.target"
+          "sops-nix.service"
+        ];
+        Wants = [
+          "network-online.target"
+          "sops-nix.service"
+        ];
+      };
+      Service = {
+        Type = "oneshot";
+        ExecStart = "${syncScript}";
+      };
+      Install.WantedBy = [ "default.target" ];
     };
   };
 }
