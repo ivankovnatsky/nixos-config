@@ -17,7 +17,6 @@
     pandoc
     parallel
     pv
-    rclone
     rems
     ripgrep
     rust-analyzer

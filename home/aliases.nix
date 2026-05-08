@@ -27,7 +27,6 @@ in
 if config.flags.purpose == "home" then
   commonShellAliases
   // {
-    rclone = "${pkgs.rclone}/bin/rclone -P";
     wl-copy = lib.mkIf isLinux "${pkgs.wl-clipboard}/bin/wl-copy -n";
   }
 else
