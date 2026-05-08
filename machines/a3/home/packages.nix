@@ -36,7 +36,6 @@
     pre-commit
     pv
     q
-    rclone
     ripgrep
     rust-analyzer
     rustc
