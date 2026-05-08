@@ -70,9 +70,16 @@ let
       };
 
       expectedStatus = mkOption {
-        type = types.int;
+        type = types.either types.int (types.listOf types.str);
         default = 200;
-        description = "Expected HTTP status code";
+        example = [
+          "200-299"
+          "302"
+        ];
+        description = ''
+          Expected HTTP status code(s). Either a single integer (e.g. 302)
+          or a list of code/range strings (e.g. [ "200-299" "302" ]).
+        '';
       };
 
       description = mkOption {
