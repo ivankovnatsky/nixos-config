@@ -80,14 +80,17 @@ in
 
   config = mkIf (cfg.enable && enabledSections != [ ]) {
     # Home-manager activation runs with a sanitized PATH and no shell
-    # rc files, so `go install` cannot find `go` (or the `git` it
-    # invokes to fetch modules, or the `cc` cgo needs to build the
-    # runtime/cgo stub). Only inject the Go toolchain when the `go`
-    # scope is actually enabled — otherwise every machine would pay
-    # the closure cost for nothing.
+    # rc files, so `go install` cannot find `go` or the `git` it
+    # invokes to fetch modules. We disable cgo because the only C
+    # toolchain we could put on PATH here is Nix's clang-wrapper,
+    # which has no macOS SDK library search paths configured — cgo
+    # links then fail with `library not found for -lresolv` and
+    # similar. Pure-Go binaries are sufficient for the packages we
+    # actually install (rclone, etc.).
     home.activation.manageTools = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       ${lib.optionalString (lib.elem "go" enabledSections) ''
-        export PATH="${pkgs.go}/bin:${pkgs.git}/bin:${pkgs.stdenv.cc}/bin:$PATH"
+        export PATH="${pkgs.go}/bin:${pkgs.git}/bin:$PATH"
+        export CGO_ENABLED=0
       ''}
       ${inputs.tools.packages.${pkgs.system}.default}/bin/tools \
         deploy \
