@@ -416,7 +416,7 @@ class UptimeKumaClient:
 
         # Compare expectedStatus (mapped to accepted_statuscodes in API)
         if "expectedStatus" in desired:
-            desired_status = [str(desired["expectedStatus"])]
+            desired_status = self._normalize_expected_status(desired["expectedStatus"])
             current_status = current.get("accepted_statuscodes", ["200"])
             if desired_status != current_status:
                 return True, f"status: {current_status} \u2192 {desired_status}"
@@ -500,11 +500,19 @@ class UptimeKumaClient:
         if "description" in monitor:
             config["description"] = monitor["description"]
         if "expectedStatus" in monitor:
-            config["accepted_statuscodes"] = [str(monitor["expectedStatus"])]
+            config["accepted_statuscodes"] = self._normalize_expected_status(
+                monitor["expectedStatus"]
+            )
         if "timeout" in monitor:
             config["timeout"] = monitor["timeout"]
 
         return config
+
+    def _normalize_expected_status(self, value) -> list:
+        """Convert expectedStatus (int or list) to Kuma's accepted_statuscodes list."""
+        if isinstance(value, list):
+            return [str(v) for v in value]
+        return [str(value)]
 
     def _get_monitor_type(self, type_str: str) -> MonitorType:
         """Convert string type to MonitorType enum."""
