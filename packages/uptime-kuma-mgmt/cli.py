@@ -102,16 +102,33 @@ def cmd_get_cli(base_url, username, password, monitor_id):
     "--discord-webhook", default=None, help="Discord webhook URL for notifications"
 )
 @click.option(
+    "--notifications/--no-notifications",
+    "notifications_enabled",
+    default=True,
+    help="Enable Discord notifications. With --no-notifications the Discord "
+    "notification is deleted and not attached to monitors.",
+)
+@click.option(
     "--dry-run",
     is_flag=True,
     help="Show what would be changed without making changes",
 )
-def cmd_sync_cli(base_url, username, password, config_file, discord_webhook, dry_run):
+def cmd_sync_cli(
+    base_url,
+    username,
+    password,
+    config_file,
+    discord_webhook,
+    notifications_enabled,
+    dry_run,
+):
     """Sync monitors from configuration file."""
     validate_auth(base_url, username, password)
     try:
         with UptimeKumaClient(base_url, username, password) as client:
-            cmd_sync(config_file, dry_run, discord_webhook, client)
+            cmd_sync(
+                config_file, dry_run, discord_webhook, notifications_enabled, client
+            )
     except UptimeKumaException:
         click.echo(f"Error: Failed to connect to Uptime Kuma at {base_url}", err=True)
         click.echo("  Please verify the server is running and accessible.", err=True)

@@ -95,6 +95,35 @@ class UptimeKumaClient:
         except Exception as e:
             raise Exception(f"Failed to setup Discord notification: {e}")
 
+    def disable_discord_notification(
+        self, name: str = "Discord", dry_run: bool = False
+    ) -> None:
+        """Delete the named Discord notification if it exists. Idempotent.
+
+        Deleting the notification in Kuma also removes its association from
+        any monitors that reference it, so subsequent syncs won't reattach.
+
+        With dry_run=True, only reports what would happen.
+        """
+        try:
+            notifications = self.api.get_notifications()
+            existing = next((n for n in notifications if n["name"] == name), None)
+            if existing:
+                action = "Would delete" if dry_run else "Deleting"
+                print(
+                    f"{action} notification: {name} (ID: {existing['id']})",
+                    file=sys.stderr,
+                )
+                if not dry_run:
+                    self.api.delete_notification(existing["id"])
+            else:
+                print(
+                    f"Notification '{name}' not present; nothing to delete",
+                    file=sys.stderr,
+                )
+        except Exception as e:
+            raise Exception(f"Failed to disable Discord notification: {e}")
+
     def cleanup_all(self):
         """Delete all monitors and notifications."""
         try:
@@ -159,11 +188,19 @@ class UptimeKumaClient:
             raise Exception(f"Failed to delete monitor: {e}")
 
     def sync_from_file(
-        self, config_file: str, dry_run: bool = False, discord_webhook: str = None
+        self,
+        config_file: str,
+        dry_run: bool = False,
+        discord_webhook: str = None,
+        notifications_enabled: bool = True,
     ):
         """
         Sync monitors from a JSON configuration file.
         Creates missing monitors, updates existing ones, deletes extras.
+
+        When notifications_enabled is False, the Discord notification is
+        deleted (if present) and no notification is attached to monitors,
+        regardless of whether discord_webhook is provided.
         """
         try:
             with open(config_file, "r") as f:
@@ -176,11 +213,15 @@ class UptimeKumaClient:
 
         # Always enable trust proxy for reverse proxy support
         notification_id = None
+        if not notifications_enabled:
+            # Preview-or-delete the Discord notification regardless of dry-run.
+            self.disable_discord_notification(dry_run=dry_run)
+
         if not dry_run:
             self.enable_trust_proxy()
 
             # Setup Discord notification if webhook URL is provided and get its ID
-            if discord_webhook:
+            if notifications_enabled and discord_webhook:
                 notification_id = self.setup_discord_notification(discord_webhook)
                 if notification_id is None:
                     raise Exception(

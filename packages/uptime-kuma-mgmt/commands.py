@@ -90,11 +90,14 @@ def cmd_get(monitor_id, client):
         sys.exit(1)
 
 
-def cmd_sync(config_file, dry_run, discord_webhook, client):
+def cmd_sync(config_file, dry_run, discord_webhook, notifications_enabled, client):
     """Sync monitors from configuration file."""
     try:
         client.sync_from_file(
-            config_file, dry_run=dry_run, discord_webhook=discord_webhook
+            config_file,
+            dry_run=dry_run,
+            discord_webhook=discord_webhook,
+            notifications_enabled=notifications_enabled,
         )
     except Exception as e:
         click.echo(f"Error: {e}", err=True)
