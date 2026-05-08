@@ -308,14 +308,16 @@ def _resolve_latest_event_url(n: Notification) -> str:
     return ""
 
 
-def resolve_html_urls(n: Notification) -> List[str]:
+def resolve_html_urls(n: Notification, deep_link_event: bool = False) -> List[str]:
     """Resolve browser URLs for a notification subject.
 
     Returns a list of URLs (multiple for CI failures with several failed jobs).
-    Tries `gh api <subject.url> --jq .html_url` first (works for PR, Issue,
-    WorkflowRun, etc). Falls back to check-run resolution for CheckSuite
-    notifications, then to workflow run matching, then to simple API->HTML URL
-    conversion.
+    For PR notifications, defaults to the diff view (/changes). With
+    ``deep_link_event=True``, deep-links to the triggering comment/review/event
+    instead. For other subjects, tries `gh api <subject.url> --jq .html_url`
+    first (works for PR, Issue, WorkflowRun, etc). Falls back to check-run
+    resolution for CheckSuite notifications, then to workflow run matching,
+    then to simple API->HTML URL conversion.
     """
     api = n.subject_api_url
 
@@ -358,7 +360,14 @@ def resolve_html_urls(n: Notification) -> List[str]:
 
         return [f"https://github.com/{n.repo_full_name}/actions"]
 
-    # For Issues and PRs, try to deep-link to the triggering event
+    # Default for PRs: link directly to the diff view (/changes)
+    if n.subject_type == "PullRequest" and not deep_link_event:
+        m = re.search(r"/pulls/(\d+)$", api)
+        if m:
+            number = m.group(1)
+            return [f"https://github.com/{n.repo_full_name}/pull/{number}/changes"]
+
+    # For Issues, and PRs with --event, deep-link to the triggering event
     if n.subject_type in ("Issue", "PullRequest"):
         # If latest_comment_url points to a specific comment, resolve it
         if n.latest_comment_url and n.latest_comment_url != api:
@@ -429,11 +438,12 @@ def mark_thread_read(thread_id: str) -> None:
 
 def collect_urls(
     ns: Iterable[Notification],
+    deep_link_event: bool = False,
 ) -> List[Tuple[str, str]]:
     """Return list of (url, thread_id) for all notifications."""
     result: List[Tuple[str, str]] = []
     for n in ns:
-        urls = resolve_html_urls(n)
+        urls = resolve_html_urls(n, deep_link_event=deep_link_event)
         if not urls:
             continue
         for url in urls:
@@ -446,7 +456,8 @@ def collect_urls(
     name="open-gh-notifications",
     help=(
         "Open unread GitHub notifications in your browser using gh CLI. "
-        "Deep-links to the triggering event (comment, review, merge, etc). "
+        "PR notifications open at the diff view (/changes) by default; pass "
+        "--event to deep-link to the triggering comment/review/event instead. "
         "Threads are marked as read after opening."
     ),
 )
@@ -457,14 +468,22 @@ def collect_urls(
     default=False,
     help="Only print the URLs that would be opened (no browser, no marking read)",
 )
-def main(show: bool) -> None:
+@click.option(
+    "-e",
+    "--event",
+    "deep_link_event",
+    is_flag=True,
+    default=False,
+    help="For PRs, deep-link to the triggering event (comment/review/merge) instead of the diff view",
+)
+def main(show: bool, deep_link_event: bool) -> None:
     try:
         notifications = fetch_notifications()
     except Exception as e:
         click.echo(f"Failed to fetch notifications via gh: {e}", err=True)
         sys.exit(1)
 
-    url_pairs = collect_urls(notifications)
+    url_pairs = collect_urls(notifications, deep_link_event=deep_link_event)
 
     if not url_pairs:
         click.echo("No notifications found.")
