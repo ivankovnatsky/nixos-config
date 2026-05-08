@@ -164,10 +164,30 @@ class UptimeKumaClient:
             raise Exception(f"Failed to get monitor: {e}")
 
     def create_monitor(self, monitor_config: dict):
-        """Create a new monitor."""
+        """Create a new monitor.
+
+        Bypasses uptime-kuma-api 1.2.1's add_monitor() because its
+        _build_monitor_data() signature rejects unknown kwargs, and
+        Kuma >= the 2024-08-24 conditions migration needs `conditions`
+        in the payload (NOT NULL column with no implicit default on
+        socket-io insert path). Build the payload via the helper, then
+        inject conditions before sending.
+        """
         try:
-            result = self.api.add_monitor(**monitor_config)
-            return result
+            from uptime_kuma_api import Event
+            from uptime_kuma_api.api import (
+                _convert_monitor_input,
+                _check_arguments_monitor,
+            )
+
+            config = dict(monitor_config)
+            conditions = config.pop("conditions", [])
+            data = self.api._build_monitor_data(**config)
+            data["conditions"] = conditions
+            _convert_monitor_input(data)
+            _check_arguments_monitor(data)
+            with self.api.wait_for_event(Event.MONITOR_LIST):
+                return self.api._call("add", data)
         except Exception as e:
             raise Exception(f"Failed to create monitor: {e}")
 
