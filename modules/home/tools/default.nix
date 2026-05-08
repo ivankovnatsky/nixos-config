@@ -17,6 +17,11 @@ let
       npmBin = "${cfg.toolsPrefix}/.npm/bin";
       uvBin = "${cfg.toolsPrefix}/.local/bin";
       uvToolDir = "${cfg.toolsPrefix}/.local/share/uv/tools";
+      # GOPATH/GOBIN follow the user's workspace (mirrors `home/go.nix`,
+      # which uses `externalStoragePath` on mini and `~/go` elsewhere
+      # — both flow through `cfg.toolsPrefix`).
+      goPath = "${cfg.toolsPrefix}/go";
+      goBin = "${cfg.toolsPrefix}/go/bin";
       # Claude CLI always installs to ~/.local/bin (hardcoded in binary, not configurable)
       claudeCli = "${config.home.homeDirectory}/.local/bin/claude";
       bun = "${pkgs.bun}/bin";
@@ -34,6 +39,7 @@ let
     "bun"
     "npm"
     "uv"
+    "go"
     "mcp"
     "curlShell"
     "gitRepos"
@@ -73,7 +79,15 @@ in
   };
 
   config = mkIf (cfg.enable && enabledSections != [ ]) {
+    # Home-manager activation runs with a sanitized PATH and no shell
+    # rc files, so `go install` cannot find `go` (or the `git` it
+    # invokes to fetch modules). Only inject the Go toolchain when
+    # the `go` scope is actually enabled — otherwise every machine
+    # would pay the closure cost for nothing.
     home.activation.manageTools = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      ${lib.optionalString (lib.elem "go" enabledSections) ''
+        export PATH="${pkgs.go}/bin:${pkgs.git}/bin:$PATH"
+      ''}
       ${inputs.tools.packages.${pkgs.system}.default}/bin/tools \
         deploy \
         --approve \
