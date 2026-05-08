@@ -141,6 +141,16 @@ in
       description = "Monitors to configure in Uptime Kuma";
     };
 
+    notifications.enable = mkOption {
+      type = types.bool;
+      default = true;
+      description = ''
+        Whether to manage Discord notifications. When false, the sync command
+        deletes the Discord notification (if present) and does not attach any
+        notification to monitors.
+      '';
+    };
+
     discordWebhook = mkOption {
       type = types.nullOr types.str;
       default = null;
@@ -263,9 +273,20 @@ in
             sed "s|@EXTERNAL_DOMAIN@|$EXTERNAL_DOMAIN|g" "${configJsonTemplate}" | \
               sed "s|@POSTGRES_PASSWORD@|$POSTGRES_PASSWORD|g" > "$RUNTIME_CONFIG"
 
-            # Build command with optional Discord webhook
+            # Build command based on notifications.enable and webhook config.
+            # When notifications are disabled, sync with --no-notifications so
+            # the existing Discord notification is removed.
             ${
-              if cfg.discordWebhook != null || cfg.discordWebhookFile != null then
+              if !cfg.notifications.enable then
+                ''
+                  ${pkgs.uptime-kuma-mgmt}/bin/uptime-kuma-mgmt sync \
+                    --base-url "$BASE_URL" \
+                    --username "$USERNAME" \
+                    --password "$PASSWORD" \
+                    --config-file "$RUNTIME_CONFIG" \
+                    --no-notifications 2>&1 || echo "Warning: Uptime Kuma sync failed with exit code $?"
+                ''
+              else if cfg.discordWebhook != null || cfg.discordWebhookFile != null then
                 ''
                   ${
                     if cfg.discordWebhookFile != null then
