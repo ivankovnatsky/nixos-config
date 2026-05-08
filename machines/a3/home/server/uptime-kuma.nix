@@ -9,6 +9,14 @@
   # 1. Access http://a3:3001
   # 2. Create admin account matching credentials in sops secrets
   # 3. Monitors auto-sync on next home-manager activation
+
+  sops.secrets.uptime-kuma-username = {
+    key = "uptimeKuma/a3/username";
+  };
+  sops.secrets.uptime-kuma-password = {
+    key = "uptimeKuma/a3/password";
+  };
+
   local.services.uptime-kuma-mgmt = {
     enable = true;
     notifications.enable = false;
