@@ -72,6 +72,7 @@
         name = "stash";
         url = "http://${config.flags.a3Ip}:9999";
         expectedStatus = 302;
+        maxredirects = 0;
         description = "Stash media organizer (redirects to /login)";
       }
       {
