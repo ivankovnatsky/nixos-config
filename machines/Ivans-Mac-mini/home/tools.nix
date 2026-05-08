@@ -34,6 +34,21 @@
         };
       };
 
+      # Go packages via `go install`. rclone from upstream because
+      # nixpkgs.rclone has been failing the iCloud Drive auth flow
+      # with HTTP 400 / "Invalid Session Token" and the latest
+      # upstream release works around it. Note: `version: latest`
+      # resolves to the highest tagged release at first install only
+      # — subsequent activations no-op while the binary exists. To
+      # refresh, delete `${toolsPrefix}/go/bin/rclone` or pin a
+      # `commit`.
+      go.packages = {
+        rclone = {
+          source = "github.com/rclone/rclone";
+          binary = "rclone";
+        };
+      };
+
       # .npmrc is already provided via `home/npm.nix` for this machine
       # npm.configFile = "";
 
