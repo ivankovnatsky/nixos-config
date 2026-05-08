@@ -50,6 +50,7 @@
     ../../../modules/home/launchd
     ../../../modules/home/nextdns-mgmt
     ../../../modules/home/tools
+    ../../../modules/home/uptime-kuma-mgmt
     ./btop.nix
     ./desktop.nix
     ./firefox.nix
@@ -57,6 +58,7 @@
     ./gpg.nix
     ./obsidian.nix
     ./packages.nix
+    ./server
     ./syncthing.nix
     ./tools.nix
   ];
