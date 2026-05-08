@@ -31,14 +31,6 @@
     key = "ghMcpToken";
   };
 
-  sops.secrets.uptime-kuma-username = {
-    key = "uptimeKuma/username";
-  };
-
-  sops.secrets.uptime-kuma-password = {
-    key = "uptimeKuma/password";
-  };
-
   sops.secrets.miniserve-username = {
     key = "miniserve/mini/username";
   };
