@@ -92,6 +92,9 @@
 	@kuma host kuma.@externalDomain@
 	reverse_proxy @kuma @machineIp@:3001
 
+	@kuma-a3 host kuma-a3.@externalDomain@
+	reverse_proxy @kuma-a3 @a3Ip@:3001
+
 	@syncthing host syncthing.@externalDomain@
 	reverse_proxy @syncthing @machineIp@:8384
 
