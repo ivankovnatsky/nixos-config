@@ -55,6 +55,7 @@
     ./firefox.nix
     ./flags.nix
     ./gpg.nix
+    ./obsidian.nix
     ./packages.nix
     ./syncthing.nix
     ./tools.nix
