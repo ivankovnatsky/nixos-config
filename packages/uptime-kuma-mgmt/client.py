@@ -354,6 +354,16 @@ class UptimeKumaClient:
         # Compare monitor-type-specific fields
         monitor_type = desired.get("type", "http")
 
+        # maxredirects only applies to HTTP/HTTPS monitors; Kuma omits it for
+        # other types and would otherwise diff forever against a None default.
+        if monitor_type in ["http", "https"] and desired.get(
+            "maxredirects", 10
+        ) != current.get("maxredirects"):
+            return (
+                True,
+                f"maxredirects: {current.get('maxredirects')} \u2192 {desired.get('maxredirects', 10)}",
+            )
+
         if monitor_type in ["tcp", "mqtt"]:
             # For TCP/MQTT: compare hostname:port
             if ":" in desired.get("url", ""):
@@ -431,6 +441,9 @@ class UptimeKumaClient:
             "maxretries": monitor.get("maxretries", 3),
             "retryInterval": monitor.get("retryInterval", 60),
         }
+
+        if monitor.get("type", "http") in ["http", "https"]:
+            config["maxredirects"] = monitor.get("maxredirects", 10)
 
         # Add notification if provided
         if notification_id is not None:
