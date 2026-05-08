@@ -81,12 +81,13 @@ in
   config = mkIf (cfg.enable && enabledSections != [ ]) {
     # Home-manager activation runs with a sanitized PATH and no shell
     # rc files, so `go install` cannot find `go` (or the `git` it
-    # invokes to fetch modules). Only inject the Go toolchain when
-    # the `go` scope is actually enabled — otherwise every machine
-    # would pay the closure cost for nothing.
+    # invokes to fetch modules, or the `cc` cgo needs to build the
+    # runtime/cgo stub). Only inject the Go toolchain when the `go`
+    # scope is actually enabled — otherwise every machine would pay
+    # the closure cost for nothing.
     home.activation.manageTools = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       ${lib.optionalString (lib.elem "go" enabledSections) ''
-        export PATH="${pkgs.go}/bin:${pkgs.git}/bin:$PATH"
+        export PATH="${pkgs.go}/bin:${pkgs.git}/bin:${pkgs.stdenv.cc}/bin:$PATH"
       ''}
       ${inputs.tools.packages.${pkgs.system}.default}/bin/tools \
         deploy \
