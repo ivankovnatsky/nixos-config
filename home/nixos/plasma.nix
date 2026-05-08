@@ -105,6 +105,7 @@
                   "applications:org.kde.krdc.desktop"
                   "applications:steam.desktop"
                   "applications:velocidrone.desktop"
+                  "applications:obsidian.desktop"
                   "applications:systemsettings.desktop"
                 ];
               };
