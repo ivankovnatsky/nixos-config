@@ -69,16 +69,6 @@
         description = "Jellyfin media server";
       }
       {
-        name = "stash";
-        url = "http://${config.flags.a3Ip}:9999";
-        expectedStatus = [
-          "200-299"
-          "302"
-        ];
-        maxredirects = 0;
-        description = "Stash media organizer (redirects to /login)";
-      }
-      {
         name = "media";
         url = "http://${config.flags.machineLocalAddress}:9998";
         description = "Stash media organizer (general)";
