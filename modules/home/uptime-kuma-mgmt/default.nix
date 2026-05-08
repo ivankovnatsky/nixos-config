@@ -57,6 +57,12 @@ let
         description = "Retry interval in seconds";
       };
 
+      maxredirects = mkOption {
+        type = types.int;
+        default = 10;
+        description = "Maximum number of redirects to follow (0 disables following redirects)";
+      };
+
       timeout = mkOption {
         type = types.int;
         default = 10;
@@ -87,6 +93,7 @@ let
         inherit (m) interval;
         inherit (m) maxretries;
         inherit (m) retryInterval;
+        inherit (m) maxredirects;
         inherit (m) timeout;
         inherit (m) expectedStatus;
         inherit (m) description;
