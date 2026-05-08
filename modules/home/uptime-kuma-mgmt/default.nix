@@ -156,6 +156,24 @@ let
         ''
     }
 
+    # Wait for the Kuma server to accept connections before syncing.
+    # On boot, the mgmt unit can fire before Kuma has bound its port;
+    # without this loop the sync would fail and (since failures are
+    # tolerated) silently leave monitors unsynced until the next trigger.
+    echo "Waiting for $BASE_URL to become ready..."
+    READY=0
+    for _ in $(seq 180); do
+      if ${pkgs.curl}/bin/curl -fsS -o /dev/null --connect-timeout 2 "$BASE_URL"; then
+        echo "Kuma is ready."
+        READY=1
+        break
+      fi
+      sleep 1
+    done
+    if [ "$READY" -ne 1 ]; then
+      echo "Warning: $BASE_URL did not become ready within 180s; sync will likely fail"
+    fi
+
     # Create runtime config with substituted placeholders
     RUNTIME_CONFIG=$(mktemp -t uptime-kuma-monitors.XXXXXX)
     trap 'rm -f "$RUNTIME_CONFIG"' EXIT
