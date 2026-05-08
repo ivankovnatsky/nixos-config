@@ -19,6 +19,6 @@
     hybrid-sleep.enable = false;
   };
 
-  # Cap CPU at 2.0 GHz to keep quiet
-  powerManagement.cpufreq.max = 2 * 1000 * 1000;
+  # Cap CPU at 4.0 GHz to keep quiet
+  powerManagement.cpufreq.max = 4000000;
 }
