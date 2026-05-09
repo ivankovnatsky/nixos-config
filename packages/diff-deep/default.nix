@@ -2,6 +2,7 @@
 
 pkgs.writeShellScriptBin "diff-deep" ''
   EXCLUDES=(
+    .claude
     .git
     .obsidian
     .terraform
