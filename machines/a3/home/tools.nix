@@ -22,6 +22,13 @@
         };
       };
 
+      go.packages = {
+        rclone = {
+          source = "github.com/rclone/rclone";
+          binary = "rclone";
+        };
+      };
+
       curlShell = {
         "https://claude.ai/install.sh" = "bash";
       };
