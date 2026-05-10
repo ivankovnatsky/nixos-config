@@ -53,7 +53,6 @@ in
       local=/${config.sops.placeholder.external-domain}/
       dhcp-option=option:domain-search,${config.sops.placeholder.external-domain}
       address=/${config.sops.placeholder.external-domain}/${config.flags.miniIp}
-      address=/${config.sops.placeholder.external-domain}/${config.flags.miniEn7Ip}
       address=/${config.sops.placeholder.external-domain}/${config.flags.miniWifiIp}
       mx-host=${config.sops.placeholder.external-domain},${config.sops.placeholder.external-domain},10
     '';
@@ -75,7 +74,7 @@ in
     waitForSecrets = false;
     settings = {
       # Bind to all interfaces — LAN devices reach dnsmasq via
-      # NextDNS rewrites (miniIp, miniEn7Ip, miniWifiIp).
+      # NextDNS rewrites (miniIp, miniWifiIp).
       # bind-dynamic is Linux-only, bind-interfaces crashes on
       # missing interfaces, specific IPs fail if not assigned at
       # boot. 0.0.0.0 avoids all of these; mDNSResponder doesn't

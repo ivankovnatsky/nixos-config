@@ -195,10 +195,6 @@
       },
       {
         "name": "@externalDomain@",
-        "content": "@miniEn7Ip@"
-      },
-      {
-        "name": "@externalDomain@",
         "content": "@miniWifiIp@"
       }
     ],

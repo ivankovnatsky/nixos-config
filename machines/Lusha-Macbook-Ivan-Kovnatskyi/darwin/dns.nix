@@ -14,7 +14,6 @@
   # endpoints pointing to AWS were previously blocked by NextDNS rebinding settings)
   networking.dns = [
     config.flags.miniIp
-    config.flags.miniEn7Ip
     config.flags.miniWifiIp
     "1.1.1.1"
     "1.0.0.1"
