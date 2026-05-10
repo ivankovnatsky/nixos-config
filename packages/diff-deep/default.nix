@@ -2,6 +2,7 @@
 
 pkgs.writeShellScriptBin "diff-deep" ''
   EXCLUDES=(
+    .stfolder
     .claude
     .git
     .obsidian
