@@ -36,7 +36,16 @@
     ];
 
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
-    folders = { };
+    folders = {
+      "icloud-notes" = {
+        path = "${config.users.users.${username}.home}/iCloudDriveNotes";
+        label = "iCloud Notes";
+        devices = [
+          "a3"
+          "Ivans-Mac-mini"
+        ];
+      };
+    };
 
     restart = false;
   };
