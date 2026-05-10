@@ -39,5 +39,6 @@
     ./syncthing-mgmt.nix
     ./tpm2.nix
     ./user.nix
+    ./wifi.nix
   ];
 }
