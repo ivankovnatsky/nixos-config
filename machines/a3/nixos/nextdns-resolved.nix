@@ -14,6 +14,13 @@ in
 
   services.resolved.enable = true;
 
+  # Stop dhcpcd from feeding DHCP-provided DNS into systemd-resolved.
+  # Without this, every link gets DNS=192.168.50.1 (the router) plus
+  # DefaultRoute=yes, which shadows the global [Resolve] drop-in we
+  # write in /run — so queries keep going to the router and NextDNS
+  # tags this host as the router's profile instead of a3's own.
+  networking.dhcpcd.extraConfig = "nohook resolv.conf";
+
   # Fetch the NextDNS profile id by name at boot, render the resolved drop-in
   # to /run, and reload systemd-resolved. The profile id never appears in the
   # nix store, in sops, or in any persistent file outside /run (tmpfs).
