@@ -37,6 +37,17 @@
             acceleration = -0.7;
           }
         ];
+
+        touchpads = [
+          {
+            name = "Apple Inc. Magic Trackpad";
+            vendorId = "05ac";
+            productId = "0324";
+
+            scrollSpeed = 0.1;
+            tapToClick = false;
+          }
+        ];
       };
 
       # Disable sleep/suspend, only blank the screen
