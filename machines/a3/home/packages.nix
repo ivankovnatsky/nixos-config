@@ -9,6 +9,7 @@
       ]
     ))
     mpv
+    unixtools.ifconfig
     git-restore
     backup-system
     bat
