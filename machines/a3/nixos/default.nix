@@ -30,7 +30,6 @@
     ./power-management.nix
     ./power-monitoring.nix
     ./remote-build.nix
-    ./reposync-notes.nix
     ./reposync.nix
     ./security.nix
     ./server
