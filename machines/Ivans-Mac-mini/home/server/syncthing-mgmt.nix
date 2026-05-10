@@ -31,7 +31,16 @@
     ];
 
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
-    folders = { };
+    folders = {
+      "icloud-notes" = {
+        path = "${config.home.homeDirectory}/Library/Mobile Documents/iCloud~md~obsidian/Documents/Notes";
+        label = "iCloud Notes";
+        devices = [
+          "Ivans-Mac-mini"
+          "a3"
+        ];
+      };
+    };
 
     restart = false;
   };
