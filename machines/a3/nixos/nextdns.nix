@@ -23,6 +23,19 @@ in
   # Point resolved at the local nextdns daemon.
   services.resolved.settings.Resolve.DNS = "127.0.0.1";
 
+  # The previous nextdns-resolved unit wrote /run/systemd/resolved.conf.d/
+  # 10-nextdns.conf (and timestamped .bak files) directly. /run is tmpfs
+  # so a reboot would clear them, but on a live nixos-rebuild switch they
+  # linger and resolved reads them alongside the new config — leaving
+  # stale DoT entries in the global DNS list.
+  system.activationScripts.cleanup-nextdns-resolved-dropin = ''
+    shopt -s nullglob
+    files=(/run/systemd/resolved.conf.d/10-nextdns.conf{,.bak.*})
+    if [ ''${#files[@]} -gt 0 ]; then
+      rm -f -- "''${files[@]}"
+    fi
+  '';
+
   # Render an EnvironmentFile with the looked-up profile id, before the
   # nextdns daemon starts. /run is tmpfs so the id never persists.
   systemd.services.nextdns-config = {
@@ -53,8 +66,8 @@ in
         --name a3)
 
       # Defensive: refuse to write garbage into the env file. NextDNS
-      # profile ids are short hex strings.
-      if ! ${pkgs.gnugrep}/bin/grep -qE '^[0-9a-f]{6,}$' <<< "$id"; then
+      # profile ids are short alphanumeric strings.
+      if ! ${pkgs.gnugrep}/bin/grep -qE '^[A-Za-z0-9]{6,16}$' <<< "$id"; then
         echo "lookup-id returned unexpected value: $id" >&2
         exit 1
       fi
