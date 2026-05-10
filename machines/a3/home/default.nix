@@ -61,5 +61,6 @@
     ./server
     ./syncthing.nix
     ./tools.nix
+    ./unison.nix
   ];
 }
