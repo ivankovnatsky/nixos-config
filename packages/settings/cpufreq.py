@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import os
 import shutil
 import sys
@@ -40,6 +41,44 @@ def cpufreq_get() -> list[dict]:
             {"cpu": cpu.name, "scaling_max": scaling_max, "cpuinfo_max": cpuinfo_max}
         )
     return out
+
+
+# Suffix → multiplier to convert the numeric part into kHz.
+# Order matters for prefix matching: longest first.
+_FREQ_UNITS: tuple[tuple[str, float], ...] = (
+    ("ghz", KHZ_PER_GHZ),
+    ("mhz", 1_000),
+    ("khz", 1),
+    ("hz", 1 / 1_000),
+    ("g", KHZ_PER_GHZ),
+    ("m", 1_000),
+    ("k", 1),
+)
+
+
+def parse_freq(value: str) -> int:
+    """Parse a frequency string into kHz.
+
+    Accepts GHz/MHz/kHz/Hz suffixes (case-insensitive, optional space).
+    A bare number is interpreted as GHz (e.g. '4' = 4 GHz).
+    Examples: '1.5', '1.5GHz', '4000 MHz', '4000000khz'.
+    """
+    s = value.strip().lower().replace(" ", "")
+    multiplier = KHZ_PER_GHZ
+    for suffix, mult in _FREQ_UNITS:
+        if s.endswith(suffix):
+            s = s[: -len(suffix)]
+            multiplier = mult
+            break
+    try:
+        n = float(s)
+    except ValueError as e:
+        raise click.BadParameter(
+            f"expected a frequency (e.g. '1.5', '1.5GHz', '4000MHz'), got {value!r}"
+        ) from e
+    if not math.isfinite(n) or n <= 0:
+        raise click.BadParameter(f"value must be positive and finite, got {value!r}")
+    return int(round(n * multiplier))
 
 
 def _reexec_with_sudo() -> None:
@@ -99,20 +138,21 @@ def register(cli):
     @cli.command()
     @click.option(
         "--max",
-        "max_khz",
-        type=int,
+        "max_freq",
+        type=str,
         default=None,
-        metavar="KHZ",
-        help="Cap CPU max frequency in kHz (e.g. 4000000 for 4.0 GHz). "
+        metavar="FREQ",
+        help="Cap CPU max frequency. Accepts GHz/MHz/kHz/Hz suffixes; "
+        "bare number is GHz (e.g. '4', '1.5GHz', '4000MHz'). "
         "Auto-elevates via sudo.",
     )
-    def cpufreq(max_khz):
+    def cpufreq(max_freq):
         """Get or cap CPU max frequency (Linux only)."""
         if not is_linux():
             print("cpufreq is Linux-only", file=sys.stderr)
             sys.exit(1)
 
-        if max_khz is None:
+        if max_freq is None:
             info = cpufreq_get()
             if not info:
                 print("No cpufreq-capable CPUs found", file=sys.stderr)
@@ -125,4 +165,4 @@ def register(cli):
                 )
             return
 
-        sys.exit(cpufreq_set_max(max_khz))
+        sys.exit(cpufreq_set_max(parse_freq(max_freq)))
