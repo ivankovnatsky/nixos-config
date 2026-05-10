@@ -5,6 +5,7 @@ Supports sync (declarative) and export operations.
 """
 
 import sys
+import ipaddress
 import json
 import socket
 import requests
@@ -21,29 +22,58 @@ def pin_dns(hostname: str, resolver_ip: str) -> None:
     Used at boot before systemd-resolved is configured: resolving the API
     host through the system stub resolver would fail, but querying a public
     resolver directly (e.g. 1.1.1.1) works as long as the link is up.
-    TLS SNI keeps working because requests still sees the original hostname.
+
+    The patch replaces the answer for `hostname` only. TLS SNI keeps working
+    because requests still sees the original hostname; we just hand it the IP
+    we resolved out-of-band. The patch is process-global and intentionally
+    not restored — this CLI exits right after.
+
+    IPv4-only by design: the typical caller pins to 1.1.1.1 over IPv4 anyway.
     """
     import dns.resolver
 
+    try:
+        ipaddress.IPv4Address(resolver_ip)
+    except ValueError as e:
+        raise ValueError(
+            f"--resolver must be an IPv4 address, got {resolver_ip!r}"
+        ) from e
+
     r = dns.resolver.Resolver(configure=False)
     r.nameservers = [resolver_ip]
-    r.lifetime = 10
-    addrs = []
-    for rdtype in ("A", "AAAA"):
-        try:
-            for rr in r.resolve(hostname, rdtype):
-                addrs.append(str(rr))
-        except Exception:
-            continue
+    r.timeout = 5
+    r.lifetime = 5
+    try:
+        answer = r.resolve(hostname, "A")
+    except Exception as e:
+        raise RuntimeError(
+            f"Could not resolve {hostname} via {resolver_ip}: {e}"
+        ) from e
+
+    addrs = [rr.address for rr in answer]
     if not addrs:
-        raise RuntimeError(f"Could not resolve {hostname} via {resolver_ip}")
+        raise RuntimeError(
+            f"No A records for {hostname} via {resolver_ip}"
+        )
 
     real_getaddrinfo = socket.getaddrinfo
 
-    def patched(host, *args, **kwargs):
+    def patched(host, port=None, family=0, type=0, proto=0, flags=0):
         if host == hostname:
-            host = addrs[0]
-        return real_getaddrinfo(host, *args, **kwargs)
+            # Synthesize results directly so callers asking for AF_INET6
+            # don't get an EAI_ADDRFAMILY mismatch against our IPv4 pin.
+            # Return one entry per resolved address so urllib3 keeps its
+            # connection-fallback behavior across multiple records.
+            sock_type = type or socket.SOCK_STREAM
+            sock_proto = proto or socket.IPPROTO_TCP
+            port_val = port or 0
+            if isinstance(port_val, str):
+                port_val = socket.getservbyname(port_val, "tcp")
+            return [
+                (socket.AF_INET, sock_type, sock_proto, "", (ip, port_val))
+                for ip in addrs
+            ]
+        return real_getaddrinfo(host, port, family, type, proto, flags)
 
     socket.getaddrinfo = patched
 
