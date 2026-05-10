@@ -40,8 +40,12 @@ in
       mkdir -p ${resolvedDir}
 
       tmp=${resolvedConf}.tmp
+      # Pin DNS to a public resolver: this unit runs Before=
+      # systemd-resolved.service, so the stub resolver isn't up yet and
+      # getaddrinfo("api.nextdns.io") would fail at boot.
       ${pkgs.nextdns-mgmt}/bin/nextdns-mgmt resolved-config \
         --api-key "$(cat ${config.sops.secrets.nextdns-api-key.path})" \
+        --resolver 1.1.1.1 \
         --name a3 > "$tmp"
 
       # Sanity-check the rendered drop-in before promoting it. If the API
