@@ -39,6 +39,8 @@ COMMAND_ALIASES = {
     "off": "poweroff",
     "b": "battery",
     "bat": "battery",
+    "cf": "cpufreq",
+    "freq": "cpufreq",
     "h": "help",
 }
 

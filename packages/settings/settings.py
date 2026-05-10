@@ -16,8 +16,8 @@ Subcommands:
   login       List, add, or remove login items (macOS only)
   poweroff    Set volume and shutdown system (macOS + Linux)
   battery     Show battery state (macOS + Linux)
+  cpufreq     Get or cap CPU max frequency (Linux only)
 """
-
 
 import click
 
@@ -28,6 +28,7 @@ import appearance
 import autohide
 import awake
 import battery
+import cpufreq
 import dock
 import fulldiskaccess
 import location
@@ -55,6 +56,7 @@ appearance.register(cli)
 autohide.register(cli)
 awake.register(cli)
 battery.register(cli)
+cpufreq.register(cli)
 dock.register(cli)
 fulldiskaccess.register(cli)
 location.register(cli)
