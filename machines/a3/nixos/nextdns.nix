@@ -21,9 +21,7 @@ in
   networking.dhcpcd.extraConfig = "nohook resolv.conf";
 
   # Point resolved at the local nextdns daemon.
-  services.resolved.extraConfig = ''
-    DNS=127.0.0.1
-  '';
+  services.resolved.settings.Resolve.DNS = "127.0.0.1";
 
   # Render an EnvironmentFile with the looked-up profile id, before the
   # nextdns daemon starts. /run is tmpfs so the id never persists.
