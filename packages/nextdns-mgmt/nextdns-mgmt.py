@@ -6,11 +6,46 @@ Supports sync (declarative) and export operations.
 
 import sys
 import json
+import socket
 import requests
 import click
 
-API_BASE = "https://api.nextdns.io"
+API_HOST = "api.nextdns.io"
+API_BASE = f"https://{API_HOST}"
 USER_AGENT = "nextdns-mgmt/1.0.0"
+
+
+def pin_dns(hostname: str, resolver_ip: str) -> None:
+    """Resolve hostname via resolver_ip and pin socket.getaddrinfo for it.
+
+    Used at boot before systemd-resolved is configured: resolving the API
+    host through the system stub resolver would fail, but querying a public
+    resolver directly (e.g. 1.1.1.1) works as long as the link is up.
+    TLS SNI keeps working because requests still sees the original hostname.
+    """
+    import dns.resolver
+
+    r = dns.resolver.Resolver(configure=False)
+    r.nameservers = [resolver_ip]
+    r.lifetime = 10
+    addrs = []
+    for rdtype in ("A", "AAAA"):
+        try:
+            for rr in r.resolve(hostname, rdtype):
+                addrs.append(str(rr))
+        except Exception:
+            continue
+    if not addrs:
+        raise RuntimeError(f"Could not resolve {hostname} via {resolver_ip}")
+
+    real_getaddrinfo = socket.getaddrinfo
+
+    def patched(host, *args, **kwargs):
+        if host == hostname:
+            host = addrs[0]
+        return real_getaddrinfo(host, *args, **kwargs)
+
+    socket.getaddrinfo = patched
 
 
 class NextDNSClient:
@@ -579,8 +614,19 @@ def export_raw(api_key, profile_id, output, list_profiles):
 @cli.command(name="resolved-config")
 @click.option("--api-key", required=True, help="NextDNS API key")
 @click.option("--name", required=True, help="Profile name to look up")
-def resolved_config(api_key, name):
+@click.option(
+    "--resolver",
+    default=None,
+    help=(
+        "DNS resolver IP to use for the API host lookup (e.g. 1.1.1.1). "
+        "Bypasses the system resolver — useful at boot before "
+        "systemd-resolved is configured."
+    ),
+)
+def resolved_config(api_key, name, resolver):
     """Print a systemd-resolved drop-in for the named profile."""
+    if resolver:
+        pin_dns(API_HOST, resolver)
     client = NextDNSClient(api_key)
     try:
         profile_id = None
