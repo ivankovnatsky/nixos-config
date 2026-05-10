@@ -18,7 +18,4 @@
     hibernate.enable = false;
     hybrid-sleep.enable = false;
   };
-
-  # Cap CPU at 4.0 GHz to keep quiet
-  powerManagement.cpufreq.max = 4000000;
 }
