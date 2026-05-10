@@ -6,6 +6,7 @@
     pathB = "${config.home.homeDirectory}/Library/Mobile Documents/iCloud~md~obsidian/Documents/Notes";
     ignore = [
       "Path .git"
+      "Path .claude"
       "Path .obsidian/app.json"
       "Path .obsidian/workspace.json"
       "Path .obsidian/workspace-mobile.json"
