@@ -659,13 +659,7 @@ def resolved_config(api_key, name, resolver):
         pin_dns(API_HOST, resolver)
     client = NextDNSClient(api_key)
     try:
-        profile_id = None
-        for p in client.get_profiles():
-            if p.get("name") == name:
-                profile_id = p["id"]
-                break
-        if not profile_id:
-            raise ValueError(f"No NextDNS profile named '{name}' found")
+        profile_id = _resolve_profile_id(client, name)
         host = f"{profile_id}.dns.nextdns.io"
         click.echo(
             "[Resolve]\n"
@@ -675,6 +669,37 @@ def resolved_config(api_key, name, resolver):
             f"DNS=2a07:a8c1::#{host}\n"
             "DNSOverTLS=yes"
         )
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
+
+
+def _resolve_profile_id(client: "NextDNSClient", name: str) -> str:
+    for p in client.get_profiles():
+        if p.get("name") == name:
+            return p["id"]
+    raise ValueError(f"No NextDNS profile named '{name}' found")
+
+
+@cli.command(name="lookup-id")
+@click.option("--api-key", required=True, help="NextDNS API key")
+@click.option("--name", required=True, help="Profile name to look up")
+@click.option(
+    "--resolver",
+    default=None,
+    help=(
+        "DNS resolver IP to use for the API host lookup (e.g. 1.1.1.1). "
+        "Bypasses the system resolver — useful at boot before "
+        "systemd-resolved is configured."
+    ),
+)
+def lookup_id(api_key, name, resolver):
+    """Print just the profile id for the named profile."""
+    if resolver:
+        pin_dns(API_HOST, resolver)
+    client = NextDNSClient(api_key)
+    try:
+        click.echo(_resolve_profile_id(client, name))
     except Exception as e:
         click.echo(f"Error: {e}", err=True)
         sys.exit(1)
