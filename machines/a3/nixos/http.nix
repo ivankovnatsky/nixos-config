@@ -53,7 +53,7 @@ in
         -e "s|@externalDomain@|$external_domain|g" \
         -e "s|@letsEncryptEmail@|$lets_encrypt_email|g" \
         -e "s|@cloudflareApiToken@|$cloudflare_api_token|g" \
-        -e "s|@machineIp@|${config.flags.a3Ip}|g" \
+        -e "s|@machineIp@|${config.flags.miniIp}|g" \
         -e "s|@a3Ip@|${config.flags.a3Ip}|g" \
         -e "s|@logPathPrefix@|/var/log|g" \
         ${caddyfileTemplate} > ${runtimeCaddyfile}
