@@ -11,6 +11,7 @@ let
   cacheDir = "${config.flags.externalStoragePath}/.cache";
   # Installed by the native tools settings in tools.nix.
   openclawBin = "${config.flags.externalStoragePath}/.npm/bin/openclaw";
+  whisperBin = "${config.flags.externalStoragePath}/.local/bin/whisper";
   gatewayPort = 18789;
 
   patchedConfig = "${stateDir}/openclaw-runtime.json";
@@ -79,7 +80,7 @@ let
         models = [
           {
             type = "cli";
-            command = "${pkgs.openai-whisper}/bin/whisper";
+            command = whisperBin;
             args = [
               "--model"
               "turbo"
@@ -175,7 +176,6 @@ let
     pkgs.ffmpeg
     pkgs.sox
     pkgs.python3
-    pkgs.openai-whisper
     steipeteTools.summarize
     steipeteTools.peekaboo
     steipeteTools.sag
