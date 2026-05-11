@@ -49,12 +49,8 @@
       url = "github:nixos/nixpkgs/nixos-unstable";
     };
 
-    # Stable Darwin release
-    nixpkgs-darwin-release = {
-      url = "github:nixos/nixpkgs/nixpkgs-25.11-darwin";
-    };
-
-    # Legacy Darwin release (for packages broken on 25.11)
+    # Legacy Darwin release (kept for packages broken on unstable; consumed
+    # by flake/overlay.nix and machines/Ivans-Mac-mini uptime-kuma service)
     nixpkgs-darwin-old-release = {
       url = "github:nixos/nixpkgs/nixpkgs-25.05-darwin";
     };
@@ -69,19 +65,9 @@
       inputs.nixpkgs.follows = "nixpkgs-darwin-unstable";
     };
 
-    nix-darwin-darwin-release = {
-      url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
-      inputs.nixpkgs.follows = "nixpkgs-darwin-release";
-    };
-
     home-manager-darwin-unstable = {
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs-darwin-unstable";
-    };
-
-    home-manager-darwin-release = {
-      url = "github:nix-community/home-manager/release-25.11";
-      inputs.nixpkgs.follows = "nixpkgs-darwin-release";
     };
 
     home-manager-nixos-unstable = {
@@ -144,11 +130,6 @@
       inputs.nixpkgs.follows = "nixpkgs-darwin-unstable";
     };
 
-    nixvim-darwin-release = {
-      url = "github:nix-community/nixvim/nixos-25.11";
-      inputs.nixpkgs.follows = "nixpkgs-darwin-release";
-    };
-
     nixvim-nixos-unstable = {
       url = "github:nix-community/nixvim/main";
       inputs.nixpkgs.follows = "nixpkgs-nixos-unstable";
@@ -176,11 +157,6 @@
     };
 
     # Secrets management with SOPS
-    sops-nix-darwin-release = {
-      url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs-darwin-release";
-    };
-
     sops-nix-darwin-unstable = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs-darwin-unstable";
