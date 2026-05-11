@@ -89,7 +89,7 @@ in
           generate_secret() {
             local file="$1" type="$2"
             if [ ! -f "${forgejoDataPath}/$file" ]; then
-              ${pkgs.forgejo}/bin/forgejo generate secret "$type" > "${forgejoDataPath}/$file"
+              /opt/homebrew/bin/forgejo generate secret "$type" > "${forgejoDataPath}/$file"
               chmod 600 "${forgejoDataPath}/$file"
             fi
           }
@@ -98,7 +98,7 @@ in
           generate_secret jwt_secret JWT_SECRET
           generate_secret oauth2_jwt_secret JWT_SECRET
 
-          exec ${pkgs.forgejo}/bin/forgejo web --config ${runtimeAppIni}
+          exec /opt/homebrew/bin/forgejo web --config ${runtimeAppIni}
         '';
       in
       "${startScript}";
