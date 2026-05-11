@@ -38,19 +38,21 @@ let
     };
   };
 
-  autoPackages = builtins.foldl' (
-    acc: dir:
-    acc
-    // {
-      ${dir.name} = prev.callPackage (../packages + "/${dir.name}") (packageArgs.${dir.name} or { });
-    }
-  ) { } (
-    builtins.filter (
-      dir:
-      dir.type == "directory"
-      && builtins.pathExists (../packages + "/${dir.name}/default.nix")
-    ) (builtins.attrValues packageList)
-  );
+  autoPackages =
+    builtins.foldl'
+      (
+        acc: dir:
+        acc
+        // {
+          ${dir.name} = prev.callPackage (../packages + "/${dir.name}") (packageArgs.${dir.name} or { });
+        }
+      )
+      { }
+      (
+        builtins.filter (
+          dir: dir.type == "directory" && builtins.pathExists (../packages + "/${dir.name}/default.nix")
+        ) (builtins.attrValues packageList)
+      );
 
   # 3. Nixpkgs-master and unstable packages
   inherit (final.stdenv.hostPlatform) system;
