@@ -6,7 +6,6 @@ pkgs.writeShellScriptBin "diff-deep" ''
     .stfolder
     .claude
     .git
-    .obsidian
     .terraform
     "terraform.tfstate*"
     .terraform.lock.hcl
