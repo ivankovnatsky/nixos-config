@@ -82,8 +82,8 @@
 
 	# Beszel monitoring hub
 	@beszel host beszel.@externalDomain@
-	reverse_proxy @beszel @machineIp@:8091 {
-		# Route to Beszel Hub on mini
+	reverse_proxy @beszel @a3Ip@:8090 {
+		# Route to Beszel Hub on a3
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
 	}
