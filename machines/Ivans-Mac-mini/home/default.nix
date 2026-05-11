@@ -52,7 +52,6 @@
     ../../../home/zsh.nix
     ../../../modules/flags
     ../../../modules/home/arr-mgmt
-    ../../../modules/home/beszel-mgmt
     ../../../modules/home/dock
     ../../../modules/home/forgejo-mgmt
     ../../../modules/home/jellyfin-mgmt
