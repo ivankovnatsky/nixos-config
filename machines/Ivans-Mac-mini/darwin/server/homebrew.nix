@@ -9,7 +9,11 @@
     brews = [
       "ollama"
       "ffmpeg"
+      "forgejo"
+      "navidrome"
     ];
-    casks = [ ];
+    casks = [
+      "jellyfin"
+    ];
   };
 }
