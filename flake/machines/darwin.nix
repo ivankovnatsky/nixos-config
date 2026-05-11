@@ -194,24 +194,21 @@
     };
   };
 
-  "Ivans-Mac-mini" = inputs.nix-darwin-darwin-release.lib.darwinSystem {
+  "Ivans-Mac-mini" = inputs.nix-darwin-darwin-unstable.lib.darwinSystem {
     system = "aarch64-darwin";
     modules = [
       # Import machine-specific configuration
       ../../machines/Ivans-Mac-mini
 
       # SOPS secrets management
-      inputs.sops-nix-darwin-release.darwinModules.sops
+      inputs.sops-nix-darwin-unstable.darwinModules.sops
       ../../secrets/sops-nix.nix
 
       # Basic system configuration
       {
         nixpkgs.overlays = [ inputs.self.overlay ];
         nixpkgs.config.allowUnfree = true;
-        nix.nixPath = [
-          "nixpkgs=${inputs.nixpkgs-darwin-release}"
-          "nixpkgs-release=${inputs.nixpkgs-darwin-release}"
-        ];
+        nix.nixPath = [ "nixpkgs=${inputs.nixpkgs-darwin-unstable}" ];
         _module.args = {
           flake-inputs = inputs;
         };
@@ -251,7 +248,7 @@
       )
 
       # Home Manager module
-      inputs.home-manager-darwin-release.darwinModules.home-manager
+      inputs.home-manager-darwin-unstable.darwinModules.home-manager
       {
         home-manager = {
           useGlobalPkgs = true;
@@ -260,8 +257,8 @@
           users.ivan = {
             imports = [
               ../../machines/Ivans-Mac-mini/home
-              inputs.nixvim-darwin-release.homeModules.nixvim
-              inputs.sops-nix-darwin-release.homeManagerModules.sops
+              inputs.nixvim-darwin-unstable.homeModules.nixvim
+              inputs.sops-nix-darwin-unstable.homeManagerModules.sops
               {
                 programs.home-manager.enable = true;
                 home.username = "ivan";
