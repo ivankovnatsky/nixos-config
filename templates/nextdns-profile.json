@@ -196,6 +196,14 @@
       {
         "name": "@externalDomain@",
         "content": "@miniWifiIp@"
+      },
+      {
+        "name": "stash.@externalDomain@",
+        "content": "@a3Ip@"
+      },
+      {
+        "name": "stash.@externalDomain@",
+        "content": "@a3WifiIp@"
       }
     ],
     "allowlist": [
