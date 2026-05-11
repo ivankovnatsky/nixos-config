@@ -2,8 +2,7 @@
 
 let
   commonVars = {
-    inherit (config.flags) miniWifiIp;
-    inherit (config.flags) miniIp;
+    inherit (config.flags) miniIp miniWifiIp a3Ip a3WifiIp;
   };
 
   commonVarsFiles = {
