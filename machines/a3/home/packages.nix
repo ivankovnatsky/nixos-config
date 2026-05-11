@@ -16,6 +16,7 @@
     bubblewrap
     cargo
     curlie
+    dig
     doggo
     duf
     erdtree
