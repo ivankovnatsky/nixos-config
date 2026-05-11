@@ -1,6 +1,5 @@
 {
   config,
-  pkgs,
   ...
 }:
 
@@ -30,14 +29,14 @@ in
       export ND_LASTFM_SECRET=$(cat ${config.sops.secrets.lastFm-secret.path})
     '';
     command = ''
-      ${pkgs.navidrome}/bin/navidrome \
+      /opt/homebrew/bin/navidrome \
         --datafolder "${dataDir}" \
         --musicfolder "${musicDir}" \
         --address ${config.flags.machineBindAddress} \
         --port 4533
     '';
     environment = {
-      # Enable transcoding via ffmpeg (bundled with nixpkgs navidrome)
+      # Enable transcoding via ffmpeg (homebrew dependency of navidrome)
       ND_ENABLETRANSCODINGCONFIG = "true";
       ND_SCANNER_SCHEDULE = "@every 15m";
     };
