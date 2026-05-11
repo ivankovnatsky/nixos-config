@@ -13,7 +13,7 @@ let
   configJson = pkgs.writeText "forgejo-mgmt-config.json" (
     builtins.toJSON {
       inherit (cfg) baseUrl;
-      forgejoBin = "${cfg.forgejoPackage}/bin/forgejo";
+      inherit (cfg) forgejoBin;
       inherit (cfg) configFile;
       inherit (cfg) workPath;
       inherit (cfg) tokenFile;
@@ -70,7 +70,11 @@ in
   options.local.services.forgejo-mgmt = {
     enable = mkEnableOption "declarative Forgejo user and repository management";
 
-    forgejoPackage = mkPackageOption pkgs "forgejo" { };
+    forgejoBin = mkOption {
+      type = types.str;
+      default = "/opt/homebrew/bin/forgejo";
+      description = "Path to the forgejo binary";
+    };
 
     configFile = mkOption {
       type = types.str;
