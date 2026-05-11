@@ -90,11 +90,6 @@
         description = "Syncthing file sync";
       }
       {
-        name = "beszel";
-        url = "http://${config.flags.machineLocalAddress}:8091";
-        description = "Beszel monitoring hub";
-      }
-      {
         name = "miniserve";
         url = "http://${config.flags.machineLocalAddress}:8080";
         expectedStatus = 401;

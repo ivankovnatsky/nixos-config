@@ -1,6 +1,5 @@
 {
   imports = [
-    ./beszel.nix
     ./download-youtube
     ./forgejo
     ./jellyfin
