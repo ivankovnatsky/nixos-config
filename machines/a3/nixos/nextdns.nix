@@ -2,7 +2,7 @@
 
 {
   sops.secrets.nextdns-api-key = {
-    key = "nextDnsApiKey";
+    key = "nextDNS/common/apiKey";
     mode = "0400";
   };
 

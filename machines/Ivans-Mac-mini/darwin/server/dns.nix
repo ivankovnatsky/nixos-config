@@ -23,9 +23,9 @@ in
 
   # Sops secrets for DNS configuration
   # Note: external-domain is declared in http.nix and beszel.nix (shared across services)
-  sops.secrets.nextdns-endpoint-mini.key = "nextDnsEndpointMini";
-  sops.secrets.nextdns-server-mini-1.key = "nextDnsServerMini1";
-  sops.secrets.nextdns-server-mini-2.key = "nextDnsServerMini2";
+  sops.secrets.nextdns-endpoint-mini.key = "nextDNS/Mini/dotHostname";
+  sops.secrets.nextdns-server-mini-1.key = "nextDNS/Mini/IPs/0";
+  sops.secrets.nextdns-server-mini-2.key = "nextDNS/Mini/IPs/1";
 
   # Sops templates for DNS service configurations
   sops.templates."stubby.yml" = {

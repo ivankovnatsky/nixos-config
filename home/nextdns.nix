@@ -12,28 +12,28 @@ in
 {
   sops.secrets = {
     nextdns-api-key = {
-      key = "nextDnsApiKey";
+      key = "nextDNS/common/apiKey";
     };
     nextdns-profile-pro = {
-      key = "nextDnsProfilePro";
+      key = "nextDNS/Pro/profileId";
     };
     nextdns-profile-air = {
-      key = "nextDnsProfileAir";
+      key = "nextDNS/Air/profileId";
     };
     nextdns-profile-mini = {
-      key = "nextDnsProfileMini";
+      key = "nextDNS/Mini/profileId";
     };
     nextdns-profile-phone = {
-      key = "nextDnsProfilePhone";
+      key = "nextDNS/Phone/profileId";
     };
     nextdns-profile-asus = {
-      key = "nextDnsProfileAsus";
+      key = "nextDNS/Asus/profileId";
     };
     nextdns-profile-lgphone = {
-      key = "nextDnsProfileLgPhone";
+      key = "nextDNS/LgPhone/profileId";
     };
     # nextdns-profile-a3 = {
-    #   key = "nextDnsProfileA3";
+    #   key = "nextDNS/a3/profileId";
     # };
   };
 

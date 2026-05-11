@@ -30,7 +30,7 @@ in
 
     machine = mkOption {
       type = types.str;
-      description = "Machine name in nextDNS/IPs/<machine> sops path";
+      description = "Machine name in nextDNS/<machine>/IPs sops path";
       example = "Air";
     };
 
@@ -45,8 +45,8 @@ in
   };
 
   config = mkIf cfg.enable {
-    sops.secrets."nextdns-dns-1".key = "nextDNS/IPs/${cfg.machine}/0";
-    sops.secrets."nextdns-dns-2".key = "nextDNS/IPs/${cfg.machine}/1";
+    sops.secrets."nextdns-dns-1".key = "nextDNS/${cfg.machine}/IPs/0";
+    sops.secrets."nextdns-dns-2".key = "nextDNS/${cfg.machine}/IPs/1";
 
     local.launchd.services.nextdns-dns = {
       enable = true;
