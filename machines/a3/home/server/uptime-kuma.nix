@@ -35,6 +35,18 @@
         maxredirects = 0;
         description = "Stash media organizer (redirects to /login)";
       }
+      {
+        name = "beszel-hub";
+        url = "http://127.0.0.1:8090";
+        description = "Beszel monitoring hub";
+      }
+      {
+        name = "beszel-agent";
+        type = "tcp";
+        url = "127.0.0.1:45876";
+        interval = 60;
+        description = "Beszel agent (local)";
+      }
     ];
   };
 }
