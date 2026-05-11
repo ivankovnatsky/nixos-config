@@ -168,8 +168,14 @@ with lib;
 
     a3Ip = mkOption {
       type = types.str;
-      description = "a3w IP address";
+      description = "a3 ethernet IP address";
       default = "192.168.50.6";
+    };
+
+    a3WifiIp = mkOption {
+      type = types.str;
+      description = "a3 WiFi IP address";
+      default = "192.168.50.11";
     };
 
     miniVmIp = mkOption {
