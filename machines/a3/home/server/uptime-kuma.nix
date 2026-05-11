@@ -41,9 +41,14 @@ in
       # ---- External / public probe ----
       {
         name = "external-domain";
-        url = "https://beszel.@EXTERNAL_DOMAIN@";
+        url = "https://stash.@EXTERNAL_DOMAIN@";
+        expectedStatus = [
+          "200-299"
+          "302"
+        ];
+        maxredirects = 0;
         interval = 60;
-        description = "External domain health check (DNS + Caddy + TLS)";
+        description = "External HTTPS check via stash (DNS + Caddy + TLS)";
       }
 
       # ---- a3-local services ----
@@ -147,12 +152,6 @@ in
         name = "openwebui";
         url = "http://${miniIp}:8090";
         description = "Open WebUI";
-      }
-      {
-        name = "openclaw-gateway";
-        url = "http://${miniIp}:18789";
-        interval = 60;
-        description = "OpenClaw gateway";
       }
       {
         name = "mailpit";
