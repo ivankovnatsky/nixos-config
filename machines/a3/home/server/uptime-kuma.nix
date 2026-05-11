@@ -154,6 +154,12 @@ in
         description = "Open WebUI";
       }
       {
+        name = "openclaw-gateway";
+        url = "http://${miniIp}:18789";
+        interval = 60;
+        description = "OpenClaw gateway";
+      }
+      {
         name = "mailpit";
         url = "http://${miniIp}:8025";
         description = "Mailpit email testing UI";
