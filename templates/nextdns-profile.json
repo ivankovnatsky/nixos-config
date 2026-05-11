@@ -198,11 +198,11 @@
         "content": "@miniWifiIp@"
       },
       {
-        "name": "stash.@externalDomain@",
+        "name": "@externalDomain@",
         "content": "@a3Ip@"
       },
       {
-        "name": "stash.@externalDomain@",
+        "name": "@externalDomain@",
         "content": "@a3WifiIp@"
       }
     ],
