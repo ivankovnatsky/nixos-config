@@ -5,7 +5,6 @@
     ../../../../darwin/shell.nix
     ../../../../darwin/sudo.nix
     ../../../../darwin/system.nix
-    ../../../../modules/darwin/beszel-agent
     ../../../../modules/darwin/dnsmasq
     ../../../../modules/darwin/launchd
     ../../../../modules/darwin/linux-builder
@@ -19,7 +18,6 @@
     ../../../../system/documentation.nix
     ../../../../system/nix.nix
     ../../../../system/sops-secrets.nix
-    ./beszel.nix
     ./dns.nix
     ./flags.nix
     ./git.nix

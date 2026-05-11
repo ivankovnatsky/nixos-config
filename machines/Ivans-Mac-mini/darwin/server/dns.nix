@@ -22,7 +22,7 @@ in
   ];
 
   # Sops secrets for DNS configuration
-  # Note: external-domain is declared in http.nix and beszel.nix (shared across services)
+  # Note: external-domain is declared in http.nix (shared across services)
   sops.secrets.nextdns-endpoint-mini.key = "nextDNS/Mini/dotHostname";
   sops.secrets.nextdns-server-mini-1.key = "nextDNS/Mini/IPs/0";
   sops.secrets.nextdns-server-mini-2.key = "nextDNS/Mini/IPs/1";
