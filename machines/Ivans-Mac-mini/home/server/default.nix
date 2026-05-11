@@ -14,6 +14,5 @@
     ./stash-media
     ./syncthing-mgmt.nix
     ./textcast
-    ./uptime-kuma
   ];
 }
