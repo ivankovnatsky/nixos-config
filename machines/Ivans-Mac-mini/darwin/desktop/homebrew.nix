@@ -7,9 +7,9 @@
     };
     global.brewfile = true;
     brews = [
-      # fish-from-nix on aarch64-darwin (nixpkgs-25.11) ships with invalid
-      # linker-signed adhoc cdhash from cache.nixos.org → SIGKILL at exec.
-      # See Notes/Configs/NixConfig/Issues/NixStoreExternalDiskDarwinFragility.md
+      # fish-from-nix on aarch64-darwin ships with invalid linker-signed
+      # adhoc cdhash from cache.nixos.org → SIGKILL at exec. See
+      # Notes/Configs/NixConfig/Issues/NixStoreExternalDiskDarwinFragility.md
       # Session 5. Use brew fish until upstream fix lands.
       "fish"
       # Since nix places it's new installs under newly generated nix store
