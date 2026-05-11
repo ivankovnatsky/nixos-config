@@ -10,7 +10,6 @@
 	trigger-rebuild \
 	\
 	flake-update-darwin-unstable \
-	flake-update-darwin-release \
 	flake-update-nixos-unstable \
 	flake-update-nixvim \
 	flake-update-homebrew \
@@ -100,12 +99,6 @@ flake-update-darwin-unstable:
 		$(NIX) flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
 	done
 
-flake-update-darwin-release:
-	inputs="nixpkgs-darwin-release nix-darwin-darwin-release home-manager-darwin-release nixvim-darwin-release sops-nix-darwin-release"; \
-	for input in $$inputs; do \
-		$(NIX) flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
-	done
-
 flake-update-nixos-unstable:
 	inputs="nixpkgs-nixos-unstable home-manager-nixos-unstable nixvim-nixos-unstable plasma-manager-nixos-unstable sops-nix-nixos-unstable nur-nixos-unstable"; \
 	for input in $$inputs; do \
@@ -113,7 +106,7 @@ flake-update-nixos-unstable:
 	done
 
 flake-update-nixvim:
-	inputs="nixvim-darwin-unstable nixvim-darwin-release nixvim-nixos-unstable"; \
+	inputs="nixvim-darwin-unstable nixvim-nixos-unstable"; \
 	for input in $$inputs; do \
 		$(NIX) flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
 	done
