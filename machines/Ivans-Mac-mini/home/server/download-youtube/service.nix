@@ -25,7 +25,7 @@ in
     inherit dataDir;
     command = ''
       ${youtube-daemon}/bin/youtube-daemon \
-        --host 127.0.0.1 \
+        --host ${config.flags.machineBindAddress} \
         --port 8085 \
         --output-dir ${dataDir}
     '';
