@@ -2,7 +2,7 @@
 
 {
   # Uptime Kuma HTTP synthetic monitoring service
-  # Web UI exposed via mini's Caddy at https://kuma-a3.@externalDomain@
+  # Web UI exposed via mini's Caddy at https://kuma.@externalDomain@
   # Monitors are reconciled declaratively by the home-manager
   # local.services.uptime-kuma-mgmt service running as user `ivan`.
   #
