@@ -29,7 +29,7 @@ in
 
   local.services.uptime-kuma-mgmt = {
     enable = true;
-    notifications.enable = true;
+    notifications.enable = false;
     baseUrl = "http://127.0.0.1:3001";
     usernameFile = config.sops.secrets.uptime-kuma-username.path;
     passwordFile = config.sops.secrets.uptime-kuma-password.path;
