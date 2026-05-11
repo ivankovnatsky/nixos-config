@@ -19,9 +19,11 @@
     ./cryptenroll.nix # TPM2 support for LUKS encryption
     ./default-apps.nix
     ./desktop.nix
+    ./dns.nix
     ./fonts.nix
     ./fwupd.nix
     ./gamescope.nix
+    ./http.nix
     ./networking.nix
     ./nextdns.nix
     ./nixpkgs.nix
