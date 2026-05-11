@@ -61,10 +61,6 @@ let
       inherit system;
       config = safeConfig;
     };
-    nixpkgs-darwin-master-beszel = import inputs.nixpkgs-darwin-master-beszel {
-      inherit system;
-      config = safeConfig;
-    };
     nixpkgs-darwin-master-opencode = import inputs.nixpkgs-darwin-master-opencode {
       inherit system;
       config = safeConfig;

@@ -19,10 +19,6 @@
       url = "github:nixos/nixpkgs/master";
     };
 
-    nixpkgs-darwin-master-beszel = {
-      url = "github:nixos/nixpkgs/master";
-    };
-
     nixpkgs-darwin-master-opencode = {
       url = "github:nixos/nixpkgs/master";
     };
