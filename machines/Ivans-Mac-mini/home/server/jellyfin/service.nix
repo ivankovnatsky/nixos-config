@@ -33,6 +33,7 @@ in
         --configdir ${configDir} \
         --cachedir ${cacheDir} \
         --logdir ${logDir} \
+        --webdir "/Applications/Jellyfin.app/Contents/Resources/jellyfin-web" \
         --ffmpeg "/Applications/Jellyfin.app/Contents/MacOS/ffmpeg"
     '';
   };
