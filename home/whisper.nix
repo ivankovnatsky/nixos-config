@@ -2,9 +2,10 @@
 
 let
   cacheDir = "${config.flags.externalStoragePath}/.cache";
+  whisperBin = "${config.local.tools.toolsPrefix}/.local/bin/whisper";
 
   whisperWrapped = pkgs.writeShellScriptBin "whisper" ''
-    exec ${pkgs.openai-whisper}/bin/whisper \
+    exec ${whisperBin} \
       --model turbo \
       --model_dir ${cacheDir}/whisper \
       "$@"
