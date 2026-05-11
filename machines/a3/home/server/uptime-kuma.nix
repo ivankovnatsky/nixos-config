@@ -42,13 +42,8 @@ in
       {
         name = "external-domain";
         url = "https://stash.@EXTERNAL_DOMAIN@";
-        expectedStatus = [
-          "200-299"
-          "302"
-        ];
-        maxredirects = 0;
         interval = 60;
-        description = "External HTTPS check via stash (DNS + Caddy + TLS)";
+        description = "External domain health check (DNS + Caddy + TLS)";
       }
 
       # ---- a3-local services ----
