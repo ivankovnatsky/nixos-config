@@ -21,6 +21,7 @@
     ripgrep
     rust-analyzer
     rustc
+    smctemp # Local overlay
     swiftformat
     syncthing
     typst
