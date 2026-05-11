@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, ... }:
 
 let
   dataDir = "${config.flags.externalStoragePath}/.jellyfin";
@@ -28,11 +28,12 @@ in
     ];
     environment.DOTNET_SYSTEM_GLOBALIZATION_INVARIANT = "1";
     command = ''
-      ${pkgs.jellyfin}/bin/jellyfin \
+      "/Applications/Jellyfin.app/Contents/MacOS/jellyfin" \
         --datadir ${dataDir} \
         --configdir ${configDir} \
         --cachedir ${cacheDir} \
-        --logdir ${logDir}
+        --logdir ${logDir} \
+        --ffmpeg "/Applications/Jellyfin.app/Contents/MacOS/ffmpeg"
     '';
   };
 }
