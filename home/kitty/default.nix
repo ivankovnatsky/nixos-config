@@ -40,7 +40,7 @@ let
     window_padding_width ${builtins.toString windowPaddingWidth}
     remember_window_size yes
     remember_window_position yes
-    hide_window_decorations titlebar-only
+    # hide_window_decorations titlebar-only
     cursor_blink_interval 0
     copy_on_select yes
     paste_actions quote-urls-at-prompt
