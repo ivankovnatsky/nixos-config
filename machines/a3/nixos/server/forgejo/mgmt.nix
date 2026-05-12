@@ -8,24 +8,39 @@
   #
   # NB: `forgejo-user-name` is already declared by system/sops-secrets.nix
   # (imported by the a3 NixOS config), so don't redeclare it here.
+  # forgejo-mgmt-sync.service runs as User=forgejo, so each secret must be
+  # readable by the forgejo user. Default sops permissions (0400 root:root)
+  # would block it — mirror the stash.nix pattern instead.
   sops.secrets = {
     forgejo-admin-name = {
       key = "forgejo/users/forgejoAdmin/name";
+      owner = "forgejo";
+      group = "forgejo";
     };
     forgejo-admin-password = {
       key = "forgejo/users/forgejoAdmin/password";
+      owner = "forgejo";
+      group = "forgejo";
     };
     forgejo-admin-email = {
       key = "forgejo/users/forgejoAdmin/email";
+      owner = "forgejo";
+      group = "forgejo";
     };
     forgejo-user-password = {
       key = "forgejo/users/forgejoUser/password";
+      owner = "forgejo";
+      group = "forgejo";
     };
     forgejo-user-email = {
       key = "forgejo/users/forgejoUser/email";
+      owner = "forgejo";
+      group = "forgejo";
     };
     forgejo-user-gpg-key = {
       key = "forgejo/users/forgejoUser/gpgPublicKey";
+      owner = "forgejo";
+      group = "forgejo";
     };
   };
 
