@@ -30,7 +30,6 @@
     ./mosh.nix
     ./music-export.nix
     ./nix.nix
-    ./ollama.nix
     ./openssh.nix
     ./packages.nix
     ./power.nix

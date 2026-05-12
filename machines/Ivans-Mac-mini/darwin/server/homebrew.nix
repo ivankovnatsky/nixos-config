@@ -7,7 +7,6 @@
     };
     global.brewfile = true;
     brews = [
-      "ollama"
       "ffmpeg"
       "forgejo"
       "navidrome"

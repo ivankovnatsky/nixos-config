@@ -5,8 +5,6 @@
     ./media
     ./miniserve.nix
     ./navidrome
-    ./ollama.nix
-    ./open-webui.nix
     ./podservice
     ./reposync.nix
     ./restart-unhealthy.nix

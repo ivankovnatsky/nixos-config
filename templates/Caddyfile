@@ -109,24 +109,7 @@
 	}
 
 	@ollama host ollama.@externalDomain@
-	reverse_proxy @ollama {
-		# Primary backend (a3w) listed first, failover to mini
-		to @a3Ip@:11434 @machineIp@:11434
-
-		# Use first available backend (a3w priority)
-		lb_policy first
-		lb_try_duration 5s
-		lb_try_interval 250ms
-
-		# Health checks for both backends
-		health_uri /
-		health_interval 30s
-		health_timeout 5s
-
-		# Fail to next backend if primary is unhealthy
-		fail_duration 30s
-
-		# Headers for proper operation
+	reverse_proxy @ollama @a3Ip@:11434 {
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
 
@@ -139,7 +122,7 @@
 	}
 
 	@openwebui host openwebui.@externalDomain@
-	reverse_proxy @openwebui @machineIp@:8090 {
+	reverse_proxy @openwebui @a3Ip@:8091 {
 		# Enable WebSocket support for real-time updates
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}

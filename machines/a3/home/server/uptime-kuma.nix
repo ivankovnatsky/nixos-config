@@ -75,6 +75,16 @@ in
         interval = 60;
         description = "Uptime Kuma self-probe";
       }
+      {
+        name = "ollama";
+        url = "http://127.0.0.1:11434";
+        description = "Ollama LLM API (a3, CUDA)";
+      }
+      {
+        name = "openwebui";
+        url = "http://127.0.0.1:8091";
+        description = "Open WebUI (a3)";
+      }
 
       # ---- mini-hosted services ----
       {
@@ -138,16 +148,6 @@ in
         name = "textcast";
         url = "http://${miniIp}:8084";
         description = "Article to audiobook service";
-      }
-      {
-        name = "ollama";
-        url = "http://${miniIp}:11434";
-        description = "Ollama LLM API";
-      }
-      {
-        name = "openwebui";
-        url = "http://${miniIp}:8090";
-        description = "Open WebUI";
       }
       {
         name = "openclaw-gateway";
