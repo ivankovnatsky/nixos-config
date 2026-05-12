@@ -134,11 +134,6 @@ in
         description = "Article to audiobook service";
       }
       {
-        name = "youtube";
-        url = "http://${miniIp}:8085";
-        description = "YouTube video downloader";
-      }
-      {
         name = "ollama";
         url = "http://${miniIp}:11434";
         description = "Ollama LLM API";
