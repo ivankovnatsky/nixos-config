@@ -48,164 +48,96 @@ in
 
       # ---- a3-local services ----
       {
-        name = "stash";
-        url = "http://127.0.0.1:9999";
-        expectedStatus = [
-          "200-299"
-          "302"
-        ];
-        maxredirects = 0;
-        description = "Stash media organizer (redirects to /login)";
-      }
-      {
-        name = "beszel-hub";
-        url = "http://127.0.0.1:8090";
-        description = "Beszel monitoring hub";
-      }
-      {
-        name = "beszel-agent";
+        name = "beszel-agent-a3";
         type = "tcp";
         url = "127.0.0.1:45876";
         interval = 60;
-        description = "Beszel agent (local)";
+        description = "Beszel agent (a3)";
       }
       {
-        name = "uptime-kuma";
-        url = "http://127.0.0.1:3001";
+        name = "beszel-hub-a3";
+        url = "http://127.0.0.1:8090";
         interval = 60;
-        description = "Uptime Kuma self-probe";
+        description = "Beszel monitoring hub (a3)";
       }
       {
-        name = "ollama";
-        url = "http://127.0.0.1:11434";
-        description = "Ollama LLM API (a3, CUDA)";
-      }
-      {
-        name = "openwebui";
-        url = "http://127.0.0.1:8091";
-        description = "Open WebUI (a3)";
-      }
-
-      # ---- mini-hosted services ----
-      {
-        name = "prowlarr";
-        url = "http://${miniIp}:9696";
-        description = "Prowlarr indexer manager";
-      }
-      {
-        name = "radarr";
-        url = "http://${miniIp}:7878";
-        description = "Radarr movie manager";
-      }
-      {
-        name = "lidarr";
-        url = "http://${miniIp}:8686";
-        description = "Lidarr music manager";
-      }
-      {
-        name = "sonarr";
-        url = "http://${miniIp}:8989";
-        description = "Sonarr TV manager";
-      }
-      {
-        name = "transmission";
-        url = "http://${miniIp}:9091";
-        expectedStatus = 401;
-        description = "Transmission torrent client (RPC auth required)";
-      }
-      {
-        name = "jellyfin";
-        url = "http://${miniIp}:8096";
-        description = "Jellyfin media server";
-      }
-      {
-        name = "media";
-        url = "http://${miniIp}:9998";
-        description = "Stash media organizer (general)";
-      }
-      {
-        name = "navidrome";
-        url = "http://${miniIp}:4533";
-        description = "Navidrome music streaming server";
-      }
-      {
-        name = "syncthing";
-        url = "http://${miniIp}:8384";
-        description = "Syncthing file sync";
-      }
-      {
-        name = "miniserve";
-        url = "http://${miniIp}:8080";
-        expectedStatus = 401;
-        description = "Miniserve file server (auth required)";
-      }
-      {
-        name = "podservice";
-        url = "http://${miniIp}:8083";
-        description = "YouTube to Podcast service";
-      }
-      {
-        name = "textcast";
-        url = "http://${miniIp}:8084";
-        description = "Article to audiobook service";
-      }
-      {
-        name = "mailpit";
-        url = "http://${miniIp}:8025";
-        description = "Mailpit email testing UI";
-      }
-      {
-        name = "forgejo-mini";
-        url = "http://${miniIp}:3000";
-        description = "Forgejo git server (mini)";
-      }
-      {
-        name = "forgejo-mini-ssh";
-        type = "tcp";
-        url = "${miniIp}:2222";
-        interval = 60;
-        description = "Forgejo SSH git access (mini)";
-      }
-      {
-        name = "forgejo";
-        url = "http://127.0.0.1:3000";
-        description = "Forgejo git server (a3)";
-      }
-      {
-        name = "forgejo-ssh";
-        type = "tcp";
-        url = "127.0.0.1:2222";
-        interval = 60;
-        description = "Forgejo SSH git access (a3)";
-      }
-      {
-        name = "dnsmasq";
-        type = "dns";
-        url = "example.com@${miniIp}";
-        interval = 60;
-        description = "dnsmasq DNS resolver";
-      }
-      {
-        name = "stubby";
-        type = "tcp";
-        url = "${miniIp}:5453";
-        interval = 60;
-        description = "Stubby DoT resolver (upstream for dnsmasq)";
-      }
-      {
-        name = "caddy-http";
+        name = "caddy-http-a3";
         type = "tcp";
         url = "127.0.0.1:80";
         interval = 60;
         description = "Caddy HTTP reverse proxy (a3)";
       }
       {
-        name = "caddy-https";
+        name = "caddy-https-a3";
         type = "tcp";
         url = "127.0.0.1:443";
         interval = 60;
         description = "Caddy HTTPS reverse proxy (a3)";
       }
+      {
+        name = "dnsmasq-a3";
+        type = "dns";
+        url = "example.com@127.0.0.1";
+        interval = 60;
+        description = "dnsmasq DNS resolver (a3)";
+      }
+      {
+        name = "forgejo-a3";
+        url = "http://127.0.0.1:3000";
+        interval = 60;
+        description = "Forgejo git server (a3)";
+      }
+      {
+        name = "forgejo-ssh-a3";
+        type = "tcp";
+        url = "127.0.0.1:2222";
+        interval = 60;
+        description = "Forgejo SSH git access (a3)";
+      }
+      {
+        name = "ollama-a3";
+        url = "http://127.0.0.1:11434";
+        interval = 60;
+        description = "Ollama LLM API (a3)";
+      }
+      {
+        name = "open-webui-a3";
+        url = "http://127.0.0.1:8091";
+        interval = 60;
+        description = "Open WebUI (a3)";
+      }
+      {
+        name = "stash-a3";
+        url = "http://127.0.0.1:9999";
+        interval = 60;
+        expectedStatus = [
+          "200-299"
+          "302"
+        ];
+        maxredirects = 0;
+        description = "Stash media organizer (a3, redirects to /login)";
+      }
+      {
+        name = "stubby-a3";
+        type = "tcp";
+        url = "127.0.0.1:5453";
+        interval = 60;
+        description = "Stubby DoT resolver (a3, upstream for dnsmasq)";
+      }
+      {
+        name = "syncthing-a3";
+        url = "http://127.0.0.1:8384";
+        interval = 60;
+        description = "Syncthing file sync (a3)";
+      }
+      {
+        name = "uptime-kuma-a3";
+        url = "http://127.0.0.1:3001";
+        interval = 60;
+        description = "Uptime Kuma self-probe (a3)";
+      }
+
+      # ---- mini-hosted services ----
       {
         name = "caddy-http-mini";
         type = "tcp";
@@ -221,18 +153,125 @@ in
         description = "Caddy HTTPS reverse proxy (mini)";
       }
       {
-        name = "ssh";
-        type = "tcp";
-        url = "${miniIp}:22";
+        name = "dnsmasq-mini";
+        type = "dns";
+        url = "example.com@${miniIp}";
         interval = 60;
-        description = "SSH service";
+        description = "dnsmasq DNS resolver (mini)";
       }
       {
-        name = "smb";
+        name = "forgejo-mini";
+        url = "http://${miniIp}:3300";
+        interval = 60;
+        description = "Forgejo git server (mini)";
+      }
+      {
+        name = "forgejo-ssh-mini";
+        type = "tcp";
+        url = "${miniIp}:2222";
+        interval = 60;
+        description = "Forgejo SSH git access (mini)";
+      }
+      {
+        name = "jellyfin-mini";
+        url = "http://${miniIp}:8096";
+        interval = 60;
+        description = "Jellyfin media server (mini)";
+      }
+      {
+        name = "lidarr-mini";
+        url = "http://${miniIp}:8686";
+        interval = 60;
+        description = "Lidarr music manager (mini)";
+      }
+      {
+        name = "mailpit-mini";
+        url = "http://${miniIp}:8025";
+        interval = 60;
+        description = "Mailpit email testing UI (mini)";
+      }
+      {
+        name = "miniserve-mini";
+        url = "http://${miniIp}:8080";
+        interval = 60;
+        expectedStatus = 401;
+        description = "Miniserve file server (mini, auth required)";
+      }
+      {
+        name = "navidrome-mini";
+        url = "http://${miniIp}:4533";
+        interval = 60;
+        description = "Navidrome music streaming server (mini)";
+      }
+      {
+        name = "podservice-mini";
+        url = "http://${miniIp}:8083";
+        interval = 60;
+        description = "YouTube to Podcast service (mini)";
+      }
+      {
+        name = "prowlarr-mini";
+        url = "http://${miniIp}:9696";
+        interval = 60;
+        description = "Prowlarr indexer manager (mini)";
+      }
+      {
+        name = "radarr-mini";
+        url = "http://${miniIp}:7878";
+        interval = 60;
+        description = "Radarr movie manager (mini)";
+      }
+      {
+        name = "smb-mini";
         type = "tcp";
         url = "${miniIp}:445";
         interval = 60;
-        description = "macOS built-in SMB service";
+        description = "macOS built-in SMB service (mini)";
+      }
+      {
+        name = "sonarr-mini";
+        url = "http://${miniIp}:8989";
+        interval = 60;
+        description = "Sonarr TV manager (mini)";
+      }
+      {
+        name = "ssh-mini";
+        type = "tcp";
+        url = "${miniIp}:22";
+        interval = 60;
+        description = "SSH service (mini)";
+      }
+      {
+        name = "stash-media-mini";
+        url = "http://${miniIp}:9998";
+        interval = 60;
+        description = "Stash media organizer (mini)";
+      }
+      {
+        name = "stubby-mini";
+        type = "tcp";
+        url = "${miniIp}:5453";
+        interval = 60;
+        description = "Stubby DoT resolver (mini, upstream for dnsmasq)";
+      }
+      {
+        name = "syncthing-mini";
+        url = "http://${miniIp}:8384";
+        interval = 60;
+        description = "Syncthing file sync (mini)";
+      }
+      {
+        name = "textcast-mini";
+        url = "http://${miniIp}:8084";
+        interval = 60;
+        description = "Article to audiobook service (mini)";
+      }
+      {
+        name = "transmission-mini";
+        url = "http://${miniIp}:9091";
+        interval = 60;
+        expectedStatus = 401;
+        description = "Transmission torrent client (mini, RPC auth required)";
       }
     ];
   };
