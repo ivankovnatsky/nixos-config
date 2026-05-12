@@ -32,5 +32,11 @@
       remoteUrl = "https://forgejo.@domain@/@username@/notes.git";
       branch = "main";
     }
+    {
+      path = "${config.flags.externalStoragePath}/.openclaw/workspace";
+      remote = "origin";
+      remoteUrl = "https://forgejo.@domain@/@username@/workspace.git";
+      branch = "main";
+    }
   ];
 }
