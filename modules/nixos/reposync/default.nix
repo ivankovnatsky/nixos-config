@@ -59,7 +59,7 @@ let
 
   configJsonTemplate = pkgs.writeText "reposync-config.json" (
     builtins.toJSON {
-      inherit (cfg) repositories alertRepeatSeconds;
+      inherit (cfg) repositories alertRepeatSeconds alertStateFile;
       inherit (cfg) discordWebhookFile;
     }
   );
@@ -78,6 +78,12 @@ in
       type = types.int;
       default = 3 * 60 * 60;
       description = "Minimum seconds between repeated Discord alerts for the same failure";
+    };
+
+    alertStateFile = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = "Path to file for storing alert suppression state (defaults to platform-specific path)";
     };
 
     repositories = mkOption {
