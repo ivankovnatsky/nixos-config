@@ -7,7 +7,10 @@
 
 let
   homeDir = config.users.users.ivan.home;
-  dataDir = "${homeDir}/.stash";
+  # Upstream default; matching it activates the module's StateDirectory=stash
+  # (see `mkIf (cfg.dataDir == "/var/lib/stash")` in nixpkgs stash.nix) which
+  # creates and owns the directory automatically.
+  dataDir = "/var/lib/stash";
   stashDir = "${homeDir}/stash";
 in
 {
@@ -59,7 +62,6 @@ in
     description = "Generate Stash JWT/session keys if missing";
     wantedBy = [ "stash.service" ];
     before = [ "stash.service" ];
-    unitConfig.RequiresMountsFor = [ homeDir ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
@@ -259,8 +261,6 @@ in
       };
     };
   };
-
-  systemd.services.stash.unitConfig.RequiresMountsFor = [ homeDir ];
 
   # Upstream binds settings.stash[*].path read-only into the unit's namespace.
   # The mini's launchd job had read-write access to its media volume, and we
