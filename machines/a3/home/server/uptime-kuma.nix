@@ -101,6 +101,12 @@ in
         description = "Ollama LLM API (a3, CUDA)";
       }
       {
+        name = "openclaw-gateway-a3";
+        url = "http://127.0.0.1:18789";
+        interval = 60;
+        description = "OpenClaw gateway (a3)";
+      }
+      {
         name = "open-webui-a3";
         url = "http://127.0.0.1:8091";
         interval = 60;
