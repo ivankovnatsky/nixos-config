@@ -106,7 +106,6 @@
     watcher
     wget
     yank
-    yt-dlp-parallel
     zellij-session
     zoxide
   ];
