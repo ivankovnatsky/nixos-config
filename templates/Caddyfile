@@ -196,6 +196,12 @@
 		}
 	}
 
+	@openclaw host openclaw.@externalDomain@
+	reverse_proxy @openclaw @a3Ip@:18789 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
 	# Logging for ACME and DNS services
 	log {
 		output file @logPathPrefix@/caddy/acme-sync.log {
