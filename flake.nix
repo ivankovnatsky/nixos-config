@@ -184,10 +184,6 @@
       url = "github:ivankovnatsky/textcast";
     };
 
-    nix-steipete-tools = {
-      url = "github:openclaw/nix-steipete-tools";
-    };
-
     # tools - declarative configuration manager
     tools = {
       url = "github:ivankovnatsky/tools";
