@@ -14,5 +14,11 @@
       branch = "main";
       syncMode = "pull-only";
     }
+    {
+      path = "${config.users.users.${username}.home}/.openclaw/workspace";
+      remote = "origin";
+      remoteUrl = "https://forgejo.@domain@/@username@/workspace.git";
+      branch = "main";
+    }
   ];
 }
