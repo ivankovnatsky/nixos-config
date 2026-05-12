@@ -18,6 +18,13 @@
           # https://github.com/openclaw/openclaw/issues/59286
           postInstall = "node scripts/postinstall-bundled-plugins.mjs";
         };
+        # Discord channel ships as a separate npm package since 2026.1.29;
+        # openclaw npm bundle no longer includes it. Required for
+        # channels.discord. Registration with openclaw happens via the
+        # openclaw-gateway prestart script.
+        "@openclaw/discord" = {
+          version = "latest";
+        };
       };
 
       uv.packages = {
