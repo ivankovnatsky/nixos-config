@@ -22,11 +22,13 @@
     environmentFile = config.sops.templates."beszel-agent.env".path;
   };
 
-  # Hub is fronted by Caddy on a3 (beszel.<externalDomain> → 127.0.0.1:8090),
-  # so bind loopback only and don't open 8090 on the firewall.
+  # Hub is fronted by Caddy (beszel.<externalDomain> → a3Ip:8090). Bind 0.0.0.0
+  # and open 8090 so the same Caddyfile template works from any host's Caddy.
   services.beszel.hub = {
     enable = true;
-    host = "127.0.0.1";
+    host = "0.0.0.0";
     port = 8090;
   };
+
+  networking.firewall.allowedTCPPorts = [ config.services.beszel.hub.port ];
 }
