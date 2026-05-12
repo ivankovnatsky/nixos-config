@@ -1,6 +1,5 @@
 {
   imports = [
-    ./download-youtube
     ./forgejo
     ./jellyfin
     ./media
