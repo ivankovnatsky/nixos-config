@@ -47,6 +47,10 @@
     key = "forgejo/users/forgejoUser/token";
   };
 
+  sops.secrets.forgejo-token-a3 = {
+    key = "forgejo/users/forgejoUser/tokenA3";
+  };
+
   sops.secrets.steam-username = {
     key = "steam/username";
   };
