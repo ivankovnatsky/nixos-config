@@ -52,15 +52,7 @@
     ../../../modules/home/nextdns-mgmt
     ../../../modules/home/tools
     ../../../modules/home/uptime-kuma-mgmt
-    ./btop.nix
-    ./desktop.nix
-    ./firefox.nix
-    ./flags.nix
-    ./gpg.nix
-    ./obsidian.nix
-    ./packages.nix
+    ./desktop
     ./server
-    ./syncthing.nix
-    ./tools.nix
   ];
 }

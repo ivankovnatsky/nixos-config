@@ -11,7 +11,7 @@ let
     hash = "sha256-4JeAW+UOaTjT3k4eP6eFiPY1ypXpAHF27x8+MJmwOQE=";
   };
 
-  caddyfileTemplate = ../../../templates/Caddyfile;
+  caddyfileTemplate = ../../../../templates/Caddyfile;
   runtimeCaddyfile = "/run/caddy/Caddyfile";
 in
 {

@@ -1,8 +1,6 @@
 {
   imports = [
-    # ./gamemode.nix
     ../../../modules/flags
-    # ./smb.nix
     ../../../modules/nixos/forgejo-mgmt
     ../../../modules/nixos/reposync
     ../../../modules/nixos/syncthing-mgmt
@@ -14,35 +12,7 @@
     ../../../system/nix.nix
     ../../../system/reposync.nix
     ../../../system/sops-secrets.nix
-    ./bluetooth.nix
-    ./boot.nix
-    ./configuration.nix
-    ./cryptenroll.nix # TPM2 support for LUKS encryption
-    ./default-apps.nix
-    ./desktop.nix
-    ./dns.nix
-    ./fonts.nix
-    ./fwupd.nix
-    ./gamescope.nix
-    ./http.nix
-    ./networking.nix
-    ./nextdns.nix
-    ./nixpkgs.nix
-    ./nvidia.nix
-    ./ollama.nix
-    ./open-webui.nix
-    ./power-management.nix
-    ./power-monitoring.nix
-    ./remote-build.nix
-    ./reposync.nix
-    ./security.nix
+    ./desktop
     ./server
-    ./stash.nix
-    ./steam.nix
-    ./storage-disk.nix
-    ./syncthing-mgmt.nix
-    ./tpm2.nix
-    ./user.nix
-    ./wifi.nix
   ];
 }

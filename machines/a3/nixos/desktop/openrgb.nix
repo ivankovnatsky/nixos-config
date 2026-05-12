@@ -29,7 +29,7 @@
 #       https://openrgb.org/devices.html
 #
 # To enable later, uncomment the block below and add `./openrgb.nix` to
-# machines/a3/nixos/default.nix imports.
+# machines/a3/nixos/desktop/default.nix imports.
 
 { ... }:
 {
