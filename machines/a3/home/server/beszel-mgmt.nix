@@ -9,10 +9,6 @@
     key = "beszel/password";
   };
 
-  sops.secrets.beszel-token = {
-    key = "beszel/token";
-  };
-
   sops.secrets.discord-webhook-beszel = {
     key = "discord/webhooks/monitoringBeszel";
   };
