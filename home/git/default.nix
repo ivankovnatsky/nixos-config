@@ -14,8 +14,10 @@ let
     TOKEN_FILE_MINI="${config.sops.secrets.forgejo-token.path}"
     USERNAME_FILE="${config.sops.secrets.forgejo-user-name.path}"
 
-    # Prefer the a3-issued token (forgejo is now hosted on a3); fall back to
-    # the mini-issued token if tokenA3 isn't rendered yet on this host.
+    # Forgejo runs on both mini and a3 (separate instances, separate user
+    # DBs, separate tokens). The public hostname forgejo.<external-domain>
+    # now resolves to a3, so prefer the a3-issued token; fall back to the
+    # mini-issued one if tokenA3 isn't rendered yet on this host.
     if [ -f "$TOKEN_FILE_A3" ]; then
       TOKEN_FILE="$TOKEN_FILE_A3"
     elif [ -f "$TOKEN_FILE_MINI" ]; then
