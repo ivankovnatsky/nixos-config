@@ -63,7 +63,6 @@
     ../../../modules/home/unison
     ./dock.nix
     ./flags.nix
-    ./openclaw.nix
     ./packages.nix
     ./server
     ./sops.nix
