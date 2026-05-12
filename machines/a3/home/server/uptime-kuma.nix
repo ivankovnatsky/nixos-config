@@ -98,7 +98,7 @@ in
         name = "ollama-a3";
         url = "http://127.0.0.1:11434";
         interval = 60;
-        description = "Ollama LLM API (a3)";
+        description = "Ollama LLM API (a3, CUDA)";
       }
       {
         name = "open-webui-a3";
