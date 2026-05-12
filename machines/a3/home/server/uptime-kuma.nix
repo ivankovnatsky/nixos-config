@@ -69,6 +69,12 @@ in
         interval = 60;
         description = "Beszel agent (local)";
       }
+      {
+        name = "uptime-kuma";
+        url = "http://127.0.0.1:3001";
+        interval = 60;
+        description = "Uptime Kuma self-probe";
+      }
 
       # ---- mini-hosted services ----
       {
@@ -205,6 +211,20 @@ in
         url = "127.0.0.1:443";
         interval = 60;
         description = "Caddy HTTPS reverse proxy (a3)";
+      }
+      {
+        name = "caddy-http-mini";
+        type = "tcp";
+        url = "${miniIp}:80";
+        interval = 60;
+        description = "Caddy HTTP reverse proxy (mini)";
+      }
+      {
+        name = "caddy-https-mini";
+        type = "tcp";
+        url = "${miniIp}:443";
+        interval = 60;
+        description = "Caddy HTTPS reverse proxy (mini)";
       }
       {
         name = "ssh";
