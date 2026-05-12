@@ -41,7 +41,7 @@ in
       # ---- External / public probe ----
       {
         name = "external-domain";
-        url = "https://stash.@EXTERNAL_DOMAIN@";
+        url = "https://forgejo.@EXTERNAL_DOMAIN@";
         interval = 60;
         description = "External domain health check (DNS + Caddy + TLS)";
       }
