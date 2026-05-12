@@ -188,16 +188,16 @@ in
       {
         name = "caddy-http";
         type = "tcp";
-        url = "${miniIp}:80";
+        url = "127.0.0.1:80";
         interval = 60;
-        description = "Caddy HTTP reverse proxy";
+        description = "Caddy HTTP reverse proxy (a3)";
       }
       {
         name = "caddy-https";
         type = "tcp";
-        url = "${miniIp}:443";
+        url = "127.0.0.1:443";
         interval = 60;
-        description = "Caddy HTTPS reverse proxy";
+        description = "Caddy HTTPS reverse proxy (a3)";
       }
       {
         name = "ssh";
