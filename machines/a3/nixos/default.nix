@@ -3,6 +3,7 @@
     # ./gamemode.nix
     ../../../modules/flags
     # ./smb.nix
+    ../../../modules/nixos/forgejo-mgmt
     ../../../modules/nixos/reposync
     ../../../modules/nixos/syncthing-mgmt
     ../../../modules/nixos/tools
