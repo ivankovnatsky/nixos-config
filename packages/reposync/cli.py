@@ -8,6 +8,7 @@ from pathlib import Path
 
 import click
 
+from alerting import clear_alert_state, configure_alerts
 from config import get_discord_webhook, load_config
 from repo import init_repo, needs_init, status_repo, sync_repo
 
@@ -23,11 +24,14 @@ def main():
 @click.option("--config-file", required=True)
 def init(config_file):
     config = load_config(config_file)
+    configure_alerts(config.get("alertRepeatSeconds"), config.get("alertStateFile"))
     webhook_url = get_discord_webhook(config)
     all_ok = True
     for repo in config.get("repositories", []):
         if not init_repo(repo, webhook_url):
             all_ok = False
+    if all_ok:
+        clear_alert_state()
     sys.exit(0 if all_ok else 1)
 
 
@@ -76,6 +80,7 @@ def debounce_after_boot():
 @click.option("--config-file", required=True)
 def sync(config_file):
     config = load_config(config_file)
+    configure_alerts(config.get("alertRepeatSeconds"), config.get("alertStateFile"))
     webhook_url = get_discord_webhook(config)
 
     debounce_after_boot()
@@ -94,6 +99,8 @@ def sync(config_file):
             continue
         if not sync_repo(repo, webhook_url):
             all_ok = False
+    if all_ok:
+        clear_alert_state()
     sys.exit(0 if all_ok else 1)
 
 
