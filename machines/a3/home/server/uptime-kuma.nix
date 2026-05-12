@@ -160,16 +160,28 @@ in
         description = "Mailpit email testing UI";
       }
       {
+        name = "forgejo-mini";
+        url = "http://${miniIp}:3000";
+        description = "Forgejo git server (mini)";
+      }
+      {
+        name = "forgejo-mini-ssh";
+        type = "tcp";
+        url = "${miniIp}:2222";
+        interval = 60;
+        description = "Forgejo SSH git access (mini)";
+      }
+      {
         name = "forgejo";
         url = "http://127.0.0.1:3000";
-        description = "Forgejo git server";
+        description = "Forgejo git server (a3)";
       }
       {
         name = "forgejo-ssh";
         type = "tcp";
         url = "127.0.0.1:2222";
         interval = 60;
-        description = "Forgejo SSH git access";
+        description = "Forgejo SSH git access (a3)";
       }
       {
         name = "dnsmasq";
