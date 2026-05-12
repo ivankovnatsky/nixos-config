@@ -187,12 +187,6 @@
 		header_up Host {host}
 	}
 
-	@youtube host youtube.@externalDomain@
-	reverse_proxy @youtube @machineIp@:8085 {
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-
 	@navidrome host navidrome.@externalDomain@
 	reverse_proxy @navidrome @machineIp@:4533 {
 		header_up X-Real-IP {remote_host}
