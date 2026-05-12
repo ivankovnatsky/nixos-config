@@ -56,8 +56,12 @@ in
   # to encounter TCC problems. To resolve these, switch to using a Mach-O
   # executable." Replace upstream's Program=<shebang script> with bash -c
   # <inline command> so launchd never has to open() a script on /nix.
+  #
+  # Setting Program = null is specifically to control the argv generation
+  # in Home Manager's launchd module; otherwise HM prepends Program to
+  # ProgramArguments, which would break our bash -c structure.
   # See Notes/Log/2026/05/01.md and home-manager#6536.
-  launchd.agents.sops-nix.config.Program = lib.mkForce "${pkgs.bash}/bin/bash";
+  launchd.agents.sops-nix.config.Program = lib.mkForce null;
   launchd.agents.sops-nix.config.ProgramArguments = lib.mkForce [
     "${pkgs.bash}/bin/bash"
     "-c"
