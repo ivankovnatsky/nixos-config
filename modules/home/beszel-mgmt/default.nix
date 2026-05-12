@@ -15,6 +15,46 @@ let
       inherit (cfg) systems;
     }
   );
+
+  syncScript = pkgs.writeShellScript "beszel-mgmt-sync" ''
+    set -e
+
+    echo "Updating Beszel systems..."
+
+    # Read secrets from files at runtime (keeps secrets out of /nix/store)
+    ${
+      if cfg.externalDomainFile != null then
+        ''
+          EXTERNAL_DOMAIN="$(cat ${cfg.externalDomainFile})"
+          BASE_URL="https://beszel.$EXTERNAL_DOMAIN"
+        ''
+      else
+        ''
+          BASE_URL="${cfg.baseUrl}"
+        ''
+    }
+    BESZEL_EMAIL="${if cfg.emailFile != null then "$(cat ${cfg.emailFile})" else cfg.email}"
+    BESZEL_PASSWORD="${if cfg.passwordFile != null then "$(cat ${cfg.passwordFile})" else cfg.password}"
+    ${optionalString (cfg.discordWebhookFile != null) ''
+      DISCORD_WEBHOOK="$(cat ${cfg.discordWebhookFile})"
+    ''}
+    ${optionalString (cfg.discordWebhook != null) ''
+      DISCORD_WEBHOOK="${cfg.discordWebhook}"
+    ''}
+
+    ${pkgs.beszel-mgmt}/bin/beszel-mgmt sync \
+      --base-url "$BASE_URL" \
+      --email "$BESZEL_EMAIL" \
+      --password "$BESZEL_PASSWORD" \
+      --config-file "${beszelConfig}" \
+      ${
+        optionalString (
+          cfg.discordWebhook != null || cfg.discordWebhookFile != null
+        ) ''--discord-webhook "$DISCORD_WEBHOOK"''
+      } 2>&1 || echo "Warning: Beszel update failed with exit code $?"
+
+    echo "Beszel systems update completed"
+  '';
 in
 {
   options.local.services.beszel-mgmt = {
@@ -115,54 +155,30 @@ in
       }
     ];
 
-    local.launchd.services.beszel-mgmt = {
+    local.launchd.services.beszel-mgmt = mkIf pkgs.stdenv.isDarwin {
       enable = true;
       keepAlive = false;
       runAtLoad = true;
+      command = "${syncScript}";
+    };
 
-      command =
-        let
-          syncScript = pkgs.writeShellScript "beszel-mgmt-sync" ''
-            set -e
-
-            echo "Updating Beszel systems..."
-
-            # Read secrets from files at runtime (keeps secrets out of /nix/store)
-            ${
-              if cfg.externalDomainFile != null then
-                ''
-                  EXTERNAL_DOMAIN="$(cat ${cfg.externalDomainFile})"
-                  BASE_URL="https://beszel.$EXTERNAL_DOMAIN"
-                ''
-              else
-                ''
-                  BASE_URL="${cfg.baseUrl}"
-                ''
-            }
-            BESZEL_EMAIL="${if cfg.emailFile != null then "$(cat ${cfg.emailFile})" else cfg.email}"
-            BESZEL_PASSWORD="${if cfg.passwordFile != null then "$(cat ${cfg.passwordFile})" else cfg.password}"
-            ${optionalString (cfg.discordWebhookFile != null) ''
-              DISCORD_WEBHOOK="$(cat ${cfg.discordWebhookFile})"
-            ''}
-            ${optionalString (cfg.discordWebhook != null) ''
-              DISCORD_WEBHOOK="${cfg.discordWebhook}"
-            ''}
-
-            ${pkgs.beszel-mgmt}/bin/beszel-mgmt sync \
-              --base-url "$BASE_URL" \
-              --email "$BESZEL_EMAIL" \
-              --password "$BESZEL_PASSWORD" \
-              --config-file "${beszelConfig}" \
-              ${
-                optionalString (
-                  cfg.discordWebhook != null || cfg.discordWebhookFile != null
-                ) ''--discord-webhook "$DISCORD_WEBHOOK"''
-              } 2>&1 || echo "Warning: Beszel update failed with exit code $?"
-
-            echo "Beszel systems update completed"
-          '';
-        in
-        "${syncScript}";
+    systemd.user.services.beszel-mgmt = mkIf pkgs.stdenv.isLinux {
+      Unit = {
+        Description = "Declarative Beszel systems sync";
+        After = [
+          "network-online.target"
+          "sops-nix.service"
+        ];
+        Wants = [
+          "network-online.target"
+          "sops-nix.service"
+        ];
+      };
+      Service = {
+        Type = "oneshot";
+        ExecStart = "${syncScript}";
+      };
+      Install.WantedBy = [ "default.target" ];
     };
   };
 }
