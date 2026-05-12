@@ -1,10 +1,12 @@
 """Alerting via Discord webhooks."""
 
+import fcntl
 import hashlib
 import json
 import os
 import sys
 import time
+from contextlib import contextmanager
 from pathlib import Path
 
 import click
@@ -53,16 +55,24 @@ def alert(webhook_url, message):
         return
 
     if send_discord(webhook_url, message):
-        _record_sent(key)
+        _record_sent(key, message)
 
 
-def clear_alert_state():
-    try:
-        _state_path().unlink()
-    except FileNotFoundError:
-        return
-    except OSError as e:
-        click.echo(f"Warning: failed to clear reposync alert state: {e}", err=True)
+def clear_alerts_for_repo(repo_name):
+    """Clear suppression state for all alerts associated with a specific repository.
+
+    This is called when a repository syncs successfully, ensuring that any
+    subsequent failure will trigger an immediate alert.
+    """
+    prefix = f"`{repo_name}`:"
+    with _locked_state() as state:
+        alerts = state.get("alerts", {})
+        to_remove = [
+            k for k, v in alerts.items()
+            if v.get("message", "").startswith(prefix)
+        ]
+        for k in to_remove:
+            del alerts[k]
 
 
 def _should_send(message):
@@ -71,27 +81,43 @@ def _should_send(message):
 
     now = time.time()
     key = _alert_key(message)
-    last_sent = _load_state().get(key)
-    if last_sent is None:
-        return True, 0, key
 
-    elapsed = now - last_sent
-    if elapsed >= _repeat_seconds:
-        return True, 0, key
+    with _locked_state() as state:
+        alert_info = state.get("alerts", {}).get(key)
+        if not alert_info:
+            return True, 0, key
 
-    return False, _repeat_seconds - elapsed, key
+        last_sent = alert_info.get("last_sent")
+        if last_sent is None:
+            return True, 0, key
+
+        elapsed = now - last_sent
+        if elapsed >= _repeat_seconds:
+            return True, 0, key
+
+        return False, _repeat_seconds - elapsed, key
 
 
-def _record_sent(key):
+def _record_sent(key, message):
     if key is None:
         return
 
-    state = _load_state()
-    state[key] = time.time()
-    _save_state(state)
+    # Message stabilization: strip volatile details (after " — ") to create a stable key.
+    # We store the stable message to allow granular clearing by repository name.
+    stable_message = message.rsplit(" — ", 1)[0]
+
+    with _locked_state() as state:
+        alerts = state.setdefault("alerts", {})
+        alerts[key] = {
+            "last_sent": time.time(),
+            "message": stable_message,
+        }
 
 
 def _alert_key(message):
+    # Message stabilization: strip volatile details (after " — ") to create a stable key.
+    # This ensures that "fetch failed — [connection timeout]" and "fetch failed — [auth error]"
+    # are treated as the same alert for suppression purposes.
     stable_message = message.rsplit(" — ", 1)[0]
     return hashlib.sha256(stable_message.encode("utf-8")).hexdigest()
 
@@ -114,34 +140,35 @@ def _state_path():
     return base / "reposync" / "alerts.json"
 
 
-def _load_state():
-    try:
-        data = json.loads(_state_path().read_text())
-    except FileNotFoundError:
-        return {}
-    except (json.JSONDecodeError, OSError) as e:
-        click.echo(f"Warning: failed to read reposync alert state: {e}", err=True)
-        return {}
-
-    alerts = data.get("alerts", {}) if isinstance(data, dict) else {}
-    return {
-        key: float(value)
-        for key, value in alerts.items()
-        if isinstance(key, str) and isinstance(value, (int, float))
-    }
-
-
-def _save_state(alerts):
+@contextmanager
+def _locked_state():
+    """Context manager for thread-safe/process-safe access to alert state."""
     path = _state_path()
-    payload = json.dumps({"alerts": alerts}, sort_keys=True)
+    path.parent.mkdir(parents=True, exist_ok=True)
 
+    # We open in a+ to allow reading and writing, ensuring the file exists.
+    f = open(path, "a+")
     try:
-        path.parent.mkdir(parents=True, exist_ok=True)
-        tmp_path = path.with_name(f".{path.name}.tmp")
-        tmp_path.write_text(payload)
-        os.replace(tmp_path, path)
-    except OSError as e:
-        click.echo(f"Warning: failed to write reposync alert state: {e}", err=True)
+        fcntl.flock(f, fcntl.LOCK_EX)
+        f.seek(0)
+        try:
+            content = f.read()
+            state = json.loads(content) if content else {}
+        except (json.JSONDecodeError, OSError) as e:
+            click.echo(f"Warning: failed to read reposync alert state: {e}", err=True)
+            state = {}
+
+        yield state
+
+        # Write back
+        f.seek(0)
+        f.truncate()
+        f.write(json.dumps(state, sort_keys=True, indent=2))
+        f.flush()
+        os.fsync(f.fileno())
+    finally:
+        # flock is automatically released when the file is closed
+        f.close()
 
 
 def _format_duration(seconds):

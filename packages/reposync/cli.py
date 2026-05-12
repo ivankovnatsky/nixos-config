@@ -1,5 +1,6 @@
 """CLI argument parsing and subcommand dispatch."""
 
+import os
 import re
 import subprocess
 import sys
@@ -8,11 +9,17 @@ from pathlib import Path
 
 import click
 
-from alerting import clear_alert_state, configure_alerts
+from alerting import clear_alerts_for_repo, configure_alerts
 from config import get_discord_webhook, load_config
 from repo import init_repo, needs_init, status_repo, sync_repo
 
 BOOT_DEBOUNCE_SECONDS = 2 * 60
+
+
+def get_repo_full_name(repo):
+    """Return the display name used for alerts and logs."""
+    display = repo.get("name") or os.path.basename(repo["path"])
+    return f"{display} ({repo['remote']}/{repo['branch']})"
 
 
 @click.group()
@@ -30,8 +37,8 @@ def init(config_file):
     for repo in config.get("repositories", []):
         if not init_repo(repo, webhook_url):
             all_ok = False
-    if all_ok:
-        clear_alert_state()
+        else:
+            clear_alerts_for_repo(get_repo_full_name(repo))
     sys.exit(0 if all_ok else 1)
 
 
@@ -99,8 +106,8 @@ def sync(config_file):
             continue
         if not sync_repo(repo, webhook_url):
             all_ok = False
-    if all_ok:
-        clear_alert_state()
+        else:
+            clear_alerts_for_repo(get_repo_full_name(repo))
     sys.exit(0 if all_ok else 1)
 
 

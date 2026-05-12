@@ -60,12 +60,27 @@ class AlertingTest(unittest.TestCase):
 
         self.assertEqual(len(self.sent), 1)
 
-    def test_clear_alert_state_allows_immediate_repeat_after_success(self):
-        self.alerting.alert("https://discord.example/webhook", "same failure")
-        self.alerting.clear_alert_state()
-        self.alerting.alert("https://discord.example/webhook", "same failure")
-
+    def test_granular_clearing_allows_immediate_repeat_for_specific_repo(self):
+        webhook = "https://discord.example/webhook"
+        self.alerting.alert(webhook, "`repo-a`: failed")
+        self.alerting.alert(webhook, "`repo-b`: failed")
         self.assertEqual(len(self.sent), 2)
+
+        # Suppressed
+        self.alerting.alert(webhook, "`repo-a`: failed")
+        self.alerting.alert(webhook, "`repo-b`: failed")
+        self.assertEqual(len(self.sent), 2)
+
+        # Clear repo-a
+        self.alerting.clear_alerts_for_repo("repo-a")
+
+        # repo-a should alert now
+        self.alerting.alert(webhook, "`repo-a`: failed")
+        self.assertEqual(len(self.sent), 3)
+
+        # repo-b still suppressed
+        self.alerting.alert(webhook, "`repo-b`: failed")
+        self.assertEqual(len(self.sent), 3)
 
 
 if __name__ == "__main__":
