@@ -92,10 +92,8 @@ in
     wants = [ "sops-nix.service" ];
   };
 
-  # Open HTTP (upstream default 3000) and 2222 (built-in SSH) on the firewall.
-  # Caddy will reverse-proxy https://forgejo.<externalDomain>/ → forgejo:3000
-  # once templates/Caddyfile's @machineIp@:3300 line is flipped to :3000 and
-  # pointed at a3 (follow-up).
+  # Open HTTP (3000, upstream default) and 2222 (built-in SSH) on the firewall.
+  # Caddy on a3 reverse-proxies https://forgejo.<externalDomain>/ → a3Ip:3000.
   networking.firewall.allowedTCPPorts = [
     config.services.forgejo.settings.server.HTTP_PORT
     sshPort
