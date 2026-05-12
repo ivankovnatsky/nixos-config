@@ -26,18 +26,18 @@ let
         workspace = "${stateDir}/workspace";
 
         model = {
-          primary = "anthropic/claude-opus-4-6";
+          primary = "anthropic/claude-opus-4-7";
           fallbacks = [
             "openai-codex/gpt-5.4"
           ];
         };
 
         models = {
-          "anthropic/claude-opus-4-6" = {
+          "anthropic/claude-opus-4-7" = {
             alias = "opus";
           };
 
-          "openai-codex/gpt-5.4" = {
+          "openai-codex/gpt-5.5" = {
             params.transport = "auto";
           };
         };
@@ -122,13 +122,17 @@ let
   );
 
   # Wrapper that patches config with SecretRefs and dynamic values, then execs the gateway.
-  # Secrets are injected as file-based SecretRefs so they stay out of process.env
-  # and are not visible to agents via `env`.
+  # Most secrets are injected as file-based SecretRefs so they stay out of process.env
+  # and are not visible to agents via `env`. The exception is DISCORD_BOT_TOKEN —
+  # the external @openclaw/discord plugin's hasDiscordConfiguredState() only
+  # checks process.env.DISCORD_BOT_TOKEN, ignoring config-based SecretRefs.
+  # Tracked upstream as openclaw/openclaw#77930 (regression in 2026.5.x).
   gatewayWithSecrets = pkgs.writeShellScript "openclaw-gateway-secrets" ''
     umask 077
     DOMAIN=$(cat ${config.sops.secrets.external-domain.path})
     SERVER_ID=$(cat ${config.sops.secrets.openclaw-discord-server-id.path})
     USER_ID=$(cat ${config.sops.secrets.openclaw-discord-user-id.path})
+    export DISCORD_BOT_TOKEN=$(cat ${config.sops.secrets.openclaw-discord-bot-token.path})
     ${pkgs.jq}/bin/jq \
       --arg origin "https://openclaw.$DOMAIN" \
       --arg serverId "$SERVER_ID" \
@@ -145,12 +149,13 @@ let
        | .secrets.providers["sops-perplexity-api-key"] = { source: "file", path: $perplexityApiKeyPath, mode: "singleValue" }
        | .secrets.providers["sops-openai-token"] = { source: "file", path: $openaiTokenPath, mode: "singleValue" }
        | .gateway.auth.token = { source: "file", provider: "sops-gateway-token", id: "value" }
-       | .channels.discord.token = { source: "file", provider: "sops-discord-token", id: "value" }
+       | .channels.discord.token = { source: "env", provider: "default", id: "DISCORD_BOT_TOKEN" }
        | .models.providers.openai = {
            baseUrl: "https://api.openai.com/v1",
            models: [],
            apiKey: { source: "file", provider: "sops-openai-token", id: "value" }
          }
+       | .plugins.entries.discord.enabled = true
        | .plugins.entries.google.enabled = true
        | .plugins.entries.google.config.webSearch.apiKey = { source: "file", provider: "sops-gemini-api-key", id: "value" }
        | .plugins.entries.perplexity.enabled = true
@@ -198,6 +203,15 @@ let
       ${stateDir}/workspace \
       ${tmpDir} \
       ${cacheDir}/whisper
+
+    # @openclaw/discord ships as a separate npm package since 2026.1.29 and
+    # is not auto-discovered from the global npm root — it must be
+    # registered with openclaw so it lands in ~/.openclaw/plugins/installs.json
+    # and gets loaded as a channel plugin.
+    if ! ${openclawBin} plugins inspect @openclaw/discord >/dev/null; then
+      echo "Registering @openclaw/discord plugin with openclaw..."
+      ${openclawBin} plugins install @openclaw/discord
+    fi
   '';
 in
 {
