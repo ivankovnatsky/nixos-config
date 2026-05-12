@@ -61,7 +61,6 @@
     ../../../modules/home/syncthing-mgmt
     ../../../modules/home/tools
     ../../../modules/home/unison
-    ../../../modules/home/uptime-kuma-mgmt
     ./dock.nix
     ./flags.nix
     ./openclaw.nix
