@@ -6,9 +6,9 @@
 }:
 
 let
-  storageRoot = "/storage/data";
-  dataDir = "${storageRoot}/.stash";
-  stashDir = "${storageRoot}/stash";
+  homeDir = config.users.users.ivan.home;
+  dataDir = "${homeDir}/.stash";
+  stashDir = "${homeDir}/stash";
 in
 {
   sops.secrets = {
@@ -59,7 +59,7 @@ in
     description = "Generate Stash JWT/session keys if missing";
     wantedBy = [ "stash.service" ];
     before = [ "stash.service" ];
-    unitConfig.RequiresMountsFor = [ "/storage" ];
+    unitConfig.RequiresMountsFor = [ homeDir ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
@@ -88,10 +88,10 @@ in
     mutableSettings = false;
 
     # mutablePlugins/mutableScrapers must be true here because we override
-    # plugins_path / scrapers_path in settings to point at /storage/data/.stash/
-    # config/{plugins,scrapers} (matching the mini layout). With them at the
-    # default false, upstream sets the same options to a Nix-store derivation
-    # path and eval fails on conflicting definitions.
+    # plugins_path / scrapers_path in settings to point at ${dataDir}/config/
+    # {plugins,scrapers} (matching the mini layout). With them at the default
+    # false, upstream sets the same options to a Nix-store derivation path and
+    # eval fails on conflicting definitions.
     mutablePlugins = true;
     mutableScrapers = true;
 
@@ -132,7 +132,7 @@ in
 
       # Paths kept under config/ to mirror the mini layout so an rsync of the
       # SQLite DB, plugins/, and scrapers/ from /Volumes/Stash/Data/.stash/
-      # lands in the right place under /storage/data/.stash/.
+      # lands in the right place under ${dataDir}.
       database = "${dataDir}/config/stash-go.sqlite";
       plugins_path = "${dataDir}/config/plugins";
       scrapers_path = "${dataDir}/config/scrapers";
@@ -260,7 +260,7 @@ in
     };
   };
 
-  systemd.services.stash.unitConfig.RequiresMountsFor = [ "/storage" ];
+  systemd.services.stash.unitConfig.RequiresMountsFor = [ homeDir ];
 
   # Upstream binds settings.stash[*].path read-only into the unit's namespace.
   # The mini's launchd job had read-write access to its media volume, and we
