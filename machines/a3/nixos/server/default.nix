@@ -12,7 +12,7 @@
     ./power-monitoring.nix
 
     ./beszel.nix
-    ./forgejo
+    ./forgejo.nix
     ./http.nix
     ./ollama.nix
     ./open-webui.nix
