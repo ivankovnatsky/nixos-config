@@ -7,6 +7,7 @@
 
   local.services.reposync = {
     enable = true;
+    alertStateFile = "/home/${username}/.local/state/reposync/alerts.json";
     domainFile = config.sops.secrets.external-domain.path;
     usernameFile = config.sops.secrets.forgejo-user-name.path;
     discordWebhookFile = config.sops.secrets.discord-webhook-reposync.path;
