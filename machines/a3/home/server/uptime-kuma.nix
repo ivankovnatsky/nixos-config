@@ -161,13 +161,13 @@ in
       }
       {
         name = "forgejo";
-        url = "http://${miniIp}:3300";
+        url = "http://127.0.0.1:3000";
         description = "Forgejo git server";
       }
       {
         name = "forgejo-ssh";
         type = "tcp";
-        url = "${miniIp}:2222";
+        url = "127.0.0.1:2222";
         interval = 60;
         description = "Forgejo SSH git access";
       }
