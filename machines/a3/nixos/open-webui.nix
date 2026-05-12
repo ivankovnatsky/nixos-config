@@ -23,10 +23,10 @@
       ENABLE_WEB_SEARCH = "true";
       DEFAULT_MODELS = "gemma3:27b";
 
-      SCARF_NO_ANALYTICS = "True";
-      DO_NOT_TRACK = "True";
-      ANONYMIZED_TELEMETRY = "False";
-      ENABLE_VERSION_UPDATE_CHECK = "False";
+      SCARF_NO_ANALYTICS = "true";
+      DO_NOT_TRACK = "true";
+      ANONYMIZED_TELEMETRY = "false";
+      ENABLE_VERSION_UPDATE_CHECK = "false";
     };
   };
 }
