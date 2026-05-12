@@ -47,6 +47,7 @@
     ../../../home/z-lua.nix
     ../../../home/zsh.nix
     ../../../modules/flags
+    ../../../modules/home/beszel-mgmt
     ../../../modules/home/launchd
     ../../../modules/home/nextdns-mgmt
     ../../../modules/home/tools
