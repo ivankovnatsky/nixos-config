@@ -26,19 +26,19 @@ let
         workspace = "${stateDir}/workspace";
 
         model = {
-          primary = "anthropic/claude-opus-4-7";
+          primary = "openai/gpt-5.5";
           fallbacks = [
-            "openai-codex/gpt-5.4"
+            "anthropic/claude-opus-4-7"
           ];
         };
 
         models = {
-          "anthropic/claude-opus-4-7" = {
-            alias = "opus";
+          "openai/gpt-5.5" = {
+            alias = "codex";
           };
 
-          "openai-codex/gpt-5.5" = {
-            params.transport = "auto";
+          "anthropic/claude-opus-4-7" = {
+            alias = "opus";
           };
         };
       };
