@@ -39,7 +39,7 @@
       branch = "main";
     }
     {
-      path = "/Volume/Storage/Data";
+      path = config.flags.externalStoragePath;
       remote = "origin";
       remoteUrl = "https://forgejo.@domain@/@username@/data.git";
       branch = "main";
