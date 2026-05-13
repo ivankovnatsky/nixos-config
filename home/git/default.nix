@@ -10,23 +10,10 @@ let
     # Git credential helper for Forgejo
     # Reads domain and username from sops and returns credentials if host matches
     DOMAIN_FILE="${config.sops.secrets.external-domain.path}"
-    TOKEN_FILE_A3="${config.sops.secrets.forgejo-token-a3.path}"
-    TOKEN_FILE_MINI="${config.sops.secrets.forgejo-token.path}"
+    TOKEN_FILE="${config.sops.secrets.forgejo-token-a3.path}"
     USERNAME_FILE="${config.sops.secrets.forgejo-user-name.path}"
 
-    # Forgejo runs on both mini and a3 (separate instances, separate user
-    # DBs, separate tokens). The public hostname forgejo.<external-domain>
-    # now resolves to a3, so prefer the a3-issued token; fall back to the
-    # mini-issued one if tokenA3 isn't rendered yet on this host.
-    if [ -f "$TOKEN_FILE_A3" ]; then
-      TOKEN_FILE="$TOKEN_FILE_A3"
-    elif [ -f "$TOKEN_FILE_MINI" ]; then
-      TOKEN_FILE="$TOKEN_FILE_MINI"
-    else
-      exit 0
-    fi
-
-    if [ ! -f "$DOMAIN_FILE" ] || [ ! -f "$USERNAME_FILE" ]; then
+    if [ ! -f "$TOKEN_FILE" ] || [ ! -f "$DOMAIN_FILE" ] || [ ! -f "$USERNAME_FILE" ]; then
       exit 0
     fi
 
