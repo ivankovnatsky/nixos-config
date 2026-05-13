@@ -95,6 +95,17 @@ in
         description = "Forgejo SSH git access (a3)";
       }
       {
+        name = "jellyfin-a3";
+        url = "http://127.0.0.1:8096";
+        interval = 60;
+        expectedStatus = [
+          "200-299"
+          "302"
+        ];
+        maxredirects = 0;
+        description = "Jellyfin media server (a3, redirects to /web)";
+      }
+      {
         name = "lidarr-a3";
         url = "http://127.0.0.1:8686";
         interval = 60;
@@ -195,12 +206,6 @@ in
         url = "example.com@${miniIp}";
         interval = 60;
         description = "dnsmasq DNS resolver (mini)";
-      }
-      {
-        name = "jellyfin-mini";
-        url = "http://${miniIp}:8096";
-        interval = 60;
-        description = "Jellyfin media server (mini)";
       }
       {
         name = "miniserve-mini";
