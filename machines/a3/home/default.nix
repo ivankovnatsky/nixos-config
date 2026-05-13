@@ -48,6 +48,7 @@
     ../../../home/zsh.nix
     ../../../modules/flags
     ../../../modules/home/beszel-mgmt
+    ../../../modules/home/jellyfin-mgmt
     ../../../modules/home/launchd
     ../../../modules/home/nextdns-mgmt
     ../../../modules/home/tools
