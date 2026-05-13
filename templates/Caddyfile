@@ -146,18 +146,6 @@
 		}
 	}
 
-	@podservice host podservice.@externalDomain@
-	reverse_proxy @podservice @machineIp@:8083 {
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-
-	@textcast host textcast.@externalDomain@
-	reverse_proxy @textcast @machineIp@:8084 {
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-
 	@navidrome host navidrome.@externalDomain@
 	reverse_proxy @navidrome @machineIp@:4533 {
 		header_up X-Real-IP {remote_host}
