@@ -13,5 +13,11 @@
       remoteUrl = "https://forgejo.@domain@/@username@/workspace.git";
       branch = "main";
     }
+    {
+      path = "/storage/data";
+      remote = "origin";
+      remoteUrl = "https://forgejo.@domain@/@username@/data.git";
+      branch = "main";
+    }
   ];
 }
