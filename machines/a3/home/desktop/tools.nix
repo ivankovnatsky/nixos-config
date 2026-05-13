@@ -25,6 +25,11 @@
         "@openclaw/discord" = {
           version = "latest";
         };
+        # Same shape as @openclaw/discord — separate npm package needed for
+        # channels.whatsapp; openclaw-gateway prestart registers it.
+        "@openclaw/whatsapp" = {
+          version = "latest";
+        };
       };
 
       uv.packages = {
