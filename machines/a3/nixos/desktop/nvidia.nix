@@ -42,9 +42,7 @@
     nvidiaSettings = true;
 
     # Optionally, you may need to select the appropriate driver version for your specific GPU.
-    # Using mkDriver to compile driver for current kernel (6.14.8) instead of nixpkgs-master
-    # which has kernel 6.16.3 and would cause "inconsistent kernel versions" error
-    package = config.boot.kernelPackages.nvidiaPackages.beta;
+    package = config.boot.kernelPackages.nvidiaPackages.bleeding_edge;
     # package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
     #   version = "580.76.05";
     #   sha256_64bit = "sha256-IZvmNrYJMbAhsujB4O/4hzY8cx+KlAyqh7zAVNBdl/0=";
