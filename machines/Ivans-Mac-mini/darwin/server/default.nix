@@ -25,7 +25,6 @@
     ./http.nix
     ./linux-builder.nix
     ./logrotate.nix
-    ./mailpit.nix
     ./mas-upgrade.nix
     ./mosh.nix
     ./music-export.nix
