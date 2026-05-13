@@ -15,14 +15,6 @@
               panes:
                 - ls -lah
                 - make sync
-          - textcast:
-              root: ${config.flags.externalStoragePath}/Textcast/Texts
-              layout: main-horizontal
-              panes:
-                - nvim Texts.txt
-                - |
-                  cd ${config.flags.externalStoragePath}/Sources/github.com/ivankovnatsky/textcast
-                  make watch-cast
           - youtube:
               root: ${config.flags.externalStoragePath}/Youtube
               layout: main-horizontal
