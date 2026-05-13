@@ -216,12 +216,6 @@ in
         description = "Navidrome music streaming server (mini)";
       }
       {
-        name = "podservice-mini";
-        url = "http://${miniIp}:8083";
-        interval = 60;
-        description = "YouTube to Podcast service (mini)";
-      }
-      {
         name = "smb-mini";
         type = "tcp";
         url = "${miniIp}:445";
@@ -247,12 +241,6 @@ in
         url = "http://${miniIp}:8384";
         interval = 60;
         description = "Syncthing file sync (mini)";
-      }
-      {
-        name = "textcast-mini";
-        url = "http://${miniIp}:8084";
-        interval = 60;
-        description = "Article to audiobook service (mini)";
       }
     ];
   };
