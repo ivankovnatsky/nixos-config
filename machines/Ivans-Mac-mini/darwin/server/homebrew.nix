@@ -10,8 +10,5 @@
       "ffmpeg"
       "navidrome"
     ];
-    casks = [
-      "jellyfin"
-    ];
   };
 }
