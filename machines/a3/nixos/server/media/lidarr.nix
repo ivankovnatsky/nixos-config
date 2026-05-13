@@ -1,12 +1,12 @@
 { lib, ... }:
 
 let
-  musicDir = "/storage/data/music";
   downloadsDir = "/storage/data/media/downloads/lidarr";
 in
 {
+  # /storage/data/music is created by ../navidrome.nix (navidrome:media 2775);
+  # lidarr writes via membership in `media`.
   systemd.tmpfiles.rules = [
-    "d ${musicDir}     2775 lidarr media -"
     "d ${downloadsDir} 2775 lidarr media -"
   ];
 
