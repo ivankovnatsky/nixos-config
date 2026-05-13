@@ -8,7 +8,6 @@
     global.brewfile = true;
     brews = [
       "ffmpeg"
-      "forgejo"
       "navidrome"
     ];
     casks = [
