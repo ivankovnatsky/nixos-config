@@ -117,10 +117,10 @@ let
     # Read additional secrets for placeholder substitution
     ${optionalString (
       cfg.externalDomainFile != null
-    ) ''EXTERNAL_DOMAIN=$(cat "${cfg.externalDomainFile}")''}
+    ) ''EXTERNAL_DOMAIN=$(${pkgs.coreutils}/bin/cat "${cfg.externalDomainFile}")''}
     ${optionalString (
       cfg.postgresPasswordFile != null
-    ) ''POSTGRES_PASSWORD=$(cat "${cfg.postgresPasswordFile}")''}
+    ) ''POSTGRES_PASSWORD=$(${pkgs.coreutils}/bin/cat "${cfg.postgresPasswordFile}")''}
     EXTERNAL_DOMAIN=''${EXTERNAL_DOMAIN:-}
     POSTGRES_PASSWORD=''${POSTGRES_PASSWORD:-}
 
@@ -128,17 +128,17 @@ let
     ${
       if cfg.baseUrlFile != null then
         ''
-          BASE_URL=$(cat "${cfg.baseUrlFile}")
+          BASE_URL=$(${pkgs.coreutils}/bin/cat "${cfg.baseUrlFile}")
         ''
       else
         ''
-          BASE_URL=$(echo "${cfg.baseUrl}" | sed "s|@EXTERNAL_DOMAIN@|$EXTERNAL_DOMAIN|g")
+          BASE_URL=$(echo "${cfg.baseUrl}" | ${pkgs.gnused}/bin/sed "s|@EXTERNAL_DOMAIN@|$EXTERNAL_DOMAIN|g")
         ''
     }
     ${
       if cfg.usernameFile != null then
         ''
-          USERNAME=$(cat "${cfg.usernameFile}")
+          USERNAME=$(${pkgs.coreutils}/bin/cat "${cfg.usernameFile}")
         ''
       else
         ''
@@ -148,7 +148,7 @@ let
     ${
       if cfg.passwordFile != null then
         ''
-          PASSWORD=$(cat "${cfg.passwordFile}")
+          PASSWORD=$(${pkgs.coreutils}/bin/cat "${cfg.passwordFile}")
         ''
       else
         ''
@@ -162,23 +162,23 @@ let
     # tolerated) silently leave monitors unsynced until the next trigger.
     echo "Waiting for $BASE_URL to become ready..."
     READY=0
-    for _ in $(seq 180); do
+    for _ in $(${pkgs.coreutils}/bin/seq 180); do
       if ${pkgs.curl}/bin/curl -fsS -o /dev/null --connect-timeout 2 "$BASE_URL"; then
         echo "Kuma is ready."
         READY=1
         break
       fi
-      sleep 1
+      ${pkgs.coreutils}/bin/sleep 1
     done
     if [ "$READY" -ne 1 ]; then
       echo "Warning: $BASE_URL did not become ready within 180s; sync will likely fail"
     fi
 
     # Create runtime config with substituted placeholders
-    RUNTIME_CONFIG=$(mktemp -t uptime-kuma-monitors.XXXXXX)
-    trap 'rm -f "$RUNTIME_CONFIG"' EXIT
-    sed "s|@EXTERNAL_DOMAIN@|$EXTERNAL_DOMAIN|g" "${configJsonTemplate}" | \
-      sed "s|@POSTGRES_PASSWORD@|$POSTGRES_PASSWORD|g" > "$RUNTIME_CONFIG"
+    RUNTIME_CONFIG=$(${pkgs.coreutils}/bin/mktemp -t uptime-kuma-monitors.XXXXXX)
+    trap '${pkgs.coreutils}/bin/rm -f "$RUNTIME_CONFIG"' EXIT
+    ${pkgs.gnused}/bin/sed "s|@EXTERNAL_DOMAIN@|$EXTERNAL_DOMAIN|g" "${configJsonTemplate}" | \
+      ${pkgs.gnused}/bin/sed "s|@POSTGRES_PASSWORD@|$POSTGRES_PASSWORD|g" > "$RUNTIME_CONFIG"
 
     # Build command based on notifications.enable and webhook config.
     # When notifications are disabled, sync with --no-notifications so
@@ -198,7 +198,7 @@ let
           ${
             if cfg.discordWebhookFile != null then
               ''
-                DISCORD_WEBHOOK=$(cat "${cfg.discordWebhookFile}")
+                DISCORD_WEBHOOK=$(${pkgs.coreutils}/bin/cat "${cfg.discordWebhookFile}")
               ''
             else
               ''
