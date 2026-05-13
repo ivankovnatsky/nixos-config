@@ -43,10 +43,6 @@
     key = "forgejo/users/forgejoUser/name";
   };
 
-  sops.secrets.forgejo-token = {
-    key = "forgejo/users/forgejoUser/token";
-  };
-
   sops.secrets.forgejo-token-a3 = {
     key = "forgejo/users/forgejoUser/tokenA3";
   };
