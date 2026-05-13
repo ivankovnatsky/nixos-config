@@ -53,7 +53,6 @@
     ../../../modules/flags
     ../../../modules/home/arr-mgmt
     ../../../modules/home/dock
-    ../../../modules/home/forgejo-mgmt
     ../../../modules/home/jellyfin-mgmt
     ../../../modules/home/launchd
     ../../../modules/home/nextdns-mgmt

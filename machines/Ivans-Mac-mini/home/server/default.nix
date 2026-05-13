@@ -1,6 +1,5 @@
 {
   imports = [
-    ./forgejo
     ./jellyfin
     ./miniserve.nix
     ./navidrome
