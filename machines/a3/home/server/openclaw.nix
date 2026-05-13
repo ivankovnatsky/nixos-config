@@ -255,7 +255,8 @@ let
     fi
     # Same pattern for @openclaw/whatsapp. The plugin only adds the channel
     # surface; the linked WhatsApp Web session must still be established
-    # manually once via `openclaw channels login --channel whatsapp`.
+    # manually once via:
+    #   openclaw channels login --channel whatsapp
     if ! ${openclawBin} plugins inspect @openclaw/whatsapp >/dev/null; then
       echo "Registering @openclaw/whatsapp plugin with openclaw..."
       ${openclawBin} plugins install @openclaw/whatsapp
