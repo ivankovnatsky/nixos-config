@@ -255,12 +255,6 @@ in
         description = "SSH service (mini)";
       }
       {
-        name = "stash-media-mini";
-        url = "http://${miniIp}:9998";
-        interval = 60;
-        description = "Stash media organizer (mini)";
-      }
-      {
         name = "stubby-mini";
         type = "tcp";
         url = "${miniIp}:5453";
