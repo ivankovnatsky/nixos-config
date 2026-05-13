@@ -112,6 +112,12 @@ in
         description = "Lidarr music manager (a3)";
       }
       {
+        name = "navidrome-a3";
+        url = "http://127.0.0.1:4533";
+        interval = 60;
+        description = "Navidrome music streaming server (a3)";
+      }
+      {
         name = "ollama-a3";
         url = "http://127.0.0.1:11434";
         interval = 60;
@@ -213,12 +219,6 @@ in
         interval = 60;
         expectedStatus = 401;
         description = "Miniserve file server (mini, auth required)";
-      }
-      {
-        name = "navidrome-mini";
-        url = "http://${miniIp}:4533";
-        interval = 60;
-        description = "Navidrome music streaming server (mini)";
       }
       {
         name = "smb-mini";
