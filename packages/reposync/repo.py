@@ -123,6 +123,7 @@ def needs_init(repo):
     path = repo["path"]
     remote = repo["remote"]
     remote_url = repo["remoteUrl"]
+    branch = repo["branch"]
 
     if not os.path.isdir(path):
         return True
@@ -134,6 +135,16 @@ def needs_init(repo):
         return True
     if result.stdout.strip() != remote_url:
         return True
+
+    # Local branch missing while remote branch exists — init must
+    # create the tracking branch so sync_repo has something to pull/push.
+    local = run_git("rev-parse", "--verify", branch, cwd=path, check=False)
+    if local.returncode != 0:
+        remote_ref = run_git(
+            "rev-parse", "--verify", f"{remote}/{branch}", cwd=path, check=False
+        )
+        if remote_ref.returncode == 0:
+            return True
 
     return False
 
