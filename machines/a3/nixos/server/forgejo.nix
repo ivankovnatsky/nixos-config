@@ -7,10 +7,8 @@ let
 in
 {
   # Declarative admin/user/repo provisioning for the local Forgejo instance.
-  # Mirrors machines/Ivans-Mac-mini/home/server/forgejo/mgmt.nix — same sops
-  # keys, same user shape, same repo list. The NixOS variant of the
-  # local.services.forgejo-mgmt module wraps the same forgejo-mgmt CLI in a
-  # systemd oneshot ordered after forgejo.service.
+  # The NixOS variant of local.services.forgejo-mgmt wraps the forgejo-mgmt
+  # CLI in a systemd oneshot ordered after forgejo.service.
   #
   # NB: `forgejo-user-name` is already declared by system/sops-secrets.nix
   # (imported by the a3 NixOS config), so don't redeclare it here.
