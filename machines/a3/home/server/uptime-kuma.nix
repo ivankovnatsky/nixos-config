@@ -95,6 +95,12 @@ in
         description = "Forgejo SSH git access (a3)";
       }
       {
+        name = "lidarr-a3";
+        url = "http://127.0.0.1:8686";
+        interval = 60;
+        description = "Lidarr music manager (a3)";
+      }
+      {
         name = "ollama-a3";
         url = "http://127.0.0.1:11434";
         interval = 60;
@@ -111,6 +117,24 @@ in
         url = "http://127.0.0.1:8091";
         interval = 60;
         description = "Open WebUI (a3)";
+      }
+      {
+        name = "prowlarr-a3";
+        url = "http://127.0.0.1:9696";
+        interval = 60;
+        description = "Prowlarr indexer manager (a3)";
+      }
+      {
+        name = "radarr-a3";
+        url = "http://127.0.0.1:7878";
+        interval = 60;
+        description = "Radarr movie manager (a3)";
+      }
+      {
+        name = "sonarr-a3";
+        url = "http://127.0.0.1:8989";
+        interval = 60;
+        description = "Sonarr TV manager (a3)";
       }
       {
         name = "stash-a3";
@@ -135,6 +159,13 @@ in
         url = "http://127.0.0.1:8384";
         interval = 60;
         description = "Syncthing file sync (a3)";
+      }
+      {
+        name = "transmission-a3";
+        url = "http://127.0.0.1:9091";
+        interval = 60;
+        expectedStatus = 401;
+        description = "Transmission torrent client (a3, RPC auth required)";
       }
       {
         name = "uptime-kuma-a3";
@@ -185,12 +216,6 @@ in
         description = "Jellyfin media server (mini)";
       }
       {
-        name = "lidarr-mini";
-        url = "http://${miniIp}:8686";
-        interval = 60;
-        description = "Lidarr music manager (mini)";
-      }
-      {
         name = "mailpit-mini";
         url = "http://${miniIp}:8025";
         interval = 60;
@@ -216,29 +241,11 @@ in
         description = "YouTube to Podcast service (mini)";
       }
       {
-        name = "prowlarr-mini";
-        url = "http://${miniIp}:9696";
-        interval = 60;
-        description = "Prowlarr indexer manager (mini)";
-      }
-      {
-        name = "radarr-mini";
-        url = "http://${miniIp}:7878";
-        interval = 60;
-        description = "Radarr movie manager (mini)";
-      }
-      {
         name = "smb-mini";
         type = "tcp";
         url = "${miniIp}:445";
         interval = 60;
         description = "macOS built-in SMB service (mini)";
-      }
-      {
-        name = "sonarr-mini";
-        url = "http://${miniIp}:8989";
-        interval = 60;
-        description = "Sonarr TV manager (mini)";
       }
       {
         name = "ssh-mini";
@@ -271,13 +278,6 @@ in
         url = "http://${miniIp}:8084";
         interval = 60;
         description = "Article to audiobook service (mini)";
-      }
-      {
-        name = "transmission-mini";
-        url = "http://${miniIp}:9091";
-        interval = 60;
-        expectedStatus = 401;
-        description = "Transmission torrent client (mini, RPC auth required)";
       }
     ];
   };
