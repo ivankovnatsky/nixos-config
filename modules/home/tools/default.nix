@@ -17,11 +17,8 @@ let
       npmBin = "${cfg.toolsPrefix}/.npm/bin";
       uvBin = "${cfg.toolsPrefix}/.local/bin";
       uvToolDir = "${cfg.toolsPrefix}/.local/share/uv/tools";
-      # GOPATH/GOBIN follow the user's workspace (mirrors `home/go.nix`,
-      # which uses `externalStoragePath` on mini and `~/go` elsewhere
-      # — both flow through `cfg.toolsPrefix`).
-      goPath = "${cfg.toolsPrefix}/go";
-      goBin = "${cfg.toolsPrefix}/go/bin";
+      inherit (cfg) goPath;
+      goBin = "${cfg.goPath}/bin";
       # Claude CLI always installs to ~/.local/bin (hardcoded in binary, not configurable)
       claudeCli = "${config.home.homeDirectory}/.local/bin/claude";
       bun = "${pkgs.bun}/bin";
@@ -62,6 +59,25 @@ in
       type = types.str;
       default = config.home.homeDirectory;
       description = "Base directory for tool installations (npm, bun, uv). Defaults to home directory.";
+    };
+
+    goPath = mkOption {
+      type = types.str;
+      readOnly = true;
+      default =
+        if cfg.toolsPrefix == config.home.homeDirectory then
+          "${cfg.toolsPrefix}/go"
+        else
+          "${cfg.toolsPrefix}/.go";
+      defaultText = literalExpression ''
+        if toolsPrefix == $HOME then "$HOME/go" else "$\{toolsPrefix}/.go"
+      '';
+      description = ''
+        GOPATH for this user, derived from `toolsPrefix`. Dotted `.go`
+        when the workspace lives outside `$HOME` (external storage),
+        plain `go` otherwise. Consumed by both this module (for
+        `go install` binaries) and `home/go.nix` (for `GOPATH`).
+      '';
     };
 
     settings = mkOption {
