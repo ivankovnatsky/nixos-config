@@ -163,25 +163,9 @@
       inputs.nixpkgs.follows = "nixpkgs-nixos-unstable";
     };
 
-    # Pod Service - YouTube to Podcast Feed Service
-    podservice = {
-      url = "github:ivankovnatsky/podservice";
-    };
-
     # rems - macOS Reminders CLI
     rems = {
       url = "github:ivankovnatsky/rems";
-    };
-
-    # Textcast - Text to Audio Service
-    # This input may cause NAR hash mismatch errors due to git-crypt configured
-    # in .gitattributes, which causes GitHub's tarball generation to be
-    # non-deterministic across CDN nodes. If this happens, run:
-    # nix flake update textcast
-    # Alternative fix: use git+https://github.com/ivankovnatsky/textcast
-    # See: https://github.com/NixOS/nix/issues/6759
-    textcast = {
-      url = "github:ivankovnatsky/textcast";
     };
 
     nix-steipete-tools = {
