@@ -9,7 +9,12 @@
     fsType = "ext4";
   };
 
+  # Owned by root (not ivan) so systemd-tmpfiles can canonicalize through
+  # this dir into service-user-owned descendants (e.g. /storage/data/media/...).
+  # Tmpfiles refuses unprivileged → other-user transitions during path
+  # traversal, which previously prevented .incomplete / watchdir / *arr
+  # subdirs of /storage/data/media/downloads from being created.
   systemd.tmpfiles.rules = [
-    "d /storage/data 0755 ivan users -"
+    "d /storage/data 0755 root users -"
   ];
 }
