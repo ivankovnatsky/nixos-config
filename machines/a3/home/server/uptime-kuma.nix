@@ -197,19 +197,6 @@ in
         description = "dnsmasq DNS resolver (mini)";
       }
       {
-        name = "forgejo-mini";
-        url = "http://${miniIp}:3300";
-        interval = 60;
-        description = "Forgejo git server (mini)";
-      }
-      {
-        name = "forgejo-ssh-mini";
-        type = "tcp";
-        url = "${miniIp}:2222";
-        interval = 60;
-        description = "Forgejo SSH git access (mini)";
-      }
-      {
         name = "jellyfin-mini";
         url = "http://${miniIp}:8096";
         interval = 60;
