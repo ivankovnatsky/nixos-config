@@ -49,6 +49,40 @@ let
     ${pkgs.jq}/bin/jq --arg apiKey "$API_KEY" '. + {apiKey: $apiKey}' "$TEMP_CONFIG"
     rm -f "$TEMP_CONFIG"
   '';
+
+  syncScript = pkgs.writeShellScript "jellyfin-mgmt-sync" ''
+    set -e
+
+    echo "Syncing Jellyfin configuration..."
+
+    # Wait for Jellyfin to become reachable. On boot, systemd may fire the
+    # sync before jellyfin.service has finished starting; without this loop
+    # the run silently no-ops until the next activation.
+    BASE_URL="${cfg.baseUrl}"
+    echo "Waiting for $BASE_URL to become ready..."
+    for _ in $(${pkgs.coreutils}/bin/seq 180); do
+      if ${pkgs.curl}/bin/curl -fsS -o /dev/null --connect-timeout 2 "$BASE_URL/System/Info/Public"; then
+        echo "Jellyfin is ready."
+        break
+      fi
+      ${pkgs.coreutils}/bin/sleep 1
+    done
+
+    ${
+      if cfg.apiKeyFile != null then
+        ''
+          CONFIG_JSON=$(${runtimeConfigScript})
+          echo "$CONFIG_JSON" | ${pkgs.jellyfin-mgmt}/bin/jellyfin-mgmt sync --config-file /dev/stdin 2>&1 || echo "Warning: Jellyfin sync failed with exit code $?"
+        ''
+      else
+        ''
+          ${pkgs.jellyfin-mgmt}/bin/jellyfin-mgmt sync \
+            --config-file "${configJson}" 2>&1 || echo "Warning: Jellyfin sync failed with exit code $?"
+        ''
+    }
+
+    echo "Jellyfin configuration sync completed"
+  '';
 in
 {
   options.local.services.jellyfin-mgmt = {
@@ -134,35 +168,30 @@ in
       }
     ];
 
-    # Darwin launchd service
-    local.launchd.services.jellyfin-mgmt = {
+    local.launchd.services.jellyfin-mgmt = mkIf pkgs.stdenv.isDarwin {
       enable = true;
       keepAlive = false;
       runAtLoad = true;
+      command = "${syncScript}";
+    };
 
-      command =
-        let
-          syncScript = pkgs.writeShellScript "jellyfin-mgmt-sync" ''
-            set -e
-
-            echo "Syncing Jellyfin configuration..."
-            ${
-              if cfg.apiKeyFile != null then
-                ''
-                  CONFIG_JSON=$(${runtimeConfigScript})
-                  echo "$CONFIG_JSON" | ${pkgs.jellyfin-mgmt}/bin/jellyfin-mgmt sync --config-file /dev/stdin 2>&1 || echo "Warning: Jellyfin sync failed with exit code $?"
-                ''
-              else
-                ''
-                  ${pkgs.jellyfin-mgmt}/bin/jellyfin-mgmt sync \
-                    --config-file "${configJson}" 2>&1 || echo "Warning: Jellyfin sync failed with exit code $?"
-                ''
-            }
-
-            echo "Jellyfin configuration sync completed"
-          '';
-        in
-        "${syncScript}";
+    systemd.user.services.jellyfin-mgmt = mkIf pkgs.stdenv.isLinux {
+      Unit = {
+        Description = "Declarative Jellyfin configuration sync";
+        After = [
+          "network-online.target"
+          "sops-nix.service"
+        ];
+        Wants = [
+          "network-online.target"
+          "sops-nix.service"
+        ];
+      };
+      Service = {
+        Type = "oneshot";
+        ExecStart = "${syncScript}";
+      };
+      Install.WantedBy = [ "default.target" ];
     };
   };
 }
