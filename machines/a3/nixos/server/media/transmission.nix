@@ -16,6 +16,16 @@ let
   watchDir = "/storage/data/media/downloads/watchdir";
 in
 {
+  # Upstream's BindPaths for the transmission unit references download-dir,
+  # incomplete-dir, and watch-dir; if any are missing at start, systemd fails
+  # mount namespace setup with status=226/NAMESPACE. Pre-create them here so
+  # the unit can come up on a fresh /storage.
+  systemd.tmpfiles.rules = [
+    "d ${downloadsDir}  2775 transmission media -"
+    "d ${incompleteDir} 2775 transmission media -"
+    "d ${watchDir}      2775 transmission media -"
+  ];
+
   sops.secrets.transmission-username = {
     key = "transmission/username";
     owner = "transmission";
