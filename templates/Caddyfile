@@ -169,12 +169,6 @@
 		}
 	}
 
-	@mailpit host mailpit.@externalDomain@
-	reverse_proxy @mailpit @machineIp@:8025 {
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-	}
-
 	@forgejo host forgejo.@externalDomain@
 	reverse_proxy @forgejo @a3Ip@:3000 {
 		header_up X-Real-IP {remote_host}
