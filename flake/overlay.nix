@@ -100,8 +100,6 @@ let
   # 4. Direct packages from other flakes
   flakeOverlays = {
     inherit (inputs.username.packages.${system}) username;
-    inherit (inputs.podservice.packages.${system}) podservice;
-    inherit (inputs.textcast.packages.${system}) textcast;
 
     rems = inputs.rems.packages.${system}.default;
     pyenv-nix-install = inputs.pyenv-nix-install.packages.${system}.default;
