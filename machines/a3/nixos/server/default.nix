@@ -15,6 +15,7 @@
     ./forgejo.nix
     ./http.nix
     ./media
+    ./navidrome.nix
     ./ollama.nix
     ./open-webui.nix
     ./remote-build.nix
