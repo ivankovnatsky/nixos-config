@@ -39,31 +39,31 @@
 	}
 
 	@lidarr host lidarr.@externalDomain@
-	reverse_proxy @lidarr @machineIp@:8686 {
+	reverse_proxy @lidarr @a3Ip@:8686 {
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
 	}
 
 	@prowlarr host prowlarr.@externalDomain@
-	reverse_proxy @prowlarr @machineIp@:9696 {
+	reverse_proxy @prowlarr @a3Ip@:9696 {
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
 	}
 
 	@radarr host radarr.@externalDomain@
-	reverse_proxy @radarr @machineIp@:7878 {
+	reverse_proxy @radarr @a3Ip@:7878 {
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
 	}
 
 	@sonarr host sonarr.@externalDomain@
-	reverse_proxy @sonarr @machineIp@:8989 {
+	reverse_proxy @sonarr @a3Ip@:8989 {
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
 	}
 
 	@transmission host transmission.@externalDomain@
-	reverse_proxy @transmission @machineIp@:9091 {
+	reverse_proxy @transmission @a3Ip@:9091 {
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
 	}
