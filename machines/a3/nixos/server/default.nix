@@ -14,6 +14,7 @@
     ./beszel.nix
     ./forgejo.nix
     ./http.nix
+    ./media
     ./ollama.nix
     ./open-webui.nix
     ./remote-build.nix
