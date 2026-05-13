@@ -2,7 +2,6 @@
   imports = [
     ./forgejo
     ./jellyfin
-    ./media
     ./miniserve.nix
     ./navidrome
     ./podservice
