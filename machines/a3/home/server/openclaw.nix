@@ -99,6 +99,15 @@ let
         sessionFilter = [ "discord" ];
       };
 
+      # Group mention triggers (channel-wide fallback used by all agents
+      # via messages.groupChat.mentionPatterns). Native WhatsApp @-mentions
+      # don't fire from a personal-number setup (the bot's JID is your own
+      # phone, so WhatsApp's autocomplete won't surface it and openclaw's
+      # self-chat safeguard suppresses mention-JID auto-triggers). Typing
+      # "Lizard" (case-insensitive, word-boundary) in a group message
+      # wakes the bot instead.
+      messages.groupChat.mentionPatterns = [ "(?i)\\bLizard\\b" ];
+
       tools.exec = {
         security = "full";
         ask = "off";
