@@ -216,12 +216,6 @@ in
         description = "Jellyfin media server (mini)";
       }
       {
-        name = "mailpit-mini";
-        url = "http://${miniIp}:8025";
-        interval = 60;
-        description = "Mailpit email testing UI (mini)";
-      }
-      {
         name = "miniserve-mini";
         url = "http://${miniIp}:8080";
         interval = 60;
