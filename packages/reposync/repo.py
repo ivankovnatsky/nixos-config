@@ -18,12 +18,39 @@ def init_repo(repo, webhook_url=None):
     name = f"{display} ({remote}/{branch})"
 
     if not os.path.isdir(path):
-        click.echo(f"{name}: creating directory {path}", err=True)
-        try:
-            os.makedirs(path, exist_ok=True)
-        except OSError as e:
-            alert(webhook_url, f"`{name}`: failed to create directory — {e}")
+        parent = os.path.dirname(path.rstrip("/"))
+        if not os.path.isdir(parent):
+            alert(
+                webhook_url,
+                f"`{name}`: parent directory {parent} does not exist — refusing to create it",
+            )
             return False
+        click.echo(f"{name}: cloning {remote_url} into {path}", err=True)
+        result = run_git(
+            "clone",
+            "--origin",
+            remote,
+            "--branch",
+            branch,
+            remote_url,
+            path,
+            check=False,
+        )
+        if result.returncode != 0:
+            # Fallback for empty/branchless remotes: clone without --branch.
+            result = run_git(
+                "clone",
+                "--origin",
+                remote,
+                remote_url,
+                path,
+                check=False,
+            )
+            if result.returncode != 0:
+                alert(
+                    webhook_url, f"`{name}`: git clone failed — {result.stderr.strip()}"
+                )
+                return False
 
     git_dir = os.path.join(path, ".git")
     if not os.path.isdir(git_dir):
