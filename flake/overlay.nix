@@ -14,9 +14,6 @@ let
     gwq = {
       inherit (masterOverlays.nixpkgs-darwin-master-gwq) go_1_26;
     };
-    navidrome = {
-      inherit (prev) navidrome;
-    };
   };
 
   autoOverlays = builtins.foldl' (
