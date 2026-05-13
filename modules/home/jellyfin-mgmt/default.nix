@@ -41,13 +41,13 @@ let
 
   # Runtime config generation script (used with apiKeyFile)
   runtimeConfigScript = ''
-    TEMP_CONFIG=$(mktemp)
-    API_KEY=$(cat ${cfg.apiKeyFile})
-    cat > "$TEMP_CONFIG" << 'EOF'
+    TEMP_CONFIG=$(${pkgs.coreutils}/bin/mktemp)
+    API_KEY=$(${pkgs.coreutils}/bin/cat ${cfg.apiKeyFile})
+    ${pkgs.coreutils}/bin/cat > "$TEMP_CONFIG" << 'EOF'
     ${builtins.toJSON baseConfig}
     EOF
     ${pkgs.jq}/bin/jq --arg apiKey "$API_KEY" '. + {apiKey: $apiKey}' "$TEMP_CONFIG"
-    rm -f "$TEMP_CONFIG"
+    ${pkgs.coreutils}/bin/rm -f "$TEMP_CONFIG"
   '';
 
   syncScript = pkgs.writeShellScript "jellyfin-mgmt-sync" ''
