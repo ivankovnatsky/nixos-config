@@ -147,7 +147,7 @@
 	}
 
 	@navidrome host navidrome.@externalDomain@
-	reverse_proxy @navidrome @machineIp@:4533 {
+	reverse_proxy @navidrome @a3Ip@:4533 {
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
 		# Streaming support
