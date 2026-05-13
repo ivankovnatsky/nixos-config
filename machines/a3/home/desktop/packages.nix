@@ -38,6 +38,7 @@ in
       nvtopPackages.nvidia # GPU monitoring (like htop for GPUs)
       pandoc
       parallel
+      pciutils
       power-consumption
       pre-commit
       pv
