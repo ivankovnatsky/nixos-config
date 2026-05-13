@@ -69,7 +69,7 @@
 	}
 
 	@jellyfin host jellyfin.@externalDomain@
-	reverse_proxy @jellyfin @machineIp@:8096 {
+	reverse_proxy @jellyfin @a3Ip@:8096 {
 		# Enable WebSocket support
 		header_up X-Real-IP {remote_host}
 		header_up Host {host}
