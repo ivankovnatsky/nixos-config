@@ -42,11 +42,6 @@
         "yt-dlp" = {
           binary = "yt-dlp";
         };
-        # Pip name `openai-whisper`, ships a `whisper` console script.
-        # Required by openclaw's tools.media.audio configuration.
-        "openai-whisper" = {
-          binary = "whisper";
-        };
       };
 
       go.packages = {
