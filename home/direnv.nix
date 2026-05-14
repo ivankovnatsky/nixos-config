@@ -1,7 +1,11 @@
+{ pkgs, ... }:
 {
-  # direnv binary and nix-direnv are installed via Homebrew (see
-  # darwin/homebrew.nix). This file declares the user-level config that
+  # direnv binary is installed via Homebrew (see darwin/homebrew.nix);
+  # nix-direnv is not a Homebrew formula, so its direnvrc comes from
+  # nixpkgs. This file declares the user-level config that
   # `programs.direnv` used to manage.
+  home.packages = [ pkgs.nix-direnv ];
+
   home.file = {
     ".config/direnv/direnv.toml".text = ''
       [global]
@@ -12,7 +16,7 @@
     '';
 
     ".config/direnv/direnvrc".text = ''
-      source /opt/homebrew/share/nix-direnv/direnvrc
+      source ${pkgs.nix-direnv}/share/nix-direnv/direnvrc
     '';
   };
 }
