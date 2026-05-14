@@ -33,6 +33,7 @@
     ../../../home/nixvim/plugins/gen-nvim
     ../../../home/nixvim/plugins/octo-nvim
     ../../../home/nixvim/plugins/unified-nvim
+    ../../../home/notifications.nix
     ../../../home/nushell.nix
     ../../../home/packages-darwin.nix
     ../../../home/packages.nix
@@ -71,7 +72,6 @@
     ./firefox.nix
     ./flags.nix
     ./nixvim.nix
-    ./notifications.nix
     ./packages.nix
     ./prevent-sleep.nix
     ./programs.nix

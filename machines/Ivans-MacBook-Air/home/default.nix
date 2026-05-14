@@ -32,6 +32,7 @@
     ../../../home/nixvim.nix
     ../../../home/nixvim/plugins/codediff
     ../../../home/nixvim/plugins/gpg-nvim
+    ../../../home/notifications.nix
     ../../../home/npm.nix
     ../../../home/nushell.nix
     ../../../home/obsidian-darwin.nix
@@ -58,6 +59,7 @@
     ../../../modules/home/dock
     ../../../modules/home/launchd
     ../../../modules/home/nextdns-mgmt
+    ../../../modules/home/notifications
     ../../../modules/home/reposync
     ../../../modules/home/syncthing-mgmt
     ../../../modules/home/tools
