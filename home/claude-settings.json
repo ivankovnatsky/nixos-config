@@ -1,4 +1,5 @@
 {
+  "editorMode": "vim",
   "effortLevel": "high",
   "env": {
     "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
