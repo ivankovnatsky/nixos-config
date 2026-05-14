@@ -48,6 +48,7 @@ in
       rustc
       temperatures
       tmux-temperatures
+      typos
       typst
       typstyle
       uv
