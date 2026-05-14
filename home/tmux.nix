@@ -35,6 +35,10 @@
       # https://neovim.io/doc/user/faq.html#faq
       set -sg escape-time 10
 
+      # Enable extended keys so modified Enter (e.g. Shift+Enter) works
+      set -g extended-keys on
+      set -as terminal-features 'xterm*:extkeys'
+
       # Check if running on macOS and in Terminal.app
       if-shell "[ $(uname) = 'Darwin' ] && [ $TERM_PROGRAM = 'Apple_Terminal' ]" \
         "set -g status off" \
