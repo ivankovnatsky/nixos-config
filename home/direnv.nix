@@ -4,8 +4,6 @@
   # nix-direnv is not a Homebrew formula, so its direnvrc comes from
   # nixpkgs. This file declares the user-level config that
   # `programs.direnv` used to manage.
-  home.packages = [ pkgs.nix-direnv ];
-
   home.file = {
     ".config/direnv/direnv.toml".text = ''
       [global]
