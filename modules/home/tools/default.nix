@@ -28,8 +28,11 @@ let
     };
   };
 
-  configJson = pkgs.writeText "tools-config.json" (
-    builtins.toJSON (lib.recursiveUpdate generatedConfig cfg.settings)
+  # `pkgs.formats.json` pretty-prints via `jq`, so the deployed file
+  # stays human-readable and the tools activation diff shows real
+  # line-level changes instead of one squashed line.
+  configJson = (pkgs.formats.json { }).generate "tools-config.json" (
+    lib.recursiveUpdate generatedConfig cfg.settings
   );
 
   toolsSections = [
