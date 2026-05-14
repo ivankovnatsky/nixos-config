@@ -16,5 +16,8 @@
   # subdirs of /storage/data/media/downloads from being created.
   systemd.tmpfiles.rules = [
     "d /storage/data 0755 root users -"
+    # miniserve (home-manager user unit) uploads here; needs ivan-owned dir.
+    "d /storage/data/backup 0755 ivan users -"
+    "d /storage/data/backup/Machines 0755 ivan users -"
   ];
 }
