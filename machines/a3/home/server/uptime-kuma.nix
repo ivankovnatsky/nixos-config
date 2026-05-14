@@ -95,6 +95,13 @@ in
         description = "Forgejo SSH git access (a3)";
       }
       {
+        name = "miniserve-a3";
+        url = "http://127.0.0.1:8080";
+        interval = 60;
+        expectedStatus = 401;
+        description = "Miniserve file server (a3, auth required)";
+      }
+      {
         name = "jellyfin-a3";
         url = "http://127.0.0.1:8096";
         interval = 60;
@@ -212,13 +219,6 @@ in
         url = "example.com@${miniIp}";
         interval = 60;
         description = "dnsmasq DNS resolver (mini)";
-      }
-      {
-        name = "miniserve-mini";
-        url = "http://${miniIp}:8080";
-        interval = 60;
-        expectedStatus = 401;
-        description = "Miniserve file server (mini, auth required)";
       }
       {
         name = "smb-mini";
