@@ -6,6 +6,9 @@
 
     settings = {
       npm.packages = {
+        "@earendil-works/pi-coding-agent" = {
+          binary = "pi";
+        };
         "@google/gemini-cli" = {
           binary = "gemini";
         };
