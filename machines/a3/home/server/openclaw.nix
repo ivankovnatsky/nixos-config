@@ -12,7 +12,9 @@ let
   tmpDir = "${stateDir}/tmp";
   # Installed by the native tools settings in tools.nix.
   openclawBin = "${config.home.homeDirectory}/.npm/bin/openclaw";
-  whisperBin = "${config.home.homeDirectory}/.local/bin/whisper";
+  # whisper CLI from nixpkgs (see home/desktop/packages.nix) — used by
+  # tools.media.audio below.
+  whisperBin = "${pkgs.openai-whisper}/bin/whisper";
   openclawSourceDir = "${config.home.homeDirectory}/Sources/github.com/openclaw/openclaw";
   gatewayPort = 18789;
 
@@ -240,10 +242,6 @@ let
     umask 077
     if [ ! -x "${openclawBin}" ]; then
       echo "openclaw not yet installed at ${openclawBin}; wait for local.tools deploy to finish" >&2
-      exit 1
-    fi
-    if [ ! -x "${whisperBin}" ]; then
-      echo "whisper not yet installed at ${whisperBin}; wait for local.tools deploy to finish" >&2
       exit 1
     fi
     ${pkgs.coreutils}/bin/mkdir -p \
