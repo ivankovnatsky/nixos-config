@@ -1,34 +1,18 @@
 { config, pkgs, ... }:
 
-# Replaces machines/Ivans-Mac-mini/home/server/navidrome (launchd) with the
-# NixOS upstream services.navidrome module on a3. Music root lives at
-# /storage/data/music — owned ivan:media 2775 here. `ivan` owns it because
-# the library is populated by `rclone sync` over SFTP logging in as `ivan`,
-# and only a file's owner (or root) may set its mtime via utimes() — group
-# write is not enough, so a non-owner rclone run fails every file with
-# "SetModTime failed: permission denied". lidarr writes imports via the
-# shared `media` group (setgid dir). Navidrome runs as its own static
-# navidrome:navidrome system user with PrivateUsers=true, which squashes
-# unmapped groups inside its namespace — so it reads the library through
-# the tree's `other` permission bits (files 0644, dirs 2755/2775), not via
-# group. The upstream module bind-mounts MusicFolder read-only into the
-# unit, so navidrome only ever reads.
+# NixOS upstream services.navidrome module on a3 (replaces the mini launchd
+# setup). Music lives at /storage/data/music owned ivan:media, so `rclone
+# sync` over SFTP as ivan can set mtimes — only a file's owner may. navidrome
+# runs PrivateUsers=true, so it reads the tree via the `other` permission
+# bits; the module bind-mounts MusicFolder read-only.
 
 let
   musicDir = "/storage/data/music";
 in
 {
-  # Owned ivan:media 2775: `ivan` owns the tree so `rclone sync` over SFTP
-  # (which logs in as ivan) can set mtimes; setgid `media` lets lidarr (in
-  # `media`) write imports. Declaring it here also keeps music existing
-  # independently of lidarr.nix's tmpfiles rule.
-  #
-  # `Z` recursively reconciles ownership on existing deployments: the `d`
-  # rule is a no-op once the directory exists, so without `Z` the files
-  # still owned by navidrome (from the launchd-era migration) keep failing
-  # rclone's SetModTime. mode `-` recursively chowns without touching any
-  # file modes — the existing tree is files 0644 / dirs 2755-2775, already
-  # world-readable, so navidrome keeps read access via its `other` bits.
+  # ivan owns the tree so rclone can set mtimes; setgid `media` lets lidarr
+  # write imports. `Z` recursively chowns the existing tree (still owned by
+  # navidrome from the launchd-era migration); mode `-` leaves modes intact.
   systemd.tmpfiles.rules = [
     "d ${musicDir} 2775 ivan media -"
     "Z ${musicDir} - ivan media -"
