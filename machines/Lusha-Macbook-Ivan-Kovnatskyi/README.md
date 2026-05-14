@@ -93,6 +93,7 @@ Configured Do Not Disturb to filter out Iru MDM notifications:
 - Notifications
 - Local network access
 - Allow access to control "Google Chrome"
+- Microphone (prompted by Claude Code)
 
 ### Hammerspoon
 
