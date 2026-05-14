@@ -35,6 +35,7 @@
     ../../../home/nushell.nix
     ../../../home/obsidian.nix
     ../../../home/packages.nix
+    ../../../home/pi-models.nix
     ../../../home/ranger.nix
     ../../../home/rebuild-diff.nix
     ../../../home/sops.nix
