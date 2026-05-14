@@ -11,5 +11,6 @@
       ]
     ))
     gh-repos-sync
+    typos
   ];
 }
