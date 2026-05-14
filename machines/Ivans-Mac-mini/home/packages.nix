@@ -15,5 +15,6 @@
     music-export
     sesh
     treefmt
+    typos
   ];
 }
