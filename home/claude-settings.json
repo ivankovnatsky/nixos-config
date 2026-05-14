@@ -1,0 +1,31 @@
+{
+  "effortLevel": "high",
+  "env": {
+    "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+  },
+  "feedbackSurveyRate": 0,
+  "includeCoAuthoredBy": false,
+  "permissions": {
+    "allow": [
+      "Read(@HOME_WORK_PATH@/Sources/**)",
+      "Bash(git add:*)",
+      "Bash(git log:*)",
+      "WebFetch(domain:*)",
+      "WebSearch",
+      "Bash(nix-prefetch-url:*)",
+      "Read(@HOME@/.config/**)",
+      "Read(@HOME@/.local/**)"
+    ],
+    "autoApproveWebFetch": true,
+    "defaultMode": "auto",
+    "deny": [
+      "Bash(sudo:*)"
+    ]
+  },
+  "skipAutoPermissionPrompt": true,
+  "skipDangerousModePermissionPrompt": true,
+  "statusLine": {
+    "command": "@HOME@/.local/bin/claude-statusline",
+    "type": "command"
+  }
+}
