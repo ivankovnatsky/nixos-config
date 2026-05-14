@@ -92,7 +92,10 @@ let
     };
   };
 
-  claudeSettingsJson = pkgs.writeText "claude-settings.json" (builtins.toJSON claudeSettings);
+  # `pkgs.formats.json` pretty-prints via `jq`, so the deployed file
+  # stays human-readable and the tools activation diff shows real
+  # line-level changes instead of one squashed line.
+  claudeSettingsJson = (pkgs.formats.json { }).generate "claude-settings.json" claudeSettings;
 in
 {
   local.tools.settings.files = [
