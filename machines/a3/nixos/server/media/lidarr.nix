@@ -4,7 +4,7 @@ let
   downloadsDir = "/storage/data/media/downloads/lidarr";
 in
 {
-  # /storage/data/music is created by ../navidrome.nix (navidrome:media 2775);
+  # /storage/data/music is created by ../navidrome.nix (ivan:media 2775);
   # lidarr writes via membership in `media`.
   systemd.tmpfiles.rules = [
     "d ${downloadsDir} 2775 lidarr media -"
