@@ -63,7 +63,10 @@ let
     };
   };
 
-  geminiSettingsJson = pkgs.writeText "gemini-settings.json" (builtins.toJSON geminiSettings);
+  # `pkgs.formats.json` pretty-prints via `jq`, so the deployed file
+  # stays human-readable and the tools activation diff shows real
+  # line-level changes instead of one squashed line.
+  geminiSettingsJson = (pkgs.formats.json { }).generate "gemini-settings.json" geminiSettings;
 in
 {
   local.tools.settings.files = [
