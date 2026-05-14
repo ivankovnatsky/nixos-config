@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  osConfig,
   ...
 }:
 
@@ -260,7 +261,14 @@ EOF
           hooksPath = "${config.home.homeDirectory}/.config/git/hooks";
         };
         safe = {
-          directory = "${config.flags.homeWorkPath}/Sources/github.com/ivankovnatsky/nix-config";
+          # /storage/data on a3 is synced by reposync but owned root:users
+          # (see machines/a3/nixos/server/storage-disk.nix), which trips git's
+          # "detected dubious ownership" check. reposync runs as ivan and reads
+          # this user config, so whitelist the path here for a3 only.
+          directory = [
+            "${config.flags.homeWorkPath}/Sources/github.com/ivankovnatsky/nix-config"
+          ]
+          ++ lib.optional (osConfig.networking.hostName == "a3") "/storage/data";
         };
       };
     };
