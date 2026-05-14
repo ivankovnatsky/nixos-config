@@ -82,11 +82,11 @@ else
     pigz >"$ARCHIVE_PATH"
 fi
 
-export TARGET_MACHINE=192.168.50.4
+export TARGET_MACHINE=192.168.50.6
 DATE_DIR=$(date +%Y-%m-%d)
 export DATE_DIR
 
-# Always copy to mini regardless of machine
+# Always copy to a3 regardless of machine
 BACKUP_PATH=$STORAGE_DATA_PATH/Backup/Machines/
 # shellcheck disable=SC2029
 ssh "ivan@$TARGET_MACHINE" "mkdir -p $BACKUP_PATH/$HOSTNAME/system/$DATE_DIR"
