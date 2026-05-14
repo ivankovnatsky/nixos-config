@@ -61,10 +61,6 @@ in
           set -gx PATH $PATH $HOME/bin
       end
 
-      if set -q GOPATH; and test -d $GOPATH/bin
-          set -gx PATH $PATH $GOPATH/bin
-      end
-
       if test -d ${config.local.tools.toolsPrefix}/.npm/bin
           set -gx PATH $PATH ${config.local.tools.toolsPrefix}/.npm/bin
       end

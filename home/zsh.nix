@@ -97,10 +97,6 @@ in
         export PATH=$PATH:$HOME/bin
       fi
 
-      if [[ -n "$GOPATH" && -d "$GOPATH/bin" ]]; then
-        export PATH=$PATH:$GOPATH/bin
-      fi
-
       if [[ -d ${config.local.tools.toolsPrefix}/.npm/bin ]]; then
         export PATH=$PATH:${config.local.tools.toolsPrefix}/.npm/bin
       fi
