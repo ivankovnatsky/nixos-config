@@ -85,7 +85,7 @@ def check_tar_on_darwin() -> None:
 
 # Defaults
 DEFAULT_STORAGE_PATH = "/Volumes/Storage/Data"
-DEFAULT_MINISERVE_URL = "http://192.168.50.4:8080"
+DEFAULT_MINISERVE_URL = "http://192.168.50.6:8080"
 
 EXCLUDE_PATTERNS: dict[str, list[str]] = {
     "runtime": [
@@ -228,16 +228,16 @@ def upload_miniserve(
 ) -> bool:
     """Upload backup using curl to miniserve."""
     date_dir = datetime.now().strftime("%Y-%m-%d")
-    upload_path = f"/Backup/Machines/{hostname}/{home_parent_dir}/{date_dir}"
+    upload_path = f"/backup/Machines/{hostname}/{home_parent_dir}/{date_dir}"
 
     click.echo(f"Creating directory: {upload_path}")
 
     # Create directories
     auth = f"{user}:{password}"
     for mkdir_path, mkdir_name in [
-        ("/Backup/Machines", hostname),
-        (f"/Backup/Machines/{hostname}", home_parent_dir),
-        (f"/Backup/Machines/{hostname}/{home_parent_dir}", date_dir),
+        ("/backup/Machines", hostname),
+        (f"/backup/Machines/{hostname}", home_parent_dir),
+        (f"/backup/Machines/{hostname}/{home_parent_dir}", date_dir),
     ]:
         subprocess.run(
             [
