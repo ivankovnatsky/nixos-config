@@ -69,6 +69,10 @@ in
           set -gx PATH $PATH ${config.local.tools.toolsPrefix}/.bun/bin
       end
 
+      if test -d ${config.local.tools.goPath}/bin
+          set -gx PATH $PATH ${config.local.tools.goPath}/bin
+      end
+
       # uv tool install directory
       set -gx UV_TOOL_BIN_DIR ${config.local.tools.toolsPrefix}/.local/bin
       set -gx UV_TOOL_DIR ${config.local.tools.toolsPrefix}/.local/share/uv/tools
