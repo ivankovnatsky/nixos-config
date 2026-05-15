@@ -15,7 +15,6 @@
     ../../../home/gemini-settings.nix
     ../../../home/ghorg.nix
     ../../../home/ghostty.nix
-    ../../../home/giffer.nix
     ../../../home/git
     ../../../home/go.nix
     ../../../home/gpg.nix
