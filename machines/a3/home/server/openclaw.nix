@@ -67,31 +67,6 @@ let
         };
       };
 
-      # WhatsApp channel runs via the gateway's Baileys (WhatsApp Web
-      # protocol) transport. The bot is linked once via
-      # `openclaw channels login --channel whatsapp` (QR scan) and
-      # credentials persist in
-      # ~/.openclaw/credentials/whatsapp/default/creds.json. allowFrom is
-      # injected at runtime from sops (see gatewayWithSecrets below) so the
-      # E.164 phone number is not in the Nix store. Keys validated against
-      # openclaw 2026.5.x strict WhatsAppConfigSchema.
-      channels.whatsapp = {
-        enabled = true;
-        dmPolicy = "allowlist";
-        groupPolicy = "allowlist";
-        groups = {
-          "*" = {
-            requireMention = true;
-          };
-        };
-        sendReadReceipts = true;
-        reactionLevel = "minimal";
-        replyToMode = "off";
-        textChunkLimit = 4000;
-        chunkMode = "length";
-        mediaMaxMb = 50;
-      };
-
       approvals.exec = {
         enabled = true;
         mode = "session";
@@ -171,19 +146,13 @@ let
     DOMAIN=$(cat ${config.sops.secrets.external-domain.path})
     SERVER_ID=$(cat ${config.sops.secrets.openclaw-discord-server-id.path})
     USER_ID=$(cat ${config.sops.secrets.openclaw-discord-user-id.path})
-    WHATSAPP_PHONE=$(cat ${config.sops.secrets.openclaw-whatsapp-phone.path})
     # Fail loud rather than silently injecting allowFrom=[""] (schema-valid
     # but matches no sender → all WhatsApp DMs/groups silently dropped).
-    if [ -z "$WHATSAPP_PHONE" ]; then
-      echo "openclaw-whatsapp-phone secret is empty; add openClaw/whatsappPhone to secrets/default.yaml" >&2
-      exit 1
-    fi
     export DISCORD_BOT_TOKEN=$(cat ${config.sops.secrets.openclaw-discord-bot-token.path})
     ${pkgs.jq}/bin/jq \
       --arg origin "https://openclaw.$DOMAIN" \
       --arg serverId "$SERVER_ID" \
       --arg userId "$USER_ID" \
-      --arg whatsappPhone "$WHATSAPP_PHONE" \
       --arg gatewayTokenPath "${config.sops.secrets.openclaw-gateway-token.path}" \
       --arg discordTokenPath "${config.sops.secrets.openclaw-discord-bot-token.path}" \
       --arg geminiApiKeyPath "${config.sops.secrets.openclaw-gemini-api-key.path}" \
@@ -203,7 +172,6 @@ let
            apiKey: { source: "file", provider: "sops-openai-token", id: "value" }
          }
        | .plugins.entries.discord.enabled = true
-       | .plugins.entries.whatsapp.enabled = true
        | .plugins.entries.google.enabled = true
        | .plugins.entries.google.config.webSearch.apiKey = { source: "file", provider: "sops-gemini-api-key", id: "value" }
        | .plugins.entries.perplexity.enabled = true
@@ -212,8 +180,6 @@ let
        | .channels.discord.allowFrom = [$userId]
        | .channels.discord.guilds[$serverId] = {}
        | .channels.discord.execApprovals.approvers = [$userId]
-       | .channels.whatsapp.allowFrom = [$whatsappPhone]
-       | .channels.whatsapp.groupAllowFrom = [$whatsappPhone]
        ' "${openclawConfig}" > "${patchedConfig}.tmp"
     mv "${patchedConfig}.tmp" "${patchedConfig}"
     export OPENCLAW_CONFIG_PATH="${patchedConfig}"
@@ -248,7 +214,6 @@ let
       ${stateDir} \
       ${stateDir}/logs \
       ${stateDir}/workspace \
-      ${stateDir}/credentials/whatsapp/default \
       ${tmpDir} \
       ${cacheDir}/whisper
 
@@ -259,14 +224,6 @@ let
     if ! ${openclawBin} plugins inspect @openclaw/discord >/dev/null; then
       echo "Registering @openclaw/discord plugin with openclaw..."
       ${openclawBin} plugins install @openclaw/discord
-    fi
-    # Same pattern for @openclaw/whatsapp. The plugin only adds the channel
-    # surface; the linked WhatsApp Web session must still be established
-    # manually once via:
-    #   openclaw channels login --channel whatsapp
-    if ! ${openclawBin} plugins inspect @openclaw/whatsapp >/dev/null; then
-      echo "Registering @openclaw/whatsapp plugin with openclaw..."
-      ${openclawBin} plugins install @openclaw/whatsapp
     fi
   '';
 in
@@ -376,12 +333,5 @@ in
 
   sops.secrets.openclaw-perplexity-api-key = {
     key = "perplexityApiToken";
-  };
-
-  # Personal E.164 phone number allowed to DM the WhatsApp channel and act
-  # as a group sender. Stored in sops under `openClaw/whatsappPhone` —
-  # add it with `sops secrets/default.yaml` before the next activation.
-  sops.secrets.openclaw-whatsapp-phone = {
-    key = "openClaw/whatsappPhone";
   };
 }
