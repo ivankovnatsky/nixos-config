@@ -169,7 +169,7 @@ in
       }
       {
         name = "syncthing-a3";
-        url = "http://{config.flags.a3Ip}:8384";
+        url = "http://127.0.0.1:8384";
         interval = 60;
         description = "Syncthing file sync (a3)";
       }
