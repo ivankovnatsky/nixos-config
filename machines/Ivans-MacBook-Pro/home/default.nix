@@ -45,7 +45,6 @@
     ../../../home/safari.nix
     ../../../home/sops.nix
     ../../../home/starship
-    ../../../home/stash
     ../../../home/syncthing-ignore.nix
     ../../../home/syncthing-mgmt.nix
     ../../../home/syncthing.nix
