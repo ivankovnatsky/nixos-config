@@ -33,7 +33,7 @@
 
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
     folders = {
-      "notes" = {
+      "Notes" = {
         path = "${config.flags.externalStoragePath}/Notes";
         label = "Notes";
         devices = [

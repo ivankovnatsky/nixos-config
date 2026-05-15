@@ -38,7 +38,7 @@
 
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
     folders = {
-      "notes" = {
+      "Notes" = {
         path = "${config.users.users.${username}.home}/Notes";
         label = "Notes";
         devices = [
