@@ -30,7 +30,6 @@
     gh-pr
     ggh
     ghq-cd
-    giffer
     gitleaks
     gofumpt
     golangci-lint
