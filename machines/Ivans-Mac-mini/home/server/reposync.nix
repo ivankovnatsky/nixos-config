@@ -27,7 +27,7 @@
       branch = "main";
     }
     {
-      path = "${config.flags.externalStoragePath}/Notes";
+      path = "${config.flags.externalStoragePath}/NotesGit";
       remote = "origin";
       remoteUrl = "https://forgejo.@domain@/@username@/notes.git";
       branch = "main";
