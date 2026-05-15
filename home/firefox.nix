@@ -1,11 +1,10 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   programs.firefox = {
     enable = true;
 
-    # Keep legacy default; new default is XDG path as of home.stateVersion 26.05.
-    configPath = ".mozilla/firefox";
+    configPath = "${config.xdg.configHome}/mozilla/firefox";
 
     profiles.default.extensions = with pkgs.nur.repos.rycee.firefox-addons; [
       # firefox-translations
