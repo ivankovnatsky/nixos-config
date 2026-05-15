@@ -6,7 +6,7 @@
 }:
 
 let
-  dnsmasqStashConfPath = config.sops.templates."dnsmasq-stash.conf".path;
+  dnsmasqConfPath = config.sops.templates."dnsmasq.conf".path;
   stubbyConfPath = config.sops.templates."stubby.yml".path;
 in
 {
@@ -36,11 +36,15 @@ in
     '';
   };
 
-  sops.templates."dnsmasq-stash.conf" = {
+  sops.templates."dnsmasq.conf" = {
     owner = "dnsmasq";
     content = ''
-      address=/stash.${config.sops.placeholder.external-domain}/${config.flags.a3Ip}
-      address=/stash.${config.sops.placeholder.external-domain}/${config.flags.a3WifiIp}
+      domain=${config.sops.placeholder.external-domain}
+      local=/${config.sops.placeholder.external-domain}/
+      dhcp-option=option:domain-search,${config.sops.placeholder.external-domain}
+      address=/${config.sops.placeholder.external-domain}/${config.flags.a3Ip}
+      address=/${config.sops.placeholder.external-domain}/${config.flags.a3WifiIp}
+      mx-host=${config.sops.placeholder.external-domain},${config.sops.placeholder.external-domain},10
     '';
   };
 
@@ -79,10 +83,11 @@ in
       max-ttl = 60;
 
       domain-needed = true;
+      expand-hosts = true;
       bogus-priv = true;
       dns-forward-max = 150;
 
-      conf-file = [ dnsmasqStashConfPath ];
+      conf-file = [ dnsmasqConfPath ];
     };
   };
 
