@@ -2,7 +2,6 @@
   imports = [
     ./kde.nix
     ./plasma.nix
-    # ./gnome.nix
 
     ./bluetooth.nix
     ./fwupd.nix
