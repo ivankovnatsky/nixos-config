@@ -19,6 +19,9 @@ let
     ];
   };
 
+  configPath = ".mozilla/firefox";
+  configPathAbs = "${config.home.homeDirectory}/${configPath}";
+
 in
 {
   home.packages = [ pkgs.tweety ];
@@ -26,16 +29,17 @@ in
   programs.firefox = {
     enable = true;
     package = pkgs.firefox-devedition;
+    inherit configPath;
 
     policies = {
       ExtensionSettings = {
         "selecttab@ivankovnatsky.net" = {
           installation_mode = "force_installed";
-          install_url = "file://${config.home.homeDirectory}/.mozilla/firefox/dev-edition-default/extensions/selecttab@ivankovnatsky.net.xpi";
+          install_url = "file://${configPathAbs}/dev-edition-default/extensions/selecttab@ivankovnatsky.net.xpi";
         };
         "tweety@pomdtr.me" = {
           installation_mode = "force_installed";
-          install_url = "file://${config.home.homeDirectory}/.mozilla/firefox/dev-edition-default/extensions/tweety@pomdtr.me.xpi";
+          install_url = "file://${configPathAbs}/dev-edition-default/extensions/tweety@pomdtr.me.xpi";
         };
       };
     };
@@ -56,13 +60,13 @@ in
   };
 
   home.file = {
-    ".mozilla/firefox/dev-edition-default/extensions/tweety@pomdtr.me.xpi" = {
+    "${configPath}/dev-edition-default/extensions/tweety@pomdtr.me.xpi" = {
       source = "${pkgs.tweety}/share/extensions/firefox.zip";
     };
-    ".mozilla/firefox/dev-edition-default/extensions/selecttab@ivankovnatsky.net.xpi" = {
+    "${configPath}/dev-edition-default/extensions/selecttab@ivankovnatsky.net.xpi" = {
       source = "${pkgs.firefox-selecttab}/share/extensions/firefox-selecttab.zip";
     };
-    ".mozilla/firefox/default/extensions/selecttab@ivankovnatsky.net.xpi" = {
+    "${configPath}/default/extensions/selecttab@ivankovnatsky.net.xpi" = {
       source = "${pkgs.firefox-selecttab}/share/extensions/firefox-selecttab.zip";
     };
   };
