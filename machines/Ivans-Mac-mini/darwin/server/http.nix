@@ -5,8 +5,7 @@
 }:
 
 # Mac Mini Caddy configuration with waiting for volume mount
-# This file provides a backup/resilient web proxy for the homelab
-# when the primary proxy (beelink) is unavailable
+# LAN reverse proxy fronting services that mostly live on a3.
 
 # KNOWN ISSUE: macOS Sequoia (15.x) has significant problems with Local Network Privacy
 # permissions for launchd agents. Even after approving local network access for Caddy:

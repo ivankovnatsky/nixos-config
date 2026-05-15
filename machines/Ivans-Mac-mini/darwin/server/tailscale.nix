@@ -17,7 +17,7 @@
 # 1. Go to https://login.tailscale.com/admin/dns
 # 2. Click "Add nameserver"
 # 3. Domain: @externalDomain@
-# 4. Nameserver: 192.168.50.1 (router IP, balances between 50.3 bee and 50.4 mini)
+# 4. Nameserver: 192.168.50.1 (router IP, points to 50.4 mini)
 # 5. Save
 
 {
