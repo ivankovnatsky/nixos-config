@@ -21,7 +21,6 @@
     ./remote-build.nix
     ./reposync.nix
     # ./smb.nix
-    ./stash.nix
     ./syncthing-mgmt.nix
     ./uptime-kuma.nix
   ];

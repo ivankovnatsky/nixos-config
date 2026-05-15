@@ -14,7 +14,7 @@ in
   # (imported by the a3 NixOS config), so don't redeclare it here.
   # forgejo-mgmt-sync.service runs as User=forgejo, so each secret must be
   # readable by the forgejo user. Default sops permissions (0400 root:root)
-  # would block it — mirror the stash.nix pattern instead.
+  # would block it.
   sops.secrets = {
     forgejo-admin-name = {
       key = "forgejo/users/forgejoAdmin/name";
