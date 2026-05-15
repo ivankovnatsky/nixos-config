@@ -25,6 +25,7 @@
     devices = [
       "Ivans-Mac-mini" # This machine
       "a3"
+      "Ivans-iPhone"
       "Ivans-MacBook-Pro"
       "Ivans-MacBook-Air"
       "Lusha-Macbook-Ivan-Kovnatskyi"
@@ -37,6 +38,7 @@
         label = "Notes";
         devices = [
           "Ivans-Mac-mini"
+          "Ivans-iPhone"
           "a3"
         ];
       };
