@@ -91,6 +91,34 @@ in
           exit 1
         fi
 
+        # Check body line lengths (max 80 chars per line). Skips:
+        #   - the title (NR==1)
+        #   - comment lines (prefix = the configured core.commentChar, default
+        #     "#", set to ";" in this config). Git only strips comments when
+        #     writing the final object, after this hook runs, so we must skip
+        #     them ourselves
+        #   - everything after the scissors line in `git commit -v` (the diff
+        #     follows it and would otherwise trip on long context lines)
+        #   - single-token lines (no whitespace), so an unbreakable URL on its
+        #     own line is allowed
+        comment_char=$(git config --get core.commentChar 2>&1)
+        [ -z "$comment_char" ] && comment_char='#'
+        body_too_long=$(awk -v cc="$comment_char" '
+          index($0, cc " ------------------------ >8 ------------------------") == 1 { exit }
+          NR>1 && substr($0, 1, 1) != cc && index($0, " ") && length($0) > 80 {
+            print "  line "NR" ("length($0)" chars): "$0
+            found=1
+          }
+          END { exit !found }
+        ' "$commit_msg_file")
+        if [ -n "$body_too_long" ]; then
+          echo "ERROR: Commit body lines must be ≤80 characters"
+          echo "$body_too_long"
+          echo "Split long explanations into multiple -b flags or wrap manually"
+          echo "(unbreakable single-token lines like bare URLs are exempt)"
+          exit 1
+        fi
+
       '';
     };
 
