@@ -174,11 +174,16 @@ let
       echo "Warning: $BASE_URL did not become ready within 180s; sync will likely fail"
     fi
 
-    # Create runtime config with substituted placeholders
+    # Create runtime config with substituted placeholders.
+    # jq split/join is used (not sed) so secrets containing `|`, `&`, `\`,
+    # or other regex/sed-special characters are substituted literally.
     RUNTIME_CONFIG=$(${pkgs.coreutils}/bin/mktemp -t uptime-kuma-monitors.XXXXXX)
     trap '${pkgs.coreutils}/bin/rm -f "$RUNTIME_CONFIG"' EXIT
-    ${pkgs.gnused}/bin/sed "s|@EXTERNAL_DOMAIN@|$EXTERNAL_DOMAIN|g" "${configJsonTemplate}" | \
-      ${pkgs.gnused}/bin/sed "s|@POSTGRES_PASSWORD@|$POSTGRES_PASSWORD|g" > "$RUNTIME_CONFIG"
+    ${pkgs.jq}/bin/jq \
+      --arg ext "$EXTERNAL_DOMAIN" \
+      --arg pwd "$POSTGRES_PASSWORD" \
+      '(.. | strings) |= (split("@EXTERNAL_DOMAIN@") | join($ext) | split("@POSTGRES_PASSWORD@") | join($pwd))' \
+      "${configJsonTemplate}" > "$RUNTIME_CONFIG"
 
     # Build command based on notifications.enable and webhook config.
     # When notifications are disabled, sync with --no-notifications so
