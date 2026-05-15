@@ -111,7 +111,7 @@ in
         export PATH="${pkgs.go}/bin:${pkgs.git}/bin:$PATH"
         export CGO_ENABLED=0
       ''}
-      ${inputs.tools.packages.${pkgs.system}.default}/bin/tools \
+      ${inputs.tools.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/tools \
         deploy \
         --approve \
         ${scopeFlags} \
