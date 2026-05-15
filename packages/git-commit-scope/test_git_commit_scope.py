@@ -205,6 +205,65 @@ class GitCommitScopeTest(unittest.TestCase):
         self.assertEqual(self.last_subject(), "dir: remove")
         self.assertEqual(self.status_short(), "")
 
+    def test_body_line_over_80_chars_rejected(self):
+        self.write("new.txt", "x\n")
+        # Long line with whitespace so single-token exemption does not apply.
+        long_body = ("word " * 20).strip()
+        self.assertGreater(len(long_body), 80)
+
+        result = self.run_scope("new.txt", "init", "-b", long_body)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Body line(s) exceed 80 chars", result.stderr)
+        # No commit was created
+        self.assertEqual(self.last_subject(), "seed")
+
+    def test_body_line_exactly_80_chars_accepted(self):
+        self.write("new.txt", "x\n")
+        # 80 chars with spaces.
+        body80 = ("word " * 16).strip()
+        self.assertEqual(len(body80), 79)
+        body80 = body80 + "x"  # pad to 80
+        self.assertEqual(len(body80), 80)
+
+        result = self.run_scope("new.txt", "init", "-b", body80)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.last_subject(), "new: init")
+
+    def test_body_multiline_long_line_rejected(self):
+        self.write("new.txt", "x\n")
+        long_with_spaces = ("word " * 20).strip()
+        body = "short\n" + long_with_spaces
+
+        result = self.run_scope("new.txt", "init", "-b", body)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Body line(s) exceed 80 chars", result.stderr)
+
+    def test_body_single_token_over_80_chars_accepted(self):
+        """Unbreakable lines (no whitespace) like long URLs are exempt."""
+        self.write("new.txt", "x\n")
+        long_url = "https://example.com/" + ("a" * 100)
+        self.assertGreater(len(long_url), 80)
+        self.assertNotIn(" ", long_url)
+
+        result = self.run_scope("new.txt", "init", "-b", long_url)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.last_subject(), "new: init")
+
+    def test_body_two_short_flags_accepted(self):
+        """Two -b flags, each ≤80, should be joined and accepted."""
+        self.write("new.txt", "x\n")
+
+        result = self.run_scope(
+            "new.txt", "init", "-b", "first short line", "-b", "second short line"
+        )
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.last_subject(), "new: init")
+
 
 if __name__ == "__main__":
     unittest.main()

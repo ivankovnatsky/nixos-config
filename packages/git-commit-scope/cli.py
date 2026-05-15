@@ -255,6 +255,34 @@ def main(args, subject, body, ai_shorten):
     # Join multiple -b flags with single newline (no blank lines)
     body_str = "\n".join(body) if body else None
 
+    # Validate body line lengths up-front so we fail before any per-target work.
+    # The commit-msg hook enforces the same rule, but catching it here gives a
+    # clearer error and avoids partial commits when multiple paths are passed.
+    # Single-token lines (no whitespace, e.g. bare URLs) are exempt because
+    # they cannot be wrapped. The hook also skips comment lines; we don't,
+    # because the body comes from -b flags and cannot contain editor comments.
+    if body_str:
+        too_long = [
+            (lineno, line)
+            for lineno, line in enumerate(body_str.split("\n"), start=1)
+            if len(line) > 80 and " " in line
+        ]
+        if too_long:
+            click.echo("Body line(s) exceed 80 chars:", err=True)
+            for lineno, line in too_long:
+                click.echo(
+                    f"  line {lineno} ({len(line)} chars): {line}", err=True
+                )
+            click.echo(
+                "Split into multiple -b flags or wrap to ≤80 chars per line",
+                err=True,
+            )
+            click.echo(
+                "(unbreakable single-token lines like bare URLs are exempt)",
+                err=True,
+            )
+            sys.exit(1)
+
     # Get git root early - needed for path normalization and rename detection
     try:
         git_root = get_git_root()
