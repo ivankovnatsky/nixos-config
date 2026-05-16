@@ -8,6 +8,12 @@
       branch = "main";
     }
     {
+      path = "${config.users.users.${username}.home}/NotesGit";
+      remote = "origin";
+      remoteUrl = "https://forgejo.@domain@/@username@/notes.git";
+      branch = "main";
+    }
+    {
       path = "${config.users.users.${username}.home}/.openclaw/workspace";
       remote = "origin";
       remoteUrl = "https://forgejo.@domain@/@username@/workspace.git";
