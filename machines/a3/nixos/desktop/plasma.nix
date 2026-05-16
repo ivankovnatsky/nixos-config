@@ -31,4 +31,13 @@
     extraPortals = [ pkgs.kdePackages.xdg-desktop-portal-kde ];
     config.common.default = "*";
   };
+
+  # Broadcast cursor theme/size to non-Qt apps (GTK, legacy X11). Plasma calls
+  # these at session start to propagate XSETTINGS / Xresources; without them
+  # the broadcast silently no-ops and apps fall back to the 24px default.
+  # https://discourse.nixos.org/t/49917
+  environment.systemPackages = with pkgs; [
+    xsettingsd
+    xorg.xrdb
+  ];
 }
