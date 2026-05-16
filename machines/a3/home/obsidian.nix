@@ -3,7 +3,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  inherit (import ./obsidian-settings.nix) appSettings;
+  inherit (import ../../../home/obsidian-settings.nix) appSettings;
   vaultPaths = config.flags.obsidian.vaultPaths;
 
   appJsonFile = pkgs.writeText "obsidian-app.json" (builtins.toJSON appSettings);

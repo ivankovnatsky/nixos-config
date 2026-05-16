@@ -3,7 +3,6 @@
 {
   imports = [
     ../../../home/atuin.nix
-    ../../../home/chromium.nix
     ../../../home/claude-settings.nix
     ../../../home/claude.nix
     ../../../home/codex.nix
@@ -22,15 +21,12 @@
     ../../../home/mpv.nix
     ../../../home/nextdns.nix
     ../../../home/nix-registry.nix
-    ../../../home/nixos/packages.nix
     ../../../home/nixvim
     ../../../home/nixvim/plugins/codediff
     ../../../home/nixvim/plugins/gpg-nvim
     ../../../home/npm.nix
     ../../../home/nushell.nix
-    ../../../home/obsidian.nix
     ../../../home/packages.nix
-    ../../../home/pi-models.nix
     ../../../home/ranger.nix
     ../../../home/rebuild-diff.nix
     ../../../home/sops.nix
@@ -50,7 +46,11 @@
     ../../../modules/home/tools
     ../../../modules/home/unison
     ../../../modules/home/uptime-kuma-mgmt
+    ./chromium.nix
     ./desktop
+    ./obsidian.nix
+    ./packages.nix
+    ./pi-models.nix
     ./server
     ./unison.nix
   ];

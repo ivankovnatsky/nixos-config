@@ -5,12 +5,12 @@
     ../../../modules/nixos/reposync
     ../../../modules/nixos/syncthing-mgmt
     ../../../modules/nixos/tools
-    ../../../nixos/chromium.nix
-    ../../../nixos/keyboard.nix
-    ../../../nixos/rebuild-diff.nix
-    ../../../nixos/sudo.nix
+    ./chromium.nix
+    ./keyboard.nix
+    ./rebuild-diff.nix
+    ./sudo.nix
     ../../../system/nix.nix
-    ../../../system/reposync.nix
+    ./reposync.nix
     ../../../system/sops-secrets.nix
     ./desktop
     ./server
