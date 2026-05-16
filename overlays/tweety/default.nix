@@ -1,49 +1,70 @@
 {
   lib,
-  stdenv,
-  fetchurl,
+  buildGoModule,
+  buildNpmPackage,
+  fetchFromGitHub,
 }:
-stdenv.mkDerivation rec {
+let
+  version = "2.2.3-unstable";
+  rev = "dc158cbb86656bc732d4c3bf754dafca8a3c2e5d";
+
+  src = fetchFromGitHub {
+    owner = "pomdtr";
+    repo = "tweety";
+    inherit rev;
+    hash = "sha256-Iq894VuzkT3ntxPYXc0jmY1ckjo1UgoXQANAc7KwTjs=";
+  };
+
+  extension = buildNpmPackage {
+    pname = "tweety-extension";
+    inherit version src;
+    sourceRoot = "${src.name}/extension";
+
+    npmDepsHash = "sha256-KJ00A56SlXNp9osBeIogpwzdzkAcwBIoGaayH3nDbi8=";
+
+    MANIFEST_VERSION = "2.2.3";
+
+    buildPhase = ''
+      runHook preBuild
+      npm run build
+      npm run build:firefox
+      npm run zip:firefox
+      runHook postBuild
+    '';
+
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out
+      cp -r dist/chrome-mv3 $out/chrome
+      cp dist/tweety-*-firefox.zip $out/firefox.zip
+      runHook postInstall
+    '';
+
+    dontNpmPrune = true;
+  };
+in
+buildGoModule {
   pname = "tweety";
-  version = "2.2.2";
+  inherit version src;
 
-  src =
-    let
-      selectSystem =
-        attrs:
-        attrs.${stdenv.hostPlatform.system} or (throw "Unsupported system: ${stdenv.hostPlatform.system}");
+  vendorHash = "sha256-2tDOyjnu3cVPDzwWRjV8VAtuKPRgBk2206nTgKiCgsQ=";
 
-      sources = {
-        x86_64-linux = {
-          url = "https://github.com/pomdtr/tweety/releases/download/v${version}/tweety-${version}-linux_amd64.tar.gz";
-          sha256 = "sha256-llMiQNR0be6NvOksT0jRehpAf8VFMclxxc1/2GGDV3E=";
-        };
-        aarch64-darwin = {
-          url = "https://github.com/pomdtr/tweety/releases/download/v${version}/tweety-${version}-darwin_arm64.tar.gz";
-          sha256 = "sha256-k1o1AkbNoCdbjJ9/Z7gHFZzioaKA1oZU6oHLL7Xxb9o=";
-        };
-      };
+  ldflags = [
+    "-s"
+    "-w"
+  ];
 
-      source = selectSystem sources;
-    in
-    fetchurl {
-      inherit (source) url;
-      inherit (source) sha256;
-    };
-
-  sourceRoot = ".";
-
-  installPhase = ''
-    mkdir -p $out/bin $out/share
-    cp tweety $out/bin/
-    cp -r extensions $out/share/
+  postInstall = ''
+    mkdir -p $out/share/extensions
+    cp -r ${extension}/chrome $out/share/extensions/chrome
+    cp ${extension}/firefox.zip $out/share/extensions/firefox.zip
   '';
 
-  meta = with lib; {
+  meta = {
     description = "An integrated terminal for your browser";
     homepage = "https://github.com/pomdtr/tweety";
-    license = licenses.mit;
-    maintainers = with maintainers; [ ivankovnatsky ];
+    license = lib.licenses.mit;
+    maintainers = [ lib.maintainers.ivankovnatsky ];
     mainProgram = "tweety";
     platforms = [
       "x86_64-linux"
