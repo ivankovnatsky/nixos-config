@@ -48,8 +48,10 @@
     ../../../modules/home/launchd
     ../../../modules/home/nextdns-mgmt
     ../../../modules/home/tools
+    ../../../modules/home/unison
     ../../../modules/home/uptime-kuma-mgmt
     ./desktop
     ./server
+    ./unison.nix
   ];
 }
