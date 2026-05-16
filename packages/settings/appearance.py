@@ -86,50 +86,26 @@ def appearance_set_theme_kde(dark: bool) -> None:
 
 
 def appearance_set_wallpaper_kde(hex_color: str) -> None:
-    h = hex_color.lstrip("#")
-    rgb = f"{int(h[0:2], 16)},{int(h[2:4], 16)},{int(h[4:6], 16)}"
+    import dbus
 
-    list_script = """
-var allDesktops = desktops();
-var output = [];
-for (var i = 0; i < allDesktops.length; i++) {
-    var d = allDesktops[i];
-    output.push(d.id);
-}
-output.join(',');
+    try:
+        bus = dbus.SessionBus()
+        proxy = bus.get_object("org.kde.plasmashell", "/PlasmaShell")
+        iface = dbus.Interface(proxy, "org.kde.PlasmaShell")
+        list_script = """
+var screens = [];
+var d = desktops();
+for (var i = 0; i < d.length; i++) screens.push(d[i].screen);
+print(screens.join(','));
 """
-    result = subprocess.run(
-        [
-            "qdbus",
-            "org.kde.plasmashell",
-            "/PlasmaShell",
-            "org.kde.PlasmaShell.evaluateScript",
-            list_script,
-        ],
-        capture_output=True,
-        text=True,
-    )
-
-    screens = result.stdout.strip().split(",")
-    for screen in screens:
-        if not screen:
-            continue
-        set_script = f"""
-var d = desktopById({screen});
-d.wallpaperPlugin = 'org.kde.color';
-d.currentConfigGroup = ['Wallpaper', 'org.kde.color', 'General'];
-d.writeConfig('Color', '{rgb}');
-"""
-        subprocess.run(
-            [
-                "qdbus",
-                "org.kde.plasmashell",
-                "/PlasmaShell",
-                "org.kde.PlasmaShell.evaluateScript",
-                set_script,
-            ],
-            capture_output=True,
-        )
+        raw = str(iface.evaluateScript(list_script)).strip()
+        screens = [int(s) for s in raw.split(",") if s] or [0]
+        for screen in screens:
+            iface.setWallpaper(
+                "org.kde.color", {"Color": hex_color}, dbus.UInt32(screen)
+            )
+    except dbus.DBusException as e:
+        print(f"Warning: could not set KDE wallpaper: {e}", file=sys.stderr)
 
 
 def appearance_open_settings_kde() -> None:
