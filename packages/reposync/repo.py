@@ -8,6 +8,116 @@ from alerting import alert
 from git_ops import has_git_lock, run_git
 
 
+def _configure_local_branch(path, branch, remote, name, webhook_url):
+    """Configure the local branch ref + upstream tracking from an existing
+    remote-tracking ref, using only plumbing so the working tree is never
+    touched. If HEAD is currently unborn, also point HEAD at the new branch
+    and populate the index; if HEAD is already born on another branch, leave
+    HEAD and the index alone so an existing checkout is not disturbed.
+
+    Returns True on success, False (with alert) on failure.
+    """
+    click.echo(
+        f"{name}: creating branch {branch} tracking {remote}/{branch}",
+        err=True,
+    )
+
+    # Detect unborn HEAD. `rev-parse --verify HEAD` fails when HEAD points at
+    # a ref that does not yet exist (the state immediately after `git init`).
+    head_check = run_git("rev-parse", "--verify", "HEAD", cwd=path, check=False)
+    head_is_unborn = head_check.returncode != 0
+
+    # Create the local branch ref pointing at the remote tip. Always safe —
+    # this does not touch HEAD, the index, or the working tree.
+    result = run_git(
+        "update-ref",
+        f"refs/heads/{branch}",
+        f"refs/remotes/{remote}/{branch}",
+        cwd=path,
+        check=False,
+    )
+    if result.returncode != 0:
+        alert(
+            webhook_url,
+            f"`{name}`: failed to create branch {branch} — {result.stderr.strip()}",
+        )
+        return False
+
+    # Set upstream tracking. Idempotent and harmless when already configured.
+    result = run_git(
+        "branch", "-u", f"{remote}/{branch}", branch, cwd=path, check=False
+    )
+    if result.returncode != 0:
+        alert(
+            webhook_url,
+            f"`{name}`: failed to set upstream tracking for {branch} — {result.stderr.strip()}",
+        )
+        return False
+
+    if not head_is_unborn:
+        # An existing checkout is on a real branch — do NOT move HEAD or
+        # touch the index. The user (or a later cycle, once they switch
+        # branches) can integrate the new branch when ready.
+        click.echo(
+            f"{name}: branch {branch} created; HEAD left on existing checkout",
+            err=True,
+        )
+        return True
+
+    # HEAD is unborn (e.g. fresh `git init`). Point HEAD at the new branch
+    # and populate the index from HEAD so `git status` reports working-tree
+    # paths against the configured ref instead of listing all tracked paths
+    # as "deleted". None of these calls write to the working tree.
+    result = run_git(
+        "symbolic-ref", "HEAD", f"refs/heads/{branch}", cwd=path, check=False
+    )
+    if result.returncode != 0:
+        alert(
+            webhook_url,
+            f"`{name}`: failed to point HEAD at {branch} — {result.stderr.strip()}",
+        )
+        return False
+    # Populate the index from HEAD. This overwrites the index — safe here
+    # because we only reach this branch when HEAD was unborn (just after
+    # `git init`), so the index was empty. The working tree is not touched.
+    result = run_git("read-tree", "HEAD", cwd=path, check=False)
+    if result.returncode != 0:
+        alert(
+            webhook_url,
+            f"`{name}`: failed to populate index from HEAD — {result.stderr.strip()}",
+        )
+        return False
+    # Refresh stat info so files whose working-tree content matches HEAD show
+    # as clean. A non-zero exit just means some files differ — expected and
+    # surfaced by the status check below; not an error.
+    run_git("update-index", "--refresh", cwd=path, check=False)
+
+    # If pre-existing files in the working tree differ from HEAD (or paths
+    # only exist in the working tree, or paths from HEAD are missing from the
+    # working tree), alert so the user reconciles manually. reposync never
+    # modifies the working tree on its own.
+    status = run_git("status", "--porcelain", cwd=path, check=False)
+    if status.returncode != 0:
+        alert(
+            webhook_url,
+            f"`{name}`: failed to read working-tree status — {status.stderr.strip()}",
+        )
+        return False
+    if status.stdout.strip():
+        alert(
+            webhook_url,
+            f"`{name}`: branch configured in pre-existing directory; "
+            "working tree has uncommitted changes — reconcile manually "
+            "(`git checkout -- .` to restore missing files from HEAD, "
+            "or `git reset --hard origin/<branch>` to match remote)",
+        )
+        # Return False so the caller (cli.py) does NOT clear alerts and does
+        # NOT run sync_repo on this repo. The git config is fully set up; we
+        # just refuse to proceed past the user's manual reconciliation gate.
+        return False
+    return True
+
+
 def init_repo(repo, webhook_url=None):
     path = repo["path"]
     remote = repo["remote"]
@@ -86,24 +196,7 @@ def init_repo(repo, webhook_url=None):
             "rev-parse", "--verify", f"{remote}/{branch}", cwd=path, check=False
         )
         if result.returncode == 0:
-            click.echo(
-                f"{name}: creating branch {branch} tracking {remote}/{branch}",
-                err=True,
-            )
-            result = run_git(
-                "checkout",
-                "-b",
-                branch,
-                "--track",
-                f"{remote}/{branch}",
-                cwd=path,
-                check=False,
-            )
-            if result.returncode != 0:
-                alert(
-                    webhook_url,
-                    f"`{name}`: failed to create branch {branch} — {result.stderr.strip()}",
-                )
+            if not _configure_local_branch(path, branch, remote, name, webhook_url):
                 return False
         else:
             click.echo(
@@ -159,14 +252,24 @@ def sync_repo(repo, webhook_url=None):
     name = f"{display} ({remote}/{branch})"
 
     if not os.path.isdir(path):
-        click.echo(f"{name}: skip ({path} does not exist)", err=True)
-        return True
+        # init_repo runs before sync_repo; reaching here means init was
+        # supposed to handle this and didn't. Alert so the user investigates.
+        alert(
+            webhook_url,
+            f"`{name}`: cannot sync — {path} does not exist (init did not run or failed)",
+        )
+        return False
 
     if not os.path.isdir(os.path.join(path, ".git")):
-        click.echo(f"{name}: skip (not a git repo)", err=True)
-        return True
+        alert(
+            webhook_url,
+            f"`{name}`: cannot sync — {path} is not a git repo (init did not configure it)",
+        )
+        return False
 
     if has_git_lock(path):
+        # Lock files are transient (another git process is running). This is
+        # benign — sync next cycle. Don't alert; just log.
         click.echo(f"{name}: skip (git lock file exists)", err=True)
         return True
 
@@ -198,10 +301,11 @@ def sync_repo(repo, webhook_url=None):
         current_branch = head_ref.stdout.strip() if head_ref.returncode == 0 else None
 
         if current_branch != branch:
-            click.echo(
-                f"{name}: skip pull (HEAD is on {current_branch!r}, not {branch!r})",
-                err=True,
+            alert(
+                webhook_url,
+                f"`{name}`: cannot pull — HEAD is on {current_branch!r}, not {branch!r}",
             )
+            ok = False
         else:
             local_before = run_git(
                 "rev-parse", branch, cwd=path, check=False
@@ -265,6 +369,15 @@ def sync_repo(repo, webhook_url=None):
             actions.append(f"pushed {n} commit(s)")
     elif not remote_exists:
         click.echo(f"{name}: skip (no local or remote branch yet)", err=True)
+    else:
+        # Remote branch is now visible (commonly: it appeared between this
+        # cycle's `needs_init` check and the fetch above). Configure the
+        # local branch via the same plumbing init uses — this is not an
+        # error condition.
+        if not _configure_local_branch(path, branch, remote, name, webhook_url):
+            ok = False
+        else:
+            actions.append("configured local branch")
 
     if ok:
         summary = ", ".join(actions) if actions else "up to date"
