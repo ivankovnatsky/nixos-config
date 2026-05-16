@@ -50,7 +50,7 @@ let
     ${lib.concatMapStringsSep "\n" (i: "ignore = ${i}") sync.ignore}
   '';
 
-  mkService = name: sync: {
+  mkLaunchdService = name: sync: {
     enable = true;
     command = "${pkgs.unison}/bin/unison -batch ${name}";
     inherit (sync) waitForPath;
@@ -59,6 +59,28 @@ let
     extraServiceConfig = {
       StartInterval = sync.interval;
     };
+  };
+
+  mkSystemdService = name: _sync: {
+    Unit = {
+      Description = "Unison sync (${name})";
+    };
+    Service = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.unison}/bin/unison -batch ${name}";
+    };
+  };
+
+  mkSystemdTimer = name: sync: {
+    Unit = {
+      Description = "Unison sync (${name}) timer";
+    };
+    Timer = {
+      OnBootSec = "1min";
+      OnUnitActiveSec = "${toString sync.interval}s";
+      Unit = "unison-${name}.service";
+    };
+    Install.WantedBy = [ "timers.target" ];
   };
 in
 {
@@ -75,8 +97,16 @@ in
       name: sync: lib.nameValuePair ".unison/${name}.prf" { text = mkProfile name sync; }
     ) cfg.syncs;
 
-    local.launchd.services = lib.mapAttrs' (
-      name: sync: lib.nameValuePair "unison-${name}" (mkService name sync)
-    ) cfg.syncs;
+    local.launchd.services = lib.mkIf pkgs.stdenv.isDarwin (
+      lib.mapAttrs' (name: sync: lib.nameValuePair "unison-${name}" (mkLaunchdService name sync)) cfg.syncs
+    );
+
+    systemd.user.services = lib.mkIf pkgs.stdenv.isLinux (
+      lib.mapAttrs' (name: sync: lib.nameValuePair "unison-${name}" (mkSystemdService name sync)) cfg.syncs
+    );
+
+    systemd.user.timers = lib.mkIf pkgs.stdenv.isLinux (
+      lib.mapAttrs' (name: sync: lib.nameValuePair "unison-${name}" (mkSystemdTimer name sync)) cfg.syncs
+    );
   };
 }
