@@ -303,8 +303,14 @@ def sync_repo(repo, webhook_url=None):
             local_before = run_git(
                 "rev-parse", branch, cwd=path, check=False
             ).stdout.strip()
+            # Pin the merge target so a concurrent fetch advancing the
+            # remote-tracking ref between rev-parse and merge can't cause a
+            # post-hoc mismatch.
+            target_sha = run_git(
+                "rev-parse", f"{remote}/{branch}", cwd=path, check=False
+            ).stdout.strip()
             result = run_git(
-                "merge", "--ff-only", f"{remote}/{branch}", cwd=path, check=False
+                "merge", "--ff-only", target_sha, cwd=path, check=False
             )
             if result.returncode != 0:
                 alert(
@@ -316,6 +322,24 @@ def sync_repo(repo, webhook_url=None):
                 local_after = run_git(
                     "rev-parse", branch, cwd=path, check=False
                 ).stdout.strip()
+                # Tripwire: ff-only succeeded, so target_sha must be an
+                # ancestor of local (behind: local advanced to it; equal:
+                # no-op; ahead: already up to date). If not, a silent break
+                # left local short of the merge target — surface it.
+                is_ancestor = run_git(
+                    "merge-base",
+                    "--is-ancestor",
+                    target_sha,
+                    local_after,
+                    cwd=path,
+                    check=False,
+                )
+                if is_ancestor.returncode != 0:
+                    alert(
+                        webhook_url,
+                        f"`{name}`: merge --ff-only returned OK but {branch}@{local_after[:8]} is not descended from target {target_sha[:8]} — investigate",
+                    )
+                    ok = False
                 if local_before != local_after:
                     count = run_git(
                         "rev-list",
