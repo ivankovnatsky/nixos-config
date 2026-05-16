@@ -4,8 +4,6 @@
   # Desktop environment home-manager configuration.
 
   imports = [
-    ../../../../home/nixos/plasma.nix # KDE Plasma config
-
     ./kwinoutput # KDE window output config
 
     ./btop.nix
@@ -14,6 +12,7 @@
     ./gpg.nix
     ./obsidian.nix
     ./packages.nix
+    ./plasma.nix
     ./tools.nix
   ];
 }
