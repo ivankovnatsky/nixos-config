@@ -2,8 +2,8 @@
 
 {
   local.unison.syncs.notes = {
-    pathA = "${config.flags.externalStoragePath}/NotesGit";
-    pathB = "${config.flags.externalStoragePath}/Notes";
+    pathA = "${config.flags.externalStoragePath}/Notes";
+    pathB = "${config.flags.externalStoragePath}/NotesGit";
     ignore = [
       "Path .git"
       "Path .claude"
