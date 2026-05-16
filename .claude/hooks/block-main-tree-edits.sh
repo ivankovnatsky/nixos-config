@@ -3,10 +3,11 @@
 # Block Edit/Write/NotebookEdit on files whose enclosing git repo has
 # main/master checked out. Forces use of a worktree branch.
 #
-# Scoped to this repo via $CLAUDE_PROJECT_DIR in .claude/settings.json.
-# Do NOT promote to user-global settings without an allowlist: the home
-# dotfiles repo (~) and the Obsidian notes vault are intentionally
-# main-only and edits there would be wrongly blocked.
+# Only fires when the target file lives in the SAME repo as
+# $CLAUDE_PROJECT_DIR. Edits to files in other repos (home dotfiles,
+# Obsidian notes vault, etc.) are ignored regardless of their branch.
+# Without this check, working in nix-config would block edits to the
+# log under ~/Notes because $HOME is itself a git repo on main.
 
 INPUT=$(cat)
 # NotebookEdit uses notebook_path instead of file_path.
@@ -31,6 +32,16 @@ fi
 # "not a repo", which is the expected, allow-path signal.
 TOPLEVEL=$("$GIT" -C "$DIR" rev-parse --show-toplevel 2>/dev/null)
 if [ -z "$TOPLEVEL" ]; then
+  exit 0
+fi
+
+# Only act on files in the same repo Claude is running in. Without
+# $CLAUDE_PROJECT_DIR we can't tell, so allow.
+if [ -z "${CLAUDE_PROJECT_DIR:-}" ]; then
+  exit 0
+fi
+PROJECT_TOPLEVEL=$("$GIT" -C "$CLAUDE_PROJECT_DIR" rev-parse --show-toplevel 2>/dev/null)
+if [ -z "$PROJECT_TOPLEVEL" ] || [ "$TOPLEVEL" != "$PROJECT_TOPLEVEL" ]; then
   exit 0
 fi
 
