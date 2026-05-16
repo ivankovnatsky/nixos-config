@@ -85,8 +85,9 @@ def appearance_set_theme_kde(dark: bool) -> None:
     subprocess.run(["plasma-apply-colorscheme", scheme], check=True)
 
 
-def appearance_set_wallpaper_kde(color: str) -> None:
-    rgb = "0,0,0" if color == "Black" else "192,192,192"
+def appearance_set_wallpaper_kde(hex_color: str) -> None:
+    h = hex_color.lstrip("#")
+    rgb = f"{int(h[0:2], 16)},{int(h[2:4], 16)},{int(h[4:6], 16)}"
 
     list_script = """
 var allDesktops = desktops();
@@ -165,8 +166,8 @@ def appearance_set_dark_mode(dark: bool) -> None:
         appearance_set_wallpaper_macos(color)
     elif is_kde():
         appearance_set_theme_kde(dark)
-        color = "Black" if dark else "Silver"
-        appearance_set_wallpaper_kde(color)
+        hex_color = "#000000" if dark else "#ede9e9"
+        appearance_set_wallpaper_kde(hex_color)
     else:
         raise RuntimeError("Unsupported platform")
 
