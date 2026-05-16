@@ -2,10 +2,6 @@
 
 {
   imports = [
-    # ../../../home/bash.nix
-    # ../../../home/gamescope-session.nix
-    # ../../../home/mangohud.nix
-    # ../../../home/nixvim/plugins/copilot-lua
     ../../../home/atuin.nix
     ../../../home/chromium.nix
     ../../../home/claude-settings.nix

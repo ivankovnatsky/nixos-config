@@ -1,25 +1,20 @@
 {
   imports = [
-    ./kde.nix
-    ./plasma.nix
-
     ./bluetooth.nix
-    ./fwupd.nix
-    ./nvidia.nix
-    # ./openrgb.nix
-    ./wifi.nix
-
-    ./default-apps.nix
-    ./fonts.nix
-
-    ./gamescope.nix
-    # ./gamemode.nix
-    ./steam.nix
-
     ./boot.nix
     ./cryptenroll.nix
+    ./default-apps.nix
+    ./fonts.nix
+    ./fwupd.nix
+    ./gamescope.nix
+    ./kde.nix
+    ./nvidia.nix
+    # ./openrgb.nix
+    ./plasma.nix
     ./power-management.nix
+    ./steam.nix
     ./tpm2.nix
     ./user.nix
+    ./wifi.nix
   ];
 }

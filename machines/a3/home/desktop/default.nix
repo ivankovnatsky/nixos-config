@@ -4,12 +4,11 @@
   # Desktop environment home-manager configuration.
 
   imports = [
-    ./kwinoutput # KDE window output config
-
     ./btop.nix
     ./firefox.nix
     ./flags.nix
     ./gpg.nix
+    ./kwinoutput # KDE window output config
     ./obsidian.nix
     ./packages.nix
     ./plasma.nix
