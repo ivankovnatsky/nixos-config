@@ -38,6 +38,6 @@
   # https://discourse.nixos.org/t/49917
   environment.systemPackages = with pkgs; [
     xsettingsd
-    xorg.xrdb
+    xrdb
   ];
 }
