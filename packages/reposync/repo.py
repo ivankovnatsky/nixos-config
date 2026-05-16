@@ -88,33 +88,9 @@ def _configure_local_branch(path, branch, remote, name, webhook_url):
         )
         return False
     # Refresh stat info so files whose working-tree content matches HEAD show
-    # as clean. A non-zero exit just means some files differ — expected and
-    # surfaced by the status check below; not an error.
+    # as clean. Non-zero exit just means some files differ — working-tree
+    # state is the user's domain; we never alert on dirtiness.
     run_git("update-index", "--refresh", cwd=path, check=False)
-
-    # If pre-existing files in the working tree differ from HEAD (or paths
-    # only exist in the working tree, or paths from HEAD are missing from the
-    # working tree), alert so the user reconciles manually. reposync never
-    # modifies the working tree on its own.
-    status = run_git("status", "--porcelain", cwd=path, check=False)
-    if status.returncode != 0:
-        alert(
-            webhook_url,
-            f"`{name}`: failed to read working-tree status — {status.stderr.strip()}",
-        )
-        return False
-    if status.stdout.strip():
-        alert(
-            webhook_url,
-            f"`{name}`: branch configured in pre-existing directory; "
-            "working tree has uncommitted changes — reconcile manually "
-            "(`git checkout -- .` to restore missing files from HEAD, "
-            "or `git reset --hard origin/<branch>` to match remote)",
-        )
-        # Return False so the caller (cli.py) does NOT clear alerts and does
-        # NOT run sync_repo on this repo. The git config is fully set up; we
-        # just refuse to proceed past the user's manual reconciliation gate.
-        return False
     return True
 
 
@@ -301,11 +277,13 @@ def sync_repo(repo, webhook_url=None):
         current_branch = head_ref.stdout.strip() if head_ref.returncode == 0 else None
 
         if current_branch != branch:
-            alert(
-                webhook_url,
-                f"`{name}`: cannot pull — HEAD is on {current_branch!r}, not {branch!r}",
+            # User is on a different branch (e.g. a feature branch). Skipping
+            # pull is the right call — don't alert; this is a legitimate
+            # workflow state, not a failure.
+            click.echo(
+                f"{name}: skip pull (HEAD is on {current_branch!r}, not {branch!r})",
+                err=True,
             )
-            ok = False
         else:
             local_before = run_git(
                 "rev-parse", branch, cwd=path, check=False
