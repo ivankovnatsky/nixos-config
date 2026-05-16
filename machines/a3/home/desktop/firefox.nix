@@ -6,8 +6,8 @@ let
       # Enable vertical tabs
       "sidebar.verticalTabs" = true;
 
-      # Place sidebar on the right
-      "sidebar.position_start" = false;
+      # Place sidebar on the left
+      "sidebar.position_start" = true;
 
       # Restore previous session (tabs and windows)
       "browser.startup.page" = 3;
