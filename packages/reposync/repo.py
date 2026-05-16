@@ -279,9 +279,24 @@ def sync_repo(repo, webhook_url=None):
         if current_branch != branch:
             # User is on a different branch (e.g. a feature branch). Skipping
             # pull is the right call — don't alert; this is a legitimate
-            # workflow state, not a failure.
+            # workflow state, not a failure. Log how far behind the target
+            # branch is so silent drift is at least visible in the journal —
+            # matters most for pull-only repos, where push is also skipped
+            # and the repo can otherwise fall behind without any signal.
+            behind_note = ""
+            behind = run_git(
+                "rev-list",
+                "--count",
+                f"{branch}..{remote}/{branch}",
+                cwd=path,
+                check=False,
+            )
+            if behind.returncode == 0:
+                n = behind.stdout.strip()
+                if n and n != "0":
+                    behind_note = f", behind {n} commit(s)"
             click.echo(
-                f"{name}: skip pull (HEAD is on {current_branch!r}, not {branch!r})",
+                f"{name}: skip pull (HEAD is on {current_branch!r}, not {branch!r}){behind_note}",
                 err=True,
             )
         else:
