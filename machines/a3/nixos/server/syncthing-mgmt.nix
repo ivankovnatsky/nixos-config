@@ -11,7 +11,7 @@
   # Syncthing management service
   local.services.syncthing-mgmt = {
     enable = true;
-    baseUrl = "http://${config.flags.a3Ip}:8384";
+    baseUrl = "http://127.0.0.1:8384";
     configDir = "${config.users.users.${username}.home}/.local/state/syncthing";
     localDeviceName = config.networking.hostName;
 
