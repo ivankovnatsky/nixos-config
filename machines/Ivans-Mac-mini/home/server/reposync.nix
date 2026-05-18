@@ -31,6 +31,7 @@
       remote = "origin";
       remoteUrl = "https://forgejo.@domain@/@username@/notes.git";
       branch = "main";
+      autoStage = true;
     }
     {
       path = "${config.flags.externalStoragePath}/.openclaw/workspace";

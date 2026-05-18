@@ -12,6 +12,7 @@
       remote = "origin";
       remoteUrl = "https://forgejo.@domain@/@username@/notes.git";
       branch = "main";
+      autoStage = true;
     }
     {
       path = "${config.users.users.${username}.home}/.openclaw/workspace";
