@@ -218,12 +218,54 @@ def needs_init(repo):
     return False
 
 
+def _stage_local_changes(path, branch, name, webhook_url):
+    """Run `git add --all` so untracked or modified files don't block the
+    next ff-only pull (incoming commits that touch the same paths would
+    otherwise refuse to merge with "untracked working tree files would
+    be overwritten"). Only acts when HEAD is on the configured branch —
+    staging onto an unrelated branch the user is working on would
+    interfere with their in-progress index.
+
+    Returns (acted, ok): acted is True if files were staged, ok is False
+    only on a hard failure (alerted).
+    """
+    head_ref = run_git("symbolic-ref", "--short", "HEAD", cwd=path, check=False)
+    current_branch = head_ref.stdout.strip() if head_ref.returncode == 0 else None
+    if current_branch != branch:
+        click.echo(
+            f"{name}: skip stage (HEAD is on {current_branch!r}, not {branch!r})",
+            err=True,
+        )
+        return False, True
+
+    status = run_git("status", "--porcelain", cwd=path, check=False)
+    if status.returncode != 0:
+        alert(
+            webhook_url,
+            f"`{name}`: stage status check failed — {status.stderr.strip()}",
+        )
+        return False, False
+    if not status.stdout.strip():
+        return False, True
+
+    add_result = run_git("add", "--all", cwd=path, check=False)
+    if add_result.returncode != 0:
+        alert(
+            webhook_url,
+            f"`{name}`: `git add --all` failed — {add_result.stderr.strip()}",
+        )
+        return False, False
+
+    return True, True
+
+
 def sync_repo(repo, webhook_url=None):
     path = repo["path"]
     remote = repo["remote"]
     branch = repo["branch"]
     sync_mode = repo.get("syncMode", "pull-push")
     prune = repo.get("prune", False)
+    auto_stage = repo.get("autoStage", False)
     display = repo.get("name") or os.path.basename(path)
     name = f"{display} ({remote}/{branch})"
 
@@ -251,6 +293,13 @@ def sync_repo(repo, webhook_url=None):
 
     ok = True
     actions = []
+
+    if auto_stage:
+        acted, stage_ok = _stage_local_changes(path, branch, name, webhook_url)
+        if not stage_ok:
+            return False
+        if acted:
+            actions.append("staged local changes")
 
     # Fetch
     fetch_args = ["fetch"] + (["--prune"] if prune else []) + [remote]
