@@ -9,10 +9,6 @@
       # Set solid dark gray wallpaper
       workspace = {
         wallpaperPlainColor = "64,64,64";
-        cursor = {
-          theme = "breeze_cursors";
-          size = 48;
-        };
       };
 
       # Configure input devices
