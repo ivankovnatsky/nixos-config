@@ -64,6 +64,21 @@ let
           Use "pull-only" for repos that should only fetch upstream changes.
         '';
       };
+
+      autoStage = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          Run `git add --all` before fetch/pull so untracked or modified
+          working-tree files don't block the ff-only pull (incoming
+          commits touching the same paths would otherwise refuse to
+          merge with "untracked working tree files would be
+          overwritten"). Does NOT commit. Intended for repos whose
+          working tree is also written to by an external sync mechanism
+          (e.g. Unison mirroring into the same path on multiple hosts).
+          Only runs when HEAD is on the configured branch.
+        '';
+      };
     };
   };
 
