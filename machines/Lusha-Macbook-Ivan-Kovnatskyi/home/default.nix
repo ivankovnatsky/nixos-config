@@ -51,7 +51,6 @@
     ../../../home/terragrunt.nix
     ../../../home/tmux.nix
     ../../../home/treefmt.nix
-    ../../../home/tweety.nix
     ../../../home/yamlint.nix
     ../../../home/z-lua.nix
     ../../../home/zsh.nix

@@ -4,9 +4,6 @@ let
   firefoxDevProfile = "rejmmzbw.dev-edition-default";
   firefoxProfile = "eje9k9co.default-release";
   userJsConfig = ''
-    // Disable extension signature requirement for Tweety
-    user_pref("xpinstall.signatures.required", false);
-
     // Enable vertical tabs
     user_pref("sidebar.verticalTabs", true);
 
@@ -23,12 +20,6 @@ in
   home.file = {
     # Firefox Developer Edition user.js configuration
     "Library/Application Support/Firefox/Profiles/${firefoxDevProfile}/user.js".text = userJsConfig;
-
-    # Install Tweety extension automatically
-    "Library/Application Support/Firefox/Profiles/${firefoxDevProfile}/extensions/tweety@pomdtr.me.xpi" =
-      {
-        source = "${pkgs.tweety}/share/extensions/firefox.zip";
-      };
 
     # Install Okta Browser Plugin
     "Library/Application Support/Firefox/Profiles/${firefoxDevProfile}/extensions/{b31c6c7d-29f1-4b34-a1e7-8b76bfabce3d}.xpi" =

@@ -27,8 +27,6 @@ let
 
 in
 {
-  home.packages = [ pkgs.tweety ];
-
   programs.firefox = {
     enable = true;
     package = pkgs.firefox-devedition;
@@ -39,10 +37,6 @@ in
         "selecttab@ivankovnatsky.net" = {
           installation_mode = "force_installed";
           install_url = "file://${configPathAbs}/dev-edition-default/extensions/selecttab@ivankovnatsky.net.xpi";
-        };
-        "tweety@pomdtr.me" = {
-          installation_mode = "force_installed";
-          install_url = "file://${configPathAbs}/dev-edition-default/extensions/tweety@pomdtr.me.xpi";
         };
       };
     };
@@ -63,9 +57,6 @@ in
   };
 
   home.file = {
-    "${configPath}/dev-edition-default/extensions/tweety@pomdtr.me.xpi" = {
-      source = "${pkgs.tweety}/share/extensions/firefox.zip";
-    };
     "${configPath}/dev-edition-default/extensions/selecttab@ivankovnatsky.net.xpi" = {
       source = "${pkgs.firefox-selecttab}/share/extensions/firefox-selecttab.zip";
     };
