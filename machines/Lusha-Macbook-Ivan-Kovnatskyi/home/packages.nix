@@ -38,7 +38,7 @@
     docker-credential-helpers
     dockutil # macOS related CLI
     doggo
-    databricks
+    databricks-cli
     eks-node-viewer
     flarectl
     gh-prs-merged-today
