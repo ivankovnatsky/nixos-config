@@ -36,6 +36,12 @@ let
         exit 2
       fi
 
+      # Block `git reset`
+      if echo "$CMD" | grep -qE '(^|[;&|]+)[[:space:]]*git[[:space:]]+reset([[:space:]]|$)'; then
+        echo "git reset is forbidden — use /commit skill, git-commit-scope <file-or-dir>, or plain git commit <file-or-dir> instead" >&2
+        exit 2
+      fi
+
       exit 0
     ''
   );
