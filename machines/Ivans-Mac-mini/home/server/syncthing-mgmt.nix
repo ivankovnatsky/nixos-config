@@ -32,17 +32,7 @@
     ];
 
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
-    folders = {
-      "Notes" = {
-        path = "${config.flags.externalStoragePath}/Notes";
-        label = "Notes";
-        devices = [
-          "Ivans-Mac-mini"
-          "Ivans-iPhone"
-          "a3"
-        ];
-      };
-    };
+    folders = { };
 
     restart = false;
   };

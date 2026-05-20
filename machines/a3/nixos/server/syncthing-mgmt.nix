@@ -37,17 +37,7 @@
     ];
 
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
-    folders = {
-      "Notes" = {
-        path = "${config.users.users.${username}.home}/Notes";
-        label = "Notes";
-        devices = [
-          "a3"
-          "Ivans-Mac-mini"
-          "Ivans-iPhone"
-        ];
-      };
-    };
+    folders = { };
 
     restart = false;
   };
