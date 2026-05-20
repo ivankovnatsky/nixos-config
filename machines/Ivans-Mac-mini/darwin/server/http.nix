@@ -29,11 +29,9 @@ let
   bindAddress = config.flags.machineBindAddress;
 
   # Create a Caddy package with the required DNS plugin
-  # Use the caddy-with-plugins overlay to get the withPlugins functionality
-  caddyWithPlugins = pkgs.caddy-with-plugins.withPlugins {
-    # https://github.com/caddy-dns/cloudflare/issues/97#issuecomment-2784508762
-    plugins = [ "github.com/caddy-dns/cloudflare@v0.0.0-20250214163716-188b4850c0f2" ];
-    hash = "sha256-jWOhBYKkxH9wpuARrReeKgWOOLl9D7chFMm+KCJhaXI=";
+  caddyWithPlugins = pkgs.caddy.withPlugins {
+    plugins = [ "github.com/caddy-dns/cloudflare@v0.2.4" ];
+    hash = "sha256-J0HWjCPoOoARAxDpG2bS9c0x5Wv4Q23qWZbTjd8nW84=";
   };
 
   # Path to the Caddyfile template
