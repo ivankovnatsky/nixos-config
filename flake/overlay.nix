@@ -7,10 +7,6 @@ let
 
   # Special arguments for specific overlays (like nixpkgs all-packages.nix)
   overlayArgs = {
-    mangohud = {
-      inherit (prev.linuxPackages.nvidia_x11.settings) libXNVCtrl;
-      mangohud32 = prev.pkgsi686Linux.mangohud;
-    };
     gwq = {
       inherit (masterOverlays.nixpkgs-darwin-master-gwq) go_1_26;
     };
