@@ -18,7 +18,7 @@
     # kcat # avro-c++ build fails with fmt 11.2.0: error: no matching member function for call to 'format' in fmt::formatter<avro::Type>
     apacheKafka
     argocd
-    aws-account-open
+    aws-console
     aws-profile
     aws-sso-cli
     aws-sso-creds
