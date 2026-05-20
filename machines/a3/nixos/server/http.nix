@@ -6,9 +6,9 @@
 }:
 
 let
-  caddyWithPlugins = pkgs.caddy-with-plugins.withPlugins {
-    plugins = [ "github.com/caddy-dns/cloudflare@v0.0.0-20250214163716-188b4850c0f2" ];
-    hash = "sha256-4JeAW+UOaTjT3k4eP6eFiPY1ypXpAHF27x8+MJmwOQE=";
+  caddyWithPlugins = pkgs.caddy.withPlugins {
+    plugins = [ "github.com/caddy-dns/cloudflare@v0.2.4" ];
+    hash = "sha256-J0HWjCPoOoARAxDpG2bS9c0x5Wv4Q23qWZbTjd8nW84=";
   };
 
   caddyfileTemplate = ../../../../templates/Caddyfile;
