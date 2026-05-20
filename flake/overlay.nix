@@ -101,6 +101,7 @@ let
     rems = inputs.rems.packages.${system}.default;
     pyenv-nix-install = inputs.pyenv-nix-install.packages.${system}.default;
     cx-cli = inputs.cx-cli.packages.${system}.default;
+    summarize = inputs.nix-steipete-tools.packages.${system}.summarize;
   };
 
   # 5. In-place overrides of upstream nixpkgs derivations
