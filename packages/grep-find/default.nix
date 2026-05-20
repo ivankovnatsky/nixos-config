@@ -1,6 +1,6 @@
 { pkgs }:
 
-pkgs.writeShellScriptBin "find-grep" ''
+pkgs.writeShellScriptBin "grep-find" ''
   export PATH="${
     pkgs.lib.makeBinPath [
       pkgs.ripgrep
@@ -9,5 +9,5 @@ pkgs.writeShellScriptBin "find-grep" ''
       pkgs.neovim
     ]
   }:$PATH"
-  exec ${pkgs.bash}/bin/bash ${./find-grep.sh} "$@"
+  exec ${pkgs.bash}/bin/bash ${./grep-find.sh} "$@"
 ''

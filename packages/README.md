@@ -7,7 +7,7 @@ Custom Nix packages exposed via overlay.
 > The Unix philosophy treats tools as **nouns** (things you use) rather than
 > **verbs** (actions you take). The action is implied by context or flags.
 
-- **Nouns over verbs** - `jpg-converter` not `convert-to-jpg`
+- **Nouns over verbs** - `image-meta` not `get-image-metadata`
 - **Domain-first** - `gh-notifications` not `open-gh-notifications`
 - **Concise** - `torrent-dl` not `download-torrent-files`
 - **Suffix patterns** - `*-mgmt` for management tools (like `systemctl`)
