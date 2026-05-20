@@ -17,6 +17,8 @@ Subcommands:
   poweroff    Set volume and shutdown system (macOS + Linux)
   battery     Show battery state (macOS + Linux)
   cpufreq     Get or cap CPU max frequency (Linux only)
+  autovolume  Probe audio activity (macOS + Linux)
+  daemon      Long-running settings agent (macOS + Linux)
 """
 
 import click
@@ -26,9 +28,11 @@ from common import AliasedGroup
 import accessibility
 import appearance
 import autohide
+import autovolume
 import awake
 import battery
 import cpufreq
+import daemon
 import dock
 import fulldiskaccess
 import location
@@ -54,9 +58,11 @@ def cli(ctx):
 accessibility.register(cli)
 appearance.register(cli)
 autohide.register(cli)
+autovolume.register(cli)
 awake.register(cli)
 battery.register(cli)
 cpufreq.register(cli)
+daemon.register(cli)
 dock.register(cli)
 fulldiskaccess.register(cli)
 location.register(cli)
