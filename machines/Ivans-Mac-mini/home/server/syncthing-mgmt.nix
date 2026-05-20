@@ -34,11 +34,11 @@
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
     folders = {
       "Notes" = {
-        path = "${config.flags.externalStoragePath}/Notes";
+        path = "${config.home.homeDirectory}/Library/Mobile Documents/iCloud~md~obsidian/Documents/Notes";
         label = "Notes";
+        # Apple devices share Notes via iCloud; Syncthing bridges mini to a3.
         devices = [
           "Ivans-Mac-mini"
-          "Ivans-iPhone"
           "a3"
         ];
       };
