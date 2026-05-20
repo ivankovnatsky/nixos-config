@@ -42,7 +42,6 @@
     summarize
     eks-node-viewer
     flarectl
-    gh-prs-merged-today
     ghorg-sync
     git-worktree-init
     glow
@@ -55,14 +54,11 @@
     iam-policy-json-to-terraform
     jcli
     jira-custom
-    k-nodes-by-label
-    k-number-of-replicas
     k8s-context
     k8sgpt
     kail
     kdash
     kitty-copy
-    kn
     krew
     kubecolor
     kubectl
@@ -85,7 +81,6 @@
     aws-cdk-cli
     opentofu
     oras
-    orphaned-snapshots
     pblock
     pnpm
     popeye
@@ -112,6 +107,5 @@
     vault-auth
     yazi
     yq
-    zscaler-kill
   ];
 }

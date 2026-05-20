@@ -25,7 +25,6 @@ in
       duf
       erdtree
       exiftool
-      game-mode
       gh-repos-sync
       glow
       hadolint
@@ -40,15 +39,12 @@ in
       pandoc
       parallel
       pciutils
-      power-consumption
       pre-commit
       pv
       q
       ripgrep
       rust-analyzer
       rustc
-      temperatures
-      tmux-temperatures
       typos
       typst
       typstyle

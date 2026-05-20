@@ -1,6 +1,5 @@
 {
   imports = [
-    ../../../darwin/aerospace.nix
     ../../../darwin/darwin.nix
     ../../../darwin/init.nix
     ../../../darwin/nix.nix

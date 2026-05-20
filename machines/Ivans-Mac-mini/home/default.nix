@@ -1,6 +1,5 @@
 {
   imports = [
-    ../../../home/aichat.nix
     ../../../home/atuin.nix
     ../../../home/bash.nix
     ../../../home/bat.nix
@@ -21,7 +20,6 @@
     ../../../home/gwq.nix
     ../../../home/hammerspoon
     ../../../home/home-session-vars.nix
-    ../../../home/jujutsu.nix
     ../../../home/kitty
     ../../../home/lsd.nix
     ../../../home/mpv.nix

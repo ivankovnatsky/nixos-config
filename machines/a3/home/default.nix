@@ -15,7 +15,6 @@
     ../../../home/go.nix
     ../../../home/gwq.nix
     ../../../home/home-session-vars.nix
-    ../../../home/jujutsu.nix
     ../../../home/kitty
     ../../../home/lsd.nix
     ../../../home/mpv.nix

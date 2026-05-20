@@ -1,7 +1,5 @@
 {
   imports = [
-    ../../../home/aichat-server.nix
-    ../../../home/aichat.nix
     ../../../home/atuin.nix
     ../../../home/bat.nix
     ../../../home/bitwarden.nix
@@ -20,7 +18,6 @@
     ../../../home/gwq.nix
     ../../../home/hammerspoon
     ../../../home/home-session-vars.nix
-    ../../../home/jujutsu.nix
     ../../../home/k9s.nix
     ../../../home/kitty
     ../../../home/lsd.nix
@@ -58,7 +55,6 @@
     ../../../modules/home/dock
     ../../../modules/home/launchd
     ../../../modules/home/notifications
-    ../../../modules/home/prevent-sleep
     ../../../modules/home/reposync
     ../../../modules/home/settings-daemon
     ../../../modules/home/syncthing-mgmt
@@ -70,7 +66,6 @@
     ./flags.nix
     ./nixvim.nix
     ./packages.nix
-    ./prevent-sleep.nix
     ./programs.nix
     ./reposync.nix
     ./settings-daemon.nix

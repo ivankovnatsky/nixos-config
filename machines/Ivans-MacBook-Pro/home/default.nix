@@ -8,7 +8,6 @@
     ../../../home/claude-settings.nix
     ../../../home/claude.nix
     ../../../home/direnv.nix
-    ../../../home/dns-clear.nix
     ../../../home/fish.nix
     ../../../home/flags.nix
     ../../../home/fzf.nix
@@ -21,7 +20,6 @@
     ../../../home/gwq.nix
     ../../../home/hammerspoon
     ../../../home/home-session-vars.nix
-    ../../../home/jujutsu.nix
     ../../../home/kitty
     ../../../home/lsd.nix
     ../../../home/mpv.nix
