@@ -101,11 +101,6 @@ ${lib.optionalString (config.local.tools.toolsPrefix != config.home.homeDirector
       # https://github.com/remigourdon/dotfiles/commit/733971c51c7dd1050b786c0fdc7ce04bd2661197
       complete --command aws --no-files --arguments '(begin; set --local --export COMP_SHELL fish; set --local --export COMP_LINE (commandline); aws_completer | sed \'s/ $//\'; end)'
 
-      # Add aichat completions for ai
-      if command -v aichat >/dev/null
-          complete -c ai -w aichat
-      end
-
       # forgit: hide branch/tag decorations from log
       set -gx FORGIT_LOG_FORMAT "%C(auto)%h %s %C(brightblack)%cr%Creset"
 

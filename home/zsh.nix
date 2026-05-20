@@ -79,11 +79,6 @@ in
       setopt extendedglob
       setopt IGNORE_EOF
 
-      # Add ai completions
-      if (( $+commands[aichat] )); then
-        compdef ai=aichat
-      fi
-
       # direnv hook (direnv installed via Homebrew)
       if (( $+commands[direnv] )); then
         eval "$(direnv hook zsh)"

@@ -5,11 +5,9 @@
     mtasks
     git-restore
     age
-    ai
     aria2
     arr-mgmt
     asusrouter-cli
-    audio-extract
     backup-home
     bbw
     beszel-mgmt
@@ -17,12 +15,10 @@
     cleanup-home
     delta
     diff-deep
-    diff-long-lines
     dns
     dust
     eat
     ffmpeg
-    find-grep
     firefox-selecttab
     forgejo-mgmt
     genpass
@@ -33,10 +29,10 @@
     gitleaks
     gofumpt
     golangci-lint
+    grep-find
     git-branch
     git-commit-scope
     git-pull-all
-    git-repo-dl
     git-root-root
     git-switch
     git-worktree-purge
@@ -50,12 +46,10 @@
     gwq-merge
     grwt
     gwq-purge
-    homelab
     hyperfine
     image-meta
     jellyfin-mgmt
     jq
-    jpg-converter
     mkcd
     nextdns-mgmt
     nix-gc
@@ -69,19 +63,15 @@
     pass-fzf
     paste-loop
     path-copy
-    perplexity
     pigz
     poppler-utils
     poweroff
     ps-top
     ps-top-nu
-    rbwget
     reboot
     rebuild
     reposync
     ruff
-    rg-all
-    rg-find
     settings
     shellcheck
     shfmt
@@ -92,19 +82,15 @@
     stylua
     syncthing-mgmt
     tac
-    tail-terminal
     tmux-attach
     tmux-spawn
-    top-top
     torrent-dl
-    torrent-watcher
     tree
     uptime-kuma-mgmt
     username # Installed as flake
     watcher
     wget
     yank
-    zellij-session
     zoxide
   ];
 }
