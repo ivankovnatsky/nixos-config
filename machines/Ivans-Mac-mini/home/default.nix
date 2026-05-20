@@ -56,6 +56,7 @@
     ../../../modules/home/launchd
     ../../../modules/home/nextdns-mgmt
     ../../../modules/home/reposync
+    ../../../modules/home/settings-daemon
     ../../../modules/home/syncthing-mgmt
     ../../../modules/home/tools
     ../../../modules/home/unison
@@ -63,6 +64,7 @@
     ./flags.nix
     ./packages.nix
     ./server
+    ./settings-daemon.nix
     ./sops.nix
     ./tmux.nix
     ./tools.nix

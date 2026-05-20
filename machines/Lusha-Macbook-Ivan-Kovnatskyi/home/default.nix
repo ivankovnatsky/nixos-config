@@ -60,6 +60,7 @@
     ../../../modules/home/notifications
     ../../../modules/home/prevent-sleep
     ../../../modules/home/reposync
+    ../../../modules/home/settings-daemon
     ../../../modules/home/syncthing-mgmt
     ../../../modules/home/tools
     ./close-zscaler.nix
@@ -72,6 +73,7 @@
     ./prevent-sleep.nix
     ./programs.nix
     ./reposync.nix
+    ./settings-daemon.nix
     ./syncthing-mgmt.nix
     ./tools.nix
   ];

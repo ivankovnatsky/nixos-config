@@ -42,6 +42,7 @@
     ../../../modules/home/jellyfin-mgmt
     ../../../modules/home/launchd
     ../../../modules/home/nextdns-mgmt
+    ../../../modules/home/settings-daemon
     ../../../modules/home/tools
     ../../../modules/home/unison
     ../../../modules/home/uptime-kuma-mgmt
@@ -51,6 +52,7 @@
     ./packages.nix
     ./pi-models.nix
     ./server
+    ./settings-daemon.nix
     ./unison.nix
   ];
 }

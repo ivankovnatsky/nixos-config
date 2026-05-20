@@ -59,10 +59,12 @@
     ../../../modules/home/nextdns-mgmt
     ../../../modules/home/notifications
     ../../../modules/home/reposync
+    ../../../modules/home/settings-daemon
     ../../../modules/home/syncthing-mgmt
     ../../../modules/home/tools
     ./dock.nix
     ./packages.nix
     ./reposync.nix
+    ./settings-daemon.nix
   ];
 }
