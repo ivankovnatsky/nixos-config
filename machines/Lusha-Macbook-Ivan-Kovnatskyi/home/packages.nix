@@ -39,6 +39,7 @@
     dockutil # macOS related CLI
     doggo
     databricks-cli
+    summarize
     eks-node-viewer
     flarectl
     gh-prs-merged-today
