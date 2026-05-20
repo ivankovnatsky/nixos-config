@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
-"""Pick an AWS SSO profile via fzf and open its console in the default browser.
+"""Open an AWS SSO console for a profile in the default browser.
 
 Reads ~/.aws/config for SSO profiles (anything whose credential_process line
 contains an iam::<acct>:role/<role> ARN) and ~/.aws-sso/config.yaml for the
 SSO portal start URL (AWS_SSO_START_URL env var overrides).
+
+With no flags it shows an fzf picker. --account / --role narrow the candidates;
+when they leave exactly one match the picker is skipped (non-interactive use).
 """
 
 import configparser
@@ -73,18 +76,51 @@ def pick(entries: list[tuple[str, str, str]]) -> tuple[str, str, str]:
     return entries[idx]
 
 
+def match(
+    entries: list[tuple[str, str, str]], account: str | None, role: str | None
+) -> list[tuple[str, str, str]]:
+    """Filter entries by account (name or id) and role, case-insensitively."""
+    out = entries
+    if account:
+        needle = account.lower()
+        out = [e for e in out if needle in e[0].lower() or needle == e[1]]
+    if role:
+        needle = role.lower()
+        out = [e for e in out if needle == e[2].lower()]
+    return out
+
+
 @click.command()
-def main() -> None:
+@click.option(
+    "-a", "--account", help="Account name (substring) or 12-digit account id."
+)
+@click.option("-r", "--role", help="Exact SSO role name.")
+@click.option(
+    "-p", "--print", "print_url", is_flag=True, help="Print the URL instead of opening it."
+)
+def main(account: str | None, role: str | None, print_url: bool) -> None:
     """Open the AWS SSO console for a selected profile."""
     start_url = load_start_url()
     entries = load_profiles()
     if not entries:
         raise click.ClickException(f"no SSO role profiles found in {AWS_CONFIG}")
 
-    _, account_id, role = pick(entries)
-    qs = urllib.parse.urlencode({"account_id": account_id, "role_name": role})
+    candidates = match(entries, account, role)
+    if not candidates:
+        raise click.ClickException(
+            f"no profile matches account={account!r} role={role!r}"
+        )
+    if len(candidates) == 1:
+        _, account_id, role_name = candidates[0]
+    else:
+        _, account_id, role_name = pick(candidates)
+
+    qs = urllib.parse.urlencode({"account_id": account_id, "role_name": role_name})
     url = f"{start_url.rstrip('/')}/#/console?{qs}"
-    subprocess.run(["open", url], check=True)
+    if print_url:
+        click.echo(url)
+    else:
+        subprocess.run(["open", url], check=True)
 
 
 if __name__ == "__main__":
