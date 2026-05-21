@@ -61,8 +61,8 @@ in
       };
 
       thresholdPercent = mkOption {
-        type = types.float;
-        default = 2.5;
+        type = types.int;
+        default = 2;
         description = "Volume percentage to lower to.";
       };
     };
