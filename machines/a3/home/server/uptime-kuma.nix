@@ -189,20 +189,6 @@ in
 
       # ---- mini-hosted services ----
       {
-        name = "caddy-http-mini";
-        type = "tcp";
-        url = "${miniIp}:80";
-        interval = 60;
-        description = "Caddy HTTP reverse proxy (mini)";
-      }
-      {
-        name = "caddy-https-mini";
-        type = "tcp";
-        url = "${miniIp}:443";
-        interval = 60;
-        description = "Caddy HTTPS reverse proxy (mini)";
-      }
-      {
         name = "dnsmasq-mini";
         type = "dns";
         url = "example.com@${miniIp}";
