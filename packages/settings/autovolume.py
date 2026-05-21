@@ -31,7 +31,7 @@ from common import is_linux, is_macos
 # Defaults intentionally re-exported so the daemon CLI and the nix module
 # can share them.
 DEFAULT_IDLE_SECONDS = 60 * 30  # 30 minutes
-DEFAULT_THRESHOLD_PERCENT = 5
+DEFAULT_THRESHOLD_PERCENT = 2
 DEFAULT_CHECK_INTERVAL = 60 * 5  # 5 minutes
 
 # Hard timeout for every probe subprocess so a stuck ioreg/pmset/pactl can
