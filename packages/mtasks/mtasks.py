@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """Taskwarrior-style table view of markdown task files.
 
-Recursively scans `--root` (default: cwd) for `*.md` files and parses
-multiple task formats simultaneously:
+Recursively scans `--root` for `*.md` files and parses multiple task
+formats simultaneously. The default root is the `Tasks/` subdirectory of
+the Obsidian notes vault — iCloud Obsidian container on Macs
+(`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/notes/Tasks`),
+`~/Notes/Tasks` on a3 — falling back to cwd if neither path exists.
 
 - Legacy sub-bullet meta: `- [ ] Title` followed by `  - key: value` lines.
 - Legacy inline-parens: `- [ ] Title (created: ..., completed: ..., due: ...)`.
@@ -32,6 +35,25 @@ from rich import box
 from rich.console import Console
 from rich.markup import escape as rich_escape
 from rich.table import Table
+
+NOTES_CANDIDATES = (
+    "Library/Mobile Documents/iCloud~md~obsidian/Documents/notes",
+    "Notes",
+)
+
+
+def resolve_default_root() -> Path:
+    """Default scan root: `<notes-vault>/Tasks` if it exists, else cwd.
+
+    Mirrors the `notes` skill detection: iCloud Obsidian container on Macs,
+    `~/Notes` on a3.
+    """
+    home = Path.home()
+    for rel in NOTES_CANDIDATES:
+        tasks = home / rel / "Tasks"
+        if tasks.is_dir():
+            return tasks
+    return Path.cwd()
 
 TASK_RE = re.compile(r"^- \[([ x/!>\-])\] (.*)$")
 SUBKV_RE = re.compile(r"^  - ([A-Za-z][A-Za-z0-9_]*): (.*)$")
@@ -504,9 +526,12 @@ def render_simple_table(
     "--root",
     type=click.Path(path_type=Path, file_okay=False, dir_okay=True),
     envvar="MTASKS_ROOT",
-    default=".",
-    show_default=True,
-    help="Root directory to scan recursively.",
+    default=None,
+    help=(
+        "Root directory to scan recursively. Defaults to the Obsidian vault's "
+        "Tasks/ subdirectory (iCloud path on Macs, ~/Notes/Tasks on a3); falls "
+        "back to cwd if neither exists."
+    ),
 )
 @click.option("--all", "show_all", is_flag=True, help="Show all tasks.")
 @click.option(
@@ -543,7 +568,7 @@ def render_simple_table(
     help="Wrap long titles across multiple lines. The default truncates.",
 )
 def main(
-    root: Path,
+    root: Path | None,
     show_all: bool,
     pending: bool,
     completed: bool,
@@ -572,7 +597,8 @@ def main(
         project=project,
         limit=limit,
     )
-    all_tasks = gather(root.resolve())
+    scan_root = root if root is not None else resolve_default_root()
+    all_tasks = gather(scan_root.resolve())
     tasks = filter_tasks(all_tasks, args)
     totals = {
         "total": len(all_tasks),
