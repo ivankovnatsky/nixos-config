@@ -1,4 +1,4 @@
-{ config, ... }:
+{ ... }:
 {
   flags = {
     enableFishShell = true;
@@ -6,6 +6,5 @@
     editor = "nvim";
     darkMode = true;
     obsidian.vaultPaths = [ ];
-    notesPath = "${config.home.homeDirectory}/iCloudDriveNotes";
   };
 }

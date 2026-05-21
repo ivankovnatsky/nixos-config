@@ -39,6 +39,5 @@
       ];
     };
     obsidian.vaultPaths = [ ];
-    notesPath = "${config.flags.externalStoragePath}/Notes";
   };
 }
