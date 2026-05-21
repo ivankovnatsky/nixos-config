@@ -7,7 +7,6 @@
     ../../../../darwin/system.nix
     ../../../../modules/darwin/dnsmasq
     ../../../../modules/darwin/launchd
-    ../../../../modules/darwin/linux-builder
     ../../../../modules/darwin/logrotate
     ../../../../modules/darwin/pam
     ../../../../modules/darwin/pmset
@@ -22,11 +21,8 @@
     ./flags.nix
     ./git.nix
     ./homebrew.nix
-    ./http.nix
-    ./linux-builder.nix
     ./logrotate.nix
     ./mas-upgrade.nix
-    ./mosh.nix
     ./music-export.nix
     ./nix.nix
     ./openssh.nix
