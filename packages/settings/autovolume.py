@@ -31,7 +31,7 @@ from common import is_linux, is_macos
 # Defaults intentionally re-exported so the daemon CLI and the nix module
 # can share them.
 DEFAULT_IDLE_SECONDS = 60 * 30  # 30 minutes
-DEFAULT_THRESHOLD_PERCENT = 2.5
+DEFAULT_THRESHOLD_PERCENT = 5
 DEFAULT_CHECK_INTERVAL = 60 * 5  # 5 minutes
 
 # Hard timeout for every probe subprocess so a stuck ioreg/pmset/pactl can
@@ -192,7 +192,7 @@ class AutoVolume:
     def __init__(
         self,
         idle_seconds: int,
-        threshold_percent: float,
+        threshold_percent: int,
         verbose: bool = True,
     ) -> None:
         self.idle_seconds = idle_seconds
@@ -227,14 +227,14 @@ class AutoVolume:
             return
         if current <= self.threshold_percent:
             self.log(
-                f"volume {current:.1f}% already <= {self.threshold_percent}%; "
+                f"volume {current}% already <= {self.threshold_percent}%; "
                 "latching without write"
             )
             self.lowered_in_this_idle = True
             return
         self.log(
             f"idle for {idle:.0f}s (>= {self.idle_seconds}s); "
-            f"lowering volume {current:.1f}% -> {self.threshold_percent}%"
+            f"lowering volume {current}% -> {self.threshold_percent}%"
         )
         if volume_mod.volume_set(self.threshold_percent):
             self.lowered_in_this_idle = True
