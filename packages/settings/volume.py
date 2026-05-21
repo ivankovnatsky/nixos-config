@@ -1,4 +1,9 @@
-"""Volume: Get/set system volume (macOS + Linux)."""
+"""Volume: Get/set system volume (macOS + Linux).
+
+Volume is an integer percentage. macOS reports `output volume` as a whole
+number (0-100), so fractional levels are not representable; Linux is kept
+integer-only for parity.
+"""
 
 from __future__ import annotations
 
@@ -11,7 +16,7 @@ import click
 from common import is_linux, is_macos
 
 
-def volume_get_macos() -> float | None:
+def volume_get_macos() -> int | None:
     """Get current volume percentage on macOS using osascript."""
     try:
         result = subprocess.run(
@@ -20,18 +25,17 @@ def volume_get_macos() -> float | None:
             text=True,
             check=True,
         )
-        return float(result.stdout.strip())
+        return int(round(float(result.stdout.strip())))
     except (subprocess.CalledProcessError, FileNotFoundError, ValueError):
         return None
 
 
-def volume_set_macos(percent: float) -> bool:
+def volume_set_macos(percent: int) -> bool:
     """Set volume percentage on macOS using osascript."""
     try:
         # macOS volume is 0-100
-        volume = int(round(percent))
         subprocess.run(
-            ["osascript", "-e", f"set volume output volume {volume}"],
+            ["osascript", "-e", f"set volume output volume {percent}"],
             check=True,
         )
         return True
@@ -40,7 +44,7 @@ def volume_set_macos(percent: float) -> bool:
         return False
 
 
-def volume_get_linux() -> float | None:
+def volume_get_linux() -> int | None:
     """Get current volume percentage on Linux using pactl."""
     try:
         result = subprocess.run(
@@ -52,17 +56,17 @@ def volume_get_linux() -> float | None:
         # Output format: "Volume: front-left: 65536 / 100% / 0.00 dB, ..."
         match = re.search(r"(\d+)%", result.stdout)
         if match:
-            return float(match.group(1))
+            return int(match.group(1))
         return None
     except (subprocess.CalledProcessError, FileNotFoundError):
         return None
 
 
-def volume_set_linux(percent: float) -> bool:
+def volume_set_linux(percent: int) -> bool:
     """Set volume percentage on Linux using pactl."""
     try:
         subprocess.run(
-            ["pactl", "set-sink-volume", "@DEFAULT_SINK@", f"{percent:.1f}%"],
+            ["pactl", "set-sink-volume", "@DEFAULT_SINK@", f"{percent}%"],
             check=True,
         )
         return True
@@ -71,7 +75,7 @@ def volume_set_linux(percent: float) -> bool:
         return False
 
 
-def volume_get() -> float | None:
+def volume_get() -> int | None:
     """Get current volume percentage."""
     if is_macos():
         return volume_get_macos()
@@ -82,7 +86,7 @@ def volume_get() -> float | None:
         return None
 
 
-def volume_set(percent: float) -> bool:
+def volume_set(percent: int) -> bool:
     """Set volume percentage."""
     if is_macos():
         return volume_set_macos(percent)
@@ -96,7 +100,7 @@ def volume_set(percent: float) -> bool:
 def register(cli):
     @cli.command()
     @click.option("--status", is_flag=True, help="Show current volume level")
-    @click.argument("level", required=False, type=float)
+    @click.argument("level", required=False, type=int)
     def volume(status, level):
         """Get or set system volume (macOS + Linux)"""
         if not is_macos() and not is_linux():
@@ -106,7 +110,7 @@ def register(cli):
         if status:
             vol = volume_get()
             if vol is not None:
-                print(f"Volume: {vol:.0f}%")
+                print(f"Volume: {vol}%")
                 return
             else:
                 print("Could not get volume", file=sys.stderr)
@@ -114,14 +118,14 @@ def register(cli):
 
         if level is not None:
             if volume_set(level):
-                print(f"Volume: {level:.1f}%")
+                print(f"Volume: {level}%")
                 return
             sys.exit(1)
 
         # Default: show status
         vol = volume_get()
         if vol is not None:
-            print(f"Volume: {vol:.0f}%")
+            print(f"Volume: {vol}%")
         else:
             print("Could not get volume", file=sys.stderr)
             sys.exit(1)
