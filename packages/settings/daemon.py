@@ -41,7 +41,7 @@ def register(cli):
     )
     @click.option(
         "--autovolume-threshold",
-        type=float,
+        type=click.IntRange(min=0, max=100),
         default=DEFAULT_THRESHOLD_PERCENT,
         show_default=True,
         help="Volume percentage to lower to.",
@@ -61,7 +61,7 @@ def register(cli):
     def run(
         autovolume: bool,
         autovolume_idle: int,
-        autovolume_threshold: float,
+        autovolume_threshold: int,
         check_interval: int,
         verbose: bool,
     ):
