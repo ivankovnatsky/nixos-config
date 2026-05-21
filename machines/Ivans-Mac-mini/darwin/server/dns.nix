@@ -51,8 +51,8 @@ in
       domain=${config.sops.placeholder.external-domain}
       local=/${config.sops.placeholder.external-domain}/
       dhcp-option=option:domain-search,${config.sops.placeholder.external-domain}
-      address=/${config.sops.placeholder.external-domain}/${config.flags.miniIp}
-      address=/${config.sops.placeholder.external-domain}/${config.flags.miniWifiIp}
+      address=/${config.sops.placeholder.external-domain}/${config.flags.a3Ip}
+      address=/${config.sops.placeholder.external-domain}/${config.flags.a3WifiIp}
       mx-host=${config.sops.placeholder.external-domain},${config.sops.placeholder.external-domain},10
     '';
   };
@@ -72,8 +72,8 @@ in
     alwaysKeepRunning = true;
     waitForSecrets = false;
     settings = {
-      # Bind to all interfaces — LAN devices reach dnsmasq via
-      # NextDNS rewrites (miniIp, miniWifiIp).
+      # Bind to all interfaces — LAN devices reach dnsmasq directly
+      # on miniIp / miniWifiIp.
       # bind-dynamic is Linux-only, bind-interfaces crashes on
       # missing interfaces, specific IPs fail if not assigned at
       # boot. 0.0.0.0 avoids all of these; mDNSResponder doesn't
