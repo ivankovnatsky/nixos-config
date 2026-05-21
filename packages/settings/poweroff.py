@@ -59,7 +59,7 @@ def register(cli):
     @click.option(
         "--volume",
         "vol",
-        type=float,
+        type=int,
         default=POWEROFF_VOLUME_SET,
         help=f"Volume level before shutdown (default: {POWEROFF_VOLUME_SET}%)",
     )
