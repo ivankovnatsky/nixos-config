@@ -6,6 +6,7 @@
     ./forgejo.nix
     ./http.nix
     ./media
+    ./miniserve.nix
     ./navidrome.nix
     ./networking.nix
     ./nextdns.nix
