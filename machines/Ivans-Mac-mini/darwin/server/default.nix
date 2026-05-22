@@ -5,31 +5,24 @@
     ../../../../darwin/shell.nix
     ../../../../darwin/sudo.nix
     ../../../../darwin/system.nix
-    ../../../../modules/darwin/dnsmasq
     ../../../../modules/darwin/launchd
-    ../../../../modules/darwin/logrotate
+    ../../../../modules/darwin/nextdns
     ../../../../modules/darwin/pam
     ../../../../modules/darwin/pmset
-    ../../../../modules/darwin/sharing
-    ../../../../modules/darwin/stubby
     ../../../../modules/darwin/sudo
     ../../../../modules/flags
     ../../../../system/documentation.nix
     ../../../../system/nix.nix
     ../../../../system/sops-secrets.nix
+    ./cleanup-legacy.nix
     ./dns.nix
     ./flags.nix
     ./git.nix
     ./homebrew.nix
-    ./logrotate.nix
-    ./mas-upgrade.nix
-    ./music-export.nix
     ./nix.nix
     ./openssh.nix
     ./packages.nix
     ./power.nix
-    ./restart-unhealthy.nix
-    ./sharing.nix
     ./system.nix
     ./tailscale.nix
   ];

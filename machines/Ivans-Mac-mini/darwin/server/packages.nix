@@ -5,8 +5,6 @@
     tmux
     git
 
-    mas
-
     # Required for Uptime Kuma tailscale-ping monitors
     tailscale
   ];
