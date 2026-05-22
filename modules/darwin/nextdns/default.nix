@@ -8,13 +8,13 @@
 with lib;
 
 let
-  cfg = config.local.nextdns-dns;
+  cfg = config.local.nextdns;
 
-  setDnsScript = pkgs.writeShellScript "set-nextdns-dns" ''
+  setDnsScript = pkgs.writeShellScript "set-nextdns" ''
     set -e
 
-    DNS1=$(/bin/cat "${config.sops.secrets."nextdns-dns-1".path}")
-    DNS2=$(/bin/cat "${config.sops.secrets."nextdns-dns-2".path}")
+    DNS1=$(/bin/cat "${config.sops.secrets."nextdns-1".path}")
+    DNS2=$(/bin/cat "${config.sops.secrets."nextdns-2".path}")
 
     ${concatMapStringsSep "\n" (
       svc:
@@ -25,7 +25,7 @@ let
   '';
 in
 {
-  options.local.nextdns-dns = {
+  options.local.nextdns = {
     enable = mkEnableOption "NextDNS DNS configuration from sops secrets";
 
     machine = mkOption {
@@ -45,10 +45,10 @@ in
   };
 
   config = mkIf cfg.enable {
-    sops.secrets."nextdns-dns-1".key = "nextDNS/${cfg.machine}/IPs/0";
-    sops.secrets."nextdns-dns-2".key = "nextDNS/${cfg.machine}/IPs/1";
+    sops.secrets."nextdns-1".key = "nextDNS/${cfg.machine}/IPs/0";
+    sops.secrets."nextdns-2".key = "nextDNS/${cfg.machine}/IPs/1";
 
-    local.launchd.services.nextdns-dns = {
+    local.launchd.services.nextdns = {
       enable = true;
       waitForSecrets = true;
       keepAlive = false;
