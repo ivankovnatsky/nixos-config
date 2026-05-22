@@ -9,7 +9,7 @@
     "iPhone USB"
   ];
 
-  local.nextdns-dns = {
+  local.nextdns = {
     enable = true;
     machine = "Air";
   };
