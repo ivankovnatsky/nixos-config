@@ -2,7 +2,7 @@
 
 {
   home.packages = with pkgs; [
-    mtasks
+    tasks
     git-restore
     age
     aria2
