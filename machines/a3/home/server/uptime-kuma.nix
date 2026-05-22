@@ -189,32 +189,11 @@ in
 
       # ---- mini-hosted services ----
       {
-        name = "dnsmasq-mini";
-        type = "dns";
-        url = "example.com@${miniIp}";
-        interval = 60;
-        description = "dnsmasq DNS resolver (mini)";
-      }
-      {
-        name = "smb-mini";
-        type = "tcp";
-        url = "${miniIp}:445";
-        interval = 60;
-        description = "macOS built-in SMB service (mini)";
-      }
-      {
         name = "ssh-mini";
         type = "tcp";
         url = "${miniIp}:22";
         interval = 60;
         description = "SSH service (mini)";
-      }
-      {
-        name = "stubby-mini";
-        type = "tcp";
-        url = "${miniIp}:5453";
-        interval = 60;
-        description = "Stubby DoT resolver (mini, upstream for dnsmasq)";
       }
       {
         name = "syncthing-mini";
