@@ -1,10 +1,10 @@
 { pkgs }:
 
-pkgs.writeShellScriptBin "mtasks" ''
+pkgs.writeShellScriptBin "tasks" ''
   exec ${
     pkgs.python3.withPackages (ps: [
       ps.click
       ps.rich
     ])
-  }/bin/python3 ${./mtasks.py} "$@"
+  }/bin/python3 ${./tasks.py} "$@"
 ''

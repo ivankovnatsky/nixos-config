@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Taskwarrior-style table view of markdown task files.
+"""Table view of markdown task files.
 
 Recursively scans `--root` for `*.md` files and parses multiple task
 formats simultaneously. The default root is the `Tasks/` subdirectory of
@@ -7,8 +7,6 @@ the Obsidian notes vault — iCloud Obsidian container on Macs
 (`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/notes/Tasks`),
 `~/Notes/Tasks` on a3 — falling back to cwd if neither path exists.
 
-- Legacy sub-bullet meta: `- [ ] Title` followed by `  - key: value` lines.
-- Legacy inline-parens: `- [ ] Title (created: ..., completed: ..., due: ...)`.
 - TaskForge inline (Obsidian Tasks): checkbox states `[ /!>x-]` plus emoji
   metadata (➕ created, 🛫 start, ⏳ scheduled, 📅 due, ✅ done, ❌ cancelled,
   priority 🔺⏫🔼🔽⏬, `#tag`s, and ` — ` notes separator).
@@ -16,8 +14,8 @@ the Obsidian notes vault — iCloud Obsidian container on Macs
   `taskSourceType: taskNotes`, and a free-form markdown body.
 
 Usage:
-  mtasks [--all|--pending|--completed] [--project P]
-       [--limit N] [--format table|simple|json] [--root PATH]
+  tasks [--all|--pending|--completed] [--project P]
+      [--limit N] [--format table|simple|json] [--root PATH]
 """
 
 from __future__ import annotations
@@ -520,12 +518,12 @@ def render_simple_table(
 
 @click.command(
     context_settings={"help_option_names": ["-h", "--help"]},
-    help="Taskwarrior-style listing of markdown task files under a directory.",
+    help="Listing of markdown task files under a directory.",
 )
 @click.option(
     "--root",
     type=click.Path(path_type=Path, file_okay=False, dir_okay=True),
-    envvar="MTASKS_ROOT",
+    envvar="TASKS_ROOT",
     default=None,
     help=(
         "Root directory to scan recursively. Defaults to the Obsidian vault's "
@@ -615,4 +613,4 @@ def main(
 
 
 if __name__ == "__main__":
-    main(prog_name="mtasks")
+    main(prog_name="tasks")
