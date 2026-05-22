@@ -12,7 +12,6 @@
     ))
     gh-repos-sync
     macmon
-    music-export
     sesh
     treefmt
     typos
