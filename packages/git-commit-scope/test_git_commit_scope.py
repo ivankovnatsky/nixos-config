@@ -74,6 +74,40 @@ class GitCommitScopeTest(unittest.TestCase):
         self.assertEqual(self.last_subject(), "new-tool: init")
         self.assertEqual(self.status_short(), "")
 
+    def test_no_args_commits_single_staged_new_file_as_init(self):
+        self.write("new-tool.py", "print('hello')\n")
+        self.git("add", "new-tool.py")
+
+        result = self.run_scope()
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.last_subject(), "new-tool: init")
+        self.assertEqual(self.status_short(), "")
+
+    def test_no_args_commits_staged_new_file_from_subdir(self):
+        subdir = self.repo / "subdir"
+        self.write("subdir/new-tool.py", "print('hello')\n")
+        self.git("add", "subdir/new-tool.py")
+
+        result = self.run_scope(cwd=subdir)
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.last_subject(), "subdir/new-tool: init")
+        self.assertEqual(self.status_short(), "")
+
+    def test_no_args_rejects_edited_rename_without_subject(self):
+        # git mv + content edit produces an R<100 rename; its new path is
+        # absent from HEAD but must NOT be defaulted to "init".
+        self.git("mv", "tracked.txt", "renamed.txt")
+        self.write("renamed.txt", "original\nedited\n")
+        self.git("add", "renamed.txt")
+
+        result = self.run_scope()
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Subject required for modified files", result.stderr)
+        self.assertEqual(self.last_subject(), "seed")
+
     def test_no_args_commits_single_deleted_file_as_remove(self):
         (self.repo / "tracked.txt").unlink()
 

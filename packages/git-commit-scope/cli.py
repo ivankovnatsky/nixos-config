@@ -67,12 +67,13 @@ def _commit_renames(
         sys.exit(1)
 
 
-def infer_no_arg_commit() -> tuple[list[str], str]:
+def infer_no_arg_commit(git_root: str) -> tuple[list[str], str]:
     """Infer a commit target and subject for bare `git-commit-scope`.
 
-    Bare mode is deliberately narrow: it only defaults new untracked files to
-    "init" and deleted files to "remove". Modified files still need an explicit
-    subject so the command does not guess at intent.
+    Bare mode is deliberately narrow: it only defaults new files (untracked or
+    staged-but-never-committed) to "init" and deleted files to "remove".
+    Modified files still need an explicit subject so the command does not guess
+    at intent.
     """
     try:
         all_files = get_all_changed_files()
@@ -96,6 +97,16 @@ def infer_no_arg_commit() -> tuple[list[str], str]:
     target = all_files[0]
     untracked = get_untracked_files()
     deleted = get_deleted_files()
+    # is_new_file resolves paths via os.path.abspath, so feed it an absolute
+    # path; target is reported relative to the git root.
+    # An edited rename (R<100) reaches here as just its new path, which is
+    # absent from HEAD and so looks "new" — but committing it as 'init' would
+    # drop the rename source and the content edit. Exclude rename destinations
+    # so they fall through to the explicit-subject error. (Pure R100 renames
+    # are handled earlier by the rename-only fast path in main().)
+    is_new = is_new_file(os.path.join(git_root, target)) and not (
+        get_rename_sources_for_path(target)
+    )
 
     if target in untracked and target in deleted:
         click.echo(
@@ -108,7 +119,7 @@ def infer_no_arg_commit() -> tuple[list[str], str]:
 
     if target in deleted:
         return [target], "remove"
-    if target in untracked:
+    if target in untracked or is_new:
         return [target], "init"
 
     click.echo(
@@ -116,7 +127,7 @@ def infer_no_arg_commit() -> tuple[list[str], str]:
         err=True,
     )
     click.echo(
-        "  Bare git-commit-scope only defaults untracked files to 'init'",
+        "  Bare git-commit-scope only defaults new files to 'init'",
         err=True,
     )
     click.echo("  and deleted files to 'remove'.", err=True)
@@ -221,7 +232,7 @@ Features:
   - Directories commit all changes under that path
   - Auto-adds untracked files before committing
   - Without path arg but with subject, detects exactly one changed file
-  - With no args, commits exactly one untracked file as init or deleted file as remove
+  - With no args, commits exactly one new file as init or deleted file as remove
   - Strips file extensions (e.g., .nix, .py)
   - Shortens machine names (e.g., Ivans-Mac-mini -> mini)
   - Removes duplicate path components (e.g., pkg/foo/foo -> pkg/foo)
@@ -321,7 +332,7 @@ def main(args, subject, body, ai_shorten):
                 sys.exit(1)
 
     if not args and not subject:
-        target_files, commit_subject = infer_no_arg_commit()
+        target_files, commit_subject = infer_no_arg_commit(git_root)
     else:
         file_paths, commit_subject = parse_args_flexible(list(args), subject)
         if file_paths:
