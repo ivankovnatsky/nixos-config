@@ -38,7 +38,15 @@ in
       tokyonight-nvim
       # material-nvim
       # onenord-nvim
+
+      # oil.nvim third-party extensions
+      # https://github.com/stevearc/oil.nvim#third-party-extensions
+      oil-git-nvim # benomahony: git status with colour and symbols
+      oil-lsp-diagnostics-nvim # LSP diagnostics as virtual text in oil
     ];
+    extraConfigLua = ''
+      require("oil-lsp-diagnostics").setup({})
+    '';
     # extraConfigLua =
     #   if config.flags.darkMode then
     #     ''
