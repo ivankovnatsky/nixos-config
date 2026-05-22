@@ -8,7 +8,7 @@
     "Wi-Fi"
   ];
 
-  local.nextdns-dns = {
+  local.nextdns = {
     enable = true;
     machine = "Pro";
   };
