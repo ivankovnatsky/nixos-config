@@ -13,7 +13,10 @@ let
   settingsPackage = pkgs.callPackage ../../../packages/settings { };
 
   daemonArgs = concatStringsSep " " (
-    [ "daemon" "run" ]
+    [
+      "daemon"
+      "run"
+    ]
     ++ (if cfg.autovolume.enable then [ "--autovolume" ] else [ "--no-autovolume" ])
     ++ [
       "--autovolume-idle"
@@ -62,7 +65,7 @@ in
 
       thresholdPercent = mkOption {
         type = types.int;
-        default = 2;
+        default = 6;
         description = "Volume percentage to lower to.";
       };
     };
@@ -87,7 +90,11 @@ in
       systemd.user.services.settings-daemon = {
         Unit = {
           Description = "Settings daemon (autovolume, etc.)";
-          After = [ "default.target" "pipewire.service" "pulseaudio.service" ];
+          After = [
+            "default.target"
+            "pipewire.service"
+            "pulseaudio.service"
+          ];
         };
         Service = {
           # systemd user units inherit a minimal PATH; the autovolume probes
