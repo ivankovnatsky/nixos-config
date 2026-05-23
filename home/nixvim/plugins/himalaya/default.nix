@@ -3,7 +3,6 @@
 {
   programs.nixvim = {
     extraPlugins = [
-      pkgs.vimPlugins.himalaya-vim
       pkgs.vimPlugins.nui-nvim
       (pkgs.vimUtils.buildVimPlugin rec {
         pname = "himalaya.nvim";
