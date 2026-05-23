@@ -148,6 +148,10 @@
           count = 0;
           rules = "";
         };
+        kwinrc."org.kde.kdecoration2" = {
+          BorderSize = "Normal";
+          BorderSizeAuto = false;
+        };
         kwalletrc = {
           "org.freedesktop.secrets" = {
             apiEnabled = true;
