@@ -49,6 +49,7 @@
     ../../../modules/home/uptime-kuma-mgmt
     ./chromium.nix
     ./desktop
+    ./discord.nix
     ./mail.nix
     ./obsidian.nix
     ./packages.nix
