@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 from datetime import date
@@ -80,9 +81,40 @@ def appearance_get_theme_kde() -> bool:
     return False
 
 
+def _kde_session_env() -> dict[str, str]:
+    # plasma-apply-colorscheme shells out to xrdb internally; from a tmux/SSH
+    # context XAUTHORITY is often stale or unset, so xrdb prints auth errors
+    # even though the colorscheme switch itself succeeds. Pull the live values
+    # from the running plasmashell process.
+    env = os.environ.copy()
+    try:
+        pid = subprocess.check_output(
+            ["pgrep", "-u", str(os.getuid()), "-x", "plasmashell"], text=True
+        ).split()[0]
+        with open(f"/proc/{pid}/environ", "rb") as f:
+            raw = f.read().decode("utf-8", "replace")
+        plasma_env = dict(
+            item.split("=", 1) for item in raw.split("\0") if "=" in item
+        )
+        for key in (
+            "DISPLAY",
+            "XAUTHORITY",
+            "WAYLAND_DISPLAY",
+            "DBUS_SESSION_BUS_ADDRESS",
+            "XDG_RUNTIME_DIR",
+        ):
+            if key in plasma_env:
+                env[key] = plasma_env[key]
+    except (subprocess.CalledProcessError, OSError, IndexError):
+        pass
+    return env
+
+
 def appearance_set_theme_kde(dark: bool) -> None:
     scheme = "BreezeDark" if dark else "BreezeLight"
-    subprocess.run(["plasma-apply-colorscheme", scheme], check=True)
+    subprocess.run(
+        ["plasma-apply-colorscheme", scheme], check=True, env=_kde_session_env()
+    )
 
 
 def appearance_set_wallpaper_kde(hex_color: str) -> None:
