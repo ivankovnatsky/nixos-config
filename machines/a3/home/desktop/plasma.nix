@@ -84,6 +84,7 @@
             }
             {
               name = "org.kde.plasma.weather";
+              config.Appearance.showTemperatureInCompactMode = true;
             }
             {
               systemTray.items = {
