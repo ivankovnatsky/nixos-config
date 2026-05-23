@@ -92,6 +92,9 @@
               };
             }
             {
+              name = "org.kde.plasma.weatherreport";
+            }
+            {
               digitalClock = {
                 time.format = "24h";
               };
