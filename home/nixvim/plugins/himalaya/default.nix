@@ -14,7 +14,7 @@
           rev = version;
           hash = "sha256-kamZKE/VpMPenc67JtjS/jsmNrYx7VgxJAuBbvKJ1aM=";
         };
-        nvimRequireCheck = "";
+        dependencies = [ pkgs.vimPlugins.nui-nvim ];
       })
     ];
   };
