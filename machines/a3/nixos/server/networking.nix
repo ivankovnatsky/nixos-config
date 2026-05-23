@@ -28,4 +28,14 @@
       5353 # mDNS/Avahi
     ];
   };
+
+  # a3's eno1 and wlp9s0 are both on 192.168.50.0/24. Without this, ARP flux
+  # lets either NIC answer for any local IP — LAN clients learn the wrong
+  # MAC for .50.6 and packets get black-holed by rp_filter.
+  boot.kernel.sysctl = {
+    "net.ipv4.conf.all.arp_ignore" = 1;
+    "net.ipv4.conf.all.arp_announce" = 2;
+    "net.ipv4.conf.default.arp_ignore" = 1;
+    "net.ipv4.conf.default.arp_announce" = 2;
+  };
 }
