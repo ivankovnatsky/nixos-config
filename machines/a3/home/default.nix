@@ -23,6 +23,7 @@
     ../../../home/nixvim
     ../../../home/nixvim/plugins/codediff
     ../../../home/nixvim/plugins/gpg-nvim
+    ../../../home/nixvim/plugins/himalaya
     ../../../home/npm.nix
     ../../../home/nushell.nix
     ../../../home/packages.nix
