@@ -45,6 +45,8 @@ let
     root = ${sync.pathB}
 
     batch = true
+    perms = 0
+    dontchmod = true
     xattrs = false
 
     ${lib.concatMapStringsSep "\n" (i: "ignore = ${i}") sync.ignore}
