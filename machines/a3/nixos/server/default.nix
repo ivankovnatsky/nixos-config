@@ -5,6 +5,7 @@
     ./dns.nix
     ./forgejo.nix
     ./http.nix
+    ./immich.nix
     ./media
     ./miniserve.nix
     ./navidrome.nix
