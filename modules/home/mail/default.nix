@@ -70,7 +70,7 @@ in
       Port 993
       User ${addr}
       PassCmd "cat ${passwordFile}"
-      SSLType IMAPS
+      TLSType IMAPS
       CertificateFile ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt
       PipelineDepth 50
       Timeout 120
@@ -145,6 +145,7 @@ in
         ]
         ''
           run mkdir -p "$(dirname "${himalayaConfig}")"
+          run mkdir -p "${cfg.maildirRoot}"
           run ln -sf ${config.sops.templates."mbsyncrc".path} ${config.home.homeDirectory}/.mbsyncrc
           run ln -sf ${config.sops.templates."msmtprc".path} ${config.home.homeDirectory}/.msmtprc
           run ln -sf ${config.sops.templates."himalaya-config.toml".path} "${himalayaConfig}"
