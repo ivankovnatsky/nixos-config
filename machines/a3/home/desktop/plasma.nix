@@ -92,7 +92,7 @@
               };
             }
             {
-              name = "org.kde.plasma.weatherreport";
+              name = "org.kde.plasma.weather";
             }
             {
               digitalClock = {
