@@ -964,11 +964,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1775570913,
-        "narHash": "sha256-/uwZAbDsZjrqYmLgnyHDz7gQjtRRRopbPMBS+t7inK8=",
+        "lastModified": 1779545591,
+        "narHash": "sha256-wmZoa8SeWf7CrJA4pBUkepUGChyXEj2UbmnQO2noQQU=",
         "owner": "ivankovnatsky",
         "repo": "username",
-        "rev": "bfec3b55cc52f3a50638b8dfe2b130fba47b8281",
+        "rev": "48ee671ba29985963a3bfb72d261e77787823fa9",
         "type": "github"
       },
       "original": {
