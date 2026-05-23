@@ -15,6 +15,12 @@ let
       # Enable Ctrl+Tab to cycle through recent tabs
       "browser.ctrlTab.recentlyUsedOrder" = true;
       "browser.ctrlTab.sortByRecentlyUsed" = true;
+
+      # Never suggest translating pages
+      "browser.translations.automaticallyPopup" = false;
+
+      # Block geolocation prompts globally (2 = block)
+      "permissions.default.geo" = 2;
     };
 
     extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
