@@ -150,6 +150,7 @@
                   "applications:kitty.desktop"
                   "applications:firefox-devedition.desktop"
                   "applications:chromium-browser.desktop"
+                  "applications:discord.desktop"
                   "applications:org.kde.plasma-systemmonitor.desktop"
                   "applications:org.kde.spectacle.desktop"
                   "applications:org.kde.kinfocenter.desktop"
