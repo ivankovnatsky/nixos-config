@@ -40,6 +40,7 @@
     ../../../modules/home/beszel-mgmt
     ../../../modules/home/jellyfin-mgmt
     ../../../modules/home/launchd
+    ../../../modules/home/mail
     ../../../modules/home/nextdns-mgmt
     ../../../modules/home/settings-daemon
     ../../../modules/home/tools
@@ -47,6 +48,7 @@
     ../../../modules/home/uptime-kuma-mgmt
     ./chromium.nix
     ./desktop
+    ./mail.nix
     ./obsidian.nix
     ./packages.nix
     ./pi-models.nix
