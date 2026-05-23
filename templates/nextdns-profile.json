@@ -192,10 +192,6 @@
       {
         "name": "@externalDomain@",
         "content": "@a3Ip@"
-      },
-      {
-        "name": "@externalDomain@",
-        "content": "@a3WifiIp@"
       }
     ],
     "allowlist": [
