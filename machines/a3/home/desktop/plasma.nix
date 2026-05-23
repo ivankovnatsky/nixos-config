@@ -83,6 +83,30 @@
               name = "org.kde.plasma.panelspacer";
             }
             {
+              systemMonitor = {
+                showTitle = false;
+                showLegend = false;
+                displayStyle = "org.kde.ksysguard.textonly";
+                sensors = [
+                  {
+                    name = "cpu/all/usage";
+                    color = "255,255,255";
+                    label = "💻";
+                  }
+                  {
+                    name = "memory/physical/usedPercent";
+                    color = "255,255,255";
+                    label = "🧠";
+                  }
+                  {
+                    name = "disk/all/read";
+                    color = "255,255,255";
+                    label = "💾";
+                  }
+                ];
+              };
+            }
+            {
               name = "org.kde.plasma.weather";
               config = {
                 Appearance.showTemperatureInCompactMode = true;
