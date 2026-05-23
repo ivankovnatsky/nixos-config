@@ -83,6 +83,9 @@
               name = "org.kde.plasma.panelspacer";
             }
             {
+              name = "org.kde.plasma.weather";
+            }
+            {
               systemTray.items = {
                 shown = [
                   "org.kde.plasma.keyboardlayout"
@@ -90,9 +93,6 @@
                   "org.kde.plasma.volume"
                 ];
               };
-            }
-            {
-              name = "org.kde.plasma.weather";
             }
             {
               digitalClock = {
