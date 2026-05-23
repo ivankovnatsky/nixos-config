@@ -84,7 +84,14 @@
             }
             {
               name = "org.kde.plasma.weather";
-              config.Appearance.showTemperatureInCompactMode = true;
+              config = {
+                Appearance.showTemperatureInCompactMode = true;
+                Units = {
+                  temperatureUnit = 6001; # Celsius
+                  pressureUnit = 5008; # Hectopascal
+                  speedUnit = 9000; # MeterPerSecond
+                };
+              };
             }
             {
               systemTray.items = {
