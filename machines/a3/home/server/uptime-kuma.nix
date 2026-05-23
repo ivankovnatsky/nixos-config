@@ -102,6 +102,17 @@ in
         description = "Miniserve file server (a3, auth required)";
       }
       {
+        name = "immich-a3";
+        url = "http://127.0.0.1:2283";
+        interval = 60;
+        expectedStatus = [
+          "200-299"
+          "302"
+        ];
+        maxredirects = 0;
+        description = "Immich photo server (a3)";
+      }
+      {
         name = "jellyfin-a3";
         url = "http://127.0.0.1:8096";
         interval = 60;
