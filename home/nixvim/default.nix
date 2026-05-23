@@ -41,7 +41,6 @@ in
 
       # oil.nvim third-party extensions
       # https://github.com/stevearc/oil.nvim#third-party-extensions
-      oil-git-nvim # benomahony: git status with colour and symbols
       oil-lsp-diagnostics-nvim # LSP diagnostics as virtual text in oil
     ];
     extraConfigLua = ''

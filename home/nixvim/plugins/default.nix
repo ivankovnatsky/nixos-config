@@ -91,10 +91,6 @@
           view_options.show_hidden = true;
         };
       };
-      # https://github.com/stevearc/oil.nvim#third-party-extensions
-      # Adds git status to oil.nvim directory listings. Auto-sets
-      # oil's signcolumn to "yes:2" (required for the two status columns).
-      oil-git-status.enable = true;
       undotree.enable = true;
       which-key.enable = true;
       # FIXME: Will comment for now. Had hardtime with hardtime plugin.
