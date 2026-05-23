@@ -11,7 +11,7 @@
         wallpaperPlainColor = "64,64,64";
         cursor = {
           theme = "breeze_cursors";
-          size = 48;
+          size = 30;
         };
       };
 
