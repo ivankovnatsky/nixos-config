@@ -160,6 +160,18 @@
 		header_up Host {host}
 	}
 
+	@immich host immich.@externalDomain@
+	reverse_proxy @immich @a3Ip@:2283 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+		# Mobile sync and video uploads need generous timeouts + body size.
+		transport http {
+			keepalive 12h
+			keepalive_idle_conns 100
+			response_header_timeout 300s
+		}
+	}
+
 	# Logging for ACME and DNS services
 	log {
 		output file @logPathPrefix@/caddy/acme-sync.log {
