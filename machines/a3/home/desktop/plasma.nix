@@ -29,6 +29,7 @@
           # Use Caps Lock to switch layouts
           # Shift+Caps Lock will still work for actual CAPS LOCK functionality
           options = [ "grp:caps_toggle" ];
+          switchingPolicy = "window";
         };
 
         mice = [
