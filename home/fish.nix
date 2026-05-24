@@ -42,7 +42,10 @@ in
       set fish_greeting # Disable greeting
 
       # https://fishshell.com/docs/current/interactive.html#vi-mode-commands
-      fish_vi_key_bindings
+      # Set the variable directly instead of calling fish_vi_key_bindings so
+      # the autopair plugin's --on-variable handler fires and installs its
+      # quote/bracket bindings. https://github.com/jorgebucaran/autopair.fish/issues/16
+      set -g fish_key_bindings fish_vi_key_bindings
 
       # Emacs-style Ctrl+A/Ctrl+E for beginning/end of line in vi mode
       bind -M insert \ca beginning-of-line
