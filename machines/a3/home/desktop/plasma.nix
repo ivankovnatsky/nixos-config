@@ -1,4 +1,9 @@
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 
 {
   # Configure mouse with slow speed using plasma-manager
@@ -38,7 +43,7 @@
             vendorId = "258a";
             productId = "0033";
 
-            accelerationProfile = "none";
+            accelerationProfile = "default";
             acceleration = -0.7;
           }
         ];
