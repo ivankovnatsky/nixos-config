@@ -62,4 +62,12 @@
   sops.secrets.discord-webhook-notifications = {
     key = "discord/webhooks/notifications";
   };
+
+  sops.secrets.weather-label = {
+    key = "weather/label";
+  };
+
+  sops.secrets.weather-id = {
+    key = "weather/id";
+  };
 }
