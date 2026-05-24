@@ -12,6 +12,7 @@
     ./obsidian.nix
     ./packages.nix
     ./plasma.nix
+    ./steam.nix
     ./tools.nix
   ];
 }
