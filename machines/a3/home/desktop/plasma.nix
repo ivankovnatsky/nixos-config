@@ -231,7 +231,7 @@
 
   # Run plasma-manager scripts after configuration
   # plasma-manager has built-in checksum tracking and will only reapply when config changes
-  home.activation.apply-plasma-config = lib.hm.dag.entryAfter [ "configure-plasma" ] ''
+  home.activation.apply-plasma-config = lib.hm.dag.entryAfter [ "configure-plasma" "sops-nix" ] ''
     if [[ -v DRY_RUN ]]; then
       echo "Would apply plasma configuration"
     else
@@ -239,25 +239,24 @@
       if [[ -x ~/.local/share/plasma-manager/run_all.sh ]]; then
         ~/.local/share/plasma-manager/run_all.sh
       fi
-      # Substitute weather widget placeholders with sops-encrypted values.
-      # Skipped on subsequent activations when plasma-manager doesn't rewrite
-      # the appletsrc (no placeholders left to match) — rotating the secret
-      # alone won't propagate; touch the plasma config to force a rewrite.
+      # Rewrite the weather widget source line from sops-encrypted values.
+      # Match by `source=bbcukmet|weather|` prefix so rotation propagates
+      # every activation (not just when plasma-manager rewrites the file).
+      # Values are passed via env so they never appear in /proc/PID/cmdline.
       appletsrc="$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc"
       label_file=${config.sops.secrets.weather-label.path}
       id_file=${config.sops.secrets.weather-id.path}
       if [[ -f "$appletsrc" && -r "$label_file" && -r "$id_file" ]]; then
-        weather_label=$(cat "$label_file")
-        weather_id=$(cat "$id_file")
-        if [[ -n "$weather_label" && -n "$weather_id" ]]; then
-          # Escape sed replacement metacharacters (#, &, \)
-          esc='s/[#&\\]/\\&/g'
-          weather_label_esc=$(printf '%s' "$weather_label" | ${pkgs.gnused}/bin/sed -e "$esc")
-          weather_id_esc=$(printf '%s' "$weather_id" | ${pkgs.gnused}/bin/sed -e "$esc")
-          ${pkgs.gnused}/bin/sed -i \
-            -e "s#@WEATHER_LABEL@#$weather_label_esc#g" \
-            -e "s#@WEATHER_ID@#$weather_id_esc#g" \
-            "$appletsrc"
+        WEATHER_LABEL=$(cat "$label_file")
+        WEATHER_ID=$(cat "$id_file")
+        if [[ -n "$WEATHER_LABEL" && -n "$WEATHER_ID" ]]; then
+          tmp=$(mktemp)
+          WEATHER_LABEL="$WEATHER_LABEL" WEATHER_ID="$WEATHER_ID" \
+            ${pkgs.gawk}/bin/awk '
+              BEGIN { lbl=ENVIRON["WEATHER_LABEL"]; id=ENVIRON["WEATHER_ID"] }
+              /^source=bbcukmet\|weather\|/ { print "source=bbcukmet|weather|" lbl "|" id; next }
+              { print }
+            ' "$appletsrc" > "$tmp" && mv "$tmp" "$appletsrc"
         fi
       fi
       # Reload KWin to apply window rules and other changes
