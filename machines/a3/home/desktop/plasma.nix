@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, pkgs, config, ... }:
 
 {
   # Configure mouse with slow speed using plasma-manager
@@ -116,6 +116,7 @@
                   pressureUnit = 5008; # Hectopascal
                   speedUnit = 9000; # MeterPerSecond
                 };
+                WeatherStation.source = "bbcukmet|weather|@WEATHER_LABEL@|@WEATHER_ID@";
               };
             }
             {
@@ -237,6 +238,27 @@
       # Run the plasma-manager scripts
       if [[ -x ~/.local/share/plasma-manager/run_all.sh ]]; then
         ~/.local/share/plasma-manager/run_all.sh
+      fi
+      # Substitute weather widget placeholders with sops-encrypted values.
+      # Skipped on subsequent activations when plasma-manager doesn't rewrite
+      # the appletsrc (no placeholders left to match) — rotating the secret
+      # alone won't propagate; touch the plasma config to force a rewrite.
+      appletsrc="$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc"
+      label_file=${config.sops.secrets.weather-label.path}
+      id_file=${config.sops.secrets.weather-id.path}
+      if [[ -f "$appletsrc" && -r "$label_file" && -r "$id_file" ]]; then
+        weather_label=$(cat "$label_file")
+        weather_id=$(cat "$id_file")
+        if [[ -n "$weather_label" && -n "$weather_id" ]]; then
+          # Escape sed replacement metacharacters (#, &, \)
+          esc='s/[#&\\]/\\&/g'
+          weather_label_esc=$(printf '%s' "$weather_label" | ${pkgs.gnused}/bin/sed -e "$esc")
+          weather_id_esc=$(printf '%s' "$weather_id" | ${pkgs.gnused}/bin/sed -e "$esc")
+          ${pkgs.gnused}/bin/sed -i \
+            -e "s#@WEATHER_LABEL@#$weather_label_esc#g" \
+            -e "s#@WEATHER_ID@#$weather_id_esc#g" \
+            "$appletsrc"
+        fi
       fi
       # Reload KWin to apply window rules and other changes
       if command -v qdbus >/dev/null 2>&1 && qdbus org.kde.KWin >/dev/null 2>&1; then
