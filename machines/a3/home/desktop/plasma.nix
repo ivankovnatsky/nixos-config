@@ -182,7 +182,7 @@
           rules = "";
         };
         kwinrc."org.kde.kdecoration2" = {
-          BorderSize = "Normal";
+          BorderSize = "None";
           BorderSizeAuto = false;
         };
         kwalletrc = {
