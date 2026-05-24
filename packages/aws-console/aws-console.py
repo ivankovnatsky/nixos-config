@@ -96,7 +96,11 @@ def match(
 )
 @click.option("-r", "--role", help="Exact SSO role name.")
 @click.option(
-    "-p", "--print", "print_url", is_flag=True, help="Print the URL instead of opening it."
+    "-p",
+    "--print",
+    "print_url",
+    is_flag=True,
+    help="Print the URL instead of opening it.",
 )
 def main(account: str | None, role: str | None, print_url: bool) -> None:
     """Open the AWS SSO console for a selected profile."""

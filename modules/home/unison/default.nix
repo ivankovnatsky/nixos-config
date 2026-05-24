@@ -100,11 +100,15 @@ in
     ) cfg.syncs;
 
     local.launchd.services = lib.mkIf pkgs.stdenv.isDarwin (
-      lib.mapAttrs' (name: sync: lib.nameValuePair "unison-${name}" (mkLaunchdService name sync)) cfg.syncs
+      lib.mapAttrs' (
+        name: sync: lib.nameValuePair "unison-${name}" (mkLaunchdService name sync)
+      ) cfg.syncs
     );
 
     systemd.user.services = lib.mkIf pkgs.stdenv.isLinux (
-      lib.mapAttrs' (name: sync: lib.nameValuePair "unison-${name}" (mkSystemdService name sync)) cfg.syncs
+      lib.mapAttrs' (
+        name: sync: lib.nameValuePair "unison-${name}" (mkSystemdService name sync)
+      ) cfg.syncs
     );
 
     systemd.user.timers = lib.mkIf pkgs.stdenv.isLinux (

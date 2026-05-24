@@ -7,7 +7,7 @@ import sys
 
 import click
 
-from client import ALL_DATA_TYPES, AsusData, make_client
+from client import AsusData, make_client
 from nvram_groups import NVRAM_GROUPS
 
 

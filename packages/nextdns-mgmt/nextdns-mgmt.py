@@ -52,9 +52,7 @@ def pin_dns(hostname: str, resolver_ip: str) -> None:
 
     addrs = [rr.address for rr in answer]
     if not addrs:
-        raise RuntimeError(
-            f"No A records for {hostname} via {resolver_ip}"
-        )
+        raise RuntimeError(f"No A records for {hostname} via {resolver_ip}")
 
     real_getaddrinfo = socket.getaddrinfo
 

@@ -57,28 +57,28 @@ let
   #
   # See: https://docs.anthropic.com/en/docs/claude-code/settings
   baseSettings = builtins.fromJSON (
-    builtins.replaceStrings
-      [ "@HOME@" "@HOME_WORK_PATH@" ]
-      [ homePath config.flags.homeWorkPath ]
-      (builtins.readFile ./claude-settings.json)
+    builtins.replaceStrings [ "@HOME@" "@HOME_WORK_PATH@" ] [ homePath config.flags.homeWorkPath ] (
+      builtins.readFile ./claude-settings.json
+    )
   );
 
-  claudeSettings = baseSettings
-  // lib.optionalAttrs isWork {
-    hooks = {
-      PreToolUse = [
-        {
-          matcher = "Bash";
-          hooks = [
-            {
-              type = "command";
-              command = "${homePath}/.local/bin/claude-pretooluse-hook";
-            }
-          ];
-        }
-      ];
+  claudeSettings =
+    baseSettings
+    // lib.optionalAttrs isWork {
+      hooks = {
+        PreToolUse = [
+          {
+            matcher = "Bash";
+            hooks = [
+              {
+                type = "command";
+                command = "${homePath}/.local/bin/claude-pretooluse-hook";
+              }
+            ];
+          }
+        ];
+      };
     };
-  };
 
   # `pkgs.formats.json` pretty-prints via `jq`, so the deployed file
   # stays human-readable and the tools activation diff shows real

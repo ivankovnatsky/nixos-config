@@ -68,8 +68,7 @@ def clear_alerts_for_repo(repo_name):
     with _locked_state() as state:
         alerts = state.get("alerts", {})
         to_remove = [
-            k for k, v in alerts.items()
-            if v.get("message", "").startswith(prefix)
+            k for k, v in alerts.items() if v.get("message", "").startswith(prefix)
         ]
         for k in to_remove:
             del alerts[k]

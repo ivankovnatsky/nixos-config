@@ -53,6 +53,7 @@ def resolve_default_root() -> Path:
             return tasks
     return Path.cwd()
 
+
 TASK_RE = re.compile(r"^- \[([ x/!>\-])\] (.*)$")
 SUBKV_RE = re.compile(r"^  - ([A-Za-z][A-Za-z0-9_]*): (.*)$")
 
@@ -70,20 +71,20 @@ COMPLETED_STATUSES = {"done", "cancelled"}
 KNOWN_STATUSES = PENDING_STATUSES | COMPLETED_STATUSES
 
 INLINE_DATE_EMOJI = {
-    "➕": "createdDate",      # ➕
-    "\U0001F6EB": "start",    # 🛫
-    "⏳": "scheduled",        # ⏳
-    "\U0001F4C5": "due",      # 📅
-    "✅": "completedDate",    # ✅
-    "❌": "cancelledDate",    # ❌
+    "➕": "createdDate",  # ➕
+    "\U0001f6eb": "start",  # 🛫
+    "⏳": "scheduled",  # ⏳
+    "\U0001f4c5": "due",  # 📅
+    "✅": "completedDate",  # ✅
+    "❌": "cancelledDate",  # ❌
 }
 
 PRIORITY_EMOJI = {
-    "\U0001F53A": "highest",  # 🔺
-    "⏫": "high",             # ⏫
-    "\U0001F53C": "medium",   # 🔼
-    "\U0001F53D": "low",      # 🔽
-    "⏬": "lowest",           # ⏬
+    "\U0001f53a": "highest",  # 🔺
+    "⏫": "high",  # ⏫
+    "\U0001f53c": "medium",  # 🔼
+    "\U0001f53d": "low",  # 🔽
+    "⏬": "lowest",  # ⏬
 }
 
 INLINE_DATE_RE = re.compile(
@@ -226,9 +227,7 @@ def parse_frontmatter(lines: list[str]) -> tuple[dict, int]:
                 current_list_key = key
             elif val.startswith("[") and val.endswith("]"):
                 inner = val[1:-1]
-                data[key] = [
-                    _strip_quotes(x) for x in inner.split(",") if x.strip()
-                ]
+                data[key] = [_strip_quotes(x) for x in inner.split(",") if x.strip()]
             else:
                 data[key] = _strip_quotes(val)
         i += 1
@@ -252,7 +251,9 @@ TASKNOTE_FIELDS = (
 )
 
 
-def make_tasknote(fm: dict, body_lines: list[str], path: Path, project: str) -> Task | None:
+def make_tasknote(
+    fm: dict, body_lines: list[str], path: Path, project: str
+) -> Task | None:
     status = fm.get("status")
     title = fm.get("title", "")
     is_tasknote = fm.get("taskSourceType") == "taskNotes" or (

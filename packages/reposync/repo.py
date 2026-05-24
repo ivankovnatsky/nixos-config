@@ -358,9 +358,7 @@ def sync_repo(repo, webhook_url=None):
             target_sha = run_git(
                 "rev-parse", f"{remote}/{branch}", cwd=path, check=False
             ).stdout.strip()
-            result = run_git(
-                "merge", "--ff-only", target_sha, cwd=path, check=False
-            )
+            result = run_git("merge", "--ff-only", target_sha, cwd=path, check=False)
             if result.returncode != 0:
                 alert(
                     webhook_url,

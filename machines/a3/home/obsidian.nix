@@ -1,6 +1,11 @@
 # NixOS Obsidian vault registration via systemd.
 # Settings and documentation live in obsidian-settings.nix.
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   inherit (import ../../../home/obsidian-settings.nix) appSettings;
@@ -8,17 +13,20 @@ let
 
   appJsonFile = pkgs.writeText "obsidian-app.json" (builtins.toJSON appSettings);
 
-  resolveVault = vault:
-    if lib.hasPrefix "/" vault then vault
-    else "${config.home.homeDirectory}/${vault}";
+  resolveVault =
+    vault: if lib.hasPrefix "/" vault then vault else "${config.home.homeDirectory}/${vault}";
 
   registerScript = pkgs.writeShellScript "register-obsidian-vaults" ''
-    ${lib.concatMapStringsSep "\n" (vault:
-      let resolved = resolveVault vault;
-      in ''
+    ${lib.concatMapStringsSep "\n" (
+      vault:
+      let
+        resolved = resolveVault vault;
+      in
+      ''
         ${pkgs.coreutils}/bin/mkdir -p "${resolved}/.obsidian"
         ${pkgs.coreutils}/bin/cp "${appJsonFile}" "${resolved}/.obsidian/app.json"
-      '') vaultPaths}
+      ''
+    ) vaultPaths}
   '';
 in
 {

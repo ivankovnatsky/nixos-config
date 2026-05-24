@@ -82,9 +82,7 @@ def register(cli):
 
         features = []
         if autovolume:
-            features.append(
-                AutoVolume(autovolume_idle, autovolume_threshold, verbose)
-            )
+            features.append(AutoVolume(autovolume_idle, autovolume_threshold, verbose))
 
         if not features:
             # Idle instead of exiting: a non-zero exit would make launchd
@@ -101,8 +99,7 @@ def register(cli):
         if verbose:
             names = ", ".join(f.name for f in features)
             print(
-                f"[daemon] starting features=[{names}] "
-                f"interval={check_interval}s",
+                f"[daemon] starting features=[{names}] interval={check_interval}s",
                 file=sys.stdout,
                 flush=True,
             )

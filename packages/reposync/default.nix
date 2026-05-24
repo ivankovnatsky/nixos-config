@@ -7,5 +7,10 @@ in
 pkgs.writeShellScriptBin "reposync" ''
   export PATH="${pkgs.git}/bin:$PATH"
   export PYTHONPATH="${discordSrc}''${PYTHONPATH:+:$PYTHONPATH}"
-  exec ${pkgs.python3.withPackages (ps: [ ps.click ps.discord-webhook ])}/bin/python ${src}/reposync.py "$@"
+  exec ${
+    pkgs.python3.withPackages (ps: [
+      ps.click
+      ps.discord-webhook
+    ])
+  }/bin/python ${src}/reposync.py "$@"
 ''

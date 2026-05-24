@@ -5,7 +5,6 @@
 }:
 
 let
-  inherit (config.flags) a3Ip;
   serveDir = "/storage/data";
 in
 {

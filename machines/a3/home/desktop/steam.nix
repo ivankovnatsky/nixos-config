@@ -36,7 +36,11 @@ in
     icon = "steam";
     terminal = false;
     type = "Application";
-    categories = [ "Network" "FileTransfer" "Game" ];
+    categories = [
+      "Network"
+      "FileTransfer"
+      "Game"
+    ];
     mimeType = [
       "x-scheme-handler/steam"
       "x-scheme-handler/steamlink"

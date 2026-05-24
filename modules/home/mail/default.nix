@@ -156,7 +156,7 @@ in
         enable = true;
         command = "${pkgs.isync}/bin/mbsync -a";
         waitForSecrets = true;
-        waitForPath = cfg.waitForPath;
+        inherit (cfg) waitForPath;
         dataDir = cfg.maildirRoot;
         runAtLoad = true;
         keepAlive = false;

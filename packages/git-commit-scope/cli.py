@@ -281,9 +281,7 @@ def main(args, subject, body, ai_shorten):
         if too_long:
             click.echo("Body line(s) exceed 80 chars:", err=True)
             for lineno, line in too_long:
-                click.echo(
-                    f"  line {lineno} ({len(line)} chars): {line}", err=True
-                )
+                click.echo(f"  line {lineno} ({len(line)} chars): {line}", err=True)
             click.echo(
                 "Split into multiple -b flags or wrap to ≤80 chars per line",
                 err=True,

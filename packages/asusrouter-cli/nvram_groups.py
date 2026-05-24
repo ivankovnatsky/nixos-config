@@ -1,6 +1,5 @@
 """Static catalog of NVRAM variable groups for ASUS routers."""
 
-
 NVRAM_GROUPS = {
     "dhcp": [
         "dhcp_enable_x",

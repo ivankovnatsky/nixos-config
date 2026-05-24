@@ -93,9 +93,7 @@ def _kde_session_env() -> dict[str, str]:
         ).split()[0]
         with open(f"/proc/{pid}/environ", "rb") as f:
             raw = f.read().decode("utf-8", "replace")
-        plasma_env = dict(
-            item.split("=", 1) for item in raw.split("\0") if "=" in item
-        )
+        plasma_env = dict(item.split("=", 1) for item in raw.split("\0") if "=" in item)
         for key in (
             "DISPLAY",
             "XAUTHORITY",

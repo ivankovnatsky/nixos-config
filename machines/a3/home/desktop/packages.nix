@@ -1,4 +1,9 @@
-{ inputs, pkgs, system, ... }:
+{
+  inputs,
+  pkgs,
+  system,
+  ...
+}:
 
 let
   steipeteTools = inputs.nix-steipete-tools.packages.${system};
