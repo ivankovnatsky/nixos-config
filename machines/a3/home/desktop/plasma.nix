@@ -55,6 +55,15 @@
         ];
       };
 
+      kwin.nightLight = {
+        enable = true;
+        mode = "automatic";
+        temperature = {
+          day = 6500;
+          night = 4500;
+        };
+      };
+
       # Disable sleep/suspend, only blank the screen
       powerdevil = {
         AC = {
