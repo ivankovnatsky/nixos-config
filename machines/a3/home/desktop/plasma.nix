@@ -116,7 +116,11 @@
                   pressureUnit = 5008; # Hectopascal
                   speedUnit = 9000; # MeterPerSecond
                 };
-                WeatherStation.source = "bbcukmet|weather|@WEATHER_LABEL@|@WEATHER_ID@";
+                WeatherStation = {
+                  placeDisplayName = "@WEATHER_LABEL@";
+                  placeInfo = "@WEATHER_LABEL@|@WEATHER_ID@";
+                  provider = "bbcukmet";
+                };
               };
             }
             {
@@ -239,9 +243,10 @@
       if [[ -x ~/.local/share/plasma-manager/run_all.sh ]]; then
         ~/.local/share/plasma-manager/run_all.sh
       fi
-      # Rewrite the weather widget source line from sops-encrypted values.
-      # Match by `source=bbcukmet|weather|` prefix so rotation propagates
-      # every activation (not just when plasma-manager rewrites the file).
+      # Rewrite the weather widget keys from sops-encrypted values.
+      # Anchored on the [WeatherStation] section header so substitution
+      # is always applied (placeholders or stale values) — secret rotation
+      # propagates every activation, not just when plasma-manager rewrites.
       # Values are passed via env so they never appear in /proc/PID/cmdline.
       appletsrc="$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc"
       label_file=${config.sops.secrets.weather-label.path}
@@ -253,15 +258,22 @@
           tmp=$(mktemp)
           WEATHER_LABEL="$WEATHER_LABEL" WEATHER_ID="$WEATHER_ID" \
             ${pkgs.gawk}/bin/awk '
-              BEGIN { lbl=ENVIRON["WEATHER_LABEL"]; id=ENVIRON["WEATHER_ID"] }
-              /^source=bbcukmet\|weather\|/ { print "source=bbcukmet|weather|" lbl "|" id; next }
+              BEGIN { lbl=ENVIRON["WEATHER_LABEL"]; id=ENVIRON["WEATHER_ID"]; in_ws=0 }
+              /^\[/ { in_ws = ($0 ~ /\]\[WeatherStation\]$/) }
+              in_ws && /^placeDisplayName=/ { print "placeDisplayName=" lbl; next }
+              in_ws && /^placeInfo=/        { print "placeInfo=" lbl "|" id; next }
               { print }
             ' "$appletsrc" > "$tmp" && mv "$tmp" "$appletsrc"
         fi
       fi
-      # Reload KWin to apply window rules and other changes
+      # Reload KWin (window rules) and plasmashell (widget configs).
       if command -v qdbus >/dev/null 2>&1 && qdbus org.kde.KWin >/dev/null 2>&1; then
         qdbus org.kde.KWin /KWin reconfigure || true
+      fi
+      if command -v qdbus >/dev/null 2>&1 && qdbus org.kde.plasmashell >/dev/null 2>&1; then
+        qdbus org.kde.plasmashell /PlasmaShell evaluateScript \
+          'panels().forEach(p => p.widgets().forEach(w => w.reloadConfig()))' \
+          || true
       fi
     fi
   '';
