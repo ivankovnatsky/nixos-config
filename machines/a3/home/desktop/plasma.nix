@@ -248,10 +248,12 @@
       # is always applied (placeholders or stale values) — secret rotation
       # propagates every activation, not just when plasma-manager rewrites.
       # Values are passed via env so they never appear in /proc/PID/cmdline.
+      # The widget only picks up the new values after plasmashell re-reads
+      # the file — run `~/.local/share/plasma-manager/run_all.sh` or restart
+      # plasma-plasmashell.service manually when you want it applied live.
       appletsrc="$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc"
       label_file=${config.sops.secrets.weather-label.path}
       id_file=${config.sops.secrets.weather-id.path}
-      rewrote=0
       if [[ -f "$appletsrc" && -r "$label_file" && -r "$id_file" ]]; then
         WEATHER_LABEL=$(cat "$label_file")
         WEATHER_ID=$(cat "$id_file")
@@ -267,22 +269,14 @@
             ' "$appletsrc" > "$tmp"
           if ! cmp -s "$tmp" "$appletsrc"; then
             mv "$tmp" "$appletsrc"
-            rewrote=1
           else
             rm -f "$tmp"
           fi
         fi
       fi
-      # Reload KWin (window rules) — always cheap.
+      # Reload KWin to apply window rules and other changes
       if command -v qdbus >/dev/null 2>&1 && qdbus org.kde.KWin >/dev/null 2>&1; then
         qdbus org.kde.KWin /KWin reconfigure || true
-      fi
-      # Restart plasmashell only when we rewrote the appletsrc: plasmashell
-      # holds the widget config in memory and would otherwise flush its
-      # (placeholder) state back over our edits. A restart forces it to
-      # re-read the file with substituted values.
-      if [[ $rewrote -eq 1 ]] && systemctl --user is-active plasma-plasmashell.service >/dev/null 2>&1; then
-        systemctl --user restart plasma-plasmashell.service
       fi
     fi
   '';
