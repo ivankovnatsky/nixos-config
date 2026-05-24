@@ -251,6 +251,7 @@
       appletsrc="$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc"
       label_file=${config.sops.secrets.weather-label.path}
       id_file=${config.sops.secrets.weather-id.path}
+      rewrote=0
       if [[ -f "$appletsrc" && -r "$label_file" && -r "$id_file" ]]; then
         WEATHER_LABEL=$(cat "$label_file")
         WEATHER_ID=$(cat "$id_file")
@@ -263,17 +264,25 @@
               in_ws && /^placeDisplayName=/ { print "placeDisplayName=" lbl; next }
               in_ws && /^placeInfo=/        { print "placeInfo=" lbl "|" id; next }
               { print }
-            ' "$appletsrc" > "$tmp" && mv "$tmp" "$appletsrc"
+            ' "$appletsrc" > "$tmp"
+          if ! cmp -s "$tmp" "$appletsrc"; then
+            mv "$tmp" "$appletsrc"
+            rewrote=1
+          else
+            rm -f "$tmp"
+          fi
         fi
       fi
-      # Reload KWin (window rules) and plasmashell (widget configs).
+      # Reload KWin (window rules) — always cheap.
       if command -v qdbus >/dev/null 2>&1 && qdbus org.kde.KWin >/dev/null 2>&1; then
         qdbus org.kde.KWin /KWin reconfigure || true
       fi
-      if command -v qdbus >/dev/null 2>&1 && qdbus org.kde.plasmashell >/dev/null 2>&1; then
-        qdbus org.kde.plasmashell /PlasmaShell evaluateScript \
-          'panels().forEach(p => p.widgets().forEach(w => w.reloadConfig()))' \
-          || true
+      # Restart plasmashell only when we rewrote the appletsrc: plasmashell
+      # holds the widget config in memory and would otherwise flush its
+      # (placeholder) state back over our edits. A restart forces it to
+      # re-read the file with substituted values.
+      if [[ $rewrote -eq 1 ]] && systemctl --user is-active plasma-plasmashell.service >/dev/null 2>&1; then
+        systemctl --user restart plasma-plasmashell.service
       fi
     fi
   '';
