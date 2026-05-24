@@ -1,5 +1,14 @@
-{ ... }:
+{ pkgs, ... }:
 
+let
+  steamLauncher = pkgs.writeShellScript "steam-launcher" ''
+    if [ $# -eq 0 ]; then
+      exec steam -start steam://open/bigpicture
+    else
+      exec steam "$@"
+    fi
+  '';
+in
 {
   # Re-import the live X / Wayland session env into the systemd --user
   # manager on every Plasma login. With Linger=yes the user manager
@@ -23,7 +32,7 @@
     name = "Steam";
     genericName = "Game Launcher";
     comment = "Application for managing and playing games on Steam";
-    exec = "steam %U";
+    exec = "${steamLauncher} %U";
     icon = "steam";
     terminal = false;
     type = "Application";
