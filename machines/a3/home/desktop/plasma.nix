@@ -255,7 +255,7 @@
         WEATHER_LABEL=$(cat "$label_file")
         WEATHER_ID=$(cat "$id_file")
         if [[ -n "$WEATHER_LABEL" && -n "$WEATHER_ID" ]]; then
-          tmp=$(mktemp)
+          tmp=$(mktemp -p "$(dirname "$appletsrc")")
           WEATHER_LABEL="$WEATHER_LABEL" WEATHER_ID="$WEATHER_ID" \
             ${pkgs.gawk}/bin/awk '
               BEGIN { lbl=ENVIRON["WEATHER_LABEL"]; id=ENVIRON["WEATHER_ID"]; in_ws=0 }
