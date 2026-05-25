@@ -49,6 +49,21 @@ BRANCH=$("$GIT" -C "$DIR" rev-parse --abbrev-ref HEAD 2>/dev/null)
 if [ "$BRANCH" = "main" ] || [ "$BRANCH" = "master" ]; then
   echo "BLOCKED: $FILE_PATH is in the main tree of $TOPLEVEL (branch=$BRANCH)." >&2
   echo "Main tree must stay on $BRANCH. Create a worktree with 'gwq-add' and edit there." >&2
+
+  GWQ_ADD=$(command -v gwq-add || echo "/etc/profiles/per-user/ivan/bin/gwq-add")
+  if [ -x "$GWQ_ADD" ]; then
+    GWQ_OUTPUT=$(cd "$TOPLEVEL" && "$GWQ_ADD" 2>&1)
+    GWQ_STATUS=$?
+    if [ $GWQ_STATUS -eq 0 ]; then
+      echo "Auto-created worktree:" >&2
+      echo "$GWQ_OUTPUT" >&2
+      echo "cd into it and retry the edit there." >&2
+    else
+      echo "gwq-add failed:" >&2
+      echo "$GWQ_OUTPUT" >&2
+    fi
+  fi
+
   exit 2
 fi
 
