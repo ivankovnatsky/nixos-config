@@ -141,9 +141,7 @@ EXCLUDE_PATTERNS: dict[str, list[str]] = {
         "**/.vscode/**",
         "**/.vscode-oss/**",
     ],
-    "os_system": [
-        "**/.Trash/**",
-    ],
+    "os_system": [],
 }
 
 DEFAULT_EXCLUDE_CATEGORIES = [
