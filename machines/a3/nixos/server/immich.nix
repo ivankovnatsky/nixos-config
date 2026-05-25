@@ -5,6 +5,8 @@
     "d /storage/data/photos 0700 immich immich -"
   ];
 
+  # Save api key in sops secrets: API key from web UI → Account Settings → API
+  # Keys.
   services.immich = {
     enable = true;
     host = "0.0.0.0";
