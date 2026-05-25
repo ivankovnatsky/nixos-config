@@ -5,9 +5,7 @@
 
     battery = {
       enable = true;
-      dailyAt = "21:00";
-      belowPercent = 50;
-      lowIntervalHours = 3;
+      at = "21:00";
     };
   };
 }
