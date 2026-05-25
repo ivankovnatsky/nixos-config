@@ -4,7 +4,6 @@
   home.packages = with pkgs; [
     fastfetch
     ghq-cd
-    ghostty
     gnumake
     gum
     kdePackages.krdc # KDE Remote Desktop Client
