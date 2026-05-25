@@ -67,7 +67,6 @@
     poppler-utils
     poweroff
     ps-top
-    ps-top-nu
     reboot
     rebuild
     reposync
