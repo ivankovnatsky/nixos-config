@@ -224,7 +224,6 @@ with lib;
         type = types.enum [
           "kitty"
           "Terminal"
-          "Ghostty"
         ];
         description = "Default terminal application";
         default = "kitty";
