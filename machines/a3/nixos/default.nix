@@ -10,6 +10,7 @@
     ./chromium.nix
     ./desktop
     ./keyboard.nix
+    ./polkit.nix
     ./rebuild-diff.nix
     ./reposync.nix
     ./server
