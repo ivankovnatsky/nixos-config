@@ -69,7 +69,7 @@ in
       Host imap.mail.me.com
       Port 993
       User ${addr}
-      PassCmd "cat ${passwordFile}"
+      PassCmd "${pkgs.coreutils}/bin/cat ${passwordFile}"
       TLSType IMAPS
       CertificateFile ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt
       PipelineDepth 50
