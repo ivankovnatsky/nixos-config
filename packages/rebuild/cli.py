@@ -304,6 +304,9 @@ def cmd_watch(config_path, command, loop, no_watch, interval):
         cleanup_instance_file()
 
 
+ALIASES = {"once": "simple"}
+
+
 class DefaultDispatch(click.Group):
     """Dispatch when no subcommand is given:
 
@@ -315,9 +318,16 @@ class DefaultDispatch(click.Group):
     def parse_args(self, ctx, args):
         if not args:
             args = ["watch", "--loop"]
+        elif args[0] in ALIASES:
+            args = [ALIASES[args[0]]] + args[1:]
         elif args[0] not in self.commands and not args[0].startswith("-"):
             args = ["simple"] + args
         return super().parse_args(ctx, args)
+
+    def get_command(self, ctx, cmd_name):
+        if cmd_name in ALIASES:
+            cmd_name = ALIASES[cmd_name]
+        return super().get_command(ctx, cmd_name)
 
 
 @click.group(cls=DefaultDispatch)
