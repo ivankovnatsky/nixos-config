@@ -48,39 +48,48 @@ fi
 BRANCH=$("$GIT" -C "$DIR" rev-parse --abbrev-ref HEAD 2>/dev/null)
 if [ "$BRANCH" = "main" ] || [ "$BRANCH" = "master" ]; then
   echo "BLOCKED: $FILE_PATH is in the main tree of $TOPLEVEL (branch=$BRANCH)." >&2
-  echo "Main tree must stay on $BRANCH. Create a worktree with 'gwq-add' and edit there." >&2
+  echo "Main tree must stay on $BRANCH. Auto-creating (or reusing) a worktree below." >&2
 
   # Reuse the last auto-created worktree if it still exists. Without this,
   # every blocked Edit/Write on main would spawn another random worktree,
   # since exit 2 means the agent never moves into the one we just made.
+  # flock serializes concurrent agents so they don't each create one.
   SENTINEL="$TOPLEVEL/.git/claude-auto-worktree"
-  WORKTREE_PATH=""
-  if [ -f "$SENTINEL" ]; then
-    CACHED=$(cat "$SENTINEL" 2>/dev/null)
-    if [ -n "$CACHED" ] && [ -d "$CACHED" ]; then
-      WORKTREE_PATH="$CACHED"
-    fi
-  fi
+  LOCK="$TOPLEVEL/.git/claude-auto-worktree.lock"
+  FLOCK=$(command -v flock || echo "/run/current-system/sw/bin/flock")
+  GWQ_ADD=$(command -v gwq-add || echo "/etc/profiles/per-user/ivan/bin/gwq-add")
 
-  if [ -z "$WORKTREE_PATH" ]; then
-    GWQ_ADD=$(command -v gwq-add || echo "/etc/profiles/per-user/ivan/bin/gwq-add")
+  WORKTREE_PATH=$(
+    if [ -x "$FLOCK" ]; then
+      exec 9>"$LOCK"
+      "$FLOCK" -x 9
+    fi
+    # Re-check sentinel under the lock in case a sibling agent just wrote it.
+    if [ -f "$SENTINEL" ]; then
+      CACHED=$(cat "$SENTINEL" 2>/dev/null)
+      if [ -n "$CACHED" ] && [ -d "$CACHED" ]; then
+        echo "$CACHED"
+        exit 0
+      fi
+    fi
     if [ -x "$GWQ_ADD" ]; then
       # gwq-add writes progress to stderr and the worktree path to stdout
       # (via `gwq get`). Let stderr pass through; capture stdout only.
-      WORKTREE_PATH=$(cd "$TOPLEVEL" && "$GWQ_ADD")
-      if [ -n "$WORKTREE_PATH" ] && [ -d "$WORKTREE_PATH" ]; then
-        echo "$WORKTREE_PATH" > "$SENTINEL"
-      else
-        echo "gwq-add did not return a usable worktree path." >&2
-        WORKTREE_PATH=""
+      NEW=$(cd "$TOPLEVEL" && "$GWQ_ADD")
+      if [ -n "$NEW" ] && [ -d "$NEW" ]; then
+        echo "$NEW" > "$SENTINEL"
+        echo "$NEW"
       fi
     fi
-  fi
+  )
 
   if [ -n "$WORKTREE_PATH" ]; then
     REL="${FILE_PATH#"$TOPLEVEL/"}"
     echo "Auto-created/reused worktree: $WORKTREE_PATH" >&2
     echo "Retry the edit against: $WORKTREE_PATH/$REL" >&2
+  else
+    echo "Could not auto-create a worktree (gwq-add missing or failed)." >&2
+    echo "Run 'gwq-add' manually and retry the edit there." >&2
   fi
 
   exit 2
