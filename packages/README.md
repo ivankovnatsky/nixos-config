@@ -50,7 +50,6 @@ Current aliases:
 
 | Alias       | Original |
 | ----------- | -------- |
-| `yank`      | `eat`    |
 | `create-pr` | `gh-pr`  |
 | `open-pr`   | `gh-pr`  |
 
