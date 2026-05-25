@@ -89,7 +89,7 @@
     username # Installed as flake
     watcher
     wget
-    yank
+    eat
     zoxide
   ];
 }

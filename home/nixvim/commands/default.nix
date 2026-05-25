@@ -26,18 +26,12 @@ in
         bang = true;
         bar = true;
       };
-      Yank = {
+      Eat = {
         command = ''
           silent %y+
           echo "Copied file contents to clipboard"
         '';
         desc = "Copy file contents to clipboard.";
-        bang = true;
-        bar = true;
-      };
-      Eat = {
-        command = "Yank";
-        desc = "Copy file contents to clipboard (alias for Yank).";
         bang = true;
         bar = true;
       };
