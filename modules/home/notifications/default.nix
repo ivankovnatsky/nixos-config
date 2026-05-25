@@ -9,6 +9,7 @@ with lib;
 
 let
   cfg = config.local.services.notifications;
+  parts = splitString ":" cfg.battery.at;
 in
 {
   options.local.services.notifications = {
@@ -22,48 +23,18 @@ in
     };
 
     battery = {
-      enable = mkEnableOption "periodic battery state notifications";
+      enable = mkEnableOption "daily battery state notifications";
 
-      interval = mkOption {
-        type = types.int;
-        default = 15 * 60;
-        description = ''
-          Launchd polling interval in seconds. The script itself decides
-          whether to actually send (see dailyAt / belowPercent), so this
-          only bounds how soon a condition is detected.
-        '';
-      };
-
-      runAtLoad = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Run the battery notifier immediately when the launchd job is loaded.";
-      };
-
-      dailyAt = mkOption {
-        type = types.str;
-        default = "";
+      at = mkOption {
+        type = types.strMatching "([01]?[0-9]|2[0-3]):[0-5][0-9]";
+        default = "21:00";
         example = "21:00";
         description = ''
-          Send a daily battery notification at or after this HH:MM (local
-          time), once per day. Empty string disables the daily slot.
+          Local time (HH:MM) at which to send the daily battery
+          notification. Backed by launchd StartCalendarInterval: if the
+          Mac is asleep at the appointed time, the job runs on next
+          wake (multiple missed fires coalesce into one).
         '';
-      };
-
-      belowPercent = mkOption {
-        type = types.int;
-        default = 0;
-        example = 50;
-        description = ''
-          Send an extra notification when the battery is at or below this
-          percentage and discharging. 0 disables low-battery alerts.
-        '';
-      };
-
-      lowIntervalHours = mkOption {
-        type = types.numbers.positive;
-        default = 3;
-        description = "Minimum hours between repeated low-battery notifications.";
       };
     };
   };
@@ -82,7 +53,7 @@ in
     local.launchd.services.notifications-battery = {
       enable = true;
       keepAlive = false;
-      inherit (cfg.battery) runAtLoad;
+      runAtLoad = false;
       waitForSecrets = true;
 
       command =
@@ -90,16 +61,18 @@ in
           script = pkgs.writeShellScript "notifications-battery-run" ''
             set -e
             exec ${pkgs.notifications}/bin/notifications battery \
-              --webhook-file ${escapeShellArg cfg.discordWebhookFile} \
-              --daily-at ${escapeShellArg cfg.battery.dailyAt} \
-              --below-percent ${toString cfg.battery.belowPercent} \
-              --low-interval-hours ${toString cfg.battery.lowIntervalHours}
+              --webhook-file ${escapeShellArg cfg.discordWebhookFile}
           '';
         in
         "${script}";
 
       extraServiceConfig = {
-        StartInterval = cfg.battery.interval;
+        StartCalendarInterval = [
+          {
+            Hour = toIntBase10 (elemAt parts 0);
+            Minute = toIntBase10 (elemAt parts 1);
+          }
+        ];
       };
     };
   };
