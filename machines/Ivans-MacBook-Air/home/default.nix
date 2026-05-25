@@ -13,7 +13,6 @@
     ../../../home/fzf.nix
     ../../../home/gemini-settings.nix
     ../../../home/ghorg.nix
-    ../../../home/ghostty.nix
     ../../../home/git
     ../../../home/go.nix
     ../../../home/gpg.nix
