@@ -387,25 +387,25 @@ let
     # Read secrets from files at runtime
     ${lib.optionalString cfg.lidarr.enable (
       if cfg.lidarr.apiKeyFile != null then
-        ''LIDARR_API_KEY="$(cat ${cfg.lidarr.apiKeyFile})"''
+        ''LIDARR_API_KEY="$(${pkgs.coreutils}/bin/cat ${cfg.lidarr.apiKeyFile})"''
       else
         ''LIDARR_API_KEY="${cfg.lidarr.apiKey}"''
     )}
     ${lib.optionalString cfg.radarr.enable (
       if cfg.radarr.apiKeyFile != null then
-        ''RADARR_API_KEY="$(cat ${cfg.radarr.apiKeyFile})"''
+        ''RADARR_API_KEY="$(${pkgs.coreutils}/bin/cat ${cfg.radarr.apiKeyFile})"''
       else
         ''RADARR_API_KEY="${cfg.radarr.apiKey}"''
     )}
     ${lib.optionalString cfg.sonarr.enable (
       if cfg.sonarr.apiKeyFile != null then
-        ''SONARR_API_KEY="$(cat ${cfg.sonarr.apiKeyFile})"''
+        ''SONARR_API_KEY="$(${pkgs.coreutils}/bin/cat ${cfg.sonarr.apiKeyFile})"''
       else
         ''SONARR_API_KEY="${cfg.sonarr.apiKey}"''
     )}
     ${lib.optionalString cfg.prowlarr.enable (
       if cfg.prowlarr.apiKeyFile != null then
-        ''PROWLARR_API_KEY="$(cat ${cfg.prowlarr.apiKeyFile})"''
+        ''PROWLARR_API_KEY="$(${pkgs.coreutils}/bin/cat ${cfg.prowlarr.apiKeyFile})"''
       else
         ''PROWLARR_API_KEY="${cfg.prowlarr.apiKey}"''
     )}
@@ -413,13 +413,13 @@ let
       dc:
       (
         if dc.usernameFile != null then
-          ''DC_${sanitize dc.name}_USERNAME="$(cat ${dc.usernameFile})"'' + "\n"
+          ''DC_${sanitize dc.name}_USERNAME="$(${pkgs.coreutils}/bin/cat ${dc.usernameFile})"'' + "\n"
         else
           ''DC_${sanitize dc.name}_USERNAME="${dc.username}"'' + "\n"
       )
       + (
         if dc.passwordFile != null then
-          ''DC_${sanitize dc.name}_PASSWORD="$(cat ${dc.passwordFile})"'' + "\n"
+          ''DC_${sanitize dc.name}_PASSWORD="$(${pkgs.coreutils}/bin/cat ${dc.passwordFile})"'' + "\n"
         else
           ''DC_${sanitize dc.name}_PASSWORD="${dc.password}"'' + "\n"
       )
@@ -427,7 +427,7 @@ let
     ${lib.concatMapStrings (
       app:
       if app.apiKeyFile != null then
-        ''APP_${sanitize app.name}_API_KEY="$(cat ${app.apiKeyFile})"'' + "\n"
+        ''APP_${sanitize app.name}_API_KEY="$(${pkgs.coreutils}/bin/cat ${app.apiKeyFile})"'' + "\n"
       else
         ''APP_${sanitize app.name}_API_KEY="${app.apiKey}"'' + "\n"
     ) cfg.prowlarr.applications}
@@ -436,13 +436,13 @@ let
       lib.optionalString (idx.username != null || idx.usernameFile != null) (
         (
           if idx.usernameFile != null then
-            ''IDX_${sanitize idx.name}_USERNAME="$(cat ${idx.usernameFile})"'' + "\n"
+            ''IDX_${sanitize idx.name}_USERNAME="$(${pkgs.coreutils}/bin/cat ${idx.usernameFile})"'' + "\n"
           else
             ''IDX_${sanitize idx.name}_USERNAME="${idx.username}"'' + "\n"
         )
         + (
           if idx.passwordFile != null then
-            ''IDX_${sanitize idx.name}_PASSWORD="$(cat ${idx.passwordFile})"'' + "\n"
+            ''IDX_${sanitize idx.name}_PASSWORD="$(${pkgs.coreutils}/bin/cat ${idx.passwordFile})"'' + "\n"
           else
             ''IDX_${sanitize idx.name}_PASSWORD="${idx.password}"'' + "\n"
         )
