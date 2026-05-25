@@ -22,7 +22,6 @@
     casks = [
       "chromium"
       "firefox"
-      "ghostty"
       "hammerspoon"
       "kitty"
       "mac-mouse-fix"
