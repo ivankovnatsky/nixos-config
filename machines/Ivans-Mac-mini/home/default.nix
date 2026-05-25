@@ -48,7 +48,6 @@
     ../../../home/z-lua.nix
     ../../../home/zsh.nix
     ../../../modules/flags
-    ../../../modules/home/arr-mgmt
     ../../../modules/home/dock
     ../../../modules/home/launchd
     ../../../modules/home/nextdns-mgmt
