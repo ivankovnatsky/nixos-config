@@ -1,5 +1,6 @@
 {
   imports = [
+    ./arr-mgmt.nix
     ./beszel-mgmt.nix
     ./jellyfin-mgmt.nix
     ./miniserve.nix
