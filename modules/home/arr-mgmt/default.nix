@@ -353,6 +353,136 @@ let
       }
     )
   );
+
+  syncScript = pkgs.writeShellScript "arr-mgmt-sync" ''
+    set -e
+
+    echo "Syncing *arr configuration..."
+
+    # Wait for services to be reachable
+    wait_for_service() {
+      local url="$1"
+      local name="$2"
+      local max_retries=30
+      local retry=0
+      while [ $retry -lt $max_retries ]; do
+        if ${pkgs.curl}/bin/curl -sf -o /dev/null "$url/ping" 2>/dev/null || \
+           ${pkgs.curl}/bin/curl -sf -o /dev/null "$url" 2>/dev/null; then
+          echo "$name is reachable"
+          return 0
+        fi
+        retry=$((retry + 1))
+        echo "Waiting for $name ($retry/$max_retries)..."
+        sleep 2
+      done
+      echo "ERROR: $name not reachable after $max_retries retries"
+      return 1
+    }
+
+    ${lib.optionalString cfg.lidarr.enable ''wait_for_service "${cfg.lidarr.baseUrl}" "Lidarr" || true''}
+    ${lib.optionalString cfg.radarr.enable ''wait_for_service "${cfg.radarr.baseUrl}" "Radarr" || true''}
+    ${lib.optionalString cfg.sonarr.enable ''wait_for_service "${cfg.sonarr.baseUrl}" "Sonarr" || true''}
+    ${lib.optionalString cfg.prowlarr.enable ''wait_for_service "${cfg.prowlarr.baseUrl}" "Prowlarr" || true''}
+
+    # Read secrets from files at runtime
+    ${lib.optionalString cfg.lidarr.enable (
+      if cfg.lidarr.apiKeyFile != null then
+        ''LIDARR_API_KEY="$(cat ${cfg.lidarr.apiKeyFile})"''
+      else
+        ''LIDARR_API_KEY="${cfg.lidarr.apiKey}"''
+    )}
+    ${lib.optionalString cfg.radarr.enable (
+      if cfg.radarr.apiKeyFile != null then
+        ''RADARR_API_KEY="$(cat ${cfg.radarr.apiKeyFile})"''
+      else
+        ''RADARR_API_KEY="${cfg.radarr.apiKey}"''
+    )}
+    ${lib.optionalString cfg.sonarr.enable (
+      if cfg.sonarr.apiKeyFile != null then
+        ''SONARR_API_KEY="$(cat ${cfg.sonarr.apiKeyFile})"''
+      else
+        ''SONARR_API_KEY="${cfg.sonarr.apiKey}"''
+    )}
+    ${lib.optionalString cfg.prowlarr.enable (
+      if cfg.prowlarr.apiKeyFile != null then
+        ''PROWLARR_API_KEY="$(cat ${cfg.prowlarr.apiKeyFile})"''
+      else
+        ''PROWLARR_API_KEY="${cfg.prowlarr.apiKey}"''
+    )}
+    ${lib.concatMapStrings (
+      dc:
+      (
+        if dc.usernameFile != null then
+          ''DC_${sanitize dc.name}_USERNAME="$(cat ${dc.usernameFile})"'' + "\n"
+        else
+          ''DC_${sanitize dc.name}_USERNAME="${dc.username}"'' + "\n"
+      )
+      + (
+        if dc.passwordFile != null then
+          ''DC_${sanitize dc.name}_PASSWORD="$(cat ${dc.passwordFile})"'' + "\n"
+        else
+          ''DC_${sanitize dc.name}_PASSWORD="${dc.password}"'' + "\n"
+      )
+    ) (cfg.lidarr.downloadClients ++ cfg.radarr.downloadClients ++ cfg.sonarr.downloadClients)}
+    ${lib.concatMapStrings (
+      app:
+      if app.apiKeyFile != null then
+        ''APP_${sanitize app.name}_API_KEY="$(cat ${app.apiKeyFile})"'' + "\n"
+      else
+        ''APP_${sanitize app.name}_API_KEY="${app.apiKey}"'' + "\n"
+    ) cfg.prowlarr.applications}
+    ${lib.concatMapStrings (
+      idx:
+      lib.optionalString (idx.username != null || idx.usernameFile != null) (
+        (
+          if idx.usernameFile != null then
+            ''IDX_${sanitize idx.name}_USERNAME="$(cat ${idx.usernameFile})"'' + "\n"
+          else
+            ''IDX_${sanitize idx.name}_USERNAME="${idx.username}"'' + "\n"
+        )
+        + (
+          if idx.passwordFile != null then
+            ''IDX_${sanitize idx.name}_PASSWORD="$(cat ${idx.passwordFile})"'' + "\n"
+          else
+            ''IDX_${sanitize idx.name}_PASSWORD="${idx.password}"'' + "\n"
+        )
+      )
+    ) cfg.prowlarr.indexers}
+
+    # Substitute secrets into template
+    # Export all secrets for envsubst
+    ${lib.optionalString cfg.lidarr.enable "export LIDARR_API_KEY"}
+    ${lib.optionalString cfg.radarr.enable "export RADARR_API_KEY"}
+    ${lib.optionalString cfg.sonarr.enable "export SONARR_API_KEY"}
+    ${lib.optionalString cfg.prowlarr.enable "export PROWLARR_API_KEY"}
+    ${lib.concatMapStrings (dc: ''
+      export DC_${sanitize dc.name}_USERNAME
+      export DC_${sanitize dc.name}_PASSWORD
+    '') (cfg.lidarr.downloadClients ++ cfg.radarr.downloadClients ++ cfg.sonarr.downloadClients)}
+    ${lib.concatMapStrings (app: ''
+      export APP_${sanitize app.name}_API_KEY
+    '') cfg.prowlarr.applications}
+    ${lib.concatMapStrings (
+      idx:
+      lib.optionalString (idx.username != null || idx.usernameFile != null) ''
+        export IDX_${sanitize idx.name}_USERNAME
+        export IDX_${sanitize idx.name}_PASSWORD
+      ''
+    ) cfg.prowlarr.indexers}
+
+    # Use envsubst to safely substitute secrets (handles special chars in values).
+    # Stage in a private 0600 file: on systemd-user $TMPDIR may be unset and fall
+    # back to world-readable /tmp, which would leak decrypted API keys.
+    CONFIG_FILE="$(${pkgs.coreutils}/bin/mktemp -t arr-config.XXXXXX.json)"
+    trap '${pkgs.coreutils}/bin/rm -f "$CONFIG_FILE"' EXIT
+    ${pkgs.coreutils}/bin/chmod 600 "$CONFIG_FILE"
+    ${pkgs.envsubst}/bin/envsubst < ${baseConfigTemplate} > "$CONFIG_FILE"
+
+    ${pkgs.arr-mgmt}/bin/arr-mgmt sync \
+      --config-file "$CONFIG_FILE" 2>&1 || echo "Warning: *arr sync failed with exit code $?"
+
+    echo "*arr configuration sync completed"
+  '';
 in
 {
   options.local.services.arr-mgmt = {
@@ -614,143 +744,32 @@ in
       ) cfg.prowlarr.indexers
     ));
 
-    # Darwin launchd service
-    local.launchd.services.arr-mgmt = {
+    # Shared sync script used by both launchd (Darwin) and systemd (Linux)
+    local.launchd.services.arr-mgmt = mkIf pkgs.stdenv.isDarwin {
       enable = true;
       keepAlive = false;
       runAtLoad = true;
       waitForSecrets = true;
+      command = "${syncScript}";
+    };
 
-      command =
-        let
-          syncScript = pkgs.writeShellScript "arr-mgmt-sync" ''
-            set -e
-
-            echo "Syncing *arr configuration..."
-
-            # Wait for services to be reachable
-            wait_for_service() {
-              local url="$1"
-              local name="$2"
-              local max_retries=30
-              local retry=0
-              while [ $retry -lt $max_retries ]; do
-                if ${pkgs.curl}/bin/curl -sf -o /dev/null "$url/ping" 2>/dev/null || \
-                   ${pkgs.curl}/bin/curl -sf -o /dev/null "$url" 2>/dev/null; then
-                  echo "$name is reachable"
-                  return 0
-                fi
-                retry=$((retry + 1))
-                echo "Waiting for $name ($retry/$max_retries)..."
-                sleep 2
-              done
-              echo "ERROR: $name not reachable after $max_retries retries"
-              return 1
-            }
-
-            ${lib.optionalString cfg.lidarr.enable ''wait_for_service "${cfg.lidarr.baseUrl}" "Lidarr" || true''}
-            ${lib.optionalString cfg.radarr.enable ''wait_for_service "${cfg.radarr.baseUrl}" "Radarr" || true''}
-            ${lib.optionalString cfg.sonarr.enable ''wait_for_service "${cfg.sonarr.baseUrl}" "Sonarr" || true''}
-            ${lib.optionalString cfg.prowlarr.enable ''wait_for_service "${cfg.prowlarr.baseUrl}" "Prowlarr" || true''}
-
-            # Read secrets from files at runtime
-            ${lib.optionalString cfg.lidarr.enable (
-              if cfg.lidarr.apiKeyFile != null then
-                ''LIDARR_API_KEY="$(cat ${cfg.lidarr.apiKeyFile})"''
-              else
-                ''LIDARR_API_KEY="${cfg.lidarr.apiKey}"''
-            )}
-            ${lib.optionalString cfg.radarr.enable (
-              if cfg.radarr.apiKeyFile != null then
-                ''RADARR_API_KEY="$(cat ${cfg.radarr.apiKeyFile})"''
-              else
-                ''RADARR_API_KEY="${cfg.radarr.apiKey}"''
-            )}
-            ${lib.optionalString cfg.sonarr.enable (
-              if cfg.sonarr.apiKeyFile != null then
-                ''SONARR_API_KEY="$(cat ${cfg.sonarr.apiKeyFile})"''
-              else
-                ''SONARR_API_KEY="${cfg.sonarr.apiKey}"''
-            )}
-            ${lib.optionalString cfg.prowlarr.enable (
-              if cfg.prowlarr.apiKeyFile != null then
-                ''PROWLARR_API_KEY="$(cat ${cfg.prowlarr.apiKeyFile})"''
-              else
-                ''PROWLARR_API_KEY="${cfg.prowlarr.apiKey}"''
-            )}
-            ${lib.concatMapStrings (
-              dc:
-              (
-                if dc.usernameFile != null then
-                  ''DC_${sanitize dc.name}_USERNAME="$(cat ${dc.usernameFile})"'' + "\n"
-                else
-                  ''DC_${sanitize dc.name}_USERNAME="${dc.username}"'' + "\n"
-              )
-              + (
-                if dc.passwordFile != null then
-                  ''DC_${sanitize dc.name}_PASSWORD="$(cat ${dc.passwordFile})"'' + "\n"
-                else
-                  ''DC_${sanitize dc.name}_PASSWORD="${dc.password}"'' + "\n"
-              )
-            ) (cfg.lidarr.downloadClients ++ cfg.radarr.downloadClients ++ cfg.sonarr.downloadClients)}
-            ${lib.concatMapStrings (
-              app:
-              if app.apiKeyFile != null then
-                ''APP_${sanitize app.name}_API_KEY="$(cat ${app.apiKeyFile})"'' + "\n"
-              else
-                ''APP_${sanitize app.name}_API_KEY="${app.apiKey}"'' + "\n"
-            ) cfg.prowlarr.applications}
-            ${lib.concatMapStrings (
-              idx:
-              lib.optionalString (idx.username != null || idx.usernameFile != null) (
-                (
-                  if idx.usernameFile != null then
-                    ''IDX_${sanitize idx.name}_USERNAME="$(cat ${idx.usernameFile})"'' + "\n"
-                  else
-                    ''IDX_${sanitize idx.name}_USERNAME="${idx.username}"'' + "\n"
-                )
-                + (
-                  if idx.passwordFile != null then
-                    ''IDX_${sanitize idx.name}_PASSWORD="$(cat ${idx.passwordFile})"'' + "\n"
-                  else
-                    ''IDX_${sanitize idx.name}_PASSWORD="${idx.password}"'' + "\n"
-                )
-              )
-            ) cfg.prowlarr.indexers}
-
-            # Substitute secrets into template
-            # Export all secrets for envsubst
-            ${lib.optionalString cfg.lidarr.enable "export LIDARR_API_KEY"}
-            ${lib.optionalString cfg.radarr.enable "export RADARR_API_KEY"}
-            ${lib.optionalString cfg.sonarr.enable "export SONARR_API_KEY"}
-            ${lib.optionalString cfg.prowlarr.enable "export PROWLARR_API_KEY"}
-            ${lib.concatMapStrings (dc: ''
-              export DC_${sanitize dc.name}_USERNAME
-              export DC_${sanitize dc.name}_PASSWORD
-            '') (cfg.lidarr.downloadClients ++ cfg.radarr.downloadClients ++ cfg.sonarr.downloadClients)}
-            ${lib.concatMapStrings (app: ''
-              export APP_${sanitize app.name}_API_KEY
-            '') cfg.prowlarr.applications}
-            ${lib.concatMapStrings (
-              idx:
-              lib.optionalString (idx.username != null || idx.usernameFile != null) ''
-                export IDX_${sanitize idx.name}_USERNAME
-                export IDX_${sanitize idx.name}_PASSWORD
-              ''
-            ) cfg.prowlarr.indexers}
-
-            # Use envsubst to safely substitute secrets (handles special chars in values)
-            ${pkgs.envsubst}/bin/envsubst < ${baseConfigTemplate} > "$TMPDIR/arr-config.json"
-
-            ${pkgs.arr-mgmt}/bin/arr-mgmt sync \
-              --config-file "$TMPDIR/arr-config.json" 2>&1 || echo "Warning: *arr sync failed with exit code $?"
-
-            rm -f "$TMPDIR/arr-config.json"
-
-            echo "*arr configuration sync completed"
-          '';
-        in
-        "${syncScript}";
+    systemd.user.services.arr-mgmt = mkIf pkgs.stdenv.isLinux {
+      Unit = {
+        Description = "Declarative *arr stack configuration sync";
+        After = [
+          "network-online.target"
+          "sops-nix.service"
+        ];
+        Wants = [
+          "network-online.target"
+          "sops-nix.service"
+        ];
+      };
+      Service = {
+        Type = "oneshot";
+        ExecStart = "${syncScript}";
+      };
+      Install.WantedBy = [ "default.target" ];
     };
   };
 }
