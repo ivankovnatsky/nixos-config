@@ -24,11 +24,6 @@
       }
       "firefox"
       "google-chrome"
-      # Needed to `brew uninstall --cask ghostty kitty`
-      {
-        name = "ghostty@tip";
-        greedy = true;
-      }
       "hammerspoon"
       {
         name = "kitty@nightly";
