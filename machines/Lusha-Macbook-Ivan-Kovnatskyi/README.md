@@ -100,10 +100,6 @@ Configured Do Not Disturb to filter out Iru MDM notifications:
 - Allow access to control "System Events" (required for space management via
   osascript)
 
-### Ghostty
-
-- Approve local network access
-
 ### container (Apple container runtime)
 
 - Approve local network access

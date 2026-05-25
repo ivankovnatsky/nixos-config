@@ -20,12 +20,7 @@
     # google-chrome
     casks = [
       "cloudflare-warp"
-      "dbeaver-community"
       "firefox"
-      {
-        name = "ghostty@tip";
-        greedy = true;
-      }
       "hammerspoon"
       "keycastr"
       {

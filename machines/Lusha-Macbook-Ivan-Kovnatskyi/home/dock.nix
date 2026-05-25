@@ -11,7 +11,6 @@
       # TODO: can dock be stretched 100% horizontally?
       entries = [
         # Default macOS apps
-        { path = "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/"; }
         { path = "/System/Applications/System Settings.app/"; }
 
         {
@@ -21,7 +20,6 @@
 
         # Additional macOS apps
         { path = "/System/Applications/Utilities/Terminal.app/"; }
-        { path = "/System/Applications/Utilities/Activity Monitor.app/"; }
 
         {
           type = "spacer";
@@ -31,8 +29,6 @@
         # Installed using Iru
         { path = "/Applications/Google Chrome.app/"; }
         { path = "/Applications/Slack.app/"; }
-        # Iru Self Service
-        { path = "/Applications/Iru Self Service.app/"; }
 
         {
           type = "spacer";
@@ -41,10 +37,8 @@
 
         # Installed using homebrew
         { path = "/Applications/kitty.app/"; }
-        { path = "/Applications/Ghostty.app/"; }
         { path = "/Applications/Firefox.app/"; }
         { path = "/Applications/Vivaldi.app/"; }
-        { path = "/Applications/DBeaver.app/"; }
 
         {
           path = "${config.home.homeDirectory}/Downloads/";
