@@ -14,11 +14,15 @@
     ./nixpkgs.nix
     ./ollama.nix
     ./open-webui.nix
+    ./polkit.nix
     ./power-monitoring.nix
+    ./rebuild-diff.nix
     ./remote-build.nix
+    ./reposync-base.nix
     ./reposync.nix
     ./security.nix
     ./storage-disk.nix
+    ./sudo.nix
     ./syncthing-mgmt.nix
     ./uptime-kuma.nix
   ];

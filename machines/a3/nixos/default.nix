@@ -7,13 +7,7 @@
     ../../../modules/nixos/tools
     ../../../system/nix.nix
     ../../../system/sops-secrets.nix
-    ./chromium.nix
     ./desktop
-    ./keyboard.nix
-    ./polkit.nix
-    ./rebuild-diff.nix
-    ./reposync.nix
     ./server
-    ./sudo.nix
   ];
 }
