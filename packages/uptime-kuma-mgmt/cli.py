@@ -15,7 +15,10 @@ from constants import (
     ENV_PASSWORD,
     DEFAULT_USERNAME_PATH,
     DEFAULT_PASSWORD_PATH,
+    DEFAULT_DISCORD_WEBHOOK_PATH,
 )
+
+ENV_DISCORD_WEBHOOK = "UPTIME_KUMA_DISCORD_WEBHOOK"
 
 
 def auth_options(f):
@@ -99,7 +102,12 @@ def cmd_get_cli(base_url, username, password, monitor_id):
 @auth_options
 @click.option("--config-file", required=True, help="JSON configuration file")
 @click.option(
-    "--discord-webhook", default=None, help="Discord webhook URL for notifications"
+    "--discord-webhook",
+    default=lambda: read_secret(ENV_DISCORD_WEBHOOK, DEFAULT_DISCORD_WEBHOOK_PATH),
+    help=(
+        f"Discord webhook URL for notifications "
+        f"(or set {ENV_DISCORD_WEBHOOK}, default: {DEFAULT_DISCORD_WEBHOOK_PATH})"
+    ),
 )
 @click.option(
     "--notifications/--no-notifications",

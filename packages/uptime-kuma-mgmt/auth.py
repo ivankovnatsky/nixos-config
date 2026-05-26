@@ -10,5 +10,5 @@ def read_secret(env_var: str, default_path: str) -> str | None:
 
     try:
         return open(os.path.expanduser(default_path)).read().strip()
-    except (OSError, IOError):
+    except FileNotFoundError:
         return None
