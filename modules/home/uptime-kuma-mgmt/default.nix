@@ -114,45 +114,38 @@ let
 
     echo "Syncing Uptime Kuma monitors..."
 
-    # Read additional secrets for placeholder substitution
+    # Single 0700 tempdir for transient secret-bearing files. Trap covers
+    # the whole dir before any secret touches disk.
+    STATE_DIR=$(${pkgs.coreutils}/bin/mktemp -d -t uptime-kuma-mgmt.XXXXXX)
+    ${pkgs.coreutils}/bin/chmod 700 "$STATE_DIR"
+    trap '${pkgs.coreutils}/bin/rm -rf "$STATE_DIR"' EXIT
+
+    # Sops file paths for jq --rawfile (path is on argv but content isn't).
+    # /dev/null is used as a no-op fallback so jq always has a readable path.
+    EXTERNAL_DOMAIN_FILE=/dev/null
+    POSTGRES_PASSWORD_FILE=/dev/null
     ${optionalString (
       cfg.externalDomainFile != null
-    ) ''EXTERNAL_DOMAIN=$(${pkgs.coreutils}/bin/cat "${cfg.externalDomainFile}")''}
+    ) ''EXTERNAL_DOMAIN_FILE="${cfg.externalDomainFile}"''}
     ${optionalString (
       cfg.postgresPasswordFile != null
-    ) ''POSTGRES_PASSWORD=$(${pkgs.coreutils}/bin/cat "${cfg.postgresPasswordFile}")''}
-    EXTERNAL_DOMAIN=''${EXTERNAL_DOMAIN:-}
-    POSTGRES_PASSWORD=''${POSTGRES_PASSWORD:-}
+    ) ''POSTGRES_PASSWORD_FILE="${cfg.postgresPasswordFile}"''}
 
-    # Read secrets from files or use direct values (with runtime substitution)
+    # Resolve base URL. The @EXTERNAL_DOMAIN@ substitution is done via a
+    # sed script file (in STATE_DIR) so the sops value never appears on
+    # sed's argv. tr strips the trailing newline sops files carry.
     ${
       if cfg.baseUrlFile != null then
-        ''
-          BASE_URL=$(${pkgs.coreutils}/bin/cat "${cfg.baseUrlFile}")
-        ''
+        ''BASE_URL=$(${pkgs.coreutils}/bin/cat "${cfg.baseUrlFile}")''
       else
         ''
-          BASE_URL=$(echo "${cfg.baseUrl}" | ${pkgs.gnused}/bin/sed "s|@EXTERNAL_DOMAIN@|$EXTERNAL_DOMAIN|g")
-        ''
-    }
-    ${
-      if cfg.usernameFile != null then
-        ''
-          USERNAME=$(${pkgs.coreutils}/bin/cat "${cfg.usernameFile}")
-        ''
-      else
-        ''
-          USERNAME="${cfg.username}"
-        ''
-    }
-    ${
-      if cfg.passwordFile != null then
-        ''
-          PASSWORD=$(${pkgs.coreutils}/bin/cat "${cfg.passwordFile}")
-        ''
-      else
-        ''
-          PASSWORD="${cfg.password}"
+          SED_SCRIPT="$STATE_DIR/base-url.sed"
+          {
+            ${pkgs.coreutils}/bin/printf 's|@EXTERNAL_DOMAIN@|'
+            ${pkgs.coreutils}/bin/tr -d '\n' < "$EXTERNAL_DOMAIN_FILE"
+            ${pkgs.coreutils}/bin/printf '|g\n'
+          } > "$SED_SCRIPT"
+          BASE_URL=$(echo "${cfg.baseUrl}" | ${pkgs.gnused}/bin/sed -f "$SED_SCRIPT")
         ''
     }
 
@@ -174,55 +167,31 @@ let
       echo "Warning: $BASE_URL did not become ready within 180s; sync will likely fail"
     fi
 
-    # Create runtime config with substituted placeholders.
-    # jq split/join is used (not sed) so secrets containing `|`, `&`, `\`,
-    # or other regex/sed-special characters are substituted literally.
-    RUNTIME_CONFIG=$(${pkgs.coreutils}/bin/mktemp -t uptime-kuma-monitors.XXXXXX)
-    trap '${pkgs.coreutils}/bin/rm -f "$RUNTIME_CONFIG"' EXIT
+    # Create runtime config with substituted placeholders. Lives in STATE_DIR
+    # (already trapped). Secrets are read via jq --rawfile so the values
+    # never appear on jq's argv. rtrimstr strips the trailing newline.
+    RUNTIME_CONFIG="$STATE_DIR/monitors.json"
     ${pkgs.jq}/bin/jq \
-      --arg ext "$EXTERNAL_DOMAIN" \
-      --arg pwd "$POSTGRES_PASSWORD" \
-      '(.. | strings) |= (split("@EXTERNAL_DOMAIN@") | join($ext) | split("@POSTGRES_PASSWORD@") | join($pwd))' \
+      --rawfile ext "$EXTERNAL_DOMAIN_FILE" \
+      --rawfile pwd "$POSTGRES_PASSWORD_FILE" \
+      '(.. | strings) |= (split("@EXTERNAL_DOMAIN@") | join($ext | rtrimstr("\n")) | split("@POSTGRES_PASSWORD@") | join($pwd | rtrimstr("\n")))' \
       "${configJsonTemplate}" > "$RUNTIME_CONFIG"
 
-    # Build command based on notifications.enable and webhook config.
-    # When notifications are disabled, sync with --no-notifications so
-    # the existing Discord notification is removed.
+    # Auth (username/password) and discord webhook are read by the CLI from
+    # ~/.config/sops-nix/secrets/{uptime-kuma-username,uptime-kuma-password,discord-webhook-kuma}.
+    # base-url is not a credential, so it's fine on argv.
     ${
       if !cfg.notifications.enable then
         ''
           ${pkgs.uptime-kuma-mgmt}/bin/uptime-kuma-mgmt sync \
             --base-url "$BASE_URL" \
-            --username "$USERNAME" \
-            --password "$PASSWORD" \
             --config-file "$RUNTIME_CONFIG" \
             --no-notifications 2>&1 || echo "Warning: Uptime Kuma sync failed with exit code $?"
-        ''
-      else if cfg.discordWebhook != null || cfg.discordWebhookFile != null then
-        ''
-          ${
-            if cfg.discordWebhookFile != null then
-              ''
-                DISCORD_WEBHOOK=$(${pkgs.coreutils}/bin/cat "${cfg.discordWebhookFile}")
-              ''
-            else
-              ''
-                DISCORD_WEBHOOK="${cfg.discordWebhook}"
-              ''
-          }
-          ${pkgs.uptime-kuma-mgmt}/bin/uptime-kuma-mgmt sync \
-            --base-url "$BASE_URL" \
-            --username "$USERNAME" \
-            --password "$PASSWORD" \
-            --config-file "$RUNTIME_CONFIG" \
-            --discord-webhook "$DISCORD_WEBHOOK" 2>&1 || echo "Warning: Uptime Kuma sync failed with exit code $?"
         ''
       else
         ''
           ${pkgs.uptime-kuma-mgmt}/bin/uptime-kuma-mgmt sync \
             --base-url "$BASE_URL" \
-            --username "$USERNAME" \
-            --password "$PASSWORD" \
             --config-file "$RUNTIME_CONFIG" 2>&1 || echo "Warning: Uptime Kuma sync failed with exit code $?"
         ''
     }
@@ -247,30 +216,6 @@ in
       description = "Path to file containing Uptime Kuma base URL (alternative to baseUrl)";
     };
 
-    username = mkOption {
-      type = types.nullOr types.str;
-      default = null;
-      description = "Uptime Kuma admin username (use usernameFile for sops secrets)";
-    };
-
-    usernameFile = mkOption {
-      type = types.nullOr types.path;
-      default = null;
-      description = "Path to file containing Uptime Kuma admin username (alternative to username)";
-    };
-
-    password = mkOption {
-      type = types.nullOr types.str;
-      default = null;
-      description = "Uptime Kuma admin password (use passwordFile for sops secrets)";
-    };
-
-    passwordFile = mkOption {
-      type = types.nullOr types.path;
-      default = null;
-      description = "Path to file containing Uptime Kuma admin password (alternative to password)";
-    };
-
     monitors = mkOption {
       type = types.listOf monitorSubmodule;
       default = [ ];
@@ -285,18 +230,6 @@ in
         deletes the Discord notification (if present) and does not attach any
         notification to monitors.
       '';
-    };
-
-    discordWebhook = mkOption {
-      type = types.nullOr types.str;
-      default = null;
-      description = "Discord webhook URL for notifications (optional)";
-    };
-
-    discordWebhookFile = mkOption {
-      type = types.nullOr types.path;
-      default = null;
-      description = "Path to file containing Discord webhook URL (alternative to discordWebhook)";
     };
 
     externalDomainFile = mkOption {
@@ -325,25 +258,6 @@ in
           (cfg.baseUrl != null && cfg.baseUrlFile == null)
           || (cfg.baseUrl == null && cfg.baseUrlFile != null);
         message = "Either baseUrl or baseUrlFile must be set, but not both";
-      }
-      {
-        assertion =
-          (cfg.username != null && cfg.usernameFile == null)
-          || (cfg.username == null && cfg.usernameFile != null);
-        message = "Either username or usernameFile must be set, but not both";
-      }
-      {
-        assertion =
-          (cfg.password != null && cfg.passwordFile == null)
-          || (cfg.password == null && cfg.passwordFile != null);
-        message = "Either password or passwordFile must be set, but not both";
-      }
-      {
-        assertion =
-          (cfg.discordWebhook == null && cfg.discordWebhookFile == null)
-          || (cfg.discordWebhook != null && cfg.discordWebhookFile == null)
-          || (cfg.discordWebhook == null && cfg.discordWebhookFile != null);
-        message = "Either discordWebhook or discordWebhookFile can be set, but not both";
       }
     ];
 
