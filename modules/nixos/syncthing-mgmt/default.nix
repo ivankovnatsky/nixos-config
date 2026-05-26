@@ -33,13 +33,6 @@ in
       description = "Path to Syncthing config directory (for reading config.xml)";
     };
 
-    apiKeyFile = mkOption {
-      type = types.nullOr types.path;
-      default = null;
-      example = "/run/secrets/syncthing-api-key";
-      description = "Path to file containing Syncthing API key. If not provided, will be read from config.xml";
-    };
-
     gui = mkOption {
       type = types.nullOr (
         types.submodule {
@@ -174,26 +167,36 @@ in
         ExecStart = pkgs.writeShellScript "syncthing-mgmt-sync" ''
           echo "Syncing Syncthing configuration..."
 
+          # Single 0700 tempdir for all transient secret files. Trap covers it
+          # before any secret touches disk so an abort never leaks.
+          STATE_DIR=$(${pkgs.coreutils}/bin/mktemp -d -t syncthing-mgmt.XXXXXX)
+          ${pkgs.coreutils}/bin/chmod 700 "$STATE_DIR"
+          trap '${pkgs.coreutils}/bin/rm -rf "$STATE_DIR"' EXIT
+
+          KEY_FILE="$STATE_DIR/api-key"
+          CURL_HEADERS="$STATE_DIR/curl-headers"
+
+          # Resolve API key from Syncthing's own config.xml. Check xmllint
+          # exit code (not file size) so an empty file isn't misread as ok.
+          if ! ${pkgs.libxml2}/bin/xmllint --xpath 'string(configuration/gui/apikey)' "${cfg.configDir}/config.xml" > "$KEY_FILE" 2>/dev/null || ! [ -s "$KEY_FILE" ]; then
+            echo "ERROR: Could not read API key from ${cfg.configDir}/config.xml"
+            exit 1
+          fi
+
+          # Assemble the curl headers file (only contains the API key now).
+          {
+            ${pkgs.coreutils}/bin/printf 'X-API-Key: '
+            ${pkgs.coreutils}/bin/cat "$KEY_FILE"
+            ${pkgs.coreutils}/bin/printf '\n'
+          } > "$CURL_HEADERS"
+
           # Wait for Syncthing API to be ready with retry logic
           MAX_RETRIES=30
           RETRY_DELAY=2
 
-          # Try to read API key from config.xml first (always use current key)
-          if ${pkgs.libxml2}/bin/xmllint --xpath 'string(configuration/gui/apikey)' "${cfg.configDir}/config.xml" > /tmp/syncthing-api-key 2>/dev/null && [ -s /tmp/syncthing-api-key ]; then
-            API_KEY=$(cat /tmp/syncthing-api-key)
-            rm -f /tmp/syncthing-api-key
-          ${optionalString (cfg.apiKeyFile != null) ''
-            elif [ -f "${cfg.apiKeyFile}" ]; then
-              API_KEY=$(cat ${cfg.apiKeyFile})
-          ''}
-          else
-            echo "ERROR: Could not read API key"
-            exit 1
-          fi
-
           echo "Waiting for Syncthing API to be ready..."
           for i in $(${pkgs.coreutils}/bin/seq 1 $MAX_RETRIES); do
-            if ${pkgs.curl}/bin/curl -sf -H "X-API-Key: $API_KEY" "${cfg.baseUrl}/rest/system/status" >/dev/null 2>&1; then
+            if ${pkgs.curl}/bin/curl -sf -H "@$CURL_HEADERS" "${cfg.baseUrl}/rest/system/status" >/dev/null 2>&1; then
               echo "Syncthing API is ready (attempt $i/$MAX_RETRIES)"
               break
             fi
@@ -207,28 +210,32 @@ in
             ${pkgs.coreutils}/bin/sleep $RETRY_DELAY
           done
 
-          # Build config JSON with secrets substituted from files
-          CONFIG_FILE=$(mktemp)
-          trap "rm -f $CONFIG_FILE" EXIT
+          # Build config JSON with secrets substituted from files. All temp
+          # files live in STATE_DIR (set + trapped at the top of this script).
+          CONFIG_FILE="$STATE_DIR/config.json"
 
-          # Start building JSON
+          # Start building JSON. jq --rawfile reads credentials from a
+          # private file so values never appear on jq's argv. For literal
+          # `username` / `password` options we read via writeText so the
+          # value never crosses any process's argv.
           GUI_JSON="null"
           ${optionalString (cfg.gui != null) ''
-            USERNAME="${if cfg.gui.usernameFile != null then "__USERNAME__" else cfg.gui.username}"
-            PASSWORD="${if cfg.gui.passwordFile != null then "__PASSWORD__" else cfg.gui.password}"
-
-            ${optionalString (cfg.gui.usernameFile != null) ''
-              USERNAME=$(cat ${cfg.gui.usernameFile})
-            ''}
-
-            ${optionalString (cfg.gui.passwordFile != null) ''
-              PASSWORD=$(cat ${cfg.gui.passwordFile})
-            ''}
-
+            ${
+              if cfg.gui.usernameFile != null then
+                ''USERNAME_FILE="${cfg.gui.usernameFile}"''
+              else
+                ''USERNAME_FILE="${pkgs.writeText "syncthing-gui-username" cfg.gui.username}"''
+            }
+            ${
+              if cfg.gui.passwordFile != null then
+                ''PASSWORD_FILE="${cfg.gui.passwordFile}"''
+              else
+                ''PASSWORD_FILE="${pkgs.writeText "syncthing-gui-password" cfg.gui.password}"''
+            }
             GUI_JSON=$(${pkgs.jq}/bin/jq -n \
-              --arg username "$USERNAME" \
-              --arg password "$PASSWORD" \
-              '{username: $username, password: $password}')
+              --rawfile username "$USERNAME_FILE" \
+              --rawfile password "$PASSWORD_FILE" \
+              '{username: ($username | rtrimstr("\n")), password: ($password | rtrimstr("\n"))}')
           ''}
 
           ${
