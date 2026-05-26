@@ -55,7 +55,6 @@
     ../../../modules/home/settings-daemon
     ../../../modules/home/syncthing-mgmt
     ../../../modules/home/tools
-    ../../../modules/home/unison
     ./dock.nix
     ./flags.nix
     ./packages.nix
