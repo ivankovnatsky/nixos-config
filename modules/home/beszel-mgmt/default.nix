@@ -10,48 +10,46 @@ with lib;
 let
   cfg = config.local.services.beszel-mgmt;
 
-  beszelConfig = pkgs.writeText "beszel-systems.json" (
+  # Template with @BASE_URL@ placeholder; base URL is substituted at runtime
+  # via jq --rawfile so secret-derived values never appear on jq's argv.
+  beszelConfigTemplate = pkgs.writeText "beszel-config-template.json" (
     builtins.toJSON {
+      base_url = "@BASE_URL@";
       inherit (cfg) systems;
     }
   );
 
   syncScript = pkgs.writeShellScript "beszel-mgmt-sync" ''
     set -e
+    umask 077
 
     echo "Updating Beszel systems..."
 
-    # Read secrets from files at runtime (keeps secrets out of /nix/store)
+    STATE_DIR=$(${pkgs.coreutils}/bin/mktemp -d -t beszel-mgmt.XXXXXX)
+    ${pkgs.coreutils}/bin/chmod 700 "$STATE_DIR"
+    trap '${pkgs.coreutils}/bin/rm -rf "$STATE_DIR"' EXIT
+    CONFIG_FILE="$STATE_DIR/config.json"
+    URL_FILE="$STATE_DIR/base-url"
+
+    # Build the base URL into a private file (never on argv).
     ${
       if cfg.externalDomainFile != null then
         ''
-          EXTERNAL_DOMAIN="$(cat ${cfg.externalDomainFile})"
-          BASE_URL="https://beszel.$EXTERNAL_DOMAIN"
+          ${pkgs.coreutils}/bin/printf 'https://beszel.' > "$URL_FILE"
+          ${pkgs.coreutils}/bin/cat "${cfg.externalDomainFile}" >> "$URL_FILE"
         ''
       else
-        ''
-          BASE_URL="${cfg.baseUrl}"
-        ''
+        ''${pkgs.coreutils}/bin/printf '%s' "${cfg.baseUrl}" > "$URL_FILE"''
     }
-    BESZEL_EMAIL="${if cfg.emailFile != null then "$(cat ${cfg.emailFile})" else cfg.email}"
-    BESZEL_PASSWORD="${if cfg.passwordFile != null then "$(cat ${cfg.passwordFile})" else cfg.password}"
-    ${optionalString (cfg.discordWebhookFile != null) ''
-      DISCORD_WEBHOOK="$(cat ${cfg.discordWebhookFile})"
-    ''}
-    ${optionalString (cfg.discordWebhook != null) ''
-      DISCORD_WEBHOOK="${cfg.discordWebhook}"
-    ''}
 
+    ${pkgs.jq}/bin/jq --rawfile url "$URL_FILE" \
+      '(.. | strings) |= (split("@BASE_URL@") | join($url | rtrimstr("\n")))' \
+      "${beszelConfigTemplate}" > "$CONFIG_FILE"
+
+    # Auth and webhook are read by the CLI from
+    # ~/.config/sops-nix/secrets/{beszel-email,beszel-password,discord-webhook-beszel}.
     ${pkgs.beszel-mgmt}/bin/beszel-mgmt sync \
-      --base-url "$BASE_URL" \
-      --email "$BESZEL_EMAIL" \
-      --password "$BESZEL_PASSWORD" \
-      --config-file "${beszelConfig}" \
-      ${
-        optionalString (
-          cfg.discordWebhook != null || cfg.discordWebhookFile != null
-        ) ''--discord-webhook "$DISCORD_WEBHOOK"''
-      } 2>&1 || echo "Warning: Beszel update failed with exit code $?"
+      --config-file "$CONFIG_FILE" 2>&1 || echo "Warning: Beszel update failed with exit code $?"
 
     echo "Beszel systems update completed"
   '';
@@ -70,30 +68,6 @@ in
       type = types.nullOr types.path;
       default = null;
       description = "Path to file containing external domain (constructs https://beszel.DOMAIN)";
-    };
-
-    email = mkOption {
-      type = types.nullOr types.str;
-      default = null;
-      description = "Beszel hub email for authentication (use emailFile for sops secrets)";
-    };
-
-    emailFile = mkOption {
-      type = types.nullOr types.path;
-      default = null;
-      description = "Path to file containing Beszel hub email";
-    };
-
-    password = mkOption {
-      type = types.nullOr types.str;
-      default = null;
-      description = "Beszel hub password for authentication (use passwordFile for sops secrets)";
-    };
-
-    passwordFile = mkOption {
-      type = types.nullOr types.path;
-      default = null;
-      description = "Path to file containing Beszel hub password";
     };
 
     systems = mkOption {
@@ -120,17 +94,6 @@ in
       description = "List of systems to sync to Beszel hub";
     };
 
-    discordWebhook = mkOption {
-      type = types.nullOr types.str;
-      default = null;
-      description = "Discord webhook URL for notifications (use discordWebhookFile for sops secrets)";
-    };
-
-    discordWebhookFile = mkOption {
-      type = types.nullOr types.path;
-      default = null;
-      description = "Path to file containing Discord webhook URL";
-    };
   };
 
   config = mkIf cfg.enable {
@@ -138,20 +101,6 @@ in
       {
         assertion = (cfg.baseUrl != null) != (cfg.externalDomainFile != null);
         message = "Exactly one of 'baseUrl' or 'externalDomainFile' must be set for beszel-mgmt";
-      }
-      {
-        assertion = (cfg.email != null) != (cfg.emailFile != null);
-        message = "Exactly one of 'email' or 'emailFile' must be set for beszel-mgmt";
-      }
-      {
-        assertion = (cfg.password != null) != (cfg.passwordFile != null);
-        message = "Exactly one of 'password' or 'passwordFile' must be set for beszel-mgmt";
-      }
-      {
-        assertion =
-          (cfg.discordWebhook == null && cfg.discordWebhookFile == null)
-          || (cfg.discordWebhook != null) != (cfg.discordWebhookFile != null);
-        message = "At most one of 'discordWebhook' or 'discordWebhookFile' can be set for beszel-mgmt";
       }
     ];
 
