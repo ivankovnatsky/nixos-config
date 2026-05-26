@@ -164,10 +164,9 @@ def cli_list_folders(base_url, api_key, config_xml):
 
 @cli.command("declarative")
 @click.option("--base-url", required=True, help="Syncthing URL")
-@click.option("--api-key", default=None, help="Syncthing API key")
 @click.option(
     "--config-xml",
-    default=None,
+    required=True,
     help="Path to Syncthing config.xml (to extract API key)",
 )
 @click.option("--config-file", required=True, help="JSON configuration file")
@@ -183,11 +182,14 @@ def cli_list_folders(base_url, api_key, config_xml):
     default=False,
     help="Restart Syncthing after applying changes",
 )
-def declarative(base_url, api_key, config_xml, config_file, dry_run, restart):
-    """Declarative mode for NixOS/Darwin modules."""
+def declarative(base_url, config_xml, config_file, dry_run, restart):
+    """Declarative mode for NixOS/Darwin modules.
+
+    Extracts the Syncthing API key from --config-xml at runtime.
+    """
     cmd_sync(
         base_url=base_url,
-        api_key=api_key,
+        api_key=None,
         config_xml=config_xml,
         config_file=config_file,
         dry_run=dry_run,
