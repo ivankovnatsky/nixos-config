@@ -14,37 +14,10 @@ let
     options = {
       enable = mkEnableOption "declarative NextDNS profile synchronization";
 
-      profileId = mkOption {
-        type = types.nullOr types.str;
-        default = null;
-        example = "abc123";
-        description = "NextDNS profile ID to sync";
-      };
-
-      profileIdFile = mkOption {
-        type = types.nullOr types.path;
-        default = null;
-        example = "/run/secrets/nextdns-profile-id";
-        description = "Path to file containing NextDNS profile ID";
-      };
-
       profileFile = mkOption {
         type = types.path;
         example = ./nextdns/profile.json;
         description = "Path to NextDNS profile JSON file";
-      };
-
-      apiKey = mkOption {
-        type = types.nullOr types.str;
-        default = null;
-        description = "NextDNS API key";
-      };
-
-      apiKeyFile = mkOption {
-        type = types.nullOr types.path;
-        default = null;
-        example = "/run/secrets/nextdns-api-key";
-        description = "Path to file containing NextDNS API key";
       };
 
       vars = mkOption {
@@ -77,42 +50,34 @@ let
 
       echo "Updating NextDNS profile ${name}..."
 
-      ${
-        if profile.apiKeyFile != null then
-          ''API_KEY="$(cat ${profile.apiKeyFile})"''
-        else
-          ''API_KEY="${profile.apiKey}"''
-      }
+      # API key and profile id are read by the CLI from
+      # ~/.config/sops-nix/secrets/{nextdns-api-key,nextdns-profile-${name}}.
 
-      PROFILE_JSON=$(mktemp)
-      trap 'rm -f "$PROFILE_JSON"' EXIT
-      cp "${profile.profileFile}" "$PROFILE_JSON"
+      STATE_DIR=$(${pkgs.coreutils}/bin/mktemp -d -t nextdns-mgmt.XXXXXX)
+      ${pkgs.coreutils}/bin/chmod 700 "$STATE_DIR"
+      trap '${pkgs.coreutils}/bin/rm -rf "$STATE_DIR"' EXIT
+      PROFILE_JSON="$STATE_DIR/profile.json"
+      SED_SCRIPT="$STATE_DIR/sed-script"
+      ${pkgs.coreutils}/bin/cp "${profile.profileFile}" "$PROFILE_JSON"
+      # Build a sed script file so sops varsFiles values never appear on argv.
       ${concatStringsSep "\n      " (
         mapAttrsToList (
-          key: value: ''${pkgs.gnused}/bin/sed -i "s|@${key}@|${value}|g" "$PROFILE_JSON"''
+          key: value:
+          ''${pkgs.coreutils}/bin/printf 's|@${key}@|%s|g\n' ${lib.escapeShellArg value} >> "$SED_SCRIPT"''
         ) profile.vars
       )}
       ${concatStringsSep "\n      " (
-        mapAttrsToList (
-          key: path: ''${pkgs.gnused}/bin/sed -i "s|@${key}@|$(cat ${path})|g" "$PROFILE_JSON"''
-        ) profile.varsFiles
+        mapAttrsToList (key: path: ''
+          ${pkgs.coreutils}/bin/printf 's|@${key}@|' >> "$SED_SCRIPT"
+          ${pkgs.coreutils}/bin/tr -d '\n' < ${path} >> "$SED_SCRIPT"
+          ${pkgs.coreutils}/bin/printf '|g\n' >> "$SED_SCRIPT"
+        '') profile.varsFiles
       )}
-
-      PROFILE_ID_ARGS=()
-      ${
-        if profile.profileIdFile != null then
-          ''PROFILE_ID_ARGS=(--profile-id "$(cat ${profile.profileIdFile})")''
-        else if profile.profileId != null then
-          ''PROFILE_ID_ARGS=(--profile-id "${profile.profileId}")''
-        else
-          ""
-      }
+      ${pkgs.gnused}/bin/sed -i -f "$SED_SCRIPT" "$PROFILE_JSON"
 
       ${pkgs.nextdns-mgmt}/bin/nextdns-mgmt update \
-        --api-key "$API_KEY" \
         --name "${name}" \
-        --profile-file "$PROFILE_JSON" \
-        "''${PROFILE_ID_ARGS[@]}" 2>&1 || echo "Warning: NextDNS update for ${name} failed with exit code $?"
+        --profile-file "$PROFILE_JSON" 2>&1 || echo "Warning: NextDNS update for ${name} failed with exit code $?"
 
       echo "NextDNS profile ${name} update completed"
     '';
@@ -125,21 +90,6 @@ in
   };
 
   config = mkIf (enabledProfiles != { }) (mkMerge [
-    {
-      assertions = flatten (
-        mapAttrsToList (name: profile: [
-          {
-            assertion = (profile.apiKey != null) != (profile.apiKeyFile != null);
-            message = "Exactly one of apiKey or apiKeyFile must be set for nextdns-mgmt profile '${name}'";
-          }
-          {
-            assertion = !(profile.profileId != null && profile.profileIdFile != null);
-            message = "At most one of profileId or profileIdFile may be set for nextdns-mgmt profile '${name}' (otherwise the profile is looked up or created by name)";
-          }
-        ]) enabledProfiles
-      );
-    }
-
     # Darwin: one launchd user agent per profile, runs at login.
     (mkIf pkgs.stdenv.hostPlatform.isDarwin {
       local.launchd.services = listToAttrs (
