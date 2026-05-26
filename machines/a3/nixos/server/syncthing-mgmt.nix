@@ -15,9 +15,6 @@
     configDir = "${config.users.users.${username}.home}/.local/state/syncthing";
     localDeviceName = config.networking.hostName;
 
-    # API key will be read from config.xml
-    apiKeyFile = null;
-
     # Device registry (all known devices)
     deviceDefinitionsFile = config.sops.secrets.syncthing-devices.path;
 
