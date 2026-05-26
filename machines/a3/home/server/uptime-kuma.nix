@@ -31,9 +31,6 @@ in
     enable = true;
     notifications.enable = false;
     baseUrl = "http://127.0.0.1:3001";
-    usernameFile = config.sops.secrets.uptime-kuma-username.path;
-    passwordFile = config.sops.secrets.uptime-kuma-password.path;
-    discordWebhookFile = config.sops.secrets.discord-webhook-kuma.path;
     externalDomainFile = config.sops.secrets.external-domain.path;
     postgresPasswordFile = config.sops.secrets.postgres-monitoring-password.path;
 
