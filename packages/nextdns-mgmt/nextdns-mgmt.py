@@ -4,6 +4,7 @@ NextDNS profile management tool.
 Supports sync (declarative) and export operations.
 """
 
+import os
 import sys
 import ipaddress
 import json
@@ -14,6 +15,22 @@ import click
 API_HOST = "api.nextdns.io"
 API_BASE = f"https://{API_HOST}"
 USER_AGENT = "nextdns-mgmt/1.0.0"
+
+DEFAULT_SECRETS_PATH = "~/.config/sops-nix/secrets"
+DEFAULT_API_KEY_PATH = f"{DEFAULT_SECRETS_PATH}/nextdns-api-key"
+DEFAULT_PROFILE_ID_PATH_TEMPLATE = f"{DEFAULT_SECRETS_PATH}/nextdns-profile-{{name}}"
+
+
+def _read_file(path: str) -> str | None:
+    """Read and strip a file's contents, or return None if the file is absent.
+
+    Distinguishes FileNotFoundError (silently fall through) from other OSError
+    (re-raise) so a permissions glitch can't be misinterpreted as 'not configured'.
+    """
+    try:
+        return open(os.path.expanduser(path)).read().strip()
+    except FileNotFoundError:
+        return None
 
 
 def pin_dns(hostname: str, resolver_ip: str) -> None:
@@ -258,12 +275,10 @@ def sync(api_key, profile_id, profile_file, dry_run):
 
 
 @cli.command()
-@click.option("--api-key", required=True, help="NextDNS API key")
-@click.option("--profile-id", default=None, help="Profile ID to update")
 @click.option(
     "--name",
     default=None,
-    help="Profile name to look up (or create) when --profile-id is not given",
+    help="Profile name to look up (or create) when no profile-id file is present",
 )
 @click.option("--profile-file", required=True, help="NextDNS profile JSON file")
 @click.option(
@@ -272,8 +287,33 @@ def sync(api_key, profile_id, profile_file, dry_run):
     default=False,
     help="Show what would be updated without making changes",
 )
-def update(api_key, profile_id, name, profile_file, dry_run):
-    """Update profile using nested endpoints (section by section)."""
+def update(name, profile_file, dry_run):
+    """Update profile using nested endpoints (section by section).
+
+    Reads NextDNS API key from ~/.config/sops-nix/secrets/nextdns-api-key.
+    If --name is given, also tries
+    ~/.config/sops-nix/secrets/nextdns-profile-<name> for the profile id;
+    falls back to name-based lookup when that file is absent.
+    """
+    api_key = _read_file(DEFAULT_API_KEY_PATH)
+    if not api_key:
+        click.echo(
+            f"Error: missing NextDNS API key (expected file at {DEFAULT_API_KEY_PATH})",
+            err=True,
+        )
+        sys.exit(1)
+    profile_id = None
+    if name:
+        profile_id = _read_file(DEFAULT_PROFILE_ID_PATH_TEMPLATE.format(name=name))
+        if profile_id:
+            click.echo(f"Using profile id from sops file for '{name}'", err=True)
+        else:
+            click.echo(
+                f"No sops profile id file for '{name}' "
+                f"({DEFAULT_PROFILE_ID_PATH_TEMPLATE.format(name=name)}); "
+                f"falling back to remote name-based lookup",
+                err=True,
+            )
     client = NextDNSClient(api_key)
     try:
         # Load and validate profile JSON BEFORE touching the remote API,
@@ -291,7 +331,7 @@ def update(api_key, profile_id, name, profile_file, dry_run):
 
         if not profile_id:
             if not name:
-                raise ValueError("Either --profile-id or --name must be provided")
+                raise ValueError("--name must be provided")
             for p in client.get_profiles():
                 if p.get("name") == name:
                     profile_id = p["id"]
