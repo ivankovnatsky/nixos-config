@@ -63,6 +63,5 @@
     ./sops.nix
     ./tmux.nix
     ./tools.nix
-    ./unison.nix
   ];
 }
