@@ -37,6 +37,7 @@
     ../../../home/z-lua.nix
     ../../../home/zsh.nix
     ../../../modules/flags
+    ../../../modules/inventory
     ../../../modules/home/arr-mgmt
     ../../../modules/home/beszel-mgmt
     ../../../modules/home/jellyfin-mgmt

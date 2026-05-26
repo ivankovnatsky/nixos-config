@@ -4,9 +4,9 @@
     name = "mac";
     type = "server";
   };
+  inventory.machineBindAddress = "0.0.0.0";
+  inventory.machineLocalAddress = "127.0.0.1";
   flags = {
-    machineBindAddress = "0.0.0.0";
-    machineLocalAddress = "127.0.0.1";
     enableFishShell = true;
     purpose = "home";
     editor = "nvim";

@@ -1,6 +1,7 @@
 {
   imports = [
     ../../../modules/flags
+    ../../../modules/inventory
     ../../../modules/nixos/forgejo-mgmt
     ../../../modules/nixos/reposync
     ../../../modules/nixos/syncthing-mgmt

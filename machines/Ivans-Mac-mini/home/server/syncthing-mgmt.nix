@@ -10,7 +10,7 @@
   # Syncthing management service
   local.services.syncthing-mgmt = {
     enable = true;
-    baseUrl = "http://${config.flags.machineLocalAddress}:8384";
+    baseUrl = "http://${config.inventory.machineLocalAddress}:8384";
     configDir = "${config.home.homeDirectory}/Library/Application Support/Syncthing";
     localDeviceName = osConfig.networking.hostName;
 

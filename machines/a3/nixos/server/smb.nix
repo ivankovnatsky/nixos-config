@@ -57,7 +57,7 @@
       what = "//ivans-mac-mini.local/Storage";
       where = "/mnt/smb/mini-storage";
       type = "cifs";
-      options = "credentials=/run/smb-mini-credentials,uid=1000,gid=100,iocharset=utf8,file_mode=0644,dir_mode=0755,vers=3.0,ip=${config.flags.miniIp}";
+      options = "credentials=/run/smb-mini-credentials,uid=1000,gid=100,iocharset=utf8,file_mode=0644,dir_mode=0755,vers=3.0,ip=${config.inventory.miniIp}";
       wantedBy = [ "multi-user.target" ];
       after = [ "smb-credentials-mini.service" ];
       requires = [ "smb-credentials-mini.service" ];

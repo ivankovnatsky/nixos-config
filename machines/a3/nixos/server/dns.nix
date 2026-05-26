@@ -42,7 +42,7 @@ in
       domain=${config.sops.placeholder.external-domain}
       local=/${config.sops.placeholder.external-domain}/
       dhcp-option=option:domain-search,${config.sops.placeholder.external-domain}
-      address=/${config.sops.placeholder.external-domain}/${config.flags.a3Ip}
+      address=/${config.sops.placeholder.external-domain}/${config.inventory.a3Ip}
       mx-host=${config.sops.placeholder.external-domain},${config.sops.placeholder.external-domain},10
     '';
   };

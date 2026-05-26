@@ -11,6 +11,7 @@
     ../../../../modules/darwin/pmset
     ../../../../modules/darwin/sudo
     ../../../../modules/flags
+    ../../../../modules/inventory
     ../../../../system/documentation.nix
     ../../../../system/nix.nix
     ../../../../system/sops-secrets.nix

@@ -1,12 +1,12 @@
 { config, ... }:
 
 let
-  inherit (config.flags) miniIp;
+  inherit (config.inventory) miniIp;
 in
 {
   # Uptime Kuma declarative monitor management for a3
   # a3 hosts all Kuma monitors for the fleet: mini-local services via
-  # config.flags.miniIp, a3-local services via 127.0.0.1, and the public
+  # config.inventory.miniIp, a3-local services via 127.0.0.1, and the public
   # external-domain probe.
   #
   # Initial setup required:

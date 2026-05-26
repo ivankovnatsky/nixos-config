@@ -3,7 +3,7 @@
   services.openssh.enable = true;
 
   users.users.${username}.openssh.authorizedKeys.keys = [
-    config.flags.sshKeys.air
-    config.flags.sshKeys.a3
+    config.inventory.sshKeys.air
+    config.inventory.sshKeys.a3
   ];
 }

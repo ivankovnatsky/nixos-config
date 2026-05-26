@@ -58,6 +58,7 @@
     ../../../modules/home/settings-daemon
     ../../../modules/home/syncthing-mgmt
     ../../../modules/home/tools
+    ../../../modules/inventory
     ./close-zscaler.nix
     ./container.nix
     ./dock.nix

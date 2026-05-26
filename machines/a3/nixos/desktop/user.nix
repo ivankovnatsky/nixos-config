@@ -10,8 +10,8 @@
     shell = pkgs.fish;
     linger = true;
     openssh.authorizedKeys.keys = [
-      config.flags.sshKeys.air
-      config.flags.sshKeys.mini
+      config.inventory.sshKeys.air
+      config.inventory.sshKeys.mini
     ];
   };
   programs.fish.enable = true;
