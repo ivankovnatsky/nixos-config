@@ -33,19 +33,6 @@ in
       example = "/Users/username/Library/Application Support/Syncthing";
     };
 
-    apiKey = mkOption {
-      type = types.nullOr types.str;
-      default = null;
-      description = "Syncthing API key (use apiKeyFile for sops secrets)";
-    };
-
-    apiKeyFile = mkOption {
-      type = types.nullOr types.path;
-      default = null;
-      example = "/run/secrets/syncthing-api-key";
-      description = "Path to file containing Syncthing API key (alternative to using config.xml)";
-    };
-
     gui = mkOption {
       type = types.nullOr (
         types.submodule {
@@ -171,13 +158,6 @@ in
           );
         message = "Exactly one of username/usernameFile and password/passwordFile must be set for syncthing-mgmt GUI config";
       }
-      {
-        assertion =
-          (cfg.apiKey == null && cfg.apiKeyFile == null)
-          || (cfg.apiKey != null && cfg.apiKeyFile == null)
-          || (cfg.apiKey == null && cfg.apiKeyFile != null);
-        message = "Either apiKey or apiKeyFile can be set, but not both";
-      }
     ];
 
     # Darwin launchd service
@@ -193,29 +173,37 @@ in
 
             echo "Syncing Syncthing configuration..."
 
+            # Single 0700 tempdir for transient secret files; trap covers it
+            # before any secret touches disk so an early abort can't leak.
+            STATE_DIR=$(${pkgs.coreutils}/bin/mktemp -d -t syncthing-mgmt.XXXXXX)
+            ${pkgs.coreutils}/bin/chmod 700 "$STATE_DIR"
+            trap '${pkgs.coreutils}/bin/rm -rf "$STATE_DIR"' EXIT
+            CURL_HEADERS="$STATE_DIR/curl-headers"
+
             # Wait for Syncthing API to be ready with retry logic
             MAX_RETRIES=30
             RETRY_DELAY=2
 
-            # Get API key from file, option, or config.xml
-            ${
-              if cfg.apiKeyFile != null then
-                ''
-                  API_KEY=$(cat "${cfg.apiKeyFile}")
-                ''
-              else if cfg.apiKey != null then
-                ''
-                  API_KEY="${cfg.apiKey}"
-                ''
-              else
-                ''
-                  API_KEY=$(${pkgs.gnugrep}/bin/grep -m1 "<apikey>" "${cfg.configDir}/config.xml" | ${pkgs.gnused}/bin/sed 's/.*<apikey>\(.*\)<\/apikey>.*/\1/')
-                ''
-            }
+            # Assemble curl headers file from API key extracted from
+            # Syncthing's own config.xml (key never appears on argv).
+            # Resolve to a separate file first and verify it's non-empty so a
+            # missing <apikey> tag fails fast instead of silently producing a
+            # blank-key headers file.
+            KEY_FILE="$STATE_DIR/api-key"
+            ${pkgs.gnugrep}/bin/grep -m1 "<apikey>" "${cfg.configDir}/config.xml" | ${pkgs.gnused}/bin/sed 's/.*<apikey>\(.*\)<\/apikey>.*/\1/' > "$KEY_FILE"
+            if ! [ -s "$KEY_FILE" ]; then
+              echo "ERROR: Could not extract API key from ${cfg.configDir}/config.xml"
+              exit 1
+            fi
+            {
+              ${pkgs.coreutils}/bin/printf 'X-API-Key: '
+              ${pkgs.coreutils}/bin/cat "$KEY_FILE"
+              ${pkgs.coreutils}/bin/printf '\n'
+            } > "$CURL_HEADERS"
 
             echo "Waiting for Syncthing API to be ready..."
             for i in $(${pkgs.coreutils}/bin/seq 1 $MAX_RETRIES); do
-              if ${pkgs.curl}/bin/curl -sf -H "X-API-Key: $API_KEY" "${cfg.baseUrl}/rest/system/status" >/dev/null 2>&1; then
+              if ${pkgs.curl}/bin/curl -sf -H "@$CURL_HEADERS" "${cfg.baseUrl}/rest/system/status" >/dev/null 2>&1; then
                 echo "Syncthing API is ready (attempt $i/$MAX_RETRIES)"
                 break
               fi
@@ -229,28 +217,32 @@ in
               ${pkgs.coreutils}/bin/sleep $RETRY_DELAY
             done
 
-            # Build config JSON with secrets substituted from files
-            CONFIG_FILE=$(mktemp)
-            trap "rm -f $CONFIG_FILE" EXIT
+            # Build config JSON with secrets substituted from files. Lives in
+            # STATE_DIR which is already trapped for cleanup.
+            CONFIG_FILE="$STATE_DIR/config.json"
 
-            # Start building JSON
+            # Start building JSON. Read credentials via jq --rawfile so they
+            # never appear on jq's argv. Literal `username` / `password`
+            # options are sourced via writeText so the value never crosses
+            # any process's argv either.
             GUI_JSON="null"
             ${optionalString (cfg.gui != null) ''
-              USERNAME="${if cfg.gui.usernameFile != null then "__USERNAME__" else cfg.gui.username}"
-              PASSWORD="${if cfg.gui.passwordFile != null then "__PASSWORD__" else cfg.gui.password}"
-
-              ${optionalString (cfg.gui.usernameFile != null) ''
-                USERNAME=$(cat ${cfg.gui.usernameFile})
-              ''}
-
-              ${optionalString (cfg.gui.passwordFile != null) ''
-                PASSWORD=$(cat ${cfg.gui.passwordFile})
-              ''}
-
+              ${
+                if cfg.gui.usernameFile != null then
+                  ''USERNAME_FILE="${cfg.gui.usernameFile}"''
+                else
+                  ''USERNAME_FILE="${pkgs.writeText "syncthing-gui-username" cfg.gui.username}"''
+              }
+              ${
+                if cfg.gui.passwordFile != null then
+                  ''PASSWORD_FILE="${cfg.gui.passwordFile}"''
+                else
+                  ''PASSWORD_FILE="${pkgs.writeText "syncthing-gui-password" cfg.gui.password}"''
+              }
               GUI_JSON=$(${pkgs.jq}/bin/jq -n \
-                --arg username "$USERNAME" \
-                --arg password "$PASSWORD" \
-                '{username: $username, password: $password}')
+                --rawfile username "$USERNAME_FILE" \
+                --rawfile password "$PASSWORD_FILE" \
+                '{username: ($username | rtrimstr("\n")), password: ($password | rtrimstr("\n"))}')
             ''}
 
             ${
@@ -300,25 +292,12 @@ in
                 optionalString (cfg.localDeviceName != null) ", localDeviceName: $localDeviceName"
               }}' > "$CONFIG_FILE"
 
-            # Run declarative sync with API key
-            ${
-              if cfg.apiKeyFile != null || cfg.apiKey != null then
-                ''
-                  ${pkgs.syncthing-mgmt}/bin/syncthing-mgmt declarative \
-                    --base-url "${cfg.baseUrl}" \
-                    --api-key "$API_KEY" \
-                    --config-file "$CONFIG_FILE" \
-                    ${optionalString cfg.restart "--restart"} 2>&1 || echo "Warning: Syncthing sync failed with exit code $?"
-                ''
-              else
-                ''
-                  ${pkgs.syncthing-mgmt}/bin/syncthing-mgmt declarative \
-                    --base-url "${cfg.baseUrl}" \
-                    --config-xml "${cfg.configDir}/config.xml" \
-                    --config-file "$CONFIG_FILE" \
-                    ${optionalString cfg.restart "--restart"} 2>&1 || echo "Warning: Syncthing sync failed with exit code $?"
-                ''
-            }
+            # Run declarative sync. The CLI extracts the API key from --config-xml.
+            ${pkgs.syncthing-mgmt}/bin/syncthing-mgmt declarative \
+              --base-url "${cfg.baseUrl}" \
+              --config-xml "${cfg.configDir}/config.xml" \
+              --config-file "$CONFIG_FILE" \
+              ${optionalString cfg.restart "--restart"} 2>&1 || echo "Warning: Syncthing sync failed with exit code $?"
 
             echo "Syncthing sync completed"
           '';
