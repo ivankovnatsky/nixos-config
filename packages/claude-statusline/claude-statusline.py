@@ -97,6 +97,7 @@ def main(input_file):
     remaining = data.get("context_window", {}).get("remaining_percentage", 100)
     remaining = int(remaining)
     ctx_size = data.get("context_window", {}).get("context_window_size", 200000)
+    cost_usd = data.get("cost", {}).get("total_cost_usd", 0)
 
     try:
         cols = os.get_terminal_size(sys.stderr.fileno()).columns
@@ -115,11 +116,12 @@ def main(input_file):
     else:
         ctx_fmt = f"{ctx_size // 1000}k"
 
-    # Line 1: model | context remaining | ctx size | git
+    # Line 1: model | context remaining | ctx size | cost | git
     line1 = (
         f"{CYAN}{model_id}{RESET} "
         f"{DIM}|{RESET} {remaining}% remaining "
-        f"{DIM}|{RESET} {DIM}ctx:{ctx_fmt}{RESET}"
+        f"{DIM}|{RESET} {DIM}ctx:{ctx_fmt}{RESET} "
+        f"{DIM}|{RESET} ${cost_usd:.2f}"
     )
 
     branch = git_branch()
