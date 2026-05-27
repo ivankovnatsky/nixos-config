@@ -16,7 +16,7 @@
         wallpaperPlainColor = "64,64,64";
         cursor = {
           theme = "breeze_cursors";
-          size = 30;
+          size = 24;
         };
       };
 
@@ -43,8 +43,8 @@
             vendorId = "258a";
             productId = "0033";
 
-            accelerationProfile = "default";
-            acceleration = -0.7;
+            accelerationProfile = "none";
+            acceleration = -0.6;
           }
         ];
 
