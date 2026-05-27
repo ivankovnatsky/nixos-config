@@ -29,22 +29,9 @@ let
       agents.defaults = {
         workspace = "${stateDir}/workspace";
 
-        model = {
-          primary = "openai/gpt-5.5";
-          fallbacks = [
-            "anthropic/claude-opus-4-7"
-          ];
-        };
+        model.primary = "openai/gpt-5.5";
 
-        models = {
-          "openai/gpt-5.5" = {
-            alias = "codex";
-          };
-
-          "anthropic/claude-opus-4-7" = {
-            alias = "opus";
-          };
-        };
+        models."openai/gpt-5.5".alias = "codex";
       };
 
       gateway = {
