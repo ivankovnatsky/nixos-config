@@ -153,14 +153,12 @@ let
       --arg gatewayTokenPath "${config.sops.secrets.openclaw-gateway-token.path}" \
       --arg discordTokenPath "${config.sops.secrets.openclaw-discord-bot-token.path}" \
       --arg geminiApiKeyPath "${config.sops.secrets.openclaw-gemini-api-key.path}" \
-      --arg perplexityApiKeyPath "${config.sops.secrets.openclaw-perplexity-api-key.path}" \
       --arg openaiTokenPath "${config.sops.secrets.openai-api-key.path}" \
       --arg anthropicTokenPath "${config.sops.secrets.anthropic-api-key.path}" \
       '
        .secrets.providers["sops-gateway-token"] = { source: "file", path: $gatewayTokenPath, mode: "singleValue" }
        | .secrets.providers["sops-discord-token"] = { source: "file", path: $discordTokenPath, mode: "singleValue" }
        | .secrets.providers["sops-gemini-api-key"] = { source: "file", path: $geminiApiKeyPath, mode: "singleValue" }
-       | .secrets.providers["sops-perplexity-api-key"] = { source: "file", path: $perplexityApiKeyPath, mode: "singleValue" }
        | .secrets.providers["sops-openai-token"] = { source: "file", path: $openaiTokenPath, mode: "singleValue" }
        | .secrets.providers["sops-anthropic-token"] = { source: "file", path: $anthropicTokenPath, mode: "singleValue" }
        | .gateway.auth.token = { source: "file", provider: "sops-gateway-token", id: "value" }
@@ -178,8 +176,6 @@ let
        | .plugins.entries.discord.enabled = true
        | .plugins.entries.google.enabled = true
        | .plugins.entries.google.config.webSearch.apiKey = { source: "file", provider: "sops-gemini-api-key", id: "value" }
-       | .plugins.entries.perplexity.enabled = true
-       | .plugins.entries.perplexity.config.webSearch.apiKey = { source: "file", provider: "sops-perplexity-api-key", id: "value" }
        | .gateway.controlUi.allowedOrigins = [$origin, "http://127.0.0.1:${toString gatewayPort}"]
        | .channels.discord.allowFrom = [$userId]
        | .channels.discord.guilds[$serverId] = {}
@@ -334,9 +330,5 @@ in
 
   sops.secrets.openclaw-gemini-api-key = {
     key = "geminiApiKey";
-  };
-
-  sops.secrets.openclaw-perplexity-api-key = {
-    key = "perplexityApiToken";
   };
 }
