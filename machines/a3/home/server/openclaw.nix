@@ -132,6 +132,8 @@ let
       # Disable slack — we only use discord and the bundled slack extension
       # is missing @slack/web-api at runtime.
       plugins.entries.slack.enabled = false;
+
+      plugins.entries.codex.enabled = true;
     }
   );
 
@@ -157,20 +159,13 @@ let
       --arg discordTokenPath "${config.sops.secrets.openclaw-discord-bot-token.path}" \
       --arg geminiApiKeyPath "${config.sops.secrets.openclaw-gemini-api-key.path}" \
       --arg perplexityApiKeyPath "${config.sops.secrets.openclaw-perplexity-api-key.path}" \
-      --arg openaiTokenPath "${config.sops.secrets.openai-api-key.path}" \
       '
        .secrets.providers["sops-gateway-token"] = { source: "file", path: $gatewayTokenPath, mode: "singleValue" }
        | .secrets.providers["sops-discord-token"] = { source: "file", path: $discordTokenPath, mode: "singleValue" }
        | .secrets.providers["sops-gemini-api-key"] = { source: "file", path: $geminiApiKeyPath, mode: "singleValue" }
        | .secrets.providers["sops-perplexity-api-key"] = { source: "file", path: $perplexityApiKeyPath, mode: "singleValue" }
-       | .secrets.providers["sops-openai-token"] = { source: "file", path: $openaiTokenPath, mode: "singleValue" }
        | .gateway.auth.token = { source: "file", provider: "sops-gateway-token", id: "value" }
        | .channels.discord.token = { source: "env", provider: "default", id: "DISCORD_BOT_TOKEN" }
-       | .models.providers.openai = {
-           baseUrl: "https://api.openai.com/v1",
-           models: [],
-           apiKey: { source: "file", provider: "sops-openai-token", id: "value" }
-         }
        | .plugins.entries.discord.enabled = true
        | .plugins.entries.google.enabled = true
        | .plugins.entries.google.config.webSearch.apiKey = { source: "file", provider: "sops-gemini-api-key", id: "value" }
