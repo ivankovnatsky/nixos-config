@@ -18,7 +18,7 @@ in
         ]
       ))
       mpv
-      antigravity-cli
+      nixpkgs-nixos-master-antigravity-cli.antigravity-cli
       rumdl
       unixtools.ifconfig
       git-restore
