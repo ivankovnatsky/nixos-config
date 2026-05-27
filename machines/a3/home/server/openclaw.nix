@@ -45,6 +45,8 @@ let
         };
       };
 
+      models.providers.openai.agentRuntime.id = "codex";
+
       gateway = {
         mode = "local";
         port = gatewayPort;
@@ -212,14 +214,12 @@ let
       ${tmpDir} \
       ${cacheDir}/whisper
 
-    # @openclaw/discord ships as a separate npm package since 2026.1.29 and
-    # is not auto-discovered from the global npm root — it must be
-    # registered with openclaw so it lands in ~/.openclaw/plugins/installs.json
-    # and gets loaded as a channel plugin.
-    if ! ${openclawBin} plugins inspect @openclaw/discord >/dev/null; then
-      echo "Registering @openclaw/discord plugin with openclaw..."
-      ${openclawBin} plugins install @openclaw/discord
-    fi
+    for plugin in @openclaw/discord @openclaw/codex; do
+      if ! ${openclawBin} plugins inspect "$plugin" >/dev/null; then
+        echo "Registering $plugin plugin with openclaw..."
+        ${openclawBin} plugins install "$plugin"
+      fi
+    done
   '';
 in
 {
