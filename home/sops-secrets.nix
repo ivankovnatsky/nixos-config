@@ -7,10 +7,6 @@
     key = "email";
   };
 
-  sops.secrets.openai-api-key = {
-    key = "openaiApiKey";
-  };
-
   sops.secrets.anthropic-api-key = {
     key = "anthropicApiKey";
   };
