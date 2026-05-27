@@ -18,6 +18,7 @@ in
         ]
       ))
       mpv
+      antigravity-cli
       rumdl
       unixtools.ifconfig
       git-restore
