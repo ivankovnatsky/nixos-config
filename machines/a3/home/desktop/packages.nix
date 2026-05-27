@@ -18,6 +18,7 @@ in
         ]
       ))
       mpv
+      rumdl
       unixtools.ifconfig
       git-restore
       backup-system
