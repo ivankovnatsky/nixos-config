@@ -131,10 +131,6 @@ let
         "${openclawSourceDir}/skills"
       ];
 
-      # Disable slack — we only use discord and the bundled slack extension
-      # is missing @slack/web-api at runtime.
-      plugins.entries.slack.enabled = false;
-
       plugins.entries.codex.enabled = true;
     }
   );
@@ -215,9 +211,12 @@ let
       ${cacheDir}/whisper
 
     for plugin in @openclaw/discord @openclaw/codex; do
-      if ! ${openclawBin} plugins inspect "$plugin" >/dev/null; then
+      if ! ${openclawBin} plugins inspect "$plugin" >/dev/null 2>&1; then
         echo "Registering $plugin plugin with openclaw..."
-        ${openclawBin} plugins install "$plugin"
+        # --force reconciles a stale node_modules dir left by a previous
+        # openclaw version whose tracking metadata is gone. Without it,
+        # install exits 1 with "plugin already exists, delete it first".
+        ${openclawBin} plugins install "$plugin" --force
       fi
     done
   '';
