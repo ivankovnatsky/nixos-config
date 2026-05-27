@@ -47,8 +47,6 @@ let
         };
       };
 
-      models.providers.openai.agentRuntime.id = "codex";
-
       gateway = {
         mode = "local";
         port = gatewayPort;
