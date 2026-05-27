@@ -22,13 +22,20 @@ if [[ "${current_branch}" == "${main_branch}" ]]; then
   exit 1
 fi
 
-if [[ -n "$(git status --porcelain)" ]]; then
-  echo "error: working tree not clean; commit or discard changes before merging" >&2
-  exit 1
+stash_before=$(git stash list | wc -l)
+
+git rebase --autostash "${main_branch}"
+git -C "${main_tree_path}" merge --ff-only "${current_branch}"
+
+stash_after=$(git stash list | wc -l)
+if (( stash_after > stash_before )); then
+  echo "warning: autostash pop failed; your changes are in 'git stash list' (run 'git stash pop')" >&2
 fi
 
-git rebase "${main_branch}"
-git -C "${main_tree_path}" merge --ff-only "${current_branch}"
+if [[ -n "$(git status --porcelain)" ]]; then
+  echo "note: merge to ${main_branch} succeeded; worktree kept because it has uncommitted changes" >&2
+  exit 0
+fi
 
 cd "${main_tree_path}"
 gwq remove "${current_tree_path}" -b
