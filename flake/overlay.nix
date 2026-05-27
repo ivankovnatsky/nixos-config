@@ -84,6 +84,10 @@ let
       inherit system;
       config = safeConfig;
     };
+    nixpkgs-nixos-master-antigravity-cli = import inputs.nixpkgs-nixos-master-antigravity-cli {
+      inherit system;
+      config = safeConfig;
+    };
     nixpkgs-nixos-unstable = import inputs.nixpkgs-nixos-unstable {
       inherit system;
       config = safeConfig;

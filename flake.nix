@@ -14,6 +14,10 @@
       url = "github:nixos/nixpkgs/master";
     };
 
+    nixpkgs-nixos-master-antigravity-cli = {
+      url = "github:nixos/nixpkgs/master";
+    };
+
     # This is used to pin packages from master channel (Darwin).
     nixpkgs-darwin-master = {
       url = "github:nixos/nixpkgs/master";
