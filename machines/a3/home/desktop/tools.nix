@@ -1,4 +1,8 @@
 { ... }:
+
+let
+  openClawVersion = "2026.5.26";
+in
 {
   local.tools = {
     enable = true;
@@ -16,7 +20,7 @@
         };
         "openclaw" = {
           binary = "openclaw";
-          version = "2026.5.26";
+          version = openClawVersion;
           # Upstream postinstall silently fails during npm install -g
           # https://github.com/openclaw/openclaw/issues/59286
           postInstall = "node scripts/postinstall-bundled-plugins.mjs";
@@ -26,15 +30,15 @@
         # channels.discord. Registration with openclaw happens via the
         # openclaw-gateway prestart script.
         "@openclaw/discord" = {
-          version = "2026.5.26";
+          version = openClawVersion;
         };
         "@openclaw/codex" = {
-          version = "2026.5.26";
+          version = openClawVersion;
         };
         # Same shape as @openclaw/discord — separate npm package needed for
         # channels.whatsapp; openclaw-gateway prestart registers it.
         "@openclaw/whatsapp" = {
-          version = "2026.5.26";
+          version = openClawVersion;
         };
       };
 
