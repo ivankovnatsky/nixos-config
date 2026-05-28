@@ -39,7 +39,7 @@
     go-grip
     go-lint-wrapper
     gpg-edit
-    gpg-pass-refresh
+    gpg-pass
     gwq
     gwq-add
     gwq-cd
