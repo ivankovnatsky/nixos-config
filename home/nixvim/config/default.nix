@@ -1,8 +1,4 @@
-{ config, ... }:
-let
-  neovimBackground = if config.flags.darkMode then "dark" else "light";
-  neovimTrueColorThemeName = if config.flags.darkMode then "tokyonight-night" else "tokyonight-day";
-in
+{ ... }:
 {
   programs.nixvim.extraConfigLua = ''
     vim.api.nvim_set_hl(0, "Comment", { italic = true })
@@ -56,7 +52,5 @@ in
 
     -- Apple Terminal now supports truecolor (24-bit) in macOS Tahoe
     vim.opt.termguicolors = true
-    vim.o.background = ${neovimBackground}
-    vim.cmd([[colorscheme ${neovimTrueColorThemeName}]])
   '';
 }

@@ -1,10 +1,6 @@
 {
   programs.nixvim = {
     opts = {
-      # My options
-      # Background
-      # background = if config.flags.darkMode then "dark" else "light";
-
       # Disable mouse mode, this is needed for handy copy-pasting from the
       # command line.
       mouse = "";

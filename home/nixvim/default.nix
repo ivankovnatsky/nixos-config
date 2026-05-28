@@ -36,8 +36,6 @@ in
 
       midnight-nvim
       tokyonight-nvim
-      # material-nvim
-      # onenord-nvim
 
       # oil.nvim third-party extensions
       # https://github.com/stevearc/oil.nvim#third-party-extensions
@@ -46,22 +44,5 @@ in
     extraConfigLua = ''
       require("oil-lsp-diagnostics").setup({})
     '';
-    # extraConfigLua =
-    #   if config.flags.darkMode then
-    #     ''
-    #       vim.opt.background = "dark"
-    #       -- vim.cmd('colorscheme material')
-    #       -- vim.g.material_style = "darker"
-
-    #       vim.cmd('colorscheme onenord')
-    #     ''
-    #   else
-    #     ''
-    #       vim.opt.background = "light"
-    #       -- vim.cmd('colorscheme material')
-    #       -- vim.g.material_style = "lighter"
-
-    #       vim.cmd('colorscheme onenord-light')
-    #     '';
   };
 }

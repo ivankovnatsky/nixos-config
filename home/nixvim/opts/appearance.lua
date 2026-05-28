@@ -138,10 +138,11 @@ local function get_system_appearance(callback)
   end
 end
 
--- Function to set the background
-local function set_background(appearance)
+local function set_appearance(appearance)
   vim.schedule(function()
     vim.o.background = appearance
+    local colorscheme = appearance == "dark" and "tokyonight-night" or "tokyonight-day"
+    vim.cmd("colorscheme " .. colorscheme)
   end)
 end
 
@@ -164,7 +165,7 @@ function _G.system_appearance.check_appearance()
   get_system_appearance(function(new_appearance)
     if new_appearance ~= current_appearance then
       current_appearance = new_appearance
-      set_background(new_appearance)
+      set_appearance(new_appearance)
       vim.schedule(function()
         vim.notify("Appearance changed to: " .. new_appearance, vim.log.levels.INFO)
       end)
@@ -175,7 +176,7 @@ end
 -- Set initial appearance
 get_system_appearance(function(appearance)
   current_appearance = appearance
-  set_background(appearance)
+  set_appearance(appearance)
 end)
 
 -- Set up autocommands

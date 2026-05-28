@@ -78,12 +78,6 @@ with lib;
       default = "nvim";
     };
 
-    darkMode = mkOption {
-      type = types.bool;
-      description = "Enable dark mode";
-      default = true;
-    };
-
     fontGeneral = mkOption {
       type = types.str;
       default = "Hack Nerd Font";

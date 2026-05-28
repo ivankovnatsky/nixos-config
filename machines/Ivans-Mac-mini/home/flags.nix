@@ -10,7 +10,6 @@
     enableFishShell = true;
     purpose = "home";
     editor = "nvim";
-    darkMode = true;
     homeWorkPath = config.flags.externalStoragePath;
     hotkeys = {
       terminal = "Terminal";

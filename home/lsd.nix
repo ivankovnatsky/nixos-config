@@ -17,7 +17,7 @@
         dir-grouping: first
     '';
     ".config/lsd/colors.yaml".text = ''
-      user: ${if config.flags.darkMode then "230" else "100"}
+      user: "230"
       group: 187
       permission:
         read: dark_green
@@ -33,9 +33,9 @@
         day-old: 42
         older: 36
       size:
-        none: ${if config.flags.darkMode then "245" else "190"}
-        small: ${if config.flags.darkMode then "229" else "185"}
-        medium: ${if config.flags.darkMode then "216" else "180"}
+        none: "245"
+        small: "229"
+        medium: "216"
         large: 172
       inode:
         valid: 13
