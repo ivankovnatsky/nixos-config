@@ -14,7 +14,7 @@
       url = "github:nixos/nixpkgs/master";
     };
 
-    nixpkgs-nixos-master-antigravity-cli = {
+    nixpkgs-nixos-master-edge = {
       url = "github:nixos/nixpkgs/master";
     };
 

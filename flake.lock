@@ -527,7 +527,7 @@
         "type": "github"
       }
     },
-    "nixpkgs-nixos-master-antigravity-cli": {
+    "nixpkgs-nixos-master-edge": {
       "locked": {
         "lastModified": 1779876520,
         "narHash": "sha256-Cos+dfK6SKBMvmtlW+oMsO/yGLoCnGB4qLCdpnJziRc=",
@@ -805,7 +805,7 @@
         "nixpkgs-darwin-unstable": "nixpkgs-darwin-unstable",
         "nixpkgs-master-pinned": "nixpkgs-master-pinned",
         "nixpkgs-nixos-master": "nixpkgs-nixos-master",
-        "nixpkgs-nixos-master-antigravity-cli": "nixpkgs-nixos-master-antigravity-cli",
+        "nixpkgs-nixos-master-edge": "nixpkgs-nixos-master-edge",
         "nixpkgs-nixos-master-ollama": "nixpkgs-nixos-master-ollama",
         "nixpkgs-nixos-unstable": "nixpkgs-nixos-unstable",
         "nixvim-darwin-unstable": "nixvim-darwin-unstable",
