@@ -27,10 +27,6 @@
           app = "Google Chrome";
         }
         {
-          key = "5";
-          app = "Slack";
-        }
-        {
           key = "9";
           app = "System Settings";
         }

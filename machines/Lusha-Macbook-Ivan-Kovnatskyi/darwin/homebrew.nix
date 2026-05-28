@@ -34,7 +34,6 @@
     masApps = {
       # Installed using Kandji
       # "Okta Verify" = 490179405;
-      # "Slack for Desktop" = 803453959;
       # "Okta Extension App" = 1439967473;
     };
   };

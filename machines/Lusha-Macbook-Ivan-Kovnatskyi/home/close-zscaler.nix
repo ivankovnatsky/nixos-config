@@ -1,4 +1,3 @@
-# Requires: System Settings > Privacy & Security > Accessibility > allow Terminal
 { pkgs, ... }:
 
 {

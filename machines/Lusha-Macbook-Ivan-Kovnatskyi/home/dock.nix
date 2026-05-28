@@ -18,17 +18,8 @@
           section = "apps";
         }
 
-        # Additional macOS apps
-        { path = "/System/Applications/Utilities/Terminal.app/"; }
-
-        {
-          type = "spacer";
-          section = "apps";
-        }
-
         # Installed using Iru
         { path = "/Applications/Google Chrome.app/"; }
-        { path = "/Applications/Slack.app/"; }
 
         {
           type = "spacer";

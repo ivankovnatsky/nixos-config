@@ -81,7 +81,6 @@ Configured Do Not Disturb to filter out Iru MDM notifications:
 ## bash
 
 - Allow "bash" to control "System Events"
-- Allow "bash" to control "Terminal"
 
 ### Zoom
 
@@ -108,17 +107,6 @@ Configured Do Not Disturb to filter out Iru MDM notifications:
 
 - Allow:
   - Local network (find devices on local networks)
-
-### Slack
-
-- Allow:
-  - Local network
-- App:
-  - Configure Google Calendar plugin
-    - Add to starred
-    - Turn off Daily Schedules
-  - Configure email forwarding to personal Slack channel to avoid opening
-    gmail.com for emails
 
 ### LinearMouse
 
