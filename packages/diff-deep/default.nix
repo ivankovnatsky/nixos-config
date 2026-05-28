@@ -2,14 +2,15 @@
 
 pkgs.writeShellScriptBin "diff-deep" ''
   EXCLUDES=(
-    .DS_Store
-    .stfolder
     .claude
+    .DS_Store
     .git
-    "workspace*"
+    .rumdl_cache
+    .stfolder
     .terraform
-    "terraform.tfstate*"
     .terraform.lock.hcl
+    "terraform.tfstate*"
+    "workspace*"
   )
 
   EXCLUDE_ARGS=""
