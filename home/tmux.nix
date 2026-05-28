@@ -37,6 +37,8 @@
 
       # Enable extended keys so modified Enter (e.g. Shift+Enter) works
       set -g extended-keys on
+      # Warning: tmux extended-keys-format is xterm. Pi works best with csi-u.
+      set -g extended-keys-format csi-u
       set -as terminal-features 'xterm*:extkeys'
 
       # Check if running on macOS and in Terminal.app
