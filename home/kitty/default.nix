@@ -54,7 +54,7 @@ let
     shell_integration enabled
 
     # Action alias for launching tabs in current directory
-    action_alias launch_tab launch --cwd=current --type=tab
+    action_alias launch_tab launch --cwd=current --type=tab --location=after
 
     enabled_layouts splits, tall, grid
 
