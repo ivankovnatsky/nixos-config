@@ -5,6 +5,7 @@
     pathA = "${config.home.homeDirectory}/Notes";
     pathB = "${config.home.homeDirectory}/NotesGit";
     ignore = [
+      "Path .rumdl_cache"
       "Path .git"
       "Path .claude"
       "Path .obsidian/workspace.json"
