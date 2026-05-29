@@ -21,6 +21,7 @@
     ./reposync-base.nix
     ./reposync.nix
     ./security.nix
+    ./storage0-disk.nix
     ./storage-disk.nix
     ./sudo.nix
     ./syncthing-mgmt.nix
