@@ -6,14 +6,13 @@
 }:
 
 let
-  homeDir = config.users.users.ivan.home;
-  # Upstream default; matching it activates the module's StateDirectory=stash
-  # (see `mkIf (cfg.dataDir == "/var/lib/stash")` in nixpkgs stash.nix) which
-  # creates and owns the directory automatically.
-  dataDir = "/var/lib/stash";
-  stashDir = "${homeDir}/stash";
+  pathDir = "/storage0/data/stash";
+  dataDir = "${pathDir}/lib";
+  stashDir = "${pathDir}/media";
 in
 {
+  users.users.ivan.extraGroups = [ "stash" ];
+
   sops.secrets = {
     stash-username = {
       key = "stash/username";
@@ -27,35 +26,21 @@ in
     };
   };
 
-  # Stash itself creates blobs/, cache/, metadata/, logs/, generated/, plugins/,
-  # scrapers/ on first run; the upstream module creates ${dataDir} via tmpfiles.
-  # We only need the bits that have to exist before stash.service starts:
-  #   - ${stashDir}: required by the module's BindReadOnlyPaths bind-mount
-  #   - ${dataDir}/keys: written to by stash-keys.service running as user stash
-  #   - ${dataDir}/config: parent of the sqlite path declared in settings.database
-  # ${dataDir} is also declared by upstream's services.stash module via
-  # tmpfiles.settings, but that file (10-stash-datadir.conf) is processed
-  # AFTER our 00-nixos.conf. Re-declare the parent here so children below
-  # (config/, keys/) have their parent in place when systemd-tmpfiles processes
-  # this file; otherwise `d` silently skips on missing parent.
   systemd.tmpfiles.rules = [
-    "d ${dataDir}        0755 stash stash -"
-    # ${stashDir} is the media library; ivan (in `users`) needs to drop files
-    # in here from the host. setgid (2) so new files inherit `users` group;
-    # 775 so both stash (owner) and ivan (group) can write.
-    "d ${stashDir}       2775 stash users -"
-    "d ${dataDir}/config 0755 stash stash -"
-    "d ${dataDir}/keys   0700 stash stash -"
-    # Recursively chown the entire ${dataDir} subtree to stash:stash. The mini
-    # snapshot (rsync) landed as ivan:users, so stash cannot write into
-    # blobs/, cache/, generated/, plugins/, scrapers/ etc. `Z` adjusts
-    # ownership of the path and all descendants; mode `-` leaves modes alone
-    # so existing files keep their original permissions.
-    "Z ${dataDir}        -    stash stash -"
-    # Recursively reconcile ${stashDir} on existing deployments — `d` above
-    # is a no-op when the directory already exists, so without this `Z` the
-    # pre-existing tree keeps its old stash:stash 0755 perms.
-    "Z ${stashDir}       2775 stash users -"
+    "d ${pathDir}        2775 ivan  stash -"
+    "d ${dataDir}        2775 ivan  stash -"
+    "d ${stashDir}       2775 ivan  stash -"
+    "d ${dataDir}/config 2775 ivan  stash -"
+    "d ${dataDir}/keys   2770 stash stash -"
+    "Z ${dataDir}        -    ivan  stash -"
+    "Z ${dataDir}/keys   -    stash stash -"
+    "Z ${stashDir}       -    ivan  stash -"
+    "a+ ${pathDir}        - - - - u:ivan:rwx,g:stash:rwx,m::rwx,d:u:ivan:rwx,d:g:stash:rwx,d:m::rwx"
+    "a+ ${dataDir}        - - - - u:ivan:rwx,g:stash:rwx,m::rwx,d:u:ivan:rwx,d:g:stash:rwx,d:m::rwx"
+    "a+ ${stashDir}       - - - - u:ivan:rwx,g:stash:rwx,m::rwx,d:u:ivan:rwx,d:g:stash:rwx,d:m::rwx"
+    "a+ ${dataDir}/config - - - - u:ivan:rwx,g:stash:rwx,m::rwx,d:u:ivan:rwx,d:g:stash:rwx,d:m::rwx"
+    "A+ ${dataDir}        - - - - u:ivan:rwX,g:stash:rwX,m::rwX,d:u:ivan:rwx,d:g:stash:rwx,d:m::rwx"
+    "A+ ${stashDir}       - - - - u:ivan:rwX,g:stash:rwX,m::rwX,d:u:ivan:rwx,d:g:stash:rwx,d:m::rwx"
   ];
 
   systemd.services.stash-keys = {
@@ -67,12 +52,14 @@ in
       RemainAfterExit = true;
       User = "stash";
       Group = "stash";
-      UMask = "0077";
+      UMask = "0007";
     };
+    unitConfig.RequiresMountsFor = [ "/storage0" ];
     script = ''
       set -euo pipefail
       [ -s ${dataDir}/keys/jwt ]     || ${pkgs.openssl}/bin/openssl rand -hex 32 > ${dataDir}/keys/jwt
       [ -s ${dataDir}/keys/session ] || ${pkgs.openssl}/bin/openssl rand -hex 32 > ${dataDir}/keys/session
+      chmod 0660 ${dataDir}/keys/jwt ${dataDir}/keys/session
     '';
   };
 
@@ -269,11 +256,8 @@ in
   systemd.services.stash.serviceConfig.BindReadOnlyPaths = lib.mkForce [ ];
   systemd.services.stash.serviceConfig.BindPaths = [ stashDir ];
 
-  # Mini did `chmod 600 ${dataDir}/config/config.yml` after rendering. The
-  # upstream module just `>` -redirects yq output with no chmod, so a default
-  # umask of 022 would leave config.yml (with the password baked in by the
-  # module's setup script) world-readable. Force tight umask for the unit.
-  systemd.services.stash.serviceConfig.UMask = "0077";
+  systemd.services.stash.serviceConfig.UMask = "0007";
+  systemd.services.stash.unitConfig.RequiresMountsFor = [ "/storage0" ];
 
   # After the upstream module rewrites config.yml from settings (every restart
   # with mutableSettings=false), patch the placeholder username with the real
