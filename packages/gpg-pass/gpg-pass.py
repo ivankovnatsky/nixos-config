@@ -42,12 +42,6 @@ def cache() -> None:
 
 
 @main.command()
-def refresh() -> None:
-    """Alias for cache."""
-    cache_passphrase()
-
-
-@main.command()
 def drop() -> None:
     """Drop the cached GPG passphrase."""
     run(["gpgconf", "--kill", "gpg-agent"])
