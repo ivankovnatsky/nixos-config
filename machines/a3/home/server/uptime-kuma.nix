@@ -169,6 +169,17 @@ in
         description = "Sonarr TV manager (a3)";
       }
       {
+        name = "stash-a3";
+        url = "http://127.0.0.1:9999";
+        interval = 60;
+        expectedStatus = [
+          "200-299"
+          "302"
+        ];
+        maxredirects = 0;
+        description = "Stash media organizer (a3, redirects to /login)";
+      }
+      {
         name = "stubby-a3";
         type = "tcp";
         url = "127.0.0.1:5453";
