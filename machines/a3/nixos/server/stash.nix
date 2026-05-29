@@ -256,7 +256,7 @@ in
   systemd.services.stash.serviceConfig.BindReadOnlyPaths = lib.mkForce [ ];
   systemd.services.stash.serviceConfig.BindPaths = [ stashDir ];
 
-  systemd.services.stash.serviceConfig.UMask = "0007";
+  systemd.services.stash.serviceConfig.UMask = "0077";
   systemd.services.stash.unitConfig.RequiresMountsFor = [ "/storage0" ];
 
   # After the upstream module rewrites config.yml from settings (every restart
@@ -271,10 +271,12 @@ in
   systemd.services.stash.serviceConfig.ExecStartPre = lib.mkAfter [
     (pkgs.writers.writeBash "stash-username-from-sops" ''
       set -euo pipefail
+      umask 0077
       env USERNAME=$(< ${config.sops.secrets.stash-username.path}) \
         ${lib.getExe pkgs.yq-go} '.username = strenv(USERNAME)' \
         ${dataDir}/config.yml > ${dataDir}/config.yml.tmp
       mv ${dataDir}/config.yml.tmp ${dataDir}/config.yml
+      chmod 0600 ${dataDir}/config.yml
     '')
   ];
 }
