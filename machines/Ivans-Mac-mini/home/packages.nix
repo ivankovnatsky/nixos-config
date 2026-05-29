@@ -10,6 +10,7 @@
         # markitdown
       ]
     ))
+    giffer
     gh-repos-sync
     macmon
     sesh
