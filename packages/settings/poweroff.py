@@ -54,6 +54,38 @@ def poweroff_log_battery() -> None:
         print(f"Warning: Could not log battery status: {e}", file=sys.stderr)
 
 
+_PERMISSION_MARKERS = ("permission denied", "must be root", "not permitted", "operation not permitted")
+
+
+def _linux_shutdown() -> None:
+    try:
+        result = subprocess.run(
+            ["shutdown", "-h", "now"],
+            capture_output=True,
+            text=True,
+        )
+    except FileNotFoundError:
+        _sudo_shutdown()
+        return
+
+    if result.returncode == 0:
+        return
+
+    if any(m in result.stderr.lower() for m in _PERMISSION_MARKERS):
+        _sudo_shutdown()
+    else:
+        print(result.stderr, file=sys.stderr, end="")
+        sys.exit(result.returncode)
+
+
+def _sudo_shutdown() -> None:
+    try:
+        subprocess.run(["sudo", "shutdown", "-h", "now"], check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error: sudo shutdown failed (exit {e.returncode})", file=sys.stderr)
+        sys.exit(e.returncode)
+
+
 def register(cli):
     @cli.command()
     @click.option(
@@ -81,8 +113,6 @@ def register(cli):
         # Shutdown the system
         print("Shutting down...")
         if is_linux():
-            result = subprocess.run(["shutdown", "-h", "now"])
-            if result.returncode != 0:
-                subprocess.run(["sudo", "shutdown", "-h", "now"], check=True)
+            _linux_shutdown()
         else:
             subprocess.run(["sudo", "shutdown", "-h", "now"], check=True)
