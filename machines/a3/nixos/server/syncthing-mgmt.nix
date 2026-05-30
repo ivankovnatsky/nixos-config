@@ -43,6 +43,7 @@
           "Ivans-Mac-mini"
           "Ivans-iPhone"
         ];
+        ignorePatterns = [ ".git" ];
       };
     };
 
