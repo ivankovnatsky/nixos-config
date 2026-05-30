@@ -8,7 +8,7 @@
       branch = "main";
     }
     {
-      path = "${config.users.users.${username}.home}/NotesGit";
+      path = "${config.users.users.${username}.home}/Notes";
       remote = "origin";
       remoteUrl = "https://forgejo.@domain@/@username@/notes.git";
       branch = "main";
