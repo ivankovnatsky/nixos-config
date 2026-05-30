@@ -36,7 +36,7 @@ COMMAND_ALIASES = {
     "fda": "fulldiskaccess",
     "fd": "fulldiskaccess",
     "li": "login",
-    "off": "poweroff",
+    "off": "turnoff",
     "b": "battery",
     "bat": "battery",
     "cf": "cpufreq",

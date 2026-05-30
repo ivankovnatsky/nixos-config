@@ -1,4 +1,4 @@
-"""Poweroff: Set volume and shutdown system (macOS + Linux)."""
+"""Turnoff: Set volume and shutdown system (macOS + Linux)."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from volume import volume_set
 ICLOUD_SYNC_DELAY = 5  # seconds to wait for iCloud sync (file is < 1KB)
 
 
-def poweroff_log_battery() -> None:
+def turnoff_log_battery() -> None:
     """Log battery status to iCloud stats directory (macOS laptops only)."""
     if not is_macos():
         return
@@ -54,7 +54,7 @@ def poweroff_log_battery() -> None:
         print(f"Warning: Could not log battery status: {e}", file=sys.stderr)
 
 
-_PERMISSION_MARKERS = ("permission denied", "must be root", "not permitted", "operation not permitted")
+_PERMISSION_MARKERS = ("permission denied", "must be root", "not permitted", "operation not permitted", "access denied")
 
 
 def _linux_shutdown() -> None:
@@ -95,14 +95,14 @@ def register(cli):
         default=POWEROFF_VOLUME_SET,
         help=f"Volume level before shutdown (default: {POWEROFF_VOLUME_SET}%)",
     )
-    def poweroff(vol):
+    def turnoff(vol):
         """Set volume and shutdown system (macOS + Linux)"""
         if not is_macos() and not is_linux():
-            print("Poweroff only available on macOS and Linux", file=sys.stderr)
+            print("Turnoff only available on macOS and Linux", file=sys.stderr)
             sys.exit(1)
 
         # Log battery status before shutdown (macOS only)
-        poweroff_log_battery()
+        turnoff_log_battery()
 
         # Set volume to specified level before shutdown
         if volume_set(vol):

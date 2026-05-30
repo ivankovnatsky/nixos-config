@@ -14,7 +14,7 @@ Subcommands:
   accessibility Manage accessibility permissions (macOS only)
   fulldiskaccess Manage Full Disk Access permissions (macOS only)
   login       List, add, or remove login items (macOS only)
-  poweroff    Set volume and shutdown system (macOS + Linux)
+  turnoff     Set volume and shutdown system (macOS + Linux)
   battery     Show battery state (macOS + Linux)
   cpufreq     Get or cap CPU max frequency (Linux only)
   autovolume  Probe audio activity (macOS + Linux)
@@ -38,7 +38,7 @@ import fulldiskaccess
 import location
 import login
 import menubar
-import poweroff
+import turnoff
 import scaling
 import scrolling
 import spaces
@@ -68,7 +68,7 @@ fulldiskaccess.register(cli)
 location.register(cli)
 login.register(cli)
 menubar.register(cli)
-poweroff.register(cli)
+turnoff.register(cli)
 scaling.register(cli)
 scrolling.register(cli)
 spaces.register(cli)
