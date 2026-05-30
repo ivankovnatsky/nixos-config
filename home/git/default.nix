@@ -233,7 +233,6 @@ EOF
         "**/.venv"
         "**/venv"
 
-        "**/.stignore"
         "**/.stfolder"
 
         "**/.worktrees/"
