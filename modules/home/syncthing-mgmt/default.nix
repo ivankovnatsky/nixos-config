@@ -113,6 +113,11 @@ in
               default = [ ];
               description = "List of device names or IDs to share this folder with";
             };
+            ignorePatterns = mkOption {
+              type = types.listOf types.str;
+              default = [ ];
+              description = "Per-folder ignore patterns (written to .stignore via API)";
+            };
           };
         }
       );
