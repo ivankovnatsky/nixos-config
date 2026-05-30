@@ -67,19 +67,12 @@ in
     goPath = mkOption {
       type = types.str;
       readOnly = true;
-      default =
-        if cfg.toolsPrefix == config.home.homeDirectory then
-          "${cfg.toolsPrefix}/go"
-        else
-          "${cfg.toolsPrefix}/.go";
-      defaultText = literalExpression ''
-        if toolsPrefix == $HOME then "$HOME/go" else "$\{toolsPrefix}/.go"
-      '';
+      default = "${cfg.toolsPrefix}/.go";
+      defaultText = literalExpression ''"$\{toolsPrefix}/.go"'';
       description = ''
-        GOPATH for this user, derived from `toolsPrefix`. Dotted `.go`
-        when the workspace lives outside `$HOME` (external storage),
-        plain `go` otherwise. Consumed by both this module (for
-        `go install` binaries) and `home/go.nix` (for `GOPATH`).
+        GOPATH for this user, derived from `toolsPrefix`. Consumed by both
+        this module (for `go install` binaries) and `home/go.nix` (for
+        `GOPATH`).
       '';
     };
 
