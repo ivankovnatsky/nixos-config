@@ -65,7 +65,7 @@
     path-copy
     pigz
     poppler-utils
-    poweroff
+    turnoff
     ps-top
     reboot
     rebuild
