@@ -24,7 +24,6 @@
     ./storage0-disk.nix
     ./storage-disk.nix
     ./sudo.nix
-    ./stash.nix
     ./syncthing-mgmt.nix
     ./uptime-kuma.nix
   ];
