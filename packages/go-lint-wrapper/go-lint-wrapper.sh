@@ -5,8 +5,7 @@
 
 set -euo pipefail
 
-# Set GOPATH if not set
-export GOPATH="${GOPATH:-$HOME/go}"
+export GOPATH="${GOPATH:-$HOME/.go}"
 export GO111MODULE=off
 
 if [[ $# -eq 0 ]]; then
