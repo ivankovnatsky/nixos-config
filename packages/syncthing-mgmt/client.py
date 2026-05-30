@@ -157,6 +157,16 @@ class SyncthingClient:
         """Trigger a rescan for a folder."""
         return self._api_call("POST", f"/rest/db/scan?folder={folder_id}")
 
+    def get_folder_ignores(self, folder_id: str):
+        """Get ignore patterns for a folder."""
+        return self._api_call("GET", f"/rest/db/ignores?folder={folder_id}")
+
+    def set_folder_ignores(self, folder_id: str, patterns: list):
+        """Set ignore patterns for a folder."""
+        return self._api_call(
+            "POST", f"/rest/db/ignores?folder={folder_id}", data={"ignore": patterns}
+        )
+
     def get_system_status(self):
         """Get system status (includes local device ID)."""
         return self._api_call("GET", "/rest/system/status")

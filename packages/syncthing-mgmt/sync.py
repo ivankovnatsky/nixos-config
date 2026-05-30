@@ -149,6 +149,23 @@ def sync_folders(client, folders_config, devices_config, dry_run=False):
             else:
                 logging.info("      [DRY-RUN] Would add folder")
 
+        # Sync per-folder ignore patterns
+        desired_ignores = folder_cfg.get("ignorePatterns", [])
+        try:
+            resp = client.get_folder_ignores(folder_id)
+            current_ignores = resp.get("ignore", []) if resp else []
+        except Exception:
+            current_ignores = []
+        if current_ignores != desired_ignores:
+            logging.info(f"    SET ignores: {folder_id}")
+            if not dry_run:
+                client.set_folder_ignores(folder_id, desired_ignores)
+                logging.info("      ✓ Folder ignores updated")
+            else:
+                logging.info("      [DRY-RUN] Would update folder ignores")
+        else:
+            logging.info(f"    OK: {folder_id} ignores already configured")
+
     # Remove folders that are in Syncthing but not in config
     for folder_id, folder in current_folders.items():
         if folder_id not in configured_folder_ids:
