@@ -31,7 +31,6 @@
     ../../../home/sops.nix
     ../../../home/ssh.nix
     ../../../home/starship
-    ../../../home/syncthing-ignore.nix
     ../../../home/tmux.nix
     ../../../home/treefmt.nix
     ../../../home/z-lua.nix

@@ -41,7 +41,6 @@
     ../../../home/sops.nix
     ../../../home/ssh.nix
     ../../../home/starship
-    ../../../home/syncthing-ignore.nix
     ../../../home/syncthing.nix
     ../../../home/terraform.nix
     ../../../home/terragrunt.nix

@@ -40,7 +40,6 @@
     ../../../home/safari.nix
     ../../../home/ssh.nix
     ../../../home/starship
-    ../../../home/syncthing-ignore.nix
     ../../../home/syncthing.nix
     ../../../home/tmux.nix
     ../../../home/treefmt.nix
