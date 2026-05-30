@@ -45,7 +45,6 @@
     ../../../modules/home/nextdns-mgmt
     ../../../modules/home/settings-daemon
     ../../../modules/home/tools
-    ../../../modules/home/unison
     ../../../modules/home/uptime-kuma-mgmt
     ./chromium.nix
     ./desktop
@@ -56,6 +55,5 @@
     ./pi-models.nix
     ./server
     ./settings-daemon.nix
-    ./unison.nix
   ];
 }
