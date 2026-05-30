@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Nix rebuild tool with two modes:
 rebuild once CONFIG_PATH    - single rebuild with notifications (quiet output)
-rebuild watch CONFIG_PATH   - watchman file-watching + optional loop/polling
+rebuild watch CONFIG_PATH   - watchman file-watching + periodic loop rebuilds
 """
 
 import logging

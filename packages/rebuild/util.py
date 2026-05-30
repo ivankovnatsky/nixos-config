@@ -11,7 +11,7 @@ def format_duration(seconds):
     return f"{minutes}m{secs}s"
 
 
-# Default interval for loop mode in seconds
+# Default interval between periodic rebuilds in seconds
 LOOP_INTERVAL = 180  # 3 minutes
 
 # Debounce delay in seconds - wait this long after last change before rebuilding
