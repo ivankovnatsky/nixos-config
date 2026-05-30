@@ -80,4 +80,9 @@ def register(cli):
 
         # Shutdown the system
         print("Shutting down...")
-        subprocess.run(["sudo", "shutdown", "-h", "now"], check=True)
+        if is_linux():
+            result = subprocess.run(["shutdown", "-h", "now"])
+            if result.returncode != 0:
+                subprocess.run(["sudo", "shutdown", "-h", "now"], check=True)
+        else:
+            subprocess.run(["sudo", "shutdown", "-h", "now"], check=True)
