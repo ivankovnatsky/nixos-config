@@ -41,6 +41,7 @@
           "Ivans-Mac-mini"
           "a3"
         ];
+        ignorePatterns = [ ".git" ];
       };
     };
 
