@@ -67,7 +67,7 @@ def cmd_once(config_path, command):
     sys.exit(returncode)
 
 
-def cmd_watch(config_path, command, loop, no_watch, interval):
+def cmd_watch(config_path, command, no_watch, interval):
     """Watch for changes and rebuild."""
     config_path_obj = Path(config_path)
     watch = not no_watch
@@ -212,11 +212,10 @@ def cmd_watch(config_path, command, loop, no_watch, interval):
     with rebuild_lock:
         run_rebuild(config_path, command)
 
-    if loop:
-        if not refresh_sudo():
-            logging.warning("Failed initial sudo refresh")
-        loop_thread = threading.Thread(target=loop_timer_thread, daemon=True)
-        loop_thread.start()
+    if not refresh_sudo():
+        logging.warning("Failed initial sudo refresh")
+    loop_thread = threading.Thread(target=loop_timer_thread, daemon=True)
+    loop_thread.start()
 
     try:
         if watch:
@@ -337,27 +336,16 @@ def once(config_path, command):
 @click.argument("config_path", required=False)
 @click.argument("command", required=False, default=None)
 @click.option(
-    "--loop",
-    is_flag=True,
-    help="Also rebuild periodically every INTERVAL seconds (with sudo refresh)",
-)
-@click.option(
     "--no-watch",
     is_flag=True,
-    help="Disable file watching (use with --loop for timer-only mode)",
+    help="Disable file watching (timer-only mode)",
 )
 @click.option(
     "--interval",
     type=int,
     default=LOOP_INTERVAL,
-    help=f"Interval in seconds between periodic rebuilds when --loop is used (default: {LOOP_INTERVAL})",
+    help=f"Interval in seconds between periodic rebuilds (default: {LOOP_INTERVAL})",
 )
-def watch(config_path, command, loop, no_watch, interval):
+def watch(config_path, command, no_watch, interval):
     """Watch for file changes and rebuild automatically."""
-    if interval != LOOP_INTERVAL and not loop:
-        raise click.UsageError("--interval requires --loop")
-    if no_watch and not loop:
-        raise click.UsageError(
-            "--no-watch requires --loop (nothing to do without watching or looping)"
-        )
-    cmd_watch(config_path or resolve_config_path(), command, loop, no_watch, interval)
+    cmd_watch(config_path or resolve_config_path(), command, no_watch, interval)
