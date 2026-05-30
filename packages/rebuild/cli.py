@@ -1,4 +1,4 @@
-"""Click CLI + simple/watch orchestration for rebuild."""
+"""Click CLI + once/watch orchestration for rebuild."""
 
 import logging
 import os
@@ -34,7 +34,7 @@ from watchman import (
 )
 
 
-def cmd_simple(config_path, command):
+def cmd_once(config_path, command):
     """Run a single rebuild with notifications and suppressed output."""
     config_path_obj = Path(config_path)
 
@@ -304,43 +304,36 @@ def cmd_watch(config_path, command, loop, no_watch, interval):
         cleanup_instance_file()
 
 
-ALIASES = {"once": "simple"}
-
-
 class DefaultDispatch(click.Group):
     """Dispatch when no subcommand is given:
 
     - `rebuild`          -> `rebuild watch --loop`   (auto-detect path)
-    - `rebuild <path>`   -> `rebuild simple <path>`  (one-shot)
+    - `rebuild <path>`   -> `rebuild once <path>`  (one-shot)
     - `rebuild --<flag>` -> handled by Click as usual (e.g. --help)
     """
 
     def parse_args(self, ctx, args):
         if not args:
             args = ["watch", "--loop"]
-        elif args[0] in ALIASES:
-            args = [ALIASES[args[0]]] + args[1:]
         elif args[0] not in self.commands and not args[0].startswith("-"):
-            args = ["simple"] + args
+            args = ["once"] + args
         return super().parse_args(ctx, args)
 
     def get_command(self, ctx, cmd_name):
-        if cmd_name in ALIASES:
-            cmd_name = ALIASES[cmd_name]
         return super().get_command(ctx, cmd_name)
 
 
 @click.group(cls=DefaultDispatch)
 def cli():
-    """Nix rebuild tool with simple and watch modes."""
+    """Nix rebuild tool with once and watch modes."""
 
 
 @cli.command()
 @click.argument("config_path", required=False)
 @click.argument("command", required=False, default=None)
-def simple(config_path, command):
+def once(config_path, command):
     """Single rebuild with notifications (quiet output)."""
-    cmd_simple(config_path or resolve_config_path(), command)
+    cmd_once(config_path or resolve_config_path(), command)
 
 
 @cli.command()
