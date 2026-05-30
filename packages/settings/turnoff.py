@@ -10,7 +10,7 @@ from pathlib import Path
 
 import click
 
-from common import POWEROFF_VOLUME_SET, is_linux, is_macos
+from common import TURNOFF_VOLUME_SET, is_linux, is_macos
 from volume import volume_set
 
 ICLOUD_SYNC_DELAY = 5  # seconds to wait for iCloud sync (file is < 1KB)
@@ -92,8 +92,8 @@ def register(cli):
         "--volume",
         "vol",
         type=click.IntRange(min=0, max=100),
-        default=POWEROFF_VOLUME_SET,
-        help=f"Volume level before shutdown (default: {POWEROFF_VOLUME_SET}%)",
+        default=TURNOFF_VOLUME_SET,
+        help=f"Volume level before shutdown (default: {TURNOFF_VOLUME_SET}%)",
     )
     def turnoff(vol):
         """Set volume and shutdown system (macOS + Linux)"""

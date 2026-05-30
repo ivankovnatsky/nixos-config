@@ -11,7 +11,7 @@ import click
 # Ensure system binaries are available during Nix activation
 os.environ["PATH"] = "/usr/bin:/bin:/usr/sbin:" + os.environ.get("PATH", "")
 DISPLAYPLACER_PATH = "/opt/homebrew/bin/displayplacer"
-POWEROFF_VOLUME_SET = 6
+TURNOFF_VOLUME_SET = 6
 
 # Command aliases
 COMMAND_ALIASES = {
