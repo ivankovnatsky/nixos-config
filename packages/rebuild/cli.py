@@ -307,13 +307,13 @@ def cmd_watch(config_path, command, loop, no_watch, interval):
 class DefaultDispatch(click.Group):
     """Dispatch when no subcommand is given:
 
-    - `rebuild`          -> `rebuild watch --loop`   (auto-detect path)
+    - `rebuild`          -> `rebuild once`   (auto-detect path)
     - `rebuild --<flag>` -> handled by Click as usual (e.g. --help)
     """
 
     def parse_args(self, ctx, args):
         if not args:
-            args = ["watch", "--loop"]
+            args = ["once"]
         return super().parse_args(ctx, args)
 
     def get_command(self, ctx, cmd_name):
