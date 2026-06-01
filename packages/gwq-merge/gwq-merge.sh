@@ -32,7 +32,11 @@ else
     exit 1
   fi
   target_branch="${current_branch}"
-  target_tree_path=$(echo "${gwq_json}" | jq -r --arg br "${target_branch}" '.[] | select(.branch == $br) | .path')
+  target_tree_path=$(echo "${gwq_json}" | jq -r --arg br "${target_branch}" '.[] | select(.branch == $br) | .path' | head -1)
+  if [[ -z "${target_tree_path}" ]]; then
+    echo "error: current branch '${current_branch}' not found in gwq worktree list" >&2
+    exit 1
+  fi
 fi
 
 stash_before=$(git -C "${target_tree_path}" stash list | wc -l)
