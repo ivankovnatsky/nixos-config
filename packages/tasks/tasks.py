@@ -485,7 +485,7 @@ def render_simple_table(
             return (prefix + title).rstrip()
         if mode == "truncate":
             if len(title) > title_width:
-                title = title[: max(1, title_width - 1)] + "…"
+                title = title[: max(1, title_width - 1)] + ".."
             return (prefix + title).rstrip()
         wrapped = textwrap.wrap(
             title, width=title_width, break_long_words=False, break_on_hyphens=False
