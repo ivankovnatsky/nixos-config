@@ -5,7 +5,6 @@
     ../../../home/bitwarden.nix
     ../../../home/btop.nix
     ../../../home/claude-settings.nix
-    ../../../home/claude.nix
     ../../../home/direnv.nix
     ../../../home/fish.nix
     ../../../home/fzf.nix

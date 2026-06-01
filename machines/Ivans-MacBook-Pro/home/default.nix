@@ -6,7 +6,6 @@
     ../../../home/btop.nix
     ../../../home/carapace.nix
     ../../../home/claude-settings.nix
-    ../../../home/claude.nix
     ../../../home/direnv.nix
     ../../../home/fish.nix
     ../../../home/flags.nix

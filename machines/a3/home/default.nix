@@ -4,7 +4,6 @@
   imports = [
     ../../../home/atuin.nix
     ../../../home/claude-settings.nix
-    ../../../home/claude.nix
     ../../../home/codex.nix
     ../../../home/fish.nix
     ../../../home/fzf.nix
