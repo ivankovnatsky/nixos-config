@@ -12,7 +12,7 @@ let
   geminiSettings = {
     general = {
       vimMode = true;
-      preferredEditor = config.flags.editor;
+      preferredEditor = config.flags.editorName;
       disableAutoUpdate = false;
       checkpointing.enabled = true;
       previewFeatures = true;

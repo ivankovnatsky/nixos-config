@@ -4,6 +4,7 @@
     enableFishShell = true;
     purpose = "home";
     editor = "nvim";
+    editorName = "neovim";
     hotkeys = {
       terminal = "Terminal";
       browser = "Safari";

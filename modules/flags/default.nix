@@ -78,6 +78,12 @@ with lib;
       default = "nvim";
     };
 
+    editorName = mkOption {
+      type = types.str;
+      description = "Editor display name";
+      default = "neovim";
+    };
+
     fontGeneral = mkOption {
       type = types.str;
       default = "Hack Nerd Font";
