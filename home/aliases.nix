@@ -37,5 +37,4 @@ else
     tg = "terragrunt";
     k = "${pkgs.kubectl}/bin/kubectl";
     argocd = "${pkgs.argocd}/bin/argocd --grpc-web";
-    claude-portkey = "~/.claude/portkey.sh";
   }
