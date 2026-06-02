@@ -8,8 +8,11 @@
     enable = true;
   };
 
-  # Load nvidia driver for Xorg and Wayland
-  services.xserver.videoDrivers = [ "nvidia" ];
+  # amdgpu must be listed explicitly for PRIME offload with AMD iGPU (per NixOS wiki)
+  services.xserver.videoDrivers = [ "amdgpu" "nvidia" ];
+
+  # simpledrm claims the AMD DRM slot before amdgpu can; this prevents it
+  boot.kernelParams = [ "initcall_blacklist=simpledrm_platform_driver_init" ];
 
   # https://nixos.wiki/wiki/Nvidia
   # https://wiki.nixos.org/wiki/NVIDIA
