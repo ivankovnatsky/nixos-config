@@ -47,6 +47,7 @@ in
       parallel
       pciutils
       pre-commit
+      pulseaudio
       pv
       q
       ripgrep
