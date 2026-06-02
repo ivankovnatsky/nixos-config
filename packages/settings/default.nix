@@ -7,6 +7,10 @@ let
     ps.dbus-python
   ]);
 in
-pkgs.writeShellScriptBin "settings" ''
-  exec ${python}/bin/python ${src}/settings.py "$@"
-''
+pkgs.writeShellApplication {
+  name = "settings";
+  runtimeInputs = pkgs.lib.optionals pkgs.stdenv.isLinux [ pkgs.pulseaudio ];
+  text = ''
+    exec ${python}/bin/python ${src}/settings.py "$@"
+  '';
+}
