@@ -14,6 +14,7 @@
     # ./openrgb.nix
     ./plasma.nix
     ./power-management.nix
+    ./thunderbolt.nix
     ./steam.nix
     ./tpm2.nix
     ./user.nix
