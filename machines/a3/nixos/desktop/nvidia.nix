@@ -8,8 +8,7 @@
     enable = true;
   };
 
-  # amdgpu must be listed explicitly for PRIME offload with AMD iGPU (per NixOS wiki)
-  services.xserver.videoDrivers = [ "amdgpu" "nvidia" ];
+  services.xserver.videoDrivers = [ "nvidia" ];
 
   # simpledrm claims the AMD DRM slot before amdgpu can; this prevents it
   boot.kernelParams = [ "initcall_blacklist=simpledrm_platform_driver_init" ];
