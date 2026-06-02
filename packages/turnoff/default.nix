@@ -3,6 +3,10 @@
 let
   settings = pkgs.callPackage ../settings { };
 in
-pkgs.writeShellScriptBin "turnoff" ''
-  exec ${settings}/bin/settings turnoff "$@"
-''
+pkgs.writeShellApplication {
+  name = "turnoff";
+  runtimeInputs = pkgs.lib.optionals pkgs.stdenv.isLinux [ pkgs.pulseaudio ];
+  text = ''
+    exec ${settings}/bin/settings turnoff "$@"
+  '';
+}
