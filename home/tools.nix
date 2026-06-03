@@ -18,9 +18,6 @@
         "osxphotos" = {
           binary = "osxphotos";
         };
-        "gallery-dl" = {
-          binary = "gallery-dl";
-        };
         "yt-dlp" = {
           binary = "yt-dlp";
         };
