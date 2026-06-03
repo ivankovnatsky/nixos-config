@@ -10,7 +10,7 @@
     ./gamescope.nix
     ./kde.nix
     ./keyboard.nix
-    ./nvidia.nix
+    ./video.nix
     # ./openrgb.nix
     ./plasma.nix
     ./power-management.nix

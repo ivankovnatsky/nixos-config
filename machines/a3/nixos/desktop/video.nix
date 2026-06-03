@@ -62,13 +62,13 @@
 
     # Monitor is connected to AMD iGPU (card2-DP-4); NVIDIA is render offload.
     # NVIDIA: 01:00.0 -> PCI:1:0:0, AMD: 0d:00.0 -> PCI:13:0:0
-    prime = {
-      offload = {
-        enable = true;
-        enableOffloadCmd = true;
-      };
-      nvidiaBusId = "PCI:1:0:0";
-      amdgpuBusId = "PCI:13:0:0";
-    };
+    # prime = {
+    #   offload = {
+    #     enable = true;
+    #     enableOffloadCmd = true;
+    #   };
+    #   nvidiaBusId = "PCI:1:0:0";
+    #   amdgpuBusId = "PCI:13:0:0";
+    # };
   };
 }
