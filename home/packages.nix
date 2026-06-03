@@ -59,7 +59,6 @@
     nodejs
     nvim-edit-staged
     obs
-    open-pr
     pass-fzf
     paste-loop
     path-copy

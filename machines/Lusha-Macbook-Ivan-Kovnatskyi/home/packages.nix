@@ -28,7 +28,6 @@
     confluent-cli
     coreutils
     crane
-    create-pr
     curlie
     cx-cli
     defaultbrowser
