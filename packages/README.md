@@ -50,8 +50,6 @@ Current aliases:
 
 | Alias       | Original |
 | ----------- | -------- |
-| `create-pr` | `gh-pr`  |
-| `open-pr`   | `gh-pr`  |
 
 ## Distinct names for packages
 
