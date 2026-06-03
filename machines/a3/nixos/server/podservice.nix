@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   dataDir = "/storage/data/media/podservice";
@@ -71,7 +71,7 @@ in
     wantedBy = [ "multi-user.target" ];
     unitConfig.RequiresMountsFor = [ "/storage" ];
     environment = {
-      PATH = "${pkgs.coreutils}/bin:${pkgs.ffmpeg}/bin";
+      PATH = lib.mkForce "${pkgs.coreutils}/bin:${pkgs.ffmpeg}/bin";
     };
     serviceConfig = {
       User = "podservice";
