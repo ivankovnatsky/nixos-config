@@ -418,22 +418,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-darwin-master-gallery-dl": {
-      "locked": {
-        "lastModified": 1777571807,
-        "narHash": "sha256-dd5KF5c5UKcwC/0T7ZmDhVgjC1q8GESyr1Hwwh+ttNA=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "6ae8780ba7778e5387235993392ce9ca4982dc0d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "master",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs-darwin-master-gwq": {
       "locked": {
         "lastModified": 1774553332,
@@ -457,22 +441,6 @@
         "owner": "nixos",
         "repo": "nixpkgs",
         "rev": "7436464cc6d11fedb1c67b9e70088f5ae14cb98b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "master",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs-darwin-master-ytdlp": {
-      "locked": {
-        "lastModified": 1777570784,
-        "narHash": "sha256-n908ma+EFdqIgzIPa/8I1Km66IQb8o3HF7LXB4cBPO4=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "13840dbaf6e10374323eea29f503085146dc6c06",
         "type": "github"
       },
       "original": {
@@ -851,10 +819,8 @@
         "nix-homebrew": "nix-homebrew",
         "nix-steipete-tools": "nix-steipete-tools",
         "nixpkgs-darwin-master": "nixpkgs-darwin-master",
-        "nixpkgs-darwin-master-gallery-dl": "nixpkgs-darwin-master-gallery-dl",
         "nixpkgs-darwin-master-gwq": "nixpkgs-darwin-master-gwq",
         "nixpkgs-darwin-master-opencode": "nixpkgs-darwin-master-opencode",
-        "nixpkgs-darwin-master-ytdlp": "nixpkgs-darwin-master-ytdlp",
         "nixpkgs-darwin-old-release": "nixpkgs-darwin-old-release",
         "nixpkgs-darwin-unstable": "nixpkgs-darwin-unstable",
         "nixpkgs-master-pinned": "nixpkgs-master-pinned",

@@ -60,14 +60,6 @@ let
       inherit system;
       config = safeConfig;
     };
-    nixpkgs-darwin-master-ytdlp = import inputs.nixpkgs-darwin-master-ytdlp {
-      inherit system;
-      config = safeConfig;
-    };
-    nixpkgs-darwin-master-gallery-dl = import inputs.nixpkgs-darwin-master-gallery-dl {
-      inherit system;
-      config = safeConfig;
-    };
     nixpkgs-darwin-master-gwq = import inputs.nixpkgs-darwin-master-gwq {
       inherit system;
       config = safeConfig;

@@ -27,14 +27,6 @@
       url = "github:nixos/nixpkgs/master";
     };
 
-    nixpkgs-darwin-master-ytdlp = {
-      url = "github:nixos/nixpkgs/master";
-    };
-
-    nixpkgs-darwin-master-gallery-dl = {
-      url = "github:nixos/nixpkgs/master";
-    };
-
     nixpkgs-darwin-master-gwq = {
       url = "github:nixos/nixpkgs/master";
     };
