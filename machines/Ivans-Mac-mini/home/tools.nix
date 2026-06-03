@@ -22,12 +22,6 @@
         "osxphotos" = {
           binary = "osxphotos";
         };
-        "gallery-dl" = {
-          binary = "gallery-dl";
-        };
-        "yt-dlp" = {
-          binary = "yt-dlp";
-        };
         # Pip name `openai-whisper`, ships a `whisper` console script.
         # Managed via uv instead of nixpkgs because the upstream test suite
         # (test_audio) fails inside the darwin build sandbox when it shells
