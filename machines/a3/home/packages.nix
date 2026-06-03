@@ -2,7 +2,6 @@
 
 {
   home.packages = with pkgs; [
-    giffer
     fastfetch
     ghq-cd
     gnumake
