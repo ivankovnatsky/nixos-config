@@ -7,6 +7,7 @@
     "msr"
     "zenpower"
     "k10temp"
+    "nct6687d"
   ];
 
   # zenpower3 kernel module for AMD CPU power readings in MangoHud
