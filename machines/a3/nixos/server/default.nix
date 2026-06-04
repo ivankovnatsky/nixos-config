@@ -23,6 +23,7 @@
     ./reposync.nix
     ./security.nix
     ./storage-disk.nix
+    ./storage0-disk.nix
     ./sudo.nix
     ./syncthing-mgmt.nix
     ./uptime-kuma.nix
