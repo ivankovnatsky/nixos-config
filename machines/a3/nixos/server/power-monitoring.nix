@@ -15,9 +15,6 @@
   # nct6687d for MSI MAG B850M Mortar board sensors (voltages, fan speeds)
   boot.extraModulePackages = with config.boot.kernelPackages; [ zenpower nct6687d ];
 
-  # Blacklist k10temp - conflicts with zenpower (both use same PCI device)
-  boot.blacklistedKernelModules = [ "k10temp" ];
-
   # Make RAPL energy files readable for MangoHud CPU power display
   systemd.tmpfiles.rules = [
     "z /sys/class/powercap/intel-rapl*/energy_uj 0444 root root -"
