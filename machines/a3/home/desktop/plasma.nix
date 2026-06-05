@@ -218,6 +218,8 @@
           };
         };
 
+        baloofilerc."Basic Settings"."Indexing-Enabled" = false;
+
         krdcrc = {
           MainWindow = {
             StatusBar = "Disabled";
