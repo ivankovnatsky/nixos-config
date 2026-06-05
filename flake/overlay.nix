@@ -26,9 +26,6 @@ let
 
   # Special arguments for specific packages (to break overlay self-reference cycles)
   packageArgs = {
-    genpass = {
-      inherit (prev) genpass;
-    };
   };
 
   autoPackages =
