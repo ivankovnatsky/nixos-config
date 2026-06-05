@@ -44,7 +44,6 @@
     gwq-add
     gwq-cd
     gwq-merge
-    grwt
     gwq-purge
     hyperfine
     image-meta
