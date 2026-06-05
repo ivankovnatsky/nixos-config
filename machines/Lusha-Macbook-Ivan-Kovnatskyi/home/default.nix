@@ -23,7 +23,6 @@
     ../../../home/nix-registry.nix
     ../../../home/nixvim
     ../../../home/nixvim/plugins/octo-nvim
-    ../../../home/nixvim/plugins/unified-nvim
     ../../../home/notifications.nix
     ../../../home/nushell.nix
     ../../../home/packages-darwin.nix
