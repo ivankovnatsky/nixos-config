@@ -530,22 +530,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-nixos-master-ollama": {
-      "locked": {
-        "lastModified": 1775403759,
-        "narHash": "sha256-cGyKiTspHEUx3QwAnV3RfyT+VOXhHLs+NEr17HU34Wo=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "5e11f7acce6c3469bef9df154d78534fa7ae8b6c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "master",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs-nixos-unstable": {
       "locked": {
         "lastModified": 1778443072,
@@ -826,7 +810,6 @@
         "nixpkgs-master-pinned": "nixpkgs-master-pinned",
         "nixpkgs-nixos-master": "nixpkgs-nixos-master",
         "nixpkgs-nixos-master-edge": "nixpkgs-nixos-master-edge",
-        "nixpkgs-nixos-master-ollama": "nixpkgs-nixos-master-ollama",
         "nixpkgs-nixos-unstable": "nixpkgs-nixos-unstable",
         "nixvim-darwin-unstable": "nixvim-darwin-unstable",
         "nixvim-nixos-unstable": "nixvim-nixos-unstable",
