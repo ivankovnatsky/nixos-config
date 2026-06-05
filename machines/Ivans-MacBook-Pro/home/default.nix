@@ -25,7 +25,6 @@
     ../../../home/nix-registry.nix
     ../../../home/nixvim
     ../../../home/nixvim.nix
-    ../../../home/nixvim/plugins/codediff
     ../../../home/nixvim/plugins/gpg-nvim
     ../../../home/notifications.nix
     ../../../home/npm.nix
