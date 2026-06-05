@@ -9,7 +9,6 @@
     arr-mgmt
     asusrouter-cli
     backup-home
-    bbw
     beszel-mgmt
     claude-statusline
     cleanup-home
@@ -32,10 +31,6 @@
     grep-find
     git-branch
     git-commit-scope
-    git-pull-all
-    git-root-root
-    git-switch
-    git-worktree-purge
     go-grip
     go-lint-wrapper
     gpg-edit
@@ -59,7 +54,6 @@
     nvim-edit-staged
     obs
     pass-fzf
-    paste-loop
     path-copy
     pigz
     poppler-utils
@@ -73,19 +67,16 @@
     shellcheck
     shfmt
     sops
-    ssh-persistent
     ssh-to-age
     statix-wrapper
     stylua
     syncthing-mgmt
     tac
     tmux-attach
-    tmux-spawn
     torrent-dl
     tree
     uptime-kuma-mgmt
     username # Installed as flake
-    watcher
     wget
     eat
     zoxide
