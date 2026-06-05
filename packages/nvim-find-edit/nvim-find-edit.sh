@@ -9,11 +9,12 @@ fi
 
 pattern="$1"
 
-mapfile -t files < <(rg "$pattern" -l)
+mapfile -t files < <(rg -l -- "$pattern")
 
 if [[ ${#files[@]} -eq 0 ]]; then
   echo "No files found matching: $pattern" >&2
   exit 1
 fi
 
-nvim "${files[@]}" +"/$pattern"
+escaped=$(printf '%s' "$pattern" | sed 's|/|\\/|g')
+nvim "${files[@]}" +"/$escaped"
