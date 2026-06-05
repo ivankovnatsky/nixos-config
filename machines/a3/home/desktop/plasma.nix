@@ -219,6 +219,7 @@
         };
 
         baloofilerc."Basic Settings"."Indexing-Enabled" = false;
+        kded6rc."Module-baloosearchmodule".autoload = false;
 
         krdcrc = {
           MainWindow = {
