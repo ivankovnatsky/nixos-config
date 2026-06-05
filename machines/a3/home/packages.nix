@@ -2,6 +2,8 @@
 
 {
   home.packages = with pkgs; [
+    rocmPackages.rocm-smi
+    amdgpu_top
     fastfetch
     ghq-cd
     gnumake
