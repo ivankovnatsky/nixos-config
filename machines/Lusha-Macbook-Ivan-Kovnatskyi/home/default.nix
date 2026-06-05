@@ -22,7 +22,6 @@
     ../../../home/mpv.nix
     ../../../home/nix-registry.nix
     ../../../home/nixvim
-    ../../../home/nixvim/plugins/gen-nvim
     ../../../home/nixvim/plugins/octo-nvim
     ../../../home/nixvim/plugins/unified-nvim
     ../../../home/notifications.nix

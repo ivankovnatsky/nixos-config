@@ -41,7 +41,6 @@
     summarize
     eks-node-viewer
     flarectl
-    ghorg-sync
     git-worktree-init
     glow
     google-cloud-sdk
@@ -90,11 +89,8 @@
     rabbitmq-server # Needed for the CLI
     rabbitmqadmin-ng # Overlay
     redis
-    sesh
-    sesh-connect
     skopeo
     sshpass
-    ssm-forward
     ssm-session-manager-plugin
     temporal
     temporal-cli

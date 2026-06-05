@@ -13,8 +13,6 @@
         enable = true;
         settings.kitty_get_text.ansi = false;
       };
-      # TODO: Enable again after tmux all sessions and tmux itself is restarted.
-      # image.enable = true;
       lint = {
         lintersByFt = {
           terraform = [ "tflint" ];
