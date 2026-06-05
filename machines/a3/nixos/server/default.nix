@@ -12,7 +12,6 @@
     ./networking.nix
     ./nextdns.nix
     ./nixpkgs.nix
-    ./ollama.nix
     ./podservice.nix
     ./power-monitoring.nix
     ./rebuild-diff.nix
