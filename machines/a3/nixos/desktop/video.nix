@@ -10,7 +10,7 @@
 
   # Load amdgpu in initrd so it fully initializes before SDDM starts.
   # Without this, SDDM races with amdgpu init and Xorg fails with EINVAL on card1.
-  hardware.amdgpu.initrd.enable = true;
+  # hardware.amdgpu.initrd.enable = true;
 
   services.xserver.videoDrivers = [ "nvidia" ];
 
