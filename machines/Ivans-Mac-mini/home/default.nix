@@ -25,7 +25,6 @@
     ../../../home/nix-registry.nix
     ../../../home/nixvim
     ../../../home/nixvim.nix
-    ../../../home/nixvim/plugins/copilot-lua
     ../../../home/nixvim/plugins/gpg-nvim
     ../../../home/npm.nix
     ../../../home/nushell.nix

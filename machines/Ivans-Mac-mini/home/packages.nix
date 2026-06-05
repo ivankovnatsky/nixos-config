@@ -12,7 +12,6 @@
     ))
     gh-repos-sync
     macmon
-    sesh
     treefmt
     typos
   ];
