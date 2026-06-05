@@ -145,12 +145,6 @@ in
         description = "OpenClaw gateway (a3)";
       }
       {
-        name = "open-webui-a3";
-        url = "http://127.0.0.1:8091";
-        interval = 60;
-        description = "Open WebUI (a3)";
-      }
-      {
         name = "prowlarr-a3";
         url = "http://127.0.0.1:9696";
         interval = 60;

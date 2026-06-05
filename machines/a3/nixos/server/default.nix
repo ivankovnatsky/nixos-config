@@ -13,7 +13,6 @@
     ./nextdns.nix
     ./nixpkgs.nix
     ./ollama.nix
-    ./open-webui.nix
     ./podservice.nix
     ./power-monitoring.nix
     ./rebuild-diff.nix
