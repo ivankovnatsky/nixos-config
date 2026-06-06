@@ -149,6 +149,12 @@ ${lib.optionalString (config.local.tools.toolsPrefix != config.home.homeDirector
         ]
       );
 
+    functions = {
+      mkcd.body = ''
+        mkdir -p $argv[1] && cd $argv[1]
+      '';
+    };
+
     inherit shellAliases;
   };
 }

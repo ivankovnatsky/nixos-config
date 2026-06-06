@@ -41,7 +41,6 @@
     image-meta
     jellyfin-mgmt
     jq
-    mkcd
     nextdns-mgmt
     nix-gc
     nix-generate-sha

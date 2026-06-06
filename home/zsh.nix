@@ -57,6 +57,10 @@ in
     };
 
     initContent = ''
+      mkcd() {
+        mkdir -p "$1" && cd "$1"
+      }
+
       # enable alt+l -- to lowercase
       bindkey '^[l' down-case-word
 
