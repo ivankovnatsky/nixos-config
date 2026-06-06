@@ -1,6 +1,5 @@
 let
   pinnedPaths = [
-    "Library/Mobile Documents/iCloud~com~mav~taskchamp"
     "Library/Mobile Documents/iCloud~md~obsidian"
   ];
   pathArgs = builtins.concatStringsSep " " (map (p: ''"$HOME/${p}"'') pinnedPaths);
