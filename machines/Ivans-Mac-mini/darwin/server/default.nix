@@ -15,7 +15,6 @@
     ../../../../system/documentation.nix
     ../../../../system/nix.nix
     ../../../../system/sops-secrets.nix
-    ./cleanup-legacy.nix
     ./dns.nix
     ./flags.nix
     ./git.nix
