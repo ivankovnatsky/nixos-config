@@ -48,7 +48,6 @@
     ./desktop
     ./discord.nix
     ./mail.nix
-    ./obsidian.nix
     ./packages.nix
     ./pi-models.nix
     ./server
