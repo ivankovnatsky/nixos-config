@@ -14,8 +14,11 @@ the Obsidian notes vault — iCloud Obsidian container on Macs
   `taskSourceType: taskNotes`, and a free-form markdown body.
 
 Usage:
-  tasks [--all|--pending|--completed] [--project P]
-      [--limit N] [--format table|simple|json] [--root PATH]
+  tasks [all|pending|completed|done|cancelled]
+      [--root PATH] [--project P] [--limit N] [--format table|simple|json]
+
+Subcommands select which tasks to show (default `pending`); options follow the
+subcommand name. A bare `tasks` (or `tasks` with only options) runs `pending`.
 """
 
 from __future__ import annotations
@@ -24,7 +27,6 @@ import io
 import json
 import re
 import shutil
-import textwrap
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
 
@@ -414,9 +416,7 @@ def _status_cell(t: Task) -> str:
     return "" if t.status == "todo" else t.status
 
 
-def render_table(
-    tasks: list[Task], totals: dict | None = None, wrap: bool = False
-) -> str:
+def render_table(tasks: list[Task], totals: dict | None = None) -> str:
     show_status = _show_status_column(tasks)
     width = shutil.get_terminal_size((100, 24)).columns
     table = Table(box=box.ROUNDED, expand=True)
@@ -425,9 +425,7 @@ def render_table(
     )
     if show_status:
         table.add_column("Status", no_wrap=True, min_width=11, max_width=12)
-    table.add_column(
-        "Title", overflow="fold" if wrap else "ellipsis", no_wrap=not wrap, ratio=1
-    )
+    table.add_column("Title", overflow="ellipsis", no_wrap=True, ratio=1)
 
     for t in tasks:
         row = [rich_escape(t.project)]
@@ -455,9 +453,7 @@ def render_table(
     return output.getvalue().rstrip()
 
 
-def render_simple_table(
-    tasks: list[Task], totals: dict | None = None, wrap: bool = False
-) -> str:
+def render_simple_table(tasks: list[Task], totals: dict | None = None) -> str:
     show_status = _show_status_column(tasks)
     cols: list[tuple[str, callable]] = [("Project", lambda t: t.project)]
     if show_status:
@@ -483,23 +479,14 @@ def render_simple_table(
         title = str(row[-1])
         if mode == "header":
             return (prefix + title).rstrip()
-        if mode == "truncate":
-            if len(title) > title_width:
-                title = title[: max(1, title_width - 1)] + ".."
-            return (prefix + title).rstrip()
-        wrapped = textwrap.wrap(
-            title, width=title_width, break_long_words=False, break_on_hyphens=False
-        ) or [""]
-        pad = " " * title_col
-        first = (prefix + wrapped[0]).rstrip()
-        rest = [pad + line for line in wrapped[1:]]
-        return "\n".join([first, *rest])
+        if len(title) > title_width:
+            title = title[: max(1, title_width - 1)] + ".."
+        return (prefix + title).rstrip()
 
-    row_mode = "wrap" if wrap else "truncate"
     out = [fmt_row(rows[0], "header")]
     out.append("  ".join("-" * width for width in widths))
     for i, t in enumerate(tasks, 1):
-        line = fmt_row(rows[i], row_mode)
+        line = fmt_row(rows[i], "truncate")
         if t.status in COMPLETED_STATUSES:
             line = f"\033[2m{line}\033[0m"
         out.append(line)
@@ -517,82 +504,22 @@ def render_simple_table(
     return "\n".join(out)
 
 
-@click.command(
-    context_settings={"help_option_names": ["-h", "--help"]},
-    help="Listing of markdown task files under a directory.",
-)
-@click.option(
-    "--root",
-    type=click.Path(path_type=Path, file_okay=False, dir_okay=True),
-    envvar="TASKS_ROOT",
-    default=None,
-    help=(
-        "Root directory to scan recursively. Defaults to the Obsidian vault's "
-        "Tasks/ subdirectory (iCloud path on Macs, ~/Notes/Tasks on a3); falls "
-        "back to cwd if neither exists."
-    ),
-)
-@click.option("--all", "show_all", is_flag=True, help="Show all tasks.")
-@click.option(
-    "--pending", is_flag=True, help="Show pending tasks. This is the default."
-)
-@click.option(
-    "--completed",
-    is_flag=True,
-    help="Show completed tasks (done or cancelled).",
-)
-@click.option("--done", is_flag=True, help="Show done tasks only.")
-@click.option("--cancelled", is_flag=True, help="Show cancelled tasks only.")
-@click.option("--project", help="Filter by project name, comma-separated.")
-@click.option(
-    "--limit",
-    type=click.IntRange(min=0),
-    default=None,
-    metavar="N",
-    help=(
-        "Limit rows. Use 0 for no limit. Defaults to no limit with --all, otherwise 20."
-    ),
-)
-@click.option(
-    "--format",
-    "output_format",
-    type=click.Choice(["table", "simple", "json"]),
-    default="table",
-    show_default=True,
-    help="Output format. table is the Rich view.",
-)
-@click.option(
-    "--wrap",
-    is_flag=True,
-    help="Wrap long titles across multiple lines. The default truncates.",
-)
-def main(
+def _execute(
+    mode: str,
     root: Path | None,
-    show_all: bool,
-    pending: bool,
-    completed: bool,
-    done: bool,
-    cancelled: bool,
     project: str | None,
     limit: int | None,
     output_format: str,
-    wrap: bool,
-):
-    modes = [show_all, pending, completed, done, cancelled]
-    if sum(1 for mode in modes if mode) > 1:
-        raise click.UsageError(
-            "Use only one of --all, --pending, --completed, --done, or --cancelled."
-        )
-
+) -> None:
     if limit is None:
-        limit = 0 if show_all else 20
+        limit = 0 if mode == "all" else 20
 
     args = Options(
-        all=show_all,
-        pending=pending,
-        completed=completed,
-        done=done,
-        cancelled=cancelled,
+        all=mode == "all",
+        pending=mode == "pending",
+        completed=mode == "completed",
+        done=mode == "done",
+        cancelled=mode == "cancelled",
         project=project,
         limit=limit,
     )
@@ -606,11 +533,97 @@ def main(
         "cancelled": sum(1 for t in all_tasks if t.status == "cancelled"),
     }
     if output_format == "table":
-        click.echo(render_table(tasks, totals, wrap=wrap))
+        click.echo(render_table(tasks, totals))
     elif output_format == "simple":
-        click.echo(render_simple_table(tasks, totals, wrap=wrap))
+        click.echo(render_simple_table(tasks, totals))
     else:
         click.echo(json.dumps([asdict(t) for t in tasks], indent=2, ensure_ascii=False))
+
+
+def shared_options(f):
+    """Options common to every subcommand. Live after the subcommand name."""
+    f = click.option(
+        "--root",
+        type=click.Path(path_type=Path, file_okay=False, dir_okay=True),
+        envvar="TASKS_ROOT",
+        default=None,
+        help=(
+            "Root directory to scan recursively. Defaults to the Obsidian vault's "
+            "Tasks/ subdirectory (iCloud path on Macs, ~/Notes/Tasks on a3); falls "
+            "back to cwd if neither exists."
+        ),
+    )(f)
+    f = click.option("--project", help="Filter by project name, comma-separated.")(f)
+    f = click.option(
+        "--limit",
+        type=click.IntRange(min=0),
+        default=None,
+        metavar="N",
+        help="Limit rows. Use 0 for no limit. Defaults to no limit with 'all', otherwise 20.",
+    )(f)
+    f = click.option(
+        "--format",
+        "output_format",
+        type=click.Choice(["table", "simple", "json"]),
+        default="table",
+        show_default=True,
+        help="Output format. table is the Rich view. json carries full metadata.",
+    )(f)
+    return f
+
+
+class DefaultGroup(click.Group):
+    """Group that runs the `pending` subcommand when none is given.
+
+    Options live on the subcommands, so a bare invocation (or one with only
+    options, e.g. `tasks --format json`) is dispatched to `pending`.
+    """
+
+    DEFAULT = "pending"
+
+    def parse_args(self, ctx, args):
+        if not args or (args[0].startswith("-") and args[0] not in ("-h", "--help")):
+            args = [self.DEFAULT, *args]
+        return super().parse_args(ctx, args)
+
+
+@click.group(
+    cls=DefaultGroup,
+    context_settings={"help_option_names": ["-h", "--help"]},
+    help="Listing of markdown task files under a directory. Defaults to 'pending'.",
+)
+def main():
+    pass
+
+
+@main.command(name="all", help="Show all tasks.")
+@shared_options
+def cmd_all(root, project, limit, output_format):
+    _execute("all", root, project, limit, output_format)
+
+
+@main.command(name="pending", help="Show pending tasks. This is the default.")
+@shared_options
+def cmd_pending(root, project, limit, output_format):
+    _execute("pending", root, project, limit, output_format)
+
+
+@main.command(name="completed", help="Show completed tasks (done or cancelled).")
+@shared_options
+def cmd_completed(root, project, limit, output_format):
+    _execute("completed", root, project, limit, output_format)
+
+
+@main.command(name="done", help="Show done tasks only.")
+@shared_options
+def cmd_done(root, project, limit, output_format):
+    _execute("done", root, project, limit, output_format)
+
+
+@main.command(name="cancelled", help="Show cancelled tasks only.")
+@shared_options
+def cmd_cancelled(root, project, limit, output_format):
+    _execute("cancelled", root, project, limit, output_format)
 
 
 if __name__ == "__main__":
