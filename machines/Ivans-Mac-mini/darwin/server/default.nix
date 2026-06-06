@@ -25,6 +25,5 @@
     ./packages.nix
     ./power.nix
     ./system.nix
-    ./tailscale.nix
   ];
 }
