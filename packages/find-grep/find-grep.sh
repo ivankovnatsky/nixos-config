@@ -54,8 +54,6 @@ case "${1:-}" in
     fzf --preview 'bat --style=numbers --color=always {}' \
       --bind 'enter:execute(nvim {})'
 
-  echo ""
-  echo "Content:"
   rg -i --color=always --line-number "$@" |
     fzf --ansi \
       --delimiter : \
