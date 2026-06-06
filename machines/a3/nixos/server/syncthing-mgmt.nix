@@ -26,7 +26,6 @@
     # unless we intentionally want per-machine differences.
     devices = [
       "a3"
-      "Ivans-iPhone"
       "Ivans-Mac-mini"
       "Ivans-MacBook-Pro"
       "Ivans-MacBook-Air"
@@ -41,7 +40,6 @@
         devices = [
           "a3"
           "Ivans-Mac-mini"
-          "Ivans-iPhone"
         ];
         ignorePatterns = [ ".git" ];
       };
