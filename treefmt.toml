@@ -1,5 +1,5 @@
 [global]
-excludes = ["home/obsidian.nix", "home/obsidian-darwin.nix", "home/obsidian-settings.nix"]
+excludes = []
 
 [formatter.ruff]
 command = "ruff"
