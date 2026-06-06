@@ -184,13 +184,5 @@ with lib;
       };
     };
 
-    obsidian = {
-      vaultPaths = mkOption {
-        type = types.listOf types.str;
-        description = "Obsidian vault paths (absolute)";
-        default = [ ];
-      };
-    };
-
   };
 }
