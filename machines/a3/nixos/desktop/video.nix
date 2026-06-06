@@ -15,7 +15,7 @@
   services.xserver.videoDrivers = [ "nvidia" ];
 
   # simpledrm claims the AMD DRM slot before amdgpu can; this prevents it
-  # boot.kernelParams = [ "initcall_blacklist=simpledrm_platform_driver_init" ];
+  boot.kernelParams = [ "initcall_blacklist=simpledrm_platform_driver_init" ];
 
   # https://nixos.wiki/wiki/Nvidia
   # https://wiki.nixos.org/wiki/NVIDIA
