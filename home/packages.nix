@@ -29,7 +29,6 @@
     gofumpt
     golangci-lint
     grep-find
-    git-branch
     git-commit-scope
     go-grip
     go-lint-wrapper
