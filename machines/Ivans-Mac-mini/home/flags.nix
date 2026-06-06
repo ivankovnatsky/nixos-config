@@ -37,6 +37,5 @@
         }
       ];
     };
-    obsidian.vaultPaths = [ ];
   };
 }
