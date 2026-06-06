@@ -28,7 +28,7 @@
     gitleaks
     gofumpt
     golangci-lint
-    grep-find
+    find-grep
     git-commit-scope
     go-grip
     go-lint-wrapper
