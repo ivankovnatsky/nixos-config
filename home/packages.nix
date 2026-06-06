@@ -49,7 +49,6 @@
     nodejs
     nvim-edit-staged
     nvim-find-edit
-    obs
     pass-fzf
     path-copy
     pigz
