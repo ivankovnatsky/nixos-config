@@ -7,7 +7,6 @@
     ./default-apps.nix
     ./fonts.nix
     ./fwupd.nix
-    ./gamescope.nix
     ./kde.nix
     ./keyboard.nix
     ./video.nix
