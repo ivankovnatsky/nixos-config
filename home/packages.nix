@@ -38,7 +38,6 @@
     gwq-add
     gwq-cd
     gwq-merge
-    gwq-purge
     hyperfine
     image-meta
     jellyfin-mgmt
