@@ -17,7 +17,6 @@ Examples from coreutils/git:
 | Tool         | Pattern                              |
 | ------------ | ------------------------------------ |
 | `ssh-keygen` | domain-noun (not `generate-ssh-key`) |
-| `git-branch` | domain-noun (not `get-branch`)       |
 | `journalctl` | noun-suffix (not `control-journal`)  |
 
 ## Adding Packages
