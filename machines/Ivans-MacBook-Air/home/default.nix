@@ -29,7 +29,6 @@
     ../../../home/notifications.nix
     ../../../home/npm.nix
     ../../../home/nushell.nix
-    ../../../home/obsidian-darwin.nix
     ../../../home/packages-darwin.nix
     ../../../home/packages.nix
     ../../../home/pass.nix
