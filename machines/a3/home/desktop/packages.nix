@@ -32,7 +32,6 @@ in
       duf
       erdtree
       exiftool
-      gh-repos-sync
       glow
       hadolint
       home-manager

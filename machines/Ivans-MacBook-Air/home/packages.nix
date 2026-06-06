@@ -10,7 +10,6 @@
         # markitdown
       ]
     ))
-    gh-repos-sync
     typos
   ];
 }
