@@ -60,7 +60,7 @@ _PERMISSION_MARKERS = ("permission denied", "must be root", "not permitted", "op
 def _linux_shutdown() -> None:
     try:
         result = subprocess.run(
-            ["shutdown", "-h", "now"],
+            ["systemctl", "poweroff"],
             capture_output=True,
             text=True,
         )
@@ -114,5 +114,8 @@ def register(cli):
         print("Shutting down...")
         if is_linux():
             _linux_shutdown()
-        else:
-            subprocess.run(["sudo", "shutdown", "-h", "now"], check=True)
+        elif is_macos():
+            subprocess.run(
+                ["osascript", "-e", 'tell app "System Events" to shut down'],
+                check=True,
+            )
