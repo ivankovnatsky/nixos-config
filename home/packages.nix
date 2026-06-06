@@ -36,7 +36,6 @@
     gpg-pass
     gwq
     gwq-add
-    gwq-cd
     gwq-merge
     hyperfine
     image-meta
