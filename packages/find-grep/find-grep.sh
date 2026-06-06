@@ -48,10 +48,6 @@ case "${1:-}" in
         --preview-window '+{2}-/2' \
         --bind 'enter:execute(nvim {1} +{2})'
   fi
-
-  fzf --preview 'bat --style=numbers --color=always {}' \
-    --query "$search_term" \
-    --bind 'enter:execute(nvim {})'
   ;;
 *)
   rg --files | rg -i "$@" |
@@ -60,6 +56,11 @@ case "${1:-}" in
 
   echo ""
   echo "Content:"
-  rg -i "$@"
+  rg -i --color=always --line-number "$@" |
+    fzf --ansi \
+      --delimiter : \
+      --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' \
+      --preview-window '+{2}-/2' \
+      --bind 'enter:execute(nvim {1} +{2})'
   ;;
 esac
