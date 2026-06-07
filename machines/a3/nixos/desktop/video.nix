@@ -10,12 +10,12 @@
 
   # Load amdgpu in initrd so it fully initializes before SDDM starts.
   # Without this, SDDM races with amdgpu init and Xorg fails with EINVAL on card1.
-  hardware.amdgpu.initrd.enable = true;
+  # hardware.amdgpu.initrd.enable = true;
 
   services.xserver.videoDrivers = [ "nvidia" ];
 
   # simpledrm claims the AMD DRM slot before amdgpu can; this prevents it
-  boot.kernelParams = [ "initcall_blacklist=simpledrm_platform_driver_init" ];
+  # boot.kernelParams = [ "initcall_blacklist=simpledrm_platform_driver_init" ];
 
   # https://nixos.wiki/wiki/Nvidia
   # https://wiki.nixos.org/wiki/NVIDIA
