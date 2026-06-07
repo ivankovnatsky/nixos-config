@@ -1,17 +1,62 @@
 { ... }:
 
 {
-  # Desktop environment home-manager configuration.
-
   imports = [
+    ../../../../home/atuin.nix
+    ../../../../home/claude-settings.nix
+    ../../../../home/codex.nix
+    ../../../../home/fish.nix
+    ../../../../home/fzf.nix
+    ../../../../home/gemini-settings.nix
+    ../../../../home/ghorg.nix
+    ../../../../home/git
+    ../../../../home/go.nix
+    ../../../../home/gwq.nix
+    ../../../../home/home-session-vars.nix
+    ../../../../home/kitty
+    ../../../../home/lsd.nix
+    ../../../../home/mpv.nix
+    ../../../../home/nextdns.nix
+    ../../../../home/nix-registry.nix
+    ../../../../home/nixvim
+    ../../../../home/nixvim/plugins/gpg-nvim
+    ../../../../home/nixvim/plugins/himalaya
+    ../../../../home/npm.nix
+    ../../../../home/nushell.nix
+    ../../../../home/packages.nix
+    ../../../../home/ranger.nix
+    ../../../../home/rebuild-diff.nix
+    ../../../../home/sops.nix
+    ../../../../home/ssh.nix
+    ../../../../home/starship
+    ../../../../home/tmux.nix
+    ../../../../home/treefmt.nix
+    ../../../../home/z-lua.nix
+    ../../../../home/zsh.nix
+    ../../../../modules/flags
+    ../../../../modules/home/arr-mgmt
+    ../../../../modules/home/beszel-mgmt
+    ../../../../modules/home/jellyfin-mgmt
+    ../../../../modules/home/launchd
+    ../../../../modules/home/mail
+    ../../../../modules/home/nextdns-mgmt
+    ../../../../modules/home/settings-daemon
+    ../../../../modules/home/tools
+    ../../../../modules/home/uptime-kuma-mgmt
+    ../../../../modules/inventory
     ./btop.nix
+    ./chromium.nix
+    ./discord.nix
     ./firefox.nix
     ./flags.nix
     ./gpg.nix
     ./kwinoutput # KDE window output config
+    ./mail.nix
     ./obsidian.nix
     ./packages.nix
+    ./pi-models.nix
     ./plasma.nix
+    ./settings-daemon.nix
     ./steam.nix
     ./tools.nix
   ];

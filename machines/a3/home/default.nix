@@ -2,55 +2,7 @@
 
 {
   imports = [
-    ../../../home/atuin.nix
-    ../../../home/claude-settings.nix
-    ../../../home/codex.nix
-    ../../../home/fish.nix
-    ../../../home/fzf.nix
-    ../../../home/gemini-settings.nix
-    ../../../home/ghorg.nix
-    ../../../home/git
-    ../../../home/go.nix
-    ../../../home/gwq.nix
-    ../../../home/home-session-vars.nix
-    ../../../home/kitty
-    ../../../home/lsd.nix
-    ../../../home/mpv.nix
-    ../../../home/nextdns.nix
-    ../../../home/nix-registry.nix
-    ../../../home/nixvim
-    ../../../home/nixvim/plugins/gpg-nvim
-    ../../../home/nixvim/plugins/himalaya
-    ../../../home/npm.nix
-    ../../../home/nushell.nix
-    ../../../home/packages.nix
-    ../../../home/ranger.nix
-    ../../../home/rebuild-diff.nix
-    ../../../home/sops.nix
-    ../../../home/ssh.nix
-    ../../../home/starship
-    ../../../home/tmux.nix
-    ../../../home/treefmt.nix
-    ../../../home/z-lua.nix
-    ../../../home/zsh.nix
-    ../../../modules/flags
-    ../../../modules/inventory
-    ../../../modules/home/arr-mgmt
-    ../../../modules/home/beszel-mgmt
-    ../../../modules/home/jellyfin-mgmt
-    ../../../modules/home/launchd
-    ../../../modules/home/mail
-    ../../../modules/home/nextdns-mgmt
-    ../../../modules/home/settings-daemon
-    ../../../modules/home/tools
-    ../../../modules/home/uptime-kuma-mgmt
-    ./chromium.nix
     ./desktop
-    ./discord.nix
-    ./mail.nix
-    ./packages.nix
-    ./pi-models.nix
     ./server
-    ./settings-daemon.nix
   ];
 }
