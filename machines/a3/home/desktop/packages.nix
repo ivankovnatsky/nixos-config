@@ -74,7 +74,6 @@ in
       nixfmt
       smartmontools # Disk health monitoring (smartctl)
       wl-clipboard # Wayland clipboard utilities
-      zapp
     ])
     ++ (with steipeteTools; [
       summarize
