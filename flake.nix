@@ -179,6 +179,12 @@
     cx-cli = {
       url = "github:coralogix/cx-cli";
     };
+
+    # zapp - CLI tool for flashing ZSA keyboards (Linux only)
+    zapp = {
+      url = "github:zsa/zapp";
+      inputs.nixpkgs.follows = "nixpkgs-nixos-unstable";
+    };
   };
 
   outputs = inputs: import ./flake { inherit inputs; };
