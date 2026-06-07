@@ -10,6 +10,10 @@
       inputs.sops-nix-nixos-unstable.nixosModules.sops
       ../../secrets/sops-nix.nix
 
+      # zapp - ZSA keyboard flashing CLI (installs binary + udev rules)
+      inputs.zapp.nixosModules.default
+      { programs.zapp.enable = true; }
+
       # Basic system configuration
       {
         nixpkgs.overlays = [

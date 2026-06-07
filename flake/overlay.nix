@@ -87,7 +87,7 @@ let
     pyenv-nix-install = inputs.pyenv-nix-install.packages.${system}.default;
     cx-cli = inputs.cx-cli.packages.${system}.default;
     summarize = inputs.nix-steipete-tools.packages.${system}.summarize;
-  } // (if builtins.elem system [ "x86_64-linux" "aarch64-linux" ] then { zapp = inputs.zapp.packages.${system}.default; } else { });
+  };
 
   # 5. In-place overrides of upstream nixpkgs derivations
   extraOverrides = {

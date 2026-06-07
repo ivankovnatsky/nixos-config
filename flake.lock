@@ -823,7 +823,8 @@
         "sops-nix-nixos-unstable": "sops-nix-nixos-unstable",
         "tools": "tools",
         "username": "username",
-        "xwmx-homebrew-tap": "xwmx-homebrew-tap"
+        "xwmx-homebrew-tap": "xwmx-homebrew-tap",
+        "zapp": "zapp"
       }
     },
     "sops-nix-darwin-unstable": {
@@ -1026,6 +1027,26 @@
       "original": {
         "owner": "xwmx",
         "repo": "homebrew-taps",
+        "type": "github"
+      }
+    },
+    "zapp": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-nixos-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1779780221,
+        "narHash": "sha256-O8XXNKMM4KfbarUNaJdG70SLobfjdGTpSkNUhYN/wMs=",
+        "owner": "zsa",
+        "repo": "zapp",
+        "rev": "d5f95623313a7493a8115b7fe3c280b56970518a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "zsa",
+        "repo": "zapp",
         "type": "github"
       }
     }
