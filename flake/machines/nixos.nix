@@ -1,7 +1,6 @@
 { inputs, ... }:
 {
   "a3" = inputs.nixpkgs-nixos-unstable.lib.nixosSystem {
-    system = "x86_64-linux";
     modules = [
       # Import machine-specific configuration
       ../../machines/a3
@@ -16,6 +15,7 @@
 
       # Basic system configuration
       {
+        nixpkgs.hostPlatform = "x86_64-linux";
         nixpkgs.overlays = [
           inputs.self.overlay
           inputs.nur-nixos-unstable.overlays.default
