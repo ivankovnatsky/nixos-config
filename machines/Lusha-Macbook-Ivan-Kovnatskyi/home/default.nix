@@ -31,7 +31,6 @@
     ../../../home/pass.nix
     ../../../home/pay-respects.nix
     ../../../home/pgcli.nix
-    ../../../home/pyenv.nix
     ../../../home/quit-mac-mouse-fix.nix
     ../../../home/ranger.nix
     ../../../home/rebuild-diff.nix
