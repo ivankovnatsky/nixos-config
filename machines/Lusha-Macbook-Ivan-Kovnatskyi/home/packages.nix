@@ -55,7 +55,6 @@
     k8s-context
     k8sgpt
     kail
-    kdash
     kitty-copy
     krew
     kubecolor
