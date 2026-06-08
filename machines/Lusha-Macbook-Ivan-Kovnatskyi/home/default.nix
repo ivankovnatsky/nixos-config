@@ -24,6 +24,7 @@
     ../../../home/nixvim
     ../../../home/nixvim/plugins/octo-nvim
     ../../../home/notifications.nix
+    ../../../home/opentofu.nix
     ../../../home/nushell.nix
     ../../../home/packages-darwin.nix
     ../../../home/packages.nix
