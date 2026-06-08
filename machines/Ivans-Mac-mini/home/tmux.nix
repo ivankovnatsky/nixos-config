@@ -6,7 +6,7 @@
       text = ''
         name: ${osConfig.networking.hostName}-dev
         startup_window: 0
-        root: ${config.flags.externalStoragePath}
+        root: ${config.flags.homeWorkPath}
 
         windows:
           - backup:

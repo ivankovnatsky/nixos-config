@@ -10,7 +10,7 @@
     enableFishShell = true;
     purpose = "home";
     editor = "nvim";
-    homeWorkPath = config.flags.externalStoragePath;
+    homeWorkPath = config.home.homeDirectory;
     hotkeys = {
       terminal = "Terminal";
       browser = "Safari";

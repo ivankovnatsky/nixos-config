@@ -21,7 +21,7 @@
       branch = "main";
     }
     {
-      path = "${config.flags.externalStoragePath}/Sources/github.com/ivankovnatsky/nix-config";
+      path = "${config.flags.homeWorkPath}/Sources/github.com/ivankovnatsky/nix-config";
       remote = "origin";
       remoteUrl = "https://github.com/ivankovnatsky/nix-config.git";
       branch = "main";

@@ -2,7 +2,7 @@
 {
   local.tools = {
     enable = true;
-    toolsPrefix = config.flags.externalStoragePath;
+    toolsPrefix = config.flags.homeWorkPath;
 
     settings = {
       npm.packages = {
@@ -21,13 +21,6 @@
       uv.packages = {
         "osxphotos" = {
           binary = "osxphotos";
-        };
-        # Pip name `openai-whisper`, ships a `whisper` console script.
-        # Managed via uv instead of nixpkgs because the upstream test suite
-        # (test_audio) fails inside the darwin build sandbox when it shells
-        # out to ffmpeg.
-        "openai-whisper" = {
-          binary = "whisper";
         };
       };
 
