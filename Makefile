@@ -20,6 +20,7 @@
 	rebuild-nixos/a3-user \
 	\
 	rebuild-darwin \
+	rebuild-darwin-auth \
 	verbose \
 	debug \
 	rebuild \
@@ -152,6 +153,13 @@ rebuild-nixos/a3-user:
 rebuild-darwin: addall
 	# NIXPKGS_ALLOW_UNFREE=1 is needed for unfree packages like codeium when using --impure
 	NIXPKGS_ALLOW_UNFREE=1 sudo -H -E $(DARWIN_REBUILD) switch --impure $(COMMON_REBUILD_FLAGS)
+
+# Same as rebuild-darwin but authenticates GitHub source fetches via a gh token.
+# Use when anonymous GitHub archive downloads fail with HTTP 504 (rate limiting).
+rebuild-darwin-auth: addall
+	NIXPKGS_ALLOW_UNFREE=1 \
+	NIX_CONFIG="access-tokens = github.com=$$(gh auth token)" \
+	sudo -H -E $(DARWIN_REBUILD) switch --impure $(COMMON_REBUILD_FLAGS)
 
 # Simple rebuild via CLI tool (quiet output, notifications)
 rebuild:
