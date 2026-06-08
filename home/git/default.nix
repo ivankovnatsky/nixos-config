@@ -127,10 +127,6 @@ in
       ghq
       git-crypt
       git-filter-repo
-      (gh-notify.override {
-        withBat = true;
-        withDelta = true;
-      })
     ];
 
     # Git started to read global config and opens up osxkeychain windows first by
