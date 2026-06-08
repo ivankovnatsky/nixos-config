@@ -169,12 +169,15 @@ EOF
 EOF
 
         ${if config.flags.purpose == "home" then ''
-        # Home machines: default to Forgejo, override for github.com repos
+        # Home machines: default to GitHub identity (from base git config),
+        # switch to Forgejo identity only when a repo's remote URL actually
+        # points at Forgejo. Keyed off the remote (hasconfig, git >= 2.36)
+        # rather than a fragile absolute gitdir path, so repos in any location
+        # (and new repos without a remote) get the right identity. The single
+        # protocol-agnostic pattern matches https, ssh, and scp-style URLs.
         cat > "$HOME/.config/git/forgejo-includes.inc" << EOF
-[include]
+[includeIf "hasconfig:remote.*.url:*forgejo.$DOMAIN*/**"]
 	path = ~/.config/git/forgejo.inc
-[includeIf "gitdir:${config.flags.homeWorkPath}/Sources/github.com/"]
-	path = ~/.config/git/github.inc
 EOF
         '' else ''
         # Work machines: no conditional includes, use default GitHub identity
