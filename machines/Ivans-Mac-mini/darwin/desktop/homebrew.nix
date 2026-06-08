@@ -18,6 +18,7 @@
       # enable root user and edit /private/etc/pam.d/sudo to unblock auth.
       "pam-reattach"
       "mpv"
+      "zapp"
     ];
     casks = [
       "chromium"
