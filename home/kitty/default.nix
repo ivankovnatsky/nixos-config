@@ -22,6 +22,11 @@ let
     font_family ${config.flags.fontGeneral}
     font_size ${builtins.toString fontSize}
 
+    # Disable config auto-reload: kitty 0.47 resolves the config dir symlink
+    # and recursively watches it, which on home-manager points into /nix/store
+    # and exhausts inotify watches. https://github.com/kovidgoyal/kitty/issues/10066
+    auto_reload_config -1
+
     macos_menubar_title_max_length 50
     # https://github.com/kovidgoyal/kitty/issues/3458#issuecomment-1312957967
     # Make it look more like Terminal.app
