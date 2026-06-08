@@ -13,9 +13,7 @@ import socket
 DEFAULT_PATH = "~/Sources/github.com/ivankovnatsky/nix-config"
 
 # Hosts whose nix-config does not live under $HOME/Sources.
-OVERRIDES = {
-    "Ivans-Mac-mini": "/Volumes/Storage/Data/Sources/github.com/ivankovnatsky/nix-config",
-}
+OVERRIDES = {}
 
 
 def current_hostname():
