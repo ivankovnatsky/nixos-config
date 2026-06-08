@@ -26,17 +26,5 @@
       remoteUrl = "https://github.com/ivankovnatsky/nix-config.git";
       branch = "main";
     }
-    {
-      path = "${config.flags.externalStoragePath}/.openclaw/workspace";
-      remote = "origin";
-      remoteUrl = "https://forgejo.@domain@/@username@/workspace.git";
-      branch = "main";
-    }
-    {
-      path = config.flags.externalStoragePath;
-      remote = "origin";
-      remoteUrl = "https://forgejo.@domain@/@username@/data.git";
-      branch = "main";
-    }
   ];
 }
