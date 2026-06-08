@@ -8,8 +8,8 @@
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
-    settings."*" = {
-      StrictHostKeyChecking = "accept-new";
+    matchBlocks."*" = {
+      extraOptions.StrictHostKeyChecking = "accept-new";
     };
   };
 
