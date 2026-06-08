@@ -22,6 +22,10 @@ in
   # https://github.com/elythh/nixvim
   programs.nixvim = {
     enable = true;
+    # Reuse the home-manager pkgs instance instead of letting Nixvim import
+    # its own Nixpkgs. Keeps `inputs.nixvim.inputs.nixpkgs.follows` working
+    # without the "source default value affected by follows" warning.
+    nixpkgs.pkgs = pkgs;
     globals.mapleader = " ";
     extraPlugins = with pkgs.vimPlugins; [
       vim-nix
