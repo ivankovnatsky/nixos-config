@@ -124,15 +124,22 @@ def cmd_watch(config_path, command, no_watch, interval):
     def loop_timer_thread():
         logging.info(f"Loop timer started (interval: {format_duration(interval)})")
         while not loop_stop_event.wait(interval):
-            logging.info("Loop timer fired, triggering periodic rebuild")
             if not refresh_sudo():
-                logging.warning("Failed to refresh sudo, attempting rebuild anyway")
+                logging.warning("Failed to refresh sudo")
             with timer_lock:
                 nonlocal debounce_timer
+                has_pending = bool(pending_files)
                 if debounce_timer is not None:
                     debounce_timer.cancel()
                     debounce_timer = None
-            trigger_rebuild(loop_triggered=True)
+            if has_pending or not watch:
+                if not watch:
+                    logging.info("Loop timer fired, triggering periodic rebuild (no-watch mode)")
+                else:
+                    logging.info("Loop timer fired, triggering rebuild (file changes pending)")
+                trigger_rebuild(loop_triggered=True)
+            else:
+                logging.info("Loop timer fired, no file changes — sudo refreshed, skipping rebuild")
 
     def trigger_rebuild(loop_triggered=False):
         nonlocal pending_files, debounce_timer
@@ -162,11 +169,6 @@ def cmd_watch(config_path, command, no_watch, interval):
                 pending_files = []
             else:
                 files_to_rebuild = []
-
-            if loop_triggered and not files_to_rebuild:
-                logging.info("=" * 60)
-                logging.info("Periodic loop rebuild (no file changes)")
-                logging.info("=" * 60)
 
         if files_to_rebuild:
             files_to_rebuild = filter_files_for_machine(
