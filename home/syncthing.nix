@@ -1,6 +1,5 @@
 {
   config,
-  lib,
   pkgs,
   ...
 }:
@@ -9,7 +8,7 @@
 #
 # Syncthing configuration for Darwin systems
 #
-# For servers (mini): binds to all interfaces, waits for external storage
+# For servers (mini): binds to all interfaces
 # For laptops (air/pro): binds to localhost only
 #
 # Syncthing will be available at the configured address after reboot or running:
@@ -27,7 +26,6 @@ in
     enable = true;
     keepAlive = true;
     throttleInterval = 10;
-    waitForPath = lib.mkIf isServer config.flags.externalStoragePath;
 
     command = ''
       ${pkgs.syncthing}/bin/syncthing serve \
