@@ -24,5 +24,6 @@
     ./sudo.nix
     ./syncthing-mgmt.nix
     ./uptime-kuma.nix
+    ./vnc.nix
   ];
 }
