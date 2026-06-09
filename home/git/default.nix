@@ -76,21 +76,6 @@ in
         # Extract scope (everything before first ": ")
         scope=$(echo "$title" | sed -n 's/: .*//p')
 
-        # Forbid commas in scope (split into separate commits instead)
-        if echo "$scope" | grep -qF ','; then
-          echo "ERROR: Commas not allowed in commit scope"
-          echo "Title: $title"
-          echo "Split into separate commits or use a general subject"
-          exit 1
-        fi
-
-        # Forbid semicolons in title
-        if echo "$title" | grep -qF ';'; then
-          echo "ERROR: Semicolons not allowed in commit title"
-          echo "Title: $title"
-          exit 1
-        fi
-
         # Check body line lengths (max 80 chars per line). Skips:
         #   - the title (NR==1)
         #   - comment lines (prefix = the configured core.commentChar, default
