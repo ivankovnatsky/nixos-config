@@ -15,6 +15,9 @@
           "@openai/codex" = {
             binary = "codex";
           };
+          "@earendil-works/pi-coding-agent" = {
+            binary = "pi";
+          };
         };
       };
 
