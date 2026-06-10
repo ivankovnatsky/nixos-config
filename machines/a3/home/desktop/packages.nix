@@ -17,6 +17,7 @@ in
           markitdown
         ]
       ))
+      unzip
       mpv
       nixpkgs-nixos-master-edge.antigravity-cli
       rumdl
