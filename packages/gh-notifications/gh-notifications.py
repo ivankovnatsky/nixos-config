@@ -414,8 +414,26 @@ def add_notification_context(url: str) -> str:
     return url
 
 
-def open_in_browser(url: str) -> bool:
-    # Use default browser; open in a new tab if possible
+def open_in_browser(url: str, foreground: bool = False) -> bool:
+    """Open URL in the default browser.
+
+    By default opens in the background (no focus stealing) on macOS via
+    `open -g`. Pass foreground=True to focus the browser.
+    """
+    if sys.platform == "darwin":
+        args = ["open"]
+        if not foreground:
+            args.append("-g")
+        args.append(url)
+        proc = subprocess.run(
+            args,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+        return proc.returncode == 0
+
+    # Fallback: default browser; open in a new tab if possible
     try:
         return webbrowser.open_new_tab(url)
     except Exception:
@@ -476,7 +494,14 @@ def collect_urls(
     default=False,
     help="For PRs, deep-link to the triggering event (comment/review/merge) instead of the diff view",
 )
-def main(show: bool, deep_link_event: bool) -> None:
+@click.option(
+    "-f",
+    "--foreground",
+    is_flag=True,
+    default=False,
+    help="Focus the browser when opening URLs (default: open in background, macOS only)",
+)
+def main(show: bool, deep_link_event: bool, foreground: bool) -> None:
     try:
         notifications = fetch_notifications()
     except Exception as e:
@@ -498,7 +523,7 @@ def main(show: bool, deep_link_event: bool) -> None:
         return
 
     for url, thread_id in url_pairs:
-        opened = open_in_browser(url)
+        opened = open_in_browser(url, foreground=foreground)
         if opened:
             try:
                 mark_thread_read(thread_id)
