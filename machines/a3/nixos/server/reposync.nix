@@ -1,4 +1,11 @@
 { config, username, ... }:
+let
+  forgejoIdentity = {
+    name = "@username@";
+    email = "@username@@@domain@";
+    signingKey = "@username@@@domain@";
+  };
+in
 {
   sops.secrets.discord-webhook-reposync = {
     key = "discord/webhooks/monitoringRepoSync";
@@ -19,6 +26,7 @@
         remote = "origin";
         remoteUrl = "https://forgejo.@domain@/@username@/home.git";
         branch = "main";
+        identity = forgejoIdentity;
       }
       {
         path = "${config.users.users.${username}.home}/Sources/github.com/ivankovnatsky/nix-config";
@@ -32,18 +40,21 @@
         remoteUrl = "https://forgejo.@domain@/@username@/notes.git";
         branch = "main";
         autoStage = true;
+        identity = forgejoIdentity;
       }
       {
         path = "${config.users.users.${username}.home}/.openclaw/workspace";
         remote = "origin";
         remoteUrl = "https://forgejo.@domain@/@username@/workspace.git";
         branch = "main";
+        identity = forgejoIdentity;
       }
       {
         path = "/storage/data";
         remote = "origin";
         remoteUrl = "https://forgejo.@domain@/@username@/data.git";
         branch = "main";
+        identity = forgejoIdentity;
       }
     ];
   };
