@@ -94,6 +94,36 @@ def _configure_local_branch(path, branch, remote, name, webhook_url):
     return True
 
 
+def _ensure_identity(path, identity, name, webhook_url):
+    """Enforce repo-local committer identity. Repo-local config outranks
+    every global/include rule, so commits made in this repo use the
+    configured identity no matter who commits or what the global git
+    config resolves to.
+
+    Returns True on success, False (with alert) on failure.
+    """
+    settings = {
+        "user.name": identity.get("name"),
+        "user.email": identity.get("email"),
+        "user.signingKey": identity.get("signingKey"),
+    }
+    for key, value in settings.items():
+        if not value:
+            continue
+        current = run_git("config", "--local", "--get", key, cwd=path, check=False)
+        if current.returncode == 0 and current.stdout.strip() == value:
+            continue
+        result = run_git("config", "--local", key, value, cwd=path, check=False)
+        if result.returncode != 0:
+            alert(
+                webhook_url,
+                f"`{name}`: failed to set {key} — {result.stderr.strip()}",
+            )
+            return False
+        click.echo(f"{name}: set {key}", err=True)
+    return True
+
+
 def init_repo(repo, webhook_url=None):
     path = repo["path"]
     remote = repo["remote"]
@@ -156,6 +186,10 @@ def init_repo(repo, webhook_url=None):
         run_git("remote", "set-url", remote, remote_url, cwd=path)
     else:
         click.echo(f"{name}: remote {remote} OK", err=True)
+
+    identity = repo.get("identity") or {}
+    if identity and not _ensure_identity(path, identity, name, webhook_url):
+        return False
 
     # Fetch from remote
     fetch_args = ["fetch"] + (["--prune"] if prune else []) + [remote]
@@ -293,6 +327,10 @@ def sync_repo(repo, webhook_url=None):
 
     ok = True
     actions = []
+
+    identity = repo.get("identity") or {}
+    if identity and not _ensure_identity(path, identity, name, webhook_url):
+        return False
 
     if auto_stage:
         acted, stage_ok = _stage_local_changes(path, branch, name, webhook_url)
