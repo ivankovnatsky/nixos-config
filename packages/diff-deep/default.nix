@@ -2,6 +2,8 @@
 
 pkgs.writeShellScriptBin "diff-deep" ''
   EXCLUDES=(
+    .git
+    .direnv
     .claude
     .DS_Store
     .git
