@@ -2,10 +2,13 @@
 """Table view of markdown task files.
 
 Recursively scans `--root` for `*.md` files and parses multiple task
-formats simultaneously. The default root is the `Tasks/` subdirectory of
+formats simultaneously. By default it scans the `Tasks/` subdirectory of
 the Obsidian notes vault — iCloud Obsidian container on Macs
 (`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/notes/Tasks`),
-`~/Notes/Tasks` on a3 — falling back to cwd if neither path exists.
+`~/Notes/Tasks` on a3 — plus the vault's `Archive/Tasks` directory for
+archived tasks, falling back to cwd if no vault exists. Passing `--root`
+restricts scanning to that single directory (add `--archive-root` to also
+scan an archive).
 
 - TaskForge inline (Obsidian Tasks): checkbox states `[ /!>x-]` plus emoji
   metadata (➕ created, 🛫 start, ⏳ scheduled, 📅 due, ✅ done, ❌ cancelled,
@@ -15,7 +18,8 @@ the Obsidian notes vault — iCloud Obsidian container on Macs
 
 Usage:
   tasks [all|pending|completed|done|cancelled]
-      [--root PATH] [--project P] [--limit N] [--format table|simple|json]
+      [--root PATH] [--archive-root PATH] [--project P] [--limit N]
+      [--format table|simple|json]
 
 Subcommands select which tasks to show (default `pending`); options follow the
 subcommand name. A bare `tasks` (or `tasks` with only options) runs `pending`.
@@ -42,18 +46,47 @@ NOTES_CANDIDATES = (
 )
 
 
-def resolve_default_root() -> Path:
-    """Default scan root: `<notes-vault>/Tasks` if it exists, else cwd.
+def resolve_roots(
+    root: Path | None,
+    archive_root: Path | None,
+    include_default_archive: bool = True,
+) -> list[Path]:
+    """Resolve the list of scan roots.
 
-    Mirrors the `notes` skill detection: iCloud Obsidian container on Macs,
-    `~/Notes` on a3.
+    Defaults: `<notes-vault>/Tasks` (active, e.g. `Tasks/Todo`) plus
+    `<notes-vault>/Archive/Tasks` (archived) when they exist, else cwd.
+    Vault detection mirrors the `notes` skill: iCloud Obsidian container on
+    Macs, `~/Notes` on a3. An explicit `root` restricts scanning to that
+    directory alone (no implicit archive); pass `archive_root` to also scan
+    an archive. With `include_default_archive=False` the archive default is
+    skipped (used by `pending` mode — archived tasks are finished by
+    definition); an explicit `archive_root` is still honored.
     """
-    home = Path.home()
-    for rel in NOTES_CANDIDATES:
-        tasks = home / rel / "Tasks"
-        if tasks.is_dir():
-            return tasks
-    return Path.cwd()
+    if root is None:
+        home = Path.home()
+        vault: Path | None = None
+        for rel in NOTES_CANDIDATES:
+            if (home / rel / "Tasks").is_dir():
+                vault = home / rel
+                break
+        if vault is not None:
+            root = vault / "Tasks"
+            if archive_root is None and include_default_archive:
+                candidate = vault / "Archive" / "Tasks"
+                if candidate.is_dir():
+                    archive_root = candidate
+        else:
+            root = Path.cwd()
+
+    roots = [root]
+    if archive_root is not None:
+        r, a = root.resolve(), archive_root.resolve()
+        # Skip the archive root if either root contains the other — the
+        # containing root's rglob already covers the nested one, and scanning
+        # both would emit duplicate tasks.
+        if not (a == r or a.is_relative_to(r) or r.is_relative_to(a)):
+            roots.append(archive_root)
+    return roots
 
 
 TASK_RE = re.compile(r"^- \[([ x/!>\-])\] (.*)$")
@@ -372,15 +405,17 @@ def parse_file(path: Path, root: Path) -> list[Task]:
     return tasks
 
 
-def gather(root: Path) -> list[Task]:
-    files = [
-        f
-        for f in root.rglob("*.md")
-        if not any(part.startswith(".") for part in f.relative_to(root).parts)
-    ]
-    files.sort(key=lambda f: f.stat().st_mtime)
+def gather(roots: list[Path]) -> list[Task]:
+    files: list[tuple[Path, Path]] = []
+    for root in roots:
+        files.extend(
+            (f, root)
+            for f in root.rglob("*.md")
+            if not any(part.startswith(".") for part in f.relative_to(root).parts)
+        )
+    files.sort(key=lambda pair: pair[0].stat().st_mtime)
     out: list[Task] = []
-    for f in files:
+    for f, root in files:
         out.extend(parse_file(f, root))
     pending = [t for t in out if t.status in PENDING_STATUSES]
     done = [t for t in out if t.status in COMPLETED_STATUSES]
@@ -507,6 +542,7 @@ def render_simple_table(tasks: list[Task], totals: dict | None = None) -> str:
 def _execute(
     mode: str,
     root: Path | None,
+    archive_root: Path | None,
     project: str | None,
     limit: int | None,
     output_format: str,
@@ -523,8 +559,10 @@ def _execute(
         project=project,
         limit=limit,
     )
-    scan_root = root if root is not None else resolve_default_root()
-    all_tasks = gather(scan_root.resolve())
+    scan_roots = resolve_roots(
+        root, archive_root, include_default_archive=mode != "pending"
+    )
+    all_tasks = gather([r.resolve() for r in scan_roots])
     tasks = filter_tasks(all_tasks, args)
     totals = {
         "total": len(all_tasks),
@@ -548,9 +586,20 @@ def shared_options(f):
         envvar="TASKS_ROOT",
         default=None,
         help=(
-            "Root directory to scan recursively. Defaults to the Obsidian vault's "
-            "Tasks/ subdirectory (iCloud path on Macs, ~/Notes/Tasks on a3); falls "
-            "back to cwd if neither exists."
+            "Active-tasks root to scan recursively. Defaults to the Obsidian "
+            "vault's Tasks/ directory (iCloud path on Macs, ~/Notes/Tasks on "
+            "a3); falls back to cwd if no vault exists."
+        ),
+    )(f)
+    f = click.option(
+        "--archive-root",
+        type=click.Path(path_type=Path, file_okay=False, dir_okay=True),
+        envvar="TASKS_ARCHIVE_ROOT",
+        default=None,
+        help=(
+            "Archived-tasks root scanned in addition to --root. Defaults to the "
+            "vault's Archive/Tasks directory when it exists; not added when "
+            "--root is passed explicitly."
         ),
     )(f)
     f = click.option("--project", help="Filter by project name, comma-separated.")(f)
@@ -598,32 +647,32 @@ def main():
 
 @main.command(name="all", help="Show all tasks.")
 @shared_options
-def cmd_all(root, project, limit, output_format):
-    _execute("all", root, project, limit, output_format)
+def cmd_all(root, archive_root, project, limit, output_format):
+    _execute("all", root, archive_root, project, limit, output_format)
 
 
 @main.command(name="pending", help="Show pending tasks. This is the default.")
 @shared_options
-def cmd_pending(root, project, limit, output_format):
-    _execute("pending", root, project, limit, output_format)
+def cmd_pending(root, archive_root, project, limit, output_format):
+    _execute("pending", root, archive_root, project, limit, output_format)
 
 
 @main.command(name="completed", help="Show completed tasks (done or cancelled).")
 @shared_options
-def cmd_completed(root, project, limit, output_format):
-    _execute("completed", root, project, limit, output_format)
+def cmd_completed(root, archive_root, project, limit, output_format):
+    _execute("completed", root, archive_root, project, limit, output_format)
 
 
 @main.command(name="done", help="Show done tasks only.")
 @shared_options
-def cmd_done(root, project, limit, output_format):
-    _execute("done", root, project, limit, output_format)
+def cmd_done(root, archive_root, project, limit, output_format):
+    _execute("done", root, archive_root, project, limit, output_format)
 
 
 @main.command(name="cancelled", help="Show cancelled tasks only.")
 @shared_options
-def cmd_cancelled(root, project, limit, output_format):
-    _execute("cancelled", root, project, limit, output_format)
+def cmd_cancelled(root, archive_root, project, limit, output_format):
+    _execute("cancelled", root, archive_root, project, limit, output_format)
 
 
 if __name__ == "__main__":
