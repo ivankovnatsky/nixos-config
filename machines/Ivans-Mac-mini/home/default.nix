@@ -1,6 +1,7 @@
 {
   imports = [
     ../../../home/atuin.nix
+    ../../../home/yazi.nix
     ../../../home/bash.nix
     ../../../home/bat.nix
     ../../../home/brctl.nix

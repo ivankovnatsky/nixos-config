@@ -31,6 +31,7 @@
     ../../../../home/starship
     ../../../../home/tmux.nix
     ../../../../home/treefmt.nix
+    ../../../../home/yazi.nix
     ../../../../home/z-lua.nix
     ../../../../home/zsh.nix
     ../../../../modules/flags
