@@ -121,54 +121,12 @@ in
       GIT_CONFIG_NOSYSTEM = "true";
     };
 
+    # Forgejo repo identity is enforced repo-locally by reposync (see
+    # modules/*/reposync identity option); no conditional includes here.
     activation.forgejoGitConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      DOMAIN_FILE="${config.sops.secrets.external-domain.path}"
-      USERNAME_FILE="${config.sops.secrets.forgejo-user-name.path}"
-      if [ -f "$DOMAIN_FILE" ] && [ -f "$USERNAME_FILE" ]; then
-        DOMAIN=$(cat "$DOMAIN_FILE")
-        FORGEJO_USERNAME=$(cat "$USERNAME_FILE")
-        mkdir -p "$HOME/.config/git"
-
-        # User config for Forgejo repos
-        cat > "$HOME/.config/git/forgejo.inc" << EOF
-[user]
-	name = $FORGEJO_USERNAME
-	email = $FORGEJO_USERNAME@$DOMAIN
-	signingKey = $FORGEJO_USERNAME@$DOMAIN
-[commit]
-	gpgSign = true
-[tag]
-	gpgSign = true
-EOF
-
-        # User config for GitHub repos
-        cat > "$HOME/.config/git/github.inc" << EOF
-[user]
-	name = Ivan Kovnatsky
-	email = 75213+ivankovnatsky@users.noreply.github.com
-	signingKey = 75213+ivankovnatsky@users.noreply.github.com
-[commit]
-	gpgSign = true
-[tag]
-	gpgSign = true
-EOF
-
-        ${if config.flags.purpose == "home" then ''
-        # Home machines: default to GitHub identity (from base git config),
-        # switch to Forgejo identity only when a repo's remote URL actually
-        # points at Forgejo. Keyed off the remote (hasconfig, git >= 2.36)
-        # rather than a fragile absolute gitdir path, so repos in any location
-        # (and new repos without a remote) get the right identity. The single
-        # protocol-agnostic pattern matches https, ssh, and scp-style URLs.
-        cat > "$HOME/.config/git/forgejo-includes.inc" << EOF
-[includeIf "hasconfig:remote.*.url:*forgejo.$DOMAIN*/**"]
-	path = ~/.config/git/forgejo.inc
-EOF
-        '' else ''
-        # Work machines: no conditional includes, use default GitHub identity
-        rm -f "$HOME/.config/git/forgejo-includes.inc"
-        ''}
-      fi
+      rm -f "$HOME/.config/git/forgejo.inc" \
+        "$HOME/.config/git/github.inc" \
+        "$HOME/.config/git/forgejo-includes.inc"
     '';
 
     activation.ghAuth = lib.hm.dag.entryAfter [ "writeBoundary" ] (
@@ -231,7 +189,6 @@ EOF
 
       includes = [
         { path = "${./config}"; }
-        { path = "~/.config/git/forgejo-includes.inc"; }
       ];
 
       # Override git's default LESS=FRX: -F quits on short output, then Ctrl+D
