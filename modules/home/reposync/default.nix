@@ -79,6 +79,34 @@ let
           Only runs when HEAD is on the configured branch.
         '';
       };
+
+      identity = mkOption {
+        type = types.nullOr (
+          types.submodule {
+            options = {
+              name = mkOption {
+                type = types.str;
+                description = "user.name to enforce repo-locally (supports @domain@/@username@)";
+              };
+              email = mkOption {
+                type = types.str;
+                description = "user.email to enforce repo-locally (supports @domain@/@username@)";
+              };
+              signingKey = mkOption {
+                type = types.nullOr types.str;
+                default = null;
+                description = "user.signingKey to enforce repo-locally (supports @domain@/@username@)";
+              };
+            };
+          }
+        );
+        default = null;
+        description = ''
+          Git identity to enforce as repo-local config. Repo-local config
+          outranks all global config, so commits made in this repo use
+          this identity regardless of who or what commits.
+        '';
+      };
     };
   };
 
