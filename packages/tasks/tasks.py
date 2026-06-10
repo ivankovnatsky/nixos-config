@@ -2,13 +2,15 @@
 """Table view of markdown task files.
 
 Recursively scans `--root` for `*.md` files and parses multiple task
-formats simultaneously. By default it scans the `Tasks/` subdirectory of
+formats simultaneously. By default it scans the `Planning/` subdirectory of
 the Obsidian notes vault — iCloud Obsidian container on Macs
-(`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/notes/Tasks`),
-`~/Notes/Tasks` on a3 — plus the vault's `Archive/Tasks` directory for
-archived tasks, falling back to cwd if no vault exists. Passing `--root`
-restricts scanning to that single directory (add `--archive-root` to also
-scan an archive).
+(`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/notes/Planning`),
+`~/Notes/Planning` on a3 — plus the vault's `Archive/Tasks` directory for
+archived tasks. If no vault is found and no `--root`/`$TASKS_ROOT` is
+given, the command errors out (it never scans cwd); if the vault exists
+but `Planning/Tasks` is missing, the whole vault is scanned. Passing
+`--root` restricts scanning to that single directory (add `--archive-root`
+to also scan an archive).
 
 - TaskForge inline (Obsidian Tasks): checkbox states `[ /!>x-]` plus emoji
   metadata (➕ created, 🛫 start, ⏳ scheduled, 📅 due, ✅ done, ❌ cancelled,
@@ -53,12 +55,15 @@ def resolve_roots(
 ) -> list[Path]:
     """Resolve the list of scan roots.
 
-    Defaults: `<notes-vault>/Tasks` (active, e.g. `Tasks/Todo`) plus
-    `<notes-vault>/Archive/Tasks` (archived) when they exist, else cwd.
-    Vault detection mirrors the `notes` skill: iCloud Obsidian container on
-    Macs, `~/Notes` on a3. An explicit `root` restricts scanning to that
-    directory alone (no implicit archive); pass `archive_root` to also scan
-    an archive. With `include_default_archive=False` the archive default is
+    Defaults: `<notes-vault>/Planning` (active) plus
+    `<notes-vault>/Archive/Tasks` (archived) when they exist. If the vault
+    exists but `Planning/Tasks` doesn't (layout changed again), falls back
+    to scanning the whole vault; errors out only when no vault directory
+    exists at all. Vault detection mirrors the `notes` skill: iCloud
+    Obsidian container on Macs, `~/Notes` on a3. An explicit `root`
+    restricts scanning to that directory alone (no implicit archive); pass
+    `archive_root` to also scan an archive.
+    With `include_default_archive=False` the archive default is
     skipped (used by `pending` mode — archived tasks are finished by
     definition); an explicit `archive_root` is still honored.
     """
@@ -66,17 +71,24 @@ def resolve_roots(
         home = Path.home()
         vault: Path | None = None
         for rel in NOTES_CANDIDATES:
-            if (home / rel / "Tasks").is_dir():
+            if (home / rel).is_dir():
                 vault = home / rel
                 break
-        if vault is not None:
-            root = vault / "Tasks"
-            if archive_root is None and include_default_archive:
-                candidate = vault / "Archive" / "Tasks"
-                if candidate.is_dir():
-                    archive_root = candidate
+        if vault is None:
+            raise click.UsageError(
+                "No notes vault found (checked "
+                + ", ".join(f"~/{c}" for c in NOTES_CANDIDATES)
+                + ") and no --root/$TASKS_ROOT given. Refusing to scan cwd."
+            )
+        if (vault / "Planning" / "Tasks").is_dir():
+            root = vault / "Planning"
         else:
-            root = Path.cwd()
+            # Layout changed again? Scan the whole vault rather than miss tasks.
+            root = vault
+        if archive_root is None and include_default_archive:
+            candidate = vault / "Archive" / "Tasks"
+            if candidate.is_dir():
+                archive_root = candidate
 
     roots = [root]
     if archive_root is not None:
@@ -587,8 +599,8 @@ def shared_options(f):
         default=None,
         help=(
             "Active-tasks root to scan recursively. Defaults to the Obsidian "
-            "vault's Tasks/ directory (iCloud path on Macs, ~/Notes/Tasks on "
-            "a3); falls back to cwd if no vault exists."
+            "vault's Planning/ directory (iCloud path on Macs, ~/Notes/Planning "
+            "on a3); errors out if no vault exists."
         ),
     )(f)
     f = click.option(
