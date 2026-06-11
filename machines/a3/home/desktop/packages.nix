@@ -58,7 +58,6 @@ in
       typstyle
       uv
       velocidrone
-      yazi
       yq
       zsh-forgit
       rocmPackages.rocm-smi
