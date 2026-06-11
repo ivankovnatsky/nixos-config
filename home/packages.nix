@@ -59,7 +59,7 @@
     rebuild
     reposync
     ruff
-    settings
+    settingsctl
     shellcheck
     shfmt
     sops

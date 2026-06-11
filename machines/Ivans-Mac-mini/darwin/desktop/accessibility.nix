@@ -2,6 +2,6 @@
 
 {
   system.activationScripts.postActivation.text = ''
-    ${pkgs.settings}/bin/settings accessibility set "Hammerspoon,Mac Mouse Fix Helper,Terminal,kitty"
+    ${pkgs.settingsctl}/bin/settings accessibility set "Hammerspoon,Mac Mouse Fix Helper,Terminal,kitty"
   '';
 }

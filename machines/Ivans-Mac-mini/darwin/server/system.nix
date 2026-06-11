@@ -5,7 +5,7 @@
 
   system = {
     activationScripts.postActivation.text = ''
-      ${pkgs.settings}/bin/settings location --init
+      ${pkgs.settingsctl}/bin/settings location --init
     '';
 
     defaults = {

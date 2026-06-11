@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-  settings = pkgs.callPackage ../settings { };
+  settings = pkgs.callPackage ../settingsctl { };
 in
 pkgs.writeShellApplication {
   name = "turnoff";

@@ -2,7 +2,7 @@
 
 let
   src = (import ../cleanPythonSource.nix { inherit (pkgs) lib; }) ./.;
-  settingsSrc = ../settings;
+  settingsSrc = ../settingsctl;
   discordSrc = (import ../cleanPythonSource.nix { inherit (pkgs) lib; }) ../discord;
   python = pkgs.python3.withPackages (ps: [
     ps.click

@@ -10,7 +10,7 @@ with lib;
 let
   cfg = config.local.services.settings-daemon;
 
-  settingsPackage = pkgs.callPackage ../../../packages/settings { };
+  settingsPackage = pkgs.callPackage ../../../packages/settingsctl { };
 
   daemonArgs = concatStringsSep " " (
     [

@@ -3,7 +3,7 @@
 {
   system = {
     activationScripts.postActivation.text = ''
-      ${pkgs.settings}/bin/settings appearance --init
+      ${pkgs.settingsctl}/bin/settings appearance --init
     '';
 
     defaults = {
