@@ -6,7 +6,6 @@
     ./cryptenroll.nix
     ./default-apps.nix
     ./fonts.nix
-    ./fwupd.nix
     ./kde.nix
     ./keyboard.nix
     ./video.nix
