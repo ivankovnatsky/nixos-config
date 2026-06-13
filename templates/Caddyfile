@@ -68,18 +68,6 @@
 		header_up Host {host}
 	}
 
-	@jellyfin host jellyfin.@externalDomain@
-	reverse_proxy @jellyfin @a3Ip@:8096 {
-		# Enable WebSocket support
-		header_up X-Real-IP {remote_host}
-		header_up Host {host}
-		# Increase timeouts for streaming
-		transport http {
-			keepalive 12h
-			keepalive_idle_conns 100
-		}
-	}
-
 	# Beszel monitoring hub
 	@beszel host beszel.@externalDomain@
 	reverse_proxy @beszel @a3Ip@:8090 {
