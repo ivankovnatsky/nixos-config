@@ -12,9 +12,23 @@
   # be managed by plasma-manager or home.file. Set it via the PermissionStore
   # D-Bus API instead.
   #
-  # Scope: the empty app_id rule covers only XWayland apps without an app_id
-  # (i.e. Proton games); native Wayland apps with a real app_id are still
-  # prompted individually.
+  # Security scope (read before keeping this): the empty app_id is a
+  # mega-authorization for ANY RemoteDesktop portal client that presents no
+  # app_id, i.e. unknown/unsandboxed host apps -- most commonly Xwayland
+  # (Proton games), but NOT exclusively Proton. Any matching no-app-id client
+  # can then control pointer/keyboard without a prompt. Native Wayland apps
+  # with a real app_id are unaffected and still prompted individually. This is
+  # a broad trust grant accepted here because this is a personal gaming
+  # machine; a least-privilege alternative is to disable Xalia per-game
+  # instead (Steam launch options: PROTON_USE_XALIA=0 %command%).
+  #
+  # Persistent state caveat: this writes to the on-disk permission store
+  # (~/.local/share/flatpak/db/kde-authorized). Removing this module does NOT
+  # revoke the grant. To revoke manually:
+  #   busctl --user call org.freedesktop.impl.portal.PermissionStore \
+  #     /org/freedesktop/impl/portal/PermissionStore \
+  #     org.freedesktop.impl.portal.PermissionStore \
+  #     DeletePermission sss kde-authorized remote-desktop ""
   #
   # Refs:
   # - https://github.com/KDE/xdg-desktop-portal-kde/blob/master/src/remotedesktop.cpp (isAppMegaAuthorized)
