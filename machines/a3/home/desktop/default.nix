@@ -57,6 +57,7 @@
     ./packages.nix
     ./pi-models.nix
     ./plasma.nix
+    ./portal-input.nix
     ./settings-daemon.nix
     ./steam.nix
     ./tools.nix
