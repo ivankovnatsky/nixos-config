@@ -4,7 +4,7 @@
 Recursively scans `--root` for `*.md` files and parses multiple task
 formats simultaneously. By default it scans the `Planning/` subdirectory of
 the Obsidian notes vault — iCloud Obsidian container on Macs
-(`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/notes/Planning`),
+(`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Notes/Planning`),
 `~/Notes/Planning` on a3 — plus the vault's `Archive/Tasks` directory for
 archived tasks. If no vault is found and no `--root`/`$TASKS_ROOT` is
 given, the command errors out (it never scans cwd); if the vault exists
@@ -43,7 +43,7 @@ from rich.markup import escape as rich_escape
 from rich.table import Table
 
 NOTES_CANDIDATES = (
-    "Library/Mobile Documents/iCloud~md~obsidian/Documents/notes",
+    "Library/Mobile Documents/iCloud~md~obsidian/Documents/Notes",
     "Notes",
 )
 
