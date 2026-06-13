@@ -1,6 +1,5 @@
 {
   imports = [
-    ./jellyfin.nix
     ./lidarr.nix
     ./prowlarr.nix
     ./radarr.nix
