@@ -16,7 +16,6 @@
     ./power-monitoring.nix
     ./rebuild-diff.nix
     ./remote-build.nix
-    ./reposync.nix
     ./security.nix
     ./storage-disk.nix
     ./storage0-disk.nix
