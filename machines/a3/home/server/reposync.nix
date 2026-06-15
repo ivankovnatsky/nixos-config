@@ -1,4 +1,4 @@
-{ config, username, ... }:
+{ config, ... }:
 let
   forgejoIdentity = {
     name = "@username@";
@@ -9,12 +9,11 @@ in
 {
   sops.secrets.discord-webhook-reposync = {
     key = "discord/webhooks/monitoringRepoSync";
-    owner = username;
   };
 
   local.services.reposync = {
     enable = true;
-    alertStateFile = "/home/${username}/.local/state/reposync/alerts.json";
+    alertStateFile = "${config.home.homeDirectory}/.local/state/reposync/alerts.json";
     domainFile = config.sops.secrets.external-domain.path;
     usernameFile = config.sops.secrets.forgejo-user-name.path;
     discordWebhookFile = config.sops.secrets.discord-webhook-reposync.path;
@@ -22,20 +21,20 @@ in
     repositories = [
       {
         name = "home";
-        path = "${config.users.users.${username}.home}";
+        path = config.home.homeDirectory;
         remote = "origin";
         remoteUrl = "https://forgejo.@domain@/@username@/home.git";
         branch = "main";
         identity = forgejoIdentity;
       }
       {
-        path = "${config.users.users.${username}.home}/Sources/github.com/ivankovnatsky/nix-config";
+        path = "${config.home.homeDirectory}/Sources/github.com/ivankovnatsky/nix-config";
         remote = "origin";
         remoteUrl = "https://github.com/ivankovnatsky/nix-config.git";
         branch = "main";
       }
       {
-        path = "${config.users.users.${username}.home}/Notes";
+        path = "${config.home.homeDirectory}/Notes";
         remote = "origin";
         remoteUrl = "https://forgejo.@domain@/@username@/notes.git";
         branch = "main";
@@ -43,7 +42,7 @@ in
         identity = forgejoIdentity;
       }
       {
-        path = "${config.users.users.${username}.home}/.openclaw/workspace";
+        path = "${config.home.homeDirectory}/.openclaw/workspace";
         remote = "origin";
         remoteUrl = "https://forgejo.@domain@/@username@/workspace.git";
         branch = "main";
