@@ -181,12 +181,6 @@ in
         private = true;
       }
       {
-        name = "workspace";
-        ownerFile = config.sops.secrets.forgejo-user-name.path;
-        description = "";
-        private = true;
-      }
-      {
         name = "data";
         ownerFile = config.sops.secrets.forgejo-user-name.path;
         description = "";
