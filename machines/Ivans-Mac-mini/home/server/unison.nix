@@ -11,6 +11,5 @@
       "Path .obsidian/workspace-mobile.json"
     ];
     interval = 60 * 5;
-    waitForPath = config.flags.externalStoragePath;
   };
 }
