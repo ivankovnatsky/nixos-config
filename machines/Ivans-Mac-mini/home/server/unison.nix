@@ -3,7 +3,7 @@
 {
   local.unison.syncs.notes = {
     pathA = "${config.home.homeDirectory}/Library/Mobile Documents/iCloud~md~obsidian/Documents/Notes";
-    pathB = "${config.flags.externalStoragePath}/NotesGit";
+    pathB = "${config.home.homeDirectory}/Notes";
     ignore = [
       "Path .git"
       "Path .claude"
