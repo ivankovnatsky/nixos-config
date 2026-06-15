@@ -116,6 +116,38 @@ let
       inherit (cfg) discordWebhookFile;
     }
   );
+
+  syncScript = pkgs.writeShellScript "reposync-run" ''
+    set -e
+
+    export PATH="${lib.makeBinPath [
+      pkgs.git
+      pkgs.openssh
+    ]}:$PATH"
+
+    CONFIG="${configJsonTemplate}"
+
+    ${optionalString (cfg.domainFile != null || cfg.usernameFile != null) ''
+      CONFIG_DIR=$(mktemp -d)
+      trap 'rm -rf "$CONFIG_DIR"' EXIT
+      cp "$CONFIG" "$CONFIG_DIR/reposync-config.json"
+      ${optionalString (cfg.domainFile != null) ''
+        DOMAIN="$(cat ${cfg.domainFile})"
+        ${pkgs.gnused}/bin/sed -i "s|@domain@|$DOMAIN|g" "$CONFIG_DIR/reposync-config.json"
+      ''}
+      ${optionalString (cfg.usernameFile != null) ''
+        USERNAME="$(cat ${cfg.usernameFile})"
+        ${pkgs.gnused}/bin/sed -i "s|@username@|$USERNAME|g" "$CONFIG_DIR/reposync-config.json"
+      ''}
+      CONFIG="$CONFIG_DIR/reposync-config.json"
+    ''}
+
+    echo "Running reposync..."
+    ${pkgs.reposync}/bin/reposync sync \
+      --config-file "$CONFIG" 2>&1 || echo "Warning: reposync failed with exit code $?"
+
+    echo "Reposync completed"
+  '';
 in
 {
   options.local.services.reposync = {
@@ -174,47 +206,44 @@ in
   };
 
   config = mkIf cfg.enable {
-    local.launchd.services.reposync = {
+    local.launchd.services.reposync = mkIf pkgs.stdenv.isDarwin {
       enable = true;
       keepAlive = false;
       inherit (cfg) runAtLoad;
       waitForSecrets =
         cfg.discordWebhookFile != null || cfg.domainFile != null || cfg.usernameFile != null;
 
-      command =
-        let
-          syncScript = pkgs.writeShellScript "reposync-run" ''
-            set -e
-
-            CONFIG="${configJsonTemplate}"
-
-            ${optionalString (cfg.domainFile != null || cfg.usernameFile != null) ''
-              CONFIG_DIR=$(mktemp -d)
-              trap 'rm -rf "$CONFIG_DIR"' EXIT
-              cp "$CONFIG" "$CONFIG_DIR/reposync-config.json"
-              ${optionalString (cfg.domainFile != null) ''
-                DOMAIN="$(cat ${cfg.domainFile})"
-                ${pkgs.gnused}/bin/sed -i "s|@domain@|$DOMAIN|g" "$CONFIG_DIR/reposync-config.json"
-              ''}
-              ${optionalString (cfg.usernameFile != null) ''
-                USERNAME="$(cat ${cfg.usernameFile})"
-                ${pkgs.gnused}/bin/sed -i "s|@username@|$USERNAME|g" "$CONFIG_DIR/reposync-config.json"
-              ''}
-              CONFIG="$CONFIG_DIR/reposync-config.json"
-            ''}
-
-            echo "Running reposync..."
-            ${pkgs.reposync}/bin/reposync sync \
-              --config-file "$CONFIG" 2>&1 || echo "Warning: reposync failed with exit code $?"
-
-            echo "Reposync completed"
-          '';
-        in
-        "${syncScript}";
+      command = "${syncScript}";
 
       extraServiceConfig = {
         StartInterval = cfg.interval;
       };
+    };
+
+    # On NixOS, sops-nix is a system unit rendered in stage-2 boot (long before
+    # any user unit starts), so secrets are already present and no user-level
+    # dependency on it is needed or possible. We only order on the network.
+    systemd.user.services.reposync = mkIf pkgs.stdenv.isLinux {
+      Unit = {
+        Description = "Sync git repositories";
+        After = [ "network-online.target" ];
+        Wants = [ "network-online.target" ];
+      };
+      Service = {
+        Type = "oneshot";
+        ExecStart = "${syncScript}";
+      };
+    };
+
+    systemd.user.timers.reposync = mkIf pkgs.stdenv.isLinux {
+      Unit.Description = "Run reposync periodically";
+      Timer = {
+        OnBootSec = "1min";
+        OnUnitActiveSec = "${toString cfg.interval}s";
+        Persistent = true;
+        Unit = "reposync.service";
+      };
+      Install.WantedBy = [ "timers.target" ];
     };
   };
 }
