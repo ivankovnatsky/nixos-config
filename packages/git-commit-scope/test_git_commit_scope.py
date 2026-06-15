@@ -287,6 +287,42 @@ class GitCommitScopeTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(self.last_subject(), "new: init")
 
+    def test_long_path_collapses_middle_to_asterisk(self):
+        # A 3-segment path with a long filename overflows 72 chars; instead of
+        # dropping the filename we keep it and collapse the middle to '*'.
+        fname = "HarvardCS502023FullComputerScienceUniversityCourse.md"
+        self.write(f"Settings/Learning/{fname}", "x\n")
+
+        result = self.run_scope()
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(
+            self.last_subject(),
+            "Settings/*/HarvardCS502023FullComputerScienceUniversityCourse: init",
+        )
+        self.assertIn("collapsed middle", result.stderr)
+        self.assertEqual(self.status_short(), "")
+
+    def test_collapse_preserves_leading_segments_when_possible(self):
+        # Deeper path: keep as many leading segments as still fit.
+        fname = "HarvardCS502023FullComputerScienceUniversityCourse.md"
+        self.write(f"Settings/Learning/Courses/Online/{fname}", "x\n")
+
+        result = self.run_scope()
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        subject = self.last_subject()
+        self.assertTrue(subject.startswith("Settings/"), subject)
+        self.assertIn("/*/", subject)
+        self.assertTrue(
+            subject.endswith(
+                "HarvardCS502023FullComputerScienceUniversityCourse: init"
+            ),
+            subject,
+        )
+        self.assertLessEqual(len(subject), 72)
+        self.assertEqual(self.status_short(), "")
+
     def test_body_two_short_flags_accepted(self):
         """Two -b flags, each ≤80, should be joined and accepted."""
         self.write("new.txt", "x\n")

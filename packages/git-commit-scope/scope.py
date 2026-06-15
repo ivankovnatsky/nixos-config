@@ -57,6 +57,51 @@ def shorten_directories(path: str) -> str:
     return "/".join(shortened)
 
 
+def collapse_middle_segments(
+    path: str, subject: str, max_length: int = MAX_MESSAGE_LENGTH
+) -> str:
+    """Collapse interior path segments into a single '*' to fit the message.
+
+    Unlike compress_path (which drops rightmost segments and loses the
+    filename), this keeps both the leading category and the trailing filename
+    context, replacing the noisy middle with '*'.
+
+    e.g. Settings/Learning/HarvardCS50... -> Settings/*/HarvardCS50...
+
+    Tries to preserve as many leading segments as possible: collapses the
+    smallest interior run first, widening it until the message fits. Returns
+    the original path unchanged if it has no collapsible middle (< 3 segments)
+    or if no collapse makes it fit.
+    """
+    parts = path.split("/")
+    if len(parts) < 3:
+        return path
+
+    original = path
+    last = parts[-1]
+    # Keep p0..parts[i] then '*' then last; i shrinks to collapse more middle.
+    # Start at len-3 so '*' always replaces at least one interior segment.
+    for i in range(len(parts) - 3, 0, -1):
+        head = parts[: i + 1]
+        candidate = "/".join(head + ["*", last])
+        if len(f"{candidate}: {subject}") <= max_length:
+            click.echo(
+                f"  scope: {original} → {candidate} (collapsed middle)",
+                err=True,
+            )
+            return candidate
+
+    candidate = "/".join([parts[0], "*", last])
+    if len(f"{candidate}: {subject}") <= max_length:
+        click.echo(
+            f"  scope: {original} → {candidate} (collapsed middle)",
+            err=True,
+        )
+        return candidate
+
+    return path
+
+
 def compress_path(path: str, subject: str, max_length: int = MAX_MESSAGE_LENGTH) -> str:
     """Progressively drop rightmost path segments until scope: subject fits.
 

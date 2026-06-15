@@ -27,6 +27,7 @@ from git import (
 from scope import (
     MAX_MESSAGE_LENGTH,
     changes_are_only_renames,
+    collapse_middle_segments,
     compress_path,
     create_commit_message,
     create_rename_message,
@@ -238,6 +239,7 @@ Features:
   - Removes duplicate path components (e.g., pkg/foo/foo -> pkg/foo)
   - Strips "default" filename (e.g., mod/foo/default -> mod/foo)
   - Shortens directories if message > 72 chars (packages->pkg, modules->mod, etc.)
+  - Collapses middle path segments to '*' to keep filename context (a/b/c/f -> a/*/f)
   - Detects staged renames (git mv) and commits with arrow notation (old -> new)
   - Validates total message length (max 72 chars)
 """,
@@ -389,6 +391,11 @@ def main(args, subject, body, ai_shorten):
 
         if _too_long(prefix):
             prefix = shorten_directories(prefix)
+
+        # Prefer collapsing the noisy middle to '*' (keeps the filename
+        # context) before falling back to dropping rightmost segments.
+        if _too_long(prefix):
+            prefix = collapse_middle_segments(prefix, commit_subject)
 
         if _too_long(prefix):
             prefix = compress_path(prefix, commit_subject)
