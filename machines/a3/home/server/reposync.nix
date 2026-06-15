@@ -42,13 +42,6 @@ in
         identity = forgejoIdentity;
       }
       {
-        path = "${config.home.homeDirectory}/.openclaw/workspace";
-        remote = "origin";
-        remoteUrl = "https://forgejo.@domain@/@username@/workspace.git";
-        branch = "main";
-        identity = forgejoIdentity;
-      }
-      {
         path = "/storage/data";
         remote = "origin";
         remoteUrl = "https://forgejo.@domain@/@username@/data.git";

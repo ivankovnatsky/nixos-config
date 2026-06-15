@@ -42,7 +42,6 @@ in
       nethogs
       nh
       nvtopPackages.nvidia # GPU monitoring (like htop for GPUs)
-      openai-whisper # `whisper` CLI, used by openclaw's tools.media.audio
       pandoc
       parallel
       pciutils

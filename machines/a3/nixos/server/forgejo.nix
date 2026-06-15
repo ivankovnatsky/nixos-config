@@ -183,7 +183,7 @@ in
       {
         name = "workspace";
         ownerFile = config.sops.secrets.forgejo-user-name.path;
-        description = "OpenClaw agent workspace";
+        description = "";
         private = true;
       }
       {

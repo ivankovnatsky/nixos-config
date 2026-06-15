@@ -122,12 +122,6 @@ in
         description = "Navidrome music streaming server (a3)";
       }
       {
-        name = "openclaw-gateway-a3";
-        url = "http://127.0.0.1:18789";
-        interval = 60;
-        description = "OpenClaw gateway (a3)";
-      }
-      {
         name = "prowlarr-a3";
         url = "http://127.0.0.1:9696";
         interval = 60;
