@@ -22,6 +22,9 @@
         "osxphotos" = {
           binary = "osxphotos";
         };
+        "yt-dlp" = {
+          binary = "yt-dlp";
+        };
       };
 
       # Go packages via `go install`. rclone from upstream because
