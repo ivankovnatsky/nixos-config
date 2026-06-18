@@ -75,5 +75,6 @@
     wget
     eat
     zoxide
+    uv
   ];
 }
