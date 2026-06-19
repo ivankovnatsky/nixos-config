@@ -24,6 +24,9 @@
         "yt-dlp" = {
           binary = "yt-dlp";
         };
+        "gallery-dl" = {
+          binary = "gallery-dl";
+        };
       };
 
       # .npmrc is already provided via `home/npm.nix` for this machine
