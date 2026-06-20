@@ -47,7 +47,6 @@
     ../../../home/z-lua.nix
     ../../../home/zsh.nix
     ../../../modules/flags
-    ../../../modules/inventory
     ../../../modules/home/dock
     ../../../modules/home/launchd
     ../../../modules/home/nextdns-mgmt
@@ -56,6 +55,7 @@
     ../../../modules/home/settings-daemon
     ../../../modules/home/syncthing-mgmt
     ../../../modules/home/tools
+    ../../../modules/inventory
     ../../Ivans-MacBook-Air/home/dock.nix
     ../../Ivans-MacBook-Air/home/packages.nix
     ../../Ivans-MacBook-Air/home/reposync.nix

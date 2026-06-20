@@ -66,7 +66,9 @@ def _stable(message: str) -> str:
 
 
 def _key(category: str, message: str) -> str:
-    return hashlib.sha256(f"{category}\x00{_stable(message)}".encode("utf-8")).hexdigest()
+    return hashlib.sha256(
+        f"{category}\x00{_stable(message)}".encode("utf-8")
+    ).hexdigest()
 
 
 @contextmanager
@@ -94,7 +96,9 @@ def _locked(state_file=None):
         f.close()
 
 
-def record(category, message, webhook_file, *, source=None, dedup_text=None, state_file=None):
+def record(
+    category, message, webhook_file, *, source=None, dedup_text=None, state_file=None
+):
     """Upsert a pending notification. Idempotent for a recurring failure.
 
     `dedup_text` overrides what the dedup key is derived from. Use it when the
@@ -129,7 +133,10 @@ def clear(category, *, message_prefix=None, state_file=None):
             k
             for k, v in pending.items()
             if v.get("category") == category
-            and (message_prefix is None or v.get("message", "").startswith(message_prefix))
+            and (
+                message_prefix is None
+                or v.get("message", "").startswith(message_prefix)
+            )
         ]
         for k in to_remove:
             del pending[k]
@@ -199,7 +206,9 @@ def flush(send_fn, *, state_file=None, log=lambda _msg: None):
     for webhook_file, items in groups.items():
         url = _read_webhook(webhook_file)
         if not url:
-            log(f"Digest flush: webhook unreadable ({webhook_file}); keeping {len(items)} entry(s).")
+            log(
+                f"Digest flush: webhook unreadable ({webhook_file}); keeping {len(items)} entry(s)."
+            )
             continue
 
         # Clear only the entries whose chunk actually posted. Stop at the first
@@ -211,7 +220,9 @@ def flush(send_fn, *, state_file=None, log=lambda _msg: None):
             if send_fn(url, text):
                 sent_keys.extend(chunk)
             else:
-                log("Digest flush: Discord post failed; keeping remaining entries for retry.")
+                log(
+                    "Digest flush: Discord post failed; keeping remaining entries for retry."
+                )
                 break
 
     if not sent_keys:

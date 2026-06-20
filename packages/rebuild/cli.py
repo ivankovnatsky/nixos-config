@@ -134,12 +134,18 @@ def cmd_watch(config_path, command, no_watch, interval):
                     debounce_timer = None
             if has_pending or not watch:
                 if not watch:
-                    logging.info("Loop timer fired, triggering periodic rebuild (no-watch mode)")
+                    logging.info(
+                        "Loop timer fired, triggering periodic rebuild (no-watch mode)"
+                    )
                 else:
-                    logging.info("Loop timer fired, triggering rebuild (file changes pending)")
+                    logging.info(
+                        "Loop timer fired, triggering rebuild (file changes pending)"
+                    )
                 trigger_rebuild(loop_triggered=True)
             else:
-                logging.info("Loop timer fired, no file changes — sudo refreshed, skipping rebuild")
+                logging.info(
+                    "Loop timer fired, no file changes — sudo refreshed, skipping rebuild"
+                )
 
     def trigger_rebuild(loop_triggered=False):
         nonlocal pending_files, debounce_timer

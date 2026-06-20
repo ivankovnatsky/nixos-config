@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   # Why lsd and not eza? Because lsd accepts arguments like `-t` which I could

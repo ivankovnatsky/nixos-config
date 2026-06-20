@@ -18,8 +18,8 @@
     ./accessibility.nix
     ./fulldiskaccess.nix
     ./homebrew.nix
-    ./users.nix
     ./login-items.nix
     ./spotlight.nix
+    ./users.nix
   ];
 }

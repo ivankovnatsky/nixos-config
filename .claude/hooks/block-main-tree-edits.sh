@@ -77,7 +77,7 @@ if [ "$BRANCH" = "main" ] || [ "$BRANCH" = "master" ]; then
       # (via `gwq get`). Let stderr pass through; capture stdout only.
       NEW=$(cd "$TOPLEVEL" && "$GWQ_ADD")
       if [ -n "$NEW" ] && [ -d "$NEW" ]; then
-        echo "$NEW" > "$SENTINEL"
+        echo "$NEW" >"$SENTINEL"
         echo "$NEW"
       fi
     fi

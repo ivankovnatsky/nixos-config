@@ -45,7 +45,7 @@ git -C "${target_tree_path}" rebase --autostash "${main_branch}"
 git -C "${main_tree_path}" merge --ff-only "${target_branch}"
 
 stash_after=$(git -C "${target_tree_path}" stash list | wc -l)
-if (( stash_after > stash_before )); then
+if ((stash_after > stash_before)); then
   echo "warning: autostash pop failed; your changes are in 'git stash list' (run 'git stash pop')" >&2
 fi
 

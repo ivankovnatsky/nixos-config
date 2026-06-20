@@ -54,7 +54,13 @@ def turnoff_log_battery() -> None:
         print(f"Warning: Could not log battery status: {e}", file=sys.stderr)
 
 
-_PERMISSION_MARKERS = ("permission denied", "must be root", "not permitted", "operation not permitted", "access denied")
+_PERMISSION_MARKERS = (
+    "permission denied",
+    "must be root",
+    "not permitted",
+    "operation not permitted",
+    "access denied",
+)
 
 
 def _linux_shutdown() -> None:

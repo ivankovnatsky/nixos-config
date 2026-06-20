@@ -17,7 +17,9 @@ class AlertingDigestTest(unittest.TestCase):
         sys.modules["click"] = fake_click
 
         # Make digest.py importable from the sibling discord package.
-        self.discord_dir = str(pathlib.Path(__file__).resolve().parent.parent / "discord")
+        self.discord_dir = str(
+            pathlib.Path(__file__).resolve().parent.parent / "discord"
+        )
         if self.discord_dir not in sys.path:
             sys.path.insert(0, self.discord_dir)
 
@@ -64,9 +66,7 @@ class AlertingDigestTest(unittest.TestCase):
         self.alerting.clear_alerts_for_repo("repo-a")
         pending = self._pending()
         self.assertEqual(len(pending), 1)
-        self.assertTrue(
-            any("`repo-b`" in v["message"] for v in pending.values())
-        )
+        self.assertTrue(any("`repo-b`" in v["message"] for v in pending.values()))
 
     def test_flush_posts_and_clears(self):
         self.alerting.alert("x", "`repo-a`: failed")

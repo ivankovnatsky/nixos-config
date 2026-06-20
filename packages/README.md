@@ -47,8 +47,8 @@ pkgs.writeShellScriptBin "alias-name" (builtins.readFile ../original/original.sh
 
 Current aliases:
 
-| Alias       | Original |
-| ----------- | -------- |
+| Alias | Original |
+| ----- | -------- |
 
 ## Distinct names for packages
 

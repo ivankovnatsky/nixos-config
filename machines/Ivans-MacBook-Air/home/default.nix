@@ -1,5 +1,6 @@
 {
   imports = [
+    ../../../darwin/unison.nix
     ../../../home/atuin.nix
     ../../../home/bat.nix
     ../../../home/brctl.nix
@@ -47,7 +48,6 @@
     ../../../home/z-lua.nix
     ../../../home/zsh.nix
     ../../../modules/flags
-    ../../../modules/inventory
     ../../../modules/home/dock
     ../../../modules/home/launchd
     ../../../modules/home/nextdns-mgmt
@@ -56,11 +56,11 @@
     ../../../modules/home/settings-daemon
     ../../../modules/home/syncthing-mgmt
     ../../../modules/home/tools
+    ../../../modules/home/unison
+    ../../../modules/inventory
     ./dock.nix
     ./packages.nix
     ./reposync.nix
     ./settings-daemon.nix
-    ../../../darwin/unison.nix
-    ../../../modules/home/unison
   ];
 }

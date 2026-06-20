@@ -8,14 +8,14 @@
     ./fonts.nix
     ./kde.nix
     ./keyboard.nix
-    ./video.nix
-    # ./openrgb.nix
     ./plasma.nix
+    # ./openrgb.nix
     ./power-management.nix
-    ./thunderbolt.nix
     ./steam.nix
+    ./thunderbolt.nix
     ./tpm2.nix
     ./user.nix
+    ./video.nix
     ./wifi.nix
   ];
 }

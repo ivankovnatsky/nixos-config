@@ -1,7 +1,6 @@
 {
   imports = [
     ../../../../home/atuin.nix
-    ../../../../home/yazi.nix
     ../../../../home/bash.nix
     ../../../../home/bat.nix
     ../../../../home/brctl.nix
@@ -43,10 +42,10 @@
     ../../../../home/tmux.nix
     ../../../../home/treefmt.nix
     ../../../../home/xattr.nix
+    ../../../../home/yazi.nix
     ../../../../home/z-lua.nix
     ../../../../home/zsh.nix
     ../../../../modules/flags
-    ../../../../modules/inventory
     ../../../../modules/home/dock
     ../../../../modules/home/launchd
     ../../../../modules/home/nextdns-mgmt
@@ -54,6 +53,7 @@
     ../../../../modules/home/settings-daemon
     ../../../../modules/home/syncthing-mgmt
     ../../../../modules/home/tools
+    ../../../../modules/inventory
     ../../../../secrets/sops-nix.nix
     ./dock.nix
     ./flags.nix

@@ -1,5 +1,6 @@
 {
   imports = [
+    ../../../../darwin/unison.nix
     ../../../../modules/home/launchd
     ../../../../modules/home/notifications
     ../../../../modules/home/tools
@@ -7,6 +8,5 @@
     ./notifications.nix
     ./reposync.nix
     ./syncthing-mgmt.nix
-    ../../../../darwin/unison.nix
   ];
 }

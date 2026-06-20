@@ -120,10 +120,12 @@ let
   syncScript = pkgs.writeShellScript "reposync-run" ''
     set -e
 
-    export PATH="${lib.makeBinPath [
-      pkgs.git
-      pkgs.openssh
-    ]}:$PATH"
+    export PATH="${
+      lib.makeBinPath [
+        pkgs.git
+        pkgs.openssh
+      ]
+    }:$PATH"
 
     CONFIG="${configJsonTemplate}"
 
