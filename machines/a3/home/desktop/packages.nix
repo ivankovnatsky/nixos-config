@@ -20,7 +20,6 @@ in
       unzip
       mpv
       nixpkgs-nixos-master-edge.antigravity-cli
-      rumdl
       unixtools.ifconfig
       git-restore
       backup-system

@@ -9,6 +9,7 @@
     arr-mgmt
     asusrouter-cli
     backup-home
+    rumdl
     beszel-mgmt
     claude-statusline
     cleanup-home
