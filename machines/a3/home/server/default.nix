@@ -5,6 +5,7 @@
     ../../../../modules/home/reposync
     ./arr-mgmt.nix
     ./beszel-mgmt.nix
+    ./jellyfin-mgmt.nix
     ./miniserve.nix
     ./notifications.nix
     ./reposync.nix

@@ -37,6 +37,7 @@
     ../../../../modules/flags
     ../../../../modules/home/arr-mgmt
     ../../../../modules/home/beszel-mgmt
+    ../../../../modules/home/jellyfin-mgmt
     ../../../../modules/home/launchd
     ../../../../modules/home/mail
     ../../../../modules/home/nextdns-mgmt

@@ -110,6 +110,17 @@ in
         description = "Immich photo server (a3)";
       }
       {
+        name = "jellyfin-a3";
+        url = "http://127.0.0.1:8096";
+        interval = 60;
+        expectedStatus = [
+          "200-299"
+          "302"
+        ];
+        maxredirects = 0;
+        description = "Jellyfin media server (a3, redirects to /web)";
+      }
+      {
         name = "lidarr-a3";
         url = "http://127.0.0.1:8686";
         interval = 60;
