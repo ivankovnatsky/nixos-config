@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import importlib
+import json
 import pathlib
 import sys
 import tempfile
@@ -8,79 +9,75 @@ import types
 import unittest
 
 
-class AlertingTest(unittest.TestCase):
+class AlertingDigestTest(unittest.TestCase):
     def setUp(self):
         fake_click = types.ModuleType("click")
         fake_click.echo = lambda *args, **kwargs: None
         fake_click.ClickException = Exception
         sys.modules["click"] = fake_click
 
-        fake_discord = types.ModuleType("discord")
-        fake_discord.send_discord = lambda *args, **kwargs: True
-        sys.modules["discord"] = fake_discord
+        # Make digest.py importable from the sibling discord package.
+        self.discord_dir = str(pathlib.Path(__file__).resolve().parent.parent / "discord")
+        if self.discord_dir not in sys.path:
+            sys.path.insert(0, self.discord_dir)
 
         self.tmp = tempfile.TemporaryDirectory()
-        self.state_file = pathlib.Path(self.tmp.name) / "alerts.json"
-        self.sent = []
-        self.now = 1000
+        self.state_file = pathlib.Path(self.tmp.name) / "pending.json"
+        self.webhook_file = pathlib.Path(self.tmp.name) / "webhook"
+        self.webhook_file.write_text("https://discord.example/webhook\n")
 
+        sys.modules.pop("digest", None)
         sys.modules.pop("alerting", None)
+        self.digest = importlib.import_module("digest")
         self.alerting = importlib.import_module("alerting")
-        self.alerting.configure_alerts(60, self.state_file)
-        self.alerting._send_discord = self.send_discord
-        self.original_time = self.alerting.time.time
-        self.alerting.time.time = lambda: self.now
+        self.alerting.configure_alerts(
+            webhook_file=str(self.webhook_file),
+            state_file=str(self.state_file),
+        )
 
     def tearDown(self):
-        self.alerting.time.time = self.original_time
-        sys.modules.pop("alerting", None)
-        sys.modules.pop("click", None)
-        sys.modules.pop("discord", None)
+        for mod in ("alerting", "digest", "click"):
+            sys.modules.pop(mod, None)
+        if self.discord_dir in sys.path:
+            sys.path.remove(self.discord_dir)
         self.tmp.cleanup()
 
-    def send_discord(self, webhook_url, message, **kwargs):
-        self.sent.append((webhook_url, message, kwargs))
-        return True
+    def _pending(self):
+        if not self.state_file.exists():
+            return {}
+        return json.loads(self.state_file.read_text()).get("pending", {})
 
-    def test_suppresses_repeated_alert_until_repeat_window_expires(self):
-        self.alerting.alert("https://discord.example/webhook", "same failure")
-        self.alerting.alert("https://discord.example/webhook", "same failure")
+    def test_failure_is_recorded_not_sent(self):
+        self.alerting.alert("ignored", "`repo`: fetch failed — detail")
+        self.assertEqual(len(self._pending()), 1)
 
-        self.assertEqual(len(self.sent), 1)
+    def test_same_failure_collapses_to_one_entry(self):
+        self.alerting.alert("x", "`repo`: fetch failed — first detail")
+        self.alerting.alert("x", "`repo`: fetch failed — second detail")
+        self.assertEqual(len(self._pending()), 1)
 
-        self.now += 61
-        self.alerting.alert("https://discord.example/webhook", "same failure")
+    def test_success_clears_pending_for_that_repo_only(self):
+        self.alerting.alert("x", "`repo-a`: failed")
+        self.alerting.alert("x", "`repo-b`: failed")
+        self.assertEqual(len(self._pending()), 2)
 
-        self.assertEqual(len(self.sent), 2)
-
-    def test_suppresses_same_failure_with_different_details(self):
-        webhook = "https://discord.example/webhook"
-        self.alerting.alert(webhook, "`repo`: fetch failed — first detail")
-        self.alerting.alert(webhook, "`repo`: fetch failed — second detail")
-
-        self.assertEqual(len(self.sent), 1)
-
-    def test_granular_clearing_allows_immediate_repeat_for_specific_repo(self):
-        webhook = "https://discord.example/webhook"
-        self.alerting.alert(webhook, "`repo-a`: failed")
-        self.alerting.alert(webhook, "`repo-b`: failed")
-        self.assertEqual(len(self.sent), 2)
-
-        # Suppressed
-        self.alerting.alert(webhook, "`repo-a`: failed")
-        self.alerting.alert(webhook, "`repo-b`: failed")
-        self.assertEqual(len(self.sent), 2)
-
-        # Clear repo-a
         self.alerting.clear_alerts_for_repo("repo-a")
+        pending = self._pending()
+        self.assertEqual(len(pending), 1)
+        self.assertTrue(
+            any("`repo-b`" in v["message"] for v in pending.values())
+        )
 
-        # repo-a should alert now
-        self.alerting.alert(webhook, "`repo-a`: failed")
-        self.assertEqual(len(self.sent), 3)
-
-        # repo-b still suppressed
-        self.alerting.alert(webhook, "`repo-b`: failed")
-        self.assertEqual(len(self.sent), 3)
+    def test_flush_posts_and_clears(self):
+        self.alerting.alert("x", "`repo-a`: failed")
+        sent = []
+        self.digest.flush(
+            lambda url, content: sent.append((url, content)) or True,
+            state_file=str(self.state_file),
+        )
+        self.assertEqual(len(sent), 1)
+        self.assertEqual(sent[0][0], "https://discord.example/webhook")
+        self.assertEqual(self._pending(), {})
 
 
 if __name__ == "__main__":

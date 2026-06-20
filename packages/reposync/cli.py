@@ -31,7 +31,7 @@ def main():
 @click.option("--config-file", required=True)
 def init(config_file):
     config = load_config(config_file)
-    configure_alerts(config.get("alertRepeatSeconds"), config.get("alertStateFile"))
+    configure_alerts(webhook_file=config.get("discordWebhookFile"))
     webhook_url = get_discord_webhook(config)
     all_ok = True
     for repo in config.get("repositories", []):
@@ -87,7 +87,7 @@ def debounce_after_boot():
 @click.option("--config-file", required=True)
 def sync(config_file):
     config = load_config(config_file)
-    configure_alerts(config.get("alertRepeatSeconds"), config.get("alertStateFile"))
+    configure_alerts(webhook_file=config.get("discordWebhookFile"))
     webhook_url = get_discord_webhook(config)
 
     debounce_after_boot()
