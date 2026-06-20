@@ -12,8 +12,7 @@ options = ["check", "--fix"]
 includes = ["*.py"]
 
 [formatter.nix-sort-imports]
-command = "python3"
-options = ["packages/nix-sort-imports/nix-sort-imports.py"]
+command = "nix-sort-imports"
 includes = ["*.nix"]
 
 [formatter.nix]
