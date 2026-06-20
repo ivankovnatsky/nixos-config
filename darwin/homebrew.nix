@@ -30,7 +30,6 @@
         name = "kitty@nightly";
         greedy = true;
       }
-      "mac-mouse-fix"
       "silicon-labs-vcp-driver"
       {
         name = "obsidian";
