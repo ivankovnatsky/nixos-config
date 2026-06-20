@@ -18,13 +18,10 @@
       "zapp"
     ];
     casks = [
-      "chromium"
       {
         name = "coconutbattery";
         greedy = true;
       }
-      "firefox"
-      "google-chrome"
       "hammerspoon"
       {
         name = "kitty@nightly";
