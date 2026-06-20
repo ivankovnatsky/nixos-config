@@ -177,7 +177,7 @@ def start_service(name: str, service_type: ServiceType) -> bool:
         return False
 
 
-SERVICE_TYPE = click.Choice(["all", "agents", "daemons"])
+SERVICE_TYPE = click.Choice(["all", "agent", "daemon"])
 
 ALIASES = {
     "ls": "list",
@@ -229,8 +229,8 @@ def cli(ctx, pattern):
 def cmd_list(ctx, svc_type, unhealthy, verbose):
     """List services."""
     pattern = ctx.obj["pattern"]
-    show_agents = svc_type in ("all", "agents")
-    show_daemons = svc_type in ("all", "daemons")
+    show_agents = svc_type in ("all", "agent")
+    show_daemons = svc_type in ("all", "daemon")
 
     if show_agents:
         click.echo("=== User Agents ===")
@@ -288,8 +288,8 @@ def restart(ctx, name, svc_type, unhealthy, daemon):
         )
         raise SystemExit(1)
 
-    restart_agents = svc_type in ("all", "agents")
-    restart_daemons = svc_type in ("all", "daemons")
+    restart_agents = svc_type in ("all", "agent")
+    restart_daemons = svc_type in ("all", "daemon")
     failed = 0
 
     if restart_agents:
@@ -357,8 +357,8 @@ def start(name, daemon):
 def status(ctx, svc_type):
     """Show unhealthy services."""
     pattern = ctx.obj["pattern"]
-    show_agents = svc_type in ("all", "agents")
-    show_daemons = svc_type in ("all", "daemons")
+    show_agents = svc_type in ("all", "agent")
+    show_daemons = svc_type in ("all", "daemon")
 
     click.echo("=== Unhealthy Services ===\n")
 
