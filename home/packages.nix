@@ -41,6 +41,7 @@
     gwq-merge
     hyperfine
     image-meta
+    jellyfin-mgmt
     jq
     nextdns-mgmt
     nix-gc
