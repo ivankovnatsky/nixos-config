@@ -44,7 +44,6 @@ in
       pandoc
       parallel
       pciutils
-      pre-commit
       pulseaudio
       pv
       q

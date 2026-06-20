@@ -9,6 +9,7 @@
     arr-mgmt
     asusrouter-cli
     backup-home
+    pre-commit
     rumdl
     beszel-mgmt
     claude-statusline
