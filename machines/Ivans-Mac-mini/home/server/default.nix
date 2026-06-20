@@ -7,6 +7,6 @@
     ./notifications.nix
     ./reposync.nix
     ./syncthing-mgmt.nix
-    ./unison.nix
+    ../../../../darwin/unison.nix
   ];
 }

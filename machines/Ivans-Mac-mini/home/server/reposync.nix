@@ -25,11 +25,7 @@ in
         remote = "origin";
         remoteUrl = "https://forgejo.@domain@/@username@/home.git";
         branch = "main";
-        identity = {
-          name = "@username@";
-          email = "@username@@@domain@";
-          signingKey = "@username@@@domain@";
-        };
+        identity = forgejoIdentity;
       }
       {
         path = "${config.flags.homeWorkPath}/Sources/github.com/ivankovnatsky/nix-config";

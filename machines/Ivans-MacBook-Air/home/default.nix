@@ -60,5 +60,7 @@
     ./packages.nix
     ./reposync.nix
     ./settings-daemon.nix
+    ../../../darwin/unison.nix
+    ../../../modules/home/unison
   ];
 }

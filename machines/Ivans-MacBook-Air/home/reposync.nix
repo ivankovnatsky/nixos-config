@@ -1,4 +1,11 @@
 { config, ... }:
+let
+  forgejoIdentity = {
+    name = "@username@";
+    email = "@username@@@domain@";
+    signingKey = "@username@@@domain@";
+  };
+in
 {
   sops.secrets.discord-webhook-reposync = {
     key = "discord/webhooks/monitoringRepoSync";
@@ -29,6 +36,14 @@
       remote = "origin";
       remoteUrl = "https://github.com/ivankovnatsky/nix-config.git";
       branch = "main";
+    }
+    {
+      path = "${config.home.homeDirectory}/Notes";
+      remote = "origin";
+      remoteUrl = "https://forgejo.@domain@/@username@/notes.git";
+      branch = "main";
+      autoStage = true;
+      identity = forgejoIdentity;
     }
   ];
 }
