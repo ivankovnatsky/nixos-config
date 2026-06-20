@@ -7,5 +7,11 @@
       enable = true;
       at = "21:00";
     };
+
+    # Flush reposync/rebuild failures recorded during the day in one batch.
+    digest = {
+      enable = true;
+      at = "21:00";
+    };
   };
 }
