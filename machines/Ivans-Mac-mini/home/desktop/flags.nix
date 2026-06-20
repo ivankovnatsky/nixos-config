@@ -12,7 +12,7 @@
     editor = "nvim";
     homeWorkPath = config.home.homeDirectory;
     hotkeys = {
-      terminal = "Terminal";
+      terminal = "kitty";
       browser = "Safari";
       shortcuts = [
         {
