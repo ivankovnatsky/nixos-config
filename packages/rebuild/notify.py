@@ -6,9 +6,11 @@ import re
 from collections import deque
 from pathlib import Path
 
-from discord import send_discord as _send_discord
+import digest
 
 from machines import current_hostname
+
+CATEGORY = "rebuild"
 
 
 DEFAULT_DISCORD_WEBHOOK_FILE = (
@@ -68,30 +70,33 @@ def extract_error_context(
     return lines[start:end]
 
 
-def send_failure_notification(webhook_file=None, exit_code=None, log_excerpt=None):
-    """Post a rebuild failure to Discord via webhook.
+def clear_failure_notification():
+    """Drop any pending rebuild-failure digest entry for this machine.
 
-    Reads the webhook URL from `webhook_file` (defaults to the sops-nix
-    rendered path ~/.config/sops-nix/secrets/discord-webhook-rebuild).
-    Silently skips if the file is missing or unreadable — never fails
+    Called after a successful rebuild so a transient failure that recovers
+    before the 21:00 digest flush is silently dropped and never alerted.
+    """
+    try:
+        digest.clear(CATEGORY)
+    except Exception as e:
+        logging.warning(f"Failed to clear rebuild digest state: {e}")
+
+
+def send_failure_notification(webhook_file=None, exit_code=None, log_excerpt=None):
+    """Record a rebuild failure into the shared 21:00 notification digest.
+
+    The failure is not posted to Discord immediately; it is held in the shared
+    digest store and posted in a batch by `notifications digest-flush` at 21:00,
+    unless a later successful rebuild clears it first. Stores the webhook
+    *file path* (defaults to the sops-nix rendered
+    ~/.config/sops-nix/secrets/discord-webhook-rebuild) so the flush can read
+    the URL at send time. Silently skips if the file is missing — never fails
     the rebuild.
     """
     path = Path(webhook_file) if webhook_file else DEFAULT_DISCORD_WEBHOOK_FILE
     if not path.exists():
         logging.debug(
             f"Discord webhook file not present at {path}; skipping notification"
-        )
-        return
-
-    try:
-        webhook_url = path.read_text().strip()
-    except Exception as e:
-        logging.warning(f"Cannot read Discord webhook file {path}: {e}")
-        return
-
-    if not webhook_url.startswith("https://"):
-        logging.debug(
-            f"Discord webhook URL in {path} is not https; skipping notification"
         )
         return
 
@@ -131,4 +136,13 @@ def send_failure_notification(webhook_file=None, exit_code=None, log_excerpt=Non
             snippet = snippet[-budget:]
         body = f"{header}\n```\n{snippet}\n```"
 
-    _send_discord(webhook_url, body, user_agent="rebuild/1.0")
+    # Dedup on a stable string (not the body) so repeated failures collapse onto
+    # one entry whose message is refreshed to the latest log, rather than the
+    # volatile excerpt spawning a fresh entry each run.
+    digest.record(
+        CATEGORY,
+        body,
+        str(path),
+        source=f"{CATEGORY}@{hostname}",
+        dedup_text=f"{CATEGORY}@{hostname}",
+    )

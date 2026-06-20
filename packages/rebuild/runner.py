@@ -10,6 +10,7 @@ from pathlib import Path
 
 from lock import acquire_lock, release_lock
 from notify import (
+    clear_failure_notification,
     extract_error_context,
     read_log_tail,
     send_failure_notification,
@@ -96,6 +97,7 @@ def run_rebuild(config_path, command, quiet=False):
                 reset_terminal()
                 if result.returncode == 0:
                     logging.info("Rebuild successful")
+                    clear_failure_notification()
                 else:
                     logging.error(f"Rebuild failed with exit code {result.returncode}")
                     context = None
@@ -120,6 +122,7 @@ def run_rebuild(config_path, command, quiet=False):
             reset_terminal()
             if result.returncode == 0:
                 logging.info("Rebuild successful")
+                clear_failure_notification()
             else:
                 logging.error(f"Rebuild failed with exit code {result.returncode}")
                 send_failure_notification(exit_code=result.returncode)
