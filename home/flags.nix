@@ -6,7 +6,7 @@
     editor = "nvim";
     editorName = "neovim";
     hotkeys = {
-      terminal = "Terminal";
+      terminal = "kitty";
       browser = "Safari";
       shortcuts = [
         {
