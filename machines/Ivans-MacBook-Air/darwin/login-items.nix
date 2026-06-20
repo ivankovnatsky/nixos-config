@@ -2,6 +2,6 @@
 
 {
   system.activationScripts.postActivation.text = ''
-    ${pkgs.settingsctl}/bin/settings login set "Hammerspoon,Mac Mouse Fix" || true
+    ${pkgs.settingsctl}/bin/settings login set "Hammerspoon" || true
   '';
 }

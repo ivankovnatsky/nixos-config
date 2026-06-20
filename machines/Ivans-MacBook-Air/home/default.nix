@@ -33,7 +33,6 @@
     ../../../home/packages-darwin.nix
     ../../../home/packages.nix
     ../../../home/pass.nix
-    ../../../home/quit-mac-mouse-fix.nix
     ../../../home/ranger.nix
     ../../../home/rebuild-diff.nix
     ../../../home/safari.nix
