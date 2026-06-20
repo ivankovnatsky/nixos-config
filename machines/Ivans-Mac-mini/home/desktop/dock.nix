@@ -47,7 +47,6 @@ in
       { path = "/Applications/Numbers.app/"; }
       { path = "/System/Applications/FindMy.app/"; }
       { path = "/System/Applications/Weather.app/"; }
-      { path = "/System/Applications/Home.app/"; }
       { path = "/System/Applications/Utilities/Screen Sharing.app/"; }
 
       {

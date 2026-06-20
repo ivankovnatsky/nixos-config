@@ -46,7 +46,6 @@ in
       { path = "/System/Library/CoreServices/Applications/Keychain Access.app/"; }
       { path = "/System/Applications/FindMy.app/"; }
       { path = "/System/Applications/Weather.app/"; }
-      { path = "/System/Applications/Home.app/"; }
       { path = "/System/Applications/Utilities/Screen Sharing.app/"; }
 
       {
@@ -64,9 +63,6 @@ in
 
       # Brew casks
       { path = "/Applications/kitty.app/"; }
-      { path = "/Applications/Firefox.app/"; }
-      { path = "/Applications/Chromium.app/"; }
-      { path = "/Applications/Google Chrome.app/"; }
       { path = "/Applications/Obsidian.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
       { path = "/Applications/coconutBattery.app/"; }
