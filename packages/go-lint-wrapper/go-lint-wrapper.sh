@@ -6,10 +6,7 @@
 set -euo pipefail
 
 if [[ -z "${GOPATH:-}" ]]; then
-  case "$(uname -s)" in
-  Linux) export GOPATH="$HOME/.go" ;;
-  *) export GOPATH="$HOME/go" ;;
-  esac
+  export GOPATH="$HOME/.go"
 fi
 export GO111MODULE=off
 
