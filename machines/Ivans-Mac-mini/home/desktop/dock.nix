@@ -58,6 +58,7 @@ in
       { path = "/Applications/Firefox.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
       { path = "/Applications/Obsidian.app/"; }
+      { path = "/Applications/WhatsApp.app/"; }
 
       {
         path = "${homePath}/Downloads/";

@@ -21,6 +21,7 @@
       "zapp"
     ];
     casks = [
+      "whatsapp"
       "firefox"
       "hammerspoon"
       "kitty"
