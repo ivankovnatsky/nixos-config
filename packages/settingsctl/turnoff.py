@@ -4,55 +4,11 @@ from __future__ import annotations
 
 import subprocess
 import sys
-import time
-from datetime import date
-from pathlib import Path
 
 import click
 
 from common import TURNOFF_VOLUME_SET, is_linux, is_macos
 from volume import volume_set
-
-ICLOUD_SYNC_DELAY = 5  # seconds to wait for iCloud sync (file is < 1KB)
-
-
-def turnoff_log_battery() -> None:
-    """Log battery status to iCloud stats directory (macOS laptops only)."""
-    if not is_macos():
-        return
-
-    import socket
-
-    try:
-        result = subprocess.run(
-            ["pmset", "-g", "batt"],
-            capture_output=True,
-            text=True,
-        )
-
-        if "InternalBattery" not in result.stdout:
-            return
-
-        hostname = socket.gethostname()
-        today = date.today().isoformat()
-        stats_dir = (
-            Path.home()
-            / "Library/Mobile Documents/com~apple~CloudDocs/Data/Stats"
-            / hostname
-            / today
-        )
-        stats_dir.mkdir(parents=True, exist_ok=True)
-
-        battery_file = stats_dir / "battery.txt"
-        battery_file.write_text(result.stdout)
-        print(f"Battery status logged to {battery_file}")
-
-        # Wait for iCloud to sync (file is tiny, should be instant)
-        print(f"Waiting {ICLOUD_SYNC_DELAY}s for iCloud sync...")
-        time.sleep(ICLOUD_SYNC_DELAY)
-    except Exception as e:
-        print(f"Warning: Could not log battery status: {e}", file=sys.stderr)
-
 
 _PERMISSION_MARKERS = (
     "permission denied",
@@ -106,9 +62,6 @@ def register(cli):
         if not is_macos() and not is_linux():
             print("Turnoff only available on macOS and Linux", file=sys.stderr)
             sys.exit(1)
-
-        # Log battery status before shutdown (macOS only)
-        turnoff_log_battery()
 
         # Set volume to specified level before shutdown
         if volume_set(vol):
