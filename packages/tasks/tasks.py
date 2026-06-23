@@ -2,10 +2,10 @@
 """Table view of markdown task files.
 
 Recursively scans `--root` for `*.md` files and parses multiple task
-formats simultaneously. By default it scans the `Planning/` subdirectory of
-the Obsidian notes vault — iCloud Obsidian container on Macs
-(`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Notes/Planning`),
-`~/Notes/Planning` on a3 — plus the vault's `Archive/Tasks` directory for
+formats simultaneously. By default it scans the `Planning/Tasks`
+subdirectory of the Obsidian notes vault — iCloud Obsidian container on Macs
+(`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Notes/Planning/Tasks`),
+`~/Notes/Planning/Tasks` on a3 — plus the vault's `Archive/Tasks` directory for
 archived tasks. If no vault is found and no `--root`/`$TASKS_ROOT` is
 given, the command errors out (it never scans cwd); if the vault exists
 but `Planning/Tasks` is missing, the whole vault is scanned. Passing
@@ -55,8 +55,10 @@ def resolve_roots(
 ) -> list[Path]:
     """Resolve the list of scan roots.
 
-    Defaults: `<notes-vault>/Planning` (active) plus
-    `<notes-vault>/Archive/Tasks` (archived) when they exist. If the vault
+    Defaults: `<notes-vault>/Planning/Tasks` (active) plus
+    `<notes-vault>/Archive/Tasks` (archived) when they exist. Both roots
+    point at a `Tasks` directory so project names come out consistently
+    relative to it (e.g. `Finance`, `Configs/NixConfig`). If the vault
     exists but `Planning/Tasks` doesn't (layout changed again), falls back
     to scanning the whole vault; errors out only when no vault directory
     exists at all. Vault detection mirrors the `notes` skill: iCloud
@@ -81,7 +83,7 @@ def resolve_roots(
                 + ") and no --root/$TASKS_ROOT given. Refusing to scan cwd."
             )
         if (vault / "Planning" / "Tasks").is_dir():
-            root = vault / "Planning"
+            root = vault / "Planning" / "Tasks"
         else:
             # Layout changed again? Scan the whole vault rather than miss tasks.
             root = vault
@@ -599,8 +601,8 @@ def shared_options(f):
         default=None,
         help=(
             "Active-tasks root to scan recursively. Defaults to the Obsidian "
-            "vault's Planning/ directory (iCloud path on Macs, ~/Notes/Planning "
-            "on a3); errors out if no vault exists."
+            "vault's Planning/Tasks directory (iCloud path on Macs, "
+            "~/Notes/Planning/Tasks on a3); errors out if no vault exists."
         ),
     )(f)
     f = click.option(
