@@ -16,12 +16,8 @@ in
 
     browser = mkOption {
       type = types.enum [
-        "chrome"
-        "chromium"
         "firefoxdeveloperedition"
         "safari"
-        "comet"
-        "vivaldi"
       ];
       default = "safari";
       description = "Browser to set as default";
