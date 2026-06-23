@@ -21,7 +21,7 @@ to also scan an archive).
 Usage:
   tasks [all|pending|completed|done|cancelled]
       [--root PATH] [--archive-root PATH] [--project P] [--limit N]
-      [--format table|simple|json]
+      [--format simple|json]
 
 Subcommands select which tasks to show (default `pending`); options follow the
 subcommand name. A bare `tasks` (or `tasks` with only options) runs `pending`.
@@ -29,7 +29,6 @@ subcommand name. A bare `tasks` (or `tasks` with only options) runs `pending`.
 
 from __future__ import annotations
 
-import io
 import json
 import re
 import shutil
@@ -37,10 +36,6 @@ from dataclasses import dataclass, field, asdict
 from pathlib import Path
 
 import click
-from rich import box
-from rich.console import Console
-from rich.markup import escape as rich_escape
-from rich.table import Table
 
 NOTES_CANDIDATES = (
     "Library/Mobile Documents/iCloud~md~obsidian/Documents/Notes",
@@ -465,74 +460,28 @@ def _status_cell(t: Task) -> str:
     return "" if t.status == "todo" else t.status
 
 
-def render_table(tasks: list[Task], totals: dict | None = None) -> str:
+def render_simple(tasks: list[Task], totals: dict | None = None) -> str:
+    """Bare list of titles, one per line, truncated to terminal width.
+
+    A `status  ` prefix is prepended only when some task is not plain `todo`.
+    No header or separator — the trailing totals line summarizes the set.
+    """
     show_status = _show_status_column(tasks)
-    width = shutil.get_terminal_size((100, 24)).columns
-    table = Table(box=box.ROUNDED, expand=True)
-    if show_status:
-        table.add_column("Status", no_wrap=True, min_width=11, max_width=12)
-    table.add_column("Title", overflow="ellipsis", no_wrap=True, ratio=1)
-
-    for t in tasks:
-        row = []
-        if show_status:
-            row.append(rich_escape(_status_cell(t)))
-        table.add_row(
-            *row,
-            rich_escape(t.title),
-            style="dim" if t.status in COMPLETED_STATUSES else None,
-        )
-
-    output = io.StringIO()
-    console = Console(file=output, force_terminal=True, width=width)
-    console.print(table)
-    if totals:
-        console.print(
-            f"shown: {len(tasks)}  "
-            f"total: {totals['total']} "
-            f"(pending: {totals['pending']}, "
-            f"done: {totals['done']}, "
-            f"cancelled: {totals['cancelled']})"
-        )
-    else:
-        console.print(f"{len(tasks)} tasks")
-    return output.getvalue().rstrip()
-
-
-def render_simple_table(tasks: list[Task], totals: dict | None = None) -> str:
-    show_status = _show_status_column(tasks)
-    cols: list[tuple[str, callable]] = []
-    if show_status:
-        cols.append(("Status", _status_cell))
-    cols.append(("Title", lambda t: t.title))
-    headers = [h for h, _ in cols]
-    rows = [headers]
-    for t in tasks:
-        rows.append([fn(t) for _, fn in cols])
-    widths = [
-        max(len(str(r[i])) for r in rows) if i < len(cols) - 1 else len(headers[i])
-        for i in range(len(cols))
-    ]
-
     sep = "  "
-    title_col = sum(widths[:-1]) + len(sep) * (len(cols) - 1)
+    status_width = (
+        max((len(_status_cell(t)) for t in tasks), default=0) if show_status else 0
+    )
+    prefix_width = status_width + len(sep) if show_status else 0
     term_width = shutil.get_terminal_size((100, 24)).columns
-    title_width = max(20, term_width - title_col)
+    title_width = max(20, term_width - prefix_width)
 
-    def fmt_row(row, mode: str):
-        prefix_cells = [str(row[i]).ljust(widths[i]) for i in range(len(cols) - 1)]
-        prefix = sep.join(prefix_cells) + sep if prefix_cells else ""
-        title = str(row[-1])
-        if mode == "header":
-            return (prefix + title).rstrip()
+    out: list[str] = []
+    for t in tasks:
+        title = t.title
         if len(title) > title_width:
             title = title[: max(1, title_width - 1)] + ".."
-        return (prefix + title).rstrip()
-
-    out = [fmt_row(rows[0], "header")]
-    out.append("  ".join("-" * width for width in widths))
-    for i, t in enumerate(tasks, 1):
-        line = fmt_row(rows[i], "truncate")
+        prefix = _status_cell(t).ljust(status_width) + sep if show_status else ""
+        line = (prefix + title).rstrip()
         if t.status in COMPLETED_STATUSES:
             line = f"\033[2m{line}\033[0m"
         out.append(line)
@@ -581,12 +530,10 @@ def _execute(
         "done": sum(1 for t in all_tasks if t.status == "done"),
         "cancelled": sum(1 for t in all_tasks if t.status == "cancelled"),
     }
-    if output_format == "table":
-        click.echo(render_table(tasks, totals))
-    elif output_format == "simple":
-        click.echo(render_simple_table(tasks, totals))
-    else:
+    if output_format == "json":
         click.echo(json.dumps([asdict(t) for t in tasks], indent=2, ensure_ascii=False))
+    else:
+        click.echo(render_simple(tasks, totals))
 
 
 def shared_options(f):
@@ -624,10 +571,10 @@ def shared_options(f):
     f = click.option(
         "--format",
         "output_format",
-        type=click.Choice(["table", "simple", "json"]),
-        default="table",
+        type=click.Choice(["simple", "json"]),
+        default="simple",
         show_default=True,
-        help="Output format. table is the Rich view. json carries full metadata.",
+        help="Output format. simple is a plain title list. json carries full metadata.",
     )(f)
     return f
 
