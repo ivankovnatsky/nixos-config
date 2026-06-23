@@ -469,15 +469,12 @@ def render_table(tasks: list[Task], totals: dict | None = None) -> str:
     show_status = _show_status_column(tasks)
     width = shutil.get_terminal_size((100, 24)).columns
     table = Table(box=box.ROUNDED, expand=True)
-    table.add_column(
-        "Project", no_wrap=True, overflow="ellipsis", min_width=12, max_width=24
-    )
     if show_status:
         table.add_column("Status", no_wrap=True, min_width=11, max_width=12)
     table.add_column("Title", overflow="ellipsis", no_wrap=True, ratio=1)
 
     for t in tasks:
-        row = [rich_escape(t.project)]
+        row = []
         if show_status:
             row.append(rich_escape(_status_cell(t)))
         table.add_row(
@@ -504,7 +501,7 @@ def render_table(tasks: list[Task], totals: dict | None = None) -> str:
 
 def render_simple_table(tasks: list[Task], totals: dict | None = None) -> str:
     show_status = _show_status_column(tasks)
-    cols: list[tuple[str, callable]] = [("Project", lambda t: t.project)]
+    cols: list[tuple[str, callable]] = []
     if show_status:
         cols.append(("Status", _status_cell))
     cols.append(("Title", lambda t: t.title))
@@ -524,7 +521,7 @@ def render_simple_table(tasks: list[Task], totals: dict | None = None) -> str:
 
     def fmt_row(row, mode: str):
         prefix_cells = [str(row[i]).ljust(widths[i]) for i in range(len(cols) - 1)]
-        prefix = sep.join(prefix_cells) + sep
+        prefix = sep.join(prefix_cells) + sep if prefix_cells else ""
         title = str(row[-1])
         if mode == "header":
             return (prefix + title).rstrip()
