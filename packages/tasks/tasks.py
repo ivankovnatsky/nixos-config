@@ -20,7 +20,7 @@ to also scan an archive).
 
 Usage:
   tasks [all|pending|completed|done|cancelled]
-      [--root PATH] [--archive-root PATH] [--project P] [--limit N]
+      [--root PATH] [--archive-root PATH] [--limit N]
       [--format simple|json]
 
 Subcommands select which tasks to show (default `pending`); options follow the
@@ -167,7 +167,6 @@ class Options:
     completed: bool = False
     done: bool = False
     cancelled: bool = False
-    project: str | None = None
     limit: int | None = 20
 
 
@@ -444,9 +443,6 @@ def filter_tasks(tasks: list[Task], args) -> list[Task]:
         out = [t for t in out if t.status == "cancelled"]
     elif not args.all:
         out = [t for t in out if t.status in PENDING_STATUSES]
-    if args.project:
-        wanted = {p.lower() for p in args.project.split(",")}
-        out = [t for t in out if t.project.lower() in wanted]
     if args.limit:
         out = out[: args.limit]
     return out
@@ -503,7 +499,6 @@ def _execute(
     mode: str,
     root: Path | None,
     archive_root: Path | None,
-    project: str | None,
     limit: int | None,
     output_format: str,
 ) -> None:
@@ -516,7 +511,6 @@ def _execute(
         completed=mode == "completed",
         done=mode == "done",
         cancelled=mode == "cancelled",
-        project=project,
         limit=limit,
     )
     scan_roots = resolve_roots(
@@ -560,7 +554,6 @@ def shared_options(f):
             "--root is passed explicitly."
         ),
     )(f)
-    f = click.option("--project", help="Filter by project name, comma-separated.")(f)
     f = click.option(
         "--limit",
         type=click.IntRange(min=0),
@@ -605,32 +598,32 @@ def main():
 
 @main.command(name="all", help="Show all tasks.")
 @shared_options
-def cmd_all(root, archive_root, project, limit, output_format):
-    _execute("all", root, archive_root, project, limit, output_format)
+def cmd_all(root, archive_root, limit, output_format):
+    _execute("all", root, archive_root, limit, output_format)
 
 
 @main.command(name="pending", help="Show pending tasks. This is the default.")
 @shared_options
-def cmd_pending(root, archive_root, project, limit, output_format):
-    _execute("pending", root, archive_root, project, limit, output_format)
+def cmd_pending(root, archive_root, limit, output_format):
+    _execute("pending", root, archive_root, limit, output_format)
 
 
 @main.command(name="completed", help="Show completed tasks (done or cancelled).")
 @shared_options
-def cmd_completed(root, archive_root, project, limit, output_format):
-    _execute("completed", root, archive_root, project, limit, output_format)
+def cmd_completed(root, archive_root, limit, output_format):
+    _execute("completed", root, archive_root, limit, output_format)
 
 
 @main.command(name="done", help="Show done tasks only.")
 @shared_options
-def cmd_done(root, archive_root, project, limit, output_format):
-    _execute("done", root, archive_root, project, limit, output_format)
+def cmd_done(root, archive_root, limit, output_format):
+    _execute("done", root, archive_root, limit, output_format)
 
 
 @main.command(name="cancelled", help="Show cancelled tasks only.")
 @shared_options
-def cmd_cancelled(root, archive_root, project, limit, output_format):
-    _execute("cancelled", root, archive_root, project, limit, output_format)
+def cmd_cancelled(root, archive_root, limit, output_format):
+    _execute("cancelled", root, archive_root, limit, output_format)
 
 
 if __name__ == "__main__":
