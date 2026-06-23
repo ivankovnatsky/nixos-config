@@ -2,7 +2,6 @@
   imports = [
     ./bluetooth.nix
     ./boot.nix
-    ./chromium.nix
     ./cryptenroll.nix
     ./default-apps.nix
     ./fonts.nix
