@@ -75,6 +75,7 @@
     tree
     uptime-kuma-mgmt
     username # Installed as flake
+    passgen # Installed as flake
     wget
     eat
     zoxide

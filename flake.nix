@@ -127,6 +127,12 @@
       inputs.flake-utils.follows = "flake-utils";
     };
 
+    passgen = {
+      url = "github:ivankovnatsky/passgen";
+      inputs.nixpkgs.follows = "nixpkgs-darwin-unstable";
+      inputs.flake-utils.follows = "flake-utils";
+    };
+
     pyenv-nix-install = {
       url = "github:sirno/pyenv-nix-install";
     };
