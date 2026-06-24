@@ -37,12 +37,6 @@
       url = "github:nixos/nixpkgs/nixos-unstable";
     };
 
-    # Legacy Darwin release (kept for packages broken on unstable; consumed
-    # by flake/overlay.nix and machines/Ivans-Mac-mini uptime-kuma service)
-    nixpkgs-darwin-old-release = {
-      url = "github:nixos/nixpkgs/nixpkgs-25.05-darwin";
-    };
-
     # Unstable Darwin packages
     nixpkgs-darwin-unstable = {
       url = "github:nixos/nixpkgs/nixpkgs-unstable";
