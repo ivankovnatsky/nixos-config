@@ -13,6 +13,10 @@
   # Suppress noisy Qt/QML warnings (qmlRegisterType absolute URLs, portal registration)
   environment.sessionVariables.QT_LOGGING_RULES = "default.warning=false;qt.qml.typeregistration.warning=false;qt.qpa.services.warning=false";
 
+  # Plasma 6 enables services.fwupd by default (Discover firmware updates).
+  # This is a server; disable it to stop fwupd-refresh.service from failing.
+  services.fwupd.enable = false;
+
   services = {
     desktopManager.plasma6.enable = true;
     displayManager.sddm = {
