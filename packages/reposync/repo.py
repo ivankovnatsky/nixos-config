@@ -136,7 +136,14 @@ def init_repo(repo, webhook_url=None):
     if not os.path.isdir(path):
         parent = os.path.dirname(path.rstrip("/"))
         if not os.path.isdir(parent):
-            os.makedirs(parent, exist_ok=True)
+            try:
+                os.makedirs(parent, exist_ok=True)
+            except OSError as exc:
+                alert(
+                    webhook_url,
+                    f"`{name}`: could not create parent directory {parent} — {exc}",
+                )
+                return False
             click.echo(f"{name}: created parent directory {parent}", err=True)
         click.echo(f"{name}: cloning {remote_url} into {path}", err=True)
         result = run_git(
