@@ -714,25 +714,6 @@
         "type": "github"
       }
     },
-    "podservice": {
-      "inputs": {
-        "flake-utils": "flake-utils_2",
-        "nixpkgs": "nixpkgs_3"
-      },
-      "locked": {
-        "lastModified": 1780478121,
-        "narHash": "sha256-8c4pjLN7Nq1jMIevnYTpU3lxgC5Iv2C2V2A+m3OFTV8=",
-        "owner": "ivankovnatsky",
-        "repo": "podservice",
-        "rev": "e446c3106570b71d538e1f937f6604edb0099f63",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ivankovnatsky",
-        "repo": "podservice",
-        "type": "github"
-      }
-    },
     "pomdtr-homebrew-tap": {
       "flake": false,
       "locked": {
@@ -815,7 +796,6 @@
         "nixvim-nixos-unstable": "nixvim-nixos-unstable",
         "nur-nixos-unstable": "nur-nixos-unstable",
         "plasma-manager-nixos-unstable": "plasma-manager-nixos-unstable",
-        "podservice": "podservice",
         "pomdtr-homebrew-tap": "pomdtr-homebrew-tap",
         "pyenv-nix-install": "pyenv-nix-install",
         "rems": "rems",

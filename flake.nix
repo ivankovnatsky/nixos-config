@@ -155,11 +155,6 @@
       inputs.nixpkgs.follows = "nixpkgs-nixos-unstable";
     };
 
-    # Pod Service - YouTube to Podcast Feed Service
-    podservice = {
-      url = "github:ivankovnatsky/podservice";
-    };
-
     # rems - macOS Reminders CLI
     rems = {
       url = "github:ivankovnatsky/rems";
