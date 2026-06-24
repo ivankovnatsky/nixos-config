@@ -258,22 +258,6 @@
         "type": "github"
       }
     },
-    "ivankovnatsky-homebrew-tap": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1764861546,
-        "narHash": "sha256-Ni4+M5pf3piJUYegTIzKINumCR9C7IZTlqc08iGfM3Q=",
-        "owner": "ivankovnatsky",
-        "repo": "homebrew-tap",
-        "rev": "c0425bd30ec06a6da29708942ff277ce6f62b215",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ivankovnatsky",
-        "repo": "homebrew-tap",
-        "type": "github"
-      }
-    },
     "keith-homebrew-tap": {
       "flake": false,
       "locked": {
@@ -714,7 +698,6 @@
         "homebrew-bundle": "homebrew-bundle",
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
-        "ivankovnatsky-homebrew-tap": "ivankovnatsky-homebrew-tap",
         "keith-homebrew-tap": "keith-homebrew-tap",
         "nix-darwin-darwin-unstable": "nix-darwin-darwin-unstable",
         "nix-homebrew": "nix-homebrew",

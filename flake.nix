@@ -82,11 +82,6 @@
       flake = false;
     };
 
-    ivankovnatsky-homebrew-tap = {
-      url = "github:ivankovnatsky/homebrew-tap";
-      flake = false;
-    };
-
     keith-homebrew-tap = {
       url = "github:keith/homebrew-formulae";
       flake = false;

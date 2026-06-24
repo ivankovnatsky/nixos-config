@@ -85,7 +85,6 @@
               "homebrew/homebrew-cask" = inputs.homebrew-cask;
               "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
               "pomdtr/homebrew-tap" = inputs.pomdtr-homebrew-tap;
-              "ivankovnatsky/homebrew-tap" = inputs.ivankovnatsky-homebrew-tap;
               "keith/homebrew-formulae" = inputs.keith-homebrew-tap;
               "antoniorodr/homebrew-memo" = inputs.antoniorodr-homebrew-tap;
               "xwmx/homebrew-taps" = inputs.xwmx-homebrew-tap;
@@ -178,7 +177,6 @@
               "homebrew/homebrew-cask" = inputs.homebrew-cask;
               "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
               "pomdtr/homebrew-tap" = inputs.pomdtr-homebrew-tap;
-              "ivankovnatsky/homebrew-tap" = inputs.ivankovnatsky-homebrew-tap;
               "keith/homebrew-formulae" = inputs.keith-homebrew-tap;
               "antoniorodr/homebrew-memo" = inputs.antoniorodr-homebrew-tap;
               "xwmx/homebrew-taps" = inputs.xwmx-homebrew-tap;
@@ -237,7 +235,6 @@
               "homebrew/homebrew-cask" = inputs.homebrew-cask;
               "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
               "pomdtr/homebrew-tap" = inputs.pomdtr-homebrew-tap;
-              "ivankovnatsky/homebrew-tap" = inputs.ivankovnatsky-homebrew-tap;
               "keith/homebrew-formulae" = inputs.keith-homebrew-tap;
               "antoniorodr/homebrew-memo" = inputs.antoniorodr-homebrew-tap;
               "xwmx/homebrew-taps" = inputs.xwmx-homebrew-tap;
@@ -400,7 +397,6 @@
               "homebrew/homebrew-cask" = inputs.homebrew-cask;
               "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
               "pomdtr/homebrew-tap" = inputs.pomdtr-homebrew-tap;
-              "ivankovnatsky/homebrew-tap" = inputs.ivankovnatsky-homebrew-tap;
             };
             mutableTaps = false;
           };
