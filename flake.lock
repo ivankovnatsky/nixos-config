@@ -749,25 +749,6 @@
         "type": "github"
       }
     },
-    "rems": {
-      "inputs": {
-        "flake-utils": "flake-utils_4",
-        "nixpkgs": "nixpkgs_5"
-      },
-      "locked": {
-        "lastModified": 1777057875,
-        "narHash": "sha256-fPgYm0Vjd854dcXGcjwc8EFY896+eUeySp8eM0bF1v4=",
-        "owner": "ivankovnatsky",
-        "repo": "rems",
-        "rev": "48529548ddaa9c9c0bfff391b5ac824d3a1c11d4",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ivankovnatsky",
-        "repo": "rems",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "antoniorodr-homebrew-tap": "antoniorodr-homebrew-tap",
@@ -798,7 +779,6 @@
         "plasma-manager-nixos-unstable": "plasma-manager-nixos-unstable",
         "pomdtr-homebrew-tap": "pomdtr-homebrew-tap",
         "pyenv-nix-install": "pyenv-nix-install",
-        "rems": "rems",
         "sops-nix-darwin-unstable": "sops-nix-darwin-unstable",
         "sops-nix-nixos-unstable": "sops-nix-nixos-unstable",
         "tools": "tools",

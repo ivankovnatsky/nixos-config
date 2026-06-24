@@ -155,11 +155,6 @@
       inputs.nixpkgs.follows = "nixpkgs-nixos-unstable";
     };
 
-    # rems - macOS Reminders CLI
-    rems = {
-      url = "github:ivankovnatsky/rems";
-    };
-
     nix-steipete-tools = {
       url = "github:openclaw/nix-steipete-tools";
       inputs.nixpkgs.follows = "nixpkgs-nixos-unstable";
