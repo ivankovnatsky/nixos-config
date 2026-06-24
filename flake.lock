@@ -632,11 +632,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1782306015,
-        "narHash": "sha256-KSWmuIxBSP6NcLTYCoNw4Tqh7tw4uGs+lX6cw73yL8Q=",
+        "lastModified": 1782306270,
+        "narHash": "sha256-Fz621sVsMZ4+ixEFY6O/iyNAx53ponYnvUwDLGgAJis=",
         "owner": "ivankovnatsky",
         "repo": "passgen",
-        "rev": "040831a9fdbad675c24a37b97884166f344065da",
+        "rev": "078344b6c5158c77ee5aaced4274d4a40a9eca6e",
         "type": "github"
       },
       "original": {
