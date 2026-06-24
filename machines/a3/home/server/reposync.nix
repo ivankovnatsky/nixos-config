@@ -48,6 +48,13 @@ in
         branch = "main";
         identity = forgejoIdentity;
       }
+      {
+        path = "${config.home.homeDirectory}/Sources/@domain@/@username@/cv";
+        remote = "origin";
+        remoteUrl = "https://forgejo.@domain@/@username@/cv.git";
+        branch = "main";
+        identity = forgejoIdentity;
+      }
     ];
   };
 }
