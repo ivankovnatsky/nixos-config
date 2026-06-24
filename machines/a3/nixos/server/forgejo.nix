@@ -186,6 +186,12 @@ in
         description = "";
         private = true;
       }
+      {
+        name = "cv";
+        ownerFile = config.sops.secrets.forgejo-user-name.path;
+        description = "";
+        private = true;
+      }
     ];
   };
 }
