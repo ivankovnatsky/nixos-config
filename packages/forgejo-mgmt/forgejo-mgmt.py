@@ -71,13 +71,22 @@ class ForgejoClient:
             },
         )
 
-    def repo_exists(self, owner: str, name: str) -> bool:
+    def get_repo(self, owner: str, name: str):
+        """Return the repo dict if it exists, otherwise None."""
         url = f"{self.base_url}/api/v1/repos/{owner}/{name}"
         try:
             response = requests.get(url, headers=self.headers, timeout=self.timeout)
-            return response.status_code == 200
+            if response.status_code == 200:
+                return response.json()
+            return None
         except requests.exceptions.RequestException:
-            return False
+            return None
+
+    def repo_exists(self, owner: str, name: str) -> bool:
+        return self.get_repo(owner, name) is not None
+
+    def edit_repo(self, owner: str, name: str, fields: dict):
+        return self._api_call("PATCH", f"/repos/{owner}/{name}", fields)
 
     def create_repo_for_user(
         self,
@@ -412,15 +421,32 @@ def sync_repos(client: ForgejoClient, repos: list):
     for repo in repos:
         name = repo["name"]
         owner = resolve_owner(repo)
-        if client.repo_exists(owner, name):
-            click.echo(f"  OK: {owner}/{name} (exists)", err=True)
+        desired_description = repo.get("description", "")
+        desired_private = repo.get("private", True)
+        existing = client.get_repo(owner, name)
+        if existing is not None:
+            # Reconcile mutable settings on the existing repo.
+            updates = {}
+            if existing.get("description", "") != desired_description:
+                updates["description"] = desired_description
+            if existing.get("private", True) != desired_private:
+                updates["private"] = desired_private
+            if updates:
+                click.echo(
+                    f"  UPDATE: {owner}/{name} ({', '.join(sorted(updates))})",
+                    err=True,
+                )
+                client.edit_repo(owner, name, updates)
+                click.echo(f"  Updated: {owner}/{name}", err=True)
+            else:
+                click.echo(f"  OK: {owner}/{name} (exists)", err=True)
         else:
             click.echo(f"  CREATE: {owner}/{name}", err=True)
             client.create_repo_for_user(
                 owner=owner,
                 name=name,
-                description=repo.get("description", ""),
-                private=repo.get("private", True),
+                description=desired_description,
+                private=desired_private,
                 auto_init=repo.get("autoInit", False),
             )
             click.echo(f"  Created: {owner}/{name}", err=True)
