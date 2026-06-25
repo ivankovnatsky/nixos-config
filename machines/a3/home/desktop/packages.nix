@@ -74,6 +74,5 @@ in
     ])
     ++ (with steipeteTools; [
       summarize
-      sag
     ]);
 }
