@@ -46,6 +46,7 @@
     ../../../../modules/home/uptime-kuma-mgmt
     ../../../../modules/inventory
     ./btop.nix
+    ../../../../home/pass.nix
     ./discord.nix
     ./firefox.nix
     ./flags.nix
