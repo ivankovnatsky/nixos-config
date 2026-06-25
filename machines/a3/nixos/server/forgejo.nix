@@ -171,7 +171,7 @@ in
       {
         name = "home";
         ownerFile = config.sops.secrets.forgejo-user-name.path;
-        description = "Home directory";
+        description = "";
         private = true;
       }
       {
@@ -188,6 +188,12 @@ in
       }
       {
         name = "cv";
+        ownerFile = config.sops.secrets.forgejo-user-name.path;
+        description = "";
+        private = true;
+      }
+      {
+        name = "passwords";
         ownerFile = config.sops.secrets.forgejo-user-name.path;
         description = "";
         private = true;

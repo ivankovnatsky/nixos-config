@@ -48,6 +48,13 @@ in
         branch = "main";
         identity = forgejoIdentity;
       }
+      {
+        path = "${config.home.homeDirectory}/.password-store";
+        remote = "origin";
+        remoteUrl = "https://forgejo.@domain@/@username@/passwords.git";
+        branch = "main";
+        identity = forgejoIdentity;
+      }
     ];
   };
 }
