@@ -55,7 +55,6 @@
     ./mail.nix
     ./obsidian.nix
     ./packages.nix
-    ./passwordstore.nix
     ./pi-models.nix
     ./plasma.nix
     ./portal-input.nix
