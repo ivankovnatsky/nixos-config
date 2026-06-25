@@ -29,7 +29,7 @@
     # functionality is ok for me.
     extraConfig = ''
       # Update environment variables when attaching to existing sessions
-      set -g update-environment "DISPLAY WAYLAND_DISPLAY XDG_RUNTIME_DIR SWAYSOCK"
+      set-option -g update-environment "DISPLAY SSH_AUTH_SOCK WAYLAND_DISPLAY XDG_RUNTIME_DIR SWAYSOCK EDITOR VISUAL LANG"
 
       # Reduce ESC key delay (default 500ms is too slow for vi mode)
       # https://neovim.io/doc/user/faq.html#faq
@@ -74,16 +74,6 @@
       bind-key r select-window -t 13
       bind-key t select-window -t 14
       bind-key y select-window -t 15
-
-      ${
-        if config.flags.enableFishShell then
-          ''
-            set -g default-command ${pkgs.fish}/bin/fish
-            set -g default-shell ${pkgs.fish}/bin/fish
-          ''
-        else
-          ""
-      }
     '';
   };
 }
