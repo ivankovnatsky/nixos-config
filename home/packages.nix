@@ -80,5 +80,6 @@
     eat
     zoxide
     uv
+    summarize
   ];
 }

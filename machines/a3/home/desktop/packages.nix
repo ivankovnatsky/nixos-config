@@ -1,16 +1,12 @@
 {
-  inputs,
   pkgs,
-  system,
   ...
 }:
 
-let
-  steipeteTools = inputs.nix-steipete-tools.packages.${system};
-in
 {
-  home.packages =
-    (with pkgs; [
+  home.packages = (
+    with pkgs;
+    [
       (python313.withPackages (
         ps: with ps; [
           grip
@@ -71,8 +67,6 @@ in
       nixfmt
       smartmontools # Disk health monitoring (smartctl)
       wl-clipboard # Wayland clipboard utilities
-    ])
-    ++ (with steipeteTools; [
-      summarize
-    ]);
+    ]
+  );
 }
