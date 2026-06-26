@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, config, ... }:
 
 with lib;
 {
@@ -117,7 +117,9 @@ with lib;
     homeWorkPath = mkOption {
       type = types.str;
       description = "Base path for work directories (git sources, password store, etc.)";
-      default = "~";
+      # Resolves to /home/<user> on Linux and /Users/<user> on Darwin via
+      # home-manager; falls back to "~" in system-eval contexts where it's unused.
+      default = attrByPath [ "home" "homeDirectory" ] "~" config;
     };
 
     externalStoragePath = mkOption {
