@@ -12,7 +12,7 @@
       # Re-add only if you need to migrate passwords from another manager.
     ]);
     settings = {
-      PASSWORD_STORE_DIR = "${config.flags.homeWorkPath}/.password-store";
+      PASSWORD_STORE_DIR = "${config.home.homeDirectory}/.password-store";
     };
   };
 }
