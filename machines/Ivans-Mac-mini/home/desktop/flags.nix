@@ -10,7 +10,6 @@
     enableFishShell = true;
     purpose = "home";
     editor = "nvim";
-    homeWorkPath = config.home.homeDirectory;
     hotkeys = {
       terminal = "kitty";
       browser = "Safari";
