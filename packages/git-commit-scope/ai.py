@@ -41,20 +41,6 @@ AI_BACKENDS = [
         ],
         "parse": "codex",
     },
-    {
-        "name": "gemini",
-        "cmd": [
-            "gemini",
-            "--prompt",
-            "{prompt}",
-            "-m",
-            "gemini-2.5-flash-lite",
-            "--output-format",
-            "json",
-        ],
-        "parse": "json",
-        "json_key": "response",
-    },
 ]
 
 
