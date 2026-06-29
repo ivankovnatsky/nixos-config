@@ -9,9 +9,6 @@
         "@earendil-works/pi-coding-agent" = {
           binary = "pi";
         };
-        "@google/gemini-cli" = {
-          binary = "gemini";
-        };
         "@openai/codex" = {
           binary = "codex";
         };

@@ -10,7 +10,6 @@
     ../../../../home/direnv.nix
     ../../../../home/fish.nix
     ../../../../home/fzf.nix
-    ../../../../home/gemini-settings.nix
     ../../../../home/ghorg.nix
     ../../../../home/git
     ../../../../home/go.nix
