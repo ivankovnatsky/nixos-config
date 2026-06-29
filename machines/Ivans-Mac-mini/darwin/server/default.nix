@@ -21,7 +21,6 @@
     ./homebrew.nix
     ./nix.nix
     ./openssh.nix
-    ./packages.nix
     ./power.nix
     ./system.nix
     ./tailscale.nix
