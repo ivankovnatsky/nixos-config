@@ -21,6 +21,10 @@
 [diff]
 	noprefix = true
 
+[diff "gpg"]
+	binary = true
+	textconv = gpg -d --quiet --yes --compress-algo=none --no-encrypt-to --batch --use-agent
+
 [log]
 	decorate = no
 
