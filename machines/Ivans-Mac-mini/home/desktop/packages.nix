@@ -13,5 +13,6 @@
     macmon
     treefmt
     typos
+    nixpkgs-nixos-master-edge.antigravity-cli
   ];
 }
