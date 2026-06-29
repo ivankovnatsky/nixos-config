@@ -23,6 +23,8 @@
     ../../../../home/npm.nix
     ../../../../home/nushell.nix
     ../../../../home/packages.nix
+    ../../../../home/packages-local.nix
+    ../../../../home/packages-overlays.nix
     ../../../../home/ranger.nix
     ../../../../home/rebuild-diff.nix
     ../../../../home/sops.nix
