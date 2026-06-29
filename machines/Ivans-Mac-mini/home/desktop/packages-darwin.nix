@@ -1,8 +1,9 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
-    genpass
-    go-grip
-    ssh-to-age
+    home-manager
+    mkpasswd
+    nixfmt
+    syncthing
   ];
 }

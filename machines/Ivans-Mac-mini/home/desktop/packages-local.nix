@@ -1,8 +1,7 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
-    genpass
-    go-grip
-    ssh-to-age
+    smctemp
+    launchd-mgmt
   ];
 }

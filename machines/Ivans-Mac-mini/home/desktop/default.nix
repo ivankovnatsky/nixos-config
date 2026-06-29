@@ -27,8 +27,6 @@
     ../../../../home/nixvim/plugins/gpg-nvim
     ../../../../home/npm.nix
     ../../../../home/nushell.nix
-    ../../../../home/packages-darwin.nix
-    ../../../../home/packages.nix
     ../../../../home/packages-local.nix
     ../../../../home/packages-overlays.nix
     ../../../../home/pass.nix
@@ -58,7 +56,9 @@
     ../../../../secrets/sops-nix.nix
     ./dock.nix
     ./flags.nix
+    ./packages-darwin.nix
     ./packages.nix
+    ./packages-local.nix
     ./settings-daemon.nix
     ./sops.nix
     ./tmux.nix
