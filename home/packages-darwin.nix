@@ -10,7 +10,6 @@
     fzf
     home-manager
     imagemagick
-    launchd-mgmt
     magic-wormhole
     mkpasswd
     nixfmt
@@ -20,13 +19,11 @@
     ripgrep
     rust-analyzer
     rustc
-    smctemp # Local overlay
     swiftformat
     syncthing
     typst
     typstyle
     watchman
-    watchman-make
     zsh-forgit
   ];
 }

@@ -1,0 +1,51 @@
+{ pkgs, ... }:
+
+{
+  home.packages = with pkgs; [
+    arr-mgmt
+    asusrouter-cli
+    backup-home
+    beszel-mgmt
+    claude-statusline
+    cleanup-home
+    diff-deep
+    dns
+    eat
+    find-grep
+    firefox-selecttab
+    forgejo-mgmt
+    gh-notifications
+    gh-pr
+    ghq-cd
+    git-commit-scope
+    git-restore
+    go-lint-wrapper
+    gpg-edit
+    gpg-pass
+    gwq-add
+    gwq-merge
+    image-meta
+    jellyfin-mgmt
+    nextdns-mgmt
+    nix-gc
+    nix-generate-sha
+    nix-sort-imports
+    nvim-edit-staged
+    nvim-find-edit
+    pass-fzf
+    path-copy
+    ps-top
+    reboot
+    rebuild
+    reposync
+    settingsctl
+    statix-wrapper
+    syncthing-mgmt
+    tac
+    tasks
+    tmux-attach
+    torrent-dl
+    turnoff
+    uptime-kuma-mgmt
+  ];
+}

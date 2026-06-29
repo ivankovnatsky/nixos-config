@@ -2,82 +2,33 @@
 
 {
   home.packages = with pkgs; [
-    tasks
-    git-restore
     age
     aria2
-    arr-mgmt
-    asusrouter-cli
-    backup-home
     pre-commit
     rumdl
-    beszel-mgmt
-    claude-statusline
-    cleanup-home
     delta
-    diff-deep
-    dns
     dust
-    eat
     ffmpeg
-    firefox-selecttab
-    forgejo-mgmt
     genpass
-    gh-notifications
-    gh-pr
     ggh
-    ghq-cd
     gitleaks
     gofumpt
     golangci-lint
-    find-grep
-    git-commit-scope
     go-grip
-    go-lint-wrapper
-    gpg-edit
-    gpg-pass
-    gwq
-    gwq-add
-    gwq-merge
     hyperfine
-    image-meta
-    jellyfin-mgmt
     jq
-    nextdns-mgmt
-    nix-gc
-    nix-generate-sha
-    nix-sort-imports
     prettier
     nodejs
-    nvim-edit-staged
-    nvim-find-edit
-    pass-fzf
-    path-copy
     pigz
     poppler-utils
-    turnoff
-    ps-top
-    reboot
-    rebuild
-    reposync
     ruff
-    settingsctl
     shellcheck
     shfmt
     sops
     ssh-to-age
-    statix-wrapper
     stylua
-    syncthing-mgmt
-    tac
-    tmux-attach
-    torrent-dl
     tree
-    uptime-kuma-mgmt
-    username # Installed as flake
-    passgen # Installed as flake
     wget
-    eat
     zoxide
     uv
     summarize
