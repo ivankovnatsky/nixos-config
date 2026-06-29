@@ -11,5 +11,6 @@
       ]
     ))
     typos
+    launchd-mgmt
   ];
 }
