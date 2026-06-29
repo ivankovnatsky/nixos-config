@@ -29,6 +29,8 @@
     ../../../../home/nushell.nix
     ../../../../home/packages-darwin.nix
     ../../../../home/packages.nix
+    ../../../../home/packages-local.nix
+    ../../../../home/packages-overlays.nix
     ../../../../home/pass.nix
     ../../../../home/quit-mac-mouse-fix.nix
     ../../../../home/ranger.nix
