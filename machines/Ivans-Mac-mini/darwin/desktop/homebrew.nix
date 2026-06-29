@@ -20,9 +20,7 @@
       "pam-reattach"
       "mpv"
       "zapp"
-      # Moved off the Nix store to relieve the internal /nix volume (M4 base):
       "macmon"
-      "treefmt"
       "grip"
       "typos-cli"
     ];
@@ -33,7 +31,6 @@
       "mac-mouse-fix"
       "obsidian"
       "silicon-labs-vcp-driver"
-      # Was nixpkgs-nixos-master-edge.antigravity-cli; cask auto-updates. Binary: agy
       "antigravity-cli"
     ];
     masApps = {

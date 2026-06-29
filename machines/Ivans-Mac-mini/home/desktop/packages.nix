@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
-    smctemp # Local overlay
+    smctemp
     launchd-mgmt
   ];
 }

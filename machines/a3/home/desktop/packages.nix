@@ -17,7 +17,6 @@
       mpv
       nixpkgs-nixos-master-edge.antigravity-cli
       unixtools.ifconfig
-      git-restore
       backup-system
       bat
       bubblewrap
@@ -56,7 +55,6 @@
       rocmPackages.rocm-smi
       amdgpu_top
       fastfetch
-      ghq-cd
       gnumake
       gum
       kdePackages.krdc # KDE Remote Desktop Client
