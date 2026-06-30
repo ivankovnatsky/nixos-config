@@ -10,6 +10,10 @@
       url = "github:nixos/nixpkgs/master";
     };
 
+    nixpkgs-nixos-master-ollama = {
+      url = "github:nixos/nixpkgs/master";
+    };
+
     nixpkgs-nixos-master-edge = {
       url = "github:nixos/nixpkgs/master";
     };
