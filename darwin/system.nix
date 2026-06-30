@@ -40,35 +40,6 @@
         EnableTiledWindowMargins = true;
       };
       CustomUserPreferences = {
-        # https://github.com/nix-darwin/nix-darwin/issues/1040#issuecomment-4620019361
-        "com.apple.symbolichotkeys" = {
-          AppleSymbolicHotKeys = {
-            "79" = {
-              # Move left a space: Cmd + Option + Left Arrow
-              enabled = true;
-              value = {
-                type = "standard";
-                parameters = [
-                  65535
-                  123
-                  9961472
-                ];
-              };
-            };
-            "81" = {
-              # Move right a space: Cmd + Option + Right Arrow
-              enabled = true;
-              value = {
-                type = "standard";
-                parameters = [
-                  65535
-                  124
-                  9961472
-                ];
-              };
-            };
-          };
-        };
         "NSGlobalDomain" = {
           # Auto-switch icon style based on appearance mode
           AppleIconAppearanceTheme = "RegularAutomatic";
