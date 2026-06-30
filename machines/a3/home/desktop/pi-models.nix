@@ -29,10 +29,6 @@ let
         # `contextWindow` matches the server-side `OLLAMA_CONTEXT_LENGTH`.
         models = [
           {
-            id = "gemma3:27b";
-            contextWindow = 8192;
-          }
-          {
             id = "gemma4:31b";
             contextWindow = 8192;
           }

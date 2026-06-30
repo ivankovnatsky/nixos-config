@@ -21,7 +21,7 @@
       OLLAMA_BASE_URLS = "http://127.0.0.1:${toString config.services.ollama.port}";
 
       ENABLE_WEB_SEARCH = "true";
-      DEFAULT_MODELS = "gemma3:27b";
+      DEFAULT_MODELS = "gpt-oss:20b";
 
       SCARF_NO_ANALYTICS = "true";
       DO_NOT_TRACK = "true";
