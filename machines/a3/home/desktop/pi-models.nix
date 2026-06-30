@@ -30,12 +30,12 @@ let
         models = [
           {
             id = "gemma4:31b";
-            contextWindow = 8192;
+            contextWindow = 81920;
           }
           {
             id = "gpt-oss:20b";
             reasoning = true;
-            contextWindow = 8192;
+            contextWindow = 81920;
           }
         ];
       };
