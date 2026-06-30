@@ -10,8 +10,6 @@
     };
     syncModels = true;
     loadModels = [
-      "gemma4:31b"
-      "gemma4:26b"
       "gpt-oss:20b"
     ];
   };
