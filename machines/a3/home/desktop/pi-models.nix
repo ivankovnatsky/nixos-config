@@ -33,6 +33,10 @@ let
             contextWindow = 81920;
           }
           {
+            id = "gemma4:26b";
+            contextWindow = 81920;
+          }
+          {
             id = "gpt-oss:20b";
             reasoning = true;
             contextWindow = 81920;
