@@ -56,7 +56,7 @@
     ./mail.nix
     ./obsidian.nix
     ./packages.nix
-    ./pi-models.nix
+    ../../../../home/pi-models.nix
     ./plasma.nix
     ./portal-input.nix
     ./settings-daemon.nix

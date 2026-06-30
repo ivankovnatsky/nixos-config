@@ -1,6 +1,7 @@
 {
   imports = [
     ../../../../home/atuin.nix
+    ../../../../home/pi-models.nix
     ../../../../home/bash.nix
     ../../../../home/bat.nix
     ../../../../home/brctl.nix

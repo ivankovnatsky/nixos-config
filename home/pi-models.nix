@@ -15,7 +15,7 @@ let
       # Local Ollama instance. `apiKey` is required by the schema but
       # ignored by Ollama, so any value works.
       ollama = {
-        baseUrl = "http://localhost:11434/v1";
+        baseUrl = "http://${config.inventory.a3Ip}:11434/v1";
         api = "openai-completions";
         apiKey = "ollama";
         # Most OpenAI-compatible local servers don't understand the
