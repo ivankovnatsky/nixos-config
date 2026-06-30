@@ -14,10 +14,4 @@
       "gpt-oss:20b"
     ];
   };
-
-  # Claude Code local development via Ollama's Anthropic-compatible API
-  # environment.variables = {
-  #   ANTHROPIC_BASE_URL = "http://localhost:11434";
-  #   ANTHROPIC_API_KEY = "ollama";
-  # };
 }
