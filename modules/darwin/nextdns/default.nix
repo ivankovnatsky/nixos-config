@@ -53,6 +53,12 @@ in
       waitForSecrets = true;
       keepAlive = false;
       command = "${setDnsScript}";
+      extraServiceConfig = {
+        # macOS/DHCP can reset per-service DNS back to the router after the
+        # one-shot launchd job has run. Re-apply periodically so the machine
+        # keeps using its own NextDNS profile instead of the router/Asus one.
+        StartInterval = 60;
+      };
     };
   };
 }
