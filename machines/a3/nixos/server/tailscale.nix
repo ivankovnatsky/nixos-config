@@ -30,6 +30,13 @@
   systemd.network.wait-online.enable = false;
   boot.initrd.systemd.network.wait-online.enable = false;
 
+  # Do not let tailnet DNS override this host's local resolver. The tailnet
+  # currently has a global nameserver of 192.168.50.1, which sends a3 back
+  # through the router/Asus NextDNS profile instead of a3's own profile.
+  services.tailscale.extraSetFlags = [
+    "--accept-dns=false"
+  ];
+
   # ```console
   # sudo tailscale set --advertise-routes=192.168.50.0/24
   # ```

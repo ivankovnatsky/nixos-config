@@ -1,4 +1,4 @@
-{ ... }:
+{ lib, ... }:
 
 {
   sops.secrets.nextdns-api-key = {
@@ -8,14 +8,18 @@
 
   services.resolved.enable = true;
 
-  # Stop dhcpcd from feeding DHCP-provided DNS into systemd-resolved.
-  # Without this, every link gets DNS=192.168.50.1 (the router) plus
-  # DefaultRoute=yes, which shadows the global [Resolve] drop-in below
-  # and queries keep going to the router instead of our local resolver.
+  # Stop network managers from feeding DHCP/Tailscale DNS into
+  # systemd-resolved. Without this, links get DNS=192.168.50.1 (the router)
+  # or Tailscale's global DNS route, which shadows the global resolver below
+  # and sends queries through the Asus/router profile instead of a3's profile.
   networking.dhcpcd.extraConfig = "nohook resolv.conf";
+  networking.networkmanager.dns = lib.mkForce "none";
 
-  # Point resolved at the local resolver (dnsmasq from dns.nix).
-  services.resolved.settings.Resolve.DNS = "127.0.0.1";
+  # Point resolved strictly at the local resolver (dnsmasq from dns.nix).
+  services.resolved.settings.Resolve = {
+    DNS = "127.0.0.1";
+    FallbackDNS = "";
+  };
 
   # Avahi is the single mDNS responder on this host (see networking.nix).
   # Leaving resolved's full mDNS responder on too makes both daemons publish
