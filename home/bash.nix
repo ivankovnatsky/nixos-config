@@ -35,7 +35,12 @@ in
       if [[ -d /etc/profiles/per-user/$USER/bin ]]; then
         export PATH="/etc/profiles/per-user/$USER/bin:$PATH"
       fi
-      export PATH="/run/current-system/sw/bin:$PATH"
+      if [[ -d /run/current-system/sw/bin ]]; then
+        export PATH="/run/current-system/sw/bin:$PATH"
+      fi
+      if [[ -d /run/wrappers/bin ]]; then
+        export PATH="/run/wrappers/bin:$PATH"
+      fi
 
       if [[ -d $HOME/bin ]]; then
         export PATH=$PATH:$HOME/bin
@@ -75,7 +80,12 @@ ${lib.optionalString (config.local.tools.toolsPrefix != config.home.homeDirector
       if [[ -d /etc/profiles/per-user/$USER/bin ]]; then
         export PATH="/etc/profiles/per-user/$USER/bin:$PATH"
       fi
-      export PATH="/run/current-system/sw/bin:$PATH"
+      if [[ -d /run/current-system/sw/bin ]]; then
+        export PATH="/run/current-system/sw/bin:$PATH"
+      fi
+      if [[ -d /run/wrappers/bin ]]; then
+        export PATH="/run/wrappers/bin:$PATH"
+      fi
 
       # Added by OrbStack: command-line tools and integration
       # This won't be added again if you remove it.
