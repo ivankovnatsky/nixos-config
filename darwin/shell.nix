@@ -13,11 +13,11 @@
     shellInit = ''
       # Add Homebrew path early to prevent "Unknown command: brew" errors
       # This runs before nix-darwin's interactiveShellInit which calls brew shellenv
-      if test -d /opt/homebrew/bin
-          fish_add_path --prepend /opt/homebrew/bin
-      end
       if test -d /usr/local/bin
           fish_add_path --prepend /usr/local/bin
+      end
+      if test -d /opt/homebrew/bin
+          fish_add_path --prepend /opt/homebrew/bin
       end
     '';
   };
