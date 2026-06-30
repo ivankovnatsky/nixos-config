@@ -6,7 +6,7 @@
     host = "0.0.0.0";
     openFirewall = true;
     environmentVariables = {
-      OLLAMA_CONTEXT_LENGTH = "81920";
+      OLLAMA_CONTEXT_LENGTH = "211920";
     };
     syncModels = true;
     loadModels = [
