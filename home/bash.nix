@@ -31,6 +31,14 @@ in
     initExtra = ''
       export GPG_TTY=$(tty)
 
+${lib.optionalString pkgs.stdenv.targetPlatform.isDarwin ''
+      if [[ -d /opt/homebrew/bin ]]; then
+        export PATH="/opt/homebrew/bin:$PATH"
+      fi
+      if [[ -d /usr/local/bin ]]; then
+        export PATH="/usr/local/bin:$PATH"
+      fi
+''}
       # Ensure Nix paths are available (especially for non-interactive agent shells)
       if [[ -d /etc/profiles/per-user/$USER/bin ]]; then
         export PATH="/etc/profiles/per-user/$USER/bin:$PATH"
@@ -76,6 +84,14 @@ ${lib.optionalString (config.local.tools.toolsPrefix != config.home.homeDirector
       set -o ignoreeof
     '';
     profileExtra = ''
+${lib.optionalString pkgs.stdenv.targetPlatform.isDarwin ''
+      if [[ -d /opt/homebrew/bin ]]; then
+        export PATH="/opt/homebrew/bin:$PATH"
+      fi
+      if [[ -d /usr/local/bin ]]; then
+        export PATH="/usr/local/bin:$PATH"
+      fi
+''}
       # Ensure Nix paths are available in SSH sessions (for mosh-server)
       if [[ -d /etc/profiles/per-user/$USER/bin ]]; then
         export PATH="/etc/profiles/per-user/$USER/bin:$PATH"

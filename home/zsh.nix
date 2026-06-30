@@ -92,6 +92,14 @@ in
     envExtra = ''
       export GPG_TTY=$(tty)
 
+${lib.optionalString pkgs.stdenv.targetPlatform.isDarwin ''
+      if [[ -d /opt/homebrew/bin ]]; then
+        export PATH="/opt/homebrew/bin:$PATH"
+      fi
+      if [[ -d /usr/local/bin ]]; then
+        export PATH="/usr/local/bin:$PATH"
+      fi
+''}
       if [[ -d /etc/profiles/per-user/$USER/bin ]]; then
         export PATH="/etc/profiles/per-user/$USER/bin:$PATH"
       fi
