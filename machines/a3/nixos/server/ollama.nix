@@ -8,6 +8,7 @@
     environmentVariables = {
       OLLAMA_CONTEXT_LENGTH = "81920";
     };
+    syncModels = true;
     loadModels = [
       "gemma4:31b"
       "gemma4:26b"
