@@ -44,7 +44,6 @@ in
       { path = "/System/Applications/Preview.app"; }
       { path = "/System/Applications/Passwords.app/"; }
       { path = "/System/Library/CoreServices/Applications/Keychain Access.app/"; }
-      { path = "/Applications/Numbers Creator Studio.app/"; }
       { path = "/System/Applications/FindMy.app/"; }
       { path = "/System/Applications/Weather.app/"; }
       { path = "/System/Applications/Utilities/Screen Sharing.app/"; }
@@ -54,6 +53,15 @@ in
         section = "apps";
       }
 
+      # Installed from App Store
+      { path = "/Applications/Numbers Creator Studio.app/"; }
+
+      {
+        type = "spacer";
+        section = "apps";
+      }
+
+      # Brew casks
       { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
       { path = "/Applications/Obsidian.app/"; }
