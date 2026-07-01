@@ -34,7 +34,7 @@
       }
     ];
     masApps = {
-      "Numbers" = 409203825;
+      "Numbers" = 361304891;
       "Pages" = 409201541;
       "Bitwarden" = 1352778147;
     };
