@@ -44,7 +44,7 @@ in
       { path = "/System/Applications/Preview.app"; }
       { path = "/System/Applications/Passwords.app/"; }
       { path = "/System/Library/CoreServices/Applications/Keychain Access.app/"; }
-      { path = "/Applications/Numbers.app/"; }
+      { path = "/Applications/Numbers Creator Studio.app/"; }
       { path = "/System/Applications/FindMy.app/"; }
       { path = "/System/Applications/Weather.app/"; }
       { path = "/System/Applications/Utilities/Screen Sharing.app/"; }

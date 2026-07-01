@@ -54,7 +54,7 @@ in
       }
 
       # Installed from App Store
-      { path = "/Applications/Numbers.app/"; }
+      { path = "/Applications/Numbers Creator Studio.app/"; }
 
       {
         type = "spacer";
