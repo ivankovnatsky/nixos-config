@@ -65,6 +65,7 @@ in
       { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Obsidian.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
+      { path = "/Applications/WhatsApp.app/"; }
       { path = "/Applications/coconutBattery.app/"; }
 
       {
