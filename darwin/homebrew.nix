@@ -18,16 +18,13 @@
       "zapp"
     ];
     casks = [
-      {
-        name = "coconutbattery";
-        greedy = true;
-      }
+      "coconutbattery"
       "hammerspoon"
+      "whatsapp"
       {
         name = "kitty@nightly";
         greedy = true;
       }
-      "silicon-labs-vcp-driver"
       {
         name = "obsidian";
         greedy = true;
