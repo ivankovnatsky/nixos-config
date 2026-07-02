@@ -108,12 +108,6 @@ in
       bindAddress = "*";
       indexers = [
         {
-          name = "The Pirate Bay";
-          definitionName = "thepiratebay";
-          enable = true;
-          priority = 25;
-        }
-        {
           name = "Toloka.to";
           definitionName = "Toloka.to";
           enable = true;
