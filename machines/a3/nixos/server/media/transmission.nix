@@ -90,12 +90,10 @@ in
       queue-stalled-enabled = true;
       queue-stalled-minutes = 30;
 
-      ratio-limit = 1.0;
-      ratio-limit-enabled = true;
-      seed-time-limit = 30;
-      seed-time-limit-enabled = true;
-      idle-seeding-limit = 30;
-      idle-seeding-limit-enabled = true;
+      # Keep seeding indefinitely; do not stop by ratio, seed time, or idle time.
+      ratio-limit-enabled = false;
+      seed-time-limit-enabled = false;
+      idle-seeding-limit-enabled = false;
       script-torrent-done-enabled = false;
 
       speed-limit-down = 0;
