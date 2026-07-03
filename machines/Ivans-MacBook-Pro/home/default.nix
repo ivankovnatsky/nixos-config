@@ -1,5 +1,6 @@
 {
   imports = [
+    ../../../darwin/unison.nix
     ../../../home/atuin.nix
     ../../../home/bat.nix
     ../../../home/brctl.nix
@@ -56,6 +57,7 @@
     ../../../modules/home/syncthing-mgmt
     ../../../modules/home/tools
     ../../../modules/inventory
+    ../../../modules/home/unison
     ../../Ivans-MacBook-Air/home/dock.nix
     ../../Ivans-MacBook-Air/home/packages.nix
     ../../Ivans-MacBook-Air/home/reposync.nix
