@@ -30,9 +30,9 @@
     ../../../home/npm.nix
     ../../../home/nushell.nix
     ../../../home/packages-darwin.nix
-    ../../../home/packages.nix
     ../../../home/packages-local.nix
     ../../../home/packages-overlays.nix
+    ../../../home/packages.nix
     ../../../home/pass.nix
     ../../../home/ranger.nix
     ../../../home/rebuild-diff.nix

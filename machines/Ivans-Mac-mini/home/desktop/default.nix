@@ -1,7 +1,6 @@
 {
   imports = [
     ../../../../home/atuin.nix
-    ../../../../home/pi-models.nix
     ../../../../home/bash.nix
     ../../../../home/bat.nix
     ../../../../home/brctl.nix
@@ -31,6 +30,7 @@
     ../../../../home/packages-local.nix
     ../../../../home/packages-overlays.nix
     ../../../../home/pass.nix
+    ../../../../home/pi-models.nix
     ../../../../home/quit-mac-mouse-fix.nix
     ../../../../home/ranger.nix
     ../../../../home/rebuild-diff.nix
@@ -58,8 +58,8 @@
     ./dock.nix
     ./flags.nix
     ./packages-darwin.nix
-    ./packages.nix
     ./packages-local.nix
+    ./packages.nix
     ./settings-daemon.nix
     ./sops.nix
     ./tmux.nix

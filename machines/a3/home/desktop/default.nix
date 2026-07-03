@@ -22,9 +22,11 @@
     ../../../../home/nixvim/plugins/himalaya
     ../../../../home/npm.nix
     ../../../../home/nushell.nix
-    ../../../../home/packages.nix
     ../../../../home/packages-local.nix
     ../../../../home/packages-overlays.nix
+    ../../../../home/packages.nix
+    ../../../../home/pass.nix
+    ../../../../home/pi-models.nix
     ../../../../home/ranger.nix
     ../../../../home/rebuild-diff.nix
     ../../../../home/sops.nix
@@ -47,7 +49,6 @@
     ../../../../modules/home/uptime-kuma-mgmt
     ../../../../modules/inventory
     ./btop.nix
-    ../../../../home/pass.nix
     ./discord.nix
     ./firefox.nix
     ./flags.nix
@@ -56,7 +57,6 @@
     ./mail.nix
     ./obsidian.nix
     ./packages.nix
-    ../../../../home/pi-models.nix
     ./plasma.nix
     ./portal-input.nix
     ./settings-daemon.nix

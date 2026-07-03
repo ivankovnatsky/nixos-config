@@ -30,9 +30,9 @@
     ../../../home/npm.nix
     ../../../home/nushell.nix
     ../../../home/packages-darwin.nix
-    ../../../home/packages.nix
     ../../../home/packages-local.nix
     ../../../home/packages-overlays.nix
+    ../../../home/packages.nix
     ../../../home/pass.nix
     ../../../home/ranger.nix
     ../../../home/rebuild-diff.nix
@@ -56,8 +56,8 @@
     ../../../modules/home/settings-daemon
     ../../../modules/home/syncthing-mgmt
     ../../../modules/home/tools
-    ../../../modules/inventory
     ../../../modules/home/unison
+    ../../../modules/inventory
     ../../Ivans-MacBook-Air/home/dock.nix
     ../../Ivans-MacBook-Air/home/packages.nix
     ../../Ivans-MacBook-Air/home/reposync.nix

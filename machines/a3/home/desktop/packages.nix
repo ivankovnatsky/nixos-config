@@ -4,8 +4,7 @@
 }:
 
 {
-  home.packages = (
-    with pkgs;
+  home.packages = with pkgs;
     [
       (python313.withPackages (
         ps: with ps; [
@@ -65,6 +64,5 @@
       nixfmt
       smartmontools # Disk health monitoring (smartctl)
       wl-clipboard # Wayland clipboard utilities
-    ]
-  );
+    ];
 }
