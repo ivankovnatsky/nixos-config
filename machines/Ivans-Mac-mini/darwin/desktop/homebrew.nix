@@ -68,6 +68,7 @@
       "forgit"
     ];
     casks = [
+      "bitwarden"
       "whatsapp"
       "firefox"
       "google-chrome"
@@ -80,8 +81,6 @@
     ];
     masApps = {
       "Numbers" = 361304891;
-      "Pages" = 409201541;
-      "Bitwarden" = 1352778147;
     };
   };
 }
