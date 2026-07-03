@@ -69,6 +69,8 @@
     ];
     casks = [
       "whatsapp"
+      "firefox"
+      "google-chrome"
       "hammerspoon"
       "kitty"
       "mac-mouse-fix"
