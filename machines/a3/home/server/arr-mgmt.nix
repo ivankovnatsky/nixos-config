@@ -108,12 +108,6 @@ in
       bindAddress = "*";
       indexers = [
         {
-          name = "EZTV";
-          definitionName = "eztv";
-          enable = true;
-          priority = 25;
-        }
-        {
           name = "LimeTorrents";
           definitionName = "limetorrents";
           enable = true;
