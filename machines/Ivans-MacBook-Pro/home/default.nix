@@ -3,6 +3,7 @@
     ../../../darwin/unison.nix
     ../../../home/atuin.nix
     ../../../home/bat.nix
+    ../../../home/rbw.nix
     ../../../home/brctl.nix
     ../../../home/btop.nix
     ../../../home/carapace.nix

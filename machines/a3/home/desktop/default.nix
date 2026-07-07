@@ -21,6 +21,7 @@
     ../../../../home/nixvim/plugins/gpg-nvim
     ../../../../home/nixvim/plugins/himalaya
     ../../../../home/npm.nix
+    ../../../../home/rbw.nix
     ../../../../home/nushell.nix
     ../../../../home/packages-local.nix
     ../../../../home/packages-overlays.nix
