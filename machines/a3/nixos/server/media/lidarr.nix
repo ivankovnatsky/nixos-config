@@ -21,6 +21,8 @@ in
 
   systemd.services.lidarr = {
     serviceConfig.UMask = lib.mkForce "0002";
-    unitConfig.RequiresMountsFor = [ "/storage" ];
+    unitConfig.RequiresMountsFor = [
+      "/storage"
+    ];
   };
 }
