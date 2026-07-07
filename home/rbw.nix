@@ -12,7 +12,10 @@ let
   pinentryPackage = if isDarwin then pkgs.pinentry_mac else pkgs.pinentry-tty;
 in
 {
-  programs.rbw.enable = true;
+  programs.rbw = {
+    enable = true;
+    package = (pkgs.rbw.override { withFzf = true; });
+  };
 
   sops.templates."rbw-config.json".content = builtins.toJSON {
     email = config.sops.placeholder.email;
