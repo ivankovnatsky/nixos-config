@@ -18,9 +18,7 @@ in
   #     (declared by home/sops-secrets.nix) — values are reused across hosts
   #     rather than re-encrypted under a new path.
   #
-  # /storage/data/backup is created by storage-disk.nix tmpfiles rule and
-  # owned by ivan so miniserve's --upload-files / --mkdir works without
-  # privilege.
+  # /storage/data/backup is a bind mount of /storage0/data/backup.
 
   sops.templates."miniserve-auth" = {
     content = ''
@@ -31,14 +29,19 @@ in
   systemd.user.services.miniserve = {
     Unit = {
       Description = "miniserve file server";
-      # /storage is LUKS+TPM unlocked at boot; ivan has `linger = true`, so this
-      # user unit starts at boot independent of any graphical session.
+      # /storage and /storage0 are LUKS+TPM unlocked at boot; ivan has
+      # `linger = true`, so this user unit starts at boot independent of any
+      # graphical session.
       #
       # RequiresMountsFor pulls in the proper Requires=/After= on the system
-      # storage.mount so we don't race the LUKS unlock. The ExecStartPre
+      # storage.mount and storage-data-backup.mount so we don't race LUKS
+      # unlocks. The ExecStartPre
       # mountpoint check is a belt-and-suspenders guard, and the generous
       # restart budget covers slow TPM unlocks (~unlimited retries over 1h).
-      RequiresMountsFor = [ "/storage" ];
+      RequiresMountsFor = [
+        "/storage"
+        "/storage/data/backup"
+      ];
       After = [ "network-online.target" ];
       Wants = [ "network-online.target" ];
       StartLimitBurst = 100;
@@ -47,7 +50,10 @@ in
     Service = {
       # Refuse to start if /storage isn't mounted — otherwise miniserve would
       # happily serve the empty mountpoint dir on the root fs.
-      ExecStartPre = "${pkgs.util-linux}/bin/mountpoint -q /storage";
+      ExecStartPre = pkgs.writeShellScript "miniserve-check-mounts" ''
+        ${pkgs.util-linux}/bin/mountpoint -q /storage
+        ${pkgs.util-linux}/bin/mountpoint -q /storage/data/backup
+      '';
       ExecStart = pkgs.writeShellScript "miniserve-start" ''
         exec ${pkgs.miniserve}/bin/miniserve \
           --interfaces 0.0.0.0 \
