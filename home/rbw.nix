@@ -8,7 +8,11 @@
 let
   inherit (pkgs.stdenv.targetPlatform) isDarwin;
 
-  configFile = "${config.home.homeDirectory}/Library/Application Support/rbw/config.json";
+  configFile =
+    if isDarwin then
+      "${config.home.homeDirectory}/Library/Application Support/rbw/config.json"
+    else
+      "${config.xdg.configHome}/rbw/config.json";
   pinentryPackage = if isDarwin then pkgs.pinentry_mac else pkgs.pinentry-tty;
 in
 {
