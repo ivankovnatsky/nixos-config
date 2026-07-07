@@ -42,7 +42,7 @@ in
         identity = forgejoIdentity;
       }
       {
-        path = "/storage/data";
+        path = "/storage0/data";
         remote = "origin";
         remoteUrl = "https://forgejo.@domain@/@username@/data.git";
         branch = "main";
