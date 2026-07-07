@@ -229,14 +229,14 @@ in
           hooksPath = "${config.home.homeDirectory}/.config/git/hooks";
         };
         safe = {
-          # /storage/data on a3 is synced by reposync but owned root:users
-          # (see machines/a3/nixos/server/storage-disk.nix), which trips git's
+          # /storage0/data on a3 is synced by reposync but owned root:users
+          # (see machines/a3/nixos/server/storage0-disk.nix), which trips git's
           # "detected dubious ownership" check. reposync runs as ivan and reads
           # this user config, so whitelist the path here for a3 only.
           directory = [
             "${config.flags.homeWorkPath}/Sources/github.com/ivankovnatsky/nix-config"
           ]
-          ++ lib.optional (osConfig.networking.hostName == "a3") "/storage/data";
+          ++ lib.optional (osConfig.networking.hostName == "a3") "/storage0/data";
         };
       };
     };
