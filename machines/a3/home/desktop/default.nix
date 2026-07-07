@@ -21,7 +21,6 @@
     ../../../../home/nixvim/plugins/gpg-nvim
     ../../../../home/nixvim/plugins/himalaya
     ../../../../home/npm.nix
-    ../../../../home/rbw.nix
     ../../../../home/nushell.nix
     ../../../../home/packages-local.nix
     ../../../../home/packages-overlays.nix
@@ -29,6 +28,7 @@
     ../../../../home/pass.nix
     ../../../../home/pi-models.nix
     ../../../../home/ranger.nix
+    ../../../../home/rbw.nix
     ../../../../home/rebuild-diff.nix
     ../../../../home/sops.nix
     ../../../../home/ssh.nix

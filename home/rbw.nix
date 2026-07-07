@@ -14,7 +14,7 @@ in
 {
   programs.rbw = {
     enable = true;
-    package = (pkgs.rbw.override { withFzf = true; });
+    package = pkgs.rbw.override { withFzf = true; };
   };
 
   sops.templates."rbw-config.json".content = builtins.toJSON {

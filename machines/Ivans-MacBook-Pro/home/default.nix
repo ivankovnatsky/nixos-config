@@ -3,7 +3,6 @@
     ../../../darwin/unison.nix
     ../../../home/atuin.nix
     ../../../home/bat.nix
-    ../../../home/rbw.nix
     ../../../home/brctl.nix
     ../../../home/btop.nix
     ../../../home/carapace.nix
@@ -36,6 +35,7 @@
     ../../../home/packages.nix
     ../../../home/pass.nix
     ../../../home/ranger.nix
+    ../../../home/rbw.nix
     ../../../home/rebuild-diff.nix
     ../../../home/safari.nix
     ../../../home/sops.nix

@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 
 {
   boot.initrd.luks.devices."crypted-storage0" = {

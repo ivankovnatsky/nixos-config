@@ -4,65 +4,64 @@
 }:
 
 {
-  home.packages = with pkgs;
-    [
-      (python313.withPackages (
-        ps: with ps; [
-          grip
-          markitdown
-        ]
-      ))
-      unzip
-      mpv
-      nixpkgs-nixos-master-edge.antigravity-cli
-      unixtools.ifconfig
-      backup-system
-      bat
-      bubblewrap
-      cargo
-      curlie
-      dig
-      doggo
-      duf
-      erdtree
-      exiftool
-      glow
-      hadolint
-      home-manager
-      imagemagick
-      magic-wormhole
-      mkpasswd
-      nethogs
-      nh
-      nvtopPackages.nvidia # GPU monitoring (like htop for GPUs)
-      pandoc
-      parallel
-      pciutils
-      pulseaudio
-      pv
-      q
-      ripgrep
-      rust-analyzer
-      rustc
-      typos
-      typst
-      typstyle
-      uv
-      velocidrone
-      yq
-      zsh-forgit
-      rocmPackages.rocm-smi
-      amdgpu_top
-      fastfetch
-      gnumake
-      gum
-      kdePackages.krdc # KDE Remote Desktop Client
-      pinentry-qt # Qt pinentry for GPG
-      libnotify # Provides notify-send command
-      lm_sensors # Provides the 'sensors' command for monitoring temperatures
-      lsof # List open files
-      nixfmt
-      smartmontools # Disk health monitoring (smartctl)
-      wl-clipboard # Wayland clipboard utilities
-    ];
+  home.packages = with pkgs; [
+    (python313.withPackages (
+      ps: with ps; [
+        grip
+        markitdown
+      ]
+    ))
+    unzip
+    mpv
+    nixpkgs-nixos-master-edge.antigravity-cli
+    unixtools.ifconfig
+    backup-system
+    bat
+    bubblewrap
+    cargo
+    curlie
+    dig
+    doggo
+    duf
+    erdtree
+    exiftool
+    glow
+    hadolint
+    home-manager
+    imagemagick
+    magic-wormhole
+    mkpasswd
+    nethogs
+    nh
+    nvtopPackages.nvidia # GPU monitoring (like htop for GPUs)
+    pandoc
+    parallel
+    pciutils
+    pulseaudio
+    pv
+    q
+    ripgrep
+    rust-analyzer
+    rustc
+    typos
+    typst
+    typstyle
+    uv
+    velocidrone
+    yq
+    zsh-forgit
+    rocmPackages.rocm-smi
+    amdgpu_top
+    fastfetch
+    gnumake
+    gum
+    kdePackages.krdc # KDE Remote Desktop Client
+    pinentry-qt # Qt pinentry for GPG
+    libnotify # Provides notify-send command
+    lm_sensors # Provides the 'sensors' command for monitoring temperatures
+    lsof # List open files
+    nixfmt
+    smartmontools # Disk health monitoring (smartctl)
+    wl-clipboard # Wayland clipboard utilities
+  ];
 }

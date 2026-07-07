@@ -33,12 +33,12 @@
     ../../../../home/pi-models.nix
     ../../../../home/quit-mac-mouse-fix.nix
     ../../../../home/ranger.nix
+    ../../../../home/rbw.nix
     ../../../../home/rebuild-diff.nix
     ../../../../home/safari.nix
     ../../../../home/sops-secrets.nix
     ../../../../home/ssh.nix
     ../../../../home/starship
-    ../../../../home/rbw.nix
     ../../../../home/syncthing.nix
     ../../../../home/tmux.nix
     ../../../../home/treefmt.nix
