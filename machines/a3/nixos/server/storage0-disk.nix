@@ -22,25 +22,8 @@
     ];
   };
 
-  systemd.services.storage-data-backup-bind-source = {
-    description = "Prepare /storage/data/backup bind mount source";
-    requiredBy = [ "storage-data-backup.mount" ];
-    before = [ "storage-data-backup.mount" ];
-    requires = [
-      "storage.mount"
-      "storage0.mount"
-    ];
-    after = [
-      "storage.mount"
-      "storage0.mount"
-    ];
-    serviceConfig.Type = "oneshot";
-    script = ''
-      ${pkgs.coreutils}/bin/install -d -o ivan -g users -m 0755 /storage0/data/backup
-      ${pkgs.coreutils}/bin/install -d -o ivan -g users -m 0755 /storage0/data/backup/Machines
-      ${pkgs.coreutils}/bin/install -d -o root -g users -m 0755 /storage/data/backup
-    '';
-  };
+  # The bind source service is no longer needed.
+  # Directories are now created by systemd-tmpfiles defined below.
 
   systemd.tmpfiles.rules = [
     "d /storage0/data 0755 root users -"
