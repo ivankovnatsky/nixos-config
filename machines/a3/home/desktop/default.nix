@@ -33,6 +33,7 @@
     ../../../../home/sops.nix
     ../../../../home/ssh.nix
     ../../../../home/starship
+    ../../../../home/summarize.nix
     ../../../../home/tmux.nix
     ../../../../home/treefmt.nix
     ../../../../home/yazi.nix

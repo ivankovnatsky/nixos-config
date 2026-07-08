@@ -40,6 +40,7 @@
     ../../../home/safari.nix
     ../../../home/sops.nix
     ../../../home/starship
+    ../../../home/summarize.nix
     ../../../home/syncthing-mgmt.nix
     ../../../home/syncthing.nix
     ../../../home/tmux.nix

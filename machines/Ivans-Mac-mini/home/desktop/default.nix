@@ -39,6 +39,7 @@
     ../../../../home/sops-secrets.nix
     ../../../../home/ssh.nix
     ../../../../home/starship
+    ../../../../home/summarize.nix
     ../../../../home/syncthing.nix
     ../../../../home/tmux.nix
     ../../../../home/treefmt.nix
