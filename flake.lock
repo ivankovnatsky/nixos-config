@@ -320,11 +320,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1778506109,
-        "narHash": "sha256-NyAG+jxc9ZkKeF2KZwB0mmvt1c18qSlBWVkGHI5FCqk=",
+        "lastModified": 1783357241,
+        "narHash": "sha256-e6fic6iZSYrkYSM291bmBuYMMkEsMg/N3q2SlHu4nEU=",
         "owner": "openclaw",
         "repo": "nix-steipete-tools",
-        "rev": "ccd52ada84f9a28aa92fd10c653b8e50c46aee44",
+        "rev": "10526a1e0e7d7b77a9f43fe86bc8bd947700b6a9",
         "type": "github"
       },
       "original": {
