@@ -3,7 +3,7 @@
     enable = true;
     onActivation = {
       autoUpdate = false;
-      cleanup = "zap";
+      cleanup = "none";
     };
     global.brewfile = true;
     brews = [
