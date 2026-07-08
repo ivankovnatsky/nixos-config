@@ -74,6 +74,24 @@ class GitCommitScopeTest(unittest.TestCase):
         self.assertEqual(self.last_subject(), "new-tool: init")
         self.assertEqual(self.status_short(), "")
 
+    def test_no_args_preserves_repeated_numeric_path_segment(self):
+        self.write("Daily/2026/07/07.md", "entry\n")
+
+        result = self.run_scope()
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.last_subject(), "Daily/2026/07/07: init")
+        self.assertEqual(self.status_short(), "")
+
+    def test_no_args_shortens_repeated_non_numeric_path_segment(self):
+        self.write("packages/tool/tool.py", "print('hello')\n")
+
+        result = self.run_scope()
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.last_subject(), "packages/tool: init")
+        self.assertEqual(self.status_short(), "")
+
     def test_no_args_commits_single_staged_new_file_as_init(self):
         self.write("new-tool.py", "print('hello')\n")
         self.git("add", "new-tool.py")

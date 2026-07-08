@@ -39,7 +39,7 @@ def shorten_path(path: str) -> str:
 
     # Remove duplicate path component (e.g., packages/git-commit-scope/git-commit-scope -> packages/git-commit-scope)
     parts = result.split("/")
-    if len(parts) >= 2 and parts[-1] == parts[-2]:
+    if len(parts) >= 2 and parts[-1] == parts[-2] and not parts[-1].isdigit():
         result = "/".join(parts[:-1])
 
     # Strip "default" filename (default.nix is conventional entry point)
