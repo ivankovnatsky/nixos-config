@@ -49,14 +49,6 @@ let
   # Older nixpkgs inputs reject nulls for options that now default to functions.
   safeConfig = final.lib.filterAttrs (_: value: value != null) final.config;
   masterOverlays = {
-    nixpkgs-darwin-master = import inputs.nixpkgs-darwin-master {
-      inherit system;
-      config = safeConfig;
-    };
-    nixpkgs-darwin-master-opencode = import inputs.nixpkgs-darwin-master-opencode {
-      inherit system;
-      config = safeConfig;
-    };
     nixpkgs-darwin-master-gwq = import inputs.nixpkgs-darwin-master-gwq {
       inherit system;
       config = safeConfig;
@@ -79,8 +71,6 @@ let
   flakeOverlays = {
     inherit (inputs.username.packages.${system}) username;
     inherit (inputs.passgen.packages.${system}) passgen;
-    pyenv-nix-install = inputs.pyenv-nix-install.packages.${system}.default;
-    cx-cli = inputs.cx-cli.packages.${system}.default;
     summarize = inputs.nix-steipete-tools.packages.${system}.summarize;
   };
 

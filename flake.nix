@@ -13,15 +13,6 @@
       url = "github:nixos/nixpkgs/master";
     };
 
-    # This is used to pin packages from master channel (Darwin).
-    nixpkgs-darwin-master = {
-      url = "github:nixos/nixpkgs/master";
-    };
-
-    nixpkgs-darwin-master-opencode = {
-      url = "github:nixos/nixpkgs/master";
-    };
-
     nixpkgs-darwin-master-gwq = {
       url = "github:nixos/nixpkgs/master";
     };
@@ -127,10 +118,6 @@
       inputs.flake-utils.follows = "flake-utils";
     };
 
-    pyenv-nix-install = {
-      url = "github:sirno/pyenv-nix-install";
-    };
-
     # KDE Plasma configuration manager
     plasma-manager-nixos-unstable = {
       url = "github:nix-community/plasma-manager/trunk";
@@ -157,11 +144,6 @@
     # tools - declarative configuration manager
     tools = {
       url = "github:ivankovnatsky/tools";
-    };
-
-    # cx - Coralogix CLI
-    cx-cli = {
-      url = "github:coralogix/cx-cli";
     };
 
     # zapp - CLI tool for flashing ZSA keyboards (Linux only)
