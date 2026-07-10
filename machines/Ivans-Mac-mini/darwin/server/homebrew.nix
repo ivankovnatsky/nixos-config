@@ -11,7 +11,6 @@
       "make"
       "tmux"
       "git"
-      "tailscale"
     ];
   };
 }
