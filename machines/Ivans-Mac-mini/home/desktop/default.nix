@@ -59,6 +59,7 @@
     ../../../../secrets/sops-nix.nix
     ./dock.nix
     ./flags.nix
+    ./firefox.nix
     ./packages-darwin.nix
     ./packages-local.nix
     ./packages.nix
