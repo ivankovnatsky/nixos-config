@@ -23,6 +23,9 @@
   # Block notification prompts globally (2 = block)
   "permissions.default.desktop-notification" = 2;
 
+  # Block persistent storage prompts globally (2 = block)
+  "permissions.default.persistent-storage" = 2;
+
   # Never offer to save passwords (using Bitwarden instead)
   "signon.rememberSignons" = false;
 
