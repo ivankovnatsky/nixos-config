@@ -124,7 +124,7 @@ in
         ];
       };
       Service = {
-        Type = "oneshot";
+        Type = "exec";
         ExecStart = "${syncScript}";
       };
       Install.WantedBy = [ "default.target" ];

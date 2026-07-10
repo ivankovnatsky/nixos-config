@@ -117,7 +117,7 @@ in
             Wants = [ "sops-nix.service" ];
           };
           Service = {
-            Type = "oneshot";
+            Type = "exec";
             ExecStart = "${mkSyncScript name profile}";
           };
           Install.WantedBy = [ "default.target" ];
