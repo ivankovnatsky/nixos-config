@@ -68,6 +68,7 @@
       "forgit"
     ];
     casks = [
+      "firefox"
       "bitwarden"
       "whatsapp"
       "hammerspoon"
