@@ -8,7 +8,7 @@ let
   # Special arguments for specific overlays (like nixpkgs all-packages.nix)
   overlayArgs = {
     gwq = {
-      inherit (masterOverlays.nixpkgs-darwin-master-gwq) go_1_26;
+      inherit (masterOverlays.nixpkgs-nixos-master) go_1_26;
     };
   };
 
@@ -49,15 +49,7 @@ let
   # Older nixpkgs inputs reject nulls for options that now default to functions.
   safeConfig = final.lib.filterAttrs (_: value: value != null) final.config;
   masterOverlays = {
-    nixpkgs-darwin-master-gwq = import inputs.nixpkgs-darwin-master-gwq {
-      inherit system;
-      config = safeConfig;
-    };
-    nixpkgs-nixos-master-ollama = import inputs.nixpkgs-nixos-master-ollama {
-      inherit system;
-      config = safeConfig;
-    };
-    nixpkgs-nixos-master-edge = import inputs.nixpkgs-nixos-master-edge {
+    nixpkgs-nixos-master = import inputs.nixpkgs-nixos-master {
       inherit system;
       config = safeConfig;
     };
