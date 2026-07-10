@@ -1,6 +1,7 @@
 {
   imports = [
     ../../../../darwin/darwin.nix
+    ../../../../darwin/default-browser.nix
     ../../../../darwin/flags.nix
     ../../../../darwin/fonts.nix
     ../../../../darwin/no-dock-restart.nix
