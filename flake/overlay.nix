@@ -53,10 +53,6 @@ let
       inherit system;
       config = safeConfig;
     };
-    nixpkgs-nixos-unstable = import inputs.nixpkgs-nixos-unstable {
-      inherit system;
-      config = safeConfig;
-    };
   };
 
   # 4. Direct packages from other flakes
