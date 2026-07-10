@@ -46,8 +46,8 @@ let
 
   # 3. Nixpkgs-master and unstable packages
   inherit (final.stdenv.hostPlatform) system;
-  # Filter out null values from config to avoid replaceStdenv = null breaking imports
-  safeConfig = builtins.removeAttrs final.config [ "replaceStdenv" ];
+  # Older nixpkgs inputs reject nulls for options that now default to functions.
+  safeConfig = final.lib.filterAttrs (_: value: value != null) final.config;
   masterOverlays = {
     nixpkgs-darwin-master = import inputs.nixpkgs-darwin-master {
       inherit system;
