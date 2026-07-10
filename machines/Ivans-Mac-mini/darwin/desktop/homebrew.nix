@@ -76,7 +76,6 @@
       "mac-mouse-fix"
       "obsidian"
       "silicon-labs-vcp-driver"
-      "antigravity-cli"
     ];
     masApps = {
       "Numbers" = 361304891;
