@@ -429,22 +429,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-nixos-master": {
-      "locked": {
-        "lastModified": 1779876520,
-        "narHash": "sha256-Cos+dfK6SKBMvmtlW+oMsO/yGLoCnGB4qLCdpnJziRc=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "d19f6793f49e4626afda0046a1075c68d6c8df03",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "master",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs-nixos-master-edge": {
       "locked": {
         "lastModified": 1779876520,
@@ -723,7 +707,6 @@
         "nixpkgs-darwin-master-opencode": "nixpkgs-darwin-master-opencode",
         "nixpkgs-darwin-unstable": "nixpkgs-darwin-unstable",
         "nixpkgs-master-pinned": "nixpkgs-master-pinned",
-        "nixpkgs-nixos-master": "nixpkgs-nixos-master",
         "nixpkgs-nixos-master-edge": "nixpkgs-nixos-master-edge",
         "nixpkgs-nixos-master-ollama": "nixpkgs-nixos-master-ollama",
         "nixpkgs-nixos-unstable": "nixpkgs-nixos-unstable",

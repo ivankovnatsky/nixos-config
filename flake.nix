@@ -5,11 +5,6 @@
     # Naming convention for the inputs is:
     # $repo_name-$platform-$repo_branch
 
-    # This is used to pin packages from master channel (NixOS).
-    nixpkgs-nixos-master = {
-      url = "github:nixos/nixpkgs/master";
-    };
-
     nixpkgs-nixos-master-ollama = {
       url = "github:nixos/nixpkgs/master";
     };
