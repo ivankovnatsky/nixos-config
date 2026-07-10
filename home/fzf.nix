@@ -16,5 +16,7 @@
     enableBashIntegration = true;
     enableZshIntegration = true;
     enableFishIntegration = config.flags.enableFishShell;
+    # Atuin owns Ctrl-R; avoid the fzf/atuin Ctrl-R conflict warning.
+    historyWidget.command = "";
   };
 }
