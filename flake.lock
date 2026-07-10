@@ -313,22 +313,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-darwin-master-gwq": {
-      "locked": {
-        "lastModified": 1774553332,
-        "narHash": "sha256-L/ngUnBCBB5iN3qPZn/10iqSfdCX/P9+9+CkGzvyTEs=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "c54fdaedc1a65f8a053e1c2256ec6460c6e5f535",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "master",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs-darwin-unstable": {
       "locked": {
         "lastModified": 1783279667,
@@ -361,23 +345,7 @@
         "type": "github"
       }
     },
-    "nixpkgs-nixos-master-edge": {
-      "locked": {
-        "lastModified": 1779876520,
-        "narHash": "sha256-Cos+dfK6SKBMvmtlW+oMsO/yGLoCnGB4qLCdpnJziRc=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "d19f6793f49e4626afda0046a1075c68d6c8df03",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "master",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs-nixos-master-ollama": {
+    "nixpkgs-nixos-master": {
       "locked": {
         "lastModified": 1775403759,
         "narHash": "sha256-cGyKiTspHEUx3QwAnV3RfyT+VOXhHLs+NEr17HU34Wo=",
@@ -584,11 +552,9 @@
         "nix-darwin-darwin-unstable": "nix-darwin-darwin-unstable",
         "nix-homebrew": "nix-homebrew",
         "nix-steipete-tools": "nix-steipete-tools",
-        "nixpkgs-darwin-master-gwq": "nixpkgs-darwin-master-gwq",
         "nixpkgs-darwin-unstable": "nixpkgs-darwin-unstable",
         "nixpkgs-master-pinned": "nixpkgs-master-pinned",
-        "nixpkgs-nixos-master-edge": "nixpkgs-nixos-master-edge",
-        "nixpkgs-nixos-master-ollama": "nixpkgs-nixos-master-ollama",
+        "nixpkgs-nixos-master": "nixpkgs-nixos-master",
         "nixpkgs-nixos-unstable": "nixpkgs-nixos-unstable",
         "nixvim-darwin-unstable": "nixvim-darwin-unstable",
         "nixvim-nixos-unstable": "nixvim-nixos-unstable",
