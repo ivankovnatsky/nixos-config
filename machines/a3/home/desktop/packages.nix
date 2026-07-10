@@ -13,7 +13,7 @@
     ))
     unzip
     mpv
-    nixpkgs-nixos-master-edge.antigravity-cli
+    nixpkgs-nixos-master.antigravity-cli
     unixtools.ifconfig
     backup-system
     bat
