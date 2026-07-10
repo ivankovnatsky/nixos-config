@@ -26,15 +26,21 @@ def login_write_state(app_list: list[str]) -> None:
     login_state_file().write_text(",".join(sorted(app_list)))
 
 
-def login_list() -> list[str]:
+def login_list_status() -> tuple[bool, list[str]]:
+    """Returns (ok, items). ok is False if osascript itself failed."""
     script = 'tell application "System Events" to get the name of every login item'
     result = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
     if result.returncode != 0:
-        return []
+        return False, []
     names = result.stdout.strip()
     if not names:
-        return []
-    return [n.strip() for n in names.split(",")]
+        return True, []
+    return True, [n.strip() for n in names.split(",")]
+
+
+def login_list() -> list[str]:
+    _, items = login_list_status()
+    return items
 
 
 def login_add(app_name: str) -> bool:
@@ -62,32 +68,27 @@ def login_remove(item_name: str) -> bool:
     return True
 
 
-def login_previous_state() -> list[str]:
-    state = login_state_file()
-    if not state.exists():
-        return []
-    raw = state.read_text().strip()
-    if not raw:
-        return []
-    return [a.strip() for a in raw.split(",") if a.strip()]
-
-
 def login_set(target_apps: list[str]) -> bool:
     """Sync login items to exactly target_apps (declarative).
 
-    Only removes items we previously managed (tracked via state file),
-    so user-added login items are preserved.
+    Diffs against the actual current login items every run, so items
+    added outside our management (e.g. by an app's own installer) are
+    removed too, not just ones we previously added ourselves.
     """
-    if login_state_matches(target_apps):
+    ok_list, current_list = login_list_status()
+    if not ok_list:
+        print("Error: could not read current login items, skipping login set", file=sys.stderr)
+        return False
+
+    current = set(current_list)
+    target = set(target_apps)
+
+    to_remove = current - target
+    to_add = target - current
+
+    if not to_remove and not to_add:
         print("Skipping login set (already configured)")
         return True
-
-    current = set(login_list())
-    target = set(target_apps)
-    previously_managed = set(login_previous_state())
-
-    to_remove = (previously_managed - target) & current
-    to_add = target - current
 
     ok = True
     for app in sorted(to_remove):
