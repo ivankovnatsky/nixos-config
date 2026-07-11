@@ -18,6 +18,7 @@
       "zapp"
     ];
     casks = [
+      "firefox@developer-edition"
       "bitwarden"
       "coconutbattery"
       "hammerspoon"
