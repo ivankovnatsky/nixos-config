@@ -193,6 +193,7 @@
                   "applications:steam.desktop"
                   "applications:velocidrone.desktop"
                   "applications:obsidian.desktop"
+                  "applications:org.cryptomator.Cryptomator.desktop"
                   "applications:systemsettings.desktop"
                 ];
               };
