@@ -1,7 +1,6 @@
 {
   imports = [
     ../../../../home/atuin.nix
-    ../../../../home/firefox-darwin.nix
     ../../../../home/bash.nix
     ../../../../home/bat.nix
     ../../../../home/brctl.nix
@@ -9,6 +8,7 @@
     ../../../../home/carapace.nix
     ../../../../home/claude-settings.nix
     ../../../../home/direnv.nix
+    ../../../../home/firefox-darwin.nix
     ../../../../home/fish.nix
     ../../../../home/fzf.nix
     ../../../../home/ghorg.nix
@@ -59,8 +59,8 @@
     ../../../../modules/inventory
     ../../../../secrets/sops-nix.nix
     ./dock.nix
-    ./flags.nix
     ./firefox.nix
+    ./flags.nix
     ./packages-darwin.nix
     ./packages-local.nix
     ./packages.nix

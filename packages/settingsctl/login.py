@@ -77,7 +77,10 @@ def login_set(target_apps: list[str]) -> bool:
     """
     ok_list, current_list = login_list_status()
     if not ok_list:
-        print("Error: could not read current login items, skipping login set", file=sys.stderr)
+        print(
+            "Error: could not read current login items, skipping login set",
+            file=sys.stderr,
+        )
         return False
 
     current = set(current_list)

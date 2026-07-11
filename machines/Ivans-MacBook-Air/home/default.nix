@@ -1,7 +1,6 @@
 {
   imports = [
     ../../../darwin/unison.nix
-    ../../../home/firefox-darwin.nix
     ../../../home/atuin.nix
     ../../../home/bat.nix
     ../../../home/brctl.nix
@@ -9,6 +8,7 @@
     ../../../home/carapace.nix
     ../../../home/claude-settings.nix
     ../../../home/direnv.nix
+    ../../../home/firefox-darwin.nix
     ../../../home/fish.nix
     ../../../home/flags.nix
     ../../../home/fzf.nix
