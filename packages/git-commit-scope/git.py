@@ -305,24 +305,46 @@ def is_file_path(path: str) -> bool:
 
 
 def is_new_file(path: str) -> bool:
-    """Check if a path is new to the repo (not in HEAD), for defaulting subject to 'init'.
+    """Check if a path contains only new changes, for defaulting to 'init'.
 
     This covers both untracked files and staged-but-never-committed files.
-    For directories, checks whether HEAD has any files under that path.
+    A directory may already contain tracked files as long as every current
+    change beneath it adds a new file.
     """
     try:
         git_root = get_git_root()
         abs_path = os.path.abspath(path)
         rel_path = os.path.relpath(abs_path, git_root)
-        if os.path.isdir(abs_path):
-            # For directories, check if HEAD has any files under this path
-            result = subprocess.run(
-                ["git", "ls-tree", "-r", "HEAD", "--", rel_path],
-                capture_output=True,
-                text=True,
-                cwd=git_root,
+        if os.path.isdir(abs_path) and not os.path.islink(abs_path):
+            prefix = "" if rel_path == "." else rel_path.rstrip("/") + "/"
+            changed = [
+                changed_path
+                for changed_path in get_all_changed_files()
+                if changed_path == rel_path or changed_path.startswith(prefix)
+            ]
+            if not changed:
+                head_entries = subprocess.run(
+                    ["git", "ls-tree", "-r", "HEAD", "--", rel_path],
+                    capture_output=True,
+                    text=True,
+                    cwd=git_root,
+                )
+                return (
+                    head_entries.returncode == 0
+                    and not head_entries.stdout.strip()
+                    and any(os.scandir(abs_path))
+                )
+            return all(
+                not get_rename_sources_for_path(changed_path)
+                and subprocess.run(
+                    ["git", "cat-file", "-e", f"HEAD:{changed_path}"],
+                    capture_output=True,
+                    text=True,
+                    cwd=git_root,
+                ).returncode
+                != 0
+                for changed_path in changed
             )
-            return result.returncode == 0 and not result.stdout.strip()
         result = subprocess.run(
             ["git", "cat-file", "-e", f"HEAD:{rel_path}"],
             capture_output=True,

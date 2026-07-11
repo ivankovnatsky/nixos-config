@@ -170,6 +170,96 @@ class GitCommitScopeTest(unittest.TestCase):
         self.assertEqual(self.last_subject(), "subdir/new-tool: init")
         self.assertEqual(self.status_short(), "")
 
+    def test_explicit_directory_commits_multiple_new_files_as_init(self):
+        self.write("repo/existing.txt", "existing\n")
+        self.git("add", "repo/existing.txt")
+        self.git("commit", "-m", "add existing repo file")
+        self.write("repo/new-a.txt", "a\n")
+        self.write("repo/nested/new-b.txt", "b\n")
+
+        result = self.run_scope("repo")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.last_subject(), "repo: init")
+        self.assertEqual(self.status_short(), "")
+
+    def test_ignored_directory_does_not_commit_unrelated_staged_change(self):
+        self.write(".gitignore", "ignored/\n")
+        self.git("add", ".gitignore")
+        self.git("commit", "-m", "ignore directory")
+        self.write("ignored/new.txt", "new\n")
+        self.write("unrelated.txt", "unrelated\n")
+        self.git("add", "unrelated.txt")
+
+        result = self.run_scope("ignored")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.last_subject(), "ignored: init")
+        self.assertEqual(self.status_short(), "A  unrelated.txt")
+
+    def test_directory_rename_requires_explicit_subject(self):
+        self.write("old/file.txt", "old\n")
+        self.git("add", "old/file.txt")
+        self.git("commit", "-m", "add old directory")
+        self.git("mv", "old", "new")
+
+        result = self.run_scope("new")
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("looks like a file path, not a subject", result.stderr)
+        self.assertEqual(self.last_subject(), "add old directory")
+
+    def test_repository_root_commits_multiple_new_files_as_init(self):
+        self.write("new-a.txt", "a\n")
+        self.write("nested/new-b.txt", "b\n")
+
+        result = self.run_scope(".")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.last_subject(), ".: init")
+        self.assertEqual(self.status_short(), "")
+
+    def test_new_directory_symlink_commits_as_init(self):
+        target = self.repo / "target"
+        target.mkdir()
+        os.symlink("target", self.repo / "link")
+
+        result = self.run_scope("link")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.last_subject(), "link: init")
+        self.assertEqual(self.status_short(), "")
+
+    def test_new_nested_repository_commits_gitlink_as_init(self):
+        nested = self.repo / "nested-repo"
+        nested.mkdir()
+        subprocess.run(
+            ["git", "init"], cwd=nested, env=self.env, check=True, capture_output=True
+        )
+        subprocess.run(
+            ["git", "config", "commit.gpgsign", "false"],
+            cwd=nested,
+            env=self.env,
+            check=True,
+        )
+        (nested / "file.txt").write_text("nested\n")
+        subprocess.run(
+            ["git", "add", "file.txt"], cwd=nested, env=self.env, check=True
+        )
+        subprocess.run(
+            ["git", "commit", "-m", "seed nested repo"],
+            cwd=nested,
+            env=self.env,
+            check=True,
+            capture_output=True,
+        )
+
+        result = self.run_scope("nested-repo")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.last_subject(), "nested-repo: init")
+        self.assertEqual(self.status_short(), "")
+
     def test_explicit_deleted_file_from_subdir_preserves_cwd_path(self):
         subdir = self.repo / "subdir"
         self.write("subdir/file.txt", "subdir\n")

@@ -444,6 +444,23 @@ def main(args, subject, body, ai_shorten):
             if dir_deletion:
                 # Directory whose contents are all staged for deletion; nothing to add.
                 pass
+            elif os.path.isdir(os.path.join(git_root, target_file)):
+                result = subprocess.run(
+                    ["git", "add", "--", target_file],
+                    capture_output=True,
+                    text=True,
+                    cwd=git_root,
+                )
+                if result.returncode != 0:
+                    click.echo(f"  add -f {target_file}")
+                    subprocess.run(
+                        ["git", "add", "-f", "--", target_file],
+                        check=True,
+                        cwd=git_root,
+                    )
+                    force_added = True
+                else:
+                    click.echo(f"  add {target_file}")
             elif is_staged_path(target_file):
                 # File already staged — check if it's ignored (e.g., pre-staged with git add -f)
                 force_added = is_ignored(target_file, git_root)
@@ -483,9 +500,15 @@ def main(args, subject, body, ai_shorten):
             if is_staged_deletion(target_file) or dir_deletion:
                 cmd = ["git", "commit", "--only", target_file, "-m", message]
             elif force_added:
-                # Ignored files can't be used as pathspec (git respects .gitignore
-                # in pathspec matching even after git add -f). Commit from index.
-                cmd = ["git", "commit", "-m", message]
+                cmd = [
+                    "git",
+                    "commit",
+                    "--only",
+                    target_file,
+                    *rename_sources,
+                    "-m",
+                    message,
+                ]
             else:
                 cmd = ["git", "commit", target_file] + rename_sources + ["-m", message]
             if body_str:
