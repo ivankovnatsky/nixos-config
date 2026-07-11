@@ -696,11 +696,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1783778704,
-        "narHash": "sha256-8zowoi2L5WNnWTpdCyVBFB20NLX8nvSs+whbwaKPJ+E=",
+        "lastModified": 1783778960,
+        "narHash": "sha256-WfKAqkpIPbCDVAiJn9jQirh7yuBiAOswOyY8vN2zfQg=",
         "owner": "ivankovnatsky",
         "repo": "tools",
-        "rev": "d31d82b31037ebeccb094abfab78eeb146290f5c",
+        "rev": "eeb91b4a955442d4d3181b6e73bada8633d1b6ae",
         "type": "github"
       },
       "original": {
