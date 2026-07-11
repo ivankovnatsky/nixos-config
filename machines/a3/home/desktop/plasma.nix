@@ -119,12 +119,22 @@
                   {
                     name = "disk/all/read";
                     color = "255,255,255";
-                    label = "💾";
+                    label = "💾↓";
+                  }
+                  {
+                    name = "disk/all/write";
+                    color = "255,255,255";
+                    label = "💾↑";
                   }
                   {
                     name = "network/all/download";
                     color = "255,255,255";
-                    label = "🌐";
+                    label = "🌐↓";
+                  }
+                  {
+                    name = "network/all/upload";
+                    color = "255,255,255";
+                    label = "🌐↑";
                   }
                 ];
               };
