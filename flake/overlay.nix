@@ -58,7 +58,6 @@ let
   # 4. Direct packages from other flakes
   flakeOverlays = {
     inherit (inputs.username.packages.${system}) username;
-    inherit (inputs.passgen.packages.${system}) passgen;
     summarize = inputs.nix-steipete-tools.packages.${system}.summarize;
   };
 

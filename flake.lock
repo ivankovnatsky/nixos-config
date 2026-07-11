@@ -475,30 +475,6 @@
         "type": "github"
       }
     },
-    "passgen": {
-      "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": [
-          "nixpkgs-darwin-unstable"
-        ],
-        "rust-overlay": "rust-overlay"
-      },
-      "locked": {
-        "lastModified": 1782306379,
-        "narHash": "sha256-MVnoxM6VEUDO9Y1WPC4m07PFDX4mofHP90+MdosgW6g=",
-        "owner": "ivankovnatsky",
-        "repo": "passgen",
-        "rev": "46445e30c04ba1f3478d19db71b3fe45f50a8a25",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ivankovnatsky",
-        "repo": "passgen",
-        "type": "github"
-      }
-    },
     "plasma-manager-nixos-unstable": {
       "inputs": {
         "home-manager": [
@@ -559,7 +535,6 @@
         "nixvim-darwin-unstable": "nixvim-darwin-unstable",
         "nixvim-nixos-unstable": "nixvim-nixos-unstable",
         "nur-nixos-unstable": "nur-nixos-unstable",
-        "passgen": "passgen",
         "plasma-manager-nixos-unstable": "plasma-manager-nixos-unstable",
         "pomdtr-homebrew-tap": "pomdtr-homebrew-tap",
         "sops-nix-darwin-unstable": "sops-nix-darwin-unstable",

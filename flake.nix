@@ -104,12 +104,6 @@
       inputs.flake-utils.follows = "flake-utils";
     };
 
-    passgen = {
-      url = "github:ivankovnatsky/passgen";
-      inputs.nixpkgs.follows = "nixpkgs-darwin-unstable";
-      inputs.flake-utils.follows = "flake-utils";
-    };
-
     # KDE Plasma configuration manager
     plasma-manager-nixos-unstable = {
       url = "github:nix-community/plasma-manager/trunk";
