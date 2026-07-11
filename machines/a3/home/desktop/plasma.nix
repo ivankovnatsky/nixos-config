@@ -102,6 +102,9 @@
                 showTitle = false;
                 showLegend = false;
                 displayStyle = "org.kde.ksysguard.textonly";
+                # Milliseconds; 0 means no limit. Not exposed as a
+                # plasma-manager option, so it goes through `settings`.
+                settings.Appearance.updateRateLimit = 5000;
                 sensors = [
                   {
                     name = "cpu/all/usage";
@@ -117,6 +120,11 @@
                     name = "disk/all/read";
                     color = "255,255,255";
                     label = "💾";
+                  }
+                  {
+                    name = "network/all/download";
+                    color = "255,255,255";
+                    label = "🌐";
                   }
                 ];
               };
