@@ -25,7 +25,5 @@
     # miniserve (home-manager user unit) uploads here; needs ivan-owned dir.
     "d /storage0/data/backup 0755 ivan users -"
     "d /storage0/data/backup/Machines 0755 ivan users -"
-    # rclone sync target for iCloud Drive contents.
-    "d /storage0/data/iclouddrive 0755 ivan users -"
   ];
 }
