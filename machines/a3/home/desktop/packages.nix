@@ -42,6 +42,7 @@
     pv
     q
     ripgrep
+    rclone
     rust-analyzer
     rustc
     typos

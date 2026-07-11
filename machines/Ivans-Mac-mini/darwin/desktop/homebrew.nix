@@ -39,6 +39,7 @@
       "pigz"
       "poppler"
       "ruff"
+      "rclone"
       "shellcheck"
       "shfmt"
       "sops"
