@@ -17,13 +17,8 @@
     options = [
       "bind"
       "x-systemd.requires-mounts-for=/storage0/data/backup"
-      "x-systemd.requires=storage-data-backup-bind-source.service"
-      "x-systemd.after=storage-data-backup-bind-source.service"
     ];
   };
-
-  # The bind source service is no longer needed.
-  # Directories are now created by systemd-tmpfiles defined below.
 
   systemd.tmpfiles.rules = [
     "d /storage0/data 0755 root users -"
