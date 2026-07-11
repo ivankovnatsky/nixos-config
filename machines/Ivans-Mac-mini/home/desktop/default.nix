@@ -1,6 +1,7 @@
 {
   imports = [
     ../../../../home/atuin.nix
+    ../../../../home/firefox-darwin.nix
     ../../../../home/bash.nix
     ../../../../home/bat.nix
     ../../../../home/brctl.nix
@@ -59,7 +60,6 @@
     ../../../../modules/inventory
     ../../../../secrets/sops-nix.nix
     ./dock.nix
-    ./firefox.nix
     ./flags.nix
     ./packages-darwin.nix
     ./packages-local.nix
