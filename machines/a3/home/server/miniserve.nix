@@ -40,6 +40,7 @@ in
       # restart budget covers slow TPM unlocks (~unlimited retries over 1h).
       RequiresMountsFor = [
         "/storage"
+        "/storage/data/backup"
       ];
       After = [ "network-online.target" ];
       Wants = [ "network-online.target" ];
@@ -47,10 +48,12 @@ in
       StartLimitIntervalSec = 3600;
     };
     Service = {
-      # Refuse to start if /storage isn't mounted — otherwise miniserve would
-      # happily serve the empty mountpoint dir on the root fs.
+      # Refuse to start unless both mounts are live — otherwise miniserve serves
+      # the empty mountpoint dir on the root fs, and --upload-files --mkdir
+      # writes onto /storage instead of the /storage0-backed bind mount.
       ExecStartPre = pkgs.writeShellScript "miniserve-check-mounts" ''
         ${pkgs.util-linux}/bin/mountpoint -q /storage
+        ${pkgs.util-linux}/bin/mountpoint -q /storage/data/backup
       '';
       ExecStart = pkgs.writeShellScript "miniserve-start" ''
         exec ${pkgs.miniserve}/bin/miniserve \
