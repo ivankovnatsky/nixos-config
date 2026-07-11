@@ -25,5 +25,7 @@
     # miniserve (home-manager user unit) uploads here; needs ivan-owned dir.
     "d /storage0/data/backup 0755 ivan users -"
     "d /storage0/data/vault 0755 ivan users -"
+    "d /storage0/data/.backup 0755 ivan users -"
+    "d /storage0/data/.scripts 0755 ivan users -"
   ];
 }
