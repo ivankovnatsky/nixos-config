@@ -8,7 +8,7 @@
     profiles."default" = {
       id = 0;
       isDefault = true;
-      settings = import ../../../../home/firefox.nix;
+      settings = import ./firefox.nix;
     };
   };
 }

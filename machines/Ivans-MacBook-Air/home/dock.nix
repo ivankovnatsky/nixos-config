@@ -63,6 +63,7 @@ in
 
       # Brew casks
       { path = "/Applications/kitty.app/"; }
+      { path = "/Applications/Firefox Developer Edition.app/"; }
       { path = "/Applications/Bitwarden.app/"; }
       { path = "/Applications/Obsidian.app/"; }
       { path = "/Applications/WhatsApp.app/"; }

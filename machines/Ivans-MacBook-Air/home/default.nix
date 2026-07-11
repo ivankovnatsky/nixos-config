@@ -1,6 +1,7 @@
 {
   imports = [
     ../../../darwin/unison.nix
+    ../../../home/firefox-darwin.nix
     ../../../home/atuin.nix
     ../../../home/bat.nix
     ../../../home/brctl.nix
