@@ -22,7 +22,6 @@ DEFAULT_WORKTREE_ROOT = Path.home() / "Worktrees"
 def get_repo_identifier() -> str:
     """Derive a repo identifier from the remote URL or local path.
 
-    For remote repos, extracts host/org/repo (e.g., github.com/lusha-com/infra).
     For local repos, uses the path relative to HOME.
     """
     remote_url = run_git("remote", "get-url", "origin", check=False)
