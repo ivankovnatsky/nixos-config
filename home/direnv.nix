@@ -8,9 +8,6 @@
     ".config/direnv/direnv.toml".text = ''
       [global]
       warn_timeout = "5m"
-
-      [whitelist]
-      prefix = ["/Users/Ivan.Kovnatskyi"]
     '';
 
     ".config/direnv/direnvrc".text = ''

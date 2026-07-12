@@ -32,7 +32,6 @@ in
       "Ivans-Mac-mini"
       "Ivans-MacBook-Air"
       "Ivans-MacBook-Pro"
-      "Lusha-Macbook-Ivan-Kovnatskyi"
     ];
 
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
