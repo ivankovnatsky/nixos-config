@@ -2,7 +2,6 @@
   imports = [
     ../../../home/atuin.nix
     ../../../home/bat.nix
-    ../../../home/brctl.nix
     ../../../home/btop.nix
     ../../../home/carapace.nix
     ../../../home/claude-settings.nix
@@ -46,7 +45,6 @@
     ../../../home/tmux.nix
     ../../../home/tools.nix
     ../../../home/treefmt.nix
-    ../../../home/xattr.nix
     ../../../home/z-lua.nix
     ../../../home/zsh.nix
     ../../../modules/flags
