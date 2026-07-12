@@ -1,6 +1,6 @@
 # nix-config
 
-Nix flake driving four macOS machines (nix-darwin + home-manager) and one NixOS
+Nix flake driving three macOS machines (nix-darwin + home-manager) and one NixOS
 machine. ~100 in-tree packages, a handful of overlays, sops-nix-encrypted
 secrets, and a custom flake-machine layer that keeps per-machine config terse.
 
