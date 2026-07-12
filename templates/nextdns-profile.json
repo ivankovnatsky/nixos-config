@@ -191,6 +191,10 @@
     "rewrites": [
       {
         "name": "@externalDomain@",
+        "content": "@miniIp@"
+      },
+      {
+        "name": "@externalDomain@",
         "content": "@a3Ip@"
       }
     ],
