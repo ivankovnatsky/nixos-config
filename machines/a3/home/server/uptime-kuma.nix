@@ -191,6 +191,27 @@ in
 
       # ---- mini-hosted services ----
       {
+        name = "caddy-http-mini";
+        type = "tcp";
+        url = "${miniIp}:80";
+        interval = 60;
+        description = "Caddy HTTP reverse proxy (mini)";
+      }
+      {
+        name = "caddy-https-mini";
+        type = "tcp";
+        url = "${miniIp}:443";
+        interval = 60;
+        description = "Caddy HTTPS reverse proxy (mini)";
+      }
+      {
+        name = "dnsmasq-mini";
+        type = "dns";
+        url = "example.com@${miniIp}";
+        interval = 60;
+        description = "dnsmasq DNS resolver (mini)";
+      }
+      {
         name = "ssh-mini";
         type = "tcp";
         url = "${miniIp}:22";
@@ -202,6 +223,13 @@ in
         url = "http://${miniIp}:8384";
         interval = 60;
         description = "Syncthing file sync (mini)";
+      }
+      {
+        name = "stubby-mini";
+        type = "tcp";
+        url = "${miniIp}:5453";
+        interval = 60;
+        description = "Stubby DoT resolver (mini, upstream for dnsmasq)";
       }
     ];
   };

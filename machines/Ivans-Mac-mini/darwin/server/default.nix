@@ -5,10 +5,11 @@
     ../../../../darwin/shell.nix
     ../../../../darwin/sudo.nix
     ../../../../darwin/system.nix
+    ../../../../modules/darwin/dnsmasq
     ../../../../modules/darwin/launchd
-    ../../../../modules/darwin/nextdns
     ../../../../modules/darwin/pam
     ../../../../modules/darwin/pmset
+    ../../../../modules/darwin/stubby
     ../../../../modules/darwin/sudo
     ../../../../modules/flags
     ../../../../modules/inventory
@@ -19,6 +20,7 @@
     ./flags.nix
     ./git.nix
     ./homebrew.nix
+    ./http.nix
     ./nix.nix
     ./openssh.nix
     ./power.nix
