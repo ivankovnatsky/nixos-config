@@ -6,10 +6,8 @@ with lib;
     machineIp = mkOption {
       type = types.str;
       description = "This machine's IP address";
-      # Returns "" for hosts not in the lookup (e.g. the work laptop
-      # Lusha-Macbook-Ivan-Kovnatskyi). Keep the empty-string fallback —
-      # the work laptop relies on it; switching to a loud failure is a
-      # separate decision.
+      # Returns "" for hosts not in the lookup. Switching to a loud failure is
+      # a separate decision.
       default =
         let
           hostName = config.networking.hostName or "";
