@@ -47,7 +47,6 @@ secrets/               sops-nix-encrypted YAML (default.yaml) and shared sops-ni
 | `Ivans-MacBook-Pro`             | darwin   | personal laptop   |
 | `Ivans-MacBook-Air`             | darwin   | personal laptop   |
 | `Ivans-Mac-mini`                | darwin   | home server       |
-| `Lusha-Macbook-Ivan-Kovnatskyi` | darwin   | work laptop       |
 | `a3`                            | NixOS    | desktop / GPU box |
 
 ## Adding a machine
