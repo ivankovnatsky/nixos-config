@@ -25,6 +25,7 @@
     devices = [
       "Ivans-Mac-mini" # This machine
       "a3"
+      "Ivans-iPhone"
       "Ivans-MacBook-Pro"
       "Ivans-MacBook-Air"
       "Lusha-Macbook-Ivan-Kovnatskyi"
@@ -33,12 +34,15 @@
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
     folders = {
       "Notes" = {
-        path = "${config.home.homeDirectory}/Library/Mobile Documents/iCloud~md~obsidian/Documents/Notes";
+        path = "${config.home.homeDirectory}/Notes";
         label = "Notes";
-        # Apple devices share Notes via iCloud; Syncthing bridges mini to a3.
+        # reposync owns the git history; Syncthing carries the working tree only.
         devices = [
           "Ivans-Mac-mini"
           "a3"
+          "Ivans-MacBook-Air"
+          "Ivans-MacBook-Pro"
+          "Ivans-iPhone"
         ];
         ignorePatterns = [ ".git" ];
       };
