@@ -35,6 +35,9 @@ let
       pkgs.writeText "dnsmasq.conf" ''
         ${settingsToConf cfg.settings}
       '';
+
+  resolverDomain =
+    if cfg.enable && cfg.resolveLocalQueries then cfg.settings.domain or null else null;
 in
 {
   options.local.services.dnsmasq = {
@@ -88,38 +91,62 @@ in
     };
   };
 
-  config = mkIf cfg.enable {
-    environment.systemPackages = [ cfg.package ];
-
-    system.activationScripts.postActivation.text = mkIf cfg.resolveLocalQueries (
-      let
-        domain = cfg.settings.domain or null;
-        listenAddress =
-          if isList cfg.settings."listen-address" then
-            elemAt cfg.settings."listen-address" 0
-          else
-            cfg.settings."listen-address" or "127.0.0.1";
-        port = cfg.settings.port or "53";
-      in
-      optionalString (domain != null) (mkAfter ''
-        echo "Setting up DNS resolver for ${domain}..."
-        mkdir -p /etc/resolver
-        echo "nameserver ${listenAddress}" > /etc/resolver/${domain}
-        ${optionalString (port != "53") "echo \"port ${port}\" >> /etc/resolver/${domain}"}
-      '')
-    );
-
-    local.launchd.services.dnsmasq = {
-      enable = true;
-      keepAlive = cfg.alwaysKeepRunning;
-      inherit (cfg) waitForSecrets;
-      command = "${cfg.package}/bin/dnsmasq -k -C ${configFile}";
-      extraDirs =
+  config = mkMerge [
+    {
+      system.activationScripts.postActivation.text = mkAfter (
         let
-          logFacility = cfg.settings."log-facility" or null;
+          listenAddresses = cfg.settings."listen-address" or "127.0.0.1";
+          listenAddress = if isList listenAddresses then elemAt listenAddresses 0 else listenAddresses;
+          port = cfg.settings.port or "53";
+          desiredDomain = if resolverDomain == null then "" else resolverDomain;
         in
-        optional (logFacility != null) (dirOf logFacility);
-      extraServiceConfig.AbandonProcessGroup = false;
-    };
-  };
+        ''
+          marker=/etc/resolver/.nix-dnsmasq-domain
+          previous_domain=""
+          if [ -f "$marker" ]; then
+            previous_domain=$(cat "$marker")
+          fi
+
+          if [ -n "$previous_domain" ] && [ "$previous_domain" != "${desiredDomain}" ]; then
+            case "$previous_domain" in
+              */*) echo "Refusing to remove invalid managed resolver domain: $previous_domain" ;;
+              *) rm -f "/etc/resolver/$previous_domain" ;;
+            esac
+          fi
+
+          ${
+            if resolverDomain == null then
+              ''
+                rm -f "$marker"
+              ''
+            else
+              ''
+                mkdir -p /etc/resolver
+                echo "nameserver ${listenAddress}" > "/etc/resolver/${resolverDomain}"
+                ${optionalString (port != "53") "echo \"port ${port}\" >> \"/etc/resolver/${resolverDomain}\""}
+                echo "${resolverDomain}" > "$marker"
+                chmod 600 "$marker"
+              ''
+          }
+        ''
+      );
+    }
+
+    (mkIf cfg.enable {
+      environment.systemPackages = [ cfg.package ];
+
+      local.launchd.services.dnsmasq = {
+        enable = true;
+        keepAlive = cfg.alwaysKeepRunning;
+        inherit (cfg) waitForSecrets;
+        command = "${cfg.package}/bin/dnsmasq -k -C ${configFile}";
+        extraDirs =
+          let
+            logFacility = cfg.settings."log-facility" or null;
+          in
+          optional (logFacility != null) (dirOf logFacility);
+        extraServiceConfig.AbandonProcessGroup = false;
+      };
+    })
+  ];
 }
