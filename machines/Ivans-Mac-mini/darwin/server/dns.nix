@@ -19,7 +19,7 @@ in
   networking.knownNetworkServices = [
     "AX88179A"
     "Ethernet"
-    "Thunderbolt Ethernet Slot 3"
+    "Thunderbolt Ethernet Slot 1"
     "Thunderbolt Bridge"
     "Wi-Fi"
   ];
