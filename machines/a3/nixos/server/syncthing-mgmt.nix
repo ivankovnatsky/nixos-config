@@ -26,6 +26,7 @@
     # unless we intentionally want per-machine differences.
     devices = [
       "a3"
+      "Ivans-iPhone"
       "Ivans-Mac-mini"
       "Ivans-MacBook-Pro"
       "Ivans-MacBook-Air"
@@ -37,9 +38,13 @@
       "Notes" = {
         path = "${config.users.users.${username}.home}/Notes";
         label = "Notes";
+        # reposync owns the git history; Syncthing carries the working tree only.
         devices = [
           "a3"
           "Ivans-Mac-mini"
+          "Ivans-MacBook-Air"
+          "Ivans-MacBook-Pro"
+          "Ivans-iPhone"
         ];
         ignorePatterns = [ ".git" ];
       };
