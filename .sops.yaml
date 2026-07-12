@@ -4,8 +4,6 @@ keys:
   - &a3-user age1rw5u356cck5mx4ee5hjtqlc2380ycyvctddl6l3kwfj2nkqksf4qclnx0w
   - &mini age1t3hxyftxh0mqtj7j9nh9h4ph6g5j00frsvqvptjh8emtv9my8qcqx982ka
   - &mini-user age1s7wndc459u3azqegj66wcj5y9yydymnpwt7vzazsxagv3sjcwsfs2enwdu
-  - &lusha age1d8zecgxstqurz80ecn0x55neucxss7dgpm63pkspzae7wtud5qtse0xcqy
-  - &lusha-user age1vk7etjd9v5e0c2majeme8yetv0n94842hcc0f4lyugpej65kq3usphl6dm
   - &macbook-pro age1grre437d8vhr7wlq2h05mtn8ufxddwdktzv6aw60qyuqgy87t4ps0f2tgs
   - &macbook-pro-user age1x42q97xw3synk305twvsxkslld2205h97t8d9z8hy8vl8hzcpgas6d48rh
   - &macbook-air age13sfhwx56gvfzprjzg2guzf5l27jsk5szu2n54tfc80q7s84w8etsfw550z
@@ -21,8 +19,6 @@ creation_rules:
       - *a3-user
       - *mini
       - *mini-user
-      - *lusha
-      - *lusha-user
       - *macbook-pro
       - *macbook-pro-user
       - *macbook-air
