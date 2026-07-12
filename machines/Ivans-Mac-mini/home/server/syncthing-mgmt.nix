@@ -44,7 +44,11 @@
           "Ivans-MacBook-Pro"
           "Ivans-iPhone"
         ];
-        ignorePatterns = [ ".git" ];
+        ignorePatterns = [
+          ".git"
+          ".claude"
+          ".rumdl_cache"
+        ];
       };
     };
 
