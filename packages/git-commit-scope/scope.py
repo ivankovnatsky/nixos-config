@@ -8,7 +8,6 @@ MACHINE_MAPPINGS = {
     "Ivans-Mac-mini": "mini",
     "Ivans-MacBook-Air": "air",
     "Ivans-MacBook-Pro": "pro",
-    "Lusha-Macbook-Ivan-Kovnatskyi": "work",
 }
 
 DIRECTORY_MAPPINGS = {
