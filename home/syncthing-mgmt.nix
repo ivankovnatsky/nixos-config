@@ -28,6 +28,7 @@ in
     # unless we intentionally want per-machine differences.
     devices = [
       "a3"
+      "Ivans-iPhone"
       "Ivans-Mac-mini"
       "Ivans-MacBook-Air"
       "Ivans-MacBook-Pro"
@@ -35,7 +36,21 @@ in
     ];
 
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
-    folders = { };
+    folders = {
+      "Notes" = {
+        path = "${homePath}/Notes";
+        label = "Notes";
+        # reposync owns the git history; Syncthing carries the working tree only.
+        devices = [
+          "Ivans-Mac-mini"
+          "a3"
+          "Ivans-MacBook-Air"
+          "Ivans-MacBook-Pro"
+          "Ivans-iPhone"
+        ];
+        ignorePatterns = [ ".git" ];
+      };
+    };
     restart = false;
   };
 }
