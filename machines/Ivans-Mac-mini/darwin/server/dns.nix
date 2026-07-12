@@ -1,4 +1,19 @@
-{ config, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+
+let
+  setLocalDns = pkgs.writeShellScript "set-local-dns" ''
+    set -e
+
+    ${lib.concatMapStringsSep "\n" (
+      service: ''/usr/sbin/networksetup -setdnsservers "${service}" 127.0.0.1''
+    ) config.networking.knownNetworkServices}
+  '';
+in
 
 {
   networking.knownNetworkServices = [
@@ -63,10 +78,14 @@
       "bogus-priv" = true;
       "dns-forward-max" = 150;
       "conf-file" = [ config.sops.templates."dnsmasq-domain.conf".path ];
-      "log-queries" = true;
-      "log-facility" = "/tmp/log/dnsmasq/dnsmasq.log";
-      "log-dhcp" = true;
     };
+  };
+
+  local.launchd.services.dns-ensure = {
+    enable = true;
+    command = "${setLocalDns}";
+    keepAlive = false;
+    extraServiceConfig.StartInterval = 60;
   };
 
   local.launchd.services.dns-cache-flush = {
