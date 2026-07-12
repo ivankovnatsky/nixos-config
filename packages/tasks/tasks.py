@@ -3,9 +3,8 @@
 
 Recursively scans `--root` for `*.md` files and parses multiple task
 formats simultaneously. By default it scans the `Planning/Tasks`
-subdirectory of the Obsidian notes vault — iCloud Obsidian container on Macs
-(`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Notes/Planning/Tasks`),
-`~/Notes/Planning/Tasks` on a3 — plus the vault's `Archive/Tasks` directory for
+subdirectory of the Syncthing-managed Obsidian notes vault at
+`~/Notes/Planning/Tasks` — plus the vault's `Archive/Tasks` directory for
 archived tasks. If no vault is found and no `--root`/`$TASKS_ROOT` is
 given, the command errors out (it never scans cwd); if the vault exists
 but `Planning/Tasks` is missing, the whole vault is scanned. Passing
@@ -37,10 +36,7 @@ from pathlib import Path
 
 import click
 
-NOTES_CANDIDATES = (
-    "Library/Mobile Documents/iCloud~md~obsidian/Documents/Notes",
-    "Notes",
-)
+NOTES_CANDIDATES = ("Notes",)
 
 
 def resolve_roots(
@@ -56,8 +52,8 @@ def resolve_roots(
     relative to it (e.g. `Finance`, `Configs/NixConfig`). If the vault
     exists but `Planning/Tasks` doesn't (layout changed again), falls back
     to scanning the whole vault; errors out only when no vault directory
-    exists at all. Vault detection mirrors the `notes` skill: iCloud
-    Obsidian container on Macs, `~/Notes` on a3. An explicit `root`
+    exists at all. Vault detection mirrors the `notes` skill and uses the
+    Syncthing-managed `~/Notes` path on every host. An explicit `root`
     restricts scanning to that directory alone (no implicit archive); pass
     `archive_root` to also scan an archive.
     With `include_default_archive=False` the archive default is
@@ -538,9 +534,9 @@ def shared_options(f):
         envvar="TASKS_ROOT",
         default=None,
         help=(
-            "Active-tasks root to scan recursively. Defaults to the Obsidian "
-            "vault's Planning/Tasks directory (iCloud path on Macs, "
-            "~/Notes/Planning/Tasks on a3); errors out if no vault exists."
+            "Active-tasks root to scan recursively. Defaults to "
+            "~/Notes/Planning/Tasks on every host; errors out if no vault "
+            "exists."
         ),
     )(f)
     f = click.option(
