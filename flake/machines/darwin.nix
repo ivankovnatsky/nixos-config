@@ -90,6 +90,15 @@
               "xwmx/homebrew-taps" = inputs.xwmx-homebrew-tap;
             };
             mutableTaps = false;
+            # Third-party taps above are pinned via flake inputs (mutableTaps
+            # = false), so trusting them wholesale doesn't carry the
+            # "future formulae" risk docs.brew.sh/Tap-Trust warns about.
+            trust.taps = [
+              "pomdtr/tap"
+              "keith/formulae"
+              "antoniorodr/memo"
+              "xwmx/taps"
+            ];
           };
         }
       )
@@ -182,6 +191,15 @@
               "xwmx/homebrew-taps" = inputs.xwmx-homebrew-tap;
             };
             mutableTaps = false;
+            # Third-party taps above are pinned via flake inputs (mutableTaps
+            # = false), so trusting them wholesale doesn't carry the
+            # "future formulae" risk docs.brew.sh/Tap-Trust warns about.
+            trust.taps = [
+              "pomdtr/tap"
+              "keith/formulae"
+              "antoniorodr/memo"
+              "xwmx/taps"
+            ];
           };
         }
       )
@@ -240,6 +258,15 @@
               "xwmx/homebrew-taps" = inputs.xwmx-homebrew-tap;
             };
             mutableTaps = false;
+            # Third-party taps above are pinned via flake inputs (mutableTaps
+            # = false), so trusting them wholesale doesn't carry the
+            # "future formulae" risk docs.brew.sh/Tap-Trust warns about.
+            trust.taps = [
+              "pomdtr/tap"
+              "keith/formulae"
+              "antoniorodr/memo"
+              "xwmx/taps"
+            ];
           };
         }
       )
