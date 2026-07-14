@@ -69,6 +69,7 @@
       "forgit"
     ];
     casks = [
+      "cryptomator"
       "firefox@developer-edition"
       "mullvad-vpn"
       "bitwarden"
