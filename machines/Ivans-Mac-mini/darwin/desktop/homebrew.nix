@@ -70,6 +70,7 @@
     ];
     casks = [
       "firefox@developer-edition"
+      "mullvad-vpn"
       "bitwarden"
       "whatsapp"
       "hammerspoon"
