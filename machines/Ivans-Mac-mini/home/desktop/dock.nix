@@ -13,23 +13,12 @@ in
     dock.username = config.home.username;
     dock.entries = [
       { path = "/System/Applications/Apps.app/"; }
-      { path = "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/"; }
       { path = "/System/Applications/Messages.app/"; }
       { path = "/System/Applications/Mail.app/"; }
-      { path = "/System/Applications/Maps.app/"; }
       { path = "/System/Applications/Photos.app/"; }
-      { path = "/System/Applications/FaceTime.app/"; }
-      { path = "/System/Applications/Phone.app/"; }
-      { path = "/System/Applications/Calendar.app/"; }
       { path = "/System/Applications/Contacts.app/"; }
-      { path = "/System/Applications/Reminders.app/"; }
       { path = "/System/Applications/Notes.app/"; }
-      { path = "/System/Applications/TV.app/"; }
       { path = "/System/Applications/Music.app/"; }
-      { path = "/System/Applications/Podcasts.app/"; }
-      { path = "/System/Applications/Games.app/"; }
-      { path = "/System/Applications/App Store.app/"; }
-      { path = "/System/Applications/iPhone Mirroring.app/"; }
       { path = "/System/Applications/System Settings.app/"; }
 
       {
@@ -37,16 +26,8 @@ in
         section = "apps";
       }
 
-      { path = "/System/Applications/Utilities/Terminal.app/"; }
-      { path = "/System/Applications/Utilities/Activity Monitor.app/"; }
-      { path = "/System/Applications/Utilities/System Information.app/"; }
-      { path = "/System/Applications/Utilities/Audio MIDI Setup.app/"; }
-      { path = "/System/Applications/Preview.app"; }
       { path = "/System/Applications/Passwords.app/"; }
       { path = "/System/Library/CoreServices/Applications/Keychain Access.app/"; }
-      { path = "/System/Applications/FindMy.app/"; }
-      { path = "/System/Applications/Weather.app/"; }
-      { path = "/System/Applications/Utilities/Screen Sharing.app/"; }
 
       {
         type = "spacer";
