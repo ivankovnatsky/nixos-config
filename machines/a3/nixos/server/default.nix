@@ -22,6 +22,7 @@
     ./storage0-disk.nix
     ./sudo.nix
     ./syncthing-mgmt.nix
+    ./tailscale.nix
     ./uptime-kuma.nix
   ];
 }
