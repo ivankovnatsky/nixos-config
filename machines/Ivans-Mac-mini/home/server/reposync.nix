@@ -55,6 +55,12 @@ in
         branch = "main";
         identity = forgejoIdentity;
       }
+      {
+        path = config.flags.externalStoragePath;
+        remote = "origin";
+        remoteUrl = "https://forgejo.@domain@/@username@/data.git";
+        branch = "main";
+      }
     ];
   };
 }
