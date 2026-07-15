@@ -13,7 +13,7 @@ let
       "${config.home.homeDirectory}/Library/Application Support/rbw/config.json"
     else
       "${config.xdg.configHome}/rbw/config.json";
-  pinentryPackage = if isDarwin then pkgs.pinentry_mac else pkgs.pinentry-tty;
+  pinentryPackage = pkgs.pinentry-tty;
 in
 {
   programs.rbw = {

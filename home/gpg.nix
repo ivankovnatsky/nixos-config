@@ -22,7 +22,7 @@ in
     text = ''
       default-cache-ttl 43200
       max-cache-ttl 43200
-      pinentry-program ${pkgs.pinentry_mac}/bin/pinentry-mac
+      pinentry-program ${pkgs.pinentry-tty}/bin/pinentry-tty
     '';
   };
 
