@@ -29,7 +29,7 @@ pkgs.runCommand "ranger-scope" { } ''
                   inner_name="''${inner_name}.txt"
               fi
               gpg --batch --quiet --decrypt -- "''${FILE_PATH}" 2>/dev/null | \
-                bat --color=always --style="''${BAT_STYLE}" --paging=never \
+                env COLORTERM=8bit bat --color=always --style="''${BAT_STYLE}" --paging=never \
                     --file-name "''${inner_name}" -- 2>/dev/null && exit 5
               gpg --batch --quiet --decrypt -- "''${FILE_PATH}" && exit 5
               exit 1;;
