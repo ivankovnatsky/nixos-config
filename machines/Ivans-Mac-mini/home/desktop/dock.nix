@@ -26,14 +26,6 @@ in
         section = "apps";
       }
 
-      { path = "/System/Applications/Passwords.app/"; }
-      { path = "/System/Library/CoreServices/Applications/Keychain Access.app/"; }
-
-      {
-        type = "spacer";
-        section = "apps";
-      }
-
       # Installed from App Store
       { path = "/Applications/Numbers Creator Studio.app/"; }
 
