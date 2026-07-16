@@ -1,13 +1,32 @@
+{ pkgs, ... }:
 {
   programs.yazi = {
     enable = true;
     shellWrapperName = "yy";
 
-    # ratio = [ parent, current, preview ]; middle = current dir listing.
-    settings.mgr.ratio = [
-      1
-      2
-      4
-    ];
+    plugins = {
+      piper = pkgs.yaziPlugins.piper;
+    };
+
+    settings = {
+      # ratio = [ parent, current, preview ]; middle = current dir listing.
+      mgr.ratio = [
+        1
+        2
+        4
+      ];
+
+      plugin.prepend_previewers =
+        map
+          (ext: {
+            url = "*.${ext}";
+            run = ''piper -- ${pkgs.yazi-gpg-preview} "$1"'';
+          })
+          [
+            "gpg"
+            "pgp"
+            "asc"
+          ];
+    };
   };
 }
