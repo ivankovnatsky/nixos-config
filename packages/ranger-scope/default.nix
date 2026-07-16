@@ -19,8 +19,18 @@ pkgs.runCommand "ranger-scope" { } ''
     cat > gpg-case.txt <<'CASE_EOF'
           ## GPG
           gpg|pgp|asc)
+              ## Tell bat the decrypted-content's original name (extension
+              ## before .gpg/.pgp/.asc stripped) so it can pick a language for
+              ## syntax highlighting, since piped stdin has no filename of its
+              ## own. Fall back to .txt when there's no inner extension.
+              inner_name="''${FILE_PATH%.*}"
+              base_noext="''${inner_name##*/}"
+              if [[ "''${base_noext}" != *.* ]]; then
+                  inner_name="''${inner_name}.txt"
+              fi
               gpg --batch --quiet --decrypt -- "''${FILE_PATH}" 2>/dev/null | \
-                bat --color=always --style="''${BAT_STYLE}" --paging=never -- 2>/dev/null && exit 5
+                bat --color=always --style="''${BAT_STYLE}" --paging=never \
+                    --file-name "''${inner_name}" -- 2>/dev/null && exit 5
               gpg --batch --quiet --decrypt -- "''${FILE_PATH}" && exit 5
               exit 1;;
 
