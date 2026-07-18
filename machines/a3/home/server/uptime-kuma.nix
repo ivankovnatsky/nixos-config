@@ -133,18 +133,6 @@ in
         description = "Navidrome music streaming server (a3)";
       }
       {
-        name = "ollama-a3";
-        url = "http://127.0.0.1:11434";
-        interval = 60;
-        description = "Ollama LLM API (a3, CUDA)";
-      }
-      {
-        name = "open-webui-a3";
-        url = "http://127.0.0.1:8091";
-        interval = 60;
-        description = "Open WebUI (a3)";
-      }
-      {
         name = "prowlarr-a3";
         url = "http://127.0.0.1:9696";
         interval = 60;
