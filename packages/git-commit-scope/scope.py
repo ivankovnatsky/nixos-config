@@ -138,14 +138,13 @@ def create_commit_message(prefix: str, subject: str) -> str:
     return f"{prefix}: {subject}"
 
 
-def validate_title(title: str) -> list[str]:
-    """Collect all violations for a commit title."""
+def validate_title(title: str, scope: str) -> list[str]:
+    """Collect all violations for a commit title and its generated scope."""
     errors = []
     if len(title) > MAX_MESSAGE_LENGTH:
         errors.append(
             f"Commit title must be ≤{MAX_MESSAGE_LENGTH} characters (got {len(title)})"
         )
-    scope = title.split(": ", 1)[0] if ": " in title else ""
     if "," in scope:
         errors.append(
             "Commas not allowed in commit scope "

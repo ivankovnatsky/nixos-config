@@ -389,7 +389,7 @@ def main(args, subject, body, ai_shorten):
             prefix = compress_path(prefix, commit_subject)
 
         message = create_commit_message(prefix, commit_subject)
-        errors = validate_title(message)
+        errors = validate_title(message, prefix)
 
         if errors:
             click.echo(f"Title validation failed for {target_file}:", err=True)
@@ -412,7 +412,7 @@ def main(args, subject, body, ai_shorten):
                     click.echo(f"  ai suggestion: {suggested}", err=True)
                     commit_subject = suggested
                     message = create_commit_message(prefix, commit_subject)
-                    remaining = validate_title(message)
+                    remaining = validate_title(message, prefix)
                     if remaining:
                         click.echo("AI suggestion still invalid:", err=True)
                         for e in remaining:

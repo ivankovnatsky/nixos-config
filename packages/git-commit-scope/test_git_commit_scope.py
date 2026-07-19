@@ -356,9 +356,10 @@ class GitCommitScopeTest(unittest.TestCase):
         self.assertEqual(self.last_subject(), "new: add one; remove two")
 
     def test_semicolon_in_scope_rejected(self):
-        self.write("new;old.txt", "x\n")
+        path = "dir: x;bad/new.txt"
+        self.write(path, "x\n")
 
-        result = self.run_scope("new;old.txt", "init")
+        result = self.run_scope(path, "init")
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("Semicolons not allowed in commit scope", result.stderr)
