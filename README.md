@@ -42,12 +42,12 @@ secrets/               sops-nix-encrypted YAML (default.yaml) and shared sops-ni
 
 ## Machines
 
-| Machine                         | Platform | Role              |
-| ------------------------------- | -------- | ----------------- |
-| `Ivans-MacBook-Pro`             | darwin   | personal laptop   |
-| `Ivans-MacBook-Air`             | darwin   | personal laptop   |
-| `Ivans-Mac-mini`                | darwin   | home server       |
-| `a3`                            | NixOS    | desktop / GPU box |
+| Machine             | Platform | Role              |
+| ------------------- | -------- | ----------------- |
+| `Ivans-MacBook-Pro` | darwin   | personal laptop   |
+| `Ivans-MacBook-Air` | darwin   | personal laptop   |
+| `Ivans-Mac-mini`    | darwin   | home server       |
+| `a3`                | NixOS    | desktop / GPU box |
 
 ## Adding a machine
 

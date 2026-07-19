@@ -1,13 +1,13 @@
 {
   imports = [
     ../../../../home/atuin.nix
-    ../../../../home/firefox-darwin.nix
     ../../../../home/bash.nix
     ../../../../home/bat.nix
     ../../../../home/btop.nix
     ../../../../home/carapace.nix
     ../../../../home/claude-settings.nix
     ../../../../home/direnv.nix
+    ../../../../home/firefox-darwin.nix
     ../../../../home/firefox-darwin.nix
     ../../../../home/fish.nix
     ../../../../home/fzf.nix

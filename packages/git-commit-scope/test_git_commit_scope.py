@@ -243,9 +243,7 @@ class GitCommitScopeTest(unittest.TestCase):
             check=True,
         )
         (nested / "file.txt").write_text("nested\n")
-        subprocess.run(
-            ["git", "add", "file.txt"], cwd=nested, env=self.env, check=True
-        )
+        subprocess.run(["git", "add", "file.txt"], cwd=nested, env=self.env, check=True)
         subprocess.run(
             ["git", "commit", "-m", "seed nested repo"],
             cwd=nested,
