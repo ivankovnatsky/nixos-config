@@ -12,7 +12,6 @@
       ]
     ))
     unzip
-    betaflight-configurator
     file
     cryptomator
     mpv
