@@ -70,7 +70,6 @@
     ];
     casks = [
       "cryptomator"
-      "betaflight-configurator"
       "firefox@developer-edition"
       "mullvad-vpn"
       "bitwarden"
