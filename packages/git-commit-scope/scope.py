@@ -139,11 +139,7 @@ def create_commit_message(prefix: str, subject: str) -> str:
 
 
 def validate_title(title: str) -> list[str]:
-    """Collect all hook-equivalent violations for a commit title.
-
-    Mirrors the global commit-msg hook (home/git/default.nix) so failures
-    surface up-front from the CLI instead of one-at-a-time from the hook.
-    """
+    """Collect all violations for a commit title."""
     errors = []
     if len(title) > MAX_MESSAGE_LENGTH:
         errors.append(
@@ -155,8 +151,8 @@ def validate_title(title: str) -> list[str]:
             "Commas not allowed in commit scope "
             "(split into separate commits or use a general subject)"
         )
-    if ";" in title:
-        errors.append("Semicolons not allowed in commit title")
+    if ";" in scope:
+        errors.append("Semicolons not allowed in commit scope")
     return errors
 
 

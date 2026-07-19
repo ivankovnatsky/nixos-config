@@ -347,6 +347,23 @@ class GitCommitScopeTest(unittest.TestCase):
         self.assertEqual(self.last_subject(), "dir: remove")
         self.assertEqual(self.status_short(), "")
 
+    def test_semicolon_in_subject_accepted(self):
+        self.write("new.txt", "x\n")
+
+        result = self.run_scope("new.txt", "add one; remove two")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.last_subject(), "new: add one; remove two")
+
+    def test_semicolon_in_scope_rejected(self):
+        self.write("new;old.txt", "x\n")
+
+        result = self.run_scope("new;old.txt", "init")
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Semicolons not allowed in commit scope", result.stderr)
+        self.assertEqual(self.last_subject(), "seed")
+
     def test_body_line_over_80_chars_rejected(self):
         self.write("new.txt", "x\n")
         # Long line with whitespace so single-token exemption does not apply.

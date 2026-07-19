@@ -371,18 +371,6 @@ def main(args, subject, body, ai_shorten):
     # Set env var so pre-commit hook skips the "use git-commit-scope" hint
     os.environ["GIT_COMMIT_SCOPE_CLI"] = "1"
 
-    # Up-front validation of subject-only rules (independent of per-file scope).
-    # Catch semicolons here so we fail before any per-target work.
-    subject_errors = []
-    if ";" in commit_subject:
-        subject_errors.append("Semicolons not allowed in commit title")
-    if subject_errors:
-        click.echo("Subject validation failed:", err=True)
-        for e in subject_errors:
-            click.echo(f"  - {e}", err=True)
-        click.echo(f"Subject: {commit_subject}", err=True)
-        sys.exit(1)
-
     def _too_long(p: str) -> bool:
         return len(create_commit_message(p, commit_subject)) > MAX_MESSAGE_LENGTH
 
