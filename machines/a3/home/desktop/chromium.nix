@@ -10,14 +10,6 @@
     package = pkgs.chromium;
 
     extensions = [
-      { id = "aeblfdkhhhdcdjpifhhbdiojplfjncoa"; } # 1password
-      { id = "pkehgijcmpdhfbdbbnkijodmdjhbjlgp"; } # privacy-badger
-      { id = "lckanjgmijmafbedllaakclkaicjfmnk"; } # clearurls
-      { id = "ldpochfccmkkmhdbclfhpagapcfdljkj"; } # decentraleyes
-      { id = "nngceckbapebfimnlniiiahkandclblb"; } # bitwarden
-      { id = "cjpalhdlnbpafiamejdnhcphjbkeiagm"; } # ublock origin
-      { id = "gcbommkclmclpchllfjekcdonpmejbdp"; } # https everywhere
-      { id = "bkdgflcldnnnapblkhphbgpggdiikppg"; } # ddg
     ];
 
     commandLineArgs = [

@@ -13,16 +13,7 @@
       defaultSearchProviderSearchURL = "https://duckduckgo.com/?q={searchTerms}";
       defaultSearchProviderSuggestURL = "https://duckduckgo.com/?q={searchTerms}";
 
-      extensions = [
-        "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1password-–-password-mana
-        "pkehgijcmpdhfbdbbnkijodmdjhbjlgp" # privacy-badger
-        "lckanjgmijmafbedllaakclkaicjfmnk" # clearurls
-        "ldpochfccmkkmhdbclfhpagapcfdljkj" # decentraleyes
-        "nngceckbapebfimnlniiiahkandclblb" # bitwarden
-        "cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock origin
-        "gcbommkclmclpchllfjekcdonpmejbdp" # https everywhere
-        "bkdgflcldnnnapblkhphbgpggdiikppg" # ddg
-      ];
+      extensions = [ ];
 
       # https://cloud.google.com/docs/chrome-enterprise/policies/
       extraOpts = {
