@@ -51,6 +51,16 @@ let
         ];
         reconnect_delay = 5;
       };
+      kafka = {
+        enabled = true;
+        bootstrap_servers = [ "127.0.0.1:9092" ];
+        topic = "podservice.lifecycle";
+        consumer_group = "podservice-dashboard";
+        client_id = "podservice-a3";
+        topic_partitions = 1;
+        topic_replication_factor = 1;
+        reconnect_delay = 5;
+      };
       log_level = "INFO";
     }
   );
@@ -70,6 +80,47 @@ in
     port = 5672;
     managementPlugin.enable = true;
   };
+
+  services.apache-kafka = {
+    enable = true;
+    clusterId = "J9MCrGnTROKNUU9vsEoQjw";
+    formatLogDirs = true;
+    formatLogDirsIgnoreFormatted = true;
+    jvmOptions = [
+      "-Xms256M"
+      "-Xmx512M"
+    ];
+    settings = {
+      "node.id" = 1;
+      "process.roles" = [
+        "broker"
+        "controller"
+      ];
+      "controller.quorum.voters" = [ "1@127.0.0.1:9093" ];
+      "controller.listener.names" = [ "CONTROLLER" ];
+      "listener.security.protocol.map" = "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT";
+      "inter.broker.listener.name" = "PLAINTEXT";
+      "listeners" = [
+        "PLAINTEXT://127.0.0.1:9092"
+        "CONTROLLER://127.0.0.1:9093"
+      ];
+      "advertised.listeners" = [
+        "PLAINTEXT://127.0.0.1:9092"
+        "CONTROLLER://127.0.0.1:9093"
+      ];
+      "log.dirs" = [ "/var/lib/apache-kafka" ];
+      "num.partitions" = 1;
+      "default.replication.factor" = 1;
+      "offsets.topic.replication.factor" = 1;
+      "transaction.state.log.replication.factor" = 1;
+      "transaction.state.log.min.isr" = 1;
+      "group.initial.rebalance.delay.ms" = 0;
+      "auto.create.topics.enable" = false;
+      "log.retention.hours" = 720;
+    };
+  };
+
+  systemd.services.apache-kafka.serviceConfig.StateDirectory = "apache-kafka";
 
   users.users.podservice = {
     isSystemUser = true;
@@ -93,12 +144,20 @@ in
     after = [
       "network-online.target"
       "rabbitmq.service"
+      "apache-kafka.service"
       "sops-nix.service"
     ];
-    requires = [ "rabbitmq.service" ];
+    requires = [
+      "rabbitmq.service"
+      "apache-kafka.service"
+    ];
     wants = [ "network-online.target" ];
     wantedBy = [ "multi-user.target" ];
-    unitConfig.RequiresMountsFor = [ "/storage" ];
+    unitConfig = {
+      RequiresMountsFor = [ "/storage" ];
+      StartLimitBurst = 10;
+      StartLimitIntervalSec = 300;
+    };
     environment = {
       PATH = lib.mkForce "${pkgs.coreutils}/bin:${pkgs.ffmpeg}/bin";
     };
@@ -111,8 +170,6 @@ in
       ExecStart = "${pkgs.podservice}/bin/podservice serve --config=${dataDir}/config.yaml";
       Restart = "on-failure";
       RestartSec = 10;
-      StartLimitBurst = 10;
-      StartLimitIntervalSec = 300;
     };
   };
 }
