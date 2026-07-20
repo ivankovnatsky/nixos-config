@@ -36,6 +36,21 @@ let
         enabled = true;
         file = urlsFile;
       };
+      rabbitmq = {
+        host = "127.0.0.1";
+        port = 5672;
+        username = "guest";
+        virtual_host = "/";
+        exchange = "podservice.commands";
+        queue = "podservice.downloads";
+        routing_key = "download.requested";
+        retry_delays = [
+          30
+          300
+          1800
+        ];
+        reconnect_delay = 5;
+      };
       log_level = "INFO";
     }
   );
@@ -49,6 +64,13 @@ let
   '';
 in
 {
+  services.rabbitmq = {
+    enable = true;
+    listenAddress = "127.0.0.1";
+    port = 5672;
+    managementPlugin.enable = true;
+  };
+
   users.users.podservice = {
     isSystemUser = true;
     group = "podservice";
@@ -70,8 +92,10 @@ in
     description = "podservice YouTube-to-podcast server";
     after = [
       "network-online.target"
+      "rabbitmq.service"
       "sops-nix.service"
     ];
+    requires = [ "rabbitmq.service" ];
     wants = [ "network-online.target" ];
     wantedBy = [ "multi-user.target" ];
     unitConfig.RequiresMountsFor = [ "/storage" ];
