@@ -30,6 +30,11 @@
       };
 
       mcp.servers = { };
+
+      flatpak = {
+        remotes.flathub = "https://dl.flathub.org/repo/flathub.flatpakrepo";
+        packages = [ "com.bitwarden.desktop" ];
+      };
     };
   };
 }
