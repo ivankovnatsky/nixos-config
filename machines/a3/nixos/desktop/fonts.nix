@@ -13,8 +13,7 @@
     # Font configuration
     fontconfig = {
       defaultFonts = {
-        serif = [ "DejaVu Serif" ];
-        sansSerif = [ "DejaVu Sans" ];
+        # Plasma provides Noto Serif and Noto Sans defaults.
         monospace = [ "Hack Nerd Font" ];
         emoji = [ "Noto Color Emoji" ];
       };
