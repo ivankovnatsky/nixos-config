@@ -121,6 +121,8 @@ in
   };
 
   systemd.services.apache-kafka.serviceConfig.StateDirectory = "apache-kafka";
+  systemd.services.apache-kafka.serviceConfig.Restart = "on-failure";
+  systemd.services.apache-kafka.serviceConfig.RestartSec = 10;
 
   users.users.podservice = {
     isSystemUser = true;
@@ -149,9 +151,11 @@ in
     ];
     requires = [
       "rabbitmq.service"
+    ];
+    wants = [
+      "network-online.target"
       "apache-kafka.service"
     ];
-    wants = [ "network-online.target" ];
     wantedBy = [ "multi-user.target" ];
     unitConfig = {
       RequiresMountsFor = [ "/storage" ];
