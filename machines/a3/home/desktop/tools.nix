@@ -12,6 +12,9 @@
         "@openai/codex" = {
           binary = "codex";
         };
+        "@bitwarden/cli" = {
+          binary = "bw";
+        };
       };
 
       uv.packages = {
