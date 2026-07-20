@@ -105,6 +105,9 @@ in
         export PATH="${pkgs.go}/bin:${pkgs.git}/bin:$PATH"
         export CGO_ENABLED=0
       ''}
+      ${lib.optionalString (lib.elem "flatpak" enabledSections) ''
+        export PATH="${pkgs.flatpak}/bin:$PATH"
+      ''}
       ${inputs.tools.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/tools \
         deploy \
         --approve \
