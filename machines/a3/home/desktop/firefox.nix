@@ -2,7 +2,46 @@
 
 let
   commonSettings = {
-    settings = import ../../../../home/firefox.nix;
+    settings = (import ../../../../home/firefox.nix) // {
+      "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+    };
+
+    userContent = ''
+      @-moz-document domain("github.com") {
+        :root {
+          --fontStack-sansSerif: "Noto Sans", sans-serif !important;
+          --fontStack-sansSerifDisplay: "Noto Sans", sans-serif !important;
+          --fontStack-system: "Noto Sans", sans-serif !important;
+        }
+
+        *,
+        *::before,
+        *::after {
+          font-family: "Noto Sans", sans-serif !important;
+        }
+
+        pre,
+        pre *,
+        code,
+        code *,
+        .blob-code,
+        .blob-code *,
+        .blob-code-content,
+        .blob-code-content *,
+        .blob-code-inner,
+        .blob-code-inner *,
+        .blob-code-marker,
+        .blob-code-marker *,
+        .react-blob-textarea,
+        .react-blob-textarea *,
+        .react-line-numbers,
+        .react-line-numbers *,
+        .react-code-text,
+        .react-code-text * {
+          font-family: "Hack Nerd Font", monospace !important;
+        }
+      }
+    '';
 
     extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
       bitwarden
