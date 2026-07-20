@@ -152,6 +152,13 @@ in
         description = "RabbitMQ AMQP broker (a3, podservice dependency)";
       }
       {
+        name = "kafka-a3";
+        type = "tcp";
+        url = "127.0.0.1:9092";
+        interval = 60;
+        description = "Kafka broker (a3, podservice lifecycle events)";
+      }
+      {
         name = "sonarr-a3";
         url = "http://127.0.0.1:8989";
         interval = 60;
