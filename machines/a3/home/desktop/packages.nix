@@ -58,7 +58,6 @@
     gnumake
     gum
     kdePackages.krdc # KDE Remote Desktop Client
-    pinentry-qt # Qt pinentry for GPG
     libnotify # Provides notify-send command
     lm_sensors # Provides the 'sensors' command for monitoring temperatures
     lsof # List open files
