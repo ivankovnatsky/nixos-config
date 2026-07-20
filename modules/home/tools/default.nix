@@ -45,6 +45,7 @@ let
     "gitRepos"
     "files"
     "brew"
+    "flatpak"
   ];
   enabledSections = filter (
     section:
