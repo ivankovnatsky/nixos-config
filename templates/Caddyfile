@@ -108,6 +108,12 @@
 		}
 	}
 
+	@podservice host podservice.@externalDomain@
+	reverse_proxy @podservice @a3Ip@:8083 {
+		header_up X-Real-IP {remote_host}
+		header_up Host {host}
+	}
+
 	@navidrome host navidrome.@externalDomain@
 	reverse_proxy @navidrome @a3Ip@:4533 {
 		header_up X-Real-IP {remote_host}

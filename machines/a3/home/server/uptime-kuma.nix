@@ -176,6 +176,12 @@ in
         interval = 60;
         description = "Uptime Kuma self-probe (a3)";
       }
+      {
+        name = "podservice-a3";
+        url = "http://127.0.0.1:8083";
+        interval = 60;
+        description = "YouTube to Podcast service (a3)";
+      }
 
       # ---- mini-hosted services ----
       {

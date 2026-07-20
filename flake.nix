@@ -122,6 +122,11 @@
       inputs.nixpkgs.follows = "nixpkgs-nixos-unstable";
     };
 
+    # Pod Service - YouTube to Podcast Feed Service
+    podservice = {
+      url = "github:ivankovnatsky/podservice";
+    };
+
     nix-steipete-tools = {
       url = "github:openclaw/nix-steipete-tools";
       inputs.nixpkgs.follows = "nixpkgs-nixos-unstable";
