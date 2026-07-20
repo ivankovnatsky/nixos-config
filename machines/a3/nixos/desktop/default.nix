@@ -5,6 +5,7 @@
     ./chromium.nix
     ./cryptenroll.nix
     ./default-apps.nix
+    ./flatpak.nix
     ./fonts.nix
     ./kde.nix
     ./keyboard.nix
