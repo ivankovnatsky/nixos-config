@@ -10,6 +10,7 @@ let
   audioDir = "${dataDir}/audio";
   metadataDir = "${dataDir}/metadata";
   thumbnailsDir = "${dataDir}/thumbnails";
+  dbDir = "${dataDir}/db";
   urlsFile = "${dataDir}/urls.txt";
 
   configFile = pkgs.writeText "podservice-config.yaml" (
@@ -138,6 +139,7 @@ in
     "d ${audioDir}      0755 podservice podservice -"
     "d ${metadataDir}   0755 podservice podservice -"
     "d ${thumbnailsDir} 0755 podservice podservice -"
+    "d ${dbDir}         0755 podservice podservice -"
     "f ${urlsFile}      0644 podservice podservice -"
   ];
 
