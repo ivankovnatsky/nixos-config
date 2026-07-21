@@ -15,6 +15,9 @@
         "@bitwarden/cli" = {
           binary = "bw";
         };
+        "@steipete/summarize" = {
+          binary = "summarize";
+        };
       };
 
       # Python packages via uv tool install

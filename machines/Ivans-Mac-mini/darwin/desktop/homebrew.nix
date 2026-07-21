@@ -47,7 +47,6 @@
       "wget"
       "zoxide"
       "uv"
-      "summarize"
       "bat"
       "btop"
       "duf"
