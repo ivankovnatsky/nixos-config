@@ -12,6 +12,9 @@
         "@openai/codex" = {
           binary = "codex";
         };
+        "@bitwarden/cli" = {
+          binary = "bw";
+        };
       };
 
       # Python packages via uv tool install

@@ -7,7 +7,6 @@
     };
     global.brewfile = true;
     brews = [
-      "bitwarden-cli"
       # fish-from-nix on aarch64-darwin ships with invalid linker-signed
       # adhoc cdhash from cache.nixos.org → SIGKILL at exec. See
       # Notes/Configs/NixConfig/Issues/NixStoreExternalDiskDarwinFragility.md
