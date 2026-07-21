@@ -5,6 +5,7 @@
     treefmt
     prettier
 
+    nix-find-orphans
     deadnix
     gofumpt
     golangci-lint
