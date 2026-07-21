@@ -32,7 +32,6 @@
     ../../../../home/packages-local.nix
     ../../../../home/packages-overlays.nix
     ../../../../home/parallel.nix
-    ../../../../home/pass.nix
     ../../../../home/pi-models.nix
     ../../../../home/quit-mac-mouse-fix.nix
     ../../../../home/ranger.nix

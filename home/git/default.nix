@@ -50,12 +50,6 @@ in
       text = ''
         #!/usr/bin/env bash
 
-        # Skip password-store repos (uses GPG signing with auto-generated messages)
-        repo_path=$(git rev-parse --show-toplevel 2>/dev/null)
-        if [[ "$repo_path" == *"/password-store"* ]] || [[ "$repo_path" == *"/.password-store"* ]]; then
-          exit 0
-        fi
-
         commit_msg_file="$1"
         commit_msg=$(cat "$commit_msg_file")
         title=$(echo "$commit_msg" | head -1)

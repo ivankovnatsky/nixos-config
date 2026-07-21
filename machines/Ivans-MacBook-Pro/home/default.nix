@@ -35,7 +35,6 @@
     ../../../home/packages-overlays.nix
     ../../../home/packages.nix
     ../../../home/parallel.nix
-    ../../../home/pass.nix
     ../../../home/ranger.nix
     ../../../home/rbw.nix
     ../../../home/rebuild-diff.nix

@@ -26,7 +26,6 @@
     ../../../../home/packages-overlays.nix
     ../../../../home/packages.nix
     ../../../../home/parallel.nix
-    ../../../../home/pass.nix
     ../../../../home/pi-models.nix
     ../../../../home/ranger.nix
     ../../../../home/rbw.nix

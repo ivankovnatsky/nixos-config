@@ -32,7 +32,6 @@
     nix-sort-imports
     nvim-edit-staged
     nvim-find-edit
-    pass-fzf
     path-copy
     ps-top
     reboot
