@@ -12,8 +12,13 @@ roots: the flake itself, and every packages/*/ and overlays/*/ directory
 Runs as a treefmt formatter: treefmt passes the matching .nix files as
 arguments, which are used only to locate the repository root. The whole tree
 is always scanned regardless of which files were passed, so treefmt's
-per-file caching cannot hide an orphan. The check reports only — it never
+per-file caching cannot hide an orphan. The default reports only — it never
 edits files — and exits non-zero when orphans exist so treefmt surfaces them.
+
+With --fix it also cleans up: deletes the orphan files and prunes dangling
+import entries (lone `./x.nix` lines in an `imports = [ ... ]` list that no
+longer resolve). --fix is deliberately kept out of the treefmt command so an
+on-save run can never delete a file you just created but haven't imported yet.
 """
 
 import os
@@ -25,6 +30,10 @@ from pathlib import Path
 # Matches a Nix relative path literal: starts with ./ or ../, runs until a
 # character that can't be part of a path token.
 PATH_RE = re.compile(r"\.\.?/[A-Za-z0-9_./+-]+")
+
+# An `imports = [ ... ];` list body, and a line that is a lone path literal.
+IMPORTS_BLOCK_RE = re.compile(r"(imports\s*=\s*\[)(.*?)(\s*\];)", re.DOTALL)
+LONE_PATH_RE = re.compile(r"^\.\.?/[A-Za-z0-9_./+-]+$")
 
 
 def find_root(start: Path):
@@ -87,6 +96,31 @@ def all_nix_files(root: Path):
     return files
 
 
+def prune_dangling_refs(path: Path):
+    """Drop lone `./x.nix` import lines that no longer resolve. Returns them."""
+    try:
+        text = path.read_text()
+    except (UnicodeDecodeError, OSError):
+        return []
+
+    removed = []
+
+    def fix_block(match):
+        kept = []
+        for line in match.group(2).split("\n"):
+            stripped = line.strip()
+            if LONE_PATH_RE.match(stripped) and resolve(stripped, path.parent) is None:
+                removed.append(stripped)
+                continue
+            kept.append(line)
+        return match.group(1) + "\n".join(kept) + match.group(3)
+
+    new_text = IMPORTS_BLOCK_RE.sub(fix_block, text)
+    if new_text != text:
+        path.write_text(new_text)
+    return removed
+
+
 def reachable_from(roots):
     seen = set()
     stack = list(roots)
@@ -110,7 +144,12 @@ def reachable_from(roots):
     default=None,
     help="Repository root (default: derived from FILES, else cwd).",
 )
-def main(files, root):
+@click.option(
+    "--fix",
+    is_flag=True,
+    help="Delete orphan files and prune dangling import lines.",
+)
+def main(files, root, fix):
     """List .nix files not reachable from any entry point."""
     if root is not None:
         root = Path(root).resolve()
@@ -131,12 +170,21 @@ def main(files, root):
     reached = reachable_from(roots)
     orphans = sorted(all_nix_files(root) - reached)
 
-    if not orphans:
-        return
-    click.echo("Orphaned .nix files (not imported anywhere):")
+    if not fix:
+        if not orphans:
+            return
+        click.echo("Orphaned .nix files (not imported anywhere):")
+        for path in orphans:
+            click.echo(f"  {path.relative_to(root)}")
+        sys.exit(1)
+
     for path in orphans:
-        click.echo(f"  {path.relative_to(root)}")
-    sys.exit(1)
+        path.unlink()
+        click.echo(f"removed orphan {path.relative_to(root)}")
+
+    for path in sorted(all_nix_files(root)):
+        for ref in prune_dangling_refs(path):
+            click.echo(f"pruned dangling ref {ref} in {path.relative_to(root)}")
 
 
 if __name__ == "__main__":
