@@ -31,6 +31,5 @@
     wget
     zoxide
     uv
-    summarize
   ];
 }

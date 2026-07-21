@@ -11,6 +11,9 @@
         "@openai/codex" = {
           binary = "codex";
         };
+        "@steipete/summarize" = {
+          binary = "summarize";
+        };
       };
 
       # Python packages via uv tool install
