@@ -1,5 +1,6 @@
 {
   imports = [
+    ../../../darwin/unison.nix
     ../../../home/atuin.nix
     ../../../home/bat.nix
     ../../../home/brctl.nix
@@ -59,6 +60,7 @@
     ../../../modules/home/settings-daemon
     ../../../modules/home/syncthing-mgmt
     ../../../modules/home/tools
+    ../../../modules/home/unison
     ../../../modules/inventory
     ./dock.nix
     ./packages.nix
