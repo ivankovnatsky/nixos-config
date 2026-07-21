@@ -296,26 +296,6 @@
         "type": "github"
       }
     },
-    "nix-steipete-tools": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs-nixos-unstable"
-        ]
-      },
-      "locked": {
-        "lastModified": 1783357241,
-        "narHash": "sha256-e6fic6iZSYrkYSM291bmBuYMMkEsMg/N3q2SlHu4nEU=",
-        "owner": "openclaw",
-        "repo": "nix-steipete-tools",
-        "rev": "10526a1e0e7d7b77a9f43fe86bc8bd947700b6a9",
-        "type": "github"
-      },
-      "original": {
-        "owner": "openclaw",
-        "repo": "nix-steipete-tools",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1783224372,
@@ -565,7 +545,6 @@
         "keith-homebrew-tap": "keith-homebrew-tap",
         "nix-darwin-darwin-unstable": "nix-darwin-darwin-unstable",
         "nix-homebrew": "nix-homebrew",
-        "nix-steipete-tools": "nix-steipete-tools",
         "nixpkgs-darwin-unstable": "nixpkgs-darwin-unstable",
         "nixpkgs-master-pinned": "nixpkgs-master-pinned",
         "nixpkgs-nixos-master": "nixpkgs-nixos-master",

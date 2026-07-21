@@ -127,11 +127,6 @@
       url = "github:ivankovnatsky/podservice";
     };
 
-    nix-steipete-tools = {
-      url = "github:openclaw/nix-steipete-tools";
-      inputs.nixpkgs.follows = "nixpkgs-nixos-unstable";
-    };
-
     # tools - declarative configuration manager
     tools = {
       url = "github:ivankovnatsky/tools";
