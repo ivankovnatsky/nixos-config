@@ -10,6 +10,6 @@
       "Path .obsidian/workspace.json"
       "Path .obsidian/workspace-mobile.json"
     ];
-    interval = 60 * 5;
+    interval = 60 * 1;
   };
 }
