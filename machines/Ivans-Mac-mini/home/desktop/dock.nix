@@ -42,6 +42,7 @@ in
       { path = "/Applications/Obsidian.app/"; }
       { path = "/Applications/WhatsApp.app/"; }
       { path = "/Applications/Cryptomator.app/"; }
+      { path = "/Applications/TaskForge.app/"; }
 
       {
         path = "${homePath}/Downloads/";
