@@ -4,11 +4,7 @@ let
   ttl = 60 * 60 * 20;
 in
 {
-  programs = {
-    gpg = {
-      enable = true;
-    };
-  };
+  programs.gpg.enable = true;
 
   services = lib.mkIf isLinux {
     gpg-agent = {
