@@ -1,6 +1,7 @@
 { pkgs, lib, ... }:
 let
   inherit (pkgs.stdenv.targetPlatform) isDarwin isLinux;
+  ttl = 60 * 60 * 20;
 in
 {
   programs = {
@@ -13,15 +14,15 @@ in
     gpg-agent = {
       enable = true;
       pinentry.package = pkgs.pinentry-tty;
-      defaultCacheTtl = 43200;
-      maxCacheTtl = 43200;
+      defaultCacheTtl = ttl;
+      maxCacheTtl = ttl;
     };
   };
 
   home.file.".gnupg/gpg-agent.conf" = lib.mkIf isDarwin {
     text = ''
-      default-cache-ttl 43200
-      max-cache-ttl 43200
+      default-cache-ttl ${builtins.toString ttl}
+      max-cache-ttl ${builtins.toString ttl}
       pinentry-program ${pkgs.pinentry-tty}/bin/pinentry-tty
     '';
   };
