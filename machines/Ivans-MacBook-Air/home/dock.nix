@@ -26,11 +26,6 @@ in
         section = "apps";
       }
 
-      {
-        type = "spacer";
-        section = "apps";
-      }
-
       # Brew casks
       { path = "/Applications/kitty.app/"; }
       { path = "/Applications/Firefox Developer Edition.app/"; }
