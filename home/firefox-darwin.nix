@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 {
   programs.firefox = {
     enable = true;
@@ -9,6 +9,9 @@
       id = 0;
       isDefault = true;
       settings = import ./firefox.nix;
+      extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
+        darkreader
+      ];
     };
   };
 }
