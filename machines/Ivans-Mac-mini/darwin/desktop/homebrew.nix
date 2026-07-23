@@ -80,7 +80,6 @@
       "silicon-labs-vcp-driver"
     ];
     masApps = {
-      "Numbers" = 361304891;
       "TaskForge - Obsidian Tasks" = 6744716215;
     };
   };

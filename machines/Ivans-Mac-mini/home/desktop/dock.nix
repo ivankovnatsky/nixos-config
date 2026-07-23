@@ -26,9 +26,6 @@ in
         section = "apps";
       }
 
-      # Installed from App Store
-      { path = "/Applications/Numbers Creator Studio.app/"; }
-
       {
         type = "spacer";
         section = "apps";
