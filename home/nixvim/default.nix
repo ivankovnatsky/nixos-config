@@ -14,6 +14,7 @@ in
     ./keymaps
     ./opts
     ./plugins
+    ./plugins/obsidian
     ./plugins/auto-capitalize
     ./plugins/lsp
     ./plugins/lspsaga
