@@ -95,7 +95,7 @@ trigger-rebuild:
 	while true; do touch .trigger-rebuild && sleep 1; done
 
 flake-update-darwin-unstable:
-	inputs="nixpkgs-darwin-unstable nix-darwin-darwin-unstable home-manager-darwin-unstable nixvim-darwin-unstable sops-nix-darwin-unstable"; \
+	inputs="nixpkgs-darwin-unstable nix-darwin-darwin-unstable home-manager-darwin-unstable nixvim-darwin-unstable sops-nix-darwin-unstable nur-darwin-unstable"; \
 	for input in $$inputs; do \
 		$(NIX) flake update ${NIX_EXTRA_FLAGS} --commit-lock-file $$input; \
 	done
