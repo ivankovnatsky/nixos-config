@@ -81,6 +81,12 @@
 
     nur-nixos-unstable = {
       url = "github:nix-community/NUR/main";
+      inputs.nixpkgs.follows = "nixpkgs-nixos-unstable";
+    };
+
+    nur-darwin-unstable = {
+      url = "github:nix-community/NUR/main";
+      inputs.nixpkgs.follows = "nixpkgs-darwin-unstable";
     };
 
     # https://discourse.nixos.org/t/error-atopile-cannot-be-found-in-pkgs/70461

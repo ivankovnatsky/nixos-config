@@ -20,7 +20,10 @@
 
       # Basic system configuration
       {
-        nixpkgs.overlays = [ inputs.self.overlay ];
+        nixpkgs.overlays = [
+          inputs.self.overlay
+          inputs.nur-darwin-unstable.overlays.default
+        ];
         nixpkgs.config.allowUnfree = true;
         nix.nixPath = [ "nixpkgs=${inputs.nixpkgs-darwin-unstable}" ];
         _module.args = {
@@ -121,7 +124,10 @@
 
       # Basic system configuration
       {
-        nixpkgs.overlays = [ inputs.self.overlay ];
+        nixpkgs.overlays = [
+          inputs.self.overlay
+          inputs.nur-darwin-unstable.overlays.default
+        ];
         nixpkgs.config.allowUnfree = true;
         nix.nixPath = [ "nixpkgs=${inputs.nixpkgs-darwin-unstable}" ];
         _module.args = {
@@ -219,7 +225,10 @@
 
       # Basic system configuration
       {
-        nixpkgs.overlays = [ inputs.self.overlay ];
+        nixpkgs.overlays = [
+          inputs.self.overlay
+          inputs.nur-darwin-unstable.overlays.default
+        ];
         nixpkgs.config.allowUnfree = true;
         nix.nixPath = [ "nixpkgs=${inputs.nixpkgs-darwin-unstable}" ];
         _module.args = {
