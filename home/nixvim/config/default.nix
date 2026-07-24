@@ -21,7 +21,7 @@
     })
 
     -- Disable logs, I'm not reading them and they grow too big.
-    vim.lsp.set_log_level("off")
+    vim.lsp.log.set_level("off")
 
     -- Create or clear the autocommand group named 'fmt'
     local group = vim.api.nvim_create_augroup('fmt', { clear = true })

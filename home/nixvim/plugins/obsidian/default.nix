@@ -6,7 +6,7 @@
         enable = true;
 
         # TODO 2025-07-25 explicitly disable legacy commands to suppress deprecation warning
-        settings.disable_frontmatter = true;
+        settings.frontmatter.enabled = false;
         settings.legacy_commands = false;
         settings.ui.enable = false;
 
