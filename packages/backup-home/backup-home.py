@@ -98,6 +98,7 @@ EXCLUDE_PATTERNS: dict[str, list[str]] = {
         "**/.cache/nix/**",
         "**/.cache/uv/archive-v0/**",
         "**/Library/Caches/Google/Chrome/**",
+        "**/Library/Caches/Ungoogled Chromium/Chrome/**",
         "**/Library/Caches/Firefox/Profiles/**",
         "**/Library/Caches/go-build/**",
         "**/Library/Caches/pypoetry/**",
@@ -132,6 +133,7 @@ EXCLUDE_PATTERNS: dict[str, list[str]] = {
     "app_data": [
         "**/Library/Application Support/Firefox/**",
         "**/Library/Application Support/Chromium/**",
+        "**/Library/Application Support/Ungoogled Chromium/**",
         "**/Library/Application Support/Google/Chrome/**",
         "**/Library/Application Support/Vivaldi/**",
         "**/Library/Application Support/Cursor/**",
