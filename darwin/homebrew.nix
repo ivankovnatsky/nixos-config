@@ -19,6 +19,7 @@
       "zapp"
     ];
     casks = [
+      "ungoogled-chromium"
       "firefox@developer-edition"
       "bitwarden"
       "coconutbattery"
