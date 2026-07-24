@@ -144,7 +144,7 @@ with lib;
           "Firefox"
           "Firefox Developer Edition"
           "Google Chrome"
-          "Ungoogled Chromium"
+          "Chromium"
         ];
         description = "Default browser application";
         default = "Safari";
