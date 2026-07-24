@@ -38,6 +38,12 @@ in
       branch = "main";
     }
     {
+      path = "${config.home.homeDirectory}/Sources/github.com/ivankovnatsky/tools";
+      remote = "origin";
+      remoteUrl = "https://github.com/ivankovnatsky/tools.git";
+      branch = "main";
+    }
+    {
       path = "${config.home.homeDirectory}/Notes";
       remote = "origin";
       remoteUrl = "https://forgejo.@domain@/@username@/notes.git";
