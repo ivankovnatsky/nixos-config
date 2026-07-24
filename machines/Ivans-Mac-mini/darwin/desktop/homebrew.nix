@@ -67,7 +67,7 @@
       "forgit"
     ];
     casks = [
-      "google-chrome"
+      "ungoogled-chromium"
       "cryptomator"
       "firefox@developer-edition"
       "mullvad-vpn"
