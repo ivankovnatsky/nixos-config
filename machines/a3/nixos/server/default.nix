@@ -1,5 +1,6 @@
 {
   imports = [
+    ./anker-monitor.nix
     ./beszel.nix
     ./configuration.nix
     ./dns.nix

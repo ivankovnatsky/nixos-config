@@ -3,6 +3,7 @@
     ../../../../modules/home/launchd
     ../../../../modules/home/notifications
     ../../../../modules/home/reposync
+    ./anker-monitor.nix
     ./arr-mgmt.nix
     ./beszel-mgmt.nix
     ./jellyfin-mgmt.nix
