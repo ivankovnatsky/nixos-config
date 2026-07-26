@@ -30,7 +30,7 @@
       Type = "exec";
       ExecStart = ''
         ${pkgs.anker-monitor}/bin/anker-monitor serve \
-          --host 0.0.0.0 --port 8787 \
+          --host 0.0.0.0 --port 8787 --max-age 300 \
           --secrets-file ${config.sops.templates."anker-secrets".path}
       '';
       Restart = "always";
