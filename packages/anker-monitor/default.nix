@@ -37,12 +37,14 @@ let
   };
 
   src = (import ../cleanPythonSource.nix { inherit (pkgs) lib; }) ./.;
+  discordSrc = (import ../cleanPythonSource.nix { inherit (pkgs) lib; }) ../discord;
+  python = py.withPackages (ps: [
+    ps.click
+    ps.discord-webhook
+    anker-solix-api
+  ]);
 in
 pkgs.writeShellScriptBin "anker-monitor" ''
-  exec ${
-    py.withPackages (ps: [
-      ps.click
-      anker-solix-api
-    ])
-  }/bin/python ${src}/anker-monitor.py "$@"
+  export PYTHONPATH="${discordSrc}''${PYTHONPATH:+:$PYTHONPATH}"
+  exec ${python}/bin/python ${src}/anker-monitor.py "$@"
 ''
