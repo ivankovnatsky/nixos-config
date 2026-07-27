@@ -1,30 +1,21 @@
-{ osConfig, ... }:
+{ config, ... }:
 
 {
-  # KDE Plasma display configuration with 200% scaling
-  # Note: plasma-manager doesn't support monitor configuration yet
-  # See: https://github.com/nix-community/plasma-manager/issues/172
+  # KWin display output config (monitor layout, scaling, replicas).
+  # plasma-manager can't manage monitors yet:
+  #   https://github.com/nix-community/plasma-manager/issues/172
   #
-  # We copy the kwinoutputconfig.json file but only if it differs
-  # This allows KDE to update the file during runtime
-
-  home.file.".config/kwinoutputconfig.json" = {
-    source = ./kwinoutputconfig.json;
-    # Don't force overwrite if the file exists and is different
-    # This allows KDE to manage the file during runtime
-    force = false;
-    onChange = ''
-      # Check if the runtime config differs from our managed version
-      if [ -f ~/.config/kwinoutputconfig.json ]; then
-        if ! diff -q ${./kwinoutputconfig.json} ~/.config/kwinoutputconfig.json > /dev/null 2>&1; then
-          echo "⚠️  kwinoutputconfig.json has changed! Showing differences:"
-          echo "────────────────────────────────────────────────────────"
-          diff -u ${./kwinoutputconfig.json} ~/.config/kwinoutputconfig.json || true
-          echo "────────────────────────────────────────────────────────"
-          echo "To update the nix config, run:"
-          echo "  cp ~/.config/kwinoutputconfig.json ~/Sources/github.com/ivankovnatsky/nix-config/machines/${osConfig.networking.hostName}/home/desktop/kwinoutput/kwinoutputconfig.json"
-        fi
-      fi
-    '';
-  };
+  # Deployed via `tools` as a real writable copy rather than a home.file
+  # store symlink, so KWin can persist runtime display changes (e.g.
+  # hot-plugging the goggles and setting them as a replica). To re-capture
+  # after changing the layout in System Settings, copy the runtime file back:
+  #   cp ~/.config/kwinoutputconfig.json \
+  #     ~/Sources/github.com/ivankovnatsky/nix-config/machines/a3/home/desktop/kwinoutput/kwinoutputconfig.json
+  local.tools.settings.files = [
+    {
+      source = "${./kwinoutputconfig.json}";
+      target = "${config.home.homeDirectory}/.config/kwinoutputconfig.json";
+      mode = "0644";
+    }
+  ];
 }
