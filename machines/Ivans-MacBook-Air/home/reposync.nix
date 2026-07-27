@@ -44,6 +44,12 @@ in
       branch = "main";
     }
     {
+      path = "${config.home.homeDirectory}/Sources/github.com/ivankovnatsky/podservice";
+      remote = "origin";
+      remoteUrl = "https://github.com/ivankovnatsky/podservice.git";
+      branch = "main";
+    }
+    {
       path = "${config.home.homeDirectory}/Notes";
       remote = "origin";
       remoteUrl = "https://forgejo.@domain@/@username@/notes.git";
