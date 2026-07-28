@@ -33,6 +33,7 @@ in
       { path = "/Applications/Bitwarden.app/"; }
       { path = "/Applications/Obsidian.app/"; }
       { path = "/Applications/WhatsApp.app/"; }
+      { path = "/Applications/Signal.app/"; }
       { path = "/Applications/Cryptomator.app/"; }
       { path = "/Applications/TaskForge.app/"; }
 

@@ -68,6 +68,7 @@
     ];
     casks = [
       "ungoogled-chromium"
+      "signal"
       "cryptomator"
       "firefox@developer-edition"
       "mullvad-vpn"
