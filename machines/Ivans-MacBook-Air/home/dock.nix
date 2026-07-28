@@ -16,6 +16,7 @@ in
       { path = "/System/Applications/Messages.app/"; }
       { path = "/System/Applications/Mail.app/"; }
       { path = "/System/Applications/Photos.app/"; }
+      { path = "/System/Applications/Calendar.app/"; }
       { path = "/System/Applications/Contacts.app/"; }
       { path = "/System/Applications/Notes.app/"; }
       { path = "/System/Applications/Music.app/"; }
