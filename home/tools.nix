@@ -5,28 +5,16 @@
 
     settings = {
       npm.packages = {
-        "@earendil-works/pi-coding-agent" = {
-          binary = "pi";
-        };
-        "@openai/codex" = {
-          binary = "codex";
-        };
-        "@steipete/summarize" = {
-          binary = "summarize";
-        };
+        "@earendil-works/pi-coding-agent" = { };
+        "@openai/codex" = { };
+        "@steipete/summarize" = { };
       };
 
       # Python packages via uv tool install
       uv.packages = {
-        "osxphotos" = {
-          binary = "osxphotos";
-        };
-        "yt-dlp" = {
-          binary = "yt-dlp";
-        };
-        "gallery-dl" = {
-          binary = "gallery-dl";
-        };
+        "osxphotos" = { };
+        "yt-dlp" = { };
+        "gallery-dl" = { };
       };
 
       # .npmrc is already provided via `home/npm.nix` for this machine
