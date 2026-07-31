@@ -5,6 +5,16 @@
 
 {
   home.packages = with pkgs; [
+    (writeShellApplication {
+      name = "whisper";
+      runtimeInputs = [
+        ffmpeg
+        python3Packages.openai-whisper
+      ];
+      text = ''
+        exec ${python3Packages.openai-whisper}/bin/whisper --model large-v3 "$@"
+      '';
+    })
     (python313.withPackages (
       ps: with ps; [
         grip
