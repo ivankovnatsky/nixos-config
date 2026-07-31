@@ -14,6 +14,7 @@
 
       uv.packages = {
         "yt-dlp" = { };
+        "openai-whisper" = { };
       };
 
       go.packages = { };
