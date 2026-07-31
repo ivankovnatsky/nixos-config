@@ -16,6 +16,7 @@
       uv.packages = {
         "osxphotos" = { };
         "yt-dlp" = { };
+        "mlx-whisper" = { };
       };
 
       go.packages = { };
