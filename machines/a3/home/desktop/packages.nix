@@ -3,23 +3,8 @@
   ...
 }:
 
-let
-  whisperWithCuda = pkgs.python3Packages.openai-whisper.override {
-    torch = pkgs.python3Packages.torchWithCuda;
-  };
-in
 {
   home.packages = with pkgs; [
-    (writeShellApplication {
-      name = "whisper";
-      runtimeInputs = [
-        ffmpeg
-        whisperWithCuda
-      ];
-      text = ''
-        exec ${whisperWithCuda}/bin/whisper --device cuda "$@" --model large-v3
-      '';
-    })
     (python313.withPackages (
       ps: with ps; [
         grip
