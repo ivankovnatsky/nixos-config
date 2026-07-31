@@ -6,28 +6,16 @@
 
     settings = {
       npm.packages = {
-        "@earendil-works/pi-coding-agent" = {
-          binary = "pi";
-        };
-        "@openai/codex" = {
-          binary = "codex";
-        };
-        "@bitwarden/cli" = {
-          binary = "bw";
-        };
-        "@steipete/summarize" = {
-          binary = "summarize";
-        };
+        "@earendil-works/pi-coding-agent" = { };
+        "@openai/codex" = { };
+        "@bitwarden/cli" = { };
+        "@steipete/summarize" = { };
       };
 
       # Python packages via uv tool install
       uv.packages = {
-        "osxphotos" = {
-          binary = "osxphotos";
-        };
-        "yt-dlp" = {
-          binary = "yt-dlp";
-        };
+        "osxphotos" = { };
+        "yt-dlp" = { };
       };
 
       go.packages = { };

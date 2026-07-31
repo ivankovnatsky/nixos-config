@@ -6,24 +6,14 @@
 
     settings = {
       npm.packages = {
-        "@earendil-works/pi-coding-agent" = {
-          binary = "pi";
-        };
-        "@openai/codex" = {
-          binary = "codex";
-        };
-        "@bitwarden/cli" = {
-          binary = "bw";
-        };
-        "@steipete/summarize" = {
-          binary = "summarize";
-        };
+        "@earendil-works/pi-coding-agent" = { };
+        "@openai/codex" = { };
+        "@bitwarden/cli" = { };
+        "@steipete/summarize" = { };
       };
 
       uv.packages = {
-        "yt-dlp" = {
-          binary = "yt-dlp";
-        };
+        "yt-dlp" = { };
       };
 
       go.packages = { };
