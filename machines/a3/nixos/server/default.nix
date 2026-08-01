@@ -14,6 +14,8 @@
     ./nextdns.nix
     ./nixpkgs.nix
     ./podservice.nix
+    ./ollama.nix
+    ./open-webui.nix
     ./power-monitoring.nix
     ./rebuild-diff.nix
     ./remote-build.nix
