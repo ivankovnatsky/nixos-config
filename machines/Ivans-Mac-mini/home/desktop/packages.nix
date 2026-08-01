@@ -4,5 +4,6 @@
     genpass
     go-grip
     ssh-to-age
+    subs
   ];
 }

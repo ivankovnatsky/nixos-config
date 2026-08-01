@@ -32,6 +32,7 @@
     mpv
     unixtools.ifconfig
     backup-system
+    subs
     bat
     bubblewrap
     cargo
