@@ -17,4 +17,15 @@
   # Publish the CUPS queue over mDNS so iOS/macOS see it as AirPrint.
   # avahi itself is already enabled in networking.nix.
   services.avahi.publish.userServices = true;
+
+  hardware.printers = {
+    ensureDefaultPrinter = "HL-1110E";
+    ensurePrinters = [
+      {
+        name = "HL-1110E";
+        deviceUri = "usb://Brother/HL-1110%20series?serial=L5L570378";
+        model = "drv:///brlaser.drv/br1110.ppd";
+      }
+    ];
+  };
 }
