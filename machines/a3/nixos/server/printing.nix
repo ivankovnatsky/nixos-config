@@ -10,7 +10,11 @@
     browsing = true;
     defaultShared = true;
     listenAddresses = [ "*:631" ];
-    allowFrom = [ "192.168.50.0/24" ];
+    # @LOCAL = any directly-connected local network. Using the interface
+    # list (not a raw subnet) makes CUPS normalize IPv4-mapped IPv6 peers
+    # (::ffff:192.168.x.x) that arrive on its dual-stack :631 socket;
+    # a hardcoded "192.168.50.0/24" fails to match the mapped form -> 403.
+    allowFrom = [ "@LOCAL" ];
     openFirewall = true;
     # Let any LAN device (incl. iOS AirPrint) submit jobs without a CUPS
     # login. Default policy demands auth for Send-Document, which macOS/iOS
