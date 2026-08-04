@@ -13,10 +13,11 @@
     ./networking.nix
     ./nextdns.nix
     ./nixpkgs.nix
-    ./podservice.nix
     ./ollama.nix
     ./open-webui.nix
+    ./podservice.nix
     ./power-monitoring.nix
+    ./printing.nix
     ./rebuild-diff.nix
     ./remote-build.nix
     ./security.nix
