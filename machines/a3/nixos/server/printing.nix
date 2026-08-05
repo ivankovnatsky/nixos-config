@@ -46,6 +46,10 @@
         name = "HL-1110E";
         deviceUri = "usb://Brother/HL-1110%20series?serial=L5L570378";
         model = "drv:///brlaser.drv/br1110.ppd";
+        # Default to 300dpi: the HL-1110 has ~1MB RAM and drops full-page
+        # 600dpi rasters (>1MB) silently — CUPS reports success, nothing
+        # prints. 300dpi keeps a full A4 page raster near the limit.
+        ppdOptions.Resolution = "300dpi";
       }
     ];
   };
