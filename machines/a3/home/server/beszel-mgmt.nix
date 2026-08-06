@@ -16,6 +16,9 @@
   local.services.beszel-mgmt = {
     enable = true;
     externalDomainFile = config.sops.secrets.external-domain.path;
+    # Default chart range; 1h is broken upstream (charts never load):
+    # https://github.com/henrygd/beszel/issues/2104
+    userSettings.chartTime = "12h";
     systems = [
       {
         name = osConfig.networking.hostName;
