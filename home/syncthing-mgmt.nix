@@ -34,26 +34,10 @@ in
       "Ivans-MacBook-Pro"
     ];
 
-    # Folders can reference devices by name (resolved from deviceDefinitionsFile)
-    folders = {
-      "Notes" = {
-        path = "${homePath}/Notes";
-        label = "Notes";
-        # reposync owns the git history; Syncthing carries the working tree only.
-        devices = [
-          "Ivans-Mac-mini"
-          "a3"
-          "Ivans-MacBook-Air"
-          "Ivans-MacBook-Pro"
-          "Ivans-iPhone"
-        ];
-        ignorePatterns = [
-          ".git"
-          ".claude"
-          ".rumdl_cache"
-        ];
-      };
-    };
+    # Notes is not synced via Syncthing on darwin machines:
+    # iCloud (Obsidian container) + Unison bridge to ~/Notes handle it locally,
+    # and reposync owns the git history.
+    folders = { };
     restart = false;
   };
 }
