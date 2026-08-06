@@ -17,6 +17,7 @@ let
       base_url = "@BASE_URL@";
       inherit (cfg) systems;
     }
+    // optionalAttrs (cfg.userSettings != { }) { user_settings = cfg.userSettings; }
   );
 
   syncScript = pkgs.writeShellScript "beszel-mgmt-sync" ''
@@ -92,6 +93,18 @@ in
       );
       default = [ ];
       description = "List of systems to sync to Beszel hub";
+    };
+
+    userSettings = mkOption {
+      type = types.attrs;
+      default = { };
+      example = {
+        chartTime = "12h";
+      };
+      description = ''
+        Keys merged into the hub user's settings JSON (user_settings
+        collection), e.g. chartTime (one of 1h/12h/24h/1w/30d).
+      '';
     };
 
   };
