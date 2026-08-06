@@ -175,8 +175,9 @@ class BeszelClient:
                 webhooks.append(shoutrrr_url)
                 click.echo("Adding Discord webhook to existing settings", err=True)
 
-                # Update user settings
-                updated_settings = {"emails": emails, "webhooks": webhooks}
+                # Update user settings (preserve unrelated keys like chartTime)
+                updated_settings = dict(settings)
+                updated_settings.update({"emails": emails, "webhooks": webhooks})
 
                 self._api_call(
                     "PATCH",
@@ -199,6 +200,34 @@ class BeszelClient:
         except Exception as e:
             raise Exception(f"Failed to setup Discord notification: {e}")
 
+    def apply_user_settings(self, settings_patch: dict):
+        """Merge given keys into the user's settings JSON (e.g. chartTime)."""
+        user_settings = self.get_user_settings()
+
+        if user_settings:
+            settings = user_settings.get("settings", {})
+            if isinstance(settings, str):
+                settings = json.loads(settings)
+
+            if all(settings.get(k) == v for k, v in settings_patch.items()):
+                click.echo("User settings already up to date", err=True)
+                return
+
+            updated_settings = dict(settings)
+            updated_settings.update(settings_patch)
+            self._api_call(
+                "PATCH",
+                f"/api/collections/user_settings/records/{user_settings['id']}",
+                data={"settings": updated_settings},
+            )
+        else:
+            self._api_call(
+                "POST",
+                "/api/collections/user_settings/records",
+                data={"user": self.user_id, "settings": settings_patch},
+            )
+        click.echo(f"Applied user settings: {settings_patch}", err=True)
+
     def sync_from_file(
         self, config_file: str, dry_run: bool = False, discord_webhook: str = None
     ):
@@ -218,6 +247,11 @@ class BeszelClient:
         # Setup Discord notification if webhook URL is provided
         if discord_webhook and not dry_run:
             self.setup_discord_notification(discord_webhook)
+
+        # Apply declarative user settings (e.g. chartTime) if provided
+        user_settings_patch = config.get("user_settings")
+        if user_settings_patch and not dry_run:
+            self.apply_user_settings(user_settings_patch)
 
         desired_systems = {s["name"]: s for s in config["systems"]}
         current_systems = {s["name"]: s for s in self.list_systems()}
