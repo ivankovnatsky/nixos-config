@@ -16,6 +16,7 @@
     ../../../../system/documentation.nix
     ../../../../system/nix.nix
     ../../../../system/sops-secrets.nix
+    ./beszel.nix
     ./dns.nix
     ./flags.nix
     ./git.nix

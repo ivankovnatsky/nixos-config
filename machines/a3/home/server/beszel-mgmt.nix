@@ -22,6 +22,11 @@
         host = "127.0.0.1";
         port = "45876";
       }
+      {
+        name = "Ivans-Mac-mini";
+        host = osConfig.inventory.miniIp;
+        port = "45876";
+      }
     ];
   };
 }
