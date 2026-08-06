@@ -35,13 +35,13 @@
       "Notes" = {
         path = "${config.home.homeDirectory}/Notes";
         label = "Notes";
+        # The mini is the bridge: iCloud + Unison land Notes in ~/Notes here,
+        # then Syncthing carries the working tree to a3.
+        # Pro/Air stay out of Syncthing (iCloud + Unison only) to avoid conflicts.
         # reposync owns the git history; Syncthing carries the working tree only.
         devices = [
           "Ivans-Mac-mini"
           "a3"
-          "Ivans-MacBook-Air"
-          "Ivans-MacBook-Pro"
-          "Ivans-iPhone"
         ];
         ignorePatterns = [
           ".git"

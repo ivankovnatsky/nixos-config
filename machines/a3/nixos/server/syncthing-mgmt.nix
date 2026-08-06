@@ -38,12 +38,11 @@
         path = "${config.users.users.${username}.home}/Notes";
         label = "Notes";
         # reposync owns the git history; Syncthing carries the working tree only.
+        # Pro/Air sync Notes via iCloud + Unison instead of Syncthing;
+        # the mini is the bridge from that iCloud world into Syncthing.
         devices = [
           "a3"
           "Ivans-Mac-mini"
-          "Ivans-MacBook-Air"
-          "Ivans-MacBook-Pro"
-          "Ivans-iPhone"
         ];
         ignorePatterns = [
           ".git"
