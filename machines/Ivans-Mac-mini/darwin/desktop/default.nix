@@ -20,6 +20,7 @@
     ./fulldiskaccess.nix
     ./homebrew.nix
     ./login-items.nix
+    ./losslessswitcher.nix
     ./spotlight.nix
     ./users.nix
   ];
