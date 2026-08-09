@@ -28,7 +28,6 @@
     ))
     unzip
     file
-    cryptomator
     mpv
     unixtools.ifconfig
     backup-system

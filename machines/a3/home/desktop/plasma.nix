@@ -195,7 +195,6 @@
                   "applications:velocidrone.desktop"
                   "applications:obsidian.desktop"
                   "applications:com.bitwarden.desktop.desktop"
-                  "applications:org.cryptomator.Cryptomator.desktop"
                   "applications:systemsettings.desktop"
                 ];
               };
