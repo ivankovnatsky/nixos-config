@@ -67,6 +67,7 @@
       "forgit"
     ];
     casks = [
+      "antigravity-cli"
       "losslessswitcher"
       "ungoogled-chromium"
       "signal"
