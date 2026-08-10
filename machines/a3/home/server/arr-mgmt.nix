@@ -121,6 +121,12 @@ in
           usernameFile = config.sops.secrets.arr-toloka-username.path;
           passwordFile = config.sops.secrets.arr-toloka-password.path;
         }
+        {
+          name = "The Pirate Bay";
+          definitionName = "thepiratebay";
+          enable = true;
+          priority = 25;
+        }
       ];
       applications = [
         {
