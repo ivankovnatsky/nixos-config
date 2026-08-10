@@ -13,11 +13,13 @@ let
   # Template with @BASE_URL@ placeholder; base URL is substituted at runtime
   # via jq --rawfile so secret-derived values never appear on jq's argv.
   beszelConfigTemplate = pkgs.writeText "beszel-config-template.json" (
-    builtins.toJSON {
-      base_url = "@BASE_URL@";
-      inherit (cfg) systems;
-    }
-    // optionalAttrs (cfg.userSettings != { }) { user_settings = cfg.userSettings; }
+    builtins.toJSON (
+      {
+        base_url = "@BASE_URL@";
+        inherit (cfg) systems;
+      }
+      // optionalAttrs (cfg.userSettings != { }) { user_settings = cfg.userSettings; }
+    )
   );
 
   syncScript = pkgs.writeShellScript "beszel-mgmt-sync" ''
