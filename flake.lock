@@ -533,11 +533,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1784710326,
-        "narHash": "sha256-07J1kL14hb73qLDsOUahoQ4pYB9uikyjsHDL4JIQqGs=",
+        "lastModified": 1786706001,
+        "narHash": "sha256-l9cOHSxEDQmDh4lySFovNsu4UsYmbT1PO5uMGfaNiFg=",
         "owner": "ivankovnatsky",
         "repo": "podservice",
-        "rev": "da52449d3caee9c80e5e2aef3272ace9e4d16596",
+        "rev": "aa4cfd6c079b44789701692fe0821d429d6801cd",
         "type": "github"
       },
       "original": {
