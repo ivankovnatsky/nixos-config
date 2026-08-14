@@ -28,6 +28,7 @@
       "Ivans-iPhone"
       "Ivans-MacBook-Pro"
       "Ivans-MacBook-Air"
+      "Canaris-iPhone"
     ];
 
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
@@ -42,6 +43,20 @@
         devices = [
           "Ivans-Mac-mini"
           "a3"
+        ];
+        ignorePatterns = [
+          ".git"
+          ".claude"
+          ".rumdl_cache"
+        ];
+      };
+      "Notes2" = {
+        path = "${config.home.homeDirectory}/Notes2";
+        label = "Notes2";
+        devices = [
+          "Ivans-Mac-mini"
+          "a3"
+          "Canaris-iPhone"
         ];
         ignorePatterns = [
           ".git"
