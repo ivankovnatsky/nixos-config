@@ -2,7 +2,6 @@
 
 {
   home.packages = with pkgs; [
-    antigravity-cli
     age
     aria2
     pre-commit
