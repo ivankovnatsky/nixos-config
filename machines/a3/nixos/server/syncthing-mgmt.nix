@@ -52,7 +52,7 @@
         ];
       };
       "Notes2" = {
-        path = "${config.home.homeDirectory}/Notes2";
+        path = "${config.users.users.${username}.home}/Notes2";
         label = "Notes2";
         devices = [
           "a3"
