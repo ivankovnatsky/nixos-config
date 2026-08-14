@@ -54,6 +54,14 @@ in
         identity = forgejoIdentity;
       }
       {
+        path = "${config.home.homeDirectory}/Notes2";
+        remote = "origin";
+        remoteUrl = "https://forgejo.@domain@/@username@/notes2.git";
+        branch = "main";
+        autoStage = true;
+        identity = forgejoIdentity;
+      }
+      {
         path = "/storage0/data";
         remote = "origin";
         remoteUrl = "https://forgejo.@domain@/@username@/data.git";
