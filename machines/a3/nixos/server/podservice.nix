@@ -125,6 +125,8 @@ in
   systemd.services.apache-kafka.serviceConfig.Restart = "on-failure";
   systemd.services.apache-kafka.serviceConfig.RestartSec = 10;
 
+  networking.firewall.allowedTCPPorts = [ 8083 ];
+
   users.users.podservice = {
     isSystemUser = true;
     group = "podservice";
