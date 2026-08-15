@@ -10,7 +10,7 @@ let
     set -e
 
     ${lib.concatMapStringsSep "\n" (
-      service: ''/usr/sbin/networksetup -setdnsservers "${service}" 127.0.0.1''
+      service: ''/usr/sbin/networksetup -setdnsservers "${service}" 127.0.0.1 1.1.1.1 1.0.0.1''
     ) config.networking.knownNetworkServices}
   '';
 in
@@ -23,7 +23,11 @@ in
     "Thunderbolt Bridge"
     "Wi-Fi"
   ];
-  networking.dns = [ "127.0.0.1" ];
+  networking.dns = [
+    "127.0.0.1"
+    "1.1.1.1"
+    "1.0.0.1"
+  ];
 
   sops.secrets.nextdns-endpoint-mini.key = "nextDNS/Mini/dotHostname";
   sops.secrets.nextdns-server-mini-1.key = "nextDNS/Mini/IPs/0";
@@ -71,7 +75,12 @@ in
       "listen-address" = "0.0.0.0";
       "local-service" = "net";
       "no-resolv" = true;
-      server = [ "127.0.0.1#5453" ];
+      server = [
+        "127.0.0.1#5453"
+        "1.1.1.1"
+        "1.0.0.1"
+      ];
+      "strict-order" = true;
       "max-ttl" = 60;
       "domain-needed" = true;
       "expand-hosts" = true;
