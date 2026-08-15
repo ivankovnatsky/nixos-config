@@ -40,18 +40,17 @@ in
   local.services.pmset = {
     enable = true;
     autoRestartOnPowerConnect = true;
+  };
 
-    # To verify the current power management schedule state:
-    # ```console
-    # sudo pmset -g sched
-    # ```
-    # pmset repeat shutdown does not work forcefully - apps can block it via
-    # power assertions (e.g., screensharingd, sharingd)
-    schedules = {
-      ShutDown = {
-        enable = true;
-        time = "22:20:00";
-        action = "shutdown";
+  local.launchd.services.auto-poweroff = {
+    enable = true;
+    command = "/sbin/shutdown -h now";
+    runAtLoad = false;
+    keepAlive = false;
+    extraServiceConfig = {
+      StartCalendarInterval = {
+        Hour = 22;
+        Minute = 20;
       };
     };
   };
