@@ -26,6 +26,7 @@
 
       curlShell = {
         "https://claude.ai/install.sh" = "bash";
+        "https://antigravity.google/cli/install.sh" = "bash";
       };
 
       # No MCP servers for this host currently; add here if needed later

@@ -21,6 +21,7 @@
 
       curlShell = {
         "https://claude.ai/install.sh" = "bash";
+        "https://antigravity.google/cli/install.sh" = "bash";
       };
 
       mcp.servers = { };

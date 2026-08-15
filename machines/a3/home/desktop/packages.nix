@@ -26,7 +26,6 @@
         markitdown
       ]
     ))
-    nixpkgs-nixos-master.antigravity-cli
     unzip
     file
     mpv
