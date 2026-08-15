@@ -29,6 +29,12 @@ in
       };
     };
 
+    autoRestartOnPowerConnect = mkOption {
+      type = types.nullOr types.bool;
+      default = null;
+      description = "Start up automatically when power is connected (pmset autorestartatconnect 1/0)";
+    };
+
     schedules = mkOption {
       default = { };
       description = "Power management schedules";
@@ -87,7 +93,15 @@ in
               echo "Setting low power mode for AC: ${if cfg.powerMode.ac then "enabled" else "disabled"}"
               /usr/bin/pmset -c lowpowermode ${if cfg.powerMode.ac then "1" else "0"}
             ''}
-            ${optionalString (cfg.powerMode.battery != null || cfg.powerMode.ac != null) ''
+            ${optionalString (cfg.autoRestartOnPowerConnect != null) ''
+              echo "Setting auto restart on power connect: ${
+                if cfg.autoRestartOnPowerConnect then "enabled" else "disabled"
+              }"
+              /usr/bin/pmset -a autorestartatconnect ${
+                if cfg.autoRestartOnPowerConnect then "1" else "0"
+              }
+            ''}
+            ${optionalString (cfg.powerMode.battery != null || cfg.powerMode.ac != null || cfg.autoRestartOnPowerConnect != null) ''
               echo "Verifying power mode settings:"
               /usr/bin/pmset -g custom
             ''}
