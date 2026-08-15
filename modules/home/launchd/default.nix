@@ -33,7 +33,7 @@ let
           example = "/Volumes/ExternalDrive";
           description = ''
             Optional path to wait for before starting the service.
-            Uses /bin/wait4path to block until the path exists.
+            Blocks until the path exists.
             Useful for services that depend on external volumes being mounted.
           '';
         };
@@ -43,7 +43,7 @@ let
           default = false;
           description = ''
             Wait for sops-nix secrets to be available before starting the service.
-            Uses /bin/wait4path to block until ~/.config/sops-nix/secrets exists.
+            Blocks until ~/.config/sops-nix/secrets exists.
             Enable this for services that depend on sops secrets.
           '';
         };
@@ -131,13 +131,17 @@ let
 
         ${optionalString svc.waitForSecrets ''
           echo "Waiting for sops secrets..."
-          /bin/wait4path ${config.home.homeDirectory}/.config/sops-nix/secrets
+          while [ ! -e ${config.home.homeDirectory}/.config/sops-nix/secrets ]; do
+            sleep 1
+          done
           echo "Sops secrets available."
         ''}
 
         ${optionalString (svc.waitForPath != null) ''
           echo "Waiting for ${svc.waitForPath}..."
-          /bin/wait4path "${svc.waitForPath}"
+          while [ ! -e "${svc.waitForPath}" ]; do
+            sleep 1
+          done
           echo "${svc.waitForPath} available."
         ''}
 
