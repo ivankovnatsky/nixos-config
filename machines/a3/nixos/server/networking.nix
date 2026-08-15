@@ -29,15 +29,17 @@
     ];
   };
 
+  networking.interfaces.enp11s0.wakeOnLan.enable = true;
+
   # Don't let NetworkManager bring up the roaming USB-eth dongle on a3.
-  # When it joins 192.168.50.0/24 alongside eno1 and wlp9s0, replies leave
+  # When it joins 192.168.50.0/24 alongside enp11s0 and wlp12s0, replies leave
   # via the lowest-metric default route (the dongle) and break return paths
   # for traffic destined to .50.6 / .50.11.
   networking.networkmanager.unmanaged = [
     "mac:f8:e4:3b:a7:0e:53"
   ];
 
-  # a3's eno1 and wlp9s0 are both on 192.168.50.0/24. Without this, ARP flux
+  # a3's enp11s0 and wlp12s0 are both on 192.168.50.0/24. Without this, ARP flux
   # lets either NIC answer for any local IP — LAN clients learn the wrong
   # MAC for .50.6 and packets get black-holed by rp_filter.
   boot.kernel.sysctl = {
