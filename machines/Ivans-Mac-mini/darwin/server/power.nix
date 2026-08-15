@@ -9,6 +9,7 @@
 
   local.services.pmset = {
     enable = true;
+    autoRestartOnPowerConnect = true;
 
     # To verify the current power management schedule state:
     # ```console
