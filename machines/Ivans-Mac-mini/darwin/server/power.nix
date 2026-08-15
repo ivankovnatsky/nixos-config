@@ -47,13 +47,13 @@ in
     # ```
     # pmset repeat shutdown does not work forcefully - apps can block it via
     # power assertions (e.g., screensharingd, sharingd)
-    # schedules = {
-    #   ShutDown = {
-    #     enable = true;
-    #     time = "22:30:00";
-    #     action = "shutdown";
-    #   };
-    # };
+    schedules = {
+      ShutDown = {
+        enable = true;
+        time = "22:30:00";
+        action = "shutdown";
+      };
+    };
   };
 
   local.launchd.services.wol-a3 = {
