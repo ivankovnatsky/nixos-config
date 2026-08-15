@@ -24,6 +24,7 @@
     gpg-pass
     gwq-add
     gwq-merge
+    homelab
     image-meta
     jellyfin-mgmt
     nextdns-mgmt
