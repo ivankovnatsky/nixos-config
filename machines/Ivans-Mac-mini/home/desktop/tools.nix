@@ -21,6 +21,10 @@
 
       go.packages = { };
 
+      pi.packages = {
+        "npm:pi-antigravity" = { };
+      };
+
       # .npmrc is already provided via `home/npm.nix` for this machine
       # npm.configFile = "";
 
