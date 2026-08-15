@@ -14,6 +14,7 @@
     ./nextdns.nix
     ./nixpkgs.nix
     ./podservice.nix
+    ./power.nix
     ./power-monitoring.nix
     ./printing.nix
     ./rebuild-diff.nix
