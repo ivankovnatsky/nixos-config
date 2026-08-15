@@ -40,6 +40,7 @@ let
     "npm"
     "uv"
     "go"
+    "pi"
     "mcp"
     "curlShell"
     "gitRepos"
