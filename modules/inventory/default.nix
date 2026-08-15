@@ -69,6 +69,12 @@ with lib;
       default = "192.168.50.11";
     };
 
+    a3Mac = mkOption {
+      type = types.str;
+      description = "a3 ethernet MAC address";
+      default = "34:5a:60:eb:04:8b";
+    };
+
     miniVmIp = mkOption {
       type = types.str;
       description = "mini-vm OrbStack VM IP address";
