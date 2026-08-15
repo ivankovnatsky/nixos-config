@@ -16,7 +16,6 @@
     ./podservice.nix
     ./power.nix
     ./power-monitoring.nix
-    ./printing.nix
     ./rebuild-diff.nix
     ./remote-build.nix
     ./security.nix

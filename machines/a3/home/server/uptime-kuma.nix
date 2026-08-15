@@ -72,13 +72,6 @@ in
         description = "Caddy HTTPS reverse proxy (a3)";
       }
       {
-        name = "cups-a3";
-        type = "tcp";
-        url = "127.0.0.1:631";
-        interval = 60;
-        description = "CUPS print server (a3, Brother HL-1110E)";
-      }
-      {
         name = "dnsmasq-a3";
         type = "dns";
         url = "example.com@127.0.0.1";
