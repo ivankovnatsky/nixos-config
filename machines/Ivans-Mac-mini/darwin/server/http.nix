@@ -28,9 +28,11 @@ in
     preStart = ''
       umask 077
 
-      /bin/wait4path ${config.sops.secrets.external-domain.path}
-      /bin/wait4path ${config.sops.secrets.lets-encrypt-email.path}
-      /bin/wait4path ${config.sops.secrets.cloudflare-api-token.path}
+      while [ ! -f "${config.sops.secrets.external-domain.path}" ] || \
+            [ ! -f "${config.sops.secrets.lets-encrypt-email.path}" ] || \
+            [ ! -f "${config.sops.secrets.cloudflare-api-token.path}" ]; do
+        sleep 1
+      done
 
       external_domain=$(cat ${config.sops.secrets.external-domain.path})
       lets_encrypt_email=$(cat ${config.sops.secrets.lets-encrypt-email.path})
