@@ -2,10 +2,10 @@
 
 {
   systemd.timers.auto-poweroff = {
-    description = "Daily auto power-off at 22:30";
+    description = "Daily auto power-off at 22:20";
     wantedBy = [ "timers.target" ];
     timerConfig = {
-      OnCalendar = "*-*-* 22:30:00";
+      OnCalendar = "*-*-* 22:20:00";
       Persistent = false;
     };
   };
