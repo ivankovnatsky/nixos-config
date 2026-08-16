@@ -358,15 +358,20 @@ def notify(message: str) -> None:
         # On Linux, broadcast to all terminals
         subprocess.run(["wall", message], check=False)
         
-        # Attempt KDE Plasma / Desktop notification (assuming user 'ivan')
+        # Attempt KDE Plasma / Desktop notification
         try:
             import os
             import pwd
-            uid = pwd.getpwnam("ivan").pw_uid
+            
+            # Find the primary user (UID 1000) dynamically
+            pw = pwd.getpwuid(1000)
+            uid = pw.pw_uid
+            username = pw.pw_name
+            
             if os.geteuid() == 0:
-                # If running as root (systemd timer), drop to ivan and set DBUS
+                # If running as root (systemd timer), drop to primary user and set DBUS
                 cmd = [
-                    "su", "-", "ivan", "-c",
+                    "su", "-", username, "-c",
                     f"DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/{uid}/bus notify-send 'Homelab' '{message}'"
                 ]
                 subprocess.run(cmd, check=False, timeout=5)
