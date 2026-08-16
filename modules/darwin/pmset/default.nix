@@ -97,14 +97,15 @@ in
               echo "Setting auto restart on power connect: ${
                 if cfg.autoRestartOnPowerConnect then "enabled" else "disabled"
               }"
-              /usr/bin/pmset -a autorestartatconnect ${
-                if cfg.autoRestartOnPowerConnect then "1" else "0"
-              }
+              /usr/bin/pmset -a autorestartatconnect ${if cfg.autoRestartOnPowerConnect then "1" else "0"}
             ''}
-            ${optionalString (cfg.powerMode.battery != null || cfg.powerMode.ac != null || cfg.autoRestartOnPowerConnect != null) ''
-              echo "Verifying power mode settings:"
-              /usr/bin/pmset -g custom
-            ''}
+            ${optionalString
+              (cfg.powerMode.battery != null || cfg.powerMode.ac != null || cfg.autoRestartOnPowerConnect != null)
+              ''
+                echo "Verifying power mode settings:"
+                /usr/bin/pmset -g custom
+              ''
+            }
           '';
 
           # Generate a single pmset repeat command with all schedules
