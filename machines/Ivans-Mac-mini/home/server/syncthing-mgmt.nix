@@ -28,7 +28,7 @@
       "Ivans-iPhone"
       "Ivans-MacBook-Pro"
       "Ivans-MacBook-Air"
-      "Canaris-iPhone"
+      "Mooings-iPhone"
     ];
 
     # Folders can reference devices by name (resolved from deviceDefinitionsFile)
@@ -56,7 +56,7 @@
         devices = [
           "Ivans-Mac-mini"
           "a3"
-          "Canaris-iPhone"
+          "Mooings-iPhone"
         ];
         ignorePatterns = [
           ".git"
