@@ -19,7 +19,9 @@ in
   networking.firewall.allowedTCPPorts = [ 8787 ];
 
   # Root-owned so the root check service can read it (default 0400 root:root).
-  sops.secrets.anker-discord-webhook = { key = "discord/webhooks/notifications"; };
+  sops.secrets.anker-discord-webhook = {
+    key = "discord/webhooks/notifications";
+  };
 
   # Actor: poll the local serve endpoint and power a3 off on sustained low SOC.
   # Root system service (not a user service) so poweroff needs no auth. No Anker

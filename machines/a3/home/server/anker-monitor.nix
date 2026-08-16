@@ -8,9 +8,15 @@
 # machines/Ivans-Mac-mini/home/server).
 
 {
-  sops.secrets.anker-email = { key = "anker/email"; };
-  sops.secrets.anker-password = { key = "anker/password"; };
-  sops.secrets.anker-country = { key = "anker/country"; };
+  sops.secrets.anker-email = {
+    key = "anker/email";
+  };
+  sops.secrets.anker-password = {
+    key = "anker/password";
+  };
+  sops.secrets.anker-country = {
+    key = "anker/country";
+  };
 
   # One combined secrets file for anker-monitor --secrets-file.
   sops.templates."anker-secrets".content = ''
@@ -23,8 +29,14 @@
   systemd.user.services.anker-monitor-serve = {
     Unit = {
       Description = "Anker C1000 SOC reporter";
-      After = [ "network-online.target" "sops-nix.service" ];
-      Wants = [ "network-online.target" "sops-nix.service" ];
+      After = [
+        "network-online.target"
+        "sops-nix.service"
+      ];
+      Wants = [
+        "network-online.target"
+        "sops-nix.service"
+      ];
     };
     Service = {
       Type = "exec";

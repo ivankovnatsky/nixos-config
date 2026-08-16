@@ -18,7 +18,9 @@ let
 in
 {
   # Reuse the shared notifications Discord channel for critical alerts.
-  sops.secrets.anker-discord-webhook = { key = "discord/webhooks/notifications"; };
+  sops.secrets.anker-discord-webhook = {
+    key = "discord/webhooks/notifications";
+  };
 
   local.launchd.services.anker-monitor-check = {
     enable = true;
