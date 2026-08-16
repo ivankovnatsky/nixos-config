@@ -348,5 +348,26 @@ def off(machine: str) -> None:
     sys.exit(power_off_machine(machine))
 
 
+@main.command()
+@click.argument("message", default="System is shutting down in 10 minutes", required=False)
+def notify(message: str) -> None:
+    """Send a local system notification (macOS/Linux)."""
+    if sys.platform == "darwin":
+        subprocess.run(["osascript", "-e", f'display notification "{message}" with title "Homelab"'], check=False)
+    else:
+        # On Linux, broadcast to all terminals
+        subprocess.run(["wall", message], check=False)
+
+
+@main.command()
+def shutdown() -> None:
+    """Safely shut down the current local machine."""
+    click.echo("Initiating local shutdown...")
+    if sys.platform == "darwin":
+        subprocess.run(["/sbin/shutdown", "-h", "now"], check=False)
+    else:
+        subprocess.run(["systemctl", "poweroff"], check=False)
+
+
 if __name__ == "__main__":
     main(prog_name="homelab")
