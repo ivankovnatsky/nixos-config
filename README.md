@@ -1,8 +1,7 @@
 # nix-config
 
-A declarative multi-system Nix Flake managing macOS (via `nix-darwin`) and
-Linux (via `NixOS`) hosts alongside user environments configured with
-`home-manager`.
+A declarative multi-system Nix Flake managing macOS (via `nix-darwin`) and Linux
+(via `NixOS`) hosts alongside user environments configured with `home-manager`.
 
 ## Structure
 
