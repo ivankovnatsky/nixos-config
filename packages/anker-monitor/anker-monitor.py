@@ -80,7 +80,7 @@ def _load_secrets(path):
             if not positions:
                 continue
             idx = min(positions)
-            key, value = line[:idx], line[idx + 1:]
+            key, value = line[:idx], line[idx + 1 :]
             creds[key.strip().lower()] = value.strip().strip("\"'")
     user = creds.get("email") or creds.get("user") or creds.get("ankeruser")
     password = creds.get("password") or creds.get("ankerpassword")
@@ -96,14 +96,18 @@ def _creds(secrets_file):
         return _load_secrets(secrets_file)
     user, password = os.environ.get("ANKERUSER"), os.environ.get("ANKERPASSWORD")
     if not user or not password:
-        raise click.ClickException("provide --secrets-file (or ANKERUSER/ANKERPASSWORD)")
+        raise click.ClickException(
+            "provide --secrets-file (or ANKERUSER/ANKERPASSWORD)"
+        )
     return user, password, os.environ.get("ANKERCOUNTRY", "US")
 
 
 def cred_options(func):
     """Single --secrets-file option for commands that reach Anker."""
     return click.option(
-        "--secrets-file", type=click.Path(exists=True), default=None,
+        "--secrets-file",
+        type=click.Path(exists=True),
+        default=None,
         help="File with email/password/country (key=value or key: value). Else ANKER* env.",
     )(func)
 
@@ -187,7 +191,9 @@ async def _serve(host, port, pn, sn, max_age, creds):
             await runner.cleanup()
 
 
-async def _check(url, threshold, debounce, interval, shutdown, shutdown_cmd, webhook_file):
+async def _check(
+    url, threshold, debounce, interval, shutdown, shutdown_cmd, webhook_file
+):
     webhook = _read_webhook(webhook_file)
     below = 0
     blind = 0  # consecutive polls with no usable reading
@@ -221,7 +227,10 @@ async def _check(url, threshold, debounce, interval, shutdown, shutdown_cmd, web
                 below = 0
                 blind += 1
                 if blind >= BLIND_ALERT_AFTER and not blind_alerted:
-                    _notify(webhook, f"can't read battery SOC ({detail}); monitoring is blind")
+                    _notify(
+                        webhook,
+                        f"can't read battery SOC ({detail}); monitoring is blind",
+                    )
                     blind_alerted = True
                 await asyncio.sleep(interval)
                 continue
@@ -240,7 +249,9 @@ async def _check(url, threshold, debounce, interval, shutdown, shutdown_cmd, web
                         # Dry-run: alert once, then keep polling (do NOT exit, or the
                         # supervisor would relaunch us and re-alert every restart).
                         if not acted:
-                            click.echo(f"threshold sustained; would run: {shutdown_cmd}")
+                            click.echo(
+                                f"threshold sustained; would run: {shutdown_cmd}"
+                            )
                             _notify(
                                 webhook,
                                 f"[DRY-RUN] battery {soc:g}% <= {threshold}% sustained; "
@@ -278,10 +289,20 @@ def cli(verbose):
 @cli.command()
 @click.option("--host", default="0.0.0.0", show_default=True)
 @click.option("--port", type=int, default=8787, show_default=True)
-@click.option("--pn", default=DEFAULT_PN, show_default=True, help="Device product number to match.")
+@click.option(
+    "--pn",
+    default=DEFAULT_PN,
+    show_default=True,
+    help="Device product number to match.",
+)
 @click.option("--sn", default=None, help="Exact device serial (overrides --pn).")
-@click.option("--max-age", type=int, default=60, show_default=True,
-              help="Report soc as null once the MQTT stream stalls this many seconds.")
+@click.option(
+    "--max-age",
+    type=int,
+    default=60,
+    show_default=True,
+    help="Report soc as null once the MQTT stream stalls this many seconds.",
+)
 @cred_options
 def serve(host, port, pn, sn, max_age, secrets_file):
     """Read C1000 SOC over Anker cloud MQTT and expose GET /soc."""
@@ -294,20 +315,39 @@ def serve(host, port, pn, sn, max_age, secrets_file):
 
 @cli.command()
 @click.option("--url", default="http://localhost:8787/soc", show_default=True)
-@click.option("--threshold", type=int, default=30, show_default=True,
-              help="Shut down when SOC is at/below this percent.")
-@click.option("--debounce", type=int, default=2, show_default=True,
-              help="Consecutive sub-threshold polls required before acting.")
-@click.option("--interval", type=int, default=30, show_default=True,
-              help="Seconds between polls.")
+@click.option(
+    "--threshold",
+    type=int,
+    default=30,
+    show_default=True,
+    help="Shut down when SOC is at/below this percent.",
+)
+@click.option(
+    "--debounce",
+    type=int,
+    default=2,
+    show_default=True,
+    help="Consecutive sub-threshold polls required before acting.",
+)
+@click.option(
+    "--interval", type=int, default=30, show_default=True, help="Seconds between polls."
+)
 @click.option("--shutdown", is_flag=True, help="Actually run the shutdown command.")
 @click.option("--shutdown-cmd", default="shutdown -h now", show_default=True)
-@click.option("--webhook-file", type=click.Path(exists=True), default=None,
-              help="File with a Discord webhook URL; alerts on shutdown and blind monitoring.")
+@click.option(
+    "--webhook-file",
+    type=click.Path(exists=True),
+    default=None,
+    help="File with a Discord webhook URL; alerts on shutdown and blind monitoring.",
+)
 def check(url, threshold, debounce, interval, shutdown, shutdown_cmd, webhook_file):
     """Poll a serve endpoint and shut this host down on sustained low SOC."""
     try:
-        asyncio.run(_check(url, threshold, debounce, interval, shutdown, shutdown_cmd, webhook_file))
+        asyncio.run(
+            _check(
+                url, threshold, debounce, interval, shutdown, shutdown_cmd, webhook_file
+            )
+        )
     except KeyboardInterrupt:
         pass
 
@@ -317,13 +357,17 @@ async def _connect(api, pn, sn):
     await api.get_bind_devices()
     serial = _match_device(api, pn, sn)
     if not serial:
-        raise click.ClickException(f"no device matching pn={pn} sn={sn or '*'} on this account")
+        raise click.ClickException(
+            f"no device matching pn={pn} sn={sn or '*'} on this account"
+        )
     device = SolixMqttDeviceFactory(api, serial).create_device()
     session = await api.startMqttSession()
     if session is None:
         raise click.ClickException("failed to start Anker MQTT session")
     topics = {f"{session.get_topic_prefix(api.devices[serial])}#"}
-    poller = asyncio.create_task(session.message_poller(topics, {serial}, timeout=TRIGGER_TIMEOUT))
+    poller = asyncio.create_task(
+        session.message_poller(topics, {serial}, timeout=TRIGGER_TIMEOUT)
+    )
     return serial, device, poller
 
 
@@ -341,9 +385,16 @@ async def _await_status(device, wait):
 @cli.command()
 @click.option("--pn", default=DEFAULT_PN, show_default=True)
 @click.option("--sn", default=None, help="Exact device serial (overrides --pn).")
-@click.option("--wait", type=int, default=60, show_default=True,
-              help="Max seconds to wait for the first realtime message.")
-@click.option("--json", "as_json", is_flag=True, help="Print the full status dict as JSON.")
+@click.option(
+    "--wait",
+    type=int,
+    default=60,
+    show_default=True,
+    help="Max seconds to wait for the first realtime message.",
+)
+@click.option(
+    "--json", "as_json", is_flag=True, help="Print the full status dict as JSON."
+)
 @cred_options
 def status(pn, sn, wait, as_json, secrets_file):
     """One-shot: print the full realtime status the device publishes."""
@@ -357,7 +408,9 @@ def status(pn, sn, wait, as_json, secrets_file):
             try:
                 st = await _await_status(device, wait)
                 if not st:
-                    raise click.ClickException("no data received (device asleep or trigger not honored)")
+                    raise click.ClickException(
+                        "no data received (device asleep or trigger not honored)"
+                    )
                 if as_json:
                     click.echo(json.dumps(st, indent=2, default=str, sort_keys=True))
                 else:

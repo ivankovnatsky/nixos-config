@@ -32,7 +32,9 @@ SSH_TIMEOUT = 10  # seconds for SSH connection timeout
 MAX_UNLOCK_ATTEMPTS = 3  # max FileVault unlock attempts
 
 
-def send_wol_packet(mac: str, broadcast_ips: list[str] | None = None, port: int = 9) -> None:
+def send_wol_packet(
+    mac: str, broadcast_ips: list[str] | None = None, port: int = 9
+) -> None:
     """Construct and broadcast a Wake-on-LAN magic packet."""
     clean_mac = mac.replace(":", "").replace("-", "").replace(".", "")
     if len(clean_mac) != 12:
@@ -46,7 +48,9 @@ def send_wol_packet(mac: str, broadcast_ips: list[str] | None = None, port: int 
             try:
                 s.sendto(packet, (target, port))
             except OSError as e:
-                click.echo(f"  Warning: failed to send to {target}:{port}: {e}", err=True)
+                click.echo(
+                    f"  Warning: failed to send to {target}:{port}: {e}", err=True
+                )
 
 
 def is_host_pingable(ip: str, timeout: int = 1) -> bool:
@@ -265,7 +269,9 @@ def power_off_machine(target: str) -> int:
     """Power off a homelab machine (mini or a3)."""
     machine_info = MACHINES.get(target.lower())
     if not machine_info:
-        click.echo(f"Unknown machine '{target}'. Available: {', '.join(MACHINES.keys())}")
+        click.echo(
+            f"Unknown machine '{target}'. Available: {', '.join(MACHINES.keys())}"
+        )
         return 1
 
     ip = machine_info["ip"]
@@ -276,7 +282,11 @@ def power_off_machine(target: str) -> int:
         subprocess.run(["dns", "clear"], check=False)
 
     click.echo(f"Shutting down {target} at {ip}...")
-    ssh_run("sudo poweroff" if target.lower() == "a3" else "sudo shutdown -h now", ip=ip, user=user)
+    ssh_run(
+        "sudo poweroff" if target.lower() == "a3" else "sudo shutdown -h now",
+        ip=ip,
+        user=user,
+    )
     click.echo(f"{target} shutdown initiated.")
     return 0
 
@@ -290,12 +300,28 @@ def main(ctx: click.Context) -> None:
 
 
 @main.command()
-@click.argument("machine", default="a3", type=click.Choice(list(MACHINES.keys()), case_sensitive=False))
+@click.argument(
+    "machine",
+    default="a3",
+    type=click.Choice(list(MACHINES.keys()), case_sensitive=False),
+)
 @click.option("--mac", default=None, help="Custom MAC address to send packet to.")
-@click.option("--broadcast", "-b", multiple=True, help="Broadcast IP addresses to send packet to.")
-@click.option("--wait/--no-wait", "-w", default=True, help="Wait for host to respond to ping.")
-@click.option("--timeout", "-t", default=60, type=int, help="Timeout in seconds when waiting for host.")
-def wol(machine: str, mac: str | None, broadcast: tuple[str, ...], wait: bool, timeout: int) -> None:
+@click.option(
+    "--broadcast", "-b", multiple=True, help="Broadcast IP addresses to send packet to."
+)
+@click.option(
+    "--wait/--no-wait", "-w", default=True, help="Wait for host to respond to ping."
+)
+@click.option(
+    "--timeout",
+    "-t",
+    default=60,
+    type=int,
+    help="Timeout in seconds when waiting for host.",
+)
+def wol(
+    machine: str, mac: str | None, broadcast: tuple[str, ...], wait: bool, timeout: int
+) -> None:
     """Send Wake-on-LAN magic packet to wake a machine."""
     m_info = MACHINES.get(machine.lower(), {})
     target_mac = mac or m_info.get("mac")
@@ -314,7 +340,9 @@ def wol(machine: str, mac: str | None, broadcast: tuple[str, ...], wait: bool, t
         if wait_for_host(target_ip, timeout=timeout):
             click.echo(f"✓ {machine} ({target_ip}) is UP and responding to ping!")
         else:
-            click.echo(f"✗ Timeout waiting for {machine} ({target_ip}) after {timeout}s.")
+            click.echo(
+                f"✗ Timeout waiting for {machine} ({target_ip}) after {timeout}s."
+            )
             sys.exit(1)
 
 
@@ -342,44 +370,62 @@ def on() -> None:
 
 
 @main.command()
-@click.argument("machine", default="mini", type=click.Choice(list(MACHINES.keys()), case_sensitive=False))
+@click.argument(
+    "machine",
+    default="mini",
+    type=click.Choice(list(MACHINES.keys()), case_sensitive=False),
+)
 def off(machine: str) -> None:
     """Power off a machine (default: mini)."""
     sys.exit(power_off_machine(machine))
 
 
 @main.command()
-@click.argument("message", default="System is shutting down in 10 minutes", required=False)
+@click.argument(
+    "message", default="System is shutting down in 10 minutes", required=False
+)
 def notify(message: str) -> None:
     """Send a local system notification (macOS/Linux)."""
     if sys.platform == "darwin":
-        subprocess.run(["osascript", "-e", f'display notification "{message}" with title "Homelab"'], check=False)
+        subprocess.run(
+            [
+                "osascript",
+                "-e",
+                f'display notification "{message}" with title "Homelab"',
+            ],
+            check=False,
+        )
     else:
         # On Linux, broadcast to all terminals
         subprocess.run(["wall", message], check=False)
-        
+
         # Attempt KDE Plasma / Desktop notification
         try:
             import os
             import pwd
-            
+
             # Find the primary user (UID 1000) dynamically
             pw = pwd.getpwuid(1000)
             uid = pw.pw_uid
             username = pw.pw_name
-            
+
             if os.geteuid() == 0:
                 # If running as root (systemd timer), drop to primary user and set DBUS
                 cmd = [
-                    "su", "-", username, "-c",
-                    f"DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/{uid}/bus notify-send 'Homelab' '{message}'"
+                    "su",
+                    "-",
+                    username,
+                    "-c",
+                    f"DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/{uid}/bus notify-send 'Homelab' '{message}'",
                 ]
                 subprocess.run(cmd, check=False, timeout=5)
             else:
                 # If already running as user
                 env = os.environ.copy()
                 env["DBUS_SESSION_BUS_ADDRESS"] = f"unix:path=/run/user/{uid}/bus"
-                subprocess.run(["notify-send", "Homelab", message], env=env, check=False, timeout=5)
+                subprocess.run(
+                    ["notify-send", "Homelab", message], env=env, check=False, timeout=5
+                )
         except Exception:
             pass
 
