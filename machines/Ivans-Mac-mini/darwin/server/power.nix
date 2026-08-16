@@ -44,13 +44,26 @@ in
 
   local.launchd.services.auto-poweroff = {
     enable = true;
-    command = "/sbin/shutdown -h now";
+    command = "${pkgs.homelab}/bin/homelab shutdown";
     runAtLoad = false;
     keepAlive = false;
     extraServiceConfig = {
       StartCalendarInterval = {
         Hour = 22;
         Minute = 20;
+      };
+    };
+  };
+
+  local.launchd.services.auto-poweroff-notify = {
+    enable = true;
+    command = "${pkgs.homelab}/bin/homelab notify";
+    runAtLoad = false;
+    keepAlive = false;
+    extraServiceConfig = {
+      StartCalendarInterval = {
+        Hour = 22;
+        Minute = 10;
       };
     };
   };
