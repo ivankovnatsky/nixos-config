@@ -14,11 +14,11 @@ in
     ./keymaps
     ./opts
     ./plugins
-    ./plugins/obsidian
     ./plugins/auto-capitalize
     ./plugins/lsp
     ./plugins/lspsaga
     ./plugins/none-ls
+    ./plugins/obsidian
   ];
   # https://github.com/elythh/nixvim
   programs.nixvim = {
