@@ -10,7 +10,7 @@ let
     set -e
 
     ${lib.concatMapStringsSep "\n" (
-      service: ''/usr/sbin/networksetup -setdnsservers "${service}" 127.0.0.1 1.1.1.1 1.0.0.1''
+      service: ''/usr/sbin/networksetup -setdnsservers "${service}" 127.0.0.1''
     ) config.networking.knownNetworkServices}
   '';
 in
@@ -25,8 +25,6 @@ in
   ];
   networking.dns = [
     "127.0.0.1"
-    "1.1.1.1"
-    "1.0.0.1"
   ];
 
   sops.secrets.nextdns-endpoint-mini.key = "nextDNS/Mini/dotHostname";
