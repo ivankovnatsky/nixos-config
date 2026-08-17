@@ -44,7 +44,7 @@ in
 
   local.launchd.services.auto-poweroff = {
     enable = true;
-    command = "${pkgs.homelab}/bin/homelab shutdown";
+    command = "${pkgs.homelab}/bin/homelab auto-shutdown";
     runAtLoad = false;
     keepAlive = false;
     extraServiceConfig = {
@@ -57,7 +57,7 @@ in
 
   local.launchd.services.auto-poweroff-notify = {
     enable = true;
-    command = "${pkgs.homelab}/bin/homelab notify";
+    command = "${pkgs.homelab}/bin/homelab auto-notify";
     runAtLoad = false;
     keepAlive = false;
     extraServiceConfig = {
