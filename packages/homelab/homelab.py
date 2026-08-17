@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Manage homelab machines (power on/off, Wake-on-LAN, FileVault unlock)."""
 
+import os
 import socket
 import subprocess
 import sys
@@ -30,6 +31,7 @@ RETRY_INTERVAL = 2  # seconds between retries
 SERVICE_CHECK_TIMEOUT = 60  # max seconds to wait for services
 SSH_TIMEOUT = 10  # seconds for SSH connection timeout
 MAX_UNLOCK_ATTEMPTS = 3  # max FileVault unlock attempts
+SKIP_AUTO_SHUTDOWN_FILE = "/tmp/skip-auto-shutdown"
 
 
 def send_wol_packet(
@@ -431,13 +433,83 @@ def notify(message: str) -> None:
 
 
 @main.command()
-def shutdown() -> None:
+@click.option("--force", is_flag=True, help="Force immediate shutdown (skips graceful macOS/KDE dialogs).")
+def shutdown(force: bool) -> None:
     """Safely shut down the current local machine."""
     click.echo("Initiating local shutdown...")
     if sys.platform == "darwin":
-        subprocess.run(["/sbin/shutdown", "-h", "now"], check=False)
+        if not force:
+            click.echo("Using graceful shutdown via Apple Events...")
+            try:
+                subprocess.run(["osascript", "-e", 'tell application "System Events" to shut down'], check=True)
+            except Exception:
+                click.echo("Failed to trigger macOS GUI shutdown, falling back to forceful shutdown...")
+                subprocess.run(["/sbin/shutdown", "-h", "now"], check=False)
+        else:
+            click.echo("Using forceful shutdown...")
+            subprocess.run(["/sbin/shutdown", "-h", "now"], check=False)
     else:
-        subprocess.run(["systemctl", "poweroff"], check=False)
+        if not force:
+            click.echo("Using graceful shutdown via KDE Plasma D-Bus...")
+            try:
+                import pwd
+                pw = pwd.getpwuid(1000)
+                uid = pw.pw_uid
+                username = pw.pw_name
+
+                if os.geteuid() == 0:
+                    cmd = [
+                        "su", "-", username, "-c",
+                        f"DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/{uid}/bus qdbus org.kde.ksmserver /KSMServer logout 0 2 2"
+                    ]
+                    subprocess.run(cmd, check=True)
+                else:
+                    env = os.environ.copy()
+                    env["DBUS_SESSION_BUS_ADDRESS"] = f"unix:path=/run/user/{uid}/bus"
+                    cmd = ["qdbus", "org.kde.ksmserver", "/KSMServer", "logout", "0", "2", "2"]
+                    subprocess.run(cmd, env=env, check=True)
+            except Exception:
+                click.echo("Failed to trigger KDE dialog, falling back to 1 minute timeout...")
+                try:
+                    subprocess.run(["shutdown", "-h", "+1", "Graceful shutdown in 1 minute. Use 'shutdown -c' to cancel."], check=False)
+                except FileNotFoundError:
+                    click.echo("shutdown command not found in PATH, using systemctl poweroff...")
+                    subprocess.run(["systemctl", "poweroff"], check=False)
+        else:
+            click.echo("Using forceful shutdown...")
+            try:
+                subprocess.run(["shutdown", "-h", "now"], check=False)
+            except FileNotFoundError:
+                subprocess.run(["systemctl", "poweroff"], check=False)
+
+
+@main.command(name="auto-notify")
+@click.pass_context
+def auto_notify(ctx: click.Context) -> None:
+    """Send auto-shutdown notification (honors skip file)."""
+    if os.path.exists(SKIP_AUTO_SHUTDOWN_FILE):
+        message = "Auto-shutdown is skipped for today (skip file present)."
+        click.echo(f"Sending skip notification because {SKIP_AUTO_SHUTDOWN_FILE} exists.")
+        ctx.invoke(notify, message=message)
+    else:
+        ctx.invoke(notify, message="System is shutting down in 10 minutes")
+
+
+@main.command(name="auto-shutdown")
+@click.option("--force", is_flag=True, help="Force immediate shutdown (skips graceful macOS/KDE dialogs).")
+@click.pass_context
+def auto_shutdown(ctx: click.Context, force: bool) -> None:
+    """Auto shut down the machine (honors skip file)."""
+    if os.path.exists(SKIP_AUTO_SHUTDOWN_FILE):
+        click.echo(f"Skipping auto-shutdown because {SKIP_AUTO_SHUTDOWN_FILE} exists.")
+        try:
+            os.remove(SKIP_AUTO_SHUTDOWN_FILE)
+            click.echo(f"Removed {SKIP_AUTO_SHUTDOWN_FILE} so it doesn't skip tomorrow.")
+        except OSError:
+            pass
+        return
+
+    ctx.invoke(shutdown, force=force)
 
 
 if __name__ == "__main__":
