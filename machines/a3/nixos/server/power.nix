@@ -14,7 +14,7 @@
     description = "Auto power-off";
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "${pkgs.homelab}/bin/homelab shutdown";
+      ExecStart = "${pkgs.homelab}/bin/homelab auto-shutdown";
     };
   };
 
@@ -31,7 +31,7 @@
     description = "Auto power-off notification";
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "${pkgs.homelab}/bin/homelab notify";
+      ExecStart = "${pkgs.homelab}/bin/homelab auto-notify";
     };
   };
 }
