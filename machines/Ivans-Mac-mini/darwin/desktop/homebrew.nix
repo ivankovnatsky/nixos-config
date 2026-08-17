@@ -67,6 +67,7 @@
       "forgit"
     ];
     casks = [
+      "soulseek"
       "losslessswitcher"
       "ungoogled-chromium"
       "signal"
