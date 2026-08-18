@@ -7,6 +7,7 @@
     ../../../../modules/home/unison
     ./anker-monitor.nix
     ./notifications.nix
+    ./power.nix
     ./reposync.nix
     ./syncthing-mgmt.nix
   ];
