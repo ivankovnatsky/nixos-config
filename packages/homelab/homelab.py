@@ -441,7 +441,7 @@ def shutdown(force: bool) -> None:
         if not force:
             click.echo("Using graceful shutdown via Apple Events...")
             try:
-                subprocess.run(["osascript", "-e", 'tell application "System Events" to shut down'], check=True)
+                subprocess.run(["osascript", "-e", 'tell application "loginwindow" to «event aevtrsdn»'], check=True)
             except Exception:
                 click.echo("Failed to trigger macOS GUI shutdown, falling back to forceful shutdown...")
                 subprocess.run(["/sbin/shutdown", "-h", "now"], check=False)
