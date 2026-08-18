@@ -15,6 +15,19 @@ Max chars: {max_chars}"""
 
 AI_BACKENDS = [
     {
+        "name": "agy",
+        "cmd": [
+            "agy",
+            "-p",
+            "{prompt}",
+            "--dangerously-skip-permissions",
+            "--output-format",
+            "json",
+        ],
+        "parse": "json",
+        "json_key": "response",
+    },
+    {
         "name": "claude",
         "cmd": [
             "claude",
