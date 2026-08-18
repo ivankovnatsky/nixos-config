@@ -16,5 +16,6 @@
   # subdirs of /storage/data/media/downloads from being created.
   systemd.tmpfiles.rules = [
     "d /storage/data 0755 root users -"
+    "d /storage/data/tmp 1777 root root -"
   ];
 }
