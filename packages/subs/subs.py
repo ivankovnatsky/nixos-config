@@ -71,7 +71,7 @@ def extract_audio(src: Path, wav: Path, *, dry: bool) -> None:
 
 
 def openai_cmd(
-    wav: Path, model: str, language: str, cond: bool, out: Path
+    wav: Path, model: str, language: str, cond: bool, task: str, out: Path
 ) -> list[str]:
     # a3 `whisper` wrapper forces `--device cuda --model large-v3`; the trailing
     # flags override (argparse keeps the last value). Greedy = beam_size 1 + temp 0,
@@ -89,6 +89,8 @@ def openai_cmd(
         model,
         "--language",
         language,
+        "--task",
+        task,
         "--beam_size",
         "1",
         "--temperature",
@@ -102,7 +104,9 @@ def openai_cmd(
     ]
 
 
-def mlx_cmd(wav: Path, model: str, language: str, cond: bool, out: Path) -> list[str]:
+def mlx_cmd(
+    wav: Path, model: str, language: str, cond: bool, task: str, out: Path
+) -> list[str]:
     # mlx-whisper is greedy at temperature 0 by default (no beam flag exists).
     prefix = (
         ["mlx_whisper"]
@@ -115,6 +119,8 @@ def mlx_cmd(wav: Path, model: str, language: str, cond: bool, out: Path) -> list
         model,
         "--language",
         language,
+        "--task",
+        task,
         "--temperature",
         "0",
         "--condition-on-previous-text",
@@ -175,7 +181,17 @@ def clean_srt(path: Path) -> int:
 )
 @click.option("-l", "--language", default="en", show_default=True)
 @click.option(
-    "--lang-tag", default=None, help="Filename language tag (defaults to --language)."
+    "-t",
+    "--task",
+    type=click.Choice(["transcribe", "translate"]),
+    default="transcribe",
+    show_default=True,
+    help="Whisper task: transcribe speech or translate non-English to English subtitles.",
+)
+@click.option(
+    "--lang-tag",
+    default=None,
+    help="Filename language tag (defaults to --language, or en for translate).",
 )
 @click.option(
     "--condition-on-previous-text/--no-condition-on-previous-text",
@@ -208,6 +224,7 @@ def main(
     engine,
     model,
     language,
+    task,
     lang_tag,
     cond,
     output,
@@ -219,7 +236,8 @@ def main(
     """Transcribe MEDIA to sidecar .srt subtitles with Whisper."""
     if engine == "auto":
         engine = default_engine()
-    lang_tag = lang_tag or language
+    if lang_tag is None:
+        lang_tag = "en" if task == "translate" else language
     resolved = MODELS.get(model, {}).get(
         engine, model
     )  # friendly alias or raw passthrough
@@ -251,14 +269,16 @@ def main(
             rc = 1
             continue
 
-        click.secho(f"\n== {src.name}  [engine={engine} model={model}]", bold=True)
+        click.secho(
+            f"\n== {src.name}  [engine={engine} model={model} task={task}]", bold=True
+        )
         started = time.monotonic()
         try:
             with tempfile.TemporaryDirectory(prefix="subs-") as td:
                 tmp = Path(td)
                 wav = tmp / "audio.wav"
                 extract_audio(src, wav, dry=dry_run)
-                run(build(wav, resolved, language, cond, tmp), dry=dry_run)
+                run(build(wav, resolved, language, cond, task, tmp), dry=dry_run)
                 if dry_run:
                     continue
 
