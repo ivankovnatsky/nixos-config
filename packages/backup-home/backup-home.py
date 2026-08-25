@@ -96,7 +96,12 @@ EXCLUDE_PATTERNS: dict[str, list[str]] = {
     "caches": [
         "**/.cache/huggingface/**",
         "**/.cache/nix/**",
-        "**/.cache/uv/archive-v0/**",
+        "**/.cache/uv/**",
+        "**/.cache/whisper/**",
+        "**/.cache/mozilla/**",
+        "**/.cache/chromium/**",
+        "**/.cache/go-build/**",
+        "**/.cache/pypoetry/**",
         "**/Library/Caches/Google/Chrome/**",
         "**/Library/Caches/Firefox/Profiles/**",
         "**/Library/Caches/go-build/**",
@@ -109,6 +114,7 @@ EXCLUDE_PATTERNS: dict[str, list[str]] = {
     "dev_deps": [
         "**/.cargo/registry/**",
         "**/.npm/**",
+        "**/.npm-cache/**",
         "**/.terraform.d/**",
         "**/.go/**",
         "**/go/**",
@@ -125,6 +131,11 @@ EXCLUDE_PATTERNS: dict[str, list[str]] = {
         "**/Group Containers/HUAQ24HBR6.dev.orbstack/**",
         "**/Library/Containers/com.utmapp.UTM/**",
         "**/.local/share/Steam/**",
+        "**/.local/share/uv/**",
+        "**/.local/share/baloo/**",
+        "**/.local/share/flatpak/**",
+        "**/.local/share/claude/**",
+        "**/.local/share/lutris/**",
         "**/.velocidrone/**",
         "**/Library/Application Support/Claude/vm_bundles/**",
         "**/Library/Application Support/rancher-desktop/**",
@@ -157,7 +168,7 @@ DEFAULT_EXCLUDE_CATEGORIES = [
 def create_backup(
     archive_path: Path,
     user: str,
-    ignore_tar_warnings: bool = False,
+    ignore_tar_warnings: bool = True,
     no_excludes: bool = False,
     exclude_categories: list[str] | None = None,
 ) -> bool:
@@ -284,9 +295,9 @@ def upload_miniserve(
     ),
 )
 @click.option(
-    "--ignore-tar-warnings",
-    is_flag=True,
-    default=False,
+    "--ignore-tar-warnings/--no-ignore-tar-warnings",
+    default=True,
+    show_default=True,
     help="Continue on non-fatal tar errors (e.g. permission denied)",
 )
 @click.option(
@@ -317,9 +328,9 @@ def upload_miniserve(
     help="Skip upload to remote machine, keep backup local",
 )
 @click.option(
-    "--delete-backup",
-    is_flag=True,
-    default=False,
+    "--delete-backup/--keep-backup",
+    default=True,
+    show_default=True,
     help="Delete local backup after successful upload",
 )
 @click.option(
