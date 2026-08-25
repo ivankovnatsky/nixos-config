@@ -11,7 +11,6 @@
     syncModels = true;
     loadModels = [
       "gemma4:26b"
-      "gemma4:31b"
     ];
   };
 }
