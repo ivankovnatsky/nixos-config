@@ -29,17 +29,12 @@ let
         # `contextWindow` matches the server-side `OLLAMA_CONTEXT_LENGTH`.
         models = [
           {
-            id = "gpt-oss:20b";
-            reasoning = true;
-            contextWindow = 211920;
-          }
-          {
-            id = "gemma4:12b";
-            reasoning = true;
-            contextWindow = 211920;
-          }
-          {
             id = "gemma4:26b";
+            reasoning = true;
+            contextWindow = 211920;
+          }
+          {
+            id = "gemma4:31b";
             reasoning = true;
             contextWindow = 211920;
           }
