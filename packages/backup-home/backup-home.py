@@ -115,6 +115,7 @@ EXCLUDE_PATTERNS: dict[str, list[str]] = {
         "**/.cargo/registry/**",
         "**/.npm/**",
         "**/.npm-cache/**",
+        "**/.bun/**",
         "**/.terraform.d/**",
         "**/.go/**",
         "**/go/**",
