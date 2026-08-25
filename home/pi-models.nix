@@ -33,11 +33,6 @@ let
             reasoning = true;
             contextWindow = 211920;
           }
-          {
-            id = "gemma4:31b";
-            reasoning = true;
-            contextWindow = 211920;
-          }
         ];
       };
     };
