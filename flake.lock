@@ -518,11 +518,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787740256,
-        "narHash": "sha256-Ew6Cy9fJVZm2wq8nZeZhBElG3++AxZcmB5QEOxegMQc=",
+        "lastModified": 1787741452,
+        "narHash": "sha256-GjAd1E9CoHE6DeJN3mpSAMKfEEQFR60zApoyd59PnvM=",
         "owner": "ivankovnatsky",
         "repo": "podservice",
-        "rev": "a9278d0b38cbaf285523e1e980f96ac4b336aeb4",
+        "rev": "ad75d610b4a3c3a4ac37f5752817b18788dd3961",
         "type": "github"
       },
       "original": {
