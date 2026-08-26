@@ -2,7 +2,7 @@
 {
   services.ollama = {
     enable = true;
-    package = pkgs.nixpkgs-nixos-master.ollama-cuda;
+    package = pkgs.ollama-cuda;
     host = "0.0.0.0";
     openFirewall = true;
     environmentVariables = {
