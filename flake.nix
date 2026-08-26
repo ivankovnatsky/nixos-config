@@ -131,6 +131,7 @@
     # Pod Service - YouTube to Podcast Feed Service
     podservice = {
       url = "github:ivankovnatsky/podservice";
+      inputs.nixpkgs.follows = "nixpkgs-nixos-master";
     };
 
     # tools - declarative configuration manager
